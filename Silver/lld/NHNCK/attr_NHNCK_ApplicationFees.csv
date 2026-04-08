@@ -1,11 +1,11 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-License Application Fee Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Transaction"" (Event). Dấu hiệu: FK → Applications + Amount + Payment Status."
-License Application Fee Code,ID dữ liệu (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ApplicationFees.Id,BK chính. PK nguồn.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationFees,Classification Value,false,false,draft,,BK. Hardcode.
-License Application Id,FK đến Securities Practitioner License Application,Surrogate Key,false,false,draft,NHNCK.qlnhn.ApplicationFees.ApplicationId,FK. Pattern Id + Code.
-License Application Code,Mã hồ sơ,Text,false,false,draft,NHNCK.qlnhn.ApplicationFees.ApplicationId,Pattern Id + Code.
-Fee Type Code,Loại phí,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationFees.FeeType,Suffix Code.
+License Application Fee Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Transaction"" (Event). FK + Amount + Payment Status → Transaction."
+License Application Fee Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ApplicationFees.Id,BK chính. PK nguồn.
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationFees,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
+License Application Id,FK đến Securities Practitioner License Application,Surrogate Key,false,false,draft,NHNCK.qlnhn.ApplicationFees.ApplicationId,FK target: Securities Practitioner License Application.License Application Id. Pattern Id + Code.
+License Application Code,Mã hồ sơ,Text,false,false,draft,NHNCK.qlnhn.ApplicationFees.ApplicationId,FK target: Securities Practitioner License Application.License Application Code. Pair with License Application Id.
+Fee Type Code,Loại phí,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationFees.FeeType,Scheme: FEE_TYPE.
 Fee Amount,Số tiền phí (VNĐ),Currency Amount,true,false,draft,NHNCK.qlnhn.ApplicationFees.Amount,Data Domain = Currency Amount.
-Payment Status Code,Trạng thái thanh toán,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationFees.Status,Suffix Code.
-Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationFees.CreatedAt,Data Domain = Timestamp.
-Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationFees.UpdatedAt,Đối xứng với Created Timestamp.
+Payment Status Code,Trạng thái thanh toán,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationFees.Status,Scheme: PAYMENT_STATUS.
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationFees.CreatedAt,
+Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationFees.UpdatedAt,

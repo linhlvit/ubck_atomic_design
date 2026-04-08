@@ -1,16 +1,16 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
 License Application Education Certificate Document Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Education Certificate"" (Documentation). Entity con tham chiếu entity cha ""License Application""."
 License Application Education Certificate Document Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ApplicationSpecializations.Id,BK chính. PK nguồn.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationSpecializations,Classification Value,false,false,draft,,BK. Hardcode.
-License Application Id,FK đến Securities Practitioner License Application,Surrogate Key,false,false,draft,NHNCK.qlnhn.ApplicationSpecializations.ApplicationId,FK. Pattern Id + Code.
-License Application Code,Mã hồ sơ,Text,false,false,draft,NHNCK.qlnhn.ApplicationSpecializations.ApplicationId,Pattern Id + Code.
-Specialization Type Code,Mã chuyên môn,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.SpecializationId,FK → Specializations (Classification Value). Suffix Code.
-Note,Nội dung ghi chú,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.Note,BCV: không có term riêng.
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationSpecializations,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
+License Application Id,FK đến Securities Practitioner License Application,Surrogate Key,false,false,draft,NHNCK.qlnhn.ApplicationSpecializations.ApplicationId,FK target: Securities Practitioner License Application.License Application Id. Pattern Id + Code.
+License Application Code,Mã hồ sơ,Text,false,false,draft,NHNCK.qlnhn.ApplicationSpecializations.ApplicationId,FK target: Securities Practitioner License Application.License Application Code. Pair with License Application Id.
+Specialization Type Code,Mã chuyên môn,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.SpecializationId,Scheme: SPECIALIZATION.
+Note,Nội dung ghi chú,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.Note,
 Documentation Item File Name,Tên file đính kèm,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.FileName,"BCV: ""Documentation Item File Name"" (Documentation). Giữ nguyên BCV term."
 Documentation Item File Path,Đường dẫn file,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.FilePath,"Nhất quán prefix ""Documentation Item File""."
 Documentation Item File Format,Loại file,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.Format,Nhất quán prefix.
 Documentation Item File Size,Dung lượng file,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.FileSize,Nhất quán prefix.
-Appraisal Status Code,Trạng thái thẩm định,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.Status,"Prefix ""Appraisal"". Suffix Code."
-Appraised By Officer Id,FK đến Regulatory Authority Officer — người thẩm định,Surrogate Key,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.AssigneeId,FK → Regulatory Authority Officer. Pattern Id + Code.
-Appraised By Officer Code,Mã người thẩm định,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.AssigneeId,FK → Regulatory Authority Officer. Pattern Id + Code.
-Appraised Timestamp,Thời gian thẩm định,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.AppraisaledAt,Data Domain = Timestamp.
+Appraisal Status Code,Trạng thái thẩm định,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.Status,Scheme: APPRAISAL_STATUS.
+Appraised By Officer Id,FK đến Regulatory Authority Officer — người thẩm định,Surrogate Key,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.AssigneeId,FK target: Regulatory Authority Officer.Officer Id. Pattern Id + Code.
+Appraised By Officer Code,Mã người thẩm định,Text,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.AssigneeId,FK target: Regulatory Authority Officer.Officer Code. Pair with Appraised By Officer Id.
+Appraised Timestamp,Thời gian thẩm định,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationSpecializations.AppraisaledAt,

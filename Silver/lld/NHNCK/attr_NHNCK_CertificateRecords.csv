@@ -1,0 +1,19 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+License Certificate Document Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Government Registration Document"" (Documentation). Chứng chỉ hành nghề được cấp."
+License Certificate Document Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.CertificateRecords.Id,BK chính. PK nguồn.
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecords,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
+Practitioner Id,FK đến Securities Practitioner,Surrogate Key,true,false,draft,NHNCK.qlnhn.CertificateRecords.ProfessionalId,FK target: Securities Practitioner.Practitioner Id.
+Practitioner Code,Mã người hành nghề,Text,true,false,draft,NHNCK.qlnhn.CertificateRecords.ProfessionalId,FK target: Securities Practitioner.Practitioner Code. Pair with Practitioner Id.
+Certificate Type Code,Mã loại chứng chỉ,Classification Value,true,false,draft,NHNCK.qlnhn.CertificateRecords.CertificateId,Scheme: CERTIFICATE_TYPE.
+Certificate Number,Số chứng chỉ,Text,true,false,draft,NHNCK.qlnhn.CertificateRecords.CertificateNumber,
+Certificate Issue Date,Ngày cấp chứng chỉ,Date,true,false,draft,NHNCK.qlnhn.CertificateRecords.IssueDate,"BCV: ""Registration Documentation Issue Date"" (Documentation)."
+Issuance Decision Document Id,FK đến quyết định cấp,Surrogate Key,true,false,draft,NHNCK.qlnhn.CertificateRecords.DecisionId,FK target: Securities Practitioner License Decision Document.License Decision Document Id.
+Issuance Decision Document Code,Mã quyết định cấp,Text,true,false,draft,NHNCK.qlnhn.CertificateRecords.DecisionId,FK target: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Issuance Decision Document Id.
+Revocation Decision Document Id,FK đến quyết định thu hồi,Surrogate Key,true,false,draft,NHNCK.qlnhn.CertificateRecords.RevocationDecisionId,FK target: Securities Practitioner License Decision Document.License Decision Document Id. Nullable — chỉ có khi bị thu hồi.
+Revocation Decision Document Code,Mã quyết định thu hồi,Text,true,false,draft,NHNCK.qlnhn.CertificateRecords.RevocationDecisionId,FK target: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Revocation Decision Document Id.
+Certificate Status Code,Trạng thái chứng chỉ,Classification Value,true,false,draft,NHNCK.qlnhn.CertificateRecords.Status,Scheme: CERTIFICATE_STATUS.
+Digital Signature Status Code,Trạng thái ký số,Classification Value,true,false,draft,NHNCK.qlnhn.CertificateRecords.SignStatus,Scheme: DIGITAL_SIGNATURE_STATUS.
+Created By Officer Id,FK đến Regulatory Authority Officer,Surrogate Key,true,false,draft,NHNCK.qlnhn.CertificateRecords.CreatedBy,FK target: Regulatory Authority Officer.Officer Id.
+Created By Officer Code,Mã người tạo,Text,true,false,draft,NHNCK.qlnhn.CertificateRecords.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id.
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.CertificateRecords.CreatedAt,
+Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.CertificateRecords.UpdatedAt,

@@ -1,24 +1,24 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-License Application Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Government Registration Document"" (Documentation) — ""Identifies a Documentation Item that is issued by a principality or sovereignty and whose purpose is to define the rights and obligations of the registered party."" Đặt ""License Application"" theo HLD."
+License Application Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Government Registration Document"" (Documentation) — ""Identifies a Documentation Item that is issued by a principality or sovereignty."" Đặt ""License Application"" theo HLD."
 License Application Code,Mã định danh hồ sơ (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.Applications.Id,BK chính. PK của bảng nguồn → map vào Entity Code.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Applications,Classification Value,false,false,draft,,BK. Hardcode giá trị NHNCK.Applications.
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Applications,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode giá trị NHNCK.Applications.
 Application Code,Mã hồ sơ (mã nghiệp vụ do hệ thống sinh),Text,true,false,draft,NHNCK.qlnhn.Applications.ApplicationCode,"BCV: không có term riêng. Mã hồ sơ nghiệp vụ, khác BK (Id tự tăng)."
 Application Title,Tiêu đề hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.Title,"BCV: không có term riêng. Prefix ""Application"" phân biệt."
-Registration Type Code,Loại đăng ký,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.RegistrationType,"BCV: ""Registration Type"" (Event). Giữ nguyên BCV term. Suffix Code."
-Application Type Code,Loại hồ sơ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.ApplicationType,BCV: không có term riêng. Phân loại hồ sơ. Suffix Code.
-Application Status Code,Mã trạng thái hồ sơ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.StatusId,"BCV: gần nhất ""Life Cycle Status"" pattern. FK → ApplicationStatuses (Classification Value). Suffix Code."
-Practitioner Id,FK đến Securities Practitioner (Nhóm B),Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.ProfessionalId,FK. Pattern Id + Code.
-Practitioner Code,Mã người hành nghề,Text,true,false,draft,NHNCK.qlnhn.Applications.ProfessionalId,Pattern Id + Code.
-License Certificate Document Id,FK đến Securities Practitioner License Certificate Document (Nhóm B),Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.CertificateRecordId,FK. Pattern Id + Code.
-License Certificate Document Code,Mã chứng chỉ hành nghề đã cấp,Text,true,false,draft,NHNCK.qlnhn.Applications.CertificateRecordId,Pattern Id + Code.
-Certificate Type Code,Mã loại chứng chỉ đăng ký,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.CertificateId,"BCV: ""Government Registration Document Type"" (Documentation). FK → Certificates (Classification Value). Suffix Code."
-Previous Certificate Type Code,ID loại chứng chỉ trước đó,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateId,"Đối xứng với Certificate Type Code, prefix ""Previous""."
-Previous License Certificate Document Id,FK đến chứng chỉ hành nghề trước đó (Securities Practitioner License Certificate Document),Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateRecordId,FK. Luôn tạo cặp Id + Code cho FK đến Fundamental entity dù nullable. Nếu Code = NULL thì Id cũng = NULL → nhất quán.
-Previous License Certificate Document Code,Mã chứng chỉ hành nghề trước đó,Text,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateRecordId,Pattern Id + Code.
-Examination Assessment Id,FK đến Securities Practitioner Qualification Examination Assessment (Nhóm C),Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.ExamSessionId,FK. Pattern Id + Code.
-Examination Assessment Code,Mã kỳ thi sát hạch,Text,true,false,draft,NHNCK.qlnhn.Applications.ExamSessionId,Pattern Id + Code.
-Verification Status Id,FK đến Securities Practitioner License Application Verification Status,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.InfoVerifyId,FK. Pattern Id + Code.
-Verification Status Code,Mã yêu cầu phê duyệt lãnh đạo,Text,true,false,draft,NHNCK.qlnhn.Applications.InfoVerifyId,Pattern Id + Code.
+Registration Type Code,Loại đăng ký,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.RegistrationType,"Scheme: REGISTRATION_TYPE. BCV: ""Registration Type"" (Event). Giữ nguyên BCV term."
+Application Type Code,Loại hồ sơ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.ApplicationType,"Scheme: APPLICATION_TYPE. Phân loại hồ sơ (cấp mới, cấp lại, gia hạn...)."
+Application Status Code,Mã trạng thái hồ sơ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.StatusId,"Scheme: APPLICATION_STATUS. BCV: gần nhất ""Life Cycle Status"" pattern."
+Practitioner Id,FK đến Securities Practitioner (Nhóm B),Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.ProfessionalId,FK target: Securities Practitioner.Practitioner Id. Pattern Id + Code.
+Practitioner Code,Mã người hành nghề,Text,true,false,draft,NHNCK.qlnhn.Applications.ProfessionalId,FK target: Securities Practitioner.Practitioner Code. Pair with Practitioner Id.
+License Certificate Document Id,FK đến Securities Practitioner License Certificate Document (Nhóm B),Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.CertificateRecordId,FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. Pattern Id + Code.
+License Certificate Document Code,Mã chứng chỉ hành nghề đã cấp,Text,true,false,draft,NHNCK.qlnhn.Applications.CertificateRecordId,FK target: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id.
+Certificate Type Code,Mã loại chứng chỉ đăng ký,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.CertificateId,"Scheme: CERTIFICATE_TYPE. BCV: ""Government Registration Document Type"" (Documentation)."
+Previous Certificate Type Code,ID loại chứng chỉ trước đó,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateId,"Scheme: CERTIFICATE_TYPE. Đối xứng Certificate Type Code, prefix ""Previous""."
+Previous License Certificate Document Id,FK đến chứng chỉ hành nghề trước đó,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateRecordId,FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. Luôn tạo cặp Id + Code cho FK đến Fundamental entity dù nullable.
+Previous License Certificate Document Code,Mã chứng chỉ hành nghề trước đó,Text,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateRecordId,FK target: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with Previous License Certificate Document Id.
+Examination Assessment Id,FK đến Securities Practitioner Qualification Examination Assessment (Nhóm C),Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.ExamSessionId,FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id. Pattern Id + Code.
+Examination Assessment Code,Mã kỳ thi sát hạch,Text,true,false,draft,NHNCK.qlnhn.Applications.ExamSessionId,FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id.
+Verification Status Id,FK đến Securities Practitioner License Application Verification Status,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.InfoVerifyId,FK target: Securities Practitioner License Application Verification Status.License Application Verification Status Id.
+Verification Status Code,Mã yêu cầu phê duyệt lãnh đạo,Text,true,false,draft,NHNCK.qlnhn.Applications.InfoVerifyId,FK target: Securities Practitioner License Application Verification Status.License Application Verification Status Code. Pair with Verification Status Id.
 Submission Date,Ngày nộp hồ sơ,Date,true,false,draft,NHNCK.qlnhn.Applications.SubmissionDate,"BCV: ""Submission Date"" (Documentation). Giữ nguyên BCV term."
 Supplement Date,Ngày bổ sung hồ sơ,Date,true,false,draft,NHNCK.qlnhn.Applications.SupplementDate,BCV: không có term riêng.
 Supplement Letter Date,Ngày thư bổ sung,Date,true,false,draft,NHNCK.qlnhn.Applications.SupplementLetterDate,"Nhất quán prefix ""Supplement""."
@@ -26,21 +26,21 @@ Reissue Reason Description,Lý do cấp (cấp lại/cấp đổi),Text,true,fal
 Rejection Reason Description,Lý do từ chối hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.RejectionReason,"Prefix ""Rejection"" phân biệt với Reissue Reason."
 Certificate Number,Số chứng chỉ được cấp (kết quả cuối),Text,true,false,draft,NHNCK.qlnhn.Applications.CertificateNumber,Denormalized từ CertificateRecords — output trực tiếp của hồ sơ.
 Certificate Issue Date,Ngày cấp chứng chỉ,Date,true,false,draft,NHNCK.qlnhn.Applications.IssueDate,"BCV: ""Registration Documentation Issue Date"" (Documentation). Rút gọn."
-Previous Certificate Number,Số chứng chỉ trước đó,Text,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateNumber,"Đối xứng với Certificate Number, prefix ""Previous""."
-Previous Certificate Issue Date,Ngày cấp chứng chỉ trước đó,Date,true,false,draft,NHNCK.qlnhn.Applications.PreviousIssueDate,Đối xứng với Certificate Issue Date.
+Previous Certificate Number,Số chứng chỉ trước đó,Text,true,false,draft,NHNCK.qlnhn.Applications.PreviousCertificateNumber,"Đối xứng Certificate Number, prefix ""Previous""."
+Previous Certificate Issue Date,Ngày cấp chứng chỉ trước đó,Date,true,false,draft,NHNCK.qlnhn.Applications.PreviousIssueDate,Đối xứng Certificate Issue Date.
 Violation Indicator,Cờ vi phạm,Indicator,true,false,draft,NHNCK.qlnhn.Applications.IsViolated,Suffix Indicator theo Data Domain.
 Date Exploitable Indicator,Cờ khai thác theo ngày,Indicator,true,false,draft,NHNCK.qlnhn.Applications.IsDateExploitable,Cần xác nhận ý nghĩa nghiệp vụ.
-Certificate Receipt Method Code,Phương thức nhận chứng chỉ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.CertificateReceiptMethod,"Nhất quán prefix ""Certificate Receipt"". Suffix Code."
+Certificate Receipt Method Code,Phương thức nhận chứng chỉ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.CertificateReceiptMethod,Scheme: CERTIFICATE_RECEIPT_METHOD.
 Certificate Receipt Address,Địa chỉ nhận chứng chỉ,Text,true,false,draft,NHNCK.qlnhn.Applications.CertificateReceiptAddress,"Text tự do, không đủ cấu trúc tách Postal Address."
 Certificate Receipt Phone Number,Số điện thoại nhận chứng chỉ,Text,true,false,draft,NHNCK.qlnhn.Applications.CertificateReceiptPhone,"Nhất quán prefix ""Certificate Receipt""."
-Certificate Receipt Status Code,Trạng thái nhận chứng chỉ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.ReceiptStatus,"Nhất quán prefix ""Certificate Receipt"". Suffix Code."
+Certificate Receipt Status Code,Trạng thái nhận chứng chỉ,Classification Value,true,false,draft,NHNCK.qlnhn.Applications.ReceiptStatus,Scheme: CERTIFICATE_RECEIPT_STATUS.
 Reissue HSM Code,Mã tái cấp HSM,Text,true,false,draft,NHNCK.qlnhn.Applications.ReissueHSM,Giữ nguyên viết tắt HSM. Cần xác nhận ý nghĩa.
-Note,Ghi chú hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.Note,BCV: không có term riêng.
-Assignee Officer Id,FK đến Regulatory Authority Officer — cán bộ xử lý hồ sơ,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.AssigneeId,FK → Regulatory Authority Officer. Pattern Id + Code.
-Assignee Officer Code,Mã cán bộ xử lý hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.AssigneeId,FK → Regulatory Authority Officer. Pattern Id + Code.
-Created By Officer Id,FK đến Regulatory Authority Officer — người tạo hồ sơ,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.CreatedBy,FK → Regulatory Authority Officer. Pattern Id + Code.
-Created By Officer Code,Mã người tạo hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.CreatedBy,FK → Regulatory Authority Officer. Pattern Id + Code.
-Created Timestamp,Ngày tạo hồ sơ,Timestamp,true,false,draft,NHNCK.qlnhn.Applications.CreatedAt,Data Domain = Timestamp.
-Updated By Officer Id,FK đến Regulatory Authority Officer — người cập nhật,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.UpdatedBy,FK → Regulatory Authority Officer. Pattern Id + Code.
-Updated By Officer Code,Mã người cập nhật,Text,true,false,draft,NHNCK.qlnhn.Applications.UpdatedBy,FK → Regulatory Authority Officer. Pattern Id + Code.
-Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.Applications.UpdatedAt,Đối xứng với Created Timestamp.
+Note,Ghi chú hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.Note,
+Assignee Officer Id,FK đến Regulatory Authority Officer — cán bộ xử lý hồ sơ,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.AssigneeId,FK target: Regulatory Authority Officer.Officer Id. Pattern Id + Code.
+Assignee Officer Code,Mã cán bộ xử lý hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.AssigneeId,FK target: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id.
+Created By Officer Id,FK đến Regulatory Authority Officer — người tạo hồ sơ,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.CreatedBy,FK target: Regulatory Authority Officer.Officer Id. Pattern Id + Code.
+Created By Officer Code,Mã người tạo hồ sơ,Text,true,false,draft,NHNCK.qlnhn.Applications.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id.
+Created Timestamp,Ngày tạo hồ sơ,Timestamp,true,false,draft,NHNCK.qlnhn.Applications.CreatedAt,
+Updated By Officer Id,FK đến Regulatory Authority Officer — người cập nhật,Surrogate Key,true,false,draft,NHNCK.qlnhn.Applications.UpdatedBy,FK target: Regulatory Authority Officer.Officer Id. Pattern Id + Code.
+Updated By Officer Code,Mã người cập nhật,Text,true,false,draft,NHNCK.qlnhn.Applications.UpdatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id.
+Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.Applications.UpdatedAt,
