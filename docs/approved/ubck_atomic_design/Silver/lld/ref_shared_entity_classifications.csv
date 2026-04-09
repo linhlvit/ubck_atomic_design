@@ -1,0 +1,63 @@
+scheme_code,code,name,source_type,source_table,used_in_entities
+IP_ALT_ID_TYPE,NATIONAL_ID,CMND,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,CITIZEN_ID,CCCD,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,PASSPORT,Hộ chiếu,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,BUSINESS_LICENSE,Giấy phép thành lập,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,ESTABLISHMENT_DECISION,Quyết định thành lập,etl_derived,,IP Alt Identification
+IP_ELEC_ADDR_TYPE,PHONE_HEAD_OFFICE,Điện thoại trụ sở chính,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,FAX_HEAD_OFFICE,Fax trụ sở chính,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,PHONE_BUSINESS,Điện thoại kinh doanh,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,EMAIL_BUSINESS,Email kinh doanh,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,FAX_BUSINESS,Fax kinh doanh,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,PHONE,Điện thoại,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,FAX,Fax,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,EMAIL,Email,etl_derived,,IP Electronic Address
+IP_ADDR_TYPE,HEAD_OFFICE,Địa chỉ trụ sở chính,etl_derived,,IP Postal Address
+IP_ADDR_TYPE,BUSINESS,Địa chỉ kinh doanh,etl_derived,,IP Postal Address
+IP_ADDR_TYPE,PERMANENT,Nơi thường trú,etl_derived,,IP Postal Address
+IP_ADDR_TYPE,CURRENT,Nơi ở hiện tại,etl_derived,,IP Postal Address
+EDUCATION_LEVEL,(source),Trình độ học vấn — values from EducationLevels,source_table,NHNCK.qlnhn.EducationLevels,Securities Practitioner
+APPLICATION_STATUS,(source),Trạng thái hồ sơ — values from ApplicationStatuses,source_table,NHNCK.qlnhn.ApplicationStatuses,License Application | App Processing Activity Log
+CERTIFICATE_TYPE,(source),Loại chứng chỉ hành nghề — values from Certificates,source_table,NHNCK.qlnhn.Certificates,License Application | License Certificate Document | Organization Employment Report
+SPECIALIZATION,(source),Chuyên môn — values from Specializations,source_table,NHNCK.qlnhn.Specializations,App Education Certificate Document
+DOCUMENT_TYPE,(source),Loại tài liệu — values from Documents,source_table,NHNCK.qlnhn.Documents,App Document Attachment
+APPLICATION_SOURCE,(source),Hình thức nộp hồ sơ — values from ApplicationSources,source_table,NHNCK.qlnhn.ApplicationSources,(reserved — chưa có trường nguồn map)
+POSITION,(source),Chức vụ — values from Positions,source_table,NHNCK.qlnhn.Positions,(reserved — WorkHistories dùng text tự do)
+REGISTRATION_TYPE,(to_define),Loại đăng ký — cần xác nhận giá trị từ data,modeler_defined,NHNCK.qlnhn.Applications.RegistrationType,License Application
+APPLICATION_TYPE,(to_define),"Loại hồ sơ (cấp mới, cấp lại, gia hạn...) — cần xác nhận từ data",modeler_defined,NHNCK.qlnhn.Applications.ApplicationType,License Application
+CERTIFICATE_RECEIPT_METHOD,(to_define),Phương thức nhận chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Applications.CertificateReceiptMethod,License Application
+CERTIFICATE_RECEIPT_STATUS,(to_define),Trạng thái nhận chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Applications.ReceiptStatus,License Application
+APPRAISAL_STATUS,(to_define),Trạng thái thẩm định tài liệu — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ApplicationSpecializations.Status,App Education Certificate Document | App Document Attachment
+FEE_TYPE,(to_define),Loại phí — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ApplicationFees.FeeType,License Application Fee
+PAYMENT_STATUS,(to_define),Trạng thái thanh toán — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ApplicationFees.Status,License Application Fee
+VERIFICATION_LEVEL,(to_define),Cấp phê duyệt (LĐCM/LĐUB) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyLevel,App Verification Status
+VERIFICATION_STATUS,(to_define),Trạng thái phê duyệt — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyStatus,App Verification Status
+INDIVIDUAL_GENDER,(to_define),Giới tính — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.Gender,Securities Practitioner
+NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.Nationality,Securities Practitioner
+PRACTICE_STATUS,(to_define),Trạng thái hành nghề — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.PracticeStatus,Securities Practitioner
+C06_VERIFICATION_STATUS,(to_define),Trạng thái xác thực C06 — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.VerifyStatus,Securities Practitioner | Identity Verification Record
+CERTIFICATE_STATUS,(to_define),Trạng thái chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.Status,License Certificate Document | Certificate Document Status History (From/To)
+DIGITAL_SIGNATURE_STATUS,(to_define),Trạng thái ký số — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.SignStatus,License Certificate Document
+GROUP_TYPE,(to_define),Loại nhóm chứng chỉ (Cấp/Thu hồi/Hủy/Chuyển đổi) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecordGroups.GroupType,License Certificate Group Document
+GROUP_STATUS,(to_define),Trạng thái nhóm — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecordGroups.Status,License Certificate Group Document
+ACTIVITY_ACTION,(to_define),Loại hành động trên chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecordLogs.Action,Certificate Document Activity Log
+RELATIONSHIP_TYPE,(to_define),"Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà) — cần xác nhận từ data",modeler_defined,NHNCK.qlnhn.ProfessionalRelationships.RelationshipType,Related Party
+COUNTRY,(to_define),Quốc gia — cần xác nhận từ data (có thể dùng ISO 3166),modeler_defined,NHNCK.qlnhn.ProfessionalRelationships.CountryId,Related Party
+CONDUCT_VIOLATION_TYPE,(to_define),Loại vi phạm (Pháp luật/Hành chính) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Violations.ViolationType,Conduct Violation
+VIOLATION_STATUS,(to_define),Trạng thái vi phạm (Hiệu lực/Không hiệu lực) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Violations.Status,Conduct Violation
+REPORT_TYPE,(to_define),Loại báo cáo — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.OrganizationReports.Type,Organization Employment Report
+COURSE_STATUS,(to_define),"Trạng thái khóa học (1:HĐ, 0:Không HĐ, -1:Đã xóa)",modeler_defined,NHNCK.qlnhn.SpecializationCourses.Status,Professional Training Class
+TRAINING_RESULT,(to_define),Kết quả đào tạo — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.SpecializationCourseDetails.Result,Professional Training Class Enrollment
+EXAMINATION_STATUS,(to_define),Trạng thái đợt thi (Khởi tạo/Đang thực hiện/Hoàn thành),modeler_defined,NHNCK.qlnhn.ExamSessions.Status,Qualification Examination Assessment
+EXAMINATION_RESULT,(to_define),Kết quả thi (Đạt/Không đạt/Chưa thi),modeler_defined,NHNCK.qlnhn.ExamDetails.Result,Qualification Examination Assessment Result
+ORGANIZATION_TYPE,(to_define),"Loại tổ chức (1:CTCK, 2:QLQ, 3:NH, 4:Khác)",modeler_defined,NHNCK.qlnhn.Organizations.OrganizationTypeId,Securities Organization Reference
+ORGANIZATION_LEVEL,(to_define),Cấp độ tổ chức,modeler_defined,NHNCK.qlnhn.Organizations.Level,Securities Organization Reference
+ORGANIZATION_STATUS,(to_define),Trạng thái tổ chức,modeler_defined,NHNCK.qlnhn.Organizations.Status,Securities Organization Reference
+SYNC_STATUS,(to_define),Trạng thái đồng bộ,modeler_defined,NHNCK.qlnhn.Organizations.SyncStatus,Securities Organization Reference
+DECISION_TYPE,(to_define),Loại quyết định,modeler_defined,NHNCK.qlnhn.Decisions.TypeId,License Decision Document
+DECISION_STATUS,(to_define),Trạng thái quyết định,modeler_defined,NHNCK.qlnhn.Decisions.Status,License Decision Document
+ORGANIZATION_UNIT_TYPE,UNIT,Đơn vị,etl_derived,,Regulatory Authority Organization Unit
+ORGANIZATION_UNIT_TYPE,DEPARTMENT,Phòng ban,etl_derived,,Regulatory Authority Organization Unit
+ORGANIZATION_UNIT_STATUS,(to_define),Trạng thái đơn vị/phòng ban,modeler_defined,NHNCK.qlnhn.Units.Status,Regulatory Authority Organization Unit
+OFFICER_STATUS,(to_define),Trạng thái người dùng,modeler_defined,NHNCK.qlnhn.Users.Status,Regulatory Authority Officer
+IP_ELEC_ADDR_TYPE,MOBILE,Số di động,etl_derived,,IP Electronic Address
