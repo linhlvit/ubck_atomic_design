@@ -10,7 +10,7 @@ Thiết kế danh sách các bảng (fact/dimension) cho datamart trong lĩnh v�
 
 3. Output Format Requirement
 
-| No | Module | Source | Physical Table Name | Logical Table Name | Grain | Description | Note |
+| No | Module | Source | Physical Table Name | Logical Table Name | Grain | Description | Note | Reference
 
 4. Column Definitions
 
@@ -92,6 +92,10 @@ Mô tả nghiệp vụ bằng tiếng Việt
 4.8 Note
 
 Thông tin về khóa chính, khóa ngoại, snapshot
+
+4.9 Reference
+
+Dashboard sử dụng bảng Fct/Dim thiết kế
 
 5. Business Term Mapping
 
