@@ -1,14 +1,6 @@
-# FMS — Relationship Diagram: Source vs Silver Proposed Model (v2)
+# FMS — Relationship Diagram: Source vs Silver Proposed Model
 
-> **Phiên bản:** 2.0 — Cập nhật theo CSDL nguồn mới (20/03/2026)
->
-> **Thay đổi so với v1:**
-> - Loại bỏ 7 bảng nguồn cũ (INSIDER, INSDERRELA, INSDERRPRST, INSIDCHANGE, BANKEMPLOY, FGBRHISTORY, FUNDTLPRO)
-> - Đổi tên 3 bảng (BRANCHS→BRANCHES, FUNDBUP→FNDBUP, FUNDHISTO→FUNDHISTORY)
-> - Bổ sung 52 bảng mới (admin, danh mục, reporting framework, rating, vi phạm, ...)
-> - SECURITIES không còn ForeignType → không cần phân luồng ETL nữa
-> - Nguồn mới áp dụng pattern JSON Snapshot cho các bảng BUP (SECBUP, TLPROBUP)
-> - Nguồn mới chuẩn hóa pattern Audit Log (Action, PrevValue, ValueChange) cho SECHISTORY, TLPRHISTORY, FGBRBUP
+> **Nguồn:** Thiết kế CSDL FMS — Phân hệ quản lý giám sát công ty chứng khoán và quỹ đầu tư chứng khoán (20/03/2026)
 >
 > **Render:** Mở file này trong VS Code với extension **Markdown Preview Mermaid Support**, hoặc dán từng block vào [mermaid.live](https://mermaid.live).
 >
@@ -18,14 +10,12 @@
 > - 🔵 Xanh dương: bảng nguồn FMS (Master)
 > - 🟢 Xanh lá: entity Silver / Proposed Model
 > - ⬜ Xám: ETL pattern — Snapshot hoặc Audit Log
-> - 🟡 Vàng: bảng ngoài scope hoặc pending column detail
+> - 🟡 Vàng: bảng pending column detail
 > - 🟣 Tím: Shared entity (dùng chung cho mọi Involved Party)
 
 ---
 
 ## Nhóm 1 — Fund Management Company & bên liên quan
-
-> **Thay đổi so với v1:** Loại bỏ toàn bộ nhóm cổ đông (INSIDER, INSDERRELA, INSDERRPRST, INSIDCHANGE → 4 Silver entities bị loại). Thêm SECBUSINES (ngành nghề KD). STAKE giữ lại (pending column detail). SECURITIES không còn ForeignType — chỉ chứa công ty QLQ trong nước.
 
 ### Source (FMS)
 
@@ -35,12 +25,12 @@ graph LR
     classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
     classDef pending fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    SECURITIES["**SECURITIES**\nDanh sách công ty QLQ trong nước\n(22 trường)"]:::src
+    SECURITIES["**SECURITIES**\nDanh sách công ty QLQ\ntrong nước\n(22 trường)"]:::src
     SECBUP["**SECBUP**\nLịch sử chi tiết công ty QLQ\n[JSON Snapshot — IsBefore pattern]\n(5 trường)"]:::pattern
-    SECHISTORY["**SECHISTORY**\nLịch sử thay đổi công ty QLQ\n[Audit Log]\n(11 trường)"]:::pattern
-    SECBUSINES["**SECBUSINES**\nNgành nghề KD\ncông ty QLQ\n(mới)"]:::src
+    SECHISTORY["**SECHISTORY**\nLịch sử thông tin công ty QLQ\n[Audit Log]\n(11 trường)"]:::pattern
+    SECBUSINES["**SECBUSINES**\nNgành nghề kinh doanh\ncủa công ty QLQ"]:::src
     STAKE["**STAKE**\nCác bên liên quan\ncông ty QLQ\n⚠ pending column detail"]:::pending
-    BUSINESS["**BUSINESS**\nDanh mục ngành nghề\nkinh doanh\n(→ Classification Value)"]:::pending
+    BUSINESS["**BUSINESS**\nDanh mục ngành nghề KD\n(→ Classification Value)"]:::pending
 
     SECHISTORY -->|SecId| SECURITIES
     SECBUP -->|SecHsId| SECHISTORY
@@ -75,15 +65,13 @@ graph LR
     FMC --> ALTID
 ```
 
-> **So với v1:** Loại 4 entity cổ đông (FMC Shareholder, FMC Shareholder Relationship, FMC Shareholder Representative, FMC Shareholder Ownership Change). Thêm FMC Business Line (từ SECBUSINES).
+> **SECBUP** lưu JSON snapshot (SecData kiểu NCLOB + cờ IsBefore) — Silver Snapshot parse JSON ra attribute.
 >
-> **SECBUP** nguồn mới chỉ còn 5 trường (Id, DateCreated, SecHsId, IsBefore, SecData) — lưu JSON snapshot toàn bộ bản ghi. Silver Snapshot vẫn giữ model cũ, ETL parse JSON ra attribute.
+> **STAKE** pending column detail — cần bổ sung từ nhà thầu.
 
 ---
 
 ## Nhóm 2 — FMC Organization Unit (Chi nhánh / VPĐD QLQ trong nước)
-
-> **Thay đổi so với v1:** BRANCHS đổi tên thành BRANCHES. SECHISTORY.BrId bị loại bỏ → không còn audit log trực tiếp cho chi nhánh từ SECHISTORY. BRCHBUP vẫn giữ vai trò snapshot.
 
 ### Source (FMS)
 
@@ -93,12 +81,11 @@ graph LR
     classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
 
     SECURITIES2["**SECURITIES**\nCông ty quản lý quỹ"]:::src
-    BRANCHES["**BRANCHES**\nChi nhánh / VPĐD\ncông ty QLQ trong nước\n(đổi tên từ BRANCHS)"]:::src
-    BRCHBUP["**BRCHBUP**\nLịch sử chi tiết CN/VPĐD\ncông ty QLQ trong nước\n(9 trường)"]:::pattern
-    SECHISTORY2["**SECHISTORY**\nLịch sử thay đổi công ty QLQ\n[Audit Log]\n⚠ không còn BrId"]:::pattern
+    BRANCHES["**BRANCHES**\nDanh sách CN/VPĐD\ncông ty QLQ trong nước"]:::src
+    BRCHBUP["**BRCHBUP**\nLịch sử chi tiết CN/VPĐD\ncông ty QLQ trong nước\n[SCD]\n(9 trường)"]:::pattern
 
     BRANCHES -->|SecId| SECURITIES2
-    BRCHBUP -->|SecHsId| SECHISTORY2
+    BRCHBUP -->|SecHsId| SECURITIES2
 ```
 
 ### Silver — Proposed Model
@@ -121,15 +108,11 @@ graph LR
     FMC_OU --> EADDR2
 ```
 
-> **So với v1:** Loại FMC Organization Unit Audit Log (SECHISTORY không còn BrId). FMC Organization Unit Snapshot (từ BRCHBUP) vẫn giữ — là cơ chế lịch sử duy nhất cho chi nhánh.
->
-> **Lưu ý:** BRCHBUP có SecHsId→SECHISTORY nhưng SECHISTORY không còn BrId. Cần xác nhận với nhà thầu: SECHISTORY entry cho branch change có cách nào trace lại CN cụ thể không?
+> **Lưu ý:** SECHISTORY không còn BrId — cơ chế lịch sử cho chi nhánh chỉ qua BRCHBUP (Snapshot). Cần xác nhận: BRCHBUP.SecHsId→SECHISTORY có trace được CN cụ thể không?
 
 ---
 
 ## Nhóm 3 — FMC Employee (Nhân sự QLQ)
-
-> **Thay đổi so với v1:** TLProfiles tinh gọn mạnh (61→14 trường). Loại bỏ BranchId, InsderId. Thêm JobTypeId, IsCBTT, IsLegal. FUNDTLPRO bị loại bỏ → không còn link Employee→Fund. TLPROBUP chuyển sang JSON Snapshot.
 
 ### Source (FMS)
 
@@ -140,9 +123,9 @@ graph LR
 
     SECURITIES3["**SECURITIES**\nCông ty quản lý quỹ"]:::src
     JOBTYPE["**JOBTYPE**\nLoại chức vụ\n(→ Classification Value)"]:::src
-    TLProfiles["**TLProfiles**\nNhân sự công ty QLQ\n(14 trường)"]:::src
-    TLPRHISTORY["**TLPRHISTORY**\nLịch sử thay đổi nhân sự\n[Audit Log]\n(11 trường)"]:::pattern
-    TLPROBUP["**TLPROBUP**\nLịch sử chi tiết nhân sự\n[JSON Snapshot]\n(5 trường)"]:::pattern
+    TLProfiles["**TLProfiles**\nDanh sách nhân sự\ncông ty QLQ\n(14 trường)"]:::src
+    TLPRHISTORY["**TLPRHISTORY**\nLịch sử nhân sự\n[Audit Log]\n(11 trường)"]:::pattern
+    TLPROBUP["**TLPROBUP**\nChi tiết lịch sử nhân sự\n[JSON Snapshot]\n(5 trường)"]:::pattern
 
     TLProfiles -->|SecId| SECURITIES3
     TLProfiles -->|JobTypeId| JOBTYPE
@@ -175,15 +158,13 @@ graph LR
     FMC_EMP --> ALTID3
 ```
 
-> **So với v1:** Bỏ link FMC Employee → FMC Organization Unit (BranchId bị loại). Bỏ link FMC Employee → FMC Shareholder (InsderId bị loại, INSIDER bị loại). Bỏ link FMC Employee → Fund Instrument (FUNDTLPRO bị loại).
+> **TLProfiles** là shared person master — REPRESENT (Nhóm 4) và STFFGBRCH (Nhóm 9) đều reference qua TLId.
 >
-> **Lưu ý:** Nguồn mới TLProfiles chỉ giữ thông tin định danh tối thiểu (Id, FullName, IdNo, NatId, BirthDate, SecId, JobTypeId, IsCBTT, IsLegal). Thông tin chi tiết cá nhân (địa chỉ, học vấn, chứng chỉ...) đã loại bỏ ở nguồn mới → shared entities (Address, Electronic Address, Alt Identification) sẽ có ít trường hơn so với v1. Cần xác nhận: thông tin chi tiết cá nhân được lưu ở bảng BUP (JSON snapshot) hay đã loại bỏ hoàn toàn?
+> **Lưu ý:** TLProfiles chỉ giữ thông tin tối thiểu (FullName, IdNo, NatId, BirthDate, SecId, JobTypeId, IsCBTT, IsLegal). Thông tin chi tiết (địa chỉ, học vấn, chứng chỉ...) có thể lưu trong JSON snapshot (TLPROBUP.TLData) — cần xác nhận.
 
 ---
 
 ## Nhóm 4 — Fund Instrument (Quỹ đầu tư)
-
-> **Thay đổi so với v1:** FUNDS tinh gọn (34→18). FUNDHISTO→FUNDHISTORY (đổi tên). FUNDBUP→FNDBUP (đổi tên, pending detail). FUNDS.BankId bị loại → quan hệ Fund↔Bank chuyển từ 1:1 sang M:N qua FNDSBMN. REPRESENT tinh gọn mạnh (26→8, chỉ còn FK reference).
 
 ### Source (FMS)
 
@@ -195,12 +176,12 @@ graph LR
 
     SECURITIES4["**SECURITIES**\nCông ty quản lý quỹ"]:::src
     TLProfiles4["**TLProfiles**\nNhân sự công ty QLQ"]:::src
-    FUNDS["**FUNDS**\nDanh sách quỹ đầu tư\n(18 trường)"]:::src
-    FUNDHISTORY["**FUNDHISTORY**\nLịch sử quỹ đầu tư\n[Audit Log]\n(đổi tên từ FUNDHISTO)"]:::pattern
-    FNDBUP["**FNDBUP**\nBản ghi chi tiết lịch sử quỹ\n[SCD]\n(đổi tên từ FUNDBUP)\n⚠ pending column detail"]:::pending
-    REPRESENT["**REPRESENT**\nBan đại diện / HĐQT quỹ\n(8 trường — tinh gọn)"]:::src
-    FNDSBMN["**FNDSBMN**\nMap FUNDS ↔ BANKMONI\n(trung gian — mới)"]:::src
     BANKMONI4["**BANKMONI**\nNgân hàng lưu ký / giám sát"]:::src
+    FUNDS["**FUNDS**\nDanh sách quỹ đầu tư\nchứng khoán\n(18 trường)"]:::src
+    FUNDHISTORY["**FUNDHISTORY**\nLịch sử quỹ đầu tư\n[Audit Log]"]:::pattern
+    FNDBUP["**FNDBUP**\nBản ghi chi tiết lịch sử quỹ\n[SCD]\n⚠ pending column detail"]:::pending
+    REPRESENT["**REPRESENT**\nBan đại diện / HĐQT\nquỹ đầu tư\n(8 trường)"]:::src
+    FNDSBMN["**FNDSBMN**\nMap FUNDS ↔ BANKMONI\n(trung gian M:N)"]:::src
 
     FUNDS -->|SecId| SECURITIES4
     FUNDHISTORY -->|FundId ?| FUNDS
@@ -221,7 +202,7 @@ graph LR
     FMC_S4["**Fund Management Company**"]:::silver
     FMC_EMP_S4["**FMC Employee**"]:::silver
     CBANK_S4["**Custodian Bank**"]:::silver
-    FUND["**Fund Instrument**\nSản phẩm quỹ đầu tư"]:::silver
+    FUND["**Fund Instrument**\nSản phẩm quỹ đầu tư\nchứng khoán"]:::silver
     FUND_AL["**Fund Instrument Audit Log**\nLịch sử thay đổi quỹ\n[Audit Log]"]:::pattern
     FUND_SNAP["**Fund Instrument Snapshot**\nẢnh chụp trạng thái quỹ\n[SCD]"]:::pattern
     BOARD["**Fund Board Member**\nThành viên Ban đại diện\n/ HĐQT quỹ"]:::silver
@@ -236,15 +217,13 @@ graph LR
     FUND_BANK --> CBANK_S4
 ```
 
-> **So với v1:** Fund→Custodian Bank chuyển từ FK trực tiếp (1:1) sang entity trung gian Fund Instrument Custodian Bank Assignment (M:N). Fund Board Member tinh gọn — chỉ còn FK đến Fund + FMC Employee + cờ IsChair, không còn thông tin cá nhân riêng.
+> **REPRESENT** tinh gọn — chỉ còn FK (FndId + TLId + IsChair). Fund Board Member = assignment nhân sự vào HĐQT quỹ. Thông tin cá nhân tra qua FMC Employee.
 >
-> **REPRESENT đơn giản hóa:** Nguồn mới chỉ giữ FndId + TLId + IsChair → Board Member = assignment of Employee to Fund Board. Thông tin cá nhân tra qua TLProfiles.
+> **FNDSBMN** — quan hệ quỹ ↔ ngân hàng LKGS là M:N (thay vì FUNDS.BankId 1:1).
 
 ---
 
 ## Nhóm 5 — Fund Investment & Fund Unit Transfer (NĐT quỹ & Giao dịch CCQ)
-
-> **Thay đổi so với v1:** MBFUND tinh gọn mạnh (29→8). MBFUND giờ có InvesId (FK→INVES) thay vì lưu thông tin NĐT riêng. TRANSFERMBF tinh gọn (27→10), có MBFId (FK→MBFUND) và TransType mới.
 
 ### Source (FMS)
 
@@ -254,7 +233,7 @@ graph LR
 
     FUNDS5["**FUNDS**\nQuỹ đầu tư"]:::src
     INVES5["**INVES**\nNhà đầu tư ủy thác\n(investor master)"]:::src
-    MBFUND["**MBFUND**\nNhà đầu tư quỹ\n(8 trường — tinh gọn)"]:::src
+    MBFUND["**MBFUND**\nDanh sách nhà đầu tư quỹ\n(8 trường)"]:::src
     MBCHANGE["**MBCHANGE**\nLịch sử thay đổi\nvốn góp NĐT quỹ\n(10 trường)"]:::src
     TRANSFERMBF["**TRANSFERMBF**\nGiao dịch chứng chỉ quỹ\n(10 trường)"]:::src
 
@@ -284,17 +263,13 @@ graph LR
     FUND_TXN --> FIA
 ```
 
-> **So với v1:** Fund Investment Arrangement giờ có FK đến Discretionary Investment Investor (từ MBFUND.InvesId→INVES). Nguồn mới chuẩn hóa: INVES là master NĐT dùng chung cho cả đầu tư ủy thác (INVESACC) lẫn đầu tư quỹ (MBFUND).
+> **MBFUND.InvesId** — NĐT quỹ reference đến INVES (investor master dùng chung cho cả đầu tư ủy thác lẫn đầu tư quỹ).
 >
-> **MBFUND.InvesId:** Liên kết mới — NĐT quỹ giờ reference đến INVES thay vì lưu thông tin riêng. Denormalized fields cũ (Name, IdNo, RepresentName, RepresentJob...) đã loại bỏ.
->
-> **TRANSFERMBF.MBFId:** FK mới — giao dịch CCQ giờ link trực tiếp đến quan hệ đầu tư (MBFUND) thay vì chỉ link đến quỹ.
+> **TRANSFERMBF.MBFId** — giao dịch CCQ link trực tiếp đến quan hệ đầu tư (MBFUND).
 
 ---
 
 ## Nhóm 6 — Discretionary Investment Investor (Nhà đầu tư ủy thác)
-
-> **Thay đổi so với v1:** INVES gần như giữ nguyên (21→16, loại 5 trường tổng hợp/địa chỉ). INVESACC gần nguyên (17→16). INVES giờ đóng vai trò investor master cho cả Nhóm 5.
 
 ### Source (FMS)
 
@@ -303,8 +278,8 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
 
     SECURITIES6["**SECURITIES**\nCông ty quản lý quỹ"]:::src
-    INVES["**INVES**\nNhà đầu tư ủy thác\n(16 trường)"]:::src
-    INVESACC["**INVESACC**\nTài khoản NĐT ủy thác\n(16 trường)"]:::src
+    INVES["**INVES**\nDanh sách nhà đầu tư\nủy thác\n(16 trường)"]:::src
+    INVESACC["**INVESACC**\nDanh sách tài khoản\nNĐT ủy thác\n(16 trường)"]:::src
 
     INVES -->|SecId| SECURITIES6
     INVESACC -->|InvesId| INVES
@@ -327,15 +302,13 @@ graph LR
     DII --> ALTID6
 ```
 
-> **So với v1:** Loại IP Postal Address (INVES không còn Address trong nguồn mới). Giữ IP Alt Identification (IdNo, IdDate, IdType còn).
+> **INVES** đóng vai trò investor master dùng chung — cả INVESACC (đầu tư ủy thác) lẫn MBFUND (đầu tư quỹ) đều reference.
 >
-> **Lưu ý vai trò kép INVES:** INVES là investor master dùng chung — cả INVESACC (đầu tư ủy thác) lẫn MBFUND (đầu tư quỹ) đều reference đến INVES. Tuy nhiên trên Silver vẫn giữ tên "Discretionary Investment Investor" vì đó là định danh chính.
+> **INVES.IdType** phân biệt loại giấy tờ (CMND vs ĐKKD) → `Identification Type` trong IP Alt Identification.
 
 ---
 
 ## Nhóm 7 — Fund Distribution Agent (Đại lý phân phối quỹ)
-
-> **Thay đổi so với v1:** Thêm AGENFUNDS (mapping đại lý ↔ quỹ, M:N). Thêm AGENCYTYPE (→ Classification Value). AGENCIES tinh gọn (20→11).
 
 ### Source (FMS)
 
@@ -343,9 +316,9 @@ graph LR
 graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
 
-    AGENCIES["**AGENCIES**\nĐại lý phân phối quỹ\n(11 trường)"]:::src
-    AGENCIESBRA["**AGENCIESBRA**\nCN / PGD của đại lý\n(8 trường)"]:::src
-    AGENFUNDS["**AGENFUNDS**\nMap đại lý ↔ quỹ đầu tư\n(trung gian — mới)"]:::src
+    AGENCIES["**AGENCIES**\nDanh sách đại lý\nquỹ đầu tư\n(11 trường)"]:::src
+    AGENCIESBRA["**AGENCIESBRA**\nDanh sách CN/PGD\ncủa đại lý quỹ đầu tư\n(8 trường)"]:::src
+    AGENFUNDS["**AGENFUNDS**\nMap đại lý ↔ quỹ đầu tư\n(trung gian M:N)"]:::src
     FUNDS7["**FUNDS**\nQuỹ đầu tư"]:::src
     AGENCYTYPE["**AGENCYTYPE**\nLoại đại lý\n(→ Classification Value)"]:::src
 
@@ -377,15 +350,9 @@ graph LR
     FDAB --> ADDR7
 ```
 
-> **So với v1:** Thêm Fund Distribution Agent Fund Assignment (từ AGENFUNDS) — M:N giữa đại lý và quỹ. AGENCYTYPE → Classification Value (Agent Type Code trên entity Fund Distribution Agent).
->
-> **Lưu ý:** Nguồn mới loại bỏ nhiều trường legacy của AGENCIES (ActiveDate, Decision, DecisionDate, EName, Fax, Telephone...) → ít shared entity hơn v1. IP Alt Identification bỏ nếu nguồn mới không còn giấy tờ định danh.
-
 ---
 
 ## Nhóm 8 — Custodian Bank (Ngân hàng lưu ký, giám sát)
-
-> **Thay đổi so với v1:** BANKEMPLOY bị loại bỏ → không còn Custodian Bank Employee. BANKMONI tinh gọn (24→13).
 
 ### Source (FMS)
 
@@ -393,7 +360,7 @@ graph LR
 graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
 
-    BANKMONI["**BANKMONI**\nNgân hàng lưu ký\nvà giám sát quỹ\n(13 trường)"]:::src
+    BANKMONI["**BANKMONI**\nDanh sách ngân hàng\nlưu ký giám sát\n(13 trường)"]:::src
 ```
 
 ### Silver — Proposed Model
@@ -411,15 +378,13 @@ graph LR
     CBANK --> EADDR8
 ```
 
-> **So với v1:** Loại Custodian Bank Employee (BANKEMPLOY bị loại khỏi nguồn mới). Giữ IP Postal Address và IP Electronic Address (BANKMONI vẫn có Address, Email, Telephone).
->
-> **Lưu ý:** BANKMONI.Type (Giám sát / Lưu ký / LKGS) vẫn giữ → Silver dùng Classification Value phân biệt.
+> **BANKMONI.Status** (loại ngân hàng: Giám sát / Lưu ký / LKGS) → Classification Value trên Silver.
 
 ---
 
 ## Nhóm 9 — Foreign Fund Management Organization Unit (VPĐD / CN QLQ nước ngoài)
 
-> **Thay đổi so với v1:** FGBRHISTORY bị loại bỏ — FGBRBUP đổi vai trò từ Snapshot sang Audit Log (cùng pattern Action/PrevValue/ValueChange như SECHISTORY, TLPRHISTORY). Thêm FGBUSINESS (ngành nghề KD). STFFGBRCH tinh gọn (26→9), giờ có TLId (FK→TLProfiles).
+> **FORBRCH** không có FK đến SECURITIES — entity **độc lập**, UBCKNN chỉ quản lý VPĐD/CN tại VN, không quản lý công ty mẹ nước ngoài.
 
 ### Source (FMS)
 
@@ -428,12 +393,12 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
 
-    FORBRCH["**FORBRCH**\nVPĐD / CN công ty QLQ\nnước ngoài tại VN\n(17 trường)"]:::src
-    FGBRBUP["**FGBRBUP**\nLịch sử chi tiết VPĐD/CN QLQ NN\n[Audit Log — đổi pattern]\n(12 trường)"]:::pattern
-    STFFGBRCH["**STFFGBRCH**\nNhân sự VPĐD/CN\nQLQ NN tại VN\n(9 trường)"]:::src
-    FGBUSINESS["**FGBUSINESS**\nNgành nghề KD\nVPĐD/CN QLQ NN\n(mới)"]:::src
     TLProfiles9["**TLProfiles**\nNhân sự công ty QLQ\n(shared person master)"]:::src
-    BUSINESS9["**BUSINESS**\nDanh mục ngành nghề\n(→ Classification Value)"]:::src
+    BUSINESS9["**BUSINESS**\nDanh mục ngành nghề KD\n(→ Classification Value)"]:::src
+    FORBRCH["**FORBRCH**\nDanh sách VPĐD/CN\ncông ty QLQ NN tại VN\n(17 trường)"]:::src
+    FGBRBUP["**FGBRBUP**\nLịch sử chi tiết\nVPĐD/CN QLQ NN tại VN\n[Audit Log]\n(12 trường)"]:::pattern
+    STFFGBRCH["**STFFGBRCH**\nNhân sự VPĐD/CN\nQLQ NN tại VN\n(9 trường)"]:::src
+    FGBUSINESS["**FGBUSINESS**\nNgành nghề KD\nVPĐD/CN QLQ NN tại VN"]:::src
 
     FGBRBUP -->|FgBrId| FORBRCH
     STFFGBRCH -->|FgBrId| FORBRCH
@@ -468,15 +433,13 @@ graph LR
     FFMOU --> ALTID9
 ```
 
-> **So với v1:** Loại Foreign Fund Mgmt Org Unit Snapshot (FGBRBUP đổi pattern sang Audit Log, không còn là Snapshot). Thêm Foreign Fund Mgmt Org Unit Business Line (từ FGBUSINESS). Foreign Fund Mgmt Org Unit Employee giờ có FK đến FMC Employee (từ STFFGBRCH.TLId→TLProfiles).
+> **FGBRBUP** dùng pattern Audit Log (Action, PrevValue, ValueChange, Reason, DateChange) — cùng cấu trúc với SECHISTORY và TLPRHISTORY.
 >
-> **Thay đổi pattern FGBRBUP:** Nguồn cũ: FGBRBUP = Snapshot, FGBRHISTORY = Audit Log. Nguồn mới: FGBRHISTORY bị loại, FGBRBUP chuyển sang pattern Audit Log (Action, PrevValue, ValueChange, Reason, DateChange) — cùng pattern với SECHISTORY và TLPRHISTORY.
+> **STFFGBRCH.TLId** → TLProfiles: nhân sự CN QLQ NN cũng được quản lý trong TLProfiles (shared person master).
 
 ---
 
 ## Nhóm 10 — Insider Share Transfer (Giao dịch chuyển nhượng cổ phần)
-
-> **Thay đổi so với v1:** TRSFERINDER tinh gọn mạnh (27→8). Loại bỏ InFrmId/InToId (INSIDER bị loại) → không còn from/to party. Chỉ còn SecId. Thiết kế CSDL nguồn có thể chưa đầy đủ.
 
 ### Source (FMS)
 
@@ -497,20 +460,16 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
 
     FMC_S10["**Fund Management Company**"]:::silver
-    ISTT["**Insider Share Transfer Transaction**\nGiao dịch chuyển nhượng\ncổ phần cổ đông QLQ\n⚠ cần bổ sung FK bên mua/bán"]:::silver
+    ISTT["**Insider Share Transfer Transaction**\nGiao dịch chuyển nhượng\ncổ phần cổ đông QLQ\n⚠ cần bổ sung FK bên mua/bán khi thiết kế LLD"]:::silver
 
     ISTT --> FMC_S10
 ```
 
-> **So với v1:** Entity giữ lại nhưng thiếu FK bên chuyển nhượng (from) và bên nhận (to). Nguồn cũ: InFrmId/InToId→INSIDER. Nguồn mới: chỉ còn SecId. Cần bổ sung FK khi thiết kế LLD — có thể link đến STAKE hoặc entity mới thay thế INSIDER.
->
-> **Trường nguồn mới:** Id, SecId, Price, Quantity, TransDate, DateCreated, DateModified, Deleted.
+> **Trường nguồn hiện tại:** Id, SecId, Price, Quantity, TransDate, DateCreated, DateModified, Deleted. Thiếu FK bên chuyển nhượng và bên nhận — sẽ bổ sung khi thiết kế LLD.
 
 ---
 
 ## Nhóm 11 — Reporting Framework (Báo cáo thành viên thị trường)
-
-> **Hoàn toàn mở rộng so với v1.** Nguồn cũ chỉ có 2 bảng (RPTMEMBER, RPTVALUES). Nguồn mới xây dựng framework báo cáo 16 bảng: biểu mẫu, kỳ báo cáo, sheet, import/export, lịch sử xử lý.
 
 ### Nhóm 11a — Report Template & Period (Biểu mẫu & Kỳ báo cáo)
 
@@ -521,12 +480,12 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef pending fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    RPTPERIOD["**RPTPERIOD**\nKỳ báo cáo\n(mới)"]:::src
-    RPTTEMP["**RPTTEMP**\nBiểu mẫu báo cáo đầu vào\n(mới)\n⚠ pending column detail"]:::pending
-    SHEET["**SHEET**\nSheet báo cáo đầu vào\n(mới)\n⚠ pending column detail"]:::pending
-    RPTTPOUT["**RPTTPOUT**\nBiểu mẫu báo cáo đầu ra\n(mới)\n⚠ pending column detail"]:::pending
-    SHEETOUT["**SHEETOUT**\nSheet báo cáo đầu ra\n(mới)\n⚠ pending column detail"]:::pending
-    RPTPDSHT["**RPTPDSHT**\nTrung gian SHEET ↔ RPTPERIOD\n(mới)"]:::src
+    RPTPERIOD["**RPTPERIOD**\nKỳ báo cáo"]:::src
+    RPTTEMP["**RPTTEMP**\nBiểu mẫu báo cáo đầu vào\n⚠ pending column detail"]:::pending
+    SHEET["**SHEET**\nSheet báo cáo đầu vào\n⚠ pending column detail"]:::pending
+    RPTTPOUT["**RPTTPOUT**\nBiểu mẫu báo cáo đầu ra\n⚠ pending column detail"]:::pending
+    SHEETOUT["**SHEETOUT**\nSheet báo cáo đầu ra\n⚠ pending column detail"]:::pending
+    RPTPDSHT["**RPTPDSHT**\nTrung gian SHEET ↔ RPTPERIOD"]:::src
 
     SHEET -->|RptId ?| RPTTEMP
     SHEETOUT -->|RptOutId ?| RPTTPOUT
@@ -555,6 +514,8 @@ graph LR
 
 ### Nhóm 11b — Report Submission & Values (Nộp báo cáo & Giá trị)
 
+> **Multi-way FK:** `RPTMEMBER` có 4 FK subject (SecId / BkMId / FrBrId / FndId) — chỉ một non-null theo `Type`. `RPTVALUES` mirror cùng 4 FK.
+
 #### Source (FMS)
 
 ```mermaid
@@ -567,8 +528,8 @@ graph LR
     FUNDS11["**FUNDS**\nQuỹ đầu tư"]:::src
     RPTPERIOD11["**RPTPERIOD**\nKỳ báo cáo"]:::src
     RPTTEMP11["**RPTTEMP / SHEET**\nBiểu mẫu / Sheet"]:::src
-    RPTMEMBER["**RPTMEMBER**\nBáo cáo thành viên thị trường\n(25 trường)"]:::src
-    RPTVALUES["**RPTVALUES**\nGiá trị báo cáo import\n(EAV fact)\n(20 trường)"]:::src
+    RPTMEMBER["**RPTMEMBER**\nBáo cáo định kỳ\ncủa thành viên thị trường\n(25 trường)"]:::src
+    RPTVALUES["**RPTVALUES**\nBáo cáo giá trị –\nlưu dữ liệu import\n(EAV fact)\n(20 trường)"]:::src
 
     RPTMEMBER -->|SecId - theo Type| SECURITIES11
     RPTMEMBER -->|BkMId - theo Type| BANKMONI11
@@ -615,9 +576,9 @@ graph LR
     classDef pending fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
     RPTMEMBER11C["**RPTMEMBER**\nBáo cáo thành viên"]:::src
-    RPTMBHS["**RPTMBHS**\nLịch sử báo cáo\nthành viên\n(mới)\n⚠ pending column detail"]:::pending
-    RPTPROCESS["**RPTPROCESS**\nLịch sử xử lý\nbáo cáo thành viên\n(mới)\n⚠ pending column detail"]:::pending
-    RPTHTORY["**RPTHTORY**\nLịch sử thay đổi\nbáo cáo đầu vào\n(mới)\n⚠ pending column detail"]:::pending
+    RPTMBHS["**RPTMBHS**\nLịch sử báo cáo\nthành viên\n⚠ pending column detail"]:::pending
+    RPTPROCESS["**RPTPROCESS**\nLịch sử xử lý\nbáo cáo thành viên\n⚠ pending column detail"]:::pending
+    RPTHTORY["**RPTHTORY**\nLịch sử thay đổi\nbáo cáo đầu vào\n⚠ pending column detail"]:::pending
 
     RPTMBHS -->|MebId ?| RPTMEMBER11C
     RPTPROCESS -->|MebId ?| RPTMEMBER11C
@@ -632,25 +593,19 @@ graph LR
     classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
 
     MRS_S11C["**Member Report Submission**"]:::silver
+    RPT_TEMP_S11C["**Report Template**"]:::silver
     MRS_HS["**Member Report Submission History**\nLịch sử nộp/sửa báo cáo\n[SCD hoặc Audit Log]"]:::pattern
     MRS_PROC["**Member Report Processing Log**\nLịch sử xử lý\nbáo cáo thành viên"]:::pattern
     RPT_CHG["**Report Template Change History**\nLịch sử thay đổi\nbiểu mẫu báo cáo"]:::pattern
 
     MRS_HS -.->|History of| MRS_S11C
     MRS_PROC -.->|Processing of| MRS_S11C
+    RPT_CHG -.->|History of| RPT_TEMP_S11C
 ```
-
-> **Multi-way FK (giữ từ v1):** `RPTMEMBER` có 4 FK subject (SecId / BkMId / FrBrId / FndId) — chỉ một non-null theo Type. Silver resolve thành multi-subject entity.
->
-> **Entity mới so với v1:** Reporting Period, Report Template, Report Template Sheet, Output Report Template, Output Report Template Sheet, Report Period Sheet Assignment, Member Report Submission History, Member Report Processing Log, Report Template Change History.
->
-> **Pending column detail:** RPTTEMP, SHEET, RPTTPOUT, SHEETOUT, RPTMBHS, RPTPROCESS, RPTHTORY — cần bổ sung từ nhà thầu.
 
 ---
 
 ## Nhóm 12 — Rating & Ranking (Đánh giá xếp loại thành viên)
-
-> **Nhóm hoàn toàn mới.** 6 bảng: RATINGPD (kỳ đánh giá), RNKFACTOR (chấm điểm), RANK (xếp hạng), RNKFACTHISTORY (lịch sử chấm điểm), RNKGRFTOR (trung gian), PARAWARN (tham số cảnh báo).
 
 ### Source (FMS)
 
@@ -660,12 +615,12 @@ graph LR
     classDef pending fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
     SECURITIES12["**SECURITIES**\nCông ty QLQ"]:::src
-    RATINGPD["**RATINGPD**\nKỳ đánh giá xếp loại\n(mới)"]:::src
-    RNKFACTOR["**RNKFACTOR**\nChấm điểm đánh giá\nxếp loại\n(mới)"]:::src
-    RANK["**RANK**\nXếp hạng theo kỳ\nđánh giá\n(mới)"]:::src
-    RNKFACTHISTORY["**RNKFACTHISTORY**\nLịch sử chấm điểm\n(mới)\n⚠ pending column detail"]:::pending
-    RNKGRFTOR["**RNKGRFTOR**\nTrung gian\nRank ↔ RnkFactor\n(mới)\n⚠ pending column detail"]:::pending
-    PARAWARN["**PARAWARN**\nTham số cảnh báo\n(mới)"]:::src
+    RATINGPD["**RATINGPD**\nKỳ đánh giá xếp loại"]:::src
+    RNKFACTOR["**RNKFACTOR**\nChấm điểm đánh giá\nxếp loại"]:::src
+    RANK["**RANK**\nXếp hạng theo kỳ\nđánh giá"]:::src
+    RNKFACTHISTORY["**RNKFACTHISTORY**\nKết quả các lần lưu\nbảng tổng hợp đánh giá\n⚠ pending column detail"]:::pending
+    RNKGRFTOR["**RNKGRFTOR**\nTrung gian\nRank ↔ RnkFactor\n⚠ pending column detail"]:::pending
+    PARAWARN["**PARAWARN**\nTham số cảnh báo"]:::src
 
     RANK -->|SecId ?| SECURITIES12
     RANK -->|RatingPdId ?| RATINGPD
@@ -700,19 +655,9 @@ graph LR
     RATE_SCORE_HS -.->|History of| RATE_SCORE
 ```
 
-> **BCV Concept:**
-> - Member Rating Period → [Condition] Evaluation Period
-> - Member Rating Factor Score → [Event] Business Activity (chấm điểm là hoạt động đánh giá)
-> - Member Ranking → [Event] Business Activity (xếp hạng là kết quả đánh giá)
-> - Member Warning Parameter → [Condition] Warning Threshold
->
-> **Pending column detail:** RNKFACTHISTORY, RNKGRFTOR.
-
 ---
 
 ## Nhóm 13 — Violations (Vi phạm thành viên)
-
-> **Nhóm hoàn toàn mới.** 1 bảng: VIOLT (danh sách vi phạm).
 
 ### Source (FMS)
 
@@ -721,7 +666,7 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
 
     SECURITIES13["**SECURITIES**\nCông ty QLQ"]:::src
-    VIOLT["**VIOLT**\nDanh sách vi phạm\n(mới)"]:::src
+    VIOLT["**VIOLT**\nDanh sách vi phạm"]:::src
 
     VIOLT -->|SecId ?| SECURITIES13
 ```
@@ -738,56 +683,98 @@ graph LR
     VIOLATION --> FMC_S13
 ```
 
-> **BCV Concept:** [Business Activity] Conduct Violation — tương tự pattern Tax Violation Penalty Decision (DCST).
->
-> **Lưu ý:** Cần xác nhận khi có column detail: VIOLT chỉ liên quan đến SECURITIES (công ty QLQ) hay có thể liên quan BANKMONI, FORBRCH? Nếu multi-subject, cần xử lý tương tự RPTMEMBER.
+> **Lưu ý:** Cần xác nhận — VIOLT chỉ liên quan SECURITIES (công ty QLQ) hay có thể liên quan BANKMONI, FORBRCH? Nếu multi-subject, xử lý tương tự RPTMEMBER.
 
 ---
 
 ## Tổng quan theo BCV Concept
 
-| BCV Concept | Category | Source Tables | Silver Entities | Ghi chú |
+### Involved Party
+
+| BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
+|---|---|---|---|---|---|
+| [Involved Party] | Portfolio Fund Management Company | SECURITIES | Danh sách công ty QLQ trong nước | Fund Management Company | 22 trường |
+| [Involved Party] | Organization Unit | BRANCHES | Danh sách CN/VPĐD công ty QLQ trong nước | FMC Organization Unit | |
+| [Involved Party] | Organization Relationship | STAKE | Danh sách các bên liên quan công ty QLQ | FMC Organization Relationship | ⚠ Pending column detail |
+| [Involved Party] | Organization Business Line | SECBUSINES | Ngành nghề kinh doanh của công ty QLQ | Fund Management Company Business Line | |
+| [Involved Party] | Employee | TLProfiles | Danh sách nhân sự công ty QLQ | FMC Employee | Shared person master |
+| [Involved Party] | Agent | AGENCIES | Danh sách đại lý quỹ đầu tư | Fund Distribution Agent | 11 trường |
+| [Involved Party] | Organization Unit (Branch) | AGENCIESBRA | Danh sách CN/PGD của đại lý quỹ đầu tư | Fund Distribution Agent Branch | 8 trường |
+| [Involved Party] | Custodian | BANKMONI | Danh sách ngân hàng lưu ký giám sát (LKGS) | Custodian Bank | 13 trường |
+| [Involved Party] | Investor | INVES | Danh sách nhà đầu tư ủy thác | Discretionary Investment Investor | Investor master dùng chung |
+| [Involved Party] | Employment Position | REPRESENT | Ban đại diện/HĐQT quỹ đầu tư | Fund Board Member | 8 trường, chỉ FK reference |
+| [Involved Party] | Organization (Foreign) | FORBRCH | Danh sách VPĐD/CN công ty QLQ NN tại VN | Foreign Fund Management Organization Unit | Độc lập, không FK→SECURITIES |
+| [Involved Party] | Organization Business Line | FGBUSINESS | Ngành nghề KD VPĐD/CN công ty QLQ NN tại VN | Foreign Fund Mgmt Org Unit Business Line | |
+| [Involved Party] | Employee (Foreign) | STFFGBRCH | Nhân sự VPĐD/CN QLQ NN tại VN | Foreign Fund Mgmt Org Unit Employee | TLId→TLProfiles |
+
+### Product & Arrangement
+
+| BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
+|---|---|---|---|---|---|
+| [Product] | Fund Instrument | FUNDS | Danh sách quỹ đầu tư chứng khoán | Fund Instrument | 18 trường |
+| [Arrangement] | Fund Investment | MBFUND | Danh sách nhà đầu tư quỹ | Fund Investment Arrangement | InvesId→INVES |
+| [Arrangement] | Discretionary Investment Account | INVESACC | Danh sách tài khoản NĐT ủy thác | Discretionary Investment Account | 16 trường |
+| [Arrangement] | Agent–Fund Assignment | AGENFUNDS | Map đại lý và quỹ đầu tư (trung gian) | Fund Distribution Agent Fund Assignment | M:N |
+| [Arrangement] | Fund–Bank Assignment | FNDSBMN | Map FUNDS & BANKMONI (trung gian) | Fund Instrument Custodian Bank Assignment | M:N |
+
+### Event & Transaction
+
+| BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
+|---|---|---|---|---|---|
+| [Event] | Ownership Change | MBCHANGE | Lịch sử thay đổi vốn góp NĐT quỹ | Fund Investment Arrangement Change | 10 trường |
+| [Event] | Fund Unit Transfer | TRANSFERMBF | Giao dịch chứng chỉ quỹ | Fund Unit Transfer Transaction | MBFId→MBFUND |
+| [Event] | Insider Share Transfer | TRSFERINDER | Giao dịch chuyển nhượng cổ phần | Insider Share Transfer Transaction | ⚠ Thiếu from/to party |
+| [Event] | Business Activity (Rating) | RNKFACTOR | Chấm điểm đánh giá xếp loại | Member Rating Factor Score | |
+| [Event] | Business Activity (Ranking) | RANK | Xếp hạng theo kỳ đánh giá | Member Ranking | |
+| [Event] | Business Activity (Violation) | VIOLT | Danh sách vi phạm | Member Conduct Violation | |
+
+### Condition
+
+| BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
+|---|---|---|---|---|---|
+| [Condition] | Evaluation Period | RATINGPD | Kỳ đánh giá xếp loại | Member Rating Period | |
+| [Condition] | Warning Threshold | PARAWARN | Tham số cảnh báo | Member Warning Parameter | |
+
+### Documentation & Reporting
+
+| BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
+|---|---|---|---|---|---|
+| [Documentation] | Reporting Period | RPTPERIOD | Kỳ báo cáo | Reporting Period | |
+| [Documentation] | Report Template | RPTTEMP | Biểu mẫu báo cáo đầu vào | Report Template | ⚠ Pending column detail |
+| [Documentation] | Report Template Sheet | SHEET | Sheet báo cáo đầu vào | Report Template Sheet | ⚠ Pending column detail |
+| [Documentation] | Output Report Template | RPTTPOUT | Biểu mẫu báo cáo đầu ra | Output Report Template | ⚠ Pending column detail |
+| [Documentation] | Output Report Template Sheet | SHEETOUT | Sheet báo cáo đầu ra | Output Report Template Sheet | ⚠ Pending column detail |
+| [Documentation] | Report Period–Sheet Junction | RPTPDSHT | Trung gian SHEET và RPTPERIOD | Report Period Sheet Assignment | |
+| [Documentation] | Reported Information | RPTMEMBER | Báo cáo định kỳ của thành viên thị trường | Member Report Submission | Multi-way FK theo Type |
+| [Documentation] | Reported Information (Detail) | RPTVALUES | Báo cáo giá trị – lưu dữ liệu import | Report Item Value | EAV fact |
+
+### ETL Pattern — Snapshot & Audit Log
+
+| Pattern | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
 |---|---|---|---|---|
-| **[Involved Party]** | Portfolio Fund Management Company | SECURITIES | Fund Management Company | Không còn ForeignType routing |
-| **[Involved Party]** | Organization Unit | BRANCHES | FMC Organization Unit | Đổi tên từ BRANCHS |
-| **[Involved Party]** | Agent | AGENCIES | Fund Distribution Agent | Tinh gọn |
-| **[Involved Party]** | Organization Unit (Branch) | AGENCIESBRA | Fund Distribution Agent Branch | |
-| **[Involved Party]** | Organization (Foreign) | FORBRCH | Foreign Fund Management Organization Unit | Độc lập, không FK→SECURITIES |
-| **[Involved Party]** | Custodian | BANKMONI | Custodian Bank | Không còn Employee |
-| **[Involved Party]** | Employee | TLProfiles | FMC Employee | Tinh gọn, shared person master |
-| **[Involved Party]** | Employee (Foreign) | STFFGBRCH | Foreign Fund Mgmt Org Unit Employee | Link TLId→TLProfiles |
-| **[Involved Party]** | Employment Position | REPRESENT | Fund Board Member | Tinh gọn, FK only |
-| **[Involved Party]** | Investor | INVES | Discretionary Investment Investor | Investor master dùng chung |
-| **[Involved Party]** | Organization Relationship | STAKE | FMC Organization Relationship | ⚠ Pending column detail |
-| **[Involved Party]** | Organization Business Line | SECBUSINES | Fund Management Company Business Line | Mới |
-| **[Involved Party]** | Organization Business Line | FGBUSINESS | Foreign Fund Mgmt Org Unit Business Line | Mới |
-| **[Product]** | Fund Instrument | FUNDS | Fund Instrument | Tinh gọn |
-| **[Arrangement]** | Fund Investment | MBFUND | Fund Investment Arrangement | Có InvesId mới |
-| **[Arrangement]** | Discretionary Investment Account | INVESACC | Discretionary Investment Account | Gần nguyên |
-| **[Arrangement]** | Agent–Fund Assignment | AGENFUNDS | Fund Distribution Agent Fund Assignment | Mới (M:N) |
-| **[Arrangement]** | Fund–Bank Assignment | FNDSBMN | Fund Instrument Custodian Bank Assignment | Mới (M:N) |
-| **[Event]** | Ownership Change | MBCHANGE | Fund Investment Arrangement Change | |
-| **[Event]** | Fund Unit Transfer | TRANSFERMBF | Fund Unit Transfer Transaction | Có MBFId mới |
-| **[Event]** | Insider Share Transfer | TRSFERINDER | Insider Share Transfer Transaction | ⚠ Thiếu from/to party |
-| **[Event]** | Business Activity (Rating) | RNKFACTOR, RANK | Member Rating Factor Score, Member Ranking | Mới |
-| **[Event]** | Business Activity (Violation) | VIOLT | Member Conduct Violation | Mới |
-| **[Condition]** | Evaluation Period | RATINGPD | Member Rating Period | Mới |
-| **[Condition]** | Warning Threshold | PARAWARN | Member Warning Parameter | Mới |
-| **[Documentation]** | Reported Information | RPTMEMBER, RPTVALUES | Member Report Submission, Report Item Value | Giữ từ v1 |
-| **[Documentation]** | Report Template | RPTTEMP, SHEET | Report Template, Report Template Sheet | Mới |
-| **[Documentation]** | Output Report Template | RPTTPOUT, SHEETOUT | Output Report Template, Output Report Template Sheet | Mới |
-| **[Documentation]** | Reporting Period | RPTPERIOD | Reporting Period | Mới |
-| **ETL Pattern** | SCD Snapshot | SECBUP, BRCHBUP, TLPROBUP, FNDBUP | *Snapshot entities (4 bảng) | SECBUP/TLPROBUP chuyển JSON |
-| **ETL Pattern** | Audit Log | SECHISTORY, TLPRHISTORY, FGBRBUP | *Audit Log entities (3 bảng) | FGBRBUP đổi pattern |
-| **ETL Pattern** | Report History/Processing | RPTMBHS, RPTPROCESS, RPTHTORY | *History/Processing entities (3 bảng) | Mới, pending detail |
-| **ETL Pattern** | Rating History | RNKFACTHISTORY, RNKGRFTOR | *Rating history/junction (2 bảng) | Mới, pending detail |
-| **[Location]** | Postal Address *(shared)* | SECURITIES, BRANCHES, AGENCIES, AGENCIESBRA, BANKMONI, FORBRCH | Involved Party Postal Address | Giảm source do tinh gọn |
-| **[Location]** | Electronic Address *(shared)* | SECURITIES, BANKMONI, FORBRCH | Involved Party Electronic Address | Giảm source |
-| **[Involved Party]** | Alternative Identification *(shared)* | TLProfiles, INVES | Involved Party Alternative Identification | Giảm mạnh |
+| SCD Snapshot (JSON) | SECBUP | Lịch sử chi tiết công ty QLQ (2 bản ghi trước/sau) | Fund Management Company Snapshot | JSON pattern |
+| SCD Snapshot | BRCHBUP | Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước | FMC Organization Unit Snapshot | 9 trường |
+| SCD Snapshot (JSON) | TLPROBUP | Chi tiết lịch sử nhân sự (2 bản ghi trước/sau) | FMC Employee Snapshot | JSON pattern |
+| SCD Snapshot | FNDBUP | Bản ghi chi tiết lịch sử quỹ đầu tư | Fund Instrument Snapshot | ⚠ Pending column detail |
+| Audit Log | SECHISTORY | Lịch sử thông tin công ty QLQ | Fund Management Company Audit Log | 11 trường |
+| Audit Log | TLPRHISTORY | Lịch sử nhân sự | FMC Employee Audit Log | 11 trường |
+| Audit Log | FUNDHISTORY | Lịch sử quỹ đầu tư | Fund Instrument Audit Log | |
+| Audit Log | FGBRBUP | Lịch sử chi tiết VPĐD/CN công ty QLQ NN tại VN | Foreign Fund Mgmt Org Unit Audit Log | Đổi pattern từ SCD→Audit Log |
+| Report History | RPTMBHS | Lịch sử báo cáo thành viên | Member Report Submission History | ⚠ Pending column detail |
+| Report Processing | RPTPROCESS | Lịch sử xử lý báo cáo thành viên | Member Report Processing Log | ⚠ Pending column detail |
+| Report Change History | RPTHTORY | Lịch sử thay đổi báo cáo đầu vào | Report Template Change History | ⚠ Pending column detail |
+| Rating History | RNKFACTHISTORY | Kết quả các lần lưu bảng tổng hợp đánh giá | Member Rating Factor Score History | ⚠ Pending column detail |
+| Rating–Ranking Junction | RNKGRFTOR | Trung gian Ranks và RNKFACTOR | Member Ranking Score Assignment | ⚠ Pending column detail |
 
----
+### Shared Entities (dùng chung — không riêng FMS)
 
-## Danh mục & Tham chiếu (Reference Data → Classification Value)
+| BCV Concept | Category | Source Tables | Silver Entity | Ghi chú |
+|---|---|---|---|---|
+| [Location] | Postal Address | SECURITIES, BRANCHES, AGENCIES, AGENCIESBRA, BANKMONI, FORBRCH | IP Postal Address | Grain = 1 Involved Party |
+| [Location] | Electronic Address | SECURITIES, BANKMONI, FORBRCH | IP Electronic Address | Phone, Fax, Email |
+| [Involved Party] | Alternative Identification | TLProfiles, INVES | IP Alt Identification | CMND/CCCD/Hộ chiếu/ĐKKD |
+
+### Danh mục & Tham chiếu (Reference Data → Classification Value)
 
 | Source Table | Mô tả | Xử lý trên Silver |
 |---|---|---|
@@ -801,54 +788,52 @@ graph LR
 | STOCKHOLDERTYPE | Loại hình NĐT/cổ đông | → Classification Value |
 | AGENCYTYPE | Loại đại lý | → Classification Value |
 
-> Nguồn cũ có thể dùng danh mục chung (shared). Nguồn mới tách riêng danh mục cho phân hệ FMS.
-
 ---
 
 ## Bảng ngoài scope Silver
 
 ### Quản trị phân hệ (8 bảng)
 
-| Source Table | Lý do |
-|---|---|
-| CALENDAR | Hạ tầng hệ thống — lịch làm việc |
-| CERTFCATE | Hạ tầng hệ thống — chứng thư số |
-| MENUS | Phân quyền chức năng |
-| REFRESHTOKEN | Session management |
-| ROLES | Phân quyền chức năng |
-| ROLESMENUS | Phân quyền chức năng |
-| USERS | Quản lý user hệ thống |
-| USERSMENUS | Phân quyền chức năng (⚠ pending column detail) |
+| Source Table | Mô tả | Lý do |
+|---|---|---|
+| CALENDAR | Lịch làm việc và lịch nghỉ | Hạ tầng hệ thống |
+| CERTFCATE | Chứng thư số thành viên thị trường | Hạ tầng hệ thống |
+| MENUS | Danh mục quyền chức năng | Phân quyền chức năng |
+| REFRESHTOKEN | Phiên làm việc (Token đăng nhập) | Session management |
+| ROLES | Nhóm quyền chức năng | Phân quyền chức năng |
+| ROLESMENUS | Phân quyền menu theo nhóm quyền | Phân quyền chức năng |
+| USERS | Quản lý người dùng hệ thống | Quản lý user |
+| USERSMENUS | Phân quyền chức năng cho người dùng | Phân quyền chức năng (⚠ pending detail) |
 
 ### Phân quyền dữ liệu (4 bảng)
 
-| Source Table | Lý do |
-|---|---|
-| DTSCOPE | Operational — phân quyền dữ liệu |
-| DTSCBMN | Operational — phân quyền NH LKGS cho chuyên viên |
-| DTSCFND | Operational — phân quyền QĐT cho chuyên viên |
-| DTSCFR | Operational — phân quyền VPĐD/CN QLQ NN cho chuyên viên |
+| Source Table | Mô tả | Lý do |
+|---|---|---|
+| DTSCOPE | Phân quyền dữ liệu – phạm vi | Operational |
+| DTSCBMN | Phân quyền dữ liệu ngân hàng LKGS cho chuyên viên QLQ | Operational |
+| DTSCFND | Phân quyền dữ liệu QĐT cho chuyên viên vụ QLQ | Operational |
+| DTSCFR | Phân quyền dữ liệu VPĐD/CN QLQ NN cho chuyên viên | Operational |
 
 ### Quản lý báo cáo — Operational (5 bảng)
 
-| Source Table | Lý do |
-|---|---|
-| SELFSETPD | Operational — thành viên tự thiết lập gửi BC (⚠ pending detail) |
-| SECURITIESREPORT | Operational — cấu hình hiển thị BC công ty QLQ (⚠ pending detail) |
-| USERRPTO | Operational — phân quyền user UBCK với BC đầu ra (⚠ pending detail) |
-| STTRGTOUT | Operational — cấu hình lấy dữ liệu BC đầu ra (⚠ pending detail) |
-| TOTSTTG | Operational — trung gian cấu hình dữ liệu đầu ra (⚠ pending detail) |
+| Source Table | Mô tả | Lý do |
+|---|---|---|
+| SELFSETPD | Thành viên tự thiết lập gửi báo cáo | Operational (⚠ pending detail) |
+| SECURITIESREPORT | Thiết lập hiển thị báo cáo công ty QLQ | Operational (⚠ pending detail) |
+| USERRPTO | Phân quyền người dùng UBCK với báo cáo đầu ra | Operational (⚠ pending detail) |
+| STTRGTOUT | Cấu hình lấy dữ liệu báo cáo đầu ra | Operational (⚠ pending detail) |
+| TOTSTTG | Trung gian cấu hình dữ liệu đầu ra với ô dữ liệu | Operational (⚠ pending detail) |
 
 ### Tiện ích & Hệ thống (6 bảng)
 
-| Source Table | Lý do |
-|---|---|
-| SYSVAR | Tham số hệ thống |
-| SYSEMAIL | Nội dung trao đổi (⚠ pending column detail) |
-| NOTIFICATION | Thông báo hệ thống (⚠ pending column detail) |
-| TABSINFO | Thiết lập hiển thị (⚠ pending column detail) |
-| TPOUTHTORY | Lịch sử thay đổi BC đầu ra (⚠ pending column detail) |
-| USERSESSIONS | Session management (⚠ pending column detail) |
+| Source Table | Mô tả | Lý do |
+|---|---|---|
+| SYSVAR | Tham số hệ thống | Cấu hình hệ thống |
+| SYSEMAIL | Nội dung trao đổi thông tin | Hệ thống (⚠ pending detail) |
+| NOTIFICATION | Thông báo hệ thống | Hệ thống (⚠ pending detail) |
+| TABSINFO | Thiết lập hiển thị dữ liệu | Hệ thống (⚠ pending detail) |
+| TPOUTHTORY | Lịch sử thay đổi báo cáo đầu ra | Hệ thống (⚠ pending detail) |
+| USERSESSIONS | Quản lý tài khoản đang truy cập | Session management (⚠ pending detail) |
 
 > **Tổng ngoài scope: 23 bảng** (8 admin + 4 phân quyền + 5 BC operational + 6 hệ thống)
 
@@ -856,63 +841,57 @@ graph LR
 
 ## Scope tổng kết
 
-| Nhóm | Source Tables | Silver Entities | Ghi chú |
-|---|---|---|---|
-| 1. FMC & bên liên quan | 5 (SECURITIES, SECBUP, SECHISTORY, SECBUSINES, STAKE) | 5 + 3 shared | Loại 4 entity cổ đông |
-| 2. FMC Organization Unit | 2 (BRANCHES, BRCHBUP) | 2 | Loại Audit Log |
-| 3. FMC Employee | 3 (TLProfiles, TLPRHISTORY, TLPROBUP) | 3 + 3 shared | Bỏ link Branch, Insider, Fund |
-| 4. Fund Instrument | 5 (FUNDS, FUNDHISTORY, FNDBUP, REPRESENT, FNDSBMN) | 5 | M:N Fund↔Bank mới |
-| 5. Fund Investment & Transfer | 3 (MBFUND, MBCHANGE, TRANSFERMBF) | 3 | Link InvesId mới |
-| 6. Discretionary Investment | 2 (INVES, INVESACC) | 2 + 1 shared | Investor master dùng chung |
-| 7. Fund Distribution Agent | 3 (AGENCIES, AGENCIESBRA, AGENFUNDS) | 3 | M:N Agent↔Fund mới |
-| 8. Custodian Bank | 1 (BANKMONI) | 1 + 2 shared | Loại Employee |
-| 9. Foreign Fund Mgmt | 4 (FORBRCH, FGBRBUP, STFFGBRCH, FGBUSINESS) | 4 + 3 shared | FGBRBUP đổi pattern |
-| 10. Share Transfer | 1 (TRSFERINDER) | 1 | ⚠ Thiếu from/to |
-| 11. Reporting Framework | 11 (RPTPERIOD, RPTTEMP, SHEET, RPTTPOUT, SHEETOUT, RPTPDSHT, RPTMEMBER, RPTVALUES, RPTMBHS, RPTPROCESS, RPTHTORY) | 11 | Mở rộng lớn |
-| 12. Rating & Ranking | 6 (RATINGPD, RNKFACTOR, RANK, RNKFACTHISTORY, RNKGRFTOR, PARAWARN) | 7 | Hoàn toàn mới |
-| 13. Violations | 1 (VIOLT) | 1 | Hoàn toàn mới |
-| Reference Data | 9 bảng danh mục | → Classification Value | |
-| Ngoài scope | 23 bảng | — | Admin, phân quyền, system |
-| **Tổng** | **56 bảng nghiệp vụ + 9 ref data** | **~48 entities + 3 shared** | (+ 23 ngoài scope = 79 bảng) |
+| Nhóm | Source Tables | Silver Entities |
+|---|---|---|
+| 1. FMC & bên liên quan | 5 (SECURITIES, SECBUP, SECHISTORY, SECBUSINES, STAKE) | 5 + 3 shared |
+| 2. FMC Organization Unit | 2 (BRANCHES, BRCHBUP) | 2 |
+| 3. FMC Employee | 3 (TLProfiles, TLPRHISTORY, TLPROBUP) | 3 + 3 shared |
+| 4. Fund Instrument | 5 (FUNDS, FUNDHISTORY, FNDBUP, REPRESENT, FNDSBMN) | 5 |
+| 5. Fund Investment & Transfer | 3 (MBFUND, MBCHANGE, TRANSFERMBF) | 3 |
+| 6. Discretionary Investment | 2 (INVES, INVESACC) | 2 + 1 shared |
+| 7. Fund Distribution Agent | 3 (AGENCIES, AGENCIESBRA, AGENFUNDS) | 3 |
+| 8. Custodian Bank | 1 (BANKMONI) | 1 + 2 shared |
+| 9. Foreign Fund Mgmt | 4 (FORBRCH, FGBRBUP, STFFGBRCH, FGBUSINESS) | 4 + 3 shared |
+| 10. Share Transfer | 1 (TRSFERINDER) | 1 |
+| 11. Reporting Framework | 11 (RPTPERIOD, RPTTEMP, SHEET, RPTTPOUT, SHEETOUT, RPTPDSHT, RPTMEMBER, RPTVALUES, RPTMBHS, RPTPROCESS, RPTHTORY) | 11 |
+| 12. Rating & Ranking | 6 (RATINGPD, RNKFACTOR, RANK, RNKFACTHISTORY, RNKGRFTOR, PARAWARN) | 7 |
+| 13. Violations | 1 (VIOLT) | 1 |
+| Reference Data | 9 bảng danh mục | → Classification Value |
+| Ngoài scope | 23 bảng | — |
+| **Tổng** | **56 bảng nghiệp vụ + 9 ref data** | **~48 entities + 3 shared** |
 
 ---
 
 ## Ghi chú thiết kế
 
 ### 1. Pattern JSON Snapshot (BUP tables)
-Nguồn mới áp dụng pattern "2 bản ghi trước/sau" cho bảng BUP: 1 cột NCLOB (SecData/TLData) chứa JSON snapshot toàn bộ entity + cờ IsBefore. Silver Snapshot entity vẫn giữ model attribute-level — ETL parse JSON ra từng trường.
+SECBUP và TLPROBUP lưu dạng 1 cột NCLOB (SecData/TLData) chứa JSON snapshot toàn bộ entity + cờ IsBefore. Silver Snapshot entity giữ model attribute-level — ETL parse JSON ra từng trường.
 
 ### 2. Pattern Audit Log chuẩn hóa
-Nguồn mới chuẩn hóa Audit Log pattern qua 3 bảng: SECHISTORY, TLPRHISTORY, FGBRBUP (đổi pattern). Cấu trúc chung: Action, PrevValue, ValueChange, Reason, DateChange, AdjustmentLicense, LicenseDate, FileData.
+SECHISTORY, TLPRHISTORY, FGBRBUP dùng chung cấu trúc: Action, PrevValue, ValueChange, Reason, DateChange, AdjustmentLicense, LicenseDate, FileData.
 
 ### 3. TLProfiles — Shared Person Master
-Nguồn mới sử dụng TLProfiles như person master trung tâm. REPRESENT.TLId và STFFGBRCH.TLId đều reference đến TLProfiles. Silver giữ các entity riêng (FMC Employee, Fund Board Member, Foreign Fund Mgmt Org Unit Employee) nhưng share FK về FMC Employee.
+TLProfiles là person master trung tâm cho FMS. REPRESENT.TLId và STFFGBRCH.TLId đều reference đến TLProfiles. Silver giữ các entity riêng (FMC Employee, Fund Board Member, Foreign Fund Mgmt Org Unit Employee) nhưng share FK về FMC Employee.
 
 ### 4. INVES — Shared Investor Master
-MBFUND.InvesId (mới) → INVES: nhà đầu tư quỹ giờ reference đến cùng bảng INVES (vốn chỉ cho NĐT ủy thác). Silver giữ tên "Discretionary Investment Investor" nhưng ghi nhận vai trò kép.
+MBFUND.InvesId → INVES: nhà đầu tư quỹ reference đến cùng bảng INVES. Silver giữ tên "Discretionary Investment Investor" nhưng ghi nhận vai trò kép (ủy thác + quỹ).
 
-### 5. Bảng cũ bị loại bỏ — dữ liệu lịch sử
-7 bảng cũ bị loại cần xác nhận phương án migrate dữ liệu lịch sử:
+### 5. SECURITIES — chỉ chứa công ty QLQ trong nước
+Không còn ForeignType → không cần phân luồng ETL. FORBRCH là entity độc lập cho VPĐD/CN QLQ nước ngoài. Trường `Dorf` trên SECURITIES — cần xác nhận ý nghĩa.
 
-| Bảng cũ | Rủi ro | Phương án suy luận |
-|---|---|---|
-| INSIDER | **Cao** | Gộp vào STAKE? Hệ thống khác? |
-| INSDERRELA | Trung bình | Gộp vào RELATION? |
-| INSDERRPRST | Trung bình | Gộp vào REPRESENT? |
-| INSIDCHANGE | Trung bình | Gộp vào MBCHANGE? |
-| BANKEMPLOY | Trung bình | Quản lý ở phân hệ khác? |
-| FGBRHISTORY | Thấp | Gộp vào FGBRBUP |
-| FUNDTLPRO | Thấp | Quản lý qua TLProfiles + JOBTYPE |
-
-### 6. Bảng pending column detail (20 bảng)
-Danh sách bảng có trong nguồn mới nhưng chưa có thiết kế chi tiết cột:
-
+### 6. Bảng pending column detail
 **Trong scope Silver (10):** FNDBUP, STAKE, RNKFACTHISTORY, RNKGRFTOR, RPTTEMP, SHEET, RPTTPOUT, SHEETOUT, RPTMBHS, RPTPROCESS, RPTHTORY
 
 **Ngoài scope Silver (10):** NOTIFICATION, SECURITIESREPORT, SELFSETPD, STTRGTOUT, SYSEMAIL, TABSINFO, TOTSTTG, TPOUTHTORY, USERSESSIONS, USERSMENUS
 
-### 7. SECURITIES — không còn phân luồng ForeignType
-Nguồn cũ: `SECURITIES.ForeignType = NULL` → FMC; `ForeignType IN ('B','O')` → Foreign Fund Mgmt Org Unit.
-Nguồn mới: SECURITIES chỉ chứa công ty QLQ trong nước (ForeignType bị loại). FORBRCH vẫn là entity độc lập cho VPĐD/CN QLQ NN. **Không cần phân luồng ETL.**
+### 7. Điểm cần xác nhận với nhà thầu
 
-Tuy nhiên nguồn mới có trường `Dorf` trên SECURITIES — cần xác nhận ý nghĩa (Domestic or Foreign flag? hay mục đích khác?).
+| # | Câu hỏi | Ảnh hưởng |
+|---|---|---|
+| 1 | SECURITIES.Dorf — ý nghĩa? | Phân loại entity |
+| 2 | SECHISTORY không còn BrId — audit log cho CN trace bằng cách nào? | Nhóm 2 |
+| 3 | TLProfiles tinh gọn — thông tin chi tiết cá nhân lưu ở đâu? JSON trong TLPROBUP? | Nhóm 3, shared entities |
+| 4 | TRSFERINDER thiếu from/to party — bổ sung FK nào? | Nhóm 10 |
+| 5 | VIOLT chỉ liên quan SECURITIES hay multi-subject? | Nhóm 13 |
+| 6 | 7 bảng cũ bị loại — phương án migrate dữ liệu lịch sử? | Toàn bộ |
+| 7 | 10 bảng trong scope chưa có column detail — timeline bổ sung? | Nhóm 4, 11, 12 |
