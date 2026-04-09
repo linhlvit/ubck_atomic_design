@@ -34,15 +34,24 @@ Danh sách bảng dimension
 
 Mô tả cách sử dụng dữ liệu
 
- 5. Mapping Principle
+5. Mapping Principle
 
-5.1 Mỗi Dashboard sử dụng một bảng fact
-5.2 Dimension phải phù hợp với fact
-5.3 Fact có thể dùng cho nhiều dashboard
+5.1 Mỗi Dashboard sử dụng một bảng Fact
+5.2 Dimension phải phù hợp với Fact
+5.3 Fact có thể dùng cho nhiều Dashboard
 5.4 Dimension có thể dùng lại
+5.5 Mỗi bảng (Fact hoặc Dimension) phải tách thành 1 dòng riêng biệt:
+    - Dòng Fact: chỉ điền cột Fact Table, để trống Dimension Table
+    - Dòng Dimension: chỉ điền cột Dimension Table, để trống Fact Table
+5.6 Description mô tả ý nghĩa nghiệp vụ của từng bảng, 
+    lấy từ cột Description trong High-Level Design
 
  6. Example
 
-| Module | Dashboard            | Fact Table           | Dimension Table | Description      |
-| ------ | -------------------- | -------------------- | --------------- | ---------------- |
-| PCS    | Monitoring Dashboard | FCT_PCS_COMPANY_SNAP | DIM_PCS_COMPANY | Giám sát công ty |
+6. Example
+
+| Module | Dashboard            | Fact Table           | Dimension Table | Description                    |
+| ------ | -------------------- | -------------------- | --------------- | ------------------------------ |
+| PCS    | Monitoring Dashboard | FCT_PCS_COMPANY_SNAP |                 | Lưu trạng thái công ty         |
+| PCS    | Monitoring Dashboard |                      | DIM_PCS_COMPANY | Thông tin công ty đại chúng     |
+| PCS    | Monitoring Dashboard |                      | DIM_PCS_STATUS  | Danh mục trạng thái công ty    |
