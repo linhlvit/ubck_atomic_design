@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Involved Party Id,FK đến Securities Organization Reference,Surrogate Key,false,false,draft,NHNCK.qlnhn.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng.
+Involved Party Code,Mã tổ chức,Text,false,false,draft,NHNCK.qlnhn.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id.
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Organizations,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
+Electronic Address Type Code,Loại kênh liên lạc,Classification Value,false,false,draft,,"Scheme: IP_ELEC_ADDR_TYPE. ETL derive: PHONE, MOBILE, EMAIL, FAX. Tối đa 4 dòng/tổ chức. Giá trị PHONE, EMAIL, FAX đã có. ⚠ GIÁ TRỊ MỚI: MOBILE."
+Electronic Address Value,Số điện thoại / Số di động / Email / Fax,Text,true,false,draft,NHNCK.qlnhn.Organizations.PhoneNumber|NHNCK.qlnhn.Organizations.MobileNumber|NHNCK.qlnhn.Organizations.Email|NHNCK.qlnhn.Organizations.Fax,PHONE ← PhoneNumber; MOBILE ← MobileNumber; EMAIL ← Email; FAX ← Fax.

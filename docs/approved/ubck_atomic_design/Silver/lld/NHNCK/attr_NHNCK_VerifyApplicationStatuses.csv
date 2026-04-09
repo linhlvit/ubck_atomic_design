@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+License Application Verification Status Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: gần nhất ""Approval Activity"" (Business Activity)."
+License Application Verification Status Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.Id,BK chính. PK nguồn.
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.VerifyApplicationStatuses,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
+License Application Id,FK đến Securities Practitioner License Application,Surrogate Key,false,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.ApplicationId,FK target: Securities Practitioner License Application.License Application Id. Pattern Id + Code.
+License Application Code,Mã hồ sơ,Text,false,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.ApplicationId,FK target: Securities Practitioner License Application.License Application Code. Pair with License Application Id.
+Verification Level Code,Cấp phê duyệt (LĐCM/LĐUB),Classification Value,true,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyLevel,Scheme: VERIFICATION_LEVEL.
+Verification Status Code,Trạng thái phê duyệt,Classification Value,true,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyStatus,Scheme: VERIFICATION_STATUS.
+Verified By Officer Id,FK đến Regulatory Authority Officer — người phê duyệt,Surrogate Key,true,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyBy,FK target: Regulatory Authority Officer.Officer Id. Pattern Id + Code.
+Verified By Officer Code,Mã người phê duyệt,Text,true,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Verified By Officer Id.
+Verified Timestamp,Ngày phê duyệt,Timestamp,true,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyAt,
+Rejection Reason Description,Lý do từ chối (nếu từ chối),Text,true,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.Reason,Chỉ có giá trị khi Verification Status = Rejected.
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.VerifyApplicationStatuses.CreatedAt,
