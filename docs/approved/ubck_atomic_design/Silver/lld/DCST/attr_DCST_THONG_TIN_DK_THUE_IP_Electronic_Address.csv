@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Involved Party Id,FK đến Registered Taxpayer,Surrogate Key,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Id. Nhất quán cấu trúc shared entity với NHNCK.
+Involved Party Code,Mã NNT,Text,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id.
+Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
+Electronic Address Type Code,"Loại liên lạc: PHONE_HEAD_OFFICE, FAX_HEAD_OFFICE, PHONE_BUSINESS, EMAIL_BUSINESS, FAX_BUSINESS. ETL derive từ vị trí cột nguồn",Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. Tất cả giá trị đã có trong ref_shared_entity_classifications.
+Electronic Address Value,"Giá trị liên lạc (số ĐT, fax, email)",Text,true,false,draft,DCST.THONG_TIN_DK_THUE.DIEN_THOAI|DCST.THONG_TIN_DK_THUE.FAX|DCST.THONG_TIN_DK_THUE.DIEN_THOAI_KD|DCST.THONG_TIN_DK_THUE.EMAIL_KD|DCST.THONG_TIN_DK_THUE.FAX_KD,"PHONE_HEAD_OFFICE → DIEN_THOAI. FAX_HEAD_OFFICE → FAX. PHONE_BUSINESS → DIEN_THOAI_KD. EMAIL_BUSINESS → EMAIL_KD. FAX_BUSINESS → FAX_KD."

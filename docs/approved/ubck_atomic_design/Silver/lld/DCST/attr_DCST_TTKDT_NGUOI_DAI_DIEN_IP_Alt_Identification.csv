@@ -1,0 +1,7 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Involved Party Id,FK đến Taxpayer Representative,Surrogate Key,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.ID,FK target: Taxpayer Representative.Taxpayer Representative Id. Nhất quán cấu trúc shared entity.
+Involved Party Code,Mã người đại diện,Text,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.ID,FK target: Taxpayer Representative.Taxpayer Representative Code. Pair with Involved Party Id.
+Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TTKDT_NGUOI_DAI_DIEN,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
+Identification Type Code,"Loại giấy tờ: 1010: CMND, 2080: CCCD, 1020: Hộ chiếu. ETL map sang NATIONAL_ID / CITIZEN_ID / PASSPORT",Classification Value,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO,"Scheme: IP_ALT_ID_TYPE. ETL derive: 1010 → NATIONAL_ID, 2080 → CITIZEN_ID, 1020 → PASSPORT."
+Identification Number,Số giấy tờ,Text,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO,
+Issue Date,Ngày cấp giấy tờ,Date,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP,

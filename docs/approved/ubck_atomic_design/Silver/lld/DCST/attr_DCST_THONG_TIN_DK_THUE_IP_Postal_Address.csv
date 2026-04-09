@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Involved Party Id,FK đến Registered Taxpayer,Surrogate Key,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Id. Nhất quán cấu trúc shared entity với NHNCK.
+Involved Party Code,Mã NNT,Text,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id.
+Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
+Address Type Code,"Loại địa chỉ: HEAD_OFFICE (trụ sở chính) hoặc BUSINESS (kinh doanh). ETL derive từ vị trí cột nguồn",Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. Giá trị đã có: HEAD_OFFICE và BUSINESS.
+Address Description,"[HEAD_OFFICE] Địa chỉ trụ sở chính; [BUSINESS] Mô tả địa chỉ kinh doanh",Text,true,false,draft,DCST.THONG_TIN_DK_THUE.DIA_CHI_TSC|DCST.THONG_TIN_DK_THUE.MOTA_DIACHI_KD,"HEAD_OFFICE → DIA_CHI_TSC (full text). BUSINESS → MOTA_DIACHI_KD."
+Province Code,"[BUSINESS] Mã tỉnh - kinh doanh. HEAD_OFFICE không có mã tỉnh riêng",Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_TINH_KD,"Chỉ có cho loại BUSINESS."
+Province Name,[BUSINESS] Tên tỉnh - kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_TINH_KD,Denormalized name.
+District Code,[BUSINESS] Mã huyện - kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_HUYEN_KD,Chỉ có cho loại BUSINESS.
+District Name,[BUSINESS] Tên huyện - kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_HUYEN_KD,Denormalized name.
+Ward Code,[BUSINESS] Mã xã - kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_XA_KD,Chỉ có cho loại BUSINESS.
+Ward Name,[BUSINESS] Tên xã - kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_XA,Denormalized name.
