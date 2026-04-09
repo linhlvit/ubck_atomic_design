@@ -1,31 +1,31 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Tax Debt Enforcement Order Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: Regulatory Report (Documentation).
+Tax Debt Enforcement Order Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: "Regulatory Report" (Documentation) — entity-level concept.
 Tax Debt Enforcement Order Code,Mã định danh bản ghi trong DCST. BK,Text,false,false,draft,DCST.TCT_TT_CUONG_CHE_NO.ID,BK chính. PK nguồn map vào Code.
 Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_TT_CUONG_CHE_NO,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
-Registered Taxpayer Id,Mã người nhận. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN,FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MA_NNHAN (= MST) → Registered Taxpayer. Nullable vì link ngầm.
+Registered Taxpayer Id,Mã người nhận. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN,FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MA_NNHAN (= MST) → Registered Taxpayer. Nullable vì link ngầm. BCV: "Organization Tax Identification Number" (Involved Party) — MA_NNHAN là MST của NNT.
 Registered Taxpayer Code,Mã người nhận,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.
-Taxpayer Name,Tên người nhận,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_NNHAN,Snapshot tại thời điểm quyết định.
-Taxpayer Business Industry,Ngành kinh doanh đối tượng bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGANH_KD_DTBCC,Snapshot tại thời điểm quyết định.
-Tax Authority Code,Mã cơ quan thuế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_CQT,Cơ quan thuế ban hành QĐ. Phân biệt với Supervisory Tax Authority (cơ quan quản lý NNT).
-Tax Authority Name,Tên cơ quan thuế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT,Denormalized name tương ứng Tax Authority Code.
-Supervisory Tax Authority Code,Mã cơ quan thuế quản lý,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_CQT_QL,Nhất quán prefix Supervisory Tax Authority với THONG_TIN_DK_THUE LLD và TCT_TTCCN_HOA_DON LLD.
-Supervisory Tax Authority Name,Tên cơ quan thuế quản lý,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT_QL,Denormalized name. Nhất quán prefix.
-Enforcement Type Code,Mã hình thức cưỡng chế,Classification Value,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_HTCC,Scheme: TAX_ENFORCEMENT_TYPE. Dùng chung với TCT_TTCCN_HOA_DON.
-Enforcement Type Name,Tên hình thức cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_HTCC,Denormalized name tương ứng Enforcement Type Code.
-Electronic Transaction Code,Mã giao dịch điện tử,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_GDDT,Nhất quán với TCT_TTCCN_HOA_DON LLD.
-Enforcement Order Number,Số quyết định,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.SO_QD,"Là giá trị được TCT_TTCCN_HOA_DON.CAN_CU_QDSO viện dẫn khi leo thang sang biện pháp ngừng hóa đơn. Không có FK vật lý — liên kết logic."
-Enforcement Order Date,Ngày quyết định,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGAY_QD,Nhất quán prefix Enforcement Order.
-Enforced Amount,Số tiền bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.SO_TIEN_BI_CC,"Nguồn VARCHAR(20) — giữ Text. Không đủ thông tin xác định đơn vị tiền tệ. Cần xác nhận với team."
-Enforcement Effective Start Date,Ngày hiệu lực từ quyết định từ,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_TU,Nhất quán prefix Enforcement Effective với TCT_TTCCN_HOA_DON LLD.
-Enforcement Effective End Date,Ngày hiệu lực quyết định đến,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_DEN,Nhất quán prefix Enforcement Effective.
-Enforcement Time,Thời gian cưỡng chế,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.THOI_GIAN_CC,Thời điểm áp dụng biện pháp trên thực tế.
-Enforcement Location,Địa điểm cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.DIA_DIEM_CC,Nhất quán prefix Enforcement.
-Taxpayer Account Number,Số tài khoản đối tượng bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.STK_DT_BCC,Áp dụng cho hình thức trích tiền tài khoản.
-Taxpayer Account Bank,Nơi mở tài khoản bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NO_MO_TK_BCC,Nhất quán prefix Taxpayer Account.
-Income Manager Name,Tên đối tượng quản lý thu nhập,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_DTQLTN,Áp dụng cho hình thức khấu trừ thu nhập. Prefix Income Manager — đơn vị trả thu nhập cho NNT bị yêu cầu khấu trừ thay.
-Income Manager Address,Địa chỉ đối tượng quản lý thu nhập,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.DI_CHI_DTQLTN,Nhất quán prefix Income Manager.
-Seized Asset Description,Tài sản kê biên,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TS_KE_BIEN,Áp dụng cho hình thức kê biên tài sản.
-Seized Asset Value,Giá trị tài sản,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.GIA_TRI_TS,"Nguồn VARCHAR(20) — giữ Text. Cần xác nhận đơn vị."
-Asset Custodian Code,Mã đối tượng giữ tài sản cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_DTGTSCC,Bên thứ ba giữ tài sản kê biên. Không có FK (không có bảng riêng) → denormalized.
-Asset Custodian Name,Tên đối tượng giữ tài sản cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_DTGTSCC,Denormalized. Nhất quán prefix Asset Custodian.
-Asset Custodian Address,Địa chỉ đối tượng giữ tài sản cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.DIA_CHI_DTGTSCC,Denormalized. Nhất quán prefix Asset Custodian.
+Taxpayer Name,Tên người nhận,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_NNHAN,"BCV: ""Organization Name"" (Involved Party). Snapshot tại thời điểm quyết định."
+Taxpayer Business Industry,Ngành kinh doanh đối tượng bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGANH_KD_DTBCC,"BCV: ""Organization Industry Classification"" (Involved Party). Snapshot tại thời điểm quyết định."
+Tax Authority Code,Mã cơ quan thuế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_CQT,BCV: không có term riêng. Cơ quan thuế ban hành QĐ. Phân biệt với Supervisory Tax Authority (cơ quan quản lý NNT).
+Tax Authority Name,Tên cơ quan thuế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT,BCV: không có term riêng. Denormalized name tương ứng Tax Authority Code.
+Supervisory Tax Authority Code,Mã cơ quan thuế quản lý,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_CQT_QL,BCV: không có term riêng. Nhất quán prefix Supervisory Tax Authority với THONG_TIN_DK_THUE LLD và TCT_TTCCN_HOA_DON LLD.
+Supervisory Tax Authority Name,Tên cơ quan thuế quản lý,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT_QL,BCV: không có term riêng. Denormalized name. Nhất quán prefix.
+Enforcement Type Code,Mã hình thức cưỡng chế,Classification Value,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_HTCC,Scheme: TAX_ENFORCEMENT_TYPE. BCV: không có term riêng. Dùng chung với TCT_TTCCN_HOA_DON.
+Enforcement Type Name,Tên hình thức cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_HTCC,BCV: không có term riêng. Denormalized name tương ứng Enforcement Type Code.
+Electronic Transaction Code,Mã giao dịch điện tử,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_GDDT,BCV: không có term riêng. Nhất quán với TCT_TTCCN_HOA_DON LLD.
+Enforcement Order Number,Số quyết định,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.SO_QD,"BCV: gần nhất ""Submission Number"" (Documentation) — QĐ cưỡng chế là văn bản hành chính. Là giá trị được TCT_TTCCN_HOA_DON.CAN_CU_QDSO viện dẫn khi leo thang sang biện pháp ngừng hóa đơn. Không có FK vật lý — liên kết logic."
+Enforcement Order Date,Ngày quyết định,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGAY_QD,"BCV: gần nhất ""Documentation Preparation Date"" (Documentation). Nhất quán prefix Enforcement Order."
+Enforced Amount,Số tiền bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.SO_TIEN_BI_CC,"BCV: không có term riêng cho số tiền cưỡng chế. Nguồn VARCHAR(20) — giữ Text. Không đủ thông tin xác định đơn vị tiền tệ. Cần xác nhận với team."
+Enforcement Effective Start Date,Ngày hiệu lực từ quyết định từ,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_TU,"BCV: gần nhất ""Condition Effective Date"" (Condition). Nhất quán prefix Enforcement Effective với TCT_TTCCN_HOA_DON LLD."
+Enforcement Effective End Date,Ngày hiệu lực quyết định đến,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_DEN,"BCV: gần nhất ""Condition Expiry Date"" (Condition). Nhất quán prefix Enforcement Effective."
+Enforcement Time,Thời gian cưỡng chế,Date,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.THOI_GIAN_CC,BCV: không có term riêng. Thời điểm áp dụng biện pháp trên thực tế.
+Enforcement Location,Địa điểm cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.DIA_DIEM_CC,"BCV: ""Location"" (Location) — gần nhất. Nhất quán prefix Enforcement."
+Taxpayer Account Number,Số tài khoản đối tượng bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.STK_DT_BCC,"BCV: ""Account Number"" (Arrangement) — gần nhất. Áp dụng cho hình thức trích tiền tài khoản."
+Taxpayer Account Bank,Nơi mở tài khoản bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NO_MO_TK_BCC,BCV: không có term riêng. Nhất quán prefix Taxpayer Account.
+Income Manager Name,Tên đối tượng quản lý thu nhập,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_DTQLTN,BCV: không có term riêng. Áp dụng cho hình thức khấu trừ thu nhập. Prefix Income Manager — đơn vị trả thu nhập cho NNT bị yêu cầu khấu trừ thay.
+Income Manager Address,Địa chỉ đối tượng quản lý thu nhập,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.DI_CHI_DTQLTN,"BCV: ""Postal Address"" (Location) — gần nhất. Nhất quán prefix Income Manager."
+Seized Asset Description,Tài sản kê biên,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TS_KE_BIEN,"BCV: gần nhất ""Property Description"" (Resource Item). Áp dụng cho hình thức kê biên tài sản."
+Seized Asset Value,Giá trị tài sản,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.GIA_TRI_TS,"BCV: gần nhất ""Property Value"" (Resource Item). Nguồn VARCHAR(20) — giữ Text. Cần xác nhận đơn vị."
+Asset Custodian Code,Mã đối tượng giữ tài sản cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_DTGTSCC,BCV: không có term riêng. Bên thứ ba giữ tài sản kê biên. Không có FK (không có bảng riêng) → denormalized.
+Asset Custodian Name,Tên đối tượng giữ tài sản cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_DTGTSCC,"BCV: ""Organization Name"" (Involved Party) — gần nhất. Denormalized. Nhất quán prefix Asset Custodian."
+Asset Custodian Address,Địa chỉ đối tượng giữ tài sản cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.DIA_CHI_DTGTSCC,"BCV: ""Postal Address"" (Location) — gần nhất. Denormalized. Nhất quán prefix Asset Custodian."

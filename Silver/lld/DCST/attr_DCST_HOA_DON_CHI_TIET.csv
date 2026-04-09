@@ -1,10 +1,10 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Tax Invoice Enforcement Order Item Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: Invoice (Documentation) — entity con của Tax Invoice Enforcement Order.
+Tax Invoice Enforcement Order Item Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: "Invoice" (Documentation) — entity con của Tax Invoice Enforcement Order.
 Tax Invoice Enforcement Order Item Code,Mã định danh bản ghi trong DCST. BK,Text,false,false,draft,DCST.HOA_DON_CHI_TIET.ID,BK chính. PK nguồn map vào Code.
 Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.HOA_DON_CHI_TIET,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
 Tax Invoice Enforcement Order Id,ID Thông tin cưỡng chế nợ theo hóa đơn. FK đến Tax Invoice Enforcement Order,Surrogate Key,false,false,draft,DCST.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID,FK target: Tax Invoice Enforcement Order.Tax Invoice Enforcement Order Id.
 Tax Invoice Enforcement Order Code,ID Thông tin cưỡng chế nợ theo hóa đơn,Text,false,false,draft,DCST.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID,FK target: Tax Invoice Enforcement Order.Tax Invoice Enforcement Order Code. Pair with Tax Invoice Enforcement Order Id.
-Invoice Template Symbol,Ký hiệu mẫu,Text,true,false,draft,DCST.HOA_DON_CHI_TIET.KH_MAU,Ký hiệu mẫu theo quy định của Bộ Tài chính (VD: 01GTKT).
-Invoice Series Symbol,Ký hiệu hóa đơn,Text,true,false,draft,DCST.HOA_DON_CHI_TIET.KH_HOA_DON,Ký hiệu series hóa đơn (VD: AA/19E). Ba trường KH_MAU + KH_HOA_DON + SO_HOA_DON cùng nhau định danh duy nhất 1 hóa đơn trong hệ thống thuế VN.
-Invoice Number,Số hóa đơn,Text,true,false,draft,DCST.HOA_DON_CHI_TIET.SO_HOA_DON,Số thứ tự hóa đơn trong series.
-Invoice Type Code,Loại hóa đơn,Classification Value,true,false,draft,DCST.HOA_DON_CHI_TIET.LOAI_HOA_DON,Scheme: INVOICE_TYPE. Giá trị mới — xem append ref_shared_entity_classifications.
+Invoice Template Symbol,Ký hiệu mẫu,Text,true,false,draft,DCST.HOA_DON_CHI_TIET.KH_MAU,"BCV: không có term riêng (đặc thù hệ thống hóa đơn VN). Ký hiệu mẫu theo quy định BTC (VD: 01GTKT). Ba trường KH_MAU + KH_HOA_DON + SO_HOA_DON cùng định danh duy nhất 1 hóa đơn."
+Invoice Series Symbol,Ký hiệu hóa đơn,Text,true,false,draft,DCST.HOA_DON_CHI_TIET.KH_HOA_DON,"BCV: không có term riêng. Ký hiệu series hóa đơn (VD: AA/19E). Nhất quán với Invoice Template Symbol."
+Invoice Number,Số hóa đơn,Text,true,false,draft,DCST.HOA_DON_CHI_TIET.SO_HOA_DON,"BCV: gần nhất ""Submission Number"" (Documentation). Số thứ tự hóa đơn trong series."
+Invoice Type Code,Loại hóa đơn,Classification Value,true,false,draft,DCST.HOA_DON_CHI_TIET.LOAI_HOA_DON,"Scheme: INVOICE_TYPE. BCV: gần nhất ""Document Type"" (Documentation). Giá trị mới — xem append ref_shared_entity_classifications."

@@ -1,13 +1,13 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Tax Violation Penalty Decision Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: Conduct Violation (Business Activity) — Activity Fact Append.
+Tax Violation Penalty Decision Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: "Conduct Violation" (Business Activity) — Activity Fact Append.
 Tax Violation Penalty Decision Code,Mã định danh bản ghi trong DCST. BK,Text,false,false,draft,DCST.TT_XLY_VI_PHAM.ID,BK chính. PK nguồn map vào Code.
 Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TT_XLY_VI_PHAM,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
-Registered Taxpayer Id,Mã số thuế. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TT_XLY_VI_PHAM.MST,FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MST → Registered Taxpayer. Nullable vì link ngầm.
+Registered Taxpayer Id,Mã số thuế. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TT_XLY_VI_PHAM.MST,FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MST → Registered Taxpayer. Nullable vì link ngầm. BCV: "Organization Tax Identification Number" (Involved Party).
 Registered Taxpayer Code,Mã số thuế,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.MST,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.
-Taxpayer Name,Tên đối tượng,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.TEN_DOI_TUONG,Snapshot tại thời điểm quyết định xử lý.
-Order Number,Số quyết định xử lý,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.SO_QDXL,Business reference number của quyết định.
-Issuing Authority Name,Cơ quan ban hành,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.CO_QUAN_BAN_HANH,Prefix Issuing Authority — nhất quán với các entity xử phạt khác.
-Inspection Period,Kỳ thanh tra kiểm tra,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.KY_TTKT,Kỳ được thanh tra/kiểm tra phát hiện vi phạm.
-Violation Penalty Description,Phạt hành vi vi phạm,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VP,Mô tả hành vi vi phạm và mức phạt.
-Administrative Violation Penalty Description,Phạt hành vi vi phạm hành chính,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VPHC,Mô tả hành vi vi phạm hành chính và mức phạt bổ sung.
-Tax Arrears Recovery Amount,"Truy thu tiền thuế, tiền nộp chậm",Text,true,false,draft,DCST.TT_XLY_VI_PHAM.TRUY_THU_TIEN_THUE,"Nguồn VARCHAR(100) — giữ Text. Cần xác nhận đơn vị tiền tệ."
+Taxpayer Name,Tên đối tượng,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.TEN_DOI_TUONG,"BCV: ""Organization Name"" (Involved Party). Snapshot tại thời điểm quyết định xử lý."
+Order Number,Số quyết định xử lý,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.SO_QDXL,"BCV: gần nhất ""Submission Number"" (Documentation). QĐ xử lý vi phạm là văn bản hành chính. Business reference number của quyết định."
+Issuing Authority Name,Cơ quan ban hành,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.CO_QUAN_BAN_HANH,"BCV: ""Business Activity Organizer"" (Business Activity). Nhất quán với ExamSessions LLD (attr_NHNCK_ExamSessions). Prefix Issuing Authority."
+Inspection Period,Kỳ thanh tra kiểm tra,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.KY_TTKT,BCV: không có term riêng. Kỳ được thanh tra/kiểm tra phát hiện vi phạm.
+Violation Penalty Description,Phạt hành vi vi phạm,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VP,"BCV: gần nhất ""Conduct Violation"" (Business Activity). Mô tả hành vi vi phạm và mức phạt."
+Administrative Violation Penalty Description,Phạt hành vi vi phạm hành chính,Text,true,false,draft,DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VPHC,"BCV: gần nhất ""Conduct Violation"" (Business Activity). Phân biệt loại vi phạm hành chính. Mô tả và mức phạt bổ sung."
+Tax Arrears Recovery Amount,"Truy thu tiền thuế, tiền nộp chậm",Text,true,false,draft,DCST.TT_XLY_VI_PHAM.TRUY_THU_TIEN_THUE,"BCV: không có term riêng cho truy thu thuế. Nguồn VARCHAR(100) — giữ Text. Cần xác nhận đơn vị tiền tệ."
