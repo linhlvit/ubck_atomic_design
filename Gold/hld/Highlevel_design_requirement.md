@@ -38,7 +38,7 @@ Ví dụ:
 
 4.4 Physical Table Name
 
-Tên bảng vật lý, sử dụng tiếng Anh đầy đủ
+Tên bảng vật lý, sử dụng tiếng Anh viết tắt
 
 Format: <PREFIX>*<DOMAIN_EN>*<SUBJECT>_<TYPE>
 

@@ -4,7 +4,7 @@ Thiết kế chi tiết cấu trúc bảng (column-level) cho datamart, bám sá
 
  2. General Rule
 
-2.1 Physical Name sử dụng tiếng Anh đầy đủ
+2.1 Physical Name sử dụng tiếng Anh viết tắt
 2.2 Logical Name là tiếng Anh dễ hiểu
 2.3 Description và Purpose viết bằng tiếng Việt đầy đủ
 2.4 Field phân loại cần có danh sách giá trị
