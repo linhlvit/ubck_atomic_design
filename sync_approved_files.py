@@ -23,6 +23,7 @@ manifest = []
 for client_id in CLIENT_IDS:
     for layer in LAYERS:
         url = f"{WORKER_BASE}/{client_id}/{layer}/csv-reviews"
+        print(f"  Fetching: .../{client_id}/{layer}/csv-reviews (client_id len={len(client_id)}, repr={repr(client_id)})")
         try:
             r = requests.get(url, timeout=15)
             r.raise_for_status()
