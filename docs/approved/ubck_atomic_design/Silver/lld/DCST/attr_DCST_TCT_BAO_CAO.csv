@@ -1,0 +1,59 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Tax Financial Statement Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: Financial Report (Documentation).
+Tax Financial Statement Code,Mã định danh bản ghi trong DCST. BK,Text,false,false,draft,DCST.TCT_BAO_CAO.ID,BK chính. PK nguồn map vào Code — không đưa vào technical field.
+Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_BAO_CAO,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
+Registered Taxpayer Id,Mã số thuế. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TCT_BAO_CAO.MST,FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MST → Registered Taxpayer. Nullable vì link ngầm có thể không resolve được.
+Registered Taxpayer Code,Mã số thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.MST,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.
+Taxpayer Name,Tên người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.TEN_NNT,"Grain = 1 tờ khai, không phải 1 NNT → giữ denormalized, không tách IP."
+Taxpayer Address,Địa chỉ người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.DIA_CHI_NNT,Denormalized — grain tờ khai. Nhất quán với ghi chú HLD.
+Taxpayer Ward,Phường xã,Text,true,false,draft,DCST.TCT_BAO_CAO.PHUONG_XA,Denormalized. Prefix Taxpayer nhất quán toàn nhóm địa chỉ NNT.
+Taxpayer District Code,Mã huyện người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_HUYEN_NNT,Denormalized.
+Taxpayer District Name,Tên huyện người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.TEN_HUYEN_NNT,Denormalized name.
+Taxpayer Province Code,Mã tỉnh người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_TINH_NNT,Denormalized.
+Taxpayer Province Name,Tên tỉnh người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.TEN_TINH_NNT,Denormalized name.
+Taxpayer Phone Number,Điện thoại người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.DIEN_THOAI_NNT,Denormalized snapshot. Prefix Taxpayer nhất quán.
+Taxpayer Fax Number,Fax người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.FAX_NNT,Denormalized snapshot.
+Taxpayer Email,Email người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.EMAIL_NNT,Denormalized snapshot.
+Business Industry,Ngày nghề kinh doanh,Text,true,false,draft,DCST.TCT_BAO_CAO.NGANH_NGHE_KD,Snapshot tại thời điểm lập báo cáo. (Lưu ý: mô tả nguồn có thể là typo của "Ngành nghề kinh doanh".)
+Service Code,Mã dịch vụ,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_DVU,Mã định danh dịch vụ eTax.
+Service Name,Tên dịch vụ,Text,true,false,draft,DCST.TCT_BAO_CAO.TEN_DVU,Denormalized name tương ứng Service Code.
+Service Version,Phiên bản dịch vụ,Text,true,false,draft,DCST.TCT_BAO_CAO.PHIEN_BAN_DVU,Version của service eTax.
+Service Provider Information,Thông tin nhà cung cấp dịch vụ,Text,true,false,draft,DCST.TCT_BAO_CAO.TT_NHACC_DVU,Text tổng hợp từ nguồn.
+Tax Return Code,Mã tờ khai,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_TKHAI,Mã loại biểu mẫu tờ khai (VD: 03/TNDN).
+Tax Return Name,Tên tờ khai,Text,true,false,draft,DCST.TCT_BAO_CAO.TEN_TKHAI,Denormalized name tương ứng Tax Return Code.
+Tax Return Form Description,Mô tả biểu mẫu,Text,true,false,draft,DCST.TCT_BAO_CAO.MO_TA_BMAU,Mô tả chi tiết biểu mẫu tờ khai.
+Tax Return XML Version,Phiên bản tờ khai XML,Text,true,false,draft,DCST.TCT_BAO_CAO.PBAN_TKHAI_XML,Version schema XML của tờ khai.
+Tax Return Type Code,Loại tờ khai,Classification Value,true,false,draft,DCST.TCT_BAO_CAO.LOAI_TKHAI,Scheme: TAX_RETURN_TYPE. Giá trị mới — xem append ref_shared_entity_classifications.
+Amendment Count,Số lần,Small Counter,true,false,draft,DCST.TCT_BAO_CAO.SO_LAN,Số lần nộp tờ khai (lần đầu + bổ sung).
+Reporting Period Type Code,Kiểu kỳ,Classification Value,true,false,draft,DCST.TCT_BAO_CAO.KIEU_KY,Scheme: REPORTING_PERIOD_TYPE. Giá trị mới — xem append.
+Reporting Period,Kỳ kê khai,Text,true,false,draft,DCST.TCT_BAO_CAO.KY_KKHAI,Nhất quán prefix Reporting Period toàn nhóm.
+Reporting Period Start Date,Kỳ kê khai từ ngày,Text,true,false,draft,DCST.TCT_BAO_CAO.KY_KKHAI_TU_NGAY,"Nguồn VARCHAR — giữ Text, không ép Date."
+Reporting Period End Date,Kỳ kê khai đến ngày,Text,true,false,draft,DCST.TCT_BAO_CAO.KY_KKHAI_DEN_NGAY,Nguồn VARCHAR — giữ Text.
+Reporting Period Start Month,Kỳ kê khai từ tháng,Text,true,false,draft,DCST.TCT_BAO_CAO.KY_KKHAI_TU_THANG,Nhất quán prefix Reporting Period.
+Reporting Period End Month,Kỳ kê khai đến tháng,Text,true,false,draft,DCST.TCT_BAO_CAO.KY_KKHAI_DEN_THANG,Nhất quán prefix Reporting Period.
+Tax Authority Code,Mã cơ quan thuế nơi nộp,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_CQTHUE_NOI_NOP,CQ thuế tiếp nhận tờ khai.
+Tax Authority Name,Tên cơ quan thuế nơi nộp,Text,true,false,draft,DCST.TCT_BAO_CAO.TEN_CQTHUE_NOI_NOP,Denormalized name. Prefix Tax Authority nhất quán.
+Filing Date,Ngày lập tờ khai,Text,true,false,draft,DCST.TCT_BAO_CAO.NGAY_LAP_TKHAI,"Nguồn VARCHAR — giữ Text, không ép Date."
+Extension Reason Code,Mã lý do gia hạn,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_LY_DO_GIA_HAN,Mã nghiệp vụ — prefix Extension Reason.
+Extension Reason,Lý do gia hạn,Text,true,false,draft,DCST.TCT_BAO_CAO.LY_DO_GIA_HAN,Nhất quán prefix Extension Reason.
+Signatory Name,Người ký,Text,true,false,draft,DCST.TCT_BAO_CAO.NGUOI_KY,Tên người ký không có FK đến Involved Party — giữ denormalized.
+Signing Date,Ngày ký,Date,true,false,draft,DCST.TCT_BAO_CAO.NGAY_KY,
+Audit Status Code,Trạng thái kiểm toán,Classification Value,true,false,draft,DCST.TCT_BAO_CAO.TRANG_THAI_KT,Scheme: AUDIT_STATUS. Giá trị mới — xem append.
+Audit Firm Tax Identification Number,Mã số thuế tổ chức kiểm toán,Text,true,false,draft,DCST.TCT_BAO_CAO.MST_TC_KTOAN,"Prefix Audit Firm — chủ thể khác với NNT. Không FK vì không có bảng KTV trong scope DCST Group A."
+Audit Firm Name,Tổ chức kiểm toán,Text,true,false,draft,DCST.TCT_BAO_CAO.TC_KIEM_TOAN,Prefix Audit Firm. Denormalized.
+Auditor Code,Mã kiểm toán viên,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_KIEM_TOAN_VIEN,Prefix Auditor — chủ thể khác.
+Auditor Name,Kiểm toán vien,Text,true,false,draft,DCST.TCT_BAO_CAO.KIEM_TOAN_VIEN,Giữ nguyên mô tả nguồn (có typo). Prefix Auditor. Denormalized.
+Audited Financial Statement Indicator,Báo cáo tài chính đã kiểm toán,Text,true,false,draft,DCST.TCT_BAO_CAO.BCTC_DA_KIEM_TOAN,Nguồn VARCHAR(20) — giữ Text. Cần xác nhận giá trị (Y/N hay 0/1).
+Audit Opinion Code,Mã ý kiến kiểm toán,Text,true,false,draft,DCST.TCT_BAO_CAO.MA_YKKT,Không đủ thông tin danh mục → giữ dạng Text.
+Audit Opinion,Ý kiến kiểm toán,Text,true,false,draft,DCST.TCT_BAO_CAO.YKKT,Nội dung ý kiến kiểm toán.
+Audit Date,Ngày kiểm toán,Date,true,false,draft,DCST.TCT_BAO_CAO.NGAY_KIEM_TOAN,
+Created Date,Ngày tạo,Text,true,false,draft,DCST.TCT_BAO_CAO.NGAY_TAO,Nguồn NUMBER — không rõ định dạng (số ngày?). Giữ Text để tránh mất dữ liệu.
+Submission Date,Ngày nộp tờ khai,Date,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_NGAY_NOP_TK,ADD_INFO = metadata truyền nhận → thiết kế như trường nghiệp vụ bình thường.
+Receipt Date,Ngày tiếp nhận,Date,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_NGAY_TIEP_NHAN,
+Report Set Period,Kỳ lập bộ báo cáo,Text,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_KY_LAP_BO,
+Filing Origin,Nguồn gốc tờ khai,Text,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_NGUON_GOC_TK,
+Filing Entry Person,Người nhập tờ khại,Text,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_NGUOI_NHAP_TK,Giữ nguyên mô tả nguồn (có typo). Prefix Filing nhất quán nhóm ADD_INFO.
+Filing Acknowledged Date,Ngày nhận tờ khai,Date,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_NGAY_NHAN_TK,Nhất quán prefix Filing.
+Filing Reference Id,ID tờ khai,Text,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_ID_TK,Metadata truyền nhận — thiết kế thành trường nghiệp vụ (không đưa vào ds_source_record_id).
+Sending Location,Nơi gửi,Text,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_NOI_GUI,
+Receiving Location,Nơi nhận,Text,true,false,draft,DCST.TCT_BAO_CAO.ADD_INFO_NOI_NHAN,
