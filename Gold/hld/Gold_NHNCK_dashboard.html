@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NHNCK — Dashboard Mockup (Gold Layer)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f4;color:#1a1a1a;line-height:1.5}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+h1{font-size:22px;font-weight:600;margin-bottom:8px}
+h2{font-size:18px;font-weight:600;margin:32px 0 6px;border-bottom:2px solid #2F5496;padding-bottom:6px}
+h3{font-size:14px;font-weight:600;margin:16px 0 4px}
+.subtitle{font-size:13px;color:#666;margin-bottom:16px}
+.fact-tag{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:2px 10px;border-radius:12px;display:inline-block;margin-bottom:12px}
+.fact-tag2{font-size:11px;color:#993C1D;background:#FAECE7;padding:2px 10px;border-radius:12px;display:inline-block;margin-bottom:12px}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.kpi-card{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:12px}
+.kpi-card .label{font-size:11px;color:#888}
+.kpi-card .value{font-size:22px;font-weight:600;margin-top:2px}
+.kpi-card .value.red{color:#E24B4A}
+.kpi-card .value.amber{color:#BA7517}
+.kpi-card .value.green{color:#1D9E75}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-box{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:16px}
+.chart-box .title{font-size:13px;font-weight:600;margin-bottom:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:11px;color:#888}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend .dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+.profile-card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:20px;margin-bottom:16px}
+.profile-header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.avatar{width:56px;height:56px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px;color:#185FA5}
+.badge{font-size:12px;padding:4px 12px;border-radius:8px;margin-left:auto}
+.badge.green{background:#E1F5EE;color:#0F6E56}
+.badge.amber{background:#FAEEDA;color:#854F0B}
+.badge.red{background:#FCEBEB;color:#A32D2D}
+.badge.gray{background:#F1EFE8;color:#5F5E5A}
+.field-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;border-top:1px solid #e5e5e5;padding-top:12px}
+.field .flabel{font-size:12px;color:#888;margin-bottom:2px}
+.field .fvalue{font-size:13px;font-weight:500}
+table{width:100%;font-size:12px;border-collapse:collapse}
+th{text-align:left;padding:8px 6px;color:#888;font-weight:400;border-bottom:1px solid #e5e5e5}
+td{padding:10px 6px;border-bottom:1px solid #f0f0f0}
+.table-card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:16px;margin-bottom:16px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.filter-row{display:flex;gap:12px;margin-bottom:16px}
+.filter-row select{flex:1;padding:8px 12px;border:1px solid #e5e5e5;border-radius:8px;font-size:13px;background:#fff}
+.filter-row label{font-size:12px;color:#888;display:block;margin-bottom:4px}
+.note{font-size:11px;color:#888;font-style:italic;margin-top:8px}
+.divider{border:none;border-top:1px solid #e0e0e0;margin:32px 0}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>NHNCK — Dashboard Mockup (Gold Layer)</h1>
+<p class="subtitle">Phân hệ Người hành nghề chứng khoán — Thiết kế Datamart tầng Gold — Star Schema — 6 DIM + 8 FCT</p>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 1 ============ -->
+<h2>Dashboard 1 — Tổng quan NHNCK toàn thị trường</h2>
+
+<h3>Các chỉ tiêu tổng hợp thông tin chung</h3>
+<span class="fact-tag">FCT_SP_CERTIFICATE_SNAP</span>
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="label">Tổng người hành nghề</div><div class="value">12,450</div></div>
+  <div class="kpi-card"><div class="label">CC cấp mới (YTD)</div><div class="value">1,230</div></div>
+  <div class="kpi-card"><div class="label">CCHN đang hoạt động</div><div class="value green">10,890</div></div>
+  <div class="kpi-card"><div class="label">Bị thu hồi</div><div class="value red">320</div></div>
+  <div class="kpi-card"><div class="label">Cảnh báo NHNCK</div><div class="value amber">85</div><span class="fact-tag2" style="margin-top:4px">FCT_SP_VIOLATION_DTL</span></div>
+</div>
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="label">Cấp mới</div><div class="value">980</div></div>
+  <div class="kpi-card"><div class="label">Cấp lại</div><div class="value">250</div></div>
+  <div class="kpi-card"><div class="label">Thu hồi 3 năm</div><div class="value amber">180</div></div>
+  <div class="kpi-card"><div class="label">Thu hồi vĩnh viễn</div><div class="value red">140</div></div>
+  <div class="kpi-card"><div class="label">Đã bị hủy</div><div class="value" style="color:#888">45</div></div>
+</div>
+
+<div class="chart-grid">
+  <div class="chart-box">
+    <div class="title">Trình độ chuyên môn</div>
+    <span class="fact-tag">FCT_SP_PERSON_SNAP → DIM_SP_PERSON</span>
+    <div style="position:relative;height:190px"><canvas id="c1"></canvas></div>
+    <div class="legend"><span><span class="dot" style="background:#378ADD"></span>Tiến sĩ 8%</span><span><span class="dot" style="background:#1D9E75"></span>Thạc sĩ 35%</span><span><span class="dot" style="background:#EF9F27"></span>Đại học 57%</span></div>
+  </div>
+  <div class="chart-box">
+    <div class="title">Cơ cấu theo loại hình CCHN</div>
+    <span class="fact-tag">FCT_SP_CERTIFICATE_SNAP → DIM_SP_CERT_TYPE</span>
+    <div style="position:relative;height:190px"><canvas id="c2"></canvas></div>
+    <div class="legend"><span><span class="dot" style="background:#7F77DD"></span>Môi giới 52%</span><span><span class="dot" style="background:#D4537E"></span>Phân tích 30%</span><span><span class="dot" style="background:#5DCAA5"></span>QLQ 18%</span></div>
+  </div>
+  <div class="chart-box">
+    <div class="title">Phân bổ độ tuổi</div>
+    <span class="fact-tag">FCT_SP_PERSON_SNAP → DIM_SP_PERSON</span>
+    <div style="position:relative;height:190px"><canvas id="c3"></canvas></div>
+    <div class="legend"><span><span class="dot" style="background:#378ADD"></span>VN</span><span><span class="dot" style="background:#D85A30"></span>Nước ngoài</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 2 ============ -->
+<h2>Dashboard 2 — Tra cứu hồ sơ 360</h2>
+<span class="fact-tag">FCT_SP_PERSON_SNAP → DIM_SP_PERSON + DIM_SP_CERT_TYPE</span>
+<div class="profile-card">
+  <div class="profile-header">
+    <div class="avatar">NT</div>
+    <div><div style="font-weight:600;font-size:16px">Nguyễn Văn Thành</div><div style="font-size:12px;color:#888">NHN-20150234</div></div>
+    <span class="badge green">Đang hoạt động</span>
+  </div>
+  <div class="field-grid">
+    <div class="field"><div class="flabel">Ngày sinh</div><div class="fvalue">15/03/1985</div></div>
+    <div class="field"><div class="flabel">Tuổi</div><div class="fvalue">41</div></div>
+    <div class="field"><div class="flabel">Quốc tịch</div><div class="fvalue">Việt Nam</div></div>
+    <div class="field"><div class="flabel">Số định danh</div><div class="fvalue">001085012345</div></div>
+    <div class="field"><div class="flabel">Nơi công tác</div><div class="fvalue">CTCK ABC</div></div>
+    <div class="field"><div class="flabel">Loại CCHN</div><div class="fvalue">Môi giới</div></div>
+    <div class="field"><div class="flabel">Trạng thái</div><div class="fvalue" style="color:#0F6E56">Đang hoạt động</div></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 3 ============ -->
+<h2>Dashboard 3 — Mạng lưới của NHNCK</h2>
+<span class="fact-tag">FCT_SP_COMPANY_ROLE_DTL → DIM_SP_PERSON + DIM_SP_LISTED_COMPANY + DIM_SP_RELATED_PERSON</span>
+<div class="two-col">
+  <div class="table-card">
+    <h3>Vai trò tại DN niêm yết</h3>
+    <table><tr><th>Đơn vị</th><th>Chức vụ</th></tr>
+    <tr><td>CTCP Vinamilk</td><td>Thành viên HĐQT</td></tr>
+    <tr><td>CTCP FPT</td><td>Cổ đông lớn</td></tr></table>
+  </div>
+  <div class="table-card">
+    <h3>Người có liên quan</h3>
+    <table><tr><th>Họ tên</th><th>Quan hệ</th><th>Đơn vị</th><th>Chức vụ</th></tr>
+    <tr><td>Nguyễn Thị Lan</td><td>Vợ</td><td>CTCP Vinamilk</td><td>Kế toán trưởng</td></tr>
+    <tr><td>Nguyễn Minh Đức</td><td>Anh</td><td>CTCP FPT</td><td>Giám đốc</td></tr></table>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 4 ============ -->
+<h2>Dashboard 4 — Hồ sơ & Danh mục của NHNCK</h2>
+
+<h3>4a. Vai trò tại DN niêm yết + Mạng lưới người liên quan</h3>
+<span class="fact-tag">FCT_SP_COMPANY_ROLE_DTL → DIM_SP_PERSON + DIM_SP_LISTED_COMPANY + DIM_SP_RELATED_PERSON</span>
+<div class="table-card">
+  <table><tr><th>Tên DN</th><th>Vai trò</th><th>Trạng thái</th><th style="text-align:right">CP sở hữu</th></tr>
+  <tr><td>CTCP Vinamilk</td><td>Thành viên HĐQT</td><td><span class="badge green">Đang hoạt động</span></td><td style="text-align:right">150,000</td></tr></table>
+</div>
+<div class="table-card">
+  <table><tr><th>Họ và tên</th><th>Mối quan hệ</th><th>Nghề nghiệp</th><th>CCCD/CMND/HC</th></tr>
+  <tr><td>Nguyễn Thị Lan</td><td>Vợ</td><td>Kế toán</td><td>001085067890</td></tr>
+  <tr><td>Nguyễn Minh Đức</td><td>Anh</td><td>Giám đốc</td><td>001082034567</td></tr></table>
+</div>
+
+<h3>4b. Tài khoản & số dư</h3>
+<span class="fact-tag2">FCT_SP_ACCOUNT_SNAP → DIM_SP_PERSON + DIM_SP_ORGANIZATION</span>
+<div class="table-card">
+  <table><tr><th>Mã CTCK</th><th>Số tài khoản</th><th>Chủ TK</th><th>Mã CK chính</th><th style="text-align:right">Số dư (tỷ VNĐ)</th></tr>
+  <tr><td>SSI</td><td>058C012345</td><td>Nguyễn Văn Thành</td><td>VNM, FPT</td><td style="text-align:right">2.45</td></tr>
+  <tr><td>VND</td><td>022C098765</td><td>Nguyễn Văn Thành</td><td>HPG</td><td style="text-align:right">0.85</td></tr></table>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 5 ============ -->
+<h2>Dashboard 5 — Quá trình hành nghề</h2>
+<span class="fact-tag">FCT_SP_CAREER_DTL → DIM_SP_PERSON + DIM_SP_ORGANIZATION</span>
+<div class="table-card">
+  <table><tr><th>Tổ chức</th><th>Vị trí</th><th>Từ tháng</th><th>Đến tháng</th><th>Trạng thái</th></tr>
+  <tr><td>CTCK ABC</td><td>Chuyên viên môi giới</td><td>01/2020</td><td>Hiện nay</td><td><span class="badge green">Hiện tại</span></td></tr>
+  <tr><td>CTCK XYZ</td><td>Nhân viên phân tích</td><td>06/2015</td><td>12/2019</td><td><span class="badge gray">Quá khứ</span></td></tr></table>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 6 ============ -->
+<h2>Dashboard 6 — Lịch sử cấp chứng chỉ</h2>
+<span class="fact-tag">FCT_SP_CERTIFICATE_SNAP → DIM_SP_PERSON + DIM_SP_CERT_TYPE</span>
+<div class="table-card">
+  <table><tr><th>Số CCHN</th><th>Loại hình</th><th>Ngày cấp</th><th>Ngày thu hồi</th><th>Quyết định</th><th>Trạng thái</th></tr>
+  <tr><td>MG-2015-0234</td><td>Môi giới</td><td>15/06/2015</td><td>—</td><td>QĐ-123/UBCK</td><td><span class="badge green">Đang hoạt động</span></td></tr>
+  <tr><td>PT-2018-0567</td><td>Phân tích</td><td>20/03/2018</td><td style="color:#E24B4A">10/01/2023</td><td>QĐ-456/UBCK</td><td><span class="badge amber">Thu hồi 3 năm</span></td></tr></table>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 7 ============ -->
+<h2>Dashboard 7 — Đợt thi sát hạch</h2>
+<span class="fact-tag">FCT_SP_EXAM_DTL → DIM_SP_PERSON</span>
+<div class="table-card">
+  <table><tr><th>Đợt thi</th><th>Ngày thi</th><th style="text-align:right">Điểm thi</th><th>Số QĐ công bố</th><th>Trạng thái</th></tr>
+  <tr><td>Đợt 3/2024</td><td>15/09/2024</td><td style="text-align:right">78.5</td><td>QĐ-789/UBCK</td><td><span class="badge green">Đạt</span></td></tr>
+  <tr><td>Đợt 1/2023</td><td>20/03/2023</td><td style="text-align:right">42.0</td><td>QĐ-321/UBCK</td><td><span class="badge red">Không đạt</span></td></tr></table>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 8 ============ -->
+<h2>Dashboard 8 — Cập nhật kiến thức</h2>
+<span class="fact-tag">FCT_SP_KNOWLEDGE_UPDATE_DTL → DIM_SP_PERSON</span>
+<div class="table-card">
+  <table><tr><th>Kết quả kiểm tra / phân loại</th><th>Trạng thái đủ 8h</th></tr>
+  <tr><td>Loại A — Xuất sắc</td><td><span class="badge green">Đã đủ 8h</span></td></tr>
+  <tr><td>Chưa kiểm tra</td><td><span class="badge amber">Chưa đủ 8h</span></td></tr></table>
+  <p class="note">Chỉ tiêu phái sinh: HOURS_STATUS = CASE WHEN TOTAL_HOURS >= 8 THEN 'Đã đủ 8h' ELSE 'Chưa đủ 8h' END</p>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DASHBOARD 9 ============ -->
+<h2>Dashboard 9 — Lịch sử vi phạm</h2>
+<span class="fact-tag2">FCT_SP_VIOLATION_DTL → DIM_SP_PERSON + DIM_SP_VIOLATION_TYPE</span>
+<div class="table-card">
+  <table><tr><th>Số QĐ</th><th>Ngày QĐ</th><th>Nội dung vi phạm</th><th>Hình thức xử phạt</th><th>Trạng thái</th></tr>
+  <tr><td>QĐ-XP-001</td><td>10/05/2023</td><td>Vi phạm quy định về CBTT</td><td>Phạt tiền</td><td><span class="badge green">Đã thực thi</span></td></tr>
+  <tr><td>QĐ-XP-002</td><td>25/11/2024</td><td>Giao dịch nội bộ</td><td>Đình chỉ hoạt động</td><td><span class="badge amber">Đang thực thi</span></td></tr></table>
+</div>
+
+<hr class="divider">
+
+<!-- ============ DATA EXPLORER ============ -->
+<h2>Data Explorer — Khai thác dữ liệu</h2>
+<span class="fact-tag">FCT_SP_CERTIFICATE_SNAP → DIM_SP_PERSON + DIM_SP_CERT_TYPE + DIM_SP_ORGANIZATION</span>
+
+<div class="filter-row">
+  <div style="flex:1"><label>Lọc theo loại hình</label><select><option>Tất cả</option><option>Môi giới</option><option>Phân tích</option><option>Quản lý quỹ</option></select></div>
+  <div style="flex:1"><label>Lọc theo trạng thái</label><select><option>Tất cả</option><option>Đang hoạt động</option><option>Thu hồi 3 năm</option><option>Thu hồi vĩnh viễn</option><option>Bị hủy</option></select></div>
+</div>
+
+<div class="table-card">
+  <table><tr><th>Tên NHN</th><th>Số CCHN</th><th>Loại hình</th><th>Tổ chức</th><th>Ngày cấp</th><th>Trạng thái</th></tr>
+  <tr><td>Nguyễn Văn Thành</td><td>MG-2015-0234</td><td>Môi giới</td><td>CTCK ABC</td><td>15/06/2015</td><td><span class="badge green">Đang hoạt động</span></td></tr>
+  <tr><td>Trần Thị Hoa</td><td>PT-2020-0891</td><td>Phân tích</td><td>CTCK XYZ</td><td>10/08/2020</td><td><span class="badge green">Đang hoạt động</span></td></tr>
+  <tr><td>Lê Quốc Hùng</td><td>QLQ-2019-0456</td><td>Quản lý quỹ</td><td>CTQLQ DEF</td><td>05/04/2019</td><td><span class="badge amber">Thu hồi 3 năm</span></td></tr></table>
+</div>
+
+<hr class="divider">
+<p style="font-size:12px;color:#888;text-align:center;padding:16px 0">NHNCK Gold Layer — Datamart Design Mockup — 9 Dashboard + 1 Data Explorer — 6 DIM + 8 FCT</p>
+
+</div>
+
+<script>
+var co = {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}};
+new Chart(document.getElementById('c1'),{type:'doughnut',data:{labels:['Tiến sĩ','Thạc sĩ','Đại học'],datasets:[{data:[8,35,57],backgroundColor:['#378ADD','#1D9E75','#EF9F27'],borderWidth:0}]},options:{...co,cutout:'55%'}});
+new Chart(document.getElementById('c2'),{type:'doughnut',data:{labels:['Môi giới','Phân tích','QLQ'],datasets:[{data:[52,30,18],backgroundColor:['#7F77DD','#D4537E','#5DCAA5'],borderWidth:0}]},options:{...co,cutout:'55%'}});
+new Chart(document.getElementById('c3'),{type:'bar',data:{labels:['18-21','22-30','31-40','41-50','50+'],datasets:[{label:'VN',data:[120,2800,4500,3200,1500],backgroundColor:'#378ADD'},{label:'Nước ngoài',data:[5,45,80,60,30],backgroundColor:'#D85A30'}]},options:{...co,scales:{x:{ticks:{autoSkip:false,font:{size:11}}},y:{ticks:{font:{size:11}}}}}});
+</script>
+</body>
+</html>
