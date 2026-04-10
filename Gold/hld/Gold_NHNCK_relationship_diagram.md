@@ -18,6 +18,81 @@
 
 ---
 
+## Đầu vào — Tổng hợp yêu cầu từ BA (file BA_analyst_NHNCK.csv)
+
+> **Nguồn dữ liệu:** NHNCK (Phân hệ Quản lý giám sát người hành nghề chứng khoán)
+>
+> **Tổng số KPI/Attribute:** 87 chỉ tiêu (80 Chỉ tiêu cơ sở + 2 Chỉ tiêu phái sinh + 2 Chiều lọc + 3 header nhóm)
+>
+> **Nhóm yêu cầu:** 9 Dashboard + 1 Data Explorer
+
+### Dashboard 1 — Tổng quan NHNCK toàn thị trường
+
+| Nhóm chart/widget | Số KPI | Danh sách chỉ tiêu |
+|---|---|---|
+| Các chỉ tiêu tổng hợp thông tin chung | 10 | Tổng người hành nghề, Chứng chỉ cấp mới (YTD), Cấp mới, Cấp lại, Bị thu hồi, CCHN đang hoạt động, Thu hồi trong 3 năm, Thu hồi vĩnh viễn, Đã bị hủy, Cảnh báo NHNCK |
+| Biểu đồ Trình độ chuyên môn | 6 | Số lượng Tiến sĩ, Số lượng Thạc sĩ, Số lượng Đại học, Tỷ lệ Tiến sĩ (%), Tỷ lệ Thạc sĩ (%), Tỷ lệ Đại học (%) |
+| Biểu đồ Cơ cấu theo loại hình CCHN | 3 | Số lượng CCHN là Môi giới, Phân tích, QLQ |
+| Biểu đồ Phân bổ độ tuổi | 10 | Số lượng NHN theo 5 nhóm tuổi (18-21, 22-30, 31-40, 41-50, 50+) × 2 quốc tịch (VN, Nước ngoài) |
+
+### Dashboard 2 — Tra cứu hồ sơ 360
+
+| Số KPI | Danh sách chỉ tiêu |
+|---|---|
+| 8 | Họ tên, Ngày sinh, Tuổi, Quốc tịch, Số định danh cá nhân/Số hộ chiếu, Nơi công tác hiện tại, Loại CCHN, Trạng thái NHNCK |
+
+### Dashboard 3 — Mạng lưới của NHNCK
+
+| Số KPI | Danh sách chỉ tiêu |
+|---|---|
+| 6 | Đơn vị công tác, Chức vụ/vai trò, Họ tên người có liên quan, Mối quan hệ, Đơn vị công tác của người có liên quan, Chức vụ/vai trò của người có liên quan |
+
+### Dashboard 4 — Hồ sơ & Danh mục của NHNCK
+
+| Nhóm widget | Số KPI | Danh sách chỉ tiêu |
+|---|---|---|
+| Vai trò tại DN niêm yết/UPCOM | 4 | Tên DN niêm yết/UPCOM, Vai trò, Trạng thái, Số lượng cổ phiếu sở hữu |
+| Mạng lưới người có liên quan | 4 | Họ và tên, Mối quan hệ, Nghề nghiệp, CCCD/CMND/HC |
+| Tài khoản & số dư | 5 | Mã CTCK, Số tài khoản, Tên chủ tài khoản, Mã CK nắm giữ chính, Số dư tài khoản (tỷ VNĐ) |
+
+### Dashboard 5 — Quá trình hành nghề của NHNCK
+
+| Số KPI | Danh sách chỉ tiêu |
+|---|---|
+| 5 | Tổ chức, Vị trí, Từ tháng, Đến tháng, Trạng thái |
+
+### Dashboard 6 — Lịch sử cấp chứng chỉ của NHNCK
+
+| Số KPI | Danh sách chỉ tiêu |
+|---|---|
+| 6 | Số CCHN, Loại hình, Ngày cấp, Ngày thu hồi, Quyết định, Trạng thái |
+
+### Dashboard 7 — Đợt thi sát hạch của NHNCK
+
+| Số KPI | Danh sách chỉ tiêu |
+|---|---|
+| 5 | Đợt thi, Ngày thi, Điểm thi, Số quyết định công bố, Trạng thái |
+
+### Dashboard 8 — Cập nhật kiến thức của NHNCK
+
+| Số KPI | Danh sách chỉ tiêu | Phân loại |
+|---|---|---|
+| 2 | Kết quả kiểm tra/phân loại (nếu có), Trạng thái đã đủ 8h hay chưa | Chỉ tiêu phái sinh |
+
+### Dashboard 9 — Lịch sử vi phạm của NHNCK
+
+| Số KPI | Danh sách chỉ tiêu |
+|---|---|
+| 5 | Số quyết định, Ngày quyết định, Nội dung vi phạm, Hình thức xử phạt, Trạng thái |
+
+### Data Explorer — Yêu cầu khai thác dữ liệu
+
+| Số KPI | Danh sách chỉ tiêu | Điều kiện lọc |
+|---|---|---|
+| 6 + 2 filter | Tên NHN, Số CCHN, Loại hình, Tổ chức, Ngày cấp, Trạng thái | Lọc theo Loại hình, Lọc theo Trạng thái |
+
+---
+
 ## Tổng quan Star Schema — Toàn bộ phân hệ NHNCK
 
 ```mermaid
