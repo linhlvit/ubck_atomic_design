@@ -13,21 +13,25 @@
 
 **Bắt buộc đọc TRƯỚC KHI thiết kế:**
 
-1. **File HLD** (relationship diagram) → hiểu tổng quan entity, quan hệ, BCV Concept đã thống nhất.
-2. **File cấu trúc bảng nguồn** (`*_Tables`, `*_Columns` trong `Source/`) → lấy danh sách cột, data type, mô tả.
-3. **Tất cả file LLD đã có** trong cùng source system (`docs/approved/.../lld/<SOURCE_SYSTEM>/`) → nắm:
+1. **File HLD Overview** (`<SOURCE_SYSTEM>_HLD_Overview.md`) → hiểu tổng quan toàn bộ entity, quan hệ, BCV Concept đã thống nhất cho source system.
+2. **File HLD Tier tương ứng** (`<SOURCE_SYSTEM>_HLD_Tier<N>.md`) → đọc chi tiết entity và quan hệ của Tier đang thiết kế.
+3. **File cấu trúc bảng nguồn** (`*_Tables`, `*_Columns` trong `Source/`) → lấy danh sách cột, data type, mô tả.
+4. **Tất cả file LLD đã có** trong cùng source system (`docs/approved/.../lld/<SOURCE_SYSTEM>/`) → nắm:
    - Entity đã thiết kế và cấu trúc attribute
    - Pattern FK đã dùng (tên trường, data domain)
    - Shared entity đã có những trường nào
-4. **File `ref_shared_entity_classifications.csv`** → kiểm tra Classification Value đã chuẩn hóa.
-5. **File `manifest.csv`** → biết file LLD nào đã có.
+5. **File `ref_shared_entity_classifications.csv`** → kiểm tra Classification Value đã chuẩn hóa.
+6. **File `manifest.csv`** → biết file LLD nào đã có.
 
-### Bước 2 — Xác định Silver entity target
+### Bước 2 — Xác định Silver entity target và Tier
 
 Từ HLD đã duyệt, xác định:
 - Bảng nguồn này map về Silver entity nào?
 - BCV Concept và Category đã gán?
 - Quan hệ FK với entity nào?
+- Entity này thuộc **Tier mấy**?
+
+**Thứ tự thiết kế theo Tier:** Thiết kế và hoàn thành LLD Tier N trước khi bắt đầu Tier N+1. Entity Tier sau có FK đến entity Tier trước — cần LLD Tier trước để lấy đúng tên attribute FK.
 
 ### Bước 3 — Thiết kế attribute-level
 

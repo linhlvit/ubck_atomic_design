@@ -467,12 +467,16 @@ graph TD
 
 ## 6d. Danh mục & Tham chiếu (Reference Data → Classification Value)
 
-| Source Table | Mô tả | Xử lý Silver |
-|---|---|---|
-| JOBTYPE | Danh sách loại chức vụ | → Classification Value |
-| BUSINESS | Danh mục ngành nghề kinh doanh | → Classification Value |
-| LOCATION | Danh sách tỉnh/thành phố | → Classification Value |
-| PARVALUE | Danh sách mệnh giá cổ phần | → Classification Value (nếu cần trong scope) |
+| Source Table | Mô tả | BCV Term | Xử lý Silver |
+|---|---|---|---|
+| JOBTYPE | Danh sách loại chức vụ | — | → Classification Value |
+| BUSINESS | Danh mục ngành nghề kinh doanh | — | → Classification Value |
+
+## 6d-extra. Entity từ bảng danh mục — cần thiết kế riêng
+
+| Source Table | Mô tả | BCV Term | Xử lý Silver |
+|---|---|---|---|
+| LOCATION | Danh sách tỉnh/thành phố | Geographic Area (id 11736, Location) — *"A place or bounded area defined by nature, by an external authority (such as a government), or for internal business purpose."* Tỉnh/thành phố là đơn vị hành chính do nhà nước định nghĩa. Cấu trúc trường: Id, Name, SName (mã), Status, IsDeleted — có instance data, vòng đời. Không phải Classification Value thuần túy. | → Silver entity **[Location] Geographic Area**. Dùng chung cho toàn hệ thống (shared). Cần thiết kế ở HLD tổng hợp hoặc tầng riêng. |
 
 ---
 
@@ -493,3 +497,5 @@ graph TD
 | 1 | INVESACC.AccPlace (nơi lưu ký) — có phải FK đến BANKMONI không? | Nếu có → thêm FK từ FMS Discretionary Investment Account đến Custodian Bank (Tầng 1) |
 | 2 | BRANCHES.BrIdowner — giá trị là Id nguồn hay text? | Ảnh hưởng thiết kế self-FK surrogate trên Silver |
 | 3 | TLProfiles — nhân sự có thể thuộc nhiều công ty QLQ qua thời gian không? | Nếu có → grain cần review, có thể cần tách role khỏi entity |
+| 4 | PARVALUE — không có bảng nào trong FMS FK đến bảng này. Xác nhận PARVALUE có thực sự trong scope FMS không, hay là orphan table? | Nếu không có entity nào sử dụng → loại khỏi scope Silver hoàn toàn |
+| 5 | LOCATION — đây là shared entity dùng chung nhiều source system, có thiết kế tập trung ở tầng nào chưa? | Tránh thiết kế trùng lặp giữa các source system |
