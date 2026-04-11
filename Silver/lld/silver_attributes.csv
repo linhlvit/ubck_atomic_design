@@ -1,208 +1,651 @@
 bcv_core_object,bcv_concept,silver_entity,silver_attribute,description,source_column
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,FMS Discretionary Investment Account Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,FMS Discretionary Investment Account Code,Mã tài khoản ủy thác do hệ thống FMS sinh ra. Là Business Key.,FMS.INVESACC.Id
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư ủy thác. FK đến Discretionary Investment Investor.,FMS.INVESACC.InvesId
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,FMS Discretionary Investment Account Id,Khóa đại diện cho tài khoản/hợp đồng ủy thác đầu tư.,
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,FMS Discretionary Investment Account Code,Mã tài khoản ủy thác do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.INVESACC.Id
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Source System Code,Mã hệ thống nguồn.,
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư ủy thác. FK → INVES.,FMS.INVESACC.InvesId
 Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Discretionary Investment Investor Code,Mã nhà đầu tư ủy thác. Lưu dư thừa.,FMS.INVESACC.InvesId
 Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Account Number,Số tài khoản lưu ký.,FMS.INVESACC.Account
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Custodian Place Description,Nơi lưu ký — text tự do.,FMS.INVESACC.AccPlace
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Custodian Place Description,Nơi lưu ký — text tự do mô tả địa điểm lưu ký.,FMS.INVESACC.AccPlace
 Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Contract Number,Số hợp đồng ủy thác quản lý danh mục.,FMS.INVESACC.ContractNo
 Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Committed Capital Amount,Quy mô vốn ủy thác cam kết theo hợp đồng.,FMS.INVESACC.ActScale
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Actual Capital Amount,Quy mô vốn giao nhận thực tế.,FMS.INVESACC.AdScale
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Actual Capital Amount,Quy mô vốn giao nhận thực tế tại thời điểm báo cáo.,FMS.INVESACC.AdScale
 Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Management Fee Rate,Phí quản lý theo điều khoản hợp đồng ủy thác.,FMS.INVESACC.ManagerFee
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Activity Status Code,Trạng thái hiệu lực hợp đồng.,FMS.INVESACC.Status
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Activity Status Code,Trạng thái hiệu lực hợp đồng: 1 = Còn hiệu lực; 0 = Hết hiệu lực.,FMS.INVESACC.Status
 Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Last Report Date,Kỳ báo cáo gần nhất liên quan đến tài khoản ủy thác.,FMS.INVESACC.DateReport
-Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ.,FMS.INVESACC.IsDataMigration
-Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Status Log Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Status Log Code,Mã nhật ký do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTMBHS.Id
-Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Id,Khóa đại diện báo cáo định kỳ mà log này ghi nhận. FK đến FMS Member Periodic Report.,FMS.RPTMBHS.RptMbId
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,FMS.INVESACC.IsDataMigration
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Status Log Id,Khóa đại diện cho bản ghi nhật ký thay đổi trạng thái báo cáo.,
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Status Log Code,Mã nhật ký do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.RPTMBHS.Id
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Source System Code,Mã hệ thống nguồn.,
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Id,Khóa đại diện báo cáo định kỳ mà log này ghi nhận thay đổi. FK → RPTMEMBER.,FMS.RPTMBHS.RptMbId
 Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Code,Mã báo cáo định kỳ. Lưu dư thừa.,FMS.RPTMBHS.RptMbId
 Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Report Submission Status Code,Trạng thái báo cáo tại thời điểm ghi nhận.,FMS.RPTMBHS.Status
 Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Report Name,Tên báo cáo tại thời điểm ghi nhận.,FMS.RPTMBHS.RptName
 Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Content Summary,Nội dung trích yếu của sự kiện thay đổi trạng thái.,FMS.RPTMBHS.ContentSummary
 Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Note,Ghi chú bổ sung về sự kiện.,FMS.RPTMBHS.Note
-Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Attachment File Data,File dữ liệu đính kèm khi thay đổi trạng thái.,FMS.RPTMBHS.FileData
-Communication,[Event] Communication,FMS Member Periodic Report,FMS Member Periodic Report Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Communication,[Event] Communication,FMS Member Periodic Report,FMS Member Periodic Report Code,Mã báo cáo định kỳ do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTMEMBER.Id
-Communication,[Event] Communication,FMS Member Periodic Report,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Communication,[Event] Communication,FMS Member Periodic Report,Fund Management Company Id,Khóa đại diện công ty QLQ nộp báo cáo (nullable).,FMS.RPTMEMBER.SecId
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Attachment File Data,File dữ liệu đính kèm khi thay đổi trạng thái (binary reference).,FMS.RPTMBHS.FileData
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Audit Log Id,Id tự sinh (surrogate key),
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Audit Log Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ProfessionalHistories.Id
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ProfessionalHistories,
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.ProfessionalHistories.ProfessionalId
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.ProfessionalHistories.ProfessionalId
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Changed Field Name,Tên trường thay đổi,NHNCK.qlnhn.ProfessionalHistories.FieldName
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Old Value,Giá trị cũ,NHNCK.qlnhn.ProfessionalHistories.OldValue
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,New Value,Giá trị mới,NHNCK.qlnhn.ProfessionalHistories.NewValue
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Changed By Officer Id,FK đến Officer — người thay đổi,NHNCK.qlnhn.ProfessionalHistories.ChangedBy
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Changed By Officer Code,Mã người thay đổi,NHNCK.qlnhn.ProfessionalHistories.ChangedBy
+Business Activity,ETL Pattern — Audit Log,Securities Practitioner Audit Log,Changed Timestamp,Ngày thay đổi,NHNCK.qlnhn.ProfessionalHistories.ChangedAt
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Conduct Violation Id,Id tự sinh (surrogate key),
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Conduct Violation Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.Violations.Id
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Violations,
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.Violations.ProfessionalId
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.Violations.ProfessionalId
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,License Decision Document Id,FK đến quyết định xử lý vi phạm,NHNCK.qlnhn.Violations.DecisionId
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,License Decision Document Code,Mã quyết định,NHNCK.qlnhn.Violations.DecisionId
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Conduct Violation Type Code,Loại vi phạm (Pháp luật/Hành chính),NHNCK.qlnhn.Violations.ViolationType
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Violation Detail,Chi tiết vi phạm,NHNCK.qlnhn.Violations.Detail
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Violation Status Code,Trạng thái (Hiệu lực/Không hiệu lực),NHNCK.qlnhn.Violations.Status
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Created By Officer Id,FK đến Officer,NHNCK.qlnhn.Violations.CreatedBy
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.Violations.CreatedBy
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Created Timestamp,Ngày tạo,NHNCK.qlnhn.Violations.CreatedAt
+Business Activity,[Business Activity] Conduct Violation,Securities Practitioner Conduct Violation,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.Violations.UpdatedAt
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,License Application Processing Activity Log Id,Id tự sinh (surrogate key),
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,License Application Processing Activity Log Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ApplicationLogs.Id
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationLogs,
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,License Application Id,FK đến Securities Practitioner License Application,NHNCK.qlnhn.ApplicationLogs.ApplicationId
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,License Application Code,Mã hồ sơ,NHNCK.qlnhn.ApplicationLogs.ApplicationId
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,Activity Status Code,Mã trạng thái tại thời điểm log,NHNCK.qlnhn.ApplicationLogs.StatusId
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,Activity Performed By Officer Id,FK đến Regulatory Authority Officer — người thực hiện,NHNCK.qlnhn.ApplicationLogs.UserId
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,Activity Performed By Officer Code,Mã người thực hiện,NHNCK.qlnhn.ApplicationLogs.UserId
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,Activity Note,Ghi chú hoạt động,NHNCK.qlnhn.ApplicationLogs.Note
+Business Activity,ETL Pattern — Business Activity Log,Securities Practitioner License Application Processing Activity Log,Activity Timestamp,Thời điểm hoạt động,NHNCK.qlnhn.ApplicationLogs.CreatedAt
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,License Application Verification Status Id,Id tự sinh (surrogate key),
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,License Application Verification Status Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.VerifyApplicationStatuses.Id
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.VerifyApplicationStatuses,
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,License Application Id,FK đến Securities Practitioner License Application,NHNCK.qlnhn.VerifyApplicationStatuses.ApplicationId
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,License Application Code,Mã hồ sơ,NHNCK.qlnhn.VerifyApplicationStatuses.ApplicationId
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Verification Level Code,Cấp phê duyệt (LĐCM/LĐUB),NHNCK.qlnhn.VerifyApplicationStatuses.VerifyLevel
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Verification Status Code,Trạng thái phê duyệt,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyStatus
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Verified By Officer Id,FK đến Regulatory Authority Officer — người phê duyệt,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyBy
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Verified By Officer Code,Mã người phê duyệt,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyBy
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Verified Timestamp,Ngày phê duyệt,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyAt
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Rejection Reason Description,Lý do từ chối (nếu từ chối),NHNCK.qlnhn.VerifyApplicationStatuses.Reason
+Business Activity,[Business Activity] Approval Activity,Securities Practitioner License Application Verification Status,Created Timestamp,Ngày tạo,NHNCK.qlnhn.VerifyApplicationStatuses.CreatedAt
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,License Certificate Document Activity Log Id,Id tự sinh (surrogate key),
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,License Certificate Document Activity Log Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.CertificateRecordLogs.Id
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecordLogs,
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,License Certificate Document Id,FK đến chứng chỉ,NHNCK.qlnhn.CertificateRecordLogs.CertificateRecordId
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,License Certificate Document Code,Mã chứng chỉ,NHNCK.qlnhn.CertificateRecordLogs.CertificateRecordId
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,Activity Action Code,Hành động,NHNCK.qlnhn.CertificateRecordLogs.Action
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,Activity Detail,Chi tiết hành động,NHNCK.qlnhn.CertificateRecordLogs.Detail
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,Activity Performed By Officer Id,FK đến Officer — người thực hiện,NHNCK.qlnhn.CertificateRecordLogs.CreatedBy
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,Activity Performed By Officer Code,Mã người thực hiện,NHNCK.qlnhn.CertificateRecordLogs.CreatedBy
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Activity Log,Activity Timestamp,Thời điểm hoạt động,NHNCK.qlnhn.CertificateRecordLogs.CreatedAt
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,License Certificate Document Status History Id,Id tự sinh (surrogate key),
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,License Certificate Document Status History Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.CertificateRecordStatusHistories.Id
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecordStatusHistories,
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,License Certificate Document Id,FK đến chứng chỉ,NHNCK.qlnhn.CertificateRecordStatusHistories.CertificateRecordId
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,License Certificate Document Code,Mã chứng chỉ,NHNCK.qlnhn.CertificateRecordStatusHistories.CertificateRecordId
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,From Status Code,Trạng thái trước,NHNCK.qlnhn.CertificateRecordStatusHistories.FromStatus
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,To Status Code,Trạng thái sau,NHNCK.qlnhn.CertificateRecordStatusHistories.ToStatus
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,Status Change Reason Description,Lý do thay đổi,NHNCK.qlnhn.CertificateRecordStatusHistories.Reason
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,Status Changed By Officer Id,FK đến Officer — người thực hiện,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedBy
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,Status Changed By Officer Code,Mã người thực hiện,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedBy
+Business Activity,ETL Pattern — Activity Log,Securities Practitioner License Certificate Document Status History,Status Change Timestamp,Thời điểm thay đổi,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedAt
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Professional Training Class Enrollment Id,Id tự sinh (surrogate key),
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Professional Training Class Enrollment Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.SpecializationCourseDetails.Id
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.SpecializationCourseDetails,
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Professional Training Class Id,FK đến khóa học,NHNCK.qlnhn.SpecializationCourseDetails.CourseId
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Professional Training Class Code,Mã khóa học,NHNCK.qlnhn.SpecializationCourseDetails.CourseId
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.SpecializationCourseDetails.ProfessionalId
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.SpecializationCourseDetails.ProfessionalId
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Exam Number,Số báo danh,NHNCK.qlnhn.SpecializationCourseDetails.ExamNumber
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Assessment Score,Điểm,NHNCK.qlnhn.SpecializationCourseDetails.Score
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Assessment Result Code,Kết quả,NHNCK.qlnhn.SpecializationCourseDetails.Result
+Business Activity,[Business Activity] Business Activity,Securities Practitioner Professional Training Class Enrollment,Created Timestamp,Ngày tạo,NHNCK.qlnhn.SpecializationCourseDetails.CreatedAt
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Tax Violation Penalty Decision Id,Id tự sinh (surrogate key),
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Tax Violation Penalty Decision Code,Mã định danh bản ghi trong DCST. BK,DCST.TT_XLY_VI_PHAM.ID
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TT_XLY_VI_PHAM,
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Registered Taxpayer Id,Mã số thuế. FK đến Registered Taxpayer,DCST.TT_XLY_VI_PHAM.MST
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Registered Taxpayer Code,Mã số thuế,DCST.TT_XLY_VI_PHAM.MST
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Taxpayer Name,Tên đối tượng,DCST.TT_XLY_VI_PHAM.TEN_DOI_TUONG
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Order Number,Số quyết định xử lý,DCST.TT_XLY_VI_PHAM.SO_QDXL
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Issuing Authority Name,Cơ quan ban hành,DCST.TT_XLY_VI_PHAM.CO_QUAN_BAN_HANH
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Inspection Period,Kỳ thanh tra kiểm tra,DCST.TT_XLY_VI_PHAM.KY_TTKT
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Violation Penalty Description,Phạt hành vi vi phạm,DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VP
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Administrative Violation Penalty Description,Phạt hành vi vi phạm hành chính,DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VPHC
+Business Activity,[Business Activity] Conduct Violation,Tax Violation Penalty Decision,Tax Arrears Recovery Amount,"Truy thu tiền thuế, tiền nộp chậm",DCST.TT_XLY_VI_PHAM.TRUY_THU_TIEN_THUE
+Communication,[Event] Communication,FMS Member Periodic Report,FMS Member Periodic Report Id,Khóa đại diện cho bản ghi báo cáo định kỳ của thành viên thị trường.,
+Communication,[Event] Communication,FMS Member Periodic Report,FMS Member Periodic Report Code,Mã báo cáo định kỳ do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.RPTMEMBER.Id
+Communication,[Event] Communication,FMS Member Periodic Report,Source System Code,Mã hệ thống nguồn.,
+Communication,[Event] Communication,FMS Member Periodic Report,Fund Management Company Id,Khóa đại diện công ty QLQ nộp báo cáo (nullable — chỉ 1 trong 4 FK có giá trị). FK → SECURITIES.,FMS.RPTMEMBER.SecId
 Communication,[Event] Communication,FMS Member Periodic Report,Fund Management Company Code,Mã công ty QLQ nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.SecId
-Communication,[Event] Communication,FMS Member Periodic Report,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư nộp báo cáo (nullable).,FMS.RPTMEMBER.FndId
+Communication,[Event] Communication,FMS Member Periodic Report,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư nộp báo cáo (nullable). FK → FUNDS.,FMS.RPTMEMBER.FndId
 Communication,[Event] Communication,FMS Member Periodic Report,FMS Investment Fund Code,Mã quỹ đầu tư nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.FndId
-Communication,[Event] Communication,FMS Member Periodic Report,Custodian Bank Id,Khóa đại diện ngân hàng LKGS nộp báo cáo (nullable).,FMS.RPTMEMBER.BkMId
+Communication,[Event] Communication,FMS Member Periodic Report,Custodian Bank Id,Khóa đại diện ngân hàng LKGS nộp báo cáo (nullable). FK → BANKMONI.,FMS.RPTMEMBER.BkMId
 Communication,[Event] Communication,FMS Member Periodic Report,Custodian Bank Code,Mã ngân hàng LKGS nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.BkMId
-Communication,[Event] Communication,FMS Member Periodic Report,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN nộp báo cáo (nullable).,FMS.RPTMEMBER.FrBrId
+Communication,[Event] Communication,FMS Member Periodic Report,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN nộp báo cáo (nullable). FK → FORBRCH.,FMS.RPTMEMBER.FrBrId
 Communication,[Event] Communication,FMS Member Periodic Report,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.FrBrId
-Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Id,Khóa đại diện kỳ báo cáo. FK đến Reporting Period.,FMS.RPTMEMBER.PrdId
+Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Id,Khóa đại diện kỳ báo cáo. FK → RPTPERIOD.,FMS.RPTMEMBER.PrdId
 Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Code,Mã kỳ báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.PrdId
 Communication,[Event] Communication,FMS Member Periodic Report,Report Name,Tên báo cáo định kỳ.,FMS.RPTMEMBER.RptName
 Communication,[Event] Communication,FMS Member Periodic Report,Content Summary,Nội dung trích yếu báo cáo.,FMS.RPTMEMBER.ContentSummary
-Communication,[Event] Communication,FMS Member Periodic Report,Report Type Code,Loại báo cáo: định kỳ hoặc bất thường.,FMS.RPTMEMBER.ReportType
-Communication,[Event] Communication,FMS Member Periodic Report,Reporting Member Type Code,Nhóm thành viên nộp báo cáo.,FMS.RPTMEMBER.Type
-Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Type Code,Loại kỳ báo cáo: ngày/tuần/tháng/quý/bán niên/năm.,FMS.RPTMEMBER.PeriodType
+Communication,[Event] Communication,FMS Member Periodic Report,Report Type Code,Loại báo cáo: 1 = Định kỳ; 2 = Bất thường.,FMS.RPTMEMBER.ReportType
+Communication,[Event] Communication,FMS Member Periodic Report,Reporting Member Type Code,Nhóm thành viên nộp báo cáo: 2 = QLQ; 3 = NH LKGS; 4 = CN QLQ NN; 5 = VPĐD QLQ NN; 7 = QĐT.,FMS.RPTMEMBER.Type
+Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Type Code,Loại kỳ báo cáo: 1 = Ngày; 2 = Tuần; 3 = Tháng; 4 = Quý; 5 = Bán niên; 6 = Năm.,FMS.RPTMEMBER.PeriodType
 Communication,[Event] Communication,FMS Member Periodic Report,Report Year,Năm của kỳ báo cáo.,FMS.RPTMEMBER.YearValue
 Communication,[Event] Communication,FMS Member Periodic Report,Report Date,Ngày (trong năm) của kỳ báo cáo.,FMS.RPTMEMBER.DayReport
 Communication,[Event] Communication,FMS Member Periodic Report,Submission Deadline,Thời hạn gửi báo cáo theo quy định.,FMS.RPTMEMBER.DeadlineSend
 Communication,[Event] Communication,FMS Member Periodic Report,Submission Date,Ngày gửi báo cáo thực tế.,FMS.RPTMEMBER.DateSubmitted
-Communication,[Event] Communication,FMS Member Periodic Report,Submission Status Code,Trạng thái nộp báo cáo.,FMS.RPTMEMBER.Status
-Communication,[Event] Communication,FMS Member Periodic Report,Is Import Indicator,Cờ đánh dấu có file import đính kèm.,FMS.RPTMEMBER.IsImport
-Condition,[Condition],Member Rating Period,Member Rating Period Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Condition,[Condition],Member Rating Period,Member Rating Period Code,Mã kỳ đánh giá xếp loại do hệ thống FMS sinh ra. Là Business Key.,FMS.RATINGPD.Id
-Condition,[Condition],Member Rating Period,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Condition,[Condition],Member Rating Period,Rating Period Name,Tên mô tả kỳ đánh giá xếp loại.,FMS.RATINGPD.PeriodName
-Condition,[Condition],Member Rating Period,Start Date,Ngày bắt đầu kỳ đánh giá xếp loại.,FMS.RATINGPD.StartDate
-Condition,[Condition],Member Rating Period,End Date,Ngày kết thúc kỳ đánh giá xếp loại.,FMS.RATINGPD.EndDate
-Condition,[Condition],Member Rating Period,Is Active Indicator,Cờ đánh dấu kỳ đánh giá đang được sử dụng (1) hay không (0).,FMS.RATINGPD.IsActive
-Condition,[Condition],Reporting Period,Reporting Period Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Condition,[Condition],Reporting Period,Reporting Period Code,Mã kỳ báo cáo do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTPERIOD.Id
-Condition,[Condition],Reporting Period,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Condition,[Condition],Reporting Period,Reporting Period Name,Tên mô tả kỳ báo cáo.,FMS.RPTPERIOD.PeriodName
-Condition,[Condition],Reporting Period,Reporting Period Type Code,Loại kỳ báo cáo: ngày/tuần/tháng/quý/bán niên/năm.,FMS.RPTPERIOD.PeriodType
-Condition,[Condition],Reporting Period,Is Active Indicator,Cờ đánh dấu kỳ báo cáo đang được sử dụng (1) hay không (0).,FMS.RPTPERIOD.IsActive
-Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Code,Mã nhân tố chấm điểm do hệ thống FMS sinh ra. Là Business Key.,FMS.RNKFACTOR.Id
-Condition,[Condition] Criterion,FMS Rating Criterion,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Communication,[Event] Communication,FMS Member Periodic Report,Submission Status Code,Trạng thái nộp: 1 = Chưa gửi; 2 = Đã gửi; 3 = Gửi muộn; 4 = Bị hủy.,FMS.RPTMEMBER.Status
+Communication,[Event] Communication,FMS Member Periodic Report,Is Import Indicator,Cờ đánh dấu có file import: 1 = Có; 2 = Không.,FMS.RPTMEMBER.IsImport
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Identity Verification Record Id,Id tự sinh (surrogate key),
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Identity Verification Record Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.IdentityInfoC06s.Id
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.IdentityInfoC06s,
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.IdentityInfoC06s.ProfessionalId
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.IdentityInfoC06s.ProfessionalId
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Identification Number,Số CCCD/CMND được xác thực,NHNCK.qlnhn.IdentityInfoC06s.IdentityNumber
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Verification Status Code,Trạng thái xác thực,NHNCK.qlnhn.IdentityInfoC06s.VerifyStatus
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Verification Date,Ngày xác thực,NHNCK.qlnhn.IdentityInfoC06s.VerifyDate
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Response Data,Dữ liệu phản hồi từ C06,NHNCK.qlnhn.IdentityInfoC06s.ResponseData
+Communication,[Communication] Verification,Securities Practitioner Identity Verification Record,Created Timestamp,Ngày tạo,NHNCK.qlnhn.IdentityInfoC06s.CreatedAt
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Examination Assessment Id,Id tự sinh (surrogate key),
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Examination Assessment Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ExamSessions.Id
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ExamSessions,
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Session Code,Mã đợt thi (mã nghiệp vụ),NHNCK.qlnhn.ExamSessions.SessionCode
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Session Name,Tên đợt thi,NHNCK.qlnhn.ExamSessions.SessionName
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Session Number,Đợt thi (số thứ tự),NHNCK.qlnhn.ExamSessions.SessionNumber
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Examination Year,Năm thi,NHNCK.qlnhn.ExamSessions.ExamYear
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Examination Location,Địa điểm thi,NHNCK.qlnhn.ExamSessions.Location
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Organizer Name,Đơn vị tổ chức,NHNCK.qlnhn.ExamSessions.Organizer
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Registration Start Date,Ngày bắt đầu nộp hồ sơ,NHNCK.qlnhn.ExamSessions.RegistrationStartDate
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Registration End Date,Ngày kết thúc nộp hồ sơ,NHNCK.qlnhn.ExamSessions.RegistrationEndDate
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Examination Start Date,Ngày thi dự kiến (bắt đầu),NHNCK.qlnhn.ExamSessions.ExamStartDate
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Examination End Date,Ngày thi dự kiến (kết thúc),NHNCK.qlnhn.ExamSessions.ExamEndDate
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Application Source Code,Hình thức nộp hồ sơ,NHNCK.qlnhn.ExamSessions.ApplicationSourceId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Attachment File Path,File thông báo đính kèm,NHNCK.qlnhn.ExamSessions.AttachmentPath
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,License Decision Document Id,FK đến quyết định công nhận kết quả,NHNCK.qlnhn.ExamSessions.DecisionId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,License Decision Document Code,Mã quyết định,NHNCK.qlnhn.ExamSessions.DecisionId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Examination Status Code,Trạng thái (Khởi tạo/Đang thực hiện/Hoàn thành),NHNCK.qlnhn.ExamSessions.Status
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Created By Officer Id,FK đến Officer,NHNCK.qlnhn.ExamSessions.CreatedBy
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.ExamSessions.CreatedBy
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Created Timestamp,Ngày tạo,NHNCK.qlnhn.ExamSessions.CreatedAt
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Updated By Officer Id,FK đến Officer,NHNCK.qlnhn.ExamSessions.UpdatedBy
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Updated By Officer Code,Mã người cập nhật,NHNCK.qlnhn.ExamSessions.UpdatedBy
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.ExamSessions.UpdatedAt
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Examination Assessment Result Id,Id tự sinh (surrogate key),
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Examination Assessment Result Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ExamDetails.Id
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ExamDetails,
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Examination Assessment Id,FK đến đợt thi,NHNCK.qlnhn.ExamDetails.ExamSessionId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Examination Assessment Code,Mã đợt thi,NHNCK.qlnhn.ExamDetails.ExamSessionId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,License Application Id,FK đến hồ sơ (Nhóm A),NHNCK.qlnhn.ExamDetails.ApplicationId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,License Application Code,Mã hồ sơ,NHNCK.qlnhn.ExamDetails.ApplicationId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.ExamDetails.ProfessionalId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.ExamDetails.ProfessionalId
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Exam Number,Số báo danh,NHNCK.qlnhn.ExamDetails.ExamNumber
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Law Score,Điểm pháp luật,NHNCK.qlnhn.ExamDetails.LawScore
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Professional Score,Điểm chuyên môn,NHNCK.qlnhn.ExamDetails.ProfessionalScore
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Examination Result Code,Kết quả (Đạt/Không đạt/Chưa thi),NHNCK.qlnhn.ExamDetails.Result
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Created Timestamp,Ngày tạo,NHNCK.qlnhn.ExamDetails.CreatedAt
+Communication,[Communication] Assessment,Securities Practitioner Qualification Examination Assessment Result,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.ExamDetails.UpdatedAt
+Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Id,Khóa đại diện cho nhân tố chấm điểm đánh giá xếp loại.,
+Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Code,Mã nhân tố chấm điểm do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.RNKFACTOR.Id
+Condition,[Condition] Criterion,FMS Rating Criterion,Source System Code,Mã hệ thống nguồn.,
 Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Parent Id,Khóa đại diện nhân tố cha (self-FK). Null nếu là nhân tố gốc.,FMS.RNKFACTOR.ParentId
 Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Parent Code,Mã nhân tố cha. Lưu dư thừa.,FMS.RNKFACTOR.ParentId
 Condition,[Condition] Criterion,FMS Rating Criterion,Criterion Name,Tên nhân tố chấm điểm đánh giá xếp loại.,FMS.RNKFACTOR.Name
-Condition,[Condition] Criterion,FMS Rating Criterion,Maximum Score,Điểm tối đa của nhân tố trong thang đánh giá.,FMS.RNKFACTOR.MaxScore
+Condition,[Condition] Criterion,FMS Rating Criterion,Maximum Score,Điểm tối đa của nhân tố này trong thang đánh giá.,FMS.RNKFACTOR.MaxScore
 Condition,[Condition] Criterion,FMS Rating Criterion,Weight,Trọng số của nhân tố trong tổng điểm đánh giá.,FMS.RNKFACTOR.Weight
 Condition,[Condition] Criterion,FMS Rating Criterion,Is Active Indicator,Cờ đánh dấu nhân tố đang được sử dụng (1) hay không (0).,FMS.RNKFACTOR.IsActive
-Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Report Import Value Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Report Import Value Code,Mã bản ghi do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTVALUES.Id
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Fund Management Company Id,Khóa đại diện công ty QLQ liên quan đến báo cáo (nullable).,FMS.RPTVALUES.SecId
+Condition,[Condition],Member Rating Period,Member Rating Period Id,Khóa đại diện cho kỳ đánh giá xếp loại.,
+Condition,[Condition],Member Rating Period,Member Rating Period Code,Mã kỳ đánh giá xếp loại do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.RATINGPD.Id
+Condition,[Condition],Member Rating Period,Source System Code,Mã hệ thống nguồn.,
+Condition,[Condition],Member Rating Period,Rating Period Name,Tên kỳ đánh giá xếp loại.,FMS.RATINGPD.PeriodName
+Condition,[Condition],Member Rating Period,Start Date,Ngày bắt đầu kỳ đánh giá.,FMS.RATINGPD.StartDate
+Condition,[Condition],Member Rating Period,End Date,Ngày kết thúc kỳ đánh giá.,FMS.RATINGPD.EndDate
+Condition,[Condition],Member Rating Period,Is Active Indicator,Trạng thái sử dụng: 1 = Sử dụng; 0 = Không sử dụng.,FMS.RATINGPD.IsActive
+Condition,[Condition],Reporting Period,Reporting Period Id,Khóa đại diện cho kỳ báo cáo.,
+Condition,[Condition],Reporting Period,Reporting Period Code,Mã kỳ báo cáo do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.RPTPERIOD.Id
+Condition,[Condition],Reporting Period,Source System Code,Mã hệ thống nguồn.,
+Condition,[Condition],Reporting Period,Reporting Period Name,Tên kỳ báo cáo.,FMS.RPTPERIOD.PeriodName
+Condition,[Condition],Reporting Period,Reporting Period Type Code,Loại kỳ báo cáo: 1 = Ngày; 2 = Tuần; 3 = Tháng; 4 = Quý; 5 = Bán niên; 6 = Năm.,FMS.RPTPERIOD.PeriodType
+Condition,[Condition],Reporting Period,Is Active Indicator,Trạng thái sử dụng: 1 = Sử dụng; 0 = Không sử dụng.,FMS.RPTPERIOD.IsActive
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Examination Assessment Fee Id,Id tự sinh (surrogate key),
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Examination Assessment Fee Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ExamSessionFees.Id
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ExamSessionFees,
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Examination Assessment Id,FK đến đợt thi,NHNCK.qlnhn.ExamSessionFees.ExamSessionId
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Examination Assessment Code,Mã đợt thi,NHNCK.qlnhn.ExamSessionFees.ExamSessionId
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Certificate Type Code,Loại chứng chỉ,NHNCK.qlnhn.ExamSessionFees.CertificateId
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Examination Fee Amount,Chi phí thi sát hạch (VNĐ),NHNCK.qlnhn.ExamSessionFees.ExamFee
+Condition,[Condition] Financial Charge,Securities Practitioner Qualification Examination Assessment Fee,Review Fee Amount,Chi phí phúc khảo (VNĐ),NHNCK.qlnhn.ExamSessionFees.ReviewFee
+Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Report Import Value Id,Khóa đại diện cho bản ghi giá trị từng ô chỉ tiêu trong báo cáo import.,
+Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Report Import Value Code,Mã bản ghi do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.RPTVALUES.Id
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Source System Code,Mã hệ thống nguồn.,
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Fund Management Company Id,Khóa đại diện công ty QLQ liên quan đến báo cáo (nullable). FK → SECURITIES.,FMS.RPTVALUES.SecId
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,FMS.RPTVALUES.SecId
-Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư liên quan (nullable).,FMS.RPTVALUES.FndId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư liên quan (nullable). FK → FUNDS.,FMS.RPTVALUES.FndId
 Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.RPTVALUES.FndId
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Custodian Bank Id,Khóa đại diện ngân hàng LKGS liên quan (nullable).,FMS.RPTVALUES.BkMId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Custodian Bank Id,Khóa đại diện ngân hàng LKGS liên quan (nullable). FK → BANKMONI.,FMS.RPTVALUES.BkMId
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Custodian Bank Code,Mã ngân hàng LKGS. Lưu dư thừa.,FMS.RPTVALUES.BkMId
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN liên quan (nullable).,FMS.RPTVALUES.FrBrId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN liên quan (nullable). FK → FORBRCH.,FMS.RPTVALUES.FrBrId
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,FMS.RPTVALUES.FrBrId
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Period Id,Khóa đại diện kỳ báo cáo. FK đến Reporting Period.,FMS.RPTVALUES.PrdId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Period Id,Khóa đại diện kỳ báo cáo. FK → RPTPERIOD.,FMS.RPTVALUES.PrdId
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Period Code,Mã kỳ báo cáo. Lưu dư thừa.,FMS.RPTVALUES.PrdId
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Report Template Source Key,Mã biểu mẫu báo cáo đầu vào (source key — chờ RPTTEMP).,FMS.RPTVALUES.RptId
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Sheet Source Key,Mã sheet báo cáo đầu vào (source key — chờ SHEET).,FMS.RPTVALUES.SheetId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Report Template Source Key,Mã biểu mẫu báo cáo đầu vào. FK → RPTTEMP (chưa có column detail).,FMS.RPTVALUES.RptId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Sheet Source Key,Mã sheet báo cáo đầu vào. FK → SHEET (chưa có column detail).,FMS.RPTVALUES.SheetId
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Target Cell Id,ID ô chỉ tiêu trong sheet báo cáo.,FMS.RPTVALUES.TgtId
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Member Source Key,Mã ID thành viên thị trường — chưa xác định FK chính xác.,FMS.RPTVALUES.MebId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Member Source Key,Mã ID thành viên thị trường — chưa xác định được FK chính xác.,FMS.RPTVALUES.MebId
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Cell Value,Giá trị dữ liệu tại ô chỉ tiêu được import.,FMS.RPTVALUES.Values
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Account Value,Thông tin tài khoản lưu ký liên quan đến ô chỉ tiêu.,FMS.RPTVALUES.AccValues
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Cell Data Type Code,Loại dữ liệu ô: Numeric = số; String = ký tự.,FMS.RPTVALUES.FormatDataType
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Is Dynamic Indicator,Cờ đánh dấu ô chỉ tiêu là dữ liệu động.,FMS.RPTVALUES.IsDynamic
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Is Dynamic Indicator,Cờ đánh dấu ô chỉ tiêu là dữ liệu động: 1 = Có; 0 = Không.,FMS.RPTVALUES.IsDynamic
 Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Period Type Code,Loại kỳ báo cáo của ô dữ liệu.,FMS.RPTVALUES.PeriodType
-Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Member Type Code,Đối tượng gửi báo cáo.,FMS.RPTVALUES.Type
-Involved Party,[Involved Party],Discretionary Investment Investor,Discretionary Investment Investor Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party],Discretionary Investment Investor,Discretionary Investment Investor Code,Mã nhà đầu tư ủy thác do hệ thống FMS sinh ra. Là Business Key.,FMS.INVES.Id
-Involved Party,[Involved Party],Discretionary Investment Investor,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party],Discretionary Investment Investor,Full Name,Tên đầy đủ nhà đầu tư ủy thác — cá nhân hoặc tổ chức.,FMS.INVES.Name
-Involved Party,[Involved Party],Discretionary Investment Investor,Domestic Foreign Indicator,Phân loại trong nước/nước ngoài: 1 = Trong nước; 0 = Ngoài.,FMS.INVES.Dorf
-Involved Party,[Involved Party],Discretionary Investment Investor,Nationality Code,Quốc tịch nhà đầu tư — load từ bảng danh mục NATIONAL.,FMS.INVES.NatId
-Involved Party,[Involved Party],Discretionary Investment Investor,Investor Type Code,Loại hình nhà đầu tư/cổ đông — load từ bảng danh mục STOCKHOLDERTYPE.,FMS.INVES.StoId
-Involved Party,[Involved Party],Discretionary Investment Investor,Fund Management Company Id,Khóa đại diện công ty QLQ mà nhà đầu tư ủy thác — FK đến Fund Management Company.,FMS.INVES.SecId
-Involved Party,[Involved Party],Discretionary Investment Investor,Fund Management Company Code,Mã công ty QLQ mà nhà đầu tư ủy thác. Lưu dư thừa.,FMS.INVES.SecId
-Involved Party,[Involved Party],Discretionary Investment Investor,Relationship Description,Mô tả quan hệ với người có liên quan — text tự do không có FK.,FMS.INVES.RelationShip
-Involved Party,[Involved Party],Discretionary Investment Investor,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ (1) hay dữ liệu mới (0).,FMS.INVES.IsDataMigration
-Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Involved Party Id,Khóa đại diện trỏ về entity chính sở hữu giấy tờ định danh này.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.INVES.Id, FMS.FUNDS.Id, FMS.TLProfiles.Id, FMS.BRANCHES.Id"
-Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Involved Party Code,Mã nghiệp vụ của entity chính. Lưu dư thừa.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.INVES.Id, FMS.FUNDS.Id, FMS.TLProfiles.Id, FMS.BRANCHES.Id"
-Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Identification Type Code,Loại giấy tờ định danh — CMND/CCCD/Hộ chiếu/Giấy phép thành lập/ĐKKD.,FMS.INVES.IdType
-Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Identification Number,Số giấy tờ định danh.,"FMS.SECURITIES.Decision, FMS.FORBRCH.ChangeLicense, FMS.INVES.IdNo, FMS.BRANCHES.Decision, FMS.TLProfiles.IdNo"
-Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Issue Date,Ngày cấp giấy tờ định danh.,"FMS.SECURITIES.DecisionDate, FMS.FORBRCH.ChangeLicenseDate, FMS.INVES.IdDate, FMS.BRANCHES.DecisionDate, FMS.FUNDS.DecisionDate"
-Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Issuing Authority Name,Nơi cấp giấy tờ định danh.,
-Involved Party,[Involved Party] Custodian,Custodian Bank,Custodian Bank Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Custodian,Custodian Bank,Custodian Bank Code,Mã ngân hàng LKGS do hệ thống FMS sinh ra. Là Business Key.,FMS.BANKMONI.Id
-Involved Party,[Involved Party] Custodian,Custodian Bank,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Custodian,Custodian Bank,Organization Name,Tên đầy đủ ngân hàng lưu ký giám sát.,FMS.BANKMONI.Name
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Member Type Code,Đối tượng gửi báo cáo: 2 = QLQ; 7 = QĐT.,FMS.RPTVALUES.Type
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,License Application Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,License Application Code,Mã định danh hồ sơ (tự động tăng). BK,NHNCK.qlnhn.Applications.Id
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Applications,
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Application Code,Mã hồ sơ (mã nghiệp vụ do hệ thống sinh),NHNCK.qlnhn.Applications.ApplicationCode
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Application Title,Tiêu đề hồ sơ,NHNCK.qlnhn.Applications.Title
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Registration Type Code,Loại đăng ký,NHNCK.qlnhn.Applications.RegistrationType
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Application Type Code,Loại hồ sơ,NHNCK.qlnhn.Applications.ApplicationType
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Application Status Code,Mã trạng thái hồ sơ,NHNCK.qlnhn.Applications.StatusId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Practitioner Id,FK đến Securities Practitioner (Nhóm B),NHNCK.qlnhn.Applications.ProfessionalId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.Applications.ProfessionalId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,License Certificate Document Id,FK đến Securities Practitioner License Certificate Document (Nhóm B),NHNCK.qlnhn.Applications.CertificateRecordId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,License Certificate Document Code,Mã chứng chỉ hành nghề đã cấp,NHNCK.qlnhn.Applications.CertificateRecordId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Certificate Type Code,Mã loại chứng chỉ đăng ký,NHNCK.qlnhn.Applications.CertificateId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Previous Certificate Type Code,ID loại chứng chỉ trước đó,NHNCK.qlnhn.Applications.PreviousCertificateId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Previous License Certificate Document Id,FK đến chứng chỉ hành nghề trước đó,NHNCK.qlnhn.Applications.PreviousCertificateRecordId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Previous License Certificate Document Code,Mã chứng chỉ hành nghề trước đó,NHNCK.qlnhn.Applications.PreviousCertificateRecordId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Examination Assessment Id,FK đến Securities Practitioner Qualification Examination Assessment (Nhóm C),NHNCK.qlnhn.Applications.ExamSessionId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Examination Assessment Code,Mã kỳ thi sát hạch,NHNCK.qlnhn.Applications.ExamSessionId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Verification Status Id,FK đến Securities Practitioner License Application Verification Status,NHNCK.qlnhn.Applications.InfoVerifyId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Verification Status Code,Mã yêu cầu phê duyệt lãnh đạo,NHNCK.qlnhn.Applications.InfoVerifyId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Submission Date,Ngày nộp hồ sơ,NHNCK.qlnhn.Applications.SubmissionDate
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Supplement Date,Ngày bổ sung hồ sơ,NHNCK.qlnhn.Applications.SupplementDate
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Supplement Letter Date,Ngày thư bổ sung,NHNCK.qlnhn.Applications.SupplementLetterDate
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Reissue Reason Description,Lý do cấp (cấp lại/cấp đổi),NHNCK.qlnhn.Applications.ReissueReason
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Rejection Reason Description,Lý do từ chối hồ sơ,NHNCK.qlnhn.Applications.RejectionReason
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Certificate Number,Số chứng chỉ được cấp (kết quả cuối),NHNCK.qlnhn.Applications.CertificateNumber
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Certificate Issue Date,Ngày cấp chứng chỉ,NHNCK.qlnhn.Applications.IssueDate
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Previous Certificate Number,Số chứng chỉ trước đó,NHNCK.qlnhn.Applications.PreviousCertificateNumber
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Previous Certificate Issue Date,Ngày cấp chứng chỉ trước đó,NHNCK.qlnhn.Applications.PreviousIssueDate
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Violation Indicator,Cờ vi phạm,NHNCK.qlnhn.Applications.IsViolated
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Date Exploitable Indicator,Cờ khai thác theo ngày,NHNCK.qlnhn.Applications.IsDateExploitable
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Certificate Receipt Method Code,Phương thức nhận chứng chỉ,NHNCK.qlnhn.Applications.CertificateReceiptMethod
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Certificate Receipt Address,Địa chỉ nhận chứng chỉ,NHNCK.qlnhn.Applications.CertificateReceiptAddress
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Certificate Receipt Phone Number,Số điện thoại nhận chứng chỉ,NHNCK.qlnhn.Applications.CertificateReceiptPhone
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Certificate Receipt Status Code,Trạng thái nhận chứng chỉ,NHNCK.qlnhn.Applications.ReceiptStatus
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Reissue HSM Code,Mã tái cấp HSM,NHNCK.qlnhn.Applications.ReissueHSM
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Note,Ghi chú hồ sơ,NHNCK.qlnhn.Applications.Note
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Assignee Officer Id,FK đến Regulatory Authority Officer — cán bộ xử lý hồ sơ,NHNCK.qlnhn.Applications.AssigneeId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Assignee Officer Code,Mã cán bộ xử lý hồ sơ,NHNCK.qlnhn.Applications.AssigneeId
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Created By Officer Id,FK đến Regulatory Authority Officer — người tạo hồ sơ,NHNCK.qlnhn.Applications.CreatedBy
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Created By Officer Code,Mã người tạo hồ sơ,NHNCK.qlnhn.Applications.CreatedBy
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Created Timestamp,Ngày tạo hồ sơ,NHNCK.qlnhn.Applications.CreatedAt
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Updated By Officer Id,FK đến Regulatory Authority Officer — người cập nhật,NHNCK.qlnhn.Applications.UpdatedBy
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Updated By Officer Code,Mã người cập nhật,NHNCK.qlnhn.Applications.UpdatedBy
+Documentation,[Documentation] Government Registration Document,Securities Practitioner License Application,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.Applications.UpdatedAt
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,License Application Document Attachment Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,License Application Document Attachment Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ApplicationDocuments.Id
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationDocuments,
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,License Application Id,FK đến Securities Practitioner License Application,NHNCK.qlnhn.ApplicationDocuments.ApplicationId
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,License Application Code,Mã hồ sơ,NHNCK.qlnhn.ApplicationDocuments.ApplicationId
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Document Type Code,Mã loại tài liệu,NHNCK.qlnhn.ApplicationDocuments.DocumentId
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Document Name,Tên tài liệu,NHNCK.qlnhn.ApplicationDocuments.DocumentName
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Document Description,Mô tả tài liệu,NHNCK.qlnhn.ApplicationDocuments.Description
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Documentation Item File Name,Tên file vật lý,NHNCK.qlnhn.ApplicationDocuments.FileName
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Documentation Item File Path,Đường dẫn tệp,NHNCK.qlnhn.ApplicationDocuments.FilePath
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Documentation Item File Format,Loại file,NHNCK.qlnhn.ApplicationDocuments.Format
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Documentation Item File Size,Dung lượng file,NHNCK.qlnhn.ApplicationDocuments.FileSize
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Appraisal Status Code,Trạng thái thẩm định,NHNCK.qlnhn.ApplicationDocuments.Status
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Appraised By Officer Id,FK đến Regulatory Authority Officer — người thẩm định,NHNCK.qlnhn.ApplicationDocuments.AssigneeId
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Appraised By Officer Code,Mã người thẩm định,NHNCK.qlnhn.ApplicationDocuments.AssigneeId
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Appraised Timestamp,Ngày thẩm định,NHNCK.qlnhn.ApplicationDocuments.AppraisaledAt
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Invalid Indicator,Cờ hợp lệ (IsInvalid = true → không hợp lệ),NHNCK.qlnhn.ApplicationDocuments.IsInvalid
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Incomplete Indicator,Cờ hoàn thành (IsIncomplete = true → chưa đầy đủ),NHNCK.qlnhn.ApplicationDocuments.IsIncomplete
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Note,Ghi chú,NHNCK.qlnhn.ApplicationDocuments.Note
+Documentation,[Documentation] Supporting Documentation,Securities Practitioner License Application Document Attachment,Created Timestamp,Ngày tạo,NHNCK.qlnhn.ApplicationDocuments.CreatedAt
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,License Application Education Certificate Document Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,License Application Education Certificate Document Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ApplicationSpecializations.Id
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationSpecializations,
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,License Application Id,FK đến Securities Practitioner License Application,NHNCK.qlnhn.ApplicationSpecializations.ApplicationId
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,License Application Code,Mã hồ sơ,NHNCK.qlnhn.ApplicationSpecializations.ApplicationId
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Specialization Type Code,Mã chuyên môn,NHNCK.qlnhn.ApplicationSpecializations.SpecializationId
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Note,Nội dung ghi chú,NHNCK.qlnhn.ApplicationSpecializations.Note
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Documentation Item File Name,Tên file đính kèm,NHNCK.qlnhn.ApplicationSpecializations.FileName
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Documentation Item File Path,Đường dẫn file,NHNCK.qlnhn.ApplicationSpecializations.FilePath
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Documentation Item File Format,Loại file,NHNCK.qlnhn.ApplicationSpecializations.Format
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Documentation Item File Size,Dung lượng file,NHNCK.qlnhn.ApplicationSpecializations.FileSize
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Appraisal Status Code,Trạng thái thẩm định,NHNCK.qlnhn.ApplicationSpecializations.Status
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Appraised By Officer Id,FK đến Regulatory Authority Officer — người thẩm định,NHNCK.qlnhn.ApplicationSpecializations.AssigneeId
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Appraised By Officer Code,Mã người thẩm định,NHNCK.qlnhn.ApplicationSpecializations.AssigneeId
+Documentation,[Documentation] Education Certificate,Securities Practitioner License Application Education Certificate Document,Appraised Timestamp,Thời gian thẩm định,NHNCK.qlnhn.ApplicationSpecializations.AppraisaledAt
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,License Certificate Document Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,License Certificate Document Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.CertificateRecords.Id
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecords,
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.CertificateRecords.ProfessionalId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.CertificateRecords.ProfessionalId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Certificate Type Code,Mã loại chứng chỉ,NHNCK.qlnhn.CertificateRecords.CertificateId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Certificate Number,Số chứng chỉ,NHNCK.qlnhn.CertificateRecords.CertificateNumber
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Certificate Issue Date,Ngày cấp chứng chỉ,NHNCK.qlnhn.CertificateRecords.IssueDate
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Issuance Decision Document Id,FK đến quyết định cấp,NHNCK.qlnhn.CertificateRecords.DecisionId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Issuance Decision Document Code,Mã quyết định cấp,NHNCK.qlnhn.CertificateRecords.DecisionId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Revocation Decision Document Id,FK đến quyết định thu hồi,NHNCK.qlnhn.CertificateRecords.RevocationDecisionId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Revocation Decision Document Code,Mã quyết định thu hồi,NHNCK.qlnhn.CertificateRecords.RevocationDecisionId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Certificate Status Code,Trạng thái chứng chỉ,NHNCK.qlnhn.CertificateRecords.Status
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Digital Signature Status Code,Trạng thái ký số,NHNCK.qlnhn.CertificateRecords.SignStatus
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Created By Officer Id,FK đến Regulatory Authority Officer,NHNCK.qlnhn.CertificateRecords.CreatedBy
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.CertificateRecords.CreatedBy
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Created Timestamp,Ngày tạo,NHNCK.qlnhn.CertificateRecords.CreatedAt
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Document,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.CertificateRecords.UpdatedAt
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,License Certificate Group Document Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,License Certificate Group Document Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.CertificateRecordGroups.Id
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecordGroups,
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Group Name,Tên nhóm,NHNCK.qlnhn.CertificateRecordGroups.GroupName
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Group Type Code,Loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi),NHNCK.qlnhn.CertificateRecordGroups.GroupType
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,License Decision Document Id,FK đến quyết định,NHNCK.qlnhn.CertificateRecordGroups.DecisionId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,License Decision Document Code,Mã quyết định,NHNCK.qlnhn.CertificateRecordGroups.DecisionId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Group Status Code,Trạng thái nhóm,NHNCK.qlnhn.CertificateRecordGroups.Status
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Created By Officer Id,FK đến Regulatory Authority Officer,NHNCK.qlnhn.CertificateRecordGroups.CreatedBy
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.CertificateRecordGroups.CreatedBy
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Created Timestamp,Ngày tạo,NHNCK.qlnhn.CertificateRecordGroups.CreatedAt
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Certificate Group Document,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.CertificateRecordGroups.UpdatedAt
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Certificate Group Member Id,Id tự sinh (surrogate key),
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Certificate Group Member Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.CertificateRecordGroupMembers.Id
+Documentation,Junction,Securities Practitioner License Certificate Group Member,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecordGroupMembers,
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Certificate Group Document Id,FK đến nhóm chứng chỉ,NHNCK.qlnhn.CertificateRecordGroupMembers.GroupId
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Certificate Group Document Code,Mã nhóm,NHNCK.qlnhn.CertificateRecordGroupMembers.GroupId
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Certificate Document Id,FK đến chứng chỉ,NHNCK.qlnhn.CertificateRecordGroupMembers.CertificateRecordId
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Certificate Document Code,Mã chứng chỉ,NHNCK.qlnhn.CertificateRecordGroupMembers.CertificateRecordId
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Application Id,FK đến hồ sơ (Nhóm A),NHNCK.qlnhn.CertificateRecordGroupMembers.ApplicationId
+Documentation,Junction,Securities Practitioner License Certificate Group Member,License Application Code,Mã hồ sơ,NHNCK.qlnhn.CertificateRecordGroupMembers.ApplicationId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,License Decision Document Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,License Decision Document Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.Decisions.Id
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Decisions,
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Decision Number,Số quyết định,NHNCK.qlnhn.Decisions.DecisionNumber
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Decision Title,Tiêu đề quyết định,NHNCK.qlnhn.Decisions.Title
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Decision Reference,Trích dẫn,NHNCK.qlnhn.Decisions.Reference
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Decision Content,Nội dung quyết định,NHNCK.qlnhn.Decisions.DecisionContent
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Decision Type Code,Loại quyết định,NHNCK.qlnhn.Decisions.TypeId
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Signed Date,Ngày ký,NHNCK.qlnhn.Decisions.SignedDate
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Signatory Name,Người ký,NHNCK.qlnhn.Decisions.Signatory
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Signatory Position Name,Chức vụ người ký,NHNCK.qlnhn.Decisions.Position
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Decision Unit Name,Đơn vị ban hành,NHNCK.qlnhn.Decisions.DecisionUnit
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Documentation Item File Name,Tên file đính kèm,NHNCK.qlnhn.Decisions.FileName
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Documentation Item File Path,Đường dẫn file,NHNCK.qlnhn.Decisions.FilePath
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Decision Status Code,Trạng thái quyết định,NHNCK.qlnhn.Decisions.Status
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Created By Officer Id,FK đến Officer,NHNCK.qlnhn.Decisions.CreatedBy
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.Decisions.CreatedBy
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Created Timestamp,Ngày tạo,NHNCK.qlnhn.Decisions.CreatedAt
+Documentation,[Documentation] Gov. Registration Document,Securities Practitioner License Decision Document,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.Decisions.UpdatedAt
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Organization Employment Report Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Organization Employment Report Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.OrganizationReports.Id
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.OrganizationReports,
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.OrganizationReports.ProfessionalId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.OrganizationReports.ProfessionalId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Securities Organization Id,FK đến tổ chức,NHNCK.qlnhn.OrganizationReports.OrganizationId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Securities Organization Code,Mã tổ chức,NHNCK.qlnhn.OrganizationReports.OrganizationId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Certificate Type Code,Mã loại chứng chỉ,NHNCK.qlnhn.OrganizationReports.CertificateId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,License Certificate Document Id,FK đến chứng chỉ,NHNCK.qlnhn.OrganizationReports.CertificateRecordId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,License Certificate Document Code,Mã chứng chỉ,NHNCK.qlnhn.OrganizationReports.CertificateRecordId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Parent Organization Employment Report Id,FK self-ref — báo cáo cha,NHNCK.qlnhn.OrganizationReports.ParentReportId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Parent Organization Employment Report Code,Mã báo cáo cha,NHNCK.qlnhn.OrganizationReports.ParentReportId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Report Type Code,Loại báo cáo,NHNCK.qlnhn.OrganizationReports.Type
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Report Date,Ngày báo cáo,NHNCK.qlnhn.OrganizationReports.ReportDate
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Full Name,Họ và tên (snapshot từ tổ chức báo cáo),NHNCK.qlnhn.OrganizationReports.FullName
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Date Of Birth,Ngày sinh (snapshot),NHNCK.qlnhn.OrganizationReports.BirthDate
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Identification Number,Số chứng minh thư (snapshot),NHNCK.qlnhn.OrganizationReports.IdentityNumber
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Position Name,Chức vụ,NHNCK.qlnhn.OrganizationReports.Position
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Department Name,Phòng ban,NHNCK.qlnhn.OrganizationReports.Department
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Business Department Name,Phòng ban nghiệp vụ,NHNCK.qlnhn.OrganizationReports.BusinessDepartment
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Workplace Name,Nơi công tác,NHNCK.qlnhn.OrganizationReports.Workplace
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Hire Date,Ngày tiếp nhận,NHNCK.qlnhn.OrganizationReports.HireDate
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Termination Date,Ngày thôi việc,NHNCK.qlnhn.OrganizationReports.TerminationDate
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Certificate Number,Số chứng chỉ (snapshot),NHNCK.qlnhn.OrganizationReports.CertificateNumber
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Certificate Issue Date,Ngày cấp chứng chỉ (snapshot),NHNCK.qlnhn.OrganizationReports.IssueDate
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Discipline Description,Kỷ luật (vi phạm hoặc xử phạt),NHNCK.qlnhn.OrganizationReports.Disciplines
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Report Description,Mô tả báo cáo,NHNCK.qlnhn.OrganizationReports.Description
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Sync Id,Mã đồng bộ,NHNCK.qlnhn.OrganizationReports.SyncId
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Sync Created Timestamp,Ngày tạo đồng bộ,NHNCK.qlnhn.OrganizationReports.SyncCreatedAt
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Sync Updated Timestamp,Ngày cập nhật đồng bộ,NHNCK.qlnhn.OrganizationReports.SyncUpdatedAt
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Created By Officer Id,FK đến Officer,NHNCK.qlnhn.OrganizationReports.CreatedBy
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.OrganizationReports.CreatedBy
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Created Timestamp,Ngày tạo,NHNCK.qlnhn.OrganizationReports.CreatedAt
+Documentation,[Documentation] Employer Registration,Securities Practitioner Organization Employment Report,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.OrganizationReports.UpdatedAt
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Tax Debt Enforcement Order Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Tax Debt Enforcement Order Code,Mã định danh bản ghi trong DCST. BK,DCST.TCT_TT_CUONG_CHE_NO.ID
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_TT_CUONG_CHE_NO,
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Registered Taxpayer Id,Mã người nhận. FK đến Registered Taxpayer,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Registered Taxpayer Code,Mã người nhận,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Taxpayer Name,Tên người nhận,DCST.TCT_TT_CUONG_CHE_NO.TEN_NNHAN
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Taxpayer Business Industry,Ngành kinh doanh đối tượng bị cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.NGANH_KD_DTBCC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Tax Authority Code,Mã cơ quan thuế,DCST.TCT_TT_CUONG_CHE_NO.MA_CQT
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Tax Authority Name,Tên cơ quan thuế,DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Supervisory Tax Authority Code,Mã cơ quan thuế quản lý,DCST.TCT_TT_CUONG_CHE_NO.MA_CQT_QL
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Supervisory Tax Authority Name,Tên cơ quan thuế quản lý,DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT_QL
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Type Code,Mã hình thức cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.MA_HTCC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Type Name,Tên hình thức cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.TEN_HTCC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Electronic Transaction Code,Mã giao dịch điện tử,DCST.TCT_TT_CUONG_CHE_NO.MA_GDDT
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Order Number,Số quyết định,DCST.TCT_TT_CUONG_CHE_NO.SO_QD
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Order Date,Ngày quyết định,DCST.TCT_TT_CUONG_CHE_NO.NGAY_QD
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforced Amount,Số tiền bị cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.SO_TIEN_BI_CC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Effective Start Date,Ngày hiệu lực từ quyết định từ,DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_TU
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Effective End Date,Ngày hiệu lực quyết định đến,DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_DEN
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Time,Thời gian cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.THOI_GIAN_CC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Enforcement Location,Địa điểm cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.DIA_DIEM_CC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Taxpayer Account Number,Số tài khoản đối tượng bị cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.STK_DT_BCC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Taxpayer Account Bank,Nơi mở tài khoản bị cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.NO_MO_TK_BCC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Income Manager Name,Tên đối tượng quản lý thu nhập,DCST.TCT_TT_CUONG_CHE_NO.TEN_DTQLTN
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Income Manager Address,Địa chỉ đối tượng quản lý thu nhập,DCST.TCT_TT_CUONG_CHE_NO.DI_CHI_DTQLTN
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Seized Asset Description,Tài sản kê biên,DCST.TCT_TT_CUONG_CHE_NO.TS_KE_BIEN
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Seized Asset Value,Giá trị tài sản,DCST.TCT_TT_CUONG_CHE_NO.GIA_TRI_TS
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Asset Custodian Code,Mã đối tượng giữ tài sản cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.MA_DTGTSCC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Asset Custodian Name,Tên đối tượng giữ tài sản cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.TEN_DTGTSCC
+Documentation,[Documentation] Regulatory Report,Tax Debt Enforcement Order,Asset Custodian Address,Địa chỉ đối tượng giữ tài sản cưỡng chế,DCST.TCT_TT_CUONG_CHE_NO.DIA_CHI_DTGTSCC
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Financial Statement Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Financial Statement Code,Mã định danh bản ghi trong DCST. BK,DCST.TCT_BAO_CAO.ID
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_BAO_CAO,
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Registered Taxpayer Id,Mã số thuế. FK đến Registered Taxpayer,DCST.TCT_BAO_CAO.MST
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Registered Taxpayer Code,Mã số thuế,DCST.TCT_BAO_CAO.MST
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Name,Tên người nộp thuế,DCST.TCT_BAO_CAO.TEN_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Address,Địa chỉ người nộp thuế,DCST.TCT_BAO_CAO.DIA_CHI_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Ward,Phường xã,DCST.TCT_BAO_CAO.PHUONG_XA
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer District Code,Mã huyện người nộp thuế,DCST.TCT_BAO_CAO.MA_HUYEN_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer District Name,Tên huyện người nộp thuế,DCST.TCT_BAO_CAO.TEN_HUYEN_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Province Code,Mã tỉnh người nộp thuế,DCST.TCT_BAO_CAO.MA_TINH_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Province Name,Tên tỉnh người nộp thuế,DCST.TCT_BAO_CAO.TEN_TINH_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Phone Number,Điện thoại người nộp thuế,DCST.TCT_BAO_CAO.DIEN_THOAI_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Fax Number,Fax người nộp thuế,DCST.TCT_BAO_CAO.FAX_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Taxpayer Email,Email người nộp thuế,DCST.TCT_BAO_CAO.EMAIL_NNT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Business Industry,Ngày nghề kinh doanh,DCST.TCT_BAO_CAO.NGANH_NGHE_KD
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Service Code,Mã dịch vụ,DCST.TCT_BAO_CAO.MA_DVU
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Service Name,Tên dịch vụ,DCST.TCT_BAO_CAO.TEN_DVU
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Service Version,Phiên bản dịch vụ,DCST.TCT_BAO_CAO.PHIEN_BAN_DVU
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Service Provider Information,Thông tin nhà cung cấp dịch vụ,DCST.TCT_BAO_CAO.TT_NHACC_DVU
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Return Code,Mã tờ khai,DCST.TCT_BAO_CAO.MA_TKHAI
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Return Name,Tên tờ khai,DCST.TCT_BAO_CAO.TEN_TKHAI
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Return Form Description,Mô tả biểu mẫu,DCST.TCT_BAO_CAO.MO_TA_BMAU
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Return XML Version,Phiên bản tờ khai XML,DCST.TCT_BAO_CAO.PBAN_TKHAI_XML
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Return Type Code,Loại tờ khai,DCST.TCT_BAO_CAO.LOAI_TKHAI
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Amendment Count,Số lần,DCST.TCT_BAO_CAO.SO_LAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Reporting Period Type Code,Kiểu kỳ,DCST.TCT_BAO_CAO.KIEU_KY
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Reporting Period,Kỳ kê khai,DCST.TCT_BAO_CAO.KY_KKHAI
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Reporting Period Start Date,Kỳ kê khai từ ngày,DCST.TCT_BAO_CAO.KY_KKHAI_TU_NGAY
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Reporting Period End Date,Kỳ kê khai đến ngày,DCST.TCT_BAO_CAO.KY_KKHAI_DEN_NGAY
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Reporting Period Start Month,Kỳ kê khai từ tháng,DCST.TCT_BAO_CAO.KY_KKHAI_TU_THANG
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Reporting Period End Month,Kỳ kê khai đến tháng,DCST.TCT_BAO_CAO.KY_KKHAI_DEN_THANG
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Authority Code,Mã cơ quan thuế nơi nộp,DCST.TCT_BAO_CAO.MA_CQTHUE_NOI_NOP
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Tax Authority Name,Tên cơ quan thuế nơi nộp,DCST.TCT_BAO_CAO.TEN_CQTHUE_NOI_NOP
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Filing Date,Ngày lập tờ khai,DCST.TCT_BAO_CAO.NGAY_LAP_TKHAI
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Extension Reason Code,Mã lý do gia hạn,DCST.TCT_BAO_CAO.MA_LY_DO_GIA_HAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Extension Reason,Lý do gia hạn,DCST.TCT_BAO_CAO.LY_DO_GIA_HAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Signatory Name,Người ký,DCST.TCT_BAO_CAO.NGUOI_KY
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Signing Date,Ngày ký,DCST.TCT_BAO_CAO.NGAY_KY
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Audit Status Code,Trạng thái kiểm toán,DCST.TCT_BAO_CAO.TRANG_THAI_KT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Audit Firm Tax Identification Number,Mã số thuế tổ chức kiểm toán,DCST.TCT_BAO_CAO.MST_TC_KTOAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Audit Firm Name,Tổ chức kiểm toán,DCST.TCT_BAO_CAO.TC_KIEM_TOAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Auditor Code,Mã kiểm toán viên,DCST.TCT_BAO_CAO.MA_KIEM_TOAN_VIEN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Auditor Name,Kiểm toán vien,DCST.TCT_BAO_CAO.KIEM_TOAN_VIEN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Audited Financial Statement Indicator,Báo cáo tài chính đã kiểm toán,DCST.TCT_BAO_CAO.BCTC_DA_KIEM_TOAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Audit Opinion Code,Mã ý kiến kiểm toán,DCST.TCT_BAO_CAO.MA_YKKT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Audit Opinion,Ý kiến kiểm toán,DCST.TCT_BAO_CAO.YKKT
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Audit Date,Ngày kiểm toán,DCST.TCT_BAO_CAO.NGAY_KIEM_TOAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Created Date,Ngày tạo,DCST.TCT_BAO_CAO.NGAY_TAO
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Submission Date,Ngày nộp tờ khai,DCST.TCT_BAO_CAO.ADD_INFO_NGAY_NOP_TK
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Receipt Date,Ngày tiếp nhận,DCST.TCT_BAO_CAO.ADD_INFO_NGAY_TIEP_NHAN
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Report Set Period,Kỳ lập bộ báo cáo,DCST.TCT_BAO_CAO.ADD_INFO_KY_LAP_BO
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Filing Origin,Nguồn gốc tờ khai,DCST.TCT_BAO_CAO.ADD_INFO_NGUON_GOC_TK
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Filing Entry Person,Người nhập tờ khại,DCST.TCT_BAO_CAO.ADD_INFO_NGUOI_NHAP_TK
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Filing Acknowledged Date,Ngày nhận tờ khai,DCST.TCT_BAO_CAO.ADD_INFO_NGAY_NHAN_TK
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Filing Reference Id,ID tờ khai,DCST.TCT_BAO_CAO.ADD_INFO_ID_TK
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Sending Location,Nơi gửi,DCST.TCT_BAO_CAO.ADD_INFO_NOI_GUI
+Documentation,[Documentation] Regulatory Report,Tax Financial Statement,Receiving Location,Nơi nhận,DCST.TCT_BAO_CAO.ADD_INFO_NOI_NHAN
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Tax Financial Statement Item Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Tax Financial Statement Item Code,Mã định danh bản ghi trong DCST. BK,DCST.TCT_BAO_CAO_CHI_TIET.ID
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_BAO_CAO_CHI_TIET,
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Tax Financial Statement Id,ID bảng TCT_BAO_CAO. FK đến Tax Financial Statement,DCST.TCT_BAO_CAO_CHI_TIET.TCT_BAO_CAO_ID
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Tax Financial Statement Code,ID bảng TCT_BAO_CAO,DCST.TCT_BAO_CAO_CHI_TIET.TCT_BAO_CAO_ID
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Line Item Code,Mã chỉ tiêu,DCST.TCT_BAO_CAO_CHI_TIET.MA_CHI_TIEU
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Line Item Name,Tên chỉ tiêu,DCST.TCT_BAO_CAO_CHI_TIET.TEN_CHI_TIEU
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Line Item Note,Thuyết minh,DCST.TCT_BAO_CAO_CHI_TIET.THUYET_MINH
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Sheet Name,Tên sheet,DCST.TCT_BAO_CAO_CHI_TIET.TEN_SHEET
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Year End Amount,Số cuối năm,DCST.TCT_BAO_CAO_CHI_TIET.SO_CUOI_NAM
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Year Start Amount,Số đầu năm,DCST.TCT_BAO_CAO_CHI_TIET.SO_DAU_NAM
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Current Year Amount,Năm nay,DCST.TCT_BAO_CAO_CHI_TIET.NAM_NAY
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Prior Year Amount,Năm trước,DCST.TCT_BAO_CAO_CHI_TIET.NAM_TRUOC
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Prior Year Increase Amount,Số tăng năm nay,DCST.TCT_BAO_CAO_CHI_TIET.SO_TANG_NAM_TRUOC
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Current Year Net Amount,Số năm nay,DCST.TCT_BAO_CAO_CHI_TIET.SO_NAM_NAY
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Prior Year Net Amount,Số năm ngoái,DCST.TCT_BAO_CAO_CHI_TIET.SO_NAM_NGOAI
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Current Year Opening Balance,Số dư đầu năm nay,DCST.TCT_BAO_CAO_CHI_TIET.SO_DU_DAU_NAM_NAY
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Current Year Closing Balance,Số dư cuối năm nay,DCST.TCT_BAO_CAO_CHI_TIET.SO_DU_CUOI_NAM_NAY
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Prior Year Opening Balance,Số dư đầu năm trước,DCST.TCT_BAO_CAO_CHI_TIET.SO_DU_DAU_NAM_TRUOC
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Prior Year Closing Balance,Số dư cuối năm trước,DCST.TCT_BAO_CAO_CHI_TIET.SO_DU_CUOI_NAM_TRUOC
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Current Year Increase Amount,Số tăng năm nay,DCST.TCT_BAO_CAO_CHI_TIET.SO_TANG_NAM_NAY
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Current Year Decrease Amount,Số giảm năm nay,DCST.TCT_BAO_CAO_CHI_TIET.SO_GIAM_NAM_NAY
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Prior Year Decrease Amount,Số giảm năm trước,DCST.TCT_BAO_CAO_CHI_TIET.SO_GIAM_NAM_TRUOC
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Preparer Name,Người lập biểu,DCST.TCT_BAO_CAO_CHI_TIET.NGUOILAPBIEU
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Chief Accountant Name,Kế toán trưởng,DCST.TCT_BAO_CAO_CHI_TIET.KETOANTRUONG
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Report Preparation Date,Ngày lập,DCST.TCT_BAO_CAO_CHI_TIET.NGAYLAP
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Director Name,Giám đốc,DCST.TCT_BAO_CAO_CHI_TIET.GIAMDOC
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Auditor License Number,Số chứng chỉ hành nghề,DCST.TCT_BAO_CAO_CHI_TIET.SOCHUNGCHIHANHNGHE
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Audit Firm Name,Đơn vị cung cấp dịch vụ kiểm toán,DCST.TCT_BAO_CAO_CHI_TIET.DONVICCAPDVUKTOAN
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Going Concern Indicator,Hoạt động liên tục,DCST.TCT_BAO_CAO_CHI_TIET.HOATDONGLIENTUC
+Documentation,[Documentation] Reported Information,Tax Financial Statement Item,Non Going Concern Indicator,Hoạt động không liên tục,DCST.TCT_BAO_CAO_CHI_TIET.HOATDONGKHONGLIENTUC
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Tax Invoice Enforcement Order Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Tax Invoice Enforcement Order Code,Mã định danh bản ghi trong DCST. BK,DCST.TCT_TTCCN_HOA_DON.ID
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_TTCCN_HOA_DON,
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Registered Taxpayer Id,Mã số thuế của người nộp thuế. FK đến Registered Taxpayer,DCST.TCT_TTCCN_HOA_DON.MA_NNHAN
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Registered Taxpayer Code,Mã số thuế của người nộp thuế,DCST.TCT_TTCCN_HOA_DON.MA_NNHAN
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Taxpayer Name,Tên người nộp thuế,DCST.TCT_TTCCN_HOA_DON.TEN_NNHAN
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Supervisory Tax Authority Code,Mã cơ quan quản lý trực tiếp,DCST.TCT_TTCCN_HOA_DON.MA_CQT_QL
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Supervisory Tax Authority Name,Tên cơ quan quản lý trực tiếp,DCST.TCT_TTCCN_HOA_DON.TEN_CQT_QL
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Taxpayer Business Industry,Tên ngành kinh doanh của đối tượng bị cưỡng chế,DCST.TCT_TTCCN_HOA_DON.NGANH_KD_DTBCC
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Enforcement Type Code,Mã hình thức cưỡng chế,DCST.TCT_TTCCN_HOA_DON.MA_HTCC
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Enforcement Type Name,Tên hình thức cưỡng chế,DCST.TCT_TTCCN_HOA_DON.TEN_HTCC
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Electronic Transaction Code,Mã giao dịch điện tử,DCST.TCT_TTCCN_HOA_DON.MA_GDDT
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Invoice Enforcement Order Number,Số quyết định,DCST.TCT_TTCCN_HOA_DON.SO_QD
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Invoice Enforcement Order Date,Ngày quyết định,DCST.TCT_TTCCN_HOA_DON.NGAY_QD
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Enforcement Effective Start Date,Ngày hiệu lực từ,DCST.TCT_TTCCN_HOA_DON.NGAY_HIEU_LUC_QD_TU
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Enforcement Effective End Date,Ngày hiệu lực đến,DCST.TCT_TTCCN_HOA_DON.NGAY_HIEU_LUC_QD_DEN
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Enforcement Status,Hiệu lực,DCST.TCT_TTCCN_HOA_DON.HIEU_LUC
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Prior Enforcement Order Number,Căn cứ số quyết định,DCST.TCT_TTCCN_HOA_DON.CAN_CU_QDSO
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Prior Enforcement Order Date,Căn cứ ngày quyết định,DCST.TCT_TTCCN_HOA_DON.CAN_CU_QDNGAY
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Notice Taxpayer Code,Thông báo: Mã số thuế người nộp thuế,DCST.TCT_TTCCN_HOA_DON.TB_MA_NNHAN
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Notice Taxpayer Name,Thông báo: Tên người nộp thuế,DCST.TCT_TTCCN_HOA_DON.TB_TEN_NNHAN
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Notice Code,Mã thông báo,DCST.TCT_TTCCN_HOA_DON.MA_THONG_BAO
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Notice Name,Tên thông báo,DCST.TCT_TTCCN_HOA_DON.TEN_THONG_BAO
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Notified Tax Debt Amount,Thông báo số tiền nợ và số tiền phạt nộp chậm,DCST.TCT_TTCCN_HOA_DON.TB_NO_SO
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order,Debt Notice Date,Thông báo tiền nợ và tiền phạt nộp chậm,DCST.TCT_TTCCN_HOA_DON.TB_NO_NGAY
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Tax Invoice Enforcement Order Item Id,Id tự sinh (surrogate key),
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Tax Invoice Enforcement Order Item Code,Mã định danh bản ghi trong DCST. BK,DCST.HOA_DON_CHI_TIET.ID
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.HOA_DON_CHI_TIET,
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Tax Invoice Enforcement Order Id,ID Thông tin cưỡng chế nợ theo hóa đơn. FK đến Tax Invoice Enforcement Order,DCST.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Tax Invoice Enforcement Order Code,ID Thông tin cưỡng chế nợ theo hóa đơn,DCST.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Invoice Template Symbol,Ký hiệu mẫu,DCST.HOA_DON_CHI_TIET.KH_MAU
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Invoice Series Symbol,Ký hiệu hóa đơn,DCST.HOA_DON_CHI_TIET.KH_HOA_DON
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Invoice Number,Số hóa đơn,DCST.HOA_DON_CHI_TIET.SO_HOA_DON
+Documentation,[Documentation] Invoice,Tax Invoice Enforcement Order Item,Invoice Type Code,Loại hóa đơn,DCST.HOA_DON_CHI_TIET.LOAI_HOA_DON
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Professional Training Class Id,Id tự sinh (surrogate key),
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Professional Training Class Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.SpecializationCourses.Id
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.SpecializationCourses,
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Course Code,Mã khóa học (mã nghiệp vụ),NHNCK.qlnhn.SpecializationCourses.CourseCode
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Course Name,Tên khóa học,NHNCK.qlnhn.SpecializationCourses.CourseName
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Specialization Type Code,Mã chuyên môn,NHNCK.qlnhn.SpecializationCourses.SpecializationId
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Academic Year,Năm học,NHNCK.qlnhn.SpecializationCourses.AcademicYear
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Examination Date,Ngày thi,NHNCK.qlnhn.SpecializationCourses.ExamDate
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Course Description,Mô tả khóa học,NHNCK.qlnhn.SpecializationCourses.Description
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Active Indicator,Trạng thái hoạt động,NHNCK.qlnhn.SpecializationCourses.IsActive
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Course Status Code,"Trạng thái (1:HĐ, 0:Không HĐ, -1:Đã xóa)",NHNCK.qlnhn.SpecializationCourses.Status
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Documentation Item File Path,Đường dẫn tài liệu,NHNCK.qlnhn.SpecializationCourses.FilePath
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Created By Officer Id,FK đến Regulatory Authority Officer,NHNCK.qlnhn.SpecializationCourses.CreatedBy
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.SpecializationCourses.CreatedBy
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Created Timestamp,Ngày tạo,NHNCK.qlnhn.SpecializationCourses.CreatedAt
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Updated By Officer Id,FK đến Regulatory Authority Officer,NHNCK.qlnhn.SpecializationCourses.UpdatedBy
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Updated By Officer Code,Mã người cập nhật,NHNCK.qlnhn.SpecializationCourses.UpdatedBy
+Event,[Event] Training Course,Securities Practitioner Professional Training Class,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.SpecializationCourses.UpdatedAt
+Involved Party,[Involved Party] Custodian,Custodian Bank,Custodian Bank Id,Khóa đại diện cho ngân hàng lưu ký giám sát.,
+Involved Party,[Involved Party] Custodian,Custodian Bank,Custodian Bank Code,Mã ngân hàng LKGS do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.BANKMONI.Id
+Involved Party,[Involved Party] Custodian,Custodian Bank,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Custodian,Custodian Bank,Organization Name,Tên đầy đủ ngân hàng LKGS.,FMS.BANKMONI.Name
 Involved Party,[Involved Party] Custodian,Custodian Bank,Abbreviation,Tên viết tắt ngân hàng LKGS.,FMS.BANKMONI.ShortName
-Involved Party,[Involved Party] Custodian,Custodian Bank,Activity Status Code,Trạng thái hoạt động hiện tại — load từ bảng danh mục STATUS.,FMS.BANKMONI.Status
-Involved Party,[Involved Party] Custodian,Custodian Bank,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ (1) hay dữ liệu mới (0).,FMS.BANKMONI.IsDataMigration
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,FMS Fund Company Key Person Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,FMS Fund Company Key Person Code,Mã nhân sự do hệ thống FMS sinh ra. Là Business Key.,FMS.TLProfiles.Id
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Fund Management Company Id,Khóa đại diện công ty QLQ mà nhân sự thuộc về.,FMS.TLProfiles.SecId
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,FMS.TLProfiles.SecId
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Full Name,Họ tên đầy đủ nhân sự.,FMS.TLProfiles.FullName
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Birth Date,Ngày sinh nhân sự.,FMS.TLProfiles.BirthDate
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Nationality Code,Mã ID quốc tịch nhân sự.,FMS.TLProfiles.NatId
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Job Type Code,Mã ID loại chức vụ nhân sự.,FMS.TLProfiles.JobTypeId
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Is Legal Representative Indicator,Cờ đánh dấu là người đại diện pháp luật: 1 = Có; 0 = Không.,FMS.TLProfiles.IsLegal
-Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Is Disclosure Representative Indicator,Cờ đánh dấu là đại diện công bố thông tin: 1 = Có; 0 = Không.,FMS.TLProfiles.IsCBTT
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Fund Investor Membership Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Fund Investor Membership Code,Mã quan hệ thành viên do hệ thống FMS sinh ra. Là Business Key.,FMS.MBFUND.Id
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà NĐT tham gia. FK đến FMS Investment Fund.,FMS.MBFUND.FndId
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.MBFUND.FndId
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư thành viên. FK đến Discretionary Investment Investor.,FMS.MBFUND.InvesId
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Discretionary Investment Investor Code,Mã nhà đầu tư thành viên. Lưu dư thừa.,FMS.MBFUND.InvesId
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Capital Amount,Số lượng vốn góp của NĐT trong quỹ.,FMS.MBFUND.Capital
-Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Ownership Ratio,Tỷ lệ sở hữu (%) của NĐT trong quỹ.,FMS.MBFUND.Ratio
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,FMS Member Rating Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,FMS Member Rating Code,Mã bảng xếp hạng do hệ thống FMS sinh ra. Là Business Key.,FMS.RANK.Id
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Fund Management Company Id,Khóa đại diện công ty QLQ được xếp hạng. FK đến Fund Management Company.,FMS.RANK.SecId
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Fund Management Company Code,Mã công ty QLQ được xếp hạng. Lưu dư thừa.,FMS.RANK.SecId
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Member Rating Period Id,Khóa đại diện kỳ đánh giá xếp loại. FK đến Member Rating Period.,FMS.RANK.RatingPdId
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Member Rating Period Code,Mã kỳ đánh giá xếp loại. Lưu dư thừa.,FMS.RANK.RatingPdId
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Total Score,Tổng điểm đánh giá xếp loại.,FMS.RANK.TotalScore
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Rank Value,Xếp hạng theo thứ tự (số nguyên thứ tự).,FMS.RANK.RankValue
-Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Rank Class Code,Xếp loại theo nhóm (ví dụ: A/B/C/D).,FMS.RANK.RankClass
-Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Foreign Fund Management Organization Unit Staff Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Foreign Fund Management Organization Unit Staff Code,Mã bản ghi nhân sự VPĐD/CN do hệ thống FMS sinh ra. Là Business Key.,FMS.STFFGBRCH.Id
-Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN mà nhân sự đảm nhận vai trò. FK đến Foreign Fund Management Organization Unit.,FMS.STFFGBRCH.FgBrId
+Involved Party,[Involved Party] Custodian,Custodian Bank,Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,FMS.BANKMONI.Status
+Involved Party,[Involved Party] Custodian,Custodian Bank,Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,FMS.BANKMONI.IsDataMigration
+Involved Party,[Involved Party],Discretionary Investment Investor,Discretionary Investment Investor Id,Khóa đại diện cho nhà đầu tư ủy thác.,
+Involved Party,[Involved Party],Discretionary Investment Investor,Discretionary Investment Investor Code,Mã nhà đầu tư ủy thác do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.INVES.Id
+Involved Party,[Involved Party],Discretionary Investment Investor,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party],Discretionary Investment Investor,Full Name,Tên nhà đầu tư ủy thác.,FMS.INVES.Name
+Involved Party,[Involved Party],Discretionary Investment Investor,Domestic Foreign Indicator,Phân loại trong nước/nước ngoài: 1 = Trong nước; 0 = Ngoài.,FMS.INVES.Dorf
+Involved Party,[Involved Party],Discretionary Investment Investor,Nationality Code,Mã ID quốc tịch. FK → NATIONAL.Id.,FMS.INVES.NatId
+Involved Party,[Involved Party],Discretionary Investment Investor,Investor Type Code,Mã ID loại hình nhà đầu tư/cổ đông. FK → STOCKHOLDERTYPE.Id.,FMS.INVES.StoId
+Involved Party,[Involved Party],Discretionary Investment Investor,Fund Management Company Id,Khóa đại diện công ty QLQ mà NĐT ủy thác. FK → SECURITIES.,FMS.INVES.SecId
+Involved Party,[Involved Party],Discretionary Investment Investor,Fund Management Company Code,Mã công ty QLQ mà NĐT ủy thác. Lưu dư thừa.,FMS.INVES.SecId
+Involved Party,[Involved Party],Discretionary Investment Investor,Relationship Description,Quan hệ với người có liên quan (denormalized text).,FMS.INVES.RelationShip
+Involved Party,[Involved Party],Discretionary Investment Investor,Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,FMS.INVES.IsDataMigration
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Foreign Fund Management Organization Unit Staff Id,Khóa đại diện cho vai trò nhân sự tại VPĐD/CN công ty QLQ nước ngoài.,
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Foreign Fund Management Organization Unit Staff Code,Mã bản ghi nhân sự VPĐD/CN do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.STFFGBRCH.Id
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN mà nhân sự đảm nhận vai trò. FK → FORBRCH.,FMS.STFFGBRCH.FgBrId
 Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,FMS.STFFGBRCH.FgBrId
-Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Fund Company Key Person Id,Khóa đại diện cá nhân đảm nhận vai trò tại VPĐD/CN. FK đến FMS Fund Company Key Person.,FMS.STFFGBRCH.TLId
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Fund Company Key Person Id,Khóa đại diện cá nhân đảm nhận vai trò tại VPĐD/CN. FK → TLProfiles.,FMS.STFFGBRCH.TLId
 Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Fund Company Key Person Code,Mã cá nhân đảm nhận vai trò. Lưu dư thừa.,FMS.STFFGBRCH.TLId
 Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Organization Unit Type Code,Loại đơn vị: O = VPĐD NN; B = CN NN.,FMS.STFFGBRCH.FnType
 Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Is Legal Representative Indicator,Cờ đánh dấu là người đại diện pháp luật: 1 = Có; 0 = Không.,FMS.STFFGBRCH.Isr
-Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Is Disclosure Representative Indicator,Cờ đánh dấu là đại diện công bố thông tin: 1 = Có; 0 = Không.,FMS.STFFGBRCH.Isp
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Representative Board Member Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Representative Board Member Code,Mã bản ghi ban đại diện do hệ thống FMS sinh ra. Là Business Key.,FMS.REPRESENT.Id
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà cá nhân tham gia ban đại diện. FK đến FMS Investment Fund.,FMS.REPRESENT.FndId
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.REPRESENT.FndId
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Company Key Person Id,Khóa đại diện cá nhân đảm nhận vai trò trong ban đại diện. FK đến FMS Fund Company Key Person.,FMS.REPRESENT.TLId
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Company Key Person Code,Mã cá nhân trong ban đại diện. Lưu dư thừa.,FMS.REPRESENT.TLId
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Is Chair Indicator,Cờ đánh dấu là trưởng ban đại diện: 1 = Có; 0 = Không.,FMS.REPRESENT.IsChair
-Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Activity Status Code,Trạng thái: 1 = Hoạt động; 0 = Khóa.,FMS.REPRESENT.Status
-Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Fund Distribution Agent Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Fund Distribution Agent Code,Mã đại lý phân phối quỹ do hệ thống FMS sinh ra. Là Business Key.,FMS.AGENCIES.Id
-Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Organization Name,Tên đầy đủ tổ chức đại lý phân phối quỹ.,FMS.AGENCIES.Name
-Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Abbreviation,Tên viết tắt tổ chức đại lý.,FMS.AGENCIES.ShortName
-Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Agent Type Code,Loại đại lý phân phối — load từ bảng danh mục AGENCYTYPE.,FMS.AGENCIES.AgencyTypeId
-Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Activity Status Code,Trạng thái hoạt động hiện tại — load từ bảng danh mục STATUS.,FMS.AGENCIES.Status
-Involved Party,[Involved Party] Organization,FMS Investment Fund,FMS Investment Fund Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Organization,FMS Investment Fund,FMS Investment Fund Code,Mã quỹ đầu tư do hệ thống FMS sinh ra. Là Business Key.,FMS.FUNDS.Id
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Organization Name,Tên quỹ đầu tư.,FMS.FUNDS.FundName
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Abbreviation,Tên viết tắt quỹ đầu tư.,FMS.FUNDS.FundShortName
-Involved Party,[Involved Party] Organization,FMS Investment Fund,English Name,Tên tiếng Anh quỹ đầu tư.,FMS.FUNDS.FundEnName
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Management Company Id,Khóa đại diện công ty QLQ quản lý quỹ. FK đến Fund Management Company.,FMS.FUNDS.SecId
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Management Company Code,Mã công ty QLQ quản lý quỹ. Lưu dư thừa.,FMS.FUNDS.SecId
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Charter Capital Amount,Vốn điều lệ quỹ đầu tư.,FMS.FUNDS.FundCapital
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Type Code,Loại hình quỹ đầu tư.,FMS.FUNDS.FundType
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Active Date,Ngày quỹ chính thức hoạt động.,FMS.FUNDS.ActiveDate
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Establishment Decision Date,Ngày cấp phép thành lập quỹ.,FMS.FUNDS.DecisionDate
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Stop Date,Ngày giải thể/đóng quỹ.,FMS.FUNDS.StopDate
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Activity Status Code,Trạng thái hoạt động của quỹ.,FMS.FUNDS.Status
-Involved Party,[Involved Party] Organization,FMS Investment Fund,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ.,FMS.FUNDS.IsDataMigration
-Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,FMS Fund Distribution Agent Organization Unit Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,FMS Fund Distribution Agent Organization Unit Code,Mã CN/PGD do hệ thống FMS sinh ra. Là Business Key.,FMS.AGENCIESBRA.Id
-Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Fund Distribution Agent Id,Khóa đại diện đại lý phân phối chủ quản. FK đến Fund Distribution Agent.,FMS.AGENCIESBRA.AgnId
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Is Disclosure Representative Indicator,Cờ đánh dấu là đại diện công bố thông tin (CBTT): 1 = Có; 0 = Không.,FMS.STFFGBRCH.Isp
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,FMS Fund Company Key Person Id,Khóa đại diện cho nhân sự chủ chốt của công ty QLQ.,
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,FMS Fund Company Key Person Code,Mã nhân sự do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.TLProfiles.Id
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Fund Management Company Id,Khóa đại diện công ty QLQ mà nhân sự thuộc về. FK → SECURITIES.,FMS.TLProfiles.SecId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Fund Management Company Code,Mã công ty QLQ mà nhân sự thuộc về. Lưu dư thừa.,FMS.TLProfiles.SecId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Full Name,Họ tên đầy đủ nhân sự.,FMS.TLProfiles.FullName
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Birth Date,Ngày sinh nhân sự.,FMS.TLProfiles.BirthDate
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Nationality Code,Mã ID quốc tịch nhân sự. FK → NATIONAL.Id.,FMS.TLProfiles.NatId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Job Type Code,Mã ID loại chức vụ nhân sự. FK → JOBTYPE.Id.,FMS.TLProfiles.JobTypeId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Is Legal Representative Indicator,Cờ đánh dấu là người đại diện pháp luật: 1 = Có; 0 = Không.,FMS.TLProfiles.IsLegal
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Is Disclosure Representative Indicator,Cờ đánh dấu là đại diện công bố thông tin (CBTT): 1 = Có; 0 = Không.,FMS.TLProfiles.IsCBTT
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,FMS Fund Distribution Agent Organization Unit Id,Khóa đại diện cho CN/PGD của đại lý phân phối quỹ.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,FMS Fund Distribution Agent Organization Unit Code,Mã CN/PGD do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.AGENCIESBRA.Id
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Fund Distribution Agent Id,Khóa đại diện đại lý phân phối chủ quản. FK → AGENCIES.,FMS.AGENCIESBRA.AgnId
 Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Fund Distribution Agent Code,Mã đại lý phân phối chủ quản. Lưu dư thừa.,FMS.AGENCIESBRA.AgnId
 Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Organization Name,Tên CN/PGD của đại lý phân phối quỹ.,FMS.AGENCIESBRA.Name
-Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Activity Status Code,Trạng thái hoạt động hiện tại.,FMS.AGENCIESBRA.Status
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Code,Mã CN/VPĐD do hệ thống FMS sinh ra. Là Business Key.,FMS.BRANCHES.Id
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Fund Management Company Id,Khóa đại diện công ty QLQ chủ quản. FK đến Fund Management Company.,FMS.BRANCHES.SecId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,FMS.AGENCIESBRA.Status
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Fund Investor Membership Id,Khóa đại diện cho quan hệ thành viên của nhà đầu tư trong quỹ.,
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Fund Investor Membership Code,Mã quan hệ thành viên do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.MBFUND.Id
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà NĐT tham gia. FK → FUNDS.,FMS.MBFUND.FndId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.MBFUND.FndId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư thành viên. FK → INVES.,FMS.MBFUND.InvesId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Discretionary Investment Investor Code,Mã nhà đầu tư thành viên. Lưu dư thừa.,FMS.MBFUND.InvesId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Capital Amount,Số lượng vốn góp của NĐT trong quỹ.,FMS.MBFUND.Capital
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Ownership Ratio,Tỷ lệ sở hữu (%) của NĐT trong quỹ.,FMS.MBFUND.Ratio
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Id,Khóa đại diện cho CN/VPĐD công ty QLQ trong nước.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Code,Mã CN/VPĐD do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.BRANCHES.Id
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Fund Management Company Id,Khóa đại diện công ty QLQ chủ quản. FK → SECURITIES.,FMS.BRANCHES.SecId
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Fund Management Company Code,Mã công ty QLQ chủ quản. Lưu dư thừa.,FMS.BRANCHES.SecId
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Parent Id,Khóa đại diện đơn vị cha (self-FK).,FMS.BRANCHES.BrIdowner
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Parent Id,Khóa đại diện đơn vị cha (self-FK). Null nếu là đơn vị gốc.,FMS.BRANCHES.BrIdowner
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Parent Code,Mã đơn vị cha. Lưu dư thừa.,FMS.BRANCHES.BrIdowner
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Key Person Id,Khóa đại diện người đại diện của đơn vị. FK đến FMS Fund Company Key Person.,FMS.BRANCHES.TLId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Key Person Id,Khóa đại diện người đại diện của đơn vị. FK → TLProfiles.,FMS.BRANCHES.TLId
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Key Person Code,Mã người đại diện. Lưu dư thừa.,FMS.BRANCHES.TLId
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Key Person Name,Tên người đại diện — lưu dư thừa từ nguồn.,FMS.BRANCHES.TLName
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Organization Name,Tên CN/VPĐD.,FMS.BRANCHES.Name
@@ -215,61 +658,275 @@ Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Or
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Business Description,Nghiệp vụ kinh doanh của CN/VPĐD.,FMS.BRANCHES.Content
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Note,Ghi chú.,FMS.BRANCHES.Description
 Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Stop Date,Ngày đóng cửa CN/VPĐD.,FMS.BRANCHES.StopDate
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Activity Status Code,Trạng thái hoạt động của CN/VPĐD.,FMS.BRANCHES.Status
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Attachment File Data,File đính kèm tài liệu giấy phép.,FMS.BRANCHES.FileData
-Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ.,FMS.BRANCHES.IsDataMigration
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Foreign Fund Management Organization Unit Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ nước ngoài do hệ thống FMS sinh ra. Là Business Key.,FMS.FORBRCH.Id
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Organization Name,Tên đầy đủ văn phòng đại diện hoặc chi nhánh.,FMS.FORBRCH.Name
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,English Name,Tên tiếng Anh của VPĐD/CN.,FMS.FORBRCH.EnName
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Latest Adjustment License Number,Số giấy phép điều chỉnh gần nhất do UBCKNN cấp.,FMS.FORBRCH.ChangeLicense
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Latest Adjustment License Date,Ngày UBCKNN chấp thuận giấy phép điều chỉnh gần nhất.,FMS.FORBRCH.ChangeLicenseDate
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Adjustment Note,Lý do sửa đổi giấy phép hoạt động.,FMS.FORBRCH.ChangeNote
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,End Date,Ngày kết thúc hoạt động của VPĐD/CN tại Việt Nam.,FMS.FORBRCH.EndDate
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Activity Status Code,Trạng thái hoạt động hiện tại — load từ bảng danh mục STATUS.,FMS.FORBRCH.Status
-Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Attachment File Data,File đính kèm tài liệu giấy phép (binary reference).,FMS.FORBRCH.FileData
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Fund Management Company Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Fund Management Company Code,Mã công ty QLQ do hệ thống FMS sinh ra. Là Business Key của entity.,FMS.SECURITIES.Id
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Organization Name,Tên đầy đủ công ty quản lý quỹ.,FMS.SECURITIES.Name
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Abbreviation,Tên viết tắt công ty quản lý quỹ.,FMS.SECURITIES.ShortName
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,English Name,Tên giao dịch tiếng Anh của công ty.,FMS.SECURITIES.EnName
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Website,Website công ty — thông tin công khai không thuộc IP Electronic Address.,FMS.SECURITIES.Website
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Establishment Decision Number,Số giấy phép thành lập hoặc giấy phép kinh doanh do UBCKNN cấp.,FMS.SECURITIES.Decision
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Establishment Decision Date,Ngày cấp giấy phép thành lập hoặc GPKD.,FMS.SECURITIES.DecisionDate
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Active Date,Ngày công ty chính thức bắt đầu hoạt động.,FMS.SECURITIES.ActiveDate
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Stop Date,Ngày đóng cửa hoặc bị thu hồi giấy phép hoạt động.,FMS.SECURITIES.StopDate
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Charter Capital Amount,Vốn điều lệ đăng ký của công ty quản lý quỹ theo giấy phép. Currency mặc định VND.,FMS.SECURITIES.SecCapital
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,FMS.BRANCHES.Status
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Attachment File Data,File đính kèm tài liệu giấy phép (binary reference).,FMS.BRANCHES.FileData
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,FMS.BRANCHES.IsDataMigration
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Representative Board Member Id,Khóa đại diện cho vai trò thành viên ban đại diện/HĐQT quỹ.,
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Representative Board Member Code,Mã bản ghi ban đại diện do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.REPRESENT.Id
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà cá nhân tham gia ban đại diện. FK → FUNDS.,FMS.REPRESENT.FndId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.REPRESENT.FndId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Company Key Person Id,Khóa đại diện cá nhân đảm nhận vai trò trong ban đại diện. FK → TLProfiles.,FMS.REPRESENT.TLId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Company Key Person Code,Mã cá nhân trong ban đại diện. Lưu dư thừa.,FMS.REPRESENT.TLId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Is Chair Indicator,Cờ đánh dấu là trưởng ban đại diện: 1 = Có; 0 = Không.,FMS.REPRESENT.IsChair
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Activity Status Code,Trạng thái: 1 = Hoạt động; 0 = Khóa.,FMS.REPRESENT.Status
+Involved Party,[Involved Party] Organization,FMS Investment Fund,FMS Investment Fund Id,Khóa đại diện cho quỹ đầu tư chứng khoán.,
+Involved Party,[Involved Party] Organization,FMS Investment Fund,FMS Investment Fund Code,Mã quỹ đầu tư do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.FUNDS.Id
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Organization Name,Tên quỹ đầu tư.,FMS.FUNDS.FundName
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Abbreviation,Tên viết tắt quỹ đầu tư.,FMS.FUNDS.FundShortName
+Involved Party,[Involved Party] Organization,FMS Investment Fund,English Name,Tên tiếng Anh quỹ đầu tư.,FMS.FUNDS.FundEnName
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Management Company Id,Khóa đại diện công ty QLQ quản lý quỹ. FK → SECURITIES.,FMS.FUNDS.SecId
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Management Company Code,Mã công ty QLQ quản lý quỹ. Lưu dư thừa.,FMS.FUNDS.SecId
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Charter Capital Amount,Vốn điều lệ quỹ đầu tư.,FMS.FUNDS.FundCapital
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Type Code,Loại hình quỹ đầu tư.,FMS.FUNDS.FundType
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Active Date,Ngày quỹ chính thức hoạt động.,FMS.FUNDS.ActiveDate
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Establishment Decision Date,Ngày cấp phép thành lập quỹ.,FMS.FUNDS.DecisionDate
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Stop Date,Ngày giải thể/đóng quỹ.,FMS.FUNDS.StopDate
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,FMS.FUNDS.Status
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,FMS.FUNDS.IsDataMigration
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Distribution Agent Ids,Danh sách surrogate key các đại lý phân phối quỹ. Denormalized từ bảng junction AGENFUNDS.,FMS.AGENFUNDS.AgencyId
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Custodian Bank Ids,Danh sách surrogate key các ngân hàng lưu ký. Denormalized từ bảng junction FNDSBMN.,FMS.FNDSBMN.BankId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,FMS Member Rating Id,Khóa đại diện cho kết quả xếp hạng của công ty QLQ trong một kỳ đánh giá.,
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,FMS Member Rating Code,Mã bảng xếp hạng do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.RANK.Id
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Fund Management Company Id,Khóa đại diện công ty QLQ được xếp hạng. FK → SECURITIES.,FMS.RANK.SecId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Fund Management Company Code,Mã công ty QLQ được xếp hạng. Lưu dư thừa.,FMS.RANK.SecId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Member Rating Period Id,Khóa đại diện kỳ đánh giá xếp loại. FK → RATINGPD.,FMS.RANK.RatingPdId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Member Rating Period Code,Mã kỳ đánh giá xếp loại. Lưu dư thừa.,FMS.RANK.RatingPdId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Total Score,Tổng điểm đánh giá xếp loại.,FMS.RANK.TotalScore
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Rank Value,Xếp hạng theo thứ tự (số nguyên thứ tự).,FMS.RANK.RankValue
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Rank Class Code,Xếp loại theo nhóm (ví dụ: A/B/C/D).,FMS.RANK.RankClass
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Foreign Fund Management Organization Unit Id,Khóa đại diện cho VPĐD/CN công ty QLQ nước ngoài tại VN.,
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.FORBRCH.Id
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Organization Name,Tên đầy đủ VPĐD/CN.,FMS.FORBRCH.Name
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,English Name,Tên tiếng Anh VPĐD/CN.,FMS.FORBRCH.EnName
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Latest Adjustment License Number,Số giấy phép điều chỉnh gần nhất.,FMS.FORBRCH.ChangeLicense
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Latest Adjustment License Date,Ngày chấp thuận giấy phép điều chỉnh gần nhất.,FMS.FORBRCH.ChangeLicenseDate
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Adjustment Note,Lý do sửa đổi giấy phép.,FMS.FORBRCH.ChangeNote
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,End Date,Hoạt động đến ngày.,FMS.FORBRCH.EndDate
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Activity Status Code,Mã trạng thái hoạt động. FK → STATUS.Id.,FMS.FORBRCH.Status
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Attachment File Data,File đính kèm (binary).,FMS.FORBRCH.FileData
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Business Type Codes,Danh sách mã loại hình kinh doanh được phép. Denormalized từ bảng junction FGBUSINESS — mỗi phần tử là 1 BuId.,FMS.FGBUSINESS.BuId
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Fund Distribution Agent Id,Khóa đại diện cho tổ chức đại lý phân phối quỹ.,
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Fund Distribution Agent Code,Mã đại lý quỹ do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.AGENCIES.Id
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Organization Name,Tên đại lý phân phối quỹ.,FMS.AGENCIES.Name
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Abbreviation,Tên viết tắt đại lý.,FMS.AGENCIES.ShortName
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Agent Type Code,Mã ID loại đại lý. FK → AGENCYTYPE.Id.,FMS.AGENCIES.AgencyTypeId
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,FMS.AGENCIES.Status
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Fund Management Company Id,Khóa đại diện cho công ty quản lý quỹ đầu tư trong nước.,
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Fund Management Company Code,Mã công ty QLQ do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.SECURITIES.Id
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Source System Code,Mã hệ thống nguồn.,
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Organization Name,Tên công ty QLQ.,FMS.SECURITIES.Name
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Abbreviation,Tên viết tắt công ty QLQ.,FMS.SECURITIES.ShortName
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,English Name,Tên tiếng Anh công ty QLQ.,FMS.SECURITIES.EnName
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Website,Website công ty QLQ. Thông tin công khai — không đưa vào IP Electronic Address.,FMS.SECURITIES.Website
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Establishment Decision Number,Giấy phép thành lập/Giấy phép kinh doanh — số giấy phép.,FMS.SECURITIES.Decision
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Establishment Decision Date,Ngày cấp giấy phép thành lập/GPKD.,FMS.SECURITIES.DecisionDate
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Active Date,Ngày chính thức hoạt động.,FMS.SECURITIES.ActiveDate
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Stop Date,Ngày đóng cửa/thu hồi giấy phép.,FMS.SECURITIES.StopDate
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Charter Capital Amount,Vốn điều lệ.,FMS.SECURITIES.SecCapital
 Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Domestic Foreign Indicator,Phân loại trong nước/nước ngoài: 1 = Trong nước; 0 = Nước ngoài.,FMS.SECURITIES.Dorf
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Activity Status Code,Trạng thái hoạt động hiện tại của công ty — load từ bảng danh mục STATUS.,FMS.SECURITIES.Status
-Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ (1) hay dữ liệu mới (0).,FMS.SECURITIES.IsDataMigration
-Location,[Location] Electronic Address,IP Electronic Address,Involved Party Id,Khóa đại diện trỏ về entity chính sở hữu thông tin liên lạc này.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.BRANCHES.Id"
-Location,[Location] Electronic Address,IP Electronic Address,Involved Party Code,Mã nghiệp vụ của entity chính. Lưu dư thừa.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.BRANCHES.Id"
-Location,[Location] Electronic Address,IP Electronic Address,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Location,[Location] Electronic Address,IP Electronic Address,Electronic Address Type Code,Loại kênh liên lạc — điện thoại/fax/email.,
-Location,[Location] Electronic Address,IP Electronic Address,Electronic Address Value,Giá trị địa chỉ liên lạc: số điện thoại hoặc fax hoặc địa chỉ email.,"FMS.SECURITIES.Telephone, FMS.SECURITIES.Fax, FMS.SECURITIES.Email, FMS.FORBRCH.Email, FMS.FORBRCH.Fax, FMS.BANKMONI.Telephone, FMS.BANKMONI.Email, FMS.BRANCHES.Telephone, FMS.BRANCHES.Fax"
-Location,[Location] Postal Address,IP Postal Address,Involved Party Id,Khóa đại diện trỏ về entity chính sở hữu địa chỉ này.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.AGENCIES.Id, FMS.BRANCHES.Id, FMS.AGENCIESBRA.Id"
-Location,[Location] Postal Address,IP Postal Address,Involved Party Code,Mã nghiệp vụ của entity chính. Lưu dư thừa để khai thác không cần join.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.AGENCIES.Id, FMS.BRANCHES.Id, FMS.AGENCIESBRA.Id"
-Location,[Location] Postal Address,IP Postal Address,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Location,[Location] Postal Address,IP Postal Address,Address Type Code,Loại địa chỉ — phân biệt trụ sở chính/kinh doanh/thường trú/hiện tại.,
-Location,[Location] Postal Address,IP Postal Address,Address Line,Địa chỉ dạng text tự do.,"FMS.SECURITIES.Address, FMS.FORBRCH.Address, FMS.BANKMONI.Address, FMS.AGENCIES.Address, FMS.BRANCHES.Address, FMS.AGENCIESBRA.Address"
-Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Certificate Transfer Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Certificate Transfer Code,Mã giao dịch CCQ do hệ thống FMS sinh ra. Là Business Key.,FMS.TRANSFERMBF.Id
-Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư phát hành CCQ. FK đến FMS Investment Fund.,FMS.TRANSFERMBF.FndId
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,FMS.SECURITIES.Status
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,FMS.SECURITIES.IsDataMigration
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Business Type Codes,Danh sách mã loại hình kinh doanh được phép. Denormalized từ bảng junction SECBUSINES — mỗi phần tử là 1 BuId.,FMS.SECBUSINES.BuId
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,High Risk Taxpayer Assessment Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,High Risk Taxpayer Assessment Code,ID bản ghi đánh giá rủi ro. BK,DCST.DN_RUI_RO_CAO.ID
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.DN_RUI_RO_CAO,
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Registered Taxpayer Id,FK đến Registered Taxpayer — resolve qua MST,DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Registered Taxpayer Code,Mã NNT — resolve qua MST,DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Organization Tax Identification Number,Mã số doanh nghiệp,DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Organization Full Name,Tên doanh nghiệp,DCST.DN_RUI_RO_CAO.TEN_DOANH_NGHIEP
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Organization Head Office Address,Địa chỉ trụ sở chính,DCST.DN_RUI_RO_CAO.DIA_CHI_TSC
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Supervisory Tax Authority Name,Cơ quan quản lý thuế,DCST.DN_RUI_RO_CAO.CQ_THUE_QUAN_LY
+Involved Party,[Involved Party] Organization,High Risk Taxpayer Assessment,Risk Assessment Year,Năm đánh giá rủi ro,DCST.DN_RUI_RO_CAO.NAM_DANH_GIA_RUI_RO
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Registered Taxpayer Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Registered Taxpayer Code,ID bản ghi đăng ký thuế. BK,DCST.THONG_TIN_DK_THUE.ID
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE,
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Full Name,Tên người nộp thuế,DCST.THONG_TIN_DK_THUE.TEN_NGUOI_NOP
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Organization Tax Identification Number,Mã số thuế,DCST.THONG_TIN_DK_THUE.MA_SO_THUE
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Charter Capital Amount,Vốn điều lệ,DCST.THONG_TIN_DK_THUE.VON_DIEU_LE
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Charter Capital Currency Code,Loại tiền vốn điều lệ,DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_VN
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Foreign Charter Capital Amount,Vốn điều lệ nước ngoài,DCST.THONG_TIN_DK_THUE.SOTIEN_VON_DL_NN
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Foreign Charter Capital Currency Code,Loại tiền vốn điều lệ nước ngoài,DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_NN
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Business Line Code,Mã ngành nghề kinh doanh,DCST.THONG_TIN_DK_THUE.MA_NGANH
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Business Line Description,Ngành nghề kinh doanh,DCST.THONG_TIN_DK_THUE.NGANH_NGHE_KD
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Business Commencement Date,Ngày bắt đầu hoạt động kinh doanh,DCST.THONG_TIN_DK_THUE.NGAY_BD_HDKD
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Parent Organization Name,Đơn vị chủ quan/ đơn vị quản lý trực thuộc,DCST.THONG_TIN_DK_THUE.DON_VI_CHU_QUAN
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Parent Organization Address,Địa chỉ đơn vị chủ quản,DCST.THONG_TIN_DK_THUE.DVCQ_VN_DIACHI
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Supervisory Authority Name,Cơ quan quản lý trực tiếp,DCST.THONG_TIN_DK_THUE.CO_QUAN_QUAN_LY_TRUC_TIEP
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Supervisory Tax Authority Code,Mã cơ quan quản lý thuế,DCST.THONG_TIN_DK_THUE.MA_CQQL_QLT
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Legal Representative Name,Tên người đại diện kinh doanh,DCST.THONG_TIN_DK_THUE.TEN_NGUOI_DAI_DIEN_KD
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Legal Representative Identification Number,Số CMT/ hộ chiếu người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,DCST.THONG_TIN_DK_THUE.SO_CMT
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Legal Representative Phone Number,Số ĐT người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Director Name,Tên giám đốc/ tổng giám đốc,DCST.THONG_TIN_DK_THUE.TEN_GIAM_DOC
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Director Phone Number,Số điện thoại giám đốc/ tổng giám đốc,DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI_GD
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Activity Status Code,"Trạng thái hoạt động: 00, 04: Đang hoạt động; 01: Ngừng HĐ đã hoàn thành thủ tục; 03: Ngừng HĐ chưa hoàn thành; 05: Ngừng KD có thời hạn; 06: Không HĐ tại địa chỉ đăng ký",DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Activity Status Name,Tên trạng thái người nộp thuế. Giá trị denormalized từ nguồn,DCST.THONG_TIN_DK_THUE.TEN_TRANG_THAI
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Cessation Reason Description,Lý do ngừng hoạt động,DCST.THONG_TIN_DK_THUE.LY_DO_NGUNG_HOAT_DONG
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Cessation Type Code,Loại ngừng hoạt động: 1. Giải thể; 2. Phá sản; 3. Chuyển đổi loại hình DN; 4. Cho làm thủ tục giải thể; 5. Phá sản; 6. Tổ chức lại; 7. Thu hồi GP; 8. Đóng theo ĐVCQ; 9. Khác,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Cessation Date,Ngày ngừng hoạt động,DCST.THONG_TIN_DK_THUE.NGUNG_HD_NGAY
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Cessation Reason,Lý do ngừng hoạt động (chi tiết),DCST.THONG_TIN_DK_THUE.NGUNG_HD_LY_DO
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Cessation Note,Ghi chú ngừng hoạt động,DCST.THONG_TIN_DK_THUE.NGUNG_HD_GHI_CHU
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Cessation Notice Number,Số thông báo ngừng hoạt động,DCST.THONG_TIN_DK_THUE.NGUNG_HD_SO_TBAO
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Temporary Suspension Start Date,Tạm nghỉ/Từ ngày,DCST.THONG_TIN_DK_THUE.TAM_NGHI_TU_NGAY
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Temporary Suspension End Date,Tạm nghỉ/Đến ngày,DCST.THONG_TIN_DK_THUE.TAM_NGHI_DEN_NGAY
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Temporary Suspension Reason,Lý do tạm nghỉ,DCST.THONG_TIN_DK_THUE.TAM_NGHI_LY_DO
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Temporary Suspension Notice Number,Số thông báo - tạm nghỉ,DCST.THONG_TIN_DK_THUE.TAM_NGHI_SO_TBAO
+Involved Party,[Involved Party] Organization,Registered Taxpayer,Temporary Suspension Notice Date,Ngày thông báo - tạm nghỉ,DCST.THONG_TIN_DK_THUE.TAM_NGHI_NGAY_TB_NNT
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Officer Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Officer Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.Users.Id
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Users,
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Username,Tên đăng nhập,NHNCK.qlnhn.Users.Username
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Full Name,Họ và tên,NHNCK.qlnhn.Users.FullName
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Email,Email,NHNCK.qlnhn.Users.Email
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Phone Number,Điện thoại,NHNCK.qlnhn.Users.Phone
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Individual Gender Code,Giới tính,NHNCK.qlnhn.Users.Gender
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Organization Unit Id,FK đến Regulatory Authority Organization Unit — đơn vị,NHNCK.qlnhn.Users.UnitId
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Organization Unit Code,Mã đơn vị,NHNCK.qlnhn.Users.UnitId
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Department Organization Unit Id,FK đến Regulatory Authority Organization Unit — phòng ban,NHNCK.qlnhn.Users.DepartmentId
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Department Organization Unit Code,Mã phòng ban,NHNCK.qlnhn.Users.DepartmentId
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Position Code,Chức vụ,NHNCK.qlnhn.Users.PositionId
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Officer Status Code,Trạng thái,NHNCK.qlnhn.Users.Status
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Created Timestamp,Ngày tạo,NHNCK.qlnhn.Users.CreatedAt
+Involved Party,[Involved Party] Individual,Regulatory Authority Officer,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.Users.UpdatedAt
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Organization Unit Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Organization Unit Code,Mã đơn vị/phòng ban. BK,NHNCK.qlnhn.Units.UnitCode|NHNCK.qlnhn.Departments.DepartmentCode
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Units hoặc NHNCK.Departments,
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Organization Unit Type Code,Phân loại cấp (Đơn vị / Phòng ban),
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Organization Unit Name,Tên đơn vị/phòng ban,NHNCK.qlnhn.Units.UnitName|NHNCK.qlnhn.Departments.DepartmentName
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Organization Unit Description,Mô tả,NHNCK.qlnhn.Units.Description|NHNCK.qlnhn.Departments.Description
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Parent Organization Unit Id,FK self-referencing — đơn vị cha,NHNCK.qlnhn.Departments.UnitId
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Parent Organization Unit Code,Mã đơn vị cha,NHNCK.qlnhn.Departments.UnitId
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Organization Unit Status Code,Trạng thái,NHNCK.qlnhn.Units.Status|NHNCK.qlnhn.Departments.Status
+Involved Party,[Involved Party] Organization,Regulatory Authority Organization Unit,Sort Order,Thứ tự sắp xếp,NHNCK.qlnhn.Units.SortOrder|NHNCK.qlnhn.Departments.SortOrder
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Securities Organization Reference Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Securities Organization Reference Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.Organizations.Id
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Organizations,
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Organization Code,Mã tổ chức (mã nghiệp vụ),NHNCK.qlnhn.Organizations.OrganizationCode
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Organization Name,Tên tổ chức,NHNCK.qlnhn.Organizations.OrganizationName
+Involved Party,[Involved Party] Organization,Securities Organization Reference,English Name,Tên tiếng Anh,NHNCK.qlnhn.Organizations.EnglishName
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Abbreviation,Tên viết tắt,NHNCK.qlnhn.Organizations.Abbreviation
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Organization Type Code,"Mã loại tổ chức (1:CTCK, 2:QLQ, 3:NH, 4:Khác)",NHNCK.qlnhn.Organizations.OrganizationTypeId
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Organization Level Code,Cấp độ tổ chức,NHNCK.qlnhn.Organizations.Level
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Parent Organization Id,FK self-referencing — tổ chức cha,NHNCK.qlnhn.Organizations.ParentId
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Parent Organization Code,Mã tổ chức cha,NHNCK.qlnhn.Organizations.ParentId
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Website,Địa chỉ website,NHNCK.qlnhn.Organizations.Website
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Representative Name,Người đại diện,NHNCK.qlnhn.Organizations.Representative
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Charter Capital Amount,Vốn điều lệ,NHNCK.qlnhn.Organizations.CharterCapital
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Organization Description,Mô tả,NHNCK.qlnhn.Organizations.Description
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Organization Status Code,Trạng thái,NHNCK.qlnhn.Organizations.Status
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Sort Order,Thứ tự sắp xếp,NHNCK.qlnhn.Organizations.SortOrder
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Linked Id,ID liên kết,NHNCK.qlnhn.Organizations.LinkedId
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Sync Id,Mã đồng bộ,NHNCK.qlnhn.Organizations.SyncId
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Last Sync Date,Lần cuối đồng bộ,NHNCK.qlnhn.Organizations.LastSyncDate
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Sync Status Code,Trạng thái đồng bộ,NHNCK.qlnhn.Organizations.SyncStatus
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Created By Officer Id,FK đến Officer,NHNCK.qlnhn.Organizations.CreatedBy
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Created By Officer Code,Mã người tạo,NHNCK.qlnhn.Organizations.CreatedBy
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Created Timestamp,Ngày tạo,NHNCK.qlnhn.Organizations.CreatedAt
+Involved Party,[Involved Party] Organization,Securities Organization Reference,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.Organizations.UpdatedAt
+Involved Party,[Involved Party] Individual,Securities Practitioner,Practitioner Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Individual,Securities Practitioner,Practitioner Code,Mã định danh người hành nghề (tự động tăng). BK,NHNCK.qlnhn.Professionals.Id
+Involved Party,[Involved Party] Individual,Securities Practitioner,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Professionals,
+Involved Party,[Involved Party] Individual,Securities Practitioner,Full Name,Họ và tên,NHNCK.qlnhn.Professionals.FullName
+Involved Party,[Involved Party] Individual,Securities Practitioner,Date Of Birth,Ngày sinh,NHNCK.qlnhn.Professionals.BirthDate
+Involved Party,[Involved Party] Individual,Securities Practitioner,Individual Gender Code,Giới tính,NHNCK.qlnhn.Professionals.Gender
+Involved Party,[Involved Party] Individual,Securities Practitioner,Nationality Code,Quốc tịch,NHNCK.qlnhn.Professionals.Nationality
+Involved Party,[Involved Party] Individual,Securities Practitioner,Birth Place,Nơi sinh,NHNCK.qlnhn.Professionals.BirthPlace
+Involved Party,[Involved Party] Individual,Securities Practitioner,Education Level Code,Trình độ học vấn,NHNCK.qlnhn.Professionals.EducationLevelId
+Involved Party,[Involved Party] Individual,Securities Practitioner,Practice Status Code,Trạng thái hành nghề,NHNCK.qlnhn.Professionals.PracticeStatus
+Involved Party,[Involved Party] Individual,Securities Practitioner,C06 Verification Status Code,Trạng thái xác thực C06,NHNCK.qlnhn.Professionals.VerifyStatus
+Involved Party,[Involved Party] Individual,Securities Practitioner,Created Timestamp,Ngày tạo,NHNCK.qlnhn.Professionals.CreatedAt
+Involved Party,[Involved Party] Individual,Securities Practitioner,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.Professionals.UpdatedAt
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Employment Status Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Employment Status Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ProfessionalWorkHistories.Id
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ProfessionalWorkHistories,
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.ProfessionalWorkHistories.ProfessionalId
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.ProfessionalWorkHistories.ProfessionalId
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Securities Organization Id,FK đến tổ chức (Nhóm E),NHNCK.qlnhn.ProfessionalWorkHistories.OrganizationId
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Securities Organization Code,Mã tổ chức,NHNCK.qlnhn.ProfessionalWorkHistories.OrganizationId
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,License Certificate Document Id,FK đến chứng chỉ,NHNCK.qlnhn.ProfessionalWorkHistories.CertificateRecordId
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,License Certificate Document Code,Mã chứng chỉ,NHNCK.qlnhn.ProfessionalWorkHistories.CertificateRecordId
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Position Name,Chức vụ,NHNCK.qlnhn.ProfessionalWorkHistories.Position
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Department Name,Phòng ban,NHNCK.qlnhn.ProfessionalWorkHistories.Department
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Employment Start Date,Từ ngày,NHNCK.qlnhn.ProfessionalWorkHistories.StartDate
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Employment End Date,Đến ngày,NHNCK.qlnhn.ProfessionalWorkHistories.EndDate
+Involved Party,[Involved Party] Individual Employment Status,Securities Practitioner Employment Status,Created Timestamp,Ngày tạo,NHNCK.qlnhn.ProfessionalWorkHistories.CreatedAt
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Party Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Party Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ProfessionalRelationships.Id
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ProfessionalRelationships,
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Practitioner Id,FK đến Securities Practitioner,NHNCK.qlnhn.ProfessionalRelationships.ProfessionalId
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Practitioner Code,Mã người hành nghề,NHNCK.qlnhn.ProfessionalRelationships.ProfessionalId
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Relationship Type Code,"Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà)",NHNCK.qlnhn.ProfessionalRelationships.RelationshipType
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Individual Full Name,Họ và tên người liên quan,NHNCK.qlnhn.ProfessionalRelationships.FullName
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Individual Birth Year,Năm sinh người liên quan,NHNCK.qlnhn.ProfessionalRelationships.BirthYear
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Individual Identification Number,Mã định danh người liên quan,NHNCK.qlnhn.ProfessionalRelationships.IdentityId
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Individual Country Code,Mã quốc gia người liên quan,NHNCK.qlnhn.ProfessionalRelationships.CountryId
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Individual Address,Địa chỉ người liên quan,NHNCK.qlnhn.ProfessionalRelationships.Address
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Individual Occupation,Nghề nghiệp người liên quan,NHNCK.qlnhn.ProfessionalRelationships.Occupation
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Related Individual Workplace,Nơi làm việc người liên quan,NHNCK.qlnhn.ProfessionalRelationships.Workplace
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Note,Ghi chú về mối quan hệ,NHNCK.qlnhn.ProfessionalRelationships.Note
+Involved Party,[Involved Party] Involved Party Relationship,Securities Practitioner Related Party,Created Timestamp,Ngày tạo,NHNCK.qlnhn.ProfessionalRelationships.CreatedAt
+Involved Party,[Involved Party] Involved Party,Taxpayer Representative,Taxpayer Representative Id,Id tự sinh (surrogate key),
+Involved Party,[Involved Party] Involved Party,Taxpayer Representative,Taxpayer Representative Code,ID bản ghi người đại diện. BK,DCST.TTKDT_NGUOI_DAI_DIEN.ID
+Involved Party,[Involved Party] Involved Party,Taxpayer Representative,Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TTKDT_NGUOI_DAI_DIEN,
+Involved Party,[Involved Party] Involved Party,Taxpayer Representative,Registered Taxpayer Id,FK đến Registered Taxpayer,DCST.TTKDT_NGUOI_DAI_DIEN.THONG_TIN_DK_THUE_ID
+Involved Party,[Involved Party] Involved Party,Taxpayer Representative,Registered Taxpayer Code,Mã NNT,DCST.TTKDT_NGUOI_DAI_DIEN.THONG_TIN_DK_THUE_ID
+Involved Party,[Involved Party] Involved Party,Taxpayer Representative,Representative Name,Tên người đại diện/chủ hộ KD,DCST.TTKDT_NGUOI_DAI_DIEN.TEN_NNT
+Involved Party,[Involved Party] Involved Party,Taxpayer Representative,Position Title,Chức vụ người đại diện/chủ hộ KD,DCST.TTKDT_NGUOI_DAI_DIEN.CHUC_VU
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Certificate Transfer Id,Khóa đại diện cho giao dịch chứng chỉ quỹ.,
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Certificate Transfer Code,Mã giao dịch CCQ do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.TRANSFERMBF.Id
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Source System Code,Mã hệ thống nguồn.,
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư phát hành CCQ. FK → FUNDS.,FMS.TRANSFERMBF.FndId
 Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.TRANSFERMBF.FndId
-Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Investor Membership Id,Khóa đại diện quan hệ thành viên NĐT thực hiện giao dịch. FK đến FMS Fund Investor Membership.,FMS.TRANSFERMBF.MBFId
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Investor Membership Id,Khóa đại diện quan hệ thành viên của NĐT thực hiện giao dịch. FK → MBFUND.,FMS.TRANSFERMBF.MBFId
 Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Investor Membership Code,Mã quan hệ thành viên. Lưu dư thừa.,FMS.TRANSFERMBF.MBFId
 Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transaction Date,Ngày thực hiện giao dịch CCQ.,FMS.TRANSFERMBF.TransDate
 Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transfer Quantity,Số lượng CCQ giao dịch.,FMS.TRANSFERMBF.Quantity
 Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transfer Price,Giá giao dịch CCQ.,FMS.TRANSFERMBF.Price
 Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transaction Type Code,Loại giao dịch CCQ (mua/bán/chuyển nhượng).,FMS.TRANSFERMBF.TransType
-Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,FMS Fund Management Company Share Transfer Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
-Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,FMS Fund Management Company Share Transfer Code,Mã giao dịch chuyển nhượng do hệ thống FMS sinh ra. Là Business Key.,FMS.TRSFERINDER.Id
-Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
-Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Fund Management Company Id,Khóa đại diện công ty QLQ có cổ phần được chuyển nhượng. FK đến Fund Management Company.,FMS.TRSFERINDER.SecId
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,FMS Fund Management Company Share Transfer Id,Khóa đại diện cho giao dịch chuyển nhượng cổ phần của công ty QLQ.,
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,FMS Fund Management Company Share Transfer Code,Mã giao dịch chuyển nhượng do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,FMS.TRSFERINDER.Id
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Source System Code,Mã hệ thống nguồn.,
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Fund Management Company Id,Khóa đại diện công ty QLQ có cổ phần được chuyển nhượng. FK → SECURITIES.,FMS.TRSFERINDER.SecId
 Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,FMS.TRSFERINDER.SecId
 Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Transaction Date,Ngày thực hiện giao dịch chuyển nhượng cổ phần.,FMS.TRSFERINDER.TransDate
 Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Transfer Quantity,Số lượng cổ phần được chuyển nhượng.,FMS.TRSFERINDER.Quantity
 Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Transfer Price,Giá giao dịch chuyển nhượng cổ phần.,FMS.TRSFERINDER.Price
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,License Application Fee Id,Id tự sinh (surrogate key),
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,License Application Fee Code,Mã định danh (tự động tăng). BK,NHNCK.qlnhn.ApplicationFees.Id
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationFees,
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,License Application Id,FK đến Securities Practitioner License Application,NHNCK.qlnhn.ApplicationFees.ApplicationId
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,License Application Code,Mã hồ sơ,NHNCK.qlnhn.ApplicationFees.ApplicationId
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,Fee Type Code,Loại phí,NHNCK.qlnhn.ApplicationFees.FeeType
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,Fee Amount,Số tiền phí (VNĐ),NHNCK.qlnhn.ApplicationFees.Amount
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,Payment Status Code,Trạng thái thanh toán,NHNCK.qlnhn.ApplicationFees.Status
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,Created Timestamp,Ngày tạo,NHNCK.qlnhn.ApplicationFees.CreatedAt
+Transaction,[Event] Transaction,Securities Practitioner License Application Fee,Updated Timestamp,Ngày cập nhật,NHNCK.qlnhn.ApplicationFees.UpdatedAt
+Involved Party,Shared Entity,Involved Party Alternative Identification,Involved Party Id,FK đến Securities Practitioner,"NHNCK.qlnhn.Professionals.Id, NHNCK.qlnhn.Organizations.Id, DCST.THONG_TIN_DK_THUE.ID, DCST.TTKDT_NGUOI_DAI_DIEN.ID, FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.INVES.Id, FMS.FUNDS.Id, FMS.TLProfiles.Id, FMS.BRANCHES.Id"
+Involved Party,Shared Entity,Involved Party Alternative Identification,Involved Party Code,Mã người hành nghề,"NHNCK.qlnhn.Professionals.Id, NHNCK.qlnhn.Organizations.Id, DCST.THONG_TIN_DK_THUE.ID, DCST.TTKDT_NGUOI_DAI_DIEN.ID, FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.INVES.Id, FMS.FUNDS.Id, FMS.TLProfiles.Id, FMS.BRANCHES.Id"
+Involved Party,Shared Entity,Involved Party Alternative Identification,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Professionals,
+Involved Party,Shared Entity,Involved Party Alternative Identification,Identification Type Code,Loại giấy tờ,"DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO, FMS.INVES.IdType"
+Involved Party,Shared Entity,Involved Party Alternative Identification,Identification Number,Số CCCD/CMND,"NHNCK.qlnhn.Professionals.IdentityNumber, NHNCK.qlnhn.Organizations.LicenseNumber, DCST.THONG_TIN_DK_THUE.SO_GIAY_PHEP|DCST.THONG_TIN_DK_THUE.SO_QUYET_DINH, DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO, FMS.SECURITIES.Decision, FMS.FORBRCH.ChangeLicense, FMS.INVES.IdNo, FMS.TLProfiles.IdNo, FMS.BRANCHES.Decision"
+Involved Party,Shared Entity,Involved Party Alternative Identification,Issue Date,Ngày cấp CCCD,"NHNCK.qlnhn.Professionals.IdentityIssueDate, NHNCK.qlnhn.Organizations.LicenseDate, DCST.THONG_TIN_DK_THUE.NGAY_CAP|DCST.THONG_TIN_DK_THUE.NGAY_BAN_HANH, DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP, FMS.SECURITIES.DecisionDate, FMS.FORBRCH.ChangeLicenseDate, FMS.INVES.IdDate, FMS.FUNDS.DecisionDate, FMS.BRANCHES.DecisionDate"
+Involved Party,Shared Entity,Involved Party Alternative Identification,Issuing Authority Name,Nơi cấp CCCD,"NHNCK.qlnhn.Professionals.IdentityIssuePlace, NHNCK.qlnhn.Organizations.LicenseIssuer"
+Involved Party,Shared Entity,Involved Party Alternative Identification,Issuing Authority,[BUSINESS_LICENSE] Cơ quan cấp giấy phép thành lập; [ESTABLISHMENT_DECISION] Cơ quan ban hành quyết định thành lập,DCST.THONG_TIN_DK_THUE.CO_QUAN_CAP|DCST.THONG_TIN_DK_THUE.CO_QUAN_BAN_HANH
+Location,Shared Entity,Involved Party Electronic Address,Involved Party Id,FK đến Securities Practitioner,"NHNCK.qlnhn.Professionals.Id, NHNCK.qlnhn.Organizations.Id, DCST.THONG_TIN_DK_THUE.ID, DCST.TTKDT_NGUOI_DAI_DIEN.ID, FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.BRANCHES.Id"
+Location,Shared Entity,Involved Party Electronic Address,Involved Party Code,Mã người hành nghề,"NHNCK.qlnhn.Professionals.Id, NHNCK.qlnhn.Organizations.Id, DCST.THONG_TIN_DK_THUE.ID, DCST.TTKDT_NGUOI_DAI_DIEN.ID, FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.BRANCHES.Id"
+Location,Shared Entity,Involved Party Electronic Address,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Professionals,
+Location,Shared Entity,Involved Party Electronic Address,Electronic Address Type Code,Loại kênh liên lạc,
+Location,Shared Entity,Involved Party Electronic Address,Electronic Address Value,Số điện thoại / Email,"NHNCK.qlnhn.Professionals.Phone|NHNCK.qlnhn.Professionals.Email, NHNCK.qlnhn.Organizations.PhoneNumber|NHNCK.qlnhn.Organizations.MobileNumber|NHNCK.qlnhn.Organizations.Email|NHNCK.qlnhn.Organizations.Fax, DCST.THONG_TIN_DK_THUE.DIEN_THOAI|DCST.THONG_TIN_DK_THUE.FAX|DCST.THONG_TIN_DK_THUE.DIEN_THOAI_KD|DCST.THONG_TIN_DK_THUE.EMAIL_KD|DCST.THONG_TIN_DK_THUE.FAX_KD, DCST.TTKDT_NGUOI_DAI_DIEN.DIEN_THOAI|DCST.TTKDT_NGUOI_DAI_DIEN.FAX|DCST.TTKDT_NGUOI_DAI_DIEN.EMAIL, FMS.SECURITIES.Telephone, FMS.SECURITIES.Fax, FMS.SECURITIES.Email, FMS.FORBRCH.Email, FMS.FORBRCH.Fax, FMS.BANKMONI.Telephone, FMS.BANKMONI.Email, FMS.BRANCHES.Telephone, FMS.BRANCHES.Fax"
+Location,Shared Entity,Involved Party Postal Address,Involved Party Id,FK đến Securities Practitioner,"NHNCK.qlnhn.Professionals.Id, NHNCK.qlnhn.Organizations.Id, DCST.THONG_TIN_DK_THUE.ID, FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.AGENCIES.Id, FMS.BRANCHES.Id, FMS.AGENCIESBRA.Id"
+Location,Shared Entity,Involved Party Postal Address,Involved Party Code,Mã người hành nghề,"NHNCK.qlnhn.Professionals.Id, NHNCK.qlnhn.Organizations.Id, DCST.THONG_TIN_DK_THUE.ID, FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.AGENCIES.Id, FMS.BRANCHES.Id, FMS.AGENCIESBRA.Id"
+Location,Shared Entity,Involved Party Postal Address,Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Professionals,
+Location,Shared Entity,Involved Party Postal Address,Address Type Code,Loại địa chỉ,
+Location,Shared Entity,Involved Party Postal Address,Address Line,Địa chỉ thường trú / Nơi ở hiện tại,"NHNCK.qlnhn.Professionals.PermanentAddress|NHNCK.qlnhn.Professionals.CurrentAddress, NHNCK.qlnhn.Organizations.Address, FMS.SECURITIES.Address, FMS.FORBRCH.Address, FMS.BANKMONI.Address, FMS.AGENCIES.Address, FMS.BRANCHES.Address, FMS.AGENCIESBRA.Address"
+Location,Shared Entity,Involved Party Postal Address,Address Description,[HEAD_OFFICE] Địa chỉ trụ sở chính; [BUSINESS] Mô tả địa chỉ kinh doanh,DCST.THONG_TIN_DK_THUE.DIA_CHI_TSC|DCST.THONG_TIN_DK_THUE.MOTA_DIACHI_KD
+Location,Shared Entity,Involved Party Postal Address,Province Code,[BUSINESS] Mã tỉnh - kinh doanh. HEAD_OFFICE không có mã tỉnh riêng,DCST.THONG_TIN_DK_THUE.MA_TINH_KD
+Location,Shared Entity,Involved Party Postal Address,Province Name,[BUSINESS] Tên tỉnh - kinh doanh,DCST.THONG_TIN_DK_THUE.TEN_TINH_KD
+Location,Shared Entity,Involved Party Postal Address,District Code,[BUSINESS] Mã huyện - kinh doanh,DCST.THONG_TIN_DK_THUE.MA_HUYEN_KD
+Location,Shared Entity,Involved Party Postal Address,District Name,[BUSINESS] Tên huyện - kinh doanh,DCST.THONG_TIN_DK_THUE.TEN_HUYEN_KD
+Location,Shared Entity,Involved Party Postal Address,Ward Code,[BUSINESS] Mã xã - kinh doanh,DCST.THONG_TIN_DK_THUE.MA_XA_KD
+Location,Shared Entity,Involved Party Postal Address,Ward Name,[BUSINESS] Tên xã - kinh doanh,DCST.THONG_TIN_DK_THUE.TEN_XA

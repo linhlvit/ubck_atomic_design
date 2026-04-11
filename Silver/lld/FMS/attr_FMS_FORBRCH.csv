@@ -10,3 +10,4 @@ Adjustment Note,Lý do sửa đổi giấy phép.,Text,true,false,draft,FMS.FORB
 End Date,Hoạt động đến ngày.,Date,true,false,draft,FMS.FORBRCH.EndDate,
 Activity Status Code,Mã trạng thái hoạt động. FK → STATUS.Id.,Classification Value,true,false,draft,FMS.FORBRCH.Status,Scheme: FMS_OPERATION_STATUS. Values load từ bảng STATUS nguồn.
 Attachment File Data,File đính kèm (binary).,Text,true,false,draft,FMS.FORBRCH.FileData,Lưu dạng text reference đến file. ETL cần xử lý riêng nếu cần extract binary.
+Business Type Codes,"Danh sách mã loại hình kinh doanh được phép. Denormalized từ bảng junction FGBUSINESS — mỗi phần tử là 1 BuId.",Array,true,false,draft,FMS.FGBUSINESS.BuId,Pure junction FGBUSINESS (ForBrchId + BuId only) → denormalize thành ARRAY thay vì tạo Silver entity riêng. HLD decision: FMS_HLD_Overview.
