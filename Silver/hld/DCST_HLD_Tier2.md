@@ -11,7 +11,7 @@
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
 |---|---|---|---|---|---|---|
 | Involved Party | [Involved Party] Individual | Individual | TTKDT_NGUOI_DAI_DIEN | Thông tin người đại diện theo pháp luật của NNT | Taxpayer Representative | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: tên người đại diện, chức vụ, FK thực đến THONG_TIN_DK_THUE. Xác nhận: grain 1 dòng = 1 người đại diện của 1 NNT. |
-| Involved Party | [Involved Party] Organization | Organization | DN_RUI_RO_CAO | Danh sách doanh nghiệp được đánh giá rủi ro cao theo năm | High Risk Taxpayer Assessment | Organization — cấu trúc trường: tên DN, MST, địa chỉ trụ sở, cơ quan thuế quản lý, năm đánh giá. Đây là entity đánh giá (assessment) về tổ chức, không phải tổ chức chính — tuy nhiên BCV không có "Assessment" riêng cho Involved Party. Dùng Organization vì nội dung mô tả thuộc tính tổ chức. Liên kết ngầm qua MST → Registered Taxpayer. |
+| Involved Party | [Involved Party] Organization | Organization | DN_RUI_RO_CAO | Danh sách doanh nghiệp được đánh giá rủi ro cao theo năm | High Risk Taxpayer Assessment Snapshot | Organization — cấu trúc trường: tên DN, MST, địa chỉ trụ sở, cơ quan thuế quản lý, năm đánh giá. Đây là entity đánh giá (assessment) về tổ chức, không phải tổ chức chính — tuy nhiên BCV không có "Assessment" riêng cho Involved Party. Dùng Organization vì nội dung mô tả thuộc tính tổ chức. Liên kết ngầm qua MST → Registered Taxpayer. |
 | Documentation | [Documentation] Regulatory Report | Regulatory Report | TCT_BAO_CAO | Tờ khai / Báo cáo tài chính nộp lên cơ quan thuế | Tax Financial Statement | Regulatory Report — *"Identifies a Documentation Item that is a report submitted to meet a regulatory obligation."* Cấu trúc trường: MST, kỳ kê khai, mã tờ khai, ngày nộp, thông tin kiểm toán, thông tin NNT denormalized (snapshot tại thời điểm nộp). Liên kết ngầm qua MST → Registered Taxpayer. |
 | Documentation | [Documentation] Regulatory Report | Regulatory Report | TCT_TT_CUONG_CHE_NO | Thông tin quyết định cưỡng chế nợ thuế | Tax Debt Enforcement Order | Regulatory Report — văn bản hành chính, cấu trúc trường: số/ngày QĐ, hình thức cưỡng chế, số tiền, ngày hiệu lực, thông tin tài sản/tài khoản bị cưỡng chế. Liên kết ngầm qua MA_NNHAN = MST → Registered Taxpayer. |
 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | TT_XLY_VI_PHAM | Thông tin quyết định xử lý vi phạm thuế | Tax Violation Penalty Decision | Conduct Violation — *"Identifies a Business Activity that records a violation of conduct rules."* Cấu trúc trường: số QĐ xử lý, cơ quan ban hành, kỳ thanh tra, mô tả hành vi vi phạm, truy thu. Pattern Activity Fact Append. Liên kết ngầm qua MST → Registered Taxpayer. |
@@ -53,7 +53,7 @@ graph TD
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
     REP["**Taxpayer Representative**\n[Involved Party] Individual\nTTKDT_NGUOI_DAI_DIEN"]:::silver
-    HRISK["**High Risk Taxpayer Assessment**\n[Involved Party] Organization\nDN_RUI_RO_CAO"]:::silver
+    HRISK["**High Risk Taxpayer Assessment Snapshot**\n[Involved Party] Organization\nDN_RUI_RO_CAO"]:::silver
     TFS["**Tax Financial Statement**\n[Documentation] Regulatory Report\nTCT_BAO_CAO"]:::silver
     TDEO["**Tax Debt Enforcement Order**\n[Documentation] Regulatory Report\nTCT_TT_CUONG_CHE_NO"]:::silver
     TVPD["**Tax Violation Penalty Decision**\n[Business Activity] Conduct Violation\nTT_XLY_VI_PHAM"]:::silver
@@ -100,7 +100,7 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 |---|---|---|
 | 1 | `Enforced Amount` (TCT_TT_CUONG_CHE_NO.SO_TIEN_BI_CC) và `Tax Arrears Recovery Amount` (TT_XLY_VI_PHAM.TRUY_THU_TIEN_THUE) nguồn VARCHAR — đơn vị tiền tệ là gì? | Nếu xác nhận đơn vị → chuyển sang Currency Amount và thêm currency code. |
 | 2 | `TCT_TTCCN_HOA_DON.HIEU_LUC` (Enforcement Status) — giá trị là gì? Còn hiệu lực / Hết hiệu lực hay dạng khác? | Nếu binary → chuyển sang Boolean. Hiện giữ Text. |
-| 3 | `High Risk Taxpayer Assessment` — DN_RUI_RO_CAO có nhiều dòng cho 1 MST (nhiều năm đánh giá)? Hay 1 dòng / 1 MST? | Ảnh hưởng grain: nếu nhiều năm thì grain = (MST × năm), không phải 1 MST. |
+| 3 | `High Risk Taxpayer Assessment Snapshot` — DN_RUI_RO_CAO có nhiều dòng cho 1 MST (nhiều năm đánh giá)? Hay 1 dòng / 1 MST? | Ảnh hưởng grain: nếu nhiều năm thì grain = (MST × năm), không phải 1 MST. |
 | 4 | Prior Enforcement Order Number trong TCT_TTCCN_HOA_DON.CAN_CU_QDSO có luôn match với SO_QD trong TCT_TT_CUONG_CHE_NO? | Nếu ETL có thể resolve → bổ sung FK `Tax Debt Enforcement Order Id` (nullable) trên Tax Invoice Enforcement Order. |
 
 ---
@@ -118,7 +118,7 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 
 ---
 
-### 2. High Risk Taxpayer Assessment
+### 2. High Risk Taxpayer Assessment Snapshot
 **Source:** `DN_RUI_RO_CAO` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party
 
 **Grain:** 1 dòng = 1 đánh giá rủi ro của 1 doanh nghiệp (theo năm). Liên kết ngầm qua MST → Registered Taxpayer.
@@ -178,7 +178,7 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 | Silver Entity | # Attributes | PK | Key FKs |
 |---|---|---|---|
 | Taxpayer Representative | 8 | Taxpayer Representative Id | Registered Taxpayer |
-| High Risk Taxpayer Assessment | 11 | High Risk Taxpayer Assessment Id | Registered Taxpayer (nullable, MST resolve) |
+| High Risk Taxpayer Assessment Snapshot | 11 | High Risk Taxpayer Assessment Snapshot Id | Registered Taxpayer (nullable, MST resolve) |
 | Tax Financial Statement | ~57 | Tax Financial Statement Id | Registered Taxpayer (nullable, MST resolve) |
 | Tax Debt Enforcement Order | 28 | Tax Debt Enforcement Order Id | Registered Taxpayer (nullable, MST resolve) |
 | Tax Violation Penalty Decision | 10 | Tax Violation Penalty Decision Id | Registered Taxpayer (nullable, MST resolve) |

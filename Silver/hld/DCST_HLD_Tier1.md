@@ -91,7 +91,7 @@ Không có bảng nào trong Tier 1 chưa đủ thông tin cột.
 - Director Name/Phone Number tương tự — giữ denormalized.
 - `MA_SO_THUE` là trường liên kết ngầm của toàn bộ Tier 2 và Tier 3 → lưu thêm tại entity con dưới dạng `Registered Taxpayer Code` (Text, giá trị MST gốc) để ETL resolve khi không join được.
 
-**Được FK từ:** Taxpayer Representative (FK thực), High Risk Taxpayer Assessment / Tax Financial Statement / Tax Debt Enforcement Order / Tax Violation Penalty Decision / Tax Invoice Enforcement Order (MST resolve — tất cả Tier 2).
+**Được FK từ:** Taxpayer Representative (FK thực), High Risk Taxpayer Assessment Snapshot / Tax Financial Statement / Tax Debt Enforcement Order / Tax Violation Penalty Decision / Tax Invoice Enforcement Order (MST resolve — tất cả Tier 2).
 
 ---
 
