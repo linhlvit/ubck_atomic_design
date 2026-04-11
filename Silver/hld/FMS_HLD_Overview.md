@@ -150,8 +150,8 @@ graph TD
 | AGENCYTYPE | Danh sách loại đại lý | — | → Classification Value |
 | NATIONAL | Danh sách quốc gia/quốc tịch | — | → Classification Value |
 | STOCKHOLDERTYPE | Danh sách loại hình NĐT/cổ đông | — | → Classification Value |
-| JOBTYPE | Danh sách loại chức vụ | — | → Classification Value |
-| BUSINESS | Danh mục ngành nghề kinh doanh | — | → Classification Value |
+| JOBTYPE | Danh sách loại chức vụ | — | → Classification Value. Scheme: `FMS_JOB_TYPE` |
+| BUSINESS | Danh mục ngành nghề kinh doanh | — | → Classification Value. Scheme: `FMS_BUSINESS_TYPE`. Denormalize thành ARRAY trên entity cha (xem 7d). |
 
 ---
 
