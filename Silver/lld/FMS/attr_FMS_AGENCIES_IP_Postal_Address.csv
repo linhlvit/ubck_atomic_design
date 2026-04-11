@@ -1,5 +1,6 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Fund Distribution Agent Id,Khóa đại diện đại lý phân phối quỹ. FK đến Fund Distribution Agent.,Surrogate Key,No,No,draft,,"FK target: Fund Distribution Agent.Fund Distribution Agent Id. Pair with Fund Distribution Agent Code."
-Fund Distribution Agent Code,Mã đại lý phân phối quỹ. Lưu dư thừa.,Text,No,No,draft,AGENCIES.Id,"FK target: Fund Distribution Agent.Fund Distribution Agent Code. Pair with Fund Distribution Agent Id."
-Address Type Code,Loại địa chỉ.,Classification Value,No,No,draft,,"Scheme: IP_ADDR_TYPE. Giá trị ETL-derived: HEAD_OFFICE."
-Address Line,Địa chỉ đại lý phân phối quỹ.,Text,Yes,No,draft,AGENCIES.Address,
+Involved Party Id,FK đến Fund Distribution Agent.,Surrogate Key,false,false,draft,FMS.AGENCIES.Id,FK target: Fund Distribution Agent.Fund Distribution Agent Id. Shared entity — không có PK surrogate riêng.
+Involved Party Code,Mã đại lý phân phối quỹ. Lưu dư thừa.,Text,false,false,draft,FMS.AGENCIES.Id,FK target: Fund Distribution Agent.Fund Distribution Agent Code. Pair with Involved Party Id.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.AGENCIES.
+Address Type Code,Loại địa chỉ.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. Giá trị ETL-derived: HEAD_OFFICE.
+Address Line,Địa chỉ đại lý phân phối quỹ.,Text,true,false,draft,FMS.AGENCIES.Address,

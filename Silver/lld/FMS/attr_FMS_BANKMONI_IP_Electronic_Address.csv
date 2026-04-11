@@ -1,5 +1,6 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Custodian Bank Id,Khóa đại diện ngân hàng LKGS. FK đến Custodian Bank.,Surrogate Key,No,No,draft,,"FK target: Custodian Bank.Custodian Bank Id. Pair with Custodian Bank Code."
-Custodian Bank Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,No,No,draft,BANKMONI.Id,"FK target: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
-Electronic Address Type Code,Loại địa chỉ liên lạc điện tử.,Classification Value,No,No,draft,,"Scheme: IP_ELEC_ADDR_TYPE. Giá trị ETL-derived: PHONE_HEAD_OFFICE / EMAIL_BUSINESS."
-Electronic Address Value,Giá trị địa chỉ liên lạc (điện thoại / email).,Text,Yes,No,draft,"BANKMONI.Telephone, BANKMONI.Email","Mỗi dòng tương ứng 1 kênh liên lạc: Telephone → PHONE_HEAD_OFFICE; Email → EMAIL_BUSINESS."
+Involved Party Id,FK đến Custodian Bank.,Surrogate Key,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng.
+Involved Party Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.BANKMONI.
+Electronic Address Type Code,Loại địa chỉ liên lạc điện tử.,Classification Value,false,false,draft,,"Scheme: IP_ELEC_ADDR_TYPE. Giá trị ETL-derived: PHONE_HEAD_OFFICE / EMAIL_BUSINESS."
+Electronic Address Value,Giá trị địa chỉ liên lạc (điện thoại / email).,Text,true,false,draft,"FMS.BANKMONI.Telephone, FMS.BANKMONI.Email","Mỗi dòng tương ứng 1 kênh liên lạc: Telephone → PHONE_HEAD_OFFICE; Email → EMAIL_BUSINESS."
