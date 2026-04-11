@@ -83,7 +83,7 @@ def load_silver_entities() -> dict[str, dict]:
     result = {}
     if not OUT_ENTITIES.exists():
         return result
-    with open(OUT_ENTITIES, encoding="utf-8", newline="") as f:
+    with open(OUT_ENTITIES, encoding="utf-8-sig", newline="") as f:
         for row in csv.DictReader(f):
             result[row["silver_entity"]] = row
     return result
@@ -209,6 +209,10 @@ def build_entities(manifest_rows: list[dict],
                 "source_table":    source_table,
                 "status":          existing.get("status", "draft"),
             }
+            # Warn nếu entity approved nhưng source_table mới không có trong silver_entities.csv
+            existing_st = existing.get("source_table", "")
+            if existing.get("status", "draft") == "approved" and source_table not in [s.strip() for s in existing_st.split(",")]:
+                print(f"  [WARN] Entity approved '{silver_entity}' có source_table mới từ manifest: {source_table}", file=sys.stderr)
         else:
             # Chỉ cập nhật source_table nếu có source mới
             existing_st = entity_map[silver_entity]["source_table"]

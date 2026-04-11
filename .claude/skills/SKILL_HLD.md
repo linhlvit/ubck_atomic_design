@@ -9,7 +9,7 @@
 1. Đọc file cấu trúc CSDL nguồn trong `Source/` — file `*_Tables` và `*_Columns`.
 2. Xác định danh sách bảng nguồn trong scope.
 3. Đọc các file HLD đã có trong `docs/approved/` (nếu có source system liên quan).
-4. **Đọc `Silver/hld/silver_entities.csv`** — lọc theo source system đang thiết kế (cột `source_table`), ghi nhận tất cả dòng có `status=reviewed`. Đây là **tên đã confirmed** — không được đặt lại tên khác cho entity đó. Nếu entity đã có `status=reviewed` trong `silver_entities.csv` → dùng đúng tên đó trong HLD, không tự sinh tên mới.
+4. **Đọc `Silver/hld/silver_entities.csv`** — lọc theo source system đang thiết kế (cột `source_table`), ghi nhận tất cả dòng có `status=approved`. Đây là **tên đã confirmed và LOCKED** — không được đặt lại tên khác cho entity đó. Nếu entity đã có `status=approved` trong `silver_entities.csv` → dùng đúng tên đó trong HLD, không tự sinh tên mới. Dòng `status=draft` → đang thiết kế, có thể điều chỉnh tên khi cần.
 
 ### Bước 1b — Xác định Table Type
 
@@ -209,11 +209,25 @@ Gộp tất cả bảng ngoài scope từ các Tier thành 1 bảng duy nhất. 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
 
+**Quy tắc viết cột "Lý do ngoài scope":**
+- Mô tả **lý do quan hệ / cấu trúc** — tại sao bảng này không thuộc Silver về mặt thiết kế data model.
+- **Không** mô tả nội dung bảng (ví dụ: "Chỉ có Code + Name" không phải lý do ngoài scope — đó là mô tả dữ liệu).
+- Các lý do chuẩn:
+
+| Tình huống | Lý do viết |
+|---|---|
+| Không FK đến/từ bất kỳ bảng nghiệp vụ nào | `Không có quan hệ FK đến bảng nghiệp vụ nào trong scope` |
+| Bảng danh mục thuần túy (Code + Name) | `Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value` |
+| Dữ liệu thu thập tại source gốc khác | `Dữ liệu gốc tại [SOURCE] — thu thập tại source gốc, không qua DCST` |
+| Hạ tầng IT / phân quyền / config | `Operational/system data — không có giá trị nghiệp vụ` |
+| Audit Log nguồn (OldValue/NewValue) | `Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ` |
+| Snapshot nguồn (IsBefore + blob) | `Snapshot nguồn — không phải entity nghiệp vụ Silver` |
+
 **Cập nhật:** Khi có thay đổi ở bất kỳ Tier nào → cập nhật cả file Tier lẫn file Overview.
 
-## Bước 8 — Cập nhật silver_entities.csv
+## Bước 8 — Cập nhật silver_entities.csv và silver_out_of_scope.csv
 
-Thực hiện **sau khi hoàn thành HLD mỗi Tier**. File này là bảng tổng hợp toàn dự án — tích lũy qua tất cả source system và tất cả Tier.
+Thực hiện **sau khi hoàn thành HLD mỗi Tier**. Hai file này là bảng tổng hợp toàn dự án — tích lũy qua tất cả source system và tất cả Tier.
 
 **Vị trí file:** `Silver/hld/silver_entities.csv`
 
@@ -235,6 +249,41 @@ bcv_core_object,bcv_concept,silver_entity,description,source_table
 - Nếu entity đã có (shared entity từ source khác) → **bổ sung** source_table mới vào dòng hiện có, không tạo dòng trùng.
 - **Sắp xếp** toàn bộ nội dung theo thứ tự: `bcv_core_object` (A→Z), sau đó `silver_entity` (A→Z).
 - Xuất 1 file duy nhất chứa toàn bộ cũ + mới.
+
+**Approved lock — bắt buộc tuân thủ khi re-design source đã có:**
+
+| Cột | status=draft | status=approved |
+|---|---|---|
+| `silver_entity` | Có thể sửa | **LOCKED** — không được đổi tên |
+| `table_type` | Có thể sửa | **LOCKED** — không được thay đổi |
+| `bcv_core_object` | Có thể sửa | **LOCKED** — không được thay đổi |
+| `bcv_concept` | Có thể sửa | **LOCKED** — không được thay đổi |
+| `description` | Có thể sửa | Có thể bổ sung / làm giàu thêm |
+| `source_table` | Có thể sửa | Có thể bổ sung source mới |
+
+Nếu cần thay đổi cột LOCKED của entity approved → đổi `status → draft` trước, sửa, rồi quyết định có approve lại không.
+
+### silver_out_of_scope.csv
+
+**Vị trí file:** `Silver/hld/silver_out_of_scope.csv`
+
+**Cấu trúc:** `source_system, source_table, description, group, reason`
+
+**Nguồn dữ liệu:** Mục 7f trong tất cả `*_HLD_Overview.md` — script đọc bảng Markdown và tổng hợp.
+
+**Sinh file sau mỗi lần hoàn thành HLD Overview:**
+
+```bash
+python Silver/lld/scripts/aggregate_out_of_scope.py
+```
+
+Hoặc chỉ rebuild 1 source:
+
+```bash
+python Silver/lld/scripts/aggregate_out_of_scope.py --source FMS
+```
+
+**Lưu ý:** File này do script sinh ra từ HLD — không sửa trực tiếp. Muốn thay đổi nội dung → sửa mục 7f trong `*_HLD_Overview.md` rồi chạy lại script.
 
 ## QUY TẮC REFERENCE GIỮA CÁC TẦNG
 

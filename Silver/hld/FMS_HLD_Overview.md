@@ -58,7 +58,7 @@ graph TD
 
     %% Tier 1
     FMC["**Fund Management Company**"]:::silver
-    FGOU["**Foreign Fund Management\nOrganization Unit**"]:::silver
+    FGOU["**Foreign Fund Management Organization Unit**"]:::silver
     BNK["**Custodian Bank**"]:::silver
     FDA["**Fund Distribution Agent**"]:::silver
     DII["**Discretionary Investment Investor**"]:::silver
@@ -67,9 +67,9 @@ graph TD
 
     %% Tier 2
     FUND["**Investment Fund**"]:::silver
-    FMCOU["**Fund Management Company\nOrganization Unit**"]:::silver
+    FMCOU["**Fund Management Company Organization Unit**"]:::silver
     KP["**Fund Management Company Key Person**"]:::silver
-    FDAOU["**Fund Distribution Agent\nOrganization Unit**"]:::silver
+    FDAOU["**Fund Distribution Agent Organization Unit**"]:::silver
     IACC["**Discretionary Investment Account**"]:::silver
     RATING["**Member Rating**"]:::silver
     RC["**Rating Criterion**"]:::silver
@@ -77,7 +77,7 @@ graph TD
     %% Tier 3
     MBF["**Investment Fund Investor Membership**"]:::silver
     REP["**Investment Fund Representative Board Member**"]:::silver
-    STF["**Foreign Fund Management\nOrganization Unit Staff**"]:::silver
+    STF["**Foreign Fund Management Organization Unit Staff**"]:::silver
     RPT["**Member Periodic Report**"]:::silver
     TRF["**Fund Management Company\nShare Transfer**"]:::silver
 

@@ -123,7 +123,9 @@ def check(reviewed: list[dict],
           show_hints: bool) -> int:
     """
     So sánh reviewed entities với những gì xuất hiện trong HLD files.
-    Trả về số lượng xung đột tìm thấy.
+    - Entity status=approved mà tên lệch HLD → CONFLICT (exit 1)
+    - Entity status=draft mà tên lệch HLD → WARN (exit 0)
+    Trả về số lượng CONFLICT (approved).
     """
     conflicts = 0
     not_found_warnings = 0
@@ -133,8 +135,8 @@ def check(reviewed: list[dict],
     for names in hld_entities.values():
         all_hld_names.update(names)
 
-    # Với mỗi reviewed entity, kiểm tra xem có entity nào trong HLD
-    # là "gần giống" (similar prefix) nhưng khác tên chính xác không
+    # Build status lookup
+    entity_status = {r["silver_entity"]: r.get("status", "draft") for r in reviewed}
     reviewed_names = {r["silver_entity"] for r in reviewed}
 
     print(f"\n{'='*65}")
@@ -162,9 +164,15 @@ def check(reviewed: list[dict],
                 if overlap >= 0.6 and name != entity:
                     similar.append((md_file, name))
 
+        status = entity_status.get(entity, "draft")
+
         if similar:
-            conflicts += 1
-            print(f"  CONFLICT  '{entity}'")
+            if status == "approved":
+                conflicts += 1
+                print(f"  CONFLICT [approved] '{entity}'")
+            else:
+                not_found_warnings += 1
+                print(f"  WARN [draft] '{entity}'")
             print(f"            silver_entities.csv  : '{entity}'")
             for md_file, sim_name in similar[:3]:
                 print(f"            HLD [{md_file}]     : '{sim_name}'")
@@ -174,15 +182,18 @@ def check(reviewed: list[dict],
             print()
         else:
             not_found_warnings += 1
-            print(f"  WARN  '{entity}' — không tìm thấy trong bất kỳ HLD file nào")
+            if status == "approved":
+                print(f"  WARN [approved] '{entity}' — không tìm thấy trong bất kỳ HLD file nào")
+            else:
+                print(f"  WARN [draft] '{entity}' — không tìm thấy trong bất kỳ HLD file nào")
 
     if conflicts == 0 and not_found_warnings == 0:
-        print("  OK — Tất cả reviewed entities nhất quán với HLD files.")
+        print("  OK — Tất cả entities nhất quán với HLD files.")
     else:
         if conflicts > 0:
-            print(f"  Tổng xung đột: {conflicts}")
+            print(f"  Tổng CONFLICT (approved, cần sửa): {conflicts}")
         if not_found_warnings > 0:
-            print(f"  Tổng WARN (không tìm thấy trong HLD): {not_found_warnings}")
+            print(f"  Tổng WARN (draft hoặc không tìm thấy trong HLD): {not_found_warnings}")
 
     print(f"{'='*65}\n")
     return conflicts

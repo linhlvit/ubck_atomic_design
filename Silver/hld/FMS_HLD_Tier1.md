@@ -64,7 +64,7 @@ graph TD
     classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
 
     FMC["**Fund Management Company**\n[Involved Party] Portfolio Fund Management Company\nSECURITIES"]:::silver
-    FFMOU["**Foreign Fund Management\nOrganization Unit**\n[Involved Party] Organization Unit\nFORBRCH"]:::silver
+    FFMOU["**Foreign Fund Management Organization Unit**\n[Involved Party] Organization Unit\nFORBRCH"]:::silver
     CB["**Custodian Bank**\n[Involved Party] Custodian\nBANKMONI"]:::silver
     FDA["**Fund Distribution Agent**\n[Involved Party] Mutual Fund Distributor\nAGENCIES"]:::silver
     DII["**Discretionary Investment Investor**\n[Involved Party]\nINVES"]:::silver

@@ -155,7 +155,7 @@ graph LR
 
     FGOU["Foreign Fund Management Organization Unit (Tier 1)"]:::refnode
     KP["Fund Management Company Key Person (Tier 2)"]:::refnode
-    STF["**Foreign Fund Management\nOrganization Unit Staff**\nNhân sự VPĐD/CN QLQ NN"]:::silver
+    STF["**Foreign Fund Management Organization Unit Staff**\nNhân sự VPĐD/CN QLQ NN"]:::silver
 
     STF -->|FK| FGOU
     STF -->|FK| KP
