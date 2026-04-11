@@ -21,7 +21,9 @@ ubck_atomic_design/
 │       ├── NHNCK/                                # Source system: NHNCK
 │       │   └── attr_NHNCK_<TABLE>.csv
 │       ├── scripts/
-│       │   └── aggregate_silver.py               # Script tổng hợp attributes + entities
+│       │   ├── aggregate_silver.py               # Script tổng hợp attributes + entities
+│       │   ├── rename_entity.py                  # Script propagate đổi tên entity từ manifest
+│       │   └── check_consistency.py              # Script kiểm tra nhất quán HLD vs manifest reviewed
 │       ├── manifest.csv                          # Danh sách tất cả LLD files + entity mapping
 │       ├── ref_shared_entity_classifications.csv # Chuẩn hóa Classification Value scheme/code
 │       └── silver_attributes.csv                 # Tổng hợp tất cả attributes (auto-gen)
@@ -167,6 +169,81 @@ Script tự động sinh:
 
 ---
 
+### Quy trình đổi tên Silver entity (sau review)
+
+Khi cần rename một Silver entity sau khi đã review (ví dụ: `High Risk Taxpayer Assessment` → `High Risk Taxpayer Assessment Snapshot`):
+
+**Bước 1 — Sửa manifest.csv (1 lần duy nhất):**
+
+| Cột | Thay đổi |
+|---|---|
+| `silver_entity` | Đổi sang tên mới |
+| `status` | Đổi từ `draft` → `reviewed` |
+
+**Bước 2 — Preview trước khi apply:**
+
+```bash
+python Silver/lld/scripts/rename_entity.py --dry-run
+```
+
+Script in ra danh sách tất cả file và số lần thay thế — kiểm tra trước khi ghi.
+
+**Bước 3 — Apply:**
+
+```bash
+python Silver/lld/scripts/rename_entity.py
+```
+
+Script tự động propagate tên mới ra:
+- `Silver/hld/silver_entities.csv`
+- `Silver/lld/silver_attributes.csv`
+- `Silver/lld/<SYSTEM>/attr_<TABLE>.csv` (attribute name prefix + description)
+- Tất cả HLD Markdown files (`*_HLD_Tier*.md`, `*_HLD_Overview.md`)
+- `Silver/lld/ref_shared_entity_classifications.csv`
+
+**Bước 4 — (Optional) Refresh aggregate:**
+
+```bash
+python Silver/lld/scripts/aggregate_silver.py
+```
+
+Chạy nếu cần rebuild hoàn toàn silver_entities.csv và silver_attributes.csv từ manifest.
+
+> **Lock mechanism:** Dòng manifest có `status=reviewed` là nguồn chân lý — `aggregate_silver.py` đọc thẳng từ manifest nên luôn generate đúng tên reviewed, không bao giờ rollback về tên cũ.
+
+---
+
+### Kiểm tra nhất quán HLD vs manifest (sau khi re-run thiết kế)
+
+Khi cập nhật quy tắc thiết kế và chạy lại HLD, có nguy cơ tên entity trong HLD bị ghi đè khác với tên đã reviewed trong manifest. Dùng script này để phát hiện xung đột:
+
+```bash
+python Silver/lld/scripts/check_consistency.py
+```
+
+Script so sánh tất cả entity name trong HLD Markdown files với manifest `status=reviewed` và báo cáo:
+
+| Kết quả | Ý nghĩa |
+|---|---|
+| `OK` | Tất cả reviewed entities nhất quán với HLD |
+| `CONFLICT` | Entity trong HLD có tên khác manifest reviewed — cần sửa HLD |
+| `WARN` | Reviewed entity không tìm thấy trong bất kỳ HLD file nào |
+
+**Các tùy chọn:**
+
+```bash
+python Silver/lld/scripts/check_consistency.py --source FMS     # chỉ kiểm tra FMS
+python Silver/lld/scripts/check_consistency.py --fix-hints      # in gợi ý cách sửa
+```
+
+**Quy tắc xử lý khi có CONFLICT:**
+
+- Nếu HLD đang dùng tên cũ → cập nhật HLD theo tên reviewed trong manifest
+- Nếu muốn đổi tên mới → sửa manifest trước, rồi chạy `rename_entity.py`
+- Không bao giờ sửa ngược manifest theo HLD nếu `status=reviewed`
+
+---
+
 ## Trạng thái thiết kế
 
 | Status | Ý nghĩa |
@@ -223,6 +300,9 @@ LLD: 38 files trong `Silver/lld/FMS/` — tất cả `draft`.
 | LLD files | `Silver/lld/<SYSTEM>/` |
 | Tổng hợp entities | `Silver/hld/silver_entities.csv` |
 | Tổng hợp attributes | `Silver/lld/silver_attributes.csv` |
-| Manifest | `Silver/lld/manifest.csv` |
+| Manifest (source of truth) | `Silver/lld/manifest.csv` |
 | Shared Entity Classifications | `Silver/lld/ref_shared_entity_classifications.csv` |
+| Script tổng hợp | `Silver/lld/scripts/aggregate_silver.py` |
+| Script đổi tên entity | `Silver/lld/scripts/rename_entity.py` |
+| Script kiểm tra nhất quán HLD | `Silver/lld/scripts/check_consistency.py` |
 | BCV knowledge base | `knowledge/` |

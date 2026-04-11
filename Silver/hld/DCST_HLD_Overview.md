@@ -17,7 +17,7 @@
 |---|---|---|---|---|---|---|---|
 | 1 | Involved Party | [Involved Party] Organization | Organization | THONG_TIN_DK_THUE | Thông tin đăng ký thuế của tổ chức/doanh nghiệp/hộ kinh doanh | Registered Taxpayer | Organization — *"Identifies an Involved Party that may stand alone in an operational or legal context."* |
 | 2 | Involved Party | [Involved Party] Individual | Individual | TTKDT_NGUOI_DAI_DIEN | Thông tin người đại diện theo pháp luật của NNT | Taxpayer Representative | Individual — *"Identifies an Involved Party who is a natural person."* FK thực đến THONG_TIN_DK_THUE. |
-| 2 | Involved Party | [Involved Party] Organization | Organization | DN_RUI_RO_CAO | Danh sách doanh nghiệp được đánh giá rủi ro cao theo năm | High Risk Taxpayer Assessment | Organization — liên kết ngầm qua MST → Registered Taxpayer. |
+| 2 | Involved Party | [Involved Party] Organization | Organization | DN_RUI_RO_CAO | Danh sách doanh nghiệp được đánh giá rủi ro cao theo năm | High Risk Taxpayer Assessment Snapshot | Organization — liên kết ngầm qua MST → Registered Taxpayer. |
 | 2 | Documentation | [Documentation] Regulatory Report | Regulatory Report | TCT_BAO_CAO | Tờ khai / Báo cáo tài chính nộp lên cơ quan thuế | Tax Financial Statement | Regulatory Report — *"Identifies a Documentation Item that is a report submitted to meet a regulatory obligation."* |
 | 2 | Documentation | [Documentation] Regulatory Report | Regulatory Report | TCT_TT_CUONG_CHE_NO | Thông tin quyết định cưỡng chế nợ thuế | Tax Debt Enforcement Order | Regulatory Report — văn bản hành chính cưỡng chế nợ thuế, nhiều hình thức. |
 | 2 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | TT_XLY_VI_PHAM | Thông tin quyết định xử lý vi phạm thuế | Tax Violation Penalty Decision | Conduct Violation — *"Identifies a Business Activity that records a violation of conduct rules."* Pattern Activity Fact Append. |
@@ -52,7 +52,7 @@ graph TD
 
     %% Tier 2
     REP["**Taxpayer Representative**\n[Involved Party] Individual\nTTKDT_NGUOI_DAI_DIEN"]:::silver
-    HRISK["**High Risk Taxpayer Assessment**\n[Involved Party] Organization\nDN_RUI_RO_CAO"]:::silver
+    HRISK["**High Risk Taxpayer Assessment Snapshot**\n[Involved Party] Organization\nDN_RUI_RO_CAO"]:::silver
     TFS["**Tax Financial Statement**\n[Documentation] Regulatory Report\nTCT_BAO_CAO"]:::silver
     TDEO["**Tax Debt Enforcement Order**\n[Documentation] Regulatory Report\nTCT_TT_CUONG_CHE_NO"]:::silver
     TVPD["**Tax Violation Penalty Decision**\n[Business Activity] Conduct Violation\nTT_XLY_VI_PHAM"]:::silver

@@ -9,6 +9,7 @@
 1. Đọc file cấu trúc CSDL nguồn trong `Source/` — file `*_Tables` và `*_Columns`.
 2. Xác định danh sách bảng nguồn trong scope.
 3. Đọc các file HLD đã có trong `docs/approved/` (nếu có source system liên quan).
+4. **Đọc `Silver/lld/manifest.csv`** — lọc theo source system đang thiết kế, ghi nhận tất cả dòng có `status=reviewed`. Đây là **tên đã confirmed** — không được đặt lại tên khác cho entity đó. Nếu entity đã có `status=reviewed` trong manifest → dùng đúng tên đó trong HLD, không tự sinh tên mới.
 
 ### Bước 2 — Phân tầng (Tiered Design)
 

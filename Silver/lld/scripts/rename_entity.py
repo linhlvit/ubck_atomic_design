@@ -22,10 +22,16 @@ Lock mechanism:
 """
 
 import csv
-import re
 import sys
 import argparse
+import io
 from pathlib import Path
+
+# Fix encoding trên Windows terminal
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-sig"):
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -128,14 +134,12 @@ def patch_csv_columns(path: Path, old: str, new: str,
     total = 0
     changed_rows = []
     for row in rows:
-        changed = False
         for col in columns:
             if col in row:
                 new_val, cnt = replace_in_text(row[col], old, new)
                 if cnt:
                     row[col] = new_val
                     total += cnt
-                    changed = True
         changed_rows.append(row)
 
     if total and not dry_run:
