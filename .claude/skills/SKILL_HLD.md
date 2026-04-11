@@ -116,6 +116,11 @@ Thể hiện Silver entities và quan hệ. Entity từ tầng trước xuất h
 
 Liệt kê các bảng nguồn được propose thiết kế vào Classification Value, kèm Scheme Code dự kiến.
 
+**Quy tắc bắt buộc:**
+- Cột Scheme Code **không được để trống (`—`)** — phải đặt tên scheme ngay tại bước HLD. Dùng UPPER_SNAKE_CASE, thêm prefix source system để tránh trùng (VD: `FMS_BUSINESS_TYPE`, `NHNCK_APPLICATION_STATUS`).
+- Nếu values load từ bảng nguồn → `source_type = source_table`. Nếu team tự định nghĩa → `source_type = etl_derived`. Nếu chưa profile data → `source_type = modeler_defined`.
+- **Sau khi xác định Scheme Code → bắt buộc đăng ký ngay vào `Silver/lld/ref_shared_entity_classifications.csv`**, kể cả khi chưa có danh sách giá trị cụ thể (ghi `(source)` hoặc `(to_define)` ở cột code). Không để scheme chỉ tồn tại trong file HLD mà thiếu trong file chuẩn hóa.
+
 #### 6e. Bảng chờ thiết kế
 
 Liệt kê các bảng trong scope nghiệp vụ nhưng chưa có cấu trúc trường — chưa thể thiết kế Silver entity. Cấu trúc tối thiểu:

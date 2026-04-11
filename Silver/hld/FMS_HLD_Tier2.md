@@ -463,8 +463,8 @@ graph TD
 
 | Source Table | Mô tả | BCV Term | Xử lý Silver |
 |---|---|---|---|
-| JOBTYPE | Danh sách loại chức vụ | — | → Classification Value |
-| BUSINESS | Danh mục ngành nghề kinh doanh | — | → Classification Value |
+| JOBTYPE | Danh sách loại chức vụ | — | → Classification Value. Scheme: `FMS_JOB_TYPE` |
+| BUSINESS | Danh mục ngành nghề kinh doanh | — | → Classification Value. Scheme: `FMS_BUSINESS_TYPE`. Được denormalize thành `ARRAY<Classification Value Code>` trên Fund Management Company (qua SECBUSINES) và Foreign Fund Management Organization Unit (qua FGBUSINESS). |
 
 ## 6d-extra. Entity từ bảng danh mục — cần thiết kế riêng
 
