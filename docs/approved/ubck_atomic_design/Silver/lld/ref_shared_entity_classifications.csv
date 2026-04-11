@@ -85,9 +85,34 @@ FMS_OPERATION_STATUS,(source),Trạng thái hoạt động của tổ chức/cá
 FMS_AGENCY_TYPE,(source),Loại đại lý phân phối quỹ đầu tư,source_table,FMS.AGENCYTYPE,Fund Distribution Agent
 FMS_NATIONAL,(source),Danh mục quốc gia/quốc tịch trong hệ thống FMS,source_table,FMS.NATIONAL,Discretionary Investment Investor
 FMS_STOCKHOLDER_TYPE,(source),Danh mục loại hình nhà đầu tư/cổ đông trong hệ thống FMS,source_table,FMS.STOCKHOLDERTYPE,Discretionary Investment Investor
-FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
-FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
-FMS_REPORTING_PERIOD_TYPE,MONTHLY,Tháng,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
-FMS_REPORTING_PERIOD_TYPE,QUARTERLY,Quý,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
-FMS_REPORTING_PERIOD_TYPE,SEMI_ANNUAL,Bán niên,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
-FMS_REPORTING_PERIOD_TYPE,ANNUAL,Năm,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
+FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,MONTHLY,Tháng,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,QUARTERLY,Quý,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,SEMI_ANNUAL,Bán niên,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,ANNUAL,Năm,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | FMS Member Periodic Report | FMS Report Import Value"
+FMS_FUND_TYPE,(source),Loại hình quỹ đầu tư,source_table,FMS.FUNDS.FundType,FMS Investment Fund
+FMS_JOB_TYPE,(source),Loại chức vụ nhân sự công ty QLQ,source_table,FMS.JOBTYPE,FMS Fund Company Key Person
+FMS_ORGANIZATION_UNIT_TYPE,BRANCH,Chi nhánh,etl_derived,FMS.BRANCHES.BrType,FMS Fund Management Company Organization Unit
+FMS_ORGANIZATION_UNIT_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện,etl_derived,FMS.BRANCHES.BrType,FMS Fund Management Company Organization Unit
+FMS_INVESACC_STATUS,ACTIVE,Còn hiệu lực,etl_derived,FMS.INVESACC.Status,FMS Discretionary Investment Account
+FMS_INVESACC_STATUS,INACTIVE,Hết hiệu lực,etl_derived,FMS.INVESACC.Status,FMS Discretionary Investment Account
+FMS_RATING_CLASS,(to_define),Xếp loại kết quả đánh giá — cần profile data RankClass,modeler_defined,FMS.RANK.RankClass,FMS Member Rating
+FMS_REPRESENT_STATUS,ACTIVE,Hoạt động,etl_derived,FMS.REPRESENT.Status,FMS Fund Representative Board Member
+FMS_REPRESENT_STATUS,INACTIVE,Khóa,etl_derived,FMS.REPRESENT.Status,FMS Fund Representative Board Member
+FMS_FOREIGN_OU_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện NN,etl_derived,FMS.STFFGBRCH.FnType,FMS Foreign Fund Management Organization Unit Staff
+FMS_FOREIGN_OU_TYPE,BRANCH,Chi nhánh NN,etl_derived,FMS.STFFGBRCH.FnType,FMS Foreign Fund Management Organization Unit Staff
+FMS_REPORT_TYPE,PERIODIC,Báo cáo định kỳ,etl_derived,FMS.RPTMEMBER.ReportType,FMS Member Periodic Report
+FMS_REPORT_TYPE,AD_HOC,Báo cáo bất thường,etl_derived,FMS.RPTMEMBER.ReportType,FMS Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,FMC,Công ty quản lý quỹ,etl_derived,FMS.RPTMEMBER.Type,"FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORTING_MEMBER_TYPE,CUSTODIAN_BANK,Ngân hàng lưu ký giám sát,etl_derived,FMS.RPTMEMBER.Type,"FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_BRANCH,Chi nhánh QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,FMS Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_REP,Văn phòng đại diện QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,FMS Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,INVESTMENT_FUND,Quỹ đầu tư chứng khoán,etl_derived,FMS.RPTMEMBER.Type,"FMS Member Periodic Report | FMS Report Import Value"
+FMS_REPORT_SUBMISSION_STATUS,PENDING,Chưa gửi,etl_derived,FMS.RPTMEMBER.Status,"FMS Member Periodic Report | FMS Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,SUBMITTED,Đã gửi,etl_derived,FMS.RPTMEMBER.Status,"FMS Member Periodic Report | FMS Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,LATE,Gửi muộn,etl_derived,FMS.RPTMEMBER.Status,"FMS Member Periodic Report | FMS Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,CANCELLED,Bị hủy,etl_derived,FMS.RPTMEMBER.Status,"FMS Member Periodic Report | FMS Member Periodic Report Status Log"
+FMS_TRANSFER_TYPE,(to_define),Loại giao dịch CCQ — cần profile data TransType,modeler_defined,FMS.TRANSFERMBF.TransType,FMS Fund Certificate Transfer
+FMS_CELL_DATA_TYPE,NUMERIC,Số,etl_derived,FMS.RPTVALUES.FormatDataType,FMS Report Import Value
+FMS_CELL_DATA_TYPE,STRING,Ký tự,etl_derived,FMS.RPTVALUES.FormatDataType,FMS Report Import Value
