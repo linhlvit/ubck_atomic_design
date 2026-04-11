@@ -12,7 +12,7 @@ ApplicationDocuments,FileName,Tên file,,
 ApplicationDocuments,Format,Loại file,,
 ApplicationDocuments,FilePath,Đường dẫn tệp,,
 ApplicationDocuments,FileSize,Dung lượng file,,
-ApplicationDocuments,AssigneeId,ID người thẩm định,FK,FK → Users.Id
+ApplicationDocuments,AssigneeId,ID người thẩm định,FK,FK → Assignee.Id
 ApplicationDocuments,AppraisaledAt,Ngày thẩm định,,
 ApplicationDocuments,Note,Ghi chú,,
 ApplicationDocuments,DocumentName,Tên tài liệu,,
@@ -20,26 +20,27 @@ ApplicationDocuments,IsInvalid,Cờ hợp lệ,,
 ApplicationDocuments,IsIncomplete,Cờ hoàn thành,,
 ApplicationDocuments,Status,Trạng thái thẩm định,,
 ApplicationDocuments,CreatedAt,Ngày tạo,,
-ApplicationFees,Id,ID dữ liệu (tự động tăng),PK,
-ApplicationFees,ApplicationId,Mã hồ sơ,FK,FK → Applications.Id
+ApplicationFees,Id,ID phí hồ sơ (tự động tăng),PK,
+ApplicationFees,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
+ApplicationFees,ProfessionalId,ID người hành nghề,FK,FK → Professionals.Id
 ApplicationFees,FeeType,Loại phí,,
-ApplicationFees,Amount,Số tiền (VNĐ),,
-ApplicationFees,Status,Trạng thái thanh toán,,
-ApplicationFees,CreatedAt,Ngày tạo,,
+ApplicationFees,Fee,Giá trị phí,,
+ApplicationFees,Content,Nội dung,,
+ApplicationFees,Note,Ghi chú,,
+ApplicationFees,Status,Trạng thái phí,,
+ApplicationFees,RequestDate,Ngày yêu cầu,,
+ApplicationFees,PaymentDate,Ngày thanh toán,,
+ApplicationFees,ExpiryDate,Ngày hết hạn,,
 ApplicationFees,UpdatedAt,Ngày cập nhật,,
-ApplicationLogs,Id,ID dữ liệu (tự động tăng),PK,
-ApplicationLogs,ApplicationId,Mã hồ sơ,FK,FK → Applications.Id
-ApplicationLogs,StatusId,Mã trạng thái,FK,FK → ApplicationStatuses.Id
-ApplicationLogs,UserId,ID người thực hiện,FK,FK → Users.Id
-ApplicationLogs,Note,Ghi chú,,
-ApplicationLogs,CreatedAt,Ngày tạo,,
+ApplicationFees,CreatedAt,Ngày tạo,,
+ApplicationFees,CreatedBy,ID người tạo,,
 Applications,Id,Mã định danh hồ sơ (tự động tăng),PK,
 Applications,CertificateId,Mã chứng chỉ,FK,FK → Certificates.Id
 Applications,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-Applications,StatusId,Mã trạng thái hồ sơ,FK,FK → ApplicationStatuses.Id
+Applications,StatusId,Mã trạng thái hồ sơ,FK,FK → Statuses.Id
 Applications,CertificateRecordId,ID chứng chỉ hành nghề,FK,FK → CertificateRecords.Id
-Applications,PreviousCertificateId,ID loại chứng chỉ trước đó,,
-Applications,PreviousCertificateRecordId,ID chứng chỉ hành nghề trước đó,,
+Applications,PreviousCertificateId,ID loại chứng chỉ trước đó,,FK suy luận → Certificates.Id
+Applications,PreviousCertificateRecordId,ID chứng chỉ hành nghề trước đó,,FK suy luận → CertificateRecords.Id
 Applications,RegistrationType,Loại đăng ký,,
 Applications,ApplicationType,Loại hồ sơ,,
 Applications,ApplicationCode,Mã hồ sơ,,
@@ -65,9 +66,9 @@ Applications,ReceiptStatus,Trạng thái nhận,,
 Applications,SupplementLetterDate,Ngày thư bổ sung,,
 Applications,CertificateReceiptPhone,Số điện thoại nhận chứng chỉ,,
 Applications,ReissueHSM,Mã tái cấp HSM,,
-Applications,ExamSessionId,ID kỳ thi,FK,FK → ExamSessions.Id
-Applications,AssigneeId,ID cán bộ xử lý,FK,FK → Users.Id
-Applications,InfoVerifyId,ID yêu cầu phê duyệt lãnh đạo,FK,FK → VerifyApplicationStatuses.Id
+Applications,ExamSessionId,ID kỳ thi,,FK suy luận → ExamSessions.Id
+Applications,AssigneeId,ID cán bộ xử lý,,FK suy luận → Users.Id
+Applications,InfoVerifyId,ID yêu cầu phê duyệt lãnh đạo,,FK suy luận → VerifyApplicationStatuses.Id
 ApplicationSources,Id,ID dữ liệu (tự động tăng),PK,
 ApplicationSources,Code,Mã hình thức nộp hồ sơ,,
 ApplicationSources,Name,Tên hình thức nộp hồ sơ,,
@@ -86,7 +87,7 @@ ApplicationSpecializations,FileName,Tên file,,
 ApplicationSpecializations,FilePath,Đường dẫn file,,
 ApplicationSpecializations,Format,Loại file,,
 ApplicationSpecializations,FileSize,Dung lượng file,,
-ApplicationSpecializations,AssigneeId,ID người thẩm định,,
+ApplicationSpecializations,AssigneeId,ID người thẩm định,,FK suy luận → Users.Id
 ApplicationSpecializations,AppraisaledAt,Thời gian thẩm định,,
 ApplicationSpecializations,Status,Trạng thái thẩm định,,
 ApplicationStatuses,Id,ID dữ liệu (tự động tăng),PK,
@@ -97,65 +98,80 @@ ApplicationStatuses,IsActive,Trạng thái hoạt động,,
 ApplicationStatuses,SortOrder,Thứ tự sắp xếp,,
 ApplicationStatuses,IsOriginalData,Cờ dữ liệu gốc,,
 CertificateDepartments,Id,ID dữ liệu (tự động tăng),PK,
-CertificateDepartments,CertificateId,ID loại chứng chỉ,,FK → Certificates.Id
-CertificateDepartments,DepartmentId,ID phòng ban,,FK → Departments.Id
+CertificateDepartments,CertificateId,ID loại chứng chỉ,,FK suy luận → Certificates.Id
+CertificateDepartments,DepartmentId,ID phòng ban,,FK suy luận → Department(s).Id
 CertificateDocuments,Id,ID dữ liệu (tự động tăng),PK,
 CertificateDocuments,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
-CertificateDocuments,DocumentId,ID tài liệu,FK,FK → Documents.Id
+CertificateDocuments,DocumentId,ID tài liệu,FK,FK → Document.Id
 CertificateDocuments,IsDisplay,Cờ hiển thị,,
 CertificateDocuments,IsRequire,Cờ bắt buộc,,
 CertificateDocuments,DocumnetType,Loại tài liệu,,
 CertificateNumberTemplates,Id,ID dữ liệu (tự động tăng),PK,
-CertificateNumberTemplates,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
-CertificateNumberTemplates,Template,Mẫu số chứng chỉ,,
-CertificateNumberTemplates,CurrentNumber,Số hiện tại,,
-CertificateNumberTemplates,Status,Trạng thái,,
+CertificateNumberTemplates,Code,Mã tài liệu,,
+CertificateNumberTemplates,CertificateId,ID loại chứng chỉ,,FK suy luận → Certificates.Id
+CertificateNumberTemplates,Type,Loại tài liệu,,
+CertificateNumberTemplates,IsDefault,Cờ mặc định bắt buộc,,
+CertificateNumberTemplates,Name,Tên,,
 CertificateRecordGroupMembers,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordGroupMembers,GroupId,ID nhóm chứng chỉ,FK,FK → CertificateRecordGroups.Id
-CertificateRecordGroupMembers,CertificateRecordId,ID chứng chỉ hành nghề,FK,FK → CertificateRecords.Id
-CertificateRecordGroupMembers,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
+CertificateRecordGroupMembers,CertificateRecordGroupId,ID nhóm chứng chỉ,FK,FK → CertificateRecordGroup.Id
+CertificateRecordGroupMembers,CertificateRecordId,ID chứng chỉ hành nghề,FK,FK → CertificateRecord.Id
+CertificateRecordGroupMembers,IsReissue,Cờ cho phép cấp lại,,
+CertificateRecordGroupMembers,RevocationReason,Lý do thu hồi/hủy,,
+CertificateRecordGroupMembers,OrderIndex,Thứ tự sắp xếp,,
+CertificateRecordGroupMembers,Status,Trạng thái,,
 CertificateRecordGroups,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordGroups,GroupName,Tên nhóm,,
-CertificateRecordGroups,GroupType,Loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi),,
-CertificateRecordGroups,DecisionId,ID quyết định,FK,FK → Decisions.Id
+CertificateRecordGroups,GroupName,Tên nhóm chứng chỉ,,
+CertificateRecordGroups,Type,Loại chứng chỉ,,
+CertificateRecordGroups,DecisionId,ID quyết định,FK,FK (xem constraint)
+CertificateRecordGroups,Description,Mô tả,,
+CertificateRecordGroups,Notes,Ghi chú,,
 CertificateRecordGroups,Status,Trạng thái,,
-CertificateRecordGroups,CreatedBy,ID người tạo,,
-CertificateRecordGroups,CreatedAt,Ngày tạo,,
-CertificateRecordGroups,UpdatedAt,Ngày cập nhật,,
+CertificateRecordGroups,CreatedAt,Thời gian tạo,,
+CertificateRecordGroups,UpdatedAt,Thời gian cập nhật gần nhất,,
 CertificateRecordLogs,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordLogs,CertificateRecordId,ID chứng chỉ hành nghề,FK,FK → CertificateRecords.Id
-CertificateRecordLogs,Action,Hành động,,
-CertificateRecordLogs,Detail,Chi tiết,,
-CertificateRecordLogs,CreatedBy,ID người thực hiện,,
-CertificateRecordLogs,CreatedAt,Ngày tạo,,
-CertificateRecords,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecords,CertificateId,Mã loại chứng chỉ,FK,FK → Certificates.Id
+CertificateRecordLogs,CertificateRecordId,ID chứng chỉ,,FK suy luận → CertificateRecords.Id
+CertificateRecordLogs,ActionType,Loại hành động,,
+CertificateRecordLogs,CertificateNumber,Số chứng chỉ,,
+CertificateRecordLogs,DecisionId,ID quyết định,,FK suy luận → Decisions.Id
+CertificateRecordLogs,IssueDate,Ngày quyết định,,
+CertificateRecordLogs,Note,Ghi chú,,
+CertificateRecordLogs,CreatedBy,Người xử lý,,
+CertificateRecords,Id,Mã định danh (tự động tăng),PK,
+CertificateRecords,ProfessionalFullName,Họ và tên người hành nghề,,
+CertificateRecords,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
 CertificateRecords,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
+CertificateRecords,IssueDecisionId,ID quyết định cấp,FK,FK → IssueDecisions.Id
+CertificateRecords,RevocationDecisionId,ID quyết định thu hồi,FK,FK → RevocationDecisions.Id
+CertificateRecords,CannellationDecisionId,ID quyết định hủy,FK,FK → CannellationDecisions.Id
 CertificateRecords,CertificateNumber,Số chứng chỉ,,
 CertificateRecords,IssueDate,Ngày cấp,,
-CertificateRecords,DecisionId,ID quyết định cấp,FK,FK → Decisions.Id
-CertificateRecords,RevocationDecisionId,ID quyết định thu hồi,FK,FK → Decisions.Id
-CertificateRecords,Status,Trạng thái chứng chỉ,,
-CertificateRecords,SignStatus,Trạng thái ký số,,
-CertificateRecords,CreatedBy,ID người tạo,,
+CertificateRecords,RevocationDate,Ngày thu hồi,,
+CertificateRecords,RevocationReason,Lý do thu hồi,,
+CertificateRecords,Status,"Trạng thái (0: Chưa sử dụng, 1: Đang sử dụng, 2: Thu hồi, 3: Đã hủy)",,
+CertificateRecords,ProcessStatus,"Trạng thái ký (Đã cấp, Đã ký, Đã trả)",,
+CertificateRecords,Description,Mô tả,,
 CertificateRecords,CreatedAt,Ngày tạo,,
-CertificateRecords,UpdatedAt,Ngày cập nhật,,
+CertificateRecords,CreatedBy,Người tạo,,
+CertificateRecords,AllowReissue,"Cho phép cấp lại (0: Không cho phép, 1: Cho phép)",,
 CertificateRecordStatusHistories,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordStatusHistories,CertificateRecordId,ID chứng chỉ hành nghề,FK,FK → CertificateRecords.Id
-CertificateRecordStatusHistories,FromStatus,Trạng thái trước,,
-CertificateRecordStatusHistories,ToStatus,Trạng thái sau,,
+CertificateRecordStatusHistories,CertificateRecordId,ID chứng chỉ hành nghề,,FK suy luận → CertificateRecords.Id
+CertificateRecordStatusHistories,UpdateType,"Loại cập nhật (Manual, System, Decision)",,
+CertificateRecordStatusHistories,OldStatus,Trạng thái ban đầu,,
+CertificateRecordStatusHistories,NewStatus,Trạng thái cập nhật,,
+CertificateRecordStatusHistories,DecisionId,ID quyết định,FK,FK → Decisions.Id
 CertificateRecordStatusHistories,Reason,Lý do thay đổi,,
-CertificateRecordStatusHistories,CreatedBy,ID người thực hiện,,
-CertificateRecordStatusHistories,CreatedAt,Ngày tạo,,
-Certificates,Id,ID dữ liệu (tự động tăng),PK,
-Certificates,CertificateCode,Mã chứng chỉ,,
-Certificates,CertificateName,Tên chứng chỉ,,
+CertificateRecordStatusHistories,CreatedAt,Thời gian tạo,,
+CertificateRecordStatusHistories,UpdatedAt,Thời gian cập nhật gần nhất,,
+Certificates,Id,ID loại chứng chỉ (tự động tăng),PK,
+Certificates,CertificateCode,Mã loại chứng chỉ,,
+Certificates,CertificateName,Tên loại chứng chỉ,,
 Certificates,Description,Mô tả,,
-Certificates,Status,Trạng thái,,
+Certificates,SortOrder,Thứ tự sắp xếp,,
 Certificates,IsOriginalData,Cờ dữ liệu gốc,,
-Certificates,CreatedBy,ID người tạo,,
-Certificates,CreatedAt,Ngày tạo,,
-Certificates,UpdatedAt,Ngày cập nhật,,
+Certificates,ProcessingDays,Số ngày xử lý,,
+Certificates,Status,Trạng thái,,
+Certificates,CreatedAt,Thời gian tạo,,
+Certificates,UpdatedAt,Thời gian cập nhật gần nhất,,
 CertificateSpecializations,Id,ID dữ liệu (tự động tăng),PK,
 CertificateSpecializations,CertificateId,Mã chứng chỉ,FK,FK → Certificates.Id
 CertificateSpecializations,SpecializationId,Mã chuyên môn,FK,FK → Specializations.Id
@@ -170,29 +186,22 @@ Decisions,Position,Chức vụ người ký,,
 Decisions,DecisionUnit,Đơn vị ban hành,,
 Decisions,FileName,Tên file đính kèm,,
 Decisions,FilePath,Đường dẫn file,,
-Decisions,TypeId,Loại quyết định,,
+Decisions,TypeId,Loại quyết định,,FK suy luận → Type(s).Id
 Decisions,Status,Trạng thái quyết định,,
 Decisions,CreatedBy,ID người tạo,,
 Decisions,CreatedAt,Thời gian tạo,,
 Decisions,UpdatedAt,Thời gian cập nhật gần nhất,,
 DepartmentAccess,Id,ID dữ liệu (tự động tăng),PK,
-DepartmentAccess,DepartmentId,ID phòng ban được khai thác,FK,FK → Departments.Id
-DepartmentAccess,DepartmentAccessId,ID phòng ban có quyền khai thác,FK,FK → Departments.Id
-Departments,Id,ID phòng ban (tự động tăng),PK,
-Departments,DepartmentCode,Mã phòng ban,,
-Departments,DepartmentName,Tên phòng ban,,
-Departments,UnitId,Mã đơn vị,FK,FK → Units.Id
-Departments,Status,Trạng thái,,
-Departments,SortOrder,Thứ tự sắp xếp,,
-Departments,Description,Mô tả phòng ban,,
+DepartmentAccess,DepartmentId,ID phòng ban được khai thác,FK,FK (xem constraint)
+DepartmentAccess,DepartmentAccessId,ID phòng ban có quyền khai thác,FK,FK (xem constraint)
 DigitalCertificates,Id,ID dữ liệu (tự động tăng),PK,
 DigitalCertificates,DigitalCertificateId,ID chứng thư số,,
-DigitalCertificates,UserId,ID tài khoản được sử dụng,FK,FK → Users.Id
+DigitalCertificates,UserId,ID tài khoản được sử dụng,FK,FK (xem constraint)
 DigitalCertificates,Status,Trạng thái,,
 DigitalCertificates,Notes,Mô tả,,
 DigitalCertificateUsers,Id,ID dữ liệu (tự động tăng),PK,
-DigitalCertificateUsers,DigitalCertificateId,ID chứng thư số,FK,FK → DigitalCertificates.Id
-DigitalCertificateUsers,UserId,ID tài khoản được sử dụng,FK,FK → Users.Id
+DigitalCertificateUsers,DigitalCertificateId,ID chứng thư số,FK,FK (xem constraint)
+DigitalCertificateUsers,UserId,ID tài khoản được sử dụng,FK,FK (xem constraint)
 DigitalCertificateUsers,Status,Trạng thái,,
 DigitalCertificateUsers,Notes,Mô tả,,
 Documents,Id,Mã định danh tài liệu (tự động tăng),PK,
@@ -210,47 +219,81 @@ EducationLevels,LevelName,Tên trình độ học vấn,,
 EducationLevels,Description,Mô tả,,
 EducationLevels,Status,Trạng thái,,
 EducationLevels,IsOriginalData,Cờ dữ liệu gốc,,
-ExamDetails,Id,ID dữ liệu (tự động tăng),PK,
-ExamDetails,ExamSessionId,ID đợt thi,FK,FK → ExamSessions.Id
-ExamDetails,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
-ExamDetails,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
+ExamDetails,Id,Mã định danh (tự động tăng),PK,
+ExamDetails,ProfessionalId,ID người hành nghề,FK,FK → Professionals.Id
+ExamDetails,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
+ExamDetails,ExamSessionId,ID kỳ thi,FK,FK → ExamSessions.Id
+ExamDetails,SequenceNumber,Số thứ tự,,
 ExamDetails,ExamNumber,Số báo danh,,
-ExamDetails,LawScore,Điểm pháp luật,,
-ExamDetails,ProfessionalScore,Điểm chuyên môn,,
-ExamDetails,Result,Kết quả (Đạt/Không đạt/Chưa thi),,
+ExamDetails,LawScore,Điểm thi luật,,
+ExamDetails,LawResult,"Kết quả luật (1: Đạt, 0: Không đạt)",,
+ExamDetails,SpecializationScore,Điểm thi chuyên môn,,
+ExamDetails,SpecializationResult,"Kết quả chuyên môn (1: Đạt, 0: Không đạt)",,
+ExamDetails,Result,"Kết quả tổng (1: Đạt, 0: Không đạt)",,
+ExamDetails,Note,Ghi chú,,
+ExamDetails,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
 ExamDetails,CreatedAt,Ngày tạo,,
-ExamDetails,UpdatedAt,Ngày cập nhật,,
-ExamSessionFees,Id,ID dữ liệu (tự động tăng),PK,
-ExamSessionFees,ExamSessionId,ID đợt thi,FK,FK → ExamSessions.Id
+ExamDetails,CreatedBy,Người tạo,,
+ExamSessionFees,Id,Mã định danh (tự động tăng),PK,
+ExamSessionFees,ExamSessionId,ID đợt thi sát hạch,FK,FK → ExamSessions.Id
 ExamSessionFees,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
-ExamSessionFees,ExamFee,Chi phí thi sát hạch (VNĐ),,
-ExamSessionFees,ReviewFee,Chi phí phúc khảo (VNĐ),,
-ExamSessions,Id,ID dữ liệu (tự động tăng),PK,
-ExamSessions,SessionNumber,Đợt thi,,
-ExamSessions,ExamYear,Năm thi,,
-ExamSessions,SessionCode,Mã đợt thi,,
-ExamSessions,SessionName,Tên đợt thi,,
-ExamSessions,Location,Địa điểm thi,,
-ExamSessions,Organizer,Đơn vị tổ chức,,
-ExamSessions,RegistrationStartDate,Ngày bắt đầu nộp hồ sơ,,
-ExamSessions,RegistrationEndDate,Ngày kết thúc nộp hồ sơ,,
-ExamSessions,ExamStartDate,Ngày thi dự kiến (bắt đầu),,
-ExamSessions,ExamEndDate,Ngày thi dự kiến (kết thúc),,
-ExamSessions,ApplicationSourceId,Hình thức nộp hồ sơ,FK,FK → ApplicationSources.Id
-ExamSessions,AttachmentPath,File thông báo đính kèm,,
-ExamSessions,DecisionId,ID quyết định công nhận kết quả,FK,FK → Decisions.Id
-ExamSessions,Status,Trạng thái (Khởi tạo/Đang thực hiện/Hoàn thành),,
-ExamSessions,CreatedBy,ID người tạo,,
-ExamSessions,CreatedAt,Ngày tạo,,
-ExamSessions,UpdatedAt,Ngày cập nhật,,
-ExamSessions,UpdatedBy,ID người cập nhật,,
-IdentityInfoC06s,Id,ID dữ liệu (tự động tăng),PK,
-IdentityInfoC06s,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-IdentityInfoC06s,IdentityNumber,Số CCCD/CMND,,
-IdentityInfoC06s,VerifyStatus,Trạng thái xác thực,,
-IdentityInfoC06s,VerifyDate,Ngày xác thực,,
-IdentityInfoC06s,ResponseData,Dữ liệu phản hồi từ C06,,
-IdentityInfoC06s,CreatedAt,Ngày tạo,,
+ExamSessionFees,FeeExam,Phí thi,,
+ExamSessionFees,FeeAppeal,Phí phúc khảo,,
+ExamSessionFees,Status,Trạng thái,,
+ExamSessionFees,CreatedAt,Ngày tạo,,
+ExamSessionFees,CreatedBy,Người tạo,,
+ExamSessionFees,UpdatedAt,Ngày cập nhật,,
+ExamSessionFees,UpdatedBy,Người cập nhật,,
+ExamSessions,Id,Mã định danh (tự động tăng),PK,
+ExamSessions,Code,Mã đợt thi,,
+ExamSessions,Name,Tên đợt thi,,
+ExamSessions,Year,Năm diễn ra,,
+ExamSessions,Session,Đợt thi,,
+ExamSessions,OrganizingUnit,Đơn vị tổ chức,,
+ExamSessions,ApplicationStartDate,Ngày bắt đầu nhận hồ sơ,,
+ExamSessions,ApplicationEndDate,Ngày kết thúc nhận hồ sơ,,
+ExamSessions,ExamStartDate,Ngày bắt đầu thi,,
+ExamSessions,ExamEndDate,Ngày kết thúc thi,,
+ExamSessions,FilePath,Đường dẫn tài liệu,,
+ExamSessions,NotiDate,Ngày thông báo,,
+ExamSessions,ExamLocations,Nơi diễn ra,,
+ExamSessions,SubmissionMethods,Phương thức nộp,,
+ExamSessions,CreatedBy,Người tạo,,
+ExamSessions,Status,"Trạng thái (0: Chưa hoàn thành, 1: Đã hoàn thành)",,
+ExamSessions,DecisionId,ID quyết định,FK,FK (xem constraint)
+IdentityInfoC06s,Id,Mã định danh lịch sử (tự động tăng),PK,
+IdentityInfoC06s,FullName,Họ và tên,,
+IdentityInfoC06s,FirstName,Tên,,
+IdentityInfoC06s,BirthDate,Ngày sinh,,
+IdentityInfoC06s,BirthYear,Năm sinh,,
+IdentityInfoC06s,IdentityNumber,Số định danh,,
+IdentityInfoC06s,Gender,"Giới tính (0: Nữ, 1: Nam)",,
+IdentityInfoC06s,National,Quốc tịch,,
+IdentityInfoC06s,Religion,Tôn giáo,,
+IdentityInfoC06s,PermanentCountryCode,Quốc gia nguyên quán,,
+IdentityInfoC06s,PermanentProvinceCode,Tỉnh thành nguyên quán,,
+IdentityInfoC06s,PermanentDistrictCode,Quận huyện nguyên quán,,
+IdentityInfoC06s,PermanentDetail,Địa chỉ nguyên quán chi tiết,,
+IdentityInfoC06s,CurrentCountryCode,Quốc gia hiện tại,,
+IdentityInfoC06s,CurrentProvinceCode,Tỉnh thành hiện tại,,
+IdentityInfoC06s,CurrentDistrictCode,Quận huyện hiện tại,,
+IdentityInfoC06s,CurrentDetail,Địa chỉ hiện tại chi tiết,,
+IdentityInfoC06s,CountryCode,Mã quốc gia,,
+IdentityInfoC06s,PlaceOfBirth,Nơi sinh,,
+IdentityInfoC06s,Hometown,Địa chỉ nhà,,
+IdentityInfoC06s,FatherFullName,Họ tên bố,,
+IdentityInfoC06s,FatherCountryCode,Quốc gia của bố,,
+IdentityInfoC06s,FatherIdentityNumber,Số định danh của bố,,
+IdentityInfoC06s,FatherIdentityNumberOld,Số định danh cũ của bố,,
+IdentityInfoC06s,MotherFullName,Họ tên mẹ,,
+IdentityInfoC06s,MotherCountryCode,Quốc gia của mẹ,,
+IdentityInfoC06s,MotherIdentityNumber,Số định danh của mẹ,,
+IdentityInfoC06s,MotherIdentityNumberOld,Số định danh cũ của mẹ,,
+IdentityInfoC06s,CoupleFullName,Họ tên vợ/chồng,,
+IdentityInfoC06s,CoupleCountryCode,Quốc gia của vợ/chồng,,
+IdentityInfoC06s,CoupleIdentityNumber,Số định danh của vợ/chồng,,
+IdentityInfoC06s,CoupleIdentityNumberOld,Số định danh cũ của vợ/chồng,,
+IdentityInfoC06s,UserUpdateId,ID người cập nhật,,FK suy luận → UserUpdate(s).Id
 OrganizationReports,Id,Mã định danh (tự động tăng),PK,
 OrganizationReports,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
 OrganizationReports,OrganizationId,Mã tổ chức,FK,FK → Organizations.Id
@@ -275,8 +318,8 @@ OrganizationReports,SyncCreatedAt,Ngày tạo đồng bộ,,
 OrganizationReports,SyncUpdatedAt,Ngày cập nhật đồng bộ,,
 OrganizationReports,Type,Loại báo cáo,,
 OrganizationReports,UpdatedAt,Ngày cập nhật,,
-OrganizationReports,ParentReportId,Mã báo cáo cha,FK,FK → OrganizationReports.Id (self-ref)
-OrganizationReports,CertificateRecordId,Mã chứng chỉ hành nghề,,
+OrganizationReports,ParentReportId,Mã báo cáo cha,FK,FK → ParentReports.Id
+OrganizationReports,CertificateRecordId,Mã chứng chỉ hành nghề,,FK suy luận → CertificateRecords.Id
 OrganizationReports,BusinessDepartment,Phòng ban nghiệp vụ,,
 Organizations,Id,Mã định danh tổ chức (tự động tăng),PK,
 Organizations,OrganizationCode,Mã tổ chức,,
@@ -285,8 +328,9 @@ Organizations,Address,Địa chỉ tổ chức,,
 Organizations,PhoneNumber,Số điện thoại,,
 Organizations,Email,Email,,
 Organizations,Fax,Số fax,,
-Organizations,OrganizationTypeId,"Mã loại tổ chức (1:CTCK,2:QLQ,3:NH,4:Khác)",,
-Organizations,ParentId,ID tổ chức cha,,FK → Organizations.Id (self-ref)
+Organizations,OrganizationTypeId,"Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác)",,
+Organizations,OrganizationReportIds,ID báo cáo tổ chức,FK,FK (xem constraint)
+Organizations,ParentId,ID tổ chức cha,,FK suy luận → Organizations.Id
 Organizations,LinkedId,ID liên kết,,
 Organizations,SyncId,ID dữ liệu đồng bộ,,
 Organizations,Level,Cấp độ tổ chức,,
@@ -307,78 +351,93 @@ Organizations,Website,Địa chỉ website,,
 Organizations,CreatedBy,ID người tạo,,
 Organizations,CreatedAt,Thời gian tạo,,
 Organizations,UpdatedAt,Thời gian cập nhật gần nhất,,
-Permissions,Id,ID quyền hạn (tự động tăng),PK,
-Permissions,PermissionCode,Mã quyền,,
-Permissions,PermissionName,Tên quyền,,
-Permissions,Description,Mô tả,,
-Permissions,Status,Trạng thái,,
-PermissionRoles,Id,Mã định danh (tự động tăng),PK,
-PermissionRoles,PermissionId,Mã quyền hạn,FK,FK → Permissions.Id
-PermissionRoles,RoleId,Mã nhóm người dùng,FK,FK → Roles.Id
-Positions,Id,Mã định danh chức vụ (tự động tăng),PK,
-Positions,PositionName,Tên chức vụ,,
-Positions,Status,Trạng thái,,
-Positions,CreatedBy,ID người tạo,,
-Positions,CreatedAt,Thời gian tạo,,
-Positions,UpdatedAt,Thời gian cập nhật gần nhất,,
-ProfessionalHistories,Id,ID dữ liệu (tự động tăng),PK,
+ProfessionalHistories,Id,Mã định danh lịch sử (tự động tăng),PK,
 ProfessionalHistories,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-ProfessionalHistories,FieldName,Tên trường thay đổi,,
-ProfessionalHistories,OldValue,Giá trị cũ,,
-ProfessionalHistories,NewValue,Giá trị mới,,
-ProfessionalHistories,ChangedBy,ID người thay đổi,,
-ProfessionalHistories,ChangedAt,Ngày thay đổi,,
+ProfessionalHistories,RegistrationType,Hình thức đăng ký,,
+ProfessionalHistories,EducationLevelId,Mã trình độ học vấn,FK,FK (xem constraint)
+ProfessionalHistories,OrganizationId,Mã tổ chức,FK,FK (xem constraint)
+ProfessionalHistories,NationalityId,Mã quốc gia,FK,FK (xem constraint)
+ProfessionalHistories,FullName,Họ và tên,,
+ProfessionalHistories,FirstName,Tên,,
+ProfessionalHistories,BirthDate,Ngày sinh,,
+ProfessionalHistories,BirthYear,Năm sinh,,
+ProfessionalHistories,Gender,"Giới tính (0: Nữ, 1: Nam)",,
+ProfessionalHistories,PermanentCountryId,Quốc gia nguyên quán,,FK suy luận → PermanentCountry(s).Id
+ProfessionalHistories,PermanentProvinceId,Tỉnh thành nguyên quán,,FK suy luận → PermanentProvince(s).Id
+ProfessionalHistories,PermanentDistrictId,Quận huyện nguyên quán,,FK suy luận → PermanentDistrict(s).Id
+ProfessionalHistories,PermanentAddress,Địa chỉ chi tiết nguyên quán,,
+ProfessionalHistories,CurrentCountryId,Quốc gia hiện tại,,FK suy luận → CurrentCountry(s).Id
+ProfessionalHistories,CurrentProvinceId,Tỉnh thành hiện tại,,FK suy luận → CurrentProvince(s).Id
+ProfessionalHistories,CurrentDistrictId,Quận huyện hiện tại,,FK suy luận → CurrentDistrict(s).Id
+ProfessionalHistories,PlaceOfBirth,Nơi sinh,,
+ProfessionalHistories,IdentityNumber,Số chứng minh thư/CCCD,,
+ProfessionalHistories,IdentityIssueDate,Ngày cấp,,
+ProfessionalHistories,IdentityIssuePlace,Nơi cấp,,
+ProfessionalHistories,Address,Địa chỉ,,
+ProfessionalHistories,Email,Email,,
+ProfessionalHistories,PhoneNumber,Số điện thoại,,
+ProfessionalHistories,MobileNumber,Số di động,,
+ProfessionalHistories,Workplace,Nơi làm việc,,
+ProfessionalHistories,Status,Trạng thái,,
+ProfessionalHistories,PreviousIdentityNumber,Số định danh cũ,,
+ProfessionalHistories,ChangeDate,Ngày thay đổi,,
+ProfessionalHistories,ReasonUpdate,Lý do thay đổi,,
+ProfessionalHistories,StatusWork,"Trạng thái làm việc (1: Hành nghề, 0: Chưa hành nghề, 2: Thu hồi cho cấp lại, 3: Thu hồi không cấp lại, 4: Hành nghề có thời hạn)",,
+ProfessionalHistories,StatusAccount,"Trạng thái tài khoản (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
 ProfessionalRelationships,Id,Mã định danh quan hệ (tự động tăng),PK,
 ProfessionalRelationships,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
 ProfessionalRelationships,FullName,Họ và tên người liên quan,,
-ProfessionalRelationships,RelationshipType,"Quan hệ (1:Vợ/Chồng,2:Con,3:Bố,4:Mẹ,5:Ông,6:Bà)",,
+ProfessionalRelationships,RelationshipType,"Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà)",,
 ProfessionalRelationships,BirthYear,Năm sinh,,
 ProfessionalRelationships,Address,Địa chỉ,,
 ProfessionalRelationships,Occupation,Nghề nghiệp,,
 ProfessionalRelationships,Workplace,Nơi làm việc,,
 ProfessionalRelationships,Note,Ghi chú,,
-ProfessionalRelationships,IdentityId,Mã định danh,,
-ProfessionalRelationships,CountryId,Mã quốc gia,,
+ProfessionalRelationships,IdentityId,Mã định danh,,FK suy luận → Identity(s).Id
+ProfessionalRelationships,CountryId,Mã quốc gia,,FK suy luận → Country(s).Id
 ProfessionalRelationships,CreatedAt,Ngày tạo,,
 Professionals,Id,Mã định danh người hành nghề (tự động tăng),PK,
 Professionals,FullName,Họ và tên,,
-Professionals,BirthDate,Ngày sinh,,
-Professionals,Gender,Giới tính,,
-Professionals,IdentityNumber,Số CCCD/CMND,,
-Professionals,IdentityIssueDate,Ngày cấp CCCD,,
-Professionals,IdentityIssuePlace,Nơi cấp CCCD,,
-Professionals,Nationality,Quốc tịch,,
-Professionals,PermanentAddress,Nơi thường trú,,
-Professionals,CurrentAddress,Nơi ở hiện tại,,
-Professionals,BirthPlace,Nơi sinh,,
-Professionals,Phone,Điện thoại liên hệ,,
-Professionals,Email,Email,,
-Professionals,EducationLevelId,Trình độ học vấn,FK,FK → EducationLevels.Id
-Professionals,PracticeStatus,Trạng thái hành nghề,,
-Professionals,VerifyStatus,Trạng thái xác thực C06,,
+Professionals,RelationshipType,Loại quan hệ,,
+Professionals,BirthYear,Năm sinh,,
+Professionals,Address,Địa chỉ,,
+Professionals,Occupation,Nghề nghiệp,,
+Professionals,Workplace,Nơi làm việc,,
+Professionals,Note,Ghi chú,,
+Professionals,IdentityId,Mã định danh,,FK suy luận → Identity(s).Id
+Professionals,CountryId,Mã quốc gia,,FK suy luận → Country(s).Id
 Professionals,CreatedAt,Ngày tạo,,
-Professionals,UpdatedAt,Ngày cập nhật,,
-ProfessionalWorkHistories,Id,ID dữ liệu (tự động tăng),PK,
-ProfessionalWorkHistories,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-ProfessionalWorkHistories,OrganizationId,Mã tổ chức,FK,FK → Organizations.Id
-ProfessionalWorkHistories,CertificateRecordId,Mã chứng chỉ hành nghề,FK,FK → CertificateRecords.Id
-ProfessionalWorkHistories,Position,Chức vụ,,
-ProfessionalWorkHistories,Department,Phòng ban,,
-ProfessionalWorkHistories,StartDate,Từ ngày,,
-ProfessionalWorkHistories,EndDate,Đến ngày,,
-ProfessionalWorkHistories,CreatedAt,Ngày tạo,,
-Roles,Id,ID nhóm quyền (tự động tăng),PK,
-Roles,RoleCode,Mã nhóm quyền,,
-Roles,RoleName,Tên nhóm quyền,,
-Roles,Description,Mô tả,,
-Roles,Status,Trạng thái,,
-SpecializationCourseDetails,Id,ID dữ liệu (tự động tăng),PK,
-SpecializationCourseDetails,CourseId,ID khóa học,FK,FK → SpecializationCourses.Id
+ProfessionalWorkHistories,Id,Mã định danh (tự động tăng),PK,
+ProfessionalWorkHistories,CertificateId,Mã chứng chỉ,FK,FK (xem constraint)
+ProfessionalWorkHistories,Name,Tên biểu mẫu/vị trí công tác,,
+ProfessionalWorkHistories,Reference,Tài liệu tham chiếu,,
+ProfessionalWorkHistories,Description,Mô tả,,
+ProfessionalWorkHistories,FileName,Tên file đính kèm,,
+ProfessionalWorkHistories,FilePath,Đường dẫn file,,
+ProfessionalWorkHistories,Status,Trạng thái,,
+ProfessionalWorkHistories,SortOrder,Thứ tự sắp xếp,,
+ProfessionalWorkHistories,IsFeatured,Cờ nổi bật,,
+ProfessionalWorkHistories,CreatedBy,ID người tạo,,
+ProfessionalWorkHistories,CreatedAt,Thời gian tạo,,
+ProfessionalWorkHistories,UpdatedAt,Thời gian cập nhật gần nhất,,
+SpecializationCourseDetails,Id,Mã định danh chi tiết khóa học (tự động tăng),PK,
+SpecializationCourseDetails,SpecializationCourseId,Mã khóa học chuyên môn,FK,FK → SpecializationCourses.Id
 SpecializationCourseDetails,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-SpecializationCourseDetails,ExamNumber,Số báo danh,,
-SpecializationCourseDetails,Score,Điểm,,
-SpecializationCourseDetails,Result,Kết quả,,
+SpecializationCourseDetails,ExamNumber,Số dự thi,,
+SpecializationCourseDetails,Fullname,Họ và tên,,
+SpecializationCourseDetails,IdentityNumber,Số định danh,,
+SpecializationCourseDetails,Description,Mô tả,,
+SpecializationCourseDetails,ExamScore,Điểm thi,,
+SpecializationCourseDetails,Result,"Kết quả thi (1: Đạt, 0: Không đạt)",,
+SpecializationCourseDetails,Note,Ghi chú,,
+SpecializationCourseDetails,BirthDate,Ngày sinh,,
+SpecializationCourseDetails,PlaceOfDate,Nơi sinh,,
+SpecializationCourseDetails,Status,"Trạng thái (0: Chờ thẩm định, 1: Xác nhận, 2: Yêu cầu nộp lại, 3: Từ chối)",,
+SpecializationCourseDetails,AssigneeId,Người xử lý,FK,FK (xem constraint)
+SpecializationCourseDetails,CreatedBy,Người tạo,,
 SpecializationCourseDetails,CreatedAt,Ngày tạo,,
+SpecializationCourseDetails,UpdatedAt,Ngày cập nhật,,
+SpecializationCourseDetails,UpdatedBy,Người cập nhật,,
 SpecializationCourses,Id,Mã định danh (tự động tăng),PK,
 SpecializationCourses,SpecializationId,Mã chuyên môn,FK,FK → Specializations.Id
 SpecializationCourses,AcademicYear,Năm học,,
@@ -387,7 +446,7 @@ SpecializationCourses,CourseName,Tên khóa học,,
 SpecializationCourses,IsActive,Trạng thái hoạt động,,
 SpecializationCourses,Description,Mô tả,,
 SpecializationCourses,ExamDate,Ngày thi,,
-SpecializationCourses,Status,"Trạng thái (1:HĐ, 0:Không HĐ, -1:Đã xóa)",,
+SpecializationCourses,Status,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
 SpecializationCourses,FilePath,Đường dẫn tài liệu,,
 SpecializationCourses,CreatedBy,Người tạo,,
 SpecializationCourses,CreatedAt,Ngày tạo,,
@@ -397,51 +456,64 @@ Specializations,Id,Mã định danh (tự động tăng),PK,
 Specializations,SpecializationCode,Mã chứng chỉ chuyên môn,,
 Specializations,SpecializationName,Tên chứng chỉ chuyên môn,,
 Specializations,Reference,"Thông tin pháp lý, quy định liên quan",,
-Specializations,Status,"Trạng thái (1:HĐ, 0:Không HĐ, -1:Đã xóa)",,
+Specializations,IsActive,Không sử dụng,,
+Specializations,IsOriginalData,Không sử dụng,,
+Specializations,Status,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
 Specializations,CreatedBy,Người tạo,,
 Specializations,CreatedAt,Ngày tạo,,
 Specializations,UpdatedAt,Ngày cập nhật,,
-SystemParameters,Id,ID tham số (tự động tăng),PK,
-SystemParameters,ParameterKey,Khóa tham số,,
-SystemParameters,ParameterValue,Giá trị tham số,,
+SystemParameters,Id,Mã định danh (tự động tăng),PK,
+SystemParameters,ParameterCode,Mã tham số,,
+SystemParameters,Value,Giá trị tham số,,
 SystemParameters,Description,Mô tả,,
-SystemParameters,Status,Trạng thái,,
-Units,Id,ID đơn vị (tự động tăng),PK,
+SystemParameters,SortOrder,Ưu tiên hiển thị,,
+SystemParameters,DataType,Kiểu dữ liệu,,
+SystemParameters,IsDisplayed,Cờ hiển thị,,
+SystemParameters,Type,"Loại tham số (1: Tham số hệ thống, 2: Cấu hình kết nối)",,
+Units,Id,Mã định danh đơn vị (tự động tăng),PK,
 Units,UnitCode,Mã đơn vị,,
 Units,UnitName,Tên đơn vị,,
-Units,Description,Mô tả,,
 Units,Status,Trạng thái,,
-Units,SortOrder,Thứ tự sắp xếp,,
-UserRoles,Id,ID dữ liệu (tự động tăng),PK,
-UserRoles,UserId,ID người dùng,FK,FK → Users.Id
-UserRoles,RoleId,ID nhóm quyền,FK,FK → Roles.Id
-Users,Id,ID người dùng (tự động tăng),PK,
-Users,Username,Tên đăng nhập,,
-Users,PasswordHash,Mật khẩu (mã hóa),,
-Users,FullName,Họ và tên,,
-Users,Email,Email,,
-Users,Phone,Điện thoại,,
-Users,Gender,Giới tính,,
-Users,UnitId,ID đơn vị,FK,FK → Units.Id
-Users,DepartmentId,ID phòng ban,FK,FK → Departments.Id
-Users,PositionId,ID chức vụ,FK,FK → Positions.Id
-Users,Status,Trạng thái,,
-Users,CreatedAt,Ngày tạo,,
-Users,UpdatedAt,Ngày cập nhật,,
-VerifyApplicationStatuses,Id,ID dữ liệu (tự động tăng),PK,
+Units,Description,Mô tả đơn vị,,
+VerifyApplicationStatuses,Id,Chỉ số định danh (tự động tăng),PK,
 VerifyApplicationStatuses,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
-VerifyApplicationStatuses,VerifyLevel,Cấp phê duyệt (LĐCM/LĐUB),,
-VerifyApplicationStatuses,VerifyStatus,Trạng thái phê duyệt,,
-VerifyApplicationStatuses,VerifyBy,ID người phê duyệt,FK,FK → Users.Id
-VerifyApplicationStatuses,VerifyAt,Ngày phê duyệt,,
-VerifyApplicationStatuses,Reason,Lý do (nếu từ chối),,
-VerifyApplicationStatuses,CreatedAt,Ngày tạo,,
-Violations,Id,ID dữ liệu (tự động tăng),PK,
+VerifyApplicationStatuses,StatusId,Trạng thái hồ sơ,FK,FK (xem constraint)
+VerifyApplicationStatuses,Reason,Lý do thay đổi trạng thái,,
+VerifyApplicationStatuses,SpecReason,Nội dung - Lãnh đạo chuyên môn,,
+VerifyApplicationStatuses,OrgReason,Nội dung - Lãnh đạo UBCK,,
+VerifyApplicationStatuses,OverviewReason,Nội dung - Cán bộ tổng hợp,,
+VerifyApplicationStatuses,PrevStatusId,ID trạng thái trước đó của hồ sơ,,FK suy luận → PrevStatus(s).Id
+VerifyApplicationStatuses,VerifiedBy,Người duyệt trạng thái,,
+VerifyApplicationStatuses,CreatedAt,Thời gian tạo,,
+VerifyApplicationStatuses,CreatedBy,ID người tạo,,
+VerifyApplicationStatuses,UpdatedAt,Thời gian cập nhật,,
+VerifyApplicationStatuses,UpdatedBy,Người cập nhật,,
+Violations,Id,Mã định danh (tự động tăng),PK,
 Violations,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-Violations,DecisionId,ID quyết định xử lý vi phạm,FK,FK → Decisions.Id
-Violations,ViolationType,Loại vi phạm (Pháp luật/Hành chính),,
-Violations,Detail,Chi tiết vi phạm,,
-Violations,Status,Trạng thái (Hiệu lực/Không hiệu lực),,
-Violations,CreatedBy,ID người tạo,,
+Violations,FullName,Họ và tên,,
+Violations,BirthDate,Ngày sinh,,
+Violations,IdentityNumber,Số chứng minh thư/CCCD,,
+Violations,Note,Ghi chú,,
+Violations,DecisionId,ID quyết định xử phạt,,FK suy luận → Decisions.Id
+Violations,Type,"Loại vi phạm (1: Hành chính, 2: Pháp luật)",,
+Violations,Status,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
+Violations,CreatedBy,Người tạo,,
 Violations,CreatedAt,Ngày tạo,,
+Violations,UpdatedBy,Người cập nhật,,
 Violations,UpdatedAt,Ngày cập nhật,,
+Departments,Id,ID phòng ban (tự động tăng),PK,
+Departments,DepartmentCode,Mã phòng ban,,
+Departments,DepartmentName,Tên phòng ban,,
+Departments,UnitId,Mã đơn vị,FK,FK → Units.Id
+Departments,Status,Trạng thái,,
+Departments,SortOrder,Thứ tự sắp xếp,,
+Departments,Description,Mô tả phòng ban,,
+PermissionRoles,Id,Mã định danh (tự động tăng),PK,
+PermissionRoles,PermissionId,Mã quyền hạn,FK,FK → Permissions.Id
+PermissionRoles,RoleId,Mã nhóm người dùng,FK,FK → Roles.Id
+Positions,Id,Mã định danh chức vụ (tự động tăng),PK,
+Positions,PositionName,Tên chức vụ,,
+Positions,Status,Trạng thái,,
+Positions,CreatedBy,ID người tạo,,
+Positions,CreatedAt,Thời gian tạo,,
+Positions,UpdatedAt,Thời gian cập nhật gần nhất,,
