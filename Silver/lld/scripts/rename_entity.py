@@ -7,25 +7,21 @@ ra tất cả file liên quan.
 
 silver_entities.csv là source of truth:
   - Người review sửa cột silver_entity trực tiếp trong silver_entities.csv
-  - Đổi status → reviewed để đánh dấu đã confirm
   - Chạy script này để propagate
+  - Nếu entity đang status=approved → script dừng + báo lỗi
+    → Cần đổi status → draft trước khi rename
 
-Quy trình người review:
-  1. Sửa silver_entity (và/hoặc table_type) trong silver_entities.csv
-  2. Đổi cột status: draft → reviewed
-  3. Chạy: python rename_entity.py
-  4. Kiểm tra log output
-  5. (Optional) python aggregate_silver.py để refresh silver_attributes.csv
+Approved lock:
+  - Entity status=approved → tên đã confirmed và LOCKED
+  - Không thể rename entity đang approved
+  - Quy trình: approved → draft → sửa tên → chạy script → approved lại
 
 Cách dùng:
   python rename_entity.py              # apply rename thật sự
   python rename_entity.py --dry-run    # in diff, không ghi file
 
-Lock mechanism:
-  - Dòng silver_entities.csv có status=reviewed → tên entity là confirmed value
-  - Script phát hiện rename bằng cách so sánh silver_entities.csv (tên mới)
-    với manifest.csv (tên cũ — chưa được sync)
-  - Sau khi propagate, manifest.csv được cập nhật để giữ sync
+Phát hiện rename: silver_entity trong silver_entities.csv
+  khác với silver_entity tương ứng trong manifest.csv (match theo source_table).
 """
 
 import csv
@@ -53,26 +49,25 @@ REF_SHARED   = LLD_DIR / "ref_shared_entity_classifications.csv"
 
 
 # ---------------------------------------------------------------------------
-# Đọc silver_entities.csv → {source_table_fqn: silver_entity} cho reviewed rows
-# và {silver_entity: lld_file} để biết file nào cần patch
+# Đọc silver_entities.csv → {silver_entity: row} cho TẤT CẢ entity
+# (không filter theo status)
 # ---------------------------------------------------------------------------
-def load_reviewed_entities() -> dict[str, str]:
+def load_all_entities() -> dict[str, dict]:
     """
-    Trả về {silver_entity: silver_entity} cho các dòng status=reviewed.
-    Dùng để xác định tên mới đã confirmed.
+    Trả về {silver_entity: row_dict} cho tất cả entity trong silver_entities.csv.
+    Dùng để detect rename (diff vs manifest) và check approved lock.
     """
     result = {}
     if not OUT_ENTITIES.exists():
         return result
     with open(OUT_ENTITIES, encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
-            if row.get("status", "").strip().lower() == "reviewed":
-                result[row["silver_entity"]] = row
+            result[row["silver_entity"]] = row
     return result
 
 
 # ---------------------------------------------------------------------------
-# Đọc manifest → {source_table_fqn: silver_entity} (tên cũ)
+# Đọc manifest → list of dicts (tên cũ)
 # ---------------------------------------------------------------------------
 def load_manifest() -> list[dict]:
     with open(MANIFEST, encoding="utf-8", newline="") as f:
@@ -80,25 +75,26 @@ def load_manifest() -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Phát hiện rename: so sánh silver_entities.csv (reviewed, tên mới)
+# Phát hiện rename: so sánh silver_entities.csv (tên mới)
 # với manifest.csv (tên cũ — chưa sync)
 # Returns: list of (old_name, new_name, source_system, lld_file)
 # ---------------------------------------------------------------------------
-def detect_renames(reviewed_entities: dict[str, dict],
+def detect_renames(all_entities: dict[str, dict],
                    manifest_rows: list[dict]) -> list[tuple[str, str, str, str]]:
     """
-    reviewed_entities: {new_silver_entity → row} từ silver_entities.csv status=reviewed
+    all_entities: {silver_entity → row} từ silver_entities.csv (tên mới)
     manifest_rows: danh sách rows từ manifest.csv (chứa tên cũ)
 
-    Detect: dòng manifest có silver_entity không có trong reviewed_entities
-    nhưng có 1 reviewed entity khác mà source_table match.
+    Detect: dòng manifest có silver_entity không có trong silver_entities
+    nhưng source_table match với 1 entity khác trong silver_entities.
     """
-    # Build: {source_table_fqn → new_name} từ silver_entities (reviewed)
-    # Dùng cột source_table trong silver_entities.csv để map
+    # Build: {source_table_fqn → new_name} từ silver_entities
     fqn_to_new: dict[str, str] = {}
-    for new_name, row in reviewed_entities.items():
-        for st in row["source_table"].split(", "):
-            fqn_to_new[st.strip()] = new_name
+    for new_name, row in all_entities.items():
+        for st in row.get("source_table", "").split(", "):
+            st = st.strip()
+            if st:
+                fqn_to_new[st] = new_name
 
     renames = []
     seen_pairs: set = set()
@@ -118,6 +114,29 @@ def detect_renames(reviewed_entities: dict[str, dict],
         renames.append((old_name, new_name, row["source_system"], row["lld_file"]))
 
     return renames
+
+
+# ---------------------------------------------------------------------------
+# Kiểm tra approved lock: entity nào đang approved mà bị rename → block
+# Returns: list of old_name bị block
+# ---------------------------------------------------------------------------
+def check_approved_lock(all_entities: dict[str, dict],
+                        renames: list[tuple[str, str, str, str]]) -> list[str]:
+    """
+    Với mỗi rename pair, kiểm tra entity (tên mới) có status=approved không.
+    Nếu approved → block rename đó.
+    Returns: list of (old_name, new_name) bị block.
+    """
+    # Build lookup cả theo new_name và old_name
+    # old_name có thể không còn trong all_entities nếu đã rename
+    # → tìm theo source_table match (đã làm trong detect_renames)
+    # Ở đây: new_name chắc chắn có trong all_entities
+    blocked = []
+    for old_name, new_name, sys_name, lld_file in renames:
+        entity_row = all_entities.get(new_name)
+        if entity_row and entity_row.get("status", "draft").strip().lower() == "approved":
+            blocked.append(old_name)
+    return blocked
 
 
 # ---------------------------------------------------------------------------
@@ -282,30 +301,38 @@ def main():
                         help="In diff ra stdout, không ghi file")
     args = parser.parse_args()
 
-    print("Đọc silver_entities.csv (reviewed rows)...", file=sys.stderr)
-    reviewed_entities = load_reviewed_entities()
+    print("Đọc silver_entities.csv (tất cả entity)...", file=sys.stderr)
+    all_entities = load_all_entities()
 
-    if not reviewed_entities:
-        print("Không có dòng nào có status=reviewed trong silver_entities.csv.", file=sys.stderr)
-        print("Gợi ý: sửa silver_entity trong silver_entities.csv, đổi status → reviewed, rồi chạy lại.", file=sys.stderr)
+    if not all_entities:
+        print("Không tìm thấy entity nào trong silver_entities.csv.", file=sys.stderr)
         return
 
-    print(f"  {len(reviewed_entities)} reviewed entities", file=sys.stderr)
+    print(f"  {len(all_entities)} entities", file=sys.stderr)
 
     print("Đọc manifest.csv (tên cũ)...", file=sys.stderr)
     manifest_rows = load_manifest()
 
-    renames = detect_renames(reviewed_entities, manifest_rows)
+    renames = detect_renames(all_entities, manifest_rows)
 
     if not renames:
         print("\nKhông phát hiện rename nào.")
         print("Gợi ý: đảm bảo silver_entity trong silver_entities.csv đã sửa khác với manifest,")
-        print("        và dòng đó có status=reviewed.")
+        print("        và source_table trong silver_entities.csv khớp với fqn trong manifest.")
         return
 
     print(f"\nPhát hiện {len(renames)} rename:")
     for old, new, sys_name, lld in renames:
         print(f"  '{old}' → '{new}'  [{sys_name}]")
+
+    # Kiểm tra approved lock
+    blocked = check_approved_lock(all_entities, renames)
+    if blocked:
+        print(f"\nERROR: Các entity sau đang status=approved — không thể rename:")
+        for name in blocked:
+            print(f"  '{name}'")
+        print("\nGợi ý: đổi status → draft trong silver_entities.csv trước khi rename.")
+        sys.exit(1)
 
     for old, new, sys_name, lld in renames:
         propagate_rename(old, new, sys_name, lld,
