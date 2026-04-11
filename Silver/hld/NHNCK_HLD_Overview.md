@@ -7,7 +7,7 @@
 > **File chi tiết theo tầng:**
 > - [NHNCK_HLD_Tier1.md](NHNCK_HLD_Tier1.md) — Reference Data: Regulatory Authority Organization Unit, Securities Organization Reference, License Decision Document, Regulatory Authority Officer
 > - [NHNCK_HLD_Tier2.md](NHNCK_HLD_Tier2.md) — Securities Practitioner, Professional Training Class, License Certificate Group Document, Qualification Examination Assessment
-> - [NHNCK_HLD_Tier3.md](NHNCK_HLD_Tier3.md) — License Certificate Document, License Application, Employment Status, Related Party, Audit Log, Conduct Violation, Organization Employment Report, Identity Verification Record, Training Class Enrollment, Examination Assessment Result, Examination Assessment Fee, License Certificate Group Member
+> - [NHNCK_HLD_Tier3.md](NHNCK_HLD_Tier3.md) — License Certificate Document, License Application, Employment Status, Related Party, Conduct Violation, Organization Employment Report, Identity Verification Record, Training Class Enrollment, Examination Assessment Result, Examination Assessment Fee, License Certificate Group Member
 > - [NHNCK_HLD_Tier4.md](NHNCK_HLD_Tier4.md) — License Application sub-entities (×5), License Certificate Document logs (×2)
 
 ---
@@ -30,7 +30,6 @@
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | Applications | Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán | Securities Practitioner License Application | Government Registration Document — FK đến Practitioner (Tier 2), Certificate Document (Tier 3), Examination Assessment (Tier 2), Officer ×3 (Tier 1). |
 | 3 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | ProfessionalWorkHistories | Lịch sử làm việc của người hành nghề tại các tổ chức | Securities Practitioner Employment Status | Individual Employment Status — FK đến Practitioner (Tier 2), Organization (Tier 1), Certificate Document (Tier 3). |
 | 3 | Involved Party | [Involved Party] Involved Party Relationship | Relationship | ProfessionalRelationships | Quan hệ thân nhân của người hành nghề | Securities Practitioner Related Party | Involved Party Relationship — FK đến Practitioner (Tier 2). |
-| 3 | Business Activity | ETL Pattern — Audit Log | Audit Log | ProfessionalHistories | Lịch sử thay đổi định danh cá nhân (Old/New value) | Securities Practitioner Audit Log | Audit Log Pattern — FK đến Practitioner (Tier 2). |
 | 3 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | Violations | Vi phạm của người hành nghề kèm quyết định xử lý | Securities Practitioner Conduct Violation | Conduct Violation — FK đến Practitioner (Tier 2), Decision (Tier 1), Officer (Tier 1). |
 | 3 | Documentation | [Documentation] Employer Registration | Employer Registration | OrganizationReports | Báo cáo của tổ chức về tình trạng làm việc của người hành nghề | Securities Practitioner Organization Employment Report | Employer Registration — FK đến Practitioner (Tier 2), Organization (Tier 1), self-ref. |
 | 3 | Communication | [Communication] Verification | Verification | IdentityInfoC06s | Lịch sử kiểm tra xác thực danh tính với hệ thống C06 | Securities Practitioner Identity Verification Record | Verification — FK đến Practitioner (Tier 2). |
@@ -78,7 +77,6 @@ graph TD
     APP["**License Application**"]:::silver
     EMPST["**Employment Status**"]:::silver
     RELP["**Related Party**"]:::silver
-    AUDIT["**Audit Log**"]:::pattern
     VIO["**Conduct Violation**"]:::silver
     EMPRPT["**Organization Employment Report**"]:::silver
     IDVERIFY["**Identity Verification Record**"]:::silver
@@ -132,7 +130,6 @@ graph TD
     EMPST -->|Organization FK| SECORG
     EMPST -->|Certificate Document FK| CERTDOC
     RELP -->|Practitioner FK| PRAC
-    AUDIT -.->|Audit of| PRAC
     VIO -->|Practitioner FK| PRAC
     VIO -->|Decision FK| DECISION
     VIO -->|Created By Officer FK| OFFICER
@@ -211,6 +208,7 @@ Không có pure junction table trong NHNCK.
 | System / Auth | PermissionRoles | Phân quyền theo vai trò | Operational/system data. |
 | System / Auth | DepartmentAccess | Quyền truy cập theo phòng ban | Operational/system data. |
 | System / Log | ActionLogs | Nhật ký hành động hệ thống | System audit log — không phải nghiệp vụ CCHN. |
+| Audit Log nguồn | ProfessionalHistories | Lịch sử thay đổi thông tin cá nhân người hành nghề | Audit Log nguồn — có cột FieldName, OldValue, NewValue, ChangedBy, ChangedAt. Cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ. |
 | System / Config | SystemParameters | Tham số hệ thống | Config data. |
 | Digital Cert | DigitalCertificates | Chứng chỉ số | Operational/PKI data — không phải CCHN. |
 | Digital Cert | DigitalCertificateUsers | Người dùng chứng chỉ số | Operational/PKI data. |
