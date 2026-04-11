@@ -1,20 +1,20 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-License Decision Document Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Government Registration Document"" (Documentation). Quyết định hành chính."
-License Decision Document Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.Decisions.Id,BK chính.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Decisions,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-Decision Number,Số quyết định,Text,true,false,draft,NHNCK.qlnhn.Decisions.DecisionNumber,"BCV: gần nhất ""Submission Number"" (Documentation). Đặt ""Decision Number"" sát nghĩa."
-Decision Title,Tiêu đề quyết định,Text,true,false,draft,NHNCK.qlnhn.Decisions.Title,"Prefix ""Decision"" phân biệt."
-Decision Reference,Trích dẫn,Text,true,false,draft,NHNCK.qlnhn.Decisions.Reference,
-Decision Content,Nội dung quyết định,Text,true,false,draft,NHNCK.qlnhn.Decisions.DecisionContent,
-Decision Type Code,Loại quyết định,Classification Value,true,false,draft,NHNCK.qlnhn.Decisions.TypeId,Scheme: DECISION_TYPE.
-Signed Date,Ngày ký,Date,true,false,draft,NHNCK.qlnhn.Decisions.SignedDate,"BCV: gần nhất ""Documentation Signatory"" + date pattern."
-Signatory Name,Người ký,Text,true,false,draft,NHNCK.qlnhn.Decisions.Signatory,"BCV: ""Documentation Signatory"" (Documentation). Suffix Name."
-Signatory Position Name,Chức vụ người ký,Text,true,false,draft,NHNCK.qlnhn.Decisions.Position,"Prefix ""Signatory"" phân biệt."
-Decision Unit Name,Đơn vị ban hành,Text,true,false,draft,NHNCK.qlnhn.Decisions.DecisionUnit,"Prefix ""Decision Unit"". Suffix Name."
-Documentation Item File Name,Tên file đính kèm,Text,true,false,draft,NHNCK.qlnhn.Decisions.FileName,"Nhất quán prefix ""Documentation Item File""."
-Documentation Item File Path,Đường dẫn file,Text,true,false,draft,NHNCK.qlnhn.Decisions.FilePath,Nhất quán prefix.
-Decision Status Code,Trạng thái quyết định,Classification Value,true,false,draft,NHNCK.qlnhn.Decisions.Status,Scheme: DECISION_STATUS.
-Created By Officer Id,FK đến Officer,Surrogate Key,true,false,draft,NHNCK.qlnhn.Decisions.CreatedBy,FK target: Regulatory Authority Officer.Officer Id.
-Created By Officer Code,Mã người tạo,Text,true,false,draft,NHNCK.qlnhn.Decisions.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id.
-Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.Decisions.CreatedAt,
-Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.Decisions.UpdatedAt,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+License Decision Document Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Government Registration Document"" (Documentation). Quyết định hành chính.",,
+License Decision Document Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.Decisions.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Decisions,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,,
+Decision Number,Số quyết định,Text,true,false,draft,NHNCK.qlnhn.Decisions.DecisionNumber,"BCV: gần nhất ""Submission Number"" (Documentation). Đặt ""Decision Number"" sát nghĩa.",,
+Decision Title,Tiêu đề quyết định,Text,true,false,draft,NHNCK.qlnhn.Decisions.Title,"Prefix ""Decision"" phân biệt.",,
+Decision Reference,Trích dẫn,Text,true,false,draft,NHNCK.qlnhn.Decisions.Reference,,,
+Decision Content,Nội dung quyết định,Text,true,false,draft,NHNCK.qlnhn.Decisions.DecisionContent,,,
+Decision Type Code,Loại quyết định,Classification Value,true,false,draft,NHNCK.qlnhn.Decisions.TypeId,Scheme: DECISION_TYPE.,,
+Signed Date,Ngày ký,Date,true,false,draft,NHNCK.qlnhn.Decisions.SignedDate,"BCV: gần nhất ""Documentation Signatory"" + date pattern.",,
+Signatory Name,Người ký,Text,true,false,draft,NHNCK.qlnhn.Decisions.Signatory,"BCV: ""Documentation Signatory"" (Documentation). Suffix Name.",,
+Signatory Position Name,Chức vụ người ký,Text,true,false,draft,NHNCK.qlnhn.Decisions.Position,"Prefix ""Signatory"" phân biệt.",,
+Decision Unit Name,Đơn vị ban hành,Text,true,false,draft,NHNCK.qlnhn.Decisions.DecisionUnit,"Prefix ""Decision Unit"". Suffix Name.",,
+Documentation Item File Name,Tên file đính kèm,Text,true,false,draft,NHNCK.qlnhn.Decisions.FileName,"Nhất quán prefix ""Documentation Item File"".",,
+Documentation Item File Path,Đường dẫn file,Text,true,false,draft,NHNCK.qlnhn.Decisions.FilePath,Nhất quán prefix.,,
+Decision Status Code,Trạng thái quyết định,Classification Value,true,false,draft,NHNCK.qlnhn.Decisions.Status,Scheme: DECISION_STATUS.,,
+Created By Officer Id,FK đến Officer,Surrogate Key,true,false,draft,NHNCK.qlnhn.Decisions.CreatedBy,FK target: Regulatory Authority Officer.Officer Id.,,
+Created By Officer Code,Mã người tạo,Text,true,false,draft,NHNCK.qlnhn.Decisions.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id.,,
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.Decisions.CreatedAt,,,
+Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.Decisions.UpdatedAt,,,

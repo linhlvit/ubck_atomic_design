@@ -1,35 +1,35 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Registered Taxpayer Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Organization"" (Involved Party)."
-Registered Taxpayer Code,ID bản ghi đăng ký thuế. BK,Text,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,BK chính. PK nguồn.
-Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-Full Name,Tên người nộp thuế,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_NGUOI_NOP,"BCV: ""Organization Name"". Scope: NNT gồm tổ chức/DN/hộ KD — không gắn prefix Organization."
-Organization Tax Identification Number,Mã số thuế,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_SO_THUE,"BCV: ""Organization Tax Identification Number"". Trường liên kết ngầm với DN_RUI_RO_CAO, TCT_BAO_CAO, TCT_TT_CUONG_CHE_NO, TT_XLY_VI_PHAM, TCT_TTCCN_HOA_DON."
-Charter Capital Amount,Vốn điều lệ,Currency Amount,true,false,draft,DCST.THONG_TIN_DK_THUE.VON_DIEU_LE,"BCV: ""Charter Capital Amount""."
-Charter Capital Currency Code,Loại tiền vốn điều lệ,Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_VN,FK target: Currency.Currency Code.
-Foreign Charter Capital Amount,Vốn điều lệ nước ngoài,Currency Amount,true,false,draft,DCST.THONG_TIN_DK_THUE.SOTIEN_VON_DL_NN,"Nhất quán prefix ""Foreign Charter Capital""."
-Foreign Charter Capital Currency Code,Loại tiền vốn điều lệ nước ngoài,Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_NN,FK target: Currency.Currency Code.
-Business Line Code,Mã ngành nghề kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_NGANH,"Nhất quán prefix ""Business Line""."
-Business Line Description,Ngành nghề kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGANH_NGHE_KD,"Nhất quán prefix ""Business Line""."
-Business Commencement Date,Ngày bắt đầu hoạt động kinh doanh,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.NGAY_BD_HDKD,"BCV: ""Organization Commence Operation Date"". Rút gọn prefix."
-Parent Organization Name,Đơn vị chủ quan/ đơn vị quản lý trực thuộc,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.DON_VI_CHU_QUAN,"Denormalized text — không có FK. Nhất quán prefix ""Parent Organization""."
-Parent Organization Address,Địa chỉ đơn vị chủ quản,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.DVCQ_VN_DIACHI,"Nhất quán prefix ""Parent Organization""."
-Supervisory Authority Name,Cơ quan quản lý trực tiếp,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.CO_QUAN_QUAN_LY_TRUC_TIEP,"Nhất quán prefix ""Supervisory""."
-Supervisory Tax Authority Code,Mã cơ quan quản lý thuế,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_CQQL_QLT,"Nhất quán prefix ""Supervisory Tax Authority""."
-Legal Representative Name,Tên người đại diện kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_NGUOI_DAI_DIEN_KD,"Prefix chủ thể ""Legal Representative"" — người khác với NNT."
-Legal Representative Identification Number,"Số CMT/ hộ chiếu người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân",Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_CMT,"Prefix ""Legal Representative"". Denormalized — không tách ra IP Alt Identification vì thuộc chủ thể khác (người đại diện, không phải NNT)."
-Legal Representative Phone Number,Số ĐT người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI,"Prefix ""Legal Representative""."
-Director Name,Tên giám đốc/ tổng giám đốc,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_GIAM_DOC,"Prefix chủ thể ""Director"" — người khác với NNT."
-Director Phone Number,Số điện thoại giám đốc/ tổng giám đốc,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI_GD,"Prefix ""Director""."
-Activity Status Code,"Trạng thái hoạt động: 00, 04: Đang hoạt động; 01: Ngừng HĐ đã hoàn thành thủ tục; 03: Ngừng HĐ chưa hoàn thành; 05: Ngừng KD có thời hạn; 06: Không HĐ tại địa chỉ đăng ký",Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Scheme: TAXPAYER_ACTIVITY_STATUS.
-Activity Status Name,Tên trạng thái người nộp thuế. Giá trị denormalized từ nguồn,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_TRANG_THAI,Denormalized name tương ứng Activity Status Code. Giữ nguyên từ nguồn.
-Cessation Reason Description,Lý do ngừng hoạt động,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.LY_DO_NGUNG_HOAT_DONG,"Nhất quán prefix ""Cessation""."
-Cessation Type Code,"Loại ngừng hoạt động: 1. Giải thể; 2. Phá sản; 3. Chuyển đổi loại hình DN; 4. Cho làm thủ tục giải thể; 5. Phá sản; 6. Tổ chức lại; 7. Thu hồi GP; 8. Đóng theo ĐVCQ; 9. Khác",Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Scheme: TAXPAYER_CESSATION_TYPE.
-Cessation Date,Ngày ngừng hoạt động,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_NGAY,"Nhất quán prefix ""Cessation""."
-Cessation Reason,Lý do ngừng hoạt động (chi tiết),Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_LY_DO,"Nhóm trường NGUNG_HD_*. Khác với Cessation Reason Description (trường LY_DO_NGUNG_HOAT_DONG riêng)."
-Cessation Note,Ghi chú ngừng hoạt động,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_GHI_CHU,"Nhóm trường NGUNG_HD_*."
-Cessation Notice Number,Số thông báo ngừng hoạt động,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_SO_TBAO,"Nhóm trường NGUNG_HD_*."
-Temporary Suspension Start Date,Tạm nghỉ/Từ ngày,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_TU_NGAY,"Nhất quán prefix ""Temporary Suspension""."
-Temporary Suspension End Date,Tạm nghỉ/Đến ngày,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_DEN_NGAY,"Nhất quán prefix ""Temporary Suspension""."
-Temporary Suspension Reason,Lý do tạm nghỉ,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_LY_DO,"Nhất quán prefix ""Temporary Suspension""."
-Temporary Suspension Notice Number,Số thông báo - tạm nghỉ,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_SO_TBAO,"Nhất quán prefix ""Temporary Suspension""."
-Temporary Suspension Notice Date,Ngày thông báo - tạm nghỉ,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_NGAY_TB_NNT,"Nhất quán prefix ""Temporary Suspension""."
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Registered Taxpayer Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Organization"" (Involved Party).",,
+Registered Taxpayer Code,ID bản ghi đăng ký thuế. BK,Text,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,,
+Full Name,Tên người nộp thuế,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_NGUOI_NOP,"BCV: ""Organization Name"". Scope: NNT gồm tổ chức/DN/hộ KD — không gắn prefix Organization.",,
+Organization Tax Identification Number,Mã số thuế,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_SO_THUE,"BCV: ""Organization Tax Identification Number"". Trường liên kết ngầm với DN_RUI_RO_CAO, TCT_BAO_CAO, TCT_TT_CUONG_CHE_NO, TT_XLY_VI_PHAM, TCT_TTCCN_HOA_DON.",,
+Charter Capital Amount,Vốn điều lệ,Currency Amount,true,false,draft,DCST.THONG_TIN_DK_THUE.VON_DIEU_LE,"BCV: ""Charter Capital Amount"".",,
+Charter Capital Currency Code,Loại tiền vốn điều lệ,Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_VN,FK target: Currency.Currency Code.,,
+Foreign Charter Capital Amount,Vốn điều lệ nước ngoài,Currency Amount,true,false,draft,DCST.THONG_TIN_DK_THUE.SOTIEN_VON_DL_NN,"Nhất quán prefix ""Foreign Charter Capital"".",,
+Foreign Charter Capital Currency Code,Loại tiền vốn điều lệ nước ngoài,Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_NN,FK target: Currency.Currency Code.,,
+Business Line Code,Mã ngành nghề kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_NGANH,"Nhất quán prefix ""Business Line"".",,
+Business Line Description,Ngành nghề kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGANH_NGHE_KD,"Nhất quán prefix ""Business Line"".",,
+Business Commencement Date,Ngày bắt đầu hoạt động kinh doanh,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.NGAY_BD_HDKD,"BCV: ""Organization Commence Operation Date"". Rút gọn prefix.",,
+Parent Organization Name,Đơn vị chủ quan/ đơn vị quản lý trực thuộc,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.DON_VI_CHU_QUAN,"Denormalized text — không có FK. Nhất quán prefix ""Parent Organization"".",,
+Parent Organization Address,Địa chỉ đơn vị chủ quản,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.DVCQ_VN_DIACHI,"Nhất quán prefix ""Parent Organization"".",,
+Supervisory Authority Name,Cơ quan quản lý trực tiếp,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.CO_QUAN_QUAN_LY_TRUC_TIEP,"Nhất quán prefix ""Supervisory"".",,
+Supervisory Tax Authority Code,Mã cơ quan quản lý thuế,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.MA_CQQL_QLT,"Nhất quán prefix ""Supervisory Tax Authority"".",,
+Legal Representative Name,Tên người đại diện kinh doanh,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_NGUOI_DAI_DIEN_KD,"Prefix chủ thể ""Legal Representative"" — người khác với NNT.",,
+Legal Representative Identification Number,Số CMT/ hộ chiếu người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_CMT,"Prefix ""Legal Representative"". Denormalized — không tách ra IP Alt Identification vì thuộc chủ thể khác (người đại diện, không phải NNT).",,
+Legal Representative Phone Number,Số ĐT người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI,"Prefix ""Legal Representative"".",,
+Director Name,Tên giám đốc/ tổng giám đốc,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_GIAM_DOC,"Prefix chủ thể ""Director"" — người khác với NNT.",,
+Director Phone Number,Số điện thoại giám đốc/ tổng giám đốc,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI_GD,"Prefix ""Director"".",,
+Activity Status Code,"Trạng thái hoạt động: 00, 04: Đang hoạt động; 01: Ngừng HĐ đã hoàn thành thủ tục; 03: Ngừng HĐ chưa hoàn thành; 05: Ngừng KD có thời hạn; 06: Không HĐ tại địa chỉ đăng ký",Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Scheme: TAXPAYER_ACTIVITY_STATUS.,,
+Activity Status Name,Tên trạng thái người nộp thuế. Giá trị denormalized từ nguồn,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TEN_TRANG_THAI,Denormalized name tương ứng Activity Status Code. Giữ nguyên từ nguồn.,,
+Cessation Reason Description,Lý do ngừng hoạt động,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.LY_DO_NGUNG_HOAT_DONG,"Nhất quán prefix ""Cessation"".",,
+Cessation Type Code,Loại ngừng hoạt động: 1. Giải thể; 2. Phá sản; 3. Chuyển đổi loại hình DN; 4. Cho làm thủ tục giải thể; 5. Phá sản; 6. Tổ chức lại; 7. Thu hồi GP; 8. Đóng theo ĐVCQ; 9. Khác,Classification Value,true,false,draft,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Scheme: TAXPAYER_CESSATION_TYPE.,,
+Cessation Date,Ngày ngừng hoạt động,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_NGAY,"Nhất quán prefix ""Cessation"".",,
+Cessation Reason,Lý do ngừng hoạt động (chi tiết),Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_LY_DO,Nhóm trường NGUNG_HD_*. Khác với Cessation Reason Description (trường LY_DO_NGUNG_HOAT_DONG riêng).,,
+Cessation Note,Ghi chú ngừng hoạt động,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_GHI_CHU,Nhóm trường NGUNG_HD_*.,,
+Cessation Notice Number,Số thông báo ngừng hoạt động,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.NGUNG_HD_SO_TBAO,Nhóm trường NGUNG_HD_*.,,
+Temporary Suspension Start Date,Tạm nghỉ/Từ ngày,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_TU_NGAY,"Nhất quán prefix ""Temporary Suspension"".",,
+Temporary Suspension End Date,Tạm nghỉ/Đến ngày,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_DEN_NGAY,"Nhất quán prefix ""Temporary Suspension"".",,
+Temporary Suspension Reason,Lý do tạm nghỉ,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_LY_DO,"Nhất quán prefix ""Temporary Suspension"".",,
+Temporary Suspension Notice Number,Số thông báo - tạm nghỉ,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_SO_TBAO,"Nhất quán prefix ""Temporary Suspension"".",,
+Temporary Suspension Notice Date,Ngày thông báo - tạm nghỉ,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.TAM_NGHI_NGAY_TB_NNT,"Nhất quán prefix ""Temporary Suspension"".",,

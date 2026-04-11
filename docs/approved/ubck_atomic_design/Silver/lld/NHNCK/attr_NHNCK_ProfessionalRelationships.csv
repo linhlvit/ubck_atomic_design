@@ -1,16 +1,16 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Related Party Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Involved Party Relationship"" (Involved Party)."
-Related Party Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Id,BK chính.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ProfessionalRelationships,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-Practitioner Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.qlnhn.ProfessionalRelationships.ProfessionalId,FK target: Securities Practitioner.Practitioner Id.
-Practitioner Code,Mã người hành nghề,Text,false,false,draft,NHNCK.qlnhn.ProfessionalRelationships.ProfessionalId,FK target: Securities Practitioner.Practitioner Code. Pair with Practitioner Id.
-Relationship Type Code,"Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà)",Classification Value,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.RelationshipType,Scheme: RELATIONSHIP_TYPE.
-Related Individual Full Name,Họ và tên người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.FullName,"BCV: ""Full Name"" (Involved Party). Prefix ""Related Individual"" — chủ thể khác Practitioner."
-Related Individual Birth Year,Năm sinh người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.BirthYear,Nguồn chỉ lưu năm → Text.
-Related Individual Identification Number,Mã định danh người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.IdentityId,Denormalized — grain khác IP (1 dòng = 1 quan hệ).
-Related Individual Country Code,Mã quốc gia người liên quan,Classification Value,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.CountryId,"Scheme: COUNTRY. BCV: ""Country Code"" (Location)."
-Related Individual Address,Địa chỉ người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Address,Text tự do. Grain khác IP.
-Related Individual Occupation,Nghề nghiệp người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Occupation,"BCV: gần nhất ""Individual Employment Type""."
-Related Individual Workplace,Nơi làm việc người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Workplace,Text tự do.
-Note,Ghi chú về mối quan hệ,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Note,Mô tả quan hệ — không prefix vì không mô tả người liên quan.
-Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.CreatedAt,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Related Party Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Involved Party Relationship"" (Involved Party).",,
+Related Party Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ProfessionalRelationships,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,,
+Practitioner Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.qlnhn.ProfessionalRelationships.ProfessionalId,FK target: Securities Practitioner.Practitioner Id.,,
+Practitioner Code,Mã người hành nghề,Text,false,false,draft,NHNCK.qlnhn.ProfessionalRelationships.ProfessionalId,FK target: Securities Practitioner.Practitioner Code. Pair with Practitioner Id.,,
+Relationship Type Code,"Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà)",Classification Value,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.RelationshipType,Scheme: RELATIONSHIP_TYPE.,,
+Related Individual Full Name,Họ và tên người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.FullName,"BCV: ""Full Name"" (Involved Party). Prefix ""Related Individual"" — chủ thể khác Practitioner.",,
+Related Individual Birth Year,Năm sinh người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.BirthYear,Nguồn chỉ lưu năm → Text.,,
+Related Individual Identification Number,Mã định danh người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.IdentityId,Denormalized — grain khác IP (1 dòng = 1 quan hệ).,,
+Related Individual Country Code,Mã quốc gia người liên quan,Classification Value,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.CountryId,"Scheme: COUNTRY. BCV: ""Country Code"" (Location).",,
+Related Individual Address,Địa chỉ người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Address,Text tự do. Grain khác IP.,,
+Related Individual Occupation,Nghề nghiệp người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Occupation,"BCV: gần nhất ""Individual Employment Type"".",,
+Related Individual Workplace,Nơi làm việc người liên quan,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Workplace,Text tự do.,,
+Note,Ghi chú về mối quan hệ,Text,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.Note,Mô tả quan hệ — không prefix vì không mô tả người liên quan.,,
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.ProfessionalRelationships.CreatedAt,,,
