@@ -271,30 +271,20 @@ graph LR
 
 ## Tổng quan theo BCV Concept — Tầng 1
 
-### Involved Party
+### 6a. Entity Silver Tầng 1
 
-| BCV Concept | BCV Term | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
-|---|---|---|---|---|---|
-| [Involved Party] | Portfolio Fund Management Company — "Identifies a Fund Management Company (Involved Party) that sets up the Portfolio. The Fund Management Company decides the investment strategy, appoints the agents, and is responsible for the promotion and the marketing of the Fund." Khớp chính xác. | SECURITIES | Danh sách công ty QLQ trong nước | Fund Management Company | Trường Dorf cần xác nhận. |
-| [Involved Party] | Organization Unit — BCV mô tả sub-entity của Organization (có FK đến parent). FORBRCH không FK đến công ty mẹ nước ngoài — hoạt động như Organization độc lập trong scope giám sát UBCKNN. | FORBRCH | Danh sách VPĐD/CN công ty QLQ NN tại VN | Foreign Fund Management Organization Unit | Độc lập, không FK→SECURITIES |
-| [Involved Party] | Custodian — "Identifies an Organization that holds, safeguards and accounts for property committed to its care." Khớp chính xác. Thêm: Investment Fund Portfolio Depository — "Identifies the Involved Party that holds and safeguards holdings owned by the Investment Fund." Mô tả đúng vai trò LKGS đối với quỹ. | BANKMONI | Danh sách ngân hàng lưu ký giám sát (LKGS) | Custodian Bank | |
-| [Involved Party] | Mutual Fund Distributor — "Identifies a relationship whereby an Involved Party is responsible for the distribution of shares in, or units of, a Group which is a pool of investments, such as a Mutual Fund." Khớp chính xác. Cũng gần Selling Agent nhưng Mutual Fund Distributor cụ thể hơn cho ngữ cảnh quỹ. | AGENCIES | Danh sách đại lý quỹ đầu tư | Fund Distribution Agent | |
-| [Involved Party] | Không có term chính xác. Funds (BCV, role) — "Identifies an Involved Party that represents any managed pool of investment assets." Mô tả fund/investor ở tầm institutional. INVES là NĐT ủy thác — cá nhân hoặc tổ chức giao tài sản cho QLQ quản lý. BCV không có "Discretionary Investment Investor" cụ thể. Đặt theo ngữ cảnh FMS. | INVES | Danh sách nhà đầu tư ủy thác | Discretionary Investment Investor | Investor master dùng chung |
-
-### Condition
-
-| BCV Concept | BCV Term | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
-|---|---|---|---|---|---|
-| [Condition] | Không có term chính xác. BCV không có "Reporting Period". Gần nhất: Time Period (Common) — khái niệm chung. Đặt theo ngữ cảnh FMS: kỳ báo cáo quy định cho thành viên thị trường. | RPTPERIOD | Kỳ báo cáo | Reporting Period | Được RPTMEMBER, RPTVALUES, RPTPDSHT reference |
-| [Condition] | Không có term chính xác. BCV không có "Evaluation Period". Gần nhất: Arrangement Performance Criterion — "Identifies a Criterion according to an evaluation of how the obligations have been discharged." Đây là tiêu chí đánh giá, không phải kỳ đánh giá. Đặt theo ngữ cảnh FMS. | RATINGPD | Danh sách kỳ đánh giá xếp loại | Member Rating Period | Được RANK, RNKFACTOR reference |
-
-### Shared Entities (dùng chung)
-
-| BCV Concept | Source Tables | Silver Entity | Ghi chú |
-|---|---|---|---|
-| [Location] Postal Address | SECURITIES, FORBRCH, BANKMONI, AGENCIES | IP Postal Address | INVES không còn Address trong nguồn mới |
-| [Location] Electronic Address | SECURITIES, FORBRCH, BANKMONI | IP Electronic Address | Phone, Fax, Email |
-| [Involved Party] Alternative Identification | SECURITIES, FORBRCH, INVES | IP Alt Identification | GP thành lập, GP hoạt động, CMND/CCCD/Hộ chiếu/ĐKKD |
+| BCV Core Object | BCV Concept | BCV Term | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
+|---|---|---|---|---|---|---|
+| Involved Party | [Involved Party] Portfolio Fund Management Company | Portfolio Fund Management Company — "Identifies a Fund Management Company (Involved Party) that sets up the Portfolio. The Fund Management Company decides the investment strategy, appoints the agents, and is responsible for the promotion and the marketing of the Fund." Khớp chính xác. | SECURITIES | Danh sách công ty QLQ trong nước | Fund Management Company | Trường Dorf cần xác nhận. |
+| Involved Party | [Involved Party] Organization Unit | Organization Unit — BCV mô tả sub-entity của Organization (có FK đến parent). FORBRCH không FK đến công ty mẹ nước ngoài — hoạt động như Organization độc lập trong scope giám sát UBCKNN. | FORBRCH | Danh sách VPĐD/CN công ty QLQ NN tại VN | Foreign Fund Management Organization Unit | Độc lập, không FK→SECURITIES |
+| Involved Party | [Involved Party] Custodian | Custodian — "Identifies an Organization that holds, safeguards and accounts for property committed to its care." Khớp chính xác. Thêm: Investment Fund Portfolio Depository — "Identifies the Involved Party that holds and safeguards holdings owned by the Investment Fund." Mô tả đúng vai trò LKGS đối với quỹ. | BANKMONI | Danh sách ngân hàng lưu ký giám sát (LKGS) | Custodian Bank | |
+| Involved Party | [Involved Party] Mutual Fund Distributor | Mutual Fund Distributor — "Identifies a relationship whereby an Involved Party is responsible for the distribution of shares in, or units of, a Group which is a pool of investments, such as a Mutual Fund." Khớp chính xác. Cũng gần Selling Agent nhưng Mutual Fund Distributor cụ thể hơn cho ngữ cảnh quỹ. | AGENCIES | Danh sách đại lý quỹ đầu tư | Fund Distribution Agent | |
+| Involved Party | [Involved Party] | Không có term chính xác. Funds (BCV, role) — "Identifies an Involved Party that represents any managed pool of investment assets." Mô tả fund/investor ở tầm institutional. INVES là NĐT ủy thác — cá nhân hoặc tổ chức giao tài sản cho QLQ quản lý. BCV không có "Discretionary Investment Investor" cụ thể. Đặt theo ngữ cảnh FMS. | INVES | Danh sách nhà đầu tư ủy thác | Discretionary Investment Investor | Investor master dùng chung |
+| Condition | [Condition] | Không có term chính xác. BCV không có "Reporting Period". Gần nhất: Time Period (Common) — khái niệm chung. Đặt theo ngữ cảnh FMS: kỳ báo cáo quy định cho thành viên thị trường. | RPTPERIOD | Kỳ báo cáo | Reporting Period | Được RPTMEMBER, RPTVALUES, RPTPDSHT reference |
+| Condition | [Condition] | Không có term chính xác. BCV không có "Evaluation Period". Gần nhất: Arrangement Performance Criterion — "Identifies a Criterion according to an evaluation of how the obligations have been discharged." Đây là tiêu chí đánh giá, không phải kỳ đánh giá. Đặt theo ngữ cảnh FMS. | RATINGPD | Danh sách kỳ đánh giá xếp loại | Member Rating Period | Được RANK, RNKFACTOR reference |
+| Location | [Location] Postal Address | Postal Address | SECURITIES, FORBRCH, BANKMONI, AGENCIES | — | IP Postal Address *(Shared)* | INVES không còn Address trong nguồn mới |
+| Location | [Location] Electronic Address | Electronic Address | SECURITIES, FORBRCH, BANKMONI | — | IP Electronic Address *(Shared)* | Phone, Fax, Email |
+| Involved Party | [Involved Party] Alternative Identification | Alternative Identification | SECURITIES, FORBRCH, INVES | — | IP Alt Identification *(Shared)* | GP thành lập, GP hoạt động, CMND/CCCD/Hộ chiếu/ĐKKD |
 
 ### Danh mục & Tham chiếu (Reference Data → Classification Value)
 

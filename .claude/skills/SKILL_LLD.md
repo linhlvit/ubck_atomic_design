@@ -175,11 +175,37 @@ Source System Code,"Mã hệ thống nguồn. TOMIC.Professionals",Classificatio
 - `source_table`: values load từ bảng danh mục nguồn → ghi `(source)` ở cột code, ghi source table.
 - `modeler_defined`: trường text nguồn cần chuẩn hóa, chưa profile → ghi `(to_define)`.
 
+### Cập nhật silver_attributes.csv
+
+Thực hiện **sau khi hoàn thành LLD mỗi Tier của một source system**. File này là bảng tổng hợp toàn dự án — tích lũy qua tất cả source system và tất cả Tier.
+
+**Vị trí file:** `Silver/lld/silver_attributes.csv`
+
+**Cấu trúc:**
+```
+bcv_core_object,bcv_concept,silver_entity,silver_attribute,description,source_column
+```
+
+**Quy tắc từng cột:**
+- `bcv_core_object`: 1 trong 15 BCV Core Object — lấy từ silver_entities.csv cho entity tương ứng.
+- `bcv_concept`: BCV Concept đã gán cho Silver entity (ví dụ: `[Involved Party] Portfolio Fund Management Company`).
+- `silver_entity`: Tên Silver entity đầy đủ.
+- `silver_attribute`: Tên attribute đúng như trong file LLD CSV.
+- `description`: Mô tả ý nghĩa attribute — kết hợp ý nghĩa BCV Term và ý nghĩa trường nguồn nghiệp vụ. Viết bằng tiếng Việt, súc tích.
+- `source_column`: Cột nguồn dạng `SOURCE_SYSTEM.TABLE.Column`. Nếu nhiều cột → phân cách bằng dấu phẩy. Để trống nếu là trường ETL-derived (surrogate key, source system code...).
+
+**Quy tắc cập nhật:**
+- Đọc toàn bộ file hiện tại trước khi ghi.
+- Thêm dòng mới cho từng attribute trong Tier vừa hoàn thành.
+- Nếu attribute thuộc shared entity đã có từ source khác → **bổ sung** source_column mới vào dòng hiện có, không tạo dòng trùng.
+- **Sắp xếp** toàn bộ nội dung theo thứ tự: `bcv_core_object` (A→Z), sau đó `silver_entity` (A→Z), sau đó `silver_attribute` giữ nguyên thứ tự thiết kế trong entity.
+- Xuất 1 file duy nhất chứa toàn bộ cũ + mới.
+
 ### Quy tắc output
 
 - **Mọi output đều phải là file CSV.** Không tạo file md hay text tóm tắt kèm theo.
-- Ghi file vào `docs/approved/<project>/Silver/lld/<SOURCE_SYSTEM>/`.
-- Nếu `manifest.csv` hoặc `ref_shared_entity_classifications.csv` bị cắt ngắn khi đọc → đọc lại với cách khác cho đến khi có đủ toàn bộ nội dung trước khi tạo file output.
+- Ghi file vào `Silver/lld/<SOURCE_SYSTEM>/`.
+- Nếu `manifest.csv`, `ref_shared_entity_classifications.csv`, hoặc `silver_attributes.csv` bị cắt ngắn khi đọc → đọc lại cho đến khi có đủ toàn bộ nội dung trước khi tạo file output.
 
 ## QUY TẮC ĐẶT TÊN ATTRIBUTE
 
