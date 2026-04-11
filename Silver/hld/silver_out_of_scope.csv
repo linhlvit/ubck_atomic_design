@@ -11,7 +11,6 @@ DCST,NHOM_DANH_MUC,Nhóm danh mục tham chiếu,Reference Data,Không có FK in
 DCST,GOI_TIN,Quản lý trạng thái truyền nhận gói tin,System,System operational table — không có giá trị nghiệp vụ.
 FMS,FGBRBUP,Lịch sử thay đổi VPĐD/CN QLQ NN,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
 FMS,FUNDHISTORY,Lịch sử quỹ đầu tư,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
-FMS,MBCHANGE,Lịch sử thay đổi vốn góp nhà đầu tư quỹ,Audit Log nguồn,Audit Log — OldCapital/NewCapital/ChangeDate
 FMS,SECHISTORY,Lịch sử thông tin công ty QLQ,Audit Log nguồn,Audit Log — PrevValue/ValueChange/Action/DateChange
 FMS,TLPRHISTORY,Lịch sử nhân sự,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
 FMS,RPTHTORY,Lịch sử thay đổi báo cáo đầu vào,Chưa có cột,Chưa có thông tin cột
@@ -47,7 +46,7 @@ FMS,USERSMENUS,Phân quyền chức năng cho người dùng,Hệ thống / Phâ
 FMS,CALENDAR,Lịch làm việc và lịch nghỉ,Isolated,Không FK đến bảng nghiệp vụ nào
 FMS,CERTFCATE,Chứng thư số của thành viên thị trường,Isolated,Không FK đến bảng nghiệp vụ nào
 FMS,PARAWARN,Danh sách tham số cảnh báo,Isolated,Không FK đến/từ bảng nghiệp vụ nào
-FMS,PARVALUE,Danh sách mệnh giá cổ phần,Isolated,Không có bảng nào FK đến. Cần xác nhận có trong scope FMS không.
+FMS,PARVALUE,Danh sách mệnh giá cổ phần,Isolated,Không có bảng nào FK đến — xác nhận orphan table.
 FMS,SYSVAR,Danh sách tham số hệ thống,Isolated,Không FK đến bảng nghiệp vụ nào
 FMS,BRCHBUP,Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước,Snapshot nguồn,Snapshot — FK đến SECHISTORY (Audit Log)
 FMS,FNDBUP,Bản ghi chi tiết lịch sử quỹ đầu tư,Snapshot nguồn,Chưa có cột — dự kiến Snapshot pattern
@@ -66,4 +65,3 @@ NHNCK,Permissions,Danh mục quyền hạn,System / Auth,Operational/system data
 NHNCK,Roles,Danh mục vai trò,System / Auth,Operational/system data.
 NHNCK,UserRoles,Phân quyền người dùng,System / Auth,Operational/system data — không có giá trị nghiệp vụ.
 NHNCK,SystemParameters,Tham số hệ thống,System / Config,Config data.
-NHNCK,ActionLogs,Nhật ký hành động hệ thống,System / Log,System audit log — không phải nghiệp vụ CCHN.

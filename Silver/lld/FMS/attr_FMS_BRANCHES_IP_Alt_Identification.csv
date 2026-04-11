@@ -1,8 +1,7 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-Involved Party Id,Khóa đại diện trỏ về Fund Management Company Organization Unit.,Surrogate Key,false,false,draft,FMS.BRANCHES.Id,FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã nghiệp vụ của Fund Management Company Organization Unit. Lưu dư thừa.,Text,false,false,draft,FMS.BRANCHES.Id,FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Involved Party Id.,,
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FMS.BRANCHES
-Identification Type Code,Loại giấy tờ — quyết định thành lập CN/VPĐD.,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION
-Identification Number,Số giấy phép thành lập CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Decision,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,
-Issue Date,Ngày cấp giấy phép thành lập CN/VPĐD.,Date,true,false,draft,FMS.BRANCHES.DecisionDate,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,
-Issuing Authority Name,Nơi cấp giấy phép.,Text,true,false,draft,,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,UBCKNN
+Involved Party Id,FK đến Fund Management Company Organization Unit.,Surrogate Key,false,false,draft,FMS.BRANCHES.Id,FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id.,,
+Involved Party Code,Mã CN/VPĐD công ty QLQ.,Text,false,false,draft,FMS.BRANCHES.Id,FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.BRANCHES,
+Alt Identification Type Code,Loại giấy tờ — quyết định thành lập CN/VPĐD.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE.,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,
+Alt Identification Value,Số quyết định thành lập CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Decision,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,
+Alt Identification Issue Date,Ngày cấp quyết định thành lập.,Date,true,false,draft,FMS.BRANCHES.DecisionDate,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,

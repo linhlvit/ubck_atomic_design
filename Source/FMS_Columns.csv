@@ -24,8 +24,8 @@ AGENCYTYPE,IsActive,Trạng thái: 1 = Sử dụng; 0 = Không sử dụng,,
 AGENCYTYPE,IsDeleted,Trạng thái bản ghi,,
 AGENCYTYPE,DateCreated,Ngày tạo,,
 AGENCYTYPE,DateModified,Ngày sửa,,
-AGENFUNDS,AgnId,Mã ID đại lý. FK → AGENCIES.Id,"PK, FK",FK → AGENCIES.Id
-AGENFUNDS,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,"PK, FK",FK → FUNDS.Id
+AGENFUNDS,AgnId,Mã ID đại lý. FK → AGENCIES.Id,,FK suy luận → AGENCIES.Id
+AGENFUNDS,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,,FK suy luận → FUNDS.Id
 BANKMONI,Id,Mã ID ngân hàng LKGS. Mã hệ thống tự sinh (PK),PK,
 BANKMONI,Name,Tên ngân hàng LKGS,,
 BANKMONI,ShortName,Tên viết tắt,,
@@ -99,12 +99,12 @@ CERTFCATE,CreatedBy,Người tạo,,
 CERTFCATE,DateCreated,Ngày tạo,,
 CERTFCATE,DateModified,Ngày sửa,,
 CERTFCATE,ModifyBy,Người sửa,,
-DTSCBMN,DtSId,Mã ID phân quyền dữ liệu. FK → DTSCOPE.Id,"PK, FK",FK → DTSCOPE.Id
-DTSCBMN,BmnId,Mã ID ngân hàng LKGS. FK → BANKMONI.Id,"PK, FK",FK → BANKMONI.Id
-DTSCFND,DtSId,Mã ID phân quyền dữ liệu. FK → DTSCOPE.Id,"PK, FK",FK → DTSCOPE.Id
-DTSCFND,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,"PK, FK",FK → FUNDS.Id
-DTSCFR,DtSId,Mã ID phân quyền dữ liệu. FK → DTSCOPE.Id,"PK, FK",FK → DTSCOPE.Id
-DTSCFR,FrId,Mã ID VPĐD/CN QLQ NN tại VN. FK → FORBRCH.Id,"PK, FK",FK → FORBRCH.Id
+DTSCBMN,DtSId,Mã ID phân quyền dữ liệu. FK → DTSCOPE.Id,,FK suy luận → DTSCOPE.Id
+DTSCBMN,BmnId,Mã ID ngân hàng LKGS. FK → BANKMONI.Id,,FK suy luận → BANKMONI.Id
+DTSCFND,DtSId,Mã ID phân quyền dữ liệu. FK → DTSCOPE.Id,,FK suy luận → DTSCOPE.Id
+DTSCFND,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,,FK suy luận → FUNDS.Id
+DTSCFR,DtSId,Mã ID phân quyền dữ liệu. FK → DTSCOPE.Id,,FK suy luận → DTSCOPE.Id
+DTSCFR,FrId,Mã ID VPĐD/CN QLQ NN tại VN. FK → FORBRCH.Id,,FK suy luận → FORBRCH.Id
 DTSCOPE,Id,Mã ID phân quyền dữ liệu (PK),PK,
 DTSCOPE,UserId,Mã ID người dùng. FK → USERS.Id,FK,FK → USERS.Id
 DTSCOPE,IsAll,Có quyền xem tất cả: 1 = Có; 0 = Không,,
@@ -124,11 +124,10 @@ FGBRBUP,Reason,Lý do sửa đổi,,
 FGBRBUP,FileData,File đính kèm,,
 FGBRBUP,DateCreated,Ngày tạo,,
 FGBRBUP,CreatedBy,Người sửa,,
-FGBUSINESS,FrBchId,Mã ID VPĐD/CN QLQ NN tại VN. FK → FORBRCH.Id,"PK, FK",FK → FORBRCH.Id
-FGBUSINESS,BuId,Mã ID ngành nghề kinh doanh. FK → BUSINESS.Id,"PK, FK",FK → BUSINESS.Id
-FNDBUP,,(Chưa có thiết kế chi tiết cột),,
-FNDSBMN,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,"PK, FK",FK → FUNDS.Id
-FNDSBMN,BmnId,Mã ID ngân hàng LKGS. FK → BANKMONI.Id,"PK, FK",FK → BANKMONI.Id
+FGBUSINESS,FrBchId,Mã ID VPĐD/CN QLQ NN tại VN. FK → FORBRCH.Id,,FK suy luận → FORBRCH.Id
+FGBUSINESS,BuId,Mã ID ngành nghề kinh doanh. FK → BUSINESS.Id,,FK suy luận → BUSINESS.Id
+FNDSBMN,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,,FK suy luận → FUNDS.Id
+FNDSBMN,BmnId,Mã ID ngân hàng LKGS. FK → BANKMONI.Id,,FK suy luận → BANKMONI.Id
 FORBRCH,Id,Mã ID VPĐD/CN công ty QLQ NN tại VN (PK),PK,
 FORBRCH,Name,Tên VPĐD/CN,,
 FORBRCH,EnName,Tên tiếng Anh,,
@@ -269,7 +268,6 @@ NATIONAL,CreatedBy,Người tạo,,
 NATIONAL,DateCreated,Ngày tạo,,
 NATIONAL,DateModified,Ngày sửa,,
 NATIONAL,ModifyBy,Người sửa,,
-NOTIFICATION,,(Chưa có thiết kế chi tiết cột),,
 PARAWARN,Id,Mã ID tham số cảnh báo (PK),PK,
 PARAWARN,WarnName,Tên tham số cảnh báo,,
 PARAWARN,WarnValue,Giá trị ngưỡng cảnh báo,,
@@ -324,7 +322,6 @@ REPRESENT,Status,Trạng thái: 1 = Hoạt động; 0 = Khóa,,
 REPRESENT,Deleted,Trạng thái bản ghi,,
 REPRESENT,DateCreated,Ngày tạo,,
 REPRESENT,DateModified,Ngày sửa,,
-RNKFACTHISTORY,,(Chưa có thiết kế chi tiết cột),,
 RNKFACTOR,Id,Mã ID nhân tố đánh giá (PK),PK,
 RNKFACTOR,Name,Tên nhân tố,,
 RNKFACTOR,ParentId,Mã ID nhân tố cha. FK → RNKFACTOR.Id,FK,FK → RNKFACTOR.Id
@@ -333,7 +330,6 @@ RNKFACTOR,Weight,Trọng số,,
 RNKFACTOR,IsActive,Trạng thái,,
 RNKFACTOR,DateCreated,Ngày tạo,,
 RNKFACTOR,DateModified,Ngày sửa,,
-RNKGRFTOR,,(Chưa có thiết kế chi tiết cột),,
 ROLES,Id,Mã ID nhóm quyền chức năng. Mã hệ thống tự sinh (PK),PK,
 ROLES,RoleName,Tên nhóm quyền,,
 ROLES,Description,Mô tả nhóm quyền,,
@@ -343,9 +339,8 @@ ROLES,CreatedBy,Người tạo,,
 ROLES,DateCreated,Ngày tạo,,
 ROLES,DateModified,Ngày sửa,,
 ROLES,ModifyBy,Người sửa,,
-ROLESMENUS,RolesId,Mã ID nhóm quyền. FK → ROLES.Id,"PK, FK",FK → ROLES.Id
-ROLESMENUS,MenusId,Mã ID menu. FK → MENUS.Id,"PK, FK",FK → MENUS.Id
-RPTHTORY,,(Chưa có thiết kế chi tiết cột),,
+ROLESMENUS,RolesId,Mã ID nhóm quyền. FK → ROLES.Id,,FK suy luận → ROLES.Id
+ROLESMENUS,MenusId,Mã ID menu. FK → MENUS.Id,,FK suy luận → MENUS.Id
 RPTMBHS,Id,ID lịch sử gửi báo cáo (PK),PK,
 RPTMBHS,RptMbId,Mã ID báo cáo thành viên. FK → RPTMEMBER.Id,FK,FK → RPTMEMBER.Id
 RPTMBHS,Status,Trạng thái báo cáo,,
@@ -379,8 +374,8 @@ RPTMEMBER,CreatedBy,Người tạo,,
 RPTMEMBER,DateCreated,Ngày tạo,,
 RPTMEMBER,DateModified,Ngày sửa,,
 RPTMEMBER,ModifyBy,Người sửa,,
-RPTPDSHT,RptPdId,Mã ID kỳ báo cáo. FK → RPTPERIOD.Id,"PK, FK",FK → RPTPERIOD.Id
-RPTPDSHT,ShtId,Mã ID sheet báo cáo. FK → SHEET.Id,"PK, FK",FK → SHEET.Id
+RPTPDSHT,RptPdId,Mã ID kỳ báo cáo. FK → RPTPERIOD.Id,,FK suy luận → RPTPERIOD.Id
+RPTPDSHT,ShtId,Mã ID sheet báo cáo. FK → SHEET.Id,,FK suy luận → SHEET.Id
 RPTPDSHT,CreatedBy,Người tạo,,
 RPTPDSHT,DateCreated,Ngày tạo,,
 RPTPDSHT,DateModified,Ngày sửa,,
@@ -394,9 +389,6 @@ RPTPERIOD,CreatedBy,Người tạo,,
 RPTPERIOD,DateCreated,Ngày tạo,,
 RPTPERIOD,DateModified,Ngày sửa,,
 RPTPERIOD,ModifyBy,Người sửa,,
-RPTPROCESS,,(Chưa có thiết kế chi tiết cột),,
-RPTTEMP,,(Chưa có thiết kế chi tiết cột),,
-RPTTPOUT,,(Chưa có thiết kế chi tiết cột),,
 RPTVALUES,Id,ID bản ghi giá trị báo cáo (PK),PK,
 RPTVALUES,MebId,Mã ID thành viên thị trường,,
 RPTVALUES,RptId,Mã báo cáo đầu vào. FK → RPTTEMP.Id,FK,FK → RPTTEMP.Id
@@ -405,8 +397,8 @@ RPTVALUES,TgtId,ID ô chỉ tiêu,,
 RPTVALUES,PrdId,Mã ID kỳ báo cáo. FK → RPTPERIOD.Id,FK,FK → RPTPERIOD.Id
 RPTVALUES,SecId,Mã ID công ty QLQ. FK → SECURITIES.Id,FK,FK → SECURITIES.Id
 RPTVALUES,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,FK,FK → FUNDS.Id
-RPTVALUES,BkMId,Mã ID ngân hàng LKGS. FK → BANKMONI.Id,,FK → BANKMONI.Id
-RPTVALUES,FrBrId,Mã ID VPĐD/CN QLQ NN. FK → FORBRCH.Id,,FK → FORBRCH.Id
+RPTVALUES,BkMId,Mã ID ngân hàng LKGS. FK → BANKMONI.Id,,
+RPTVALUES,FrBrId,Mã ID VPĐD/CN QLQ NN. FK → FORBRCH.Id,,
 RPTVALUES,Values,Giá trị file import,,
 RPTVALUES,AccValues,Tài khoản lưu ký,,
 RPTVALUES,FormatDataType,Loại dữ liệu: Numberic = số; String = ký tự,,
@@ -422,8 +414,8 @@ SECBUP,SecHsId,Mã ID lịch sử công ty QLQ. FK → SECHISTORY.Id,FK,FK → S
 SECBUP,IsBefore,1 = Bản ghi trước thay đổi; 0 = Bản ghi sau,,
 SECBUP,SecData,Dữ liệu snapshot công ty QLQ,,
 SECBUP,DateCreated,Ngày tạo,,
-SECBUSINES,SecId,Mã ID công ty QLQ. FK → SECURITIES.Id,"PK, FK",FK → SECURITIES.Id
-SECBUSINES,BuId,Mã ID ngành nghề kinh doanh. FK → BUSINESS.Id,"PK, FK",FK → BUSINESS.Id
+SECBUSINES,SecId,Mã ID công ty QLQ. FK → SECURITIES.Id,,FK suy luận → SECURITIES.Id
+SECBUSINES,BuId,Mã ID ngành nghề kinh doanh. FK → BUSINESS.Id,,FK suy luận → BUSINESS.Id
 SECHISTORY,Id,Mã ID lịch sử công ty QLQ (PK),PK,
 SECHISTORY,SecId,Mã ID công ty QLQ. FK → SECURITIES.Id,FK,FK → SECURITIES.Id
 SECHISTORY,Action,Sự kiện thay đổi,,
@@ -457,11 +449,6 @@ SECURITIES,CreatedBy,Người tạo,,
 SECURITIES,DateCreated,Ngày tạo,,
 SECURITIES,DateModified,Ngày sửa,,
 SECURITIES,ModifyBy,Người sửa,,
-SECURITIESREPORT,,(Chưa có thiết kế chi tiết cột),,
-SELFSETPD,,(Chưa có thiết kế chi tiết cột),,
-SHEET,,(Chưa có thiết kế chi tiết cột),,
-SHEETOUT,,(Chưa có thiết kế chi tiết cột),,
-STAKE,,(Chưa có thiết kế chi tiết cột),,
 STATUS,Id,Mã ID trạng thái hoạt động (PK),PK,
 STATUS,Name,Tên trạng thái,,
 STATUS,IsActive,Trạng thái: 1 = Sử dụng; 0 = Không sử dụng,,
@@ -487,8 +474,6 @@ STOCKHOLDERTYPE,CreatedBy,Người tạo,,
 STOCKHOLDERTYPE,DateCreated,Ngày tạo,,
 STOCKHOLDERTYPE,DateModified,Ngày sửa,,
 STOCKHOLDERTYPE,ModifyBy,Người sửa,,
-STTRGTOUT,,(Chưa có thiết kế chi tiết cột),,
-SYSEMAIL,,(Chưa có thiết kế chi tiết cột),,
 SYSVAR,Id,Mã ID tham số hệ thống (PK),PK,
 SYSVAR,VarName,Tên tham số,,
 SYSVAR,VarValue,Giá trị tham số,,
@@ -499,7 +484,6 @@ SYSVAR,CreatedBy,Người tạo,,
 SYSVAR,DateCreated,Ngày tạo,,
 SYSVAR,DateModified,Ngày sửa,,
 SYSVAR,ModifyBy,Người sửa,,
-TABSINFO,,(Chưa có thiết kế chi tiết cột),,
 TLPRHISTORY,Id,ID lịch sử nhân sự. Mã hệ thống tự sinh (PK),PK,
 TLPRHISTORY,SecId,Mã ID công ty QLQ. FK → SECURITIES.Id,FK,FK → SECURITIES.Id
 TLPRHISTORY,TLProfileId,Mã ID nhân sự. FK → TLProfiles.Id,FK,FK → TLProfiles.Id
@@ -530,8 +514,6 @@ TLProfiles,CreatedBy,Người tạo,,
 TLProfiles,DateCreated,Ngày tạo,,
 TLProfiles,DateModified,Ngày sửa,,
 TLProfiles,ModifyBy,Người sửa,,
-TOTSTTG,,(Chưa có thiết kế chi tiết cột),,
-TPOUTHTORY,,(Chưa có thiết kế chi tiết cột),,
 TRANSFERMBF,Id,Mã ID giao dịch CCQ (PK),PK,
 TRANSFERMBF,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,FK,FK → FUNDS.Id
 TRANSFERMBF,MBFId,Mã ID nhà đầu tư quỹ. FK → MBFUND.Id,FK,FK → MBFUND.Id
@@ -550,8 +532,8 @@ TRSFERINDER,Price,Giá giao dịch,,
 TRSFERINDER,Deleted,Trạng thái bản ghi,,
 TRSFERINDER,DateCreated,Ngày tạo,,
 TRSFERINDER,DateModified,Ngày sửa,,
-USERRPTO,UserId,Mã ID người dùng. FK → USERS.Id,"PK, FK",FK → USERS.Id
-USERRPTO,TpOutId,Mã ID biểu mẫu báo cáo đầu ra. FK → RPTTPOUT.Id,"PK, FK",FK → RPTTPOUT.Id
+USERRPTO,UserId,Mã ID người dùng. FK → USERS.Id,,FK suy luận → USERS.Id
+USERRPTO,TpOutId,Mã ID biểu mẫu báo cáo đầu ra. FK → RPTTPOUT.Id,,FK suy luận → RPTTPOUT.Id
 USERS,Id,Mã ID người dùng hệ thống. Mã hệ thống tự sinh (PK),PK,
 USERS,UserName,Tên đăng nhập,,
 USERS,FullName,Họ và tên đầy đủ,,
@@ -565,8 +547,6 @@ USERS,CreatedBy,Người tạo,,
 USERS,DateCreated,Ngày tạo,,
 USERS,DateModified,Ngày sửa,,
 USERS,ModifyBy,Người sửa,,
-USERSESSIONS,,(Chưa có thiết kế chi tiết cột),,
-USERSMENUS,,(Chưa có thiết kế chi tiết cột),,
 VIOLT,Id,Mã ID vi phạm (PK),PK,
 VIOLT,SecId,Mã ID công ty QLQ. FK → SECURITIES.Id,FK,FK → SECURITIES.Id
 VIOLT,FndId,Mã ID quỹ đầu tư. FK → FUNDS.Id,FK,FK → FUNDS.Id

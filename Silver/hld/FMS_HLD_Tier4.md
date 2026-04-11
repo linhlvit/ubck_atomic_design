@@ -146,10 +146,53 @@ graph LR
 
 ---
 
+## 4. MBCHANGE — Investment Fund Investor Capital Change Log
+
+### Source (FMS)
+
+```mermaid
+graph LR
+    classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
+    classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
+
+    MBFUND["**Investment Fund Investor Membership** (Tier 3)"]:::ref
+    MBCHANGE["**MBCHANGE**\nLịch sử thay đổi vốn góp\nnhà đầu tư quỹ (10 trường)"]:::src
+
+    MBCHANGE -->|MBFId| MBFUND
+```
+
+**Trường chính:** MBFId (FK→MBFUND), OldCapital (vốn góp trước), NewCapital (vốn góp sau), ChangeDate (ngày thay đổi), Reason (lý do).
+
+### Silver — Proposed Model
+
+```mermaid
+graph LR
+    classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
+
+    MBF["Investment Fund Investor Membership (Tier 3)"]:::refnode
+    CHG["**Investment Fund Investor Capital Change Log**\nLịch sử thay đổi vốn góp của NĐT"]:::silver
+
+    CHG -->|FK| MBF
+```
+
+| Hạng mục | Nội dung |
+|---|---|
+| Silver Entity | Investment Fund Investor Capital Change Log |
+| BCV Concept | [Event] Business Activity |
+| Model Table Type | Fact Append |
+| Grain | 1 dòng = 1 lần thay đổi vốn góp của 1 NĐT trong 1 quỹ |
+| FK đến Tier 3 | Investment Fund Investor Membership (MBFId) |
+
+> **Lưu ý:** OldCapital/NewCapital là dữ liệu nghiệp vụ thực — ghi nhận lịch sử thay đổi phần vốn góp cùng lý do (Reason). Khác với Audit Log nguồn (chứa PrevValue/ValueChange dạng text blob không định kiểu). Đây là Business Activity có attribute nghiệp vụ rõ ràng → trong scope Silver.
+
+---
+
 ## 6a. Tổng quan BCV Concept
 
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
 |---|---|---|---|---|---|---|
+| Business Activity | [Event] Business Activity | Event | MBCHANGE | Lịch sử thay đổi vốn góp nhà đầu tư quỹ | Investment Fund Investor Capital Change Log | Candidate: Business Activity (id 8958). Cấu trúc: OldCapital, NewCapital, ChangeDate, Reason — mỗi dòng là 1 sự kiện thay đổi vốn góp có giá trị nghiệp vụ. Phân biệt với Audit Log nguồn (MBCHANGE có cột có định kiểu số, không phải blob). |
 | Transaction | [Event] Transaction | Event | TRANSFERMBF | Danh sách giao dịch chứng chỉ quỹ | Investment Fund Certificate Transfer | Candidate: Transaction (id 8954) — *"Identifies an Event that is a transaction between Involved Parties."* Cấu trúc trường: TransDate, Quantity (số lượng CCQ), Price (giá), TransType — giao dịch tài chính cụ thể có số lượng và giá trị. Khớp chính xác. |
 | Business Activity | [Event] Business Activity | Event | RPTMBHS | Lịch sử báo cáo thành viên | Member Periodic Report Status Log | Candidate: Business Activity (id 8958). Cấu trúc trường: Status, ContentSummary, Note, FileData — mỗi dòng là 1 sự kiện nghiệp vụ (gửi, duyệt, hủy báo cáo). Không lưu Old/New value → không phải Audit Log nguồn, trong scope Silver. |
 | Documentation | [Resource Item] Documentation | Resource Item | RPTVALUES | Báo cáo giá trị — lưu dữ liệu import | Report Import Value | Candidate: Documentation (id 11050) — *"Identifies a Resource Item that is a document."* Cấu trúc trường: Values (giá trị từng ô), SheetId, TgtId (ô chỉ tiêu) — nội dung tài liệu báo cáo được import vào hệ thống. Khớp chính xác. |
@@ -176,10 +219,12 @@ graph TD
     TRANSFERMBF["**TRANSFERMBF**\nGiao dịch CCQ"]:::src
     RPTMBHS["**RPTMBHS**\nLịch sử trạng thái BC"]:::src
     RPTVALUES["**RPTVALUES**\nDữ liệu import BC"]:::src
+    MBCHANGE["**MBCHANGE**\nLịch sử thay đổi vốn góp"]:::src
 
     TRANSFERMBF -->|FndId| FUNDS
     TRANSFERMBF -->|MBFId| MBFUND
     RPTMBHS -->|RptMbId| RPTMEMBER
+    MBCHANGE -->|MBFId| MBFUND
     RPTVALUES -->|SecId| SECURITIES
     RPTVALUES -->|FndId| FUNDS
     RPTVALUES -->|BkMId| BANKMONI
@@ -209,10 +254,12 @@ graph TD
     TRCF["**Investment Fund Certificate Transfer**"]:::silver
     RLOG["**Member Periodic Report Status Log**"]:::silver
     RIV["**Report Import Value**"]:::silver
+    CHG["**Investment Fund Investor Capital Change Log**"]:::silver
 
     TRCF -->|FK| FUND
     TRCF -->|FK| MBF
     RLOG -->|FK| RPT
+    CHG -->|FK| MBF
     RIV -->|FK nullable| FMC
     RIV -->|FK nullable| FUND
     RIV -->|FK nullable| BNK
@@ -226,7 +273,7 @@ graph TD
 
 | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|
-| MBCHANGE | Lịch sử thay đổi vốn góp nhà đầu tư quỹ | Audit Log nguồn — có OldCapital/NewCapital/ChangeDate. Cơ chế đặc thù source system. |
+| ~~MBCHANGE~~ | ~~Lịch sử thay đổi vốn góp nhà đầu tư quỹ~~ | ✅ Reclassified: OldCapital/NewCapital là số có định kiểu + Reason nghiệp vụ → Business Activity trong scope. Xem mục 4. |
 | SECBUP | Chi tiết lịch sử công ty QLQ (bản ghi trước/sau) | Snapshot nguồn — có IsBefore + SecData (blob). Cơ chế đặc thù source system. |
 | TLPROBUP | Chi tiết lịch sử nhân sự (bản ghi trước/sau) | Snapshot nguồn — có IsBefore + TLData (blob). Cơ chế đặc thù source system. |
 | BRCHBUP | Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước | Snapshot nguồn — FK đến SECHISTORY (Audit Log). Cơ chế đặc thù source system. |

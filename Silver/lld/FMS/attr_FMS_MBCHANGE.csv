@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Investment Fund Investor Capital Change Log Id,Khóa đại diện cho bản ghi thay đổi vốn góp NĐT.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Investment Fund Investor Capital Change Log Code,Mã định danh bản ghi thay đổi. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.MBCHANGE.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.MBCHANGE,
+Investment Fund Investor Membership Id,FK đến quan hệ góp vốn của NĐT trong quỹ.,Surrogate Key,false,false,draft,FMS.MBCHANGE.MBFId,FK target: Investment Fund Investor Membership.Investment Fund Investor Membership Id.,,
+Investment Fund Investor Membership Code,Mã quan hệ góp vốn.,Text,false,false,draft,FMS.MBCHANGE.MBFId,FK target: Investment Fund Investor Membership.Investment Fund Investor Membership Code. Pair with Investment Fund Investor Membership Id.,,
+Old Capital Amount,Số vốn góp trước khi thay đổi (VNĐ).,Currency Amount,true,false,draft,FMS.MBCHANGE.OldCapital,,,
+New Capital Amount,Số vốn góp sau khi thay đổi (VNĐ).,Currency Amount,true,false,draft,FMS.MBCHANGE.NewCapital,,,
+Change Date,Ngày thực hiện thay đổi vốn góp.,Date,true,false,draft,FMS.MBCHANGE.ChangeDate,,,
+Change Reason,Lý do thay đổi vốn góp.,Text,true,false,draft,FMS.MBCHANGE.Reason,,,
+Created By,Người tạo bản ghi.,Text,true,false,draft,FMS.MBCHANGE.CreatedBy,Mã người dùng hệ thống — denormalized.,,
+Created Timestamp,Ngày tạo bản ghi.,Timestamp,true,false,draft,FMS.MBCHANGE.DateCreated,,,
+Updated Timestamp,Ngày cập nhật bản ghi.,Timestamp,true,false,draft,FMS.MBCHANGE.DateModified,,,

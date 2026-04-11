@@ -98,14 +98,7 @@ graph TD
 | AGENCYTYPE | Loại đại lý | → Classification Value |
 | NATIONAL | Quốc gia/quốc tịch | → Classification Value |
 | STOCKHOLDERTYPE | Loại hình NĐT/cổ đông | → Classification Value |
-
----
-
-## 6e. Bảng chờ thiết kế
-
-| Source Table | Mô tả bảng nguồn | Lý do chưa thiết kế |
-|---|---|---|
-| RPTPERIOD | Kỳ báo cáo | Chưa có thông tin cột đầy đủ |
+| RELATION | Mối quan hệ cổ đông | → Classification Value. Scheme: `FMS_RELATION_TYPE`. Dùng trên Discretionary Investment Investor (INVES.RelationShip). |
 
 ---
 
@@ -114,7 +107,7 @@ graph TD
 | # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
 | 1 | SECURITIES.Dorf (1=Trong nước, 0=Nước ngoài) — nếu Dorf=0 tồn tại, có cần phân luồng ETL? | Ảnh hưởng entity Fund Management Company |
-| 2 | RPTPERIOD — cần bổ sung column detail | Ảnh hưởng entity Reporting Period |
+| ~~2~~ | ~~RPTPERIOD — cần bổ sung column detail~~ | ✅ Đã có cột: PeriodName, PeriodType, IsActive — đã thiết kế. |
 | 3 | PARAWARN — không có bảng nào FK đến bảng này. Xác nhận có thực sự trong scope FMS không? | Nếu không có entity nào sử dụng → loại khỏi scope Silver |
 
 ---
@@ -174,11 +167,11 @@ graph TD
 
 **Grain:** 1 dòng = 1 nhà đầu tư ủy thác (cá nhân hoặc tổ chức).
 
-**Attributes chính:** Investor Name, Dorf Indicator, Identification Type Code, Nationality Code, Stockholder Type Code, Fund Management Company FK (SecId — QLQ đang nhận ủy thác).
+**Attributes chính:** Investor Name, Dorf Indicator, Identification Type Code, Nationality Code, Stockholder Type Code, Relationship Type Code (RelationShip — FK→RELATION, Scheme: `FMS_RELATION_TYPE`), Fund Management Company FK (SecId — QLQ đang nhận ủy thác).
 
 **Shared entities:** IP Alt Identification (IdNo, IdDate, IdType — CMND/CCCD/Hộ chiếu/ĐKKD).
 
-**Ghi chú:** INVES đóng vai trò investor master dùng chung cho cả INVESACC (ủy thác) lẫn MBFUND (đầu tư quỹ).
+**Ghi chú:** INVES đóng vai trò investor master dùng chung cho cả INVESACC (ủy thác) lẫn MBFUND (đầu tư quỹ). RELATION chỉ có Id/Name → xử lý là Classification Value (Scheme: `FMS_RELATION_TYPE`), không tạo Silver entity riêng.
 
 ---
 
@@ -187,7 +180,9 @@ graph TD
 
 **Grain:** 1 dòng = 1 kỳ báo cáo (tháng/quý/năm).
 
-**Ghi chú:** Chưa có thông tin cột đầy đủ — chờ thiết kế.
+**Attributes chính:** Period Name, Period Type Code (tháng/quý/năm — Classification Value), Is Active Indicator, Is Deleted Indicator.
+
+**Được FK từ:** Member Periodic Report (Tier 3), Report Import Value (Tier 4).
 
 ---
 
@@ -209,5 +204,5 @@ graph TD
 | Custodian Bank | ~7 | Custodian Bank Id | — |
 | Fund Distribution Agent | ~6 | Fund Distribution Agent Id | — |
 | Discretionary Investment Investor | ~10 | Discretionary Investment Investor Id | Fund Management Company (SecId) |
-| Reporting Period | TBD | Reporting Period Id | — |
+| Reporting Period | ~5 | Reporting Period Id | — |
 | Member Rating Period | ~7 | Member Rating Period Id | — |

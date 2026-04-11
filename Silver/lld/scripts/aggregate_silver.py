@@ -157,6 +157,7 @@ def build_attributes(manifest_rows: list[dict],
                 "source_system":          source_system,
                 "source_table":           source_table,
                 "source_column":          ar.get("source_columns", ""),
+                "comment":                ar.get("comment", ""),
                 "classification_context": ar.get("classification_context", ""),
                 "etl_derived_value":      ar.get("etl_derived_value", ""),
             })
@@ -260,7 +261,7 @@ def main():
         "silver_attribute", "description", "data_domain",
         "nullable", "is_primary_key",
         "source_system", "source_table", "source_column",
-        "classification_context", "etl_derived_value",
+        "comment", "classification_context", "etl_derived_value",
     ]
 
     if args.dry_run:

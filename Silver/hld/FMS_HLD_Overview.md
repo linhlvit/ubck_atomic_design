@@ -33,12 +33,14 @@
 | 2 | Arrangement | [Arrangement] Financial Portfolio Management Arrangement | Arrangement | INVESACC | Danh sách tài khoản nhà đầu tư ủy thác | Discretionary Investment Account | Financial Portfolio Management Arrangement — *"Identifies a service of managing of financial portfolio."* ContractNo + ActScale/AdScale + ManagerFee = hợp đồng dịch vụ. |
 | 2 | Involved Party | [Involved Party] Involved Party Rating | Involved Party | RANK | Bảng xếp hạng theo kỳ đánh giá | Member Rating | Involved Party Rating (id 10360) — *"Identifies a relationship in which a Rating Scale applies to an Involved Party."* TotalScore/RankValue/RankClass = kết quả cụ thể gán cho từng QLQ theo kỳ. |
 | 2 | Condition | [Condition] Criterion | Condition | RNKFACTOR | Bảng chấm điểm đánh giá xếp loại (nhân tố cha/con) | Rating Criterion | Criterion (id 8945) — *"Identifies a Condition that specifies a characteristic used as a basis of judgment."* Name + MaxScore + Weight = tiêu chí tĩnh, không gắn Arrangement. |
+| 3 | Business Activity | [Business Activity] Conduct Violation | Business Activity | VIOLT | Danh sách vi phạm của công ty QLQ/quỹ đầu tư | Fund Management Conduct Violation | Conduct Violation — vi phạm pháp luật hoặc hành chính của công ty QLQ hoặc quỹ đầu tư. SecId/FndId nullable — thuộc về QLQ hoặc quỹ, không đồng thời cả hai. |
 | 3 | Involved Party | [Involved Party] Involved Party Group Membership | Involved Party | MBFUND | Danh sách nhà đầu tư quỹ | Investment Fund Investor Membership | Involved Party Group Membership (id 10364) — *"Identifies a relationship in which an Involved Party is a member of a Group."* FndId + InvesId + Capital + Ratio = membership có attribute. |
 | 3 | Involved Party | [Involved Party] Involved Party Role | Involved Party | REPRESENT | Danh sách ban đại diện/HĐQT quỹ đầu tư | Investment Fund Representative Board Member | Involved Party Role (id 10362) — *"Identifies a relationship in which an Involved Party performs a defined function."* FndId + TLId + IsChair + Status = cá nhân đảm nhận vai trò trong ban đại diện. |
 | 3 | Involved Party | [Involved Party] Involved Party Role | Involved Party | STFFGBRCH | Danh sách nhân sự VPĐD/CN công ty QLQ NN | Foreign Fund Management Organization Unit Staff | Involved Party Role (id 10362) — cùng pattern với REPRESENT. FgBrId + TLId + FnType + Isr + Isp = cá nhân đảm nhận vai trò tại VPĐD/CN QLQ NN. |
 | 3 | Communication | [Event] Communication | Event | RPTMEMBER | Báo cáo định kỳ của thành viên thị trường | Member Periodic Report | Communication (id 8956) — *"Identifies an Event that is a communication between Involved Parties."* DeadlineSend + DateSubmitted + Status = giao tiếp giữa thành viên và cơ quan quản lý. |
 | 3 | Transaction | [Event] Transaction | Event | TRSFERINDER | Danh sách giao dịch chuyển nhượng cổ phần | Fund Management Company Share Transfer | Transaction (id 8954) — *"Identifies an Event that is a transaction between Involved Parties."* TransDate + Quantity + Price = giao dịch tài chính cụ thể. |
 | 4 | Transaction | [Event] Transaction | Event | TRANSFERMBF | Danh sách giao dịch chứng chỉ quỹ | Investment Fund Certificate Transfer | Transaction (id 8954) — cùng pattern với TRSFERINDER. TransDate + Quantity + Price + TransType = giao dịch CCQ. |
+| 4 | Business Activity | [Event] Business Activity | Event | MBCHANGE | Lịch sử thay đổi vốn góp nhà đầu tư quỹ | Investment Fund Investor Capital Change Log | Business Activity (id 8958) — OldCapital/NewCapital/ChangeDate/Reason là dữ liệu nghiệp vụ định kiểu rõ ràng, không phải blob. Reclassified từ "Audit Log nguồn". |
 | 4 | Business Activity | [Event] Business Activity | Event | RPTMBHS | Lịch sử báo cáo thành viên | Member Periodic Report Status Log | Business Activity (id 8958) — *"Identifies an Event that is a business activity."* Status + ContentSummary + Note = sự kiện thay đổi trạng thái báo cáo, không lưu Old/New value. |
 | 4 | Documentation | [Resource Item] Documentation | Resource Item | RPTVALUES | Báo cáo giá trị — lưu dữ liệu import | Report Import Value | Documentation (id 11050) — *"Identifies a Resource Item that is a document."* Values + SheetId + TgtId = nội dung tài liệu báo cáo được import. |
 
@@ -80,10 +82,12 @@ graph TD
     STF["**Foreign Fund Management Organization Unit Staff**"]:::silver
     RPT["**Member Periodic Report**"]:::silver
     TRF["**Fund Management Company\nShare Transfer**"]:::silver
+    VIO["**Fund Management Conduct Violation**"]:::silver
 
     %% Tier 4
     TRCF["**Investment Fund Certificate Transfer**"]:::silver
     RLOG["**Member Periodic Report Status Log**"]:::silver
+    CHG["**Investment Fund Investor\nCapital Change Log**"]:::silver
     RIV["**Report Import Value**"]:::silver
 
     %% Tier 1 — Shared
@@ -128,11 +132,14 @@ graph TD
     RPT -->|FK nullable| FGOU
     RPT -->|FK| RPD
     TRF -->|FK| FMC
+    VIO -->|FK nullable| FMC
+    VIO -->|FK nullable| FUND
 
     %% Tier 4 — FK đến Tier 2/3
     TRCF -->|FK| FUND
     TRCF -->|FK| MBF
     RLOG -->|FK| RPT
+    CHG -->|FK| MBF
     RIV -->|FK nullable| FMC
     RIV -->|FK nullable| FUND
     RIV -->|FK nullable| BNK
@@ -171,14 +178,14 @@ graph TD
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
 | 1 | T1 | SECURITIES.Dorf (1=Trong nước, 0=Nước ngoài) — nếu Dorf=0 tồn tại, có cần phân luồng ETL? | Entity Fund Management Company |
-| 2 | T1 | RPTPERIOD — cần bổ sung column detail | Entity Reporting Period |
+| ~~2~~ | T1 | ~~RPTPERIOD — cần bổ sung column detail~~ | ✅ Đã có cột đầy đủ — thiết kế hoàn tất. |
 | 3 | T2 | INVESACC.AccPlace (nơi lưu ký) — có phải FK đến BANKMONI không? | Nếu có → thêm FK từ Discretionary Investment Account đến Custodian Bank |
 | 4 | T2 | BRANCHES.BrIdowner — giá trị là Id nguồn hay text? | Ảnh hưởng thiết kế self-FK surrogate trên Silver |
 | 5 | T2 | TLProfiles — nhân sự có thể thuộc nhiều công ty QLQ qua thời gian không? | Nếu có → grain cần review, có thể cần tách role khỏi entity |
-| 6 | T2 | PARVALUE — không có bảng nào FK đến. Xác nhận có trong scope FMS không? | Nếu không → loại khỏi scope hoàn toàn |
+| ~~6~~ | T2 | ~~PARVALUE — không có bảng nào FK đến.~~ | ✅ Xác nhận orphan — loại khỏi scope Silver. |
 | 7 | T3 | TRSFERINDER — không có FK bên nhận/bên chuyển nhượng. Giao dịch này có liên quan đến INVES không? | Nếu có → thêm FK đến Discretionary Investment Investor |
 | 8 | T3 | RPTMEMBER — mỗi bản ghi chỉ thuộc 1 loại thành viên (SecId hoặc FndId hoặc BkMId hoặc FrBrId). Xác nhận logic nullable này. | Ảnh hưởng thiết kế FK nullable và kiểm tra data quality |
-| 9 | T3 | STFFGBRCH — TLId trỏ đến TLProfiles (nhân sự QLQ trong nước). VPĐD/CN QLQ NN có dùng chung bảng nhân sự với QLQ trong nước không? | Nếu không → cần Silver entity nhân sự riêng cho QLQ NN |
+| ~~9~~ | T3 | ~~STFFGBRCH — TLId trỏ đến TLProfiles. Có dùng chung không?~~ | ✅ Xác nhận: dùng chung TLProfiles — không cần entity nhân sự riêng cho QLQ NN. |
 | 10 | T4 | TRANSFERMBF — FK đến cả FUNDS và MBFUND, MBFUND đã chứa FndId. FK đến FUNDS có cần thiết trên Silver không? | Nếu không → bỏ FK redundant đến Investment Fund |
 | 11 | T4 | RPTVALUES.RptId và SheetId — sau khi có cột RPTTEMP và SHEET, xác nhận đây là FK đến Silver entity hay Classification Value | Ảnh hưởng thiết kế FK của Report Import Value |
 
@@ -189,7 +196,7 @@ graph TD
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
 | Isolated | PARAWARN | Danh sách tham số cảnh báo | Không FK đến/từ bảng nghiệp vụ nào |
-| Isolated | PARVALUE | Danh sách mệnh giá cổ phần | Không có bảng nào FK đến. Cần xác nhận có trong scope FMS không. |
+| Isolated | PARVALUE | Danh sách mệnh giá cổ phần | Không có bảng nào FK đến — xác nhận orphan, loại khỏi scope. |
 | Isolated | CALENDAR | Lịch làm việc và lịch nghỉ | Không FK đến bảng nghiệp vụ nào |
 | Isolated | CERTFCATE | Chứng thư số của thành viên thị trường | Không FK đến bảng nghiệp vụ nào |
 | Isolated | SYSVAR | Danh sách tham số hệ thống | Không FK đến bảng nghiệp vụ nào |
@@ -212,7 +219,7 @@ graph TD
 | Audit Log nguồn | TLPRHISTORY | Lịch sử nhân sự | Audit Log — cùng pattern SECHISTORY |
 | Audit Log nguồn | FUNDHISTORY | Lịch sử quỹ đầu tư | Audit Log — cùng pattern SECHISTORY |
 | Audit Log nguồn | FGBRBUP | Lịch sử thay đổi VPĐD/CN QLQ NN | Audit Log — cùng pattern SECHISTORY |
-| Audit Log nguồn | MBCHANGE | Lịch sử thay đổi vốn góp nhà đầu tư quỹ | Audit Log — OldCapital/NewCapital/ChangeDate |
+| ~~Audit Log nguồn~~ | ~~MBCHANGE~~ | ~~Lịch sử thay đổi vốn góp nhà đầu tư quỹ~~ | ✅ Reclassified — trong scope Silver (Tier 4). Xem Investment Fund Investor Capital Change Log. |
 | Snapshot nguồn | SECBUP | Chi tiết lịch sử công ty QLQ (bản ghi trước/sau) | Snapshot — IsBefore + SecData (blob) |
 | Snapshot nguồn | TLPROBUP | Chi tiết lịch sử nhân sự (bản ghi trước/sau) | Snapshot — IsBefore + TLData (blob) |
 | Snapshot nguồn | BRCHBUP | Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước | Snapshot — FK đến SECHISTORY (Audit Log) |
