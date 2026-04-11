@@ -1,7 +1,13 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Discretionary Investment Investor.,Surrogate Key,false,false,draft,FMS.INVES.Id,FK target: Discretionary Investment Investor.Discretionary Investment Investor Id. Shared entity — không có PK surrogate riêng.
-Involved Party Code,Mã nhà đầu tư ủy thác. Lưu dư thừa.,Text,false,false,draft,FMS.INVES.Id,FK target: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Involved Party Id.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.INVES.
-Identification Type Code,Loại giấy tờ định danh.,Classification Value,false,false,draft,FMS.INVES.IdType,"Scheme: IP_ALT_ID_TYPE. ETL map: IdType=1 → NATIONAL_ID hoặc PASSPORT (cá nhân); IdType=0 → BUSINESS_LICENSE (tổ chức). Cần profile data để xác định chính xác."
-Identification Number,Số CMND/CCCD/Hộ chiếu/ĐKKD.,Text,true,false,draft,FMS.INVES.IdNo,
-Issue Date,Ngày cấp giấy tờ.,Date,true,false,draft,FMS.INVES.IdDate,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Discretionary Investment Investor.,Surrogate Key,false,false,draft,FMS.INVES.Id,FK target: Discretionary Investment Investor.Discretionary Investment Investor Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã nhà đầu tư ủy thác. Lưu dư thừa.,Text,false,false,draft,FMS.INVES.Id,FK target: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FMS.INVES
+Identification Type Code,Loại giấy tờ — CMND (cá nhân).,Classification Value,false,false,draft,FMS.INVES.IdType,ETL map: IdType=1 (cá nhân) → NATIONAL_ID. Cần xác nhận qua data profile.,IP_ALT_ID_TYPE=NATIONAL_ID
+Identification Number,Số CMND,Text,true,false,draft,FMS.INVES.IdNo,,IP_ALT_ID_TYPE=NATIONAL_ID,
+Issue Date,Ngày cấp CMND,Date,true,false,draft,FMS.INVES.IdDate,,IP_ALT_ID_TYPE=NATIONAL_ID,
+Identification Type Code,Loại giấy tờ — hộ chiếu (cá nhân).,Classification Value,false,false,draft,FMS.INVES.IdType,ETL map: IdType=1 (cá nhân) → PASSPORT. Cần xác nhận qua data profile.,IP_ALT_ID_TYPE=PASSPORT
+Identification Number,Số hộ chiếu,Text,true,false,draft,FMS.INVES.IdNo,,IP_ALT_ID_TYPE=PASSPORT,
+Issue Date,Ngày cấp hộ chiếu,Date,true,false,draft,FMS.INVES.IdDate,,IP_ALT_ID_TYPE=PASSPORT,
+Identification Type Code,Loại giấy tờ — giấy phép kinh doanh (tổ chức).,Classification Value,false,false,draft,FMS.INVES.IdType,ETL map: IdType=0 (tổ chức) → BUSINESS_LICENSE.,IP_ALT_ID_TYPE=BUSINESS_LICENSE
+Identification Number,Số ĐKKD/giấy phép kinh doanh,Text,true,false,draft,FMS.INVES.IdNo,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issue Date,Ngày cấp giấy phép kinh doanh,Date,true,false,draft,FMS.INVES.IdDate,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,

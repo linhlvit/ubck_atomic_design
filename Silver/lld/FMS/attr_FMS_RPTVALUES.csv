@@ -1,24 +1,24 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-FMS Report Import Value Id,Khóa đại diện cho bản ghi giá trị từng ô chỉ tiêu trong báo cáo import.,Surrogate Key,false,true,draft,,
-FMS Report Import Value Code,Mã bản ghi do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RPTVALUES.Id,BCV Term: Documentation. BK của entity.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.RPTVALUES.
-Fund Management Company Id,Khóa đại diện công ty QLQ liên quan đến báo cáo (nullable). FK → SECURITIES.,Surrogate Key,true,false,draft,FMS.RPTVALUES.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.
-Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.
-FMS Investment Fund Id,Khóa đại diện quỹ đầu tư liên quan (nullable). FK → FUNDS.,Surrogate Key,true,false,draft,FMS.RPTVALUES.FndId,FK target: FMS Investment Fund.FMS Investment Fund Id. Pair with FMS Investment Fund Code.
-FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.FndId,FK target: FMS Investment Fund.FMS Investment Fund Code. Pair with FMS Investment Fund Id.
-Custodian Bank Id,Khóa đại diện ngân hàng LKGS liên quan (nullable). FK → BANKMONI.,Surrogate Key,true,false,draft,FMS.RPTVALUES.BkMId,FK target: Custodian Bank.Custodian Bank Id. Pair with Custodian Bank Code.
-Custodian Bank Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.BkMId,FK target: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id.
-Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN liên quan (nullable). FK → FORBRCH.,Surrogate Key,true,false,draft,FMS.RPTVALUES.FrBrId,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id. Pair with Foreign Fund Management Organization Unit Code.
-Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.FrBrId,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Foreign Fund Management Organization Unit Id.
-Reporting Period Id,Khóa đại diện kỳ báo cáo. FK → RPTPERIOD.,Surrogate Key,false,false,draft,FMS.RPTVALUES.PrdId,FK target: Reporting Period.Reporting Period Id. Pair with Reporting Period Code.
-Reporting Period Code,Mã kỳ báo cáo. Lưu dư thừa.,Text,false,false,draft,FMS.RPTVALUES.PrdId,FK target: Reporting Period.Reporting Period Code. Pair with Reporting Period Id.
-Report Template Source Key,Mã biểu mẫu báo cáo đầu vào. FK → RPTTEMP (chưa có column detail).,Text,true,false,draft,FMS.RPTVALUES.RptId,Giữ dạng source key vì RPTTEMP chưa có thông tin cột — xem câu hỏi xác nhận T4-#2. Sẽ chuyển thành FK surrogate sau khi RPTTEMP được thiết kế.
-Sheet Source Key,Mã sheet báo cáo đầu vào. FK → SHEET (chưa có column detail).,Text,true,false,draft,FMS.RPTVALUES.SheetId,Giữ dạng source key vì SHEET chưa có thông tin cột — xem câu hỏi xác nhận T4-#2.
-Target Cell Id,ID ô chỉ tiêu trong sheet báo cáo.,Text,true,false,draft,FMS.RPTVALUES.TgtId,
-Member Source Key,Mã ID thành viên thị trường — chưa xác định được FK chính xác.,Text,true,false,draft,FMS.RPTVALUES.MebId,Không rõ FK đến bảng nào — để denormalized dạng source key cho đến khi xác nhận.
-Cell Value,Giá trị dữ liệu tại ô chỉ tiêu được import.,Text,true,false,draft,FMS.RPTVALUES.Values,Data type Text để chứa cả số lẫn chuỗi theo FormatDataType.
-Account Value,Thông tin tài khoản lưu ký liên quan đến ô chỉ tiêu.,Text,true,false,draft,FMS.RPTVALUES.AccValues,
-Cell Data Type Code,Loại dữ liệu ô: Numeric = số; String = ký tự.,Classification Value,true,false,draft,FMS.RPTVALUES.FormatDataType,Scheme: FMS_CELL_DATA_TYPE. Giá trị ETL-derived: NUMERIC/STRING.
-Is Dynamic Indicator,Cờ đánh dấu ô chỉ tiêu là dữ liệu động: 1 = Có; 0 = Không.,Indicator,true,false,draft,FMS.RPTVALUES.IsDynamic,
-Reporting Period Type Code,Loại kỳ báo cáo của ô dữ liệu.,Classification Value,true,false,draft,FMS.RPTVALUES.PeriodType,Scheme: FMS_REPORTING_PERIOD_TYPE. Cùng scheme với Reporting Period entity.
-Reporting Member Type Code,Đối tượng gửi báo cáo: 2 = QLQ; 7 = QĐT.,Classification Value,true,false,draft,FMS.RPTVALUES.Type,Scheme: FMS_REPORTING_MEMBER_TYPE. Cùng scheme với RPTMEMBER.Type.
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+FMS Report Import Value Id,Khóa đại diện cho bản ghi giá trị từng ô chỉ tiêu trong báo cáo import.,Surrogate Key,false,true,draft,,,,
+FMS Report Import Value Code,Mã bản ghi do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RPTVALUES.Id,BCV Term: Documentation. BK của entity.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.RPTVALUES.,,
+Fund Management Company Id,Khóa đại diện công ty QLQ liên quan đến báo cáo (nullable). FK → SECURITIES.,Surrogate Key,true,false,draft,FMS.RPTVALUES.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.,,
+Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.,,
+FMS Investment Fund Id,Khóa đại diện quỹ đầu tư liên quan (nullable). FK → FUNDS.,Surrogate Key,true,false,draft,FMS.RPTVALUES.FndId,FK target: FMS Investment Fund.FMS Investment Fund Id. Pair with FMS Investment Fund Code.,,
+FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.FndId,FK target: FMS Investment Fund.FMS Investment Fund Code. Pair with FMS Investment Fund Id.,,
+Custodian Bank Id,Khóa đại diện ngân hàng LKGS liên quan (nullable). FK → BANKMONI.,Surrogate Key,true,false,draft,FMS.RPTVALUES.BkMId,FK target: Custodian Bank.Custodian Bank Id. Pair with Custodian Bank Code.,,
+Custodian Bank Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.BkMId,FK target: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id.,,
+Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN liên quan (nullable). FK → FORBRCH.,Surrogate Key,true,false,draft,FMS.RPTVALUES.FrBrId,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id. Pair with Foreign Fund Management Organization Unit Code.,,
+Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,Text,true,false,draft,FMS.RPTVALUES.FrBrId,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Foreign Fund Management Organization Unit Id.,,
+Reporting Period Id,Khóa đại diện kỳ báo cáo. FK → RPTPERIOD.,Surrogate Key,false,false,draft,FMS.RPTVALUES.PrdId,FK target: Reporting Period.Reporting Period Id. Pair with Reporting Period Code.,,
+Reporting Period Code,Mã kỳ báo cáo. Lưu dư thừa.,Text,false,false,draft,FMS.RPTVALUES.PrdId,FK target: Reporting Period.Reporting Period Code. Pair with Reporting Period Id.,,
+Report Template Source Key,Mã biểu mẫu báo cáo đầu vào. FK → RPTTEMP (chưa có column detail).,Text,true,false,draft,FMS.RPTVALUES.RptId,Giữ dạng source key vì RPTTEMP chưa có thông tin cột — xem câu hỏi xác nhận T4-#2. Sẽ chuyển thành FK surrogate sau khi RPTTEMP được thiết kế.,,
+Sheet Source Key,Mã sheet báo cáo đầu vào. FK → SHEET (chưa có column detail).,Text,true,false,draft,FMS.RPTVALUES.SheetId,Giữ dạng source key vì SHEET chưa có thông tin cột — xem câu hỏi xác nhận T4-#2.,,
+Target Cell Id,ID ô chỉ tiêu trong sheet báo cáo.,Text,true,false,draft,FMS.RPTVALUES.TgtId,,,
+Member Source Key,Mã ID thành viên thị trường — chưa xác định được FK chính xác.,Text,true,false,draft,FMS.RPTVALUES.MebId,Không rõ FK đến bảng nào — để denormalized dạng source key cho đến khi xác nhận.,,
+Cell Value,Giá trị dữ liệu tại ô chỉ tiêu được import.,Text,true,false,draft,FMS.RPTVALUES.Values,Data type Text để chứa cả số lẫn chuỗi theo FormatDataType.,,
+Account Value,Thông tin tài khoản lưu ký liên quan đến ô chỉ tiêu.,Text,true,false,draft,FMS.RPTVALUES.AccValues,,,
+Cell Data Type Code,Loại dữ liệu ô: Numeric = số; String = ký tự.,Classification Value,true,false,draft,FMS.RPTVALUES.FormatDataType,Scheme: FMS_CELL_DATA_TYPE. Giá trị ETL-derived: NUMERIC/STRING.,,
+Is Dynamic Indicator,Cờ đánh dấu ô chỉ tiêu là dữ liệu động: 1 = Có; 0 = Không.,Indicator,true,false,draft,FMS.RPTVALUES.IsDynamic,,,
+Reporting Period Type Code,Loại kỳ báo cáo của ô dữ liệu.,Classification Value,true,false,draft,FMS.RPTVALUES.PeriodType,Scheme: FMS_REPORTING_PERIOD_TYPE. Cùng scheme với Reporting Period entity.,,
+Reporting Member Type Code,Đối tượng gửi báo cáo: 2 = QLQ; 7 = QĐT.,Classification Value,true,false,draft,FMS.RPTVALUES.Type,Scheme: FMS_REPORTING_MEMBER_TYPE. Cùng scheme với RPTMEMBER.Type.,,

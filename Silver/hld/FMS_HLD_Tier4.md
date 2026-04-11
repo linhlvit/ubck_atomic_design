@@ -1,19 +1,14 @@
-# FMS — HLD Tầng 4: Phụ thuộc Tầng 3
+# FMS — HLD Tier 4: Phụ thuộc Tier 3
 
 > **Nguồn:** Thiết kế CSDL FMS — Phân hệ quản lý giám sát công ty chứng khoán và quỹ đầu tư chứng khoán (20/03/2026)
 >
-> **Phạm vi:** Bảng có FK đến ít nhất 1 entity Tầng 3 (FMS Fund Investor Membership, FMS Member Periodic Report).
+> **Phụ thuộc Tier 1:** Fund Management Company, Custodian Bank, Foreign Fund Management Organization Unit, Reporting Period.
 >
-> **Entity tham chiếu (Tầng 1):** Fund Management Company, Custodian Bank, Foreign Fund Management Organization Unit, Reporting Period.
+> **Phụ thuộc Tier 2:** FMS Investment Fund.
 >
-> **Entity tham chiếu (Tầng 2):** FMS Investment Fund.
+> **Phụ thuộc Tier 3:** FMS Fund Investor Membership, FMS Member Periodic Report.
 >
-> **Entity tham chiếu (Tầng 3):** FMS Fund Investor Membership, FMS Member Periodic Report.
->
-> **Ký hiệu:**
-> - 🔵 Xanh dương: bảng nguồn FMS
-> - 🟢 Xanh lá: entity Silver mới (Tầng 4)
-> - ⬜ Xám: entity Silver tham chiếu (Tầng 1/2/3 — chỉ ghi tên)
+> **Thiết kế theo:** [FMS_HLD_Overview.md](FMS_HLD_Overview.md)
 
 ---
 
@@ -26,8 +21,8 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FUNDS["**FMS Investment Fund** (Tầng 2)"]:::ref
-    MBFUND["**FMS Fund Investor Membership** (Tầng 3)"]:::ref
+    FUNDS["**FMS Investment Fund** (Tier 2)"]:::ref
+    MBFUND["**FMS Fund Investor Membership** (Tier 3)"]:::ref
     TRANSFERMBF["**TRANSFERMBF**\nDanh sách giao dịch\nchứng chỉ quỹ (9 trường)"]:::src
 
     TRANSFERMBF -->|FndId| FUNDS
@@ -43,8 +38,8 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FUND["FMS Investment Fund (Tầng 2)"]:::refnode
-    MBF["FMS Fund Investor Membership (Tầng 3)"]:::refnode
+    FUND["FMS Investment Fund (Tier 2)"]:::refnode
+    MBF["FMS Fund Investor Membership (Tier 3)"]:::refnode
     TRF["**FMS Fund Certificate Transfer**\nGiao dịch chứng chỉ quỹ"]:::silver
 
     TRF -->|FK| FUND
@@ -57,8 +52,8 @@ graph LR
 | BCV Concept | [Event] Transaction |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 giao dịch chứng chỉ quỹ của 1 NĐT thành viên tại 1 quỹ |
-| FK đến Tầng 2 | FMS Investment Fund (FndId) |
-| FK đến Tầng 3 | FMS Fund Investor Membership (MBFId) |
+| FK đến Tier 2 | FMS Investment Fund (FndId) |
+| FK đến Tier 3 | FMS Fund Investor Membership (MBFId) |
 
 > **Lưu ý:** TransType → Classification Value. Quantity và Price là attribute giao dịch. FK đến cả FUNDS và MBFUND — MBFUND đã chứa FndId nên FK đến FUNDS ở đây dư thừa nhưng giữ để tra cứu trực tiếp theo quỹ.
 
@@ -73,7 +68,7 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    RPTMEMBER["**FMS Member Periodic Report** (Tầng 3)"]:::ref
+    RPTMEMBER["**FMS Member Periodic Report** (Tier 3)"]:::ref
     RPTMBHS["**RPTMBHS**\nLịch sử trạng thái\nbáo cáo thành viên (8 trường)"]:::src
 
     RPTMBHS -->|RptMbId| RPTMEMBER
@@ -88,7 +83,7 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    RPT["FMS Member Periodic Report (Tầng 3)"]:::refnode
+    RPT["FMS Member Periodic Report (Tier 3)"]:::refnode
     LOG["**FMS Member Periodic Report Status Log**\nLịch sử thay đổi trạng thái báo cáo"]:::silver
 
     LOG -->|FK| RPT
@@ -100,7 +95,7 @@ graph LR
 | BCV Concept | [Event] Business Activity |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 lần thay đổi trạng thái của 1 báo cáo định kỳ |
-| FK đến Tầng 3 | FMS Member Periodic Report (RptMbId) |
+| FK đến Tier 3 | FMS Member Periodic Report (RptMbId) |
 
 > **Lưu ý:** RPTMBHS không lưu Old/New value — lưu từng trạng thái mới kèm nội dung (Status, ContentSummary, Note, FileData). Đây là log sự kiện nghiệp vụ, không phải Audit Log nguồn → trong scope Silver. ChgById (FK→USERS) là trường hệ thống — không tạo FK đến Silver entity USERS, lưu dạng text để audit. Status → Classification Value.
 
@@ -115,11 +110,11 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    SECURITIES["**Fund Management Company** (Tầng 1)"]:::ref
-    FUNDS["**FMS Investment Fund** (Tầng 2)"]:::ref
-    BANKMONI["**Custodian Bank** (Tầng 1)"]:::ref
-    FORBRCH["**Foreign Fund Management OU** (Tầng 1)"]:::ref
-    RPTPERIOD["**Reporting Period** (Tầng 1)"]:::ref
+    SECURITIES["**Fund Management Company** (Tier 1)"]:::ref
+    FUNDS["**FMS Investment Fund** (Tier 2)"]:::ref
+    BANKMONI["**Custodian Bank** (Tier 1)"]:::ref
+    FORBRCH["**Foreign Fund Management OU** (Tier 1)"]:::ref
+    RPTPERIOD["**Reporting Period** (Tier 1)"]:::ref
     RPTTEMP["RPTTEMP (chưa có cột)"]:::ref
     SHEET["SHEET (chưa có cột)"]:::ref
     RPTVALUES["**RPTVALUES**\nDữ liệu giá trị import\nbáo cáo đầu vào (19 trường)"]:::src
@@ -143,15 +138,15 @@ graph LR
 | BCV Concept | [Resource Item] Documentation |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 giá trị tại 1 ô chỉ tiêu trong 1 sheet báo cáo của 1 thành viên trong 1 kỳ |
-| FK đến Tầng 1 | Reporting Period (PrdId) + Fund Management Company (SecId, nullable) + Custodian Bank (BkMId, nullable) + Foreign Fund Management Organization Unit (FrBrId, nullable) |
-| FK đến Tầng 2 | FMS Investment Fund (FndId, nullable) |
+| FK đến Tier 1 | Reporting Period (PrdId) + Fund Management Company (SecId, nullable) + Custodian Bank (BkMId, nullable) + Foreign Fund Management Organization Unit (FrBrId, nullable) |
+| FK đến Tier 2 | FMS Investment Fund (FndId, nullable) |
 | FK chờ | RPTTEMP (RptId), SHEET (SheetId) — chưa có cột, chưa thể thiết kế Silver entity tương ứng |
 
 > **Lưu ý:** Grain rất nhỏ (cell-level). FormatDataType (Numeric/String) → Classification Value. IsDynamic → Indicator. RPTTEMP và SHEET chưa có cột → FK tạm thời giữ dạng source key, chờ thiết kế.
 
 ---
 
-## 6a. Tổng quan BCV Concept — Tầng 4
+## 6a. Tổng quan BCV Concept
 
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
 |---|---|---|---|---|---|---|
@@ -161,7 +156,7 @@ graph LR
 
 ---
 
-## 6b. Diagram Source — Tầng 4
+## 6b. Diagram Source (Mermaid)
 
 ```mermaid
 graph TD
@@ -196,7 +191,7 @@ graph TD
 
 ---
 
-## 6c. Diagram Silver — Tầng 4
+## 6c. Diagram Silver (Mermaid)
 
 ```mermaid
 graph TD

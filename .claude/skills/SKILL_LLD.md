@@ -61,6 +61,8 @@ Dùng đúng 1 trong 12 Data Domain chuẩn:
 | Indicator | Cờ đánh dấu (Y/N, 0/1) |
 | Boolean | True/False |
 | Small Counter | Số đếm nhỏ |
+| Array\<Text\> | Mảng chuỗi — dùng cho junction chỉ chứa code/text |
+| Array\<Struct\> | Mảng struct — dùng cho junction chứa cặp Id + Code. Ghi schema struct vào comment: `Struct: {field1: Domain1; field2: Domain2}` |
 
 #### 3c. FK đến Fundamental entity
 - **Luôn tạo cặp [Entity] Id + [Entity] Code** — kể cả khi nullable.
@@ -84,6 +86,15 @@ Dùng đúng 1 trong 12 Data Domain chuẩn:
 
 #### 3h. Trường denormalized
 - Trường chứa thông tin entity khác nhưng không có cơ chế link → giữ dạng text denormalized. Không đề xuất "map ở entity khác" nếu không có link thực tế.
+
+#### 3i. Bảng junction denormalized theo HLD
+
+Nếu HLD đã quyết định denormalize 1 bảng junction thành ARRAY trên entity cha:
+- Thêm attribute vào file LLD của entity cha (không tạo file LLD riêng, không thêm vào manifest).
+- `data_domain` = `Array<Text>` (junction chỉ có code) hoặc `Array<Struct>` (junction có cặp Id + Code)
+- `source_columns` = FK phía bên kia của junction (VD: `FMS.SECBUSINES.BuId`)
+- `comment`: tên bảng junction gốc + tham chiếu HLD + schema struct nếu là `Array<Struct>`. Mẫu: `Pure junction {TABLE} → denormalize thành ARRAY. Struct: {field1: Domain1; field2: Domain2}. HLD decision: {file HLD}.`
+- Tên attribute: danh từ số nhiều phản ánh nội dung phần tử (VD: `Business Type Codes`, `Distribution Agent Ids`).
 
 ### Bước 4 — Rà soát shared entity
 
@@ -133,6 +144,7 @@ Trước khi xuất file:
 - [ ] Format nullable nhất quán: `true`/`false` — không dùng `Yes`/`No`?
 - [ ] Format source_columns nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`?
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha?
+- [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest?
 
 ## OUTPUT
 
@@ -141,17 +153,38 @@ Trước khi xuất file:
 **Tên file:** `attr_<SOURCE_SYSTEM>_<SourceTableName>.csv`
 **Mỗi file = 1 bảng nguồn.**
 
-**Cấu trúc cột:**
+**Cấu trúc cột — non-shared entity:**
 ```
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+```
+- `classification_context`: để rỗng với non-shared entity.
+- `etl_derived_value`: để rỗng nếu không có giá trị ETL-derived cố định.
+
+**Cấu trúc cột — shared entity (IP Postal Address / IP Electronic Address / IP Alt Identification):**
+
+Grain: **1 dòng = 1 silver_attribute × 1 classification_context**. Attribute lặp lại nếu có nhiều context.
+
+- `classification_context`: format `SCHEME=VALUE`. VD: `IP_ADDR_TYPE=HEAD_OFFICE`, `SOURCE_SYSTEM=FMS.SECURITIES`.
+- `etl_derived_value`: giá trị cố định ETL-derived (không từ cột nguồn). VD: `UBCKNN`.
+
+**Ví dụ non-shared:**
+```csv
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Securities Practitioner Id,Khóa đại diện cho NHN.,Surrogate Key,false,true,approved,,,, 
+Securities Practitioner Code,"Mã NHN do UBCKNN cấp. Map từ PK bảng nguồn.",Text,false,false,approved,Professionals.ID,"BCV Term: Individual Identifier. BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,approved,,,SOURCE_SYSTEM=NHNCK.Professionals,
 ```
 
-**Ví dụ:**
+**Ví dụ shared entity (IP Electronic Address với 2 context):**
 ```csv
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Securities Practitioner Id,Khóa đại diện cho NHN.,Surrogate Key,No,Yes,approved,,
-Securities Practitioner Code,"Mã NHN do UBCKNN cấp. Map từ PK bảng nguồn.",Text,No,No,approved,Professionals.ID,"BCV Term: Individual Identifier. BK của entity."
-Source System Code,"Mã hệ thống nguồn. TOMIC.Professionals",Classification Value,No,No,approved,,"Scheme: SOURCE_SYSTEM."
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Securities Practitioner.,Surrogate Key,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: ...,,
+Involved Party Code,Mã người hành nghề.,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: ...,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Professionals,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Value,Số điện thoại.,Text,true,false,draft,NHNCK.qlnhn.Professionals.Phone,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — email.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Value,Email.,Text,true,false,draft,NHNCK.qlnhn.Professionals.Email,,IP_ELEC_ADDR_TYPE=EMAIL,
 ```
 
 ### Cập nhật manifest.csv
@@ -160,7 +193,10 @@ Source System Code,"Mã hệ thống nguồn. TOMIC.Professionals",Classificatio
 2. Thêm dòng mới cho file LLD vừa tạo.
 3. Xuất **1 file duy nhất** tên `manifest.csv` chứa toàn bộ cũ + mới.
 
-**Cấu trúc:** `source_system,source_table,silver_entity,bcv_concept,group,lld_file,status`
+**Cấu trúc:** `source_system,source_table,silver_entity,bcv_concept,bcv_core_object,group,lld_file,status`
+
+- `bcv_core_object`: 1 trong các giá trị chuẩn — `Arrangement`, `Business Activity`, `Communication`, `Condition`, `Documentation`, `Event`, `Involved Party`, `Location`, `Transaction`.
+- Shared entity (IP Postal Address, IP Electronic Address, IP Alt Identification): dùng `bcv_core_object` của entity chính mà shared entity này phục vụ.
 
 ### Cập nhật ref_shared_entity_classifications.csv
 
@@ -175,37 +211,31 @@ Source System Code,"Mã hệ thống nguồn. TOMIC.Professionals",Classificatio
 - `source_table`: values load từ bảng danh mục nguồn → ghi `(source)` ở cột code, ghi source table.
 - `modeler_defined`: trường text nguồn cần chuẩn hóa, chưa profile → ghi `(to_define)`.
 
-### Cập nhật silver_attributes.csv
+### Cập nhật silver_attributes.csv và silver_entities.csv
 
-Thực hiện **sau khi hoàn thành LLD mỗi Tier của một source system**. File này là bảng tổng hợp toàn dự án — tích lũy qua tất cả source system và tất cả Tier.
+**KHÔNG ghi thủ công vào 2 file này.** Sau khi hoàn thành toàn bộ attr_*.csv và manifest.csv của Tier, chạy script:
 
-**Vị trí file:** `Silver/lld/silver_attributes.csv`
-
-**Cấu trúc:**
-```
-bcv_core_object,bcv_concept,silver_entity,silver_attribute,description,source_column
+```bash
+cd <workspace_root>
+python Silver/lld/scripts/aggregate_silver.py
 ```
 
-**Quy tắc từng cột:**
-- `bcv_core_object`: 1 trong 15 BCV Core Object — lấy từ silver_entities.csv cho entity tương ứng.
-- `bcv_concept`: BCV Concept đã gán cho Silver entity (ví dụ: `[Involved Party] Portfolio Fund Management Company`).
-- `silver_entity`: Tên Silver entity đầy đủ.
-- `silver_attribute`: Tên attribute đúng như trong file LLD CSV.
-- `description`: Mô tả ý nghĩa attribute — kết hợp ý nghĩa BCV Term và ý nghĩa trường nguồn nghiệp vụ. Viết bằng tiếng Việt, súc tích.
-- `source_column`: Cột nguồn dạng `SOURCE_SYSTEM.TABLE.Column`. Nếu nhiều cột → phân cách bằng dấu phẩy. Để trống nếu là trường ETL-derived (surrogate key, source system code...).
+Script tự động:
+- Đọc `manifest.csv` → biết toàn bộ entity, file LLD, bcv_core_object
+- Đọc từng `attr_*.csv` → thu thập attributes
+- Gộp shared entities (IP Alt Identification, IP Postal Address, IP Electronic Address) từ mọi source → 1 dòng duy nhất mỗi attribute, source_column merge
+- Sort: `bcv_core_object` (A→Z) → `silver_entity` (A→Z) → thứ tự attribute giữ nguyên
+- Preserve description đã điền thủ công trong `silver_entities.csv`
+- Ghi đè cả 2 file output
 
-**Quy tắc cập nhật:**
-- Đọc toàn bộ file hiện tại trước khi ghi.
-- Thêm dòng mới cho từng attribute trong Tier vừa hoàn thành.
-- Nếu attribute thuộc shared entity đã có từ source khác → **bổ sung** source_column mới vào dòng hiện có, không tạo dòng trùng.
-- **Sắp xếp** toàn bộ nội dung theo thứ tự: `bcv_core_object` (A→Z), sau đó `silver_entity` (A→Z), sau đó `silver_attribute` giữ nguyên thứ tự thiết kế trong entity.
-- Xuất 1 file duy nhất chứa toàn bộ cũ + mới.
+**Kiểm tra sau khi chạy:** Script in ra số rows — báo cáo con số này cho người thiết kế xác nhận.
 
 ### Quy tắc output
 
-- **Mọi output đều phải là file CSV.** Không tạo file md hay text tóm tắt kèm theo.
-- Ghi file vào `Silver/lld/<SOURCE_SYSTEM>/`.
-- Nếu `manifest.csv`, `ref_shared_entity_classifications.csv`, hoặc `silver_attributes.csv` bị cắt ngắn khi đọc → đọc lại cho đến khi có đủ toàn bộ nội dung trước khi tạo file output.
+- **Mọi attr file đều phải là file CSV.** Không tạo file md hay text tóm tắt kèm theo.
+- Ghi attr file vào `Silver/lld/<SOURCE_SYSTEM>/`.
+- Nếu `manifest.csv` hoặc `ref_shared_entity_classifications.csv` bị cắt ngắn khi đọc → đọc lại cho đến khi có đủ toàn bộ nội dung trước khi tạo file output.
+- `silver_attributes.csv` và `silver_entities.csv` **không cần đọc** trước khi chạy script — script tự xử lý.
 
 ## QUY TẮC ĐẶT TÊN ATTRIBUTE
 

@@ -1,7 +1,7 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Foreign Fund Management Organization Unit.,Surrogate Key,false,false,draft,FMS.FORBRCH.Id,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id. Shared entity — không có PK surrogate riêng.
-Involved Party Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,Text,false,false,draft,FMS.FORBRCH.Id,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Involved Party Id.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.FORBRCH.
-Identification Type Code,Loại giấy tờ định danh.,Classification Value,false,false,draft,,"Scheme: IP_ALT_ID_TYPE. Giá trị ETL-derived: BUSINESS_LICENSE (Giấy phép hoạt động/điều chỉnh tại VN)."
-Identification Number,Số giấy phép điều chỉnh gần nhất.,Text,true,false,draft,FMS.FORBRCH.ChangeLicense,
-Issue Date,Ngày chấp thuận giấy phép điều chỉnh.,Date,true,false,draft,FMS.FORBRCH.ChangeLicenseDate,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Foreign Fund Management Organization Unit.,Surrogate Key,false,false,draft,FMS.FORBRCH.Id,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,Text,false,false,draft,FMS.FORBRCH.Id,FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FMS.FORBRCH
+Identification Type Code,Loại giấy tờ — giấy phép hoạt động tại VN.,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=BUSINESS_LICENSE
+Identification Number,Số giấy phép điều chỉnh gần nhất.,Text,true,false,draft,FMS.FORBRCH.ChangeLicense,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issue Date,Ngày chấp thuận giấy phép điều chỉnh.,Date,true,false,draft,FMS.FORBRCH.ChangeLicenseDate,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,

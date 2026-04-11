@@ -1,6 +1,8 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Custodian Bank.,Surrogate Key,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng.
-Involved Party Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.BANKMONI.
-Electronic Address Type Code,Loại địa chỉ liên lạc điện tử.,Classification Value,false,false,draft,,"Scheme: IP_ELEC_ADDR_TYPE. Giá trị ETL-derived: PHONE_HEAD_OFFICE / EMAIL_BUSINESS."
-Electronic Address Value,Giá trị địa chỉ liên lạc (điện thoại / email).,Text,true,false,draft,"FMS.BANKMONI.Telephone, FMS.BANKMONI.Email","Mỗi dòng tương ứng 1 kênh liên lạc: Telephone → PHONE_HEAD_OFFICE; Email → EMAIL_BUSINESS."
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Custodian Bank.,Surrogate Key,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FMS.BANKMONI
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại trụ sở.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE_HEAD_OFFICE
+Electronic Address Value,Số điện thoại ngân hàng LKGS.,Text,true,false,draft,FMS.BANKMONI.Telephone,,IP_ELEC_ADDR_TYPE=PHONE_HEAD_OFFICE,
+Electronic Address Type Code,Loại kênh liên lạc — email công ty.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS
+Electronic Address Value,Email ngân hàng LKGS.,Text,true,false,draft,FMS.BANKMONI.Email,,IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS,

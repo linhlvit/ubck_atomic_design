@@ -6,9 +6,9 @@
 >
 > **File chi tiết theo tầng:**
 > - [FMS_HLD_Tier1.md](FMS_HLD_Tier1.md) — Main Entities
-> - [FMS_HLD_Tier2.md](FMS_HLD_Tier2.md) — Phụ thuộc Tầng 1
-> - [FMS_HLD_Tier3.md](FMS_HLD_Tier3.md) — Phụ thuộc Tầng 2
-> - [FMS_HLD_Tier4.md](FMS_HLD_Tier4.md) — Phụ thuộc Tầng 3
+> - [FMS_HLD_Tier2.md](FMS_HLD_Tier2.md) — Phụ thuộc Tier 1
+> - [FMS_HLD_Tier3.md](FMS_HLD_Tier3.md) — Phụ thuộc Tier 2
+> - [FMS_HLD_Tier4.md](FMS_HLD_Tier4.md) — Phụ thuộc Tier 3
 
 ---
 

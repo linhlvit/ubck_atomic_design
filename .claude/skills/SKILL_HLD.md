@@ -20,6 +20,12 @@ Thiết kế nền móng trước, xây dựng quan hệ sau. Mỗi tầng = 1 f
 - **Tầng 3+ — Phụ thuộc tầng trước**: Bảng có FK đến entity Tầng 2 trở lên.
 - **Tầng ETL Pattern**: Snapshot / Audit Log — luôn phụ thuộc entity chính.
 
+**Quy tắc đánh số Tier:**
+- Luôn đánh số theo **dependency** (Tier 1, Tier 2, Tier 3, ...) — không phân theo nhóm nghiệp vụ, không dùng tên nghiệp vụ làm tên Tier.
+- Nếu source system đã có cách đặt tên Tier sẵn (ví dụ: Tier A/B/C/E từ tài liệu nghiệp vụ) → vẫn **phải phân tích lại dependency** và đánh số thứ tự 1, 2, 3, ... cho từng file HLD. Tên nghiệp vụ chỉ là gợi ý, không phải căn cứ để bỏ qua bước phân tích.
+- Nhiều entity có cùng mức dependency → gộp vào cùng 1 Tier.
+- **Circular reference trong cùng Tier:** Khi 2 entity trong cùng Tier có FK lẫn nhau (VD: Application.InfoVerifyId → VerifyApplicationStatus, và VerifyApplicationStatus.ApplicationId → Application) → giữ nguyên trong cùng Tier, ghi vào mục 6f "Điểm cần xác nhận" để người thiết kế quyết định xử lý. Không tách thêm Tier chỉ để tránh circular.
+
 **Xác định ngoài scope:**
 - Bảng **thực sự isolated** (không FK đến và không FK từ bất kỳ bảng nghiệp vụ nào trong scope) → ngoài scope Silver.
 - Bảng có FK đến main entity nhưng không có entity nào phụ thuộc → vẫn trong scope (leaf entity).
@@ -89,7 +95,7 @@ Với mỗi entity thuộc concept [Involved Party], kiểm tra:
 
 Cấu trúc tối thiểu:
 
-| BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | Ghi chú |
+| BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
 |---|---|---|---|---|---|---|
 
 - Cột "BCV Core Object": 1 trong 15 Core Object của BCV (Involved Party, Location, Condition, Arrangement, Product, Transaction, Communication, Event, Business Activity, Documentation, Property, Business Direction, Common, Group, Accounting).

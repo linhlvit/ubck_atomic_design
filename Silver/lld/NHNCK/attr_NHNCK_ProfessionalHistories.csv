@@ -1,12 +1,12 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Audit Log Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. ETL Pattern — Audit Log. Lịch sử thay đổi định danh cá nhân.
-Audit Log Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ProfessionalHistories.Id,BK chính.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ProfessionalHistories,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-Practitioner Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.qlnhn.ProfessionalHistories.ProfessionalId,"FK target: Securities Practitioner.Practitioner Id. ""Audit Log of""."
-Practitioner Code,Mã người hành nghề,Text,false,false,draft,NHNCK.qlnhn.ProfessionalHistories.ProfessionalId,FK target: Securities Practitioner.Practitioner Code. Pair with Practitioner Id.
-Changed Field Name,Tên trường thay đổi,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.FieldName,Tên trường trong hệ thống nguồn bị thay đổi.
-Old Value,Giá trị cũ,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.OldValue,Giá trị trước khi thay đổi. Lưu dạng text chung.
-New Value,Giá trị mới,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.NewValue,Giá trị sau khi thay đổi.
-Changed By Officer Id,FK đến Officer — người thay đổi,Surrogate Key,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.ChangedBy,FK target: Regulatory Authority Officer.Officer Id.
-Changed By Officer Code,Mã người thay đổi,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.ChangedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Changed By Officer Id.
-Changed Timestamp,Ngày thay đổi,Timestamp,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.ChangedAt,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Audit Log Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. ETL Pattern — Audit Log. Lịch sử thay đổi định danh cá nhân.,,
+Audit Log Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ProfessionalHistories.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ProfessionalHistories,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,,
+Practitioner Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.qlnhn.ProfessionalHistories.ProfessionalId,"FK target: Securities Practitioner.Practitioner Id. ""Audit Log of"".",,
+Practitioner Code,Mã người hành nghề,Text,false,false,draft,NHNCK.qlnhn.ProfessionalHistories.ProfessionalId,FK target: Securities Practitioner.Practitioner Code. Pair with Practitioner Id.,,
+Changed Field Name,Tên trường thay đổi,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.FieldName,Tên trường trong hệ thống nguồn bị thay đổi.,,
+Old Value,Giá trị cũ,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.OldValue,Giá trị trước khi thay đổi. Lưu dạng text chung.,,
+New Value,Giá trị mới,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.NewValue,Giá trị sau khi thay đổi.,,
+Changed By Officer Id,FK đến Officer — người thay đổi,Surrogate Key,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.ChangedBy,FK target: Regulatory Authority Officer.Officer Id.,,
+Changed By Officer Code,Mã người thay đổi,Text,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.ChangedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Changed By Officer Id.,,
+Changed Timestamp,Ngày thay đổi,Timestamp,true,false,draft,NHNCK.qlnhn.ProfessionalHistories.ChangedAt,,,

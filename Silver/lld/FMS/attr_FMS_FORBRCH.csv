@@ -1,12 +1,13 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Foreign Fund Management Organization Unit Id,Khóa đại diện cho VPĐD/CN công ty QLQ nước ngoài tại VN.,Surrogate Key,false,true,draft,,
-Foreign Fund Management Organization Unit Code,Mã VPĐD/CN do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.FORBRCH.Id,BCV Term: Organization Unit. BK của entity.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.FORBRCH.
-Organization Name,Tên đầy đủ VPĐD/CN.,Text,true,false,draft,FMS.FORBRCH.Name,
-English Name,Tên tiếng Anh VPĐD/CN.,Text,true,false,draft,FMS.FORBRCH.EnName,
-Latest Adjustment License Number,Số giấy phép điều chỉnh gần nhất.,Text,true,false,draft,FMS.FORBRCH.ChangeLicense,BCV: không có term riêng. Đưa vào IP Alt Identification — xem file attr_FMS_FORBRCH_IP_Alt_Identification.csv.
-Latest Adjustment License Date,Ngày chấp thuận giấy phép điều chỉnh gần nhất.,Date,true,false,draft,FMS.FORBRCH.ChangeLicenseDate,
-Adjustment Note,Lý do sửa đổi giấy phép.,Text,true,false,draft,FMS.FORBRCH.ChangeNote,
-End Date,Hoạt động đến ngày.,Date,true,false,draft,FMS.FORBRCH.EndDate,
-Activity Status Code,Mã trạng thái hoạt động. FK → STATUS.Id.,Classification Value,true,false,draft,FMS.FORBRCH.Status,Scheme: FMS_OPERATION_STATUS. Values load từ bảng STATUS nguồn.
-Attachment File Data,File đính kèm (binary).,Text,true,false,draft,FMS.FORBRCH.FileData,Lưu dạng text reference đến file. ETL cần xử lý riêng nếu cần extract binary.
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Foreign Fund Management Organization Unit Id,Khóa đại diện cho VPĐD/CN công ty QLQ nước ngoài tại VN.,Surrogate Key,false,true,draft,,,,
+Foreign Fund Management Organization Unit Code,Mã VPĐD/CN do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.FORBRCH.Id,BCV Term: Organization Unit. BK của entity.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.FORBRCH.,,
+Organization Name,Tên đầy đủ VPĐD/CN.,Text,true,false,draft,FMS.FORBRCH.Name,,,
+English Name,Tên tiếng Anh VPĐD/CN.,Text,true,false,draft,FMS.FORBRCH.EnName,,,
+Latest Adjustment License Number,Số giấy phép điều chỉnh gần nhất.,Text,true,false,draft,FMS.FORBRCH.ChangeLicense,BCV: không có term riêng. Đưa vào IP Alt Identification — xem file attr_FMS_FORBRCH_IP_Alt_Identification.csv.,,
+Latest Adjustment License Date,Ngày chấp thuận giấy phép điều chỉnh gần nhất.,Date,true,false,draft,FMS.FORBRCH.ChangeLicenseDate,,,
+Adjustment Note,Lý do sửa đổi giấy phép.,Text,true,false,draft,FMS.FORBRCH.ChangeNote,,,
+End Date,Hoạt động đến ngày.,Date,true,false,draft,FMS.FORBRCH.EndDate,,,
+Activity Status Code,Mã trạng thái hoạt động. FK → STATUS.Id.,Classification Value,true,false,draft,FMS.FORBRCH.Status,Scheme: FMS_OPERATION_STATUS. Values load từ bảng STATUS nguồn.,,
+Attachment File Data,File đính kèm (binary).,Text,true,false,draft,FMS.FORBRCH.FileData,Lưu dạng text reference đến file. ETL cần xử lý riêng nếu cần extract binary.,,
+Business Type Codes,Danh sách mã loại hình kinh doanh được phép. Denormalized từ bảng junction FGBUSINESS — mỗi phần tử là 1 BuId.,Array<Text>,true,false,draft,FMS.FGBUSINESS.BuId,Pure junction FGBUSINESS (ForBrchId + BuId only) → denormalize thành ARRAY<STRING>. HLD decision: FMS_HLD_Overview.,,

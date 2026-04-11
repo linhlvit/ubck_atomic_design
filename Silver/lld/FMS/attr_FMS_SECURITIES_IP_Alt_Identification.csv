@@ -1,7 +1,7 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Fund Management Company.,Surrogate Key,false,false,draft,FMS.SECURITIES.Id,FK target: Fund Management Company.Fund Management Company Id. Shared entity — không có PK surrogate riêng.
-Involved Party Code,Mã công ty QLQ. Lưu dư thừa.,Text,false,false,draft,FMS.SECURITIES.Id,FK target: Fund Management Company.Fund Management Company Code. Pair with Involved Party Id.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.SECURITIES.
-Identification Type Code,Loại giấy tờ định danh.,Classification Value,false,false,draft,,"Scheme: IP_ALT_ID_TYPE. Giá trị ETL-derived: BUSINESS_LICENSE (Giấy phép thành lập/GPKD)."
-Identification Number,Số giấy phép thành lập/GPKD.,Text,true,false,draft,FMS.SECURITIES.Decision,
-Issue Date,Ngày cấp giấy phép.,Date,true,false,draft,FMS.SECURITIES.DecisionDate,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Fund Management Company.,Surrogate Key,false,false,draft,FMS.SECURITIES.Id,FK target: Fund Management Company.Fund Management Company Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã công ty QLQ. Lưu dư thừa.,Text,false,false,draft,FMS.SECURITIES.Id,FK target: Fund Management Company.Fund Management Company Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FMS.SECURITIES
+Identification Type Code,Loại giấy tờ — giấy phép thành lập/GPKD.,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=BUSINESS_LICENSE
+Identification Number,Số giấy phép thành lập/GPKD.,Text,true,false,draft,FMS.SECURITIES.Decision,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issue Date,Ngày cấp giấy phép.,Date,true,false,draft,FMS.SECURITIES.DecisionDate,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
