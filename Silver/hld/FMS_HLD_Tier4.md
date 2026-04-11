@@ -153,11 +153,11 @@ graph LR
 
 ## 6a. Tổng quan BCV Concept — Tầng 4
 
-| BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
-|---|---|---|---|---|---|
-| [Event] Transaction | Event | TRANSFERMBF | Danh sách giao dịch chứng chỉ quỹ | FMS Fund Certificate Transfer | Candidate: Transaction (id 8954) — *"Identifies an Event that is a transaction between Involved Parties."* Cấu trúc trường: TransDate, Quantity (số lượng CCQ), Price (giá), TransType — giao dịch tài chính cụ thể có số lượng và giá trị. Khớp chính xác. |
-| [Event] Business Activity | Event | RPTMBHS | Lịch sử báo cáo thành viên | FMS Member Periodic Report Status Log | Candidate: Business Activity (id 8958). Cấu trúc trường: Status, ContentSummary, Note, FileData — mỗi dòng là 1 sự kiện nghiệp vụ (gửi, duyệt, hủy báo cáo). Không lưu Old/New value → không phải Audit Log nguồn, trong scope Silver. |
-| [Resource Item] Documentation | Resource Item | RPTVALUES | Báo cáo giá trị — lưu dữ liệu import | FMS Report Import Value | Candidate: Documentation (id 11050) — *"Identifies a Resource Item that is a document."* Cấu trúc trường: Values (giá trị từng ô), SheetId, TgtId (ô chỉ tiêu) — nội dung tài liệu báo cáo được import vào hệ thống. Khớp chính xác. |
+| BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
+|---|---|---|---|---|---|---|
+| Transaction | [Event] Transaction | Event | TRANSFERMBF | Danh sách giao dịch chứng chỉ quỹ | FMS Fund Certificate Transfer | Candidate: Transaction (id 8954) — *"Identifies an Event that is a transaction between Involved Parties."* Cấu trúc trường: TransDate, Quantity (số lượng CCQ), Price (giá), TransType — giao dịch tài chính cụ thể có số lượng và giá trị. Khớp chính xác. |
+| Business Activity | [Event] Business Activity | Event | RPTMBHS | Lịch sử báo cáo thành viên | FMS Member Periodic Report Status Log | Candidate: Business Activity (id 8958). Cấu trúc trường: Status, ContentSummary, Note, FileData — mỗi dòng là 1 sự kiện nghiệp vụ (gửi, duyệt, hủy báo cáo). Không lưu Old/New value → không phải Audit Log nguồn, trong scope Silver. |
+| Documentation | [Resource Item] Documentation | Resource Item | RPTVALUES | Báo cáo giá trị — lưu dữ liệu import | FMS Report Import Value | Candidate: Documentation (id 11050) — *"Identifies a Resource Item that is a document."* Cấu trúc trường: Values (giá trị từng ô), SheetId, TgtId (ô chỉ tiêu) — nội dung tài liệu báo cáo được import vào hệ thống. Khớp chính xác. |
 
 ---
 

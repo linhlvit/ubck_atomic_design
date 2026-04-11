@@ -1,0 +1,275 @@
+bcv_core_object,bcv_concept,silver_entity,silver_attribute,description,source_column
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,FMS Discretionary Investment Account Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,FMS Discretionary Investment Account Code,Mã tài khoản ủy thác do hệ thống FMS sinh ra. Là Business Key.,FMS.INVESACC.Id
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư ủy thác. FK đến Discretionary Investment Investor.,FMS.INVESACC.InvesId
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Discretionary Investment Investor Code,Mã nhà đầu tư ủy thác. Lưu dư thừa.,FMS.INVESACC.InvesId
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Account Number,Số tài khoản lưu ký.,FMS.INVESACC.Account
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Custodian Place Description,Nơi lưu ký — text tự do.,FMS.INVESACC.AccPlace
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Contract Number,Số hợp đồng ủy thác quản lý danh mục.,FMS.INVESACC.ContractNo
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Committed Capital Amount,Quy mô vốn ủy thác cam kết theo hợp đồng.,FMS.INVESACC.ActScale
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Actual Capital Amount,Quy mô vốn giao nhận thực tế.,FMS.INVESACC.AdScale
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Management Fee Rate,Phí quản lý theo điều khoản hợp đồng ủy thác.,FMS.INVESACC.ManagerFee
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Activity Status Code,Trạng thái hiệu lực hợp đồng.,FMS.INVESACC.Status
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Last Report Date,Kỳ báo cáo gần nhất liên quan đến tài khoản ủy thác.,FMS.INVESACC.DateReport
+Arrangement,[Arrangement] Financial Portfolio Management Arrangement,FMS Discretionary Investment Account,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ.,FMS.INVESACC.IsDataMigration
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Status Log Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Status Log Code,Mã nhật ký do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTMBHS.Id
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Id,Khóa đại diện báo cáo định kỳ mà log này ghi nhận. FK đến FMS Member Periodic Report.,FMS.RPTMBHS.RptMbId
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,FMS Member Periodic Report Code,Mã báo cáo định kỳ. Lưu dư thừa.,FMS.RPTMBHS.RptMbId
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Report Submission Status Code,Trạng thái báo cáo tại thời điểm ghi nhận.,FMS.RPTMBHS.Status
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Report Name,Tên báo cáo tại thời điểm ghi nhận.,FMS.RPTMBHS.RptName
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Content Summary,Nội dung trích yếu của sự kiện thay đổi trạng thái.,FMS.RPTMBHS.ContentSummary
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Note,Ghi chú bổ sung về sự kiện.,FMS.RPTMBHS.Note
+Business Activity,[Event] Business Activity,FMS Member Periodic Report Status Log,Attachment File Data,File dữ liệu đính kèm khi thay đổi trạng thái.,FMS.RPTMBHS.FileData
+Communication,[Event] Communication,FMS Member Periodic Report,FMS Member Periodic Report Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Communication,[Event] Communication,FMS Member Periodic Report,FMS Member Periodic Report Code,Mã báo cáo định kỳ do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTMEMBER.Id
+Communication,[Event] Communication,FMS Member Periodic Report,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Communication,[Event] Communication,FMS Member Periodic Report,Fund Management Company Id,Khóa đại diện công ty QLQ nộp báo cáo (nullable).,FMS.RPTMEMBER.SecId
+Communication,[Event] Communication,FMS Member Periodic Report,Fund Management Company Code,Mã công ty QLQ nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.SecId
+Communication,[Event] Communication,FMS Member Periodic Report,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư nộp báo cáo (nullable).,FMS.RPTMEMBER.FndId
+Communication,[Event] Communication,FMS Member Periodic Report,FMS Investment Fund Code,Mã quỹ đầu tư nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.FndId
+Communication,[Event] Communication,FMS Member Periodic Report,Custodian Bank Id,Khóa đại diện ngân hàng LKGS nộp báo cáo (nullable).,FMS.RPTMEMBER.BkMId
+Communication,[Event] Communication,FMS Member Periodic Report,Custodian Bank Code,Mã ngân hàng LKGS nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.BkMId
+Communication,[Event] Communication,FMS Member Periodic Report,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN nộp báo cáo (nullable).,FMS.RPTMEMBER.FrBrId
+Communication,[Event] Communication,FMS Member Periodic Report,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN nộp báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.FrBrId
+Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Id,Khóa đại diện kỳ báo cáo. FK đến Reporting Period.,FMS.RPTMEMBER.PrdId
+Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Code,Mã kỳ báo cáo. Lưu dư thừa.,FMS.RPTMEMBER.PrdId
+Communication,[Event] Communication,FMS Member Periodic Report,Report Name,Tên báo cáo định kỳ.,FMS.RPTMEMBER.RptName
+Communication,[Event] Communication,FMS Member Periodic Report,Content Summary,Nội dung trích yếu báo cáo.,FMS.RPTMEMBER.ContentSummary
+Communication,[Event] Communication,FMS Member Periodic Report,Report Type Code,Loại báo cáo: định kỳ hoặc bất thường.,FMS.RPTMEMBER.ReportType
+Communication,[Event] Communication,FMS Member Periodic Report,Reporting Member Type Code,Nhóm thành viên nộp báo cáo.,FMS.RPTMEMBER.Type
+Communication,[Event] Communication,FMS Member Periodic Report,Reporting Period Type Code,Loại kỳ báo cáo: ngày/tuần/tháng/quý/bán niên/năm.,FMS.RPTMEMBER.PeriodType
+Communication,[Event] Communication,FMS Member Periodic Report,Report Year,Năm của kỳ báo cáo.,FMS.RPTMEMBER.YearValue
+Communication,[Event] Communication,FMS Member Periodic Report,Report Date,Ngày (trong năm) của kỳ báo cáo.,FMS.RPTMEMBER.DayReport
+Communication,[Event] Communication,FMS Member Periodic Report,Submission Deadline,Thời hạn gửi báo cáo theo quy định.,FMS.RPTMEMBER.DeadlineSend
+Communication,[Event] Communication,FMS Member Periodic Report,Submission Date,Ngày gửi báo cáo thực tế.,FMS.RPTMEMBER.DateSubmitted
+Communication,[Event] Communication,FMS Member Periodic Report,Submission Status Code,Trạng thái nộp báo cáo.,FMS.RPTMEMBER.Status
+Communication,[Event] Communication,FMS Member Periodic Report,Is Import Indicator,Cờ đánh dấu có file import đính kèm.,FMS.RPTMEMBER.IsImport
+Condition,[Condition],Member Rating Period,Member Rating Period Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Condition,[Condition],Member Rating Period,Member Rating Period Code,Mã kỳ đánh giá xếp loại do hệ thống FMS sinh ra. Là Business Key.,FMS.RATINGPD.Id
+Condition,[Condition],Member Rating Period,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Condition,[Condition],Member Rating Period,Rating Period Name,Tên mô tả kỳ đánh giá xếp loại.,FMS.RATINGPD.PeriodName
+Condition,[Condition],Member Rating Period,Start Date,Ngày bắt đầu kỳ đánh giá xếp loại.,FMS.RATINGPD.StartDate
+Condition,[Condition],Member Rating Period,End Date,Ngày kết thúc kỳ đánh giá xếp loại.,FMS.RATINGPD.EndDate
+Condition,[Condition],Member Rating Period,Is Active Indicator,Cờ đánh dấu kỳ đánh giá đang được sử dụng (1) hay không (0).,FMS.RATINGPD.IsActive
+Condition,[Condition],Reporting Period,Reporting Period Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Condition,[Condition],Reporting Period,Reporting Period Code,Mã kỳ báo cáo do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTPERIOD.Id
+Condition,[Condition],Reporting Period,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Condition,[Condition],Reporting Period,Reporting Period Name,Tên mô tả kỳ báo cáo.,FMS.RPTPERIOD.PeriodName
+Condition,[Condition],Reporting Period,Reporting Period Type Code,Loại kỳ báo cáo: ngày/tuần/tháng/quý/bán niên/năm.,FMS.RPTPERIOD.PeriodType
+Condition,[Condition],Reporting Period,Is Active Indicator,Cờ đánh dấu kỳ báo cáo đang được sử dụng (1) hay không (0).,FMS.RPTPERIOD.IsActive
+Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Code,Mã nhân tố chấm điểm do hệ thống FMS sinh ra. Là Business Key.,FMS.RNKFACTOR.Id
+Condition,[Condition] Criterion,FMS Rating Criterion,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Parent Id,Khóa đại diện nhân tố cha (self-FK). Null nếu là nhân tố gốc.,FMS.RNKFACTOR.ParentId
+Condition,[Condition] Criterion,FMS Rating Criterion,FMS Rating Criterion Parent Code,Mã nhân tố cha. Lưu dư thừa.,FMS.RNKFACTOR.ParentId
+Condition,[Condition] Criterion,FMS Rating Criterion,Criterion Name,Tên nhân tố chấm điểm đánh giá xếp loại.,FMS.RNKFACTOR.Name
+Condition,[Condition] Criterion,FMS Rating Criterion,Maximum Score,Điểm tối đa của nhân tố trong thang đánh giá.,FMS.RNKFACTOR.MaxScore
+Condition,[Condition] Criterion,FMS Rating Criterion,Weight,Trọng số của nhân tố trong tổng điểm đánh giá.,FMS.RNKFACTOR.Weight
+Condition,[Condition] Criterion,FMS Rating Criterion,Is Active Indicator,Cờ đánh dấu nhân tố đang được sử dụng (1) hay không (0).,FMS.RNKFACTOR.IsActive
+Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Report Import Value Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Report Import Value Code,Mã bản ghi do hệ thống FMS sinh ra. Là Business Key.,FMS.RPTVALUES.Id
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Fund Management Company Id,Khóa đại diện công ty QLQ liên quan đến báo cáo (nullable).,FMS.RPTVALUES.SecId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,FMS.RPTVALUES.SecId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư liên quan (nullable).,FMS.RPTVALUES.FndId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.RPTVALUES.FndId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Custodian Bank Id,Khóa đại diện ngân hàng LKGS liên quan (nullable).,FMS.RPTVALUES.BkMId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Custodian Bank Code,Mã ngân hàng LKGS. Lưu dư thừa.,FMS.RPTVALUES.BkMId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN liên quan (nullable).,FMS.RPTVALUES.FrBrId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,FMS.RPTVALUES.FrBrId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Period Id,Khóa đại diện kỳ báo cáo. FK đến Reporting Period.,FMS.RPTVALUES.PrdId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Period Code,Mã kỳ báo cáo. Lưu dư thừa.,FMS.RPTVALUES.PrdId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Report Template Source Key,Mã biểu mẫu báo cáo đầu vào (source key — chờ RPTTEMP).,FMS.RPTVALUES.RptId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Sheet Source Key,Mã sheet báo cáo đầu vào (source key — chờ SHEET).,FMS.RPTVALUES.SheetId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Target Cell Id,ID ô chỉ tiêu trong sheet báo cáo.,FMS.RPTVALUES.TgtId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Member Source Key,Mã ID thành viên thị trường — chưa xác định FK chính xác.,FMS.RPTVALUES.MebId
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Cell Value,Giá trị dữ liệu tại ô chỉ tiêu được import.,FMS.RPTVALUES.Values
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Account Value,Thông tin tài khoản lưu ký liên quan đến ô chỉ tiêu.,FMS.RPTVALUES.AccValues
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Cell Data Type Code,Loại dữ liệu ô: Numeric = số; String = ký tự.,FMS.RPTVALUES.FormatDataType
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Is Dynamic Indicator,Cờ đánh dấu ô chỉ tiêu là dữ liệu động.,FMS.RPTVALUES.IsDynamic
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Period Type Code,Loại kỳ báo cáo của ô dữ liệu.,FMS.RPTVALUES.PeriodType
+Documentation,[Resource Item] Documentation,FMS Report Import Value,Reporting Member Type Code,Đối tượng gửi báo cáo.,FMS.RPTVALUES.Type
+Involved Party,[Involved Party],Discretionary Investment Investor,Discretionary Investment Investor Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party],Discretionary Investment Investor,Discretionary Investment Investor Code,Mã nhà đầu tư ủy thác do hệ thống FMS sinh ra. Là Business Key.,FMS.INVES.Id
+Involved Party,[Involved Party],Discretionary Investment Investor,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party],Discretionary Investment Investor,Full Name,Tên đầy đủ nhà đầu tư ủy thác — cá nhân hoặc tổ chức.,FMS.INVES.Name
+Involved Party,[Involved Party],Discretionary Investment Investor,Domestic Foreign Indicator,Phân loại trong nước/nước ngoài: 1 = Trong nước; 0 = Ngoài.,FMS.INVES.Dorf
+Involved Party,[Involved Party],Discretionary Investment Investor,Nationality Code,Quốc tịch nhà đầu tư — load từ bảng danh mục NATIONAL.,FMS.INVES.NatId
+Involved Party,[Involved Party],Discretionary Investment Investor,Investor Type Code,Loại hình nhà đầu tư/cổ đông — load từ bảng danh mục STOCKHOLDERTYPE.,FMS.INVES.StoId
+Involved Party,[Involved Party],Discretionary Investment Investor,Fund Management Company Id,Khóa đại diện công ty QLQ mà nhà đầu tư ủy thác — FK đến Fund Management Company.,FMS.INVES.SecId
+Involved Party,[Involved Party],Discretionary Investment Investor,Fund Management Company Code,Mã công ty QLQ mà nhà đầu tư ủy thác. Lưu dư thừa.,FMS.INVES.SecId
+Involved Party,[Involved Party],Discretionary Investment Investor,Relationship Description,Mô tả quan hệ với người có liên quan — text tự do không có FK.,FMS.INVES.RelationShip
+Involved Party,[Involved Party],Discretionary Investment Investor,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ (1) hay dữ liệu mới (0).,FMS.INVES.IsDataMigration
+Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Involved Party Id,Khóa đại diện trỏ về entity chính sở hữu giấy tờ định danh này.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.INVES.Id, FMS.FUNDS.Id, FMS.TLProfiles.Id, FMS.BRANCHES.Id"
+Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Involved Party Code,Mã nghiệp vụ của entity chính. Lưu dư thừa.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.INVES.Id, FMS.FUNDS.Id, FMS.TLProfiles.Id, FMS.BRANCHES.Id"
+Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Identification Type Code,Loại giấy tờ định danh — CMND/CCCD/Hộ chiếu/Giấy phép thành lập/ĐKKD.,FMS.INVES.IdType
+Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Identification Number,Số giấy tờ định danh.,"FMS.SECURITIES.Decision, FMS.FORBRCH.ChangeLicense, FMS.INVES.IdNo, FMS.BRANCHES.Decision, FMS.TLProfiles.IdNo"
+Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Issue Date,Ngày cấp giấy tờ định danh.,"FMS.SECURITIES.DecisionDate, FMS.FORBRCH.ChangeLicenseDate, FMS.INVES.IdDate, FMS.BRANCHES.DecisionDate, FMS.FUNDS.DecisionDate"
+Involved Party,[Involved Party] Alternative Identification,IP Alt Identification,Issuing Authority Name,Nơi cấp giấy tờ định danh.,
+Involved Party,[Involved Party] Custodian,Custodian Bank,Custodian Bank Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Custodian,Custodian Bank,Custodian Bank Code,Mã ngân hàng LKGS do hệ thống FMS sinh ra. Là Business Key.,FMS.BANKMONI.Id
+Involved Party,[Involved Party] Custodian,Custodian Bank,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Custodian,Custodian Bank,Organization Name,Tên đầy đủ ngân hàng lưu ký giám sát.,FMS.BANKMONI.Name
+Involved Party,[Involved Party] Custodian,Custodian Bank,Abbreviation,Tên viết tắt ngân hàng LKGS.,FMS.BANKMONI.ShortName
+Involved Party,[Involved Party] Custodian,Custodian Bank,Activity Status Code,Trạng thái hoạt động hiện tại — load từ bảng danh mục STATUS.,FMS.BANKMONI.Status
+Involved Party,[Involved Party] Custodian,Custodian Bank,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ (1) hay dữ liệu mới (0).,FMS.BANKMONI.IsDataMigration
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,FMS Fund Company Key Person Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,FMS Fund Company Key Person Code,Mã nhân sự do hệ thống FMS sinh ra. Là Business Key.,FMS.TLProfiles.Id
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Fund Management Company Id,Khóa đại diện công ty QLQ mà nhân sự thuộc về.,FMS.TLProfiles.SecId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,FMS.TLProfiles.SecId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Full Name,Họ tên đầy đủ nhân sự.,FMS.TLProfiles.FullName
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Birth Date,Ngày sinh nhân sự.,FMS.TLProfiles.BirthDate
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Nationality Code,Mã ID quốc tịch nhân sự.,FMS.TLProfiles.NatId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Job Type Code,Mã ID loại chức vụ nhân sự.,FMS.TLProfiles.JobTypeId
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Is Legal Representative Indicator,Cờ đánh dấu là người đại diện pháp luật: 1 = Có; 0 = Không.,FMS.TLProfiles.IsLegal
+Involved Party,[Involved Party] Individual,FMS Fund Company Key Person,Is Disclosure Representative Indicator,Cờ đánh dấu là đại diện công bố thông tin: 1 = Có; 0 = Không.,FMS.TLProfiles.IsCBTT
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Fund Investor Membership Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Fund Investor Membership Code,Mã quan hệ thành viên do hệ thống FMS sinh ra. Là Business Key.,FMS.MBFUND.Id
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà NĐT tham gia. FK đến FMS Investment Fund.,FMS.MBFUND.FndId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.MBFUND.FndId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư thành viên. FK đến Discretionary Investment Investor.,FMS.MBFUND.InvesId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Discretionary Investment Investor Code,Mã nhà đầu tư thành viên. Lưu dư thừa.,FMS.MBFUND.InvesId
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Capital Amount,Số lượng vốn góp của NĐT trong quỹ.,FMS.MBFUND.Capital
+Involved Party,[Involved Party] Involved Party Group Membership,FMS Fund Investor Membership,Ownership Ratio,Tỷ lệ sở hữu (%) của NĐT trong quỹ.,FMS.MBFUND.Ratio
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,FMS Member Rating Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,FMS Member Rating Code,Mã bảng xếp hạng do hệ thống FMS sinh ra. Là Business Key.,FMS.RANK.Id
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Fund Management Company Id,Khóa đại diện công ty QLQ được xếp hạng. FK đến Fund Management Company.,FMS.RANK.SecId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Fund Management Company Code,Mã công ty QLQ được xếp hạng. Lưu dư thừa.,FMS.RANK.SecId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Member Rating Period Id,Khóa đại diện kỳ đánh giá xếp loại. FK đến Member Rating Period.,FMS.RANK.RatingPdId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Member Rating Period Code,Mã kỳ đánh giá xếp loại. Lưu dư thừa.,FMS.RANK.RatingPdId
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Total Score,Tổng điểm đánh giá xếp loại.,FMS.RANK.TotalScore
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Rank Value,Xếp hạng theo thứ tự (số nguyên thứ tự).,FMS.RANK.RankValue
+Involved Party,[Involved Party] Involved Party Rating,FMS Member Rating,Rank Class Code,Xếp loại theo nhóm (ví dụ: A/B/C/D).,FMS.RANK.RankClass
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Foreign Fund Management Organization Unit Staff Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Foreign Fund Management Organization Unit Staff Code,Mã bản ghi nhân sự VPĐD/CN do hệ thống FMS sinh ra. Là Business Key.,FMS.STFFGBRCH.Id
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Foreign Fund Management Organization Unit Id,Khóa đại diện VPĐD/CN QLQ NN mà nhân sự đảm nhận vai trò. FK đến Foreign Fund Management Organization Unit.,FMS.STFFGBRCH.FgBrId
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ NN. Lưu dư thừa.,FMS.STFFGBRCH.FgBrId
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Fund Company Key Person Id,Khóa đại diện cá nhân đảm nhận vai trò tại VPĐD/CN. FK đến FMS Fund Company Key Person.,FMS.STFFGBRCH.TLId
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,FMS Fund Company Key Person Code,Mã cá nhân đảm nhận vai trò. Lưu dư thừa.,FMS.STFFGBRCH.TLId
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Organization Unit Type Code,Loại đơn vị: O = VPĐD NN; B = CN NN.,FMS.STFFGBRCH.FnType
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Is Legal Representative Indicator,Cờ đánh dấu là người đại diện pháp luật: 1 = Có; 0 = Không.,FMS.STFFGBRCH.Isr
+Involved Party,[Involved Party] Involved Party Role,FMS Foreign Fund Management Organization Unit Staff,Is Disclosure Representative Indicator,Cờ đánh dấu là đại diện công bố thông tin: 1 = Có; 0 = Không.,FMS.STFFGBRCH.Isp
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Representative Board Member Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Representative Board Member Code,Mã bản ghi ban đại diện do hệ thống FMS sinh ra. Là Business Key.,FMS.REPRESENT.Id
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà cá nhân tham gia ban đại diện. FK đến FMS Investment Fund.,FMS.REPRESENT.FndId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.REPRESENT.FndId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Company Key Person Id,Khóa đại diện cá nhân đảm nhận vai trò trong ban đại diện. FK đến FMS Fund Company Key Person.,FMS.REPRESENT.TLId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,FMS Fund Company Key Person Code,Mã cá nhân trong ban đại diện. Lưu dư thừa.,FMS.REPRESENT.TLId
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Is Chair Indicator,Cờ đánh dấu là trưởng ban đại diện: 1 = Có; 0 = Không.,FMS.REPRESENT.IsChair
+Involved Party,[Involved Party] Involved Party Role,FMS Fund Representative Board Member,Activity Status Code,Trạng thái: 1 = Hoạt động; 0 = Khóa.,FMS.REPRESENT.Status
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Fund Distribution Agent Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Fund Distribution Agent Code,Mã đại lý phân phối quỹ do hệ thống FMS sinh ra. Là Business Key.,FMS.AGENCIES.Id
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Organization Name,Tên đầy đủ tổ chức đại lý phân phối quỹ.,FMS.AGENCIES.Name
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Abbreviation,Tên viết tắt tổ chức đại lý.,FMS.AGENCIES.ShortName
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Agent Type Code,Loại đại lý phân phối — load từ bảng danh mục AGENCYTYPE.,FMS.AGENCIES.AgencyTypeId
+Involved Party,[Involved Party] Mutual Fund Distributor,Fund Distribution Agent,Activity Status Code,Trạng thái hoạt động hiện tại — load từ bảng danh mục STATUS.,FMS.AGENCIES.Status
+Involved Party,[Involved Party] Organization,FMS Investment Fund,FMS Investment Fund Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Organization,FMS Investment Fund,FMS Investment Fund Code,Mã quỹ đầu tư do hệ thống FMS sinh ra. Là Business Key.,FMS.FUNDS.Id
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Organization Name,Tên quỹ đầu tư.,FMS.FUNDS.FundName
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Abbreviation,Tên viết tắt quỹ đầu tư.,FMS.FUNDS.FundShortName
+Involved Party,[Involved Party] Organization,FMS Investment Fund,English Name,Tên tiếng Anh quỹ đầu tư.,FMS.FUNDS.FundEnName
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Management Company Id,Khóa đại diện công ty QLQ quản lý quỹ. FK đến Fund Management Company.,FMS.FUNDS.SecId
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Management Company Code,Mã công ty QLQ quản lý quỹ. Lưu dư thừa.,FMS.FUNDS.SecId
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Charter Capital Amount,Vốn điều lệ quỹ đầu tư.,FMS.FUNDS.FundCapital
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Fund Type Code,Loại hình quỹ đầu tư.,FMS.FUNDS.FundType
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Active Date,Ngày quỹ chính thức hoạt động.,FMS.FUNDS.ActiveDate
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Establishment Decision Date,Ngày cấp phép thành lập quỹ.,FMS.FUNDS.DecisionDate
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Stop Date,Ngày giải thể/đóng quỹ.,FMS.FUNDS.StopDate
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Activity Status Code,Trạng thái hoạt động của quỹ.,FMS.FUNDS.Status
+Involved Party,[Involved Party] Organization,FMS Investment Fund,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ.,FMS.FUNDS.IsDataMigration
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,FMS Fund Distribution Agent Organization Unit Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,FMS Fund Distribution Agent Organization Unit Code,Mã CN/PGD do hệ thống FMS sinh ra. Là Business Key.,FMS.AGENCIESBRA.Id
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Fund Distribution Agent Id,Khóa đại diện đại lý phân phối chủ quản. FK đến Fund Distribution Agent.,FMS.AGENCIESBRA.AgnId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Fund Distribution Agent Code,Mã đại lý phân phối chủ quản. Lưu dư thừa.,FMS.AGENCIESBRA.AgnId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Organization Name,Tên CN/PGD của đại lý phân phối quỹ.,FMS.AGENCIESBRA.Name
+Involved Party,[Involved Party] Organization Unit,FMS Fund Distribution Agent Organization Unit,Activity Status Code,Trạng thái hoạt động hiện tại.,FMS.AGENCIESBRA.Status
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Code,Mã CN/VPĐD do hệ thống FMS sinh ra. Là Business Key.,FMS.BRANCHES.Id
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Fund Management Company Id,Khóa đại diện công ty QLQ chủ quản. FK đến Fund Management Company.,FMS.BRANCHES.SecId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Fund Management Company Code,Mã công ty QLQ chủ quản. Lưu dư thừa.,FMS.BRANCHES.SecId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Parent Id,Khóa đại diện đơn vị cha (self-FK).,FMS.BRANCHES.BrIdowner
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,FMS Fund Management Company Organization Unit Parent Code,Mã đơn vị cha. Lưu dư thừa.,FMS.BRANCHES.BrIdowner
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Key Person Id,Khóa đại diện người đại diện của đơn vị. FK đến FMS Fund Company Key Person.,FMS.BRANCHES.TLId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Key Person Code,Mã người đại diện. Lưu dư thừa.,FMS.BRANCHES.TLId
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Key Person Name,Tên người đại diện — lưu dư thừa từ nguồn.,FMS.BRANCHES.TLName
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Organization Name,Tên CN/VPĐD.,FMS.BRANCHES.Name
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Organization Unit Type Code,Loại đơn vị: 1 = CN; 4 = VPĐD.,FMS.BRANCHES.BrType
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Establishment Decision Number,Số giấy phép thành lập CN/VPĐD.,FMS.BRANCHES.Decision
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Establishment Decision Date,Ngày cấp giấy phép thành lập CN/VPĐD.,FMS.BRANCHES.DecisionDate
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Latest Adjustment License Number,Số GP/QĐ/CV sửa đổi gần nhất.,FMS.BRANCHES.VoucherNo
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Latest Adjustment License Date,Ngày chấp thuận sửa đổi gần nhất.,FMS.BRANCHES.VoucherDate
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Adjustment Note,Lý do sửa đổi giấy phép.,FMS.BRANCHES.DesChange
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Business Description,Nghiệp vụ kinh doanh của CN/VPĐD.,FMS.BRANCHES.Content
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Note,Ghi chú.,FMS.BRANCHES.Description
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Stop Date,Ngày đóng cửa CN/VPĐD.,FMS.BRANCHES.StopDate
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Activity Status Code,Trạng thái hoạt động của CN/VPĐD.,FMS.BRANCHES.Status
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Attachment File Data,File đính kèm tài liệu giấy phép.,FMS.BRANCHES.FileData
+Involved Party,[Involved Party] Organization Unit,FMS Fund Management Company Organization Unit,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ.,FMS.BRANCHES.IsDataMigration
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Foreign Fund Management Organization Unit Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Foreign Fund Management Organization Unit Code,Mã VPĐD/CN QLQ nước ngoài do hệ thống FMS sinh ra. Là Business Key.,FMS.FORBRCH.Id
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Organization Name,Tên đầy đủ văn phòng đại diện hoặc chi nhánh.,FMS.FORBRCH.Name
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,English Name,Tên tiếng Anh của VPĐD/CN.,FMS.FORBRCH.EnName
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Latest Adjustment License Number,Số giấy phép điều chỉnh gần nhất do UBCKNN cấp.,FMS.FORBRCH.ChangeLicense
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Latest Adjustment License Date,Ngày UBCKNN chấp thuận giấy phép điều chỉnh gần nhất.,FMS.FORBRCH.ChangeLicenseDate
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Adjustment Note,Lý do sửa đổi giấy phép hoạt động.,FMS.FORBRCH.ChangeNote
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,End Date,Ngày kết thúc hoạt động của VPĐD/CN tại Việt Nam.,FMS.FORBRCH.EndDate
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Activity Status Code,Trạng thái hoạt động hiện tại — load từ bảng danh mục STATUS.,FMS.FORBRCH.Status
+Involved Party,[Involved Party] Organization Unit,Foreign Fund Management Organization Unit,Attachment File Data,File đính kèm tài liệu giấy phép (binary reference).,FMS.FORBRCH.FileData
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Fund Management Company Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Fund Management Company Code,Mã công ty QLQ do hệ thống FMS sinh ra. Là Business Key của entity.,FMS.SECURITIES.Id
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Organization Name,Tên đầy đủ công ty quản lý quỹ.,FMS.SECURITIES.Name
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Abbreviation,Tên viết tắt công ty quản lý quỹ.,FMS.SECURITIES.ShortName
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,English Name,Tên giao dịch tiếng Anh của công ty.,FMS.SECURITIES.EnName
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Website,Website công ty — thông tin công khai không thuộc IP Electronic Address.,FMS.SECURITIES.Website
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Establishment Decision Number,Số giấy phép thành lập hoặc giấy phép kinh doanh do UBCKNN cấp.,FMS.SECURITIES.Decision
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Establishment Decision Date,Ngày cấp giấy phép thành lập hoặc GPKD.,FMS.SECURITIES.DecisionDate
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Active Date,Ngày công ty chính thức bắt đầu hoạt động.,FMS.SECURITIES.ActiveDate
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Stop Date,Ngày đóng cửa hoặc bị thu hồi giấy phép hoạt động.,FMS.SECURITIES.StopDate
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Charter Capital Amount,Vốn điều lệ đăng ký của công ty quản lý quỹ theo giấy phép. Currency mặc định VND.,FMS.SECURITIES.SecCapital
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Domestic Foreign Indicator,Phân loại trong nước/nước ngoài: 1 = Trong nước; 0 = Nước ngoài.,FMS.SECURITIES.Dorf
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Activity Status Code,Trạng thái hoạt động hiện tại của công ty — load từ bảng danh mục STATUS.,FMS.SECURITIES.Status
+Involved Party,[Involved Party] Portfolio Fund Management Company,Fund Management Company,Is Data Migration,Cờ đánh dấu bản ghi được đổ từ hệ thống cũ (1) hay dữ liệu mới (0).,FMS.SECURITIES.IsDataMigration
+Location,[Location] Electronic Address,IP Electronic Address,Involved Party Id,Khóa đại diện trỏ về entity chính sở hữu thông tin liên lạc này.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.BRANCHES.Id"
+Location,[Location] Electronic Address,IP Electronic Address,Involved Party Code,Mã nghiệp vụ của entity chính. Lưu dư thừa.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.BRANCHES.Id"
+Location,[Location] Electronic Address,IP Electronic Address,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Location,[Location] Electronic Address,IP Electronic Address,Electronic Address Type Code,Loại kênh liên lạc — điện thoại/fax/email.,
+Location,[Location] Electronic Address,IP Electronic Address,Electronic Address Value,Giá trị địa chỉ liên lạc: số điện thoại hoặc fax hoặc địa chỉ email.,"FMS.SECURITIES.Telephone, FMS.SECURITIES.Fax, FMS.SECURITIES.Email, FMS.FORBRCH.Email, FMS.FORBRCH.Fax, FMS.BANKMONI.Telephone, FMS.BANKMONI.Email, FMS.BRANCHES.Telephone, FMS.BRANCHES.Fax"
+Location,[Location] Postal Address,IP Postal Address,Involved Party Id,Khóa đại diện trỏ về entity chính sở hữu địa chỉ này.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.AGENCIES.Id, FMS.BRANCHES.Id, FMS.AGENCIESBRA.Id"
+Location,[Location] Postal Address,IP Postal Address,Involved Party Code,Mã nghiệp vụ của entity chính. Lưu dư thừa để khai thác không cần join.,"FMS.SECURITIES.Id, FMS.FORBRCH.Id, FMS.BANKMONI.Id, FMS.AGENCIES.Id, FMS.BRANCHES.Id, FMS.AGENCIESBRA.Id"
+Location,[Location] Postal Address,IP Postal Address,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Location,[Location] Postal Address,IP Postal Address,Address Type Code,Loại địa chỉ — phân biệt trụ sở chính/kinh doanh/thường trú/hiện tại.,
+Location,[Location] Postal Address,IP Postal Address,Address Line,Địa chỉ dạng text tự do.,"FMS.SECURITIES.Address, FMS.FORBRCH.Address, FMS.BANKMONI.Address, FMS.AGENCIES.Address, FMS.BRANCHES.Address, FMS.AGENCIESBRA.Address"
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Certificate Transfer Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Certificate Transfer Code,Mã giao dịch CCQ do hệ thống FMS sinh ra. Là Business Key.,FMS.TRANSFERMBF.Id
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Investment Fund Id,Khóa đại diện quỹ đầu tư phát hành CCQ. FK đến FMS Investment Fund.,FMS.TRANSFERMBF.FndId
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,FMS.TRANSFERMBF.FndId
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Investor Membership Id,Khóa đại diện quan hệ thành viên NĐT thực hiện giao dịch. FK đến FMS Fund Investor Membership.,FMS.TRANSFERMBF.MBFId
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,FMS Fund Investor Membership Code,Mã quan hệ thành viên. Lưu dư thừa.,FMS.TRANSFERMBF.MBFId
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transaction Date,Ngày thực hiện giao dịch CCQ.,FMS.TRANSFERMBF.TransDate
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transfer Quantity,Số lượng CCQ giao dịch.,FMS.TRANSFERMBF.Quantity
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transfer Price,Giá giao dịch CCQ.,FMS.TRANSFERMBF.Price
+Transaction,[Event] Transaction,FMS Fund Certificate Transfer,Transaction Type Code,Loại giao dịch CCQ (mua/bán/chuyển nhượng).,FMS.TRANSFERMBF.TransType
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,FMS Fund Management Company Share Transfer Id,Khóa đại diện sinh ra trên Silver — không dùng PK nguồn.,
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,FMS Fund Management Company Share Transfer Code,Mã giao dịch chuyển nhượng do hệ thống FMS sinh ra. Là Business Key.,FMS.TRSFERINDER.Id
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Source System Code,Mã hệ thống nguồn xác định bảng gốc của bản ghi.,
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Fund Management Company Id,Khóa đại diện công ty QLQ có cổ phần được chuyển nhượng. FK đến Fund Management Company.,FMS.TRSFERINDER.SecId
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,FMS.TRSFERINDER.SecId
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Transaction Date,Ngày thực hiện giao dịch chuyển nhượng cổ phần.,FMS.TRSFERINDER.TransDate
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Transfer Quantity,Số lượng cổ phần được chuyển nhượng.,FMS.TRSFERINDER.Quantity
+Transaction,[Event] Transaction,FMS Fund Management Company Share Transfer,Transfer Price,Giá giao dịch chuyển nhượng cổ phần.,FMS.TRSFERINDER.Price

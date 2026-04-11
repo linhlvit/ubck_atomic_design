@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+FMS Fund Investor Membership Id,Khóa đại diện cho quan hệ thành viên của nhà đầu tư trong quỹ.,Surrogate Key,false,true,draft,,
+FMS Fund Investor Membership Code,Mã quan hệ thành viên do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.MBFUND.Id,BCV Term: Involved Party Group Membership. BK của entity.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.MBFUND.
+FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà NĐT tham gia. FK → FUNDS.,Surrogate Key,false,false,draft,FMS.MBFUND.FndId,FK target: FMS Investment Fund.FMS Investment Fund Id. Pair with FMS Investment Fund Code.
+FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,Text,false,false,draft,FMS.MBFUND.FndId,FK target: FMS Investment Fund.FMS Investment Fund Code. Pair with FMS Investment Fund Id.
+Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư thành viên. FK → INVES.,Surrogate Key,false,false,draft,FMS.MBFUND.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Id. Pair with Discretionary Investment Investor Code.
+Discretionary Investment Investor Code,Mã nhà đầu tư thành viên. Lưu dư thừa.,Text,false,false,draft,FMS.MBFUND.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Discretionary Investment Investor Id.
+Capital Amount,Số lượng vốn góp của NĐT trong quỹ.,Currency Amount,true,false,draft,FMS.MBFUND.Capital,Currency mặc định VND.
+Ownership Ratio,Tỷ lệ sở hữu (%) của NĐT trong quỹ.,Percentage,true,false,draft,FMS.MBFUND.Ratio,

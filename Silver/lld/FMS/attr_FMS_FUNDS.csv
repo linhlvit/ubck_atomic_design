@@ -1,0 +1,16 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+FMS Investment Fund Id,Khóa đại diện cho quỹ đầu tư chứng khoán.,Surrogate Key,false,true,draft,,
+FMS Investment Fund Code,Mã quỹ đầu tư do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.FUNDS.Id,BCV: Organization. BK của entity.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.FUNDS.
+Organization Name,Tên quỹ đầu tư.,Text,true,false,draft,FMS.FUNDS.FundName,
+Abbreviation,Tên viết tắt quỹ đầu tư.,Text,true,false,draft,FMS.FUNDS.FundShortName,
+English Name,Tên tiếng Anh quỹ đầu tư.,Text,true,false,draft,FMS.FUNDS.FundEnName,
+Fund Management Company Id,Khóa đại diện công ty QLQ quản lý quỹ. FK → SECURITIES.,Surrogate Key,false,false,draft,FMS.FUNDS.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.
+Fund Management Company Code,Mã công ty QLQ quản lý quỹ. Lưu dư thừa.,Text,false,false,draft,FMS.FUNDS.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.
+Charter Capital Amount,Vốn điều lệ quỹ đầu tư.,Currency Amount,true,false,draft,FMS.FUNDS.FundCapital,Currency mặc định VND.
+Fund Type Code,Loại hình quỹ đầu tư.,Classification Value,true,false,draft,FMS.FUNDS.FundType,Scheme: FMS_FUND_TYPE. Values load từ bảng FUNDS.FundType nguồn.
+Active Date,Ngày quỹ chính thức hoạt động.,Date,true,false,draft,FMS.FUNDS.ActiveDate,
+Establishment Decision Date,Ngày cấp phép thành lập quỹ.,Date,true,false,draft,FMS.FUNDS.DecisionDate,
+Stop Date,Ngày giải thể/đóng quỹ.,Date,true,false,draft,FMS.FUNDS.StopDate,
+Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,Classification Value,true,false,draft,FMS.FUNDS.Status,Scheme: FMS_OPERATION_STATUS. Values load từ bảng STATUS nguồn.
+Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,Indicator,true,false,draft,FMS.FUNDS.IsDataMigration,Trường kỹ thuật migration.

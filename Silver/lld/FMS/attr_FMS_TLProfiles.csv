@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+FMS Fund Company Key Person Id,Khóa đại diện cho nhân sự chủ chốt của công ty QLQ.,Surrogate Key,false,true,draft,,
+FMS Fund Company Key Person Code,Mã nhân sự do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.TLProfiles.Id,BCV Term: Individual. BK của entity.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.TLProfiles.
+Fund Management Company Id,Khóa đại diện công ty QLQ mà nhân sự thuộc về. FK → SECURITIES.,Surrogate Key,false,false,draft,FMS.TLProfiles.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.
+Fund Management Company Code,Mã công ty QLQ mà nhân sự thuộc về. Lưu dư thừa.,Text,false,false,draft,FMS.TLProfiles.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.
+Full Name,Họ tên đầy đủ nhân sự.,Text,true,false,draft,FMS.TLProfiles.FullName,
+Birth Date,Ngày sinh nhân sự.,Date,true,false,draft,FMS.TLProfiles.BirthDate,
+Nationality Code,Mã ID quốc tịch nhân sự. FK → NATIONAL.Id.,Classification Value,true,false,draft,FMS.TLProfiles.NatId,Scheme: FMS_NATIONAL. Values load từ bảng NATIONAL nguồn.
+Job Type Code,Mã ID loại chức vụ nhân sự. FK → JOBTYPE.Id.,Classification Value,true,false,draft,FMS.TLProfiles.JobTypeId,Scheme: FMS_JOB_TYPE. Values load từ bảng JOBTYPE nguồn.
+Is Legal Representative Indicator,Cờ đánh dấu là người đại diện pháp luật: 1 = Có; 0 = Không.,Indicator,true,false,draft,FMS.TLProfiles.IsLegal,
+Is Disclosure Representative Indicator,Cờ đánh dấu là đại diện công bố thông tin (CBTT): 1 = Có; 0 = Không.,Indicator,true,false,draft,FMS.TLProfiles.IsCBTT,

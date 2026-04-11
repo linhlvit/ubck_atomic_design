@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Involved Party Id,Khóa đại diện trỏ về FMS Fund Management Company Organization Unit sở hữu giấy tờ định danh này.,Surrogate Key,false,false,draft,FMS.BRANCHES.Id,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Id. Pair with Involved Party Code.
+Involved Party Code,Mã nghiệp vụ của FMS Fund Management Company Organization Unit. Lưu dư thừa.,Text,false,false,draft,FMS.BRANCHES.Id,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Code. Pair with Involved Party Id.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.BRANCHES.
+Identification Type Code,Loại giấy tờ định danh — Giấy phép thành lập CN/VPĐD.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. Giá trị: ESTABLISHMENT_DECISION.
+Identification Number,Số giấy phép thành lập CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Decision,
+Issue Date,Ngày cấp giấy phép thành lập CN/VPĐD.,Date,true,false,draft,FMS.BRANCHES.DecisionDate,
+Issuing Authority Name,Nơi cấp giấy phép — UBCKNN.,Text,true,false,draft,,ETL-derived: giá trị cố định "UBCKNN" — không có trường nguồn riêng.

@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+FMS Fund Representative Board Member Id,Khóa đại diện cho vai trò thành viên ban đại diện/HĐQT quỹ.,Surrogate Key,false,true,draft,,
+FMS Fund Representative Board Member Code,Mã bản ghi ban đại diện do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.REPRESENT.Id,BCV Term: Involved Party Role. BK của entity.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.REPRESENT.
+FMS Investment Fund Id,Khóa đại diện quỹ đầu tư mà cá nhân tham gia ban đại diện. FK → FUNDS.,Surrogate Key,false,false,draft,FMS.REPRESENT.FndId,FK target: FMS Investment Fund.FMS Investment Fund Id. Pair with FMS Investment Fund Code.
+FMS Investment Fund Code,Mã quỹ đầu tư. Lưu dư thừa.,Text,false,false,draft,FMS.REPRESENT.FndId,FK target: FMS Investment Fund.FMS Investment Fund Code. Pair with FMS Investment Fund Id.
+FMS Fund Company Key Person Id,Khóa đại diện cá nhân đảm nhận vai trò trong ban đại diện. FK → TLProfiles.,Surrogate Key,false,false,draft,FMS.REPRESENT.TLId,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Id. Pair with FMS Fund Company Key Person Code.
+FMS Fund Company Key Person Code,Mã cá nhân trong ban đại diện. Lưu dư thừa.,Text,false,false,draft,FMS.REPRESENT.TLId,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Code. Pair with FMS Fund Company Key Person Id.
+Is Chair Indicator,Cờ đánh dấu là trưởng ban đại diện: 1 = Có; 0 = Không.,Indicator,true,false,draft,FMS.REPRESENT.IsChair,
+Activity Status Code,Trạng thái: 1 = Hoạt động; 0 = Khóa.,Classification Value,true,false,draft,FMS.REPRESENT.Status,Scheme: FMS_REPRESENT_STATUS. Giá trị ETL-derived: ACTIVE/INACTIVE.
