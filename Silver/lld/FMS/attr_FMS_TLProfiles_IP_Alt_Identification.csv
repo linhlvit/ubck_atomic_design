@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Involved Party Id,Khóa đại diện trỏ về FMS Fund Company Key Person sở hữu giấy tờ định danh này.,Surrogate Key,false,false,draft,FMS.TLProfiles.Id,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Id. Pair with Involved Party Code.
+Involved Party Code,Mã nghiệp vụ của FMS Fund Company Key Person. Lưu dư thừa.,Text,false,false,draft,FMS.TLProfiles.Id,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Code. Pair with Involved Party Id.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.TLProfiles.
+Identification Type Code,Loại giấy tờ định danh — CMND/CCCD/Hộ chiếu.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. Giá trị ETL-derived từ context nhân sự cá nhân.
+Identification Number,Số giấy tờ định danh (CMND/CCCD/Hộ chiếu).,Text,true,false,draft,FMS.TLProfiles.IdNo,
+Issue Date,Ngày cấp giấy tờ định danh.,Date,true,false,draft,,BCV: không có trường ngày cấp trong TLProfiles nguồn — để trống nếu không có.
+Issuing Authority Name,Nơi cấp giấy tờ định danh.,Text,true,false,draft,,BCV: không có trường nơi cấp trong TLProfiles nguồn — để trống nếu không có.

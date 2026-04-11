@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Involved Party Id,Khóa đại diện trỏ về FMS Fund Management Company Organization Unit sở hữu thông tin liên lạc này.,Surrogate Key,false,false,draft,FMS.BRANCHES.Id,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Id. Pair with Involved Party Code.
+Involved Party Code,Mã nghiệp vụ của FMS Fund Management Company Organization Unit. Lưu dư thừa.,Text,false,false,draft,FMS.BRANCHES.Id,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Code. Pair with Involved Party Id.
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.BRANCHES.
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại/fax.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. Giá trị: PHONE/FAX — 1 dòng mỗi loại.
+Electronic Address Value,Giá trị số điện thoại hoặc số fax.,Text,true,false,draft,"FMS.BRANCHES.Telephone, FMS.BRANCHES.Fax",
