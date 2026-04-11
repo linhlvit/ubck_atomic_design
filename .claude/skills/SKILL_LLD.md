@@ -20,8 +20,11 @@
    - Entity đã thiết kế và cấu trúc attribute
    - Pattern FK đã dùng (tên trường, data domain)
    - Shared entity đã có những trường nào
-5. **File `ref_shared_entity_classifications.csv`** → kiểm tra Classification Value đã chuẩn hóa.
-6. **File `manifest.csv`** → biết file LLD nào đã có.
+5. **LLD entity tương đồng từ source khác (nếu có):** Nếu entity đang thiết kế có kiểu tương đồng với entity đã thiết kế ở source khác (cùng BCV Concept, hoặc cùng loại shared entity), đọc ít nhất 1 file LLD tương ứng từ source đó. Mục đích: lấy đúng pattern tên attribute, format nullable, format source_columns, FK comment.
+   - Ví dụ: thiết kế IP Postal Address cho FMS → đọc `lld/NHNCK/attr_NHNCK_Professionals_IP_Postal_Address.csv`.
+   - Ví dụ: thiết kế entity [Involved Party] Organization → đọc `lld/DCST/attr_DCST_THONG_TIN_DK_THUE.csv`.
+6. **File `ref_shared_entity_classifications.csv`** → kiểm tra Classification Value đã chuẩn hóa.
+7. **File `manifest.csv`** → biết file LLD nào đã có.
 
 ### Bước 2 — Xác định Silver entity target và Tier
 
@@ -126,6 +129,10 @@ Trước khi xuất file:
 - [ ] Prefix chủ thể cho trường mô tả người/đối tượng khác?
 - [ ] Mọi trường nguồn đều xuất hiện trong mapping? Không có dòng "không map ở đây"?
 - [ ] LLD không bao gồm technical fields (Record Status, Record Insert Date, ETL Timestamp...)?
+- [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (ví dụ: `Full Name`, `Charter Capital Amount`, `Activity Status Code`, `English Name`, `Abbreviation`...)?
+- [ ] Format nullable nhất quán: `true`/`false` — không dùng `Yes`/`No`?
+- [ ] Format source_columns nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`?
+- [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha?
 
 ## OUTPUT
 

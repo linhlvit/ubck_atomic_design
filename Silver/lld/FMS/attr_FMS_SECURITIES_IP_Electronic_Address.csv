@@ -1,0 +1,5 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Fund Management Company Id,Khóa đại diện công ty QLQ. FK đến Fund Management Company.,Surrogate Key,No,No,draft,,"FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code."
+Fund Management Company Code,Mã công ty QLQ. Lưu dư thừa.,Text,No,No,draft,SECURITIES.Id,"FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+Electronic Address Type Code,Loại địa chỉ liên lạc điện tử.,Classification Value,No,No,draft,,"Scheme: IP_ELEC_ADDR_TYPE. Giá trị ETL-derived: PHONE_HEAD_OFFICE / FAX_HEAD_OFFICE / EMAIL_BUSINESS."
+Electronic Address Value,Giá trị địa chỉ liên lạc (số điện thoại / fax / email).,Text,Yes,No,draft,"SECURITIES.Telephone, SECURITIES.Fax, SECURITIES.Email","Mỗi dòng tương ứng 1 kênh liên lạc: Telephone → PHONE_HEAD_OFFICE; Fax → FAX_HEAD_OFFICE; Email → EMAIL_BUSINESS."

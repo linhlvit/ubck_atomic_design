@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+Fund Distribution Agent Id,Khóa đại diện cho tổ chức đại lý phân phối quỹ.,Surrogate Key,No,Yes,draft,,
+Fund Distribution Agent Code,Mã đại lý quỹ do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,No,No,draft,AGENCIES.Id,BCV Term: Mutual Fund Distributor. BK của entity.
+Source System Code,Mã hệ thống nguồn.,Classification Value,No,No,draft,,"Scheme: SOURCE_SYSTEM. Giá trị: FMS.AGENCIES"
+Agent Full Name,Tên đại lý phân phối quỹ.,Text,Yes,No,draft,AGENCIES.Name,
+Agent Short Name,Tên viết tắt đại lý.,Text,Yes,No,draft,AGENCIES.ShortName,
+Agent Type Code,Mã ID loại đại lý. FK → AGENCYTYPE.Id.,Classification Value,Yes,No,draft,AGENCIES.AgencyTypeId,"Scheme: FMS_AGENCY_TYPE. Values load từ bảng AGENCYTYPE nguồn."
+Operation Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,Classification Value,Yes,No,draft,AGENCIES.Status,"Scheme: FMS_OPERATION_STATUS. Values load từ bảng STATUS nguồn."

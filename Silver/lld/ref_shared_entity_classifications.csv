@@ -34,7 +34,7 @@ PAYMENT_STATUS,(to_define),Trạng thái thanh toán — cần xác nhận từ 
 VERIFICATION_LEVEL,(to_define),Cấp phê duyệt (LĐCM/LĐUB) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyLevel,App Verification Status
 VERIFICATION_STATUS,(to_define),Trạng thái phê duyệt — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyStatus,App Verification Status
 INDIVIDUAL_GENDER,(to_define),Giới tính — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.Gender,Securities Practitioner
-NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.Nationality,Securities Practitioner
+NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data (có thể dùng ISO 3166),modeler_defined,NHNCK.qlnhn.Professionals.Nationality,Securities Practitioner
 PRACTICE_STATUS,(to_define),Trạng thái hành nghề — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.PracticeStatus,Securities Practitioner
 C06_VERIFICATION_STATUS,(to_define),Trạng thái xác thực C06 — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.VerifyStatus,Securities Practitioner | Identity Verification Record
 CERTIFICATE_STATUS,(to_define),Trạng thái chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.Status,License Certificate Document | Certificate Document Status History (From/To)
@@ -81,3 +81,13 @@ REPORTING_PERIOD_TYPE,(to_define),"Kiểu kỳ kê khai (tháng, quý, năm...) 
 AUDIT_STATUS,(to_define),Trạng thái kiểm toán BCTC — cần profile data TRANG_THAI_KT,modeler_defined,DCST.TCT_BAO_CAO.TRANG_THAI_KT,Tax Financial Statement
 TAX_ENFORCEMENT_TYPE,(to_define),"Hình thức cưỡng chế (trích tiền TK, kê biên TS, ngừng sử dụng HĐ...) — cần profile data MA_HTCC",modeler_defined,DCST.TCT_TT_CUONG_CHE_NO|DCST.TCT_TTCCN_HOA_DON,Tax Debt Enforcement Order | Tax Invoice Enforcement Order
 INVOICE_TYPE,(to_define),Loại hóa đơn — cần profile data LOAI_HOA_DON,modeler_defined,DCST.HOA_DON_CHI_TIET,Tax Invoice Enforcement Order Item
+FMS_OPERATION_STATUS,(source),Trạng thái hoạt động của tổ chức/cá nhân trong hệ thống FMS,source_table,FMS.STATUS,"Fund Management Company | Foreign Fund Management Organization Unit | Custodian Bank | Fund Distribution Agent"
+FMS_AGENCY_TYPE,(source),Loại đại lý phân phối quỹ đầu tư,source_table,FMS.AGENCYTYPE,Fund Distribution Agent
+FMS_NATIONAL,(source),Danh mục quốc gia/quốc tịch trong hệ thống FMS,source_table,FMS.NATIONAL,Discretionary Investment Investor
+FMS_STOCKHOLDER_TYPE,(source),Danh mục loại hình nhà đầu tư/cổ đông trong hệ thống FMS,source_table,FMS.STOCKHOLDERTYPE,Discretionary Investment Investor
+FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
+FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
+FMS_REPORTING_PERIOD_TYPE,MONTHLY,Tháng,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
+FMS_REPORTING_PERIOD_TYPE,QUARTERLY,Quý,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
+FMS_REPORTING_PERIOD_TYPE,SEMI_ANNUAL,Bán niên,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
+FMS_REPORTING_PERIOD_TYPE,ANNUAL,Năm,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period
