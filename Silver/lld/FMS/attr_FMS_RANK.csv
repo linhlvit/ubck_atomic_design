@@ -1,11 +1,11 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-FMS Member Rating Id,Khóa đại diện cho kết quả xếp hạng của công ty QLQ trong một kỳ đánh giá.,Surrogate Key,false,true,draft,,
-FMS Member Rating Code,Mã bảng xếp hạng do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RANK.Id,BCV Term: Involved Party Rating. BK của entity.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.RANK.
-Fund Management Company Id,Khóa đại diện công ty QLQ được xếp hạng. FK → SECURITIES.,Surrogate Key,false,false,draft,FMS.RANK.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.
-Fund Management Company Code,Mã công ty QLQ được xếp hạng. Lưu dư thừa.,Text,false,false,draft,FMS.RANK.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.
-Member Rating Period Id,Khóa đại diện kỳ đánh giá xếp loại. FK → RATINGPD.,Surrogate Key,false,false,draft,FMS.RANK.RatingPdId,FK target: Member Rating Period.Member Rating Period Id. Pair with Member Rating Period Code.
-Member Rating Period Code,Mã kỳ đánh giá xếp loại. Lưu dư thừa.,Text,false,false,draft,FMS.RANK.RatingPdId,FK target: Member Rating Period.Member Rating Period Code. Pair with Member Rating Period Id.
-Total Score,Tổng điểm đánh giá xếp loại.,Percentage,true,false,draft,FMS.RANK.TotalScore,BCV: không có term riêng. Lưu dưới dạng điểm số — có thể là thang 100.
-Rank Value,Xếp hạng theo thứ tự (số nguyên thứ tự).,Small Counter,true,false,draft,FMS.RANK.RankValue,
-Rank Class Code,Xếp loại theo nhóm (ví dụ: A/B/C/D).,Classification Value,true,false,draft,FMS.RANK.RankClass,Scheme: FMS_RATING_CLASS. Values cần profile từ data nguồn.
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+FMS Member Rating Id,Khóa đại diện cho kết quả xếp hạng của công ty QLQ trong một kỳ đánh giá.,Surrogate Key,false,true,draft,,,,
+FMS Member Rating Code,Mã bảng xếp hạng do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RANK.Id,BCV Term: Involved Party Rating. BK của entity.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.RANK.,,
+Fund Management Company Id,Khóa đại diện công ty QLQ được xếp hạng. FK → SECURITIES.,Surrogate Key,false,false,draft,FMS.RANK.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.,,
+Fund Management Company Code,Mã công ty QLQ được xếp hạng. Lưu dư thừa.,Text,false,false,draft,FMS.RANK.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.,,
+Member Rating Period Id,Khóa đại diện kỳ đánh giá xếp loại. FK → RATINGPD.,Surrogate Key,false,false,draft,FMS.RANK.RatingPdId,FK target: Member Rating Period.Member Rating Period Id. Pair with Member Rating Period Code.,,
+Member Rating Period Code,Mã kỳ đánh giá xếp loại. Lưu dư thừa.,Text,false,false,draft,FMS.RANK.RatingPdId,FK target: Member Rating Period.Member Rating Period Code. Pair with Member Rating Period Id.,,
+Total Score,Tổng điểm đánh giá xếp loại.,Percentage,true,false,draft,FMS.RANK.TotalScore,BCV: không có term riêng. Lưu dưới dạng điểm số — có thể là thang 100.,,
+Rank Value,Xếp hạng theo thứ tự (số nguyên thứ tự).,Small Counter,true,false,draft,FMS.RANK.RankValue,,,
+Rank Class Code,Xếp loại theo nhóm (ví dụ: A/B/C/D).,Classification Value,true,false,draft,FMS.RANK.RankClass,Scheme: FMS_RATING_CLASS. Values cần profile từ data nguồn.,,

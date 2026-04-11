@@ -1,6 +1,6 @@
-# UBCK Data Model — LLD Repository
+# UBCK Data Model — Silver Layer Design Repository
 
-> **Mục đích:** Lưu trữ và quản lý các file thiết kế LLD (Low-Level Design) dạng Logical, phục vụ quy trình thiết kế Data Model trên kiến trúc Medallion (Silver layer).
+> **Mục đích:** Lưu trữ và quản lý thiết kế HLD và LLD cho Silver layer trên kiến trúc Medallion (Bronze / Silver / Gold), phục vụ dự án Lakehouse của UBCKNN.
 
 ---
 
@@ -9,167 +9,220 @@
 ```
 ubck_atomic_design/
 ├── Silver/
-│   ├── hld/                                        # HLD — sơ đồ quan hệ Source → Silver
-│   │   ├── DCST_relationship_diagram.md
-│   │   ├── FIMS_relationship_diagram.md
-│   │   ├── FMS_relationship_diagram.md
-│   │   └── NHNCK_relationship_diagram.md
+│   ├── hld/                                      # HLD — thiết kế mức entity
+│   │   ├── <SYSTEM>_HLD_Tier<N>.md               # Thiết kế theo Tier dependency
+│   │   ├── <SYSTEM>_HLD_Overview.md              # Tổng quan toàn bộ source system
+│   │   └── silver_entities.csv                   # Tổng hợp tất cả Silver entities (auto-gen)
 │   └── lld/
-│       ├── DCST/                                   # Source system: DCST (Dữ liệu Cơ quan Thuế)
-│       │   ├── attr_DCST_THONG_TIN_DK_THUE.xlsx
-│       │   ├── attr_DCST_TTKDT_NGUOI_DAI_DIEN.xlsx
-│       │   ├── attr_DCST_DN_RUI_RO_CAO.xlsx
-│       │   ├── attr_DCST_TCT_BAO_CAO.xlsx
-│       │   ├── attr_DCST_TCT_BAO_CAO_CHI_TIET.xlsx
-│       │   ├── attr_DCST_TCT_TT_CUONG_CHE_NO.xlsx
-│       │   ├── attr_DCST_TT_XLY_VI_PHAM.xlsx
-│       │   ├── attr_DCST_TCT_TTCCN_HOA_DON.xlsx
-│       │   └── attr_DCST_HOA_DON_CHI_TIET.xlsx
-│       ├── NHNCK/                                  # Source system: NHNCK (Người Hành Nghề Chứng Khoán)
+│       ├── DCST/                                 # Source system: DCST
+│       │   └── attr_DCST_<TABLE>.csv
+│       ├── FMS/                                  # Source system: FMS
+│       │   └── attr_FMS_<TABLE>.csv
+│       ├── NHNCK/                                # Source system: NHNCK
 │       │   └── attr_NHNCK_<TABLE>.csv
-│       ├── manifest.csv                            # Danh sách tổng hợp tất cả LLD entities
-│       └── ref_shared_entity_classifications.csv   # Phân loại các scheme, code value trong Classification value
-├── Source/                                         # Source table definitions
-│   ├── DCST_Source_Tables.xlsx
-│   ├── FIMS_Source_Tables.xlsx
-│   ├── FMS_Source_Tables.xlsx
-│   ├── NHNCK_Source_Tables.xlsx
-│   └── GAP/                                        # (Mở rộng)
-├── system/
-│   ├── common/                                     # (Tài nguyên dùng chung — mở rộng)
-│   └── templates/
-│       └── attr_template.csv                       # Template chuẩn cho file LLD
-├── instructions/                                   # (Legacy — không dùng nữa)
-└── README.md
+│       ├── scripts/
+│       │   └── aggregate_silver.py               # Script tổng hợp attributes + entities
+│       ├── manifest.csv                          # Danh sách tất cả LLD files + entity mapping
+│       ├── ref_shared_entity_classifications.csv # Chuẩn hóa Classification Value scheme/code
+│       └── silver_attributes.csv                 # Tổng hợp tất cả attributes (auto-gen)
+├── Source/                                       # Cấu trúc CSDL nguồn
+│   ├── <SYSTEM>_Source_Tables.*
+│   └── <SYSTEM>_Source_Columns.*
+├── knowledge/                                    # BCV knowledge base
+│   ├── terms.csv
+│   ├── term_relationships.csv
+│   └── reference_data_sets.csv
+└── .claude/
+    └── skills/
+        ├── SKILL_HLD.md                          # Quy trình thiết kế HLD
+        └── SKILL_LLD.md                          # Quy trình thiết kế LLD
 ```
 
 ---
 
-## Quy ước file LLD
+## Quy trình thiết kế
 
-### Tên file
+### Giai đoạn 1 — HLD (High-Level Design)
 
-Format: `attr_<SOURCE>_<TÊN_BẢNG_NGUỒN>.<ext>`
+**Mục tiêu:** Xác định Silver entities, BCV Concept, và quan hệ giữa entities. Chưa đi vào chi tiết từng cột.
 
-- DCST: `attr_DCST_THONG_TIN_DK_THUE.xlsx`
-- NHNCK: `attr_NHNCK_Professionals.csv`
+#### Input
 
-### Cấu trúc file
-
-**DCST (.xlsx):** Mỗi file chứa 1 hoặc nhiều sheet, mỗi sheet = 1 Silver entity được thiết kế từ bảng nguồn đó.
-
-Ví dụ `attr_DCST_THONG_TIN_DK_THUE.xlsx` gồm 4 sheet:
-
-| Sheet | Silver Entity | Loại |
-|---|---|---|
-| Registered Taxpayer | Registered Taxpayer | Fundamental (SCD4A) |
-| IP Postal Address | Involved Party Postal Address | Shared |
-| IP Electronic Address | Involved Party Electronic Address | Shared |
-| IP Alt Identification | Involved Party Alternative Identification | Shared |
-
-**NHNCK (.csv):** Mỗi file = 1 Silver entity.
-
-### Các cột trong mỗi file/sheet
-
-| Cột | Mô tả |
+| Loại | Vị trí |
 |---|---|
-| `attribute_name` | Tên attribute trên Silver (tiếng Anh, logical name) |
-| `description` | Mô tả gốc từ CSDL nguồn + mô tả bổ sung trên model (nếu có) |
-| `data_domain` | 1 trong 12 Data Domain chuẩn |
-| `nullable` | true / false |
-| `is_primary_key` | true / false |
-| `status` | draft / reviewed / approved |
-| `source_columns` | Trường nguồn. Format: `<SOURCE>.dbo.<TABLE>.<COLUMN>`. Nhiều nguồn phân cách bằng `\|` |
-| `comment` | Ghi chú thiết kế, logic mapping, điểm cần xác nhận SME |
+| Cấu trúc CSDL nguồn | `Source/*_Tables.*`, `*_Columns.*` |
+| BCV knowledge base | `knowledge/terms.csv`, `term_relationships.csv`, `reference_data_sets.csv` |
+| HLD source system liên quan (nếu có) | `Silver/hld/*.md` |
+
+#### Phương pháp
+
+**Phân tầng theo dependency — không theo nhóm nghiệp vụ:**
+
+| Tier | Định nghĩa |
+|---|---|
+| Tier 1 | Không FK đến bảng nghiệp vụ nào (chỉ FK đến danh mục) |
+| Tier 2 | FK đến entity Tier 1 |
+| Tier N | FK đến entity Tier N-1 |
+
+Quy tắc bổ sung:
+- Nhiều entity cùng mức dependency → gộp vào 1 Tier
+- Circular reference trong cùng Tier → giữ nguyên, ghi vào mục 6f
+- Nếu source system đã có cách đặt tên Tier riêng → vẫn phải phân tích lại dependency từ đầu
+
+**Phân loại bảng nguồn:**
+
+| Loại | Xử lý |
+|---|---|
+| Bảng có instance data | → Silver entity |
+| Bảng chỉ có Code + Name | → Classification Value (không tạo entity) |
+| Junction chỉ 2 trường FK | → Denormalize thành ARRAY trên entity cha |
+| Audit Log / Snapshot nguồn | → Ngoài scope Silver |
+| Bảng chưa có cột | → Ghi vào 6e, chờ thông tin |
+
+**Tra BCV bắt buộc** trước khi gán Concept — grep trên `knowledge/`, kiểm tra bằng cấu trúc trường thực tế, không suy luận từ tên bảng.
+
+#### Output mỗi Tier — `<SYSTEM>_HLD_Tier<N>.md`
+
+| Mục | Nội dung |
+|---|---|
+| **6a** | Bảng tổng quan BCV Concept — entity mới của Tier kèm lý do chọn BCV Term |
+| **6b** | Diagram Source (Mermaid) — FK giữa các bảng nguồn |
+| **6c** | Diagram Silver (Mermaid) — Silver entities và quan hệ |
+| **6d** | Danh mục & Tham chiếu — bảng nguồn map thành Classification Value |
+| **6e** | Bảng chờ thiết kế — bảng chưa có cột |
+| **6f** | Điểm cần xác nhận — câu hỏi mở cần người thiết kế quyết định |
+
+#### Output sau Tier cuối — `<SYSTEM>_HLD_Overview.md`
+
+| Mục | Nội dung |
+|---|---|
+| **7a** | Bảng tổng quan tất cả Silver entities (gộp 6a mọi Tier, thêm cột Tier) |
+| **7b** | Diagram Silver tổng — 1 diagram toàn bộ data model |
+| **7c** | Toàn bộ Classification Value |
+| **7d** | Toàn bộ junction table và cách denormalize |
+| **7e** | Toàn bộ điểm cần xác nhận còn mở |
+| **7f** | Toàn bộ bảng ngoài scope |
+
+Sau HLD Overview → cập nhật `Silver/hld/silver_entities.csv`.
 
 ---
 
-## Trạng thái thiết kế (status)
+### Giai đoạn 2 — LLD (Low-Level Design)
+
+**Mục tiêu:** Thiết kế chi tiết từng attribute — tên, data domain, FK target, nullable, source column mapping.
+
+**Điều kiện tiên quyết:** HLD đã được duyệt.
+
+#### Input
+
+| Loại | Vị trí |
+|---|---|
+| HLD Overview + HLD Tier tương ứng | `Silver/hld/*.md` |
+| Cấu trúc CSDL nguồn | `Source/*_Columns.*` |
+| LLD đã có cùng source system | `Silver/lld/<SYSTEM>/attr_*.csv` |
+| LLD entity tương đồng source khác | `Silver/lld/<OTHER>/attr_*.csv` |
+| Classification Value đã chuẩn hóa | `Silver/lld/ref_shared_entity_classifications.csv` |
+| Danh sách entity đã có | `Silver/lld/manifest.csv` |
+
+#### Quy tắc mapping cột nguồn
+
+| Loại trường | Quy tắc |
+|---|---|
+| PK bảng nguồn | → Entity Code (BK), data domain = `Text` |
+| FK đến Fundamental entity | → Cặp `[Entity] Id` (`Surrogate Key`) + `[Entity] Code` (`Text`) |
+| FK đến Classification Value / danh mục | → 1 trường Code duy nhất, data domain = `Classification Value` |
+| Địa chỉ / liên lạc / giấy tờ (grain = 1 IP) | → Tách ra file shared entity riêng |
+
+**12 Data Domain chuẩn:** Text, Date, Timestamp, Currency Amount, Interest Rate, Exchange Rate, Percentage, Surrogate Key, Classification Value, Indicator, Boolean, Small Counter.
+
+#### Output mỗi entity — `attr_<SYSTEM>_<SourceTable>.csv`
+
+Cấu trúc 10 cột:
+
+| Cột | Mô tả |
+|---|---|
+| `attribute_name` | Tên attribute trên Silver (tiếng Anh) |
+| `description` | Mô tả gốc nguồn + mô tả bổ sung model |
+| `data_domain` | 1 trong 12 Data Domain chuẩn |
+| `nullable` | `true` / `false` |
+| `is_primary_key` | `true` / `false` |
+| `status` | `draft` / `reviewed` / `approved` |
+| `source_columns` | Fully qualified: `SYSTEM.schema.Table.Column` |
+| `comment` | FK target, Scheme code, lý do thiết kế |
+| `classification_context` | Shared entity: `SCHEME=VALUE` (1 dòng / 1 context) |
+| `etl_derived_value` | Giá trị ETL-derived cố định (không lấy từ cột nguồn) |
+
+Sau mỗi file attr → cập nhật `manifest.csv` và `ref_shared_entity_classifications.csv`.
+
+#### Bước tổng hợp cuối
+
+```bash
+cd <workspace_root>
+python Silver/lld/scripts/aggregate_silver.py
+```
+
+Script tự động sinh:
+- `Silver/lld/silver_attributes.csv` — toàn bộ attributes (13 cột)
+- `Silver/hld/silver_entities.csv` — toàn bộ entities (5 cột)
+
+---
+
+## Trạng thái thiết kế
 
 | Status | Ý nghĩa |
 |---|---|
 | `draft` | Mới thiết kế, chưa review |
-| `reviewed` | Đã review với team, có thể còn điểm cần xác nhận SME |
+| `reviewed` | Đã review với team, có thể còn điểm xác nhận SME |
 | `approved` | Đã duyệt, sẵn sàng chuyển Engineer |
 
 ---
 
-## Workflow
+## Source systems hiện tại
 
-```
-1. Design trong Claude chat
-   → Mentor hỗ trợ thiết kế từ bảng nguồn → xuất file .csv
+### NHNCK — Người Hành Nghề Chứng Khoán
 
-2. Review & commit
-   → Download file → review → commit vào repo (status = draft)
-   → Sau khi review với team → update status = reviewed/approved
+| Tier | Số entities | HLD file |
+|---|---|---|
+| Tier 1 | 4 entities | `NHNCK_HLD_Tier1.md` |
+| Tier 2 | 4 entities | `NHNCK_HLD_Tier2.md` |
+| Tier 3 | 12 entities | `NHNCK_HLD_Tier3.md` |
+| Tier 4 | 7 entities | `NHNCK_HLD_Tier4.md` |
 
-3. Sync vào Claude project
-   → Bấm "Sync now" trên project knowledge
-   → ⚠️ Luôn sync TRƯỚC KHI bắt đầu chat mới
-
-4. Design bảng tiếp theo
-   → Claude đọc file LLD đã duyệt để đảm bảo nhất quán FK, naming, pattern
-```
-
----
-
-## Quy tắc thiết kế (tóm tắt)
-
-Chi tiết đầy đủ nằm trong project instruction. Dưới đây là tóm tắt nhanh:
-
-- **LLD Logical** — không bao gồm technical fields (Record Status, Record Insert Date, v.v.)
-- **Shared entity** — không có PK surrogate riêng
-- **Classification Value** — chỉ có Code, không tạo cặp Id + Code
-- **Currency** — bảng SCD1, chỉ có Code
-- **FK đến Fundamental entity** — pattern Id + Code
-- **Source System Code** — giá trị chi tiết đến tên bảng (ví dụ: `DCST.THONG_TIN_DK_THUE`)
-- **PK nguồn** — map vào Entity Code (BK)
-- **Description** — giữ nguyên mô tả gốc nguồn + bổ sung mô tả model
-- **Data Domain** — dùng đúng 12 domain chuẩn (Currency Amount, không viết tắt Amount)
-
----
-
-## Danh sách source systems
+LLD: 34 files trong `Silver/lld/NHNCK/` — tất cả `draft`.
 
 ### DCST — Dữ liệu Cơ quan Thuế
 
-| Bảng nguồn | Silver Entity chính | Status |
+| Tier | Số entities | HLD file |
 |---|---|---|
-| THONG_TIN_DK_THUE | Registered Taxpayer | ✅ Designed |
-| TTKDT_NGUOI_DAI_DIEN | Taxpayer Representative | ✅ Designed |
-| DN_RUI_RO_CAO | High Risk Taxpayer Assessment | ✅ Designed |
-| TCT_BAO_CAO | Tax Financial Statement | ✅ Designed |
-| TCT_BAO_CAO_CHI_TIET | Tax Financial Statement Item | ✅ Designed |
-| TCT_TT_CUONG_CHE_NO | Tax Debt Enforcement Order | ✅ Designed |
-| TT_XLY_VI_PHAM | Tax Violation Penalty Decision | ✅ Designed |
-| TCT_TTCCN_HOA_DON | Tax Invoice Enforcement Order | ✅ Designed |
-| HOA_DON_CHI_TIET | Tax Invoice Enforcement Item | ✅ Designed |
+| Tier 1 | 3 entities | `DCST_HLD_Tier1.md` |
+| Tier 2 | 6 entities | `DCST_HLD_Tier2.md` |
+| Tier 3 | 2 entities | `DCST_HLD_Tier3.md` |
 
-### NHNCK — Nhân Hành Nghề Chứng Khoán
+LLD: 14 files trong `Silver/lld/DCST/` — tất cả `draft`.
 
-| Bảng nguồn | Silver Entity chính | Status |
+### FMS — Quản lý Giám sát Quỹ và Công ty Chứng khoán
+
+| Tier | Số entities | HLD file |
 |---|---|---|
-| Applications | Applications | ✅ Designed |
-| Professionals | Professionals | ✅ Designed |
-| Organizations | Organizations | ✅ Designed |
-| (xem `Silver/lld/manifest.csv` để đầy đủ) | | |
+| Tier 1 | 7 entities | `FMS_HLD_Tier1.md` |
+| Tier 2 | 7 entities | `FMS_HLD_Tier2.md` |
+| Tier 3 | 5 entities | `FMS_HLD_Tier3.md` |
+| Tier 4 | 3 entities | `FMS_HLD_Tier4.md` |
 
-### FIMS, FMS
-
-> Source tables đã có tại `Source/`. LLD chưa thiết kế.
+LLD: 38 files trong `Silver/lld/FMS/` — tất cả `draft`.
 
 ---
 
-## Tham chiếu
+## Tham chiếu nhanh
 
 | Tài liệu | Vị trí |
 |---|---|
-| HLD Relationship Diagrams | `Silver/hld/` |
-| LLD files | `Silver/lld/<SOURCE>/` |
-| Manifest (tổng hợp entities) | `Silver/lld/manifest.csv` |
+| Quy trình thiết kế HLD | `.claude/skills/SKILL_HLD.md` |
+| Quy trình thiết kế LLD | `.claude/skills/SKILL_LLD.md` |
+| HLD files | `Silver/hld/` |
+| LLD files | `Silver/lld/<SYSTEM>/` |
+| Tổng hợp entities | `Silver/hld/silver_entities.csv` |
+| Tổng hợp attributes | `Silver/lld/silver_attributes.csv` |
+| Manifest | `Silver/lld/manifest.csv` |
 | Shared Entity Classifications | `Silver/lld/ref_shared_entity_classifications.csv` |
-| Data Dictionary template | `system/templates/attr_template.csv` |
-| Tài liệu thiết kế CSDL (D02) | Claude project knowledge |
-| Data Dictionary tổng hợp (Excel) | Claude project knowledge |
-| Modules đào tạo (M1–M12) | Claude project knowledge |
+| BCV knowledge base | `knowledge/` |

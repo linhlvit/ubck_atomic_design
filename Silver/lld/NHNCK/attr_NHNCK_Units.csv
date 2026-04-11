@@ -1,0 +1,11 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Organization Unit Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,,,
+Organization Unit Code,Mã đơn vị. BK,Text,false,false,draft,NHNCK.qlnhn.Units.UnitCode,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Units,
+Organization Unit Type Code,Phân loại cấp — Đơn vị.,Classification Value,false,false,draft,,,ORGANIZATION_UNIT_TYPE=UNIT,
+Organization Unit Name,Tên đơn vị,Text,true,false,draft,NHNCK.qlnhn.Units.UnitName,,,
+Organization Unit Description,Mô tả,Text,true,false,draft,NHNCK.qlnhn.Units.Description,,,
+Parent Organization Unit Id,FK self-referencing — đơn vị cha. Unit không có parent → NULL.,Surrogate Key,true,false,draft,,FK target: Regulatory Authority Organization Unit.Organization Unit Id. Unit luôn là root — giá trị NULL.,,
+Parent Organization Unit Code,Mã đơn vị cha. Unit không có parent → NULL.,Text,true,false,draft,,FK target: Regulatory Authority Organization Unit.Organization Unit Code. Pair with Parent Organization Unit Id.,,
+Organization Unit Status Code,Trạng thái,Classification Value,true,false,draft,NHNCK.qlnhn.Units.Status,Scheme: ORGANIZATION_UNIT_STATUS.,,
+Sort Order,Thứ tự sắp xếp,Small Counter,true,false,draft,NHNCK.qlnhn.Units.SortOrder,,,

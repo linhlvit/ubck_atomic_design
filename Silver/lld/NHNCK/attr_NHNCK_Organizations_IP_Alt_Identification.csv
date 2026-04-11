@@ -1,8 +1,8 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Securities Organization Reference,Surrogate Key,false,false,draft,NHNCK.qlnhn.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng.
-Involved Party Code,Mã tổ chức,Text,false,false,draft,NHNCK.qlnhn.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Organizations,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
-Identification Type Code,Loại giấy tờ,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL derive: BUSINESS_LICENSE. 1 dòng/tổ chức. Giá trị BUSINESS_LICENSE đã có trong ref.
-Identification Number,Số giấy phép kinh doanh,Text,true,false,draft,NHNCK.qlnhn.Organizations.LicenseNumber,Nhất quán DCST LLD.
-Issue Date,Ngày cấp giấy phép,Date,true,false,draft,NHNCK.qlnhn.Organizations.LicenseDate,Nhất quán DCST LLD.
-Issuing Authority Name,Cơ quan cấp giấy phép,Text,true,false,draft,NHNCK.qlnhn.Organizations.LicenseIssuer,Nhất quán DCST LLD.
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Securities Organization Reference,Surrogate Key,false,false,draft,NHNCK.qlnhn.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã tổ chức,Text,false,false,draft,NHNCK.qlnhn.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Organizations
+Identification Type Code,Loại giấy tờ — giấy phép kinh doanh.,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=BUSINESS_LICENSE
+Identification Number,Số giấy phép kinh doanh,Text,true,false,draft,NHNCK.qlnhn.Organizations.LicenseNumber,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issue Date,Ngày cấp giấy phép,Date,true,false,draft,NHNCK.qlnhn.Organizations.LicenseDate,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issuing Authority Name,Cơ quan cấp giấy phép,Text,true,false,draft,NHNCK.qlnhn.Organizations.LicenseIssuer,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,

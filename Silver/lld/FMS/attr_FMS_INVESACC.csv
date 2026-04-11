@@ -1,15 +1,15 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-FMS Discretionary Investment Account Id,Khóa đại diện cho tài khoản/hợp đồng ủy thác đầu tư.,Surrogate Key,false,true,draft,,
-FMS Discretionary Investment Account Code,Mã tài khoản ủy thác do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.INVESACC.Id,BCV Term: Financial Portfolio Management Arrangement. BK của entity.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.INVESACC.
-Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư ủy thác. FK → INVES.,Surrogate Key,false,false,draft,FMS.INVESACC.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Id. Pair with Discretionary Investment Investor Code.
-Discretionary Investment Investor Code,Mã nhà đầu tư ủy thác. Lưu dư thừa.,Text,false,false,draft,FMS.INVESACC.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Discretionary Investment Investor Id.
-Account Number,Số tài khoản lưu ký.,Text,true,false,draft,FMS.INVESACC.Account,BCV: không có term riêng cho account number trong Arrangement context. Giữ tên gần với BCV Account.
-Custodian Place Description,Nơi lưu ký — text tự do mô tả địa điểm lưu ký.,Text,true,false,draft,FMS.INVESACC.AccPlace,Cần xác nhận: AccPlace có phải FK đến BANKMONI không (câu hỏi xác nhận T2-#1). Hiện để denormalized.
-Contract Number,Số hợp đồng ủy thác quản lý danh mục.,Text,true,false,draft,FMS.INVESACC.ContractNo,
-Committed Capital Amount,Quy mô vốn ủy thác cam kết theo hợp đồng.,Currency Amount,true,false,draft,FMS.INVESACC.ActScale,Currency mặc định VND.
-Actual Capital Amount,Quy mô vốn giao nhận thực tế tại thời điểm báo cáo.,Currency Amount,true,false,draft,FMS.INVESACC.AdScale,Currency mặc định VND.
-Management Fee Rate,Phí quản lý theo điều khoản hợp đồng ủy thác.,Percentage,true,false,draft,FMS.INVESACC.ManagerFee,Phí theo hợp đồng — không phải phí thực tế phát sinh. BCV: không có term riêng cho management fee rate.
-Activity Status Code,Trạng thái hiệu lực hợp đồng: 1 = Còn hiệu lực; 0 = Hết hiệu lực.,Classification Value,true,false,draft,FMS.INVESACC.Status,Scheme: FMS_INVESACC_STATUS. Giá trị ETL-derived: ACTIVE/INACTIVE.
-Last Report Date,Kỳ báo cáo gần nhất liên quan đến tài khoản ủy thác.,Date,true,false,draft,FMS.INVESACC.DateReport,
-Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,Indicator,true,false,draft,FMS.INVESACC.IsDataMigration,Trường kỹ thuật migration.
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+FMS Discretionary Investment Account Id,Khóa đại diện cho tài khoản/hợp đồng ủy thác đầu tư.,Surrogate Key,false,true,draft,,,,
+FMS Discretionary Investment Account Code,Mã tài khoản ủy thác do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.INVESACC.Id,BCV Term: Financial Portfolio Management Arrangement. BK của entity.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.INVESACC.,,
+Discretionary Investment Investor Id,Khóa đại diện nhà đầu tư ủy thác. FK → INVES.,Surrogate Key,false,false,draft,FMS.INVESACC.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Id. Pair with Discretionary Investment Investor Code.,,
+Discretionary Investment Investor Code,Mã nhà đầu tư ủy thác. Lưu dư thừa.,Text,false,false,draft,FMS.INVESACC.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Discretionary Investment Investor Id.,,
+Account Number,Số tài khoản lưu ký.,Text,true,false,draft,FMS.INVESACC.Account,BCV: không có term riêng cho account number trong Arrangement context. Giữ tên gần với BCV Account.,,
+Custodian Place Description,Nơi lưu ký — text tự do mô tả địa điểm lưu ký.,Text,true,false,draft,FMS.INVESACC.AccPlace,Cần xác nhận: AccPlace có phải FK đến BANKMONI không (câu hỏi xác nhận T2-#1). Hiện để denormalized.,,
+Contract Number,Số hợp đồng ủy thác quản lý danh mục.,Text,true,false,draft,FMS.INVESACC.ContractNo,,,
+Committed Capital Amount,Quy mô vốn ủy thác cam kết theo hợp đồng.,Currency Amount,true,false,draft,FMS.INVESACC.ActScale,Currency mặc định VND.,,
+Actual Capital Amount,Quy mô vốn giao nhận thực tế tại thời điểm báo cáo.,Currency Amount,true,false,draft,FMS.INVESACC.AdScale,Currency mặc định VND.,,
+Management Fee Rate,Phí quản lý theo điều khoản hợp đồng ủy thác.,Percentage,true,false,draft,FMS.INVESACC.ManagerFee,Phí theo hợp đồng — không phải phí thực tế phát sinh. BCV: không có term riêng cho management fee rate.,,
+Activity Status Code,Trạng thái hiệu lực hợp đồng: 1 = Còn hiệu lực; 0 = Hết hiệu lực.,Classification Value,true,false,draft,FMS.INVESACC.Status,Scheme: FMS_INVESACC_STATUS. Giá trị ETL-derived: ACTIVE/INACTIVE.,,
+Last Report Date,Kỳ báo cáo gần nhất liên quan đến tài khoản ủy thác.,Date,true,false,draft,FMS.INVESACC.DateReport,,,
+Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,Indicator,true,false,draft,FMS.INVESACC.IsDataMigration,Trường kỹ thuật migration.,,

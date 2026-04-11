@@ -153,17 +153,38 @@ Trước khi xuất file:
 **Tên file:** `attr_<SOURCE_SYSTEM>_<SourceTableName>.csv`
 **Mỗi file = 1 bảng nguồn.**
 
-**Cấu trúc cột:**
+**Cấu trúc cột — non-shared entity:**
 ```
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+```
+- `classification_context`: để rỗng với non-shared entity.
+- `etl_derived_value`: để rỗng nếu không có giá trị ETL-derived cố định.
+
+**Cấu trúc cột — shared entity (IP Postal Address / IP Electronic Address / IP Alt Identification):**
+
+Grain: **1 dòng = 1 silver_attribute × 1 classification_context**. Attribute lặp lại nếu có nhiều context.
+
+- `classification_context`: format `SCHEME=VALUE`. VD: `IP_ADDR_TYPE=HEAD_OFFICE`, `SOURCE_SYSTEM=FMS.SECURITIES`.
+- `etl_derived_value`: giá trị cố định ETL-derived (không từ cột nguồn). VD: `UBCKNN`.
+
+**Ví dụ non-shared:**
+```csv
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Securities Practitioner Id,Khóa đại diện cho NHN.,Surrogate Key,false,true,approved,,,, 
+Securities Practitioner Code,"Mã NHN do UBCKNN cấp. Map từ PK bảng nguồn.",Text,false,false,approved,Professionals.ID,"BCV Term: Individual Identifier. BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,approved,,,SOURCE_SYSTEM=NHNCK.Professionals,
 ```
 
-**Ví dụ:**
+**Ví dụ shared entity (IP Electronic Address với 2 context):**
 ```csv
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Securities Practitioner Id,Khóa đại diện cho NHN.,Surrogate Key,No,Yes,approved,,
-Securities Practitioner Code,"Mã NHN do UBCKNN cấp. Map từ PK bảng nguồn.",Text,No,No,approved,Professionals.ID,"BCV Term: Individual Identifier. BK của entity."
-Source System Code,"Mã hệ thống nguồn. TOMIC.Professionals",Classification Value,No,No,approved,,"Scheme: SOURCE_SYSTEM."
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Securities Practitioner.,Surrogate Key,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: ...,,
+Involved Party Code,Mã người hành nghề.,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: ...,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Professionals,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Value,Số điện thoại.,Text,true,false,draft,NHNCK.qlnhn.Professionals.Phone,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — email.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Value,Email.,Text,true,false,draft,NHNCK.qlnhn.Professionals.Email,,IP_ELEC_ADDR_TYPE=EMAIL,
 ```
 
 ### Cập nhật manifest.csv

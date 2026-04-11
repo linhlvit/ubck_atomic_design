@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,Khóa đại diện trỏ về FMS Fund Distribution Agent Organization Unit sở hữu địa chỉ này.,Surrogate Key,false,false,draft,FMS.AGENCIESBRA.Id,FK target: FMS Fund Distribution Agent Organization Unit.FMS Fund Distribution Agent Organization Unit Id. Pair with Involved Party Code.
-Involved Party Code,Mã nghiệp vụ của FMS Fund Distribution Agent Organization Unit. Lưu dư thừa.,Text,false,false,draft,FMS.AGENCIESBRA.Id,FK target: FMS Fund Distribution Agent Organization Unit.FMS Fund Distribution Agent Organization Unit Code. Pair with Involved Party Id.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.AGENCIESBRA.
-Address Type Code,Loại địa chỉ CN/PGD.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. Giá trị: BUSINESS (địa chỉ kinh doanh).
-Address Line,Địa chỉ CN/PGD dạng text tự do.,Text,true,false,draft,FMS.AGENCIESBRA.Address,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,Khóa đại diện trỏ về FMS Fund Distribution Agent Organization Unit.,Surrogate Key,false,false,draft,FMS.AGENCIESBRA.Id,FK target: FMS Fund Distribution Agent Organization Unit.FMS Fund Distribution Agent Organization Unit Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã nghiệp vụ của FMS Fund Distribution Agent Organization Unit. Lưu dư thừa.,Text,false,false,draft,FMS.AGENCIESBRA.Id,FK target: FMS Fund Distribution Agent Organization Unit.FMS Fund Distribution Agent Organization Unit Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FMS.AGENCIESBRA
+Address Type Code,Loại địa chỉ — kinh doanh.,Classification Value,false,false,draft,,,IP_ADDR_TYPE=BUSINESS
+Address Line,Địa chỉ CN/PGD dạng text tự do.,Text,true,false,draft,FMS.AGENCIESBRA.Address,,IP_ADDR_TYPE=BUSINESS,

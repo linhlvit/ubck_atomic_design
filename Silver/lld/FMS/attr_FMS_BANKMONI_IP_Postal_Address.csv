@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Custodian Bank.,Surrogate Key,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng.
-Involved Party Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.BANKMONI.
-Address Type Code,Loại địa chỉ.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. Giá trị ETL-derived: HEAD_OFFICE.
-Address Line,Địa chỉ ngân hàng LKGS.,Text,true,false,draft,FMS.BANKMONI.Address,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Custodian Bank.,Surrogate Key,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã ngân hàng LKGS. Lưu dư thừa.,Text,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FMS.BANKMONI
+Address Type Code,Loại địa chỉ — trụ sở chính.,Classification Value,false,false,draft,,,IP_ADDR_TYPE=HEAD_OFFICE
+Address Line,Địa chỉ ngân hàng LKGS.,Text,true,false,draft,FMS.BANKMONI.Address,,IP_ADDR_TYPE=HEAD_OFFICE,

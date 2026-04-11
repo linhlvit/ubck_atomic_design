@@ -1,18 +1,12 @@
-# FMS — HLD Tầng 3: Phụ thuộc Tầng 2
+# FMS — HLD Tier 3: Phụ thuộc Tier 2
 
 > **Nguồn:** Thiết kế CSDL FMS — Phân hệ quản lý giám sát công ty chứng khoán và quỹ đầu tư chứng khoán (20/03/2026)
 >
-> **Phạm vi:** Bảng có FK đến ít nhất 1 entity Tầng 2 (FUNDS, BRANCHES, TLProfiles, AGENCIESBRA, INVESACC, RANK, RNKFACTOR).
+> **Phụ thuộc Tier 1:** Fund Management Company, Foreign Fund Management Organization Unit, Custodian Bank, Fund Distribution Agent, Discretionary Investment Investor, Reporting Period, Member Rating Period.
 >
-> **Entity tham chiếu (Tầng 1):** Fund Management Company, Foreign Fund Management Organization Unit, Custodian Bank, Fund Distribution Agent, Discretionary Investment Investor, Reporting Period, Member Rating Period.
+> **Phụ thuộc Tier 2:** FMS Investment Fund, FMS Fund Management Company Organization Unit, FMS Fund Company Key Person, FMS Fund Distribution Agent Organization Unit, FMS Discretionary Investment Account, FMS Member Rating, FMS Rating Criterion.
 >
-> **Entity tham chiếu (Tầng 2):** FMS Investment Fund, FMS Fund Management Company Organization Unit, FMS Fund Company Key Person, FMS Fund Distribution Agent Organization Unit, FMS Discretionary Investment Account, FMS Member Rating, FMS Rating Criterion.
->
-> **Ký hiệu:**
-> - 🔵 Xanh dương: bảng nguồn FMS
-> - 🟢 Xanh lá: entity Silver mới (Tầng 3)
-> - ⬜ Xám: entity Silver tham chiếu (Tầng 1/2 — chỉ ghi tên)
-> - 🟣 Tím: Shared entity
+> **Thiết kế theo:** [FMS_HLD_Overview.md](FMS_HLD_Overview.md)
 
 ---
 
@@ -49,8 +43,8 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FUNDS["**FMS Investment Fund** (Tầng 2)"]:::ref
-    INVES["**Discretionary Investment Investor** (Tầng 1)"]:::ref
+    FUNDS["**FMS Investment Fund** (Tier 2)"]:::ref
+    INVES["**Discretionary Investment Investor** (Tier 1)"]:::ref
     MBFUND["**MBFUND**\nDanh sách nhà đầu tư quỹ\n(7 trường)"]:::src
 
     MBFUND -->|FndId| FUNDS
@@ -66,8 +60,8 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FUND["FMS Investment Fund (Tầng 2)"]:::refnode
-    DII["Discretionary Investment Investor (Tầng 1)"]:::refnode
+    FUND["FMS Investment Fund (Tier 2)"]:::refnode
+    DII["Discretionary Investment Investor (Tier 1)"]:::refnode
     MBF["**FMS Fund Investor Membership**\nVốn góp của NĐT trong quỹ"]:::silver
 
     MBF -->|FK| FUND
@@ -80,10 +74,10 @@ graph LR
 | BCV Concept | [Involved Party] Involved Party Group Membership |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 NĐT tham gia góp vốn vào 1 quỹ đầu tư |
-| FK đến Tầng 1 | Discretionary Investment Investor (InvesId) |
-| FK đến Tầng 2 | FMS Investment Fund (FndId) |
+| FK đến Tier 1 | Discretionary Investment Investor (InvesId) |
+| FK đến Tier 2 | FMS Investment Fund (FndId) |
 
-> **Lưu ý:** Capital (số lượng vốn góp) và Ratio (tỷ lệ sở hữu %) là attribute nghiệp vụ của membership — giữ trên entity này. MBCHANGE (lịch sử thay đổi vốn góp) sẽ FK đến entity này ở Tầng 4.
+> **Lưu ý:** Capital (số lượng vốn góp) và Ratio (tỷ lệ sở hữu %) là attribute nghiệp vụ của membership — giữ trên entity này. MBCHANGE (lịch sử thay đổi vốn góp) sẽ FK đến entity này ở Tier 4.
 
 ---
 
@@ -96,8 +90,8 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FUNDS["**FMS Investment Fund** (Tầng 2)"]:::ref
-    TLP["**FMS Fund Company Key Person** (Tầng 2)"]:::ref
+    FUNDS["**FMS Investment Fund** (Tier 2)"]:::ref
+    TLP["**FMS Fund Company Key Person** (Tier 2)"]:::ref
     REPRESENT["**REPRESENT**\nDanh sách ban đại diện/HĐQT\nquỹ đầu tư (7 trường)"]:::src
 
     REPRESENT -->|FndId| FUNDS
@@ -113,8 +107,8 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FUND["FMS Investment Fund (Tầng 2)"]:::refnode
-    KP["FMS Fund Company Key Person (Tầng 2)"]:::refnode
+    FUND["FMS Investment Fund (Tier 2)"]:::refnode
+    KP["FMS Fund Company Key Person (Tier 2)"]:::refnode
     REP["**FMS Fund Representative Board Member**\nThành viên ban đại diện quỹ"]:::silver
 
     REP -->|FK| FUND
@@ -127,7 +121,7 @@ graph LR
 | BCV Concept | [Involved Party] Involved Party Role |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 nhân sự giữ vai trò thành viên ban đại diện tại 1 quỹ |
-| FK đến Tầng 2 | FMS Investment Fund (FndId) + FMS Fund Company Key Person (TLId) |
+| FK đến Tier 2 | FMS Investment Fund (FndId) + FMS Fund Company Key Person (TLId) |
 
 > **Lưu ý:** IsChair → Indicator (trưởng ban hay thành viên thường). Status → Classification Value.
 
@@ -142,8 +136,8 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FORBRCH["**Foreign Fund Management Organization Unit** (Tầng 1)"]:::ref
-    TLP["**FMS Fund Company Key Person** (Tầng 2)"]:::ref
+    FORBRCH["**Foreign Fund Management Organization Unit** (Tier 1)"]:::ref
+    TLP["**FMS Fund Company Key Person** (Tier 2)"]:::ref
     STFFGBRCH["**STFFGBRCH**\nDanh sách nhân sự\nVPĐD/CN công ty QLQ NN (9 trường)"]:::src
 
     STFFGBRCH -->|FgBrId| FORBRCH
@@ -159,8 +153,8 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FGOU["Foreign Fund Management Organization Unit (Tầng 1)"]:::refnode
-    KP["FMS Fund Company Key Person (Tầng 2)"]:::refnode
+    FGOU["Foreign Fund Management Organization Unit (Tier 1)"]:::refnode
+    KP["FMS Fund Company Key Person (Tier 2)"]:::refnode
     STF["**FMS Foreign Fund Management\nOrganization Unit Staff**\nNhân sự VPĐD/CN QLQ NN"]:::silver
 
     STF -->|FK| FGOU
@@ -173,8 +167,8 @@ graph LR
 | BCV Concept | [Involved Party] Involved Party Role |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 nhân sự giữ vai trò tại 1 VPĐD/CN công ty QLQ NN |
-| FK đến Tầng 1 | Foreign Fund Management Organization Unit (FgBrId) |
-| FK đến Tầng 2 | FMS Fund Company Key Person (TLId) |
+| FK đến Tier 1 | Foreign Fund Management Organization Unit (FgBrId) |
+| FK đến Tier 2 | FMS Fund Company Key Person (TLId) |
 
 > **Lưu ý:** FnType (O=VPĐD NN; B=CN NN) → Classification Value. Isr, Isp → Indicator.
 
@@ -189,11 +183,11 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    SECURITIES["**Fund Management Company** (Tầng 1)"]:::ref
-    FUNDS["**FMS Investment Fund** (Tầng 2)"]:::ref
-    BANKMONI["**Custodian Bank** (Tầng 1)"]:::ref
-    FORBRCH["**Foreign Fund Management Organization Unit** (Tầng 1)"]:::ref
-    RPTPERIOD["**Reporting Period** (Tầng 1)"]:::ref
+    SECURITIES["**Fund Management Company** (Tier 1)"]:::ref
+    FUNDS["**FMS Investment Fund** (Tier 2)"]:::ref
+    BANKMONI["**Custodian Bank** (Tier 1)"]:::ref
+    FORBRCH["**Foreign Fund Management Organization Unit** (Tier 1)"]:::ref
+    RPTPERIOD["**Reporting Period** (Tier 1)"]:::ref
     RPTMEMBER["**RPTMEMBER**\nBáo cáo định kỳ\nthành viên thị trường (22 trường)"]:::src
 
     RPTMEMBER -->|SecId| SECURITIES
@@ -212,11 +206,11 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FMC["Fund Management Company (Tầng 1)"]:::refnode
-    FUND["FMS Investment Fund (Tầng 2)"]:::refnode
-    BNK["Custodian Bank (Tầng 1)"]:::refnode
-    FGOU["Foreign Fund Management Organization Unit (Tầng 1)"]:::refnode
-    RPD["Reporting Period (Tầng 1)"]:::refnode
+    FMC["Fund Management Company (Tier 1)"]:::refnode
+    FUND["FMS Investment Fund (Tier 2)"]:::refnode
+    BNK["Custodian Bank (Tier 1)"]:::refnode
+    FGOU["Foreign Fund Management Organization Unit (Tier 1)"]:::refnode
+    RPD["Reporting Period (Tier 1)"]:::refnode
     RPT["**FMS Member Periodic Report**\nBáo cáo định kỳ thành viên thị trường"]:::silver
 
     RPT -->|FK nullable| FMC
@@ -232,10 +226,10 @@ graph LR
 | BCV Concept | [Event] Communication |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 báo cáo định kỳ hoặc bất thường của 1 thành viên thị trường trong 1 kỳ báo cáo |
-| FK đến Tầng 1 | Fund Management Company (SecId, nullable) + Custodian Bank (BkMId, nullable) + Foreign Fund Management Organization Unit (FrBrId, nullable) + Reporting Period (PrdId) |
-| FK đến Tầng 2 | FMS Investment Fund (FndId, nullable) |
+| FK đến Tier 1 | Fund Management Company (SecId, nullable) + Custodian Bank (BkMId, nullable) + Foreign Fund Management Organization Unit (FrBrId, nullable) + Reporting Period (PrdId) |
+| FK đến Tier 2 | FMS Investment Fund (FndId, nullable) |
 
-> **Lưu ý:** Mỗi bản ghi báo cáo chỉ thuộc 1 loại thành viên — các FK SecId/FndId/BkMId/FrBrId là nullable (chỉ 1 trường có giá trị tùy Type). ReportType, Type, PeriodType, Status → Classification Value. RPTMBHS (lịch sử trạng thái) sẽ FK đến entity này ở Tầng 4.
+> **Lưu ý:** Mỗi bản ghi báo cáo chỉ thuộc 1 loại thành viên — các FK SecId/FndId/BkMId/FrBrId là nullable (chỉ 1 trường có giá trị tùy Type). ReportType, Type, PeriodType, Status → Classification Value. RPTMBHS (lịch sử trạng thái) sẽ FK đến entity này ở Tier 4.
 
 ---
 
@@ -248,7 +242,7 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    SECURITIES["**Fund Management Company** (Tầng 1)"]:::ref
+    SECURITIES["**Fund Management Company** (Tier 1)"]:::ref
     TRSFERINDER["**TRSFERINDER**\nDanh sách giao dịch\nchuyển nhượng cổ phần (7 trường)"]:::src
 
     TRSFERINDER -->|SecId| SECURITIES
@@ -263,7 +257,7 @@ graph LR
     classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
-    FMC["Fund Management Company (Tầng 1)"]:::refnode
+    FMC["Fund Management Company (Tier 1)"]:::refnode
     TRF["**FMS Fund Management Company\nShare Transfer**\nGiao dịch chuyển nhượng cổ phần QLQ"]:::silver
 
     TRF -->|FK| FMC
@@ -275,13 +269,13 @@ graph LR
 | BCV Concept | [Event] Transaction |
 | Model Table Type | Fundamental (SCD1) |
 | Grain | 1 dòng = 1 giao dịch chuyển nhượng cổ phần của 1 công ty QLQ |
-| FK đến Tầng 1 | Fund Management Company (SecId) |
+| FK đến Tier 1 | Fund Management Company (SecId) |
 
 > **Lưu ý:** Quantity (số lượng) và Price (giá) là attribute giao dịch. Không có FK đến bên nhận/bên chuyển nhượng cụ thể trong scope hiện tại — cần xác nhận thêm.
 
 ---
 
-## 6a. Tổng quan BCV Concept — Tầng 3
+## 6a. Tổng quan BCV Concept
 
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
 |---|---|---|---|---|---|---|
@@ -293,7 +287,7 @@ graph LR
 
 ---
 
-## 6b. Diagram Source — Tầng 3
+## 6b. Diagram Source (Mermaid)
 
 ```mermaid
 graph TD
@@ -339,7 +333,7 @@ graph TD
 
 ---
 
-## 6c. Diagram Silver — Tầng 3
+## 6c. Diagram Silver (Mermaid)
 
 ```mermaid
 graph TD
@@ -397,7 +391,7 @@ graph TD
 
 ---
 
-## 6f. Bảng chờ thiết kế
+## 6e. Bảng chờ thiết kế
 
 | Source Table | Mô tả bảng nguồn | Lý do chưa thiết kế |
 |---|---|---|
@@ -407,7 +401,7 @@ graph TD
 
 ---
 
-## 6g. Điểm cần xác nhận
+## 6f. Điểm cần xác nhận
 
 | # | Câu hỏi | Ảnh hưởng |
 |---|---|---|

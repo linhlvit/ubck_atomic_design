@@ -1,12 +1,12 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-License Certificate Document Status History Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. ETL Pattern — status history.
-License Certificate Document Status History Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.Id,BK chính.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecordStatusHistories,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-License Certificate Document Id,FK đến chứng chỉ,Surrogate Key,false,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CertificateRecordId,"FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. ""History of""."
-License Certificate Document Code,Mã chứng chỉ,Text,false,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CertificateRecordId,FK target: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id.
-From Status Code,Trạng thái trước,Classification Value,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.FromStatus,Scheme: CERTIFICATE_STATUS.
-To Status Code,Trạng thái sau,Classification Value,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.ToStatus,Scheme: CERTIFICATE_STATUS.
-Status Change Reason Description,Lý do thay đổi,Text,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.Reason,Suffix Description vì text tự do.
-Status Changed By Officer Id,FK đến Officer — người thực hiện,Surrogate Key,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedBy,FK target: Regulatory Authority Officer.Officer Id.
-Status Changed By Officer Code,Mã người thực hiện,Text,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Status Changed By Officer Id.
-Status Change Timestamp,Thời điểm thay đổi,Timestamp,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedAt,CreatedAt = thời điểm thay đổi.
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+License Certificate Document Status History Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. ETL Pattern — status history.,,
+License Certificate Document Status History Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.CertificateRecordStatusHistories,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,,
+License Certificate Document Id,FK đến chứng chỉ,Surrogate Key,false,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CertificateRecordId,"FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. ""History of"".",,
+License Certificate Document Code,Mã chứng chỉ,Text,false,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CertificateRecordId,FK target: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id.,,
+From Status Code,Trạng thái trước,Classification Value,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.FromStatus,Scheme: CERTIFICATE_STATUS.,,
+To Status Code,Trạng thái sau,Classification Value,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.ToStatus,Scheme: CERTIFICATE_STATUS.,,
+Status Change Reason Description,Lý do thay đổi,Text,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.Reason,Suffix Description vì text tự do.,,
+Status Changed By Officer Id,FK đến Officer — người thực hiện,Surrogate Key,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedBy,FK target: Regulatory Authority Officer.Officer Id.,,
+Status Changed By Officer Code,Mã người thực hiện,Text,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Status Changed By Officer Id.,,
+Status Change Timestamp,Thời điểm thay đổi,Timestamp,true,false,draft,NHNCK.qlnhn.CertificateRecordStatusHistories.CreatedAt,CreatedAt = thời điểm thay đổi.,,

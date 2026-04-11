@@ -1,24 +1,24 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-FMS Fund Management Company Organization Unit Id,Khóa đại diện cho CN/VPĐD công ty QLQ trong nước.,Surrogate Key,false,true,draft,,
-FMS Fund Management Company Organization Unit Code,Mã CN/VPĐD do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.BRANCHES.Id,BCV Term: Organization Unit. BK của entity.
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.BRANCHES.
-Fund Management Company Id,Khóa đại diện công ty QLQ chủ quản. FK → SECURITIES.,Surrogate Key,false,false,draft,FMS.BRANCHES.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.
-Fund Management Company Code,Mã công ty QLQ chủ quản. Lưu dư thừa.,Text,false,false,draft,FMS.BRANCHES.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.
-FMS Fund Management Company Organization Unit Parent Id,Khóa đại diện đơn vị cha (self-FK). Null nếu là đơn vị gốc.,Surrogate Key,true,false,draft,FMS.BRANCHES.BrIdowner,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Id. Pair with FMS Fund Management Company Organization Unit Parent Code.
-FMS Fund Management Company Organization Unit Parent Code,Mã đơn vị cha. Lưu dư thừa.,Text,true,false,draft,FMS.BRANCHES.BrIdowner,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Code. Pair with FMS Fund Management Company Organization Unit Parent Id.
-Key Person Id,Khóa đại diện người đại diện của đơn vị. FK → TLProfiles.,Surrogate Key,true,false,draft,FMS.BRANCHES.TLId,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Id. Pair with Key Person Code.
-Key Person Code,Mã người đại diện. Lưu dư thừa.,Text,true,false,draft,FMS.BRANCHES.TLId,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Code. Pair with Key Person Id.
-Key Person Name,Tên người đại diện — lưu dư thừa từ nguồn.,Text,true,false,draft,FMS.BRANCHES.TLName,Denormalized từ TLProfiles.FullName — giữ để trace khi dữ liệu lịch sử thay đổi.
-Organization Name,Tên CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Name,
-Organization Unit Type Code,Loại đơn vị: 1 = CN; 4 = VPĐD.,Classification Value,true,false,draft,FMS.BRANCHES.BrType,Scheme: FMS_ORGANIZATION_UNIT_TYPE. Giá trị ETL-derived: BRANCH/REPRESENTATIVE_OFFICE.
-Establishment Decision Number,Số giấy phép thành lập CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Decision,Đưa vào IP Alt Identification — xem file attr_FMS_BRANCHES_IP_Alt_Identification.csv.
-Establishment Decision Date,Ngày cấp giấy phép thành lập CN/VPĐD.,Date,true,false,draft,FMS.BRANCHES.DecisionDate,
-Latest Adjustment License Number,Số GP/QĐ/CV sửa đổi gần nhất.,Text,true,false,draft,FMS.BRANCHES.VoucherNo,
-Latest Adjustment License Date,Ngày chấp thuận sửa đổi gần nhất.,Date,true,false,draft,FMS.BRANCHES.VoucherDate,
-Adjustment Note,Lý do sửa đổi giấy phép.,Text,true,false,draft,FMS.BRANCHES.DesChange,
-Business Description,Nghiệp vụ kinh doanh của CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Content,
-Note,Ghi chú.,Text,true,false,draft,FMS.BRANCHES.Description,
-Stop Date,Ngày đóng cửa CN/VPĐD.,Date,true,false,draft,FMS.BRANCHES.StopDate,
-Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,Classification Value,true,false,draft,FMS.BRANCHES.Status,Scheme: FMS_OPERATION_STATUS. Values load từ bảng STATUS nguồn.
-Attachment File Data,File đính kèm tài liệu giấy phép (binary reference).,Text,true,false,draft,FMS.BRANCHES.FileData,
-Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,Indicator,true,false,draft,FMS.BRANCHES.IsDataMigration,Trường kỹ thuật migration.
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+FMS Fund Management Company Organization Unit Id,Khóa đại diện cho CN/VPĐD công ty QLQ trong nước.,Surrogate Key,false,true,draft,,,,
+FMS Fund Management Company Organization Unit Code,Mã CN/VPĐD do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.BRANCHES.Id,BCV Term: Organization Unit. BK của entity.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.BRANCHES.,,
+Fund Management Company Id,Khóa đại diện công ty QLQ chủ quản. FK → SECURITIES.,Surrogate Key,false,false,draft,FMS.BRANCHES.SecId,FK target: Fund Management Company.Fund Management Company Id. Pair with Fund Management Company Code.,,
+Fund Management Company Code,Mã công ty QLQ chủ quản. Lưu dư thừa.,Text,false,false,draft,FMS.BRANCHES.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.,,
+FMS Fund Management Company Organization Unit Parent Id,Khóa đại diện đơn vị cha (self-FK). Null nếu là đơn vị gốc.,Surrogate Key,true,false,draft,FMS.BRANCHES.BrIdowner,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Id. Pair with FMS Fund Management Company Organization Unit Parent Code.,,
+FMS Fund Management Company Organization Unit Parent Code,Mã đơn vị cha. Lưu dư thừa.,Text,true,false,draft,FMS.BRANCHES.BrIdowner,FK target: FMS Fund Management Company Organization Unit.FMS Fund Management Company Organization Unit Code. Pair with FMS Fund Management Company Organization Unit Parent Id.,,
+Key Person Id,Khóa đại diện người đại diện của đơn vị. FK → TLProfiles.,Surrogate Key,true,false,draft,FMS.BRANCHES.TLId,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Id. Pair with Key Person Code.,,
+Key Person Code,Mã người đại diện. Lưu dư thừa.,Text,true,false,draft,FMS.BRANCHES.TLId,FK target: FMS Fund Company Key Person.FMS Fund Company Key Person Code. Pair with Key Person Id.,,
+Key Person Name,Tên người đại diện — lưu dư thừa từ nguồn.,Text,true,false,draft,FMS.BRANCHES.TLName,Denormalized từ TLProfiles.FullName — giữ để trace khi dữ liệu lịch sử thay đổi.,,
+Organization Name,Tên CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Name,,,
+Organization Unit Type Code,Loại đơn vị: 1 = CN; 4 = VPĐD.,Classification Value,true,false,draft,FMS.BRANCHES.BrType,Scheme: FMS_ORGANIZATION_UNIT_TYPE. Giá trị ETL-derived: BRANCH/REPRESENTATIVE_OFFICE.,,
+Establishment Decision Number,Số giấy phép thành lập CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Decision,Đưa vào IP Alt Identification — xem file attr_FMS_BRANCHES_IP_Alt_Identification.csv.,,
+Establishment Decision Date,Ngày cấp giấy phép thành lập CN/VPĐD.,Date,true,false,draft,FMS.BRANCHES.DecisionDate,,,
+Latest Adjustment License Number,Số GP/QĐ/CV sửa đổi gần nhất.,Text,true,false,draft,FMS.BRANCHES.VoucherNo,,,
+Latest Adjustment License Date,Ngày chấp thuận sửa đổi gần nhất.,Date,true,false,draft,FMS.BRANCHES.VoucherDate,,,
+Adjustment Note,Lý do sửa đổi giấy phép.,Text,true,false,draft,FMS.BRANCHES.DesChange,,,
+Business Description,Nghiệp vụ kinh doanh của CN/VPĐD.,Text,true,false,draft,FMS.BRANCHES.Content,,,
+Note,Ghi chú.,Text,true,false,draft,FMS.BRANCHES.Description,,,
+Stop Date,Ngày đóng cửa CN/VPĐD.,Date,true,false,draft,FMS.BRANCHES.StopDate,,,
+Activity Status Code,Mã ID trạng thái hoạt động. FK → STATUS.Id.,Classification Value,true,false,draft,FMS.BRANCHES.Status,Scheme: FMS_OPERATION_STATUS. Values load từ bảng STATUS nguồn.,,
+Attachment File Data,File đính kèm tài liệu giấy phép (binary reference).,Text,true,false,draft,FMS.BRANCHES.FileData,,,
+Is Data Migration,1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới.,Indicator,true,false,draft,FMS.BRANCHES.IsDataMigration,Trường kỹ thuật migration.,,

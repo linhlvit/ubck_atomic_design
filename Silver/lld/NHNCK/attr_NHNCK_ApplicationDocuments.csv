@@ -1,21 +1,21 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-License Application Document Attachment Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Supporting Documentation"" (Documentation). Entity con tham chiếu entity cha ""License Application""."
-License Application Document Attachment Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ApplicationDocuments.Id,BK chính. PK nguồn.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationDocuments,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-License Application Id,FK đến Securities Practitioner License Application,Surrogate Key,false,false,draft,NHNCK.qlnhn.ApplicationDocuments.ApplicationId,FK target: Securities Practitioner License Application.License Application Id. Pattern Id + Code.
-License Application Code,Mã hồ sơ,Text,false,false,draft,NHNCK.qlnhn.ApplicationDocuments.ApplicationId,FK target: Securities Practitioner License Application.License Application Code. Pair with License Application Id.
-Document Type Code,Mã loại tài liệu,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.DocumentId,Scheme: DOCUMENT_TYPE.
-Document Name,Tên tài liệu,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.DocumentName,"Tên hiển thị, khác File Name (tên file vật lý)."
-Document Description,Mô tả tài liệu,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Description,"Nhất quán prefix ""Document""."
-Documentation Item File Name,Tên file vật lý,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.FileName,"BCV: ""Documentation Item File Name"" (Documentation)."
-Documentation Item File Path,Đường dẫn tệp,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.FilePath,"Nhất quán prefix ""Documentation Item File""."
-Documentation Item File Format,Loại file,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Format,Nhất quán prefix.
-Documentation Item File Size,Dung lượng file,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.FileSize,Nhất quán prefix.
-Appraisal Status Code,Trạng thái thẩm định,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Status,Scheme: APPRAISAL_STATUS.
-Appraised By Officer Id,FK đến Regulatory Authority Officer — người thẩm định,Surrogate Key,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.AssigneeId,FK target: Regulatory Authority Officer.Officer Id. Pattern Id + Code.
-Appraised By Officer Code,Mã người thẩm định,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.AssigneeId,FK target: Regulatory Authority Officer.Officer Code. Pair with Appraised By Officer Id.
-Appraised Timestamp,Ngày thẩm định,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.AppraisaledAt,
-Invalid Indicator,Cờ hợp lệ (IsInvalid = true → không hợp lệ),Indicator,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.IsInvalid,Suffix Indicator.
-Incomplete Indicator,Cờ hoàn thành (IsIncomplete = true → chưa đầy đủ),Indicator,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.IsIncomplete,Suffix Indicator.
-Note,Ghi chú,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Note,
-Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.CreatedAt,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+License Application Document Attachment Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Supporting Documentation"" (Documentation). Entity con tham chiếu entity cha ""License Application"".",,
+License Application Document Attachment Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.ApplicationDocuments.Id,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.ApplicationDocuments,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,,
+License Application Id,FK đến Securities Practitioner License Application,Surrogate Key,false,false,draft,NHNCK.qlnhn.ApplicationDocuments.ApplicationId,FK target: Securities Practitioner License Application.License Application Id. Pattern Id + Code.,,
+License Application Code,Mã hồ sơ,Text,false,false,draft,NHNCK.qlnhn.ApplicationDocuments.ApplicationId,FK target: Securities Practitioner License Application.License Application Code. Pair with License Application Id.,,
+Document Type Code,Mã loại tài liệu,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.DocumentId,Scheme: DOCUMENT_TYPE.,,
+Document Name,Tên tài liệu,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.DocumentName,"Tên hiển thị, khác File Name (tên file vật lý).",,
+Document Description,Mô tả tài liệu,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Description,"Nhất quán prefix ""Document"".",,
+Documentation Item File Name,Tên file vật lý,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.FileName,"BCV: ""Documentation Item File Name"" (Documentation).",,
+Documentation Item File Path,Đường dẫn tệp,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.FilePath,"Nhất quán prefix ""Documentation Item File"".",,
+Documentation Item File Format,Loại file,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Format,Nhất quán prefix.,,
+Documentation Item File Size,Dung lượng file,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.FileSize,Nhất quán prefix.,,
+Appraisal Status Code,Trạng thái thẩm định,Classification Value,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Status,Scheme: APPRAISAL_STATUS.,,
+Appraised By Officer Id,FK đến Regulatory Authority Officer — người thẩm định,Surrogate Key,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.AssigneeId,FK target: Regulatory Authority Officer.Officer Id. Pattern Id + Code.,,
+Appraised By Officer Code,Mã người thẩm định,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.AssigneeId,FK target: Regulatory Authority Officer.Officer Code. Pair with Appraised By Officer Id.,,
+Appraised Timestamp,Ngày thẩm định,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.AppraisaledAt,,,
+Invalid Indicator,Cờ hợp lệ (IsInvalid = true → không hợp lệ),Indicator,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.IsInvalid,Suffix Indicator.,,
+Incomplete Indicator,Cờ hoàn thành (IsIncomplete = true → chưa đầy đủ),Indicator,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.IsIncomplete,Suffix Indicator.,,
+Note,Ghi chú,Text,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.Note,,,
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.ApplicationDocuments.CreatedAt,,,
