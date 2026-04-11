@@ -1,9 +1,9 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-FMS Rating Criterion Id,Khóa đại diện cho nhân tố chấm điểm đánh giá xếp loại.,Surrogate Key,false,true,draft,,,,
-FMS Rating Criterion Code,Mã nhân tố chấm điểm do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RNKFACTOR.Id,BCV Term: Criterion. BK của entity.,,
+Rating Criterion Id,Khóa đại diện cho nhân tố chấm điểm đánh giá xếp loại.,Surrogate Key,false,true,draft,,,,
+Rating Criterion Code,Mã nhân tố chấm điểm do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RNKFACTOR.Id,BCV Term: Criterion. BK của entity.,,
 Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.RNKFACTOR.,,
-FMS Rating Criterion Parent Id,Khóa đại diện nhân tố cha (self-FK). Null nếu là nhân tố gốc.,Surrogate Key,true,false,draft,FMS.RNKFACTOR.ParentId,FK target: FMS Rating Criterion.FMS Rating Criterion Id. Pair with FMS Rating Criterion Parent Code.,,
-FMS Rating Criterion Parent Code,Mã nhân tố cha. Lưu dư thừa.,Text,true,false,draft,FMS.RNKFACTOR.ParentId,FK target: FMS Rating Criterion.FMS Rating Criterion Code. Pair with FMS Rating Criterion Parent Id.,,
+Rating Criterion Parent Id,Khóa đại diện nhân tố cha (self-FK). Null nếu là nhân tố gốc.,Surrogate Key,true,false,draft,FMS.RNKFACTOR.ParentId,FK target: Rating Criterion.Rating Criterion Id. Pair with Rating Criterion Parent Code.,,
+Rating Criterion Parent Code,Mã nhân tố cha. Lưu dư thừa.,Text,true,false,draft,FMS.RNKFACTOR.ParentId,FK target: Rating Criterion.Rating Criterion Code. Pair with Rating Criterion Parent Id.,,
 Criterion Name,Tên nhân tố chấm điểm đánh giá xếp loại.,Text,false,false,draft,FMS.RNKFACTOR.Name,,,
 Maximum Score,Điểm tối đa của nhân tố này trong thang đánh giá.,Percentage,true,false,draft,FMS.RNKFACTOR.MaxScore,,,
 Weight,Trọng số của nhân tố trong tổng điểm đánh giá.,Percentage,true,false,draft,FMS.RNKFACTOR.Weight,,,

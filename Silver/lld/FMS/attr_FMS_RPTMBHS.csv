@@ -1,9 +1,9 @@
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-FMS Member Periodic Report Status Log Id,Khóa đại diện cho bản ghi nhật ký thay đổi trạng thái báo cáo.,Surrogate Key,false,true,draft,,,,
-FMS Member Periodic Report Status Log Code,Mã nhật ký do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RPTMBHS.Id,BCV Term: Business Activity. BK của entity.,,
+Member Periodic Report Status Log Id,Khóa đại diện cho bản ghi nhật ký thay đổi trạng thái báo cáo.,Surrogate Key,false,true,draft,,,,
+Member Periodic Report Status Log Code,Mã nhật ký do hệ thống FMS sinh ra. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RPTMBHS.Id,BCV Term: Business Activity. BK của entity.,,
 Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Giá trị: FMS.RPTMBHS.,,
-FMS Member Periodic Report Id,Khóa đại diện báo cáo định kỳ mà log này ghi nhận thay đổi. FK → RPTMEMBER.,Surrogate Key,false,false,draft,FMS.RPTMBHS.RptMbId,FK target: FMS Member Periodic Report.FMS Member Periodic Report Id. Pair with FMS Member Periodic Report Code.,,
-FMS Member Periodic Report Code,Mã báo cáo định kỳ. Lưu dư thừa.,Text,false,false,draft,FMS.RPTMBHS.RptMbId,FK target: FMS Member Periodic Report.FMS Member Periodic Report Code. Pair with FMS Member Periodic Report Id.,,
+Member Periodic Report Id,Khóa đại diện báo cáo định kỳ mà log này ghi nhận thay đổi. FK → RPTMEMBER.,Surrogate Key,false,false,draft,FMS.RPTMBHS.RptMbId,FK target: Member Periodic Report.Member Periodic Report Id. Pair with Member Periodic Report Code.,,
+Member Periodic Report Code,Mã báo cáo định kỳ. Lưu dư thừa.,Text,false,false,draft,FMS.RPTMBHS.RptMbId,FK target: Member Periodic Report.Member Periodic Report Code. Pair with Member Periodic Report Id.,,
 Report Submission Status Code,Trạng thái báo cáo tại thời điểm ghi nhận.,Classification Value,true,false,draft,FMS.RPTMBHS.Status,Scheme: FMS_REPORT_SUBMISSION_STATUS. Cùng scheme với RPTMEMBER.Status.,,
 Report Name,Tên báo cáo tại thời điểm ghi nhận.,Text,true,false,draft,FMS.RPTMBHS.RptName,Lưu snapshot tên báo cáo theo từng lần thay đổi trạng thái.,,
 Content Summary,Nội dung trích yếu của sự kiện thay đổi trạng thái.,Text,true,false,draft,FMS.RPTMBHS.ContentSummary,,,

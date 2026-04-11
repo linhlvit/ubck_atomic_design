@@ -130,7 +130,7 @@ graph TD
 
 **Shared entities:** IP Postal Address (Address), IP Electronic Address (Telephone, Fax, Email), IP Alt Identification (Decision — GP thành lập).
 
-**Được FK từ:** FMS Investment Fund, FMS Fund Management Company Organization Unit, FMS Fund Company Key Person, FMS Member Rating (Tier 2); FMS Fund Investor Membership, FMS Member Periodic Report, FMS Fund Management Company Share Transfer (Tier 3+).
+**Được FK từ:** Investment Fund, Fund Management Company Organization Unit, Fund Management Company Key Person, Member Rating (Tier 2); Investment Fund Investor Membership, Member Periodic Report, Fund Management Company Share Transfer (Tier 3+).
 
 ---
 

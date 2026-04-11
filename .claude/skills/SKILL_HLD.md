@@ -31,6 +31,11 @@ Thiết kế nền móng trước, xây dựng quan hệ sau. Mỗi tầng = 1 f
 - Bảng có FK đến main entity nhưng không có entity nào phụ thuộc → vẫn trong scope (leaf entity).
 - Bảng **chưa có cấu trúc trường** (không có thông tin cột) → **không thiết kế**, ghi nhận vào file đầu ra để theo dõi.
 - Bảng **Audit Log nguồn** (nhận biết qua cột PrevValue/ValueChange hoặc OldValue/NewValue + Action + DateChange): đây là cơ chế ghi lịch sử đặc thù của source system → **ngoài scope Silver**. Nếu cần dữ liệu lịch sử trên Silver thì thiết kế job parsing riêng để đẩy vào entity Silver có cột tường minh.
+
+  **Phân biệt Audit Log nguồn vs ETL Pattern — Activity/Status Log trên Silver:**
+  - **Audit Log nguồn** = bảng source system ghi mọi thay đổi field dạng generic (FieldName + OldValue + NewValue) → **ngoài scope Silver**.
+  - **ETL Pattern — Activity/Status Log** = Silver entity ghi nhận sự kiện nghiệp vụ có cột tường minh (VD: trạng thái trước/sau, lý do thay đổi, timestamp) → **trong scope Silver**, tạo entity riêng.
+  - Dấu hiệu nhận biết Audit Log nguồn: có cặp `OldValue`/`NewValue` (hoặc `PrevValue`/`ValueChange`) kèm cột `FieldName` — tức là 1 dòng mô tả 1 field thay đổi bất kỳ, không phải 1 sự kiện nghiệp vụ cụ thể.
 - Bảng **Snapshot nguồn** (nhận biết qua cột IsBefore + blob data như SecData/TLData): cùng lý do với Audit Log nguồn → **ngoài scope Silver**.
 
 ### Bước 3 — Trace dependency cho mỗi bảng

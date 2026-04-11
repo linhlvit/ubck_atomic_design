@@ -26,21 +26,21 @@
 | 1 | Location | [Location] Postal Address | Location | SECURITIES, FORBRCH, BANKMONI, AGENCIES | — | IP Postal Address *(Shared)* | Postal Address |
 | 1 | Location | [Location] Electronic Address | Location | SECURITIES, FORBRCH, BANKMONI | — | IP Electronic Address *(Shared)* | Electronic Address |
 | 1 | Involved Party | [Involved Party] Alternative Identification | Involved Party | SECURITIES, FORBRCH, INVES | — | IP Alt Identification *(Shared)* | Alternative Identification |
-| 2 | Involved Party | [Involved Party] Organization | Involved Party | FUNDS | Danh sách quỹ đầu tư chứng khoán | FMS Investment Fund | Organization (id 10894) — *"Identifies an Involved Party that may stand alone in an operational or legal context."* FundCapital + DecisionDate + StopDate = pháp nhân. |
-| 2 | Involved Party | [Involved Party] Organization Unit | Involved Party | BRANCHES | Danh sách CN/VPĐD công ty QLQ trong nước | FMS Fund Management Company Organization Unit | Organization Unit (id 11192) — *"A component or subdivision of an Organization."* Có Address/GP riêng, FK đến tổ chức cha. |
-| 2 | Involved Party | [Involved Party] Individual | Involved Party | TLProfiles | Danh sách nhân sự công ty QLQ | FMS Fund Company Key Person | Individual (id 10902) — *"Identifies an Involved Party who is a natural person."* FullName + BirthDate + IdNo = thể nhân. |
-| 2 | Involved Party | [Involved Party] Organization Unit | Involved Party | AGENCIESBRA | Danh sách CN/PGD của đại lý quỹ đầu tư | FMS Fund Distribution Agent Organization Unit | Organization Unit (id 11192) — cùng pattern với BRANCHES. Name + Address + FK đến đại lý cha. |
-| 2 | Arrangement | [Arrangement] Financial Portfolio Management Arrangement | Arrangement | INVESACC | Danh sách tài khoản nhà đầu tư ủy thác | FMS Discretionary Investment Account | Financial Portfolio Management Arrangement — *"Identifies a service of managing of financial portfolio."* ContractNo + ActScale/AdScale + ManagerFee = hợp đồng dịch vụ. |
-| 2 | Involved Party | [Involved Party] Involved Party Rating | Involved Party | RANK | Bảng xếp hạng theo kỳ đánh giá | FMS Member Rating | Involved Party Rating (id 10360) — *"Identifies a relationship in which a Rating Scale applies to an Involved Party."* TotalScore/RankValue/RankClass = kết quả cụ thể gán cho từng QLQ theo kỳ. |
-| 2 | Condition | [Condition] Criterion | Condition | RNKFACTOR | Bảng chấm điểm đánh giá xếp loại (nhân tố cha/con) | FMS Rating Criterion | Criterion (id 8945) — *"Identifies a Condition that specifies a characteristic used as a basis of judgment."* Name + MaxScore + Weight = tiêu chí tĩnh, không gắn Arrangement. |
-| 3 | Involved Party | [Involved Party] Involved Party Group Membership | Involved Party | MBFUND | Danh sách nhà đầu tư quỹ | FMS Fund Investor Membership | Involved Party Group Membership (id 10364) — *"Identifies a relationship in which an Involved Party is a member of a Group."* FndId + InvesId + Capital + Ratio = membership có attribute. |
-| 3 | Involved Party | [Involved Party] Involved Party Role | Involved Party | REPRESENT | Danh sách ban đại diện/HĐQT quỹ đầu tư | FMS Fund Representative Board Member | Involved Party Role (id 10362) — *"Identifies a relationship in which an Involved Party performs a defined function."* FndId + TLId + IsChair + Status = cá nhân đảm nhận vai trò trong ban đại diện. |
-| 3 | Involved Party | [Involved Party] Involved Party Role | Involved Party | STFFGBRCH | Danh sách nhân sự VPĐD/CN công ty QLQ NN | FMS Foreign Fund Management Organization Unit Staff | Involved Party Role (id 10362) — cùng pattern với REPRESENT. FgBrId + TLId + FnType + Isr + Isp = cá nhân đảm nhận vai trò tại VPĐD/CN QLQ NN. |
-| 3 | Communication | [Event] Communication | Event | RPTMEMBER | Báo cáo định kỳ của thành viên thị trường | FMS Member Periodic Report | Communication (id 8956) — *"Identifies an Event that is a communication between Involved Parties."* DeadlineSend + DateSubmitted + Status = giao tiếp giữa thành viên và cơ quan quản lý. |
-| 3 | Transaction | [Event] Transaction | Event | TRSFERINDER | Danh sách giao dịch chuyển nhượng cổ phần | FMS Fund Management Company Share Transfer | Transaction (id 8954) — *"Identifies an Event that is a transaction between Involved Parties."* TransDate + Quantity + Price = giao dịch tài chính cụ thể. |
-| 4 | Transaction | [Event] Transaction | Event | TRANSFERMBF | Danh sách giao dịch chứng chỉ quỹ | FMS Fund Certificate Transfer | Transaction (id 8954) — cùng pattern với TRSFERINDER. TransDate + Quantity + Price + TransType = giao dịch CCQ. |
-| 4 | Business Activity | [Event] Business Activity | Event | RPTMBHS | Lịch sử báo cáo thành viên | FMS Member Periodic Report Status Log | Business Activity (id 8958) — *"Identifies an Event that is a business activity."* Status + ContentSummary + Note = sự kiện thay đổi trạng thái báo cáo, không lưu Old/New value. |
-| 4 | Documentation | [Resource Item] Documentation | Resource Item | RPTVALUES | Báo cáo giá trị — lưu dữ liệu import | FMS Report Import Value | Documentation (id 11050) — *"Identifies a Resource Item that is a document."* Values + SheetId + TgtId = nội dung tài liệu báo cáo được import. |
+| 2 | Involved Party | [Involved Party] Organization | Involved Party | FUNDS | Danh sách quỹ đầu tư chứng khoán | Investment Fund | Organization (id 10894) — *"Identifies an Involved Party that may stand alone in an operational or legal context."* FundCapital + DecisionDate + StopDate = pháp nhân. |
+| 2 | Involved Party | [Involved Party] Organization Unit | Involved Party | BRANCHES | Danh sách CN/VPĐD công ty QLQ trong nước | Fund Management Company Organization Unit | Organization Unit (id 11192) — *"A component or subdivision of an Organization."* Có Address/GP riêng, FK đến tổ chức cha. |
+| 2 | Involved Party | [Involved Party] Individual | Involved Party | TLProfiles | Danh sách nhân sự công ty QLQ | Fund Management Company Key Person | Individual (id 10902) — *"Identifies an Involved Party who is a natural person."* FullName + BirthDate + IdNo = thể nhân. |
+| 2 | Involved Party | [Involved Party] Organization Unit | Involved Party | AGENCIESBRA | Danh sách CN/PGD của đại lý quỹ đầu tư | Fund Distribution Agent Organization Unit | Organization Unit (id 11192) — cùng pattern với BRANCHES. Name + Address + FK đến đại lý cha. |
+| 2 | Arrangement | [Arrangement] Financial Portfolio Management Arrangement | Arrangement | INVESACC | Danh sách tài khoản nhà đầu tư ủy thác | Discretionary Investment Account | Financial Portfolio Management Arrangement — *"Identifies a service of managing of financial portfolio."* ContractNo + ActScale/AdScale + ManagerFee = hợp đồng dịch vụ. |
+| 2 | Involved Party | [Involved Party] Involved Party Rating | Involved Party | RANK | Bảng xếp hạng theo kỳ đánh giá | Member Rating | Involved Party Rating (id 10360) — *"Identifies a relationship in which a Rating Scale applies to an Involved Party."* TotalScore/RankValue/RankClass = kết quả cụ thể gán cho từng QLQ theo kỳ. |
+| 2 | Condition | [Condition] Criterion | Condition | RNKFACTOR | Bảng chấm điểm đánh giá xếp loại (nhân tố cha/con) | Rating Criterion | Criterion (id 8945) — *"Identifies a Condition that specifies a characteristic used as a basis of judgment."* Name + MaxScore + Weight = tiêu chí tĩnh, không gắn Arrangement. |
+| 3 | Involved Party | [Involved Party] Involved Party Group Membership | Involved Party | MBFUND | Danh sách nhà đầu tư quỹ | Investment Fund Investor Membership | Involved Party Group Membership (id 10364) — *"Identifies a relationship in which an Involved Party is a member of a Group."* FndId + InvesId + Capital + Ratio = membership có attribute. |
+| 3 | Involved Party | [Involved Party] Involved Party Role | Involved Party | REPRESENT | Danh sách ban đại diện/HĐQT quỹ đầu tư | Investment Fund Representative Board Member | Involved Party Role (id 10362) — *"Identifies a relationship in which an Involved Party performs a defined function."* FndId + TLId + IsChair + Status = cá nhân đảm nhận vai trò trong ban đại diện. |
+| 3 | Involved Party | [Involved Party] Involved Party Role | Involved Party | STFFGBRCH | Danh sách nhân sự VPĐD/CN công ty QLQ NN | Foreign Fund Management Organization Unit Staff | Involved Party Role (id 10362) — cùng pattern với REPRESENT. FgBrId + TLId + FnType + Isr + Isp = cá nhân đảm nhận vai trò tại VPĐD/CN QLQ NN. |
+| 3 | Communication | [Event] Communication | Event | RPTMEMBER | Báo cáo định kỳ của thành viên thị trường | Member Periodic Report | Communication (id 8956) — *"Identifies an Event that is a communication between Involved Parties."* DeadlineSend + DateSubmitted + Status = giao tiếp giữa thành viên và cơ quan quản lý. |
+| 3 | Transaction | [Event] Transaction | Event | TRSFERINDER | Danh sách giao dịch chuyển nhượng cổ phần | Fund Management Company Share Transfer | Transaction (id 8954) — *"Identifies an Event that is a transaction between Involved Parties."* TransDate + Quantity + Price = giao dịch tài chính cụ thể. |
+| 4 | Transaction | [Event] Transaction | Event | TRANSFERMBF | Danh sách giao dịch chứng chỉ quỹ | Investment Fund Certificate Transfer | Transaction (id 8954) — cùng pattern với TRSFERINDER. TransDate + Quantity + Price + TransType = giao dịch CCQ. |
+| 4 | Business Activity | [Event] Business Activity | Event | RPTMBHS | Lịch sử báo cáo thành viên | Member Periodic Report Status Log | Business Activity (id 8958) — *"Identifies an Event that is a business activity."* Status + ContentSummary + Note = sự kiện thay đổi trạng thái báo cáo, không lưu Old/New value. |
+| 4 | Documentation | [Resource Item] Documentation | Resource Item | RPTVALUES | Báo cáo giá trị — lưu dữ liệu import | Report Import Value | Documentation (id 11050) — *"Identifies a Resource Item that is a document."* Values + SheetId + TgtId = nội dung tài liệu báo cáo được import. |
 
 ---
 
@@ -66,25 +66,25 @@ graph TD
     MRP["**Member Rating Period**"]:::silver
 
     %% Tier 2
-    FUND["**FMS Investment Fund**"]:::silver
-    FMCOU["**FMS Fund Management Company\nOrganization Unit**"]:::silver
-    KP["**FMS Fund Company Key Person**"]:::silver
-    FDAOU["**FMS Fund Distribution Agent\nOrganization Unit**"]:::silver
-    IACC["**FMS Discretionary Investment Account**"]:::silver
-    RATING["**FMS Member Rating**"]:::silver
-    RC["**FMS Rating Criterion**"]:::silver
+    FUND["**Investment Fund**"]:::silver
+    FMCOU["**Fund Management Company\nOrganization Unit**"]:::silver
+    KP["**Fund Management Company Key Person**"]:::silver
+    FDAOU["**Fund Distribution Agent\nOrganization Unit**"]:::silver
+    IACC["**Discretionary Investment Account**"]:::silver
+    RATING["**Member Rating**"]:::silver
+    RC["**Rating Criterion**"]:::silver
 
     %% Tier 3
-    MBF["**FMS Fund Investor Membership**"]:::silver
-    REP["**FMS Fund Representative Board Member**"]:::silver
-    STF["**FMS Foreign Fund Management\nOrganization Unit Staff**"]:::silver
-    RPT["**FMS Member Periodic Report**"]:::silver
-    TRF["**FMS Fund Management Company\nShare Transfer**"]:::silver
+    MBF["**Investment Fund Investor Membership**"]:::silver
+    REP["**Investment Fund Representative Board Member**"]:::silver
+    STF["**Foreign Fund Management\nOrganization Unit Staff**"]:::silver
+    RPT["**Member Periodic Report**"]:::silver
+    TRF["**Fund Management Company\nShare Transfer**"]:::silver
 
     %% Tier 4
-    TRCF["**FMS Fund Certificate Transfer**"]:::silver
-    RLOG["**FMS Member Periodic Report Status Log**"]:::silver
-    RIV["**FMS Report Import Value**"]:::silver
+    TRCF["**Investment Fund Certificate Transfer**"]:::silver
+    RLOG["**Member Periodic Report Status Log**"]:::silver
+    RIV["**Report Import Value**"]:::silver
 
     %% Tier 1 — Shared
     FMC --> ADDR
@@ -161,8 +161,8 @@ graph TD
 |---|---|---|---|
 | SECBUSINES | Ngành nghề kinh doanh của công ty QLQ | Fund Management Company | → `business_type_codes ARRAY<STRING>` |
 | FGBUSINESS | Ngành nghề kinh doanh VPĐD/CN QLQ NN tại VN | Foreign Fund Management Organization Unit | → `business_type_codes ARRAY<STRING>` |
-| AGENFUNDS | Bảng trung gian Map đại lý và quỹ đầu tư | FMS Investment Fund | → `distribution_agents ARRAY<STRUCT<agent_id BIGINT, agent_code STRING>>` |
-| FNDSBMN | Bảng trung gian FUNDS & BANKMONI | FMS Investment Fund | → `custodian_banks ARRAY<STRUCT<bank_id BIGINT, bank_code STRING>>` |
+| AGENFUNDS | Bảng trung gian Map đại lý và quỹ đầu tư | Investment Fund | → `distribution_agents ARRAY<STRUCT<agent_id BIGINT, agent_code STRING>>` |
+| FNDSBMN | Bảng trung gian FUNDS & BANKMONI | Investment Fund | → `custodian_banks ARRAY<STRUCT<bank_id BIGINT, bank_code STRING>>` |
 
 ---
 
@@ -172,15 +172,15 @@ graph TD
 |---|---|---|---|
 | 1 | T1 | SECURITIES.Dorf (1=Trong nước, 0=Nước ngoài) — nếu Dorf=0 tồn tại, có cần phân luồng ETL? | Entity Fund Management Company |
 | 2 | T1 | RPTPERIOD — cần bổ sung column detail | Entity Reporting Period |
-| 3 | T2 | INVESACC.AccPlace (nơi lưu ký) — có phải FK đến BANKMONI không? | Nếu có → thêm FK từ FMS Discretionary Investment Account đến Custodian Bank |
+| 3 | T2 | INVESACC.AccPlace (nơi lưu ký) — có phải FK đến BANKMONI không? | Nếu có → thêm FK từ Discretionary Investment Account đến Custodian Bank |
 | 4 | T2 | BRANCHES.BrIdowner — giá trị là Id nguồn hay text? | Ảnh hưởng thiết kế self-FK surrogate trên Silver |
 | 5 | T2 | TLProfiles — nhân sự có thể thuộc nhiều công ty QLQ qua thời gian không? | Nếu có → grain cần review, có thể cần tách role khỏi entity |
 | 6 | T2 | PARVALUE — không có bảng nào FK đến. Xác nhận có trong scope FMS không? | Nếu không → loại khỏi scope hoàn toàn |
 | 7 | T3 | TRSFERINDER — không có FK bên nhận/bên chuyển nhượng. Giao dịch này có liên quan đến INVES không? | Nếu có → thêm FK đến Discretionary Investment Investor |
 | 8 | T3 | RPTMEMBER — mỗi bản ghi chỉ thuộc 1 loại thành viên (SecId hoặc FndId hoặc BkMId hoặc FrBrId). Xác nhận logic nullable này. | Ảnh hưởng thiết kế FK nullable và kiểm tra data quality |
 | 9 | T3 | STFFGBRCH — TLId trỏ đến TLProfiles (nhân sự QLQ trong nước). VPĐD/CN QLQ NN có dùng chung bảng nhân sự với QLQ trong nước không? | Nếu không → cần Silver entity nhân sự riêng cho QLQ NN |
-| 10 | T4 | TRANSFERMBF — FK đến cả FUNDS và MBFUND, MBFUND đã chứa FndId. FK đến FUNDS có cần thiết trên Silver không? | Nếu không → bỏ FK redundant đến FMS Investment Fund |
-| 11 | T4 | RPTVALUES.RptId và SheetId — sau khi có cột RPTTEMP và SHEET, xác nhận đây là FK đến Silver entity hay Classification Value | Ảnh hưởng thiết kế FK của FMS Report Import Value |
+| 10 | T4 | TRANSFERMBF — FK đến cả FUNDS và MBFUND, MBFUND đã chứa FndId. FK đến FUNDS có cần thiết trên Silver không? | Nếu không → bỏ FK redundant đến Investment Fund |
+| 11 | T4 | RPTVALUES.RptId và SheetId — sau khi có cột RPTTEMP và SHEET, xác nhận đây là FK đến Silver entity hay Classification Value | Ảnh hưởng thiết kế FK của Report Import Value |
 
 ---
 
