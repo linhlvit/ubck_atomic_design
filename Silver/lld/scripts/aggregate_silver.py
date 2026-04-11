@@ -107,7 +107,7 @@ def build_attributes(manifest_rows: list[dict]) -> list[dict]:
     """
     Trả về list các row cho silver_attributes.csv.
     Mỗi row: bcv_core_object, bcv_concept, silver_entity,
-              silver_attribute, description, source_column
+              silver_attribute, description, data_domain, source_column
 
     Shared entities được gộp: mỗi attribute_name chỉ xuất hiện 1 lần,
     source_column = union của mọi nguồn.
@@ -149,6 +149,9 @@ def build_attributes(manifest_rows: list[dict]) -> list[dict]:
                     shared_buffer[silver_entity][attr_name] = {
                         "attribute_name": attr_name,
                         "description":    ar.get("description", ""),
+                        "data_domain":    ar.get("data_domain", ""),
+                        "nullable":       ar.get("nullable", ""),
+                        "is_primary_key": ar.get("is_primary_key", ""),
                         "source_columns": [src_col] if src_col else [],
                     }
                 else:
@@ -158,12 +161,15 @@ def build_attributes(manifest_rows: list[dict]) -> list[dict]:
         else:
             for ar in attr_rows:
                 non_shared.append({
-                    "bcv_core_object": bcv_core_object,
-                    "bcv_concept":     bcv_concept,
-                    "silver_entity":   silver_entity,
+                    "bcv_core_object":  bcv_core_object,
+                    "bcv_concept":      bcv_concept,
+                    "silver_entity":    silver_entity,
                     "silver_attribute": ar["attribute_name"],
-                    "description":     ar.get("description", ""),
-                    "source_column":   ar.get("source_columns", ""),
+                    "description":      ar.get("description", ""),
+                    "data_domain":      ar.get("data_domain", ""),
+                    "nullable":         ar.get("nullable", ""),
+                    "is_primary_key":   ar.get("is_primary_key", ""),
+                    "source_column":    ar.get("source_columns", ""),
                 })
 
     # --- Pass 2: Flatten shared buffer ---
@@ -181,6 +187,9 @@ def build_attributes(manifest_rows: list[dict]) -> list[dict]:
                 "silver_entity":    silver_entity,
                 "silver_attribute": attr_name,
                 "description":      data["description"],
+                "data_domain":      data.get("data_domain", ""),
+                "nullable":         data.get("nullable", ""),
+                "is_primary_key":   data.get("is_primary_key", ""),
                 "source_column":    merged_src,
             })
 
@@ -287,7 +296,8 @@ def main():
     print(f"  {len(attr_rows)} attribute rows", file=sys.stderr)
 
     ATTR_FIELDS = ["bcv_core_object", "bcv_concept", "silver_entity",
-                   "silver_attribute", "description", "source_column"]
+                   "silver_attribute", "description", "data_domain",
+                   "nullable", "is_primary_key", "source_column"]
 
     if args.dry_run:
         import io

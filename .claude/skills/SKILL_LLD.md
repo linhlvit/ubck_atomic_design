@@ -61,6 +61,8 @@ Dùng đúng 1 trong 12 Data Domain chuẩn:
 | Indicator | Cờ đánh dấu (Y/N, 0/1) |
 | Boolean | True/False |
 | Small Counter | Số đếm nhỏ |
+| Array\<Text\> | Mảng chuỗi — dùng cho junction chỉ chứa code/text |
+| Array\<Struct\> | Mảng struct — dùng cho junction chứa cặp Id + Code. Ghi schema struct vào comment: `Struct: {field1: Domain1; field2: Domain2}` |
 
 #### 3c. FK đến Fundamental entity
 - **Luôn tạo cặp [Entity] Id + [Entity] Code** — kể cả khi nullable.
@@ -89,9 +91,9 @@ Dùng đúng 1 trong 12 Data Domain chuẩn:
 
 Nếu HLD đã quyết định denormalize 1 bảng junction thành ARRAY trên entity cha:
 - Thêm attribute vào file LLD của entity cha (không tạo file LLD riêng, không thêm vào manifest).
-- `data_domain` = `Array`
+- `data_domain` = `Array<Text>` (junction chỉ có code) hoặc `Array<Struct>` (junction có cặp Id + Code)
 - `source_columns` = FK phía bên kia của junction (VD: `FMS.SECBUSINES.BuId`)
-- `comment`: tên bảng junction gốc + tham chiếu HLD. Mẫu: `Pure junction {TABLE} → denormalize thành ARRAY. HLD decision: {file HLD}.`
+- `comment`: tên bảng junction gốc + tham chiếu HLD + schema struct nếu là `Array<Struct>`. Mẫu: `Pure junction {TABLE} → denormalize thành ARRAY. Struct: {field1: Domain1; field2: Domain2}. HLD decision: {file HLD}.`
 - Tên attribute: danh từ số nhiều phản ánh nội dung phần tử (VD: `Business Type Codes`, `Distribution Agent Ids`).
 
 ### Bước 4 — Rà soát shared entity
