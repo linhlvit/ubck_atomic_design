@@ -52,7 +52,7 @@ graph LR
 | FK đến Tier 1 | Fund Management Company (SecId) |
 | Shared Entities | IP Alt Identification (DecisionDate — GP thành lập quỹ) |
 
-> **Lưu ý:** FundType → Classification Value. FUNDS không có Address/Phone/Email → không tách IP Postal/Electronic Address. Entity trung tâm Tier 2 — được MBFUND, AGENFUNDS, FNDSBMN, REPRESENT, RPTMEMBER, VIOLT reference.
+> **Lưu ý:** FundType → Classification Value. FUNDS không có Address/Phone/Email → không tách IP Postal/Electronic Address. Entity trung tâm Tier 2 — được MBFUND, AGENFUNDS, FNDSBMN, REPRESENT, RPTMEMBER, VIOLT (Tier 3), RPTVALUES (Tier 4) reference.
 
 ---
 
@@ -491,5 +491,5 @@ graph TD
 | 1 | INVESACC.AccPlace (nơi lưu ký) — có phải FK đến BANKMONI không? | Nếu có → thêm FK từ Discretionary Investment Account đến Custodian Bank (Tier 1) |
 | 2 | BRANCHES.BrIdowner — giá trị là Id nguồn hay text? | Ảnh hưởng thiết kế self-FK surrogate trên Silver |
 | 3 | TLProfiles — nhân sự có thể thuộc nhiều công ty QLQ qua thời gian không? | Nếu có → grain cần review, có thể cần tách role khỏi entity |
-| 4 | PARVALUE — không có bảng nào trong FMS FK đến bảng này. Xác nhận PARVALUE có thực sự trong scope FMS không, hay là orphan table? | Nếu không có entity nào sử dụng → loại khỏi scope Silver hoàn toàn |
+| ~~4~~ | ~~PARVALUE — không có bảng nào trong FMS FK đến bảng này.~~ | ✅ Xác nhận: không có FK đến PARVALUE từ bất kỳ bảng nào — loại khỏi scope Silver. |
 | 5 | LOCATION — đây là shared entity dùng chung nhiều source system, có thiết kế tập trung ở tầng nào chưa? | Tránh thiết kế trùng lặp giữa các source system |

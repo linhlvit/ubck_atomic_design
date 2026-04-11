@@ -275,10 +275,58 @@ graph LR
 
 ---
 
+## 8. VIOLT — Fund Management Conduct Violation
+
+### Source (FMS)
+
+```mermaid
+graph LR
+    classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
+    classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
+
+    SECURITIES["**Fund Management Company** (Tier 1)"]:::ref
+    FUNDS["**Investment Fund** (Tier 2)"]:::ref
+    VIOLT["**VIOLT**\nDanh sách vi phạm\n(11 trường)"]:::src
+
+    VIOLT -->|SecId| SECURITIES
+    VIOLT -->|FndId| FUNDS
+```
+
+**Trường chính:** SecId (FK→SECURITIES, nullable), FndId (FK→FUNDS, nullable), ViolType (loại vi phạm), ViolContent (nội dung vi phạm), ViolDate (ngày vi phạm), ViolStatus (trạng thái xử lý), Note (ghi chú).
+
+### Silver — Proposed Model
+
+```mermaid
+graph LR
+    classDef silver fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef refnode fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
+
+    FMC["Fund Management Company (Tier 1)"]:::refnode
+    FUND["Investment Fund (Tier 2)"]:::refnode
+    VIO["**Fund Management Conduct Violation**\nVi phạm của công ty QLQ hoặc quỹ đầu tư"]:::silver
+
+    VIO -->|FK nullable| FMC
+    VIO -->|FK nullable| FUND
+```
+
+| Hạng mục | Nội dung |
+|---|---|
+| Silver Entity | Fund Management Conduct Violation |
+| BCV Concept | [Business Activity] Conduct Violation |
+| Model Table Type | Fact Append |
+| Grain | 1 dòng = 1 vi phạm của 1 công ty QLQ hoặc 1 quỹ đầu tư |
+| FK đến Tier 1 | Fund Management Company (SecId, nullable) |
+| FK đến Tier 2 | Investment Fund (FndId, nullable) |
+
+> **Lưu ý:** SecId và FndId là nullable — mỗi bản ghi thuộc về công ty QLQ **hoặc** quỹ đầu tư, không đồng thời cả hai. ViolType → Classification Value (Scheme: `FMS_VIOLATION_TYPE`). ViolStatus → Classification Value (Scheme: `FMS_VIOLATION_STATUS`).
+
+---
+
 ## 6a. Tổng quan BCV Concept
 
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
 |---|---|---|---|---|---|---|
+| Business Activity | [Business Activity] Conduct Violation | Business Activity | VIOLT | Danh sách vi phạm của công ty QLQ/quỹ | Fund Management Conduct Violation | Conduct Violation — cùng BCV Concept với NHNCK.Violations. Cấu trúc: ViolType, ViolContent, ViolDate, ViolStatus — ghi nhận hành vi vi phạm và trạng thái xử lý. Khớp chính xác. |
 | Involved Party | [Involved Party] Involved Party Group Membership | Involved Party | MBFUND | Danh sách nhà đầu tư quỹ | Investment Fund Investor Membership | Candidate: Involved Party Group Membership (id 10364) — *"Identifies a relationship in which an Involved Party is a member of a Group."* Cấu trúc trường: FndId (quỹ = group), InvesId (NĐT = member), Capital (vốn góp), Ratio (tỷ lệ sở hữu). NĐT tham gia góp vốn vào quỹ = quan hệ membership có attribute. Khớp chính xác. |
 | Involved Party | [Involved Party] Involved Party Role | Involved Party | REPRESENT | Danh sách ban đại diện/HĐQT quỹ đầu tư | Investment Fund Representative Board Member | Candidate: Involved Party Role (id 10362) — *"Identifies a relationship in which an Involved Party performs a defined function."* Cấu trúc trường: FndId (quỹ), TLId (nhân sự), IsChair (vai trò trưởng/thành viên), Status (còn/hết hiệu lực) — cá nhân đảm nhận vai trò trong ban đại diện. Khớp chính xác. |
 | Involved Party | [Involved Party] Involved Party Role | Involved Party | STFFGBRCH | Danh sách nhân sự VPĐD/CN công ty QLQ NN | Foreign Fund Management Organization Unit Staff | Candidate: Involved Party Role (id 10362) — cùng pattern với REPRESENT. Cấu trúc trường: FgBrId (VPĐD/CN), TLId (nhân sự), FnType (loại đơn vị), Isr (người đại diện), Isp (đại diện CBTT) — cá nhân đảm nhận vai trò tại VPĐD/CN QLQ NN. Khớp chính xác. |
@@ -312,6 +360,7 @@ graph TD
     STFFGBRCH["**STFFGBRCH**\nNhân sự VPĐD/CN QLQ NN"]:::src
     RPTMEMBER["**RPTMEMBER**\nBáo cáo định kỳ"]:::src
     TRSFERINDER["**TRSFERINDER**\nChuyển nhượng cổ phần"]:::src
+    VIOLT["**VIOLT**\nVi phạm QLQ/quỹ"]:::src
 
     AGENFUNDS -->|AgnId| AGENCIES
     AGENFUNDS -->|FndId| FUNDS
@@ -329,6 +378,8 @@ graph TD
     RPTMEMBER -->|FrBrId| FORBRCH
     RPTMEMBER -->|PrdId| RPTPERIOD
     TRSFERINDER -->|SecId| SECURITIES
+    VIOLT -->|SecId nullable| SECURITIES
+    VIOLT -->|FndId nullable| FUNDS
 ```
 
 ---
@@ -354,6 +405,7 @@ graph TD
     STF["**Foreign Fund Management OU Staff**"]:::silver
     RPT["**Member Periodic Report**"]:::silver
     TRF["**Fund Management Company Share Transfer**"]:::silver
+    VIO["**Fund Management Conduct Violation**"]:::silver
 
     MBF -->|FK| FUND
     MBF -->|FK| DII
@@ -367,6 +419,8 @@ graph TD
     RPT -->|FK nullable| FGOU
     RPT -->|FK| RPD
     TRF -->|FK| FMC
+    VIO -->|FK nullable| FMC
+    VIO -->|FK nullable| FUND
 ```
 
 ---
@@ -407,4 +461,4 @@ graph TD
 |---|---|---|
 | 1 | TRSFERINDER — không có FK bên nhận/bên chuyển nhượng cụ thể. Giao dịch này có liên quan đến INVES (NĐT) không? | Nếu có → thêm FK đến Discretionary Investment Investor |
 | 2 | RPTMEMBER — mỗi bản ghi chỉ thuộc 1 loại thành viên (SecId hoặc FndId hoặc BkMId hoặc FrBrId). Xác nhận logic nullable này. | Ảnh hưởng thiết kế FK nullable và kiểm tra data quality |
-| 3 | STFFGBRCH — TLId trỏ đến TLProfiles (nhân sự QLQ trong nước). VPĐD/CN QLQ NN có dùng chung bảng nhân sự với QLQ trong nước không? | Nếu không → cần Silver entity nhân sự riêng cho QLQ NN |
+| ~~3~~ | ~~STFFGBRCH — TLId trỏ đến TLProfiles. VPĐD/CN QLQ NN có dùng chung bảng nhân sự không?~~ | ✅ Xác nhận: STFFGBRCH.TLId → TLProfiles.Id — dùng chung bảng nhân sự. Không cần entity riêng. |
