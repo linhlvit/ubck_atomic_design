@@ -9,7 +9,26 @@
 1. Đọc file cấu trúc CSDL nguồn trong `Source/` — file `*_Tables` và `*_Columns`.
 2. Xác định danh sách bảng nguồn trong scope.
 3. Đọc các file HLD đã có trong `docs/approved/` (nếu có source system liên quan).
-4. **Đọc `Silver/lld/manifest.csv`** — lọc theo source system đang thiết kế, ghi nhận tất cả dòng có `status=reviewed`. Đây là **tên đã confirmed** — không được đặt lại tên khác cho entity đó. Nếu entity đã có `status=reviewed` trong manifest → dùng đúng tên đó trong HLD, không tự sinh tên mới.
+4. **Đọc `Silver/hld/silver_entities.csv`** — lọc theo source system đang thiết kế (cột `source_table`), ghi nhận tất cả dòng có `status=reviewed`. Đây là **tên đã confirmed** — không được đặt lại tên khác cho entity đó. Nếu entity đã có `status=reviewed` trong `silver_entities.csv` → dùng đúng tên đó trong HLD, không tự sinh tên mới.
+
+### Bước 1b — Xác định Table Type
+
+Mỗi Silver entity phải có `table_type` trong bảng 6a. Dùng bảng sau để phân loại:
+
+| table_type | Khi nào dùng | ETL pattern |
+|---|---|---|
+| `Fundamental` | Entity độc lập, Tier 1, có lifecycle riêng, không FK đến entity nghiệp vụ khác | SCD2, upsert theo surrogate key |
+| `Relative` | Entity phụ thuộc Fundamental (FK), mô tả trạng thái hoặc thuộc tính bổ sung | SCD1 hoặc SCD2 tùy case |
+| `Fact Append` | Log hoạt động, giao dịch, sự kiện — mỗi dòng là 1 occurrence không bị xóa/sửa | Insert-only, append, không update |
+| `Snapshot` | Chụp toàn bộ trạng thái tại 1 thời điểm — load định kỳ (hàng ngày / hàng kỳ) | Full replace theo partition ngày |
+
+**Dấu hiệu nhận biết nhanh:**
+- Tên entity chứa "Activity Log", "Status Log", "Status History" → `Fact Append`
+- bcv_concept chứa "ETL Pattern" → `Fact Append`
+- bcv_core_object = Transaction → `Fact Append`
+- Tên entity chứa "Snapshot" → `Snapshot`
+- Tier 1, không phải log/snapshot → `Fundamental`
+- Tier 2+ không phải log/snapshot → `Relative`
 
 ### Bước 2 — Phân tầng (Tiered Design)
 

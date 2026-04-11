@@ -1,9 +1,10 @@
 """
 check_consistency.py
 ====================
-Kiểm tra tính nhất quán giữa HLD Markdown files và manifest.csv.
+Kiểm tra tính nhất quán giữa HLD Markdown files và silver_entities.csv.
 
-Phát hiện xung đột: entity name trong HLD file khác với tên đã reviewed trong manifest.
+Phát hiện xung đột: entity name trong HLD file khác với tên trong silver_entities.csv
+(source of truth cho entity-level attributes).
 Dùng sau khi re-run thiết kế HLD để đảm bảo tên reviewed không bị ghi đè.
 
 Cách dùng:
@@ -12,9 +13,9 @@ Cách dùng:
   python check_consistency.py --fix-hints  # in gợi ý câu lệnh sửa (không tự sửa)
 
 Output:
-  - CONFLICT: entity trong HLD có tên khác manifest reviewed
+  - CONFLICT: entity trong HLD có tên khác silver_entities.csv
   - OK: không có xung đột
-  - WARN: entity trong manifest reviewed không tìm thấy trong bất kỳ HLD file nào
+  - WARN: entity trong silver_entities.csv không tìm thấy trong bất kỳ HLD file nào
 """
 
 import csv
@@ -33,31 +34,37 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-s
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-SCRIPT_DIR = Path(__file__).parent
-LLD_DIR    = SCRIPT_DIR.parent
-HLD_DIR    = LLD_DIR.parent / "hld"
-MANIFEST   = LLD_DIR / "manifest.csv"
+SCRIPT_DIR   = Path(__file__).parent
+LLD_DIR      = SCRIPT_DIR.parent
+HLD_DIR      = LLD_DIR.parent / "hld"
+MANIFEST     = LLD_DIR / "manifest.csv"
+OUT_ENTITIES = HLD_DIR / "silver_entities.csv"
 
 
 # ---------------------------------------------------------------------------
-# Đọc manifest → danh sách reviewed entities per source system
-# Returns: list of {"source_system", "source_table", "silver_entity", "lld_file"}
+# Đọc silver_entities.csv → danh sách entities (source of truth)
+# Nếu source_filter: lọc theo source_table prefix (e.g. "FMS.")
+# Returns: list of {"silver_entity", "source_table", "status"}
 # ---------------------------------------------------------------------------
 def load_reviewed_entities(source_filter: str | None = None) -> list[dict]:
-    reviewed = []
-    with open(MANIFEST, encoding="utf-8", newline="") as f:
+    entities = []
+    if not OUT_ENTITIES.exists():
+        return entities
+    with open(OUT_ENTITIES, encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
-            if row.get("status", "").strip().lower() != "reviewed":
-                continue
-            if source_filter and row["source_system"].strip().upper() != source_filter.upper():
-                continue
-            reviewed.append({
-                "source_system": row["source_system"].strip(),
-                "source_table":  row["source_table"].strip(),
-                "silver_entity": row["silver_entity"].strip(),
-                "lld_file":      row["lld_file"].strip(),
+            silver_entity = row["silver_entity"].strip()
+            source_table  = row.get("source_table", "")
+            # Filter theo source system: kiểm tra source_table chứa prefix "FMS."
+            if source_filter:
+                sources = [s.strip() for s in source_table.split(",")]
+                if not any(s.upper().startswith(source_filter.upper() + ".") for s in sources):
+                    continue
+            entities.append({
+                "silver_entity": silver_entity,
+                "source_table":  source_table,
+                "status":        row.get("status", "draft"),
             })
-    return reviewed
+    return entities
 
 
 # ---------------------------------------------------------------------------
@@ -131,10 +138,10 @@ def check(reviewed: list[dict],
     reviewed_names = {r["silver_entity"] for r in reviewed}
 
     print(f"\n{'='*65}")
-    print(f"  CHECK CONSISTENCY — manifest reviewed vs HLD files")
+    print(f"  CHECK CONSISTENCY — silver_entities.csv vs HLD files")
     print(f"{'='*65}")
-    print(f"  Reviewed entities trong manifest : {len(reviewed_names)}")
-    print(f"  HLD files được kiểm tra          : {len(hld_entities)}")
+    print(f"  Entities trong silver_entities.csv : {len(reviewed_names)}")
+    print(f"  HLD files được kiểm tra            : {len(hld_entities)}")
     print()
 
     for entity in sorted(reviewed_names):
@@ -143,14 +150,12 @@ def check(reviewed: list[dict],
             continue
 
         # Không tìm thấy chính xác — tìm xem có tên "gần giống" không
-        # (tên chứa một phần lớn của reviewed name, hoặc ngược lại)
         similar: list[tuple[str, str]] = []  # (md_file, similar_name)
         words = set(entity.lower().split())
 
         for md_file, names in hld_entities.items():
             for name in names:
                 name_words = set(name.lower().split())
-                # Xác định tỉ lệ overlap từ
                 if len(words) == 0:
                     continue
                 overlap = len(words & name_words) / max(len(words), len(name_words))
@@ -160,11 +165,11 @@ def check(reviewed: list[dict],
         if similar:
             conflicts += 1
             print(f"  CONFLICT  '{entity}'")
-            print(f"            Manifest (reviewed) : '{entity}'")
-            for md_file, sim_name in similar[:3]:  # show max 3 similar
+            print(f"            silver_entities.csv  : '{entity}'")
+            for md_file, sim_name in similar[:3]:
                 print(f"            HLD [{md_file}]     : '{sim_name}'")
             if show_hints:
-                print(f"            Gợi ý: cập nhật HLD để dùng tên reviewed, hoặc")
+                print(f"            Gợi ý: cập nhật HLD để dùng tên từ silver_entities.csv, hoặc")
                 print(f"                   chạy rename_entity.py nếu đây là rename mới")
             print()
         else:
@@ -188,7 +193,7 @@ def check(reviewed: list[dict],
 # ---------------------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser(
-        description="Kiểm tra nhất quán entity names giữa HLD Markdown files và manifest reviewed rows."
+        description="Kiểm tra nhất quán entity names giữa HLD Markdown files và silver_entities.csv."
     )
     parser.add_argument("--source", metavar="SYSTEM",
                         help="Chỉ kiểm tra source system (VD: FMS, DCST, NHNCK)")
@@ -198,11 +203,11 @@ def main():
 
     source = args.source.upper() if args.source else None
 
-    print("Đọc manifest.csv (reviewed rows)...", file=sys.stderr)
+    print("Đọc silver_entities.csv...", file=sys.stderr)
     reviewed = load_reviewed_entities(source_filter=source)
 
     if not reviewed:
-        print(f"Không có reviewed entity nào{' cho ' + source if source else ''}. Kết thúc.", file=sys.stderr)
+        print(f"Không tìm thấy entity nào{' cho ' + source if source else ''} trong silver_entities.csv. Kết thúc.", file=sys.stderr)
         return
 
     print(f"Đọc HLD Markdown files...", file=sys.stderr)
