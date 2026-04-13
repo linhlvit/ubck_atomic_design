@@ -1,0 +1,9 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Foreign Investor Securities Account Id,Khóa đại diện cho tài khoản giao dịch chứng khoán.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Foreign Investor Securities Account Code,Mã tài khoản. Map từ PK bảng nguồn.,Text,false,false,draft,FIMS.SECURITIESACCOUNT.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FIMS.SECURITIESACCOUNT,
+Securities Company Id,FK đến công ty chứng khoán nơi mở tài khoản.,Surrogate Key,false,false,draft,FIMS.SECURITIESACCOUNT.SecId,FK target: Securities Company.Securities Company Id.,,
+Securities Company Code,Mã công ty chứng khoán nơi mở tài khoản.,Text,false,false,draft,FIMS.SECURITIESACCOUNT.SecId,FK target: Securities Company.Securities Company Code. Pair with Securities Company Id.,,
+Foreign Investor Id,FK đến nhà đầu tư nước ngoài chủ tài khoản.,Surrogate Key,false,false,draft,FIMS.SECURITIESACCOUNT.InvesId,FK target: Foreign Investor.Foreign Investor Id.,,
+Foreign Investor Code,Mã nhà đầu tư nước ngoài chủ tài khoản.,Text,false,false,draft,FIMS.SECURITIESACCOUNT.InvesId,FK target: Foreign Investor.Foreign Investor Code. Pair with Foreign Investor Id.,,
+Account Number,Số tài khoản giao dịch chứng khoán.,Text,false,false,draft,FIMS.SECURITIESACCOUNT.Account,,,

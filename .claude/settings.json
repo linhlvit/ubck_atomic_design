@@ -18,7 +18,18 @@
       "Bash(ls \"c:/Users/linhl_ufzmt5s/OneDrive/One - UBCK/Design/ubck_atomic_design/Silver/hld/\"*Overview*)",
       "Bash(python Silver/lld/scripts/aggregate_out_of_scope.py)",
       "Bash(python aggregate_silver.py)",
-      "Bash(awk -F',' 'NR>1 {print $1}' \"c:/Users/linhl_ufzmt5s/OneDrive/One - UBCK/Design/ubck_atomic_design/Source/NHNCK_Columns.csv\")"
+      "Bash(awk -F',' 'NR>1 {print $1}' \"c:/Users/linhl_ufzmt5s/OneDrive/One - UBCK/Design/ubck_atomic_design/Source/NHNCK_Columns.csv\")",
+      "Bash(python3 Silver/lld/scripts/add_fims_entities.py)",
+      "Bash(python Silver/lld/scripts/add_fims_entities.py)",
+      "Bash(python -c \"import csv; rows=list\\(csv.DictReader\\(open\\('Silver/hld/silver_entities.csv',encoding='utf-8'\\)\\)\\); [print\\(r['silver_entity'],'|',r['source_table']\\) for r in rows if 'FIMS' in r.get\\('source_table',''\\)]\")",
+      "Bash(python -c \"import csv; rows=list\\(csv.DictReader\\(open\\('Silver/hld/silver_entities.csv',encoding='utf-8'\\)\\)\\); [print\\(r['silver_entity'],'|',r['source_table']\\) for r in rows if 'Organization Unit' in r.get\\('silver_entity',''\\)]\")",
+      "Bash(python -c \"import csv; rows=list\\(csv.DictReader\\(open\\('Silver/hld/silver_entities.csv',encoding='utf-8'\\)\\)\\); [print\\(r['silver_entity'],'|',r['source_table']\\) for r in rows if 'Fund Management Company' in r.get\\('silver_entity',''\\)]\")",
+      "Read(//c/Users/linhl_ufzmt5s/.claude/projects/c--Users-linhl-ufzmt5s-OneDrive-One---UBCK-Design-ubck-atomic-design/memory/**)",
+      "Bash(python aggregate_silver.py --skip-entities)",
+      "Bash(find Silver/lld -name \"attr_*.csv\" -exec sed -i 's/^Activity Status Name,/Life Cycle Status Name,/g' {} \\\\;)",
+      "Bash(find Silver/lld -name \"attr_*.csv\" -exec sed -i 's/^Activity Status Code,/Life Cycle Status Code,/g' {} \\\\;)",
+      "Bash(find Silver/lld -name \"ref_*\")",
+      "Bash(find Silver -name \"*class*\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\linhl_ufzmt5s\\OneDrive\\One - UBCK\\Design\\ubck_atomic_design\\Silver\\lld\\NHNCK",

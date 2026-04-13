@@ -103,11 +103,23 @@ Nếu bảng nguồn có grain = 1 Involved Party:
 - Trường liên lạc → **IP Electronic Address**
 - Trường giấy tờ → **IP Alt Identification**
 
-Kiểm tra `ref_shared_entity_classifications.csv` để dùng đúng Code đã chuẩn hóa. Nếu có giá trị mới chưa có → **ghi rõ trong output** danh sách cần bổ sung.
+Kiểm tra `ref_shared_entity_classifications.csv` để dùng đúng Code đã chuẩn hóa. Nếu có giá trị mới chưa có → thêm vào ref file ngay, không để lại.
 
 Shared entity **không có PK surrogate riêng** — chỉ FK trỏ về entity chính.
 
 Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalized.
+
+#### 4a. Quy tắc trường địa lý (quốc gia / tỉnh / huyện / xã)
+
+Trường chứa mã địa lý có 3 cách xử lý — chọn theo bối cảnh nguồn:
+
+| Bối cảnh | Xử lý | Ví dụ |
+|---|---|---|
+| Bảng nguồn có bảng lookup địa lý rõ ràng trong cùng hệ thống (VD: FIMS.NATIONAL) | **FK pair** đến Silver entity **Geographic Area** (Id + Code) | FIMS: NaId → Geographic Area |
+| Dữ liệu phản hồi từ API ngoài (C06, VNPT...) hoặc nguồn không có bảng lookup trong scope | **Classification Value** với scheme riêng, ghi rõ `(no_lookup)` trong ref — không tạo FK | NHNCK: COUNTRY, PROVINCE, DISTRICT |
+| Trường địa lý trong địa chỉ, nguồn ghi kèm cả Name (không resolve được) | **Text** denormalized — giữ cả Code lẫn Name | DCST IP_Postal_Address: Province Code/Name |
+
+**Geographic Area là Silver entity** ([Location] Geographic Area) — chứa danh mục khu vực địa lý đa cấp (quốc gia/vùng/tỉnh/huyện/xã). Chỉ tạo FK đến đây khi có bảng lookup tường minh trong scope thiết kế.
 
 ### Bước 5 — Viết comment
 
@@ -122,6 +134,7 @@ Thứ tự: tag automation trước, notes sau.
 - `Scheme: {SCHEME_CODE}. {notes}`
 - Scheme Code = UPPER_SNAKE_CASE, nhất quán với `ref_shared_entity_classifications.csv`.
 - KHÔNG dùng cả `FK target:` và `Scheme:` cho cùng 1 trường.
+- **Bắt buộc cross-check**: Mọi Scheme Code dùng trong LLD phải tồn tại trong `ref_shared_entity_classifications.csv`. Nếu chưa có → thêm vào ref file ngay trong cùng lượt thiết kế, trước khi xuất attr file.
 
 **Trường nghiệp vụ:**
 - Ghi BCV Term đã tra cứu được (nếu có) + lý do chọn tên attribute.
@@ -140,11 +153,14 @@ Trước khi xuất file:
 - [ ] Prefix chủ thể cho trường mô tả người/đối tượng khác?
 - [ ] Mọi trường nguồn đều xuất hiện trong mapping? Không có dòng "không map ở đây"?
 - [ ] LLD không bao gồm technical fields (Record Status, Record Insert Date, ETL Timestamp...)?
-- [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (ví dụ: `Full Name`, `Charter Capital Amount`, `Activity Status Code`, `English Name`, `Abbreviation`...)?
+- [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (ví dụ: `Charter Capital Amount`, `Activity Status Code`...)?
+- [ ] **Entity dùng chung nhiều source**: attribute tên công ty/tên tắt/tên tiếng Anh phải dùng **prefix entity** nhất quán giữa mọi source (VD: `Fund Management Company Name`, `Custodian Bank Short Name`) — KHÔNG dùng `Full Name` / `Abbreviation` / `English Name` cho entity shared?
 - [ ] Format nullable nhất quán: `true`/`false` — không dùng `Yes`/`No`?
 - [ ] Format source_columns nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`?
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha?
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest?
+- [ ] **Cross-check scheme**: Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột classification_context đều có trong `ref_shared_entity_classifications.csv`? Nếu thiếu → thêm vào ref trước khi kết thúc.
+- [ ] **Trường địa lý**: mã quốc gia/tỉnh/huyện/xã được xử lý đúng theo bối cảnh nguồn (FK Geographic Area / Classification Value no_lookup / Text denormalized)?
 
 ## OUTPUT
 
@@ -232,7 +248,7 @@ Script tự động:
 
 ### Quy tắc output
 
-- **Mọi attr file đều phải là file CSV.** Không tạo file md hay text tóm tắt kèm theo.
+- **Mọi attr file đều phải là file CSV, encoding UTF-8 BOM (`utf-8-sig`).** Excel trên Windows mở trực tiếp không bị lỗi ký tự. Không tạo file md hay text tóm tắt kèm theo.
 - Ghi attr file vào `Silver/lld/<SOURCE_SYSTEM>/`.
 - Nếu `manifest.csv` hoặc `ref_shared_entity_classifications.csv` bị cắt ngắn khi đọc → đọc lại cho đến khi có đủ toàn bộ nội dung trước khi tạo file output.
 - `silver_attributes.csv` và `silver_entities.csv` **không cần đọc** trước khi chạy script — script tự xử lý.
