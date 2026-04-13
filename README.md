@@ -265,6 +265,33 @@ Cấu trúc 10 cột:
 
 Sau mỗi file attr → cập nhật `manifest.csv` và `ref_shared_entity_classifications.csv`.
 
+#### Grain của `manifest.csv` và quan hệ với ETL
+
+**Grain:** `1 dòng manifest = 1 ETL job = 1 (silver_entity × source_table)`
+
+Mỗi dòng đại diện cho việc load dữ liệu từ **1 bảng nguồn** vào **1 bảng đích Silver**. Các trường hợp phổ biến:
+
+| Pattern | Ví dụ | Số dòng manifest |
+|---|---|---|
+| 1 bảng nguồn → 1 Silver entity | `FIMS.AUTHOANNOUNCE → Disclosure Authorization` | 1 |
+| 1 bảng nguồn → nhiều Silver entity | `FMS.SECURITIES → Fund Management Company + Involved Party Postal Address + ...` | N dòng (1 job / entity) |
+| Nhiều bảng nguồn → 1 Silver entity | `FMS.SECURITIES + FIMS.FUNDCOMPANY → Fund Management Company` | N dòng (1 job / source) |
+
+Phân biệt **context** (addr_type, source_system) là logic **bên trong** từng ETL job — không phản ánh ở cấp manifest.
+
+Khi implement ETL, mỗi job tra `silver_attributes.csv` với filter:
+
+```
+source_system = X  AND  source_table = Y
+```
+
+để lấy toàn bộ mapping detail (source_column, classification_context) cho job đó. Cột `classification_context` trong `silver_attributes.csv` xác định điều kiện lọc dữ liệu:
+
+```
+Source System Code = 'FIMS_AUTHOANNOUNCE'
+Source System Code = 'FMS_SECURITIES' | Address Type Code = 'HEAD_OFFICE'
+```
+
 #### Bước tổng hợp cuối
 
 ```bash

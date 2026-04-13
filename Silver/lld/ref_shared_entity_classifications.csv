@@ -61,12 +61,15 @@ ORGANIZATION_UNIT_TYPE,UNIT,Đơn vị,etl_derived,,Regulatory Authority Organiz
 ORGANIZATION_UNIT_TYPE,DEPARTMENT,Phòng ban,etl_derived,,Regulatory Authority Organization Unit
 ORGANIZATION_UNIT_STATUS,(to_define),Trạng thái đơn vị/phòng ban,modeler_defined,NHNCK.qlnhn.Units.Status,Regulatory Authority Organization Unit
 OFFICER_STATUS,(to_define),Trạng thái người dùng,modeler_defined,NHNCK.qlnhn.Users.Status,Regulatory Authority Officer
-TAXPAYER_ACTIVITY_STATUS,00,Đang hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
-TAXPAYER_ACTIVITY_STATUS,01,Ngừng HĐ đã hoàn thành thủ tục chấm dứt hiệu lực MST,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
-TAXPAYER_ACTIVITY_STATUS,03,Ngừng HĐ chưa hoàn thành thủ tục chấm dứt hiệu lực MST,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
-TAXPAYER_ACTIVITY_STATUS,04,Đang hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
-TAXPAYER_ACTIVITY_STATUS,05,Ngừng kinh doanh có thời hạn,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
-TAXPAYER_ACTIVITY_STATUS,06,Không hoạt động tại địa chỉ đã đăng ký,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,(source),Trạng thái vòng đời thành viên — values from FIMS.STATUS,source_table,FIMS.STATUS,"Custodian Bank | Depository Center | Fund Management Company | Fund Management Company Organization Unit | Investment Fund | National Securities Exchange | Securities Practitioner License Profile | Stock Broker"
+LIFE_CYCLE_STATUS,ACTIVE,Còn hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
+LIFE_CYCLE_STATUS,INACTIVE,Hết hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
+LIFE_CYCLE_STATUS,00,Đang hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,01,Ngừng HĐ đã hoàn thành thủ tục chấm dứt hiệu lực MST,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,03,Ngừng HĐ chưa hoàn thành thủ tục chấm dứt hiệu lực MST,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,04,Đang hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,05,Ngừng kinh doanh có thời hạn,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,06,Không hoạt động tại địa chỉ đã đăng ký,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
 TAXPAYER_CESSATION_TYPE,1,Giải thể,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
 TAXPAYER_CESSATION_TYPE,2,Phá sản,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
 TAXPAYER_CESSATION_TYPE,3,"Chuyển đổi loại hình DN, tổ chức sắp xếp loại DN",etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
@@ -95,8 +98,6 @@ FMS_FUND_TYPE,(source),Loại hình quỹ đầu tư,source_table,FMS.FUNDS.Fund
 FMS_JOB_TYPE,(source),Loại chức vụ nhân sự công ty QLQ,source_table,FMS.JOBTYPE,Fund Management Company Key Person
 FMS_ORGANIZATION_UNIT_TYPE,BRANCH,Chi nhánh,etl_derived,FMS.BRANCHES.BrType,Fund Management Company Organization Unit
 FMS_ORGANIZATION_UNIT_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện,etl_derived,FMS.BRANCHES.BrType,Fund Management Company Organization Unit
-FMS_INVESACC_STATUS,ACTIVE,Còn hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
-FMS_INVESACC_STATUS,INACTIVE,Hết hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
 FMS_RATING_CLASS,(to_define),Xếp loại kết quả đánh giá — cần profile data RankClass,modeler_defined,FMS.RANK.RankClass,Member Rating
 FMS_REPRESENT_STATUS,ACTIVE,Hoạt động,etl_derived,FMS.REPRESENT.Status,Investment Fund Representative Board Member
 FMS_REPRESENT_STATUS,INACTIVE,Khóa,etl_derived,FMS.REPRESENT.Status,Investment Fund Representative Board Member
