@@ -153,7 +153,7 @@ Trước khi xuất file:
 - [ ] Prefix chủ thể cho trường mô tả người/đối tượng khác?
 - [ ] Mọi trường nguồn đều xuất hiện trong mapping? Không có dòng "không map ở đây"?
 - [ ] LLD không bao gồm technical fields (Record Status, Record Insert Date, ETL Timestamp...)?
-- [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (ví dụ: `Charter Capital Amount`, `Activity Status Code`...)?
+- [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (ví dụ: `Charter Capital Amount`, `Life Cycle Status Code`...)?
 - [ ] **Entity dùng chung nhiều source**: attribute tên công ty/tên tắt/tên tiếng Anh phải dùng **prefix entity** nhất quán giữa mọi source (VD: `Fund Management Company Name`, `Custodian Bank Short Name`) — KHÔNG dùng `Full Name` / `Abbreviation` / `English Name` cho entity shared?
 - [ ] Format nullable nhất quán: `true`/`false` — không dùng `Yes`/`No`?
 - [ ] Format source_columns nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`?
@@ -173,14 +173,13 @@ Trước khi xuất file:
 ```
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 ```
-- `classification_context`: để rỗng với non-shared entity.
 - `etl_derived_value`: để rỗng nếu không có giá trị ETL-derived cố định.
 
 **Cấu trúc cột — shared entity (IP Postal Address / IP Electronic Address / IP Alt Identification):**
 
 Grain: **1 dòng = 1 silver_attribute × 1 classification_context**. Attribute lặp lại nếu có nhiều context.
 
-- `classification_context`: format `SCHEME=VALUE`. VD: `IP_ADDR_TYPE=HEAD_OFFICE`, `SOURCE_SYSTEM=FMS.SECURITIES`.
+- `classification_context` — format nội bộ trong attr_*.csv: `SCHEME=VALUE`. VD: `IP_ADDR_TYPE=HEAD_OFFICE`, `SOURCE_SYSTEM=FMS.SECURITIES`. Script `aggregate_silver.py` tự convert sang format output `Field Name = 'VALUE'` khi ghi vào `silver_attributes.csv` — người thiết kế chỉ cần viết format nội bộ.
 - `etl_derived_value`: giá trị cố định ETL-derived (không từ cột nguồn). VD: `UBCKNN`.
 
 **Ví dụ non-shared:**
@@ -209,10 +208,11 @@ Electronic Address Value,Email.,Text,true,false,draft,NHNCK.qlnhn.Professionals.
 2. Thêm dòng mới cho file LLD vừa tạo.
 3. Xuất **1 file duy nhất** tên `manifest.csv` chứa toàn bộ cũ + mới.
 
-**Cấu trúc:** `source_system,source_table,silver_entity,bcv_concept,bcv_core_object,group,lld_file,status`
+**Cấu trúc:** `source_system,source_table,silver_entity,group,lld_file`
 
-- `bcv_core_object`: 1 trong các giá trị chuẩn — `Arrangement`, `Business Activity`, `Communication`, `Condition`, `Documentation`, `Event`, `Involved Party`, `Location`, `Transaction`.
-- Shared entity (IP Postal Address, IP Electronic Address, IP Alt Identification): dùng `bcv_core_object` của entity chính mà shared entity này phục vụ.
+- `silver_entity`: tên Silver entity đích — phải khớp với `silver_entities.csv`.
+- `group`: tier nhóm (`T1`, `T2`, `T3`, `T4`).
+- `lld_file`: tên file attr_*.csv tương ứng.
 
 ### Cập nhật ref_shared_entity_classifications.csv
 
@@ -237,7 +237,8 @@ python Silver/lld/scripts/aggregate_silver.py
 ```
 
 Script tự động:
-- Đọc `manifest.csv` → biết toàn bộ entity, file LLD, bcv_core_object
+- Đọc `manifest.csv` → biết toàn bộ entity và file LLD
+- Đọc `Silver/hld/silver_entities.csv` → lấy `bcv_core_object` cho mỗi entity
 - Đọc từng `attr_*.csv` → thu thập attributes
 - Gộp shared entities (IP Alt Identification, IP Postal Address, IP Electronic Address) từ mọi source → 1 dòng duy nhất mỗi attribute, source_column merge
 - Sort: `bcv_core_object` (A→Z) → `silver_entity` (A→Z) → thứ tự attribute giữ nguyên
