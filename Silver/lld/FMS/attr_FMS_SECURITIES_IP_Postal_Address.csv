@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Fund Management Company.,Surrogate Key,false,false,draft,FMS.SECURITIES.Id,FK target: Fund Management Company.Fund Management Company Id.,,
+Involved Party Code,Mã công ty QLQ.,Text,false,false,draft,FMS.SECURITIES.Id,FK target: Fund Management Company.Fund Management Company Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.SECURITIES,
+Address Type Code,Loại địa chỉ.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE.,IP_ADDR_TYPE=HEAD_OFFICE,
+Address Value,Địa chỉ trụ sở chính công ty QLQ.,Text,true,false,draft,FMS.SECURITIES.Address,,IP_ADDR_TYPE=HEAD_OFFICE,

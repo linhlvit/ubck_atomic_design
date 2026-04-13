@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: Securities Practitioner.Practitioner Id. Shared entity — không có PK surrogate riêng. Nhất quán cấu trúc với LLD DCST.
-Involved Party Code,Mã người hành nghề,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: Securities Practitioner.Practitioner Code. Pair with Involved Party Id.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Professionals,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
-Address Type Code,Loại địa chỉ,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. ETL derive: PERMANENT hoặc CURRENT. Tối đa 2 dòng/NHN.
-Address Line,Địa chỉ thường trú / Nơi ở hiện tại,Text,true,false,draft,NHNCK.qlnhn.Professionals.PermanentAddress|NHNCK.qlnhn.Professionals.CurrentAddress,"PERMANENT ← PermanentAddress; CURRENT ← CurrentAddress. Text tự do, không có Province/District/Ward."
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: Securities Practitioner.Practitioner Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã người hành nghề,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: Securities Practitioner.Practitioner Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Professionals
+Address Type Code,Loại địa chỉ — địa chỉ chung,Classification Value,false,false,draft,,,IP_ADDR_TYPE=ADDRESS
+Address Line,Địa chỉ,Text,true,false,draft,NHNCK.qlnhn.Professionals.Address,Nguồn mới chỉ có 1 trường Address chung.,IP_ADDR_TYPE=ADDRESS,

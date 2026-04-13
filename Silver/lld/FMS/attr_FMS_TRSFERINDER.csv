@@ -1,0 +1,11 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Fund Management Company Share Transfer Id,Khóa đại diện cho giao dịch chuyển nhượng cổ phần QLQ.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Fund Management Company Share Transfer Code,Mã định danh giao dịch. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.TRSFERINDER.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.TRSFERINDER,
+Fund Management Company Id,FK đến công ty QLQ có cổ phần được chuyển nhượng.,Surrogate Key,false,false,draft,FMS.TRSFERINDER.SecId,FK target: Fund Management Company.Fund Management Company Id.,,
+Fund Management Company Code,Mã công ty QLQ.,Text,false,false,draft,FMS.TRSFERINDER.SecId,FK target: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id.,,
+Transfer Date,Ngày thực hiện giao dịch chuyển nhượng.,Date,false,false,draft,FMS.TRSFERINDER.TransDate,,,
+Share Quantity,Số lượng cổ phần chuyển nhượng.,Currency Amount,true,false,draft,FMS.TRSFERINDER.Quantity,,,
+Transfer Price,Giá giao dịch chuyển nhượng (VNĐ/cổ phần).,Currency Amount,true,false,draft,FMS.TRSFERINDER.Price,,,
+Created Timestamp,Ngày tạo bản ghi.,Timestamp,true,false,draft,FMS.TRSFERINDER.DateCreated,,,
+Updated Timestamp,Ngày cập nhật bản ghi.,Timestamp,true,false,draft,FMS.TRSFERINDER.DateModified,,,

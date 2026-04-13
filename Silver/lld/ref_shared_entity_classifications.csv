@@ -34,7 +34,7 @@ PAYMENT_STATUS,(to_define),Trạng thái thanh toán — cần xác nhận từ 
 VERIFICATION_LEVEL,(to_define),Cấp phê duyệt (LĐCM/LĐUB) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyLevel,App Verification Status
 VERIFICATION_STATUS,(to_define),Trạng thái phê duyệt — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyStatus,App Verification Status
 INDIVIDUAL_GENDER,(to_define),Giới tính — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.Gender,Securities Practitioner
-NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.Nationality,Securities Practitioner
+NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data (có thể dùng ISO 3166),modeler_defined,NHNCK.qlnhn.Professionals.Nationality,Securities Practitioner
 PRACTICE_STATUS,(to_define),Trạng thái hành nghề — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.PracticeStatus,Securities Practitioner
 C06_VERIFICATION_STATUS,(to_define),Trạng thái xác thực C06 — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.VerifyStatus,Securities Practitioner | Identity Verification Record
 CERTIFICATE_STATUS,(to_define),Trạng thái chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.Status,License Certificate Document | Certificate Document Status History (From/To)
@@ -81,3 +81,44 @@ REPORTING_PERIOD_TYPE,(to_define),"Kiểu kỳ kê khai (tháng, quý, năm...) 
 AUDIT_STATUS,(to_define),Trạng thái kiểm toán BCTC — cần profile data TRANG_THAI_KT,modeler_defined,DCST.TCT_BAO_CAO.TRANG_THAI_KT,Tax Financial Statement
 TAX_ENFORCEMENT_TYPE,(to_define),"Hình thức cưỡng chế (trích tiền TK, kê biên TS, ngừng sử dụng HĐ...) — cần profile data MA_HTCC",modeler_defined,DCST.TCT_TT_CUONG_CHE_NO|DCST.TCT_TTCCN_HOA_DON,Tax Debt Enforcement Order | Tax Invoice Enforcement Order
 INVOICE_TYPE,(to_define),Loại hóa đơn — cần profile data LOAI_HOA_DON,modeler_defined,DCST.HOA_DON_CHI_TIET,Tax Invoice Enforcement Order Item
+FMS_OPERATION_STATUS,(source),Trạng thái hoạt động của tổ chức/cá nhân trong hệ thống FMS,source_table,FMS.STATUS,"Fund Management Company | Foreign Fund Management Organization Unit | Custodian Bank | Fund Distribution Agent"
+FMS_AGENCY_TYPE,(source),Loại đại lý phân phối quỹ đầu tư,source_table,FMS.AGENCYTYPE,Fund Distribution Agent
+FMS_NATIONAL,(source),Danh mục quốc gia/quốc tịch trong hệ thống FMS,source_table,FMS.NATIONAL,Discretionary Investment Investor
+FMS_STOCKHOLDER_TYPE,(source),Danh mục loại hình nhà đầu tư/cổ đông trong hệ thống FMS,source_table,FMS.STOCKHOLDERTYPE,Discretionary Investment Investor
+FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,MONTHLY,Tháng,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,QUARTERLY,Quý,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,SEMI_ANNUAL,Bán niên,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,ANNUAL,Năm,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_FUND_TYPE,(source),Loại hình quỹ đầu tư,source_table,FMS.FUNDS.FundType,Investment Fund
+FMS_JOB_TYPE,(source),Loại chức vụ nhân sự công ty QLQ,source_table,FMS.JOBTYPE,Fund Management Company Key Person
+FMS_ORGANIZATION_UNIT_TYPE,BRANCH,Chi nhánh,etl_derived,FMS.BRANCHES.BrType,Fund Management Company Organization Unit
+FMS_ORGANIZATION_UNIT_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện,etl_derived,FMS.BRANCHES.BrType,Fund Management Company Organization Unit
+FMS_INVESACC_STATUS,ACTIVE,Còn hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
+FMS_INVESACC_STATUS,INACTIVE,Hết hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
+FMS_RATING_CLASS,(to_define),Xếp loại kết quả đánh giá — cần profile data RankClass,modeler_defined,FMS.RANK.RankClass,Member Rating
+FMS_REPRESENT_STATUS,ACTIVE,Hoạt động,etl_derived,FMS.REPRESENT.Status,Investment Fund Representative Board Member
+FMS_REPRESENT_STATUS,INACTIVE,Khóa,etl_derived,FMS.REPRESENT.Status,Investment Fund Representative Board Member
+FMS_FOREIGN_OU_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện NN,etl_derived,FMS.STFFGBRCH.FnType,Foreign Fund Management Organization Unit Staff
+FMS_FOREIGN_OU_TYPE,BRANCH,Chi nhánh NN,etl_derived,FMS.STFFGBRCH.FnType,Foreign Fund Management Organization Unit Staff
+FMS_REPORT_TYPE,PERIODIC,Báo cáo định kỳ,etl_derived,FMS.RPTMEMBER.ReportType,Member Periodic Report
+FMS_REPORT_TYPE,AD_HOC,Báo cáo bất thường,etl_derived,FMS.RPTMEMBER.ReportType,Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,FMC,Công ty quản lý quỹ,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
+FMS_REPORTING_MEMBER_TYPE,CUSTODIAN_BANK,Ngân hàng lưu ký giám sát,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
+FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_BRANCH,Chi nhánh QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_REP,Văn phòng đại diện QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,INVESTMENT_FUND,Quỹ đầu tư chứng khoán,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
+FMS_REPORT_SUBMISSION_STATUS,PENDING,Chưa gửi,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,SUBMITTED,Đã gửi,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,LATE,Gửi muộn,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,CANCELLED,Bị hủy,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_TRANSFER_TYPE,(to_define),Loại giao dịch CCQ — cần profile data TransType,modeler_defined,FMS.TRANSFERMBF.TransType,Investment Fund Certificate Transfer
+FMS_CELL_DATA_TYPE,NUMERIC,Số,etl_derived,FMS.RPTVALUES.FormatDataType,Report Import Value
+FMS_CELL_DATA_TYPE,STRING,Ký tự,etl_derived,FMS.RPTVALUES.FormatDataType,Report Import Value
+FMS_BUSINESS_TYPE,(source),Ngành nghề kinh doanh của tổ chức trong hệ thống FMS,source_table,FMS.BUSINESS,"Fund Management Company | Foreign Fund Management Organization Unit"
+FMS_RELATION_TYPE,(to_define),Quan hệ giữa NĐT và người liên quan — cần profile data RelationShip,modeler_defined,FMS.INVES.RelationShip,Discretionary Investment Investor
+FMS_VIOLATION_TYPE,(to_define),Loại vi phạm trong hoạt động quản lý quỹ — cần profile data ViolType,modeler_defined,FMS.VIOLT.ViolType,Fund Management Conduct Violation
+FMS_VIOLATION_STATUS,(to_define),Trạng thái xử lý vi phạm — cần profile data ViolStatus,modeler_defined,FMS.VIOLT.ViolStatus,Fund Management Conduct Violation
+FMS_REPORT_VALUE_TYPE,(to_define),Loại giá trị trong báo cáo thành viên — cần profile data Type,modeler_defined,FMS.RPTVALUES.Type,Member Report Value
+IP_ELEC_ADDR_TYPE,WEBSITE,Website tổ chức,etl_derived,,IP Electronic Address

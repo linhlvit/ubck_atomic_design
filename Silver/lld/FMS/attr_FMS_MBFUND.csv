@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Investment Fund Investor Membership Id,Khóa đại diện cho quan hệ góp vốn của NĐT vào quỹ.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Investment Fund Investor Membership Code,Mã định danh quan hệ góp vốn. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.MBFUND.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.MBFUND,
+Investment Fund Id,FK đến quỹ đầu tư.,Surrogate Key,false,false,draft,FMS.MBFUND.FndId,FK target: Investment Fund.Investment Fund Id.,,
+Investment Fund Code,Mã quỹ đầu tư.,Text,false,false,draft,FMS.MBFUND.FndId,FK target: Investment Fund.Investment Fund Code. Pair with Investment Fund Id.,,
+Discretionary Investment Investor Id,FK đến nhà đầu tư.,Surrogate Key,false,false,draft,FMS.MBFUND.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Id.,,
+Discretionary Investment Investor Code,Mã nhà đầu tư.,Text,false,false,draft,FMS.MBFUND.InvesId,FK target: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Discretionary Investment Investor Id.,,
+Capital Amount,Số vốn góp của NĐT vào quỹ (VNĐ).,Currency Amount,true,false,draft,FMS.MBFUND.Capital,,,
+Ownership Ratio,Tỷ lệ sở hữu của NĐT trong quỹ (%).,Percentage,true,false,draft,FMS.MBFUND.Ratio,,,
+Created Timestamp,Ngày tạo bản ghi.,Timestamp,true,false,draft,FMS.MBFUND.DateCreated,,,
+Updated Timestamp,Ngày cập nhật bản ghi.,Timestamp,true,false,draft,FMS.MBFUND.DateModified,,,

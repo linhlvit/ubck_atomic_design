@@ -1,26 +1,29 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Securities Organization Reference Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Organization"" (Involved Party). Tổ chức tham gia TTCK (CTCK, QLQ, NH...)."
-Securities Organization Reference Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.Organizations.Id,BK chính.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Organizations,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-Organization Code,Mã tổ chức (mã nghiệp vụ),Text,true,false,draft,NHNCK.qlnhn.Organizations.OrganizationCode,"Mã nghiệp vụ, khác BK."
-Organization Name,Tên tổ chức,Text,true,false,draft,NHNCK.qlnhn.Organizations.OrganizationName,"BCV: gần nhất ""Full Name"" (Involved Party). Đặt ""Organization Name"" sát nghĩa."
-English Name,Tên tiếng Anh,Text,true,false,draft,NHNCK.qlnhn.Organizations.EnglishName,
-Abbreviation,Tên viết tắt,Text,true,false,draft,NHNCK.qlnhn.Organizations.Abbreviation,
-Organization Type Code,"Mã loại tổ chức (1:CTCK, 2:QLQ, 3:NH, 4:Khác)",Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.OrganizationTypeId,"Scheme: ORGANIZATION_TYPE. BCV: ""Organization Type"" (Involved Party)."
-Organization Level Code,Cấp độ tổ chức,Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.Level,Scheme: ORGANIZATION_LEVEL.
-Parent Organization Id,FK self-referencing — tổ chức cha,Surrogate Key,true,false,draft,NHNCK.qlnhn.Organizations.ParentId,FK target: Securities Organization Reference.Securities Organization Reference Id. Self-referencing.
-Parent Organization Code,Mã tổ chức cha,Text,true,false,draft,NHNCK.qlnhn.Organizations.ParentId,FK target: Securities Organization Reference.Securities Organization Reference Code. Pair with Parent Organization Id.
-Website,Địa chỉ website,Text,true,false,draft,NHNCK.qlnhn.Organizations.Website,Thông tin công khai — không thuộc IP Electronic Address.
-Representative Name,Người đại diện,Text,true,false,draft,NHNCK.qlnhn.Organizations.Representative,"BCV: ""Designated Representative"" (Involved Party). Suffix Name. Chủ thể khác — không thuộc shared entity."
-Charter Capital Amount,Vốn điều lệ,Currency Amount,true,false,draft,NHNCK.qlnhn.Organizations.CharterCapital,Nhất quán naming với DCST LLD.
-Organization Description,Mô tả,Text,true,false,draft,NHNCK.qlnhn.Organizations.Description,"Prefix ""Organization"" phân biệt."
-Organization Status Code,Trạng thái,Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.Status,Scheme: ORGANIZATION_STATUS.
-Sort Order,Thứ tự sắp xếp,Small Counter,true,false,draft,NHNCK.qlnhn.Organizations.SortOrder,
-Linked Id,ID liên kết,Text,true,false,draft,NHNCK.qlnhn.Organizations.LinkedId,Metadata liên kết hệ thống.
-Sync Id,Mã đồng bộ,Text,true,false,draft,NHNCK.qlnhn.Organizations.SyncId,Metadata đồng bộ.
-Last Sync Date,Lần cuối đồng bộ,Date,true,false,draft,NHNCK.qlnhn.Organizations.LastSyncDate,
-Sync Status Code,Trạng thái đồng bộ,Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.SyncStatus,Scheme: SYNC_STATUS.
-Created By Officer Id,FK đến Officer,Surrogate Key,true,false,draft,NHNCK.qlnhn.Organizations.CreatedBy,FK target: Regulatory Authority Officer.Officer Id.
-Created By Officer Code,Mã người tạo,Text,true,false,draft,NHNCK.qlnhn.Organizations.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id.
-Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.Organizations.CreatedAt,
-Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.Organizations.UpdatedAt,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Securities Organization Reference Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Organization"" (Involved Party). Tổ chức tham gia TTCK (CTCK, QLQ, NH...).",,
+Securities Organization Reference Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.Organizations.Id,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=NHNCK.Organizations,
+Organization Code,Mã tổ chức (mã nghiệp vụ),Text,true,false,draft,NHNCK.qlnhn.Organizations.OrganizationCode,"Mã nghiệp vụ, khác BK.",,
+Organization Name,Tên tổ chức,Text,true,false,draft,NHNCK.qlnhn.Organizations.OrganizationName,,,
+English Name,Tên tiếng Anh,Text,true,false,draft,NHNCK.qlnhn.Organizations.EnglishName,,,
+Abbreviation,Tên viết tắt,Text,true,false,draft,NHNCK.qlnhn.Organizations.Abbreviation,,,
+Organization Type Code,"Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác)",Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.OrganizationTypeId,Scheme: ORGANIZATION_TYPE.,,
+Organization Level Code,Cấp độ tổ chức,Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.Level,Scheme: ORGANIZATION_LEVEL.,,
+Parent Organization Id,FK self-referencing — tổ chức cha,Surrogate Key,true,false,draft,NHNCK.qlnhn.Organizations.ParentId,FK target: Securities Organization Reference.Securities Organization Reference Id. Self-referencing.,,
+Parent Organization Code,Mã tổ chức cha,Text,true,false,draft,NHNCK.qlnhn.Organizations.ParentId,FK target: Securities Organization Reference.Securities Organization Reference Code. Pair with Parent Organization Id.,,
+Representative Name,Người đại diện,Text,true,false,draft,NHNCK.qlnhn.Organizations.Representative,"BCV: ""Designated Representative"" (Involved Party). Suffix Name. Chủ thể khác — không thuộc shared entity.",,
+Charter Capital Amount,Vốn điều lệ,Currency Amount,true,false,draft,NHNCK.qlnhn.Organizations.CharterCapital,,,
+License Number,Số giấy phép hoạt động,Text,true,false,draft,NHNCK.qlnhn.Organizations.LicenseNumber,,,
+License Issuer,Cơ quan cấp giấy phép,Text,true,false,draft,NHNCK.qlnhn.Organizations.LicenseIssuer,,,
+License Date,Ngày cấp giấy phép,Date,true,false,draft,NHNCK.qlnhn.Organizations.LicenseDate,,,
+Website,Địa chỉ website,Text,true,false,draft,NHNCK.qlnhn.Organizations.Website,Thông tin công khai — không thuộc IP Electronic Address.,,
+Organization Description,Mô tả,Text,true,false,draft,NHNCK.qlnhn.Organizations.Description,,,
+Organization Status Code,Trạng thái,Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.Status,Scheme: ORGANIZATION_STATUS.,,
+Sort Order,Thứ tự sắp xếp,Small Counter,true,false,draft,NHNCK.qlnhn.Organizations.SortOrder,,,
+Linked Id,ID liên kết,Text,true,false,draft,NHNCK.qlnhn.Organizations.LinkedId,Metadata liên kết hệ thống.,,
+Sync Id,Mã đồng bộ,Text,true,false,draft,NHNCK.qlnhn.Organizations.SyncId,Metadata đồng bộ.,,
+Last Sync Date,Lần cuối đồng bộ,Date,true,false,draft,NHNCK.qlnhn.Organizations.LastSyncDate,,,
+Sync Status Code,Trạng thái đồng bộ,Classification Value,true,false,draft,NHNCK.qlnhn.Organizations.SyncStatus,Scheme: SYNC_STATUS.,,
+Created By Officer Id,FK đến Officer,Surrogate Key,true,false,draft,NHNCK.qlnhn.Organizations.CreatedBy,FK target: Regulatory Authority Officer.Officer Id.,,
+Created By Officer Code,Mã người tạo,Text,true,false,draft,NHNCK.qlnhn.Organizations.CreatedBy,FK target: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id.,,
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.Organizations.CreatedAt,,,
+Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.Organizations.UpdatedAt,,,

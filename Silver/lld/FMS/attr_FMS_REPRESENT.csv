@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Investment Fund Representative Board Member Id,Khóa đại diện cho thành viên ban đại diện quỹ.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Investment Fund Representative Board Member Code,Mã định danh thành viên ban đại diện. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.REPRESENT.Id,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.REPRESENT,
+Investment Fund Id,FK đến quỹ đầu tư.,Surrogate Key,false,false,draft,FMS.REPRESENT.FndId,FK target: Investment Fund.Investment Fund Id.,,
+Investment Fund Code,Mã quỹ đầu tư.,Text,false,false,draft,FMS.REPRESENT.FndId,FK target: Investment Fund.Investment Fund Code. Pair with Investment Fund Id.,,
+Fund Management Company Key Person Id,FK đến nhân sự giữ vai trò thành viên ban đại diện.,Surrogate Key,false,false,draft,FMS.REPRESENT.TLId,FK target: Fund Management Company Key Person.Fund Management Company Key Person Id.,,
+Fund Management Company Key Person Code,Mã nhân sự.,Text,false,false,draft,FMS.REPRESENT.TLId,FK target: Fund Management Company Key Person.Fund Management Company Key Person Code. Pair with Fund Management Company Key Person Id.,,
+Is Chair Indicator,Cờ đánh dấu trưởng ban đại diện.,Indicator,true,false,draft,FMS.REPRESENT.IsChair,,,
+Practice Status Code,Trạng thái tham gia ban đại diện.,Classification Value,true,false,draft,FMS.REPRESENT.Status,Scheme: FMS_REPRESENT_STATUS.,,
+Created Timestamp,Ngày tạo bản ghi.,Timestamp,true,false,draft,FMS.REPRESENT.DateCreated,,,
+Updated Timestamp,Ngày cập nhật bản ghi.,Timestamp,true,false,draft,FMS.REPRESENT.DateModified,,,

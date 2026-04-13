@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Custodian Bank.,Surrogate Key,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Id.,,
+Involved Party Code,Mã ngân hàng LKGS.,Text,false,false,draft,FMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.BANKMONI,
+Electronic Address Type Code,Loại liên lạc — điện thoại.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE.,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Value,Số điện thoại.,Text,true,false,draft,FMS.BANKMONI.Telephone,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại liên lạc — email.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE.,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Value,Địa chỉ email.,Text,true,false,draft,FMS.BANKMONI.Email,,IP_ELEC_ADDR_TYPE=EMAIL,

@@ -1,14 +1,13 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Practitioner Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Individual"" (Involved Party). Domain prefix ""Securities Practitioner"" theo HLD."
-Practitioner Code,Mã định danh người hành nghề (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,BK chính. PK nguồn.
-Source System Code,Mã nguồn dữ liệu. Giá trị: NHNCK.Professionals,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.
-Full Name,Họ và tên,Text,true,false,draft,NHNCK.qlnhn.Professionals.FullName,"BCV: ""Full Name"" (Involved Party). Giữ nguyên BCV term."
-Date Of Birth,Ngày sinh,Date,true,false,draft,NHNCK.qlnhn.Professionals.BirthDate,"BCV: ""Date Of Birth"" (Involved Party). Giữ nguyên BCV term."
-Individual Gender Code,Giới tính,Classification Value,true,false,draft,NHNCK.qlnhn.Professionals.Gender,"Scheme: INDIVIDUAL_GENDER. BCV: ""Individual Gender"" (Involved Party)."
-Nationality Code,Quốc tịch,Classification Value,true,false,draft,NHNCK.qlnhn.Professionals.Nationality,Scheme: NATIONALITY.
-Birth Place,Nơi sinh,Text,true,false,draft,NHNCK.qlnhn.Professionals.BirthPlace,"Text tự do, không đủ cấu trúc. Giữ denormalized."
-Education Level Code,Trình độ học vấn,Classification Value,true,false,draft,NHNCK.qlnhn.Professionals.EducationLevelId,Scheme: EDUCATION_LEVEL.
-Practice Status Code,Trạng thái hành nghề,Classification Value,true,false,draft,NHNCK.qlnhn.Professionals.PracticeStatus,Scheme: PRACTICE_STATUS.
-C06 Verification Status Code,Trạng thái xác thực C06,Classification Value,true,false,draft,NHNCK.qlnhn.Professionals.VerifyStatus,Scheme: C06_VERIFICATION_STATUS.
-Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.Professionals.CreatedAt,
-Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.qlnhn.Professionals.UpdatedAt,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Practitioner Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Individual"" (Involved Party). Domain prefix ""Securities Practitioner"" theo HLD.",,
+Practitioner Code,Mã định danh người hành nghề (tự động tăng). BK,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=NHNCK.Professionals,
+Full Name,Họ và tên,Text,true,false,draft,NHNCK.qlnhn.Professionals.FullName,"BCV: ""Full Name"" (Involved Party).",,
+Birth Year,Năm sinh,Text,true,false,draft,NHNCK.qlnhn.Professionals.BirthYear,"Text vì là năm dạng ""1990"".",,
+Country Code,Quốc gia/quốc tịch,Classification Value,true,false,draft,NHNCK.qlnhn.Professionals.CountryId,Scheme: COUNTRY.,,
+Identity Reference Code,Mã định danh giấy tờ tùy thân (FK bảng identity riêng),Text,true,false,draft,NHNCK.qlnhn.Professionals.IdentityId,Bảng identity riêng không có trong scope NHNCK — lưu BK dạng Text.,,
+Relationship Type Code,Loại quan hệ người hành nghề,Classification Value,true,false,draft,NHNCK.qlnhn.Professionals.RelationshipType,Scheme: PRACTITIONER_RELATIONSHIP_TYPE.,,
+Occupation Name,Nghề nghiệp,Text,true,false,draft,NHNCK.qlnhn.Professionals.Occupation,Text tự do.,,
+Workplace Name,Nơi làm việc,Text,true,false,draft,NHNCK.qlnhn.Professionals.Workplace,Text tự do.,,
+Practitioner Note,Ghi chú,Text,true,false,draft,NHNCK.qlnhn.Professionals.Note,,,
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.qlnhn.Professionals.CreatedAt,,,

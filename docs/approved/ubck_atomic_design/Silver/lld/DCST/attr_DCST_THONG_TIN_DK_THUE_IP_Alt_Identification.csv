@@ -1,8 +1,12 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment
-Involved Party Id,FK đến Registered Taxpayer,Surrogate Key,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Id. Nhất quán cấu trúc shared entity với NHNCK.
-Involved Party Code,Mã NNT,Text,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id.
-Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.
-Identification Type Code,"Loại giấy tờ: BUSINESS_LICENSE (giấy phép thành lập) hoặc ESTABLISHMENT_DECISION (quyết định thành lập). ETL derive từ vị trí cột nguồn",Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. Giá trị đã có trong ref_shared_entity_classifications.
-Identification Number,"[BUSINESS_LICENSE] Số giấy phép thành lập; [ESTABLISHMENT_DECISION] Số quyết định thành lập",Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_GIAY_PHEP|DCST.THONG_TIN_DK_THUE.SO_QUYET_DINH,"BUSINESS_LICENSE → SO_GIAY_PHEP. ESTABLISHMENT_DECISION → SO_QUYET_DINH."
-Issue Date,"[BUSINESS_LICENSE] Ngày cấp; [ESTABLISHMENT_DECISION] Ngày ban hành quyết định",Date,true,false,draft,DCST.THONG_TIN_DK_THUE.NGAY_CAP|DCST.THONG_TIN_DK_THUE.NGAY_BAN_HANH,"BUSINESS_LICENSE → NGAY_CAP. ESTABLISHMENT_DECISION → NGAY_BAN_HANH."
-Issuing Authority,"[BUSINESS_LICENSE] Cơ quan cấp giấy phép thành lập; [ESTABLISHMENT_DECISION] Cơ quan ban hành quyết định thành lập",Text,true,false,draft,DCST.THONG_TIN_DK_THUE.CO_QUAN_CAP|DCST.THONG_TIN_DK_THUE.CO_QUAN_BAN_HANH,"BUSINESS_LICENSE → CO_QUAN_CAP. ESTABLISHMENT_DECISION → CO_QUAN_BAN_HANH."
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Registered Taxpayer,Surrogate Key,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã NNT,Text,false,false,draft,DCST.THONG_TIN_DK_THUE.ID,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=DCST.THONG_TIN_DK_THUE
+Identification Type Code,Loại giấy tờ — giấy phép thành lập.,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=BUSINESS_LICENSE
+Identification Number,Số giấy phép thành lập,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_GIAY_PHEP,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issue Date,Ngày cấp giấy phép,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.NGAY_CAP,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issuing Authority,Cơ quan cấp giấy phép thành lập,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.CO_QUAN_CAP,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Identification Type Code,Loại giấy tờ — quyết định thành lập.,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION
+Identification Number,Số quyết định thành lập,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.SO_QUYET_DINH,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,
+Issue Date,Ngày ban hành quyết định,Date,true,false,draft,DCST.THONG_TIN_DK_THUE.NGAY_BAN_HANH,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,
+Issuing Authority,Cơ quan ban hành quyết định thành lập,Text,true,false,draft,DCST.THONG_TIN_DK_THUE.CO_QUAN_BAN_HANH,,IP_ALT_ID_TYPE=ESTABLISHMENT_DECISION,

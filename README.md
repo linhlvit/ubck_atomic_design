@@ -1,6 +1,6 @@
-# UBCK Data Model — LLD Repository
+# UBCK Data Model — Silver Layer Design Repository
 
-> **Mục đích:** Lưu trữ và quản lý các file thiết kế LLD (Low-Level Design) dạng Logical, phục vụ quy trình thiết kế Data Model trên kiến trúc Medallion (Silver layer).
+> **Mục đích:** Lưu trữ và quản lý thiết kế HLD và LLD cho Silver layer trên kiến trúc Medallion (Bronze / Silver / Gold), phục vụ dự án Lakehouse của UBCKNN.
 
 ---
 
@@ -9,167 +9,425 @@
 ```
 ubck_atomic_design/
 ├── Silver/
-│   ├── hld/                                        # HLD — sơ đồ quan hệ Source → Silver
-│   │   ├── DCST_relationship_diagram.md
-│   │   ├── FIMS_relationship_diagram.md
-│   │   ├── FMS_relationship_diagram.md
-│   │   └── NHNCK_relationship_diagram.md
+│   ├── hld/                                      # HLD — thiết kế mức entity
+│   │   ├── <SYSTEM>_HLD_Tier<N>.md               # Thiết kế theo Tier dependency
+│   │   ├── <SYSTEM>_HLD_Overview.md              # Tổng quan toàn bộ source system
+│   │   ├── silver_entities.csv                   # Tổng hợp tất cả Silver entities (source of truth)
+│   │   └── silver_out_of_scope.csv               # Bảng ngoài scope Silver (auto-gen từ 7f)
 │   └── lld/
-│       ├── DCST/                                   # Source system: DCST (Dữ liệu Cơ quan Thuế)
-│       │   ├── attr_DCST_THONG_TIN_DK_THUE.xlsx
-│       │   ├── attr_DCST_TTKDT_NGUOI_DAI_DIEN.xlsx
-│       │   ├── attr_DCST_DN_RUI_RO_CAO.xlsx
-│       │   ├── attr_DCST_TCT_BAO_CAO.xlsx
-│       │   ├── attr_DCST_TCT_BAO_CAO_CHI_TIET.xlsx
-│       │   ├── attr_DCST_TCT_TT_CUONG_CHE_NO.xlsx
-│       │   ├── attr_DCST_TT_XLY_VI_PHAM.xlsx
-│       │   ├── attr_DCST_TCT_TTCCN_HOA_DON.xlsx
-│       │   └── attr_DCST_HOA_DON_CHI_TIET.xlsx
-│       ├── NHNCK/                                  # Source system: NHNCK (Người Hành Nghề Chứng Khoán)
+│       ├── DCST/                                 # Source system: DCST
+│       │   └── attr_DCST_<TABLE>.csv
+│       ├── FMS/                                  # Source system: FMS
+│       │   └── attr_FMS_<TABLE>.csv
+│       ├── NHNCK/                                # Source system: NHNCK
 │       │   └── attr_NHNCK_<TABLE>.csv
-│       ├── manifest.csv                            # Danh sách tổng hợp tất cả LLD entities
-│       └── ref_shared_entity_classifications.csv   # Phân loại các scheme, code value trong Classification value
-├── Source/                                         # Source table definitions
-│   ├── DCST_Source_Tables.xlsx
-│   ├── FIMS_Source_Tables.xlsx
-│   ├── FMS_Source_Tables.xlsx
-│   ├── NHNCK_Source_Tables.xlsx
-│   └── GAP/                                        # (Mở rộng)
-├── system/
-│   ├── common/                                     # (Tài nguyên dùng chung — mở rộng)
-│   └── templates/
-│       └── attr_template.csv                       # Template chuẩn cho file LLD
-├── instructions/                                   # (Legacy — không dùng nữa)
-└── README.md
+│       ├── scripts/
+│       │   ├── aggregate_silver.py               # Script tổng hợp attributes + entities
+│       │   ├── aggregate_out_of_scope.py         # Script tổng hợp bảng ngoài scope từ 7f
+│       │   ├── rename_entity.py                  # Script propagate đổi tên entity
+│       │   └── check_consistency.py              # Script kiểm tra nhất quán HLD vs silver_entities.csv
+│       ├── manifest.csv                          # Danh sách tất cả LLD files + entity mapping
+│       ├── ref_shared_entity_classifications.csv # Chuẩn hóa Classification Value scheme/code
+│       └── silver_attributes.csv                 # Tổng hợp tất cả attributes (auto-gen)
+├── Source/                                       # Cấu trúc CSDL nguồn
+│   ├── <SYSTEM>_Source_Tables.*
+│   └── <SYSTEM>_Source_Columns.*
+├── knowledge/                                    # BCV knowledge base
+│   ├── terms.csv
+│   ├── term_relationships.csv
+│   └── reference_data_sets.csv
+└── .claude/
+    └── skills/
+        ├── SKILL_HLD.md                          # Quy trình thiết kế HLD
+        └── SKILL_LLD.md                          # Quy trình thiết kế LLD
 ```
 
 ---
 
-## Quy ước file LLD
+## Quy trình thiết kế
 
-### Tên file
+### Tổng quan luồng thiết kế
 
-Format: `attr_<SOURCE>_<TÊN_BẢNG_NGUỒN>.<ext>`
+```mermaid
+sequenceDiagram
+    actor DM as Data Modeler
+    participant SRC as Source/<br/>knowledge/
+    participant HLD as Silver/hld/<br/>*_HLD_Tier*.md
+    participant SE as silver_entities.csv<br/>(source of truth)
+    participant MF as manifest.csv
+    participant LLD as Silver/lld/<SYSTEM>/<br/>attr_*.csv
+    participant AGG as aggregate_silver.py
+    participant OUT as silver_attributes.csv
 
-- DCST: `attr_DCST_THONG_TIN_DK_THUE.xlsx`
-- NHNCK: `attr_NHNCK_Professionals.csv`
+    rect rgb(230, 240, 255)
+        note over DM,SE: Giai đoạn 1 — HLD
+        DM->>SRC: Đọc Source columns + BCV knowledge
+        DM->>SE: Kiểm tra entity nào đã reviewed
+        loop Mỗi Tier (T1 → T2 → ... → TN)
+            DM->>HLD: Viết *_HLD_TierN.md (6a~6f)
+        end
+        DM->>HLD: Viết *_HLD_Overview.md (7a~7f)
+        DM->>SE: Cập nhật silver_entities.csv<br/>(bcv, table_type, description)
+    end
 
-### Cấu trúc file
+    rect rgb(230, 255, 230)
+        note over DM,OUT: Giai đoạn 2 — LLD
+        DM->>HLD: Đọc HLD làm input
+        DM->>MF: Thêm dòng mapping mới<br/>(source_system, source_table, lld_file, group)
+        loop Mỗi entity
+            DM->>LLD: Viết attr_<SYSTEM>_<TABLE>.csv
+        end
+        DM->>AGG: Chạy aggregate_silver.py
+        AGG->>SE: Đọc entity attributes
+        AGG->>MF: Đọc danh sách lld_file
+        AGG->>LLD: Đọc từng attr file
+        AGG->>OUT: Ghi silver_attributes.csv
+        AGG->>SE: Cập nhật source_table
+    end
+```
 
-**DCST (.xlsx):** Mỗi file chứa 1 hoặc nhiều sheet, mỗi sheet = 1 Silver entity được thiết kế từ bảng nguồn đó.
+---
 
-Ví dụ `attr_DCST_THONG_TIN_DK_THUE.xlsx` gồm 4 sheet:
+### Quy trình đổi tên entity
 
-| Sheet | Silver Entity | Loại |
+```mermaid
+sequenceDiagram
+    actor DM as Data Modeler
+    participant SE as silver_entities.csv
+    participant RN as rename_entity.py
+    participant MF as manifest.csv
+    participant LLD as attr_*.csv
+    participant HLD as *_HLD_*.md
+    participant OUT as silver_attributes.csv
+
+    Note over DM,SE: Entity phải ở status=draft trước khi rename
+    DM->>SE: Kiểm tra status entity
+    alt status = approved
+        DM->>SE: Đổi status: approved → draft
+    end
+    DM->>SE: Sửa silver_entity → tên mới
+    DM->>RN: Chạy --dry-run
+    RN->>SE: Đọc tất cả entities (tên mới)
+    RN->>MF: Đọc manifest (tên cũ)
+    RN-->>DM: In preview: file nào thay đổi
+    DM->>RN: Chạy (apply)
+    RN->>MF: Cập nhật silver_entity
+    RN->>OUT: Cập nhật silver_entity
+    RN->>LLD: Cập nhật attribute_name, description, comment
+    RN->>HLD: Replace tên trong tất cả HLD files
+    DM->>SE: Đổi status: draft → approved (nếu cần)
+    DM->>RN: (Optional) Chạy aggregate_silver.py
+```
+
+---
+
+### Quy trình sửa table_type
+
+```mermaid
+sequenceDiagram
+    actor DM as Data Modeler
+    participant SE as silver_entities.csv
+    participant AGG as aggregate_silver.py
+    participant OUT as silver_attributes.csv
+
+    DM->>SE: Sửa table_type trực tiếp
+    DM->>AGG: Chạy aggregate_silver.py
+    AGG->>SE: Đọc table_type mới (source of truth)
+    AGG->>OUT: Rebuild silver_attributes.csv
+```
+
+---
+
+### Giai đoạn 1 — HLD (High-Level Design)
+
+**Mục tiêu:** Xác định Silver entities, BCV Concept, và quan hệ giữa entities. Chưa đi vào chi tiết từng cột.
+
+#### Input
+
+| Loại | Vị trí |
+|---|---|
+| Cấu trúc CSDL nguồn | `Source/*_Tables.*`, `*_Columns.*` |
+| BCV knowledge base | `knowledge/terms.csv`, `term_relationships.csv`, `reference_data_sets.csv` |
+| HLD source system liên quan (nếu có) | `Silver/hld/*.md` |
+
+#### Phương pháp
+
+**Phân tầng theo dependency — không theo nhóm nghiệp vụ:**
+
+| Tier | Định nghĩa |
+|---|---|
+| Tier 1 | Không FK đến bảng nghiệp vụ nào (chỉ FK đến danh mục) |
+| Tier 2 | FK đến entity Tier 1 |
+| Tier N | FK đến entity Tier N-1 |
+
+Quy tắc bổ sung:
+- Nhiều entity cùng mức dependency → gộp vào 1 Tier
+- Circular reference trong cùng Tier → giữ nguyên, ghi vào mục 6f
+- Nếu source system đã có cách đặt tên Tier riêng → vẫn phải phân tích lại dependency từ đầu
+
+**Phân loại bảng nguồn:**
+
+| Loại | Xử lý |
+|---|---|
+| Bảng có instance data | → Silver entity |
+| Bảng chỉ có Code + Name | → Classification Value (không tạo entity) |
+| Junction chỉ 2 trường FK | → Denormalize thành ARRAY trên entity cha |
+| Audit Log / Snapshot nguồn | → Ngoài scope Silver |
+| Bảng chưa có cột | → Ghi vào 6e, chờ thông tin |
+
+**Tra BCV bắt buộc** trước khi gán Concept — grep trên `knowledge/`, kiểm tra bằng cấu trúc trường thực tế, không suy luận từ tên bảng.
+
+#### Output mỗi Tier — `<SYSTEM>_HLD_Tier<N>.md`
+
+| Mục | Nội dung |
+|---|---|
+| **6a** | Bảng tổng quan BCV Concept — entity mới của Tier kèm lý do chọn BCV Term |
+| **6b** | Diagram Source (Mermaid) — FK giữa các bảng nguồn |
+| **6c** | Diagram Silver (Mermaid) — Silver entities và quan hệ |
+| **6d** | Danh mục & Tham chiếu — bảng nguồn map thành Classification Value |
+| **6e** | Bảng chờ thiết kế — bảng chưa có cột |
+| **6f** | Điểm cần xác nhận — câu hỏi mở cần người thiết kế quyết định |
+
+#### Output sau Tier cuối — `<SYSTEM>_HLD_Overview.md`
+
+| Mục | Nội dung |
+|---|---|
+| **7a** | Bảng tổng quan tất cả Silver entities (gộp 6a mọi Tier, thêm cột Tier) |
+| **7b** | Diagram Silver tổng — 1 diagram toàn bộ data model |
+| **7c** | Toàn bộ Classification Value |
+| **7d** | Toàn bộ junction table và cách denormalize |
+| **7e** | Toàn bộ điểm cần xác nhận còn mở |
+| **7f** | Toàn bộ bảng ngoài scope |
+
+Sau HLD Overview → cập nhật `Silver/hld/silver_entities.csv`.
+
+---
+
+### Giai đoạn 2 — LLD (Low-Level Design)
+
+**Mục tiêu:** Thiết kế chi tiết từng attribute — tên, data domain, FK target, nullable, source column mapping.
+
+**Điều kiện tiên quyết:** HLD đã được duyệt.
+
+#### Input
+
+| Loại | Vị trí |
+|---|---|
+| HLD Overview + HLD Tier tương ứng | `Silver/hld/*.md` |
+| Cấu trúc CSDL nguồn | `Source/*_Columns.*` |
+| LLD đã có cùng source system | `Silver/lld/<SYSTEM>/attr_*.csv` |
+| LLD entity tương đồng source khác | `Silver/lld/<OTHER>/attr_*.csv` |
+| Classification Value đã chuẩn hóa | `Silver/lld/ref_shared_entity_classifications.csv` |
+| Danh sách entity đã có | `Silver/lld/manifest.csv` |
+
+#### Quy tắc mapping cột nguồn
+
+| Loại trường | Quy tắc |
+|---|---|
+| PK bảng nguồn | → Entity Code (BK), data domain = `Text` |
+| FK đến Fundamental entity | → Cặp `[Entity] Id` (`Surrogate Key`) + `[Entity] Code` (`Text`) |
+| FK đến Classification Value / danh mục | → 1 trường Code duy nhất, data domain = `Classification Value` |
+| Địa chỉ / liên lạc / giấy tờ (grain = 1 IP) | → Tách ra file shared entity riêng |
+
+**12 Data Domain chuẩn:** Text, Date, Timestamp, Currency Amount, Interest Rate, Exchange Rate, Percentage, Surrogate Key, Classification Value, Indicator, Boolean, Small Counter.
+
+#### Cột `table_type` trong manifest và silver_entities
+
+Mỗi entity có 1 giá trị `table_type` xác định ETL pattern trên Delta Lake:
+
+| table_type | Ý nghĩa | ETL pattern |
 |---|---|---|
-| Registered Taxpayer | Registered Taxpayer | Fundamental (SCD4A) |
-| IP Postal Address | Involved Party Postal Address | Shared |
-| IP Electronic Address | Involved Party Electronic Address | Shared |
-| IP Alt Identification | Involved Party Alternative Identification | Shared |
+| `Fundamental` | Entity chính, Tier 1, surrogate key, lifecycle riêng | SCD2, upsert |
+| `Relative` | Entity phụ thuộc, FK đến Fundamental | SCD1 hoặc SCD2 |
+| `Fact Append` | Log, sự kiện, giao dịch — không update | Insert-only |
+| `Snapshot` | Full load định kỳ, chụp trạng thái toàn bộ | Replace partition |
 
-**NHNCK (.csv):** Mỗi file = 1 Silver entity.
+Lưu trong `silver_entities.csv` — `aggregate_silver.py` đọc từ đây khi rebuild `silver_attributes.csv`.
 
-### Các cột trong mỗi file/sheet
+---
+
+#### Output mỗi entity — `attr_<SYSTEM>_<SourceTable>.csv`
+
+Cấu trúc 10 cột:
 
 | Cột | Mô tả |
 |---|---|
-| `attribute_name` | Tên attribute trên Silver (tiếng Anh, logical name) |
-| `description` | Mô tả gốc từ CSDL nguồn + mô tả bổ sung trên model (nếu có) |
+| `attribute_name` | Tên attribute trên Silver (tiếng Anh) |
+| `description` | Mô tả gốc nguồn + mô tả bổ sung model |
 | `data_domain` | 1 trong 12 Data Domain chuẩn |
-| `nullable` | true / false |
-| `is_primary_key` | true / false |
-| `status` | draft / reviewed / approved |
-| `source_columns` | Trường nguồn. Format: `<SOURCE>.dbo.<TABLE>.<COLUMN>`. Nhiều nguồn phân cách bằng `\|` |
-| `comment` | Ghi chú thiết kế, logic mapping, điểm cần xác nhận SME |
+| `nullable` | `true` / `false` |
+| `is_primary_key` | `true` / `false` |
+| `status` | `draft` / `approved` |
+| `source_columns` | Fully qualified: `SYSTEM.schema.Table.Column` |
+| `comment` | FK target, Scheme code, lý do thiết kế |
+| `classification_context` | Shared entity: `SCHEME=VALUE` (1 dòng / 1 context) |
+| `etl_derived_value` | Giá trị ETL-derived cố định (không lấy từ cột nguồn) |
+
+Sau mỗi file attr → cập nhật `manifest.csv` và `ref_shared_entity_classifications.csv`.
+
+#### Bước tổng hợp cuối
+
+```bash
+cd <workspace_root>
+python Silver/lld/scripts/aggregate_silver.py
+```
+
+Script tự động sinh:
+- `Silver/lld/silver_attributes.csv` — toàn bộ attributes (13 cột)
+- `Silver/hld/silver_entities.csv` — cập nhật `source_table` nếu có source mới (7 cột)
+
+> **Lưu ý:** `aggregate_silver.py` đọc `bcv_core_object`, `bcv_concept`, `table_type`, `description` từ `silver_entities.csv` (source of truth) — không ghi đè các cột này.
 
 ---
 
-## Trạng thái thiết kế (status)
+### Quy trình đổi tên Silver entity (sau review)
+
+Khi cần rename một Silver entity (ví dụ: `High Risk Taxpayer Assessment` → `High Risk Taxpayer Assessment Snapshot`):
+
+**Điều kiện:** Entity phải có `status=draft`. Nếu đang `approved` → đổi về `draft` trước.
+
+**Bước 1 — Sửa `silver_entities.csv`:**
+
+| Cột | Thay đổi |
+|---|---|
+| `silver_entity` | Đổi sang tên mới |
+| `status` | Đảm bảo là `draft` (đổi về `draft` nếu đang `approved`) |
+
+**Bước 2 — Preview trước khi apply:**
+
+```bash
+python Silver/lld/scripts/rename_entity.py --dry-run
+```
+
+Script in ra danh sách tất cả file và số lần thay thế — kiểm tra trước khi ghi.
+
+**Bước 3 — Apply:**
+
+```bash
+python Silver/lld/scripts/rename_entity.py
+```
+
+Script tự động propagate tên mới ra:
+- `Silver/lld/manifest.csv` (cột `silver_entity` — giữ sync)
+- `Silver/lld/silver_attributes.csv`
+- `Silver/lld/<SYSTEM>/attr_<TABLE>.csv` (attribute name prefix + description)
+- Tất cả HLD Markdown files (`*_HLD_Tier*.md`, `*_HLD_Overview.md`)
+- `Silver/lld/ref_shared_entity_classifications.csv`
+
+**Bước 4 — (Optional) Refresh aggregate:**
+
+```bash
+python Silver/lld/scripts/aggregate_silver.py
+```
+
+Chạy nếu cần rebuild hoàn toàn `silver_attributes.csv`.
+
+> **Approved lock:** Nếu entity có `status=approved`, `rename_entity.py` sẽ từ chối thực thi và báo lỗi. Phải đổi `status` về `draft` trước khi rename.
+
+### Quy trình sửa table_type (sau review)
+
+Khi cần sửa `table_type` của một entity:
+
+1. Sửa cột `table_type` trong `Silver/hld/silver_entities.csv`
+2. Chạy `aggregate_silver.py` → `silver_attributes.csv` được rebuild với bcv fields đúng
+
+Không cần sửa manifest — `table_type` chỉ lưu trong `silver_entities.csv`.
+
+---
+
+### Kiểm tra nhất quán HLD vs silver_entities (sau khi re-run thiết kế)
+
+Khi cập nhật quy tắc thiết kế và chạy lại HLD, có nguy cơ tên entity trong HLD bị ghi đè khác với tên trong `silver_entities.csv`. Dùng script này để phát hiện xung đột:
+
+```bash
+python Silver/lld/scripts/check_consistency.py
+```
+
+Script so sánh tất cả entity name trong HLD Markdown files với `silver_entities.csv` và báo cáo:
+
+| Kết quả | Ý nghĩa |
+|---|---|
+| `OK` | Tất cả entities nhất quán với HLD |
+| `CONFLICT` | Entity trong HLD có tên khác `silver_entities.csv` — cần sửa HLD |
+| `WARN` | Entity không tìm thấy trong bất kỳ HLD file nào |
+
+**Các tùy chọn:**
+
+```bash
+python Silver/lld/scripts/check_consistency.py --source FMS     # chỉ kiểm tra FMS
+python Silver/lld/scripts/check_consistency.py --fix-hints      # in gợi ý cách sửa
+```
+
+**Quy tắc xử lý khi có CONFLICT:**
+
+- Entity `status=approved` bị CONFLICT → **bắt buộc sửa** (exit code 1)
+- Entity `status=draft` không tìm thấy trong HLD → WARN (exit code 0, chỉ cảnh báo)
+- Nếu HLD đang dùng tên cũ → cập nhật HLD theo tên trong `silver_entities.csv`
+- Nếu muốn đổi tên mới → đảm bảo entity ở `status=draft`, sửa `silver_entities.csv`, rồi chạy `rename_entity.py`
+- Không bao giờ sửa ngược `silver_entities.csv` theo HLD nếu `status=approved`
+
+---
+
+## Trạng thái thiết kế
 
 | Status | Ý nghĩa |
 |---|---|
-| `draft` | Mới thiết kế, chưa review |
-| `reviewed` | Đã review với team, có thể còn điểm cần xác nhận SME |
-| `approved` | Đã duyệt, sẵn sàng chuyển Engineer |
+| `draft` | Đang thiết kế — tên entity và table_type có thể thay đổi |
+| `approved` | Đã duyệt — tên entity và table_type bị LOCKED, không thể rename qua script |
+
+Để rename entity đang `approved`: đổi `status → draft` trong `silver_entities.csv` trước, sau đó mới chạy `rename_entity.py`.
 
 ---
 
-## Workflow
+## Source systems hiện tại
 
-```
-1. Design trong Claude chat
-   → Mentor hỗ trợ thiết kế từ bảng nguồn → xuất file .csv
+### NHNCK — Người Hành Nghề Chứng Khoán
 
-2. Review & commit
-   → Download file → review → commit vào repo (status = draft)
-   → Sau khi review với team → update status = reviewed/approved
+| Tier | Số entities | HLD file |
+|---|---|---|
+| Tier 1 | 4 entities | `NHNCK_HLD_Tier1.md` |
+| Tier 2 | 4 entities | `NHNCK_HLD_Tier2.md` |
+| Tier 3 | 12 entities | `NHNCK_HLD_Tier3.md` |
+| Tier 4 | 7 entities | `NHNCK_HLD_Tier4.md` |
 
-3. Sync vào Claude project
-   → Bấm "Sync now" trên project knowledge
-   → ⚠️ Luôn sync TRƯỚC KHI bắt đầu chat mới
-
-4. Design bảng tiếp theo
-   → Claude đọc file LLD đã duyệt để đảm bảo nhất quán FK, naming, pattern
-```
-
----
-
-## Quy tắc thiết kế (tóm tắt)
-
-Chi tiết đầy đủ nằm trong project instruction. Dưới đây là tóm tắt nhanh:
-
-- **LLD Logical** — không bao gồm technical fields (Record Status, Record Insert Date, v.v.)
-- **Shared entity** — không có PK surrogate riêng
-- **Classification Value** — chỉ có Code, không tạo cặp Id + Code
-- **Currency** — bảng SCD1, chỉ có Code
-- **FK đến Fundamental entity** — pattern Id + Code
-- **Source System Code** — giá trị chi tiết đến tên bảng (ví dụ: `DCST.THONG_TIN_DK_THUE`)
-- **PK nguồn** — map vào Entity Code (BK)
-- **Description** — giữ nguyên mô tả gốc nguồn + bổ sung mô tả model
-- **Data Domain** — dùng đúng 12 domain chuẩn (Currency Amount, không viết tắt Amount)
-
----
-
-## Danh sách source systems
+LLD: 34 files trong `Silver/lld/NHNCK/` — tất cả `draft`.
 
 ### DCST — Dữ liệu Cơ quan Thuế
 
-| Bảng nguồn | Silver Entity chính | Status |
+| Tier | Số entities | HLD file |
 |---|---|---|
-| THONG_TIN_DK_THUE | Registered Taxpayer | ✅ Designed |
-| TTKDT_NGUOI_DAI_DIEN | Taxpayer Representative | ✅ Designed |
-| DN_RUI_RO_CAO | High Risk Taxpayer Assessment | ✅ Designed |
-| TCT_BAO_CAO | Tax Financial Statement | ✅ Designed |
-| TCT_BAO_CAO_CHI_TIET | Tax Financial Statement Item | ✅ Designed |
-| TCT_TT_CUONG_CHE_NO | Tax Debt Enforcement Order | ✅ Designed |
-| TT_XLY_VI_PHAM | Tax Violation Penalty Decision | ✅ Designed |
-| TCT_TTCCN_HOA_DON | Tax Invoice Enforcement Order | ✅ Designed |
-| HOA_DON_CHI_TIET | Tax Invoice Enforcement Item | ✅ Designed |
+| Tier 1 | 3 entities | `DCST_HLD_Tier1.md` |
+| Tier 2 | 6 entities | `DCST_HLD_Tier2.md` |
+| Tier 3 | 2 entities | `DCST_HLD_Tier3.md` |
 
-### NHNCK — Nhân Hành Nghề Chứng Khoán
+LLD: 14 files trong `Silver/lld/DCST/` — tất cả `draft`.
 
-| Bảng nguồn | Silver Entity chính | Status |
+### FMS — Quản lý Giám sát Quỹ và Công ty Chứng khoán
+
+| Tier | Số entities | HLD file |
 |---|---|---|
-| Applications | Applications | ✅ Designed |
-| Professionals | Professionals | ✅ Designed |
-| Organizations | Organizations | ✅ Designed |
-| (xem `Silver/lld/manifest.csv` để đầy đủ) | | |
+| Tier 1 | 7 entities | `FMS_HLD_Tier1.md` |
+| Tier 2 | 7 entities | `FMS_HLD_Tier2.md` |
+| Tier 3 | 5 entities | `FMS_HLD_Tier3.md` |
+| Tier 4 | 3 entities | `FMS_HLD_Tier4.md` |
 
-### FIMS, FMS
-
-> Source tables đã có tại `Source/`. LLD chưa thiết kế.
+LLD: 38 files trong `Silver/lld/FMS/` — tất cả `draft`.
 
 ---
 
-## Tham chiếu
+## Tham chiếu nhanh
 
 | Tài liệu | Vị trí |
 |---|---|
-| HLD Relationship Diagrams | `Silver/hld/` |
-| LLD files | `Silver/lld/<SOURCE>/` |
-| Manifest (tổng hợp entities) | `Silver/lld/manifest.csv` |
+| Quy trình thiết kế HLD | `.claude/skills/SKILL_HLD.md` |
+| Quy trình thiết kế LLD | `.claude/skills/SKILL_LLD.md` |
+| HLD files | `Silver/hld/` |
+| LLD files | `Silver/lld/<SYSTEM>/` |
+| Tổng hợp entities | `Silver/hld/silver_entities.csv` |
+| Tổng hợp attributes | `Silver/lld/silver_attributes.csv` |
+| Manifest (source of truth) | `Silver/lld/manifest.csv` |
 | Shared Entity Classifications | `Silver/lld/ref_shared_entity_classifications.csv` |
-| Data Dictionary template | `system/templates/attr_template.csv` |
-| Tài liệu thiết kế CSDL (D02) | Claude project knowledge |
-| Data Dictionary tổng hợp (Excel) | Claude project knowledge |
-| Modules đào tạo (M1–M12) | Claude project knowledge |
+| Script tổng hợp | `Silver/lld/scripts/aggregate_silver.py` |
+| Script đổi tên entity | `Silver/lld/scripts/rename_entity.py` |
+| Script kiểm tra nhất quán HLD | `Silver/lld/scripts/check_consistency.py` |
+| BCV knowledge base | `knowledge/` |
