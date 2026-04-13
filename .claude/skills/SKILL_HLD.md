@@ -233,7 +233,7 @@ Thực hiện **sau khi hoàn thành HLD mỗi Tier**. Hai file này là bảng 
 
 **Cấu trúc:**
 ```
-bcv_core_object,bcv_concept,silver_entity,description,source_table
+bcv_core_object,bcv_concept,silver_entity,table_type,status,description,source_table
 ```
 
 **Quy tắc từng cột:**
