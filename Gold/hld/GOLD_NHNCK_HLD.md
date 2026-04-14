@@ -74,8 +74,6 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Certificate_Snapshot : "Date Dimension Id"
-    Securities_Practitioner_Dimension ||--o{ Fact_Certificate_Snapshot : "Practitioner Dimension Id"
-    Certificate_Type_Dimension ||--o{ Fact_Certificate_Snapshot : "Certificate Type Dimension Id"
     Certificate_Status_Dimension ||--o{ Fact_Certificate_Snapshot : "Certificate Status Dimension Id"
 ```
 
@@ -83,8 +81,6 @@ erDiagram
 |---|---|
 | Fact Certificate Snapshot | 1 row = 1 CCHN × 1 Snapshot Date (daily) |
 | Calendar Date Dimension | 1 row = 1 ngày snapshot |
-| Securities Practitioner Dimension | 1 row = 1 NHN (SCD2) |
-| Certificate Type Dimension | 1 row = 1 loại chứng chỉ |
 | Certificate Status Dimension | 1 row = 1 trạng thái CCHN |
 
 **Star schema — K6:**
