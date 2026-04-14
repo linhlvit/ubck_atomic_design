@@ -127,7 +127,7 @@ graph LR
     classDef ref fill:#f3f4f6,stroke:#9ca3af,color:#6b7280
 
     SECURITIES["**SECURITIES**\nCông ty QLQ (Tier 1)"]:::ref
-    NATIONAL["NATIONAL (Danh mục)"]:::ref
+    NATIONAL["NATIONAL\n[Location] Geographic Area\n(shared entity)"]:::geo
     JOBTYPE["JOBTYPE (Danh mục)"]:::ref
     TLProfiles["**TLProfiles**\nDanh sách nhân sự\ncông ty QLQ (13 trường)"]:::src
 
@@ -377,7 +377,7 @@ graph TD
     RATINGPD["RATINGPD (Tier 1)"]:::ref
 
     STATUS["STATUS (Danh mục)"]:::dim
-    NATIONAL["NATIONAL (Danh mục)"]:::dim
+    NATIONAL["NATIONAL\n[Location] Geographic Area\n(shared entity)"]:::geo
     JOBTYPE["JOBTYPE (Danh mục)"]:::dim
     BUSINESS["BUSINESS (Danh mục)"]:::dim
 

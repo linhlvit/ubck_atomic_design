@@ -149,14 +149,14 @@ def main():
     print(f"  {len(rows)} dòng tổng cộng", file=sys.stderr)
 
     if args.dry_run:
-        out = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", newline="")
+        out = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8-sig", newline="")
         writer = csv.DictWriter(out, fieldnames=FIELDS, lineterminator="\n",
                                 extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
         out.flush()
     else:
-        with open(OUT_FILE, "w", encoding="utf-8", newline="") as f:
+        with open(OUT_FILE, "w", encoding="utf-8-sig", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n",
                                     extrasaction="ignore")
             writer.writeheader()

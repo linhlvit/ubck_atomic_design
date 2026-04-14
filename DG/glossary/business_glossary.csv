@@ -1,0 +1,266 @@
+﻿term_id,parent_term_id,term_name,definition,primary_grain,data_domain,source_tags,entity_tags,status,notes
+NHNCK_001,,Conduct Violation Code,Mã định danh (tự động tăng). BK,theo từng vi phạm,Text,NHNCK,Securities Practitioner Conduct Violation,draft,BK chính.
+NHNCK_002,,Practitioner Code,Mã định danh người hành nghề (tự động tăng). BK,theo từng người hành nghề,Text,NHNCK,Securities Practitioner Conduct Violation | Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Qualification Examination Assessment Result | Securities Practitioner License Application | Securities Practitioner License Certificate Document | Securities Practitioner Organization Employment Report | Securities Practitioner | Securities Practitioner Related Party | Securities Practitioner License Application Fee,draft,BK chính. PK nguồn.
+NHNCK_003,,Full Name,Họ và tên,theo từng người hành nghề,Text,NHNCK,Securities Practitioner Conduct Violation | Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Identity Verification Record | Securities Practitioner Organization Employment Report | Securities Practitioner,draft,"BCV: ""Full Name"" (Involved Party)."
+NHNCK_004,,Date Of Birth,Ngày sinh (snapshot),theo từng báo cáo tuyển dụng,Date,NHNCK,Securities Practitioner Conduct Violation | Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Identity Verification Record | Securities Practitioner Organization Employment Report,draft,Denormalized snapshot.
+NHNCK_005,,Identification Number,,,,NHNCK,,draft,Abstract parent — see child terms for specific meanings
+NHNCK_006,NHNCK_005,Identification Number,Số chứng minh thư (snapshot),theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Conduct Violation | Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Organization Employment Report,draft,Số CMND/CCCD/CMT của người hành nghề (snapshot tại thời điểm ghi nhận)
+NHNCK_007,NHNCK_005,Identification Number,Số quyết định thành lập,theo từng giấy tờ định danh,Text,NHNCK,Involved Party Alternative Identification,draft,Số quyết định thành lập hoặc giấy phép hoạt động của tổ chức
+NHNCK_008,,License Decision Document Code,Mã định danh (tự động tăng). BK,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner Conduct Violation | Securities Practitioner License Certificate Document Activity Log | Securities Practitioner License Certificate Document Status History | Securities Practitioner Qualification Examination Assessment | Securities Practitioner License Certificate Group Document | Securities Practitioner License Decision Document,draft,BK chính. PK nguồn.
+NHNCK_009,,Conduct Violation Type Code,"Loại vi phạm (1: Hành chính, 2: Pháp luật)",theo từng vi phạm,Classification Value,NHNCK,Securities Practitioner Conduct Violation,draft,Scheme: CONDUCT_VIOLATION_TYPE.
+NHNCK_010,,Violation Note,Ghi chú vi phạm,theo từng vi phạm,Text,NHNCK,Securities Practitioner Conduct Violation,draft,
+NHNCK_011,,Violation Status Code,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",theo từng vi phạm,Classification Value,NHNCK,Securities Practitioner Conduct Violation,draft,Scheme: VIOLATION_STATUS.
+NHNCK_012,,Created By Officer Code,Mã người tạo,theo từng tổ chức thành viên,Text,NHNCK,Securities Practitioner Conduct Violation | Securities Practitioner License Application Verification Status | Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Qualification Examination Assessment | Securities Practitioner Qualification Examination Assessment Result | Securities Practitioner Qualification Examination Assessment Fee | Securities Practitioner License Application | Securities Practitioner License Certificate Document | Securities Practitioner License Decision Document | Securities Practitioner Organization Employment Report | Securities Practitioner Professional Training Class | Securities Organization Reference | Securities Practitioner License Application Fee,draft,FK target: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id.
+NHNCK_013,,Updated By Officer Code,Mã người cập nhật,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner Conduct Violation | Securities Practitioner License Application Verification Status | Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Identity Verification Record | Securities Practitioner Qualification Examination Assessment Fee | Securities Practitioner License Application | Securities Practitioner Professional Training Class,draft,FK target: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id.
+NHNCK_014,,License Application Processing Activity Log Code,Mã định danh (tự động tăng). BK,theo từng thao tác xử lý hồ sơ,Text,NHNCK,Securities Practitioner License Application Processing Activity Log,draft,BK chính.
+NHNCK_015,,Officer Code,Mã tài khoản thực hiện,theo từng thao tác xử lý hồ sơ,Text,NHNCK,Securities Practitioner License Application Processing Activity Log,draft,FK target: Regulatory Authority Officer.Officer Code. Pair with Officer Id.
+NHNCK_016,,Client Machine Address,Địa chỉ IP máy thực hiện,theo từng thao tác xử lý hồ sơ,Text,NHNCK,Securities Practitioner License Application Processing Activity Log,draft,
+NHNCK_017,,Activity Detail,Mô tả nội dung thao tác,theo từng thao tác xử lý hồ sơ,Text,NHNCK,Securities Practitioner License Application Processing Activity Log,draft,
+NHNCK_018,,License Application Verification Status Code,Mã yêu cầu phê duyệt,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application Verification Status | Securities Practitioner License Application,draft,FK target: Securities Practitioner License Application Verification Status.License Application Verification Status Code. Pair with License Application Verification Status Id.
+NHNCK_019,,License Application Code,Mã định danh (tự động tăng). BK,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application Verification Status | Securities Practitioner Qualification Examination Assessment Result | Securities Practitioner License Application | Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document | Securities Practitioner License Application Fee,draft,BK chính. PK nguồn.
+NHNCK_020,,Verification Status Code,Trạng thái phê duyệt (FK → ApplicationStatuses),theo từng lần phê duyệt hồ sơ,Classification Value,NHNCK,Securities Practitioner License Application Verification Status,draft,Scheme: APPLICATION_STATUS. FK đến bảng ApplicationStatuses.
+NHNCK_021,,Previous Verification Status Code,Trạng thái hồ sơ trước đó,theo từng lần phê duyệt hồ sơ,Classification Value,NHNCK,Securities Practitioner License Application Verification Status,draft,Scheme: APPLICATION_STATUS.
+NHNCK_022,,Verified By Officer Code,Mã người phê duyệt,theo từng lần phê duyệt hồ sơ,Text,NHNCK,Securities Practitioner License Application Verification Status,draft,FK target: Regulatory Authority Officer.Officer Code. Pair with Verified By Officer Id.
+NHNCK_023,,Rejection Reason Description,Lý do thay đổi trạng thái,theo từng lần phê duyệt hồ sơ,Text,NHNCK,Securities Practitioner License Application Verification Status,draft,
+NHNCK_024,,Specialization Officer Reason,Nội dung ý kiến — Lãnh đạo chuyên môn,theo từng lần phê duyệt hồ sơ,Text,NHNCK,Securities Practitioner License Application Verification Status,draft,
+NHNCK_025,,Organization Officer Reason,Nội dung ý kiến — Lãnh đạo UBCK,theo từng lần phê duyệt hồ sơ,Text,NHNCK,Securities Practitioner License Application Verification Status,draft,
+NHNCK_026,,Overview Officer Reason,Nội dung ý kiến — Cán bộ tổng hợp,theo từng lần phê duyệt hồ sơ,Text,NHNCK,Securities Practitioner License Application Verification Status,draft,
+NHNCK_027,,License Certificate Document Activity Log Code,Mã định danh (tự động tăng). BK,theo từng thao tác trên chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Document Activity Log,draft,BK chính.
+NHNCK_028,,License Certificate Document Code,Mã CCHN đã cấp,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Certificate Document Activity Log | Securities Practitioner License Certificate Document Status History | Securities Practitioner License Application | Securities Practitioner License Certificate Document | Securities Practitioner License Certificate Group Member | Securities Practitioner Organization Employment Report,draft,FK target: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id.
+NHNCK_029,,Activity Type Code,Loại hành động,theo từng thao tác trên chứng chỉ,Classification Value,NHNCK,Securities Practitioner License Certificate Document Activity Log,draft,Scheme: CERTIFICATE_ACTIVITY_TYPE.
+NHNCK_030,,Certificate Number,Số chứng chỉ (snapshot tại thời điểm cấp),theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Certificate Document Activity Log | Securities Practitioner License Application | Securities Practitioner License Certificate Document | Securities Practitioner Organization Employment Report,draft,Denormalized snapshot.
+NHNCK_031,,Issue Date,Ngày ban hành quyết định,theo từng giấy tờ định danh,Date,NHNCK,Securities Practitioner License Certificate Document Activity Log | Securities Practitioner License Application | Involved Party Alternative Identification,draft,
+NHNCK_032,,Activity Note,Ghi chú hoạt động,theo từng thao tác trên chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Document Activity Log,draft,
+NHNCK_033,,Processed By Officer Code,Mã người xử lý,theo từng thao tác trên chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Document Activity Log,draft,FK target: Regulatory Authority Officer.Officer Code. Pair with Processed By Officer Id.
+NHNCK_034,,License Certificate Document Status History Code,Mã định danh (tự động tăng). BK,theo từng thay đổi trạng thái chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Document Status History,draft,BK chính.
+NHNCK_035,,Update Type Code,"Loại cập nhật (Manual, System, Decision)",theo từng thay đổi trạng thái chứng chỉ,Classification Value,NHNCK,Securities Practitioner License Certificate Document Status History,draft,Scheme: STATUS_UPDATE_TYPE.
+NHNCK_036,,Old Status Code,Trạng thái trước,theo từng thay đổi trạng thái chứng chỉ,Classification Value,NHNCK,Securities Practitioner License Certificate Document Status History,draft,Scheme: CERTIFICATE_STATUS.
+NHNCK_037,,New Status Code,Trạng thái sau,theo từng thay đổi trạng thái chứng chỉ,Classification Value,NHNCK,Securities Practitioner License Certificate Document Status History,draft,Scheme: CERTIFICATE_STATUS.
+NHNCK_038,,Status Change Reason Description,Lý do thay đổi,theo từng thay đổi trạng thái chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Document Status History,draft,
+NHNCK_039,,Status Change Timestamp,Thời điểm thay đổi,theo từng thay đổi trạng thái chứng chỉ,Timestamp,NHNCK,Securities Practitioner License Certificate Document Status History,draft,CreatedAt = thời điểm ghi lịch sử.
+NHNCK_040,,Professional Training Class Enrollment Code,Mã định danh (tự động tăng). BK,theo từng lượt đăng ký học,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment,draft,BK chính.
+NHNCK_041,,Professional Training Class Code,Mã định danh (tự động tăng). BK,theo từng khóa đào tạo,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Professional Training Class,draft,BK chính. PK nguồn.
+NHNCK_042,,Place Of Birth,Nơi sinh,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment | Securities Practitioner Identity Verification Record,draft,
+NHNCK_043,,Exam Number,,,,NHNCK,,draft,Abstract parent — see child terms for specific meanings
+NHNCK_044,NHNCK_043,Exam Number,Số dự thi,theo từng lượt đăng ký học,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment,draft,Số dự thi của học viên trong khóa đào tạo
+NHNCK_045,NHNCK_043,Exam Number,Số báo danh,theo từng kết quả thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,Số báo danh của thí sinh trong đợt thi cấp chứng chỉ
+NHNCK_046,,Enrollment Description,Mô tả,theo từng lượt đăng ký học,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment,draft,
+NHNCK_047,,Assessment Score,Điểm thi,theo từng lượt đăng ký học,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment,draft,"Text vì có thể dạng text (VD: ""Vắng"")."
+NHNCK_048,,Assessment Result Code,"Kết quả thi (1: Đạt, 0: Không đạt)",theo từng lượt đăng ký học,Classification Value,NHNCK,Securities Practitioner Professional Training Class Enrollment,draft,Scheme: TRAINING_RESULT.
+NHNCK_049,,Enrollment Note,Ghi chú,theo từng lượt đăng ký học,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment,draft,
+NHNCK_050,,Enrollment Status Code,"Trạng thái (0: Chờ thẩm định, 1: Xác nhận, 2: Yêu cầu nộp lại, 3: Từ chối)",theo từng lượt đăng ký học,Classification Value,NHNCK,Securities Practitioner Professional Training Class Enrollment,draft,Scheme: ENROLLMENT_STATUS.
+NHNCK_051,,Assignee Officer Code,,,,NHNCK,,draft,Abstract parent — see child terms for specific meanings
+NHNCK_052,NHNCK_051,Assignee Officer Code,Mã cán bộ xử lý,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner Professional Training Class Enrollment | Securities Practitioner License Application,draft,Mã cán bộ được phân công xử lý hồ sơ / khóa học
+NHNCK_053,NHNCK_051,Assignee Officer Code,Mã người thẩm định,theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document,draft,Mã người được phân công thẩm định tài liệu đính kèm hồ sơ
+NHNCK_054,,Identity Verification Record Code,Mã định danh (tự động tăng). BK,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,BK chính.
+NHNCK_055,,Identity Number,Số định danh cá nhân (CCCD/CMND),theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,Số định danh được xác thực qua C06.
+NHNCK_056,,First Name,Tên,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_057,,Birth Year,Năm sinh,theo từng người hành nghề,Text,NHNCK,Securities Practitioner Identity Verification Record | Securities Practitioner | Securities Practitioner Related Party,draft,"Text vì là năm dạng ""1990""."
+NHNCK_058,,Individual Gender Code,"Giới tính (0: Nữ, 1: Nam)",theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: INDIVIDUAL_GENDER.
+NHNCK_059,,Nationality Code,Quốc tịch,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: NATIONALITY.
+NHNCK_060,,Religion Name,Tôn giáo,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,Text tự do.
+NHNCK_061,,Country Code,Quốc gia/quốc tịch,theo từng người hành nghề,Classification Value,NHNCK,Securities Practitioner Identity Verification Record | Securities Practitioner | Securities Practitioner Related Party,draft,Scheme: COUNTRY.
+NHNCK_062,,Hometown,Địa chỉ quê quán,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_063,,Permanent Country Code,Quốc gia nguyên quán,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: COUNTRY.
+NHNCK_064,,Permanent Province Code,Tỉnh thành nguyên quán,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: PROVINCE.
+NHNCK_065,,Permanent District Code,Quận huyện nguyên quán,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: DISTRICT.
+NHNCK_066,,Permanent Address Detail,Địa chỉ nguyên quán chi tiết,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_067,,Current Country Code,Quốc gia hiện tại,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: COUNTRY.
+NHNCK_068,,Current Province Code,Tỉnh thành hiện tại,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: PROVINCE.
+NHNCK_069,,Current District Code,Quận huyện hiện tại,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: DISTRICT.
+NHNCK_070,,Current Address Detail,Địa chỉ hiện tại chi tiết,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_071,,Father Full Name,Họ và tên bố,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_072,,Father Country Code,Quốc gia của bố,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: COUNTRY.
+NHNCK_073,,Father Identity Number,Số định danh của bố,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_074,,Father Identity Number Old,Số định danh cũ của bố,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_075,,Mother Full Name,Họ và tên mẹ,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_076,,Mother Country Code,Quốc gia của mẹ,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: COUNTRY.
+NHNCK_077,,Mother Identity Number,Số định danh của mẹ,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_078,,Mother Identity Number Old,Số định danh cũ của mẹ,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_079,,Couple Full Name,Họ và tên vợ/chồng,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_080,,Couple Country Code,Quốc gia của vợ/chồng,theo từng lần xác thực danh tính,Classification Value,NHNCK,Securities Practitioner Identity Verification Record,draft,Scheme: COUNTRY.
+NHNCK_081,,Couple Identity Number,Số định danh của vợ/chồng,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_082,,Couple Identity Number Old,Số định danh cũ của vợ/chồng,theo từng lần xác thực danh tính,Text,NHNCK,Securities Practitioner Identity Verification Record,draft,
+NHNCK_083,,Examination Assessment Code,Mã đợt thi,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner Qualification Examination Assessment | Securities Practitioner Qualification Examination Assessment Result | Securities Practitioner Qualification Examination Assessment Fee | Securities Practitioner License Application,draft,FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id.
+NHNCK_084,,Session Code,Mã đợt thi (mã nghiệp vụ),theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,"Mã nghiệp vụ, khác BK."
+NHNCK_085,,Session Name,Tên đợt thi,theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,
+NHNCK_086,,Examination Year,Năm thi,theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,"Text vì là năm dạng ""2025""."
+NHNCK_087,,Session Number,Đợt thi (số thứ tự trong năm),theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,
+NHNCK_088,,Organizer Name,Đơn vị tổ chức,theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,Suffix Name — text tự do.
+NHNCK_089,,Registration Start Date,Ngày bắt đầu nhận hồ sơ,theo từng đợt thi,Date,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,
+NHNCK_090,,Registration End Date,Ngày kết thúc nhận hồ sơ,theo từng đợt thi,Date,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,
+NHNCK_091,,Examination Start Date,Ngày bắt đầu thi,theo từng đợt thi,Date,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,
+NHNCK_092,,Examination End Date,Ngày kết thúc thi,theo từng đợt thi,Date,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,
+NHNCK_093,,Examination Location,Địa điểm thi,theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,Text tự do.
+NHNCK_094,,Notification Date,Ngày thông báo kết quả,theo từng đợt thi,Date,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,
+NHNCK_095,,Submission Method Description,Phương thức nộp hồ sơ,theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,Text tự do.
+NHNCK_096,,Attachment File Path,File thông báo đính kèm,theo từng đợt thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment | Securities Practitioner License Decision Document | Securities Practitioner Professional Training Class,draft,
+NHNCK_097,,Examination Status Code,"Trạng thái (0: Chưa hoàn thành, 1: Đã hoàn thành)",theo từng đợt thi,Classification Value,NHNCK,Securities Practitioner Qualification Examination Assessment,draft,Scheme: EXAMINATION_STATUS.
+NHNCK_098,,Examination Assessment Result Code,Mã định danh (tự động tăng). BK,theo từng kết quả thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,BK chính.
+NHNCK_099,,Certificate Type Code,Mã loại chứng chỉ đăng ký,theo từng hồ sơ CCHN,Classification Value,NHNCK,Securities Practitioner Qualification Examination Assessment Result | Securities Practitioner Qualification Examination Assessment Fee | Securities Practitioner License Application | Securities Practitioner License Certificate Document | Securities Practitioner Organization Employment Report,draft,Scheme: CERTIFICATE_TYPE.
+NHNCK_100,,Sequence Number,Số thứ tự trong đợt thi,theo từng kết quả thi,Small Counter,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,
+NHNCK_101,,Law Score,Điểm pháp luật,theo từng kết quả thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,"Text vì có thể dạng text (VD: ""Vắng"", ""Miễn thi"")."
+NHNCK_102,,Law Result Indicator,"Kết quả luật (1: Đạt, 0: Không đạt)",theo từng kết quả thi,Boolean,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,
+NHNCK_103,,Specialization Score,Điểm chuyên môn,theo từng kết quả thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,Tương tự Law Score.
+NHNCK_104,,Specialization Result Indicator,"Kết quả chuyên môn (1: Đạt, 0: Không đạt)",theo từng kết quả thi,Boolean,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,
+NHNCK_105,,Examination Result Code,"Kết quả tổng (1: Đạt, 0: Không đạt)",theo từng kết quả thi,Classification Value,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,Scheme: EXAMINATION_RESULT.
+NHNCK_106,,Examination Note,Ghi chú,theo từng kết quả thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment Result,draft,
+NHNCK_107,,Examination Assessment Fee Code,Mã định danh (tự động tăng). BK,theo từng mức phí thi,Text,NHNCK,Securities Practitioner Qualification Examination Assessment Fee,draft,BK chính.
+NHNCK_108,,Examination Fee Amount,Phí thi (VNĐ),theo từng mức phí thi,Currency Amount,NHNCK,Securities Practitioner Qualification Examination Assessment Fee,draft,
+NHNCK_109,,Appeal Fee Amount,Phí phúc khảo (VNĐ),theo từng mức phí thi,Currency Amount,NHNCK,Securities Practitioner Qualification Examination Assessment Fee,draft,
+NHNCK_110,,Fee Status Code,Trạng thái,theo từng mức phí thi,Classification Value,NHNCK,Securities Practitioner Qualification Examination Assessment Fee,draft,Scheme: FEE_STATUS.
+NHNCK_111,,Application Status Code,Trạng thái hồ sơ (FK → ApplicationStatuses),theo từng hồ sơ CCHN,Classification Value,NHNCK,Securities Practitioner License Application,draft,Scheme: APPLICATION_STATUS.
+NHNCK_112,,Previous Certificate Type Code,Mã loại chứng chỉ trước đó,theo từng hồ sơ CCHN,Classification Value,NHNCK,Securities Practitioner License Application,draft,Scheme: CERTIFICATE_TYPE.
+NHNCK_113,,Previous License Certificate Document Code,Mã CCHN trước đó,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,FK target: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with Previous License Certificate Document Id.
+NHNCK_114,,Application Code,Mã hồ sơ (mã nghiệp vụ),theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,"Mã nghiệp vụ, khác BK."
+NHNCK_115,,Application Title,Tiêu đề hồ sơ,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_116,,Registration Type Code,Loại đăng ký,theo từng hồ sơ CCHN,Classification Value,NHNCK,Securities Practitioner License Application,draft,Scheme: REGISTRATION_TYPE.
+NHNCK_117,,Application Type Code,Loại hồ sơ,theo từng hồ sơ CCHN,Classification Value,NHNCK,Securities Practitioner License Application,draft,Scheme: APPLICATION_TYPE.
+NHNCK_118,,Submission Date,Ngày nộp hồ sơ,theo từng hồ sơ CCHN,Date,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_119,,Supplement Date,Ngày bổ sung hồ sơ,theo từng hồ sơ CCHN,Date,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_120,,Supplement Letter Date,Ngày thư yêu cầu bổ sung,theo từng hồ sơ CCHN,Date,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_121,,Reissue Reason,Lý do cấp lại,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_122,,Rejection Reason,Lý do từ chối,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_123,,Previous Certificate Number,Số chứng chỉ trước đó (snapshot),theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,Denormalized snapshot.
+NHNCK_124,,Previous Issue Date,Ngày cấp chứng chỉ trước đó (snapshot),theo từng hồ sơ CCHN,Date,NHNCK,Securities Practitioner License Application,draft,Denormalized snapshot.
+NHNCK_125,,Reissue HSM Code,Mã tái cấp HSM,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_126,,Certificate Receipt Method Code,Phương thức nhận chứng chỉ,theo từng hồ sơ CCHN,Classification Value,NHNCK,Securities Practitioner License Application,draft,Scheme: RECEIPT_METHOD.
+NHNCK_127,,Certificate Receipt Address,Địa chỉ nhận chứng chỉ,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_128,,Certificate Receipt Phone,Số điện thoại nhận chứng chỉ,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_129,,Receipt Status Code,Trạng thái nhận chứng chỉ,theo từng hồ sơ CCHN,Classification Value,NHNCK,Securities Practitioner License Application,draft,Scheme: RECEIPT_STATUS.
+NHNCK_130,,Is Violated Indicator,Cờ vi phạm,theo từng hồ sơ CCHN,Boolean,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_131,,Is Date Exploitable Indicator,Cờ khai thác theo ngày,theo từng hồ sơ CCHN,Boolean,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_132,,Application Note,Ghi chú,theo từng hồ sơ CCHN,Text,NHNCK,Securities Practitioner License Application,draft,
+NHNCK_133,,License Application Document Attachment Code,Mã định danh (tự động tăng). BK,theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment,draft,BK chính.
+NHNCK_134,,Document Type Code,Mã loại tài liệu (FK → Documents),theo từng tài liệu đính kèm hồ sơ,Classification Value,NHNCK,Securities Practitioner License Application Document Attachment,draft,Scheme: DOCUMENT_TYPE. FK đến bảng Documents.
+NHNCK_135,,Document Name,Tên tài liệu,theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment,draft,
+NHNCK_136,,File Name,Tên file,theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document,draft,
+NHNCK_137,,File Path,Đường dẫn file,theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document,draft,
+NHNCK_138,,File Format,Loại file (pdf,theo từng tài liệu đính kèm hồ sơ, docx...),NHNCK,Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document,draft,NHNCK.qlnhn.ApplicationDocuments.Format
+NHNCK_139,,File Size,Dung lượng file (bytes),theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document,draft,
+NHNCK_140,,Attachment Description,Mô tả tài liệu,theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment,draft,
+NHNCK_141,,Attachment Note,Ghi chú thẩm định,theo từng tài liệu đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Document Attachment,draft,
+NHNCK_142,,Appraisal Status Code,Trạng thái thẩm định,theo từng tài liệu đính kèm hồ sơ,Classification Value,NHNCK,Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document,draft,Scheme: APPRAISAL_STATUS.
+NHNCK_143,,Is Invalid Indicator,Cờ không hợp lệ,theo từng tài liệu đính kèm hồ sơ,Boolean,NHNCK,Securities Practitioner License Application Document Attachment,draft,
+NHNCK_144,,Is Incomplete Indicator,Cờ chưa hoàn thành,theo từng tài liệu đính kèm hồ sơ,Boolean,NHNCK,Securities Practitioner License Application Document Attachment,draft,
+NHNCK_145,,Appraisaled Timestamp,Ngày thẩm định,theo từng tài liệu đính kèm hồ sơ,Timestamp,NHNCK,Securities Practitioner License Application Document Attachment | Securities Practitioner License Application Education Certificate Document,draft,
+NHNCK_146,,License Application Education Certificate Document Code,Mã định danh (tự động tăng). BK,theo từng văn bằng đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Education Certificate Document,draft,BK chính.
+NHNCK_147,,Specialization Type Code,Mã chuyên môn (FK → Specializations),theo từng văn bằng đính kèm hồ sơ,Classification Value,NHNCK,Securities Practitioner License Application Education Certificate Document | Securities Practitioner Professional Training Class,draft,Scheme: SPECIALIZATION_TYPE.
+NHNCK_148,,Specialization Note,Nội dung/ghi chú,theo từng văn bằng đính kèm hồ sơ,Text,NHNCK,Securities Practitioner License Application Education Certificate Document,draft,
+NHNCK_149,,Professional Full Name,Họ và tên người hành nghề (snapshot tại thời điểm cấp),theo từng chứng chỉ hành nghề,Text,NHNCK,Securities Practitioner License Certificate Document,draft,Denormalized snapshot.
+NHNCK_150,,Issuance Decision Document Code,Mã quyết định cấp,theo từng chứng chỉ hành nghề,Text,NHNCK,Securities Practitioner License Certificate Document,draft,FK target: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Issuance Decision Document Id.
+NHNCK_151,,Revocation Decision Document Code,Mã quyết định thu hồi,theo từng chứng chỉ hành nghề,Text,NHNCK,Securities Practitioner License Certificate Document,draft,FK target: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Revocation Decision Document Id.
+NHNCK_152,,Cancellation Decision Document Code,Mã quyết định hủy,theo từng chứng chỉ hành nghề,Text,NHNCK,Securities Practitioner License Certificate Document,draft,FK target: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Cancellation Decision Document Id.
+NHNCK_153,,Certificate Issue Date,Ngày cấp chứng chỉ,theo từng chứng chỉ hành nghề,Date,NHNCK,Securities Practitioner License Certificate Document | Securities Practitioner Organization Employment Report,draft,
+NHNCK_154,,Revocation Date,Ngày thu hồi chứng chỉ,theo từng chứng chỉ hành nghề,Date,NHNCK,Securities Practitioner License Certificate Document,draft,NULL = chưa bị thu hồi.
+NHNCK_155,,Revocation Reason,Lý do thu hồi,theo từng chứng chỉ hành nghề,Text,NHNCK,Securities Practitioner License Certificate Document | Securities Practitioner License Certificate Group Member,draft,
+NHNCK_156,,Certificate Status Code,"Trạng thái (0: Chưa sử dụng, 1: Đang sử dụng, 2: Thu hồi, 3: Đã hủy)",theo từng chứng chỉ hành nghề,Classification Value,NHNCK,Securities Practitioner License Certificate Document,draft,Scheme: CERTIFICATE_STATUS.
+NHNCK_157,,Process Status Code,"Trạng thái xử lý (Đã cấp, Đã ký, Đã trả)",theo từng chứng chỉ hành nghề,Classification Value,NHNCK,Securities Practitioner License Certificate Document,draft,Scheme: CERTIFICATE_PROCESS_STATUS.
+NHNCK_158,,Certificate Description,Mô tả,theo từng chứng chỉ hành nghề,Text,NHNCK,Securities Practitioner License Certificate Document,draft,
+NHNCK_159,,Allow Reissue Indicator,"Cho phép cấp lại (0: Không, 1: Có)",theo từng chứng chỉ hành nghề,Boolean,NHNCK,Securities Practitioner License Certificate Document,draft,
+NHNCK_160,,License Certificate Group Document Code,Mã nhóm,theo từng thành viên trong nhóm chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Group Document | Securities Practitioner License Certificate Group Member,draft,FK target: Securities Practitioner License Certificate Group Document.License Certificate Group Document Code. Pair with License Certificate Group Document Id.
+NHNCK_161,,Group Name,Tên nhóm,theo từng nhóm chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Group Document,draft,
+NHNCK_162,,Group Type Code,Loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi),theo từng nhóm chứng chỉ,Classification Value,NHNCK,Securities Practitioner License Certificate Group Document,draft,Scheme: GROUP_TYPE.
+NHNCK_163,,Group Description,Mô tả nhóm,theo từng nhóm chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Group Document,draft,
+NHNCK_164,,Group Notes,Ghi chú,theo từng nhóm chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Group Document,draft,
+NHNCK_165,,Group Status Code,Trạng thái nhóm,theo từng nhóm chứng chỉ,Classification Value,NHNCK,Securities Practitioner License Certificate Group Document,draft,Scheme: GROUP_STATUS.
+NHNCK_166,,License Certificate Group Member Code,Mã định danh (tự động tăng). BK,theo từng thành viên trong nhóm chứng chỉ,Text,NHNCK,Securities Practitioner License Certificate Group Member,draft,BK chính.
+NHNCK_167,,Order Index,Thứ tự sắp xếp trong nhóm,theo từng thành viên trong nhóm chứng chỉ,Small Counter,NHNCK,Securities Practitioner License Certificate Group Member,draft,
+NHNCK_168,,Is Reissue Indicator,Cờ cho phép cấp lại,theo từng thành viên trong nhóm chứng chỉ,Boolean,NHNCK,Securities Practitioner License Certificate Group Member,draft,
+NHNCK_169,,Member Status Code,Trạng thái thành viên nhóm,theo từng thành viên trong nhóm chứng chỉ,Classification Value,NHNCK,Securities Practitioner License Certificate Group Member,draft,Scheme: GROUP_MEMBER_STATUS.
+NHNCK_170,,Decision Number,Số quyết định,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,Mã nghiệp vụ — số hiệu quyết định hành chính.
+NHNCK_171,,Decision Title,Tiêu đề quyết định,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,
+NHNCK_172,,Decision Reference,Trích dẫn,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,
+NHNCK_173,,Decision Content,Nội dung quyết định,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,
+NHNCK_174,,Signing Date,Ngày ký,theo từng quyết định hành chính,Date,NHNCK,Securities Practitioner License Decision Document,draft,
+NHNCK_175,,Signatory Name,Người ký,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,Suffix Name — text tự do.
+NHNCK_176,,Signatory Position Name,Chức vụ người ký,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,Suffix Name — text tự do.
+NHNCK_177,,Decision Unit Name,Đơn vị ban hành,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,Suffix Name — text tự do.
+NHNCK_178,,Attachment File Name,Tên file đính kèm,theo từng quyết định hành chính,Text,NHNCK,Securities Practitioner License Decision Document,draft,
+NHNCK_179,,Decision Type Code,Loại quyết định,theo từng quyết định hành chính,Classification Value,NHNCK,Securities Practitioner License Decision Document,draft,Scheme: DECISION_TYPE.
+NHNCK_180,,Decision Status Code,Trạng thái quyết định,theo từng quyết định hành chính,Classification Value,NHNCK,Securities Practitioner License Decision Document,draft,Scheme: DECISION_STATUS.
+NHNCK_181,,Organization Employment Report Code,Mã định danh (tự động tăng). BK,theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,BK chính.
+NHNCK_182,,Securities Organization Code,Mã tổ chức,theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,FK target: Securities Organization Reference.Securities Organization Reference Code. Pair with Securities Organization Id.
+NHNCK_183,,Parent Organization Employment Report Code,Mã báo cáo cha,theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,FK target: Securities Practitioner Organization Employment Report.Organization Employment Report Code. Pair with Parent Organization Employment Report Id.
+NHNCK_184,,Report Type Code,Loại báo cáo,theo từng báo cáo tuyển dụng,Classification Value,NHNCK,Securities Practitioner Organization Employment Report,draft,Scheme: REPORT_TYPE.
+NHNCK_185,,Report Date,Ngày báo cáo,theo từng báo cáo tuyển dụng,Date,NHNCK,Securities Practitioner Organization Employment Report,draft,
+NHNCK_186,,Position Name,Chức vụ,theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,Text tự do.
+NHNCK_187,,Department Name,Phòng ban,theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,Text tự do.
+NHNCK_188,,Business Department Name,Phòng ban nghiệp vụ,theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,Phân biệt với Department Name.
+NHNCK_189,,Workplace Name,Nơi làm việc,theo từng người hành nghề,Text,NHNCK,Securities Practitioner Organization Employment Report | Securities Practitioner | Securities Practitioner Related Party,draft,Text tự do.
+NHNCK_190,,Hire Date,Ngày tiếp nhận,theo từng báo cáo tuyển dụng,Date,NHNCK,Securities Practitioner Organization Employment Report,draft,
+NHNCK_191,,Termination Date,Ngày thôi việc,theo từng báo cáo tuyển dụng,Date,NHNCK,Securities Practitioner Organization Employment Report,draft,NULL = đang làm việc.
+NHNCK_192,,Discipline Description,Kỷ luật (vi phạm hoặc xử phạt),theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,
+NHNCK_193,,Report Description,Mô tả báo cáo,theo từng báo cáo tuyển dụng,Text,NHNCK,Securities Practitioner Organization Employment Report,draft,
+NHNCK_194,,Sync Id,Mã đồng bộ,theo từng tổ chức thành viên,Text,NHNCK,Securities Practitioner Organization Employment Report | Securities Organization Reference,draft,Metadata đồng bộ.
+NHNCK_195,,Sync Created Timestamp,Ngày tạo đồng bộ,theo từng báo cáo tuyển dụng,Timestamp,NHNCK,Securities Practitioner Organization Employment Report,draft,
+NHNCK_196,,Sync Updated Timestamp,Ngày cập nhật đồng bộ,theo từng báo cáo tuyển dụng,Timestamp,NHNCK,Securities Practitioner Organization Employment Report,draft,
+NHNCK_197,,Course Code,Mã khóa học (mã nghiệp vụ),theo từng khóa đào tạo,Text,NHNCK,Securities Practitioner Professional Training Class,draft,"Mã nghiệp vụ, khác BK."
+NHNCK_198,,Course Name,Tên khóa học,theo từng khóa đào tạo,Text,NHNCK,Securities Practitioner Professional Training Class,draft,
+NHNCK_199,,Academic Year,Năm học,theo từng khóa đào tạo,Text,NHNCK,Securities Practitioner Professional Training Class,draft,"Text vì là năm dạng ""2025""."
+NHNCK_200,,Exam Date,Ngày thi,theo từng khóa đào tạo,Date,NHNCK,Securities Practitioner Professional Training Class,draft,
+NHNCK_201,,Course Description,Mô tả khóa học,theo từng khóa đào tạo,Text,NHNCK,Securities Practitioner Professional Training Class,draft,
+NHNCK_202,,Is Active Indicator,Trạng thái hoạt động,theo từng khóa đào tạo,Boolean,NHNCK,Securities Practitioner Professional Training Class,draft,
+NHNCK_203,,Course Status Code,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",theo từng khóa đào tạo,Classification Value,NHNCK,Securities Practitioner Professional Training Class,draft,Scheme: COURSE_STATUS.
+NHNCK_204,,Organization Unit Code,Mã đơn vị. BK,theo từng đơn vị/phòng ban UBCKNN,Text,NHNCK,Regulatory Authority Organization Unit,draft,BK chính.
+NHNCK_205,,Organization Unit Type Code,Phân loại — Đơn vị (Unit),theo từng đơn vị/phòng ban UBCKNN,Classification Value,NHNCK,Regulatory Authority Organization Unit,draft,
+NHNCK_206,,Organization Unit Name,Tên đơn vị,theo từng đơn vị/phòng ban UBCKNN,Text,NHNCK,Regulatory Authority Organization Unit,draft,
+NHNCK_207,,Organization Unit Description,Mô tả,theo từng đơn vị/phòng ban UBCKNN,Text,NHNCK,Regulatory Authority Organization Unit,draft,
+NHNCK_208,,Organization Unit Status Code,Trạng thái,theo từng đơn vị/phòng ban UBCKNN,Classification Value,NHNCK,Regulatory Authority Organization Unit,draft,Scheme: ORGANIZATION_UNIT_STATUS.
+NHNCK_209,,Parent Organization Unit Code,Mã đơn vị cha,theo từng đơn vị/phòng ban UBCKNN,Text,NHNCK,Regulatory Authority Organization Unit,draft,FK target: Regulatory Authority Organization Unit.Organization Unit Code. Pair with Parent Organization Unit Id.
+NHNCK_210,,Sort Order,Thứ tự sắp xếp,theo từng tổ chức thành viên,Small Counter,NHNCK,Regulatory Authority Organization Unit | Securities Organization Reference,draft,
+NHNCK_211,,Securities Organization Reference Code,Mã định danh (tự động tăng). BK,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,BK chính. PK nguồn.
+NHNCK_212,,Organization Code,Mã tổ chức (mã nghiệp vụ),theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,"Mã nghiệp vụ, khác BK."
+NHNCK_213,,Organization Name,Tên tổ chức,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,
+NHNCK_214,,English Name,Tên tiếng Anh,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,
+NHNCK_215,,Abbreviation,Tên viết tắt,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,
+NHNCK_216,,Organization Type Code,"Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác)",theo từng tổ chức thành viên,Classification Value,NHNCK,Securities Organization Reference,draft,Scheme: ORGANIZATION_TYPE.
+NHNCK_217,,Organization Level Code,Cấp độ tổ chức,theo từng tổ chức thành viên,Classification Value,NHNCK,Securities Organization Reference,draft,Scheme: ORGANIZATION_LEVEL.
+NHNCK_218,,Parent Organization Code,Mã tổ chức cha,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,FK target: Securities Organization Reference.Securities Organization Reference Code. Pair with Parent Organization Id.
+NHNCK_219,,Representative Name,Người đại diện,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,"BCV: ""Designated Representative"" (Involved Party). Suffix Name. Chủ thể khác — không thuộc shared entity."
+NHNCK_220,,Charter Capital Amount,Vốn điều lệ,theo từng tổ chức thành viên,Currency Amount,NHNCK,Securities Organization Reference,draft,
+NHNCK_221,,License Number,Số giấy phép hoạt động,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,
+NHNCK_222,,License Issuer,Cơ quan cấp giấy phép,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,
+NHNCK_223,,License Date,Ngày cấp giấy phép,theo từng tổ chức thành viên,Date,NHNCK,Securities Organization Reference,draft,
+NHNCK_224,,Website,Địa chỉ website,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,Thông tin công khai — không thuộc IP Electronic Address.
+NHNCK_225,,Organization Description,Mô tả,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,
+NHNCK_226,,Organization Status Code,Trạng thái,theo từng tổ chức thành viên,Classification Value,NHNCK,Securities Organization Reference,draft,Scheme: ORGANIZATION_STATUS.
+NHNCK_227,,Linked Id,ID liên kết,theo từng tổ chức thành viên,Text,NHNCK,Securities Organization Reference,draft,Metadata liên kết hệ thống.
+NHNCK_228,,Last Sync Date,Lần cuối đồng bộ,theo từng tổ chức thành viên,Date,NHNCK,Securities Organization Reference,draft,
+NHNCK_229,,Sync Status Code,Trạng thái đồng bộ,theo từng tổ chức thành viên,Classification Value,NHNCK,Securities Organization Reference,draft,Scheme: SYNC_STATUS.
+NHNCK_230,,Identity Reference Code,Mã định danh giấy tờ tùy thân (FK bảng identity riêng),theo từng giấy tờ định danh,Text,NHNCK,Securities Practitioner | Securities Practitioner Related Party | Involved Party Alternative Identification,draft,Nguồn mới: IdentityId tham chiếu bảng identity riêng — không có detail trực tiếp trong Professionals.
+NHNCK_231,,Relationship Type Code,Loại quan hệ người hành nghề,theo từng người hành nghề,Classification Value,NHNCK,Securities Practitioner | Securities Practitioner Related Party,draft,Scheme: PRACTITIONER_RELATIONSHIP_TYPE.
+NHNCK_232,,Occupation Name,Nghề nghiệp,theo từng người hành nghề,Text,NHNCK,Securities Practitioner | Securities Practitioner Related Party,draft,Text tự do.
+NHNCK_233,,Practitioner Note,Ghi chú,theo từng người hành nghề,Text,NHNCK,Securities Practitioner,draft,
+NHNCK_234,,Securities Practitioner Related Party Code,Mã định danh (tự động tăng). BK,theo từng quan hệ thân nhân,Text,NHNCK,Securities Practitioner Related Party,draft,BK chính.
+NHNCK_235,,Related Party Full Name,Họ và tên người liên quan,theo từng quan hệ thân nhân,Text,NHNCK,Securities Practitioner Related Party,draft,
+NHNCK_236,,Address,Địa chỉ,theo từng quan hệ thân nhân,Text,NHNCK,Securities Practitioner Related Party,draft,
+NHNCK_237,,Related Party Note,Ghi chú,theo từng quan hệ thân nhân,Text,NHNCK,Securities Practitioner Related Party,draft,
+NHNCK_238,,License Application Fee Code,Mã định danh (tự động tăng). BK,theo từng khoản phí hồ sơ,Text,NHNCK,Securities Practitioner License Application Fee,draft,BK chính. PK nguồn.
+NHNCK_239,,Fee Type Code,Loại phí,theo từng khoản phí hồ sơ,Classification Value,NHNCK,Securities Practitioner License Application Fee,draft,Scheme: FEE_TYPE.
+NHNCK_240,,Fee Amount,Số tiền phí (VNĐ),theo từng khoản phí hồ sơ,Currency Amount,NHNCK,Securities Practitioner License Application Fee,draft,
+NHNCK_241,,Fee Content,Nội dung phí,theo từng khoản phí hồ sơ,Text,NHNCK,Securities Practitioner License Application Fee,draft,
+NHNCK_242,,Fee Note,Ghi chú,theo từng khoản phí hồ sơ,Text,NHNCK,Securities Practitioner License Application Fee,draft,
+NHNCK_243,,Payment Status Code,Trạng thái thanh toán,theo từng khoản phí hồ sơ,Classification Value,NHNCK,Securities Practitioner License Application Fee,draft,Scheme: PAYMENT_STATUS.
+NHNCK_244,,Request Date,Ngày yêu cầu thanh toán,theo từng khoản phí hồ sơ,Date,NHNCK,Securities Practitioner License Application Fee,draft,
+NHNCK_245,,Payment Date,Ngày thanh toán,theo từng khoản phí hồ sơ,Date,NHNCK,Securities Practitioner License Application Fee,draft,
+NHNCK_246,,Expiry Date,Ngày hết hạn thanh toán,theo từng khoản phí hồ sơ,Date,NHNCK,Securities Practitioner License Application Fee,draft,
+NHNCK_247,,Involved Party Code,Mã người hành nghề,theo từng giấy tờ định danh,Text,NHNCK,Involved Party Alternative Identification | Involved Party Electronic Address | Involved Party Postal Address,draft,FK target: Securities Practitioner.Practitioner Code. Pair with Involved Party Id.
+NHNCK_248,,Identification Type Code,Loại giấy tờ định danh — CCCD/CMND,theo từng giấy tờ định danh,Classification Value,NHNCK,Involved Party Alternative Identification,draft,
+NHNCK_249,,Issuing Authority Name,Cơ quan cấp giấy phép,theo từng giấy tờ định danh,Text,NHNCK,Involved Party Alternative Identification,draft,
+NHNCK_250,,Issuing Authority,Cơ quan ban hành quyết định thành lập,theo từng giấy tờ định danh,Text,NHNCK,Involved Party Alternative Identification,draft,
+NHNCK_251,,Alt Identification Type Code,Loại giấy tờ — quyết định thành lập CN/VPĐD.,theo từng giấy tờ định danh,Classification Value,NHNCK,Involved Party Alternative Identification,draft,Scheme: IP_ALT_ID_TYPE. // Scheme: IP_ALT_ID_TYPE. IdType xác định loại giấy tờ (CMND/CCCD/Hộ chiếu/ĐKKD). // Scheme: IP_ALT_ID_TYPE. Giá trị: CITIZEN_ID (CCCD) hoặc PASSPORT (Hộ chiếu).
+NHNCK_252,,Alt Identification Value,Số quyết định/giấy phép thành lập.,theo từng giấy tờ định danh,Text,NHNCK,Involved Party Alternative Identification,draft,
+NHNCK_253,,Alt Identification Issue Date,Ngày cấp quyết định thành lập quỹ.,theo từng giấy tờ định danh,Date,NHNCK,Involved Party Alternative Identification,draft,
+NHNCK_254,,Electronic Address Type Code,Loại kênh liên lạc — điện thoại kinh doanh.,theo từng địa chỉ điện tử,Classification Value,NHNCK,Involved Party Electronic Address,draft,Scheme: IP_ELEC_ADDR_TYPE.
+NHNCK_255,,Electronic Address Value,Số điện thoại trụ sở chính.,theo từng địa chỉ điện tử,Text,NHNCK,Involved Party Electronic Address,draft,
+NHNCK_256,,Address Type Code,Loại địa chỉ — địa chỉ chung,theo từng địa chỉ bưu chính,Classification Value,NHNCK,Involved Party Postal Address,draft,
+NHNCK_257,,Address Line,Địa chỉ,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,Nguồn mới chỉ có 1 trường Address chung.
+NHNCK_258,,Address Description,Mô tả địa chỉ kinh doanh,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,
+NHNCK_259,,Province Code,Mã tỉnh kinh doanh,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,
+NHNCK_260,,Province Name,Tên tỉnh kinh doanh,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,
+NHNCK_261,,District Code,Mã huyện kinh doanh,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,
+NHNCK_262,,District Name,Tên huyện kinh doanh,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,
+NHNCK_263,,Ward Code,Mã xã kinh doanh,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,
+NHNCK_264,,Ward Name,Tên xã kinh doanh,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,
+NHNCK_265,,Address Value,Địa chỉ trụ sở đại lý phân phối quỹ.,theo từng địa chỉ bưu chính,Text,NHNCK,Involved Party Postal Address,draft,

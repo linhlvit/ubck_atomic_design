@@ -33,9 +33,10 @@ FEE_TYPE,(to_define),Loại phí — cần xác nhận từ data,modeler_defined
 PAYMENT_STATUS,(to_define),Trạng thái thanh toán — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ApplicationFees.Status,License Application Fee
 VERIFICATION_LEVEL,(to_define),Cấp phê duyệt (LĐCM/LĐUB) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyLevel,App Verification Status
 VERIFICATION_STATUS,(to_define),Trạng thái phê duyệt — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyStatus,App Verification Status
-INDIVIDUAL_GENDER,(to_define),Giới tính — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.Gender,Securities Practitioner
-NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data (có thể dùng ISO 3166),modeler_defined,NHNCK.qlnhn.Professionals.Nationality,Securities Practitioner
-PRACTICE_STATUS,(to_define),Trạng thái hành nghề — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.PracticeStatus,Securities Practitioner
+INDIVIDUAL_GENDER,(to_define),Giới tính — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ProfessionalHistories.Gender,Securities Practitioner
+NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data (có thể dùng ISO 3166),modeler_defined,NHNCK.qlnhn.ProfessionalHistories.NationalityId,Securities Practitioner
+PRACTICE_STATUS,(to_define),Trạng thái hành nghề — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ProfessionalHistories.StatusWork,Securities Practitioner
+PRACTITIONER_REGISTRATION_TYPE,(to_define),Hình thức đăng ký người hành nghề vào hệ thống — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ProfessionalHistories.RegistrationType,Securities Practitioner
 C06_VERIFICATION_STATUS,(to_define),Trạng thái xác thực C06 — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.VerifyStatus,Securities Practitioner | Identity Verification Record
 CERTIFICATE_STATUS,(to_define),Trạng thái chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.Status,License Certificate Document | Certificate Document Status History (From/To)
 DIGITAL_SIGNATURE_STATUS,(to_define),Trạng thái ký số — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.SignStatus,License Certificate Document
@@ -86,7 +87,8 @@ TAX_ENFORCEMENT_TYPE,(to_define),"Hình thức cưỡng chế (trích tiền TK,
 INVOICE_TYPE,(to_define),Loại hóa đơn — cần profile data LOAI_HOA_DON,modeler_defined,DCST.HOA_DON_CHI_TIET,Tax Invoice Enforcement Order Item
 FMS_OPERATION_STATUS,(source),Trạng thái hoạt động của tổ chức/cá nhân trong hệ thống FMS,source_table,FMS.STATUS,"Fund Management Company | Foreign Fund Management Organization Unit | Custodian Bank | Fund Distribution Agent"
 FMS_AGENCY_TYPE,(source),Loại đại lý phân phối quỹ đầu tư,source_table,FMS.AGENCYTYPE,Fund Distribution Agent
-FMS_NATIONAL,(source),Danh mục quốc gia/quốc tịch trong hệ thống FMS,source_table,FMS.NATIONAL,Discretionary Investment Investor
+GEOGRAPHIC_AREA_TYPE,COUNTRY,Quốc gia / quốc tịch — từ FIMS.NATIONAL + FMS.NATIONAL + SCMS.DM_QUOC_TICH,etl_derived,"FIMS.NATIONAL, FMS.NATIONAL, SCMS.DM_QUOC_TICH",Geographic Area
+GEOGRAPHIC_AREA_TYPE,PROVINCE,Tỉnh / thành phố trong nước — từ SCMS.DM_TINH_THANH,etl_derived,SCMS.DM_TINH_THANH,Geographic Area
 FMS_STOCKHOLDER_TYPE,(source),Danh mục loại hình nhà đầu tư/cổ đông trong hệ thống FMS,source_table,FMS.STOCKHOLDERTYPE,Discretionary Investment Investor
 FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
 FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
@@ -123,3 +125,48 @@ FMS_VIOLATION_TYPE,(to_define),Loại vi phạm trong hoạt động quản lý 
 FMS_VIOLATION_STATUS,(to_define),Trạng thái xử lý vi phạm — cần profile data ViolStatus,modeler_defined,FMS.VIOLT.ViolStatus,Fund Management Conduct Violation
 FMS_REPORT_VALUE_TYPE,(to_define),Loại giá trị trong báo cáo thành viên — cần profile data Type,modeler_defined,FMS.RPTVALUES.Type,Member Report Value
 IP_ELEC_ADDR_TYPE,WEBSITE,Website tổ chức,etl_derived,,IP Electronic Address
+SCMS_COMPANY_TYPE,(source),Loại công ty (CTCK cổ phần/TNHH/nhà nước...),source_table,SCMS.DM_LOAI_CONG_TY,Securities Company
+SCMS_COMPANY_STATUS,(source),Trạng thái hoạt động của CTCK — bao gồm flag gửi báo cáo và công bố thông tin,source_table,SCMS.DM_TRANG_THAI_CTCK,Securities Company
+SCMS_SERVICE_TYPE,(source),Dịch vụ được phép cung cấp của CTCK,source_table,SCMS.DM_DICH_VU,Securities Company Organization Unit
+SCMS_POSITION_TYPE,(source),Chức vụ của nhân sự cao cấp CTCK,source_table,SCMS.DM_CHUC_VU,Securities Company Senior Personnel
+SCMS_SHAREHOLDER_RELATION_TYPE,(source),Loại mối quan hệ giữa cổ đông và người liên quan,source_table,SCMS.DM_MOI_QUAN_HE,Securities Company Shareholder
+SCMS_BUSINESS_SECTOR,(source),Ngành nghề kinh doanh đăng ký của CTCK,source_table,SCMS.DM_NGANH_NGHE_KD,Securities Company
+SCMS_SHAREHOLDER_TXN_TYPE,(source),Loại giao dịch cổ đông (mua/bán/tặng/thừa kế...),source_table,SCMS.DM_LOAI_GIAO_DICH_CD,"Securities Company Shareholder Transfer, Disclosure Shareholder Change"
+SCMS_VIOLATION_TYPE,(source),Loại vi phạm báo cáo (gửi muộn/không gửi/sai nội dung...),source_table,SCMS.DM_LOAI_VI_PHAM,Securities Company Report Violation
+SCMS_INCIDENT_TYPE,(source),Loại sự vụ trong quản lý CTCK,source_table,SCMS.DM_SU_VU,Securities Company Administrative Penalty
+SCMS_INDICATOR_GROUP,(source),Nhóm chỉ tiêu báo cáo,source_table,SCMS.DM_CHI_TIEU_DM,Report Indicator
+SCMS_STATISTICAL_CODE,(source),Mã thống kê của chỉ tiêu,source_table,SCMS.DM_THONG_KE,Report Indicator
+SCMS_ORG_UNIT_TYPE,BRANCH,Chi nhánh,etl_derived,,Securities Company Organization Unit
+SCMS_ORG_UNIT_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện,etl_derived,,Securities Company Organization Unit
+SCMS_ORG_UNIT_TYPE,TRANSACTION_OFFICE,Phòng giao dịch,etl_derived,,Securities Company Organization Unit
+SCMS_REPORT_TYPE,0,Báo cáo đầu vào,etl_derived,SCMS.scms.BM_BAO_CAO.LOAI_BAO_CAO,Report Template
+SCMS_REPORT_TYPE,1,Báo cáo đầu ra,etl_derived,SCMS.scms.BM_BAO_CAO.LOAI_BAO_CAO,Report Template
+SCMS_REPORT_LAYOUT_TYPE,1,Báo cáo hàng cột,etl_derived,SCMS.scms.BM_SHEET.KIEU_BAO_CAO,Report Template Sheet
+SCMS_REPORT_LAYOUT_TYPE,2,Báo cáo hàng,etl_derived,SCMS.scms.BM_SHEET.KIEU_BAO_CAO,Report Template Sheet
+SCMS_REPORT_LAYOUT_TYPE,3,Báo cáo cột,etl_derived,SCMS.scms.BM_SHEET.KIEU_BAO_CAO,Report Template Sheet
+SCMS_INDICATOR_DATA_TYPE,1,Danh mục,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,2,Công thức,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,3,Số,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,4,Ký tự,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,5,Ngày tháng,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_CALCULATION_METHOD,1,Cộng dồn,etl_derived,SCMS.scms.DM_CHI_TIEU.CACH_TINH,Report Indicator
+SCMS_CALCULATION_METHOD,2,Tính đến thời điểm,etl_derived,SCMS.scms.DM_CHI_TIEU.CACH_TINH,Report Indicator
+SCMS_ORG_UNIT_STATUS,(to_define),Trạng thái chi nhánh/VPDD/PGD — cần profile data TRANG_THAI_CHI_NHANH/TRANG_THAI_VPDD/TRANG_THAI_PGD,modeler_defined,"SCMS.scms.CTCK_CHI_NHANH.TRANG_THAI_CHI_NHANH, SCMS.scms.CTCK_VP_DAI_DIEN.TRANG_THAI_VPDD, SCMS.scms.CTCK_PHONG_GIAO_DICH.TRANG_THAI_PGD",Securities Company Organization Unit
+SCMS_PERSONNEL_STATUS,(to_define),Trạng thái nhân sự cao cấp CTCK — cần profile data TRANG_THAI_NHAN_SU,modeler_defined,SCMS.scms.CTCK_NHAN_SU_CAO_CAP.TRANG_THAI_NHAN_SU,Securities Company Senior Personnel
+SCMS_SHAREHOLDER_TYPE,(to_define),Loại cổ đông: IS_CA_NHAN — cần ánh xạ sang Individual/Organization,modeler_defined,SCMS.scms.CTCK_CO_DONG.IS_CA_NHAN,Securities Company Shareholder
+SCMS_AUDIT_FIRM_PRACTITIONER_STATUS,(to_define),Trạng thái kiểm toán viên — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CT_KIEM_TOAN_VIEN.TRANG_THAI,Audit Firm Practitioner
+SCMS_SCHEDULE_STATUS,(to_define),Trạng thái định kỳ gửi báo cáo — cần profile data SU_DUNG,modeler_defined,SCMS.scms.BM_BAO_CAO_DINH_KY.SU_DUNG,Report Submission Schedule
+SCMS_REPORT_SUBMISSION_STATUS,(source),Trạng thái lần gửi báo cáo: 4-Đã gửi; 5-Yêu cầu gửi lại; 6-Đã gửi lại,source_table,SCMS.scms.BC_THANH_VIEN.TRANG_THAI,Member Periodic Report
+SCMS_DISCLOSURE_TYPE,(to_define),Loại công bố thông tin — cần profile data LOAI_CONG_BO,modeler_defined,SCMS.scms.CBTT_BAO_CAO.LOAI_CONG_BO,Disclosure Report Submission
+SCMS_DISCLOSURE_METHOD,(to_define),Kiểu công bố thông tin — cần profile data KIEU_CONG_BO,modeler_defined,SCMS.scms.CBTT_BAO_CAO.KIEU_CONG_BO,Disclosure Report Submission
+SCMS_DISCLOSURE_STATUS,(to_define),Trạng thái công bố thông tin — cần profile data TRANG_THAI,modeler_defined,"SCMS.scms.CBTT_BAO_CAO.TRANG_THAI, SCMS.scms.CBTT_CHAO_BAN_CHUNG_KHOAN.TRANG_THAI, SCMS.scms.CBTT_CO_DONG.TRANG_THAI","Disclosure Report Submission, Disclosure Securities Offering, Disclosure Shareholder Change"
+SCMS_OFFERING_FORM,(to_define),Hình thức chào bán chứng khoán — cần profile data HINH_THUC_CHAO_BAN,modeler_defined,SCMS.scms.CBTT_CHAO_BAN_CHUNG_KHOAN.HINH_THUC_CHAO_BAN,Disclosure Securities Offering
+SCMS_OFFERING_TARGET,(to_define),Đối tượng chào bán — cần profile data DOI_TUONG_CHAO_BAN,modeler_defined,SCMS.scms.CBTT_CHAO_BAN_CHUNG_KHOAN.DOI_TUONG_CHAO_BAN,Disclosure Securities Offering
+SCMS_PENALTY_FORM,(to_define),Hình thức xử lý hành chính — cần profile data HINH_THUC,modeler_defined,SCMS.scms.CTCK_XU_LY_HANH_CHINH.HINH_THUC,Securities Company Administrative Penalty
+SCMS_PENALTY_STATUS,(to_define),Trạng thái quyết định xử lý hành chính — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_XU_LY_HANH_CHINH.TRANG_THAI,Securities Company Administrative Penalty
+SCMS_VIOLATION_RECORD_STATUS,(to_define),Trạng thái bản ghi vi phạm — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.BC_VI_PHAM.TRANG_THAI,Securities Company Report Violation
+SCMS_SHAREHOLDER_TRANSFER_STATUS,(to_define),Trạng thái chuyển nhượng cổ phần — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_CD_CHUYEN_NHUONG.TRANG_THAI,Securities Company Shareholder Transfer
+SCMS_RELATED_PARTY_RELATIONSHIP,(to_define),Loại mối quan hệ người liên quan với cổ đông — cần profile data MOI_QUAN_HE,modeler_defined,SCMS.scms.CTCK_CD_MOI_QUAN_HE.MOI_QUAN_HE,Securities Company Shareholder Related Party
+SCMS_SHAREHOLDER_REPRESENTATIVE_STATUS,(to_define),Trạng thái người đại diện cổ đông — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_CD_DAI_DIEN.TRANG_THAI,Securities Company Shareholder Representative
+SCMS_SHAREHOLDER_RELATED_PARTY_STATUS,(to_define),Trạng thái bản ghi người liên quan — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_CD_MOI_QUAN_HE.TRANG_THAI,Securities Company Shareholder Related Party
+SCMS_OBLIGATION_STATUS,(to_define),Trạng thái nghĩa vụ gửi báo cáo — cần profile data,modeler_defined,SCMS.scms.BM_BAO_CAO_DINH_KY_DON_VI,Report Submission Obligation

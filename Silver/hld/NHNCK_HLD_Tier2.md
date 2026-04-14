@@ -10,7 +10,7 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Silver Entity | BCV Term |
 |---|---|---|---|---|---|---|
-| Involved Party | [Involved Party] Individual | Individual | Professionals | Thông tin người hành nghề chứng khoán được UBCKNN quản lý | Securities Practitioner | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã người hành nghề, họ tên, ngày sinh, giới tính, quốc tịch, nơi sinh, trình độ học vấn, trạng thái hành nghề, trạng thái xác thực C06. Không FK đến bảng nghiệp vụ nào trong Tier 1 (chỉ dùng shared entities). |
+| Involved Party | [Involved Party] Individual | Individual | Professionals, ProfessionalHistories | Thông tin người hành nghề chứng khoán được UBCKNN quản lý | Securities Practitioner | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã người hành nghề, họ tên, ngày sinh đầy đủ, giới tính, quốc tịch, nơi sinh, trình độ học vấn, hình thức đăng ký, trạng thái hành nghề, trạng thái xác thực C06. Không FK đến bảng nghiệp vụ nào trong Tier 1 (chỉ dùng shared entities). **ETL note:** `Professionals` cung cấp Practitioner Code và surrogate key; các attribute cá nhân chi tiết (BirthDate, Gender, EducationLevelId, NationalityId, RegistrationType...) lấy từ bản mới nhất của `ProfessionalHistories` (ORDER BY ChangeDate DESC, Id DESC). |
 | Event | [Event] Training Course | Training Course | SpecializationCourses | Danh mục khóa học chuyên môn bổ sung kiến thức cho người hành nghề | Securities Practitioner Professional Training Class | Training Course — *"Identifies an Event that is a course of instruction."* Cấu trúc trường: mã khóa học, tên khóa học, loại chuyên môn, thời gian, địa điểm, trạng thái. Master entity của khóa học — không gắn với người cụ thể. |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CertificateRecordGroups | Nhóm quyết định cấp/thu hồi/hủy chứng chỉ (1 quyết định có thể ảnh hưởng nhiều CCHN) | Securities Practitioner License Certificate Group Document | Government Registration Document — cấu trúc trường: tên nhóm, loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi), FK đến Decision, FK đến Officer (CreatedBy), trạng thái nhóm. FK đến Tier 1 (Decision + Officer). |
 | Communication | [Communication] Assessment | Assessment | ExamSessions | Danh mục các đợt thi sát hạch cấp CCHN do UBCKNN tổ chức | Securities Practitioner Qualification Examination Assessment | Assessment — *"Identifies a Communication that is an evaluation or appraisal."* Cấu trúc trường: Session Code/Name/Number, Examination Year/Location, Organizer Name, Registration/Examination Start/End Date, Application Source Code, Examination Status Code, FK đến Decision, FK đến Officer (CreatedBy + UpdatedBy). FK đến Tier 1 (Decision + Officer). |
@@ -25,6 +25,7 @@ graph LR
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
     Professionals["**Professionals**\nNgười hành nghề CK"]:::src
+    ProfessionalHistories["**ProfessionalHistories**\nLịch sử thông tin người hành nghề\n(lấy bản mới nhất)"]:::src
     SpecializationCourses["**SpecializationCourses**\nKhóa học chuyên môn"]:::src
     CertificateRecordGroups["**CertificateRecordGroups**\nNhóm chứng chỉ"]:::src
     ExamSessions["**ExamSessions**\nĐợt thi sát hạch"]:::src
@@ -48,7 +49,7 @@ graph TD
     classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    PRAC["**Securities Practitioner**\n[Involved Party] Individual\nProfessionals"]:::silver
+    PRAC["**Securities Practitioner**\n[Involved Party] Individual\nProfessionals + ProfessionalHistories"]:::silver
     TRAINCLASS["**Securities Practitioner\nProfessional Training Class**\n[Event] Training Course\nSpecializationCourses"]:::silver
     CERTGRP["**Securities Practitioner\nLicense Certificate Group Document**\n[Documentation] Gov. Registration Document\nCertificateRecordGroups"]:::silver
     EXAM["**Securities Practitioner\nQualification Examination Assessment**\n[Communication] Assessment\nExamSessions"]:::silver
@@ -96,11 +97,13 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 ## Entities trong Tier 2
 
 ### 1. Securities Practitioner
-**Source:** `Professionals` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party
+**Source:** `Professionals` + `ProfessionalHistories` (bản mới nhất) | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party
 
 **Grain:** 1 dòng = 1 người hành nghề chứng khoán được UBCKNN quản lý.
 
-**Attributes chính:** Practitioner Code, Full Name, Date Of Birth, Individual Gender Code, Nationality Code, Birth Place, Education Level Code, Practice Status Code, C06 Verification Status Code.
+**Attributes chính:** Practitioner Code, Full Name, Date Of Birth, Individual Gender Code, Nationality Code, Birth Place, Education Level Code, Registration Type Code, Practice Status Code, C06 Verification Status Code.
+
+**ETL note:** `Professionals` là nguồn chính cho Practitioner Code và identity key. Các attribute cá nhân chi tiết (Date Of Birth đầy đủ, Gender, Education Level, Nationality, Registration Type) lấy từ bản mới nhất của `ProfessionalHistories` (ORDER BY ChangeDate DESC, Id DESC — 1 dòng per ProfessionalId).
 
 **Shared entities:** IP Postal Address (PermanentAddress, CurrentAddress), IP Electronic Address (Phone, Email), IP Alt Identification (IdentityNumber — CCCD).
 
@@ -145,7 +148,7 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 
 | Silver Entity | # Attributes | PK | Key FKs |
 |---|---|---|---|
-| Securities Practitioner | 14 | Practitioner Id | — |
+| Securities Practitioner | 15 | Practitioner Id | — |
 | Securities Practitioner Professional Training Class | ~10 | Training Class Id | — |
 | Securities Practitioner License Certificate Group Document | 13 | License Certificate Group Document Id | Decision, Officer (CreatedBy) |
 | Securities Practitioner Qualification Examination Assessment | 25 | Examination Assessment Id | Decision, Officer (×2: CreatedBy + UpdatedBy) |

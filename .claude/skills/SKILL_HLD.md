@@ -145,6 +145,7 @@ Liệt kê các bảng nguồn được propose thiết kế vào Classification
 - Cột Scheme Code **không được để trống (`—`)** — phải đặt tên scheme ngay tại bước HLD. Dùng UPPER_SNAKE_CASE, thêm prefix source system để tránh trùng (VD: `FMS_BUSINESS_TYPE`, `NHNCK_APPLICATION_STATUS`).
 - Nếu values load từ bảng nguồn → `source_type = source_table`. Nếu team tự định nghĩa → `source_type = etl_derived`. Nếu chưa profile data → `source_type = modeler_defined`.
 - **Sau khi xác định Scheme Code → bắt buộc đăng ký ngay vào `Silver/lld/ref_shared_entity_classifications.csv`**, kể cả khi chưa có danh sách giá trị cụ thể (ghi `(source)` hoặc `(to_define)` ở cột code). Không để scheme chỉ tồn tại trong file HLD mà thiếu trong file chuẩn hóa.
+- **Encoding khi ghi file `ref_shared_entity_classifications.csv`: bắt buộc dùng UTF-8 with BOM** (`utf-8-sig` trong Python). Excel và các tool Windows cần BOM để nhận diện đúng tiếng Việt — nếu ghi UTF-8 thuần sẽ bị lỗi encoding khi mở.
 
 #### 6e. Bảng chờ thiết kế
 
@@ -228,6 +229,8 @@ Gộp tất cả bảng ngoài scope từ các Tier thành 1 bảng duy nhất. 
 ## Bước 8 — Cập nhật silver_entities.csv và silver_out_of_scope.csv
 
 Thực hiện **sau khi hoàn thành HLD mỗi Tier**. Hai file này là bảng tổng hợp toàn dự án — tích lũy qua tất cả source system và tất cả Tier.
+
+**Encoding bắt buộc:** Cả `silver_entities.csv` và `silver_out_of_scope.csv` đều phải ghi **UTF-8 with BOM** (`utf-8-sig` trong Python). Script `aggregate_silver.py` và `aggregate_out_of_scope.py` đã xử lý đúng — không ghi tay bằng `utf-8` thuần.
 
 **Vị trí file:** `Silver/hld/silver_entities.csv`
 

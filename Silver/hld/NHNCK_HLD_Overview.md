@@ -21,7 +21,7 @@
 | 1 | Involved Party | [Involved Party] Organization | Organization | Organizations | Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) | Securities Organization Reference | Organization — entity nghiệp vụ phong phú, FK từ nhiều bảng. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | Decisions | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Government Registration Document — được FK từ Certificate Document (×2), Certificate Group Document, Conduct Violation, Examination Assessment. |
 | 1 | Involved Party | [Involved Party] Individual | Individual | Users | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Regulatory Authority Officer | Individual — FK từ nhiều bảng (AssigneeId, CreatedBy, UpdatedBy, VerifyBy). |
-| 2 | Involved Party | [Involved Party] Individual | Individual | Professionals | Thông tin người hành nghề chứng khoán | Securities Practitioner | Individual — master entity người hành nghề. Không FK đến bảng nghiệp vụ Tier 1. |
+| 2 | Involved Party | [Involved Party] Individual | Individual | Professionals, ProfessionalHistories | Thông tin người hành nghề chứng khoán | Securities Practitioner | Individual — master entity người hành nghề. Không FK đến bảng nghiệp vụ Tier 1. Attribute cá nhân chi tiết lấy từ bản mới nhất ProfessionalHistories. |
 | 2 | Event | [Event] Training Course | Training Course | SpecializationCourses | Danh mục khóa học chuyên môn bổ sung kiến thức | Securities Practitioner Professional Training Class | Training Course — master entity khóa học, không gắn với người cụ thể. |
 | 2 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CertificateRecordGroups | Nhóm quyết định cấp/thu hồi/hủy chứng chỉ | Securities Practitioner License Certificate Group Document | Government Registration Document — FK đến Decision + Officer (Tier 1). |
 | 2 | Communication | [Communication] Assessment | Assessment | ExamSessions | Danh mục các đợt thi sát hạch cấp CCHN | Securities Practitioner Qualification Examination Assessment | Assessment — FK đến Decision + Officer (Tier 1). |
@@ -208,7 +208,6 @@ Không có pure junction table trong NHNCK.
 | System / Auth | PermissionRoles | Phân quyền theo vai trò | Operational/system data. |
 | System / Auth | DepartmentAccess | Quyền truy cập theo phòng ban | Operational/system data. |
 | System / Log | ActionLogs | Nhật ký hành động hệ thống | System audit log — không phải nghiệp vụ CCHN. |
-| Audit Log nguồn | ProfessionalHistories | Lịch sử thay đổi thông tin cá nhân người hành nghề | Audit Log nguồn — có cột FieldName, OldValue, NewValue, ChangedBy, ChangedAt. Cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ. |
 | System / Config | SystemParameters | Tham số hệ thống | Config data. |
 | Digital Cert | DigitalCertificates | Chứng chỉ số | Operational/PKI data — không phải CCHN. |
 | Digital Cert | DigitalCertificateUsers | Người dùng chứng chỉ số | Operational/PKI data. |

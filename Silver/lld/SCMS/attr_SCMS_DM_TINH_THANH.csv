@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Geographic Area Id,Khóa đại diện cho khu vực địa lý.,Surrogate Key,false,true,draft,,PK surrogate. Shared entity — dùng chung với FIMS.NATIONAL và SCMS.DM_QUOC_TICH.,,
+Geographic Area Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,SCMS.scms.DM_TINH_THANH.ID,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.DM_TINH_THANH,
+Geographic Area Type Code,Loại khu vực địa lý: PROVINCE — tỉnh/thành phố.,Classification Value,false,false,draft,,Scheme: GEOGRAPHIC_AREA_TYPE. ETL-derived: hardcode PROVINCE cho bảng này.,GEOGRAPHIC_AREA_TYPE=PROVINCE,PROVINCE
+Geographic Area Business Code,Mã tỉnh/thành phố (mã nghiệp vụ).,Text,true,false,draft,SCMS.scms.DM_TINH_THANH.MA_TINH_THANH,,,
+Geographic Area Name,Tên tỉnh/thành phố.,Text,false,false,draft,SCMS.scms.DM_TINH_THANH.TEN_TINH_THANH,,,
+Note,Ghi chú.,Text,true,false,draft,SCMS.scms.DM_TINH_THANH.GHI_CHU,,,
+Life Cycle Status Code,Trạng thái sử dụng.,Classification Value,true,false,draft,SCMS.scms.DM_TINH_THANH.TRANG_THAI,Scheme: LIFE_CYCLE_STATUS.,,
+Created Timestamp,Ngày tạo.,Timestamp,true,false,draft,SCMS.scms.DM_TINH_THANH.NGAY_TAO,,,

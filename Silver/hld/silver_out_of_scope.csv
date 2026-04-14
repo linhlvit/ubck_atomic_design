@@ -1,67 +1,25 @@
-source_system,source_table,description,group,reason
-DCST,CONG_TY_KIEM_TOAN,Công ty kiểm toán,Group B,Thu thập tại source gốc.
-DCST,KIEM_TOAN_VIEN,Kiểm toán viên,Group B,Thu thập tại source gốc.
-DCST,THONG_TIN_CONG_TY,Thông tin công ty chứng khoán,Group B,Dữ liệu phát sinh từ nguồn gốc khác (SCMS). Thu thập tại source gốc.
-DCST,UBCK_BAO_CAO,Báo cáo UBCKNN,Group B,"Thu thập tại source gốc (FMS, IDS)."
-DCST,UBCK_BAO_CAO_CHI_TIET,Chi tiết báo cáo UBCKNN,Group B,Thu thập tại source gốc.
-DCST,UBCK_XU_PHAT,Quyết định xử phạt của UBCKNN,Group B,Dữ liệu phát sinh từ nguồn gốc khác (IDS/HT Thanh tra).
-DCST,"(user, permission, log, config)",Quản trị hệ thống,Group C (12 bảng),Không có FK đến bảng Group A. Không có giá trị nghiệp vụ.
-DCST,DANH_MUC,Danh mục tham chiếu,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value.
-DCST,NHOM_DANH_MUC,Nhóm danh mục tham chiếu,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value scheme.
-DCST,GOI_TIN,Quản lý trạng thái truyền nhận gói tin,System,System operational table — không có giá trị nghiệp vụ.
-FMS,FGBRBUP,Lịch sử thay đổi VPĐD/CN QLQ NN,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
-FMS,FUNDHISTORY,Lịch sử quỹ đầu tư,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
-FMS,SECHISTORY,Lịch sử thông tin công ty QLQ,Audit Log nguồn,Audit Log — PrevValue/ValueChange/Action/DateChange
-FMS,TLPRHISTORY,Lịch sử nhân sự,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
-FMS,RPTHTORY,Lịch sử thay đổi báo cáo đầu vào,Chưa có cột,Chưa có thông tin cột
-FMS,RPTPDSHT,Bảng trung gian SHEETS và RPTPERIOD,Chưa có cột,Chưa có thông tin cột
-FMS,RPTPROCESS,Lịch sử xử lý báo cáo thành viên,Chưa có cột,Chưa có thông tin cột
-FMS,RPTTEMP,Danh sách biểu mẫu báo cáo đầu vào,Chưa có cột,Chưa có thông tin cột — RPTVALUES FK đến
-FMS,RPTTPOUT,Danh sách biểu mẫu báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
-FMS,SELFSETPD,Thành viên tự thiết lập gửi báo cáo,Chưa có cột,Chưa có thông tin cột
-FMS,SHEET,Danh sách sheet báo cáo đầu vào,Chưa có cột,Chưa có thông tin cột — RPTVALUES FK đến
-FMS,SHEETOUT,Danh sách sheet báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
-FMS,STAKE,Danh sách các bên liên quan,Chưa có cột,Chưa có thông tin cột
-FMS,STTRGTOUT,Cấu hình lấy dữ liệu báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
-FMS,TOTSTTG,Cấu hình dữ liệu đầu ra với ô dữ liệu,Chưa có cột,Chưa có thông tin cột
-FMS,TPOUTHTORY,Lịch sử thay đổi báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
-FMS,USERRPTO,Phân quyền người dùng UBCK với báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
-FMS,RNKFACTHISTORY,Lưu kết quả các lần lưu bảng tổng hợp đánh giá,Chờ thiết kế,"Trong scope nghiệp vụ, chưa có thông tin cột"
-FMS,RNKGRFTOR,Bảng trung gian Ranks và RNKFACTOR,Chờ thiết kế,"Trong scope nghiệp vụ, chưa có thông tin cột"
-FMS,DTSCBMN,Phân quyền dữ liệu ngân hàng LKGS cho chuyên viên,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,DTSCFND,Phân quyền dữ liệu QĐT cho chuyên viên,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,DTSCFR,Phân quyền dữ liệu VPĐD/CN QLQ NN cho chuyên viên,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,DTSCOPE,Phân quyền dữ liệu — phạm vi,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,MENUS,Danh mục quyền chức năng,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,NOTIFICATION,Thông báo hệ thống,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,REFRESHTOKEN,Phiên làm việc (Token đăng nhập),Hệ thống / Phân quyền,Hạ tầng IT
-FMS,ROLES,Nhóm quyền chức năng,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,ROLESMENUS,Phân quyền menu theo nhóm quyền,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,SECURITIESREPORT,Thiết lập hiển thị báo cáo công ty QLQ,Hệ thống / Phân quyền,Cấu hình UI
-FMS,SYSEMAIL,Nội dung trao đổi thông tin,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,TABSINFO,Thiết lập hiển thị dữ liệu,Hệ thống / Phân quyền,Cấu hình UI
-FMS,USERS,Quản lý người dùng hệ thống,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,USERSESSIONS,Quản lý tài khoản đang truy cập,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,USERSMENUS,Phân quyền chức năng cho người dùng,Hệ thống / Phân quyền,Hạ tầng IT
-FMS,CALENDAR,Lịch làm việc và lịch nghỉ,Isolated,Không FK đến bảng nghiệp vụ nào
-FMS,CERTFCATE,Chứng thư số của thành viên thị trường,Isolated,Không FK đến bảng nghiệp vụ nào
-FMS,PARAWARN,Danh sách tham số cảnh báo,Isolated,Không FK đến/từ bảng nghiệp vụ nào
-FMS,PARVALUE,Danh sách mệnh giá cổ phần,Isolated,Không có bảng nào FK đến — xác nhận orphan table.
-FMS,SYSVAR,Danh sách tham số hệ thống,Isolated,Không FK đến bảng nghiệp vụ nào
-FMS,BRCHBUP,Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước,Snapshot nguồn,Snapshot — FK đến SECHISTORY (Audit Log)
-FMS,FNDBUP,Bản ghi chi tiết lịch sử quỹ đầu tư,Snapshot nguồn,Chưa có cột — dự kiến Snapshot pattern
-FMS,SECBUP,Chi tiết lịch sử công ty QLQ (bản ghi trước/sau),Snapshot nguồn,Snapshot — IsBefore + SecData (blob)
-FMS,TLPROBUP,Chi tiết lịch sử nhân sự (bản ghi trước/sau),Snapshot nguồn,Snapshot — IsBefore + TLData (blob)
-NHNCK,ProfessionalHistories,Lịch sử thay đổi thông tin cá nhân người hành nghề,Audit Log nguồn,"Audit Log nguồn — có cột FieldName, OldValue, NewValue, ChangedBy, ChangedAt. Cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ."
-NHNCK,CertificateNumberTemplates,Template số chứng chỉ,Config,Config/template data.
-NHNCK,CertificateDepartments,Phòng ban chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,CertificateDocuments,Tài liệu chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,CertificateSpecializations,Chuyên môn chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,DigitalCertificateUsers,Người dùng chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,DigitalCertificates,Chứng chỉ số,Digital Cert,Operational/PKI data — không phải CCHN.
-NHNCK,DepartmentAccess,Quyền truy cập theo phòng ban,System / Auth,Operational/system data.
-NHNCK,PermissionRoles,Phân quyền theo vai trò,System / Auth,Operational/system data.
-NHNCK,Permissions,Danh mục quyền hạn,System / Auth,Operational/system data.
-NHNCK,Roles,Danh mục vai trò,System / Auth,Operational/system data.
-NHNCK,UserRoles,Phân quyền người dùng,System / Auth,Operational/system data — không có giá trị nghiệp vụ.
-NHNCK,SystemParameters,Tham số hệ thống,System / Config,Config data.
+﻿source_system,source_table,description,group,reason
+SCMS,BC_THANH_VIEN_LS,Lịch sử các lần gửi báo cáo,Audit Log nguồn,"Audit Log nguồn — snapshot từng phiên bản gửi, không phải entity nghiệp vụ Silver"
+SCMS,BM_BAO_CAO_LS,Lịch sử biểu mẫu báo cáo,Audit Log nguồn,Audit Log nguồn — cần xác nhận (xem Điểm #7)
+SCMS,CTCK_HS_LICH_SU,Hồ sơ lịch sử thay đổi của CTCK,Audit Log nguồn,"Audit Log nguồn — ghi lịch sử dạng generic (BANG_LIEN_KET + CHI_TIET_ID), không phải sự kiện nghiệp vụ cụ thể"
+SCMS,CTCK_LICH_SU_XOA,Lịch sử xóa của CTCK,Audit Log nguồn,"Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ"
+SCMS,BC_GT_DTL,Báo cáo nháp chi tiết,Draft data,Dữ liệu trạng thái trung gian — phụ thuộc BC_GT_HDR
+SCMS,BC_GT_HDR,Báo cáo nháp header,Draft data,Dữ liệu trạng thái trung gian — cần xác nhận (xem Điểm #11)
+SCMS,BC_KHAI_THAC,Dữ liệu khai thác tổng hợp,Gold/intermediate,"Operational/system data — pre-aggregated, cần xác nhận (xem Điểm #10)"
+SCMS,BC_KHAI_THAC_GT,Giá trị khai thác tổng hợp,Gold/intermediate,Operational/system data — phụ thuộc BC_KHAI_THAC
+SCMS,DM_CHI_TIEU_THONG_KE,Chỉ tiêu – thống kê (mapping),Metadata,"Operational/system data — metadata cross-reference giữa 2 scheme, dùng trong ETL"
+SCMS,CHUNG_THU_SO,Danh sách chứng thư số,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,LK_CHUC_NANG_NGUOI,Liên kết người dùng chức năng,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,LK_CHUC_NANG_NHOM_NGUOI,Liên kết nhóm người dùng chức năng,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,LK_NGUOI_DUNG_BAO_CAO,Liên kết phân quyền khai thác báo cáo,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,LK_NGUOI_DUNG_CTCK,Liên kết phân quyền cán bộ quản trị CTCK,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,LK_NGUOI_DUNG_NHOM,Liên kết người dùng nhóm người dùng,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,QT_CHUC_NANG,Danh mục chức năng hệ thống,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,QT_LICH_HE_THONG,Thông tin lịch hệ thống,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,QT_LOG_HE_THONG,Danh sách log hệ thống,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,QT_NGUOI_DUNG,Danh sách người dùng hệ thống,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,QT_NGUOI_DUNG_IP,Thông tin quản lý IP đăng ký,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,QT_NHOM_NGUOI_DUNG,Danh sách nhóm người dùng,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,QT_THAM_SO_HE_THONG,Quản trị cấu hình tham số hệ thống,Operational/system,Operational/system data — không có giá trị nghiệp vụ
+SCMS,BM_TIEUDE_HANG,Tiêu đề hàng thiết kế động,UI metadata,"Operational/system data — metadata hiển thị UI, không có giá trị nghiệp vụ"
+SCMS,BM_TIEUDE_HANG_COT,Tiêu đề thiết kế động,UI metadata,"Operational/system data — cấu hình layout báo cáo, không có giá trị nghiệp vụ"

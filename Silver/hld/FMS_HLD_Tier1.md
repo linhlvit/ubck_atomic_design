@@ -42,7 +42,7 @@ graph LR
 
     STATUS["STATUS (Danh mục)"]:::dim
     AGENCYTYPE["AGENCYTYPE (Danh mục)"]:::dim
-    NATIONAL["NATIONAL (Danh mục)"]:::dim
+    NATIONAL["NATIONAL\n[Location] Geographic Area\n(shared entity)"]:::geo
     STOCKHOLDERTYPE["STOCKHOLDERTYPE (Danh mục)"]:::dim
 
     SECURITIES -->|Status| STATUS
@@ -96,7 +96,7 @@ graph TD
 |---|---|---|
 | STATUS | Trạng thái hoạt động | → Classification Value |
 | AGENCYTYPE | Loại đại lý | → Classification Value |
-| NATIONAL | Quốc gia/quốc tịch | → Classification Value |
+| NATIONAL | Quốc gia/quốc tịch | → **Silver entity `Geographic Area`** (shared, status=approved). Cùng entity với FIMS.NATIONAL và SCMS.DM_QUOC_TICH. Type = `COUNTRY`. |
 | STOCKHOLDERTYPE | Loại hình NĐT/cổ đông | → Classification Value |
 | RELATION | Mối quan hệ cổ đông | → Classification Value. Scheme: `FMS_RELATION_TYPE`. Dùng trên Discretionary Investment Investor (INVES.RelationShip). |
 

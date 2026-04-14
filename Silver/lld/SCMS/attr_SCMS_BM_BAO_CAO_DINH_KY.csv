@@ -1,0 +1,11 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Report Submission Schedule Id,Khóa đại diện cho định kỳ gửi báo cáo.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Report Submission Schedule Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.ID,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.BM_BAO_CAO_DINH_KY,
+Report Template Id,FK đến biểu mẫu báo cáo.,Surrogate Key,false,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.BM_BAO_CAO_ID,FK target: Report Template.Report Template Id.,,
+Report Template Code,Mã biểu mẫu báo cáo.,Text,false,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.BM_BAO_CAO_ID,FK target: Report Template.Report Template Code. Pair with Report Template Id.,,
+Reporting Period Type Code,Kỳ báo cáo (tần suất định kỳ).,Classification Value,true,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.KY_BAO_CAO,Scheme: SCMS_SCHEDULE_STATUS. Giá trị kỳ báo cáo — cần profile data để xác định scheme đầy đủ.,,
+Grace Period Days,Khoảng thời gian gia hạn T+ (số ngày).,Small Counter,true,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.T,T+: số ngày gia hạn cho kỳ báo cáo.,,
+Submission Deadline,Thời gian nộp báo cáo.,Text,true,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.THOI_GIAN,Text — cần xác nhận format (ngày/giờ hoặc quy tắc T+N).,,
+Is Active Indicator,Trạng thái sử dụng: 1-Sử dụng; 0-Không sử dụng.,Indicator,true,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.SU_DUNG,,,
+Updated Timestamp,Ngày cập nhật.,Timestamp,true,false,draft,SCMS.scms.BM_BAO_CAO_DINH_KY.NGAY_CAP_NHAT,,,
