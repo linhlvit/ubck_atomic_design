@@ -145,7 +145,7 @@ erDiagram
 
 ```mermaid
 pie title Cơ cấu theo loại hình chứng chỉ
-    "Môi giới (14,200)" : 80.1
+    "Môi giới (14,200)" : 80.1 
     "Phân tích đầu tư (2,580)" : 14.6
     "Quản lý quỹ (940)" : 5.3
 ```
