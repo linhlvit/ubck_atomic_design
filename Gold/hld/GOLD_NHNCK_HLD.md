@@ -686,9 +686,8 @@ erDiagram
 | K_NHNCK_81 | Trạng thái | Text | Stock | Fact Certificate Snapshot → Classification Dimension.Classification Name (via Certificate Status Dimension Id) |
 | K_NHNCK_82 | Lọc: Loại chứng chỉ | — | Slicer | Fact Certificate Snapshot → Classification Dimension.Classification Code (via Certificate Type Dimension Id) |
 | K_NHNCK_83 | Lọc: Trạng thái | — | Slicer | Fact Certificate Snapshot → Classification Dimension.Classification Code (via Certificate Status Dimension Id) |
-| K_NHNCK_84 | Kết quả (count NHN) | Number | Derived | COUNT(DISTINCT Fact Certificate Snapshot.Practitioner Dimension Id) sau khi áp dụng slicer K82 + K83 |
 
-**Star schema — K76–K84:**
+**Star schema — K76–K83:**
 
 ```mermaid
 erDiagram
@@ -780,7 +779,7 @@ graph TB
 | Fact Table | Grain | KPI phục vụ |
 |------------|-------|-------------|
 | Fact Practitioner Snapshot | 1 NHN × 1 Snapshot Date (daily) | K1, K7–K12, K16–K33 |
-| Fact Certificate Snapshot | 1 CCHN × 1 Snapshot Date (daily) | K2–K5, K13–K15, K58–K63, K76–K84 |
+| Fact Certificate Snapshot | 1 CCHN × 1 Snapshot Date (daily) | K2–K5, K13–K15, K58–K63, K76–K83 |
 | Fact Violation | 1 vi phạm NHN (event) | K6, K71–K75 |
 | Fact Practitioner Employment Snapshot | 1 NHN × 1 lượt công tác × 1 Snapshot Date (daily) | K34–K35, K40–K43, K53–K57 |
 | Fact Practitioner Relationship Snapshot | 1 NHN × 1 NLQ × 1 Snapshot Date (daily) | K36–K39, K44–K47 |
