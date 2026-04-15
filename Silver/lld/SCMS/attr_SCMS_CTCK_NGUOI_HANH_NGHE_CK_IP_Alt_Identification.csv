@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến người hành nghề chứng khoán.,Surrogate Key,false,false,draft,SCMS.CTCK_NGUOI_HANH_NGHE_CK.ID,FK target: Practitioner.Practitioner Id.,,
+Involved Party Code,Mã người hành nghề chứng khoán.,Text,false,false,draft,SCMS.CTCK_NGUOI_HANH_NGHE_CK.ID,FK target: Practitioner.Practitioner Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_NGUOI_HANH_NGHE_CK,
+Identification Type Code,Loại định danh — giấy tờ tùy thân.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived: hardcode NATIONAL_ID.,IP_ALT_ID_TYPE=NATIONAL_ID,NATIONAL_ID
+Identification Number,Số giấy tờ tùy thân.,Text,true,false,draft,SCMS.CTCK_NGUOI_HANH_NGHE_CK.SO_GIAY_TO,,IP_ALT_ID_TYPE=NATIONAL_ID,

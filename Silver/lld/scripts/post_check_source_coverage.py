@@ -68,8 +68,9 @@ SKIP_COLUMNS = {
         # SCMS / FIMS audit user IDs
         "NGUOI_TAO_ID", "NGUOI_CAP_NHAT_ID", "NGUOI_DUNG_ID",
         "USER_ID", "CREATED_USER_ID", "UPDATED_USER_ID",
-        # FMS / FIMS audit/migration fields
-        "MODIFYBY", "ISDATAMIGRATION", "IDOLD",
+        # FMS / FIMS audit/migration fields (camelCase variants)
+        "CREATEDBY", "DATECREATED", "DATEMODIFIED", "MODIFYBY",
+        "MODIFIEDBY", "ISDATAMIGRATION", "IDOLD",
         "ISDELETE", "ISDELETED",
         # Binary/file attachment fields — không lưu Silver
         "FILEDATA", "FILEIMPORT", "DATAFILEIMPORT",

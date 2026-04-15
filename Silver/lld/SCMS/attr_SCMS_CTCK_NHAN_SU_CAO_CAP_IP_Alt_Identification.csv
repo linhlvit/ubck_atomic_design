@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến nhân sự cao cấp.,Surrogate Key,false,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.ID,FK target: Securities Company Senior Personnel.Securities Company Senior Personnel Id.,,
+Involved Party Code,Mã nhân sự cao cấp.,Text,false,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.ID,FK target: Securities Company Senior Personnel.Securities Company Senior Personnel Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_NHAN_SU_CAO_CAP,
+Identification Type Code,Loại định danh — CMND/CCCD.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived: hardcode NATIONAL_ID.,IP_ALT_ID_TYPE=NATIONAL_ID,NATIONAL_ID
+Identification Number,Số CMND/CCCD.,Text,true,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.SO_CMND,,IP_ALT_ID_TYPE=NATIONAL_ID,
+Issue Date,Ngày cấp CMND/CCCD.,Date,true,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.NGAY_CAP,,IP_ALT_ID_TYPE=NATIONAL_ID,
+Issuing Authority Name,Nơi cấp CMND/CCCD.,Text,true,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.NOI_CAP,,IP_ALT_ID_TYPE=NATIONAL_ID,

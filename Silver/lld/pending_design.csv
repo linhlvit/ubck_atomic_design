@@ -7,3 +7,5 @@ NHNCK,Units,Id,PK nguồn của Units,BK dùng UnitCode thay Id — Id không ma
 NHNCK,Organizations,OrganizationReportIds,Multi-value FK đến báo cáo tổ chức,Multi-value FK — cần parsing riêng hoặc tách bảng junction. Out-of-scope T1.,Xem xét thiết kế junction entity trong Tier sau
 DCST,THONG_TIN_CONG_TY,(all),Thông tin công ty (CTCK/đại chúng/QLQ),Dữ liệu phái sinh từ nguồn gốc — không thiết kế Silver từ nguồn DCST,Không thiết kế
 DCST,NHOM_DANH_MUC,(all),Nhóm danh mục,Reference data set (Classification Value) — không tạo Silver entity. Scheme: DCST_CATALOG_GROUP.,Không thiết kế Silver entity
+FMS,LOCATION,(all),Danh mục tỉnh/thành phố của FMS,Map vào Geographic Area (PROVINCE) nhưng không có FK từ bảng FMS nào trỏ vào — out-of-scope T1.,Thiết kế khi có FK từ entity FMS tham chiếu vào LOCATION
+FMS,RELATION,(all),Danh mục mối quan hệ cổ đông,Reference data set (Classification Value) — không tạo Silver entity. Scheme: FMS_RELATION_TYPE. Values đã được ref trong ref_shared_entity_classifications.csv.,Không thiết kế Silver entity
