@@ -1,0 +1,9 @@
+source_system,source_table,source_column,description,reason,action
+FIMS,ANNOUNCE,InvestorData,Dữ liệu nhà đầu tư (payload),Payload field — cần profile nguồn để xác định kiểu dữ liệu và cấu trúc thiết kế,Người thiết kế kiểm tra nguồn và cập nhật thiết kế sau
+FIMS,ANNOUNCE,InvestorDataName,Tên dữ liệu nhà đầu tư (payload),Payload field — cần profile nguồn để xác định kiểu dữ liệu và cấu trúc thiết kế,Người thiết kế kiểm tra nguồn và cập nhật thiết kế sau
+FMS,BRANCHES,Content,Nghiệp vụ kinh doanh (mô tả hoạt động),Cần xác định có map vào Silver entity riêng hay thêm vào FMS Branches attr,Người thiết kế xem xét và quyết định sau
+NHNCK,Departments,Id,PK nguồn của Departments,BK dùng DepartmentCode thay Id — Id không map. Xác nhận out-of-scope hoặc thêm vào SKIP_COLUMNS,Người thiết kế xác nhận
+NHNCK,Units,Id,PK nguồn của Units,BK dùng UnitCode thay Id — Id không map. Xác nhận out-of-scope hoặc thêm vào SKIP_COLUMNS,Người thiết kế xác nhận
+NHNCK,Organizations,OrganizationReportIds,Multi-value FK đến báo cáo tổ chức,Multi-value FK — cần parsing riêng hoặc tách bảng junction. Out-of-scope T1.,Xem xét thiết kế junction entity trong Tier sau
+DCST,THONG_TIN_CONG_TY,(all),Thông tin công ty (CTCK/đại chúng/QLQ),Dữ liệu phái sinh từ nguồn gốc — không thiết kế Silver từ nguồn DCST,Không thiết kế
+DCST,NHOM_DANH_MUC,(all),Nhóm danh mục,Reference data set (Classification Value) — không tạo Silver entity. Scheme: DCST_CATALOG_GROUP.,Không thiết kế Silver entity

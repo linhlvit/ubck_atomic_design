@@ -131,6 +131,10 @@ def load_manifest(filter_source=None, filter_group=None) -> list[dict]:
     rows = []
     with open(MANIFEST, encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
+            if row.get("group", "").strip() == "pending":
+                continue
+            if not row.get("lld_file", "").strip():
+                continue
             if filter_source and row["source_system"] != filter_source:
                 continue
             if filter_group and row["group"] != filter_group:
@@ -264,20 +268,28 @@ def find_attr_in_ctx(attr_rows: list[dict], attr_name: str, ctx_key: str,
 
 # ---------------------------------------------------------------------------
 # Build master attribute list cho 1 entity từ tất cả sources trong manifest
-# Returns: OrderedDict { attr_name → best metadata row }
+# Returns: OrderedDict { (attr_name, addr_part_or_None) → best metadata row }
+#
+# Dùng (attr_name, addr_part) làm key thay vì chỉ attr_name vì cùng tên attr
+# có thể xuất hiện nhiều lần trong 1 file với các context khác nhau
+# (VD: Identification Number cho BUSINESS_LICENSE và OPERATING_LICENSE).
 # "Best" = description dài nhất; nullable conservative (true wins)
 # ---------------------------------------------------------------------------
-def build_master_attrs(entity_manifest_rows: list[dict]) -> "OrderedDict[str, dict]":
-    master: OrderedDict[str, dict] = OrderedDict()
+def build_master_attrs(entity_manifest_rows: list[dict]) -> "OrderedDict[tuple, dict]":
+    master: OrderedDict[tuple, dict] = OrderedDict()
 
     for m in entity_manifest_rows:
         attr_rows = load_attr_file(m["source_system"], m["lld_file"])
         for ar in attr_rows:
-            name = ar["attribute_name"]
-            if name not in master:
-                master[name] = dict(ar)
+            name     = ar["attribute_name"]
+            raw_ctx  = ar.get("classification_context", "").strip()
+            addr_part = _extract_addr_part(raw_ctx)
+            key = (name, addr_part)
+
+            if key not in master:
+                master[key] = dict(ar)
             else:
-                existing = master[name]
+                existing = master[key]
                 # description: chọn dài hơn
                 if len(ar.get("description", "")) > len(existing.get("description", "")):
                     existing["description"] = ar["description"]
@@ -289,6 +301,15 @@ def build_master_attrs(entity_manifest_rows: list[dict]) -> "OrderedDict[str, di
                 old_c = existing.get("comment", "").strip()
                 if new_c and new_c not in old_c:
                     existing["comment"] = (old_c + " // " + new_c).strip(" /")
+
+    # Dedup: nếu đã có (attr_name, addr_part) với addr_part != None,
+    # xóa key (attr_name, None) tương ứng để tránh emit duplicate row
+    # (xảy ra khi shared entity được gộp từ nhiều source, 1 source dùng context
+    # cụ thể còn source khác để context trống cho cùng tên attr).
+    attr_names_with_addr = {name for (name, addr) in master if addr is not None}
+    keys_to_remove = [(name, None) for (name, addr) in list(master) if addr is None and name in attr_names_with_addr]
+    for k in keys_to_remove:
+        master.pop(k, None)
 
     return master
 
@@ -330,7 +351,21 @@ def build_attributes(manifest_rows: list[dict],
         context_keys = get_distinct_context_keys(attr_rows, source_system, source_table)
 
         for ctx_key in context_keys:
-            for attr_name, master_row in master_attrs.items():
+            for (attr_name, master_addr_part), master_row in master_attrs.items():
+                # ctx_key được build từ (source_system, source_table, addr_part của source này).
+                # Với shared entity, master_addr_part là addr_part từ file LLD đầu tiên định nghĩa
+                # attr này. Nếu master_addr_part không None, chỉ emit dòng này khi ctx_key
+                # chứa cùng addr value — tránh emit Identification Number/BUSINESS_LICENSE
+                # vào context OPERATING_LICENSE.
+                if master_addr_part is not None:
+                    # So sánh scheme=value trong ctx_key với master_addr_part
+                    scheme_m, _, value_m = master_addr_part.partition("=")
+                    field_m = SCHEME_TO_FIELD.get(scheme_m, scheme_m)
+                    ctx_tag = f"{field_m} = '{value_m}'"
+                    if ctx_tag not in ctx_key:
+                        # Không phải context này — bỏ qua
+                        continue
+
                 matched = find_attr_in_ctx(attr_rows, attr_name, ctx_key, source_system, source_table)
 
                 if matched:

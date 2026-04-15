@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Disclosure Representative Key Person.,Surrogate Key,false,false,draft,FIMS.TLPROFILES.Id,FK target: Disclosure Representative Key Person.Disclosure Representative Key Person Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã nhân sự CBTT.,Text,false,false,draft,FIMS.TLPROFILES.Id,FK target: Disclosure Representative Key Person.Disclosure Representative Key Person Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FIMS.TLPROFILES,
+Identification Type Code,Loại giấy tờ: CCCD/Hộ chiếu.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived — cần profile thêm để phân biệt CITIZEN_ID vs PASSPORT.,IP_ALT_ID_TYPE=CITIZEN_ID,CITIZEN_ID
+Identification Number,Số CCCD/Hộ chiếu.,Text,true,false,draft,FIMS.TLPROFILES.IdNo,,IP_ALT_ID_TYPE=CITIZEN_ID,
+Issue Date,Ngày cấp CCCD/Hộ chiếu.,Date,true,false,draft,FIMS.TLPROFILES.IdDate,,IP_ALT_ID_TYPE=CITIZEN_ID,
+Issuing Authority Name,Nơi cấp CCCD/Hộ chiếu.,Text,true,false,draft,FIMS.TLPROFILES.IdAdd,,IP_ALT_ID_TYPE=CITIZEN_ID,
+Identification Type Code,Loại giấy tờ: chứng chỉ hành nghề.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived.,IP_ALT_ID_TYPE=PRACTITIONER_LICENSE,PRACTITIONER_LICENSE
+Identification Number,Số chứng chỉ hành nghề.,Text,true,false,draft,FIMS.TLPROFILES.CertNo,,IP_ALT_ID_TYPE=PRACTITIONER_LICENSE,
+Issue Date,Ngày cấp chứng chỉ hành nghề.,Date,true,false,draft,FIMS.TLPROFILES.CertDate,,IP_ALT_ID_TYPE=PRACTITIONER_LICENSE,
+Issuing Authority Name,Nơi cấp chứng chỉ hành nghề.,Text,true,false,draft,FIMS.TLPROFILES.CertAdd,,IP_ALT_ID_TYPE=PRACTITIONER_LICENSE,

@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Disclosure Representative.,Surrogate Key,false,false,draft,FIMS.INFODISCREPRES.Id,FK target: Disclosure Representative.Disclosure Representative Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã người/tổ chức đại diện CBTT.,Text,false,false,draft,FIMS.INFODISCREPRES.Id,FK target: Disclosure Representative.Disclosure Representative Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FIMS.INFODISCREPRES,
+Address Type Code,Loại địa chỉ — địa chỉ chung.,Classification Value,false,false,draft,,,IP_ADDR_TYPE=ADDRESS,ADDRESS
+Address Value,Địa chỉ.,Text,true,false,draft,FIMS.INFODISCREPRES.Address,,IP_ADDR_TYPE=ADDRESS,

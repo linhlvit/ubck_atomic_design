@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Depository Center.,Surrogate Key,false,false,draft,FIMS.DEPOSITORYCENTER.Id,FK target: Depository Center.Depository Center Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã Trung tâm lưu ký.,Text,false,false,draft,FIMS.DEPOSITORYCENTER.Id,FK target: Depository Center.Depository Center Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FIMS.DEPOSITORYCENTER,
+Address Type Code,Loại địa chỉ — trụ sở chính.,Classification Value,false,false,draft,,,IP_ADDR_TYPE=HEAD_OFFICE,HEAD_OFFICE
+Address Value,Địa chỉ trụ sở.,Text,true,false,draft,FIMS.DEPOSITORYCENTER.Address,,IP_ADDR_TYPE=HEAD_OFFICE,

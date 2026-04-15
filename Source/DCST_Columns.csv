@@ -1,357 +1,410 @@
-﻿Tên bảng,Tên trường,Mô tả,Khóa,Ghi chú (FK suy luận)
-HT_THAM_SO,ID,,PK,
-HT_THAM_SO,MA_THAM_SO,Mã tham số,,
-HT_THAM_SO,GIA_TRI,Giá trị,,
-HT_THAM_SO,STT,Số thứ tự,,
-HT_THAM_SO,TRANG_THAI,Trạng thái,,
-HT_THAM_SO,KIEU_DU_LIEU,Kiểu dữ liệu,,
-HT_THAM_SO,MO_TA,Mô tả,,
-HT_THAM_SO,NGAY_CAP_NHAT,Ngày cập nhật,,
-NHAT_KY_HE_THONG,ID,,PK,
-NHAT_KY_HE_THONG,TEN_DANG_NHAP,Tên đăng nhập,,
-NHAT_KY_HE_THONG,MO_TA,Mô tả,,
-NHAT_KY_HE_THONG,HANH_DONG,Hành động,,
-NHAT_KY_HE_THONG,NGAY_TAO,Ngày tạo,,
-NHAT_KY_HE_THONG,IPCLIENT,IP Client,,
-NHAT_KY_HE_THONG,CHUC_NANG,Chức năng,,
-THIET_LAP_LICH,ID,,PK,
-THIET_LAP_LICH,LOAI,Loại: 1. Truyền đi; 2. Nhận về,,
-THIET_LAP_LICH,CHUC_NANG_ID,ID chức năng,FK,FK suy luận → CHUC_NANG
+﻿Tên bảng,Tên trường,Mô tả,Khóa,Ghi chú (FK suy luận),
+HT_THAM_SO,ID,,PK,,HT_THAM_SO
+HT_THAM_SO,MA_THAM_SO,Mã tham số,,,HT_THAM_SO
+HT_THAM_SO,GIA_TRI,Giá trị,,,HT_THAM_SO
+HT_THAM_SO,STT,Số thứ tự,,,HT_THAM_SO
+HT_THAM_SO,TRANG_THAI,Trạng thái,,,HT_THAM_SO
+HT_THAM_SO,KIEU_DU_LIEU,Kiểu dữ liệu,,,HT_THAM_SO
+HT_THAM_SO,MO_TA,Mô tả,,,HT_THAM_SO
+HT_THAM_SO,NGAY_CAP_NHAT,Ngày cập nhật,,,HT_THAM_SO
+NHAT_KY_HE_THONG,ID,,PK,,NHAT_KY_HE_THONG
+NHAT_KY_HE_THONG,TEN_DANG_NHAP,Tên đăng nhập,,,NHAT_KY_HE_THONG
+NHAT_KY_HE_THONG,MO_TA,Mô tả,,,NHAT_KY_HE_THONG
+NHAT_KY_HE_THONG,HANH_DONG,Hành động,,,NHAT_KY_HE_THONG
+NHAT_KY_HE_THONG,NGAY_TAO,Ngày tạo,,,NHAT_KY_HE_THONG
+NHAT_KY_HE_THONG,IPCLIENT,IP Client,,,NHAT_KY_HE_THONG
+NHAT_KY_HE_THONG,CHUC_NANG,Chức năng,,,NHAT_KY_HE_THONG
+THIET_LAP_LICH,ID,,PK,,THIET_LAP_LICH
+THIET_LAP_LICH,LOAI,Loại: 1. Truyền đi; 2. Nhận về,,,THIET_LAP_LICH
+THIET_LAP_LICH,CHUC_NANG_ID,ID chức năng,FK,FK suy luận → CHUC_NANG,THIET_LAP_LICH
 THIET_LAP_LICH,DINH_KY,"Định kỳ:
-0. Hàng ngày; 1. Hàng tháng; 2. Hàng năm; 3. Khi có yêu cầu; 4 Quý, 5: Nửa năm.",,
-THIET_LAP_LICH,NGAY_BAT_DAU,Ngày tiến hành truyền/ nhận dữ liệu,,
-THIET_LAP_LICH,GIO_BAT_DAU,Giờ bắt đầu truyền/ nhận dữ liệu,,
-THIET_LAP_LICH,PHUT_BAT_DAU,Phút bắt đầu truyền/ nhận dữ liệu,,
-THIET_LAP_LICH,TRANG_THAI,Trạng thái: 1. Sử dụng; 2. Ngừng sử dụng,,
-THIET_LAP_LICH,DM_DON_VI_ID,Danh mục đơn vị,FK,FK suy luận → DM_DON_VI.ID
-CONG_TY_KIEM_TOAN,ID,,PK,
-CONG_TY_KIEM_TOAN,SO_QD_GD,Số quyết định chấp thuận,,
-CONG_TY_KIEM_TOAN,NGAY_QD,Ngày quyết định,,
-CONG_TY_KIEM_TOAN,TEN,Tên công ty,,
-CONG_TY_KIEM_TOAN,DIA_CHI,Địa chỉ trụ sở chính,,
-CONG_TY_KIEM_TOAN,SDT,Số điện thoại,,
-CONG_TY_KIEM_TOAN,FAX,Fax,,
-CONG_TY_KIEM_TOAN,NAM_CT,Năm chấp thuận,,
-CONG_TY_KIEM_TOAN,SO_KTV,Số kiểm toán viên được chấp thuận,,
-CONG_TY_KIEM_TOAN,MST,Mã số thuế,,
-CONG_TY_KIEM_TOAN,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-CONG_TY_KIEM_TOAN,DKKD,Đăng ký kinh doanh,,
-CONG_TY_KIEM_TOAN,GUID,,,
-DN_RUI_RO_CAO,ID,,PK,
-DN_RUI_RO_CAO,MA_SO_DOANH_NGHIEP,Mã số doanh nghiệp,,
-DN_RUI_RO_CAO,TEN_DOANH_NGHIEP,Tên doanh nghiệp,,
-DN_RUI_RO_CAO,DIA_CHI_TSC,Địa chỉ trụ sở chính,,
-DN_RUI_RO_CAO,CQ_THUE_QUAN_LY,Cơ quan quản lý thuế,,
-DN_RUI_RO_CAO,NAM_DANH_GIA_RUI_RO,Năm đanh giá rủi ro,,
-DN_RUI_RO_CAO,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-GOI_TIN,ID,ID,PK,
-GOI_TIN,MA_GOI_TIN,Mã gói tin,,
-GOI_TIN,LOAI,1. Gói tin đến; 2. Gói tin đi,,
-GOI_TIN,DON_VI_TRUYEN,1. TCT; 2. UBCKNN,,
-GOI_TIN,DON_VI_NHAN,1. TCT; 2. UBCKNN,,
-GOI_TIN,NGUOI_GUI,Người gửi,,
+0. Hàng ngày; 1. Hàng tháng; 2. Hàng năm; 3. Khi có yêu cầu; 4 Quý, 5: Nửa năm.",,,THIET_LAP_LICH
+THIET_LAP_LICH,NGAY_BAT_DAU,Ngày tiến hành truyền/ nhận dữ liệu,,,THIET_LAP_LICH
+THIET_LAP_LICH,GIO_BAT_DAU,Giờ bắt đầu truyền/ nhận dữ liệu,,,THIET_LAP_LICH
+THIET_LAP_LICH,PHUT_BAT_DAU,Phút bắt đầu truyền/ nhận dữ liệu,,,THIET_LAP_LICH
+THIET_LAP_LICH,TRANG_THAI,Trạng thái: 1. Sử dụng; 2. Ngừng sử dụng,,,THIET_LAP_LICH
+THIET_LAP_LICH,DM_DON_VI_ID,Danh mục đơn vị,FK,FK suy luận → DM_DON_VI.ID,THIET_LAP_LICH
+CONG_TY_KIEM_TOAN,ID,,PK,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,SO_QD_GD,Số quyết định chấp thuận,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,NGAY_QD,Ngày quyết định,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,TEN,Tên công ty,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,DIA_CHI,Địa chỉ trụ sở chính,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,SDT,Số điện thoại,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,FAX,Fax,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,NAM_CT,Năm chấp thuận,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,SO_KTV,Số kiểm toán viên được chấp thuận,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,MST,Mã số thuế,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,DKKD,Đăng ký kinh doanh,,,CONG_TY_KIEM_TOAN
+CONG_TY_KIEM_TOAN,GUID,,,,CONG_TY_KIEM_TOAN
+DN_RUI_RO_CAO,ID,,PK,,DN_RUI_RO_CAO
+DN_RUI_RO_CAO,MA_SO_DOANH_NGHIEP,Mã số doanh nghiệp,,,DN_RUI_RO_CAO
+DN_RUI_RO_CAO,TEN_DOANH_NGHIEP,Tên doanh nghiệp,,,DN_RUI_RO_CAO
+DN_RUI_RO_CAO,DIA_CHI_TSC,Địa chỉ trụ sở chính,,,DN_RUI_RO_CAO
+DN_RUI_RO_CAO,CQ_THUE_QUAN_LY,Cơ quan quản lý thuế,,,DN_RUI_RO_CAO
+DN_RUI_RO_CAO,NAM_DANH_GIA_RUI_RO,Năm đanh giá rủi ro,,,DN_RUI_RO_CAO
+DN_RUI_RO_CAO,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,DN_RUI_RO_CAO
+GOI_TIN,ID,ID,PK,,GOI_TIN
+GOI_TIN,MA_GOI_TIN,Mã gói tin,,,GOI_TIN
+GOI_TIN,LOAI,1. Gói tin đến; 2. Gói tin đi,,,GOI_TIN
+GOI_TIN,DON_VI_TRUYEN,1. TCT; 2. UBCKNN,,,GOI_TIN
+GOI_TIN,DON_VI_NHAN,1. TCT; 2. UBCKNN,,,GOI_TIN
+GOI_TIN,NGUOI_GUI,Người gửi,,,GOI_TIN
 GOI_TIN,TRANG_THAI,"Trạng thái gói tin:
-1. Chưa tiếp nhận; 2. Đã tiếp nhận; 3. Đã gửi; 4. Lỗi;  5. Mới tạo;  6. Đợi phản hồi 7. Message gửi TCT",,
-GOI_TIN,NOI_DUNG,Nội dung XML gửi/ nhận,,
-GOI_TIN,MO_TA,Mô tả,,
-GOI_TIN,NGAY_GUI,Ngày gửi,,
-GOI_TIN,NGAY_TIEP_NHAN,Ngày tiếp nhận,,
-GOI_TIN,VERSION,Phiên bản,,
-GOI_TIN,SENDER_CODE,Mã hệ thống gửi,,
-GOI_TIN,SENDER_NAME,Tên hệ thống gửi,,
-GOI_TIN,RECEIVER_CODE,Mã hệ thống nhận,,
-GOI_TIN,RECEIVER_NAME,Tên hệ thống nhận,,
-GOI_TIN,TRAN_CODE,Mã TRAN_CODE,,
-GOI_TIN,MSG_ID,Message ID,,FK suy luận → MSG
-GOI_TIN,MSG_REFID,,,
-GOI_TIN,ID_LINK,,,
-GOI_TIN,ORIGINAL_CODE,,,
-GOI_TIN,ORIGINAL_NAME,,,
-GOI_TIN,ORIGINAL_DATE,,,
-GOI_TIN,ERROR_CODE,,,
-GOI_TIN,ERROR_DESC,,,
-GOI_TIN,SPARE1,,,
-GOI_TIN,SPARE2,,,
-GOI_TIN,SPARE3,,,
-KIEM_TOAN_VIEN,ID,null,PK,
-KIEM_TOAN_VIEN,CONG_TY_KIEM_TOAN_ID,ID Công ty kiểm toán,FK,FK suy luận → CONG_TY_KIEM_TOAN.ID
-KIEM_TOAN_VIEN,TEN_KTV,Tên kiểm toán viên,,
-KIEM_TOAN_VIEN,SO_GCN,Số giấy chứng nhận đăng ký hành nghề,,
-KIEM_TOAN_VIEN,NGAY_CT,Ngày chấp thuận,,
-KIEM_TOAN_VIEN,NGAY_HUY_CT,Ngày hủy chấp thuận,,
-THONG_TIN_DK_THUE,ID,,PK,
-THONG_TIN_DK_THUE,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-THONG_TIN_DK_THUE,TEN_NGUOI_NOP,Tên người nộp thuế,,
-THONG_TIN_DK_THUE,MA_SO_THUE,Mã số thuế,,
-THONG_TIN_DK_THUE,DIA_CHI_TSC,Địa chỉ trụ sở chính,,
-THONG_TIN_DK_THUE,DIEN_THOAI,Điện thoại,,
-THONG_TIN_DK_THUE,FAX,Fax,,
-THONG_TIN_DK_THUE,VON_DIEU_LE,Vốn điều lệ,,
-THONG_TIN_DK_THUE,NGANH_NGHE_KD,Ngành nghề kinh doanh,,
-THONG_TIN_DK_THUE,SO_GIAY_PHEP,Số giấy phép thành lập,,
-THONG_TIN_DK_THUE,NGAY_CAP,Ngày cấp,,
-THONG_TIN_DK_THUE,CO_QUAN_CAP,Cơ quan cấp giấy phép thành lập,,
-THONG_TIN_DK_THUE,SO_QUYET_DINH,Số quyết định thành lập,,
-THONG_TIN_DK_THUE,NGAY_BAN_HANH,Ngày ban hành quyết định,,
-THONG_TIN_DK_THUE,CO_QUAN_BAN_HANH,Cơ quan ban hành quyết định thành lập,,
-THONG_TIN_DK_THUE,DON_VI_CHU_QUAN,Đơn vị chủ quan/ đơn vị quản lý trực thuộc,,
-THONG_TIN_DK_THUE,NGAY_BD_HDKD,Ngày bắt đầu hoạt động kinh doanh,,
-THONG_TIN_DK_THUE,TEN_NGUOI_DAI_DIEN_KD,Tên người đại diện kinh doanh,,
-THONG_TIN_DK_THUE,SO_CMT,Số CMT/ hộ chiếu người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,,
-THONG_TIN_DK_THUE,SO_DIEN_THOAI,Số ĐT người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,,
-THONG_TIN_DK_THUE,TEN_GIAM_DOC,Tên giám đốc/ tổng giám đốc,,
-THONG_TIN_DK_THUE,SO_DIEN_THOAI_GD,Số điện thoại giám đốc/ tổng giám đốc,,
+1. Chưa tiếp nhận; 2. Đã tiếp nhận; 3. Đã gửi; 4. Lỗi;  5. Mới tạo;  6. Đợi phản hồi 7. Message gửi TCT",,,GOI_TIN
+GOI_TIN,NOI_DUNG,Nội dung XML gửi/ nhận,,,GOI_TIN
+GOI_TIN,MO_TA,Mô tả,,,GOI_TIN
+GOI_TIN,NGAY_GUI,Ngày gửi,,,GOI_TIN
+GOI_TIN,NGAY_TIEP_NHAN,Ngày tiếp nhận,,,GOI_TIN
+GOI_TIN,VERSION,Phiên bản,,,GOI_TIN
+GOI_TIN,SENDER_CODE,Mã hệ thống gửi,,,GOI_TIN
+GOI_TIN,SENDER_NAME,Tên hệ thống gửi,,,GOI_TIN
+GOI_TIN,RECEIVER_CODE,Mã hệ thống nhận,,,GOI_TIN
+GOI_TIN,RECEIVER_NAME,Tên hệ thống nhận,,,GOI_TIN
+GOI_TIN,TRAN_CODE,Mã TRAN_CODE,,,GOI_TIN
+GOI_TIN,MSG_ID,Message ID,,FK suy luận → MSG,GOI_TIN
+GOI_TIN,MSG_REFID,,,,GOI_TIN
+GOI_TIN,ID_LINK,,,,GOI_TIN
+GOI_TIN,ORIGINAL_CODE,,,,GOI_TIN
+GOI_TIN,ORIGINAL_NAME,,,,GOI_TIN
+GOI_TIN,ORIGINAL_DATE,,,,GOI_TIN
+GOI_TIN,ERROR_CODE,,,,GOI_TIN
+GOI_TIN,ERROR_DESC,,,,GOI_TIN
+GOI_TIN,SPARE1,,,,GOI_TIN
+GOI_TIN,SPARE2,,,,GOI_TIN
+GOI_TIN,SPARE3,,,,GOI_TIN
+KIEM_TOAN_VIEN,ID,null,PK,,KIEM_TOAN_VIEN
+KIEM_TOAN_VIEN,CONG_TY_KIEM_TOAN_ID,ID Công ty kiểm toán,FK,FK suy luận → CONG_TY_KIEM_TOAN.ID,KIEM_TOAN_VIEN
+KIEM_TOAN_VIEN,TEN_KTV,Tên kiểm toán viên,,,KIEM_TOAN_VIEN
+KIEM_TOAN_VIEN,SO_GCN,Số giấy chứng nhận đăng ký hành nghề,,,KIEM_TOAN_VIEN
+KIEM_TOAN_VIEN,NGAY_CT,Ngày chấp thuận,,,KIEM_TOAN_VIEN
+KIEM_TOAN_VIEN,NGAY_HUY_CT,Ngày hủy chấp thuận,,,KIEM_TOAN_VIEN
+THONG_TIN_DK_THUE,ID,,PK,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TEN_NGUOI_NOP,Tên người nộp thuế,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,MA_SO_THUE,Mã số thuế,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,DIA_CHI_TSC,Địa chỉ trụ sở chính,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,DIEN_THOAI,Điện thoại,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,FAX,Fax,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,VON_DIEU_LE,Vốn điều lệ,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGANH_NGHE_KD,Ngành nghề kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,SO_GIAY_PHEP,Số giấy phép thành lập,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGAY_CAP,Ngày cấp,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,CO_QUAN_CAP,Cơ quan cấp giấy phép thành lập,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,SO_QUYET_DINH,Số quyết định thành lập,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGAY_BAN_HANH,Ngày ban hành quyết định,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,CO_QUAN_BAN_HANH,Cơ quan ban hành quyết định thành lập,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,DON_VI_CHU_QUAN,Đơn vị chủ quan/ đơn vị quản lý trực thuộc,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGAY_BD_HDKD,Ngày bắt đầu hoạt động kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TEN_NGUOI_DAI_DIEN_KD,Tên người đại diện kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,SO_CMT,Số CMT/ hộ chiếu người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,SO_DIEN_THOAI,Số ĐT người đại diện theo pháp luật/ chủ doanh nghiệp tư nhân,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TEN_GIAM_DOC,Tên giám đốc/ tổng giám đốc,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,SO_DIEN_THOAI_GD,Số điện thoại giám đốc/ tổng giám đốc,,,THONG_TIN_DK_THUE
 THONG_TIN_DK_THUE,TRANG_THAI_HOAT_DONG,"Trạng thái hoạt động:
-00, 04: Đang hoạt động; 01: Tổ chức ngừng hoạt động và đã hoàn thành thủ tục chấm dứt hiệu lực mã số thuế; 03: Tổ chức ngừng hoạt động nhưng chưa hoàn thành thủ tục chấm dứt hiệu lực mã số thuế; 05: Ngừng kinh doanh có thời hạn; 06: Không hoạt động tại địa chỉ đã đăng ký",,
-THONG_TIN_DK_THUE,LY_DO_NGUNG_HOAT_DONG,Lý do ngừng hoạt động,,
+00, 04: Đang hoạt động; 01: Tổ chức ngừng hoạt động và đã hoàn thành thủ tục chấm dứt hiệu lực mã số thuế; 03: Tổ chức ngừng hoạt động nhưng chưa hoàn thành thủ tục chấm dứt hiệu lực mã số thuế; 05: Ngừng kinh doanh có thời hạn; 06: Không hoạt động tại địa chỉ đã đăng ký",,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,LY_DO_NGUNG_HOAT_DONG,Lý do ngừng hoạt động,,,THONG_TIN_DK_THUE
 THONG_TIN_DK_THUE,LOAI_NGUNG_HOAT_DONG,"Loạt ngừng hoạt động:
-1. Giải thể ; 2. Phá sản; 3. Chuyển đổi loại hình doanh nghiệp, tổ chức sắp xếp loại doanh nghiệp; 4. Cho làm thủ tục giải thể; 5. Cho làm thủ tục phá sản; 6. Cho làm thủ tục tổ chức lại tổ chức kinh tế; 7. Bị thu hồi giấy phép hoạt động; 8. Đóng theo đơn vị chủ quản (đối với MST 13 số); 9. Khác",,
-THONG_TIN_DK_THUE,CO_QUAN_QUAN_LY_TRUC_TIEP,Cơ quan quản lý trực tiếp,,
-THONG_TIN_DK_THUE,MA_CQQL_QLT,Mã cơ quan quản lý thuế,,
-THONG_TIN_DK_THUE,LOAITIEN_VON_DL_VN,Loại tiền vốn điều lệ,,
-THONG_TIN_DK_THUE,SOTIEN_VON_DL_NN,Vốn điều lệ nước ngoài,,
-THONG_TIN_DK_THUE,LOAITIEN_VON_DL_NN,Loại tiền vốn điều lệ nước ngoài,,
-THONG_TIN_DK_THUE,DVCQ_VN_DIACHI,Địa chỉ đơn vị chủ quản,,
-THONG_TIN_DK_THUE,MOTA_DIACHI_KD,Mô tả địa chỉ -  kinh doanh,,
-THONG_TIN_DK_THUE,MA_TINH_KD,Mã tỉnh - kinh doanh,,
-THONG_TIN_DK_THUE,MA_HUYEN_KD,Mã huyện - kinh doanh,,
-THONG_TIN_DK_THUE,MA_XA_KD,Mã xã - kinh doanh,,
-THONG_TIN_DK_THUE,DIEN_THOAI_KD,Điện thoại - kinh doanh,,
-THONG_TIN_DK_THUE,EMAIL_KD,Email - kinh doanh,,
-THONG_TIN_DK_THUE,FAX_KD,Fax - kinh doanh,,
-THONG_TIN_DK_THUE,TAM_NGHI_TU_NGAY,Tạm nghỉ/Từ ngày,,
-THONG_TIN_DK_THUE,TAM_NGHI_DEN_NGAY,Tạm nghỉ/Đến ngày,,
-THONG_TIN_DK_THUE,TAM_NGHI_LY_DO,Lý do tạm nghỉ,,
-THONG_TIN_DK_THUE,TAM_NGHI_SO_TBAO,Số thông báo - tạm nghỉ,,
-THONG_TIN_DK_THUE,TAM_NGHI_NGAY_TB_NNT,Ngày thông báo  - tạm nghỉ,,
-THONG_TIN_DK_THUE,NGUNG_HD_NGAY,Ngày ngừng hoạt động,,
-THONG_TIN_DK_THUE,NGUNG_HD_LY_DO,Lý do ngừng hoạt động,,
-THONG_TIN_DK_THUE,NGUNG_HD_GHI_CHU,Ghi chú ngừng hoạt động,,
-THONG_TIN_DK_THUE,NGUNG_HD_SO_TBAO,Số thông báo ngừng hoạt động,,
-THONG_TIN_DK_THUE,TEN_TRANG_THAI,Tên trạng thái người nộp thuế,,
-THONG_TIN_DK_THUE,MA_NGANH,Mã ngành nghề kinh doanh,,
-THONG_TIN_DK_THUE,TEN_TINH_KD,Tên tỉnh - Kinh doanh,,
-THONG_TIN_DK_THUE,TEN_HUYEN_KD,Tên huyện - KD,,
-THONG_TIN_DK_THUE,TEN_XA,Tên xã - KD,,
-UBCK_XU_PHAT,ID,,PK,
-UBCK_XU_PHAT,SO_QD_GD,Số quyết định xử phạt,,
-UBCK_XU_PHAT,NGAY_QD,Ngày quyết định xử phạt,,
-UBCK_XU_PHAT,TEN,Tên đối tượng bị xử phạt,,
-UBCK_XU_PHAT,DIA_CHI,Địa chỉ trụ sở chính,,
-UBCK_XU_PHAT,LV_HD,Lĩnh vực hoạt động,,
-UBCK_XU_PHAT,MST,Mã số thuế,,
-UBCK_XU_PHAT,TEN_NDD,Tên người đại diện pháp luật,,
-UBCK_XU_PHAT,HANH_VI,Hành vi vi phạm,,
-UBCK_XU_PHAT,SO_TIEN,Số tiền xử phạt,,
-UBCK_XU_PHAT,HINH_THUC,Hình thức xử phạt bổ sung,,
-UBCK_XU_PHAT,BIEN_PHAP,Biện pháp khắc phục hậu quả,,
-UBCK_XU_PHAT,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-UBCK_XU_PHAT,NGAY_CAP,Ngày cấp,,
-UBCK_XU_PHAT,NOI_CAP,Nơi cấp,,
-TCT_BAO_CAO,ID,,PK,
-TCT_BAO_CAO,MA_DVU,Mã dịch vụ,,
-TCT_BAO_CAO,TEN_DVU,Tên dịch vụ,,
-TCT_BAO_CAO,PHIEN_BAN_DVU,Phiên bản dịch vụ,,
-TCT_BAO_CAO,TT_NHACC_DVU,Thông tin nhà cung cấp dịch vụ,,
-TCT_BAO_CAO,MA_TKHAI,Mã tờ khai,,
-TCT_BAO_CAO,TEN_TKHAI,Tên tờ khai,,
-TCT_BAO_CAO,MO_TA_BMAU,Mô tả biểu mẫu,,
-TCT_BAO_CAO,PBAN_TKHAI_XML,Phiên bản tờ khai XML,,
-TCT_BAO_CAO,LOAI_TKHAI,Loại tờ khai,,
-TCT_BAO_CAO,SO_LAN,Số lần,,
-TCT_BAO_CAO,KIEU_KY,Kiểu kỳ,,
-TCT_BAO_CAO,KY_KKHAI,Kỳ kê khai,,
-TCT_BAO_CAO,KY_KKHAI_TU_NGAY,Kỳ kê khai từ ngày,,
-TCT_BAO_CAO,KY_KKHAI_DEN_NGAY,Kỳ kê khai đến ngày,,
-TCT_BAO_CAO,KY_KKHAI_TU_THANG,Kỳ kê khai từ tháng,,
-TCT_BAO_CAO,KY_KKHAI_DEN_THANG,Kỳ kê khai đến tháng,,
-TCT_BAO_CAO,MA_CQTHUE_NOI_NOP,Mã cơ quan thuế nơi nộp,,
-TCT_BAO_CAO,TEN_CQTHUE_NOI_NOP,Tên cơ quan thuế nơi nộp,,
-TCT_BAO_CAO,NGAY_LAP_TKHAI,Ngày lập tờ khai,,
-TCT_BAO_CAO,MA_LY_DO_GIA_HAN,Mã lý do gia hạn,,
-TCT_BAO_CAO,LY_DO_GIA_HAN,Lý do gia hạn,,
-TCT_BAO_CAO,NGUOI_KY,Người ký,,
-TCT_BAO_CAO,NGAY_KY,Ngày ký,,
-TCT_BAO_CAO,NGANH_NGHE_KD,Ngày nghề kinh doanh,,
-TCT_BAO_CAO,MST,Mã số thuế,,
-TCT_BAO_CAO,TEN_NNT,Tên người nộp thuế,,
-TCT_BAO_CAO,DIA_CHI_NNT,Địa chỉ người nộp thuế,,
-TCT_BAO_CAO,PHUONG_XA,Phường xã,,
-TCT_BAO_CAO,MA_HUYEN_NNT,Mã huyện người nộp thuế,,
-TCT_BAO_CAO,TEN_HUYEN_NNT,Tên huyện người nộp thuế,,
-TCT_BAO_CAO,MA_TINH_NNT,Mã tỉnh người nộp thuế,,
-TCT_BAO_CAO,TEN_TINH_NNT,Tên tỉnh người nộp thuế,,
-TCT_BAO_CAO,DIEN_THOAI_NNT,Điện thoại người nộp thuế,,
-TCT_BAO_CAO,FAX_NNT,Fax người nộp thuế,,
-TCT_BAO_CAO,EMAIL_NNT,Email người nộp thuế,,
-TCT_BAO_CAO,TRANG_THAI_KT,Trạng thái kiểm toán,,
-TCT_BAO_CAO,MST_TC_KTOAN,Mã số thuế tổ chức kiểm toán,,
-TCT_BAO_CAO,TC_KIEM_TOAN,Tổ chức kiểm toán,,
-TCT_BAO_CAO,MA_KIEM_TOAN_VIEN,Mã kiểm toán viên,,
-TCT_BAO_CAO,KIEM_TOAN_VIEN,Kiểm toán vien,,
-TCT_BAO_CAO,BCTC_DA_KIEM_TOAN,Báo cáo tài chính đã kiểm toán,,
-TCT_BAO_CAO,MA_YKKT,Mã ý kiến kiểm toán,,
-TCT_BAO_CAO,YKKT,Ý kiến kiểm toán,,
-TCT_BAO_CAO,NGAY_KIEM_TOAN,Ngày kiểm toán,,
-TCT_BAO_CAO,NGAY_TAO,Ngày tạo,,
-TCT_BAO_CAO,GOI_TIN_ID,Gói tin ID,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-TCT_BAO_CAO,ADD_INFO_NGAY_NOP_TK,Ngày nộp tờ khai,,
-TCT_BAO_CAO,ADD_INFO_NGAY_TIEP_NHAN,Ngày tiếp nhận,,
-TCT_BAO_CAO,ADD_INFO_KY_LAP_BO,Kỳ lập bộ báo cáo,,
-TCT_BAO_CAO,ADD_INFO_NGUON_GOC_TK,Nguồn gốc tờ khai,,
-TCT_BAO_CAO,ADD_INFO_NGUOI_NHAP_TK,Người nhập tờ khại,,
-TCT_BAO_CAO,ADD_INFO_NGAY_NHAN_TK,Ngày nhận tờ khai,,
-TCT_BAO_CAO,ADD_INFO_ID_TK,ID tờ khai,,
-TCT_BAO_CAO,ADD_INFO_NOI_GUI,Nơi gửi,,
-TCT_BAO_CAO,ADD_INFO_NOI_NHAN,Nơi nhận,,
-TCT_BAO_CAO,GUID,,,
-TCT_BAO_CAO_CHI_TIET,ID,,PK,
-TCT_BAO_CAO_CHI_TIET,TCT_BAO_CAO_ID,ID bảng TCT_BAO_CAO,FK,FK suy luận → TCT_BAO_CAO.ID
-TCT_BAO_CAO_CHI_TIET,MA_CHI_TIEU,Mã chỉ tiêu,,
-TCT_BAO_CAO_CHI_TIET,TEN_CHI_TIEU,Tên chỉ tiêu,,
-TCT_BAO_CAO_CHI_TIET,THUYET_MINH,Thuyết minh,,
-TCT_BAO_CAO_CHI_TIET,SO_CUOI_NAM,Số cuối năm,,
-TCT_BAO_CAO_CHI_TIET,SO_DAU_NAM,Số đầu năm,,
-TCT_BAO_CAO_CHI_TIET,NAM_NAY,Năm nay,,
-TCT_BAO_CAO_CHI_TIET,NAM_TRUOC,Năm trước,,
-TCT_BAO_CAO_CHI_TIET,TEN_SHEET,Tên sheet,,
-TCT_BAO_CAO_CHI_TIET,NGUOILAPBIEU,Người lập biểu,,
-TCT_BAO_CAO_CHI_TIET,KETOANTRUONG,Kế toán trưởng,,
-TCT_BAO_CAO_CHI_TIET,NGAYLAP,Ngày lập,,
-TCT_BAO_CAO_CHI_TIET,GIAMDOC,Giám đốc,,
-TCT_BAO_CAO_CHI_TIET,SOCHUNGCHIHANHNGHE,Số chứng chỉ hành nghề,,
-TCT_BAO_CAO_CHI_TIET,DONVICCAPDVUKTOAN,Đơn vị cung cấp dịch vụ kiểm toán,,
-TCT_BAO_CAO_CHI_TIET,HOATDONGLIENTUC,Hoạt động liên tục,,
-TCT_BAO_CAO_CHI_TIET,HOATDONGKHONGLIENTUC,Hoạt động không liên tục,,
-TCT_BAO_CAO_CHI_TIET,SO_TANG_NAM_TRUOC,Số tăng năm nay,,
-TCT_BAO_CAO_CHI_TIET,SO_NAM_NAY,Số năm nay,,
-TCT_BAO_CAO_CHI_TIET,SO_NAM_NGOAI,Số năm ngoái,,
-TCT_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_NAY,Số dư đầu năm nay,,
-TCT_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_NAY,Số dư cuối năm nay,,
-TCT_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_TRUOC,Số dư cuối năm trước,,
-TCT_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_TRUOC,Số dư đầu năm trước,,
-TCT_BAO_CAO_CHI_TIET,SO_TANG_NAM_NAY,Số tăng năm nay,,
-TCT_BAO_CAO_CHI_TIET,SO_GIAM_NAM_NAY,Số giảm năm nay,,
-TCT_BAO_CAO_CHI_TIET,SO_GIAM_NAM_TRUOC,Số giảm năm trước,,
-TCT_TT_CUONG_CHE_NO,ID,,PK,
-TCT_TT_CUONG_CHE_NO,MA_NNHAN,Mã người nhận,,
-TCT_TT_CUONG_CHE_NO,TEN_NNHAN,Tên người nhận,,
-TCT_TT_CUONG_CHE_NO,MA_CQT,Mã cơ quan thuế,,
-TCT_TT_CUONG_CHE_NO,TEN_CQT,Tên cơ quan thuế,,
-TCT_TT_CUONG_CHE_NO,MA_HTCC,Mã hình thức cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,TEN_HTCC,Tên hình thức cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,MA_GDDT,Mã giao dịch điện tử,,
-TCT_TT_CUONG_CHE_NO,SO_QD,Số quyết định,,
-TCT_TT_CUONG_CHE_NO,NGAY_QD,Ngày quyết định,,
-TCT_TT_CUONG_CHE_NO,SO_TIEN_BI_CC,Số tiền bị cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,STK_DT_BCC,Số tài khoản đối tượng bị cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,NO_MO_TK_BCC,Nơi mở tài khoản bị cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,TEN_DTQLTN,Tên đối tượng quản lý thu nhập,,
-TCT_TT_CUONG_CHE_NO,DI_CHI_DTQLTN,Địa chỉ đối tượng quản lý thu nhập,,
-TCT_TT_CUONG_CHE_NO,TS_KE_BIEN,Tài sản kê biên,,
-TCT_TT_CUONG_CHE_NO,GIA_TRI_TS,Giá trị tài sản,,
-TCT_TT_CUONG_CHE_NO,THOI_GIAN_CC,Thời gian cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,DIA_DIEM_CC,Địa điểm cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,TEN_DTGTSCC,Tên đối tượng giữ tài sản cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,MA_DTGTSCC,Mã đối tượng giữ tài sản cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,DIA_CHI_DTGTSCC,Địa chỉ đối tượng giữ tài sản cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,NGANH_KD_DTBCC,Ngành kinh doanh đối tượng bị cưỡng chế,,
-TCT_TT_CUONG_CHE_NO,NGAY_HIEU_LUC_QD_TU,Ngày hiệu lực từ quyết định từ,,
-TCT_TT_CUONG_CHE_NO,NGAY_HIEU_LUC_QD_DEN,Ngày hiệu lực quyết định đến,,
-TCT_TT_CUONG_CHE_NO,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-TCT_TT_CUONG_CHE_NO,MA_CQT_QL,Mã cơ quan thuế quản lý,,
-TCT_TT_CUONG_CHE_NO,TEN_CQT_QL,Tên cơ quan thuế quản lý,,
-TT_XLY_VI_PHAM,ID,,PK,
-TT_XLY_VI_PHAM,SO_QDXL,Số quyết định xử lý,,
-TT_XLY_VI_PHAM,TEN_DOI_TUONG,Tên đối tượng,,
-TT_XLY_VI_PHAM,MST,Mã số thuế,,
-TT_XLY_VI_PHAM,KY_TTKT,Kỳ thanh tra kiểm tra,,
-TT_XLY_VI_PHAM,PHAT_HANH_VI_VP,Phạt hành vi vi phạm,,
-TT_XLY_VI_PHAM,PHAT_HANH_VI_VPHC,Phạt hành vi vi phạm hành chính,,
-TT_XLY_VI_PHAM,TRUY_THU_TIEN_THUE,"Truy thu tiền thuế, tiền nộp chậm",,
-TT_XLY_VI_PHAM,GOI_TIN_ID,Id gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-TT_XLY_VI_PHAM,CO_QUAN_BAN_HANH,Cơ quan ban hành,,
-UBCK_BAO_CAO,ID,,PK,
-UBCK_BAO_CAO,HE_THONG,Hệ thống,,
-UBCK_BAO_CAO,MA_BAO_CAO,Mã báo cáo,,
-UBCK_BAO_CAO,TEN_BAO_CAO,Tên báo cáo,,
-UBCK_BAO_CAO,DON_VI,Đơn vị,,
-UBCK_BAO_CAO,LOAI_BAO_CAO,Loại báo cáo,,
-UBCK_BAO_CAO,KIEU_KY,Kiểu kỳ,,
-UBCK_BAO_CAO,KY_BAO_CAO,Kỳ báo cáo,,
-UBCK_BAO_CAO,KY_BC_TU_NGAY,Kỳ báo cáo từ ngày,,
-UBCK_BAO_CAO,KY_BC_DEN_NGAY,Kỳ báo cáo đến ngày,,
-UBCK_BAO_CAO,KY_BC_TU_THANG,Kỳ báo cáo từ tháng,,
-UBCK_BAO_CAO,KY_BC_DEN_THANG,Kỳ báo cáo đến tháng,,
-UBCK_BAO_CAO,THOI_GIAN_GUI,Thời gian gửi,,
-UBCK_BAO_CAO,TT_KIEM_TOAN,Thông tin kiểm toán,,
-UBCK_BAO_CAO,TC_KIEM_TOAN,Tổ chức kiểm toán,,
-UBCK_BAO_CAO,MST_TCKT,Mã số thuế tổ chức kiểm toán,,
-UBCK_BAO_CAO,DKKD,Đăng ký kinh doanh,,
-UBCK_BAO_CAO,MA_YKKT,Mã ý kiến kiểm toán,,
-UBCK_BAO_CAO,YKKT,Ý kiến kiểm toán,,
-UBCK_BAO_CAO,NGAY_KIEM_TOAN,Ngày kiểm toán,,
-UBCK_BAO_CAO,KIEM_TOAN_VIEN,Kiểm toán viên,,
-UBCK_BAO_CAO,MA_LY_DO_GIA_HAN,Mã lý do gia hạn,,
-UBCK_BAO_CAO,LY_DO_GIA_HAN,Lý do gia hạn,,
-UBCK_BAO_CAO,NGUOI_KY,Người ký,,
-UBCK_BAO_CAO,NGAY_KY,Ngày ký,,
-UBCK_BAO_CAO,NGAY_TAO,Ngày tạo,,
-UBCK_BAO_CAO,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID
-UBCK_BAO_CAO,MA_SO_DOANH_NGHIEP,Mã số doanh nghiệp,,
-UBCK_BAO_CAO,GUID,,,
-UBCK_BAO_CAO,MST,Mã số thuế,,
-UBCK_BAO_CAO,NGUON_GOC_TK,Nguồn gốc tờ khai,,
-UBCK_BAO_CAO,CNDKHN,Chứng chỉ hành nghề,,
-UBCK_BAO_CAO,HOATDONGLIENTUC,Hoạt động liên tục,,
-UBCK_BAO_CAO,HOATDONGKHONGLIENTUC,Hoạt động không liên tục,,
-UBCK_BAO_CAO_CHI_TIET,ID,,PK,
-UBCK_BAO_CAO_CHI_TIET,UBCK_BAO_CAO_ID,ID bảng UBCK_BAO_CAO,FK,FK suy luận → UBCK_BAO_CAO.ID
-UBCK_BAO_CAO_CHI_TIET,MA_CHI_TIEU,Mã chỉ tiêu,,
-UBCK_BAO_CAO_CHI_TIET,TEN_CHI_TIEU,Tên chỉ tiêu,,
-UBCK_BAO_CAO_CHI_TIET,THUYET_MINH,Thuyết minh,,
-UBCK_BAO_CAO_CHI_TIET,SO_CUOI_NAM,Số cuối năm,,
-UBCK_BAO_CAO_CHI_TIET,SO_DAU_NAM,Số đầu năm,,
-UBCK_BAO_CAO_CHI_TIET,NAM_NAY,Năm nay,,
-UBCK_BAO_CAO_CHI_TIET,NAM_TRUOC,Năm trước,,
-UBCK_BAO_CAO_CHI_TIET,TEN_SHEET,Tên sheet,,
-UBCK_BAO_CAO_CHI_TIET,TEN_SHEET,Tên sheet,,
-UBCK_BAO_CAO_CHI_TIET,NGUOILAPBIEU,Người lập biểu,,
-UBCK_BAO_CAO_CHI_TIET,KETOANTRUONG,Kế toán trưởng,,
-UBCK_BAO_CAO_CHI_TIET,NGAYLAP,Ngày lập,,
-UBCK_BAO_CAO_CHI_TIET,GIAMDOC,Giám đốc,,
-UBCK_BAO_CAO_CHI_TIET,SOCHUNGCHIHANHNGHE,Số chứng chỉ hành nghề,,
-UBCK_BAO_CAO_CHI_TIET,DONVICCAPDVUKTOAN,Đơn vị cung cấp dịch vụ kiểm toán,,
-UBCK_BAO_CAO_CHI_TIET,HOATDONGLIENTUC,Hoạt động liên tục,,
-UBCK_BAO_CAO_CHI_TIET,HOATDONGKHONGLIENTUC,Hoạt động không liên tục,,
-UBCK_BAO_CAO_CHI_TIET,SO_TANG_NAM_TRUOC,Số tăng năm nay,,
-UBCK_BAO_CAO_CHI_TIET,SO_NAM_NAY,Số năm nay,,
-UBCK_BAO_CAO_CHI_TIET,SO_NAM_NGOAI,Số năm ngoái,,
-UBCK_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_NAY,Số dư đầu năm nay,,
-UBCK_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_NAY,Số dư cuối năm nay,,
-UBCK_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_TRUOC,Số dư cuối năm trước,,
-UBCK_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_TRUOC,Số dư đầu năm trước,,
-UBCK_BAO_CAO_CHI_TIET,SO_TANG_NAM_NAY,Số tăng năm nay,,
-UBCK_BAO_CAO_CHI_TIET,SO_GIAM_NAM_NAY,Số giảm năm nay,,
-UBCK_BAO_CAO_CHI_TIET,SO_GIAM_NAM_TRUOC,Số giảm năm trước,,
-DANH_MUC,ID,,PK,
-DANH_MUC,MA,Mã danh mục,,
-DANH_MUC,TEN,Tên danh mục,,
-DANH_MUC,NHOM_DANH_MUC_ID,ID nhóm danh mục,FK,FK suy luận → NHOM_DANH_MUC.ID
-HOA_DON_CHI_TIET,ID,,PK,
-HOA_DON_CHI_TIET,KH_MAU,Ký hiệu mẫu,,
-HOA_DON_CHI_TIET,KH_HOA_DON,Ký hiệu hóa đơn,,
-HOA_DON_CHI_TIET,SO_HOA_DON,Số hóa đơn,,
-HOA_DON_CHI_TIET,TCT_TTCCN_HOA_DON_ID,ID Thông tin cưỡng chế nợ theo hóa đơn,FK,FK suy luận → TCT_TTCCN_HOA_DON.ID
-HOA_DON_CHI_TIET,LOAI_HOA_DON,Loại hóa đơn,,
-HOA_DON_CHI_TIET,OBJID,,,
-TTKDT_NGUOI_DAI_DIEN,ID,,PK,
-TTKDT_NGUOI_DAI_DIEN,TEN_NNT,Tên người đại diện/chủ hộ KD,,
-TTKDT_NGUOI_DAI_DIEN,CHUC_VU,Chức vụ người đại diện/chủ hộ KD,,
-TTKDT_NGUOI_DAI_DIEN,LOAI_GIAY_TO,"Loại giấy tờ như: CMND, CCCD: 1010: CMND, 2080 CCCD, 1020: hộ chiếu",,
-TTKDT_NGUOI_DAI_DIEN,SO_GIAY_TO,Số giấy tờ,,
-TTKDT_NGUOI_DAI_DIEN,NGAY_CAP,Ngày cấp giấy tờ,,
-TTKDT_NGUOI_DAI_DIEN,DIEN_THOAI,Điện thoại,,
-TTKDT_NGUOI_DAI_DIEN,FAX,Fax,,
-TTKDT_NGUOI_DAI_DIEN,EMAIL,Email,,
-TTKDT_NGUOI_DAI_DIEN,THONG_TIN_DK_THUE_ID,ID thông tin đăng ký thuế,FK,FK suy luận → THONG_TIN_DK_THUE.ID
+1. Giải thể ; 2. Phá sản; 3. Chuyển đổi loại hình doanh nghiệp, tổ chức sắp xếp loại doanh nghiệp; 4. Cho làm thủ tục giải thể; 5. Cho làm thủ tục phá sản; 6. Cho làm thủ tục tổ chức lại tổ chức kinh tế; 7. Bị thu hồi giấy phép hoạt động; 8. Đóng theo đơn vị chủ quản (đối với MST 13 số); 9. Khác",,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,CO_QUAN_QUAN_LY_TRUC_TIEP,Cơ quan quản lý trực tiếp,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,MA_CQQL_QLT,Mã cơ quan quản lý thuế,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,LOAITIEN_VON_DL_VN,Loại tiền vốn điều lệ,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,SOTIEN_VON_DL_NN,Vốn điều lệ nước ngoài,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,LOAITIEN_VON_DL_NN,Loại tiền vốn điều lệ nước ngoài,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,DVCQ_VN_DIACHI,Địa chỉ đơn vị chủ quản,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,MOTA_DIACHI_KD,Mô tả địa chỉ -  kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,MA_TINH_KD,Mã tỉnh - kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,MA_HUYEN_KD,Mã huyện - kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,MA_XA_KD,Mã xã - kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,DIEN_THOAI_KD,Điện thoại - kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,EMAIL_KD,Email - kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,FAX_KD,Fax - kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TAM_NGHI_TU_NGAY,Tạm nghỉ/Từ ngày,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TAM_NGHI_DEN_NGAY,Tạm nghỉ/Đến ngày,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TAM_NGHI_LY_DO,Lý do tạm nghỉ,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TAM_NGHI_SO_TBAO,Số thông báo - tạm nghỉ,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TAM_NGHI_NGAY_TB_NNT,Ngày thông báo  - tạm nghỉ,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGUNG_HD_NGAY,Ngày ngừng hoạt động,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGUNG_HD_LY_DO,Lý do ngừng hoạt động,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGUNG_HD_GHI_CHU,Ghi chú ngừng hoạt động,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,NGUNG_HD_SO_TBAO,Số thông báo ngừng hoạt động,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TEN_TRANG_THAI,Tên trạng thái người nộp thuế,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,MA_NGANH,Mã ngành nghề kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TEN_TINH_KD,Tên tỉnh - Kinh doanh,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TEN_HUYEN_KD,Tên huyện - KD,,,THONG_TIN_DK_THUE
+THONG_TIN_DK_THUE,TEN_XA,Tên xã - KD,,,THONG_TIN_DK_THUE
+UBCK_XU_PHAT,ID,,PK,,UBCK_XU_PHAT
+UBCK_XU_PHAT,SO_QD_GD,Số quyết định xử phạt,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,NGAY_QD,Ngày quyết định xử phạt,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,TEN,Tên đối tượng bị xử phạt,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,DIA_CHI,Địa chỉ trụ sở chính,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,LV_HD,Lĩnh vực hoạt động,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,MST,Mã số thuế,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,TEN_NDD,Tên người đại diện pháp luật,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,HANH_VI,Hành vi vi phạm,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,SO_TIEN,Số tiền xử phạt,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,HINH_THUC,Hình thức xử phạt bổ sung,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,BIEN_PHAP,Biện pháp khắc phục hậu quả,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,UBCK_XU_PHAT
+UBCK_XU_PHAT,NGAY_CAP,Ngày cấp,,,UBCK_XU_PHAT
+UBCK_XU_PHAT,NOI_CAP,Nơi cấp,,,UBCK_XU_PHAT
+TCT_BAO_CAO,ID,,PK,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_DVU,Mã dịch vụ,,,TCT_BAO_CAO
+TCT_BAO_CAO,TEN_DVU,Tên dịch vụ,,,TCT_BAO_CAO
+TCT_BAO_CAO,PHIEN_BAN_DVU,Phiên bản dịch vụ,,,TCT_BAO_CAO
+TCT_BAO_CAO,TT_NHACC_DVU,Thông tin nhà cung cấp dịch vụ,,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_TKHAI,Mã tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,TEN_TKHAI,Tên tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,MO_TA_BMAU,Mô tả biểu mẫu,,,TCT_BAO_CAO
+TCT_BAO_CAO,PBAN_TKHAI_XML,Phiên bản tờ khai XML,,,TCT_BAO_CAO
+TCT_BAO_CAO,LOAI_TKHAI,Loại tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,SO_LAN,Số lần,,,TCT_BAO_CAO
+TCT_BAO_CAO,KIEU_KY,Kiểu kỳ,,,TCT_BAO_CAO
+TCT_BAO_CAO,KY_KKHAI,Kỳ kê khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,KY_KKHAI_TU_NGAY,Kỳ kê khai từ ngày,,,TCT_BAO_CAO
+TCT_BAO_CAO,KY_KKHAI_DEN_NGAY,Kỳ kê khai đến ngày,,,TCT_BAO_CAO
+TCT_BAO_CAO,KY_KKHAI_TU_THANG,Kỳ kê khai từ tháng,,,TCT_BAO_CAO
+TCT_BAO_CAO,KY_KKHAI_DEN_THANG,Kỳ kê khai đến tháng,,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_CQTHUE_NOI_NOP,Mã cơ quan thuế nơi nộp,,,TCT_BAO_CAO
+TCT_BAO_CAO,TEN_CQTHUE_NOI_NOP,Tên cơ quan thuế nơi nộp,,,TCT_BAO_CAO
+TCT_BAO_CAO,NGAY_LAP_TKHAI,Ngày lập tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_LY_DO_GIA_HAN,Mã lý do gia hạn,,,TCT_BAO_CAO
+TCT_BAO_CAO,LY_DO_GIA_HAN,Lý do gia hạn,,,TCT_BAO_CAO
+TCT_BAO_CAO,NGUOI_KY,Người ký,,,TCT_BAO_CAO
+TCT_BAO_CAO,NGAY_KY,Ngày ký,,,TCT_BAO_CAO
+TCT_BAO_CAO,NGANH_NGHE_KD,Ngày nghề kinh doanh,,,TCT_BAO_CAO
+TCT_BAO_CAO,MST,Mã số thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,TEN_NNT,Tên người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,DIA_CHI_NNT,Địa chỉ người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,PHUONG_XA,Phường xã,,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_HUYEN_NNT,Mã huyện người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,TEN_HUYEN_NNT,Tên huyện người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_TINH_NNT,Mã tỉnh người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,TEN_TINH_NNT,Tên tỉnh người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,DIEN_THOAI_NNT,Điện thoại người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,FAX_NNT,Fax người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,EMAIL_NNT,Email người nộp thuế,,,TCT_BAO_CAO
+TCT_BAO_CAO,TRANG_THAI_KT,Trạng thái kiểm toán,,,TCT_BAO_CAO
+TCT_BAO_CAO,MST_TC_KTOAN,Mã số thuế tổ chức kiểm toán,,,TCT_BAO_CAO
+TCT_BAO_CAO,TC_KIEM_TOAN,Tổ chức kiểm toán,,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_KIEM_TOAN_VIEN,Mã kiểm toán viên,,,TCT_BAO_CAO
+TCT_BAO_CAO,KIEM_TOAN_VIEN,Kiểm toán vien,,,TCT_BAO_CAO
+TCT_BAO_CAO,BCTC_DA_KIEM_TOAN,Báo cáo tài chính đã kiểm toán,,,TCT_BAO_CAO
+TCT_BAO_CAO,MA_YKKT,Mã ý kiến kiểm toán,,,TCT_BAO_CAO
+TCT_BAO_CAO,YKKT,Ý kiến kiểm toán,,,TCT_BAO_CAO
+TCT_BAO_CAO,NGAY_KIEM_TOAN,Ngày kiểm toán,,,TCT_BAO_CAO
+TCT_BAO_CAO,NGAY_TAO,Ngày tạo,,,TCT_BAO_CAO
+TCT_BAO_CAO,GOI_TIN_ID,Gói tin ID,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_NGAY_NOP_TK,Ngày nộp tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_NGAY_TIEP_NHAN,Ngày tiếp nhận,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_KY_LAP_BO,Kỳ lập bộ báo cáo,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_NGUON_GOC_TK,Nguồn gốc tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_NGUOI_NHAP_TK,Người nhập tờ khại,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_NGAY_NHAN_TK,Ngày nhận tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_ID_TK,ID tờ khai,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_NOI_GUI,Nơi gửi,,,TCT_BAO_CAO
+TCT_BAO_CAO,ADD_INFO_NOI_NHAN,Nơi nhận,,,TCT_BAO_CAO
+TCT_BAO_CAO,GUID,,,,TCT_BAO_CAO
+TCT_BAO_CAO_CHI_TIET,ID,,PK,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,TCT_BAO_CAO_ID,ID bảng TCT_BAO_CAO,FK,FK suy luận → TCT_BAO_CAO.ID,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,MA_CHI_TIEU,Mã chỉ tiêu,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,TEN_CHI_TIEU,Tên chỉ tiêu,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,THUYET_MINH,Thuyết minh,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_CUOI_NAM,Số cuối năm,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_DAU_NAM,Số đầu năm,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,NAM_NAY,Năm nay,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,NAM_TRUOC,Năm trước,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,TEN_SHEET,Tên sheet,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,NGUOILAPBIEU,Người lập biểu,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,KETOANTRUONG,Kế toán trưởng,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,NGAYLAP,Ngày lập,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,GIAMDOC,Giám đốc,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SOCHUNGCHIHANHNGHE,Số chứng chỉ hành nghề,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,DONVICCAPDVUKTOAN,Đơn vị cung cấp dịch vụ kiểm toán,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,HOATDONGLIENTUC,Hoạt động liên tục,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,HOATDONGKHONGLIENTUC,Hoạt động không liên tục,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_TANG_NAM_TRUOC,Số tăng năm nay,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_NAM_NAY,Số năm nay,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_NAM_NGOAI,Số năm ngoái,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_NAY,Số dư đầu năm nay,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_NAY,Số dư cuối năm nay,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_TRUOC,Số dư cuối năm trước,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_TRUOC,Số dư đầu năm trước,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_TANG_NAM_NAY,Số tăng năm nay,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_GIAM_NAM_NAY,Số giảm năm nay,,,TCT_BAO_CAO_CHI_TIET
+TCT_BAO_CAO_CHI_TIET,SO_GIAM_NAM_TRUOC,Số giảm năm trước,,,TCT_BAO_CAO_CHI_TIET
+TCT_TT_CUONG_CHE_NO,ID,,PK,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,MA_NNHAN,Mã người nhận,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,TEN_NNHAN,Tên người nhận,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,MA_CQT,Mã cơ quan thuế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,TEN_CQT,Tên cơ quan thuế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,MA_HTCC,Mã hình thức cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,TEN_HTCC,Tên hình thức cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,MA_GDDT,Mã giao dịch điện tử,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,SO_QD,Số quyết định,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,NGAY_QD,Ngày quyết định,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,SO_TIEN_BI_CC,Số tiền bị cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,STK_DT_BCC,Số tài khoản đối tượng bị cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,NO_MO_TK_BCC,Nơi mở tài khoản bị cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,TEN_DTQLTN,Tên đối tượng quản lý thu nhập,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,DI_CHI_DTQLTN,Địa chỉ đối tượng quản lý thu nhập,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,TS_KE_BIEN,Tài sản kê biên,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,GIA_TRI_TS,Giá trị tài sản,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,THOI_GIAN_CC,Thời gian cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,DIA_DIEM_CC,Địa điểm cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,TEN_DTGTSCC,Tên đối tượng giữ tài sản cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,MA_DTGTSCC,Mã đối tượng giữ tài sản cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,DIA_CHI_DTGTSCC,Địa chỉ đối tượng giữ tài sản cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,NGANH_KD_DTBCC,Ngành kinh doanh đối tượng bị cưỡng chế,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,NGAY_HIEU_LUC_QD_TU,Ngày hiệu lực từ quyết định từ,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,NGAY_HIEU_LUC_QD_DEN,Ngày hiệu lực quyết định đến,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,MA_CQT_QL,Mã cơ quan thuế quản lý,,,TCT_TT_CUONG_CHE_NO
+TCT_TT_CUONG_CHE_NO,TEN_CQT_QL,Tên cơ quan thuế quản lý,,,TCT_TT_CUONG_CHE_NO
+TT_XLY_VI_PHAM,ID,,PK,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,SO_QDXL,Số quyết định xử lý,,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,TEN_DOI_TUONG,Tên đối tượng,,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,MST,Mã số thuế,,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,KY_TTKT,Kỳ thanh tra kiểm tra,,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,PHAT_HANH_VI_VP,Phạt hành vi vi phạm,,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,PHAT_HANH_VI_VPHC,Phạt hành vi vi phạm hành chính,,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,TRUY_THU_TIEN_THUE,"Truy thu tiền thuế, tiền nộp chậm",,,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,GOI_TIN_ID,Id gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,TT_XLY_VI_PHAM
+TT_XLY_VI_PHAM,CO_QUAN_BAN_HANH,Cơ quan ban hành,,,TT_XLY_VI_PHAM
+UBCK_BAO_CAO,ID,,PK,,UBCK_BAO_CAO
+UBCK_BAO_CAO,HE_THONG,Hệ thống,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,MA_BAO_CAO,Mã báo cáo,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,TEN_BAO_CAO,Tên báo cáo,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,DON_VI,Đơn vị,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,LOAI_BAO_CAO,Loại báo cáo,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,KIEU_KY,Kiểu kỳ,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,KY_BAO_CAO,Kỳ báo cáo,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,KY_BC_TU_NGAY,Kỳ báo cáo từ ngày,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,KY_BC_DEN_NGAY,Kỳ báo cáo đến ngày,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,KY_BC_TU_THANG,Kỳ báo cáo từ tháng,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,KY_BC_DEN_THANG,Kỳ báo cáo đến tháng,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,THOI_GIAN_GUI,Thời gian gửi,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,TT_KIEM_TOAN,Thông tin kiểm toán,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,TC_KIEM_TOAN,Tổ chức kiểm toán,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,MST_TCKT,Mã số thuế tổ chức kiểm toán,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,DKKD,Đăng ký kinh doanh,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,MA_YKKT,Mã ý kiến kiểm toán,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,YKKT,Ý kiến kiểm toán,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,NGAY_KIEM_TOAN,Ngày kiểm toán,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,KIEM_TOAN_VIEN,Kiểm toán viên,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,MA_LY_DO_GIA_HAN,Mã lý do gia hạn,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,LY_DO_GIA_HAN,Lý do gia hạn,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,NGUOI_KY,Người ký,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,NGAY_KY,Ngày ký,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,NGAY_TAO,Ngày tạo,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,GOI_TIN_ID,ID gói tin,FK,FK suy luận → CAU_HINH_GOI_TIN.ID,UBCK_BAO_CAO
+UBCK_BAO_CAO,MA_SO_DOANH_NGHIEP,Mã số doanh nghiệp,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,GUID,,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,MST,Mã số thuế,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,NGUON_GOC_TK,Nguồn gốc tờ khai,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,CNDKHN,Chứng chỉ hành nghề,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,HOATDONGLIENTUC,Hoạt động liên tục,,,UBCK_BAO_CAO
+UBCK_BAO_CAO,HOATDONGKHONGLIENTUC,Hoạt động không liên tục,,,UBCK_BAO_CAO
+UBCK_BAO_CAO_CHI_TIET,ID,,PK,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,UBCK_BAO_CAO_ID,ID bảng UBCK_BAO_CAO,FK,FK suy luận → UBCK_BAO_CAO.ID,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,MA_CHI_TIEU,Mã chỉ tiêu,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,TEN_CHI_TIEU,Tên chỉ tiêu,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,THUYET_MINH,Thuyết minh,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_CUOI_NAM,Số cuối năm,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_DAU_NAM,Số đầu năm,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,NAM_NAY,Năm nay,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,NAM_TRUOC,Năm trước,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,TEN_SHEET,Tên sheet,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,TEN_SHEET,Tên sheet,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,NGUOILAPBIEU,Người lập biểu,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,KETOANTRUONG,Kế toán trưởng,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,NGAYLAP,Ngày lập,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,GIAMDOC,Giám đốc,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SOCHUNGCHIHANHNGHE,Số chứng chỉ hành nghề,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,DONVICCAPDVUKTOAN,Đơn vị cung cấp dịch vụ kiểm toán,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,HOATDONGLIENTUC,Hoạt động liên tục,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,HOATDONGKHONGLIENTUC,Hoạt động không liên tục,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_TANG_NAM_TRUOC,Số tăng năm nay,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_NAM_NAY,Số năm nay,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_NAM_NGOAI,Số năm ngoái,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_NAY,Số dư đầu năm nay,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_NAY,Số dư cuối năm nay,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_DU_CUOI_NAM_TRUOC,Số dư cuối năm trước,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_DU_DAU_NAM_TRUOC,Số dư đầu năm trước,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_TANG_NAM_NAY,Số tăng năm nay,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_GIAM_NAM_NAY,Số giảm năm nay,,,UBCK_BAO_CAO_CHI_TIET
+UBCK_BAO_CAO_CHI_TIET,SO_GIAM_NAM_TRUOC,Số giảm năm trước,,,UBCK_BAO_CAO_CHI_TIET
+DANH_MUC,ID,,PK,,DANH_MUC
+DANH_MUC,MA,Mã danh mục,,,DANH_MUC
+DANH_MUC,TEN,Tên danh mục,,,DANH_MUC
+DANH_MUC,NHOM_DANH_MUC_ID,ID nhóm danh mục,FK,FK suy luận → NHOM_DANH_MUC.ID,DANH_MUC
+HOA_DON_CHI_TIET,ID,,PK,,HOA_DON_CHI_TIET
+HOA_DON_CHI_TIET,KH_MAU,Ký hiệu mẫu,,,HOA_DON_CHI_TIET
+HOA_DON_CHI_TIET,KH_HOA_DON,Ký hiệu hóa đơn,,,HOA_DON_CHI_TIET
+HOA_DON_CHI_TIET,SO_HOA_DON,Số hóa đơn,,,HOA_DON_CHI_TIET
+HOA_DON_CHI_TIET,TCT_TTCCN_HOA_DON_ID,ID Thông tin cưỡng chế nợ theo hóa đơn,FK,FK suy luận → TCT_TTCCN_HOA_DON.ID,HOA_DON_CHI_TIET
+HOA_DON_CHI_TIET,LOAI_HOA_DON,Loại hóa đơn,,,HOA_DON_CHI_TIET
+HOA_DON_CHI_TIET,OBJID,,,,HOA_DON_CHI_TIET
+TTKDT_NGUOI_DAI_DIEN,ID,,PK,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,TEN_NNT,Tên người đại diện/chủ hộ KD,,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,CHUC_VU,Chức vụ người đại diện/chủ hộ KD,,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,LOAI_GIAY_TO,"Loại giấy tờ như: CMND, CCCD: 1010: CMND, 2080 CCCD, 1020: hộ chiếu",,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,SO_GIAY_TO,Số giấy tờ,,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,NGAY_CAP,Ngày cấp giấy tờ,,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,DIEN_THOAI,Điện thoại,,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,FAX,Fax,,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,EMAIL,Email,,,TTKDT_NGUOI_DAI_DIEN
+TTKDT_NGUOI_DAI_DIEN,THONG_TIN_DK_THUE_ID,ID thông tin đăng ký thuế,FK,FK suy luận → THONG_TIN_DK_THUE.ID,TTKDT_NGUOI_DAI_DIEN
+TCT_TTCCN_HOA_DON,ID,,PK,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,MA_NNHAN,Mã số thuế của người nộp thuế,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TEN_NNHAN,Tên người nộp thuế,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,MA_CQT_QL,Mã cơ quan quản lý trực tiếp,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TEN_CQT_QL,Tên cơ quan quản lý trực tiếp,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,MA_HTCC,Mã hình thức cưỡng chế,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TEN_HTCC,Tên hình thức cưỡng chế,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,MA_GDDT,Mã giao dịch điện tử,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,SO_QD,Số quyết định,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,NGAY_QD,Ngày quyết định,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,NGANH_KD_DTBCC,Tên ngành kinh doanh của đối tượng bị cưỡng chế,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,NGAY_HIEU_LUC_QD_TU,Ngày hiệu lực từ,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,NGAY_HIEU_LUC_QD_DEN,Ngày hiệu lực đến,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TB_MA_NNHAN,Thông báo: Mã số thuế người nộp thuế,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TB_TEN_NNHAN,Thông báo: Tên người nộp thuế,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,MA_THONG_BAO,Mã thông báo,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TEN_THONG_BAO,Tên thông báo,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,CAN_CU_QDSO,Căn cứ số quyết định,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,CAN_CU_QDNGAY,Căn cứ ngày quyết định,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TB_NO_SO,Thông báo số tiền nợ và số tiền phạt nộp chậm,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,TB_NO_NGAY,Thông báo tiền nợ và tiền phạt nộp chậm,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,HIEU_LUC,Hiệu lực,,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,GOI_TIN_ID,ID gói tin,FK,,TCT_TTCCN_HOA_DON
+TCT_TTCCN_HOA_DON,GUID,,,,TCT_TTCCN_HOA_DON
+THONG_TIN_CONG_TY,ID,,PK,,
+THONG_TIN_CONG_TY,TEN,Tên công ty,,,
+THONG_TIN_CONG_TY,LOAI_CTY,1. Công ty chứng khoán; 2. Công ty đại chúng; 3. Công ty quản lý quỹ,,,
+THONG_TIN_CONG_TY,NGAY_THAYDOI,Ngày thay đổi thông tin,,,
+THONG_TIN_CONG_TY,MST,Mã số thuế,,,
+THONG_TIN_CONG_TY,DIA_CHI,Địa chỉ,,,
+THONG_TIN_CONG_TY,SDT,Số điện thoại,,,
+THONG_TIN_CONG_TY,FAX,Fax,,,
+THONG_TIN_CONG_TY,WEB,Địa chỉ website công ty,,,
+THONG_TIN_CONG_TY,KINHDOANH,Ngành nghề kinh doanh,,,
+THONG_TIN_CONG_TY,TEN_NDD,Tên người đại diện pháp luật,,,
+THONG_TIN_CONG_TY,VON,Vốn đầu tư chủ sở hữu,,,
+THONG_TIN_CONG_TY,NGAY_DK,Ngày đăng ký công ty đại chúng,,,
+THONG_TIN_CONG_TY,SO_QD_GD,Số quyết định niêm yết/ giao dịch cổ phiếu,,,
+THONG_TIN_CONG_TY,KY_HIEU,Ký hiệu,,,
+THONG_TIN_CONG_TY,NGAY_GD,Ngày niêm yết/ giao dịch,,,
+THONG_TIN_CONG_TY,NOI_GD,Nơi niêm yết/ giao dịch cổ phiếu,,,
+THONG_TIN_CONG_TY,NGAY_DAU_GD,Ngày niêm yết/ giao dịch cổ phiếu lần đầu tiên trên sàn giao dịch chứng khoán,,,
+THONG_TIN_CONG_TY,SO_CD,Số lượng cổ đông,,,
+THONG_TIN_CONG_TY,NGAY_HUY_CP,Ngày hủy niêm yết,,,
+THONG_TIN_CONG_TY,NGAY_HUY_DC,Ngày hủy đại chúng,,,
+THONG_TIN_CONG_TY,GOI_TIN_ID,Mã gói tin,FK,,
+THONG_TIN_CONG_TY,DKKD,Đăng ký kinh doanh,,,
+THONG_TIN_CONG_TY,GUID,,,,
+THONG_TIN_CONG_TY,SO_BAN_GHI,Lưu số bản ghi công ty có cùng gói tin ID và loại công ty,,,
+NHOM_DANH_MUC,ID,,PK,,
+NHOM_DANH_MUC,MA,Mã danh mục,,,
+NHOM_DANH_MUC,TEN,Tên danh mục,,,
+NHOM_DANH_MUC,TRANG THAI,Trạng thái,,,

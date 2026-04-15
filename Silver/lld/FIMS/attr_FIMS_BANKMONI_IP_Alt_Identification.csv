@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Custodian Bank.,Surrogate Key,false,false,draft,FIMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã ngân hàng lưu ký giám sát.,Text,false,false,draft,FIMS.BANKMONI.Id,FK target: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FIMS.BANKMONI,
+Identification Type Code,Loại giấy tờ: giấy phép kinh doanh.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived.,IP_ALT_ID_TYPE=BUSINESS_LICENSE,BUSINESS_LICENSE
+Identification Number,Số giấy phép kinh doanh.,Text,true,false,draft,FIMS.BANKMONI.IdNo,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issue Date,Ngày cấp giấy phép kinh doanh.,Date,true,false,draft,FIMS.BANKMONI.IdDate,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issuing Authority Name,Nơi cấp giấy phép kinh doanh.,Text,true,false,draft,FIMS.BANKMONI.IdAdd,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Identification Type Code,Loại giấy tờ: giấy phép đăng ký/hoạt động.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived.,IP_ALT_ID_TYPE=OPERATING_LICENSE,OPERATING_LICENSE
+Identification Number,Số giấy phép đăng ký/hoạt động.,Text,true,false,draft,FIMS.BANKMONI.RegNo,,IP_ALT_ID_TYPE=OPERATING_LICENSE,
+Issue Date,Ngày cấp giấy phép đăng ký/hoạt động.,Date,true,false,draft,FIMS.BANKMONI.RegDate,,IP_ALT_ID_TYPE=OPERATING_LICENSE,
+Issuing Authority Name,Nơi cấp giấy phép đăng ký/hoạt động.,Text,true,false,draft,FIMS.BANKMONI.RegAdd,,IP_ALT_ID_TYPE=OPERATING_LICENSE,

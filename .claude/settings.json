@@ -45,12 +45,23 @@
       "Bash(sort -t',' -k1,1)",
       "Bash(python \"Silver/lld/scripts/aggregate_silver.py\")",
       "Bash(python Silver/lld/scripts/post_check_silver.py)",
-      "Bash(python Silver/lld/scripts/aggregate_silver.py --skip-entities)"
+      "Bash(python Silver/lld/scripts/aggregate_silver.py --skip-entities)",
+      "Bash(grep -rh \"^Issuing Authority Name,\" Silver/lld/*/attr_*.csv)",
+      "Bash(grep -rh \"^Address Value,\" Silver/lld/*/attr_*.csv)",
+      "Bash(python Silver/lld/scripts/post_check_source_coverage.py --source SCMS)",
+      "Bash(python Silver/lld/scripts/post_check_source_coverage.py)",
+      "Bash(python Silver/lld/scripts/post_check_source_coverage.py --source FIMS)",
+      "Read(//c/Users/linhl_ufzmt5s/.claude/projects/c--Users-linhl-ufzmt5s-OneDrive-One---UBCK-Design-ubck-atomic-design/**)",
+      "Bash(python Silver/lld/scripts/post_check_source_coverage.py --source DCST)",
+      "Bash(python Silver/lld/scripts/post_check_source_coverage.py --source FMS)",
+      "Bash(python Silver/lld/scripts/post_check_source_coverage.py --source NHNCK)",
+      "Bash(grep -E \"Id$|ReportIds\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\linhl_ufzmt5s\\OneDrive\\One - UBCK\\Design\\ubck_atomic_design\\Silver\\lld\\NHNCK",
       "c:\\Users\\linhl_ufzmt5s\\OneDrive\\One - UBCK\\Design\\ubck_atomic_design\\Silver\\lld\\FMS",
-      "c:\\Users\\linhl_ufzmt5s\\.claude\\plans"
+      "c:\\Users\\linhl_ufzmt5s\\.claude\\plans",
+      "c:\\Users\\linhl_ufzmt5s\\.claude\\projects\\c--Users-linhl-ufzmt5s-OneDrive-One---UBCK-Design-ubck-atomic-design\\memory"
     ]
   }
 }

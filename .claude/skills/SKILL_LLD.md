@@ -107,16 +107,61 @@ Nếu bảng nguồn có grain = 1 Involved Party:
 
 Kiểm tra `ref_shared_entity_classifications.csv` để dùng đúng Code đã chuẩn hóa. Nếu có giá trị mới chưa có → thêm vào ref file ngay, không để lại.
 
-Shared entity **không có PK surrogate riêng** — chỉ FK trỏ về entity chính.
+Shared entity **không có PK surrogate riêng** — chỉ FK trỏ về entity chính. Khi thêm trường mới vào bất kỳ shared entity nào, **phải thông báo rõ** để người thiết kế cập nhật bảng tên trường chuẩn bên dưới.
+
+---
 
 **Tên trường chuẩn cho IP Alt Identification** — bắt buộc dùng đúng tên này:
 
 | Trường | Tên chuẩn | Data Domain |
 |---|---|---|
+| FK chính | `Involved Party Id` | Surrogate Key |
+| FK BK | `Involved Party Code` | Text |
+| Nguồn | `Source System Code` | Classification Value |
 | Loại giấy tờ | `Identification Type Code` | Classification Value |
 | Số giấy tờ | `Identification Number` | Text |
 | Ngày cấp | `Issue Date` | Date |
-| Nơi cấp | `Issuing Authority` | Text |
+| Nơi cấp | `Issuing Authority Name` | Text |
+
+---
+
+**Tên trường chuẩn cho IP Postal Address** — bắt buộc dùng đúng tên này:
+
+| Trường | Tên chuẩn | Data Domain |
+|---|---|---|
+| FK chính | `Involved Party Id` | Surrogate Key |
+| FK BK | `Involved Party Code` | Text |
+| Nguồn | `Source System Code` | Classification Value |
+| Loại địa chỉ | `Address Type Code` | Classification Value |
+| Địa chỉ text | `Address Value` | Text |
+| FK địa lý (có lookup) | `{Semantic Prefix} Id` | Surrogate Key |
+| Mã địa lý (có lookup) | `{Semantic Prefix} Code` | Text |
+| Quận/huyện text | `District Name` | Text |
+| Mã quận/huyện | `District Code` | Text |
+| Phường/xã text | `Ward Name` | Text |
+| Mã phường/xã | `Ward Code` | Text |
+| Tỉnh/thành text | `Province Name` | Text |
+| Mã tỉnh text | `Province Code` | Text |
+
+> Không phải mọi source đều có đủ các trường trên — chỉ map những trường có dữ liệu nguồn. FK địa lý (có lookup) dùng khi source có bảng lookup tường minh; `Province/District/Ward Name/Code` dùng khi nguồn lưu text denormalized không có lookup.
+>
+> **Quy tắc đặt tên `{Semantic Prefix}`**: Dùng prefix ngữ nghĩa cụ thể theo vai trò của trường địa lý trong entity — **KHÔNG** dùng "Geographic Area" trong tên attribute. Ví dụ: `Province Id/Code` (tỉnh/thành trong địa chỉ), `Nationality Id/Code` (quốc tịch cá nhân), `Country of Registration Id/Code` (quốc gia đăng ký tổ chức), `Country of Residence Id/Code` (quốc gia cư trú). Tên "Geographic Area" là tên kỹ thuật của Silver entity — không lộ ra trong tên attribute của entity khác.
+
+---
+
+**Tên trường chuẩn cho IP Electronic Address** — bắt buộc dùng đúng tên này:
+
+| Trường | Tên chuẩn | Data Domain |
+|---|---|---|
+| FK chính | `Involved Party Id` | Surrogate Key |
+| FK BK | `Involved Party Code` | Text |
+| Nguồn | `Source System Code` | Classification Value |
+| Loại kênh | `Electronic Address Type Code` | Classification Value |
+| Giá trị | `Electronic Address Value` | Text |
+
+> Mỗi loại kênh (PHONE, FAX, EMAIL, WEBSITE, EMAIL_DISCLOSURE...) là 1 cặp `Electronic Address Type Code` + `Electronic Address Value` riêng trong file.
+
+---
 
 Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalized. Ví dụ: snapshot tờ khai thuế, quyết định hành chính, log kỹ thuật — địa chỉ trong các entity này là denormalized hợp lệ.
 
@@ -126,11 +171,22 @@ Trường chứa mã địa lý có 3 cách xử lý — chọn theo bối cản
 
 | Bối cảnh | Xử lý | Ví dụ |
 |---|---|---|
-| Bảng nguồn có bảng lookup địa lý rõ ràng trong cùng hệ thống (VD: FIMS.NATIONAL) | **FK pair** đến Silver entity **Geographic Area** (Id + Code) | FIMS: NaId → Geographic Area |
+| Bảng nguồn có bảng lookup địa lý rõ ràng trong cùng hệ thống (VD: FIMS.NATIONAL) | **FK pair** đến Silver entity **Geographic Area** — đặt tên theo ngữ nghĩa (xem quy tắc bên dưới) | FIMS: NaId → `Nationality Id/Code`; SCMS: TINH_THANH_ID → `Province Id/Code` |
 | Dữ liệu phản hồi từ API ngoài (C06, VNPT...) hoặc nguồn không có bảng lookup trong scope | **Classification Value** với scheme riêng, ghi rõ `(no_lookup)` trong ref — không tạo FK | NHNCK: COUNTRY, PROVINCE, DISTRICT |
 | Trường địa lý trong địa chỉ, nguồn ghi kèm cả Name (không resolve được) | **Text** denormalized — giữ cả Code lẫn Name | DCST IP_Postal_Address: Province Code/Name |
 
 **Geographic Area là Silver entity** ([Location] Geographic Area) — chứa danh mục khu vực địa lý đa cấp (quốc gia/vùng/tỉnh/huyện/xã). Chỉ tạo FK đến đây khi có bảng lookup tường minh trong scope thiết kế.
+
+**Quy tắc đặt tên FK đến Geographic Area**: Dùng prefix ngữ nghĩa cụ thể — **KHÔNG** dùng "Geographic Area" trong tên attribute. Tham chiếu comment vẫn ghi `FK target: Geographic Area.Geographic Area Id`.
+
+| Ngữ nghĩa | Tên Id | Tên Code |
+|---|---|---|
+| Quốc tịch cá nhân | `Nationality Id` | `Nationality Code` |
+| Quốc gia đăng ký tổ chức | `Country of Registration Id` | `Country of Registration Code` |
+| Quốc gia cư trú | `Country of Residence Id` | `Country of Residence Code` |
+| Tỉnh/thành phố | `Province Id` | `Province Code` |
+| Quận/huyện (có lookup) | `District Id` | `District Code` |
+| Các ngữ nghĩa khác | `{Vai trò cụ thể} Id` | `{Vai trò cụ thể} Code` |
 
 ### Bước 5 — Viết comment
 
@@ -278,6 +334,35 @@ Script kiểm tra 5 tiêu chí và in báo cáo — không sửa file nào.
 | C3 | Cùng tên attr nhưng data_domain khác nhau giữa các entity | Typo hoặc copy sai data domain từ entity khác | Sửa domain về giá trị chuẩn trong 12 Data Domain |
 | C4 | PK có nullable=true | Copy sai từ trường khác | Đặt `nullable=false` cho PK |
 | C5 | source_column không đúng 3 phần | Thừa schema (VD: `SCMS.scms.table.col`) hoặc thiếu source prefix | Sửa về đúng `SOURCE.table.column` |
+
+---
+
+### Bước 7b — Post-check phủ sóng cột nguồn
+
+Kiểm tra cột nguồn chưa được map vào Silver cho các bảng đã thiết kế:
+
+```bash
+# Kiểm tra tất cả nguồn
+python Silver/lld/scripts/post_check_source_coverage.py
+
+# Chỉ kiểm tra 1 nguồn
+python Silver/lld/scripts/post_check_source_coverage.py --source SCMS
+
+# Chỉ kiểm tra 1 bảng
+python Silver/lld/scripts/post_check_source_coverage.py --table CTCK_THONG_TIN
+```
+
+Script đọc `Source/<SOURCE>_Columns.csv` (danh sách cột thực tế của nguồn), so sánh với `silver_attributes.csv`, báo cáo cột chưa map — không sửa file nào. Bỏ qua group=pending trong manifest và bỏ qua các cột kỹ thuật/audit tự động.
+
+**Bảng xử lý kết quả:**
+
+| Loại cột báo cáo | Nguyên nhân phổ biến | Hành động |
+|---|---|---|
+| Cột nghiệp vụ thực sự chưa map | Bỏ sót khi thiết kế | Tạo/cập nhật attr file, chạy lại aggregate |
+| Cột liên lạc/địa chỉ (DIEN_THOAI, EMAIL, DIA_CHI...) | Chưa tạo shared entity | Tạo file IP Postal/Electronic Address, thêm vào manifest |
+| FK đến bảng khác (ID, *_ID) | FK thuần — giá trị đã capture qua entity cha | Bỏ qua, ghi chú "FK only" nếu cần |
+| Cột out-of-scope theo business | Cố ý không map | Thêm vào `SKIP_COLUMNS` trong script HOẶC ghi rõ lý do bỏ qua |
+| Cột audit/kỹ thuật chưa có trong SKIP_COLUMNS | Pattern mới của nguồn | Thêm vào `SKIP_COLUMNS` trong script |
 
 ### Quy tắc output
 

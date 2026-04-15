@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến văn phòng đại diện.,Surrogate Key,false,false,draft,SCMS.CTCK_VP_DAI_DIEN.ID,FK target: Securities Company Organization Unit.Securities Company Organization Unit Id.,,
+Involved Party Code,Mã văn phòng đại diện.,Text,false,false,draft,SCMS.CTCK_VP_DAI_DIEN.ID,FK target: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_VP_DAI_DIEN,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL-derived.,IP_ELEC_ADDR_TYPE=PHONE,PHONE
+Electronic Address Value,Số điện thoại.,Text,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.DIEN_THOAI,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — fax.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL-derived.,IP_ELEC_ADDR_TYPE=FAX,FAX
+Electronic Address Value,Số fax.,Text,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.FAX,,IP_ELEC_ADDR_TYPE=FAX,

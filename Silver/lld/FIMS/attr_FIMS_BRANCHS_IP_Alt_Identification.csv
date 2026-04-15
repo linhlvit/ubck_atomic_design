@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Fund Management Company Organization Unit.,Surrogate Key,false,false,draft,FIMS.BRANCHS.id,FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã chi nhánh công ty quản lý quỹ.,Text,false,false,draft,FIMS.BRANCHS.id,FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FIMS.BRANCHS,
+Identification Type Code,Loại giấy tờ: giấy phép kinh doanh.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived.,IP_ALT_ID_TYPE=BUSINESS_LICENSE,BUSINESS_LICENSE
+Identification Number,Số giấy phép kinh doanh.,Text,true,false,draft,FIMS.BRANCHS.IdNo,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issue Date,Ngày cấp giấy phép kinh doanh.,Date,true,false,draft,FIMS.BRANCHS.IdDate,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Issuing Authority Name,Nơi cấp giấy phép kinh doanh.,Text,true,false,draft,FIMS.BRANCHS.IdAdd,,IP_ALT_ID_TYPE=BUSINESS_LICENSE,
+Identification Type Code,Loại giấy tờ: giấy phép hoạt động.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived.,IP_ALT_ID_TYPE=OPERATING_LICENSE,OPERATING_LICENSE
+Identification Number,Số giấy phép hoạt động.,Text,true,false,draft,FIMS.BRANCHS.RegNo,,IP_ALT_ID_TYPE=OPERATING_LICENSE,
+Issue Date,Ngày cấp giấy phép hoạt động.,Date,true,false,draft,FIMS.BRANCHS.RegDate,,IP_ALT_ID_TYPE=OPERATING_LICENSE,
+Issuing Authority Name,Nơi cấp giấy phép hoạt động.,Text,true,false,draft,FIMS.BRANCHS.RegAdd,,IP_ALT_ID_TYPE=OPERATING_LICENSE,

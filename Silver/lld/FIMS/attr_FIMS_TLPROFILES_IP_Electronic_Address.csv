@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Disclosure Representative Key Person.,Surrogate Key,false,false,draft,FIMS.TLPROFILES.Id,FK target: Disclosure Representative Key Person.Disclosure Representative Key Person Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã nhân sự CBTT.,Text,false,false,draft,FIMS.TLPROFILES.Id,FK target: Disclosure Representative Key Person.Disclosure Representative Key Person Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=FIMS.TLPROFILES,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,PHONE
+Electronic Address Value,Số điện thoại.,Text,true,false,draft,FIMS.TLPROFILES.Telephone,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — email.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL,EMAIL
+Electronic Address Value,Email.,Text,true,false,draft,FIMS.TLPROFILES.Email,,IP_ELEC_ADDR_TYPE=EMAIL,
