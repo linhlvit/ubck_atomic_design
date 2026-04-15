@@ -1,4 +1,4 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Rating Criterion Id,Khóa đại diện cho nhân tố chấm điểm đánh giá.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Rating Criterion Code,Mã định danh nhân tố. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RNKFACTOR.Id,BK chính.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.RNKFACTOR,
@@ -7,6 +7,6 @@ Parent Rating Criterion Id,FK tự thân — nhân tố cha.,Surrogate Key,true,
 Parent Rating Criterion Code,Mã nhân tố cha.,Text,true,false,draft,FMS.RNKFACTOR.ParentId,FK target: Rating Criterion.Rating Criterion Code. Pair with Parent Rating Criterion Id.,,
 Max Score,Điểm tối đa của nhân tố.,Percentage,true,false,draft,FMS.RNKFACTOR.MaxScore,,,
 Weight,Trọng số của nhân tố trong tổng điểm.,Percentage,true,false,draft,FMS.RNKFACTOR.Weight,,,
-Is Active Indicator,Nhân tố đang được áp dụng.,Indicator,true,false,draft,FMS.RNKFACTOR.IsActive,,,
+Is Active Flag,Nhân tố đang được áp dụng.,Boolean,true,false,draft,FMS.RNKFACTOR.IsActive,,,
 Created Timestamp,Ngày tạo bản ghi.,Timestamp,true,false,draft,FMS.RNKFACTOR.DateCreated,,,
 Updated Timestamp,Ngày cập nhật bản ghi.,Timestamp,true,false,draft,FMS.RNKFACTOR.DateModified,,,

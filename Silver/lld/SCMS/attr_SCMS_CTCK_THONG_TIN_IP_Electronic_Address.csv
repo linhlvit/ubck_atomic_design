@@ -1,0 +1,6 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến công ty chứng khoán.,Surrogate Key,false,false,draft,SCMS.CTCK_THONG_TIN.ID,FK target: Securities Company.Securities Company Id.,,
+Involved Party Code,Mã công ty chứng khoán.,Text,false,false,draft,SCMS.CTCK_THONG_TIN.ID,FK target: Securities Company.Securities Company Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_THONG_TIN,
+Electronic Address Type Code,Loại kênh liên lạc — website.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL-derived: hardcode WEBSITE.,IP_ELEC_ADDR_TYPE=WEBSITE,WEBSITE
+Electronic Address Value,Địa chỉ website.,Text,true,false,draft,SCMS.CTCK_THONG_TIN.WEBSITE,,IP_ELEC_ADDR_TYPE=WEBSITE,

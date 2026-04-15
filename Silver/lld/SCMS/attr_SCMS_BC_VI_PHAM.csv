@@ -1,10 +1,10 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Securities Company Report Violation Id,Khóa đại diện cho bản ghi vi phạm báo cáo.,Surrogate Key,false,true,draft,,PK surrogate.,,
-Securities Company Report Violation Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,SCMS.scms.BC_VI_PHAM.ID,BK chính. PK nguồn.,,
+Securities Company Report Violation Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,SCMS.BC_VI_PHAM.ID,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.BC_VI_PHAM,
-Securities Company Id,FK đến công ty chứng khoán vi phạm.,Surrogate Key,false,false,draft,SCMS.scms.BC_VI_PHAM.CTCK_THONG_TIN_ID,FK target: Securities Company.Securities Company Id.,,
-Securities Company Code,Mã công ty chứng khoán.,Text,false,false,draft,SCMS.scms.BC_VI_PHAM.CTCK_THONG_TIN_ID,FK target: Securities Company.Securities Company Code. Pair with Securities Company Id.,,
-Violation Date,Ngày vi phạm.,Date,true,false,draft,SCMS.scms.BC_VI_PHAM.NGAY_VI_PHAM,,,
-Reason,Lý do vi phạm.,Text,true,false,draft,SCMS.scms.BC_VI_PHAM.LY_DO,,,
-Violation Type Codes,Danh sách mã loại vi phạm.,Array<Text>,true,false,draft,SCMS.scms.BC_VI_PHAM_LOAI_VP.DM_LOAI_VI_PHAM_ID,"Pure junction BC_VI_PHAM_LOAI_VP → denormalize thành ARRAY. Scheme: SCMS_VIOLATION_TYPE. HLD decision: SCMS_HLD_Tier4.md.",,
-Updated Timestamp,Ngày cập nhật.,Timestamp,true,false,draft,SCMS.scms.BC_VI_PHAM.NGAY_CAP_NHAT,,,
+Securities Company Id,FK đến công ty chứng khoán vi phạm.,Surrogate Key,false,false,draft,SCMS.BC_VI_PHAM.CTCK_THONG_TIN_ID,FK target: Securities Company.Securities Company Id.,,
+Securities Company Code,Mã công ty chứng khoán.,Text,false,false,draft,SCMS.BC_VI_PHAM.CTCK_THONG_TIN_ID,FK target: Securities Company.Securities Company Code. Pair with Securities Company Id.,,
+Violation Date,Ngày vi phạm.,Date,true,false,draft,SCMS.BC_VI_PHAM.NGAY_VI_PHAM,,,
+Reason,Lý do vi phạm.,Text,true,false,draft,SCMS.BC_VI_PHAM.LY_DO,,,
+Violation Type Codes,Danh sách mã loại vi phạm.,Array<Text>,true,false,draft,SCMS.BC_VI_PHAM_LOAI_VP.DM_LOAI_VI_PHAM_ID,"Pure junction BC_VI_PHAM_LOAI_VP → denormalize thành ARRAY. Scheme: SCMS_VIOLATION_TYPE. HLD decision: SCMS_HLD_Tier4.md.",,
+Updated Timestamp,Ngày cập nhật.,Timestamp,true,false,draft,SCMS.BC_VI_PHAM.NGAY_CAP_NHAT,,,

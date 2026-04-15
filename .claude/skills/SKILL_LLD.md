@@ -103,11 +103,22 @@ Nếu bảng nguồn có grain = 1 Involved Party:
 - Trường liên lạc → **IP Electronic Address**
 - Trường giấy tờ → **IP Alt Identification**
 
+**Involved Party bao gồm cả cá nhân lẫn tổ chức.** Không phân biệt loại IP — chỉ cần entity chính đang mô tả 1 IP (cá nhân, tổ chức, công ty, chi nhánh...) là phải tách shared entity. Ví dụ: Securities Company Senior Personnel (cá nhân), Securities Company (tổ chức), Securities Company Organization Unit (chi nhánh) — đều phải tách địa chỉ/liên lạc sang shared entity.
+
 Kiểm tra `ref_shared_entity_classifications.csv` để dùng đúng Code đã chuẩn hóa. Nếu có giá trị mới chưa có → thêm vào ref file ngay, không để lại.
 
 Shared entity **không có PK surrogate riêng** — chỉ FK trỏ về entity chính.
 
-Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalized.
+**Tên trường chuẩn cho IP Alt Identification** — bắt buộc dùng đúng tên này:
+
+| Trường | Tên chuẩn | Data Domain |
+|---|---|---|
+| Loại giấy tờ | `Identification Type Code` | Classification Value |
+| Số giấy tờ | `Identification Number` | Text |
+| Ngày cấp | `Issue Date` | Date |
+| Nơi cấp | `Issuing Authority` | Text |
+
+Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalized. Ví dụ: snapshot tờ khai thuế, quyết định hành chính, log kỹ thuật — địa chỉ trong các entity này là denormalized hợp lệ.
 
 #### 4a. Quy tắc trường địa lý (quốc gia / tỉnh / huyện / xã)
 
@@ -161,6 +172,7 @@ Trước khi xuất file:
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest?
 - [ ] **Cross-check scheme**: Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột classification_context đều có trong `ref_shared_entity_classifications.csv`? Nếu thiếu → thêm vào ref trước khi kết thúc.
 - [ ] **Trường địa lý**: mã quốc gia/tỉnh/huyện/xã được xử lý đúng theo bối cảnh nguồn (FK Geographic Area / Classification Value no_lookup / Text denormalized)?
+- [ ] **Post-check**: Sau khi chạy aggregate, chạy `post_check_silver.py` và xử lý mọi warning trước khi kết thúc Tier?
 
 ## OUTPUT
 
@@ -246,6 +258,26 @@ Script tự động:
 - Ghi đè cả 2 file output
 
 **Kiểm tra sau khi chạy:** Script in ra số rows — báo cáo con số này cho người thiết kế xác nhận.
+
+### Bước 7 — Post-check sau khi aggregate
+
+Chạy script để phát hiện lỗi thiết kế trong `silver_attributes.csv`:
+
+```bash
+python Silver/lld/scripts/post_check_silver.py
+```
+
+Script kiểm tra 5 tiêu chí và in báo cáo — không sửa file nào.
+
+**Bảng xử lý kết quả:**
+
+| Check | Mô tả | Nguyên nhân phổ biến | Hành động |
+|---|---|---|---|
+| C1 | Source không map được attr nào | Source mới thêm vào manifest chưa có file attr | Tạo file attr cho source đó, chạy lại aggregate |
+| C2 | Thông tin liên lạc/địa chỉ trong entity chính | Quên tách shared entity ở Bước 4 | Tách trường sang IP Postal/Electronic Address, xóa khỏi entity chính |
+| C3 | Cùng tên attr nhưng data_domain khác nhau giữa các entity | Typo hoặc copy sai data domain từ entity khác | Sửa domain về giá trị chuẩn trong 12 Data Domain |
+| C4 | PK có nullable=true | Copy sai từ trường khác | Đặt `nullable=false` cho PK |
+| C5 | source_column không đúng 3 phần | Thừa schema (VD: `SCMS.scms.table.col`) hoặc thiếu source prefix | Sửa về đúng `SOURCE.table.column` |
 
 ### Quy tắc output
 

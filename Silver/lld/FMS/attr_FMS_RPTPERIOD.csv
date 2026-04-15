@@ -1,10 +1,10 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Reporting Period Id,Khóa đại diện cho kỳ báo cáo.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Reporting Period Code,Mã định danh kỳ báo cáo. Map từ PK bảng nguồn.,Text,false,false,draft,FMS.RPTPERIOD.Id,BK chính.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FMS.RPTPERIOD,
 Reporting Period Name,Tên kỳ báo cáo.,Text,false,false,draft,FMS.RPTPERIOD.PeriodName,,,
 Reporting Period Type Code,Kiểu kỳ báo cáo (tháng/quý/năm...).,Classification Value,true,false,draft,FMS.RPTPERIOD.PeriodType,Scheme: FMS_REPORTING_PERIOD_TYPE.,,
-Is Active Indicator,Kỳ báo cáo đang hoạt động.,Indicator,true,false,draft,FMS.RPTPERIOD.IsActive,,,
+Is Active Flag,Kỳ báo cáo đang hoạt động.,Boolean,true,false,draft,FMS.RPTPERIOD.IsActive,,,
 Created By,Người tạo bản ghi.,Text,true,false,draft,FMS.RPTPERIOD.CreatedBy,Mã người dùng hệ thống — denormalized.,,
 Created Timestamp,Ngày tạo bản ghi.,Timestamp,true,false,draft,FMS.RPTPERIOD.DateCreated,,,
 Updated Timestamp,Ngày cập nhật bản ghi.,Timestamp,true,false,draft,FMS.RPTPERIOD.DateModified,,,

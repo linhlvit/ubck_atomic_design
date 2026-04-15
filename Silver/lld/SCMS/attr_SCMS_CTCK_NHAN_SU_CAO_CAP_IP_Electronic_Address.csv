@@ -1,0 +1,12 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến nhân sự cao cấp CTCK.,Surrogate Key,false,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.ID,FK target: Securities Company Senior Personnel.Securities Company Senior Personnel Id.,,
+Involved Party Code,Mã nhân sự cao cấp.,Text,false,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.ID,FK target: Securities Company Senior Personnel.Securities Company Senior Personnel Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_NHAN_SU_CAO_CAP,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL-derived: hardcode PHONE.,IP_ELEC_ADDR_TYPE=PHONE,PHONE
+Electronic Address Value,Số điện thoại.,Text,true,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.DIEN_THOAI,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — fax.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL-derived: hardcode FAX.,IP_ELEC_ADDR_TYPE=FAX,FAX
+Electronic Address Value,Số fax.,Text,true,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.FAX,,IP_ELEC_ADDR_TYPE=FAX,
+Electronic Address Type Code,Loại kênh liên lạc — email.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL-derived: hardcode EMAIL.,IP_ELEC_ADDR_TYPE=EMAIL,EMAIL
+Electronic Address Value,Địa chỉ email.,Text,true,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.EMAIL,,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Type Code,Loại kênh liên lạc — email công bố thông tin.,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL-derived: hardcode EMAIL_DISCLOSURE.,IP_ELEC_ADDR_TYPE=EMAIL_DISCLOSURE,EMAIL_DISCLOSURE
+Electronic Address Value,Email dùng riêng cho công bố thông tin.,Text,true,false,draft,SCMS.CTCK_NHAN_SU_CAO_CAP.EMAIL_CONG_BO_TT,,IP_ELEC_ADDR_TYPE=EMAIL_DISCLOSURE,
