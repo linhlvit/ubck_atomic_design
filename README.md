@@ -25,8 +25,10 @@ ubck_atomic_design/
 │       │   ├── aggregate_silver.py               # Script tổng hợp attributes + entities
 │       │   ├── aggregate_out_of_scope.py         # Script tổng hợp bảng ngoài scope từ 7f
 │       │   ├── rename_entity.py                  # Script propagate đổi tên entity
-│       │   └── check_consistency.py              # Script kiểm tra nhất quán HLD vs silver_entities.csv
+│       │   ├── check_consistency.py              # Script kiểm tra nhất quán HLD vs silver_entities.csv
+│       │   └── post_check_source_coverage.py     # Script kiểm tra coverage 2 chiều: source vs Silver
 │       ├── manifest.csv                          # Danh sách tất cả LLD files + entity mapping
+│       ├── pending_design.csv                    # Cột nguồn chưa thiết kế (intentionally deferred)
 │       ├── ref_shared_entity_classifications.csv # Chuẩn hóa Classification Value scheme/code
 │       └── silver_attributes.csv                 # Tổng hợp tất cả attributes (auto-gen)
 ├── Source/                                       # Cấu trúc CSDL nguồn
@@ -305,6 +307,55 @@ Script tự động sinh:
 
 > **Lưu ý:** `aggregate_silver.py` đọc `bcv_core_object`, `bcv_concept`, `table_type`, `description` từ `silver_entities.csv` (source of truth) — không ghi đè các cột này.
 
+#### Post-check sau khi aggregate
+
+Sau khi chạy `aggregate_silver.py`, chạy thêm script kiểm tra chất lượng:
+
+```bash
+python Silver/lld/scripts/post_check_source_coverage.py
+```
+
+Script thực hiện **2 chiều kiểm tra**:
+
+| Check | Hướng | Mô tả |
+|---|---|---|
+| **CHECK A** | Source → Silver | Cột nguồn đã trong manifest nhưng chưa có mapping trong `silver_attributes.csv` |
+| **CHECK B** | Silver → Source | `source_column` trong Silver trỏ đến cột không tồn tại trong `Source/*_Columns.csv` |
+
+Output phân loại thành 3 nhóm:
+
+| Nhóm | Ký hiệu | Ý nghĩa |
+|---|---|---|
+| Chưa map | `- column` | Cần thiết kế hoặc thêm vào `pending_design.csv` |
+| Pending | `~ column` | Đã ghi nhận trong `pending_design.csv`, chờ xử lý |
+| Ghost mapping | `⚠ entity.attr` | Tên cột trong Silver không tồn tại ở nguồn — cần sửa attr file |
+
+**Các tùy chọn lọc:**
+
+```bash
+python Silver/lld/scripts/post_check_source_coverage.py --source SCMS      # chỉ kiểm tra nguồn SCMS
+python Silver/lld/scripts/post_check_source_coverage.py --table CTCK_THONG_TIN  # chỉ 1 bảng
+```
+
+**Xử lý kết quả:**
+
+| Check | Nguyên nhân phổ biến | Hành động |
+|---|---|---|
+| CHECK A — cột chưa map | Quên thiết kế hoặc bảng mới thêm vào manifest | Tạo/cập nhật attr file, hoặc thêm vào `pending_design.csv` |
+| CHECK A — cột pending | Cố ý defer | Theo dõi trong `pending_design.csv`, xử lý khi đến Tier tiếp theo |
+| CHECK B — ghost mapping | Tên cột gõ sai hoặc source đổi schema | Sửa `source_columns` trong attr file tương ứng |
+
+**`pending_design.csv`** — file ghi nhận các cột nguồn cố ý chưa thiết kế:
+
+| Cột | Mô tả |
+|---|---|
+| `source_system` | Tên source system |
+| `source_table` | Tên bảng nguồn |
+| `source_column` | Tên cột (hoặc `(all)` cho toàn bảng) |
+| `description` | Mô tả cột |
+| `reason` | Lý do defer |
+| `action` | Bước xử lý tiếp theo |
+
 ---
 
 ### Quy trình đổi tên Silver entity (sau review)
@@ -455,6 +506,8 @@ LLD: 38 files trong `Silver/lld/FMS/` — tất cả `draft`.
 | Manifest (source of truth) | `Silver/lld/manifest.csv` |
 | Shared Entity Classifications | `Silver/lld/ref_shared_entity_classifications.csv` |
 | Script tổng hợp | `Silver/lld/scripts/aggregate_silver.py` |
+| Script post-check coverage | `Silver/lld/scripts/post_check_source_coverage.py` |
 | Script đổi tên entity | `Silver/lld/scripts/rename_entity.py` |
 | Script kiểm tra nhất quán HLD | `Silver/lld/scripts/check_consistency.py` |
+| Cột nguồn chưa thiết kế | `Silver/lld/pending_design.csv` |
 | BCV knowledge base | `knowledge/` |
