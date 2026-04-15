@@ -1,0 +1,10 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến công ty chứng khoán.,Surrogate Key,false,false,draft,SCMS.CTCK_THONG_TIN.ID,FK target: Securities Company.Securities Company Id.,,
+Involved Party Code,Mã công ty chứng khoán.,Text,false,false,draft,SCMS.CTCK_THONG_TIN.ID,FK target: Securities Company.Securities Company Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_THONG_TIN,
+Address Type Code,Loại địa chỉ — trụ sở chính.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. ETL-derived: hardcode HEAD_OFFICE.,IP_ADDR_TYPE=HEAD_OFFICE,HEAD_OFFICE
+Address,Địa chỉ trụ sở chính.,Text,true,false,draft,SCMS.CTCK_THONG_TIN.DIA_CHI,,IP_ADDR_TYPE=HEAD_OFFICE,
+Geographic Area Id,FK đến tỉnh/thành phố trụ sở.,Surrogate Key,true,false,draft,SCMS.CTCK_THONG_TIN.TINH_THANH_ID,FK target: Geographic Area.Geographic Area Id.,IP_ADDR_TYPE=HEAD_OFFICE,
+Geographic Area Code,Mã tỉnh/thành phố trụ sở.,Text,true,false,draft,SCMS.CTCK_THONG_TIN.TINH_THANH_ID,FK target: Geographic Area.Geographic Area Code. Pair with Geographic Area Id.,IP_ADDR_TYPE=HEAD_OFFICE,
+District Name,Quận/huyện trụ sở.,Text,true,false,draft,SCMS.CTCK_THONG_TIN.QUAN_HUYEN,Text denormalized — không có bảng lookup quận/huyện trong scope.,IP_ADDR_TYPE=HEAD_OFFICE,
+Ward Name,Phường/xã trụ sở.,Text,true,false,draft,SCMS.CTCK_THONG_TIN.PHUONG_XA,Text denormalized.,IP_ADDR_TYPE=HEAD_OFFICE,

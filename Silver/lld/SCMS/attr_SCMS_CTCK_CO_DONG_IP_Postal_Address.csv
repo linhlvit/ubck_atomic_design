@@ -1,0 +1,8 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến cổ đông CTCK.,Surrogate Key,false,false,draft,SCMS.CTCK_CO_DONG.ID,FK target: Securities Company Shareholder.Securities Company Shareholder Id.,,
+Involved Party Code,Mã cổ đông.,Text,false,false,draft,SCMS.CTCK_CO_DONG.ID,FK target: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_CO_DONG,
+Address Type Code,Loại địa chỉ — nơi ở hiện tại.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. ETL-derived: hardcode CURRENT.,IP_ADDR_TYPE=CURRENT,CURRENT
+Address,Địa chỉ hiện tại.,Text,true,false,draft,SCMS.CTCK_CO_DONG.DIA_CHI_HIEN_TAI,,IP_ADDR_TYPE=CURRENT,
+Address Type Code,Loại địa chỉ — hộ khẩu thường trú.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. ETL-derived: hardcode PERMANENT.,IP_ADDR_TYPE=PERMANENT,PERMANENT
+Address,Hộ khẩu thường trú.,Text,true,false,draft,SCMS.CTCK_CO_DONG.HO_KHAU_THUONG_TRU,,IP_ADDR_TYPE=PERMANENT,
