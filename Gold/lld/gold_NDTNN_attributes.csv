@@ -43,6 +43,7 @@ Fact Foreign Investor Snapshot,Snapshot Date,INT,,YYYYMMDD — ngày dữ liệu
 Fact Foreign Investor Snapshot,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
 Fact Foreign Investor Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
 Fact Foreign Investor Snapshot,Investor Dimension Id,INT,FK → Foreign Investor Dimension,FK NĐT,Foreign Investor Dimension,Investor Dimension Id
+Fact Foreign Investor Snapshot,Custodian Bank Dimension Id,INT,FK → Custodian Bank Dimension,FK NHLK quản lý NĐT,Custodian Bank Dimension,Custodian Bank Dimension Id
 Fact Foreign Investor Capital Flow,Snapshot Date,INT,,YYYYMMDD — ngày cuối kỳ nửa tháng (15 hoặc cuối tháng),Reporting Period,Period End Date
 Fact Foreign Investor Capital Flow,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
 Fact Foreign Investor Capital Flow,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
@@ -79,4 +80,3 @@ Custodian Bank Dimension,Custodian Bank Code,VARCHAR,BK,Mã NHLK,Custodian Bank,
 Custodian Bank Dimension,Custodian Bank Name,NVARCHAR,,Tên NHLK,Custodian Bank,Custodian Bank Name
 Custodian Bank Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
 Custodian Bank Dimension,End Date,DATE,,9999-12-31 = hiện hành,,ETL derived
-Fact Foreign Investor Snapshot,Custodian Bank Dimension Id,INT,FK → Custodian Bank Dimension,FK NHLK quản lý NĐT,Custodian Bank Dimension,Custodian Bank Dimension Id
