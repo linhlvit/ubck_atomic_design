@@ -1,0 +1,8 @@
+gold_entity,table_type,status,description,source_table,FKs
+Calendar Date Dimension,dim,draft,Bảng lịch phục vụ slicer năm và phân tích theo thời gian,Generated,
+Securities Practitioner Dimension,dim,draft,Cá nhân hành nghề chứng khoán — ngày sinh / quốc tịch / trình độ học vấn,Securities Practitioner,
+Certificate Type Dimension,dim,draft,Danh mục loại chứng chỉ hành nghề,Classification Value,
+Certificate Status Dimension,dim,draft,Danh mục trạng thái chứng chỉ hành nghề,Classification Value,
+Fact Practitioner Snapshot,fact,draft,Snapshot người hành nghề có ít nhất 1 CCHN theo ngày,Securities Practitioner,Calendar Date Dimension.Date Dimension Id | Securities Practitioner Dimension.Practitioner Dimension Id
+Fact Certificate Snapshot,fact,draft,Snapshot chứng chỉ hành nghề được cấp theo ngày,Securities Practitioner License Certificate Document,Calendar Date Dimension.Date Dimension Id | Securities Practitioner Dimension.Practitioner Dimension Id | Certificate Type Dimension.Certificate Type Dimension Id | Certificate Status Dimension.Certificate Status Dimension Id
+Fact Violation,fact,draft,Sự kiện vi phạm hành vi của người hành nghề,Securities Practitioner Conduct Violation,Calendar Date Dimension.Date Dimension Id | Securities Practitioner Dimension.Practitioner Dimension Id
