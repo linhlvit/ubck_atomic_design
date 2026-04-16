@@ -1,0 +1,7 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Market Surveillance Compliance Report Row Data Id,Khóa đại diện cho dòng dữ liệu báo cáo tuân thủ.,Surrogate Key,false,true,draft,,,,
+Market Surveillance Compliance Report Row Data Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.compliance_report_data.id,BK chính. Map từ PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.compliance_report_data,
+Market Surveillance Compliance Report Instance Id,FK đến instance báo cáo tuân thủ.,Surrogate Key,false,false,draft,GSGD.compliance_report_data.report_master_id,FK target: Market Surveillance Compliance Report Instance.Market Surveillance Compliance Report Instance Id.,,
+Market Surveillance Compliance Report Instance Code,Mã instance báo cáo tuân thủ. Denormalized.,Text,false,false,draft,GSGD.compliance_report_data.report_master_id,FK target: Market Surveillance Compliance Report Instance.Market Surveillance Compliance Report Instance Code. Pair with Market Surveillance Compliance Report Instance Id.,,
+Row Data,Dữ liệu một dòng trong báo cáo tuân thủ (JSON/text raw). Schema không ổn định — không parse.,Text,true,false,draft,GSGD.compliance_report_data.row_data,,,

@@ -1,0 +1,9 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Market Surveillance Suspicious Account Group Id,Khóa đại diện cho nhóm tài khoản nghi vấn trong vụ việc.,Surrogate Key,false,true,draft,,,,
+Market Surveillance Suspicious Account Group Code,Mã nhóm tài khoản nghi vấn. BK.,Text,false,false,draft,GSGD.suspicious_account_group.group_code,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.suspicious_account_group,
+Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.suspicious_account_group.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.suspicious_account_group.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+Group Name,Tên nhóm tài khoản nghi vấn.,Text,true,false,draft,GSGD.suspicious_account_group.group_name,,,
+Description,Mô tả nhóm.,Text,true,false,draft,GSGD.suspicious_account_group.description,,,
+Relationship Criteria Code,"Tiêu chí phân nhóm: Danh tính, IP, MAC, Tiền.",Classification Value,true,false,draft,GSGD.suspicious_account_group.relationship_criteria,Scheme: GSGD_RELATIONSHIP_CRITERIA.,GSGD_RELATIONSHIP_CRITERIA,

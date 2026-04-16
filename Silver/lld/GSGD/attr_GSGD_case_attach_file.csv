@@ -1,0 +1,11 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Market Surveillance Case Document Attachment Id,Khóa đại diện cho file đính kèm vụ việc giám sát.,Surrogate Key,false,true,draft,,,,
+Market Surveillance Case Document Attachment Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.case_attach_file.id,BK chính. Map từ PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.case_attach_file,
+Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.case_attach_file.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.case_attach_file.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+File Name,Tên file đính kèm.,Text,true,false,draft,GSGD.case_attach_file.file_name,,,
+File Path,Đường dẫn file.,Text,true,false,draft,GSGD.case_attach_file.file_path,,,
+File Size,Kích thước file (bytes).,Text,true,false,draft,GSGD.case_attach_file.file_size,Lưu dạng Text — không có data domain chuẩn cho byte count.,,
+File Type Code,"Loại file: CSV, XLSX, PDF.",Classification Value,true,false,draft,GSGD.case_attach_file.file_type,Scheme: GSGD_FILE_TYPE.,GSGD_FILE_TYPE,
+File Group Code,"Nhóm file: 1=Hồ sơ của Sở, 2=Danh sách tài khoản nghi vấn.",Classification Value,true,false,draft,GSGD.case_attach_file.file_group,Scheme: GSGD_FILE_GROUP.,GSGD_FILE_GROUP,

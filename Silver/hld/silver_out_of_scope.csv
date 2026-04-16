@@ -1,4 +1,127 @@
 ﻿source_system,source_table,description,group,reason
+DCST,CONG_TY_KIEM_TOAN,Công ty kiểm toán,Group B,Thu thập tại source gốc.
+DCST,KIEM_TOAN_VIEN,Kiểm toán viên,Group B,Thu thập tại source gốc.
+DCST,THONG_TIN_CONG_TY,Thông tin công ty chứng khoán,Group B,Dữ liệu phát sinh từ nguồn gốc khác (SCMS). Thu thập tại source gốc.
+DCST,UBCK_BAO_CAO,Báo cáo UBCKNN,Group B,"Thu thập tại source gốc (FMS, IDS)."
+DCST,UBCK_BAO_CAO_CHI_TIET,Chi tiết báo cáo UBCKNN,Group B,Thu thập tại source gốc.
+DCST,UBCK_XU_PHAT,Quyết định xử phạt của UBCKNN,Group B,Dữ liệu phát sinh từ nguồn gốc khác (IDS/HT Thanh tra).
+DCST,"(user, permission, log, config)",Quản trị hệ thống,Group C (12 bảng),Không có FK đến bảng Group A. Không có giá trị nghiệp vụ.
+DCST,DANH_MUC,Danh mục tham chiếu,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value.
+DCST,NHOM_DANH_MUC,Nhóm danh mục tham chiếu,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value scheme.
+DCST,GOI_TIN,Quản lý trạng thái truyền nhận gói tin,System,System operational table — không có giá trị nghiệp vụ.
+FIMS,RPTPROCESS,Lưu lịch sử xử lý báo cáo,Activity Log,"Activity log tại nguồn — chỉ phục vụ vận hành hệ thống FIMS. UserId chỉ là system user, không map được sang Silver entity."
+FIMS,RELATIONSHIP,Danh mục quan hệ ủy quyền CBTT,Chưa thiết kế,Chưa có cấu trúc cột đầy đủ — chỉ có 1 cột Id.
+FIMS,CALENDAR,Lưu danh sách lịch hệ thống,Config,Operational/system data — không có giá trị nghiệp vụ
+FIMS,CALENDARMANAGERMENT,Lưu các thay đổi lịch hệ thống,Config,Operational/system data — không có giá trị nghiệp vụ
+FIMS,CDTWARN,Lưu danh sách điều kiện cảnh báo,Config,Operational/system data — không có giá trị nghiệp vụ
+FIMS,PARAWARN,Lưu danh sách tham số cảnh báo,Config,Operational/system data — không có giá trị nghiệp vụ
+FIMS,RPTPDSHT,Bảng trung gian giữa SHEET và RPTPERIOD,Config,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
+FIMS,SELFSETPD,Lưu danh sách cấu hình kỳ báo cáo do cán bộ UB tự thiết lập,Config,Operational/system data — không có giá trị nghiệp vụ
+FIMS,SYSVAR,Bảng lưu danh sách tham số hệ thống,Config,Operational/system data — không có giá trị nghiệp vụ
+FIMS,DOCUMENT,Lưu danh sách tài liệu hệ thống,Reference Data,Không có FK inbound từ bảng nghiệp vụ — tài liệu hệ thống nội bộ.
+FIMS,RPTOUTFILESAVE,Lưu danh sách file thống kê đã được gen tự động,Report Output,Operational/system data — không có giá trị nghiệp vụ
+FIMS,RPTOUTMANAGEMENT,Lưu danh sách cấu hình gen file thống kê tự động,Report Output,Operational/system data — không có giá trị nghiệp vụ
+FIMS,RPTTPOUT,Lưu danh sách biểu mẫu báo cáo đầu ra,Report Output,Báo cáo đầu ra hệ thống — không phải báo cáo nghiệp vụ thành viên nộp
+FIMS,RPTVALUESMANAGERMENT,Lưu quản lý các bảng lưu giá trị của báo cáo,Report Output,Operational/system data — không có giá trị nghiệp vụ
+FIMS,SHEETOUT,Lưu danh sách sheet của báo cáo đầu ra,Report Output,Không có FK inbound từ bảng nghiệp vụ
+FIMS,ANNOUNCEINVESHIS,Lưu lịch sử danh sách NĐT NN ủy quyền CBTT,Snapshot nguồn,Snapshot nguồn — cùng schema ANNOUNCEINVES.
+FIMS,AUTHOANNOUNCEHIS,Lưu danh sách lịch sử ủy quyền CBTT,Snapshot nguồn,Snapshot nguồn — cùng schema AUTHOANNOUNCE + IdOld.
+FIMS,CATEGORIESSTOCKHIS,Lưu danh sách lịch sử sở hữu chứng khoán,Snapshot nguồn,Snapshot nguồn — cùng schema CATEGORIESSTOCK.
+FIMS,INVESTORHIS,Lưu danh sách lịch sử của nhà đầu tư,Snapshot nguồn,Snapshot nguồn — cùng schema INVESTOR + IdOld. SCD2 xử lý tại ETL.
+FIMS,RPTHTORY,Lưu lịch sử thay đổi biểu mẫu báo cáo đầu vào,Snapshot nguồn,Snapshot nguồn — lịch sử phiên bản biểu mẫu.
+FIMS,SECURITIESACCOUNTHIS,Lưu danh sách lịch sử tài khoản chứng khoán,Snapshot nguồn,Snapshot nguồn — cùng schema SECURITIESACCOUNT.
+FIMS,TPOUTHTORY,Lưu danh sách lịch sử thay đổi biểu mẫu báo cáo đầu ra,Snapshot nguồn,Snapshot nguồn.
+FIMS,CERTFCATE,Lưu danh sách chứng thư số,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,EMAILSENTSYSTEM,Lưu danh sách trao đổi thông tin,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,ERRORLOG,Lưu lịch sử lỗi hệ thống,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,GROUPROLES,Lưu danh sách quyền được phân cho nhóm,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,GROUPS,Lưu danh sách nhóm người dùng,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,GROUPUSERS,Lưu danh sách người dùng được phân vào nhóm,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,MENUS,Lưu danh sách các quyền của hệ thống,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,NOTIFICATION,Lưu danh sách thông báo,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,REFRESHTOKEN,Lưu danh sách các phiên làm việc của người dùng,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,ROLES,Lưu danh sách nhóm quyền,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,SYSEMAIL,Lưu danh sách trao đổi thông tin gửi qua mail,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,SYSTEMINTEGRATIONCONFIG,Lưu danh sách cấu hình kết nối hệ thống,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,SYSTEMINTEGRATIONDATA,Lưu dữ liệu kết nối MSS,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,USERRPTO,Lưu danh sách phân quyền sử dụng báo cáo đầu ra,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,USERS,Lưu danh sách người dùng trên hệ thống,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,USERSESSIONS,Lưu danh sách theo dõi tài khoản đang truy cập,System,Operational/system data — không có giá trị nghiệp vụ
+FIMS,USERSMENUS,Lưu danh sách quyền được phân cho người dùng,System,Operational/system data — không có giá trị nghiệp vụ
+FMS,FGBRBUP,Lịch sử thay đổi VPĐD/CN QLQ NN,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
+FMS,FUNDHISTORY,Lịch sử quỹ đầu tư,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
+FMS,SECHISTORY,Lịch sử thông tin công ty QLQ,Audit Log nguồn,Audit Log — PrevValue/ValueChange/Action/DateChange
+FMS,TLPRHISTORY,Lịch sử nhân sự,Audit Log nguồn,Audit Log — cùng pattern SECHISTORY
+FMS,RPTHTORY,Lịch sử thay đổi báo cáo đầu vào,Chưa có cột,Chưa có thông tin cột
+FMS,RPTPDSHT,Bảng trung gian SHEETS và RPTPERIOD,Chưa có cột,Chưa có thông tin cột
+FMS,RPTPROCESS,Lịch sử xử lý báo cáo thành viên,Chưa có cột,Chưa có thông tin cột
+FMS,RPTTEMP,Danh sách biểu mẫu báo cáo đầu vào,Chưa có cột,Chưa có thông tin cột — RPTVALUES FK đến
+FMS,RPTTPOUT,Danh sách biểu mẫu báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
+FMS,SELFSETPD,Thành viên tự thiết lập gửi báo cáo,Chưa có cột,Chưa có thông tin cột
+FMS,SHEET,Danh sách sheet báo cáo đầu vào,Chưa có cột,Chưa có thông tin cột — RPTVALUES FK đến
+FMS,SHEETOUT,Danh sách sheet báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
+FMS,STAKE,Danh sách các bên liên quan,Chưa có cột,Chưa có thông tin cột
+FMS,STTRGTOUT,Cấu hình lấy dữ liệu báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
+FMS,TOTSTTG,Cấu hình dữ liệu đầu ra với ô dữ liệu,Chưa có cột,Chưa có thông tin cột
+FMS,TPOUTHTORY,Lịch sử thay đổi báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
+FMS,USERRPTO,Phân quyền người dùng UBCK với báo cáo đầu ra,Chưa có cột,Chưa có thông tin cột
+FMS,RNKFACTHISTORY,Lưu kết quả các lần lưu bảng tổng hợp đánh giá,Chờ thiết kế,"Trong scope nghiệp vụ, chưa có thông tin cột"
+FMS,RNKGRFTOR,Bảng trung gian Ranks và RNKFACTOR,Chờ thiết kế,"Trong scope nghiệp vụ, chưa có thông tin cột"
+FMS,DTSCBMN,Phân quyền dữ liệu ngân hàng LKGS cho chuyên viên,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,DTSCFND,Phân quyền dữ liệu QĐT cho chuyên viên,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,DTSCFR,Phân quyền dữ liệu VPĐD/CN QLQ NN cho chuyên viên,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,DTSCOPE,Phân quyền dữ liệu — phạm vi,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,MENUS,Danh mục quyền chức năng,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,NOTIFICATION,Thông báo hệ thống,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,REFRESHTOKEN,Phiên làm việc (Token đăng nhập),Hệ thống / Phân quyền,Hạ tầng IT
+FMS,ROLES,Nhóm quyền chức năng,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,ROLESMENUS,Phân quyền menu theo nhóm quyền,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,SECURITIESREPORT,Thiết lập hiển thị báo cáo công ty QLQ,Hệ thống / Phân quyền,Cấu hình UI
+FMS,SYSEMAIL,Nội dung trao đổi thông tin,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,TABSINFO,Thiết lập hiển thị dữ liệu,Hệ thống / Phân quyền,Cấu hình UI
+FMS,USERS,Quản lý người dùng hệ thống,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,USERSESSIONS,Quản lý tài khoản đang truy cập,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,USERSMENUS,Phân quyền chức năng cho người dùng,Hệ thống / Phân quyền,Hạ tầng IT
+FMS,CALENDAR,Lịch làm việc và lịch nghỉ,Isolated,Không FK đến bảng nghiệp vụ nào
+FMS,CERTFCATE,Chứng thư số của thành viên thị trường,Isolated,Không FK đến bảng nghiệp vụ nào
+FMS,PARAWARN,Danh sách tham số cảnh báo,Isolated,Không FK đến/từ bảng nghiệp vụ nào
+FMS,PARVALUE,Danh sách mệnh giá cổ phần,Isolated,"Không có bảng nào FK đến — xác nhận orphan, loại khỏi scope."
+FMS,SYSVAR,Danh sách tham số hệ thống,Isolated,Không FK đến bảng nghiệp vụ nào
+FMS,BRCHBUP,Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước,Snapshot nguồn,Snapshot — FK đến SECHISTORY (Audit Log)
+FMS,FNDBUP,Bản ghi chi tiết lịch sử quỹ đầu tư,Snapshot nguồn,Chưa có cột — dự kiến Snapshot pattern
+FMS,SECBUP,Chi tiết lịch sử công ty QLQ (bản ghi trước/sau),Snapshot nguồn,Snapshot — IsBefore + SecData (blob)
+FMS,TLPROBUP,Chi tiết lịch sử nhân sự (bản ghi trước/sau),Snapshot nguồn,Snapshot — IsBefore + TLData (blob)
+FMS,~~MBCHANGE~~,~~Lịch sử thay đổi vốn góp nhà đầu tư quỹ~~,~~Audit Log nguồn~~,✅ Reclassified — trong scope Silver (Tier 4). Xem Investment Fund Investor Capital Change Log.
+GSGD,account_group_history,Lịch sử thay đổi nhóm tài khoản (OldValue/NewValue),Audit Log nguồn,"Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ"
+GSGD,company_event_history,Lịch sử thay đổi sự kiện tổ chức niêm yết (OldValue/NewValue),Audit Log nguồn,"Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ"
+GSGD,investor_account_history,Lịch sử thay đổi tài khoản (OldValue/NewValue),Audit Log nguồn,"Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ"
+GSGD,securities_group_history,Lịch sử thay đổi nhóm chứng khoán (OldValue/NewValue),Audit Log nguồn,"Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ"
+GSGD,audit_log,Nhật ký hệ thống,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,report_template,Mẫu báo cáo (cấu hình UI),Operational / System,"Operational/system data — cấu hình biểu mẫu chạy báo cáo, không có giá trị nghiệp vụ"
+GSGD,report_template_workflow,Cấu hình biểu mẫu cho quy trình phân tích,Operational / System,Operational/system data — không có FK inbound từ bảng nghiệp vụ nào có giá trị thiết kế Silver
+GSGD,system_config,Cấu hình hệ thống,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,system_parameter,Tham số hệ thống,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,system_permission,Quyền hệ thống,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,system_user,Người dùng hệ thống,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,user_group,Nhóm người dùng,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,user_group_member,Thành viên nhóm người dùng,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,user_table_config,Cấu hình hiển thị bảng theo user,Operational / System,Operational/system data — không có giá trị nghiệp vụ
+GSGD,analysis_define_report_template,Tham số cấu hình biểu mẫu báo cáo,Out of scope,Pure junction giữa analysis_attribute_define và report_template (ngoài scope) — không có giá trị nghiệp vụ Silver
+GSGD,category_config,Cấu hình danh mục dùng chung,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
+GSGD,category_item,Item trong danh mục dùng chung,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
+NHNCK,CertificateNumberTemplates,Template số chứng chỉ,Config,Config/template data.
+NHNCK,CertificateDepartments,Phòng ban chứng chỉ số,Digital Cert,Operational/PKI data.
+NHNCK,CertificateDocuments,Tài liệu chứng chỉ số,Digital Cert,Operational/PKI data.
+NHNCK,CertificateSpecializations,Chuyên môn chứng chỉ số,Digital Cert,Operational/PKI data.
+NHNCK,DigitalCertificateUsers,Người dùng chứng chỉ số,Digital Cert,Operational/PKI data.
+NHNCK,DigitalCertificates,Chứng chỉ số,Digital Cert,Operational/PKI data — không phải CCHN.
+NHNCK,DepartmentAccess,Quyền truy cập theo phòng ban,System / Auth,Operational/system data.
+NHNCK,PermissionRoles,Phân quyền theo vai trò,System / Auth,Operational/system data.
+NHNCK,Permissions,Danh mục quyền hạn,System / Auth,Operational/system data.
+NHNCK,Roles,Danh mục vai trò,System / Auth,Operational/system data.
+NHNCK,UserRoles,Phân quyền người dùng,System / Auth,Operational/system data — không có giá trị nghiệp vụ.
+NHNCK,SystemParameters,Tham số hệ thống,System / Config,Config data.
+NHNCK,ActionLogs,Nhật ký hành động hệ thống,System / Log,System audit log — không phải nghiệp vụ CCHN.
 SCMS,BC_THANH_VIEN_LS,Lịch sử các lần gửi báo cáo,Audit Log nguồn,"Audit Log nguồn — snapshot từng phiên bản gửi, không phải entity nghiệp vụ Silver"
 SCMS,BM_BAO_CAO_LS,Lịch sử biểu mẫu báo cáo,Audit Log nguồn,Audit Log nguồn — cần xác nhận (xem Điểm #7)
 SCMS,CTCK_HS_LICH_SU,Hồ sơ lịch sử thay đổi của CTCK,Audit Log nguồn,"Audit Log nguồn — ghi lịch sử dạng generic (BANG_LIEN_KET + CHI_TIET_ID), không phải sự kiện nghiệp vụ cụ thể"

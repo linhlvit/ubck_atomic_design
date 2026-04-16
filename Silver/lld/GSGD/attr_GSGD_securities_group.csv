@@ -1,0 +1,9 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Securities Watchlist Group Id,Khóa đại diện cho nhóm chứng khoán giám sát.,Surrogate Key,false,true,draft,,,,
+Securities Watchlist Group Code,Mã nhóm (hệ thống tự sinh). BK.,Text,false,false,draft,GSGD.securities_group.group_code,BK chính.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.securities_group,
+Group Name,Tên nhóm chứng khoán.,Text,true,false,draft,GSGD.securities_group.group_name,,,
+Group Type Code,"Loại nhóm: 1=Thường, 2=Theo ngành.",Classification Value,true,false,draft,GSGD.securities_group.group_type,Scheme: GSGD_SECURITIES_GROUP_TYPE.,GSGD_SECURITIES_GROUP_TYPE,
+Description,Mô tả nhóm.,Text,true,false,draft,GSGD.securities_group.description,,,
+Group Status Code,"Trạng thái: 1=Chờ duyệt, 2=Phê duyệt, 3=Từ chối.",Classification Value,true,false,draft,GSGD.securities_group.status,Scheme: GSGD_GROUP_STATUS. Cần profile giá trị thực tế.,GSGD_GROUP_STATUS,
+Securities Codes,"Danh sách mã chứng khoán trong nhóm. Denormalized từ bảng junction securities_group_member.",Array<Text>,true,false,draft,GSGD.securities_group_member.securities_code_id,"Pure junction securities_group_member → denormalize thành ARRAY. securities_code ngoài scope GSGD. HLD decision: GSGD_HLD_Tier2.md 6f-2.",,

@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Account Investor Group Member Id,Khóa đại diện cho thành viên nhóm tài khoản.,Surrogate Key,false,true,draft,,,,
+Account Investor Group Member Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.account_group_member.id,BK chính. Map từ PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.account_group_member,
+Account Investor Group Id,FK đến nhóm tài khoản.,Surrogate Key,false,false,draft,GSGD.account_group_member.group_id,FK target: Account Investor Group.Account Investor Group Id.,,
+Account Investor Group Code,Mã nhóm tài khoản. Denormalized.,Text,false,false,draft,GSGD.account_group_member.group_id,FK target: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id.,,
+Investor Trading Account Id,FK đến tài khoản giao dịch chứng khoán.,Surrogate Key,false,false,draft,GSGD.account_group_member.account_id,FK target: Investor Trading Account.Investor Trading Account Id.,,
+Investor Trading Account Code,Mã tài khoản giao dịch. Denormalized.,Text,false,false,draft,GSGD.account_group_member.account_id,FK target: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id.,,
+Member Status Code,Trạng thái tài khoản trong nhóm.,Classification Value,true,false,draft,GSGD.account_group_member.status,Scheme: GSGD_ACCOUNT_STATUS.,GSGD_ACCOUNT_STATUS,
+Relationship Type,"Mối quan hệ: Danh tính, IP, MAC, Tiền.",Text,true,false,draft,GSGD.account_group_member.relationship_type,,,

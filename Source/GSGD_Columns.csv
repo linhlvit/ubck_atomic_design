@@ -1,0 +1,736 @@
+﻿Tên bảng,Tên trường,Mô tả,Khóa,Ghi chú (FK suy luận)
+investor_account,id,"Primary key, auto increment",PK,
+investor_account,account_code,Số tài khoản (từ VSDC),,
+investor_account,account_name,Họ và tên,,
+investor_account,contact_address,"Địa chỉ liên lạc (từ CTCK, có thể sửa)",,
+investor_account,identity_number,Số CCCD/Số đăng ký sở hữu,,
+investor_account,identity_issue_date,Ngày cấp,,
+investor_account,identity_issue_place,Nơi cấp,,
+investor_account,open_date,Ngày mở tài khoản,,
+investor_account,close_date,Ngày đóng tài khoản,,
+investor_account,last_modified_date,Ngày thay đổi thông tin,,
+investor_account,nationality,Quốc tịch,,
+investor_account,investor_type,"Loại hình NĐT: 1=Cá nhân, 2=Tổ chức",,
+investor_account,date_of_birth,"Ngày tháng năm sinh/ngày thành lập DN (từ CTCK, có thể sửa)",,
+investor_account,legal_representative,"Người đại diện theo pháp luật (từ CTCK, có thể sửa)",,
+investor_account,permanent_address,"Địa chỉ thường trú (từ CTCK, có thể sửa)",,
+investor_account,margin_account_open_date,Ngày mở TK ký quỹ,,
+investor_account,phone_number,"Số điện thoại (từ CTCK, có thể sửa)",,
+investor_account,email,"Email (từ CTCK, có thể sửa)",,
+investor_account,bank_account_holder_name,"Tên chủ tài khoản ngân hàng (từ CTCK, có thể sửa)",,
+investor_account,bank_account_number,"Số tài khoản ngân hàng (từ CTCK, có thể sửa)",,
+investor_account,bank_account_name,"Tên ngân hàng (từ CTCK, có thể sửa)",,
+investor_account,margin_service_enabled,Dịch vụ TC sử dụng - Ký quỹ,,
+investor_account,advance_payment_service_enabled,Dịch vụ TC sử dụng - Ứng trước tiền bán,,
+investor_account,account_authorization_enabled,Dịch vụ TC sử dụng - Hợp đồng tài chính khác,,
+investor_account,authorized_person_name,Người nhận ủy quyền,,
+investor_account,authorization_date,Ngày nhận ủy quyền,,
+investor_account,approval_status,Trạng thái phê duyệt tài khoản,,
+investor_account,account_status,"Trạng thái: 0=Đóng, 1=Mở",,
+investor_account,domestic_foreign_flag,"Trong nước/Nước ngoài: 0=Trong nước, 1=Nước ngoài",,
+investor_account,data_source,"Nguồn dữ liệu chính: VSDC, CTCK",,
+investor_account,created_at,Ngày tạo,,
+investor_account,updated_at,Ngày sửa cuối,,
+investor_account,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+investor_account,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+investor_account,created_by_name,Tên người tạo,,
+investor_account,updated_by_name,Tên người cập nhật,,
+investor_account,deleted,"Soft delete: 0=Active, 1=Deleted",,
+investor_account_history,id,Primary key,PK,
+investor_account_history,account_id,Foreign key với investor_account,FK,FK → investor_account.id
+investor_account_history,account_code,Số tài khoản,,
+investor_account_history,change_date,Ngày thay đổi,,
+investor_account_history,change_type,Loại thay đổi,,
+investor_account_history,old_value,Giá trị cũ,,
+investor_account_history,new_value,Giá trị mới,,
+investor_account_history,change_source,"Nguồn thay đổi: VSDC, USER",,
+investor_account_history,changed_by,Người thay đổi,,
+investor_account_history,approval_status,Trạng thái phê duyệt,,
+investor_account_history,approval_comment,Nội dung phê duyệt,,
+investor_account_history,approval_by_id,Id người phê duyệt,,FK suy luận → system_user.id
+investor_account_history,approval_name,Tên người phê duyệt,,
+investor_account_history,created_at,Ngày tạo,,
+investor_account_history,updated_at,Ngày sửa cuối,,
+investor_account_history,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+investor_account_history,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+investor_account_history,created_by_name,Tên người tạo,,
+investor_account_history,updated_by_name,Tên người cập nhật,,
+investor_account_history,deleted,Soft delete,,
+account_financial_service,id,Primary key,PK,
+account_financial_service,account_id,Foreign key (investor_account.id),FK,FK → investor_account.id
+account_financial_service,service_type,"Loại dịch vụ: 1=Ký quỹ, 2=Ứng trước tiền bán, 3=HĐ tài chính khác",,
+account_financial_service,contract_number,Số hợp đồng,,
+account_financial_service,contract_date,Ngày ký hợp đồng,,
+account_financial_service,created_at,Ngày tạo,,
+account_financial_service,updated_at,Ngày sửa cuối,,
+account_financial_service,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+account_financial_service,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+account_financial_service,created_by_name,Tên người tạo,,
+account_financial_service,updated_by_name,Tên người cập nhật,,
+account_financial_service,deleted,Soft delete,,
+account_authorization,id,Primary key,PK,
+account_authorization,account_id,Foreign key (investor_account.id),FK,FK → investor_account.id
+account_authorization,authorized_person_name,Người nhận ủy quyền,,
+account_authorization,authorization_date,Ngày nhận ủy quyền,,
+account_authorization,created_at,Ngày tạo,,
+account_authorization,updated_at,Ngày sửa cuối,,
+account_authorization,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+account_authorization,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+account_authorization,created_by_name,Tên người tạo,,
+account_authorization,updated_by_name,Tên người cập nhật,,
+account_authorization,deleted,Soft delete,,
+account_group,id,Primary key,PK,
+account_group,group_code,Mã nhóm (hệ thống tự sinh),,
+account_group,group_name,Tên nhóm,,
+account_group,securities_code_id,Mã chứng khoán,FK,FK → securities_code.id
+account_group,stock_code,Mã cổ phiếu,,
+account_group,case_file_id,Mã vụ việc (nếu có),FK,FK → case_file.id
+account_group,description,Mô tả nhóm,,
+account_group,relation_type_id,Mã loại quan hệ,,FK suy luận → category_item.id
+account_group,characteristic,Đặc điểm,,
+account_group,contact_person_account,Người liên hệ,,
+account_group,approval_status,Trạng thái phê duyệt,,
+account_group,group_type,"Loại nhóm: 1=Thường, 2=Nghi vấn",,
+account_group,created_at,Ngày tạo,,
+account_group,updated_at,Ngày sửa cuối,,
+account_group,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+account_group,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+account_group,created_by_name,Tên người tạo,,
+account_group,updated_by_name,Tên người cập nhật,,
+account_group,deleted,Soft delete,,
+account_group_member,id,Primary key,PK,
+account_group_member,group_id,Foreign key (account_group.id),FK,FK → account_group.id
+account_group_member,account_id,Foreign key (investor_account.id),FK,FK → investor_account.id
+account_group_member,status,Trạng thái tài khoản trong nhóm,,
+account_group_member,relationship_type,"Mối quan hệ: Danh tính, IP, MAC, Tiền",,
+account_group_member,created_at,Ngày tạo,,
+account_group_member,updated_at,Ngày sửa cuối,,
+account_group_member,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+account_group_member,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+account_group_member,created_by_name,Tên người tạo,,
+account_group_member,updated_by_name,Tên người cập nhật,,
+account_group_member,deleted,Soft delete,,
+account_group_history,id,Primary key,PK,
+account_group_history,group_id,Id của nhóm tài khoản,FK,FK suy luận → account_group.id
+account_group_history,group_code,Mã nhóm,,
+account_group_history,change_date,Ngày thay đổi,,
+account_group_history,change_type,Loại thay đổi,,
+account_group_history,old_value,Giá trị cũ,,
+account_group_history,new_value,Giá trị mới,,
+account_group_history,change_source,"Nguồn thay đổi: VSDC, USER",,
+account_group_history,changed_by_id,Người thay đổi,,FK suy luận → system_user.id
+account_group_history,approval_status,Trạng thái phê duyệt,,
+account_group_history,approval_comment,Nội dung phê duyệt,,
+account_group_history,approved_by_id,Người phê duyệt,,FK suy luận → system_user.id
+account_group_history,created_at,Ngày tạo,,
+account_group_history,updated_at,Ngày sửa cuối,,
+account_group_history,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+account_group_history,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+account_group_history,created_by_name,Tên người tạo,,
+account_group_history,updated_by_name,Tên người cập nhật,,
+account_group_history,deleted,Soft delete,,
+account_relationship,id,Primary key,PK,
+account_relationship,account_id_1,investor_accunt.id,FK,FK → investor_account.id
+account_relationship,account_id_2,investor_account.id,FK,FK → investor_account.id
+account_relationship,account_group_id,account_group.id,FK,FK → account_group.id
+account_relationship,category_item_id,"category_item.id
+- Là ID loại kiểu quan hệ",FK,FK → category_item.id
+account_relationship,relationship_value,"Giá trị quan hệ (IP address, MAC address, etc.)",,
+account_relationship,strength,Độ mạnh quan hệ (1-100),,
+account_relationship,created_at,Ngày tạo,,
+account_relationship,updated_at,Ngày sửa cuối,,
+account_relationship,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+account_relationship,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+account_relationship,created_by_name,Tên người tạo,,
+account_relationship,updated_by_name,Tên người cập nhật,,
+account_relationship,deleted,Soft delete,,
+company_event,id,Primary key,PK,
+company_event,company_name,Tên sự kiện tổ chức niêm yết,,
+company_event,event_type_id,Loại sự kiện,,FK suy luận → category_item.id
+company_event,event_id,Sự kiện,,
+company_event,event_date,Ngày sự kiện,,
+company_event,approval_status,Trạng thái phê duyệt,,
+company_event,created_at,Ngày tạo,,
+company_event,updated_at,Ngày sửa cuối,,
+company_event,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+company_event,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+company_event,created_by_name,Tên người tạo,,
+company_event,updated_by_name,Tên người cập nhật,,
+company_event,deleted,Soft delete,,
+company_event,stock_code,Mã chứng khoán,,
+company_event_history,id,Primary key,PK,
+company_event_history,company_event_id,Id của sự kiện tổ chức niêm yết,FK,FK suy luận → company_event.id
+company_event_history,change_date,Ngày thay đổi,,
+company_event_history,change_type,Loại thay đổi,,
+company_event_history,old_value,Giá trị cũ,,
+company_event_history,new_value,Giá trị mới,,
+company_event_history,change_source,"Nguồn thay đổi: VSDC, USER",,
+company_event_history,changed_by,Người thay đổi,,
+company_event_history,approval_status,Trạng thái phê duyệt,,
+company_event_history,approval_comment,Nội dung phê duyệt,,
+company_event_history,approval_by_id,Id người phê duyệt,,FK suy luận → system_user.id
+company_event_history,approval_name,Tên người phê duyệt,,
+company_event_history,created_at,Ngày tạo,,
+company_event_history,updated_at,Ngày sửa cuối,,
+company_event_history,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+company_event_history,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+company_event_history,created_by_name,Tên người tạo,,
+company_event_history,updated_by_name,Tên người cập nhật,,
+company_event_history,deleted,Soft delete,,
+securities_group,id,Primary key,PK,
+securities_group,group_code,Mã nhóm (hệ thống tự sinh),,
+securities_group,group_name,,,
+securities_group,group_type,"Loại nhóm: 1=Thường
+2=Theo ngành",,
+securities_group,description,Mô tả nhóm,,
+securities_group,status,"Trạng thái: 
+1=Chờ duyệt 2=Phê duyệt
+3=Từ chối",,
+securities_group,created_at,Ngày tạo,,
+securities_group,updated_at,Ngày sửa cuối,,
+securities_group,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+securities_group,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+securities_group,created_by_name,Tên người tạo,,
+securities_group,updated_by_name,Tên người cập nhật,,
+securities_group,deleted,Soft delete,,
+securities_group_member,id,Primary key,PK,
+securities_group_member,group_id,securities_group.id,FK,FK → securities_group.id
+securities_group_member,securities_code_id,securities_code.id,FK,FK → securities_code.id
+securities_group_member,created_at,Ngày tạo,,
+securities_group_member,updated_at,Ngày sửa cuối,,
+securities_group_member,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+securities_group_member,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+securities_group_member,created_by_name,Tên người tạo,,
+securities_group_member,updated_by_name,Tên người cập nhật,,
+securities_group_member,deleted,Soft delete,,
+securities_group_history,id,Primary key,PK,
+securities_group_history,group_id,Id của nhóm chứng khoán(securities_group.id),FK,FK → securities_group.id
+securities_group_history,group_code,Mã nhóm,,
+securities_group_history,change_date,Ngày thay đổi,,
+securities_group_history,change_type,Loại thay đổi,,
+securities_group_history,old_value,Giá trị cũ (null nếu là tạo mới),,
+securities_group_history,new_value,Giá trị mới (null nếu là xóa),,
+securities_group_history,change_source,"Nguồn thay đổi: VSDC, USER",,
+securities_group_history,changed_by_id,Người thay đổi,,FK suy luận → system_user.id
+securities_group_history,approval_status,Trạng thái phê duyệt,,
+securities_group_history,approval_comment,Nội dung phê duyệt,,
+securities_group_history,approved_by_id,Người phê duyệt,,FK suy luận → system_user.id
+securities_group_history,created_at,Ngày tạo,,
+securities_group_history,updated_at,Ngày sửa cuối,,
+securities_group_history,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+securities_group_history,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+securities_group_history,created_by_name,Tên người tạo,,
+securities_group_history,updated_by_name,Tên người cập nhật,,
+securities_group_history,deleted,Soft delete,,
+case_file,id,Primary key,PK,
+case_file,case_file_code,Mã vụ việc (tự sinh: MãCK+DDMMYYYY),,
+case_file,case_file_type,,,
+case_file,securities_code_id,Mã chứng khoán(securities_code.id),FK,FK → securities_code.id
+case_file,securities_code,Mã chứng khoán,,
+case_file,information_source,Nguồn thông tin,,
+case_file,information_source_detail,Nguồn thông tin chi tiết,,
+case_file,completion_date,Thời gian hoàn thành vụ việc,,
+case_file,start_date,,,
+case_file,end_date,,,
+case_file,assigned_to,Người được phân công,,
+case_file,case_file_status,,,
+case_file,notes,Ghi chú,,
+case_file,created_at,Ngày tạo,,
+case_file,updated_at,Ngày sửa cuối,,
+case_file,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+case_file,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+case_file,created_by_name,Tên người tạo,,
+case_file,updated_by_name,Tên người cập nhật,,
+case_file,deleted,Soft delete,,
+case_attach_file,id,Primary key,PK,
+case_attach_file,case_file_id,case_file.id,FK,FK → case_file.id
+case_attach_file,file_name,,,
+case_attach_file,file_path,,,
+case_attach_file,file_size,Kích thước file (bytes),,
+case_attach_file,file_type,"Loại file: CSV, XLSX, PDF",,
+case_attach_file,file_group,"1=Hồ sơ của Sở, 2=Danh sách tài khoản nghi vấn",,
+case_attach_file,created_at,Ngày tạo,,
+case_attach_file,updated_at,Ngày sửa cuối,,
+case_attach_file,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+case_attach_file,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+case_attach_file,created_by_name,Tên người tạo,,
+case_attach_file,updated_by_name,Tên người cập nhật,,
+case_attach_file,deleted,Soft delete,,
+case_file_workflow,id,Primary key,PK,
+case_file_workflow,case_file_id,case_file.id,FK,FK → case_file.id
+case_file_workflow,workflow_type,"1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+case_file_workflow,step_order,,,
+case_file_workflow,step_name,Tên bước,,
+case_file_workflow,report_template_id,Mẫu báo cáo(report_template.id),FK,FK → report_template.id
+case_file_workflow,status,"Trạng thái: 0=Chưa thực hiện, 1=Đang thực hiện, 2=Hoàn thành",,
+case_file_workflow,created_at,Ngày tạo,,
+case_file_workflow,updated_at,Ngày sửa cuối,,
+case_file_workflow,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+case_file_workflow,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+case_file_workflow,created_by_name,Tên người tạo,,
+case_file_workflow,updated_by_name,Tên người cập nhật,,
+case_file_workflow,deleted,Soft delete,,
+case_approval_step,id,Primary key,PK,
+case_approval_step,case_file_id,case_file.id,FK,FK → case_file.id
+case_approval_step,step_code,"1 = Chuyên viên khởi tạo
+2 = Trưởng ban phê duyệt
+3 = Phó Trưởng ban phân công
+4 = Chuyên viên xử lý",,
+case_approval_step,step_name,Tên bước (phục vụ hiển thị),,
+case_approval_step,assigned_user_id,User đang được giao duyệt bước này (có thể null nếu phân công theo role),,FK suy luận → system_user.id
+case_approval_step,assigned_role,"Chức vụ/nhóm duyệt (ví dụ: TRUONG_BAN, PHO_TRUONG_BAN, CHUYEN_VIEN)",,
+case_approval_step,status,"Trạng thái: 0=Chưa xử lý, 1=Đang xử lý, 2=Đã duyệt/Hoàn thành, 3=Từ chối",,
+case_approval_step,action_at,Thời điểm duyệt/xử lý,,
+case_approval_step,action_note,Ghi chú khi duyệt/từ chối,,
+case_approval_step,next_step_code,"Bước tiếp theo (2..4), null nếu là bước cuối",,
+case_approval_step,next_assigned_user_id,Người được chỉ định duyệt bước tiếp theo (theo chức vụ phù hợp),,FK suy luận → system_user.id
+case_approval_step,next_assigned_role,Chức vụ/nhóm của người duyệt tiếp theo (nếu chỉ định theo role),,
+case_approval_step,due_date,Hạn xử lý (nếu cần SLA),,
+case_approval_step,created_at,Ngày tạo,,
+case_approval_step,updated_at,Ngày sửa cuối,,
+case_approval_step,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+case_approval_step,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+case_approval_step,created_by_name,Tên người tạo,,
+case_approval_step,updated_by_name,Tên người cập nhật,,
+case_approval_step,deleted,Soft delete,,
+suspicious_account,id,Primary key,PK,
+suspicious_account,case_file_id,case_file.id,FK,FK → case_file.id
+suspicious_account,account_id,investor_account.id,FK,FK → investor_account.id
+suspicious_account,criteria_flags,Các tiêu chí đánh giá (JSON hoặc comma-separated),,
+suspicious_account,source,"Nguồn: 1=Hệ thống tự động, 2=User thêm",,
+suspicious_account,created_at,Ngày tạo,,
+suspicious_account,updated_at,Ngày sửa cuối,,
+suspicious_account,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+suspicious_account,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+suspicious_account,created_by_name,Tên người tạo,,
+suspicious_account,updated_by_name,Tên người cập nhật,,
+suspicious_account,deleted,Soft delete,,
+suspicious_account_group,id,Primary key,PK,
+suspicious_account_group,case_file_id,case_file.id,FK,FK → case_file.id
+suspicious_account_group,group_code,Mã nhóm,,
+suspicious_account_group,group_name,Tên nhóm,,
+suspicious_account_group,description,Mô tả,,
+suspicious_account_group,relationship_criteria,"Tiêu chí phân nhóm: Danh tính, IP, MAC, Tiền",,
+suspicious_account_group,created_at,Ngày tạo,,
+suspicious_account_group,updated_at,Ngày sửa cuối,,
+suspicious_account_group,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+suspicious_account_group,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+suspicious_account_group,created_by_name,Tên người tạo,,
+suspicious_account_group,updated_by_name,Tên người cập nhật,,
+suspicious_account_group,deleted,Soft delete,,
+analysis_report,id,Primary key,PK,
+analysis_report,case_file_id,case_file.id,FK,FK → case_file.id
+analysis_report,report_type,,,
+analysis_report,report_date,,,
+analysis_report,report_data,Dữ liệu báo cáo (JSON hoặc XML),,
+analysis_report,report_file_path,Đường dẫn file báo cáo,,
+analysis_report,analysis_execution_log,ID phân tích biểu mẫu,,
+analysis_report,created_at,Ngày tạo,,
+analysis_report,updated_at,Ngày sửa cuối,,
+analysis_report,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_report,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_report,created_by_name,Tên người tạo,,
+analysis_report,updated_by_name,Tên người cập nhật,,
+analysis_report,deleted,Soft delete,,
+analysis_attribute_define,id,Primary key,PK,
+analysis_attribute_define,attribute_code,Mã tiêu chí (ví dụ: CT_01_THRESHOLD_A),,
+analysis_attribute_define,attribute_name,Tên hiển thị tiêu chí (ví dụ: Tỷ trọng đặt/khớp lệnh > A% trong X ngày),,
+analysis_attribute_define,description,"Mô tả chi tiết tiêu chí, dùng cho BA/SA",,
+analysis_attribute_define,workflow_type,"Quy trình áp dụng: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+analysis_attribute_define,data_type,"Kiểu dữ liệu: NUMBER, STRING, DATE, BOOLEAN",,
+analysis_attribute_define,default_value,"Giá trị mặc định (lưu dạng text, parse theo data_type)",,
+analysis_attribute_define,min_value,Giá trị tối thiểu (nếu là NUMBER/DATE),,
+analysis_attribute_define,max_value,Giá trị tối đa (nếu là NUMBER/DATE),,
+analysis_attribute_define,unit,"Đơn vị: %, ngày, phiên, ...",,
+analysis_attribute_define,step,Bước nhảy cho slider (nếu áp dụng),,
+analysis_attribute_define,display_group,"Nhóm hiển thị trên màn hình (ví dụ: ""Tham số cấu hình báo cáo"")",,
+analysis_attribute_define,display_order,Thứ tự hiển thị,,
+analysis_attribute_define,active_flag,"0=Không dùng, 1=Đang dùng",,
+analysis_attribute_define,created_at,Ngày tạo,,
+analysis_attribute_define,updated_at,Ngày sửa cuối,,
+analysis_attribute_define,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_attribute_define,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_attribute_define,created_by_name,Tên người tạo,,
+analysis_attribute_define,updated_by_name,Tên người cập nhật,,
+analysis_attribute_define,deleted,Soft delete,,
+analysis_attribute_value,id,Primary key,PK,
+analysis_attribute_value,attribute_id,analysis_attribute_def.id,FK,FK → analysis_attribute_define.id
+analysis_attribute_value,workflow_type,"Quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+analysis_attribute_value,value_number,Giá trị số (nếu data_type = NUMBER),,
+analysis_attribute_value,value_string,Giá trị chuỗi (nếu data_type = STRING hoặc mô tả mở rộng),,
+analysis_attribute_value,value_date,Giá trị ngày (nếu data_type = DATE),,
+analysis_attribute_value,value_boolean,Giá trị boolean: 0/1 (nếu data_type = BOOLEAN),,
+analysis_attribute_value,created_at,Ngày tạo,,
+analysis_attribute_value,updated_at,Ngày sửa cuối,,
+analysis_attribute_value,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_attribute_value,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_attribute_value,created_by_name,Tên người tạo,,
+analysis_attribute_value,updated_by_name,Tên người cập nhật,,
+analysis_attribute_value,deleted,Soft delete,,
+analysis_define_report_template,id,Primary key,PK,
+analysis_define_report_template,attribute_id,Foreign key (analysis_attribute_def.id),FK,FK → analysis_attribute_define.id
+analysis_define_report_template,report_id,Foreign key (report_template.id),FK,FK → report_template.id
+analysis_define_report_template,created_at,Ngày tạo,,
+analysis_define_report_template,updated_at,Ngày sửa cuối,,
+analysis_define_report_template,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_define_report_template,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_define_report_template,created_by_name,Tên người tạo,,
+analysis_define_report_template,updated_by_name,Tên người cập nhật,,
+analysis_define_report_template,deleted,Soft delete,,
+analysis_execution_log,id,Primary key,PK,
+analysis_execution_log,analysis _name,Tên phân tích  biểu mẫu,,
+analysis_execution_log,case_file_id,case_file.id,,FK → case_file.id
+analysis_execution_log,report_template_id,report_template.id,,FK suy luận → report_template.id
+analysis_execution_log,workflow_type,"1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+analysis_execution_log,start_time,Thời gian bắt đầu,,
+analysis_execution_log,end_time,Thời gian kết thúc,,
+analysis_execution_log,status,"Trạng thái
+1: Active
+0: Inactive",,
+analysis_execution_log,request_param,Thông tin parameters,,
+analysis_execution_log,error_message,Id item cha (nếu có),,
+analysis_execution_log,path,Đường dẫn file,,
+analysis_execution_log,template_type,"1: Báo cáo tổng hợp
+2: Báo cáo phân tích",,
+analysis_execution_log,file_name,Tên file,,
+analysis_execution_log,created_at,Ngày tạo,,
+analysis_execution_log,updated_at,Ngày sửa cuối,,
+analysis_execution_log,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_execution_log,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_execution_log,created_by_name,Tên người tạo,,
+analysis_execution_log,updated_by_name,Tên người cập nhật,,
+analysis_execution_log,deleted,Soft delete,,
+analysis_suspicious_account_code,id,Primary key,PK,
+analysis_suspicious_account_code,template_id,report_template.id,FK,FK → report_template.id
+analysis_suspicious_account_code,case_file_id,case_file.id,FK,FK → case_file.id
+analysis_suspicious_account_code,workflow_type,"1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+analysis_suspicious_account_code,account_code,Mã tài khoản,,
+analysis_suspicious_account_code,account_name,Họ và tên,,
+analysis_suspicious_account_code,account_type,Loại tài khoản,,
+analysis_suspicious_account_code,contact_address,"Địa chỉ liên lạc (từ CTCK, có thể sửa)",,
+analysis_suspicious_account_code,identity_number,Số CCCD/Số đăng ký sở hữu,,
+analysis_suspicious_account_code,identity_issue_date,Ngày cấp,,
+analysis_suspicious_account_code,identity_issue_place,Nơi cấp,,
+analysis_suspicious_account_code,domestic_foreign_flag,"Trong nước/Nước ngoài: 0=Trong nước, 1=Nước ngoài",,
+analysis_suspicious_account_code,phone_number,"Số điện thoại (từ CTCK, có thể sửa)",,
+analysis_suspicious_account_code,email,"Email (từ CTCK, có thể sửa)",,
+analysis_suspicious_account_code,account_status,"Trạng thái: 0=Đóng, 1=Mở",,
+analysis_suspicious_account_code,created_at,Ngày tạo,,
+analysis_suspicious_account_code,updated_at,Ngày sửa cuối,,
+analysis_suspicious_account_code,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_suspicious_account_code,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_suspicious_account_code,created_by_name,Tên người tạo,,
+analysis_suspicious_account_code,updated_by_name,Tên người cập nhật,,
+analysis_suspicious_account_code,deleted,Soft delete,,
+analysis_suspicious_account,id,Primary key,PK,
+analysis_suspicious_account,case_file_id,case_file.id,FK,FK → case_file.id
+analysis_suspicious_account,workflow_type,"1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+analysis_suspicious_account,result_type,"1=Kết quả phân tích
+2=Kết quả kiểm tra",,
+analysis_suspicious_account,account_code,Mã tài khoản,,
+analysis_suspicious_account,analysis_date,Ngày phân tích,,
+analysis_suspicious_account,created_at,Ngày tạo,,
+analysis_suspicious_account,updated_at,Ngày sửa cuối,,
+analysis_suspicious_account,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_suspicious_account,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_suspicious_account,created_by_name,Tên người tạo,,
+analysis_suspicious_account,updated_by_name,Tên người cập nhật,,
+analysis_suspicious_account,deleted,Soft delete,,
+analysis_account_relationship,id,Primary key,PK,
+analysis_account_relationship,case_file_id,case_file.id,FK,FK → case_file.id
+analysis_account_relationship,workflow_type,"1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+analysis_account_relationship,result_type,"1=Kết quả phân tích
+2=Kết quả kiểm tra",,
+analysis_account_relationship,relationship_id,Id mối quan hệ giữa các tài khoản nghi vấn,,FK suy luận → account_relationship.id
+analysis_account_relationship,analysis_date,Ngày phân tích,,
+analysis_account_relationship,created_at,Ngày tạo,,
+analysis_account_relationship,updated_at,Ngày sửa cuối,,
+analysis_account_relationship,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_account_relationship,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_account_relationship,created_by_name,Tên người tạo,,
+analysis_account_relationship,updated_by_name,Tên người cập nhật,,
+analysis_account_relationship,deleted,Soft delete,,
+analysis_account_group,id,Primary key,PK,
+analysis_account_group,case_file_id,case_file.id,FK,FK → case_file.id
+analysis_account_group,workflow_type,"1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+analysis_account_group,result_type,"1=Kết quả phân tích
+2=Kết quả kiểm tra",,
+analysis_account_group,group_code,Mã nhóm,,
+analysis_account_group,group_name,Tên nhóm,,
+analysis_account_group,analysis_date,Ngày phân tích,,
+analysis_account_group,created_at,Ngày tạo,,
+analysis_account_group,updated_at,Ngày sửa cuối,,
+analysis_account_group,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_account_group,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_account_group,created_by_name,Tên người tạo,,
+analysis_account_group,updated_by_name,Tên người cập nhật,,
+analysis_account_group,deleted,Soft delete,,
+analysis_account_group_member,id,Primary key,PK,
+analysis_account_group_member,case_file_id,Id của case file,,FK suy luận → case_file.id
+analysis_account_group_member,workflow_type,"1=Sơ bộ
+2=Thao túng
+3=Nội gián
+4=Liên thị trường",,
+analysis_account_group_member,result_type,"1=Kết quả phân tích
+2=Kết quả kiểm tra",,
+analysis_account_group_member,account_group_id,Id của analysis account group,,FK suy luận → account_group.id
+analysis_account_group_member,account_code,Mã tài khoản,,
+analysis_account_group_member,account_name,Tên tài khoản,,
+analysis_account_group_member,relationship_id,Id của mối quan hệ,,FK suy luận → account_relationship.id
+analysis_account_group_member,description,Mô tả,,
+analysis_account_group_member,analysis_date,Ngày phân tích,,
+analysis_account_group_member,created_at,Ngày tạo,,
+analysis_account_group_member,updated_at,Ngày sửa cuối,,
+analysis_account_group_member,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+analysis_account_group_member,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+analysis_account_group_member,created_by_name,Tên người tạo,,
+analysis_account_group_member,updated_by_name,Tên người cập nhật,,
+analysis_account_group_member,deleted,Soft delete,,
+abnormal_report,id,Primary key,PK,
+abnormal_report,report_code,Mã báo cáo,,
+abnormal_report,report_name,Tên báo cáo,,
+abnormal_report,report_type,,,
+abnormal_report,period_type,,,
+abnormal_report,period_value,,,
+abnormal_report,period_year,,,
+abnormal_report,submitter_type,,,
+abnormal_report,submitter_id,Mã người nộp,,
+abnormal_report,submitter_name,Tên người nộp,,
+abnormal_report,submission_date,,,
+abnormal_report,approval_status,"Trạng thái: 0=Chờ duyệt, 1=Đã duyệt, 2=Từ chối, 3=Yêu cầu nộp lại",,
+abnormal_report,approval_date,Ngày duyệt,,
+abnormal_report,approver,Người duyệt,,
+abnormal_report,rejection_reason,Lý do từ chối,,
+abnormal_report,created_at,Ngày tạo,,
+abnormal_report,updated_at,Ngày sửa cuối,,
+abnormal_report,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+abnormal_report,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+abnormal_report,created_by_name,Tên người tạo,,
+abnormal_report,updated_by_name,Tên người cập nhật,,
+abnormal_report,deleted,Soft delete,,
+abnormal_report_file,id,Primary key,PK,
+abnormal_report_file,report_id,abnormal_report.id,FK,FK → abnormal_report.id
+abnormal_report_file,file_name,,,
+abnormal_report_file,file_path,,,
+abnormal_report_file,file_size,Kích thước file (bytes),,
+abnormal_report_file,file_type,"Loại file: CSV, XLSX, PDF",,
+abnormal_report_file,digital_signature,Chữ ký số,,
+abnormal_report_file,created_at,Ngày tạo,,
+abnormal_report_file,updated_at,Ngày sửa cuối,,
+abnormal_report_file,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+abnormal_report_file,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+abnormal_report_file,created_by_name,Tên người tạo,,
+abnormal_report_file,updated_by_name,Tên người cập nhật,,
+abnormal_report_file,deleted,Soft delete,,
+compliance_report_template,id,Primary key,PK,
+compliance_report_template,template_name,Tên báo cáo,,
+compliance_report_template,period_type,,,
+compliance_report_template,created_at,Ngày tạo,,
+compliance_report_template,updated_at,Ngày sửa cuối,,
+compliance_report_template,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+compliance_report_template,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+compliance_report_template,created_by_name,Tên người tạo,,
+compliance_report_template,updated_by_name,Tên người cập nhật,,
+compliance_report_template,deleted,Soft delete,,
+compliance_report_config,id,Primary key,PK,
+compliance_report_config,template_id,compliance_report_template.id,FK,FK → compliance_report_template.id
+compliance_report_config,column_label,,,
+compliance_report_config,display_order,,,
+compliance_report_config,data_type,,,
+compliance_report_config,is_visible,,,
+compliance_report_config,created_at,Ngày tạo,,
+compliance_report_config,updated_at,Ngày sửa cuối,,
+compliance_report_config,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+compliance_report_config,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+compliance_report_config,created_by_name,Tên người tạo,,
+compliance_report_config,updated_by_name,Tên người cập nhật,,
+compliance_report_config,deleted,Soft delete,,
+compliance_report_master,id,Primary key,PK,
+compliance_report_master,template_id,compliance_report_template.id,FK,FK → compliance_report_template.id
+compliance_report_master,period_type,,,
+compliance_report_master,period_value,,,
+compliance_report_master,period_year,,,
+compliance_report_master,status,,,
+compliance_report_master,created_at,Ngày tạo,,
+compliance_report_master,updated_at,Ngày sửa cuối,,
+compliance_report_master,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+compliance_report_master,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+compliance_report_master,created_by_name,Tên người tạo,,
+compliance_report_master,updated_by_name,Tên người cập nhật,,
+compliance_report_master,deleted,Soft delete,,
+compliance_report_data,id,Primary key,PK,
+compliance_report_data,report_master_id,compliance_report_master.id,FK,FK → compliance_report_master.id
+compliance_report_data,row_data,,,
+compliance_report_data,created_at,Ngày tạo,,
+compliance_report_data,updated_at,Ngày sửa cuối,,
+compliance_report_data,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+compliance_report_data,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+compliance_report_data,created_by_name,Tên người tạo,,
+compliance_report_data,updated_by_name,Tên người cập nhật,,
+compliance_report_data,deleted,Soft delete,,
+system_user,id,Primary key,PK,
+system_user,username,Tên đăng nhập (từ SSO),,
+system_user,full_name,,,
+system_user,email,Email,,
+system_user,department,Đơn vị,,
+system_user,position,Chức vụ,,
+system_user,status,"Trạng thái: 0=Khóa, 1=Hoạt động",,
+system_user,created_at,Ngày tạo,,
+system_user,updated_at,Ngày sửa cuối,,
+system_user,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+system_user,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+system_user,created_by_name,Tên người tạo,,
+system_user,updated_by_name,Tên người cập nhật,,
+system_user,deleted,Soft delete,,
+user_group,id,Primary key,PK,
+user_group,group_code,Mã nhóm,,
+user_group,group_name,,,
+user_group,description,Mô tả,,
+user_group,status,"Trạng thái: 0=Khóa, 1=Hoạt động",,
+user_group,created_at,Ngày tạo,,
+user_group,updated_at,Ngày sửa cuối,,
+user_group,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+user_group,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+user_group,created_by_name,Tên người tạo,,
+user_group,updated_by_name,Tên người cập nhật,,
+user_group,deleted,Soft delete,,
+user_group_member,id,Primary key,PK,
+user_group_member,group_id,user_group.id,FK,FK → user_group.id
+user_group_member,user_id,system_user.id,FK,FK → system_user.id
+user_group_member,created_at,Ngày tạo,,
+user_group_member,updated_at,Ngày sửa cuối,,
+user_group_member,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+user_group_member,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+user_group_member,created_by_name,Tên người tạo,,
+user_group_member,updated_by_name,Tên người cập nhật,,
+user_group_member,deleted,Soft delete,,
+system_permission,id,Primary key,PK,
+system_permission,permission_code,Mã quyền,,
+system_permission,permission_name,,,
+system_permission,module,Module,,
+system_permission,function,Chức năng,,
+system_permission,action,"Hành động: VIEW, ADD, EDIT, DELETE, APPROVE, EXPORT",,
+system_permission,description,Mô tả,,
+system_permission,created_at,Ngày tạo,,
+system_permission,updated_at,Ngày sửa cuối,,
+system_permission,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+system_permission,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+system_permission,created_by_name,Tên người tạo,,
+system_permission,updated_by_name,Tên người cập nhật,,
+system_permission,deleted,Soft delete,,
+report_template,id,Primary key,PK,
+report_template,template_code,"Mã mẫu báo cáo (BM001, BM002, etc.)",,
+report_template,template_name,,,
+report_template,template_type,"Loại: 1=Quản lý thông tin, 2=Tổng hợp dữ liệu, 3=Phân tích chuyên sâu",,
+report_template,template_config,Cấu hình mẫu (JSON),,
+report_template,data_source,Nguồn dữ liệu,,
+report_template,parameters,Tham số báo cáo (JSON),,
+report_template,status,"Trạng thái: 0=Không hoạt động, 1=Hoạt động",,
+report_template,created_at,Ngày tạo,,
+report_template,updated_at,Ngày sửa cuối,,
+report_template,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+report_template,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+report_template,created_by_name,Tên người tạo,,
+report_template,updated_by_name,Tên người cập nhật,,
+report_template,deleted,Soft delete,,
+report_template_workflow,id,Primary key,PK,
+report_template_workflow,template_id,Id biểu mẫu (report_template.id),,FK → report_template.id
+report_template_workflow,workflow_type,"1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường",,
+report_template_workflow,essential,Biểu mẫu báo cáo được coi là Trọng yếu,,
+report_template_workflow,template_type,"1=Báo cáo tổng hợp
+2=Báo cáo phân tích",,
+report_template_workflow,case_file_id,,,FK suy luận → case_file.id
+report_template_workflow,report_type,"1=Báo cáo cơ sở, 2=Báo cáo phái sinh",,
+report_template_workflow,parameters,Tham số cấu hình biểu mẫu báo cáo cho từng vụ việc,,
+report_template_workflow,created_at,Ngày tạo,,
+report_template_workflow,updated_at,Ngày sửa cuối,,
+report_template_workflow,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+report_template_workflow,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+report_template_workflow,created_by_name,Tên người tạo,,
+report_template_workflow,updated_by_name,Tên người cập nhật,,
+report_template_workflow,deleted,Soft delete,,
+system_config,id,Primary key,PK,
+system_config,config_key,Khóa cấu hình,,
+system_config,config_value,Giá trị cấu hình,,
+system_config,config_group,"Nhóm cấu hình: LOGGING, API, MAINTENANCE, INTEGRATION",,
+system_config,description,Mô tả,,
+system_config,requires_restart,"Yêu cầu khởi động lại: 0=Không, 1=Có",,
+system_config,created_at,Ngày tạo,,
+system_config,updated_at,Ngày sửa cuối,,
+system_config,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+system_config,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+system_config,created_by_name,Tên người tạo,,
+system_config,updated_by_name,Tên người cập nhật,,
+system_config,deleted,Soft delete,,
+system_parameter,id,Primary key,PK,
+system_parameter,parameter_key,Khóa tham số,,
+system_parameter,parameter_value,Giá trị tham số,,
+system_parameter,parameter_type,"Loại: NUMBER, STRING, DATE, BOOLEAN",,
+system_parameter,unit,Đơn vị tính,,
+system_parameter,description,Mô tả,,
+system_parameter,min_value,Giá trị tối thiểu,,
+system_parameter,max_value,Giá trị tối đa,,
+system_parameter,status,"Trạng thái: 0=Không áp dụng, 1=Áp dụng",,
+system_parameter,created_at,Ngày tạo,,
+system_parameter,updated_at,Ngày sửa cuối,,
+system_parameter,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+system_parameter,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+system_parameter,created_by_name,Tên người tạo,,
+system_parameter,updated_by_name,Tên người cập nhật,,
+system_parameter,deleted,Soft delete,,
+audit_log,id,Primary key,PK,
+audit_log,user_id,Foreign key(system_user.id),FK,FK → system_user.id
+audit_log,username,Tên đăng nhập,,
+audit_log,action_type,,,
+audit_log,entity_type,Loại thực thể,,
+audit_log,entity_id,ID thực thể,,
+audit_log,action_description,Mô tả hành động,,
+audit_log,ip_address,Địa chỉ IP,,
+audit_log,user_agent,User agent,,
+audit_log,log_date,Ngày ghi log,,
+audit_log,created_at,Ngày tạo,,
+user_table_config,id,Primary key,PK,
+user_table_config,user_id,ID người dùng,FK,FK suy luận → system_user.id
+user_table_config,table_name,"Tên bảng/màn hình (VD: case_file, securities_code)",,
+user_table_config,table_code,Mã màn hình,,
+user_table_config,tab_name,"Tên tab trong màn hình (VD: tab 1, 2, 3 thuộc màn hình A)",,
+user_table_config,tab_code,Tab code,,
+user_table_config,config_data,"Trạng thái cột (lưu dạng json. VD: {“columnA”: true, “columnB”:false}",,
+user_table_config,notes,Ghi chú,,
+user_table_config,created_at,Ngày tạo,,
+user_table_config,updated_at,Ngày sửa cuối,,
+user_table_config,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+user_table_config,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+user_table_config,created_by_name,Tên người tạo,,
+user_table_config,updated_by_name,Tên người cập nhật,,
+user_table_config,deleted,Soft delete,,
+category_config,id,Primary key,PK,
+category_config,category_name,Tên danh mục chung,FK,
+category_config,category_code,Code danh mục dùng chung (sử dụng để select ra theo code. VD: TMS_ACCOUNT_RELATIONSHIP),,
+category_config,description,Mô tả,,
+category_config,parent_id,Id của danh mục cha (nếu có),,FK suy luận → category_config.id
+category_config,created_at,Ngày tạo,,
+category_config,updated_at,Ngày sửa cuối,,
+category_config,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+category_config,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+category_config,created_by_name,Tên người tạo,,
+category_config,updated_by_name,Tên người cập nhật,,
+category_config,deleted,Soft delete,,
+category_item,id,Primary key,PK,
+category_item,item_code,Mã item,,
+category_item,item_name,Tên item,,
+category_item,item_value,Giá trị (nếu có),,
+category_item,category_config_id,Id của danh mục (category_config),,FK suy luận → category_config.id
+category_item,position,Vị trí hiển thị,,
+category_item,description,Mô tả,,
+category_item,parent_item_id,Id item cha (nếu có),,FK suy luận → category_item.id
+category_item,status,"Trạng thái
+1: Active
+0: Inactive",,
+category_item,created_at,Ngày tạo,,
+category_item,updated_at,Ngày sửa cuối,,
+category_item,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+category_item,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+category_item,created_by_name,Tên người tạo,,
+category_item,updated_by_name,Tên người cập nhật,,
+category_item,deleted,Soft delete,,

@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Market Surveillance Suspicious Account Id,Khóa đại diện cho tài khoản nghi vấn trong vụ việc.,Surrogate Key,false,true,draft,,,,
+Market Surveillance Suspicious Account Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.suspicious_account.id,BK chính. Map từ PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.suspicious_account,
+Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.suspicious_account.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.suspicious_account.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+Investor Trading Account Id,FK đến tài khoản giao dịch nghi vấn.,Surrogate Key,false,false,draft,GSGD.suspicious_account.account_id,FK target: Investor Trading Account.Investor Trading Account Id.,,
+Investor Trading Account Code,Mã tài khoản nghi vấn. Denormalized.,Text,false,false,draft,GSGD.suspicious_account.account_id,FK target: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id.,,
+Criteria Flags,Các tiêu chí đánh giá (JSON hoặc comma-separated).,Text,true,false,draft,GSGD.suspicious_account.criteria_flags,,,
+Suspicious Source Code,"Nguồn xác định TK nghi vấn: 1=Hệ thống tự động, 2=User thêm.",Classification Value,true,false,draft,GSGD.suspicious_account.source,Scheme: GSGD_SUSPICIOUS_SOURCE.,GSGD_SUSPICIOUS_SOURCE,

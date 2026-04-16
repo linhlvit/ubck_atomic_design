@@ -216,3 +216,62 @@ TT_OFFICER_ROLE,CHUYEN_VIEN,Chuyên viên xử lý,etl_derived,ThanhTra.TT_HO_SO
 TT_RESOLUTION_RESULT,DUNG,Đúng,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
 TT_RESOLUTION_RESULT,SAI,Sai,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
 TT_RESOLUTION_RESULT,DUNG_MOT_PHAN,Đúng một phần,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
+GSGD_INVESTOR_TYPE,1,Cá nhân,etl_derived,GSGD.investor_account.investor_type,Investor Trading Account
+GSGD_INVESTOR_TYPE,2,Tổ chức,etl_derived,GSGD.investor_account.investor_type,Investor Trading Account
+GSGD_ACCOUNT_STATUS,0,Đóng,etl_derived,GSGD.investor_account.account_status,Investor Trading Account
+GSGD_ACCOUNT_STATUS,1,Mở,etl_derived,GSGD.investor_account.account_status,Investor Trading Account
+GSGD_DOMESTIC_FOREIGN_FLAG,0,Trong nước,etl_derived,GSGD.investor_account.domestic_foreign_flag,Investor Trading Account
+GSGD_DOMESTIC_FOREIGN_FLAG,1,Nước ngoài,etl_derived,GSGD.investor_account.domestic_foreign_flag,Investor Trading Account
+GSGD_ACCOUNT_GROUP_TYPE,1,Thường,etl_derived,GSGD.account_group.group_type,Account Investor Group
+GSGD_ACCOUNT_GROUP_TYPE,2,Nghi vấn,etl_derived,GSGD.account_group.group_type,Account Investor Group
+GSGD_ACCOUNT_RELATION_TYPE,(source),Loại quan hệ tài khoản — values from category_item,source_table,GSGD.category_item,Account Investor Group Member | Investor Account Relationship
+GSGD_SECURITIES_GROUP_TYPE,1,Thường,etl_derived,GSGD.securities_group.group_type,Securities Watchlist Group
+GSGD_SECURITIES_GROUP_TYPE,2,Theo ngành,etl_derived,GSGD.securities_group.group_type,Securities Watchlist Group
+GSGD_CASE_TYPE,1,Sơ bộ,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_TYPE,2,Thao túng,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_TYPE,3,Nội gián,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_TYPE,4,Liên thị trường,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_STATUS,(source),Trạng thái vụ việc — values from category_item,source_table,GSGD.category_item,Market Surveillance Case
+GSGD_INFORMATION_SOURCE,(source),Nguồn thông tin vụ việc — values from category_item,source_table,GSGD.category_item,Market Surveillance Case
+GSGD_WORKFLOW_TYPE,1,Sơ bộ,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_WORKFLOW_TYPE,2,Thao túng,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_WORKFLOW_TYPE,3,Nội gián,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_WORKFLOW_TYPE,4,Liên thị trường,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_DATA_TYPE,NUMBER,Số,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_DATA_TYPE,STRING,Chuỗi,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_DATA_TYPE,DATE,Ngày,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_DATA_TYPE,BOOLEAN,Boolean,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_ABNORMAL_REPORT_TYPE,(source),Loại báo cáo bất thường — values from category_item,source_table,GSGD.category_item,Abnormal Trading Report
+GSGD_PERIOD_TYPE,(to_define),Loại kỳ báo cáo — cần profile từ data,modeler_defined,GSGD.abnormal_report.period_type | GSGD.compliance_report_template.period_type,Abnormal Trading Report | Market Surveillance Compliance Report Template | Market Surveillance Compliance Report Instance
+GSGD_SUBMITTER_TYPE,(to_define),Loại người nộp báo cáo — cần profile từ data,modeler_defined,GSGD.abnormal_report.submitter_type,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,0,Chờ duyệt,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,1,Đã duyệt,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,2,Từ chối,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,3,Yêu cầu nộp lại,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_FINANCIAL_SERVICE_TYPE,1,Ký quỹ,etl_derived,GSGD.account_financial_service.service_type,Investor Trading Account Financial Service
+GSGD_FINANCIAL_SERVICE_TYPE,2,Ứng trước tiền bán,etl_derived,GSGD.account_financial_service.service_type,Investor Trading Account Financial Service
+GSGD_FINANCIAL_SERVICE_TYPE,3,Hợp đồng tài chính khác,etl_derived,GSGD.account_financial_service.service_type,Investor Trading Account Financial Service
+GSGD_FILE_TYPE,(to_define),Loại file đính kèm (CSV/XLSX/PDF) — cần profile từ data,modeler_defined,GSGD.case_attach_file.file_type | GSGD.abnormal_report_file.file_type,Market Surveillance Case Document Attachment | Abnormal Trading Report File Attachment
+GSGD_FILE_GROUP,1,Hồ sơ của Sở,etl_derived,GSGD.case_attach_file.file_group,Market Surveillance Case Document Attachment
+GSGD_FILE_GROUP,2,Danh sách tài khoản nghi vấn,etl_derived,GSGD.case_attach_file.file_group,Market Surveillance Case Document Attachment
+GSGD_APPROVAL_STEP_CODE,1,Chuyên viên khởi tạo,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_CODE,2,Trưởng ban phê duyệt,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_CODE,3,Phó Trưởng ban phân công,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_CODE,4,Chuyên viên xử lý,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,0,Chưa xử lý,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,1,Đang xử lý,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,2,Đã duyệt/Hoàn thành,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,3,Từ chối,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_SUSPICIOUS_SOURCE,1,Hệ thống tự động,etl_derived,GSGD.suspicious_account.source,Market Surveillance Suspicious Account
+GSGD_SUSPICIOUS_SOURCE,2,User thêm,etl_derived,GSGD.suspicious_account.source,Market Surveillance Suspicious Account
+GSGD_RELATIONSHIP_CRITERIA,(source),Tiêu chí phân nhóm nghi vấn — values from category_item,source_table,GSGD.category_item,Market Surveillance Suspicious Account Group
+GSGD_COMPANY_EVENT_TYPE,(source),Loại sự kiện tổ chức niêm yết — values from category_item,source_table,GSGD.category_item,Listed Company Corporate Event
+GSGD_EXECUTION_STATUS,0,Inactive,etl_derived,GSGD.analysis_execution_log.status,Market Surveillance Analysis Execution Log
+GSGD_EXECUTION_STATUS,1,Active,etl_derived,GSGD.analysis_execution_log.status,Market Surveillance Analysis Execution Log
+GSGD_RESULT_TYPE,1,Kết quả phân tích,etl_derived,GSGD.analysis_suspicious_account.result_type,Market Surveillance Suspicious Account Analysis Result | Market Surveillance Account Relationship Analysis Result | Market Surveillance Account Group Analysis Result | Market Surveillance Account Group Member Analysis Result
+GSGD_RESULT_TYPE,2,Kết quả kiểm tra,etl_derived,GSGD.analysis_suspicious_account.result_type,Market Surveillance Suspicious Account Analysis Result | Market Surveillance Account Relationship Analysis Result | Market Surveillance Account Group Analysis Result | Market Surveillance Account Group Member Analysis Result
+GSGD_TEMPLATE_TYPE,1,Báo cáo tổng hợp,etl_derived,GSGD.analysis_execution_log.template_type,Market Surveillance Analysis Execution Log
+GSGD_TEMPLATE_TYPE,2,Báo cáo phân tích,etl_derived,GSGD.analysis_execution_log.template_type,Market Surveillance Analysis Execution Log
+GSGD_ANALYSIS_REPORT_TYPE,(source),Loại báo cáo phân tích vụ việc — values from category_item,source_table,GSGD.category_item,Market Surveillance Analysis Report
+GSGD_DATA_SOURCE,(source),Nguồn dữ liệu tài khoản: VSDC / CTCK — values from category_item,source_table,GSGD.investor_account.data_source,Investor Trading Account
+GSGD_GROUP_STATUS,(source),"Trạng thái nhóm chứng khoán: 1=Chờ duyệt, 2=Phê duyệt, 3=Từ chối — values from category_item",source_table,GSGD.securities_group.status,Securities Watchlist Group

@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Listed Company Corporate Event Id,Khóa đại diện cho sự kiện tổ chức niêm yết.,Surrogate Key,false,true,draft,,,,
+Listed Company Corporate Event Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.company_event.id,BK chính. Map từ PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.company_event,
+Company Name,Tên tổ chức niêm yết. Denormalized — không có FK tường minh đến entity niêm yết.,Text,true,false,draft,GSGD.company_event.company_name,,,
+Stock Code,Mã chứng khoán. Denormalized — không có FK tường minh.,Text,true,false,draft,GSGD.company_event.stock_code,,,
+Event Type Code,Loại sự kiện tổ chức niêm yết.,Classification Value,true,false,draft,GSGD.company_event.event_type_id,Scheme: GSGD_COMPANY_EVENT_TYPE. FK suy luận → category_item.,GSGD_COMPANY_EVENT_TYPE,
+Event Id,Định danh sự kiện. Denormalized — không rõ FK đến đâu.,Text,true,false,draft,GSGD.company_event.event_id,,,
+Event Date,Ngày sự kiện.,Date,true,false,draft,GSGD.company_event.event_date,,,
+Approval Status Code,Trạng thái phê duyệt.,Classification Value,true,false,draft,GSGD.company_event.approval_status,Scheme: GSGD_APPROVAL_STATUS.,GSGD_APPROVAL_STATUS,

@@ -1,0 +1,11 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Abnormal Trading Report File Attachment Id,Khóa đại diện cho file đính kèm báo cáo bất thường.,Surrogate Key,false,true,draft,,,,
+Abnormal Trading Report File Attachment Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.abnormal_report_file.id,BK chính. Map từ PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.abnormal_report_file,
+Abnormal Trading Report Id,FK đến báo cáo giao dịch bất thường.,Surrogate Key,false,false,draft,GSGD.abnormal_report_file.report_id,FK target: Abnormal Trading Report.Abnormal Trading Report Id.,,
+Abnormal Trading Report Code,Mã báo cáo bất thường. Denormalized.,Text,false,false,draft,GSGD.abnormal_report_file.report_id,FK target: Abnormal Trading Report.Abnormal Trading Report Code. Pair with Abnormal Trading Report Id.,,
+File Name,Tên file đính kèm.,Text,true,false,draft,GSGD.abnormal_report_file.file_name,,,
+File Path,Đường dẫn file.,Text,true,false,draft,GSGD.abnormal_report_file.file_path,,,
+File Size,Kích thước file (bytes).,Text,true,false,draft,GSGD.abnormal_report_file.file_size,,,
+File Type Code,"Loại file: CSV, XLSX, PDF.",Classification Value,true,false,draft,GSGD.abnormal_report_file.file_type,Scheme: GSGD_FILE_TYPE.,GSGD_FILE_TYPE,
+Digital Signature,Chữ ký số của file.,Text,true,false,draft,GSGD.abnormal_report_file.digital_signature,,,
