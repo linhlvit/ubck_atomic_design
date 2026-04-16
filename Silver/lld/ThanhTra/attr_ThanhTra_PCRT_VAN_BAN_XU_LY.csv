@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+AML Enforcement Decision Id,Khóa đại diện cho quyết định xử phạt PCRT.,Surrogate Key,false,true,draft,,,,
+AML Enforcement Decision Code,"Mã quyết định. Map từ PK ThanhTra.PCRT_VAN_BAN_XU_LY.ID.",Text,false,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.PCRT_VAN_BAN_XU_LY,
+AML Enforcement Case Id,FK đến AML Enforcement Case.,Surrogate Key,false,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.HO_SO_ID,"FK target: AML Enforcement Case.AML Enforcement Case Id.",,
+AML Enforcement Case Code,Mã hồ sơ PCRT.,Text,false,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.HO_SO_ID,"FK target: AML Enforcement Case.AML Enforcement Case Code. Pair with AML Enforcement Case Id.",,
+Penalty Decision Number,Số quyết định xử phạt / công văn nhắc nhở.,Text,true,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.SO_QD_XU_PHAT,,,
+Violation Report Number,Số biên bản vi phạm hành chính.,Text,true,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.SO_BIEN_BAN_VPHC,,,
+Violation Report Date,Ngày ký biên bản vi phạm hành chính.,Date,true,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.NGAY_KY_BIEN_BAN,,,
+Penalty Content,Nội dung xử phạt.,Text,true,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.NOI_DUNG_XU_PHAT,,,
+Total Penalty Amount,Tổng số tiền phạt.,Currency Amount,true,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT,,,
+Decision Status Code,Trạng thái.,Classification Value,true,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.TRANG_THAI,"Scheme: TT_CASE_STATUS.",,
+Remark,Ghi chú.,Text,true,false,draft,ThanhTra.PCRT_VAN_BAN_XU_LY.GHI_CHU,,,

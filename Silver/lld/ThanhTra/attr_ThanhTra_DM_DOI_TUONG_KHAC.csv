@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Inspection Subject Other Party Id,Khóa đại diện cho đối tượng thanh tra khác.,Surrogate Key,false,true,draft,,,,
+Inspection Subject Other Party Code,"Mã đối tượng. Map từ PK ThanhTra.DM_DOI_TUONG_KHAC.ID.",Text,false,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.DM_DOI_TUONG_KHAC,
+Party Type Code,"Loại đối tượng: CA_NHAN / TO_CHUC.",Classification Value,false,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG,"Scheme: TT_PARTY_TYPE.",,
+Name,Tên đối tượng thanh tra.,Text,false,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.TEN_DOI_TUONG,,,
+Short Name,Tên viết tắt.,Text,true,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.TEN_VIET_TAT,,,
+Representative Name,Người đại diện (cho tổ chức).,Text,true,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.NGUOI_DAI_DIEN,,,
+Business License Number,Số giấy phép kinh doanh (cho tổ chức).,Text,true,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.SO_GPKD,,,
+Country of Registration Id,FK đến Geographic Area — quốc gia đăng ký.,Surrogate Key,true,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.QUOC_GIA_ID,"FK target: Geographic Area.Geographic Area Id. Source has lookup via ThanhTra.DM_QUOC_GIA → shared Silver entity Geographic Area (COUNTRY).",,
+Country of Registration Code,Mã quốc gia đăng ký.,Text,true,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.QUOC_GIA_ID,"FK target: Geographic Area.Geographic Area Code. Pair with Country of Registration Id.",,
+Website,Website.,Text,true,false,draft,ThanhTra.DM_DOI_TUONG_KHAC.WEBSITE,,,

@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Inspection Officer Id,Khóa đại diện cho cán bộ thanh tra.,Surrogate Key,false,true,draft,,,,
+Inspection Officer Code,"Mã cán bộ thanh tra. Map từ PK bảng nguồn ThanhTra.DM_CAN_BO.ID.",Text,false,false,draft,ThanhTra.DM_CAN_BO.ID,"BK của entity. BCV Term: Individual Identifier.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.DM_CAN_BO,
+Login Name,"Tên đăng nhập, liên kết tài khoản hệ thống nội bộ.",Text,true,false,draft,ThanhTra.DM_CAN_BO.TEN_DANG_NHAP,,,
+Full Name,Họ và tên cán bộ thanh tra.,Text,false,false,draft,ThanhTra.DM_CAN_BO.HO_VA_TEN,,,
+Date of Birth,Ngày sinh cán bộ.,Date,true,false,draft,ThanhTra.DM_CAN_BO.NGAY_SINH,,,
+Gender Code,"Giới tính: NAM / NU.",Classification Value,true,false,draft,ThanhTra.DM_CAN_BO.GIOI_TINH,"Scheme: INDIVIDUAL_GENDER.",,
+Supervised Company Name,"Công ty phụ trách (tên công ty — denormalized, không có FK).",Text,true,false,draft,ThanhTra.DM_CAN_BO.CONG_TY_PHU_TRACH,,,
+Officer Status Code,"Trạng thái cán bộ: SU_DUNG / KHONG_SU_DUNG.",Classification Value,false,false,draft,ThanhTra.DM_CAN_BO.TRANG_THAI,"Scheme: TT_OFFICER_STATUS.",,

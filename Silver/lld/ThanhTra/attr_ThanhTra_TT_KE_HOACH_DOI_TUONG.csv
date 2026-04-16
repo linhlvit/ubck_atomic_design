@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Inspection Annual Plan Subject Id,Khóa đại diện cho đối tượng trong kế hoạch thanh tra.,Surrogate Key,false,true,draft,,,,
+Inspection Annual Plan Subject Code,"Mã đối tượng kế hoạch. Map từ PK ThanhTra.TT_KE_HOACH_DOI_TUONG.ID.",Text,false,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.TT_KE_HOACH_DOI_TUONG,
+Inspection Annual Plan Id,FK đến Inspection Annual Plan.,Surrogate Key,false,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.KE_HOACH_ID,"FK target: Inspection Annual Plan.Inspection Annual Plan Id.",,
+Inspection Annual Plan Code,Mã kế hoạch.,Text,false,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.KE_HOACH_ID,"FK target: Inspection Annual Plan.Inspection Annual Plan Code. Pair with Inspection Annual Plan Id.",,
+Sequence Number,Số thứ tự đối tượng trong kế hoạch.,Small Counter,true,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.STT,,,
+Subject Name,Tên đối tượng thanh tra (denormalized — không có DOI_TUONG_ID FK).,Text,false,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.TEN_DOI_TUONG,,,
+Subject Address,Địa chỉ đối tượng (denormalized).,Text,true,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.DIA_CHI,,,
+Planned Duration,Thời gian dự kiến thanh tra.,Text,true,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.THOI_GIAN_DU_KIEN,,,
+Lead Unit Name,Đơn vị chủ trì (denormalized theo tên).,Text,true,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.DON_VI_CHU_TRI,,,
+Notification Dispatch Number,Số công văn thông báo.,Text,true,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.SO_CVTB,,,
+Notification Dispatch Date,Ngày ký công văn thông báo.,Date,true,false,draft,ThanhTra.TT_KE_HOACH_DOI_TUONG.NGAY_KY,,,

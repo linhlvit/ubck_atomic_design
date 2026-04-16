@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Inspection Decision Subject Id,Khóa đại diện cho đối tượng trong quyết định thanh tra.,Surrogate Key,false,true,draft,,,,
+Inspection Decision Subject Code,"Mã đối tượng quyết định. Map từ PK ThanhTra.TT_QUYET_DINH_DOI_TUONG.ID.",Text,false,false,draft,ThanhTra.TT_QUYET_DINH_DOI_TUONG.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.TT_QUYET_DINH_DOI_TUONG,
+Inspection Decision Id,FK đến Inspection Decision.,Surrogate Key,false,false,draft,ThanhTra.TT_QUYET_DINH_DOI_TUONG.QUYET_DINH_ID,"FK target: Inspection Decision.Inspection Decision Id.",,
+Inspection Decision Code,Mã quyết định.,Text,false,false,draft,ThanhTra.TT_QUYET_DINH_DOI_TUONG.QUYET_DINH_ID,"FK target: Inspection Decision.Inspection Decision Code. Pair with Inspection Decision Id.",,
+Sequence Number,Số thứ tự đối tượng trong quyết định.,Small Counter,true,false,draft,ThanhTra.TT_QUYET_DINH_DOI_TUONG.STT,,,
+Subject Type Code,"Loại đối tượng: CA_NHAN / TO_CHUC.",Classification Value,false,false,draft,ThanhTra.TT_QUYET_DINH_DOI_TUONG.LOAI_DOI_TUONG,"Scheme: TT_PARTY_TYPE.",,
+Subject Name,"Tên đối tượng (denormalized — DOI_TUONG_REF_ID là polymorphic FK, không resolve được thành entity duy nhất).",Text,false,false,draft,ThanhTra.TT_QUYET_DINH_DOI_TUONG.TEN_DOI_TUONG,,,
+Subject Reference Id,"Tham chiếu đến bảng DM_ tương ứng (polymorphic — giá trị có thể trỏ đến DM_CONG_TY_CK/QLQ/DC/DM_DOI_TUONG_KHAC).",Text,true,false,draft,ThanhTra.TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID,"Denormalized — không map FK do polymorphic. Giữ raw value.",,

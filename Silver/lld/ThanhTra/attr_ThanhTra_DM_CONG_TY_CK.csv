@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Securities Company Id,Khóa đại diện cho công ty chứng khoán.,Surrogate Key,false,true,draft,,,,
+Securities Company Code,"Mã công ty chứng khoán. Map từ PK ThanhTra.DM_CONG_TY_CK.ID.",Text,false,false,draft,ThanhTra.DM_CONG_TY_CK.ID,"BK của entity — source ThanhTra.DM_CONG_TY_CK. Entity Securities Company cũng có source từ FIMS.SECURITIESCOMPANY và SCMS.CTCK_THONG_TIN.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.DM_CONG_TY_CK,
+Securities Company Name,Tên tiếng Việt công ty chứng khoán.,Text,false,false,draft,ThanhTra.DM_CONG_TY_CK.TEN_TIENG_VIET,,,
+Securities Company English Name,Tên tiếng Anh công ty chứng khoán.,Text,true,false,draft,ThanhTra.DM_CONG_TY_CK.TEN_TIENG_ANH,,,
+Securities Company Short Name,Tên viết tắt công ty chứng khoán.,Text,true,false,draft,ThanhTra.DM_CONG_TY_CK.TEN_VIET_TAT,,,
+Company Type Code,Loại hình công ty.,Classification Value,true,false,draft,ThanhTra.DM_CONG_TY_CK.LOAI_HINH_CONG_TY,"Scheme: TT_COMPANY_TYPE.",,
+Charter Capital Amount,Vốn điều lệ.,Currency Amount,true,false,draft,ThanhTra.DM_CONG_TY_CK.VON_DIEU_LE,,,
+Life Cycle Status Code,Trạng thái hoạt động.,Classification Value,true,false,draft,ThanhTra.DM_CONG_TY_CK.TRANG_THAI_HOAT_DONG,"Scheme: LIFE_CYCLE_STATUS.",,
+Business License Number,Số giấy phép kinh doanh.,Text,true,false,draft,ThanhTra.DM_CONG_TY_CK.GIAY_PHEP_KINH_DOANH,,,
+Website,Website chính thức.,Text,true,false,draft,ThanhTra.DM_CONG_TY_CK.WEBSITE,,,

@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Complaint Processing Case Id,Khóa đại diện cho hồ sơ giải quyết đơn thư.,Surrogate Key,false,true,draft,,,,
+Complaint Processing Case Code,"Mã hồ sơ. Map từ PK ThanhTra.DT_HO_SO.ID.",Text,false,false,draft,ThanhTra.DT_HO_SO.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.DT_HO_SO,
+Complaint Petition Id,FK đến Complaint Petition — đơn thư gốc.,Surrogate Key,false,false,draft,ThanhTra.DT_HO_SO.DON_THU_ID,"FK target: Complaint Petition.Complaint Petition Id.",,
+Complaint Petition Code,Mã đơn thư gốc.,Text,false,false,draft,ThanhTra.DT_HO_SO.DON_THU_ID,"FK target: Complaint Petition.Complaint Petition Code. Pair with Complaint Petition Id.",,
+Case Number,Số hồ sơ.,Text,true,false,draft,ThanhTra.DT_HO_SO.SO_HO_SO,,,
+Case Name,Tên hồ sơ.,Text,true,false,draft,ThanhTra.DT_HO_SO.TEN_HO_SO,,,
+Archive Number,Mã số lưu trữ.,Text,true,false,draft,ThanhTra.DT_HO_SO.MA_SO_LUU_TRU,,,
+Transfer Unit Name,Đơn vị chuyển kết quả rà soát.,Text,true,false,draft,ThanhTra.DT_HO_SO.DON_VI_CHUYEN_KQ,,,
+Case Status Code,"Trạng thái: MOI_TIEP_NHAN / DANG_GIAI_QUYET / HOAN_THANH.",Classification Value,false,false,draft,ThanhTra.DT_HO_SO.TRANG_THAI,"Scheme: TT_CASE_STATUS.",,
+Resolution Date,Ngày kết thúc giải quyết.,Date,true,false,draft,ThanhTra.DT_HO_SO.NGAY_KET_THUC,,,
+Remark,Ghi chú.,Text,true,false,draft,ThanhTra.DT_HO_SO.GHI_CHU,,,

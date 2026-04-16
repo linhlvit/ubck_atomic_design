@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Inspection Annual Plan Id,Khóa đại diện cho kế hoạch thanh tra hàng năm.,Surrogate Key,false,true,draft,,,,
+Inspection Annual Plan Code,"Mã kế hoạch. Map từ PK ThanhTra.TT_KE_HOACH.ID.",Text,false,false,draft,ThanhTra.TT_KE_HOACH.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.TT_KE_HOACH,
+Plan Type Code,"Loại kế hoạch: THANH_TRA / KIEM_TRA.",Classification Value,false,false,draft,ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH,"Scheme: TT_PLAN_TYPE.",,
+Plan Name,"Tên kế hoạch (ví dụ: Kế hoạch thanh tra năm 2025).",Text,false,false,draft,ThanhTra.TT_KE_HOACH.TEN_KE_HOACH,,,
+Approval Decision Number,Số quyết định phê duyệt kế hoạch.,Text,true,false,draft,ThanhTra.TT_KE_HOACH.SO_QD_PHE_DUYET,,,
+Approval Date,Ngày ký quyết định phê duyệt.,Date,true,false,draft,ThanhTra.TT_KE_HOACH.NGAY_KY_QUYET_DINH,,,
+Plan Year,Năm kế hoạch (ví dụ: 2025).,Small Counter,false,false,draft,ThanhTra.TT_KE_HOACH.NAM_KE_HOACH,,,
+Official Dispatch Number,Số công văn kèm kế hoạch.,Text,true,false,draft,ThanhTra.TT_KE_HOACH.SO_CONG_VAN,,,
+Official Dispatch Date,Ngày công văn.,Date,true,false,draft,ThanhTra.TT_KE_HOACH.NGAY_CONG_VAN,,,
+Remark,Ghi chú (tối đa 4000 ký tự).,Text,true,false,draft,ThanhTra.TT_KE_HOACH.GHI_CHU,,,
+Plan Status Code,"Trạng thái: 1-Hoạt động, 0-Đã xóa.",Classification Value,false,false,draft,ThanhTra.TT_KE_HOACH.TRANG_THAI,"Scheme: TT_RECORD_STATUS.",,

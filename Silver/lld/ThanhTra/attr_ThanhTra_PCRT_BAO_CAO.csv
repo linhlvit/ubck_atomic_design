@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+AML Periodic Report Id,Khóa đại diện cho báo cáo phòng chống rửa tiền định kỳ.,Surrogate Key,false,true,draft,,,,
+AML Periodic Report Code,"Mã báo cáo. Map từ ThanhTra.PCRT_BAO_CAO.MA_BAO_CAO (unique).",Text,false,false,draft,ThanhTra.PCRT_BAO_CAO.MA_BAO_CAO,"BK của entity.",,
+Source Record Id,Khóa chính nội bộ từ bảng nguồn ThanhTra.PCRT_BAO_CAO.ID.,Text,false,false,draft,ThanhTra.PCRT_BAO_CAO.ID,"Internal source PK — dùng để cross-reference khi MA_BAO_CAO chưa có.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.PCRT_BAO_CAO,
+Report Name,Tên báo cáo phòng chống rửa tiền.,Text,false,false,draft,ThanhTra.PCRT_BAO_CAO.TEN_BAO_CAO,,,
+Report Date,Ngày lập báo cáo.,Date,true,false,draft,ThanhTra.PCRT_BAO_CAO.NGAY_LAP_BAO_CAO,,,
+Report Sent Date,Ngày gửi báo cáo.,Date,true,false,draft,ThanhTra.PCRT_BAO_CAO.NGAY_GUI_BAO_CAO,,,
+Period From Date,Từ ngày tổng hợp.,Date,true,false,draft,ThanhTra.PCRT_BAO_CAO.TU_NGAY_TONG_HOP,,,
+Period To Date,Đến ngày tổng hợp.,Date,true,false,draft,ThanhTra.PCRT_BAO_CAO.DEN_NGAY_TONG_HOP,,,
+Report Content,Nội dung báo cáo.,Text,true,false,draft,ThanhTra.PCRT_BAO_CAO.NOI_DUNG,,,
+Report File URL,Đường dẫn file báo cáo.,Text,true,false,draft,ThanhTra.PCRT_BAO_CAO.FILE_BAO_CAO,,,

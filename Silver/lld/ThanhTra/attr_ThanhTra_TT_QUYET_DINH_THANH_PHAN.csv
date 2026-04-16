@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Inspection Decision Team Member Id,Khóa đại diện cho thành viên đoàn thanh tra trong quyết định.,Surrogate Key,false,true,draft,,,,
+Inspection Decision Team Member Code,"Mã thành viên. Map từ PK ThanhTra.TT_QUYET_DINH_THANH_PHAN.ID.",Text,false,false,draft,ThanhTra.TT_QUYET_DINH_THANH_PHAN.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.TT_QUYET_DINH_THANH_PHAN,
+Inspection Decision Id,FK đến Inspection Decision.,Surrogate Key,false,false,draft,ThanhTra.TT_QUYET_DINH_THANH_PHAN.QUYET_DINH_ID,"FK target: Inspection Decision.Inspection Decision Id.",,
+Inspection Decision Code,Mã quyết định.,Text,false,false,draft,ThanhTra.TT_QUYET_DINH_THANH_PHAN.QUYET_DINH_ID,"FK target: Inspection Decision.Inspection Decision Code. Pair with Inspection Decision Id.",,
+Inspection Officer Id,FK đến Inspection Officer — cán bộ trong đoàn.,Surrogate Key,false,false,draft,ThanhTra.TT_QUYET_DINH_THANH_PHAN.CAN_BO_ID,"FK target: Inspection Officer.Inspection Officer Id.",,
+Inspection Officer Code,Mã cán bộ.,Text,false,false,draft,ThanhTra.TT_QUYET_DINH_THANH_PHAN.CAN_BO_ID,"FK target: Inspection Officer.Inspection Officer Code. Pair with Inspection Officer Id.",,
+Team Role Description,"Vai trò trong đoàn (trưởng đoàn, thành viên...).",Text,true,false,draft,ThanhTra.TT_QUYET_DINH_THANH_PHAN.VAI_TRO,,,
+Sequence Number,Số thứ tự trong đoàn.,Small Counter,true,false,draft,ThanhTra.TT_QUYET_DINH_THANH_PHAN.STT,,,

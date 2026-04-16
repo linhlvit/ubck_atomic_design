@@ -1,0 +1,12 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Complaint Enforcement Decision Id,Khóa đại diện cho quyết định xử phạt từ hồ sơ đơn thư.,Surrogate Key,false,true,draft,,,,
+Complaint Enforcement Decision Code,"Mã quyết định xử phạt. Map từ PK ThanhTra.DT_VAN_BAN_XU_LY.ID.",Text,false,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.ID,"BK của entity.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=ThanhTra.DT_VAN_BAN_XU_LY,
+Complaint Processing Case Id,FK đến Complaint Processing Case (OQ-5: DT_VAN_BAN_XU_LY FK → DT_HO_SO).,Surrogate Key,false,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.HO_SO_ID,"FK target: Complaint Processing Case.Complaint Processing Case Id.",,
+Complaint Processing Case Code,Mã hồ sơ đơn thư.,Text,false,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.HO_SO_ID,"FK target: Complaint Processing Case.Complaint Processing Case Code. Pair with Complaint Processing Case Id.",,
+Penalty Decision Number,Số quyết định xử phạt.,Text,true,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.SO_QD_XU_PHAT,,,
+Violation Report Number,Số biên bản vi phạm hành chính.,Text,true,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.SO_BIEN_BAN_VPHC,,,
+Violation Report Date,Ngày biên bản vi phạm hành chính.,Date,true,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.NGAY_BIEN_BAN,,,
+Penalty Content,Nội dung xử phạt.,Text,true,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.NOI_DUNG_XU_PHAT,,,
+Decision Status Code,"Trạng thái: CHUA_NOP_PHAT / DA_NOP_PHAT / NOP_PHAT_NHIEU_LAN.",Classification Value,false,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,"Scheme: TT_PENALTY_STATUS.",,
+Remark,Ghi chú.,Text,true,false,draft,ThanhTra.DT_VAN_BAN_XU_LY.GHI_CHU,,,

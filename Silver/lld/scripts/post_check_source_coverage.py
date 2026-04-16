@@ -58,6 +58,7 @@ SKIP_COLUMNS = {
     c.upper() for c in [
         "NGAY_TAO", "NGAY_CAP_NHAT", "IS_BANG_TAM",
         "NGUOI_TAO", "NGUOI_CAP_NHAT",
+        "NGUOI_SUA", "NGAY_SUA",
         "CREATED_AT", "UPDATED_AT", "CREATED_BY", "UPDATED_BY",
         "DATE_CREATED", "DATE_MODIFIED", "MODIFIED_BY",
         "CREATED_DATE", "MODIFIED_DATE",
