@@ -188,3 +188,31 @@ TT_BUSINESS_SECTOR,(source),Mảng nghiệp vụ được thanh tra/giám sát,s
 TT_SECURITY_LEVEL,(source),Mức độ bảo mật hồ sơ,source_table,ThanhTra.DM_MUC_DO_BAO_MAT,Surveillance Enforcement Case
 TT_LEGAL_BASIS_TYPE,(source),Căn cứ pháp lý của quyết định thanh tra,source_table,ThanhTra.DM_CAN_CU_THANH_TRA,Inspection Decision
 TT_MISC_CATEGORY,(source),Danh mục phân loại dùng chung nội bộ,source_table,ThanhTra.DM_DANH_MUC_KHAC,(reserved)
+TT_OFFICER_STATUS,SU_DUNG,Đang sử dụng,etl_derived,ThanhTra.DM_CAN_BO.TRANG_THAI,Inspection Officer
+TT_OFFICER_STATUS,KHONG_SU_DUNG,Không sử dụng,etl_derived,ThanhTra.DM_CAN_BO.TRANG_THAI,Inspection Officer
+TT_COMPANY_TYPE,(to_define),Loại hình công ty — cần profile data LOAI_HINH_CONG_TY,modeler_defined,"ThanhTra.DM_CONG_TY_CK.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_QLQ.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_DC.LOAI_HINH_CONG_TY","Securities Company | Fund Management Company | Public Company"
+TT_FUND_TYPE,(to_define),Loại quỹ đầu tư — cần profile data LOAI_QUY,modeler_defined,ThanhTra.DM_CONG_TY_QLQ.LOAI_QUY,Fund Management Company
+TT_PARTY_TYPE,CA_NHAN,Cá nhân,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG","Inspection Subject Other Party | Complaint Petition | Inspection Case"
+TT_PARTY_TYPE,TO_CHUC,Tổ chức,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG","Inspection Subject Other Party | Complaint Petition | Inspection Case"
+TT_PLAN_TYPE,THANH_TRA,Thanh tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH","Inspection Annual Plan | Inspection Decision | Inspection Case"
+TT_PLAN_TYPE,KIEM_TRA,Kiểm tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH","Inspection Annual Plan | Inspection Decision | Inspection Case"
+TT_RECORD_STATUS,1,Hoạt động,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI","Inspection Annual Plan | Inspection Decision"
+TT_RECORD_STATUS,0,Đã xóa,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI","Inspection Annual Plan | Inspection Decision"
+TT_PETITION_TYPE,KHIEU_NAI,Khiếu nại,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_TYPE,TO_CAO,Tố cáo,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_TYPE,PHAN_ANH,Phản ánh,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_TYPE,KIEN_NGHI,Kiến nghị,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_STATUS,MOI,Mới tiếp nhận,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PETITION_STATUS,DANG_XU_LY,Đang xử lý,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PETITION_STATUS,HOAN_THANH,Hoàn thành,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PETITION_STATUS,DONG,Đóng,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PENALTY_STATUS,CHUA_NOP_PHAT,Chưa nộp phạt,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
+TT_PENALTY_STATUS,DA_NOP_PHAT,Đã nộp phạt,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
+TT_PENALTY_STATUS,NOP_PHAT_NHIEU_LAN,Nộp phạt nhiều lần,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
+TT_ANNOUNCEMENT_STATUS,CHO_DUYET,Chờ duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI","Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement"
+TT_ANNOUNCEMENT_STATUS,DA_DUYET,Đã duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI","Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement"
+TT_OFFICER_ROLE,LANH_DAO,Lãnh đạo phụ trách,etl_derived,ThanhTra.TT_HO_SO_CAN_BO.LOAI_PHAN_CONG,Inspection Case Officer Assignment
+TT_OFFICER_ROLE,CHUYEN_VIEN,Chuyên viên xử lý,etl_derived,ThanhTra.TT_HO_SO_CAN_BO.LOAI_PHAN_CONG,Inspection Case Officer Assignment
+TT_RESOLUTION_RESULT,DUNG,Đúng,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
+TT_RESOLUTION_RESULT,SAI,Sai,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
+TT_RESOLUTION_RESULT,DUNG_MOT_PHAN,Đúng một phần,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
