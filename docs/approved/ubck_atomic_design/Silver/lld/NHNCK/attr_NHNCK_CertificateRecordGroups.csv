@@ -1,0 +1,13 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+License Certificate Group Document Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Government Registration Document"". Nhóm cấp/thu hồi/hủy chứng chỉ.",,
+License Certificate Group Document Code,Mã định danh (tự động tăng). BK,Text,false,false,draft,NHNCK.CertificateRecordGroups.Id,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=NHNCK.CertificateRecordGroups,
+Group Name,Tên nhóm,Text,true,false,draft,NHNCK.CertificateRecordGroups.GroupName,,,
+Group Type Code,Loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi),Classification Value,true,false,draft,NHNCK.CertificateRecordGroups.Type,Scheme: GROUP_TYPE.,,
+License Decision Document Id,FK đến quyết định,Surrogate Key,true,false,draft,NHNCK.CertificateRecordGroups.DecisionId,FK target: Securities Practitioner License Decision Document.License Decision Document Id.,,
+License Decision Document Code,Mã quyết định,Text,true,false,draft,NHNCK.CertificateRecordGroups.DecisionId,FK target: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id.,,
+Group Description,Mô tả nhóm,Text,true,false,draft,NHNCK.CertificateRecordGroups.Description,,,
+Group Notes,Ghi chú,Text,true,false,draft,NHNCK.CertificateRecordGroups.Notes,,,
+Group Status Code,Trạng thái nhóm,Classification Value,true,false,draft,NHNCK.CertificateRecordGroups.Status,Scheme: GROUP_STATUS.,,
+Created Timestamp,Ngày tạo,Timestamp,true,false,draft,NHNCK.CertificateRecordGroups.CreatedAt,,,
+Updated Timestamp,Ngày cập nhật,Timestamp,true,false,draft,NHNCK.CertificateRecordGroups.UpdatedAt,,,

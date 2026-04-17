@@ -1,0 +1,277 @@
+scheme_code,code,name,source_type,source_table,used_in_entities
+IP_ALT_ID_TYPE,NATIONAL_ID,CMND,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,CITIZEN_ID,CCCD,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,PASSPORT,Hộ chiếu,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,BUSINESS_LICENSE,Giấy phép thành lập,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,ESTABLISHMENT_DECISION,Quyết định thành lập,etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,OPERATING_LICENSE,Giấy phép đăng ký/hoạt động (GPDC/GPHĐ),etl_derived,,IP Alt Identification
+IP_ALT_ID_TYPE,PRACTITIONER_LICENSE,Chứng chỉ hành nghề (CCHN),etl_derived,,IP Alt Identification
+IP_ELEC_ADDR_TYPE,PHONE_HEAD_OFFICE,Điện thoại trụ sở chính,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,FAX_HEAD_OFFICE,Fax trụ sở chính,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,PHONE_BUSINESS,Điện thoại kinh doanh,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,EMAIL_BUSINESS,Email kinh doanh,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,FAX_BUSINESS,Fax kinh doanh,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,PHONE,Điện thoại,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,FAX,Fax,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,EMAIL,Email,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,MOBILE,Số di động,etl_derived,,IP Electronic Address
+IP_ELEC_ADDR_TYPE,EMAIL_DISCLOSURE,Email công bố thông tin,etl_derived,,IP Electronic Address
+IP_ADDR_TYPE,HEAD_OFFICE,Địa chỉ trụ sở chính,etl_derived,,IP Postal Address
+IP_ADDR_TYPE,BUSINESS,Địa chỉ kinh doanh,etl_derived,,IP Postal Address
+IP_ADDR_TYPE,PERMANENT,Nơi thường trú,etl_derived,,IP Postal Address
+IP_ADDR_TYPE,CURRENT,Nơi ở hiện tại,etl_derived,,IP Postal Address
+EDUCATION_LEVEL,(source),Trình độ học vấn — values from EducationLevels,source_table,NHNCK.qlnhn.EducationLevels,Securities Practitioner
+APPLICATION_STATUS,(source),Trạng thái hồ sơ — values from ApplicationStatuses,source_table,NHNCK.qlnhn.ApplicationStatuses,License Application | App Processing Activity Log
+CERTIFICATE_TYPE,(source),Loại chứng chỉ hành nghề — values from Certificates,source_table,NHNCK.qlnhn.Certificates,License Application | License Certificate Document | Organization Employment Report
+SPECIALIZATION,(source),Chuyên môn — values from Specializations,source_table,NHNCK.qlnhn.Specializations,App Education Certificate Document
+DOCUMENT_TYPE,(source),Loại tài liệu — values from Documents,source_table,NHNCK.qlnhn.Documents,App Document Attachment
+APPLICATION_SOURCE,(source),Hình thức nộp hồ sơ — values from ApplicationSources,source_table,NHNCK.qlnhn.ApplicationSources,(reserved — chưa có trường nguồn map)
+POSITION,(source),Chức vụ — values from Positions,source_table,NHNCK.qlnhn.Positions,(reserved — WorkHistories dùng text tự do)
+REGISTRATION_TYPE,(to_define),Loại đăng ký — cần xác nhận giá trị từ data,modeler_defined,NHNCK.qlnhn.Applications.RegistrationType,License Application
+APPLICATION_TYPE,(to_define),"Loại hồ sơ (cấp mới, cấp lại, gia hạn...) — cần xác nhận từ data",modeler_defined,NHNCK.qlnhn.Applications.ApplicationType,License Application
+CERTIFICATE_RECEIPT_METHOD,(to_define),Phương thức nhận chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Applications.CertificateReceiptMethod,License Application
+CERTIFICATE_RECEIPT_STATUS,(to_define),Trạng thái nhận chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Applications.ReceiptStatus,License Application
+APPRAISAL_STATUS,(to_define),Trạng thái thẩm định tài liệu — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ApplicationSpecializations.Status,App Education Certificate Document | App Document Attachment
+FEE_TYPE,(to_define),Loại phí — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ApplicationFees.FeeType,License Application Fee
+PAYMENT_STATUS,(to_define),Trạng thái thanh toán — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ApplicationFees.Status,License Application Fee
+VERIFICATION_LEVEL,(to_define),Cấp phê duyệt (LĐCM/LĐUB) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyLevel,App Verification Status
+VERIFICATION_STATUS,(to_define),Trạng thái phê duyệt — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.VerifyApplicationStatuses.VerifyStatus,App Verification Status
+INDIVIDUAL_GENDER,(to_define),Giới tính — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ProfessionalHistories.Gender,Securities Practitioner
+NATIONALITY,(to_define),Quốc tịch — cần xác nhận từ data (có thể dùng ISO 3166),modeler_defined,NHNCK.qlnhn.ProfessionalHistories.NationalityId,Securities Practitioner
+PRACTICE_STATUS,(to_define),Trạng thái hành nghề — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ProfessionalHistories.StatusWork,Securities Practitioner
+PRACTITIONER_REGISTRATION_TYPE,(to_define),Hình thức đăng ký người hành nghề vào hệ thống — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.ProfessionalHistories.RegistrationType,Securities Practitioner
+C06_VERIFICATION_STATUS,(to_define),Trạng thái xác thực C06 — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Professionals.VerifyStatus,Securities Practitioner | Identity Verification Record
+CERTIFICATE_STATUS,(to_define),Trạng thái chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.Status,License Certificate Document | Certificate Document Status History (From/To)
+DIGITAL_SIGNATURE_STATUS,(to_define),Trạng thái ký số — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecords.SignStatus,License Certificate Document
+GROUP_TYPE,(to_define),Loại nhóm chứng chỉ (Cấp/Thu hồi/Hủy/Chuyển đổi) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecordGroups.GroupType,License Certificate Group Document
+GROUP_STATUS,(to_define),Trạng thái nhóm — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecordGroups.Status,License Certificate Group Document
+ACTIVITY_ACTION,(to_define),Loại hành động trên chứng chỉ — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.CertificateRecordLogs.Action,Certificate Document Activity Log
+RELATIONSHIP_TYPE,(to_define),"Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà) — cần xác nhận từ data",modeler_defined,NHNCK.qlnhn.ProfessionalRelationships.RelationshipType,Related Party
+COUNTRY,(to_define),Quốc gia — cần xác nhận từ data (có thể dùng ISO 3166),modeler_defined,NHNCK.qlnhn.ProfessionalRelationships.CountryId,Related Party
+CONDUCT_VIOLATION_TYPE,(to_define),Loại vi phạm (Pháp luật/Hành chính) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Violations.ViolationType,Conduct Violation
+VIOLATION_STATUS,(to_define),Trạng thái vi phạm (Hiệu lực/Không hiệu lực) — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.Violations.Status,Conduct Violation
+REPORT_TYPE,(to_define),Loại báo cáo — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.OrganizationReports.Type,Organization Employment Report
+COURSE_STATUS,(to_define),"Trạng thái khóa học (1:HĐ, 0:Không HĐ, -1:Đã xóa)",modeler_defined,NHNCK.qlnhn.SpecializationCourses.Status,Professional Training Class
+TRAINING_RESULT,(to_define),Kết quả đào tạo — cần xác nhận từ data,modeler_defined,NHNCK.qlnhn.SpecializationCourseDetails.Result,Professional Training Class Enrollment
+EXAMINATION_STATUS,(to_define),Trạng thái đợt thi (Khởi tạo/Đang thực hiện/Hoàn thành),modeler_defined,NHNCK.qlnhn.ExamSessions.Status,Qualification Examination Assessment
+EXAMINATION_RESULT,(to_define),Kết quả thi (Đạt/Không đạt/Chưa thi),modeler_defined,NHNCK.qlnhn.ExamDetails.Result,Qualification Examination Assessment Result
+ORGANIZATION_TYPE,(to_define),"Loại tổ chức (1:CTCK, 2:QLQ, 3:NH, 4:Khác)",modeler_defined,NHNCK.qlnhn.Organizations.OrganizationTypeId,Securities Organization Reference
+ORGANIZATION_LEVEL,(to_define),Cấp độ tổ chức,modeler_defined,NHNCK.qlnhn.Organizations.Level,Securities Organization Reference
+ORGANIZATION_STATUS,(to_define),Trạng thái tổ chức,modeler_defined,NHNCK.qlnhn.Organizations.Status,Securities Organization Reference
+SYNC_STATUS,(to_define),Trạng thái đồng bộ,modeler_defined,NHNCK.qlnhn.Organizations.SyncStatus,Securities Organization Reference
+DECISION_TYPE,(to_define),Loại quyết định,modeler_defined,NHNCK.qlnhn.Decisions.TypeId,License Decision Document
+DECISION_STATUS,(to_define),Trạng thái quyết định,modeler_defined,NHNCK.qlnhn.Decisions.Status,License Decision Document
+ORGANIZATION_UNIT_TYPE,UNIT,Đơn vị,etl_derived,,Regulatory Authority Organization Unit
+ORGANIZATION_UNIT_TYPE,DEPARTMENT,Phòng ban,etl_derived,,Regulatory Authority Organization Unit
+ORGANIZATION_UNIT_STATUS,(to_define),Trạng thái đơn vị/phòng ban,modeler_defined,NHNCK.qlnhn.Units.Status,Regulatory Authority Organization Unit
+OFFICER_STATUS,(to_define),Trạng thái người dùng,modeler_defined,NHNCK.qlnhn.Users.Status,Regulatory Authority Officer
+LIFE_CYCLE_STATUS,(source),Trạng thái vòng đời thành viên — values from FIMS.STATUS,source_table,FIMS.STATUS,"Custodian Bank | Depository Center | Fund Management Company | Fund Management Company Organization Unit | Investment Fund | National Securities Exchange | Securities Practitioner License Profile | Stock Broker"
+LIFE_CYCLE_STATUS,ACTIVE,Còn hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
+LIFE_CYCLE_STATUS,INACTIVE,Hết hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
+LIFE_CYCLE_STATUS,00,Đang hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,01,Ngừng HĐ đã hoàn thành thủ tục chấm dứt hiệu lực MST,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,03,Ngừng HĐ chưa hoàn thành thủ tục chấm dứt hiệu lực MST,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,04,Đang hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,05,Ngừng kinh doanh có thời hạn,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+LIFE_CYCLE_STATUS,06,Không hoạt động tại địa chỉ đã đăng ký,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,1,Giải thể,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,2,Phá sản,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,3,"Chuyển đổi loại hình DN, tổ chức sắp xếp loại DN",etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,4,Cho làm thủ tục giải thể,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,5,Cho làm thủ tục phá sản,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,6,Cho làm thủ tục tổ chức lại tổ chức kinh tế,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,7,Bị thu hồi giấy phép hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,8,Đóng theo đơn vị chủ quản (MST 13 số),etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAXPAYER_CESSATION_TYPE,9,Khác,etl_derived,DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG,Registered Taxpayer
+TAX_RETURN_TYPE,(to_define),"Loại tờ khai (lần đầu, bổ sung, điều chỉnh...) — cần profile data LOAI_TKHAI",modeler_defined,DCST.TCT_BAO_CAO.LOAI_TKHAI,Tax Financial Statement
+REPORTING_PERIOD_TYPE,(to_define),"Kiểu kỳ kê khai (tháng, quý, năm...) — cần profile data KIEU_KY",modeler_defined,DCST.TCT_BAO_CAO.KIEU_KY,Tax Financial Statement
+AUDIT_STATUS,(to_define),Trạng thái kiểm toán BCTC — cần profile data TRANG_THAI_KT,modeler_defined,DCST.TCT_BAO_CAO.TRANG_THAI_KT,Tax Financial Statement
+TAX_ENFORCEMENT_TYPE,(to_define),"Hình thức cưỡng chế (trích tiền TK, kê biên TS, ngừng sử dụng HĐ...) — cần profile data MA_HTCC",modeler_defined,DCST.TCT_TT_CUONG_CHE_NO|DCST.TCT_TTCCN_HOA_DON,Tax Debt Enforcement Order | Tax Invoice Enforcement Order
+INVOICE_TYPE,(to_define),Loại hóa đơn — cần profile data LOAI_HOA_DON,modeler_defined,DCST.HOA_DON_CHI_TIET,Tax Invoice Enforcement Order Item
+FMS_OPERATION_STATUS,(source),Trạng thái hoạt động của tổ chức/cá nhân trong hệ thống FMS,source_table,FMS.STATUS,"Fund Management Company | Foreign Fund Management Organization Unit | Custodian Bank | Fund Distribution Agent"
+FMS_AGENCY_TYPE,(source),Loại đại lý phân phối quỹ đầu tư,source_table,FMS.AGENCYTYPE,Fund Distribution Agent
+GEOGRAPHIC_AREA_TYPE,COUNTRY,Quốc gia / quốc tịch — từ FIMS.NATIONAL + FMS.NATIONAL + SCMS.DM_QUOC_TICH,etl_derived,"FIMS.NATIONAL, FMS.NATIONAL, SCMS.DM_QUOC_TICH",Geographic Area
+GEOGRAPHIC_AREA_TYPE,PROVINCE,Tỉnh / thành phố trong nước — từ SCMS.DM_TINH_THANH,etl_derived,SCMS.DM_TINH_THANH,Geographic Area
+FMS_STOCKHOLDER_TYPE,(source),Danh mục loại hình nhà đầu tư/cổ đông trong hệ thống FMS,source_table,FMS.STOCKHOLDERTYPE,Discretionary Investment Investor
+FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,MONTHLY,Tháng,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,QUARTERLY,Quý,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,SEMI_ANNUAL,Bán niên,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,ANNUAL,Năm,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_FUND_TYPE,(source),Loại hình quỹ đầu tư,source_table,FMS.FUNDS.FundType,Investment Fund
+FMS_JOB_TYPE,(source),Loại chức vụ nhân sự công ty QLQ,source_table,FMS.JOBTYPE,Fund Management Company Key Person
+FMS_ORGANIZATION_UNIT_TYPE,BRANCH,Chi nhánh,etl_derived,FMS.BRANCHES.BrType,Fund Management Company Organization Unit
+FMS_ORGANIZATION_UNIT_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện,etl_derived,FMS.BRANCHES.BrType,Fund Management Company Organization Unit
+FMS_RATING_CLASS,(to_define),Xếp loại kết quả đánh giá — cần profile data RankClass,modeler_defined,FMS.RANK.RankClass,Member Rating
+FMS_REPRESENT_STATUS,ACTIVE,Hoạt động,etl_derived,FMS.REPRESENT.Status,Investment Fund Representative Board Member
+FMS_REPRESENT_STATUS,INACTIVE,Khóa,etl_derived,FMS.REPRESENT.Status,Investment Fund Representative Board Member
+FMS_FOREIGN_OU_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện NN,etl_derived,FMS.STFFGBRCH.FnType,Foreign Fund Management Organization Unit Staff
+FMS_FOREIGN_OU_TYPE,BRANCH,Chi nhánh NN,etl_derived,FMS.STFFGBRCH.FnType,Foreign Fund Management Organization Unit Staff
+FMS_REPORT_TYPE,PERIODIC,Báo cáo định kỳ,etl_derived,FMS.RPTMEMBER.ReportType,Member Periodic Report
+FMS_REPORT_TYPE,AD_HOC,Báo cáo bất thường,etl_derived,FMS.RPTMEMBER.ReportType,Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,FMC,Công ty quản lý quỹ,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
+FMS_REPORTING_MEMBER_TYPE,CUSTODIAN_BANK,Ngân hàng lưu ký giám sát,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
+FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_BRANCH,Chi nhánh QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_REP,Văn phòng đại diện QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report
+FMS_REPORTING_MEMBER_TYPE,INVESTMENT_FUND,Quỹ đầu tư chứng khoán,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
+FMS_REPORT_SUBMISSION_STATUS,PENDING,Chưa gửi,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,SUBMITTED,Đã gửi,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,LATE,Gửi muộn,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_REPORT_SUBMISSION_STATUS,CANCELLED,Bị hủy,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_TRANSFER_TYPE,(to_define),Loại giao dịch CCQ — cần profile data TransType,modeler_defined,FMS.TRANSFERMBF.TransType,Investment Fund Certificate Transfer
+FMS_CELL_DATA_TYPE,NUMERIC,Số,etl_derived,FMS.RPTVALUES.FormatDataType,Report Import Value
+FMS_CELL_DATA_TYPE,STRING,Ký tự,etl_derived,FMS.RPTVALUES.FormatDataType,Report Import Value
+FMS_BUSINESS_TYPE,(source),Ngành nghề kinh doanh của tổ chức trong hệ thống FMS,source_table,FMS.BUSINESS,"Fund Management Company | Foreign Fund Management Organization Unit"
+FMS_RELATION_TYPE,(source),Quan hệ giữa NĐT và người liên quan,source_table,FMS.RELATION,Discretionary Investment Investor
+FMS_VIOLATION_TYPE,(to_define),Loại vi phạm trong hoạt động quản lý quỹ — cần profile data ViolType,modeler_defined,FMS.VIOLT.ViolType,Fund Management Conduct Violation
+FMS_VIOLATION_STATUS,(to_define),Trạng thái xử lý vi phạm — cần profile data ViolStatus,modeler_defined,FMS.VIOLT.ViolStatus,Fund Management Conduct Violation
+FMS_REPORT_VALUE_TYPE,(to_define),Loại giá trị trong báo cáo thành viên — cần profile data Type,modeler_defined,FMS.RPTVALUES.Type,Member Report Value
+IP_ELEC_ADDR_TYPE,WEBSITE,Website tổ chức,etl_derived,,IP Electronic Address
+SCMS_COMPANY_TYPE,(source),Loại công ty (CTCK cổ phần/TNHH/nhà nước...),source_table,SCMS.DM_LOAI_CONG_TY,Securities Company
+SCMS_COMPANY_STATUS,(source),Trạng thái hoạt động của CTCK — bao gồm flag gửi báo cáo và công bố thông tin,source_table,SCMS.DM_TRANG_THAI_CTCK,Securities Company
+SCMS_SERVICE_TYPE,(source),Dịch vụ được phép cung cấp của CTCK,source_table,SCMS.DM_DICH_VU,Securities Company Organization Unit
+SCMS_POSITION_TYPE,(source),Chức vụ của nhân sự cao cấp CTCK,source_table,SCMS.DM_CHUC_VU,Securities Company Senior Personnel
+SCMS_SHAREHOLDER_RELATION_TYPE,(source),Loại mối quan hệ giữa cổ đông và người liên quan,source_table,SCMS.DM_MOI_QUAN_HE,Securities Company Shareholder
+SCMS_BUSINESS_SECTOR,(source),Ngành nghề kinh doanh đăng ký của CTCK,source_table,SCMS.DM_NGANH_NGHE_KD,Securities Company
+SCMS_SHAREHOLDER_TXN_TYPE,(source),Loại giao dịch cổ đông (mua/bán/tặng/thừa kế...),source_table,SCMS.DM_LOAI_GIAO_DICH_CD,"Securities Company Shareholder Transfer, Disclosure Shareholder Change"
+SCMS_VIOLATION_TYPE,(source),Loại vi phạm báo cáo (gửi muộn/không gửi/sai nội dung...),source_table,SCMS.DM_LOAI_VI_PHAM,Securities Company Report Violation
+SCMS_INCIDENT_TYPE,(source),Loại sự vụ trong quản lý CTCK,source_table,SCMS.DM_SU_VU,Securities Company Administrative Penalty
+SCMS_INDICATOR_GROUP,(source),Nhóm chỉ tiêu báo cáo,source_table,SCMS.DM_CHI_TIEU_DM,Report Indicator
+SCMS_STATISTICAL_CODE,(source),Mã thống kê của chỉ tiêu,source_table,SCMS.DM_THONG_KE,Report Indicator
+SCMS_ORG_UNIT_TYPE,BRANCH,Chi nhánh,etl_derived,,Securities Company Organization Unit
+SCMS_ORG_UNIT_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện,etl_derived,,Securities Company Organization Unit
+SCMS_ORG_UNIT_TYPE,TRANSACTION_OFFICE,Phòng giao dịch,etl_derived,,Securities Company Organization Unit
+SCMS_REPORT_DIRECTION_TYPE,0,Báo cáo đầu vào,etl_derived,SCMS.scms.BM_BAO_CAO.LOAI_BAO_CAO,Report Template
+SCMS_REPORT_DIRECTION_TYPE,1,Báo cáo đầu ra,etl_derived,SCMS.scms.BM_BAO_CAO.LOAI_BAO_CAO,Report Template
+SCMS_REPORT_LAYOUT_TYPE,1,Báo cáo hàng cột,etl_derived,SCMS.scms.BM_SHEET.KIEU_BAO_CAO,Report Template Sheet
+SCMS_REPORT_LAYOUT_TYPE,2,Báo cáo hàng,etl_derived,SCMS.scms.BM_SHEET.KIEU_BAO_CAO,Report Template Sheet
+SCMS_REPORT_LAYOUT_TYPE,3,Báo cáo cột,etl_derived,SCMS.scms.BM_SHEET.KIEU_BAO_CAO,Report Template Sheet
+SCMS_INDICATOR_DATA_TYPE,1,Danh mục,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,2,Công thức,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,3,Số,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,4,Ký tự,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_INDICATOR_DATA_TYPE,5,Ngày tháng,etl_derived,SCMS.scms.DM_CHI_TIEU.KIEU_DU_LIEU,Report Indicator
+SCMS_CALCULATION_METHOD,1,Cộng dồn,etl_derived,SCMS.scms.DM_CHI_TIEU.CACH_TINH,Report Indicator
+SCMS_CALCULATION_METHOD,2,Tính đến thời điểm,etl_derived,SCMS.scms.DM_CHI_TIEU.CACH_TINH,Report Indicator
+SCMS_ORG_UNIT_STATUS,(to_define),Trạng thái chi nhánh/VPDD/PGD — cần profile data TRANG_THAI_CHI_NHANH/TRANG_THAI_VPDD/TRANG_THAI_PGD,modeler_defined,"SCMS.scms.CTCK_CHI_NHANH.TRANG_THAI_CHI_NHANH, SCMS.scms.CTCK_VP_DAI_DIEN.TRANG_THAI_VPDD, SCMS.scms.CTCK_PHONG_GIAO_DICH.TRANG_THAI_PGD",Securities Company Organization Unit
+SCMS_PERSONNEL_STATUS,(to_define),Trạng thái nhân sự cao cấp CTCK — cần profile data TRANG_THAI_NHAN_SU,modeler_defined,SCMS.scms.CTCK_NHAN_SU_CAO_CAP.TRANG_THAI_NHAN_SU,Securities Company Senior Personnel
+SCMS_SHAREHOLDER_TYPE,(to_define),Loại cổ đông: IS_CA_NHAN — cần ánh xạ sang Individual/Organization,modeler_defined,SCMS.scms.CTCK_CO_DONG.IS_CA_NHAN,Securities Company Shareholder
+SCMS_AUDIT_FIRM_PRACTITIONER_STATUS,(to_define),Trạng thái kiểm toán viên — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CT_KIEM_TOAN_VIEN.TRANG_THAI,Audit Firm Practitioner
+SCMS_SCHEDULE_STATUS,(to_define),Trạng thái định kỳ gửi báo cáo — cần profile data SU_DUNG,modeler_defined,SCMS.scms.BM_BAO_CAO_DINH_KY.SU_DUNG,Report Submission Schedule
+SCMS_REPORT_SUBMISSION_STATUS,(source),Trạng thái lần gửi báo cáo: 4-Đã gửi; 5-Yêu cầu gửi lại; 6-Đã gửi lại,source_table,SCMS.scms.BC_THANH_VIEN.TRANG_THAI,Member Periodic Report
+SCMS_DISCLOSURE_TYPE,(to_define),Loại công bố thông tin — cần profile data LOAI_CONG_BO,modeler_defined,SCMS.scms.CBTT_BAO_CAO.LOAI_CONG_BO,Disclosure Report Submission
+SCMS_DISCLOSURE_METHOD,(to_define),Kiểu công bố thông tin — cần profile data KIEU_CONG_BO,modeler_defined,SCMS.scms.CBTT_BAO_CAO.KIEU_CONG_BO,Disclosure Report Submission
+SCMS_DISCLOSURE_STATUS,(to_define),Trạng thái công bố thông tin — cần profile data TRANG_THAI,modeler_defined,"SCMS.scms.CBTT_BAO_CAO.TRANG_THAI, SCMS.scms.CBTT_CHAO_BAN_CHUNG_KHOAN.TRANG_THAI, SCMS.scms.CBTT_CO_DONG.TRANG_THAI","Disclosure Report Submission, Disclosure Securities Offering, Disclosure Shareholder Change"
+SCMS_OFFERING_FORM,(to_define),Hình thức chào bán chứng khoán — cần profile data HINH_THUC_CHAO_BAN,modeler_defined,SCMS.scms.CBTT_CHAO_BAN_CHUNG_KHOAN.HINH_THUC_CHAO_BAN,Disclosure Securities Offering
+SCMS_OFFERING_TARGET,(to_define),Đối tượng chào bán — cần profile data DOI_TUONG_CHAO_BAN,modeler_defined,SCMS.scms.CBTT_CHAO_BAN_CHUNG_KHOAN.DOI_TUONG_CHAO_BAN,Disclosure Securities Offering
+SCMS_PENALTY_FORM,(to_define),Hình thức xử lý hành chính — cần profile data HINH_THUC,modeler_defined,SCMS.scms.CTCK_XU_LY_HANH_CHINH.HINH_THUC,Securities Company Administrative Penalty
+SCMS_PENALTY_STATUS,(to_define),Trạng thái quyết định xử lý hành chính — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_XU_LY_HANH_CHINH.TRANG_THAI,Securities Company Administrative Penalty
+SCMS_VIOLATION_RECORD_STATUS,(to_define),Trạng thái bản ghi vi phạm — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.BC_VI_PHAM.TRANG_THAI,Securities Company Report Violation
+SCMS_SHAREHOLDER_TRANSFER_STATUS,(to_define),Trạng thái chuyển nhượng cổ phần — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_CD_CHUYEN_NHUONG.TRANG_THAI,Securities Company Shareholder Transfer
+SCMS_RELATED_PARTY_RELATIONSHIP,(to_define),Loại mối quan hệ người liên quan với cổ đông — cần profile data MOI_QUAN_HE,modeler_defined,SCMS.scms.CTCK_CD_MOI_QUAN_HE.MOI_QUAN_HE,Securities Company Shareholder Related Party
+SCMS_SHAREHOLDER_REPRESENTATIVE_STATUS,(to_define),Trạng thái người đại diện cổ đông — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_CD_DAI_DIEN.TRANG_THAI,Securities Company Shareholder Representative
+SCMS_SHAREHOLDER_RELATED_PARTY_STATUS,(to_define),Trạng thái bản ghi người liên quan — cần profile data TRANG_THAI,modeler_defined,SCMS.scms.CTCK_CD_MOI_QUAN_HE.TRANG_THAI,Securities Company Shareholder Related Party
+SCMS_OBLIGATION_STATUS,(to_define),Trạng thái nghĩa vụ gửi báo cáo — cần profile data,modeler_defined,SCMS.scms.BM_BAO_CAO_DINH_KY_DON_VI,Report Submission Obligation
+IP_ADDR_TYPE,ADDRESS,Địa chỉ chung (không phân biệt loại),etl_derived,,IP Postal Address
+IP_ELEC_ADDR_TYPE,HOTLINE,Số điện thoại hotline,etl_derived,,IP Electronic Address
+TT_FORM_TYPE,(source),Loại biểu mẫu thanh tra,source_table,ThanhTra.DM_BIEU_MAU,Inspection Annual Plan
+TT_POSITION_TYPE,(source),Chức vụ trong đoàn thanh tra,source_table,ThanhTra.DM_CHUC_VU,"Inspection Annual Plan | Inspection Case"
+TT_UNIT_TYPE,(source),Đơn vị UBCKNN chủ trì,source_table,ThanhTra.DM_DON_VI,Inspection Annual Plan
+TT_CASE_TYPE,(source),Loại hồ sơ thanh tra/giám sát,source_table,ThanhTra.DM_HO_SO,"Inspection Case | Surveillance Enforcement Case | AML Enforcement Case"
+TT_CASE_STATUS,(source),Trạng thái hồ sơ xử lý,source_table,ThanhTra.DM_TRANG_THAI_HO_SO,"Inspection Case | Surveillance Enforcement Case | AML Enforcement Case"
+TT_INSPECTION_SECTOR,(source),Lĩnh vực thanh tra kiểm tra,source_table,ThanhTra.DM_LINH_VUC,"Inspection Annual Plan | Inspection Case"
+TT_VIOLATION_TYPE,(source),Hành vi vi phạm,source_table,ThanhTra.DM_HANH_VI_VI_PHAM,"Inspection Conclusion | Surveillance Enforcement Decision | AML Enforcement Decision"
+TT_PENALTY_TYPE,(source),Hình thức phạt,source_table,ThanhTra.DM_HINH_THUC_PHAT,"Inspection Conclusion | Surveillance Enforcement Decision | AML Enforcement Decision"
+TT_DOCUMENT_FORM_TYPE,(source),Hình thức văn bản (quyết định/công văn/thông báo),source_table,ThanhTra.DM_HINH_THUC_VAN_BAN,Inspection Decision
+TT_BUSINESS_SECTOR,(source),Mảng nghiệp vụ được thanh tra/giám sát,source_table,ThanhTra.DM_MANG_NGHIEP_VU,"Inspection Decision | Surveillance Enforcement Case | AML Enforcement Case"
+TT_SECURITY_LEVEL,(source),Mức độ bảo mật hồ sơ,source_table,ThanhTra.DM_MUC_DO_BAO_MAT,Surveillance Enforcement Case
+TT_LEGAL_BASIS_TYPE,(source),Căn cứ pháp lý của quyết định thanh tra,source_table,ThanhTra.DM_CAN_CU_THANH_TRA,Inspection Decision
+TT_MISC_CATEGORY,(source),Danh mục phân loại dùng chung nội bộ,source_table,ThanhTra.DM_DANH_MUC_KHAC,(reserved)
+TT_OFFICER_STATUS,SU_DUNG,Đang sử dụng,etl_derived,ThanhTra.DM_CAN_BO.TRANG_THAI,Inspection Officer
+TT_OFFICER_STATUS,KHONG_SU_DUNG,Không sử dụng,etl_derived,ThanhTra.DM_CAN_BO.TRANG_THAI,Inspection Officer
+TT_COMPANY_TYPE,(to_define),Loại hình công ty — cần profile data LOAI_HINH_CONG_TY,modeler_defined,"ThanhTra.DM_CONG_TY_CK.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_QLQ.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_DC.LOAI_HINH_CONG_TY","Securities Company | Fund Management Company | Public Company"
+TT_FUND_TYPE,(to_define),Loại quỹ đầu tư — cần profile data LOAI_QUY,modeler_defined,ThanhTra.DM_CONG_TY_QLQ.LOAI_QUY,Fund Management Company
+TT_PARTY_TYPE,CA_NHAN,Cá nhân,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG","Inspection Subject Other Party | Complaint Petition | Inspection Case"
+TT_PARTY_TYPE,TO_CHUC,Tổ chức,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG","Inspection Subject Other Party | Complaint Petition | Inspection Case"
+TT_PLAN_TYPE,THANH_TRA,Thanh tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH","Inspection Annual Plan | Inspection Decision | Inspection Case"
+TT_PLAN_TYPE,KIEM_TRA,Kiểm tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH","Inspection Annual Plan | Inspection Decision | Inspection Case"
+TT_RECORD_STATUS,1,Hoạt động,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI","Inspection Annual Plan | Inspection Decision"
+TT_RECORD_STATUS,0,Đã xóa,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI","Inspection Annual Plan | Inspection Decision"
+TT_PETITION_TYPE,KHIEU_NAI,Khiếu nại,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_TYPE,TO_CAO,Tố cáo,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_TYPE,PHAN_ANH,Phản ánh,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_TYPE,KIEN_NGHI,Kiến nghị,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
+TT_PETITION_STATUS,MOI,Mới tiếp nhận,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PETITION_STATUS,DANG_XU_LY,Đang xử lý,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PETITION_STATUS,HOAN_THANH,Hoàn thành,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PETITION_STATUS,DONG,Đóng,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Complaint Petition
+TT_PENALTY_STATUS,CHUA_NOP_PHAT,Chưa nộp phạt,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
+TT_PENALTY_STATUS,DA_NOP_PHAT,Đã nộp phạt,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
+TT_PENALTY_STATUS,NOP_PHAT_NHIEU_LAN,Nộp phạt nhiều lần,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
+TT_ANNOUNCEMENT_STATUS,CHO_DUYET,Chờ duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI","Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement"
+TT_ANNOUNCEMENT_STATUS,DA_DUYET,Đã duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI","Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement"
+TT_OFFICER_ROLE,LANH_DAO,Lãnh đạo phụ trách,etl_derived,ThanhTra.TT_HO_SO_CAN_BO.LOAI_PHAN_CONG,Inspection Case Officer Assignment
+TT_OFFICER_ROLE,CHUYEN_VIEN,Chuyên viên xử lý,etl_derived,ThanhTra.TT_HO_SO_CAN_BO.LOAI_PHAN_CONG,Inspection Case Officer Assignment
+TT_RESOLUTION_RESULT,DUNG,Đúng,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
+TT_RESOLUTION_RESULT,SAI,Sai,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
+TT_RESOLUTION_RESULT,DUNG_MOT_PHAN,Đúng một phần,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
+GSGD_INVESTOR_TYPE,1,Cá nhân,etl_derived,GSGD.investor_account.investor_type,Investor Trading Account
+GSGD_INVESTOR_TYPE,2,Tổ chức,etl_derived,GSGD.investor_account.investor_type,Investor Trading Account
+GSGD_ACCOUNT_STATUS,0,Đóng,etl_derived,GSGD.investor_account.account_status,Investor Trading Account
+GSGD_ACCOUNT_STATUS,1,Mở,etl_derived,GSGD.investor_account.account_status,Investor Trading Account
+GSGD_DOMESTIC_FOREIGN_FLAG,0,Trong nước,etl_derived,GSGD.investor_account.domestic_foreign_flag,Investor Trading Account
+GSGD_DOMESTIC_FOREIGN_FLAG,1,Nước ngoài,etl_derived,GSGD.investor_account.domestic_foreign_flag,Investor Trading Account
+GSGD_ACCOUNT_GROUP_TYPE,1,Thường,etl_derived,GSGD.account_group.group_type,Account Investor Group
+GSGD_ACCOUNT_GROUP_TYPE,2,Nghi vấn,etl_derived,GSGD.account_group.group_type,Account Investor Group
+GSGD_ACCOUNT_RELATION_TYPE,(source),Loại quan hệ tài khoản — values from category_item,source_table,GSGD.category_item,Account Investor Group Member | Investor Account Relationship
+GSGD_SECURITIES_GROUP_TYPE,1,Thường,etl_derived,GSGD.securities_group.group_type,Securities Watchlist Group
+GSGD_SECURITIES_GROUP_TYPE,2,Theo ngành,etl_derived,GSGD.securities_group.group_type,Securities Watchlist Group
+GSGD_CASE_TYPE,1,Sơ bộ,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_TYPE,2,Thao túng,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_TYPE,3,Nội gián,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_TYPE,4,Liên thị trường,etl_derived,GSGD.case_file.case_file_type,Market Surveillance Case
+GSGD_CASE_STATUS,(source),Trạng thái vụ việc — values from category_item,source_table,GSGD.category_item,Market Surveillance Case
+GSGD_INFORMATION_SOURCE,(source),Nguồn thông tin vụ việc — values from category_item,source_table,GSGD.category_item,Market Surveillance Case
+GSGD_WORKFLOW_TYPE,1,Sơ bộ,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_WORKFLOW_TYPE,2,Thao túng,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_WORKFLOW_TYPE,3,Nội gián,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_WORKFLOW_TYPE,4,Liên thị trường,etl_derived,GSGD.case_file_workflow.workflow_type,Market Surveillance Case Workflow Step | Market Surveillance Analysis Criterion | Market Surveillance Analysis Criterion Value
+GSGD_DATA_TYPE,NUMBER,Số,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_DATA_TYPE,STRING,Chuỗi,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_DATA_TYPE,DATE,Ngày,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_DATA_TYPE,BOOLEAN,Boolean,etl_derived,GSGD.analysis_attribute_define.data_type,Market Surveillance Analysis Criterion
+GSGD_ABNORMAL_REPORT_TYPE,(source),Loại báo cáo bất thường — values from category_item,source_table,GSGD.category_item,Abnormal Trading Report
+GSGD_PERIOD_TYPE,(to_define),Loại kỳ báo cáo — cần profile từ data,modeler_defined,GSGD.abnormal_report.period_type | GSGD.compliance_report_template.period_type,Abnormal Trading Report | Market Surveillance Compliance Report Template | Market Surveillance Compliance Report Instance
+GSGD_SUBMITTER_TYPE,(to_define),Loại người nộp báo cáo — cần profile từ data,modeler_defined,GSGD.abnormal_report.submitter_type,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,0,Chờ duyệt,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,1,Đã duyệt,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,2,Từ chối,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_APPROVAL_STATUS,3,Yêu cầu nộp lại,etl_derived,GSGD.abnormal_report.approval_status,Abnormal Trading Report
+GSGD_FINANCIAL_SERVICE_TYPE,1,Ký quỹ,etl_derived,GSGD.account_financial_service.service_type,Investor Trading Account Financial Service
+GSGD_FINANCIAL_SERVICE_TYPE,2,Ứng trước tiền bán,etl_derived,GSGD.account_financial_service.service_type,Investor Trading Account Financial Service
+GSGD_FINANCIAL_SERVICE_TYPE,3,Hợp đồng tài chính khác,etl_derived,GSGD.account_financial_service.service_type,Investor Trading Account Financial Service
+GSGD_FILE_TYPE,(to_define),Loại file đính kèm (CSV/XLSX/PDF) — cần profile từ data,modeler_defined,GSGD.case_attach_file.file_type | GSGD.abnormal_report_file.file_type,Market Surveillance Case Document Attachment | Abnormal Trading Report File Attachment
+GSGD_FILE_GROUP,1,Hồ sơ của Sở,etl_derived,GSGD.case_attach_file.file_group,Market Surveillance Case Document Attachment
+GSGD_FILE_GROUP,2,Danh sách tài khoản nghi vấn,etl_derived,GSGD.case_attach_file.file_group,Market Surveillance Case Document Attachment
+GSGD_APPROVAL_STEP_CODE,1,Chuyên viên khởi tạo,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_CODE,2,Trưởng ban phê duyệt,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_CODE,3,Phó Trưởng ban phân công,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_CODE,4,Chuyên viên xử lý,etl_derived,GSGD.case_approval_step.step_code,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,0,Chưa xử lý,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,1,Đang xử lý,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,2,Đã duyệt/Hoàn thành,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_APPROVAL_STEP_STATUS,3,Từ chối,etl_derived,GSGD.case_approval_step.status,Market Surveillance Case Approval Step Log
+GSGD_SUSPICIOUS_SOURCE,1,Hệ thống tự động,etl_derived,GSGD.suspicious_account.source,Market Surveillance Suspicious Account
+GSGD_SUSPICIOUS_SOURCE,2,User thêm,etl_derived,GSGD.suspicious_account.source,Market Surveillance Suspicious Account
+GSGD_RELATIONSHIP_CRITERIA,(source),Tiêu chí phân nhóm nghi vấn — values from category_item,source_table,GSGD.category_item,Market Surveillance Suspicious Account Group
+GSGD_COMPANY_EVENT_TYPE,(source),Loại sự kiện tổ chức niêm yết — values from category_item,source_table,GSGD.category_item,Listed Company Corporate Event
+GSGD_EXECUTION_STATUS,0,Inactive,etl_derived,GSGD.analysis_execution_log.status,Market Surveillance Analysis Execution Log
+GSGD_EXECUTION_STATUS,1,Active,etl_derived,GSGD.analysis_execution_log.status,Market Surveillance Analysis Execution Log
+GSGD_RESULT_TYPE,1,Kết quả phân tích,etl_derived,GSGD.analysis_suspicious_account.result_type,Market Surveillance Suspicious Account Analysis Result | Market Surveillance Account Relationship Analysis Result | Market Surveillance Account Group Analysis Result | Market Surveillance Account Group Member Analysis Result
+GSGD_RESULT_TYPE,2,Kết quả kiểm tra,etl_derived,GSGD.analysis_suspicious_account.result_type,Market Surveillance Suspicious Account Analysis Result | Market Surveillance Account Relationship Analysis Result | Market Surveillance Account Group Analysis Result | Market Surveillance Account Group Member Analysis Result
+GSGD_TEMPLATE_TYPE,1,Báo cáo tổng hợp,etl_derived,GSGD.analysis_execution_log.template_type,Market Surveillance Analysis Execution Log
+GSGD_TEMPLATE_TYPE,2,Báo cáo phân tích,etl_derived,GSGD.analysis_execution_log.template_type,Market Surveillance Analysis Execution Log
+GSGD_ANALYSIS_REPORT_TYPE,(source),Loại báo cáo phân tích vụ việc — values from category_item,source_table,GSGD.category_item,Market Surveillance Analysis Report
+GSGD_DATA_SOURCE,(source),Nguồn dữ liệu tài khoản: VSDC / CTCK — values from category_item,source_table,GSGD.investor_account.data_source,Investor Trading Account
+GSGD_GROUP_STATUS,(source),"Trạng thái nhóm chứng khoán: 1=Chờ duyệt, 2=Phê duyệt, 3=Từ chối — values from category_item",source_table,GSGD.securities_group.status,Securities Watchlist Group
