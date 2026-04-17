@@ -1,0 +1,86 @@
+gold_entity,gold_attribute,data_type,key,description,source_entity,source_attribute
+Calendar Date Dimension,Calendar Date Dimension Id,INT,PK,Surrogate key ngày,Generated,ETL derived
+Calendar Date Dimension,Full Date,DATE,BK,Ngày dạng YYYY-MM-DD,Generated,ETL derived
+Calendar Date Dimension,Year,INT,,Năm,Generated,ETL derived
+Calendar Date Dimension,Quarter,INT,,Quý (1-4),Generated,ETL derived
+Calendar Date Dimension,Month,INT,,Tháng (1-12),Generated,ETL derived
+Calendar Date Dimension,Week,INT,,Tuần trong năm (1-53),Generated,ETL derived
+Calendar Date Dimension,Day,INT,,Ngày trong tháng,Generated,ETL derived
+Calendar Date Dimension,Day of Week,INT,,Thứ trong tuần (1-7),Generated,ETL derived
+Calendar Date Dimension,Is Weekend Flag,BOOLEAN,,Flag cuối tuần,Generated,ETL derived
+Classification Dimension,Classification Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Classification Dimension,Scheme Code,VARCHAR,BK (cặp),Mã scheme phân loại,Generated,ETL derived
+Classification Dimension,Classification Code,VARCHAR,BK (cặp),Mã phân loại trong scheme,Classification Value,scheme = varies
+Classification Dimension,Classification Name,NVARCHAR,,Tên hiển thị phân loại,Classification Value,scheme = varies
+Classification Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Classification Dimension,End Date,DATE,,SCD2 ngày kết thúc hiệu lực (9999-12-31 cho bản hiện hành),Generated,ETL derived
+Inspection Case Dimension,Inspection Case Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Inspection Case Dimension,Inspection Case Code,VARCHAR,BK,Mã định danh hồ sơ thanh tra/kiểm tra từ Silver,Inspection Case,Inspection Case Code
+Inspection Case Dimension,Case Number,VARCHAR,,Mã hồ sơ nghiệp vụ duy nhất (INS-*/EXM-*/QD-*),Inspection Case,Case Number
+Inspection Case Dimension,Case Name,NVARCHAR,,Tên hồ sơ,Inspection Case,Case Name
+Inspection Case Dimension,Case Content,NVARCHAR,,Nội dung hồ sơ,Inspection Case,Case Content
+Inspection Case Dimension,Archive Number,VARCHAR,,Mã số lưu trữ,Inspection Case,Archive Number
+Inspection Case Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Inspection Case Dimension,End Date,DATE,,SCD2 ngày kết thúc hiệu lực,Generated,ETL derived
+Inspection Subject Dimension,Inspection Subject Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Inspection Subject Dimension,Subject Source Entity Code,VARCHAR,BK (cặp),Mã Silver entity nguồn (SECURITIES_COMPANY/FUND_MANAGEMENT_COMPANY/PUBLIC_COMPANY/INSPECTION_SUBJECT_OTHER_PARTY) phân biệt đối tượng polymorphic,Generated,ETL derived
+Inspection Subject Dimension,Subject Source Reference Id,VARCHAR,BK (cặp),Mã định danh gốc trên Silver entity tương ứng,Generated,ETL derived
+Inspection Subject Dimension,Subject Name,NVARCHAR,,Tên đối tượng (resolve theo source entity: Public Company Name / Fund Management Company Name / Securities Company Name / Inspection Subject Other Party Name),Public Company,Public Company Name
+Inspection Subject Dimension,Subject Short Name,NVARCHAR,,Tên viết tắt,Public Company,Public Company Short Name
+Inspection Subject Dimension,Subject Business License Number,VARCHAR,,Số giấy phép kinh doanh,Public Company,Business License Number
+Inspection Subject Dimension,Subject Representative Name,NVARCHAR,,Người đại diện (cho tổ chức),Inspection Subject Other Party,Representative Name
+Inspection Subject Dimension,Subject Type Code,VARCHAR,FK → Classification Dimension (scheme: TT_PARTY_TYPE),Loại đối tượng (CA_NHAN/TO_CHUC) derive từ Silver source entity,Classification Value,scheme = TT_PARTY_TYPE
+Inspection Subject Dimension,Subject Source Type Code,VARCHAR,FK → Classification Dimension (scheme: TT_SUBJECT_SOURCE_TYPE),Loại nguồn đối tượng tầng 1 (CTDC/CTCK/CTQLQ/DOI_TUONG_KHAC) ETL derive từ source entity,Classification Value,scheme = TT_SUBJECT_SOURCE_TYPE
+Inspection Subject Dimension,Other Party Subtype Code,VARCHAR,FK → Classification Dimension (scheme: TT_OTHER_PARTY_SUBTYPE),Phân loại chi tiết tầng 2 chỉ áp dụng khi Subject Source Type Code = DOI_TUONG_KHAC (CA_NHAN/NHLK/CTKT/TO_CHUC_PHTP/NHA_DAU_TU/TO_CHUC_KHAC) ETL derive từ attribute phụ của Inspection Subject Other Party,Classification Value,scheme = TT_OTHER_PARTY_SUBTYPE
+Inspection Subject Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Inspection Subject Dimension,End Date,DATE,,SCD2 ngày kết thúc hiệu lực,Generated,ETL derived
+Inspection Decision Dimension,Inspection Decision Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Inspection Decision Dimension,Inspection Decision Code,VARCHAR,BK,Mã quyết định thanh tra/kiểm tra từ Silver,Inspection Decision,Inspection Decision Code
+Inspection Decision Dimension,Decision Number,VARCHAR,,Số quyết định duy nhất,Inspection Decision,Decision Number
+Inspection Decision Dimension,Decision Name,NVARCHAR,,Tên quyết định,Inspection Decision,Decision Name
+Inspection Decision Dimension,Issue Date,DATE,,Ngày ra quyết định,Inspection Decision,Issue Date
+Inspection Decision Dimension,Announcement Date,DATE,,Ngày công bố quyết định,Inspection Decision,Announcement Date
+Inspection Decision Dimension,Inspection Annual Plan Code,VARCHAR,,Mã kế hoạch năm liên kết (nullable - NULL = quyết định đột xuất),Inspection Decision,Inspection Annual Plan Code
+Inspection Decision Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Inspection Decision Dimension,End Date,DATE,,SCD2 ngày kết thúc hiệu lực,Generated,ETL derived
+Complaint Petition Dimension,Complaint Petition Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Complaint Petition Dimension,Complaint Petition Code,VARCHAR,BK,Mã đơn thư từ Silver,Complaint Petition,Complaint Petition Code
+Complaint Petition Dimension,Petition Name,NVARCHAR,,Tên đơn thư,Complaint Petition,Petition Name
+Complaint Petition Dimension,Complainant Name,NVARCHAR,,Tên tổ chức/cá nhân gửi đơn (snapshot tại thời điểm tiếp nhận),Complaint Petition,Complainant Name
+Complaint Petition Dimension,Is Anonymous Flag,BOOLEAN,,Flag nặc danh (1-Có / 0-Không),Complaint Petition,Is Anonymous
+Complaint Petition Dimension,Written Date,DATE,,Ngày viết đơn,Complaint Petition,Written Date
+Complaint Petition Dimension,Submission Date,DATE,,Ngày tiếp nhận đơn (snapshot),Complaint Petition,Submission Date
+Complaint Petition Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Complaint Petition Dimension,End Date,DATE,,SCD2 ngày kết thúc hiệu lực,Generated,ETL derived
+Fact Inspection Case,Received Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày nhận hồ sơ,Inspection Case,Received Date
+Fact Inspection Case,Status As Of Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày cập nhật trạng thái hồ sơ mới nhất,Generated,ETL derived
+Fact Inspection Case,Inspection Case Dimension Id,INT,FK → Inspection Case Dimension,Lookup hồ sơ thanh tra/kiểm tra,Inspection Case,Inspection Case Code
+Fact Inspection Case,Inspection Subject Dimension Id,INT,FK → Inspection Subject Dimension,Lookup đối tượng thanh tra/kiểm tra (resolve polymorphic từ Inspection Decision Subject),Generated,ETL derived
+Fact Inspection Case,Inspection Decision Dimension Id,INT,FK → Inspection Decision Dimension,Lookup quyết định thanh tra/kiểm tra,Inspection Case,Inspection Decision Code
+Fact Inspection Case,Case Status Dimension Id,INT,FK → Classification Dimension (scheme: TT_CASE_STATUS),Trạng thái hồ sơ hiện tại,Inspection Case,Case Status Code
+Fact Inspection Case,Inspection Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PLAN_TYPE),Loại hình THANH_TRA/KIEM_TRA,Inspection Case,Inspection Type Code
+Fact Inspection Case,Inspection Schedule Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_INSPECTION_SCHEDULE_TYPE),Loại lịch ĐỊNH_KỲ/ĐỘT_XUẤT derive từ Inspection Decision.Inspection Annual Plan Id NULL check,Classification Value,scheme = TT_INSPECTION_SCHEDULE_TYPE
+Fact Inspection Case,Population Date,TIMESTAMP,,Thời điểm ETL load,Generated,ETL derived
+Fact Inspection Case Violation,Conclusion Issue Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày ra kết luận (Signing Date của Inspection Case Conclusion),Inspection Case Conclusion,Signing Date
+Fact Inspection Case Violation,Inspection Case Dimension Id,INT,FK → Inspection Case Dimension,Lookup hồ sơ thanh tra/kiểm tra,Inspection Case Conclusion,Inspection Case Code
+Fact Inspection Case Violation,Inspection Subject Dimension Id,INT,FK → Inspection Subject Dimension,Lookup đối tượng thanh tra/kiểm tra (resolve từ Inspection Case → Inspection Decision → Inspection Decision Subject),Generated,ETL derived
+Fact Inspection Case Violation,Violation Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_VIOLATION_TYPE),Hành vi vi phạm,Inspection Case Conclusion,Violation Type Code
+Fact Inspection Case Violation,Penalty Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PENALTY_TYPE),Hình thức phạt,Inspection Case Conclusion,Penalty Type Code
+Fact Inspection Case Violation,Inspection Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PLAN_TYPE),Loại hình THANH_TRA/KIEM_TRA (derive từ Inspection Case),Inspection Case,Inspection Type Code
+Fact Inspection Case Violation,Inspection Case Conclusion Number,VARCHAR,DD,Số hiệu văn bản kết luận (degenerate dimension),Inspection Case Conclusion,Conclusion Document Number
+Fact Inspection Case Violation,Population Date,TIMESTAMP,,Thời điểm ETL load,Generated,ETL derived
+Fact Inspection Penalty Decision,Signing Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày ký kết luận xử phạt,Inspection Case Conclusion,Signing Date
+Fact Inspection Penalty Decision,Inspection Case Dimension Id,INT,FK → Inspection Case Dimension,Lookup hồ sơ thanh tra/kiểm tra,Inspection Case Conclusion,Inspection Case Code
+Fact Inspection Penalty Decision,Inspection Subject Dimension Id,INT,FK → Inspection Subject Dimension,Lookup đối tượng bị xử phạt,Generated,ETL derived
+Fact Inspection Penalty Decision,Violation Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_VIOLATION_TYPE),Hành vi vi phạm (1 kết luận = 1 hành vi theo TT_O17),Inspection Case Conclusion,Violation Type Code
+Fact Inspection Penalty Decision,Penalty Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PENALTY_TYPE),Hình thức phạt,Inspection Case Conclusion,Penalty Type Code
+Fact Inspection Penalty Decision,Case Status Dimension Id,INT,FK → Classification Dimension (scheme: TT_CASE_STATUS),Trạng thái kết luận,Inspection Case Conclusion,Conclusion Status Code
+Fact Inspection Penalty Decision,Inspection Case Conclusion Number,VARCHAR,DD,Số hiệu văn bản kết luận xử phạt (degenerate dimension),Inspection Case Conclusion,Conclusion Document Number
+Fact Inspection Penalty Decision,Penalty Amount,DECIMAL,,Số tiền phạt (VNĐ) - display layer chia 1_000_000 để ra triệu đồng theo biểu TT01,Inspection Case Conclusion,Penalty Amount
+Fact Inspection Penalty Decision,Population Date,TIMESTAMP,,Thời điểm ETL load,Generated,ETL derived
+Fact Complaint Petition,Submission Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày tiếp nhận đơn thư,Complaint Petition,Submission Date
+Fact Complaint Petition,Complaint Petition Dimension Id,INT,FK → Complaint Petition Dimension,Lookup đơn thư,Complaint Petition,Complaint Petition Code
+Fact Complaint Petition,Petition Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PETITION_TYPE),Loại đơn (KHIEU_NAI/TO_CAO/PHAN_ANH/KIEN_NGHI),Complaint Petition,Petition Type Code
+Fact Complaint Petition,Petition Status Dimension Id,INT,FK → Classification Dimension (scheme: TT_PETITION_STATUS),Trạng thái đơn (MOI/DANG_XU_LY/HOAN_THANH/DONG),Complaint Petition,Petition Status Code
+Fact Complaint Petition,Complainant Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PARTY_TYPE),Loại đối tượng gửi đơn (CA_NHAN/TO_CHUC),Complaint Petition,Complainant Type Code
+Fact Complaint Petition,Population Date,TIMESTAMP,,Thời điểm ETL load,Generated,ETL derived
