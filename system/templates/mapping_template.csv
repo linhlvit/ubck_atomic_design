@@ -1,0 +1,42 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,dev_std,deposit_arr_hold_item,SCD 2,,,,Hold item của Deposit Arrangement: Block Fund và Posting Restrict,2026-01-26,phuong.do,init
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,dev_lnd,tdhsds_AA_ARRANGEMENT_LINKED_APPL_snp,aa_arr_linked,"RECID, LINKED_APPL_ID","DS_SYM_RUN_DT = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+2,physical_table,dev_raw,tdhsds_AC_LOCKED_EVENTS,tfm_aclk,"RECID, ACCOUNT_NUMBER, LOCKED_AMOUNT, FROM_DATE, TO_DATE, PAYMENT_AMT, PAYMENT_CCY, LOCKED_TYPE, row_number() over (partition by RECID order by CREATION_TIME_DL desc) as rn","DS_SYM_RUN_DT = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+3,derived_cte,,tfm_aclk,aclk,"RECID, ACCOUNT_NUMBER, LOCKED_AMOUNT, FROM_DATE, TO_DATE, PAYMENT_AMT, PAYMENT_CCY, LOCKED_TYPE, add_detail_req_source",rn = 1,,,,
+4,physical_table,dev_lnd,tdhsds_AA_ARRANGEMENT_snp,aa_arr,"RECID, ARRANGEMENT_STATUS, PRODUCT_LINE","DS_SYM_RUN_DT = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')
+AND ARRANGEMENT_STATUS = 'CURRENT'",,,,
+5,physical_table,dev_lnd,tdhsds_AA_ARR_ACCOUNT_BLOCKING_REASON_snp,aa_arr_ac_blk_reason,"RECID, BLOCKING_REASON, MV_REF, SV_REF","DS_SYM_RUN_DT = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+1,aclk,LEFT JOIN,aa_arr_linked,aclk.ACCOUNT_NUMBER = aa_arr_linked.LINKED_APPL_ID,,,,,,
+2,aclk,INNER JOIN,aa_arr,aa_arr_linked.RECID = aa_arr.RECID,,,,,,
+3,aa_arr_linked,LEFT JOIN,aa_arr_ac_blk_reason,aa_arr_linked.RECID = aa_arr_ac_blk_reason.RECID,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,dpst_arrgmnt_id,"{{ generate_surrogate_key_bigint('T24_ARRANGEMENT', 'aa_arr_linked.RECID') }}",String,,,,Id hợp đồng tiền gửi (surrogate key),,,
+2,dpst_arrgmnt_cd,aa_arr_linked.RECID,String,,,,Mã số hợp đồng tiền gửi,,,
+3,hld_evt_itm_cd,aclk.RECID,String,,,,Mã lần phong tỏa,,,
+4,pstng_rstr_cd,CAST(NULL AS VARCHAR),String,,,,Mã loại phong tỏa — NULL với Block Fund,,,
+5,hld_itm_tp_cd,'BF',String,,,,Phân biệt Block Fund / Posting Restrict,,,
+6,hld_rsn,aclk.LOCKED_TYPE,String,,,,Lý do phong tỏa,,,
+7,hld_amt_fcy,"COALESCE(aclk.LOCKED_AMOUNT, 0)",String,,,,Số tiền phong tỏa (ngoại tệ),,,
+8,start_dt,aclk.FROM_DATE,String,,,,Ngày bắt đầu phong tỏa,,,
+9,end_dt,aclk.TO_DATE,String,,,,Ngày kết thúc phong tỏa,,,
+10,pmt_amt_fcy,"COALESCE(aclk.PAYMENT_AMT, 0)",String,,,,Số tiền giao dịch (ngoại tệ),,,
+11,pmt_ccy_cd,aclk.PAYMENT_CCY,String,,,,Loại tiền giao dịch,,,
+12,unhl_rsn,aclk.ADD_DETAIL_REQ_SOURCE,String,,,,Lý do giải tỏa,,,
+13,blk_rsn,aa_arr_ac_blk_reason.BLOCKING_REASON,String,,,,Lý do phong tỏa chi tiết,,,
+14,arrn_product_line,aa_arr.PRODUCT_LINE,String,,,,Dòng sản phẩm của Arrangement,,,
+15,ds_source_system_cd,'T24_AA_ARRANGEMENT',String,,,,Mã nguồn dữ liệu,,,
+16,ds_etl_processing_ts,current_timestamp,String,,,,Thời điểm ETL xử lý,,,
+17,ds_dt,"to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",String,,,,Ngày dữ liệu,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason
+1,WHERE,rn = 1,,,,,Điều kiện lọc cuối trên main query (nếu có). VD: status = 'LIVE',,,
+2,GROUP BY,,,,,,Các trường group (nếu dùng aggregation),,,
+3,HAVING,,,,,,Điều kiện sau GROUP BY (nếu có),,,
+4,ORDER BY,,,,,,Sắp xếp (nếu cần),,,
+5,UNION ALL,,,,,,Dùng khi merge nhiều luồng vào cùng 1 bảng đích,,,
