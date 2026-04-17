@@ -83,6 +83,8 @@ SKIP_COLUMNS = {
         "IDSCMSOLD",
         # FIMS internal user FK — không phải Involved Party
         "USERID",
+        # QLRR audit user fields — không có User entity trên Silver (HLD decision)
+        "CREATED_BY_ID", "UPDATED_BY_ID", "CREATED_BY_NAME", "UPDATED_BY_NAME",
         # FIMS BRANCHS FK đến tổ chức cha — chưa map, out-of-scope T1
         "IDNOPARENT",
         # DCST internal messaging / integration fields — không phải data nghiệp vụ

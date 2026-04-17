@@ -1,0 +1,428 @@
+﻿Tên bảng,Tên trường,Mô tả,Khóa,Ghi chú (FK suy luận)
+risk_indicator_category,id,Primary key,PK,
+risk_indicator_category,set_code,"Bộ chỉ tiêu
+1=Trong nước
+2=Quốc tế",,
+risk_indicator_category,category_code,"Mã nhóm (VD: MACRO, MONETARY, STOCK_MARKET)",,
+risk_indicator_category,category_name,Tên nhóm (VD: Yếu tố vĩ mô),,
+risk_indicator_category,status,"0=Không hoạt động
+1=Hoạt động",,
+risk_indicator_category,created_at,Ngày tạo,,
+risk_indicator_category,updated_at,Ngày sửa cuối,,
+risk_indicator_category,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_indicator_category,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_indicator_category,created_by_name,Tên người tạo,,
+risk_indicator_category,updated_by_name,Tên người cập nhật,,
+risk_indicator_category,deleted,"Soft delete: 0=Active, 1=Deleted",,
+risk_indicator,id,Primary key,PK,
+risk_indicator,indicator_code,"Mã chỉ tiêu (VD: GDP_VN, CPI_VN, VNINDEX, CPI_US, DXY)",,
+risk_indicator,indicator_name,"Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)",,
+risk_indicator,set_code,"Bộ chỉ tiêu
+1=Trong nước
+2=Quốc tế",,
+risk_indicator,category_id,Nhóm chỉ tiêu (VD: Yếu tố vĩ mô),FK,FK → risk_indicator_category.id
+risk_indicator,unit_code,"Đơn vị mặc định 
+1=%
+2=Điểm
+3=Tỷ VND
+4=Triệu USD
+5=Hợp đồng
+6=Cổ phiếu
+7=Công ty
+8=VND
+9=Số tài khoản
+10=Đơn vị tính",,
+risk_indicator,source_code,"Nguồn mặc định
+1=Investing
+2=Tổng cục Thống kê
+3=Ngân hàng Nhà nước
+4=Nội bộ
+5=HNX
+6=VSDC
+(Investing chỉ dùng cho chỉ tiêu quốc tế)",,
+risk_indicator,period_type,"Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm",,
+risk_indicator,status,"0=Không hoạt động
+1=Hoạt động",,
+risk_indicator,last_sync_time,Lần sync gần nhất,,
+risk_indicator,display_order,Thứ tự hiển thị của chỉ tiêu,,
+risk_indicator,is_display,"Có hiển thị trên màn hình không
+0=Không
+1=Có",,
+risk_indicator,created_at,Ngày tạo,,
+risk_indicator,updated_at,Ngày sửa cuối,,
+risk_indicator,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_indicator,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_indicator,created_by_name,Tên người tạo,,
+risk_indicator,updated_by_name,Tên người cập nhật,,
+risk_indicator,deleted,Soft delete,,
+risk_indicator_custom,id,Primary key,PK,
+risk_indicator_custom,indicator_name,"Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)",,
+risk_indicator_custom,unit_code,"Đơn vị mặc định 
+1=%
+2=Điểm
+3=Tỷ VND
+4=Triệu USD
+5=Hợp đồng
+6=Cổ phiếu
+7=Công ty
+8=VND
+9=Số tài khoản
+10=Đơn vị tính",,
+risk_indicator_custom,source_code,Nguồn cảnh báo,,
+risk_indicator_custom,period_type,"Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm",,
+risk_indicator_custom,status,"0=Không hoạt động
+1=Hoạt động",,
+risk_indicator_custom,created_at,Ngày tạo,,
+risk_indicator_custom,updated_at,Ngày sửa cuối,,
+risk_indicator_custom,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_indicator_custom,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_indicator_custom,created_by_name,Tên người tạo,,
+risk_indicator_custom,updated_by_name,Tên người cập nhật,,
+risk_indicator_custom,deleted,Soft delete,,
+risk_indicator_value,id,Primary key,PK,
+risk_indicator_value,indicator_id,Chỉ tiêu,FK,FK → risk_indicator.id
+risk_indicator_value,period_type,"Kỳ dữ liệu: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm",,
+risk_indicator_value,period_value,"Lưu giá trị dành cho trường hợp period_type = Tháng, Quý. 
+Dựa vào dữ liệu của period_date.
+Vd:
+period_type=Tháng
+period_date = 12/03/2026 thì period_value = 3
+Vd:
+period_type=Quý
+period_date=12/03/2026
+thì period_value = 1
+(Quý 1: Tháng 1, Tháng 2, Tháng 3.
+Quý 2: Tháng 4, Tháng 5, Tháng 6.
+Quý 3: Tháng 7, Tháng 8, Tháng 9.
+Quý 4: Tháng 10, Tháng 11, Tháng 12
+)",,
+risk_indicator_value,period_year,Năm lấy theo period_date,,
+risk_indicator_value,period_date,Ngày đại diện cho kỳ,,
+risk_indicator_value,period_label,"Chuỗi hiển thị kỳ (VD: 2024-01, 2024-Q1, 2024)",,
+risk_indicator_value,value,Giá trị chỉ tiêu tại kỳ này,,
+risk_indicator_value,unit_code,"Đơn vị 
+1=%
+2=Điểm
+3=Tỷ VND
+4=Triệu USD
+5=Hợp đồng
+6=Cổ phiếu
+7=Công ty
+8=VND
+9=Số tài khoản 
+10=Đơn vị tính",,
+risk_indicator_value,source_code,"Nguồn
+1=Investing
+2=Tổng cục Thống kê
+3=Ngân hàng Nhà nước
+4=Nội bộ
+5=HNX
+6=VSDC
+(Investing chỉ dùng cho chỉ tiêu quốc tế)",,
+risk_indicator_value,data_origin,"Nguồn gốc: 1=API CSDL tập trung, 2=User chỉnh sửa",,
+risk_indicator_value,cumulative_value,Giá trị luỹ kế,,
+risk_indicator_value,created_at,Ngày tạo,,
+risk_indicator_value,updated_at,Ngày sửa cuối,,
+risk_indicator_value,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_indicator_value,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_indicator_value,created_by_name,Tên người tạo,,
+risk_indicator_value,updated_by_name,Tên người cập nhật,,
+risk_indicator_value,deleted,Soft delete,,
+risk_indicator_value_history,id,Primary key,PK,
+risk_indicator_value_history,indicator_id,Chỉ tiêu,FK,FK → risk_indicator.id
+risk_indicator_value_history,old_value,Giá trị cũ (null nếu là tạo mới),,
+risk_indicator_value_history,new_value,Giá trị mới (null nếu là xóa),,
+risk_indicator_value_history,unit_code,"Đơn vị 
+1=%
+2=Điểm
+3=Tỷ VND
+4=Triệu USD
+5=Hợp đồng
+6=Cổ phiếu
+7=Công ty
+8=VND
+9=Số tài khoản 
+10=Đơn vị tính",,
+risk_indicator_value_history,source_code,"Nguồn
+1=Investing
+2=Tổng cục Thống kê
+3=Ngân hàng Nhà nước
+4=Nội bộ
+5=HNX
+6=VSDC
+(Investing chỉ dùng cho chỉ tiêu quốc tế)",,
+risk_indicator_value_history,data_origin,"Nguồn gốc dữ liệu sau thay đổi: 
+1=API CSDL tập trung 2=User chỉnh sửa",,
+risk_indicator_value_history,change_type,"Loại thay đổi: SYNC
+UPDATE",,
+risk_indicator_value_history,change_by_id,Người thực hiện (user id),,FK suy luận → system_user.id
+risk_indicator_value_history,change_by_name,Tên người thực hiện,,
+risk_indicator_value_history,change_at,Thời điểm ghi nhận thay đổi,,
+risk_indicator_value_history,created_at,Ngày tạo,,
+risk_indicator_value_history,updated_at,Ngày sửa cuối,,
+risk_indicator_value_history,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_indicator_value_history,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_indicator_value_history,created_by_name,Tên người tạo,,
+risk_indicator_value_history,updated_by_name,Tên người cập nhật,,
+risk_indicator_value_history,deleted,Soft delete,,
+risk_indicator_schedule,id,Primary key,PK,
+risk_indicator_schedule,indicator_id,Chỉ tiêu (1-1),FK,FK → risk_indicator.id
+risk_indicator_schedule,frequency_type,"1=Giờ, 2=Ngày, 3=Tháng, 
+4=Quý, 5=Năm",,
+risk_indicator_schedule,frequency_value,Mỗi bao nhiêu đơn vị (VD: mỗi 2 ngày),,
+risk_indicator_schedule,start_time,Ngày giờ bắt đầu chạy,,
+risk_indicator_schedule,next_run_time,Lịch chạy tiếp theo (auto-calculated),,
+risk_indicator_schedule,last_run_time,Lần chạy gần nhất,,
+risk_indicator_schedule,cron_expression,Quartz cron,,
+risk_indicator_schedule,is_enabled,0=Không hoạt động 1=Hoạt động,,
+risk_indicator_schedule,total_runs,Số lần đã chạy (thống kê),,
+risk_indicator_schedule,last_status,SUCCESS/FAILED,,
+risk_indicator_schedule,last_error,Lỗi lần chạy gần nhất (nếu có),,
+risk_indicator_schedule,created_at,Ngày tạo,,
+risk_indicator_schedule,updated_at,Ngày cập nhật,,
+risk_indicator_schedule,created_by_id,User ID người tạo,,FK suy luận → system_user.id
+risk_indicator_schedule,updated_by_id,User ID người cập nhật,,FK suy luận → system_user.id
+risk_indicator_schedule,created_by_name,Tên người tạo,,
+risk_indicator_schedule,updated_by_name,Tên người cập nhật,,
+risk_indicator_schedule,deleted,Soft delete,,
+risk_report_type,id,Primary key,PK,
+risk_report_type,code,Mã loại báo cáo (VD: MARKET_STATUS_PERIOD),,
+risk_report_type,name,Tên loại báo cáo (VD: Báo cáo nhanh hàng tháng),,
+risk_report_type,description,Mô tả chi tiết,,
+risk_report_type,template_content,Nội dung template báo cáo (Word/HTML) chứa các placeholder theo cú pháp {{PLACEHOLDER_CODE}},,
+risk_report_type,display_order,Thứ tự hiển thị của báo cáo,,
+risk_report_type,is_active,"0=Không hoạt động
+1=Hoạt động",,
+risk_report_type,created_at,Ngày tạo,,
+risk_report_type,updated_at,Ngày sửa cuối,,
+risk_report_type,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_report_type,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_report_type,created_by_name,Tên người tạo,,
+risk_report_type,updated_by_name,Tên người cập nhật,,
+risk_report_type,deleted,Soft delete,,
+risk_report_placeholder_config,id,Primary key,PK,
+risk_report_placeholder_config,report_type_id,Loại báo cáo,FK,FK suy luận → risk_report_type.id
+risk_report_placeholder_config,placeholder_code,"Mã placeholder trong template (VD: VN_INDEX_VALUE, MARKET_CAP_GROWTH)",,
+risk_report_placeholder_config,value_type,"Kiểu dữ liệu
+1=Lấy từ DB
+2=Công thức",,
+risk_report_placeholder_config,data_source_table,Tên bảng/view chứa dữ liệu nguồn (khi value_type = 1),,
+risk_report_placeholder_config,data_source_column,Tên cột chứa giá trị,,
+risk_report_placeholder_config,data_source_filter,Điều kiện lọc dữ liệu (VD: indicator_code = 'VN_INDEX'),,
+risk_report_placeholder_config,formula_expression,Biểu thức công thức (khi VALUE_TYPE = FORMULA). Cho phép tham chiếu placeholder khác: {{VN_INDEX_CURRENT}} - {{VN_INDEX_PREV}},,
+risk_report_placeholder_config,data_format,"Định dạng hiển thị (VD: #,##0.00, #,##0.00%, DD/MM/YYYY)",,
+risk_report_placeholder_config,use_previous_period,"Cho phép sử dụng dữ liệu kỳ trước khi kỳ hiện tại chưa có
+0=Không
+1=Có",,
+risk_report_placeholder_config,is_active,"Trạng thái: 0=Không
+1=Có",,
+risk_report_placeholder_config,created_at,Ngày tạo,,
+risk_report_placeholder_config,updated_at,Ngày sửa cuối,,
+risk_report_placeholder_config,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_report_placeholder_config,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_report_placeholder_config,created_by_name,Tên người tạo,,
+risk_report_placeholder_config,updated_by_name,Tên người cập nhật,,
+risk_report_placeholder_config,deleted,Soft delete,,
+risk_report_upload_batch,id,Primary key,PK,
+risk_report_upload_batch,report_type_id,Loại báo cáo,FK,FK suy luận → risk_report_type.id
+risk_report_upload_batch,report_date,Thời gian báo cáo (do người dùng chọn khi upload),,
+risk_report_upload_batch,file_count,Số lượng file trong batch,,
+risk_report_upload_batch,created_at,Ngày tạo,,
+risk_report_upload_batch,updated_at,Ngày sửa cuối,,
+risk_report_upload_batch,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_report_upload_batch,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_report_upload_batch,created_by_name,Tên người tạo,,
+risk_report_upload_batch,updated_by_name,Tên người cập nhật,,
+risk_report_upload_batch,deleted,Soft delete,,
+risk_report_file,id,Primary key,PK,
+risk_report_file,batch_id,Id nhóm upload,FK,FK suy luận → risk_report_upload_batch.id
+risk_report_file,file_name,Tên file hiển thị (VD: Báo cáo TTCK Q4-2025.docx),,
+risk_report_file,file_path,Đường dẫn lưu file trên hệ thống (filesystem/object storage),,
+risk_report_file,file_size,Dung lượng file (bytes),,
+risk_report_file,file_type,"Loại file: DOCX, XLSX, PDF,…",,
+risk_report_file,uploaded_at,Thời gian upload file,,
+risk_report_file,uploaded_by_id,Người nộp file (user id),,FK suy luận → system_user.id
+risk_report_file,created_at,Ngày tạo,,
+risk_report_file,updated_at,Ngày sửa cuối,,
+risk_report_file,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_report_file,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_report_file,created_by_name,Tên người tạo,,
+risk_report_file,updated_by_name,Tên người cập nhật,,
+risk_report_file,deleted,Soft delete,,
+risk_alert_config,id,Primary key,PK,
+risk_alert_config,indicator_type,"1=Chỉ tiêu hệ thống
+2=Chỉ tiêu tự tạo",,
+risk_alert_config,indicator_id,Id chỉ tiêu hệ thống,FK,FK → risk_indicator.id
+risk_alert_config,custom_indicator_id,Id chỉ tiêu tự tạo,FK,FK → risk_indicator_custom.id
+risk_alert_config,custom_old_value,Giá trị kỳ trước (cho chỉ tiêu tự tạo),,
+risk_alert_config,custom_new_value,Giá trị kỳ này (cho chỉ tiêu tự tạo),,
+risk_alert_config,threshold_direction,"1=Tăng, 2=Giảm, 3=Tăng/Giảm",,
+risk_alert_config,threshold_unit_code,"Đơn vị 
+1=%
+2=Điểm
+3=Tỷ VND
+4=Triệu USD
+5=Hợp đồng
+6=Cổ phiếu
+7=Công ty
+8=VND
+9=Số tài khoản 
+10=Đơn vị tính",,
+risk_alert_config,threshold_value,Giá trị ngưỡng,,
+risk_alert_config,compare_period_time,Số kỳ cần so sánh,,
+risk_alert_config,alert_message_template,Nội dung cảnh báo,,
+risk_alert_config,handler_user_id,Người xử lý chính (user id),FK,FK → system_user.id
+risk_alert_config,handler_user_name,Tên người xử lý chính,,
+risk_alert_config,notify_bell_flag,"Hiển thị thông báo chuông: 0=Không, 1=Có",,
+risk_alert_config,notify_email_flag,"Gửi email cảnh báo: 0=Không, 1=Có",,
+risk_alert_config,notify_toast_flag,"Thông báo toast: 0=Không, 1=Có",,
+risk_alert_config,is_active,"0=Không hoạt động, 1=Đang hoạt động",,
+risk_alert_config,display_order,Thứ tự hiển thị của cảnh báo,,
+risk_alert_config,created_at,Ngày tạo,,
+risk_alert_config,updated_at,Ngày sửa cuối,,
+risk_alert_config,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_alert_config,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_alert_config,created_by_name,Tên người tạo,,
+risk_alert_config,updated_by_name,Tên người cập nhật,,
+risk_alert_config,deleted,Soft delete,,
+risk_alert,id,Primary key,PK,
+risk_alert,alert_config_id,Cấu hình cảnh báo,FK,FK → risk_alert_config.id
+risk_alert,indicator_type,"1=Chỉ tiêu hệ thống
+2=Chỉ tiêu tự tạo",,
+risk_alert,indicator_id,Id chỉ tiêu hệ thống,FK,FK → risk_indicator.id
+risk_alert,custom_indicator_id,Id chỉ tiêu tự tạo,FK,FK → risk_indicator_custom.id
+risk_alert,period_date,Kỳ dữ liệu bị cảnh báo,,
+risk_alert,current_value,Giá trị hiện tại,,
+risk_alert,previous_value,"Giá trị kỳ trước (dùng để hiển thị, có thể null nếu không xác định)",,
+risk_alert,change_amount,Giá trị chênh lệch,,
+risk_alert,change_percent,Chênh lệch %,,
+risk_alert,threshold_direction,"1=Tăng, 2=Giảm, 3=Tăng/Giảm",,
+risk_alert,threshold_unit_code,"Đơn vị 
+1=%
+2=Điểm
+3=Tỷ VND
+4=Triệu USD
+5=Hợp đồng
+6=Cổ phiếu
+7=Công ty
+8=VND
+9=Số tài khoản 
+10=Đơn vị tính",,
+risk_alert,threshold_value,Giá trị ngưỡng,,
+risk_alert,compare_period_time,Số kỳ cần so sánh,,
+risk_alert,alert_message,Nội dung cảnh báo (từ template),,
+risk_alert,triggered_at,Thời điểm phát sinh cảnh báo,,
+risk_alert,triggered_by_job_id,Job ID đồng bộ chỉ tiêu,FK,FK suy luận → risk_indicator_schedule.id
+risk_alert,handler_user_id,Người được giao xử lý (user id),,FK suy luận → system_user.id
+risk_alert,handler_user_name,Tên người xử lý,,
+risk_alert,status,"Trạng thái: 0=Chưa xử lý, 1=Đang xử lý, 2=Đã xử lý, 3=Đã huỷ/Đã bỏ qua",,
+risk_alert,assigned_at,Thời điểm phân công,,
+risk_alert,created_at,Ngày tạo,,
+risk_alert,updated_at,Ngày sửa cuối,,
+risk_alert,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_alert,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_alert,created_by_name,Tên người tạo,,
+risk_alert,updated_by_name,Tên người cập nhật,,
+risk_alert,deleted,Soft delete,,
+risk_alert_resolution,id,Primary key,PK,
+risk_alert_resolution,alert_id,Cảnh báo liên quan,FK,FK → risk_alert.id
+risk_alert_resolution,resolution_type,"1=Quick (không giải trình), 2=Detailed (có giải trình)",,
+risk_alert_resolution,explanation_content,Nội dung giải trình chi tiết,,
+risk_alert_resolution,resolved_at,Thời điểm xử lý,,
+risk_alert_resolution,resolved_by_id,User ID người xử lý,,FK suy luận → system_user.id
+risk_alert_resolution,resolved_by_name,Tên người xử lý,,
+risk_alert_resolution,created_at,Ngày tạo,,
+risk_alert_resolution,updated_at,Ngày sửa cuối,,
+risk_alert_resolution,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_alert_resolution,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_alert_resolution,created_by_name,Tên người tạo,,
+risk_alert_resolution,updated_by_name,Tên người cập nhật,,
+risk_alert_resolution,deleted,Soft delete,,
+risk_alert_resolution_file,id,Primary key,PK,
+risk_alert_resolution_file,resolution_id,Giải trình liên quan,FK,FK → risk_alert_resolution.id
+risk_alert_resolution_file,file_name,Tên file,,
+risk_alert_resolution_file,file_path,Đường dẫn file trên hệ thống,,
+risk_alert_resolution_file,file_size,Dung lượng file (bytes),,
+risk_alert_resolution_file,file_type,"Loại file: PDF, DOCX, XLSX, PNG, JPG,…",,
+risk_alert_resolution_file,uploaded_at,Thời gian upload,,
+risk_alert_resolution_file,uploaded_by_id,"Người upload
+(user id)",,FK suy luận → system_user.id
+risk_alert_resolution_file,created_at,Ngày tạo,,
+risk_alert_resolution_file,updated_at,Ngày sửa cuối,,
+risk_alert_resolution_file,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_alert_resolution_file,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_alert_resolution_file,created_by_name,Tên người tạo,,
+risk_alert_resolution_file,updated_by_name,Tên người cập nhật,,
+risk_alert_resolution_file,deleted,Soft delete,,
+risk_alert_history,id,Primary key,PK,
+risk_alert_history,alert_id,Cảnh báo liên quan,FK,FK → risk_alert.id
+risk_alert_history,resolution_id,Xử lý cảnh báo,FK,FK → risk_alert_resolution.id
+risk_alert_history,event_type,"Loại sự kiện: 
+1=Xảy ra cảnh báo
+2=Xử lý không giải trình
+3=Xử lý có giải trình",,
+risk_alert_history,event_time,Thời gian xảy ra sự kiện,,
+risk_alert_history,event_title,Tiêu đề sự kiện,,
+risk_alert_history,event_description,Mô tả sự kiện,,
+risk_alert_history,event_user_id,User thực hiện,,FK suy luận → system_user.id
+risk_alert_history,event_user_name,Tên user thực hiện,,
+risk_alert_history,created_at,Ngày tạo,,
+risk_alert_history,updated_at,Ngày sửa cuối,,
+risk_alert_history,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_alert_history,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_alert_history,created_by_name,Tên người tạo,,
+risk_alert_history,updated_by_name,Tên người cập nhật,,
+risk_alert_history,deleted,Soft delete,,
+risk_notification,id,Primary key,PK,
+risk_notification,alert_id,Alert liên quan,FK,FK → risk_alert.id
+risk_notification,notification_type,"1=Toast, 2=Bell, 3=Email",,
+risk_notification,recipient_user_id,"User nhận notification (cho type=1,2)",,FK suy luận → system_user.id
+risk_notification,recipient_email,Email (cho type=3),,
+risk_notification,sent_at,Thời điểm gửi,,
+risk_notification,send_status,"1=SENT
+2=FAILED",,
+risk_notification,send_error,Lỗi khi gửi (nếu có),,
+risk_notification,read_status,"0=Chưa đọc
+1=Đã đọc",,
+risk_notification,created_at,Ngày tạo,,
+risk_notification,updated_at,Ngày sửa cuối,,
+risk_notification,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+risk_notification,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+risk_notification,created_by_name,Tên người tạo,,
+risk_notification,updated_by_name,Tên người cập nhật,,
+risk_notification,deleted,Soft delete,,
+permission_group,id,Primary key,PK,
+permission_group,group_name,Tên nhóm quyền,,
+permission_group,group_description,Mô tả,,
+permission_group,created_at,Ngày tạo,,
+permission_group,updated_at,Ngày sửa cuối,,
+permission_group,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+permission_group,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+permission_group,created_by_name,Tên người tạo,,
+permission_group,updated_by_name,Tên người cập nhật,,
+permission_group,deleted,Soft delete,,
+permission_group_user,id,Primary key,PK,
+permission_group_user,group_id,Id nhóm quyền,FK,FK → permission_group.id
+permission_group_user,user_id,"Người dùng được phân quyền
+(user id)",,FK suy luận → system_user.id
+permission_group_user,user_code,Mã người dùng,,
+permission_group_user,user_name,Tên người dùng được phân quyền,,
+permission_group_user,user_position,Chức vụ người dùng,,
+permission_group_user,created_at,Ngày tạo,,
+permission_group_user,updated_at,Ngày sửa cuối,,
+permission_group_user,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+permission_group_user,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+permission_group_user,created_by_name,Tên người tạo,,
+permission_group_user,updated_by_name,Tên người cập nhật,,
+permission_group_user,deleted,Soft delete,,
+permission_group_indicator,id,Primary key,PK,
+permission_group_indicator,group_id,Id nhóm quyền,FK,FK → permission_group.id
+permission_group_indicator,indicator_id,"Chỉ tiêu
+(indicator id)",FK,FK suy luận → risk_indicator.id
+permission_group_indicator,created_at,Ngày tạo,,
+permission_group_indicator,updated_at,Ngày sửa cuối,,
+permission_group_indicator,created_by_id,User_id người tạo,,FK suy luận → system_user.id
+permission_group_indicator,updated_by_id,User_id người cập nhật,,FK suy luận → system_user.id
+permission_group_indicator,created_by_name,Tên người tạo,,
+permission_group_indicator,updated_by_name,Tên người cập nhật,,
+permission_group_indicator,deleted,Soft delete,,

@@ -17,3 +17,28 @@ ThanhTra,SYS_THAM_SO,(all),Tham số cấu hình hệ thống,Out-of-scope — b
 ThanhTra,SYS_SAO_LUU,(all),Lịch sao lưu tự động,Out-of-scope — bảng hệ thống không thuộc phạm vi Silver nghiệp vụ.,Không thiết kế
 ThanhTra,SYS_NHAT_KY_SAO_LUU,(all),Nhật ký sao lưu dữ liệu,Out-of-scope — bảng hệ thống không thuộc phạm vi Silver nghiệp vụ.,Không thiết kế
 ThanhTra,SYS_VAN_BAN_PHAP_QUY,(all),Văn bản pháp quy hệ thống,Out-of-scope — tài liệu pháp quy nội bộ hệ thống không thuộc phạm vi Silver nghiệp vụ.,Không thiết kế
+QLRR,risk_indicator_category,id,PK kỹ thuật bảng nguồn,BK dùng category_code (unique globally) thay id — id không map vào Silver.,Out-of-scope
+QLRR,risk_alert_config,indicator_type,Phân biệt loại chỉ tiêu (1=hệ thống/2=tự tạo) trước khi gộp,"Sau gộp Risk Indicator, thông tin này capture qua Risk Indicator.Indicator Type Code. Không map lại trên Alert Config.",Đã capture qua entity gộp
+QLRR,risk_alert_config,custom_indicator_id,FK đến risk_indicator_custom trước khi gộp,"Sau gộp, đã map vào Risk Alert Config.Risk Indicator Id (ds_indicator_id covers cả 2 loại). HLD T2-02 confirmed.",Đã capture qua Risk Indicator Id sau gộp
+QLRR,risk_alert_config,custom_old_value,Giá trị kỳ trước cho chỉ tiêu tự tạo,"Không có trong HLD Tier 2 Silver diagram — out-of-scope. Cột này có thể là ephemeral state tính toán, không có giá trị lưu trữ độc lập.",Out-of-scope
+QLRR,risk_alert_config,custom_new_value,Giá trị kỳ này cho chỉ tiêu tự tạo,"Không có trong HLD Tier 2 Silver diagram — out-of-scope. Tương tự custom_old_value.",Out-of-scope
+QLRR,risk_alert,indicator_type,Phân biệt loại chỉ tiêu (1=hệ thống/2=tự tạo) trước khi gộp,"Sau gộp Risk Indicator, thông tin này capture qua Risk Indicator.Indicator Type Code. Không map lại trên Alert.",Đã capture qua entity gộp
+QLRR,risk_alert,custom_indicator_id,FK đến risk_indicator_custom trước khi gộp,"Sau gộp, đã map vào Risk Alert.Risk Indicator Id. HLD T2-02 confirmed.",Đã capture qua Risk Indicator Id sau gộp
+QLRR,permission_group,(all),Nhóm quyền hệ thống QLRR,Out-of-scope — bảng permission hệ thống không thuộc phạm vi Silver nghiệp vụ. Đã chốt trong HLD.,Không thiết kế
+QLRR,permission_group_user,(all),Quan hệ người dùng – nhóm quyền,Out-of-scope — bảng permission hệ thống không thuộc phạm vi Silver nghiệp vụ. Đã chốt trong HLD.,Không thiết kế
+QLRR,permission_group_indicator,(all),Quan hệ nhóm quyền – chỉ tiêu,Out-of-scope — bảng permission hệ thống không thuộc phạm vi Silver nghiệp vụ. Đã chốt trong HLD.,Không thiết kế
+QLRR,risk_report_placeholder_config,(all),Cấu hình placeholder kỹ thuật trong template báo cáo,Out-of-scope — operational/system data không có giá trị nghiệp vụ. Đã chốt trong HLD Tier 2.,Không thiết kế
+QLRR,risk_indicator,id,PK kỹ thuật bảng nguồn,BK Silver (Risk Indicator Code) = 'CUS_' + id cho chỉ tiêu tự tạo. id đơn lẻ không map riêng.,Đã capture qua Risk Indicator Code (BK)
+QLRR,risk_indicator,indicator_name,"Tên chỉ tiêu hệ thống","Đã map vào Risk Indicator.Indicator Name qua source_columns comma-separated (merge entity). Script không nhận format multi-source.",Đã thiết kế — entity merge risk_indicator + risk_indicator_custom
+QLRR,risk_indicator,unit_code,Đơn vị mặc định chỉ tiêu hệ thống,Đã map vào Risk Indicator.Unit Code qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_indicator,source_code,Nguồn dữ liệu chỉ tiêu hệ thống,Đã map vào Risk Indicator.Data Source Code qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_indicator,period_type,Tần suất chỉ tiêu hệ thống,Đã map vào Risk Indicator.Period Type Code qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_indicator,status,Trạng thái chỉ tiêu hệ thống,Đã map vào Risk Indicator.Active Flag qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_indicator_custom,id,PK kỹ thuật bảng nguồn,BK Silver (Risk Indicator Code) = 'CUS_' + id cho chỉ tiêu tự tạo. id đơn lẻ không map riêng.,Đã capture qua Risk Indicator Code (BK)
+QLRR,risk_indicator_custom,indicator_name,Tên chỉ tiêu tự tạo,Đã map vào Risk Indicator.Indicator Name qua source_columns comma-separated (merge entity).,Đã thiết kế — entity merge
+QLRR,risk_indicator_custom,unit_code,Đơn vị mặc định chỉ tiêu tự tạo,Đã map vào Risk Indicator.Unit Code qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_indicator_custom,source_code,Nguồn dữ liệu chỉ tiêu tự tạo,Đã map vào Risk Indicator.Data Source Code qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_indicator_custom,period_type,Tần suất chỉ tiêu tự tạo,Đã map vào Risk Indicator.Period Type Code qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_indicator_custom,status,Trạng thái chỉ tiêu tự tạo,Đã map vào Risk Indicator.Active Flag qua source_columns comma-separated.,Đã thiết kế — entity merge
+QLRR,risk_report_type,id,PK kỹ thuật bảng nguồn,BK dùng risk_report_type.code thay id — id không map vào Silver.,Out-of-scope
+QLRR,risk_report_type,template_content,Nội dung template HTML/text của loại báo cáo,Out-of-scope — config kỹ thuật không lưu trên Silver. Chốt T1-01.,Không thiết kế

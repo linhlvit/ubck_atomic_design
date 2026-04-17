@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Risk Report Upload Batch Id,Khóa đại diện cho đợt upload báo cáo.,Surrogate Key,false,true,draft,,,,
+Risk Report Upload Batch Code,Mã định danh đợt upload. BK. Map từ PK bảng nguồn.,Text,false,false,draft,QLRR.risk_report_upload_batch.id,BK của entity.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_report_upload_batch,
+Risk Report Type Id,FK đến loại báo cáo.,Surrogate Key,false,false,draft,QLRR.risk_report_upload_batch.report_type_id,FK target: Risk Report Type.Risk Report Type Id.,,
+Risk Report Type Code,Mã loại báo cáo.,Text,false,false,draft,QLRR.risk_report_upload_batch.report_type_id,FK target: Risk Report Type.Risk Report Type Code. Pair with Risk Report Type Id.,,
+Report Date,Thời gian báo cáo (do người dùng chọn khi upload).,Date,false,false,draft,QLRR.risk_report_upload_batch.report_date,,,
+File Count,Số lượng file trong đợt upload.,Small Counter,false,false,draft,QLRR.risk_report_upload_batch.file_count,,,

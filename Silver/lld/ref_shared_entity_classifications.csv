@@ -275,3 +275,44 @@ GSGD_TEMPLATE_TYPE,2,Báo cáo phân tích,etl_derived,GSGD.analysis_execution_l
 GSGD_ANALYSIS_REPORT_TYPE,(source),Loại báo cáo phân tích vụ việc — values from category_item,source_table,GSGD.category_item,Market Surveillance Analysis Report
 GSGD_DATA_SOURCE,(source),Nguồn dữ liệu tài khoản: VSDC / CTCK — values from category_item,source_table,GSGD.investor_account.data_source,Investor Trading Account
 GSGD_GROUP_STATUS,(source),"Trạng thái nhóm chứng khoán: 1=Chờ duyệt, 2=Phê duyệt, 3=Từ chối — values from category_item",source_table,GSGD.securities_group.status,Securities Watchlist Group
+RISK_INDICATOR_SET,1,Trong nước,etl_derived,QLRR.risk_indicator.set_code,Risk Indicator | Risk Indicator Category
+RISK_INDICATOR_SET,2,Quốc tế,etl_derived,QLRR.risk_indicator.set_code,Risk Indicator | Risk Indicator Category
+RISK_INDICATOR_TYPE,1,Chỉ tiêu hệ thống,etl_derived,QLRR.risk_indicator (derived),Risk Indicator
+RISK_INDICATOR_TYPE,2,Chỉ tiêu tự tạo,etl_derived,QLRR.risk_indicator_custom (derived),Risk Indicator
+RISK_UNIT,(source),Đơn vị đo lường chỉ tiêu (1=%/2=Điểm/3=Tỷ VND/4=Triệu USD/5=Hợp đồng/6=Cổ phiếu/7=Công ty/8=VND/9=Số TK/10=Đơn vị tính),source_table,QLRR.risk_indicator.unit_code,"Risk Indicator | Risk Indicator Value | Risk Alert Config | Risk Alert"
+RISK_DATA_SOURCE,(source),Nguồn dữ liệu chỉ tiêu (1=Investing/2=Tổng cục TK/3=NHNN/4=Nội bộ/5=HNX/6=VSDC),source_table,QLRR.risk_indicator.source_code,"Risk Indicator | Risk Indicator Value | Risk Indicator Value Change"
+RISK_PERIOD_TYPE,1,Ngày,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
+RISK_PERIOD_TYPE,2,Tháng,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
+RISK_PERIOD_TYPE,3,Quý,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
+RISK_PERIOD_TYPE,4,Năm,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
+RISK_DATA_ORIGIN,1,API CSDL tập trung,etl_derived,QLRR.risk_indicator_value.data_origin,Risk Indicator Value | Risk Indicator Value Change
+RISK_DATA_ORIGIN,2,User chỉnh sửa,etl_derived,QLRR.risk_indicator_value.data_origin,Risk Indicator Value | Risk Indicator Value Change
+RISK_JOB_FREQUENCY_TYPE,1,Giờ,etl_derived,QLRR.risk_indicator_schedule.frequency_type,Risk Indicator Schedule
+RISK_JOB_FREQUENCY_TYPE,2,Ngày,etl_derived,QLRR.risk_indicator_schedule.frequency_type,Risk Indicator Schedule
+RISK_JOB_FREQUENCY_TYPE,3,Tháng,etl_derived,QLRR.risk_indicator_schedule.frequency_type,Risk Indicator Schedule
+RISK_JOB_FREQUENCY_TYPE,4,Quý,etl_derived,QLRR.risk_indicator_schedule.frequency_type,Risk Indicator Schedule
+RISK_JOB_FREQUENCY_TYPE,5,Năm,etl_derived,QLRR.risk_indicator_schedule.frequency_type,Risk Indicator Schedule
+RISK_JOB_RUN_STATUS,SUCCESS,Thành công,etl_derived,QLRR.risk_indicator_schedule.last_status,Risk Indicator Schedule
+RISK_JOB_RUN_STATUS,FAILED,Thất bại,etl_derived,QLRR.risk_indicator_schedule.last_status,Risk Indicator Schedule
+RISK_ALERT_THRESHOLD_DIRECTION,1,Tăng,etl_derived,QLRR.risk_alert_config.threshold_direction,Risk Alert Config | Risk Alert
+RISK_ALERT_THRESHOLD_DIRECTION,2,Giảm,etl_derived,QLRR.risk_alert_config.threshold_direction,Risk Alert Config | Risk Alert
+RISK_ALERT_THRESHOLD_DIRECTION,3,Tăng/Giảm,etl_derived,QLRR.risk_alert_config.threshold_direction,Risk Alert Config | Risk Alert
+RISK_INDICATOR_CHANGE_TYPE,SYNC,Đồng bộ từ API,etl_derived,QLRR.risk_indicator_value_history.change_type,Risk Indicator Value Change
+RISK_INDICATOR_CHANGE_TYPE,UPDATE,Cập nhật thủ công,etl_derived,QLRR.risk_indicator_value_history.change_type,Risk Indicator Value Change
+RISK_ALERT_STATUS,0,Chưa xử lý,etl_derived,QLRR.risk_alert.status,Risk Alert
+RISK_ALERT_STATUS,1,Đang xử lý,etl_derived,QLRR.risk_alert.status,Risk Alert
+RISK_ALERT_STATUS,2,Đã xử lý,etl_derived,QLRR.risk_alert.status,Risk Alert
+RISK_ALERT_STATUS,3,Đã huỷ/Đã bỏ qua,etl_derived,QLRR.risk_alert.status,Risk Alert
+RISK_FILE_TYPE,(to_define),Loại file (DOCX/XLSX/PDF/PNG/JPG...) — cần profile từ data,modeler_defined,"QLRR.risk_report_file.file_type, QLRR.risk_alert_resolution_file.file_type",Risk Report File | Risk Alert Resolution File
+RISK_ALERT_RESOLUTION_TYPE,1,Quick (không giải trình),etl_derived,QLRR.risk_alert_resolution.resolution_type,Risk Alert Resolution
+RISK_ALERT_RESOLUTION_TYPE,2,Detailed (có giải trình),etl_derived,QLRR.risk_alert_resolution.resolution_type,Risk Alert Resolution
+RISK_ALERT_EVENT_TYPE,1,Xảy ra cảnh báo,etl_derived,QLRR.risk_alert_history.event_type,Risk Alert History
+RISK_ALERT_EVENT_TYPE,2,Xử lý không giải trình,etl_derived,QLRR.risk_alert_history.event_type,Risk Alert History
+RISK_ALERT_EVENT_TYPE,3,Xử lý có giải trình,etl_derived,QLRR.risk_alert_history.event_type,Risk Alert History
+RISK_NOTIFICATION_TYPE,1,Toast,etl_derived,QLRR.risk_notification.notification_type,Risk Alert Notification
+RISK_NOTIFICATION_TYPE,2,Bell,etl_derived,QLRR.risk_notification.notification_type,Risk Alert Notification
+RISK_NOTIFICATION_TYPE,3,Email,etl_derived,QLRR.risk_notification.notification_type,Risk Alert Notification
+RISK_NOTIFICATION_SEND_STATUS,1,SENT,etl_derived,QLRR.risk_notification.send_status,Risk Alert Notification
+RISK_NOTIFICATION_SEND_STATUS,2,FAILED,etl_derived,QLRR.risk_notification.send_status,Risk Alert Notification
+RISK_NOTIFICATION_READ_STATUS,0,Chưa đọc,etl_derived,QLRR.risk_notification.read_status,Risk Alert Notification
+RISK_NOTIFICATION_READ_STATUS,1,Đã đọc,etl_derived,QLRR.risk_notification.read_status,Risk Alert Notification

@@ -1,0 +1,8 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Risk Indicator Category Id,Khóa đại diện cho nhóm chỉ tiêu rủi ro.,Surrogate Key,false,true,draft,,,,
+Risk Indicator Category Code,"Mã nhóm chỉ tiêu (VD: MACRO, MONETARY, STOCK_MARKET). BK.",Text,false,false,draft,QLRR.risk_indicator_category.category_code,BK của entity. Unique globally.,,
+
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_indicator_category,
+Indicator Set Code,"Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế. Attribute bổ sung — không phân biệt entity.",Classification Value,false,false,draft,QLRR.risk_indicator_category.set_code,Scheme: RISK_INDICATOR_SET. set_code chỉ là thông tin mô tả bổ sung; category_code unique globally.,RISK_INDICATOR_SET,
+Category Name,Tên nhóm chỉ tiêu (VD: Yếu tố vĩ mô).,Text,false,false,draft,QLRR.risk_indicator_category.category_name,,,
+Active Flag,"Trạng thái hoạt động: 0=Không hoạt động, 1=Hoạt động.",Boolean,false,false,draft,QLRR.risk_indicator_category.status,,,
