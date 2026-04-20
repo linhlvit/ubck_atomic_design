@@ -1,0 +1,145 @@
+gold_entity,gold_attribute,data_type,key,description,source_entity,source_attribute
+Calendar Date Dimension,Date Dimension Id,INT,PK,Surrogate key YYYYMMDD,Generated,ETL derived
+Calendar Date Dimension,Full Date,DATE,BK,Ngày đầy đủ,Generated,ETL derived
+Calendar Date Dimension,Calendar Year,INT,,Năm — slicer dashboard + filter YoY/SSCK/YTD,Generated,ETL derived
+Calendar Date Dimension,Calendar Quarter,INT,,Quý (1-4) — slicer + GROUP BY BCTC quý,Generated,ETL derived
+Calendar Date Dimension,Calendar Month,INT,,Tháng (1-12) — slicer + MoM derived,Generated,ETL derived
+Calendar Date Dimension,Year Quarter Label,VARCHAR,,Nhãn năm-quý (VD Q3/2024) — trục X chart quý,Generated,ETL derived
+Calendar Date Dimension,Year Month Label,VARCHAR,,Nhãn năm-tháng (VD T10/2024) — trục X chart tháng,Generated,ETL derived
+Classification Dimension,Classification Dimension Id,INT,PK,Surrogate key tự tăng unique toàn bảng,Generated,ETL derived
+Classification Dimension,Scheme Code,VARCHAR,BK (cặp),Mã nhóm phân loại — phân biệt scheme,Classification Value,scheme = <assigned>
+Classification Dimension,Classification Code,VARCHAR,BK (cặp),Mã giá trị trong scheme — filter KPI (VD BROKERAGE/GOOD/REVOKED),Classification Value,source_table
+Classification Dimension,Classification Name,NVARCHAR,,Tên hiển thị — decoded label trên UI,Classification Value,source_table
+Classification Dimension,Parent Classification Code,VARCHAR,,Code cha — group Position Type thành Position Group (HDQT/HDTV/BKS/BDH) cho K_QLKD_89,Classification Value,etl_derived
+Classification Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Classification Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
+Securities Company Dimension,Securities Company Dimension Id,INT,PK,Surrogate key — FK trên mọi fact QLKD,Generated,ETL derived
+Securities Company Dimension,Securities Company Code,VARCHAR,BK,Mã CTCK — filter <selected> trong Dashboard 3,Securities Company,Securities Company Code
+Securities Company Dimension,Securities Company Name,NVARCHAR,,Tên tiếng Việt — slicer + header dashboard,Securities Company,Securities Company Name
+Securities Company Dimension,Securities Company Short Name,NVARCHAR,,Tên viết tắt — hiển thị compact trên UI,Securities Company,Securities Company Short Name
+Securities Company Dimension,Charter Capital Amount,DECIMAL,,Vốn điều lệ — header dashboard 3 per CTCK card,Securities Company,Charter Capital Amount
+Securities Company Dimension,Company Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_COMPANY_TYPE),Loại hình công ty — slicer Block 6,Classification Value,scheme = SCMS_COMPANY_TYPE
+Securities Company Dimension,Company Status Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_COMPANY_STATUS),Trạng thái hoạt động — slicer entry screen D3,Classification Value,scheme = SCMS_COMPANY_STATUS
+Securities Company Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Securities Company Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
+Securities Company Report Metadata Dimension,Report Metadata Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Securities Company Report Metadata Dimension,Report Template Code,VARCHAR,BK (cặp),Mã biểu mẫu báo cáo,Report Template,Report Template Code
+Securities Company Report Metadata Dimension,Reporting Period Code,VARCHAR,BK (cặp),Mã kỳ báo cáo — filter K_QLKD_31..45 quý chọn,Reporting Period,Reporting Period Code
+Securities Company Report Metadata Dimension,Cell Code,VARCHAR,BK (cặp),Mã chỉ tiêu báo cáo — filter chính cho mọi KPI Report Value,Report Template Indicator,Report Template Indicator Code
+Securities Company Report Metadata Dimension,Reporting Period Name,NVARCHAR,,Tên kỳ báo cáo (VD Q3/2024) — label trục X chart quý,Reporting Period,Reporting Period Name
+Securities Company Report Metadata Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Securities Company Report Metadata Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
+Member Periodic Report Dimension,Member Periodic Report Dimension Id,INT,PK,Surrogate key — FK trên Fact Report Value (v0.7 mới),Generated,ETL derived
+Member Periodic Report Dimension,Member Periodic Report Code,VARCHAR,BK,Mã lần nộp báo cáo,Member Periodic Report,Member Periodic Report Code
+Member Periodic Report Dimension,Securities Company Dimension Id,INT,FK → Securities Company Dimension,FK CTCK nộp báo cáo — filter Block 27/40/41 per CTCK,Member Periodic Report,Securities Company Code
+Member Periodic Report Dimension,Report Template Name,NVARCHAR,,Tên biểu mẫu (K_QLKD_124 Loại báo cáo),Report Template,Report Template Name
+Member Periodic Report Dimension,Reporting Period Name,NVARCHAR,,Tên kỳ báo cáo (K_QLKD_71 / K_QLKD_125),Reporting Period,Reporting Period Name
+Member Periodic Report Dimension,Submission Date,DATE,,Ngày gửi (K_QLKD_74 / K_QLKD_127 / K_QLKD_122 filter time range),Member Periodic Report,Submission Date
+Member Periodic Report Dimension,Submission Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup Calendar Date cho Submission Date,Member Periodic Report,Submission Date
+Member Periodic Report Dimension,Submission Deadline Date,DATE,,Hạn nộp (K_QLKD_126),Member Periodic Report,Submission Deadline Date
+Member Periodic Report Dimension,Report Submission Status Dimension Id,INT,FK → Classification Dimension (scheme: FMS_REPORT_SUBMISSION_STATUS),Trạng thái nộp (K_QLKD_75 / K_QLKD_128 — ĐÚNG HẠN / QUÁ HẠN / CHƯA NỘP),Classification Value,scheme = FMS_REPORT_SUBMISSION_STATUS
+Member Periodic Report Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Member Periodic Report Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
+Securities Company Senior Personnel Dimension,Senior Personnel Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Securities Company Senior Personnel Dimension,Senior Personnel Code,VARCHAR,BK,Mã nhân sự cao cấp,Securities Company Senior Personnel,Securities Company Senior Personnel Code
+Securities Company Senior Personnel Dimension,Full Name,NVARCHAR,,Họ và tên (K_QLKD_86),Securities Company Senior Personnel,Full Name
+Securities Company Senior Personnel Dimension,Email Disclosure,VARCHAR,,Email (K_QLKD_87),Involved Party Electronic Address,Electronic Address Value
+Securities Company Senior Personnel Dimension,Phone Number,VARCHAR,,Số điện thoại (K_QLKD_88),Involved Party Electronic Address,Electronic Address Value
+Securities Company Senior Personnel Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Securities Company Senior Personnel Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
+Securities Company Organization Unit Dimension,Organization Unit Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Securities Company Organization Unit Dimension,Organization Unit Code,VARCHAR,BK,Mã đơn vị trực thuộc,Securities Company Organization Unit,Securities Company Organization Unit Code
+Securities Company Organization Unit Dimension,Organization Unit Name,NVARCHAR,,Tên CN/PGD/VPĐD (K_QLKD_117),Securities Company Organization Unit,Organization Unit Name
+Securities Company Organization Unit Dimension,Address,NVARCHAR,,Địa chỉ (K_QLKD_118),Involved Party Postal Address,Address Value
+Securities Company Organization Unit Dimension,Representative Name,NVARCHAR,,Giám đốc CN / Trưởng VPĐD (K_QLKD_121),Securities Company Organization Unit,Representative Name
+Securities Company Organization Unit Dimension,Establishment Date,DATE,,Ngày thành lập (K_QLKD_120),Securities Company Organization Unit,Decision Date
+Securities Company Organization Unit Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Securities Company Organization Unit Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
+Securities Company Practitioner Dimension,Practitioner Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
+Securities Company Practitioner Dimension,Practitioner Code,VARCHAR,BK,Mã NHN,Securities Practitioner,Practitioner Code
+Securities Company Practitioner Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
+Securities Company Practitioner Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
+Fact Securities Company Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot — filter K_QLKD_1..8 / 12..15 / 22..24,Generated,ETL derived
+Fact Securities Company Snapshot,Snapshot Date,DATE,,Ngày snapshot (T-1 batch T) — grain,Generated,ETL derived
+Fact Securities Company Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — COUNT DISTINCT trên FK này,Securities Company,Securities Company Code
+Fact Securities Company Snapshot,Company Status Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_COMPANY_STATUS),Trạng thái CTCK tại snapshot — filter K_QLKD_2..8,Classification Value,scheme = SCMS_COMPANY_STATUS
+Fact Securities Company Snapshot,License Maintenance Status Dimension Id,INT,FK → Classification Dimension (scheme: QLKD_LICENSE_MAINTENANCE_STATUS),Trạng thái duy trì GPHD — filter K_QLKD_22..24,Classification Value,scheme = QLKD_LICENSE_MAINTENANCE_STATUS
+Fact Securities Company Snapshot,Is Brokerage Business Flag,BOOLEAN,,Cờ có nghiệp vụ Môi giới — K_QLKD_12,Securities Company,Business Sector Codes
+Fact Securities Company Snapshot,Is Underwriting Business Flag,BOOLEAN,,Cờ có nghiệp vụ Bảo lãnh — K_QLKD_13,Securities Company,Business Sector Codes
+Fact Securities Company Snapshot,Is Advisory Business Flag,BOOLEAN,,Cờ có nghiệp vụ Tư vấn — K_QLKD_14,Securities Company,Business Sector Codes
+Fact Securities Company Snapshot,Is Prop Trading Business Flag,BOOLEAN,,Cờ có nghiệp vụ Tự doanh — K_QLKD_15,Securities Company,Business Sector Codes
+Fact Securities Company Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact Securities Company Service Registration Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
+Fact Securities Company Service Registration Snapshot,Snapshot Date,DATE,,Ngày snapshot — grain,Generated,ETL derived
+Fact Securities Company Service Registration Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — COUNT DISTINCT cho K_QLKD_16..21 / 25..30,Securities Company Service Registration,Securities Company Code
+Fact Securities Company Service Registration Snapshot,Service Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_SERVICE_TYPE),Loại dịch vụ — filter KPI theo mã dịch vụ,Classification Value,scheme = SCMS_SERVICE_TYPE
+Fact Securities Company Service Registration Snapshot,Service Registration Status Dimension Id,INT,FK → Classification Dimension (scheme: QLKD_SERVICE_REGISTRATION_STATUS),Trạng thái đăng ký — filter K_QLKD_16..21 NOT IN REVOKED / K_QLKD_25..30 filter 3 mức,Classification Value,scheme = QLKD_SERVICE_REGISTRATION_STATUS
+Fact Securities Company Service Registration Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact Securities Company Member Report Value,Report Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày số liệu báo cáo,Member Periodic Report,Report Date
+Fact Securities Company Member Report Value,Report Date,DATE,,Ngày số liệu báo cáo — filter KPI tháng/quý,Member Periodic Report,Report Date
+Fact Securities Company Member Report Value,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK nộp báo cáo,Member Report Indicator Value,Securities Company Code
+Fact Securities Company Member Report Value,Report Metadata Dimension Id,INT,FK → Securities Company Report Metadata Dimension,Lookup tổ hợp (Template × Period × Cell Code) — filter chính,Member Report Indicator Value,Report Template Indicator Code
+Fact Securities Company Member Report Value,Member Periodic Report Dimension Id,INT,FK → Member Periodic Report Dimension,Lookup lần nộp báo cáo (v0.7) — JOIN lấy Submission Date/Status + COUNT DISTINCT K_QLKD_122,Member Report Indicator Value,Member Periodic Report Code
+Fact Securities Company Member Report Value,Member Object Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_MEMBER_OBJECT_TYPE),Loại đối tượng nộp báo cáo — filter chỉ CTCK,Classification Value,scheme = SCMS_MEMBER_OBJECT_TYPE
+Fact Securities Company Member Report Value,Cell Value,VARCHAR,,Giá trị ô chỉ tiêu (text) — CAST query-time DECIMAL/BIGINT — measure chính của mọi KPI Report Value,Member Report Indicator Value,Cell Value
+Fact Securities Company Member Report Value,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact Securities Offering Disclosure,Disclosure Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày công bố — filter K_QLKD_46..50 BETWEEN tháng chọn,Disclosure Securities Offering,Disclosure Date
+Fact Securities Offering Disclosure,Disclosure Date,DATE,,Ngày công bố thông tin — grain event,Disclosure Securities Offering,Disclosure Date
+Fact Securities Offering Disclosure,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK phát hành,Disclosure Securities Offering,Securities Company Code
+Fact Securities Offering Disclosure,Offering Form Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_OFFERING_FORM),Hình thức chào bán — filter K_QLKD_46..50,Classification Value,scheme = SCMS_OFFERING_FORM
+Fact Securities Offering Disclosure,Offering Value Amount,DECIMAL,,Giá trị chào bán VNĐ — SUM measure cho K_QLKD_46..50,Disclosure Securities Offering,Offering Value
+Fact Securities Offering Disclosure,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact Securities Company Senior Personnel Tenure,Tenure Start Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày bắt đầu nhiệm kỳ (milestone 1) — K_QLKD_90,Generated,ETL derived
+Fact Securities Company Senior Personnel Tenure,Tenure Start Date,DATE,,Ngày bắt đầu nhiệm kỳ,Generated,ETL derived
+Fact Securities Company Senior Personnel Tenure,Tenure End Date,DATE,,Ngày kết thúc nhiệm kỳ (NULL = đương nhiệm) — filter K_QLKD_91..94 active,Securities Company Senior Personnel,Resignation Date
+Fact Securities Company Senior Personnel Tenure,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — filter per CTCK,Securities Company Senior Personnel,Securities Company Code
+Fact Securities Company Senior Personnel Tenure,Senior Personnel Dimension Id,INT,FK → Securities Company Senior Personnel Dimension,Lookup nhân sự — COUNT DISTINCT cho K_QLKD_91..94,Securities Company Senior Personnel,Securities Company Senior Personnel Code
+Fact Securities Company Senior Personnel Tenure,Position Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_POSITION_TYPE),Chức vụ (K_QLKD_89) + filter K_QLKD_91..94 IN (HDQT_*/HDTV_*/BKS_*/CEO/...),Classification Value,scheme = SCMS_POSITION_TYPE
+Fact Securities Company Senior Personnel Tenure,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact Securities Company Organization Unit Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
+Fact Securities Company Organization Unit Snapshot,Snapshot Date,DATE,,Ngày snapshot,Generated,ETL derived
+Fact Securities Company Organization Unit Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — filter per CTCK,Securities Company Organization Unit,Securities Company Code
+Fact Securities Company Organization Unit Snapshot,Organization Unit Dimension Id,INT,FK → Securities Company Organization Unit Dimension,Lookup đơn vị — COUNT DISTINCT cho K_QLKD_101..107 / 114..116,Securities Company Organization Unit,Securities Company Organization Unit Code
+Fact Securities Company Organization Unit Snapshot,Organization Unit Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_ORG_UNIT_TYPE),Loại đơn vị (BRANCH/TRANSACTION_OFFICE/REPRESENTATIVE_OFFICE) — filter K_QLKD_101..103,Classification Value,scheme = SCMS_ORG_UNIT_TYPE
+Fact Securities Company Organization Unit Snapshot,Is Active Flag,BOOLEAN,,Cờ đơn vị đang hoạt động — filter K_QLKD_101..107,Generated,ETL derived (Securities Company Organization Unit - Organization Unit Status Code)
+Fact Securities Company Organization Unit Snapshot,Is Brokerage Flag,BOOLEAN,,Cờ có nghiệp vụ Môi giới tại đơn vị — K_QLKD_104 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
+Fact Securities Company Organization Unit Snapshot,Is Underwriting Flag,BOOLEAN,,Cờ có nghiệp vụ Bảo lãnh — K_QLKD_105 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
+Fact Securities Company Organization Unit Snapshot,Is Advisory Flag,BOOLEAN,,Cờ có nghiệp vụ Tư vấn — K_QLKD_106 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
+Fact Securities Company Organization Unit Snapshot,Is Proprietary Trading Flag,BOOLEAN,,Cờ có nghiệp vụ Tự doanh — K_QLKD_107 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
+Fact Securities Company Organization Unit Snapshot,Is License Maintained Good Flag,BOOLEAN,,Cờ GPHD đơn vị đang duy trì tốt — K_QLKD_114,Generated,ETL derived (chờ dữ liệu)
+Fact Securities Company Organization Unit Snapshot,Is License Maintained Near Limit Flag,BOOLEAN,,Cờ GPHD gần giới hạn — K_QLKD_115,Generated,ETL derived (chờ dữ liệu)
+Fact Securities Company Organization Unit Snapshot,Is License Not Maintained Flag,BOOLEAN,,Cờ GPHD không duy trì — K_QLKD_116,Generated,ETL derived (chờ dữ liệu)
+Fact Securities Company Organization Unit Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact Securities Company Organization Unit Service Registration Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
+Fact Securities Company Organization Unit Service Registration Snapshot,Snapshot Date,DATE,,Ngày snapshot,Generated,ETL derived
+Fact Securities Company Organization Unit Service Registration Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — filter per CTCK,Securities Company Organization Unit,Securities Company Code
+Fact Securities Company Organization Unit Service Registration Snapshot,Organization Unit Dimension Id,INT,FK → Securities Company Organization Unit Dimension,Lookup đơn vị — COUNT DISTINCT K_QLKD_108..113,Securities Company Organization Unit,Securities Company Organization Unit Code
+Fact Securities Company Organization Unit Service Registration Snapshot,Service Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_SERVICE_TYPE),Loại dịch vụ đơn vị đăng ký — filter K_QLKD_108..113,Classification Value,scheme = SCMS_SERVICE_TYPE
+Fact Securities Company Organization Unit Service Registration Snapshot,Service Registration Status Dimension Id,INT,FK → Classification Dimension (scheme: QLKD_SERVICE_REGISTRATION_STATUS),Trạng thái đăng ký (ACTIVE/...) — filter K_QLKD_108..113,Classification Value,scheme = QLKD_SERVICE_REGISTRATION_STATUS
+Fact Securities Company Organization Unit Service Registration Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact Securities Company Administrative Penalty,Decision Number,VARCHAR,DD,Mã QĐ xử phạt (COUNT DISTINCT cho K_QLKD_123),Securities Company Administrative Penalty,Decision Number
+Fact Securities Company Administrative Penalty,Penalty Decision Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày QĐ xử phạt,Securities Company Administrative Penalty,Decision Date
+Fact Securities Company Administrative Penalty,Penalty Decision Date,DATE,,Ngày quyết định xử phạt — filter K_QLKD_123 BETWEEN 01/01/Year AND selected,Securities Company Administrative Penalty,Decision Date
+Fact Securities Company Administrative Penalty,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK bị xử phạt,Securities Company Administrative Penalty,Securities Company Code
+Fact Securities Company Administrative Penalty,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact QLKD Inspection Penalty Record,Inspection Decision Issue Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày ban hành QĐ TT/KT — K_QLKD_130,Inspection Decision,Issue Date
+Fact QLKD Inspection Penalty Record,Inspection Decision Issue Date,DATE,,Ngày ban hành QĐ thanh tra/kiểm tra (K_QLKD_130),Inspection Decision,Issue Date
+Fact QLKD Inspection Penalty Record,Conclusion Signing Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày ban hành QĐ xử phạt — K_QLKD_132,Inspection Case Conclusion,Signing Date
+Fact QLKD Inspection Penalty Record,Conclusion Signing Date,DATE,,Ngày ban hành QĐ xử phạt (K_QLKD_132),Inspection Case Conclusion,Signing Date
+Fact QLKD Inspection Penalty Record,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK đối tượng — filter per CTCK,Inspection Decision Subject,Securities Company Code
+Fact QLKD Inspection Penalty Record,Inspection Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PLAN_TYPE),Loại TT/KT — K_QLKD_129,Classification Value,scheme = TT_PLAN_TYPE
+Fact QLKD Inspection Penalty Record,Violation Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_VIOLATION_TYPE),Loại hành vi vi phạm — K_QLKD_133,Classification Value,scheme = TT_VIOLATION_TYPE
+Fact QLKD Inspection Penalty Record,Penalty Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PENALTY_TYPE),Loại hình thức phạt — K_QLKD_134,Classification Value,scheme = TT_PENALTY_TYPE
+Fact QLKD Inspection Penalty Record,Conclusion Document Number,VARCHAR,DD,Số QĐ xử phạt (K_QLKD_131),Inspection Case Conclusion,Conclusion Document Number
+Fact QLKD Inspection Penalty Record,Violation Clause,NVARCHAR,DD,Điều khoản vi phạm (K_QLKD_133 supplementary text),Inspection Case Conclusion,Violation Clause
+Fact QLKD Inspection Penalty Record,Penalty Amount,DECIMAL,,Số tiền phạt (K_QLKD_134 amount),Inspection Case Conclusion,Penalty Amount
+Fact QLKD Inspection Penalty Record,Penalty Clause,NVARCHAR,DD,Điều khoản xử phạt (K_QLKD_134 supplementary text),Inspection Case Conclusion,Penalty Clause
+Fact QLKD Inspection Penalty Record,Conclusion Summary,NVARCHAR,DD,Tóm tắt kết luận (K_QLKD_135 parse Biện pháp khắc phục — xem QLKD_O12),Inspection Case Conclusion,Conclusion Summary
+Fact QLKD Inspection Penalty Record,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+Fact QLKD Practitioner License Certificate Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
+Fact QLKD Practitioner License Certificate Snapshot,Snapshot Date,DATE,,Ngày snapshot,Generated,ETL derived
+Fact QLKD Practitioner License Certificate Snapshot,Practitioner Dimension Id,INT,FK → Securities Company Practitioner Dimension,Lookup NHN — COUNT DISTINCT cho K_QLKD_76 / 79..85,Securities Practitioner License Certificate Document,Practitioner Code
+Fact QLKD Practitioner License Certificate Snapshot,Managing Securities Company Dimension Id,INT,FK → Securities Company Dimension,CTCK đang quản lý NHN — filter per CTCK,Securities Practitioner Organization Employment Report,Securities Organization Code
+Fact QLKD Practitioner License Certificate Snapshot,Certificate Type Dimension Id,INT,FK → Classification Dimension (scheme: NHNCK_CERTIFICATE_TYPE),Loại CCHN — filter K_QLKD_79..85,Classification Value,scheme = NHNCK_CERTIFICATE_TYPE
+Fact QLKD Practitioner License Certificate Snapshot,Is Active Flag,BOOLEAN,,Cờ CCHN đang hoạt động — filter K_QLKD_76 / 79..85,Generated,ETL derived
+Fact QLKD Practitioner License Certificate Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived

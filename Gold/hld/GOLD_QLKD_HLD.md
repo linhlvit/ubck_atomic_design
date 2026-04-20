@@ -1787,7 +1787,7 @@ erDiagram
 └────────────────────────┘  └────────────────────────────┘
 ```
 
-**2. Source:** `Fact Securities Company Member Report Value` (reuse Block 27, COUNT DISTINCT trên FK `Member Periodic Report Dimension Id`) + `Fact Securities Company Administrative Penalty` (SCMS, source `CTCK_XU_LY_HANH_CHINH`) → `Member Periodic Report Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
+**2. Source:** `Fact Securities Company Member Report Value` (reuse Block 27, COUNT DISTINCT trên FK `Member Periodic Report Dimension Id`) + `Fact Securities Company Administrative Penalty` (SCMS, source `CTCK_XU_LY_HANH_CHINH`) → `Member Periodic Report Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
 
 Block này composite — 2 KPI cards từ 2 fact khác nhau, mỗi card là 1 star schema độc lập (không JOIN giữa 2 fact). Cùng 1 block vì đều thuộc tab "Tuân thủ" của 1 CTCK.
 
@@ -1809,7 +1809,6 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Date Dimension Id"
     Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Administrative_Penalty : "Penalty Decision Date Dimension Id"
     Securities_Company_Dimension ||--o{ Fact_Securities_Company_Administrative_Penalty : "Securities Company Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Administrative_Penalty : "Inspection Type Dimension Id"
 ```
 
 **5. Bảng tham gia**
@@ -1908,6 +1907,7 @@ Inspection Decision Subject (lọc CTCK = selected)
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Inspection Decision Issue Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Conclusion Signing Date Dimension Id"
     Securities_Company_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Securities Company Dimension Id"
     Classification_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Inspection Type Dimension Id"
     Classification_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Violation Type Dimension Id"
