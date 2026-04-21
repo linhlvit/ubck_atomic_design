@@ -52,26 +52,36 @@
 
 ---
 
-## Bảng out-of-scope (không thiết kế Silver)
+## 7f. Bảng ngoài scope
 
-| Source Table | Lý do |
-|---|---|
-| company_data | Bảng trung gian (intermediate linking table) — không có business lifecycle độc lập |
-| noti_config_apply | Pure junction table — không có business attribute |
-| report_approval | Cascade drop từ company_data |
-| report_extensions | Cascade drop từ company_data |
-| data | Cascade drop từ company_data |
-| data_values | Cascade drop từ company_data. Ghi chú: nếu anchor khôi phục, cần map cả field_id và form_field_id |
-| logins, users | Bảng hệ thống — không có giá trị nghiệp vụ Silver |
-| user_audit_log, sms_log | Operational log — out-of-scope |
-| sys_parameters, data_access_rules, data_types | System config/metadata — out-of-scope |
-| fields, form_fields | Field definition metadata — denormalized vào data_values khi anchor khôi phục |
-| company_profiles_his, company_detail_his, company_change_role_his, fields_history, form_fields_history, stockholder_history | Bảng lịch sử kỹ thuật — SCD2 Silver tự track |
-| departments | Phòng ban UBCK — dùng shared Regulatory Authority Organization Unit khi cần FK |
-| categories | Reference data set — Classification Value scheme `IDS_INDUSTRY_CATEGORY` |
-| countries | Reference data set — map vào shared Geographic Area (COUNTRY) |
-| provinces | Reference data set — map vào shared Geographic Area (PROVINCE) |
-| lookup_values | Reference data sets — mỗi lookup_group = 1 Classification Value scheme IDS_* |
+| Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
+|---|---|---|---|
+| Intermediate | company_data | Bảng trung gian lưu forms thuộc company_profiles | Intermediate linking table — không có business lifecycle độc lập |
+| Junction | noti_config_apply | Junction giữa noti_config và company_profiles | Pure junction table — không có business attribute |
+| Cascade drop | report_approval | Phê duyệt báo cáo (FK company_data) | Cascade drop từ company_data |
+| Cascade drop | report_extensions | Gia hạn báo cáo (FK company_data) | Cascade drop từ company_data |
+| Cascade drop | data | BCTC cell values (FK company_data) | Cascade drop từ company_data |
+| Cascade drop | data_values | Form field values (FK company_data) | Cascade drop từ company_data. Nếu anchor khôi phục, cần map cả field_id và form_field_id |
+| Operational / System | logins | Tài khoản đăng nhập hệ thống | Bảng hệ thống — không có giá trị nghiệp vụ Silver |
+| Operational / System | users | Người dùng hệ thống | Bảng hệ thống — không có giá trị nghiệp vụ Silver |
+| Operational / System | user_audit_log | Log thao tác người dùng | Operational log — out-of-scope |
+| Operational / System | sms_log | Log gửi SMS | Operational log — out-of-scope |
+| Operational / System | sys_parameters | Tham số hệ thống | System config/metadata — out-of-scope |
+| Operational / System | data_access_rules | Phân quyền dữ liệu | System config/metadata — out-of-scope |
+| Operational / System | data_types | Định nghĩa kiểu dữ liệu cho fields | System config/metadata — out-of-scope |
+| Form Metadata | fields | Field definition cho form | Field definition metadata — denormalized vào data_values khi anchor khôi phục |
+| Form Metadata | form_fields | Junction lưu fields trong 1 form | Field definition metadata — denormalized vào data_values khi anchor khôi phục |
+| Audit Log nguồn | company_profiles_his | Lịch sử thay đổi company_profiles | Bảng lịch sử kỹ thuật — SCD2 Silver tự track |
+| Audit Log nguồn | company_detail_his | Lịch sử thay đổi company_detail | Bảng lịch sử kỹ thuật — SCD2 Silver tự track |
+| Audit Log nguồn | company_change_role_his | Lịch sử thay đổi vai trò người dùng | Bảng lịch sử kỹ thuật — SCD2 Silver tự track |
+| Audit Log nguồn | fields_history | Lịch sử thay đổi fields | Bảng lịch sử kỹ thuật — SCD2 Silver tự track |
+| Audit Log nguồn | form_fields_history | Lịch sử thay đổi form_fields | Bảng lịch sử kỹ thuật — SCD2 Silver tự track |
+| Audit Log nguồn | stockholder_history | Lịch sử thay đổi cổ đông | Bảng lịch sử kỹ thuật — SCD2 Silver tự track |
+| Shared Entity | departments | Phòng ban UBCK | Dùng shared Regulatory Authority Organization Unit khi cần FK — không thiết kế riêng IDS |
+| Reference Data | categories | Ngành nghề 2 cấp công ty đại chúng | Reference data set — Classification Value scheme IDS_INDUSTRY_CATEGORY |
+| Reference Data | countries | Danh mục quốc gia | Reference data set — map vào shared Geographic Area (COUNTRY) |
+| Reference Data | provinces | Danh mục tỉnh/thành phố | Reference data set — map vào shared Geographic Area (PROVINCE) |
+| Reference Data | lookup_values | Danh mục giá trị tra cứu | Reference data sets — mỗi lookup_group = 1 Classification Value scheme IDS_* |
 
 ---
 
