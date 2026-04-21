@@ -96,6 +96,19 @@ Nếu HLD đã quyết định denormalize 1 bảng junction thành ARRAY trên 
 - `comment`: tên bảng junction gốc + tham chiếu HLD + schema struct nếu là `Array<Struct>`. Mẫu: `Pure junction {TABLE} → denormalize thành ARRAY. Struct: {field1: Domain1; field2: Domain2}. HLD decision: {file HLD}.`
 - Tên attribute: danh từ số nhiều phản ánh nội dung phần tử (VD: `Business Type Codes`, `Distribution Agent Ids`).
 
+#### 3j. Merge entity từ 2 bảng nguồn 1-1 — xử lý cột duplicate
+
+Khi 1 Silver entity gộp từ 2 bảng nguồn quan hệ 1-1 (VD: Public Company = company_profiles + company_detail), thường có các cột trùng giá trị (name VI/EN, business_reg_no, ticker, audit fields).
+
+**Quy tắc:**
+1. **Chọn 1 bảng làm primary source** cho các cột trùng — map `source_columns` từ bảng đó.
+2. **Các cột trùng của bảng kia** phải document trong `pending_design.csv`:
+   - `reason`: "Giá trị 1-1 với {primary_table}.{col}. Map primary từ {primary_table}."
+   - `action`: "Đã capture qua {primary_table} (1-1)"
+3. **KHÔNG** ghi `"X.col1, Y.col2"` trong `source_columns`. Script `post_check_silver.py` C5 kiểm tra format đúng 3 phần `SOURCE.table.column` → sẽ báo lỗi.
+4. **PK kỹ thuật của bảng phụ** (VD: company_detail.id) cũng document pending: "PK kỹ thuật riêng của bảng detail, không phải BK của entity."
+5. Nếu đây là entity shared giữa nhiều source system, xem xét HLD Tier tương ứng cho quy tắc merge tương tự.
+
 ### Bước 4 — Rà soát shared entity
 
 Nếu bảng nguồn có grain = 1 Involved Party:
@@ -105,9 +118,17 @@ Nếu bảng nguồn có grain = 1 Involved Party:
 
 **Involved Party bao gồm cả cá nhân lẫn tổ chức.** Không phân biệt loại IP — chỉ cần entity chính đang mô tả 1 IP (cá nhân, tổ chức, công ty, chi nhánh...) là phải tách shared entity. Ví dụ: Securities Company Senior Personnel (cá nhân), Securities Company (tổ chức), Securities Company Organization Unit (chi nhánh) — đều phải tách địa chỉ/liên lạc sang shared entity.
 
+Quy tắc grain = Involved Party luôn áp dụng, không phụ thuộc HLD Tier có liệt kê shared entity hay không. Nếu HLD Tier chưa có shared entity tương ứng, đồng bộ tài liệu sau khi thiết kế LLD:
+1. Thêm dòng vào `manifest.csv`: `<SOURCE>,<table>,Involved Party {Postal Address|Electronic Address|Alternative Identification},<Tier>,<lld_file>`.
+2. Cập nhật `source_table` trong HLD Overview và HLD Tier tương ứng.
+3. Ghi 1 dòng vào "Điểm cần xác nhận" của HLD Tier mô tả quyết định tách shared entity.
+
 Kiểm tra `ref_shared_entity_classifications.csv` để dùng đúng Code đã chuẩn hóa. Nếu có giá trị mới chưa có → thêm vào ref file ngay, không để lại.
 
-Shared entity **không có PK surrogate riêng** — chỉ FK trỏ về entity chính. Khi thêm trường mới vào bất kỳ shared entity nào, **phải thông báo rõ** để người thiết kế cập nhật bảng tên trường chuẩn bên dưới.
+Schema shared entity cố định — chỉ chứa các trường liệt kê trong bảng tên trường chuẩn bên dưới. Shared entity không có PK surrogate riêng (chỉ FK về entity chính), không có audit fields, không có business flag. Cột nguồn không map được vào schema chuẩn (PK kỹ thuật của bảng nguồn, audit fields, business flag như `primary_flg`, `is_active`...) document trong `pending_design.csv`:
+- PK kỹ thuật: "Shared entity không có PK surrogate riêng — chỉ FK về entity chính."
+- Audit fields: "Shared entity schema chuẩn không có audit fields."
+- Business flag: "Cân nhắc tính tại Gold hoặc bổ sung schema shared entity (ảnh hưởng mọi nguồn)."
 
 ---
 
@@ -122,8 +143,6 @@ Shared entity **không có PK surrogate riêng** — chỉ FK trỏ về entity 
 | Số giấy tờ | `Identification Number` | Text |
 | Ngày cấp | `Issue Date` | Date |
 | Nơi cấp | `Issuing Authority Name` | Text |
-
----
 
 **Tên trường chuẩn cho IP Postal Address** — bắt buộc dùng đúng tên này:
 
@@ -163,6 +182,25 @@ Shared entity **không có PK surrogate riêng** — chỉ FK trỏ về entity 
 
 ---
 
+**Quy tắc `classification_context` cho shared entity:**
+
+Mọi attribute trong file shared entity bắt buộc có `classification_context` với format `SCHEME=VALUE` — không để bare. Bare context khiến aggregate mất mapping silent khi shared entity merge từ nhiều source.
+
+Chọn value theo nguồn:
+- Nguồn có cột type động qua lookup (VD: `identity_type_cd` → CMND/CCCD/Hộ chiếu/GPKD) → dùng placeholder `(source)`: `IP_ALT_ID_TYPE=(source)`. ETL map value runtime.
+- Nguồn cố định 1 loại (VD: chỉ có cột `phone_no` = PHONE) → hardcode: `IP_ELEC_ADDR_TYPE=PHONE`.
+
+Scheme áp dụng: `IP_ADDR_TYPE` (IP Postal Address), `IP_ELEC_ADDR_TYPE` (IP Electronic Address), `IP_ALT_ID_TYPE` (IP Alt Identification).
+
+Ví dụ shared entity type động:
+```csv
+Identification Type Code,...,Classification Value,false,false,draft,IDS.identity.identity_type_cd,"Scheme: IP_ALT_ID_TYPE. ETL map từ scheme nguồn sang scheme chuẩn.",IP_ALT_ID_TYPE=(source),
+Identification Number,...,Text,true,false,draft,IDS.identity.identity_no,,IP_ALT_ID_TYPE=(source),
+Issue Date,...,Date,true,false,draft,IDS.identity.identity_issued_date,,IP_ALT_ID_TYPE=(source),
+```
+
+Trường hợp nguồn có `identity_no` nhưng không có cột type phân biệt: dùng `IP_ALT_ID_TYPE=NATIONAL_ID` làm default. Document trong `pending_design.csv` (`reason="Nguồn không phân biệt loại giấy tờ"`, `action="Cần profile data nguồn để xác định loại giấy tờ thực tế"`) và thêm 1 điểm xác nhận vào HLD Tier tương ứng.
+
 Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalized. Ví dụ: snapshot tờ khai thuế, quyết định hành chính, log kỹ thuật — địa chỉ trong các entity này là denormalized hợp lệ.
 
 #### 4a. Quy tắc trường địa lý (quốc gia / tỉnh / huyện / xã)
@@ -173,6 +211,7 @@ Trường chứa mã địa lý có 3 cách xử lý — chọn theo bối cản
 |---|---|---|
 | Bảng nguồn có bảng lookup địa lý rõ ràng trong cùng hệ thống (VD: FIMS.NATIONAL) | **FK pair** đến Silver entity **Geographic Area** — đặt tên theo ngữ nghĩa (xem quy tắc bên dưới) | FIMS: NaId → `Nationality Id/Code`; SCMS: TINH_THANH_ID → `Province Id/Code` |
 | Dữ liệu phản hồi từ API ngoài (C06, VNPT...) hoặc nguồn không có bảng lookup trong scope | **Classification Value** với scheme riêng, ghi rõ `(no_lookup)` trong ref — không tạo FK | NHNCK: COUNTRY, PROVINCE, DISTRICT |
+| Nguồn có bảng lookup (provinces/countries) nhưng HLD chưa thiết kế lookup đó vào Silver Geographic Area trong cùng Tier | **Text** denormalized với comment ghi rõ "provinces/countries là reference data set chưa map vào shared Geographic Area trong scope {SOURCE}" | IDS: `head_office_prov`, `nationality` |
 | Trường địa lý trong địa chỉ, nguồn ghi kèm cả Name (không resolve được) | **Text** denormalized — giữ cả Code lẫn Name | DCST IP_Postal_Address: Province Code/Name |
 
 **Geographic Area là Silver entity** ([Location] Geographic Area) — chứa danh mục khu vực địa lý đa cấp (quốc gia/vùng/tỉnh/huyện/xã). Chỉ tạo FK đến đây khi có bảng lookup tường minh trong scope thiết kế.
@@ -228,7 +267,12 @@ Trước khi xuất file:
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest?
 - [ ] **Cross-check scheme**: Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột classification_context đều có trong `ref_shared_entity_classifications.csv`? Nếu thiếu → thêm vào ref trước khi kết thúc.
 - [ ] **Trường địa lý**: mã quốc gia/tỉnh/huyện/xã được xử lý đúng theo bối cảnh nguồn (FK Geographic Area / Classification Value no_lookup / Text denormalized)?
+- [ ] **Shared entity type động**: Nếu nguồn có cột type qua lookup_values (identity_type_cd, v.v.) → đã dùng `SCHEME=(source)` placeholder chưa? Không để bare context (gây mất mapping silent).
+- [ ] **Shared entity — cột không map**: PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.csv`?
+- [ ] **Merge entity 1-1**: source_columns KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending?
+- [ ] **Manifest encoding**: `manifest.csv` không có BOM (strip trước khi chạy aggregate)?
 - [ ] **Post-check**: Sau khi chạy aggregate, chạy `post_check_silver.py` và xử lý mọi warning trước khi kết thúc Tier?
+- [ ] **Source coverage**: chạy `post_check_source_coverage.py --source <SOURCE>` — mọi bảng đã thiết kế đều có 100% cột map (hoặc pending với reason rõ)?
 
 ## OUTPUT
 
@@ -281,6 +325,8 @@ Electronic Address Value,Email.,Text,true,false,draft,NHNCK.qlnhn.Professionals.
 - `silver_entity`: tên Silver entity đích — phải khớp với `silver_entities.csv`.
 - `group`: tier nhóm (`T1`, `T2`, `T3`, `T4`).
 - `lld_file`: tên file attr_*.csv tương ứng.
+
+**Encoding:** `manifest.csv` phải là UTF-8 không BOM. Nếu chạy aggregate gặp `KeyError: 'source_system'`, kiểm tra và strip BOM trước khi chạy lại.
 
 ### Cập nhật ref_shared_entity_classifications.csv
 

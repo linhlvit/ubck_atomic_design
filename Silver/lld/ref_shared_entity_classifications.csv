@@ -316,3 +316,51 @@ RISK_NOTIFICATION_SEND_STATUS,1,SENT,etl_derived,QLRR.risk_notification.send_sta
 RISK_NOTIFICATION_SEND_STATUS,2,FAILED,etl_derived,QLRR.risk_notification.send_status,Risk Alert Notification
 RISK_NOTIFICATION_READ_STATUS,0,Chưa đọc,etl_derived,QLRR.risk_notification.read_status,Risk Alert Notification
 RISK_NOTIFICATION_READ_STATUS,1,Đã đọc,etl_derived,QLRR.risk_notification.read_status,Risk Alert Notification
+IDS_REPORT_CATALOG_TYPE,i,Báo cáo đầu vào,etl_derived,IDS.report_catalog.rc_type_cd,Financial Report Catalog | Financial Report Row Template | Financial Report Column Template
+IDS_REPORT_CATALOG_TYPE,o,Báo cáo đầu ra,etl_derived,IDS.report_catalog.rc_type_cd,Financial Report Catalog | Financial Report Row Template | Financial Report Column Template
+IDS_REPORT_SCOPE,(source),"Loại hình báo cáo (hợp nhất, mẹ) — values from lookup_values với lookup_group='Report_scope'",source_table,IDS.lookup_values,Financial Report Catalog
+IDS_ENTERPRISE_TYPE,(source),"Loại hình doanh nghiệp (dn-doanh nghiệp, bh-bảo hiểm, td-tín dụng, ck-chứng khoán) — values from lookup_values với lookup_group='Enterprise_type'",source_table,IDS.lookup_values,Financial Report Catalog | Public Company
+IDS_REPORT_ROW_TYPE,v,Value,etl_derived,IDS.rrow.row_type_cd,Financial Report Row Template
+IDS_REPORT_ROW_TYPE,f,Formula,etl_derived,IDS.rrow.row_type_cd,Financial Report Row Template
+IDS_REPORT_ROW_TYPE,d,Description,etl_derived,IDS.rrow.row_type_cd,Financial Report Row Template
+IDS_PERIODIC_REPORT_FREQUENCY,0,Báo cáo tháng,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,1,Báo cáo quý,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,2,Báo cáo năm,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,3,Báo cáo thường niên,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,4,Báo cáo trực tuyến 6 tháng đầu năm,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,5,Báo cáo trực tuyến 6 tháng cuối năm,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_FORM_ROW_DATA_TYPE,v,Value,etl_derived,IDS.rep_row.data_type_cd,Periodic Report Form Row Template
+IDS_PERIODIC_FORM_ROW_DATA_TYPE,d,Description,etl_derived,IDS.rep_row.data_type_cd,Periodic Report Form Row Template
+IDS_PERIODIC_FORM_COLUMN_DATA_TYPE,n,Number,etl_derived,IDS.rep_column.data_type_cd,Periodic Report Form Column Template
+IDS_PERIODIC_FORM_COLUMN_DATA_TYPE,t,Text,etl_derived,IDS.rep_column.data_type_cd,Periodic Report Form Column Template
+IDS_NOTIFICATION_SEND_SCHEDULE,(source),Lịch gửi tin định kỳ — values from lookup_values với lookup_group='send_schedule_type',source_table,IDS.lookup_values,Disclosure Notification
+IDS_NEWS_STATUS,(source),Trạng thái tin thông báo — values from lookup_values với lookup_group='news_status',source_table,IDS.lookup_values,Disclosure Notification
+IDS_NEWS_TYPE,(source),Loại tin gốc — values from lookup_values với lookup_group='news_type',source_table,IDS.lookup_values,Disclosure Notification | Disclosure Form Definition
+IDS_FORM_TYPE,(source),"Loại tin hay hồ sơ (hồ sơ, cbtt) — values from lookup_values với lookup_group='form_type'",source_table,IDS.lookup_values,Disclosure Form Definition
+IDS_SUB_NEWS_TYPE,(source),Loại tin con — values from lookup_values với lookup_group='sub_news_type',source_table,IDS.lookup_values,Disclosure Form Definition
+IDS_INDUSTRY_CATEGORY,(source),Ngành nghề 2 cấp của công ty đại chúng — values from categories (self-referencing parent_id),source_table,IDS.categories,Public Company
+IDS_COMPANY_STATUS,(source),Trạng thái niêm yết IDS — values from lookup_values với lookup_group='status_ids',source_table,IDS.lookup_values,Public Company
+IDS_EQUITY_LISTING_EXCH,(source),Sàn niêm yết cổ phiếu (HNX/HOSE/UPCoM) — values from lookup_values với lookup_group='equity_listing_exch',source_table,IDS.lookup_values,Public Company
+IDS_SECURITIES_TYPE,(source),Loại chứng khoán phát hành — values from lookup_values với lookup_group='securities_type',source_table,IDS.lookup_values,Public Company
+IDS_PUBLIC_COMPANY_FORM,(source),Hình thức trở thành công ty đại chúng (IPO / nộp hồ sơ trực tiếp) — values from lookup_values với lookup_group='public_company_form',source_table,IDS.lookup_values,Public Company
+IDS_FINANCIAL_STMT_TYPE,(source),Loại báo cáo tài chính (IFRS/VAS...) — values from lookup_values với lookup_group='financial_statement_type',source_table,IDS.lookup_values,Public Company
+IDS_ENTITY_TYPE,(source),"Loại hình cổ đông (cá nhân, tổ chức) — values from lookup_values với lookup_group='entity type'",source_table,IDS.lookup_values,Stock Holder
+IDS_GENDER,(source),Giới tính — values from lookup_values với lookup_group='gender',source_table,IDS.lookup_values,Stock Holder
+IDS_EDUCATION_LEVEL,(source),Trình độ học vấn — values from lookup_values với lookup_group='education level',source_table,IDS.lookup_values,Stock Holder
+IDS_AF_POSITION_TITLE,(source),Chức vụ kiểm toán — values from lookup_values với lookup_group='af_position_title',source_table,IDS.lookup_values,Audit Firm Legal Representative | Auditor Approval
+IDS_NOTIFICATION_SEND_CHANNEL,(source),Hình thức gửi thông báo (email/sms/push) — values from lookup_values với lookup_group='noti_send_channel',source_table,IDS.lookup_values,Disclosure Notification Config
+IDS_NOTIFICATION_TARGET_SYSTEM,(source),Hệ thống nhận thông báo — values from lookup_values với lookup_group='noti_target_system',source_table,IDS.lookup_values,Disclosure Notification Config
+IDS_REPRESENTATIVE_ROLE,0,Người đại diện pháp luật,etl_derived,IDS.legal_representative.representative_role,Public Company Legal Representative
+IDS_REPRESENTATIVE_ROLE,1,Người CBTT,etl_derived,IDS.legal_representative.representative_role,Public Company Legal Representative
+IDS_COMPANY_RELATIONSHIP_TYPE,(source),"Loại quan hệ công ty (mẹ, con, liên doanh liên kết) — values from lookup_values với lookup_group='company_relationship_type'",source_table,IDS.lookup_values,Public Company Related Entity
+IDS_IDENTITY_TYPE,(source),Loại giấy tờ định danh — values from lookup_values với lookup_group='identity type',source_table,IDS.lookup_values,Involved Party Alternative Identification (ETL map sang IP_ALT_ID_TYPE)
+IDS_HOLDER_RELATIONSHIP_TYPE,(source),Loại quan hệ cổ đông — values from lookup_values với lookup_group='relationship type',source_table,IDS.lookup_values,Stock Holder Relationship
+IDS_STOCK_RESTRICTION_TYPE,(source),Loại hạn chế chuyển nhượng cổ phiếu — values from lookup_values với lookup_group='restriction type',source_table,IDS.lookup_values,Stock Control
+IDS_WARNING_TARGET_TYPE,(source),Đối tượng nhắc nhở (công ty KT / KTV) — values from lookup_values với lookup_group='warning_target_type',source_table,IDS.lookup_values,Audit Firm Warning
+IDS_WARNING_SOURCE_TYPE,(source),Cơ quan nhắc nhở (BTC / UBCKNN) — values from lookup_values với lookup_group='warning_source_type',source_table,IDS.lookup_values,Audit Firm Warning
+IDS_SANCTION_TARGET_TYPE,(source),Đối tượng xử phạt — values from lookup_values với lookup_group='sanction_target_type',source_table,IDS.lookup_values,Audit Firm Sanction
+IDS_SANCTION_AUTHORITY,(source),Cơ quan xử phạt (BTC / UBCKNN) — values from lookup_values với lookup_group='sanction_authority',source_table,IDS.lookup_values,Audit Firm Sanction
+IDS_ISSUANCE_SECURITY_TYPE,(source),Loại chứng khoán phát hành — values from lookup_values với lookup_group='security_type',source_table,IDS.lookup_values,Public Company Securities Offering
+IDS_INSPECTION_TYPE,(source),Loại thanh tra/kiểm tra — values from lookup_values với lookup_group='inspection_type',source_table,IDS.lookup_values,Public Company Inspection
+IDS_INSPECTION_MODE,(source),Thanh tra định kỳ/bất thường — values from lookup_values với lookup_group='inspection_mode',source_table,IDS.lookup_values,Public Company Inspection
+IDS_PENALIZED_SUBJECT_TYPE,(source),Đối tượng xử phạt (công ty đại chúng / nhà đầu tư liên quan) — values from lookup_values với lookup_group='penalized_subjet_type',source_table,IDS.lookup_values,Public Company Penalty

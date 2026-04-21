@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Audit Firm Legal Representative.,Surrogate Key,false,false,draft,IDS.af_legal_representative.id,FK target: Audit Firm Legal Representative.Audit Firm Legal Representative Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã người đại diện pháp luật.,Text,false,false,draft,IDS.af_legal_representative.id,FK target: Audit Firm Legal Representative.Audit Firm Legal Representative Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.af_legal_representative,
+Identification Type Code,Loại giấy tờ — CMND/Hộ chiếu (nguồn không phân biệt rõ).,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. Nguồn ghi gộp identity_no không tách CMND/HC — dùng NATIONAL_ID làm default.,IP_ALT_ID_TYPE=NATIONAL_ID,NATIONAL_ID
+Identification Number,Số CMND/Hộ chiếu.,Text,true,false,draft,IDS.af_legal_representative.identity_no,,IP_ALT_ID_TYPE=NATIONAL_ID,
