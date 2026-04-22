@@ -11,7 +11,7 @@ Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
 1,se,LEFT JOIN,se_bu,se.id = se_bu.secid,,,,,,
 Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
 #,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
-1,fund_management_company_id,"md5(concat('FMS_SECURITIES', '.', se.id))",string,,,,Khóa đại diện cho công ty quản lý quỹ trong nước.,,,
+1,fund_management_company_id,"hash_id('FMS_SECURITIES', se.id)",string,,,,Khóa đại diện cho công ty quản lý quỹ trong nước.,,,
 2,fund_management_company_code,se.id,string,,,,Mã định danh công ty QLQ. Map từ PK bảng nguồn.,,,
 3,source_system_code,'FMS_SECURITIES',string,,,,Mã nguồn dữ liệu.,,,
 4,fund_management_company_name,se.name,string,,,,Tên đầy đủ công ty QLQ trong nước.,,,

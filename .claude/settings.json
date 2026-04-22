@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf \"e:/FSS/ubck_atomic_design/Mapping/silver/FMS\" \"e:/FSS/ubck_atomic_design/Mapping/silver/FIMS\" \"e:/FSS/ubck_atomic_design/Mapping/silver/ThanhTra\")",
+      "Bash(PYTHONIOENCODING=utf-8 python Mapping/scripts/gen_mapping_silver.py --entity \"Fund Management Company\")",
+      "Bash(python -c ' *)",
+      "Bash(sed 's/_Tables.csv//')",
+      "Bash(PYTHONIOENCODING=utf-8 python Mapping/scripts/gen_reg_silver.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python Mapping/scripts/gen_mapping_silver.py --entity \"Regulatory Authority Organization Unit\")",
+      "Bash(PYTHONIOENCODING=utf-8 python Mapping/scripts/gen_mapping_silver.py --entity \"Securities Company Organization Unit\")",
+      "Bash(PYTHONIOENCODING=utf-8 python Mapping/scripts/gen_mapping_silver.py --entity \"Involved Party Electronic Address\" --source-system FIMS)",
+      "Bash(PYTHONIOENCODING=utf-8 python Code/scripts/gen_code_silver.py \"Mapping/silver/FIMS/fund_management_company_FIMS_FUNDCOMPANY.csv\")",
+      "Bash(PYTHONIOENCODING=utf-8 python Mapping/scripts/gen_mapping_silver.py --entity \"Involved Party Electronic Address\")",
+      "Bash(PYTHONIOENCODING=utf-8 python Code/scripts/gen_code_silver.py --entity \"Involved Party Electronic Address\")",
+      "Bash(PYTHONIOENCODING=utf-8 python Code/scripts/gen_code_silver.py --entity \"Fund Management Company\")",
+      "Bash(PYTHONIOENCODING=utf-8 python Code/scripts/gen_code_silver.py --all)"
+    ],
+    "additionalDirectories": [
+      "e:\\FSS\\ubck_atomic_design\\Mapping\\registries"
+    ]
+  }
+}

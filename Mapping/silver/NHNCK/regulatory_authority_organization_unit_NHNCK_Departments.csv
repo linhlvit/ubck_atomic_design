@@ -1,0 +1,23 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Regulatory Authority Organization Unit,SCD4A,,,,Đơn vị/phòng ban thuộc UBCKNN. Cấu trúc phân cấp gộp Units và Departments.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,DEPARTMENTS,de,"departmentcode, departmentname, description, status, unitid, sortorder","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,organization_unit_id,"hash_id('NHNCK_Departments', de.departmentcode)",string,,,,Id tự sinh (surrogate key),,,
+2,organization_unit_code,de.departmentcode,string,,,,Mã phòng ban. BK,,,
+3,source_system_code,'NHNCK_Departments',string,,,,Mã nguồn dữ liệu,,,
+4,organization_unit_type_code,,string,,,,Phân loại — Phòng ban (Department),,,
+5,organization_unit_name,de.departmentname,string,,,,Tên phòng ban,,,
+6,organization_unit_description,de.description,string,,,,Mô tả,,,
+7,organization_unit_status_code,de.status,string,,,,Trạng thái,,,
+8,parent_organization_unit_id,"hash_id('NHNCK_Units', de.unitid)",string,,,,FK đến đơn vị cha (Units),,,
+9,parent_organization_unit_code,de.unitid,string,,,,Mã đơn vị cha,,,
+10,sort_order,de.sortorder,string,,,,Thứ tự sắp xếp,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

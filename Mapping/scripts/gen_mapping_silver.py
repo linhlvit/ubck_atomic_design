@@ -1,14 +1,14 @@
 """
-Step 3 — gen_mapping
+Step 3 — gen_mapping_silver
 Routes by mapping_type:
   regular       : 1 SSC = 1 sheet → 1 file per entity per source system
   shared_entity : 1 source_system = 1 sheet (unpivot_cte pattern)
   cv            : placeholder
 
 Usage (from repo root):
-    python Mapping/scripts/gen_mapping.py
-    python Mapping/scripts/gen_mapping.py --entity "Fund Management Company"
-    python Mapping/scripts/gen_mapping.py --source-system FMS
+    python Mapping/scripts/gen_mapping_silver.py
+    python Mapping/scripts/gen_mapping_silver.py --entity "Fund Management Company"
+    python Mapping/scripts/gen_mapping_silver.py --source-system FMS
 
 Reads from:
     Mapping/registries/gm_silver_entities.csv
@@ -17,7 +17,7 @@ Reads from:
     system/templates/mapping_template.csv
 
 Writes to:
-    Mapping/silver/<source_system>/mapping_<entity_snake>.csv
+    Mapping/silver/<source_system>/<entity_snake>.csv
 """
 import csv, pandas as pd, re, os, sys, argparse, wordninja
 
@@ -210,12 +210,12 @@ def get_transformation(row, source_tables, pk_code_col, own_ssc, entity_ssc_map)
         ssc_val = extract_quoted(ctx)
         return (f"'{ssc_val}'", '') if ssc_val else ('', '')
     if domain == 'Surrogate Key' and row['is_primary_key']:
-        return f"md5(concat('{own_ssc}', '.', {alias}.{pk_code_col.get(attr,'??')}))", ''
+        return f"hash_id('{own_ssc}', {alias}.{pk_code_col.get(attr,'??')})", ''
     if domain == 'Surrogate Key':
         m = re.search(r'FK target:\s*(.+?)\.\s*\w', comment)
         target_entity = m.group(1).strip() if m else ''
         target_ssc    = entity_ssc_map.get(target_entity, '')
-        if target_ssc and col: return f"md5(concat('{target_ssc}', '.', {alias}.{col}))", ''
+        if target_ssc and col: return f"hash_id('{target_ssc}', {alias}.{col})", ''
         return '', ''
     if domain == 'Classification Value' and 'SOURCE_SYSTEM' in comment:
         return f"'{extract_quoted(ctx)}'", ''
@@ -385,7 +385,7 @@ def write_shared_entity_sheet(ws, tmpl_ws, entity_name, meta, sys_grp, sys_name,
     copy_tmpl_row(tmpl_ws, T['map_banner'], ws, r)
     r += 1; copy_tmpl_row(tmpl_ws, T['map_header'], ws, r); r += 1
     for seq, tgt, transf, dtype in [
-        (1, ip_id_attr,          f"md5(concat({first_leg}.source_system_code, '.', {first_leg}.ip_code))", 'string'),
+        (1, ip_id_attr,          f"hash_id({first_leg}.source_system_code, {first_leg}.ip_code)", 'string'),
         (2, 'involved_party_code', f"{first_leg}.ip_code",            'string'),
         (3, ssc_attr,              f"{first_leg}.source_system_code", 'string'),
         (4, type_attr,             f"{first_leg}.type_code",          'string'),
@@ -447,7 +447,7 @@ def gen_mapping(entity_filter=None, source_system_filter=None):
                 sys_grp = grp_all[grp_all['source_system'] == sys_name].reset_index(drop=True)
                 out_dir = os.path.join(MAPPING_DIR, sys_name)
                 os.makedirs(out_dir, exist_ok=True)
-                out_path = os.path.join(out_dir, f'mapping_{entity_snake}.csv')
+                out_path = os.path.join(out_dir, f'{entity_snake}.csv')
                 ws = CSVSheet()
                 write_shared_entity_sheet(ws, tmpl_ws, entity_name, meta, sys_grp, sys_name,
                                           df_bz_atr, entity_ssc_map)
@@ -463,7 +463,7 @@ def gen_mapping(entity_filter=None, source_system_filter=None):
                 out_dir = os.path.join(MAPPING_DIR, sys_name)
                 os.makedirs(out_dir, exist_ok=True)
                 ssc_suffix = f'_{ssc}' if len(ssc_list) > 1 else ''
-                out_path = os.path.join(out_dir, f'mapping_{entity_snake}{ssc_suffix}.csv')
+                out_path = os.path.join(out_dir, f'{entity_snake}{ssc_suffix}.csv')
                 ws = CSVSheet()
                 if mapping_type == 'regular':
                     write_regular_sheet(ws, tmpl_ws, entity_name, meta, src_grp, ssc,

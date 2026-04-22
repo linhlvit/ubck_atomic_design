@@ -9,7 +9,7 @@ Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
 ,,,,,,,,,,
 Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
 #,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
-1,fund_management_company_id,"md5(concat('ThanhTra_DM_CONG_TY_QLQ', '.', dm_co_ty_ql.id))",string,,,,Khóa đại diện cho công ty quản lý quỹ.,,,
+1,fund_management_company_id,"hash_id('ThanhTra_DM_CONG_TY_QLQ', dm_co_ty_ql.id)",string,,,,Khóa đại diện cho công ty quản lý quỹ.,,,
 2,fund_management_company_code,dm_co_ty_ql.id,string,,,,Mã công ty quản lý quỹ. Map từ PK ThanhTra.DM_CONG_TY_QLQ.ID.,,,
 3,source_system_code,'ThanhTra_DM_CONG_TY_QLQ',string,,,,Mã hệ thống nguồn.,,,
 4,fund_management_company_name,dm_co_ty_ql.ten_tieng_viet,string,,,,Tên tiếng Việt công ty quản lý quỹ.,,,

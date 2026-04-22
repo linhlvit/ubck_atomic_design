@@ -37,9 +37,9 @@ ubck_atomic_design/
 │       └── mapping_template.csv
 └── Mapping/
     ├── scripts/                     ← scripts Python
-    │   ├── gen_bronze.py
-    │   ├── gen_silver.py
-    │   └── gen_mapping.py
+    │   ├── gen_reg_bronze.py
+    │   ├── gen_reg_silver.py
+    │   └── gen_mapping_silver.py
     ├── registries/                    ← gm_* files (living files)
     │   ├── gm_bronze_entities.csv
     │   ├── gm_bronze_attributes.csv
@@ -47,7 +47,7 @@ ubck_atomic_design/
     │   └── gm_silver_attributes.csv
     └── silver/                      ← mapping output, 1 folder per source system
         ├── FMS/
-        │   └── mapping_<entity>.csv
+        │   └── <entity>.csv
         ├── FIMS/
         ├── NHNCK/
         ├── SCMS/
@@ -56,11 +56,11 @@ ubck_atomic_design/
 
 ---
 
-## Bước 1 — gen_bronze.py
+## Bước 1 — gen_reg_bronze.py
 
 ```bash
-python Mapping/scripts/gen_bronze.py FMS
-python Mapping/scripts/gen_bronze.py NHNCK
+python Mapping/scripts/gen_reg_bronze.py FMS
+python Mapping/scripts/gen_reg_bronze.py NHNCK
 ```
 
 Chạy 1 lần per source system. **Append mode** — tự động replace dòng cũ nếu chạy lại.
@@ -79,10 +79,10 @@ Chạy 1 lần per source system. **Append mode** — tự động replace dòng
 
 ---
 
-## Bước 2 — gen_silver.py
+## Bước 2 — gen_reg_silver.py
 
 ```bash
-python Mapping/scripts/gen_silver.py
+python Mapping/scripts/gen_reg_silver.py
 ```
 
 **Input:**
@@ -143,12 +143,12 @@ Auto-detect và xử lý 2 dạng tên cột trong `silver_attributes.csv`:
 
 ---
 
-## Bước 3 — gen_mapping.py
+## Bước 3 — gen_mapping_silver.py
 
 ```bash
-python Mapping/scripts/gen_mapping.py
-python Mapping/scripts/gen_mapping.py --entity "Fund Management Company"
-python Mapping/scripts/gen_mapping.py --source-system FMS
+python Mapping/scripts/gen_mapping_silver.py
+python Mapping/scripts/gen_mapping_silver.py --entity "Fund Management Company"
+python Mapping/scripts/gen_mapping_silver.py --source-system FMS
 ```
 
 **Input:**
@@ -159,11 +159,11 @@ python Mapping/scripts/gen_mapping.py --source-system FMS
 
 **Output:**
 ```
-Mapping/silver/<source_system>/mapping_<entity_snake>.csv
+Mapping/silver/<source_system>/<entity_snake>.csv
 ```
-Ví dụ: `Mapping/silver/FMS/mapping_fund_management_company.csv`
+Ví dụ: `Mapping/silver/FMS/fund_management_company.csv`
 
-Nếu entity có nhiều SSC (multi-source): `mapping_fund_management_company_FMS_SECURITIES.csv`
+Nếu entity có nhiều SSC (multi-source): `fund_management_company_FMS_SECURITIES.csv`
 
 Template được đọc bằng `csv.reader` và output ghi bằng `csv.writer` với encoding `utf-8-sig`. Không dùng openpyxl — giữ file dạng text để Git diff/merge được.
 
@@ -184,8 +184,8 @@ Template được đọc bằng `csv.reader` và output ghi bằng `csv.writer` 
 | Pattern | Transformation |
 |---|---|
 | `silver_attribute == 'Source System Code'` | `'<value trong classification_context>'` — LUÔN lấy giá trị trong `''` từ `classification_context`, không phụ thuộc vào comment |
-| Surrogate Key PK | `md5(concat('<own_SSC>', '.', alias.code_col))` |
-| Surrogate Key FK | `md5(concat('<target_SSC>', '.', alias.fk_col))` |
+| Surrogate Key PK | `hash_id('<own_SSC>', alias.code_col)` |
+| Surrogate Key FK | `hash_id('<target_SSC>', alias.fk_col)` |
 | Classification Value + SOURCE_SYSTEM trong comment | `'<value trong classification_context>'` |
 | Array<Text> | `alias.snake_attr_name` (direct map từ derived CTE) |
 | Các domain khác có source_column | `alias.source_col` |
@@ -228,7 +228,7 @@ ip_code=<id_col> | <TYPE>:<val_col> | <TYPE>:<val_col> | <passthrough_col>
 
 | target_column | transformation |
 |---|---|
-| `involved_party_id` | `md5(concat(leg_<alias>.source_system_code, '.', leg_<alias>.ip_code))` |
+| `involved_party_id` | `hash_id(leg_<alias>.source_system_code, leg_<alias>.ip_code)` |
 | `involved_party_code` | `leg_<alias>.ip_code` |
 | `source_system_code` | `leg_<alias>.source_system_code` |
 | `<type_code_attr>` | `leg_<alias>.type_code` |

@@ -1,10 +1,10 @@
 """
-Step 1 — gen_bronze
+Step 1 — gen_reg_bronze
 Append-mode: run once per source system, all sources accumulate in the same files.
 
 Usage (from repo root):
-    python Mapping/scripts/gen_bronze.py FMS
-    python Mapping/scripts/gen_bronze.py NHNCK
+    python Mapping/scripts/gen_reg_bronze.py FMS
+    python Mapping/scripts/gen_reg_bronze.py NHNCK
 
 Reads from:
     Source/<SS>_Tables.csv

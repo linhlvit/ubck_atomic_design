@@ -1,9 +1,9 @@
 """
-Step 2 — gen_silver
+Step 2 — gen_reg_silver
 Enrich silver_entities and silver_attributes; output to Mapping/registries/.
 
 Usage (from repo root):
-    python Mapping/scripts/gen_silver.py
+    python Mapping/scripts/gen_reg_silver.py
 
 Reads from:
     Silver/hld/silver_entities.csv
