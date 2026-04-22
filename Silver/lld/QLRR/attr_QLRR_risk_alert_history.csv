@@ -1,11 +1,11 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Risk Alert History Id,Khóa đại diện cho bản ghi lịch sử sự kiện cảnh báo.,Surrogate Key,false,true,draft,,,,
 Risk Alert History Code,Mã định danh bản ghi lịch sử. BK. Map từ PK bảng nguồn.,Text,false,false,draft,QLRR.risk_alert_history.id,BK của entity.,,
 Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_alert_history,
 Risk Alert Id,FK đến cảnh báo liên quan.,Surrogate Key,false,false,draft,QLRR.risk_alert_history.alert_id,FK target: Risk Alert.Risk Alert Id.,,
-Risk Alert Code,Mã cảnh báo liên quan.,Text,false,false,draft,QLRR.risk_alert_history.alert_id,FK target: Risk Alert.Risk Alert Code. Pair with Risk Alert Id.,,
-Risk Alert Resolution Id,"FK đến bản ghi xử lý liên quan. Nullable — event_type=1 (phát sinh cảnh báo) chưa có resolution.",Surrogate Key,true,false,draft,QLRR.risk_alert_history.resolution_id,"FK target: Risk Alert Resolution.Risk Alert Resolution Id. Nullable — HLD T4-01: event_type=1 chưa có resolution_id.",,
-Risk Alert Resolution Code,Mã bản ghi xử lý liên quan.,Text,true,false,draft,QLRR.risk_alert_history.resolution_id,"FK target: Risk Alert Resolution.Risk Alert Resolution Code. Pair with Risk Alert Resolution Id. Nullable.",,
+Risk Alert Code,Mã cảnh báo liên quan.,Text,false,false,draft,QLRR.risk_alert_history.alert_id,Lookup pair: Risk Alert.Risk Alert Code. Pair with Risk Alert Id.,,
+Risk Alert Resolution Id,FK đến bản ghi xử lý liên quan. Nullable — event_type=1 (phát sinh cảnh báo) chưa có resolution.,Surrogate Key,true,false,draft,QLRR.risk_alert_history.resolution_id,FK target: Risk Alert Resolution.Risk Alert Resolution Id. Nullable — HLD T4-01: event_type=1 chưa có resolution_id.,,
+Risk Alert Resolution Code,Mã bản ghi xử lý liên quan.,Text,true,false,draft,QLRR.risk_alert_history.resolution_id,Lookup pair: Risk Alert Resolution.Risk Alert Resolution Code. Pair with Risk Alert Resolution Id. Nullable.,,
 Event Type Code,"Loại sự kiện: 1=Xảy ra cảnh báo, 2=Xử lý không giải trình, 3=Xử lý có giải trình.",Classification Value,false,false,draft,QLRR.risk_alert_history.event_type,Scheme: RISK_ALERT_EVENT_TYPE.,RISK_ALERT_EVENT_TYPE,
 Event Time,Thời gian xảy ra sự kiện trong vòng đời cảnh báo.,Timestamp,false,false,draft,QLRR.risk_alert_history.event_time,,,
 Event Title,Tiêu đề sự kiện.,Text,true,false,draft,QLRR.risk_alert_history.event_title,,,

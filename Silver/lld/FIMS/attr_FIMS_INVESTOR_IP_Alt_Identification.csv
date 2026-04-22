@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Foreign Investor.,Surrogate Key,false,false,draft,FIMS.INVESTOR.id,FK target: Foreign Investor.Foreign Investor Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã nhà đầu tư nước ngoài.,Text,false,false,draft,FIMS.INVESTOR.id,FK target: Foreign Investor.Foreign Investor Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã nhà đầu tư nước ngoài.,Text,false,false,draft,FIMS.INVESTOR.id,Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FIMS.INVESTOR,
 Identification Type Code,Loại giấy tờ: CCCD/Hộ chiếu.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived — cần profile thêm để phân biệt CITIZEN_ID vs PASSPORT.,IP_ALT_ID_TYPE=CITIZEN_ID,CITIZEN_ID
 Identification Number,Số CCCD/Hộ chiếu.,Text,true,false,draft,FIMS.INVESTOR.IdNo,,,

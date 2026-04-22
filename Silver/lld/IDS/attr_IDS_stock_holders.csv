@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Stock Holder Id,Khóa đại diện cho cổ đông giao dịch.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Stock Holder Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.stock_holders.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.stock_holders,
 Public Company Id,FK đến công ty đại chúng.,Surrogate Key,false,false,draft,IDS.stock_holders.company_profile_id,FK target: Public Company.Public Company Id.,,
-Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.stock_holders.company_profile_id,FK target: Public Company.Public Company Code. Pair with Public Company Id.,,
+Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.stock_holders.company_profile_id,Lookup pair: Public Company.Public Company Code. Pair with Public Company Id.,,
 Shareholder Name,Tên cổ đông (cá nhân hoặc tổ chức).,Text,true,false,draft,IDS.stock_holders.shareholder_name,,,
 Entity Type Code,"Loại hình cổ đông (cá nhân, tổ chức).",Classification Value,true,false,draft,IDS.stock_holders.entity_type_cd,Scheme: IDS_ENTITY_TYPE.,IDS_ENTITY_TYPE,
 Identity Type Codes,"Danh sách loại giấy tờ (chuỗi cách nhau dấu "","" — ví dụ ""1,2"", FK đến identity.identity_type_cd).",Text,true,false,draft,IDS.stock_holders.identity_type_cd,Denormalized text — nguồn lưu chuỗi delimited; chi tiết giấy tờ tách sang IP Alt Identification (Tier 3).,,

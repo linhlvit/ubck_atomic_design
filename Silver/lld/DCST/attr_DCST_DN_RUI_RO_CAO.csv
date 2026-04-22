@@ -3,7 +3,7 @@ High Risk Taxpayer Assessment Snapshot Id,Id tự sinh (surrogate key),Surrogate
 High Risk Taxpayer Assessment Snapshot Code,ID bản ghi đánh giá rủi ro. BK,Text,false,false,draft,DCST.DN_RUI_RO_CAO.ID,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.DN_RUI_RO_CAO,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,,
 Registered Taxpayer Id,FK đến Registered Taxpayer — resolve qua MST,Surrogate Key,true,false,draft,DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP,FK target: Registered Taxpayer.Registered Taxpayer Id. ETL resolve: JOIN DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP = THONG_TIN_DK_THUE.MA_SO_THUE. Pattern Id + Code.,,
-Registered Taxpayer Code,Mã NNT — resolve qua MST,Text,true,false,draft,DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
+Registered Taxpayer Code,Mã NNT — resolve qua MST,Text,true,false,draft,DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP,Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
 Organization Tax Identification Number,Mã số doanh nghiệp,Text,true,false,draft,DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP,Giữ nguyên giá trị MST gốc từ nguồn. Dùng để liên kết ngầm với Registered Taxpayer.,,
 Organization Full Name,Tên doanh nghiệp,Text,true,false,draft,DCST.DN_RUI_RO_CAO.TEN_DOANH_NGHIEP,"Denormalized từ nguồn. Prefix ""Organization"".",,
 Organization Head Office Address,Địa chỉ trụ sở chính,Text,true,false,draft,DCST.DN_RUI_RO_CAO.DIA_CHI_TSC,"Denormalized từ nguồn — không tách shared entity (entity này không phải IP chính). Nhất quán prefix ""Organization"".",,

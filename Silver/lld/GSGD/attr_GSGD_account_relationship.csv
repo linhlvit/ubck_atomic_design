@@ -1,13 +1,13 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Investor Account Relationship Id,Khóa đại diện cho mối quan hệ giữa các tài khoản nhà đầu tư.,Surrogate Key,false,true,draft,,,,
 Investor Account Relationship Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.account_relationship.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.account_relationship,
 First Investor Trading Account Id,FK đến tài khoản giao dịch thứ nhất.,Surrogate Key,false,false,draft,GSGD.account_relationship.account_id_1,FK target: Investor Trading Account.Investor Trading Account Id.,,
-First Investor Trading Account Code,Mã tài khoản giao dịch thứ nhất. Denormalized.,Text,false,false,draft,GSGD.account_relationship.account_id_1,FK target: Investor Trading Account.Investor Trading Account Code. Pair with First Investor Trading Account Id.,,
+First Investor Trading Account Code,Mã tài khoản giao dịch thứ nhất. Denormalized.,Text,false,false,draft,GSGD.account_relationship.account_id_1,Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with First Investor Trading Account Id.,,
 Second Investor Trading Account Id,FK đến tài khoản giao dịch thứ hai.,Surrogate Key,false,false,draft,GSGD.account_relationship.account_id_2,FK target: Investor Trading Account.Investor Trading Account Id.,,
-Second Investor Trading Account Code,Mã tài khoản giao dịch thứ hai. Denormalized.,Text,false,false,draft,GSGD.account_relationship.account_id_2,FK target: Investor Trading Account.Investor Trading Account Code. Pair with Second Investor Trading Account Id.,,
+Second Investor Trading Account Code,Mã tài khoản giao dịch thứ hai. Denormalized.,Text,false,false,draft,GSGD.account_relationship.account_id_2,Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Second Investor Trading Account Id.,,
 Account Investor Group Id,FK đến nhóm tài khoản.,Surrogate Key,true,false,draft,GSGD.account_relationship.account_group_id,FK target: Account Investor Group.Account Investor Group Id.,,
-Account Investor Group Code,Mã nhóm tài khoản. Denormalized.,Text,true,false,draft,GSGD.account_relationship.account_group_id,FK target: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id.,,
+Account Investor Group Code,Mã nhóm tài khoản. Denormalized.,Text,true,false,draft,GSGD.account_relationship.account_group_id,Lookup pair: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id.,,
 Relation Type Code,Loại quan hệ (Danh tính / IP / MAC / Tiền).,Classification Value,true,false,draft,GSGD.account_relationship.category_item_id,Scheme: GSGD_ACCOUNT_RELATION_TYPE. FK suy luận → category_item.,GSGD_ACCOUNT_RELATION_TYPE,
 Relationship Value,"Giá trị quan hệ (IP address, MAC address, etc.).",Text,true,false,draft,GSGD.account_relationship.relationship_value,,,
 Strength,Độ mạnh quan hệ (1-100). Điểm tính — không phải %.,Small Counter,true,false,draft,GSGD.account_relationship.strength,,,

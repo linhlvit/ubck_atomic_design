@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Risk Alert Resolution Id,Khóa đại diện cho bản ghi xử lý cảnh báo.,Surrogate Key,false,true,draft,,,,
 Risk Alert Resolution Code,Mã định danh bản ghi xử lý. BK. Map từ PK bảng nguồn.,Text,false,false,draft,QLRR.risk_alert_resolution.id,BK của entity.,,
 Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_alert_resolution,
 Risk Alert Id,FK đến cảnh báo liên quan.,Surrogate Key,false,false,draft,QLRR.risk_alert_resolution.alert_id,FK target: Risk Alert.Risk Alert Id.,,
-Risk Alert Code,Mã cảnh báo liên quan.,Text,false,false,draft,QLRR.risk_alert_resolution.alert_id,FK target: Risk Alert.Risk Alert Code. Pair with Risk Alert Id.,,
+Risk Alert Code,Mã cảnh báo liên quan.,Text,false,false,draft,QLRR.risk_alert_resolution.alert_id,Lookup pair: Risk Alert.Risk Alert Code. Pair with Risk Alert Id.,,
 Resolution Type Code,"Loại xử lý cảnh báo: 1=Quick (không giải trình), 2=Detailed (có giải trình).",Classification Value,false,false,draft,QLRR.risk_alert_resolution.resolution_type,Scheme: RISK_ALERT_RESOLUTION_TYPE.,RISK_ALERT_RESOLUTION_TYPE,
 Explanation Content,Nội dung giải trình chi tiết (chỉ khi resolution_type=2).,Text,true,false,draft,QLRR.risk_alert_resolution.explanation_content,,,
 Resolved At,Thời điểm xử lý cảnh báo.,Timestamp,false,false,draft,QLRR.risk_alert_resolution.resolved_at,,,

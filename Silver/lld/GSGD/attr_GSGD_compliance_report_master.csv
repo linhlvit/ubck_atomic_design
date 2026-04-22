@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Market Surveillance Compliance Report Instance Id,Khóa đại diện cho instance báo cáo tuân thủ theo kỳ.,Surrogate Key,false,true,draft,,,,
 Market Surveillance Compliance Report Instance Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.compliance_report_master.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.compliance_report_master,
 Market Surveillance Compliance Report Template Id,FK đến mẫu báo cáo tuân thủ.,Surrogate Key,false,false,draft,GSGD.compliance_report_master.template_id,FK target: Market Surveillance Compliance Report Template.Market Surveillance Compliance Report Template Id.,,
-Market Surveillance Compliance Report Template Code,Mã mẫu báo cáo tuân thủ. Denormalized.,Text,false,false,draft,GSGD.compliance_report_master.template_id,FK target: Market Surveillance Compliance Report Template.Market Surveillance Compliance Report Template Code. Pair with Market Surveillance Compliance Report Template Id.,,
+Market Surveillance Compliance Report Template Code,Mã mẫu báo cáo tuân thủ. Denormalized.,Text,false,false,draft,GSGD.compliance_report_master.template_id,Lookup pair: Market Surveillance Compliance Report Template.Market Surveillance Compliance Report Template Code. Pair with Market Surveillance Compliance Report Template Id.,,
 Period Type Code,Loại kỳ báo cáo.,Classification Value,true,false,draft,GSGD.compliance_report_master.period_type,Scheme: GSGD_PERIOD_TYPE.,GSGD_PERIOD_TYPE,
 Period Value,Giá trị kỳ báo cáo (ví dụ: tháng 1 = 1).,Text,true,false,draft,GSGD.compliance_report_master.period_value,,,
 Period Year,Năm kỳ báo cáo.,Small Counter,true,false,draft,GSGD.compliance_report_master.period_year,,,

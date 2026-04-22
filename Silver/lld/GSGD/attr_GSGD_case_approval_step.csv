@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Market Surveillance Case Approval Step Log Id,Khóa đại diện cho bước phê duyệt vụ việc giám sát.,Surrogate Key,false,true,draft,,,,
 Market Surveillance Case Approval Step Log Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.case_approval_step.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.case_approval_step,
 Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.case_approval_step.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
-Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.case_approval_step.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.case_approval_step.case_file_id,Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
 Step Code,"Mã bước: 1=Chuyên viên khởi tạo, 2=Trưởng ban phê duyệt, 3=Phó Trưởng ban phân công, 4=Chuyên viên xử lý.",Classification Value,false,false,draft,GSGD.case_approval_step.step_code,Scheme: GSGD_APPROVAL_STEP_CODE.,GSGD_APPROVAL_STEP_CODE,
 Step Name,Tên bước (phục vụ hiển thị).,Text,true,false,draft,GSGD.case_approval_step.step_name,,,
 Assigned Role,"Chức vụ/nhóm duyệt (ví dụ: TRUONG_BAN, PHO_TRUONG_BAN, CHUYEN_VIEN).",Text,true,false,draft,GSGD.case_approval_step.assigned_role,,,

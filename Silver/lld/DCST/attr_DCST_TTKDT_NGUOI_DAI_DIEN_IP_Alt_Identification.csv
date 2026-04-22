@@ -1,13 +1,13 @@
 ﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Taxpayer Representative,Surrogate Key,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.ID,FK target: Taxpayer Representative.Taxpayer Representative Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã người đại diện,Text,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.ID,FK target: Taxpayer Representative.Taxpayer Representative Code. Pair with Involved Party Id.,,
-Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=DCST.TTKDT_NGUOI_DAI_DIEN
-Identification Type Code,Loại giấy tờ — CMND.,Classification Value,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO,ETL map: 1010 → NATIONAL_ID.,IP_ALT_ID_TYPE=NATIONAL_ID
+Involved Party Code,Mã người đại diện,Text,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.ID,Lookup pair: Taxpayer Representative.Taxpayer Representative Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=DCST.TTKDT_NGUOI_DAI_DIEN,
+Identification Type Code,Loại giấy tờ — CMND.,Classification Value,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO,ETL map: 1010 → NATIONAL_ID.,IP_ALT_ID_TYPE=NATIONAL_ID,
 Identification Number,Số CMND,Text,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO,,IP_ALT_ID_TYPE=NATIONAL_ID,
 Issue Date,Ngày cấp CMND,Date,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP,,IP_ALT_ID_TYPE=NATIONAL_ID,
-Identification Type Code,Loại giấy tờ — CCCD.,Classification Value,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO,ETL map: 2080 → CITIZEN_ID.,IP_ALT_ID_TYPE=CITIZEN_ID
+Identification Type Code,Loại giấy tờ — CCCD.,Classification Value,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO,ETL map: 2080 → CITIZEN_ID.,IP_ALT_ID_TYPE=CITIZEN_ID,
 Identification Number,Số CCCD,Text,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO,,IP_ALT_ID_TYPE=CITIZEN_ID,
 Issue Date,Ngày cấp CCCD,Date,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP,,IP_ALT_ID_TYPE=CITIZEN_ID,
-Identification Type Code,Loại giấy tờ — hộ chiếu.,Classification Value,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO,ETL map: 1020 → PASSPORT.,IP_ALT_ID_TYPE=PASSPORT
+Identification Type Code,Loại giấy tờ — hộ chiếu.,Classification Value,false,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO,ETL map: 1020 → PASSPORT.,IP_ALT_ID_TYPE=PASSPORT,
 Identification Number,Số hộ chiếu,Text,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO,,IP_ALT_ID_TYPE=PASSPORT,
 Issue Date,Ngày cấp hộ chiếu,Date,true,false,draft,DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP,,IP_ALT_ID_TYPE=PASSPORT,

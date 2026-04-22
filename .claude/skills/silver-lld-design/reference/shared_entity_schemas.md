@@ -47,7 +47,7 @@ Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào s
 | Quận/huyện (có lookup) | `District Id` | `District Code` |
 | Các ngữ nghĩa khác | `{Vai trò cụ thể} Id` | `{Vai trò cụ thể} Code` |
 
-Comment vẫn ghi `FK target: Geographic Area.Geographic Area Id` — chỉ tên attribute mới đổi.
+Comment vẫn ghi `FK target: Geographic Area.Geographic Area Id` cho trường Id; trường Code ghi `Lookup pair: Geographic Area.Geographic Area Code. Pair with {Id field}.` — chỉ tên attribute mới đổi (xem Bước 5 SKILL.md cho phân biệt FK target vs Lookup pair).
 
 ## IP Electronic Address
 

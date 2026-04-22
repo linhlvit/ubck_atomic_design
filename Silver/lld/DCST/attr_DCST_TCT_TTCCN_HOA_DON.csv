@@ -3,7 +3,7 @@ Tax Invoice Enforcement Order Id,Id tự sinh (surrogate key),Surrogate Key,fals
 Tax Invoice Enforcement Order Code,Mã định danh bản ghi trong DCST. BK,Text,false,false,draft,DCST.TCT_TTCCN_HOA_DON.ID,BK chính. PK nguồn map vào Code.,,
 Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_TTCCN_HOA_DON,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.,,
 Registered Taxpayer Id,Mã số thuế của người nộp thuế. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TCT_TTCCN_HOA_DON.MA_NNHAN,"FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MA_NNHAN (= MST) → Registered Taxpayer. Nullable vì link ngầm. BCV: ""Organization Tax Identification Number"" (Involved Party).",,
-Registered Taxpayer Code,Mã số thuế của người nộp thuế,Text,true,false,draft,DCST.TCT_TTCCN_HOA_DON.MA_NNHAN,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
+Registered Taxpayer Code,Mã số thuế của người nộp thuế,Text,true,false,draft,DCST.TCT_TTCCN_HOA_DON.MA_NNHAN,Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
 Taxpayer Name,Tên người nộp thuế,Text,true,false,draft,DCST.TCT_TTCCN_HOA_DON.TEN_NNHAN,"BCV: ""Organization Name"" (Involved Party). Snapshot tại thời điểm quyết định.",,
 Supervisory Tax Authority Code,Mã cơ quan quản lý trực tiếp,Text,true,false,draft,DCST.TCT_TTCCN_HOA_DON.MA_CQT_QL,BCV: không có term riêng. Nhất quán prefix Supervisory Tax Authority với THONG_TIN_DK_THUE LLD và TCT_TT_CUONG_CHE_NO LLD.,,
 Supervisory Tax Authority Name,Tên cơ quan quản lý trực tiếp,Text,true,false,draft,DCST.TCT_TTCCN_HOA_DON.TEN_CQT_QL,BCV: không có term riêng. Denormalized name. Nhất quán prefix.,,

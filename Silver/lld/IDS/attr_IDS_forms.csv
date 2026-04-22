@@ -1,4 +1,4 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Disclosure Form Definition Id,Khóa đại diện cho định nghĩa loại hồ sơ/tin CBTT.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Disclosure Form Definition Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.forms.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.forms,
@@ -11,12 +11,12 @@ Sub News Type Code,Loại tin con.,Classification Value,true,false,draft,IDS.for
 Officer Approval Flag,Chuyên viên tự động duyệt (1=đã duyệt / 0=chưa duyệt).,Boolean,true,false,draft,IDS.forms.officer_approval_flg,,,
 Post Checked Flag,Hậu kiểm tin (1=đã kiểm tra / 0=chưa kiểm tra).,Boolean,true,false,draft,IDS.forms.post_checked_flg,,,
 Activated Flag,Kích hoạt (1=đã kích hoạt / 0=chưa kích hoạt).,Boolean,true,false,draft,IDS.forms.activated_flg,,,
-CA Signed Flag,"Ký CA (chứng thư số): 0=bắt buộc / 1=không bắt buộc.",Boolean,true,false,draft,IDS.forms.ca_signed_flg,,,
+CA Signed Flag,Ký CA (chứng thư số): 0=bắt buộc / 1=không bắt buộc.,Boolean,true,false,draft,IDS.forms.ca_signed_flg,,,
 Leader Approval Flag,Form tự động duyệt cấp lãnh đạo (1=đã duyệt / 0=chưa duyệt).,Boolean,true,false,draft,IDS.forms.leader_approval_flg,,,
 Published Flag,Form được công bố (1=được công bố / 0=chưa công bố).,Boolean,true,false,draft,IDS.forms.published_flg,,,
 Title Formula,Công thức cho tiêu đề form tin.,Text,true,false,draft,IDS.forms.title_formula,,,
 Parent Disclosure Form Definition Id,FK đến form cha (self-join).,Surrogate Key,true,false,draft,IDS.forms.parent_id,FK target: Disclosure Form Definition.Disclosure Form Definition Id. Self-join.,,
-Parent Disclosure Form Definition Code,Mã form cha.,Text,true,false,draft,IDS.forms.parent_id,FK target: Disclosure Form Definition.Disclosure Form Definition Code. Pair with Parent Disclosure Form Definition Id. Self-join.,,
+Parent Disclosure Form Definition Code,Mã form cha.,Text,true,false,draft,IDS.forms.parent_id,Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code. Pair with Parent Disclosure Form Definition Id. Self-join.,,
 Report Type,"Loại báo cáo (tháng, quý, năm, bán niên...).",Text,true,false,draft,IDS.forms.report_type,Text denormalized — không có scheme tài liệu hóa.,,
 Control Unit Code,Đơn vị kiểm soát (Dept_cd của bảng departments).,Text,true,false,draft,IDS.forms.control_unit_cd,Denormalized text — departments out-of-scope theo HLD; FK Regulatory Authority Organization Unit không có lookup trong IDS scope.,,
 Operating Unit Codes,"Đơn vị sử dụng (nhiều đơn vị cách nhau bằng "";"" Dept_cd của bảng departments).",Text,true,false,draft,IDS.forms.operating_unit_cd,Denormalized text — multi-value chuỗi delimited; departments out-of-scope.,,

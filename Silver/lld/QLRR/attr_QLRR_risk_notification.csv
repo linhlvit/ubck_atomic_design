@@ -1,12 +1,12 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Risk Alert Notification Id,Khóa đại diện cho bản ghi thông báo cảnh báo.,Surrogate Key,false,true,draft,,,,
 Risk Alert Notification Code,Mã định danh thông báo. BK. Map từ PK bảng nguồn.,Text,false,false,draft,QLRR.risk_notification.id,BK của entity.,,
 Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_notification,
 Risk Alert Id,FK đến cảnh báo liên quan.,Surrogate Key,false,false,draft,QLRR.risk_notification.alert_id,FK target: Risk Alert.Risk Alert Id.,,
-Risk Alert Code,Mã cảnh báo liên quan.,Text,false,false,draft,QLRR.risk_notification.alert_id,FK target: Risk Alert.Risk Alert Code. Pair with Risk Alert Id.,,
+Risk Alert Code,Mã cảnh báo liên quan.,Text,false,false,draft,QLRR.risk_notification.alert_id,Lookup pair: Risk Alert.Risk Alert Code. Pair with Risk Alert Id.,,
 Notification Type Code,"Kênh thông báo: 1=Toast, 2=Bell, 3=Email.",Classification Value,false,false,draft,QLRR.risk_notification.notification_type,Scheme: RISK_NOTIFICATION_TYPE.,RISK_NOTIFICATION_TYPE,
 Recipient User Id,"User ID người nhận thông báo (cho type=Toast/Bell, denormalized).",Text,true,false,draft,QLRR.risk_notification.recipient_user_id,Denormalized — không có User entity trên Silver. Nullable khi type=Email.,,
-Recipient Email,"Địa chỉ email người nhận (cho type=Email).",Text,true,false,draft,QLRR.risk_notification.recipient_email,Nullable khi type=Toast/Bell.,,
+Recipient Email,Địa chỉ email người nhận (cho type=Email).,Text,true,false,draft,QLRR.risk_notification.recipient_email,Nullable khi type=Toast/Bell.,,
 Sent At,Thời điểm gửi thông báo.,Timestamp,true,false,draft,QLRR.risk_notification.sent_at,,,
 Send Status Code,"Trạng thái gửi: 1=SENT, 2=FAILED.",Classification Value,false,false,draft,QLRR.risk_notification.send_status,Scheme: RISK_NOTIFICATION_SEND_STATUS.,RISK_NOTIFICATION_SEND_STATUS,
 Send Error,Thông tin lỗi khi gửi thông báo thất bại (nếu có).,Text,true,false,draft,QLRR.risk_notification.send_error,,,

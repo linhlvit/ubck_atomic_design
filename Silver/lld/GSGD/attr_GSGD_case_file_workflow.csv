@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Market Surveillance Case Workflow Step Id,Khóa đại diện cho bước quy trình xử lý vụ việc.,Surrogate Key,false,true,draft,,,,
 Market Surveillance Case Workflow Step Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.case_file_workflow.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.case_file_workflow,
 Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.case_file_workflow.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
-Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.case_file_workflow.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.case_file_workflow.case_file_id,Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
 Workflow Type Code,"Loại quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường.",Classification Value,false,false,draft,GSGD.case_file_workflow.workflow_type,Scheme: GSGD_WORKFLOW_TYPE.,GSGD_WORKFLOW_TYPE,
 Step Order,Thứ tự bước trong quy trình.,Small Counter,true,false,draft,GSGD.case_file_workflow.step_order,,,
 Step Name,Tên bước quy trình.,Text,true,false,draft,GSGD.case_file_workflow.step_name,,,

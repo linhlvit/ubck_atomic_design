@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Market Surveillance Analysis Report Id,Khóa đại diện cho báo cáo kết quả phân tích vụ việc.,Surrogate Key,false,true,draft,,,,
 Market Surveillance Analysis Report Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.analysis_report.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.analysis_report,
 Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.analysis_report.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
-Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.analysis_report.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.analysis_report.case_file_id,Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
 Report Type Code,Loại báo cáo phân tích vụ việc.,Classification Value,true,false,draft,GSGD.analysis_report.report_type,Scheme: GSGD_ANALYSIS_REPORT_TYPE.,GSGD_ANALYSIS_REPORT_TYPE,
 Report Date,Ngày lập báo cáo.,Date,true,false,draft,GSGD.analysis_report.report_date,,,
 Report Data,Dữ liệu báo cáo (JSON hoặc XML). Lưu raw — không parse.,Text,true,false,draft,GSGD.analysis_report.report_data,,,
