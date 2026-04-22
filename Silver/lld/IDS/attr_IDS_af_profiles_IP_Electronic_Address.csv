@@ -1,0 +1,10 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Audit Firm.,Surrogate Key,false,false,draft,IDS.af_profiles.id,FK target: Audit Firm.Audit Firm Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã công ty kiểm toán.,Text,false,false,draft,IDS.af_profiles.id,FK target: Audit Firm.Audit Firm Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.af_profiles,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,PHONE
+Electronic Address Value,Số điện thoại.,Text,true,false,draft,IDS.af_profiles.phone_no,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — fax.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=FAX,FAX
+Electronic Address Value,Số fax.,Text,true,false,draft,IDS.af_profiles.fax_no,,IP_ELEC_ADDR_TYPE=FAX,
+Electronic Address Type Code,Loại kênh liên lạc — website.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=WEBSITE,WEBSITE
+Electronic Address Value,Website.,Text,true,false,draft,IDS.af_profiles.website,,IP_ELEC_ADDR_TYPE=WEBSITE,

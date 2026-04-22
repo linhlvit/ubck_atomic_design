@@ -109,6 +109,32 @@ GSGD,user_table_config,Cấu hình hiển thị bảng theo user,Operational / S
 GSGD,analysis_define_report_template,Tham số cấu hình biểu mẫu báo cáo,Out of scope,Pure junction giữa analysis_attribute_define và report_template (ngoài scope) — không có giá trị nghiệp vụ Silver
 GSGD,category_config,Cấu hình danh mục dùng chung,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
 GSGD,category_item,Item trong danh mục dùng chung,Reference Data,Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
+IDS,company_change_role_his,Lịch sử thay đổi vai trò người dùng,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Silver tự track
+IDS,company_detail_his,Lịch sử thay đổi company_detail,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Silver tự track
+IDS,company_profiles_his,Lịch sử thay đổi company_profiles,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Silver tự track
+IDS,fields_history,Lịch sử thay đổi fields,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Silver tự track
+IDS,form_fields_history,Lịch sử thay đổi form_fields,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Silver tự track
+IDS,stockholder_history,Lịch sử thay đổi cổ đông,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Silver tự track
+IDS,data,BCTC cell values (FK company_data),Cascade drop,Cascade drop từ company_data
+IDS,data_values,Form field values (FK company_data),Cascade drop,"Cascade drop từ company_data. Nếu anchor khôi phục, cần map cả field_id và form_field_id"
+IDS,report_approval,Phê duyệt báo cáo (FK company_data),Cascade drop,Cascade drop từ company_data
+IDS,report_extensions,Gia hạn báo cáo (FK company_data),Cascade drop,Cascade drop từ company_data
+IDS,fields,Field definition cho form,Form Metadata,Field definition metadata — denormalized vào data_values khi anchor khôi phục
+IDS,form_fields,Junction lưu fields trong 1 form,Form Metadata,Field definition metadata — denormalized vào data_values khi anchor khôi phục
+IDS,company_data,Bảng trung gian lưu forms thuộc company_profiles,Intermediate,Intermediate linking table — không có business lifecycle độc lập
+IDS,noti_config_apply,Junction giữa noti_config và company_profiles,Junction,Pure junction table — không có business attribute
+IDS,data_access_rules,Phân quyền dữ liệu,Operational / System,System config/metadata — out-of-scope
+IDS,data_types,Định nghĩa kiểu dữ liệu cho fields,Operational / System,System config/metadata — out-of-scope
+IDS,logins,Tài khoản đăng nhập hệ thống,Operational / System,Bảng hệ thống — không có giá trị nghiệp vụ Silver
+IDS,sms_log,Log gửi SMS,Operational / System,Operational log — out-of-scope
+IDS,sys_parameters,Tham số hệ thống,Operational / System,System config/metadata — out-of-scope
+IDS,user_audit_log,Log thao tác người dùng,Operational / System,Operational log — out-of-scope
+IDS,users,Người dùng hệ thống,Operational / System,Bảng hệ thống — không có giá trị nghiệp vụ Silver
+IDS,categories,Ngành nghề 2 cấp công ty đại chúng,Reference Data,Reference data set — Classification Value scheme IDS_INDUSTRY_CATEGORY
+IDS,countries,Danh mục quốc gia,Reference Data,Reference data set — map vào shared Geographic Area (COUNTRY)
+IDS,lookup_values,Danh mục giá trị tra cứu,Reference Data,Reference data sets — mỗi lookup_group = 1 Classification Value scheme IDS_*
+IDS,provinces,Danh mục tỉnh/thành phố,Reference Data,Reference data set — map vào shared Geographic Area (PROVINCE)
+IDS,departments,Phòng ban UBCK,Shared Entity,Dùng shared Regulatory Authority Organization Unit khi cần FK — không thiết kế riêng IDS
 NHNCK,CertificateNumberTemplates,Template số chứng chỉ,Config,Config/template data.
 NHNCK,CertificateDepartments,Phòng ban chứng chỉ số,Digital Cert,Operational/PKI data.
 NHNCK,CertificateDocuments,Tài liệu chứng chỉ số,Digital Cert,Operational/PKI data.
@@ -122,6 +148,10 @@ NHNCK,Roles,Danh mục vai trò,System / Auth,Operational/system data.
 NHNCK,UserRoles,Phân quyền người dùng,System / Auth,Operational/system data — không có giá trị nghiệp vụ.
 NHNCK,SystemParameters,Tham số hệ thống,System / Config,Config data.
 NHNCK,ActionLogs,Nhật ký hành động hệ thống,System / Log,System audit log — không phải nghiệp vụ CCHN.
+QLRR,risk_report_placeholder_config,Cấu hình mapping placeholder trong template báo cáo,Config kỹ thuật,Operational/system data — không có giá trị nghiệp vụ
+QLRR,permission_group,Nhóm quyền,Phân quyền,Operational/system data — không có giá trị nghiệp vụ
+QLRR,permission_group_indicator,Phân quyền chỉ tiêu theo nhóm,Phân quyền,Operational/system data — không có giá trị nghiệp vụ
+QLRR,permission_group_user,Phân quyền người dùng theo nhóm,Phân quyền,Operational/system data — không có giá trị nghiệp vụ
 SCMS,BC_THANH_VIEN_LS,Lịch sử các lần gửi báo cáo,Audit Log nguồn,"Audit Log nguồn — snapshot từng phiên bản gửi, không phải entity nghiệp vụ Silver"
 SCMS,BM_BAO_CAO_LS,Lịch sử biểu mẫu báo cáo,Audit Log nguồn,Audit Log nguồn — cần xác nhận (xem Điểm #7)
 SCMS,CTCK_HS_LICH_SU,Hồ sơ lịch sử thay đổi của CTCK,Audit Log nguồn,"Audit Log nguồn — ghi lịch sử dạng generic (BANG_LIEN_KET + CHI_TIET_ID), không phải sự kiện nghiệp vụ cụ thể"

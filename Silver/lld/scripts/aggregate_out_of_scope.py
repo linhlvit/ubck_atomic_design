@@ -120,7 +120,7 @@ def build_out_of_scope(filter_source: str | None = None) -> list[dict]:
     # Nếu filter_source: chỉ rebuild output cho source đó, giữ lại các source khác
     if filter_source and OUT_FILE.exists():
         existing = []
-        with open(OUT_FILE, encoding="utf-8", newline="") as f:
+        with open(OUT_FILE, encoding="utf-8-sig", newline="") as f:
             for row in csv.DictReader(f):
                 if row["source_system"].upper() != filter_source.upper():
                     existing.append(row)

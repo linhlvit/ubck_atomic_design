@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Public Company Foreign Ownership Limit Id,Khóa đại diện cho giới hạn sở hữu nước ngoài.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Public Company Foreign Ownership Limit Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.foreign_owner_limit.id,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.foreign_owner_limit,
+Public Company Id,FK đến công ty đại chúng.,Surrogate Key,false,false,draft,IDS.foreign_owner_limit.company_profile_id,FK target: Public Company.Public Company Id.,,
+Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.foreign_owner_limit.company_profile_id,FK target: Public Company.Public Company Code. Pair with Public Company Id.,,
+Max Ownership Rate,Tỷ lệ sở hữu nước ngoài tối đa.,Percentage,true,false,draft,IDS.foreign_owner_limit.max_owner_rate,,,
+Effective From Date,Ngày bắt đầu áp dụng.,Date,true,false,draft,IDS.foreign_owner_limit.from_date,,,
+Effective To Date,Ngày kết thúc áp dụng.,Date,true,false,draft,IDS.foreign_owner_limit.to_date,,,
+Created By Login Name,Người tạo (login_name của logins).,Text,true,false,draft,IDS.foreign_owner_limit.created_by,Denormalized — logins là bảng hệ thống out-of-scope.,,
+Created Timestamp,Ngày tạo.,Timestamp,true,false,draft,IDS.foreign_owner_limit.created_date,,,
+Last Updated By Login Name,Người sửa (login_name của logins).,Text,true,false,draft,IDS.foreign_owner_limit.last_updated_by,Denormalized — logins là bảng hệ thống out-of-scope.,,
+Last Updated Timestamp,Ngày sửa.,Timestamp,true,false,draft,IDS.foreign_owner_limit.last_updated_date,,,

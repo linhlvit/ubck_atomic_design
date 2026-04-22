@@ -316,3 +316,92 @@ RISK_NOTIFICATION_SEND_STATUS,1,SENT,etl_derived,QLRR.risk_notification.send_sta
 RISK_NOTIFICATION_SEND_STATUS,2,FAILED,etl_derived,QLRR.risk_notification.send_status,Risk Alert Notification
 RISK_NOTIFICATION_READ_STATUS,0,Chưa đọc,etl_derived,QLRR.risk_notification.read_status,Risk Alert Notification
 RISK_NOTIFICATION_READ_STATUS,1,Đã đọc,etl_derived,QLRR.risk_notification.read_status,Risk Alert Notification
+IDS_REPORT_CATALOG_TYPE,i,Báo cáo đầu vào,etl_derived,IDS.report_catalog.rc_type_cd,Financial Report Catalog | Financial Report Row Template | Financial Report Column Template
+IDS_REPORT_CATALOG_TYPE,o,Báo cáo đầu ra,etl_derived,IDS.report_catalog.rc_type_cd,Financial Report Catalog | Financial Report Row Template | Financial Report Column Template
+IDS_REPORT_SCOPE,(source),"Loại hình báo cáo (hợp nhất, mẹ) — values from lookup_values với lookup_group='Report_scope'",source_table,IDS.lookup_values,Financial Report Catalog
+IDS_ENTERPRISE_TYPE,(source),"Loại hình doanh nghiệp (dn-doanh nghiệp, bh-bảo hiểm, td-tín dụng, ck-chứng khoán) — values from lookup_values với lookup_group='Enterprise_type'",source_table,IDS.lookup_values,Financial Report Catalog | Public Company
+IDS_REPORT_ROW_TYPE,v,Value,etl_derived,IDS.rrow.row_type_cd,Financial Report Row Template
+IDS_REPORT_ROW_TYPE,f,Formula,etl_derived,IDS.rrow.row_type_cd,Financial Report Row Template
+IDS_REPORT_ROW_TYPE,d,Description,etl_derived,IDS.rrow.row_type_cd,Financial Report Row Template
+IDS_PERIODIC_REPORT_FREQUENCY,0,Báo cáo tháng,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,1,Báo cáo quý,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,2,Báo cáo năm,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,3,Báo cáo thường niên,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,4,Báo cáo trực tuyến 6 tháng đầu năm,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_REPORT_FREQUENCY,5,Báo cáo trực tuyến 6 tháng cuối năm,etl_derived,IDS.rep_forms.rf_report_type_cd,Periodic Report Form
+IDS_PERIODIC_FORM_ROW_DATA_TYPE,v,Value,etl_derived,IDS.rep_row.data_type_cd,Periodic Report Form Row Template
+IDS_PERIODIC_FORM_ROW_DATA_TYPE,d,Description,etl_derived,IDS.rep_row.data_type_cd,Periodic Report Form Row Template
+IDS_PERIODIC_FORM_COLUMN_DATA_TYPE,n,Number,etl_derived,IDS.rep_column.data_type_cd,Periodic Report Form Column Template
+IDS_PERIODIC_FORM_COLUMN_DATA_TYPE,t,Text,etl_derived,IDS.rep_column.data_type_cd,Periodic Report Form Column Template
+IDS_NOTIFICATION_SEND_SCHEDULE,(source),Lịch gửi tin định kỳ — values from lookup_values với lookup_group='send_schedule_type',source_table,IDS.lookup_values,Disclosure Notification
+IDS_NEWS_STATUS,(source),Trạng thái tin thông báo — values from lookup_values với lookup_group='news_status',source_table,IDS.lookup_values,Disclosure Notification
+IDS_NEWS_TYPE,(source),Loại tin gốc — values from lookup_values với lookup_group='news_type',source_table,IDS.lookup_values,Disclosure Notification | Disclosure Form Definition
+IDS_FORM_TYPE,(source),"Loại tin hay hồ sơ (hồ sơ, cbtt) — values from lookup_values với lookup_group='form_type'",source_table,IDS.lookup_values,Disclosure Form Definition
+IDS_SUB_NEWS_TYPE,(source),Loại tin con — values from lookup_values với lookup_group='sub_news_type',source_table,IDS.lookup_values,Disclosure Form Definition
+IDS_INDUSTRY_CATEGORY,(source),Ngành nghề 2 cấp của công ty đại chúng — values from categories (self-referencing parent_id),source_table,IDS.categories,Public Company
+IDS_COMPANY_STATUS,(source),Trạng thái niêm yết IDS — values from lookup_values với lookup_group='status_ids',source_table,IDS.lookup_values,Public Company
+IDS_EQUITY_LISTING_EXCH,(source),Sàn niêm yết cổ phiếu (HNX/HOSE/UPCoM) — values from lookup_values với lookup_group='equity_listing_exch',source_table,IDS.lookup_values,Public Company
+IDS_SECURITIES_TYPE,(source),Loại chứng khoán phát hành — values from lookup_values với lookup_group='securities_type',source_table,IDS.lookup_values,Public Company
+IDS_PUBLIC_COMPANY_FORM,(source),Hình thức trở thành công ty đại chúng (IPO / nộp hồ sơ trực tiếp) — values from lookup_values với lookup_group='public_company_form',source_table,IDS.lookup_values,Public Company
+IDS_FINANCIAL_STMT_TYPE,(source),Loại báo cáo tài chính (IFRS/VAS...) — values from lookup_values với lookup_group='financial_statement_type',source_table,IDS.lookup_values,Public Company
+IDS_ENTITY_TYPE,(source),"Loại hình cổ đông (cá nhân, tổ chức) — values from lookup_values với lookup_group='entity type'",source_table,IDS.lookup_values,Stock Holder
+IDS_GENDER,(source),Giới tính — values from lookup_values với lookup_group='gender',source_table,IDS.lookup_values,Stock Holder
+IDS_EDUCATION_LEVEL,(source),Trình độ học vấn — values from lookup_values với lookup_group='education level',source_table,IDS.lookup_values,Stock Holder
+IDS_AF_POSITION_TITLE,(source),Chức vụ kiểm toán — values from lookup_values với lookup_group='af_position_title',source_table,IDS.lookup_values,Audit Firm Legal Representative | Auditor Approval
+IDS_NOTIFICATION_SEND_CHANNEL,(source),Hình thức gửi thông báo (email/sms/push) — values from lookup_values với lookup_group='noti_send_channel',source_table,IDS.lookup_values,Disclosure Notification Config
+IDS_NOTIFICATION_TARGET_SYSTEM,(source),Hệ thống nhận thông báo — values from lookup_values với lookup_group='noti_target_system',source_table,IDS.lookup_values,Disclosure Notification Config
+IDS_REPRESENTATIVE_ROLE,0,Người đại diện pháp luật,etl_derived,IDS.legal_representative.representative_role,Public Company Legal Representative
+IDS_REPRESENTATIVE_ROLE,1,Người CBTT,etl_derived,IDS.legal_representative.representative_role,Public Company Legal Representative
+IDS_COMPANY_RELATIONSHIP_TYPE,(source),"Loại quan hệ công ty (mẹ, con, liên doanh liên kết) — values from lookup_values với lookup_group='company_relationship_type'",source_table,IDS.lookup_values,Public Company Related Entity
+IDS_IDENTITY_TYPE,(source),Loại giấy tờ định danh — values from lookup_values với lookup_group='identity type',source_table,IDS.lookup_values,Involved Party Alternative Identification (ETL map sang IP_ALT_ID_TYPE)
+IDS_HOLDER_RELATIONSHIP_TYPE,(source),Loại quan hệ cổ đông — values from lookup_values với lookup_group='relationship type',source_table,IDS.lookup_values,Stock Holder Relationship
+IDS_STOCK_RESTRICTION_TYPE,(source),Loại hạn chế chuyển nhượng cổ phiếu — values from lookup_values với lookup_group='restriction type',source_table,IDS.lookup_values,Stock Control
+IDS_WARNING_TARGET_TYPE,(source),Đối tượng nhắc nhở (công ty KT / KTV) — values from lookup_values với lookup_group='warning_target_type',source_table,IDS.lookup_values,Audit Firm Warning
+IDS_WARNING_SOURCE_TYPE,(source),Cơ quan nhắc nhở (BTC / UBCKNN) — values from lookup_values với lookup_group='warning_source_type',source_table,IDS.lookup_values,Audit Firm Warning
+IDS_SANCTION_TARGET_TYPE,(source),Đối tượng xử phạt — values from lookup_values với lookup_group='sanction_target_type',source_table,IDS.lookup_values,Audit Firm Sanction
+IDS_SANCTION_AUTHORITY,(source),Cơ quan xử phạt (BTC / UBCKNN) — values from lookup_values với lookup_group='sanction_authority',source_table,IDS.lookup_values,Audit Firm Sanction
+IDS_ISSUANCE_SECURITY_TYPE,(source),Loại chứng khoán phát hành — values from lookup_values với lookup_group='security_type',source_table,IDS.lookup_values,Public Company Securities Offering
+IDS_INSPECTION_TYPE,(source),Loại thanh tra/kiểm tra — values from lookup_values với lookup_group='inspection_type',source_table,IDS.lookup_values,Public Company Inspection
+IDS_INSPECTION_MODE,(source),Thanh tra định kỳ/bất thường — values from lookup_values với lookup_group='inspection_mode',source_table,IDS.lookup_values,Public Company Inspection
+IDS_PENALIZED_SUBJECT_TYPE,(source),Đối tượng xử phạt (công ty đại chúng / nhà đầu tư liên quan) — values from lookup_values với lookup_group='penalized_subjet_type',source_table,IDS.lookup_values,Public Company Penalty
+GEOGRAPHIC_AREA_TYPE,REGION,Vùng/miền Việt Nam (từ ECAT_02_Region),etl_derived,ECAT.ECAT_02_Region,Geographic Area
+GEOGRAPHIC_AREA_TYPE,PROVINCE_OLD,Tỉnh/Thành phố (cũ — pre-2025) — từ ECAT_03_ProvinceOld,etl_derived,ECAT.ECAT_03_ProvinceOld,Geographic Area
+GEOGRAPHIC_AREA_TYPE,DISTRICT_OLD,Quận/Huyện (cũ — pre-2025) — từ ECAT_05_DistrictOld,etl_derived,ECAT.ECAT_05_DistrictOld,Geographic Area
+GEOGRAPHIC_AREA_TYPE,WARD_OLD,Phường/Xã/Thị trấn (cũ — pre-2025) — từ ECAT_06_WardOld,etl_derived,ECAT.ECAT_06_WardOld,Geographic Area
+GEOGRAPHIC_AREA_TYPE,WARD,Phường/Xã/Thị trấn (chuẩn — post-sáp nhập 2025) — từ ECAT_07_Ward,etl_derived,ECAT.ECAT_07_Ward,Geographic Area
+ECAT_ORGANIZATION_UNIT,(source),Đơn vị/phòng ban — values from ECAT_08_Department,source_table,ECAT.ECAT_08_Department,(Classification Value — không gắn Silver entity)
+ECAT_POSITION_TYPE,(source),Loại chức vụ — values from ECAT_09_PositionType,source_table,ECAT.ECAT_09_PositionType,(Classification Value — không gắn Silver entity)
+ECAT_POSITION,(source),Chức vụ — values from ECAT_10_Position (parent → ECAT_POSITION_TYPE),source_table,ECAT.ECAT_10_Position,(Classification Value — không gắn Silver entity)
+ECAT_SECURITY_TYPE,(source),Loại chứng khoán — values from ECAT_12_SecurityType,source_table,ECAT.ECAT_12_SecurityType,Security
+ECAT_MARKET,(source),Thị trường (HOSE/HNX/UPCOM/OTC) — values from ECAT_13_Market,source_table,ECAT.ECAT_13_Market,Security
+ECAT_SHARE_PAR_VALUE,(source),Mệnh giá cổ phần — values from ECAT_15_SharePar,source_table,ECAT.ECAT_15_SharePar,(Classification Value — không gắn Silver entity)
+ECAT_BUSINESS_INDICATOR,(source),Danh mục chỉ tiêu nghiệp vụ chung — values from ECAT_16_Indicator,source_table,ECAT.ECAT_16_Indicator,(Classification Value — không gắn Silver entity)
+ECAT_FINANCIAL_REPORT_TYPE,(source),Loại báo cáo tài chính — values from ECAT_17_FinancialReportType,source_table,ECAT.ECAT_17_FinancialReportType,(Classification Value — không gắn Silver entity)
+ECAT_BUSINESS_OPERATION,(source),Nghiệp vụ kinh doanh — values from ECAT_18_BusinessOperation,source_table,ECAT.ECAT_18_BusinessOperation,(Classification Value — không gắn Silver entity)
+ECAT_CORPORATE_POSITION_TYPE,(source),Loại chức vụ doanh nghiệp — values from ECAT_19_CorporatePositionType,source_table,ECAT.ECAT_19_CorporatePositionType,(Classification Value — không gắn Silver entity)
+ECAT_CORPORATE_POSITION,(source),Chức vụ trong doanh nghiệp — values from ECAT_20_CorporatePosition (parent → ECAT_CORPORATE_POSITION_TYPE),source_table,ECAT.ECAT_20_CorporatePosition,(Classification Value — không gắn Silver entity)
+ECAT_COMPANY_TYPE,(source),Loại công ty — values from ECAT_21_CompanyType,source_table,ECAT.ECAT_21_CompanyType,(Classification Value — không gắn Silver entity)
+ECAT_SERVICE,(source),Dịch vụ — values from ECAT_22_Service,source_table,ECAT.ECAT_22_Service,(Classification Value — không gắn Silver entity)
+ECAT_CASE_TYPE,(source),Sự vụ — values from ECAT_23_Case,source_table,ECAT.ECAT_23_Case,(Classification Value — không gắn Silver entity)
+ECAT_INVESTOR_TYPE,(source),Loại nhà đầu tư/cổ đông — values from ECAT_24_InvestorType,source_table,ECAT.ECAT_24_InvestorType,(Classification Value — không gắn Silver entity)
+ECAT_AGENT_TYPE,(source),Loại đại lý — values from ECAT_25_AgentType,source_table,ECAT.ECAT_25_AgentType,(Classification Value — không gắn Silver entity)
+ECAT_RELATIONSHIP_TYPE,(source),Mối quan hệ — values from ECAT_26_Relationship,source_table,ECAT.ECAT_26_Relationship,(Classification Value — không gắn Silver entity)
+ECAT_EDUCATION_LEVEL,(source),Trình độ — values from ECAT_27_EducationLevel,source_table,ECAT.ECAT_27_EducationLevel,(Classification Value — không gắn Silver entity)
+ECAT_PROFESSIONAL_CERTIFICATE_TYPE,(source),Loại chứng chỉ hành nghề — values from ECAT_28_ProfessionalCertType,source_table,ECAT.ECAT_28_ProfessionalCertType,(Classification Value — không gắn Silver entity)
+ECAT_ADMINISTRATIVE_PROCEDURE,(source),Thủ tục hành chính — values from ECAT_30_AdminProcedure,source_table,ECAT.ECAT_30_AdminProcedure,(Classification Value — không gắn Silver entity)
+ECAT_ADMINISTRATIVE_PROCEDURE_COMPONENT,(source),Thành phần TTHC — values from ECAT_31_AdminProcedureComponent (parent → ECAT_ADMINISTRATIVE_PROCEDURE),source_table,ECAT.ECAT_31_AdminProcedureComponent,(Classification Value — không gắn Silver entity)
+ECAT_INDUSTRY_LV1,(source),Ngành nghề cấp 1 — values from ECAT_32_IndustryLv1,source_table,ECAT.ECAT_32_IndustryLv1,(Classification Value — không gắn Silver entity)
+ECAT_INDUSTRY_LV2,(source),Ngành nghề cấp 2 — values from ECAT_33_IndustryLv2 (parent → ECAT_INDUSTRY_LV1),source_table,ECAT.ECAT_33_IndustryLv2,(Classification Value — không gắn Silver entity)
+ECAT_APPROVAL_STATUS,(source),Trạng thái duyệt — values from ECAT_34_ApprovalStatus,source_table,ECAT.ECAT_34_ApprovalStatus,(Classification Value — không gắn Silver entity)
+ECAT_FREQUENCY_TYPE,(source),Loại tần suất — values from ECAT_35_FrequencyType,source_table,ECAT.ECAT_35_FrequencyType,(Classification Value — không gắn Silver entity)
+ECAT_FREQUENCY,(source),Tần suất — values from ECAT_36_Frequency (parent → ECAT_FREQUENCY_TYPE),source_table,ECAT.ECAT_36_Frequency,(Classification Value — không gắn Silver entity)
+ECAT_ALERT_TYPE,(source),Loại cảnh báo — values from ECAT_37_AlertType,source_table,ECAT.ECAT_37_AlertType,(Classification Value — không gắn Silver entity)
+ECAT_ALERT_SEVERITY,(source),Mức độ cảnh báo — values from ECAT_38_AlertSeverity,source_table,ECAT.ECAT_38_AlertSeverity,(Classification Value — không gắn Silver entity)
+ECAT_REPORT_PROCESSING_STATUS_TYPE,(source),Loại trạng thái xử lý báo cáo — values from ECAT_39_ReportProcessingStatusType,source_table,ECAT.ECAT_39_ReportProcessingStatusType,(Classification Value — không gắn Silver entity)
+ECAT_ALERT_PROCESSING_STATUS,(source),Trạng thái xử lý cảnh báo — values from ECAT_40_AlertProcessingStatus,source_table,ECAT.ECAT_40_AlertProcessingStatus,(Classification Value — không gắn Silver entity)
+ECAT_NOTIFICATION_STATUS_TYPE,(source),Loại trạng thái thông báo — values from ECAT_41_NotificationStatusType,source_table,ECAT.ECAT_41_NotificationStatusType,(Classification Value — không gắn Silver entity)
+ECAT_NOTIFICATION_STATUS,(source),Trạng thái thông báo — values from ECAT_42_NotificationStatus (parent → ECAT_NOTIFICATION_STATUS_TYPE),source_table,ECAT.ECAT_42_NotificationStatus,(Classification Value — không gắn Silver entity)
+ECAT_ENTERPRISE_TYPE,(source),Loại hình doanh nghiệp — values from ECAT_43_EnterpriseType,source_table,ECAT.ECAT_43_EnterpriseType,(Classification Value — không gắn Silver entity)
+ECAT_FUND_TYPE,(source),Loại hình quỹ đầu tư — values from ECAT_44_FundType,source_table,ECAT.ECAT_44_FundType,(Classification Value — không gắn Silver entity)
+ECAT_OPERATING_STATUS,(source),Trạng thái hoạt động — values from ECAT_45_OperatingStatus,source_table,ECAT.ECAT_45_OperatingStatus,(Classification Value — không gắn Silver entity)
+ECAT_SHAREHOLDER_TYPE,(source),Loại hình cổ đông/nhà đầu tư — values from ECAT_46_ShareholderType,source_table,ECAT.ECAT_46_ShareholderType,(Classification Value — không gắn Silver entity)

@@ -1,0 +1,12 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+{Entity} Id,Khóa đại diện cho {entity description}.,Surrogate Key,false,true,draft,,PK surrogate.,,
+{Entity} Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,{SOURCE}.{table}.id,BK chính. PK nguồn.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM={SOURCE}.{table},
+{Business Code Field},{Mô tả gốc từ CSDL nguồn}.,Text,true,false,draft,{SOURCE}.{table}.{col},{note},,
+{FK Entity} Id,FK đến {Target Entity}.,Surrogate Key,false,false,draft,{SOURCE}.{table}.{fk_col},FK target: {Target Entity}.{Target Entity} Id.,,
+{FK Entity} Code,Mã {target entity}.,Text,false,false,draft,{SOURCE}.{table}.{fk_col},FK target: {Target Entity}.{Target Entity} Code. Pair with {FK Entity} Id.,,
+{Status} Code,{Mô tả status từ nguồn}.,Classification Value,true,false,draft,{SOURCE}.{table}.{status_col},Scheme: {SOURCE}_{SCHEME_NAME}.,{SOURCE}_{SCHEME_NAME},
+Created By Login Name,Người tạo (login_name của logins).,Text,true,false,draft,{SOURCE}.{table}.created_by,Denormalized — logins là bảng hệ thống out-of-scope.,,
+Created Timestamp,Ngày tạo.,Timestamp,true,false,draft,{SOURCE}.{table}.created_date,,,
+Last Updated By Login Name,Người sửa (login_name của logins).,Text,true,false,draft,{SOURCE}.{table}.last_updated_by,Denormalized — logins là bảng hệ thống out-of-scope.,,
+Last Updated Timestamp,Ngày sửa.,Timestamp,true,false,draft,{SOURCE}.{table}.last_updated_date,,,
