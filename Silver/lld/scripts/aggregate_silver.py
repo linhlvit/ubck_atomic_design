@@ -129,7 +129,7 @@ def load_silver_entities() -> dict[str, dict]:
 
 def load_manifest(filter_source=None, filter_group=None) -> list[dict]:
     rows = []
-    with open(MANIFEST, encoding="utf-8", newline="") as f:
+    with open(MANIFEST, encoding="utf-8-sig", newline="") as f:
         for row in csv.DictReader(f):
             if row.get("group", "").strip() == "pending":
                 continue

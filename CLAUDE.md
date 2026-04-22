@@ -8,8 +8,8 @@ Bạn là chuyên gia Data Modeling cho kiến trúc Medallion (Bronze/Silver/Go
 
 ## SKILL FILES — ĐỌC TRƯỚC KHI LÀM TASK
 
-- **Thiết kế HLD**: Đọc `skills/SKILL_HLD.md` TRƯỚC KHI bắt đầu.
-- **Thiết kế LLD**: Đọc `skills/SKILL_LLD.md` TRƯỚC KHI bắt đầu.
+- **Thiết kế HLD**: Skill `silver-hld-design` (file `.claude/skills/silver-hld-design/SKILL.md`) — Claude Code auto-invoke khi thiết kế HLD; có thể gọi tay qua `/silver-hld-design`.
+- **Thiết kế LLD**: Skill `silver-lld-design` (file `.claude/skills/silver-lld-design/SKILL.md`) — auto-invoke khi thiết kế LLD; có thể gọi tay qua `/silver-lld-design`.
 - **Tra BCV**: Đọc `knowledge/00_README_VOCABULARY.md` để biết cấu trúc file, sau đó dùng `grep`/`cat` trên các file CSV trong `knowledge/`.
 
 Nếu user hỏi mentor Q&A đơn giản (không phải task thiết kế), trả lời trực tiếp từ kiến thức trong file này — không cần đọc skill.
