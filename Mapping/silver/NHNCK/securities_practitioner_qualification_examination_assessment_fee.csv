@@ -1,0 +1,28 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner Qualification Examination Assessment Fee,SCD4A,,,,Biểu phí thi sát hạch theo đợt thi và loại chứng chỉ. Ghi nhận mức phí thi và phúc khảo.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,EXAMSESSIONFEES,ex_se_fe,"id, examsessionid, certificateid, feeexam, feeappeal, status, createdby, updatedby, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,examination_assessment_fee_id,"hash_id('NHNCK_ExamSessionFees', ex_se_fe.id)",string,,,,Id tự sinh (surrogate key),,,
+2,examination_assessment_fee_code,ex_se_fe.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_ExamSessionFees',string,,,,Mã nguồn dữ liệu,,,
+4,examination_assessment_id,"hash_id('NHNCK_ExamSessions', ex_se_fe.examsessionid)",string,,,,FK đến đợt thi,,,
+5,examination_assessment_code,ex_se_fe.examsessionid,string,,,,Mã đợt thi,,,
+6,certificate_type_code,ex_se_fe.certificateid,string,,,,Mã loại chứng chỉ,,,
+7,examination_fee_amount,ex_se_fe.feeexam,"decimal(23,2)",,,,Phí thi (VNĐ),,,
+8,appeal_fee_amount,ex_se_fe.feeappeal,"decimal(23,2)",,,,Phí phúc khảo (VNĐ),,,
+9,fee_status_code,ex_se_fe.status,string,,,,Trạng thái,,,
+10,created_by_officer_id,,string,,,,FK đến Officer,,,
+11,created_by_officer_code,ex_se_fe.createdby,string,,,,Mã người tạo,,,
+12,updated_by_officer_id,,string,,,,FK đến Officer,,,
+13,updated_by_officer_code,ex_se_fe.updatedby,string,,,,Mã người cập nhật,,,
+14,created_timestamp,ex_se_fe.createdat,timestamp,,,,Ngày tạo,,,
+15,updated_timestamp,ex_se_fe.updatedat,timestamp,,,,Ngày cập nhật,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

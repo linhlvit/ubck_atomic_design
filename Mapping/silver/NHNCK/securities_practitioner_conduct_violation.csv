@@ -1,0 +1,32 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner Conduct Violation,Fact Append,,,,Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán. Ghi nhận loại vi phạm và quyết định xử lý.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,VIOLATIONS,vi,"id, professionalid, fullname, birthdate, identitynumber, decisionid, type, note, status, createdby, updatedby, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,conduct_violation_id,"hash_id('NHNCK_Violations', vi.id)",string,,,,Id tự sinh (surrogate key),,,
+2,conduct_violation_code,vi.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_Violations',string,,,,Mã nguồn dữ liệu,,,
+4,practitioner_id,"hash_id('NHNCK_Professionals', vi.professionalid)",string,,,,FK đến Securities Practitioner,,,
+5,practitioner_code,vi.professionalid,string,,,,Mã người hành nghề,,,
+6,full_name,vi.fullname,string,,,,Họ và tên người vi phạm (snapshot),,,
+7,date_of_birth,vi.birthdate,date,,,,Ngày sinh (snapshot),,,
+8,identification_number,vi.identitynumber,string,,,,Số CMND/CCCD (snapshot),,,
+9,license_decision_document_id,"hash_id('NHNCK_Decisions', vi.decisionid)",string,,,,FK đến quyết định xử lý vi phạm,,,
+10,license_decision_document_code,vi.decisionid,string,,,,Mã quyết định,,,
+11,conduct_violation_type_code,vi.type,string,,,,"Loại vi phạm (1: Hành chính, 2: Pháp luật)",,,
+12,violation_note,vi.note,string,,,,Ghi chú vi phạm,,,
+13,violation_status_code,vi.status,string,,,,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,,
+14,created_by_officer_id,,string,,,,FK đến Officer,,,
+15,created_by_officer_code,vi.createdby,string,,,,Mã người tạo,,,
+16,updated_by_officer_id,,string,,,,FK đến Officer,,,
+17,updated_by_officer_code,vi.updatedby,string,,,,Mã người cập nhật,,,
+18,created_timestamp,vi.createdat,timestamp,,,,Ngày tạo,,,
+19,updated_timestamp,vi.updatedat,timestamp,,,,Ngày cập nhật,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

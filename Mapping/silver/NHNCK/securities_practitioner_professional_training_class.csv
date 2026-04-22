@@ -1,0 +1,31 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner Professional Training Class,Fact Append,,,,Khóa đào tạo chuyên môn nghiệp vụ chứng khoán do UBCKNN tổ chức. Ghi nhận thông tin khóa học và ngày thi.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,SPECIALIZATIONCOURSES,sp_co,"id, specializationid, coursecode, coursename, academicyear, examdate, description, filepath, isactive, status, createdby, updatedby, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,professional_training_class_id,"hash_id('NHNCK_SpecializationCourses', sp_co.id)",string,,,,Id tự sinh (surrogate key),,,
+2,professional_training_class_code,sp_co.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_SpecializationCourses',string,,,,Mã nguồn dữ liệu,,,
+4,specialization_type_code,sp_co.specializationid,string,,,,Mã chuyên môn,,,
+5,course_code,sp_co.coursecode,string,,,,Mã khóa học (mã nghiệp vụ),,,
+6,course_name,sp_co.coursename,string,,,,Tên khóa học,,,
+7,academic_year,sp_co.academicyear,string,,,,Năm học,,,
+8,exam_date,sp_co.examdate,date,,,,Ngày thi,,,
+9,course_description,sp_co.description,string,,,,Mô tả khóa học,,,
+10,attachment_file_path,sp_co.filepath,string,,,,Đường dẫn tài liệu,,,
+11,is_active_flag,sp_co.isactive,string,,,,Trạng thái hoạt động,,,
+12,course_status_code,sp_co.status,string,,,,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,,
+13,created_by_officer_id,,string,,,,FK đến Officer,,,
+14,created_by_officer_code,sp_co.createdby,string,,,,Mã người tạo,,,
+15,updated_by_officer_id,,string,,,,FK đến Officer,,,
+16,updated_by_officer_code,sp_co.updatedby,string,,,,Mã người cập nhật,,,
+17,created_timestamp,sp_co.createdat,timestamp,,,,Ngày tạo,,,
+18,updated_timestamp,sp_co.updatedat,timestamp,,,,Ngày cập nhật,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

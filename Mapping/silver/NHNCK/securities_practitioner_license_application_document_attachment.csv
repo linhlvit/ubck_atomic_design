@@ -1,0 +1,33 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Application Document Attachment,SCD4A,,,,Tài liệu đính kèm hồ sơ CCHN. Ghi nhận loại tài liệu và trạng thái thẩm định.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,APPLICATIONDOCUMENTS,ap_do,"id, applicationid, documentid, documentname, filename, filepath, format, filesize, description, note, status, isinvalid, isincomplete, assigneeid, appraisaledat, createdat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_application_document_attachment_id,"hash_id('NHNCK_ApplicationDocuments', ap_do.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_application_document_attachment_code,ap_do.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_ApplicationDocuments',string,,,,Mã nguồn dữ liệu,,,
+4,license_application_id,"hash_id('NHNCK_Applications', ap_do.applicationid)",string,,,,FK đến hồ sơ,,,
+5,license_application_code,ap_do.applicationid,string,,,,Mã hồ sơ,,,
+6,document_type_code,ap_do.documentid,string,,,,Mã loại tài liệu (FK → Documents),,,
+7,document_name,ap_do.documentname,string,,,,Tên tài liệu,,,
+8,file_name,ap_do.filename,string,,,,Tên file,,,
+9,file_path,ap_do.filepath,string,,,,Đường dẫn file,,,
+10,file_format,ap_do.format,string,,,,"Loại file (pdf, docx...)",,,
+11,file_size,ap_do.filesize,string,,,,Dung lượng file (bytes),,,
+12,attachment_description,ap_do.description,string,,,,Mô tả tài liệu,,,
+13,attachment_note,ap_do.note,string,,,,Ghi chú thẩm định,,,
+14,appraisal_status_code,ap_do.status,string,,,,Trạng thái thẩm định,,,
+15,is_invalid_indicator,ap_do.isinvalid,string,,,,Cờ không hợp lệ,,,
+16,is_incomplete_indicator,ap_do.isincomplete,string,,,,Cờ chưa hoàn thành,,,
+17,assignee_officer_id,,string,,,,FK đến người thẩm định,,,
+18,assignee_officer_code,ap_do.assigneeid,string,,,,Mã người thẩm định,,,
+19,appraisaled_timestamp,ap_do.appraisaledat,timestamp,,,,Ngày thẩm định,,,
+20,created_timestamp,ap_do.createdat,timestamp,,,,Ngày tạo,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

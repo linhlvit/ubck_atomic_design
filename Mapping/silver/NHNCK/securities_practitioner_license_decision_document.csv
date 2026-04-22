@@ -1,0 +1,32 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Decision Document,SCD4A,,,,Quyết định hành chính của UBCKNN về cấp/thu hồi/hủy chứng chỉ hành nghề chứng khoán.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,DECISIONS,de,"id, decisionnumber, title, reference, decisioncontent, signeddate, signatory, position, decisionunit, filename, filepath, typeid, status, createdby, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_decision_document_id,"hash_id('NHNCK_Decisions', de.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_decision_document_code,de.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_Decisions',string,,,,Mã nguồn dữ liệu,,,
+4,decision_number,de.decisionnumber,string,,,,Số quyết định,,,
+5,decision_title,de.title,string,,,,Tiêu đề quyết định,,,
+6,decision_reference,de.reference,string,,,,Trích dẫn,,,
+7,decision_content,de.decisioncontent,string,,,,Nội dung quyết định,,,
+8,signing_date,de.signeddate,date,,,,Ngày ký,,,
+9,signatory_name,de.signatory,string,,,,Người ký,,,
+10,signatory_position_name,de.position,string,,,,Chức vụ người ký,,,
+11,decision_unit_name,de.decisionunit,string,,,,Đơn vị ban hành,,,
+12,attachment_file_name,de.filename,string,,,,Tên file đính kèm,,,
+13,attachment_file_path,de.filepath,string,,,,Đường dẫn file,,,
+14,decision_type_code,de.typeid,string,,,,Loại quyết định,,,
+15,decision_status_code,de.status,string,,,,Trạng thái quyết định,,,
+16,created_by_officer_id,,string,,,,FK đến Officer,,,
+17,created_by_officer_code,de.createdby,string,,,,Mã người tạo,,,
+18,created_timestamp,de.createdat,timestamp,,,,Ngày tạo,,,
+19,updated_timestamp,de.updatedat,timestamp,,,,Ngày cập nhật,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

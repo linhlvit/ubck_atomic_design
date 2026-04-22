@@ -1,0 +1,28 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner Related Party,SCD4A,,,,Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ và thông tin người liên quan.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,PROFESSIONALRELATIONSHIPS,pr_re,"id, professionalid, fullname, relationshiptype, birthyear, countryid, identityid, address, occupation, workplace, note, createdat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,securities_practitioner_related_party_id,"hash_id('NHNCK_ProfessionalRelationships', pr_re.id)",string,,,,Id tự sinh (surrogate key),,,
+2,securities_practitioner_related_party_code,pr_re.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_ProfessionalRelationships',string,,,,Mã nguồn dữ liệu,,,
+4,practitioner_id,"hash_id('NHNCK_Professionals', pr_re.professionalid)",string,,,,FK đến Securities Practitioner,,,
+5,practitioner_code,pr_re.professionalid,string,,,,Mã người hành nghề,,,
+6,related_party_full_name,pr_re.fullname,string,,,,Họ và tên người liên quan,,,
+7,relationship_type_code,pr_re.relationshiptype,string,,,,"Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà)",,,
+8,birth_year,pr_re.birthyear,string,,,,Năm sinh,,,
+9,country_code,pr_re.countryid,string,,,,Quốc gia,,,
+10,identity_reference_code,pr_re.identityid,string,,,,Mã định danh giấy tờ tùy thân,,,
+11,address,pr_re.address,string,,,,Địa chỉ,,,
+12,occupation_name,pr_re.occupation,string,,,,Nghề nghiệp,,,
+13,workplace_name,pr_re.workplace,string,,,,Nơi làm việc,,,
+14,related_party_note,pr_re.note,string,,,,Ghi chú,,,
+15,created_timestamp,pr_re.createdat,timestamp,,,,Ngày tạo,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

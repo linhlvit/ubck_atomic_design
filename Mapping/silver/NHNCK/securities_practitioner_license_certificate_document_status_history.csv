@@ -1,0 +1,26 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Certificate Document Status History,Fact Append,,,,Lịch sử thay đổi trạng thái của chứng chỉ hành nghề. Ghi nhận trạng thái trước/sau và lý do thay đổi.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,CERTIFICATERECORDSTATUSHISTORIES,ce_re_st_hi,"id, certificaterecordid, decisionid, updatetype, oldstatus, newstatus, reason, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_certificate_document_status_history_id,"hash_id('NHNCK_CertificateRecordStatusHistories', ce_re_st_hi.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_certificate_document_status_history_code,ce_re_st_hi.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_CertificateRecordStatusHistories',string,,,,Mã nguồn dữ liệu,,,
+4,license_certificate_document_id,"hash_id('NHNCK_CertificateRecords', ce_re_st_hi.certificaterecordid)",string,,,,FK đến chứng chỉ,,,
+5,license_certificate_document_code,ce_re_st_hi.certificaterecordid,string,,,,Mã chứng chỉ,,,
+6,license_decision_document_id,"hash_id('NHNCK_Decisions', ce_re_st_hi.decisionid)",string,,,,FK đến quyết định,,,
+7,license_decision_document_code,ce_re_st_hi.decisionid,string,,,,Mã quyết định,,,
+8,update_type_code,ce_re_st_hi.updatetype,string,,,,"Loại cập nhật (Manual, System, Decision)",,,
+9,old_status_code,ce_re_st_hi.oldstatus,string,,,,Trạng thái trước,,,
+10,new_status_code,ce_re_st_hi.newstatus,string,,,,Trạng thái sau,,,
+11,status_change_reason_description,ce_re_st_hi.reason,string,,,,Lý do thay đổi,,,
+12,status_change_timestamp,ce_re_st_hi.createdat,timestamp,,,,Thời điểm thay đổi,,,
+13,updated_timestamp,ce_re_st_hi.updatedat,timestamp,,,,Ngày cập nhật bản ghi,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason
