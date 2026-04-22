@@ -6,23 +6,23 @@
 
 ## Thay đổi so với v1.7
 
-- **Thêm Báo cáo Hoạt động xử lý vi phạm trên TTCK (Biểu số TT01, BA STT 20)** — 1 block mới (Block 20), KPI K_TT_75..K_TT_88 (14 KPI).
-- **Không tạo scheme gold-derived** — Block 20 reuse scheme `TT_VIOLATION_TYPE` đã có. 7 loại hình trong biểu TT01 tương ứng với 7 mã của TT_VIOLATION_TYPE (mã cụ thể là placeholder chờ profile Silver xác nhận).
+- **Thêm Báo cáo Hoạt động xử lý vi phạm trên TTCK (Biểu số TT01, BA STT 20)** — 1 block mới (Nhóm 20), KPI K_TT_75..K_TT_88 (14 KPI).
+- **Không tạo scheme gold-derived** — Nhóm 20 reuse scheme `TT_VIOLATION_TYPE` đã có. 7 loại hình trong biểu TT01 tương ứng với 7 mã của TT_VIOLATION_TYPE (mã cụ thể là placeholder chờ profile Silver xác nhận).
 - **Fact sử dụng:** reuse `Fact Inspection Penalty Decision` đã có, không thêm entity mới.
 - **TT_O20 (open, parked):** 7 mã Classification cụ thể của TT_VIOLATION_TYPE cho biểu TT01 cần trao đổi với BA + khảo sát dữ liệu Silver thực tế để xác nhận mapping chính xác giữa 7 loại hình TT01 và Classification Code trong Silver.
 
 ## Thay đổi so với v1.6
 
-- **Thêm Dashboard Tình hình Đơn thư (BA STT 16-19)** — 4 block mới (Block 16-19), KPI K_TT_65..K_TT_77 (13 KPI).
+- **Thêm Dashboard Tình hình Đơn thư (BA STT 16-19)** — 4 block mới (Nhóm 16-19), KPI K_TT_65..K_TT_77 (13 KPI).
 - **Thêm fact mới `Fact Complaint Petition`** — grain 1 row = 1 đơn thư (event tiếp nhận). Source: `Complaint Petition` (DT_DON_THU).
 - **Thêm dim mới `Complaint Petition Dimension`** — SCD2, grain 1 đơn thư. Attribute mô tả: Complaint Petition Code (BK) / Petition Name / Complainant Name / Is Anonymous / Written Date.
 - **Scheme Classification mới reuse từ Silver:** `TT_PETITION_TYPE` (4 mã) / `TT_PETITION_STATUS` (4 mã) / `TT_PARTY_TYPE` (2 mã: CA_NHAN / TO_CHUC).
-- **TT_O18 (closed):** Block 18 giữ nguyên 4 loại đơn theo BA và Silver scheme TT_PETITION_TYPE (KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI). Screenshot gộp PHAN_ANH + KIEN_NGHI thành "PHẢN ÁNH KIẾN NGHỊ" chỉ là cách display UI — ETL/fact giữ 4 mã riêng biệt, UI tuỳ chọn mapping label.
+- **TT_O18 (closed):** Nhóm 18 giữ nguyên 4 loại đơn theo BA và Silver scheme TT_PETITION_TYPE (KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI). Screenshot gộp PHAN_ANH + KIEN_NGHI thành "PHẢN ÁNH KIẾN NGHỊ" chỉ là cách display UI — ETL/fact giữ 4 mã riêng biệt, UI tuỳ chọn mapping label.
 - **Label BA STT 18:** BA đặt tên "Biểu đồ cơ cấu theo đối tượng" nhưng nội dung là phân loại đơn thư (theo loại đơn). Screenshot tiêu đề "Biểu đồ cơ cấu theo loại đơn thư" mô tả đúng hơn. Xử lý theo screenshot — không ảnh hưởng thiết kế.
 
 ## Thay đổi so với v1.5
 
-- **Expand star schema + bảng tham gia** ở từng block (Block 6-15) — bỏ cú pháp "giống Block X", viết đầy đủ để mỗi block tự đọc được.
+- **Expand star schema + bảng tham gia** ở từng block (Nhóm 6-15) — bỏ cú pháp "giống Nhóm X", viết đầy đủ để mỗi block tự đọc được.
 - **Chuẩn hoá grain mô tả** `Fact Inspection Penalty Decision` và `Inspection Case Dimension` — 2 entity khác grain nhưng mô tả rõ từng đơn vị: fact = "1 kết luận xử phạt", dim Case = "1 hồ sơ thanh tra/kiểm tra".
 - **TT_O17 (closed):** Chốt quy ước: 1 Inspection Case Conclusion = 1 hành vi vi phạm (Silver lưu Violation Type Code đơn trị trên Conclusion — giả định đây là hành vi chính). Nếu profile thực tế có nhiều hành vi trên 1 kết luận, sẽ raise issue sau. Loại khỏi Section 3 Open.
 
@@ -35,7 +35,7 @@
 
 ---
 
-#### Block 1 — Thống kê chung (KPI cards)
+#### Nhóm 1 — Thống kê chung (KPI cards)
 
 **1. Mockup:**
 
@@ -83,7 +83,7 @@ erDiagram
 
 ---
 
-#### Block 2 — Thống kê số vụ thanh tra (biểu đồ cột chồng + đường)
+#### Nhóm 2 — Thống kê số vụ thanh tra (biểu đồ cột chồng + đường)
 
 **1. Mockup:**
 
@@ -130,7 +130,7 @@ erDiagram
 
 ---
 
-#### Block 3 — Cơ cấu vi phạm theo loại hành vi (biểu đồ tròn)
+#### Nhóm 3 — Cơ cấu vi phạm theo loại hành vi (biểu đồ tròn)
 
 **1. Mockup:**
 
@@ -179,7 +179,7 @@ erDiagram
 
 ---
 
-#### Block 4 — Cơ cấu vi phạm theo đối tượng (biểu đồ tròn)
+#### Nhóm 4 — Cơ cấu vi phạm theo đối tượng (biểu đồ tròn)
 
 **1. Mockup:**
 
@@ -231,7 +231,7 @@ erDiagram
 
 ---
 
-#### Block 5 — Danh sách vụ việc thanh tra
+#### Nhóm 5 — Danh sách vụ việc thanh tra
 
 **1. Mockup:**
 
@@ -288,7 +288,7 @@ erDiagram
 
 ---
 
-#### Block 6 — Thống kê chung Kiểm tra (KPI cards)
+#### Nhóm 6 — Thống kê chung Kiểm tra (KPI cards)
 
 **1. Mockup:**
 
@@ -336,7 +336,7 @@ erDiagram
 
 ---
 
-#### Block 7 — Xu hướng số cuộc kiểm tra theo tháng (biểu đồ cột chồng + đường)
+#### Nhóm 7 — Xu hướng số cuộc kiểm tra theo tháng (biểu đồ cột chồng + đường)
 
 **1. Mockup:**
 
@@ -383,7 +383,7 @@ erDiagram
 
 ---
 
-#### Block 8 — Cơ cấu kiểm tra theo loại hành vi (biểu đồ tròn)
+#### Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi (biểu đồ tròn)
 
 **1. Mockup:**
 
@@ -443,7 +443,7 @@ erDiagram
 
 ---
 
-#### Block 9 — Cơ cấu kiểm tra theo đối tượng (biểu đồ tròn)
+#### Nhóm 9 — Cơ cấu kiểm tra theo đối tượng (biểu đồ tròn)
 
 **1. Mockup:**
 
@@ -498,7 +498,7 @@ erDiagram
 
 ---
 
-#### Block 10 — Danh sách vụ việc kiểm tra
+#### Nhóm 10 — Danh sách vụ việc kiểm tra
 
 **1. Mockup:**
 
@@ -518,7 +518,7 @@ erDiagram
 |---|---|---|---|---|---|
 | 70 | K_TT_41 | Mã vụ việc | Text | Stock | `"Inspection Case Dimension"."Case Number"` WHERE Inspection Type = 'KIEM_TRA' |
 | 71 | K_TT_42 | Đối tượng | Text | Stock | `"Inspection Subject Dimension"."Subject Name"` |
-| 72 | K_TT_43 | Phân loại đối tượng | Text | Stock | Display logic giống K_TT_16 Block 5: 2 tầng Source Type + Other Party Subtype |
+| 72 | K_TT_43 | Phân loại đối tượng | Text | Stock | Display logic giống K_TT_16 Nhóm 5: 2 tầng Source Type + Other Party Subtype |
 | 73 | K_TT_44 | Loại hình (Định kỳ / Đột xuất) | Text | Stock | `"Classification Dimension"."Classification Name"` (via Inspection Schedule Type Dimension Id) |
 | 74 | K_TT_45 | Trạng thái | Text | Stock | `"Classification Dimension"."Classification Name"` (via Case Status Dimension Id) |
 
@@ -554,11 +554,11 @@ erDiagram
 **Slicer:**
 - Năm (mặc định: năm hiện tại, screenshot hiển thị NĂM 2024)
 
-**Lưu ý phạm vi:** Dashboard này sử dụng fact mới `Fact Inspection Penalty Decision` (grain 1 row = 1 kết luận xử phạt) cho Block 11, 12, 15 + reuse `Fact Inspection Case Violation` cho Block 13, 14. Theo quy ước TT_O17 đã chốt: 1 kết luận xử phạt = 1 hành vi vi phạm (Silver lưu đơn trị Violation Type Code per Conclusion).
+**Lưu ý phạm vi:** Dashboard này sử dụng fact mới `Fact Inspection Penalty Decision` (grain 1 row = 1 kết luận xử phạt) cho Nhóm 11, 12, 15 + reuse `Fact Inspection Case Violation` cho Nhóm 13, 14. Theo quy ước TT_O17 đã chốt: 1 kết luận xử phạt = 1 hành vi vi phạm (Silver lưu đơn trị Violation Type Code per Conclusion).
 
 ---
 
-#### Block 11 — Thống kê chung Xử phạt (KPI cards)
+#### Nhóm 11 — Thống kê chung Xử phạt (KPI cards)
 
 **1. Mockup:**
 
@@ -599,7 +599,7 @@ erDiagram
 
 ---
 
-#### Block 12 — Thống kê xử phạt theo tháng (biểu đồ kết hợp cột + đường)
+#### Nhóm 12 — Thống kê xử phạt theo tháng (biểu đồ kết hợp cột + đường)
 
 **1. Mockup:**
 
@@ -641,7 +641,7 @@ erDiagram
 
 ---
 
-#### Block 13 — Cơ cấu xử phạt theo loại hành vi (biểu đồ tròn)
+#### Nhóm 13 — Cơ cấu xử phạt theo loại hành vi (biểu đồ tròn)
 
 **1. Mockup:**
 
@@ -656,7 +656,7 @@ pie showData
     "Vi phạm đăng ký CTĐC" : 14
 ```
 
-Theo screenshot — 6 loại (tương tự Block 8).
+Theo screenshot — 6 loại (tương tự Nhóm 8).
 
 **2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Inspection Case Dimension`, `Classification Dimension` (scheme: TT_VIOLATION_TYPE, TT_PENALTY_TYPE)
 
@@ -703,7 +703,7 @@ erDiagram
 
 ---
 
-#### Block 14 — Cơ cấu xử phạt theo đối tượng (biểu đồ tròn)
+#### Nhóm 14 — Cơ cấu xử phạt theo đối tượng (biểu đồ tròn)
 
 **1. Mockup:**
 
@@ -755,7 +755,7 @@ erDiagram
 
 ---
 
-#### Block 15 — Danh sách quyết định xử phạt
+#### Nhóm 15 — Danh sách quyết định xử phạt
 
 **1. Mockup:**
 
@@ -767,7 +767,7 @@ erDiagram
 | QD-2024-004 | CTQLQ | Công ty Quản lý Quỹ Z | VI PHẠM HOẠT ĐỘNG CỦA CÔNG TY QLQ | ĐÃ HOÀN THÀNH |
 | QD-2024-005 | TỔ CHỨC KHÁC | CTCP Thương mại M | VI PHẠM ĐĂNG KÝ CTĐC | ĐÃ HOÀN THÀNH |
 
-**Ghi chú:** Cột "Loại hình" Block 15 là **hành vi vi phạm** (reuse TT_VIOLATION_TYPE), KHÁC với cột "Loại hình" Block 5/10 (Định kỳ/Đột xuất, scheme TT_INSPECTION_SCHEDULE_TYPE).
+**Ghi chú:** Cột "Loại hình" Nhóm 15 là **hành vi vi phạm** (reuse TT_VIOLATION_TYPE), KHÁC với cột "Loại hình" Nhóm 5/10 (Định kỳ/Đột xuất, scheme TT_INSPECTION_SCHEDULE_TYPE).
 
 **2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Inspection Case Dimension`, `Inspection Subject Dimension`, `Classification Dimension` (scheme: TT_VIOLATION_TYPE, TT_CASE_STATUS, TT_SUBJECT_SOURCE_TYPE, TT_OTHER_PARTY_SUBTYPE)
 
@@ -816,7 +816,7 @@ erDiagram
 
 ---
 
-#### Block 16 — Thống kê chung Đơn thư (KPI card)
+#### Nhóm 16 — Thống kê chung Đơn thư (KPI card)
 
 **1. Mockup:**
 
@@ -857,7 +857,7 @@ erDiagram
 
 ---
 
-#### Block 17 — Thống kê tình hình xử lý đơn thư theo tháng (biểu đồ cột)
+#### Nhóm 17 — Thống kê tình hình xử lý đơn thư theo tháng (biểu đồ cột)
 
 **1. Mockup:**
 
@@ -899,7 +899,7 @@ erDiagram
 
 ---
 
-#### Block 18 — Biểu đồ cơ cấu theo loại đơn thư (biểu đồ cột ghép)
+#### Nhóm 18 — Biểu đồ cơ cấu theo loại đơn thư (biểu đồ cột ghép)
 
 **1. Mockup:**
 
@@ -952,7 +952,7 @@ erDiagram
 
 ---
 
-#### Block 19 — Danh sách đơn thư chi tiết
+#### Nhóm 19 — Danh sách đơn thư chi tiết
 
 **1. Mockup:**
 
@@ -1011,7 +1011,7 @@ erDiagram
 
 ---
 
-#### Block 20 — Báo cáo hoạt động xử lý vi phạm trên TTCK (TT01)
+#### Nhóm 20 — Báo cáo hoạt động xử lý vi phạm trên TTCK (TT01)
 
 **1. Mockup:**
 
@@ -1158,4 +1158,4 @@ graph TB
 
 | ID | Vấn đề | Giả định | KPI liên quan | Status |
 |---|---|---|---|---|
-| TT_O20 | Mapping 7 loại hình trong biểu báo cáo TT01 sang Classification Code cụ thể của scheme TT_VIOLATION_TYPE trong Silver chưa được xác nhận. Các mã `<code VP_CTDC_TCCBCK>` / `<code VP_CTCK>` / `<code VP_CTQLQ>` / `<code VP_CDL_CDNB>` / `<code VP_THAO_TUNG_NOI_BO>` / `<code VP_CHAO_BAN_CK>` / `<code VP_KHAC>` trong logic KPI Block 20 hiện là placeholder. | Giả định scheme TT_VIOLATION_TYPE đã bao phủ 7 loại hình theo biểu TT01 (UBCK ban hành chính thức). Cần trao đổi với BA + khảo sát dữ liệu thực tế Silver để xác nhận mã chính xác trong Phase 2 trước khi viết Detail Mapping. | K_TT_75..K_TT_88 | Open |
+| TT_O20 | Mapping 7 loại hình trong biểu báo cáo TT01 sang Classification Code cụ thể của scheme TT_VIOLATION_TYPE trong Silver chưa được xác nhận. Các mã `<code VP_CTDC_TCCBCK>` / `<code VP_CTCK>` / `<code VP_CTQLQ>` / `<code VP_CDL_CDNB>` / `<code VP_THAO_TUNG_NOI_BO>` / `<code VP_CHAO_BAN_CK>` / `<code VP_KHAC>` trong logic KPI Nhóm 20 hiện là placeholder. | Giả định scheme TT_VIOLATION_TYPE đã bao phủ 7 loại hình theo biểu TT01 (UBCK ban hành chính thức). Cần trao đổi với BA + khảo sát dữ liệu thực tế Silver để xác nhận mã chính xác trong Phase 2 trước khi viết Detail Mapping. | K_TT_75..K_TT_88 | Open |
