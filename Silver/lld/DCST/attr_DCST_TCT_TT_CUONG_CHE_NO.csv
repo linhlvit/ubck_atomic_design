@@ -3,7 +3,7 @@ Tax Debt Enforcement Order Id,Id tự sinh (surrogate key),Surrogate Key,false,t
 Tax Debt Enforcement Order Code,Mã định danh bản ghi trong DCST. BK,Text,false,false,draft,DCST.TCT_TT_CUONG_CHE_NO.ID,BK chính. PK nguồn map vào Code.,,
 Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_TT_CUONG_CHE_NO,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.,,
 Registered Taxpayer Id,Mã người nhận. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN,"FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MA_NNHAN (= MST) → Registered Taxpayer. Nullable vì link ngầm. BCV: ""Organization Tax Identification Number"" (Involved Party) — MA_NNHAN là MST của NNT.",,
-Registered Taxpayer Code,Mã người nhận,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
+Registered Taxpayer Code,Mã người nhận,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN,Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
 Taxpayer Name,Tên người nhận,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.TEN_NNHAN,"BCV: ""Organization Name"" (Involved Party). Snapshot tại thời điểm quyết định.",,
 Taxpayer Business Industry,Ngành kinh doanh đối tượng bị cưỡng chế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.NGANH_KD_DTBCC,"BCV: ""Organization Industry Classification"" (Involved Party). Snapshot tại thời điểm quyết định.",,
 Tax Authority Code,Mã cơ quan thuế,Text,true,false,draft,DCST.TCT_TT_CUONG_CHE_NO.MA_CQT,BCV: không có term riêng. Cơ quan thuế ban hành QĐ. Phân biệt với Supervisory Tax Authority (cơ quan quản lý NNT).,,

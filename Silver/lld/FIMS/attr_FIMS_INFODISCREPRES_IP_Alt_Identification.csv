@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Disclosure Representative.,Surrogate Key,false,false,draft,FIMS.INFODISCREPRES.Id,FK target: Disclosure Representative.Disclosure Representative Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã người/tổ chức đại diện CBTT.,Text,false,false,draft,FIMS.INFODISCREPRES.Id,FK target: Disclosure Representative.Disclosure Representative Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã người/tổ chức đại diện CBTT.,Text,false,false,draft,FIMS.INFODISCREPRES.Id,Lookup pair: Disclosure Representative.Disclosure Representative Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=FIMS.INFODISCREPRES,
 Identification Type Code,Loại giấy tờ: CCCD.,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. ETL-derived.,IP_ALT_ID_TYPE=CITIZEN_ID,CITIZEN_ID
 Identification Number,Số CCCD.,Text,true,false,draft,FIMS.INFODISCREPRES.IdAdd,"Chú ý: tên cột nguồn bị đảo — IdAdd chứa số CCCD, IdNo chứa nơi cấp.",IP_ALT_ID_TYPE=CITIZEN_ID,

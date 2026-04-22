@@ -1,10 +1,10 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Disclosure Notification Id,Khóa đại diện cho instance thông báo CBTT.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Disclosure Notification Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.notifications.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.notifications,
 Notification Business Code,Mã thông báo (mã nghiệp vụ).,Text,true,false,draft,IDS.notifications.noti_cd,Mã nghiệp vụ — khác BK kỹ thuật.,,
 Disclosure Form Definition Id,FK đến định nghĩa loại hồ sơ/tin CBTT.,Surrogate Key,true,false,draft,IDS.notifications.form_id,FK target: Disclosure Form Definition.Disclosure Form Definition Id.,,
-Disclosure Form Definition Code,Mã định nghĩa loại hồ sơ/tin CBTT.,Text,true,false,draft,IDS.notifications.form_cd,FK target: Disclosure Form Definition.Disclosure Form Definition Business Code. Pair with Disclosure Form Definition Id. Nguồn lưu denormalized form_cd cùng form_id.,,
+Disclosure Form Definition Code,Mã định nghĩa loại hồ sơ/tin CBTT.,Text,true,false,draft,IDS.notifications.form_cd,Lookup pair: Disclosure Form Definition.Disclosure Form Definition Business Code. Pair with Disclosure Form Definition Id. Nguồn lưu denormalized form_cd cùng form_id.,,
 Notification Title,Tiêu đề thông báo (tiếng Việt).,Text,true,false,draft,IDS.notifications.noti_title_vi,,,
 Notification English Title,Tiêu đề thông báo (tiếng Anh).,Text,true,false,draft,IDS.notifications.noti_title_en,,,
 Notification Content,Nội dung thông báo (tiếng Việt).,Text,true,false,draft,IDS.notifications.noti_content_vi,,,

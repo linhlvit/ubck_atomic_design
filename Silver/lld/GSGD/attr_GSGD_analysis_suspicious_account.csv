@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Market Surveillance Suspicious Account Analysis Result Id,Khóa đại diện cho kết quả phân tích tài khoản nghi vấn.,Surrogate Key,false,true,draft,,,,
 Market Surveillance Suspicious Account Analysis Result Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.analysis_suspicious_account.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.analysis_suspicious_account,
 Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.analysis_suspicious_account.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
-Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.analysis_suspicious_account.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.analysis_suspicious_account.case_file_id,Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
 Workflow Type Code,"Loại quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường.",Classification Value,false,false,draft,GSGD.analysis_suspicious_account.workflow_type,Scheme: GSGD_WORKFLOW_TYPE.,GSGD_WORKFLOW_TYPE,
 Result Type Code,"Loại kết quả: 1=Kết quả phân tích, 2=Kết quả kiểm tra.",Classification Value,false,false,draft,GSGD.analysis_suspicious_account.result_type,Scheme: GSGD_RESULT_TYPE.,GSGD_RESULT_TYPE,
 Account Code,Mã tài khoản nghi vấn.,Text,false,false,draft,GSGD.analysis_suspicious_account.account_code,,,

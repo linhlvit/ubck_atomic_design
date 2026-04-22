@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Public Company Legal Representative.,Surrogate Key,false,false,draft,IDS.legal_representative.id,FK target: Public Company Legal Representative.Public Company Legal Representative Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã người đại diện.,Text,false,false,draft,IDS.legal_representative.id,FK target: Public Company Legal Representative.Public Company Legal Representative Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã người đại diện.,Text,false,false,draft,IDS.legal_representative.id,Lookup pair: Public Company Legal Representative.Public Company Legal Representative Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.legal_representative,
 Identification Type Code,Loại giấy tờ — CMND/CCCD/Hộ chiếu (nguồn không phân biệt rõ).,Classification Value,false,false,draft,,Scheme: IP_ALT_ID_TYPE. Nguồn mô tả identity_no là CMND/CCCD/Hộ chiếu nhưng không có cột type phân biệt — dùng NATIONAL_ID làm default. Cần profile data nguồn.,IP_ALT_ID_TYPE=NATIONAL_ID,NATIONAL_ID
 Identification Number,Số CMND/CCCD/Hộ chiếu.,Text,true,false,draft,IDS.legal_representative.identity_no,,IP_ALT_ID_TYPE=NATIONAL_ID,

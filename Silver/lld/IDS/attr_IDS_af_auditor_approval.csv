@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Auditor Approval Id,Khóa đại diện cho hồ sơ chấp thuận kiểm toán viên.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Auditor Approval Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.af_auditor_approval.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.af_auditor_approval,
 Audit Firm Id,FK đến công ty kiểm toán.,Surrogate Key,false,false,draft,IDS.af_auditor_approval.af_profile_id,FK target: Audit Firm.Audit Firm Id.,,
-Audit Firm Code,Mã công ty kiểm toán.,Text,false,false,draft,IDS.af_auditor_approval.af_profile_id,FK target: Audit Firm.Audit Firm Code. Pair with Audit Firm Id.,,
+Audit Firm Code,Mã công ty kiểm toán.,Text,false,false,draft,IDS.af_auditor_approval.af_profile_id,Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id.,,
 Auditor Full Name,Họ tên kiểm toán viên.,Text,true,false,draft,IDS.af_auditor_approval.full_name,Denormalized — entity grain là hồ sơ chấp thuận; kiểm toán viên không có entity Involved Party riêng trong scope IDS.,,
 Audit Practice Certificate Number,Số GCN đăng ký hành nghề kiểm toán.,Text,true,false,draft,IDS.af_auditor_approval.audit_practice_cert_no,,,
 Position Title Code,Chức vụ kiểm toán viên.,Classification Value,true,false,draft,IDS.af_auditor_approval.position_title_cd,Scheme: IDS_AF_POSITION_TITLE. Dùng chung với af_legal_representative.,IDS_AF_POSITION_TITLE,

@@ -3,7 +3,7 @@ Tax Financial Statement Id,Id tự sinh (surrogate key),Surrogate Key,false,true
 Tax Financial Statement Code,Mã định danh bản ghi trong DCST. BK,Text,false,false,draft,DCST.TCT_BAO_CAO.ID,BK chính. PK nguồn map vào Code — không đưa vào technical field.,,
 Source System Code,Mã nguồn dữ liệu. Giá trị: DCST.TCT_BAO_CAO,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. Hardcode.,,
 Registered Taxpayer Id,Mã số thuế. FK đến Registered Taxpayer,Surrogate Key,true,false,draft,DCST.TCT_BAO_CAO.MST,"FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MST → Registered Taxpayer. Nullable vì link ngầm có thể không resolve được. BCV: ""Organization Tax Identification Number"" (Involved Party) — MST là mã định danh NNT.",,
-Registered Taxpayer Code,Mã số thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.MST,FK target: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
+Registered Taxpayer Code,Mã số thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.MST,Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id.,,
 Taxpayer Name,Tên người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.TEN_NNT,"BCV: ""Organization Name"" (Involved Party). Denormalized snapshot — grain tờ khai, không tách IP.",,
 Taxpayer Address,Địa chỉ người nộp thuế,Text,true,false,draft,DCST.TCT_BAO_CAO.DIA_CHI_NNT,"BCV: ""Postal Address"" (Location). Denormalized — grain tờ khai, không tách IP Postal Address.",,
 Taxpayer Ward,Phường xã,Text,true,false,draft,DCST.TCT_BAO_CAO.PHUONG_XA,"BCV: ""Postal Address"" (Location). Denormalized. Prefix Taxpayer nhất quán nhóm địa chỉ.",,

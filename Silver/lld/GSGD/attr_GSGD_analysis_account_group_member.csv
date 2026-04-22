@@ -1,13 +1,13 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Market Surveillance Account Group Member Analysis Result Id,Khóa đại diện cho kết quả phân tích thành viên nhóm tài khoản.,Surrogate Key,false,true,draft,,,,
 Market Surveillance Account Group Member Analysis Result Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.analysis_account_group_member.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.analysis_account_group_member,
 Market Surveillance Case Id,FK đến vụ việc giám sát.,Surrogate Key,false,false,draft,GSGD.analysis_account_group_member.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Id.,,
-Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.analysis_account_group_member.case_file_id,FK target: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
+Market Surveillance Case Code,Mã vụ việc. Denormalized.,Text,false,false,draft,GSGD.analysis_account_group_member.case_file_id,Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id.,,
 Account Investor Group Id,FK đến nhóm tài khoản. FK suy luận đã xác nhận.,Surrogate Key,true,false,draft,GSGD.analysis_account_group_member.account_group_id,FK target: Account Investor Group.Account Investor Group Id. FK suy luận — đã xác nhận HLD Tier3 6f-3.,,
-Account Investor Group Code,Mã nhóm tài khoản. Denormalized.,Text,true,false,draft,GSGD.analysis_account_group_member.account_group_id,FK target: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id.,,
+Account Investor Group Code,Mã nhóm tài khoản. Denormalized.,Text,true,false,draft,GSGD.analysis_account_group_member.account_group_id,Lookup pair: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id.,,
 Investor Account Relationship Id,FK đến mối quan hệ tài khoản.,Surrogate Key,true,false,draft,GSGD.analysis_account_group_member.relationship_id,FK target: Investor Account Relationship.Investor Account Relationship Id. FK suy luận.,,
-Investor Account Relationship Code,Mã mối quan hệ tài khoản. Denormalized.,Text,true,false,draft,GSGD.analysis_account_group_member.relationship_id,FK target: Investor Account Relationship.Investor Account Relationship Code. Pair with Investor Account Relationship Id.,,
+Investor Account Relationship Code,Mã mối quan hệ tài khoản. Denormalized.,Text,true,false,draft,GSGD.analysis_account_group_member.relationship_id,Lookup pair: Investor Account Relationship.Investor Account Relationship Code. Pair with Investor Account Relationship Id.,,
 Workflow Type Code,"Loại quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường.",Classification Value,false,false,draft,GSGD.analysis_account_group_member.workflow_type,Scheme: GSGD_WORKFLOW_TYPE.,GSGD_WORKFLOW_TYPE,
 Result Type Code,"Loại kết quả: 1=Kết quả phân tích, 2=Kết quả kiểm tra.",Classification Value,false,false,draft,GSGD.analysis_account_group_member.result_type,Scheme: GSGD_RESULT_TYPE.,GSGD_RESULT_TYPE,
 Account Code,Mã tài khoản thành viên trong kết quả phân tích.,Text,true,false,draft,GSGD.analysis_account_group_member.account_code,,,

@@ -1,8 +1,8 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Investor Trading Account Authorization Id,Khóa đại diện cho ủy quyền tài khoản giao dịch.,Surrogate Key,false,true,draft,,,,
 Investor Trading Account Authorization Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.account_authorization.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.account_authorization,
 Investor Trading Account Id,FK đến tài khoản giao dịch chứng khoán.,Surrogate Key,false,false,draft,GSGD.account_authorization.account_id,FK target: Investor Trading Account.Investor Trading Account Id.,,
-Investor Trading Account Code,Mã tài khoản giao dịch. Denormalized.,Text,false,false,draft,GSGD.account_authorization.account_id,FK target: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id.,,
+Investor Trading Account Code,Mã tài khoản giao dịch. Denormalized.,Text,false,false,draft,GSGD.account_authorization.account_id,Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id.,,
 Authorized Person Name,Người nhận ủy quyền.,Text,true,false,draft,GSGD.account_authorization.authorized_person_name,,,
 Authorization Date,Ngày nhận ủy quyền.,Date,true,false,draft,GSGD.account_authorization.authorization_date,,,

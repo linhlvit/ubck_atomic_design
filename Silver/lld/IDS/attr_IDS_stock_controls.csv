@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Stock Control Id,Khóa đại diện cho bản ghi hạn chế chuyển nhượng cổ phiếu.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Stock Control Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.stock_controls.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.stock_controls,
 Stock Holder Id,FK đến cổ đông.,Surrogate Key,false,false,draft,IDS.stock_controls.stock_holder_id,FK target: Stock Holder.Stock Holder Id.,,
-Stock Holder Code,Mã cổ đông.,Text,false,false,draft,IDS.stock_controls.stock_holder_id,FK target: Stock Holder.Stock Holder Code. Pair with Stock Holder Id.,,
+Stock Holder Code,Mã cổ đông.,Text,false,false,draft,IDS.stock_controls.stock_holder_id,Lookup pair: Stock Holder.Stock Holder Code. Pair with Stock Holder Id.,,
 Restricted Share Quantity,Số cổ phiếu bị hạn chế chuyển nhượng.,Small Counter,true,false,draft,IDS.stock_controls.restricted_share_qty,,,
 Restriction Start Date,Ngày bắt đầu hạn chế.,Date,true,false,draft,IDS.stock_controls.restriction_start_date,,,
 Restriction End Date,Ngày hết hạn chế.,Date,true,false,draft,IDS.stock_controls.restriction_end_date,,,

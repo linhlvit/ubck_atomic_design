@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Public Company Tender Offer Id,Khóa đại diện cho đợt chào mua công khai.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Public Company Tender Offer Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.company_tender_offer.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.company_tender_offer,
 Public Company Id,FK đến công ty đại chúng (công ty mục tiêu).,Surrogate Key,false,false,draft,IDS.company_tender_offer.company_profile_id,FK target: Public Company.Public Company Id.,,
-Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.company_tender_offer.company_profile_id,FK target: Public Company.Public Company Code. Pair with Public Company Id.,,
+Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.company_tender_offer.company_profile_id,Lookup pair: Public Company.Public Company Code. Pair with Public Company Id.,,
 Tender Offeror Name,Tên tổ chức/cá nhân chào mua công khai (tiếng Việt).,Text,true,false,draft,IDS.company_tender_offer.tender_offeror_name_vi,Text denormalized — bên chào mua không có entity Involved Party riêng trong scope IDS.,,
 Tender Offeror English Name,Tên tổ chức/cá nhân chào mua công khai (tiếng Anh).,Text,true,false,draft,IDS.company_tender_offer.tender_offeror_name_en,,,
 Tender Offeror Identification Number,Số CMND/Hộ chiếu/GCN ĐKDN của bên chào mua.,Text,true,false,draft,IDS.company_tender_offer.offeror_id_no,Text denormalized — bên chào mua không có entity riêng.,,

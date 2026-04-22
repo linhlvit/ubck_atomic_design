@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Audit Firm Legal Representative.,Surrogate Key,false,false,draft,IDS.af_legal_representative.id,FK target: Audit Firm Legal Representative.Audit Firm Legal Representative Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã người đại diện pháp luật.,Text,false,false,draft,IDS.af_legal_representative.id,FK target: Audit Firm Legal Representative.Audit Firm Legal Representative Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã người đại diện pháp luật.,Text,false,false,draft,IDS.af_legal_representative.id,Lookup pair: Audit Firm Legal Representative.Audit Firm Legal Representative Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.af_legal_representative,
 Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,PHONE
 Electronic Address Value,Số điện thoại liên hệ.,Text,true,false,draft,IDS.af_legal_representative.phone_no,,IP_ELEC_ADDR_TYPE=PHONE,

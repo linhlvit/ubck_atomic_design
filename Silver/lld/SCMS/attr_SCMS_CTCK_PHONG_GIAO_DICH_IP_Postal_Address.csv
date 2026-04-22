@@ -1,10 +1,10 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến phòng giao dịch.,Surrogate Key,false,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.ID,FK target: Securities Company Organization Unit.Securities Company Organization Unit Id.,,
-Involved Party Code,Mã phòng giao dịch.,Text,false,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.ID,FK target: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã phòng giao dịch.,Text,false,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.ID,Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_PHONG_GIAO_DICH,
 Address Type Code,Loại địa chỉ — trụ sở chính.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. ETL-derived: hardcode HEAD_OFFICE.,IP_ADDR_TYPE=HEAD_OFFICE,HEAD_OFFICE
 Address Detail,Địa chỉ phòng giao dịch.,Text,true,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.DIA_CHI,Text tự do — denormalized.,,
 Province Id,FK đến tỉnh/thành phố.,Surrogate Key,true,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.TINH_THANH_ID,FK target: Geographic Area.Geographic Area Id. Lookup: DM_TINH_THANH.,,
-Province Code,Mã tỉnh/thành phố.,Text,true,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.TINH_THANH_ID,FK target: Geographic Area.Geographic Area Code. Pair with Province Id.,,
+Province Code,Mã tỉnh/thành phố.,Text,true,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.TINH_THANH_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id.,,
 District Name,Quận/huyện.,Text,true,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.QUAN_HUYEN,Text denormalized — không có bảng lookup quận/huyện trong scope.,,
 Ward Name,Phường/xã.,Text,true,false,draft,SCMS.CTCK_PHONG_GIAO_DICH.PHUONG_XA,Text denormalized.,,

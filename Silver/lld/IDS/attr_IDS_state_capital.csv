@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Public Company State Capital Id,Khóa đại diện cho bản ghi sở hữu nhà nước trong công ty đại chúng.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Public Company State Capital Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.state_capital.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.state_capital,
 Public Company Id,FK đến công ty đại chúng.,Surrogate Key,false,false,draft,IDS.state_capital.company_profile_id,FK target: Public Company.Public Company Id.,,
-Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.state_capital.company_profile_id,FK target: Public Company.Public Company Code. Pair with Public Company Id.,,
+Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.state_capital.company_profile_id,Lookup pair: Public Company.Public Company Code. Pair with Public Company Id.,,
 State Representative Name,Tên đại diện nhà nước (tiếng Việt).,Text,true,false,draft,IDS.state_capital.state_rep_name_vi,,,
 State Representative English Name,Tên đại diện nhà nước (tiếng Anh).,Text,true,false,draft,IDS.state_capital.state_rep_name_en,,,
 Owned Share Quantity,Số cổ phiếu sở hữu nhà nước.,Small Counter,true,false,draft,IDS.state_capital.owned_share_qty,,,

@@ -1,6 +1,6 @@
 ﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến {Parent Entity}.,Surrogate Key,false,false,draft,{SOURCE}.{table}.id,FK target: {Parent Entity}.{Parent Entity} Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã {parent entity}.,Text,false,false,draft,{SOURCE}.{table}.id,FK target: {Parent Entity}.{Parent Entity} Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã {parent entity}.,Text,false,false,draft,{SOURCE}.{table}.id,Lookup pair: {Parent Entity}.{Parent Entity} Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM={SOURCE}.{table},
 Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,PHONE
 Electronic Address Value,Số điện thoại.,Text,true,false,draft,{SOURCE}.{table}.{phone_col},,IP_ELEC_ADDR_TYPE=PHONE,

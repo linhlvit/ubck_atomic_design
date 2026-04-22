@@ -1,8 +1,8 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Stock Holder.,Surrogate Key,false,false,draft,IDS.identity.stock_holder_id,FK target: Stock Holder.Stock Holder Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã cổ đông.,Text,false,false,draft,IDS.identity.stock_holder_id,FK target: Stock Holder.Stock Holder Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã cổ đông.,Text,false,false,draft,IDS.identity.stock_holder_id,Lookup pair: Stock Holder.Stock Holder Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.identity,
-Identification Type Code,"Loại giấy tờ định danh (CMND/CCCD/Hộ chiếu/GPKD).",Classification Value,false,false,draft,IDS.identity.identity_type_cd,Scheme: IP_ALT_ID_TYPE. ETL map identity_type_cd (scheme IDS_IDENTITY_TYPE theo lookup_values) sang scheme chuẩn IP_ALT_ID_TYPE khi ingestion.,IP_ALT_ID_TYPE=(source),
+Identification Type Code,Loại giấy tờ định danh (CMND/CCCD/Hộ chiếu/GPKD).,Classification Value,false,false,draft,IDS.identity.identity_type_cd,Scheme: IP_ALT_ID_TYPE. ETL map identity_type_cd (scheme IDS_IDENTITY_TYPE theo lookup_values) sang scheme chuẩn IP_ALT_ID_TYPE khi ingestion.,IP_ALT_ID_TYPE=(source),
 Identification Number,Số giấy tờ.,Text,true,false,draft,IDS.identity.identity_no,,IP_ALT_ID_TYPE=(source),
 Issue Date,Ngày cấp giấy tờ.,Date,true,false,draft,IDS.identity.identity_issued_date,,IP_ALT_ID_TYPE=(source),
 Issuing Authority Name,Nơi cấp giấy tờ.,Text,true,false,draft,IDS.identity.identity_issued_place,,IP_ALT_ID_TYPE=(source),

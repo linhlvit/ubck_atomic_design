@@ -1,0 +1,36 @@
+// Silver Lakehouse — FIMS
+
+Table stock_exchange [note: "So giao dich chung khoan - thanh vien thi truong trong he thong FIMS (HNX, HOSE)."] {
+  stock_exchange_id bigint [pk, not null]
+  stock_exchange_code varchar [not null]
+  source_system_code varchar [not null]
+  country_of_registration_id bigint
+  country_of_registration_code varchar
+  full_name varchar [not null]
+  english_name varchar
+  abbreviation varchar
+  life_cycle_status_code varchar
+  description varchar
+  created_by varchar
+  created_timestamp timestamp
+  updated_timestamp timestamp
+}
+
+Table depository_center [note: "Trung tam luu ky chung khoan quoc gia - thanh vien thi truong trong he thong FIMS (VSD)."] {
+  depository_center_id bigint [pk, not null]
+  depository_center_code varchar [not null]
+  source_system_code varchar [not null]
+  country_of_registration_id bigint
+  country_of_registration_code varchar
+  full_name varchar [not null]
+  english_name varchar
+  abbreviation varchar
+  life_cycle_status_code varchar
+  description varchar
+  created_by varchar
+  created_timestamp timestamp
+  updated_timestamp timestamp
+}
+
+// Ref: stock_exchange.country_of_registration_id > geographic_area.geographic_area_id // out-of-source: Geographic Area không nằm trong FIMS
+// Ref: depository_center.country_of_registration_id > geographic_area.geographic_area_id // out-of-source: Geographic Area không nằm trong FIMS

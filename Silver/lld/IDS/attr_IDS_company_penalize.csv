@@ -1,10 +1,10 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Public Company Penalty Id,Khóa đại diện cho quyết định xử phạt hành chính.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Public Company Penalty Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.company_penalize.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.company_penalize,
 Public Company Id,FK đến công ty đại chúng.,Surrogate Key,false,false,draft,IDS.company_penalize.company_profile_id,FK target: Public Company.Public Company Id.,,
-Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.company_penalize.company_profile_id,FK target: Public Company.Public Company Code. Pair with Public Company Id.,,
-Penalized Subject Type Code,"Đối tượng bị xử phạt (công ty đại chúng / nhà đầu tư liên quan).",Classification Value,true,false,draft,IDS.company_penalize.penalized_subjet_type_cd,Scheme: IDS_PENALIZED_SUBJECT_TYPE.,IDS_PENALIZED_SUBJECT_TYPE,
+Public Company Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.company_penalize.company_profile_id,Lookup pair: Public Company.Public Company Code. Pair with Public Company Id.,,
+Penalized Subject Type Code,Đối tượng bị xử phạt (công ty đại chúng / nhà đầu tư liên quan).,Classification Value,true,false,draft,IDS.company_penalize.penalized_subjet_type_cd,Scheme: IDS_PENALIZED_SUBJECT_TYPE.,IDS_PENALIZED_SUBJECT_TYPE,
 Investor Name,Tên nhà đầu tư bị xử phạt (null khi đối tượng là công ty).,Text,true,false,draft,IDS.company_penalize.investor_name,Text denormalized — nhà đầu tư bị phạt không có entity Involved Party riêng trong scope IDS.,,
 Investor Identification Number,Số CCCD/Hộ chiếu của nhà đầu tư.,Text,true,false,draft,IDS.company_penalize.investor_id_no,Text denormalized.,,
 Investor Position Title,Chức vụ của nhà đầu tư.,Text,true,false,draft,IDS.company_penalize.investor_position_title,Text denormalized — chức vụ tại công ty đại chúng.,,
