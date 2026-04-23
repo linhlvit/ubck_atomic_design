@@ -69,6 +69,7 @@ Copy [`templates/attr_main_entity.csv`](templates/attr_main_entity.csv) làm sta
 #### 3a. Mô tả (description)
 - Ghép 2 phần: **mô tả gốc từ CSDL nguồn (giữ nguyên)** + mô tả bổ sung trên model (nếu có).
 - Không bỏ mô tả nguồn, không viết lại theo cách hiểu riêng.
+- **Tiếng Việt PHẢI có dấu đầy đủ** (Unicode UTF-8). Không viết Việt-không-dấu, không viết tắt. Hiển thị trực tiếp trong tài liệu Word handover (`silver-gen-docs`). Nếu mô tả gốc từ CSDL nguồn không có dấu → bổ sung dấu khi copy.
 
 #### 3b. Data Domain
 Dùng đúng 1 trong 12 Data Domain chuẩn (chi tiết xem [`reference/data_domains.md`](reference/data_domains.md)). 2 Data Domain mở rộng cho junction denormalized: `Array<Text>`, `Array<Struct>`.
@@ -144,9 +145,22 @@ Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalize
 Thứ tự: tag automation trước, notes sau.
 
 **FK đến Fundamental entity:**
-- Id: `FK target: {Silver Entity Name}.{Target Attribute Name}. {notes}`
-- Code: `FK target: {Silver Entity Name}.{Target Attribute Name}. Pair with {Id field name}. {notes}`
-- Currency Code: `FK target: Currency.Currency Code. {notes}`
+
+Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup, không phải FK constraint):
+
+- **Id** — FK constraint duy nhất (Surrogate Key):
+  `FK target: {Silver Entity Name}.{Silver Entity Name} Id. {notes}`
+  → `silver-gen-docs` parse prefix `FK target:` và đưa vào bảng Constraint của tài liệu CSDL.
+
+- **Code** — denormalized lookup (KHÔNG phải FK constraint, chỉ là copy giá trị business key cho tiện query):
+  `Lookup pair: {Silver Entity Name}.{Silver Entity Name} Code. Pair with {Id field name}. {notes}`
+  → `silver-gen-docs` KHÔNG đưa Code vào bảng Constraint. Chỉ Id mới sinh constraint.
+
+- **Currency Code** (Classification Value pattern, không có Id surrogate):
+  `FK target: Currency.Currency Code. {notes}`
+  → vẫn dùng `FK target:` vì đây là FK constraint trực tiếp đến Currency entity (không có cặp Id+Code).
+
+**Tại sao tách syntax:** parser của `silver-gen-docs` đơn giản hoá — chỉ scan `FK target:` để build Constraint. Code có comment `Lookup pair:` → tự động không match → không bị duplicate trong Constraint table (đúng chuẩn DBA: 1 FK = 1 constraint, không lặp lại Code).
 
 **Classification Value:**
 - `Scheme: {SCHEME_CODE}. {notes}`
@@ -174,6 +188,7 @@ Trước khi xuất file:
 - [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (`Charter Capital Amount`, `Life Cycle Status Code`...)?
 - [ ] **Entity dùng chung nhiều source:** attribute tên công ty/tên tắt/tên tiếng Anh phải dùng **prefix entity** nhất quán (`Fund Management Company Name`, `Custodian Bank Short Name`) — KHÔNG dùng `Full Name` / `Abbreviation` / `English Name` cho entity shared.
 - [ ] Format `nullable` nhất quán: `true`/`false` — không dùng `Yes`/`No`.
+- [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest.
@@ -205,8 +220,8 @@ Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,ap
 **Ví dụ shared entity (IP Electronic Address với 2 context):**
 ```csv
 attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-Involved Party Id,FK đến Securities Practitioner.,Surrogate Key,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: ...,,
-Involved Party Code,Mã người hành nghề.,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: ...,,
+Involved Party Id,FK đến Securities Practitioner.,Surrogate Key,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: Securities Practitioner.Securities Practitioner Id.,,
+Involved Party Code,Mã người hành nghề.,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Professionals,
 Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,
 Electronic Address Value,Số điện thoại.,Text,true,false,draft,NHNCK.qlnhn.Professionals.Phone,,IP_ELEC_ADDR_TYPE=PHONE,

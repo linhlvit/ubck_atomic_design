@@ -211,7 +211,7 @@ bcv_core_object,bcv_concept,silver_entity,table_type,status,description,source_t
 - `bcv_core_object`: 1 trong 15 BCV Core Object (Involved Party, Location, Condition, Arrangement, Product, Transaction, Communication, Event, Business Activity, Documentation, Property, Business Direction, Common, Group, Accounting). Business Activity là Core Object độc lập, không phải sub-type của Event.
 - `bcv_concept`: BCV Concept đã gán (ví dụ: `[Involved Party] Portfolio Fund Management Company`).
 - `silver_entity`: Tên Silver entity đầy đủ (ví dụ: `Fund Management Company`).
-- `description`: Tiếng Việt, súc tích, kết hợp BCV Term + ý nghĩa nghiệp vụ bảng nguồn.
+- `description`: Tiếng Việt **CÓ DẤU đầy đủ** (Unicode UTF-8), súc tích, kết hợp BCV Term + ý nghĩa nghiệp vụ bảng nguồn. Không viết Việt-không-dấu, không viết tắt. Hiển thị trực tiếp trong tài liệu Word handover (`silver-gen-docs`).
 - `source_table`: Bảng nguồn dạng `SOURCE_SYSTEM.TABLE`. Nhiều bảng → phân cách bằng dấu phẩy.
 
 **Quy tắc cập nhật:** Thêm dòng entity mới qua `aggregate_silver.py`. Shared entity từ source khác → bổ sung source_table vào dòng hiện có, không tạo dòng trùng. Sort: `bcv_core_object` (A→Z) → `silver_entity` (A→Z).

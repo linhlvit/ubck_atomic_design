@@ -1,0 +1,28 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Application Education Certificate Document,SCD4A,,,,Văn bằng/chứng chỉ học tập đính kèm hồ sơ CCHN. Ghi nhận loại chuyên môn và file đính kèm kèm trạng thái thẩm định.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,APPLICATIONSPECIALIZATIONS,ap_sp,"id, applicationid, specializationid, filename, filepath, format, filesize, note, status, assigneeid, appraisaledat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_application_education_certificate_document_id,"hash_id('NHNCK_ApplicationSpecializations', ap_sp.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_application_education_certificate_document_code,ap_sp.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_ApplicationSpecializations',string,,,,Mã nguồn dữ liệu,,,
+4,license_application_id,"hash_id('NHNCK_Applications', ap_sp.applicationid)",string,,,,FK đến hồ sơ,,,
+5,license_application_code,ap_sp.applicationid,string,,,,Mã hồ sơ,,,
+6,specialization_type_code,ap_sp.specializationid,string,,,,Mã chuyên môn (FK → Specializations),,,
+7,file_name,ap_sp.filename,string,,,,Tên file chứng chỉ chuyên môn,,,
+8,file_path,ap_sp.filepath,string,,,,Đường dẫn file,,,
+9,file_format,ap_sp.format,string,,,,Loại file,,,
+10,file_size,ap_sp.filesize,string,,,,Dung lượng file (bytes),,,
+11,specialization_note,ap_sp.note,string,,,,Nội dung/ghi chú,,,
+12,appraisal_status_code,ap_sp.status,string,,,,Trạng thái thẩm định,,,
+13,assignee_officer_id,,string,,,,FK đến người thẩm định,,,
+14,assignee_officer_code,ap_sp.assigneeid,string,,,,Mã người thẩm định,,,
+15,appraisaled_timestamp,ap_sp.appraisaledat,timestamp,,,,Ngày thẩm định,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

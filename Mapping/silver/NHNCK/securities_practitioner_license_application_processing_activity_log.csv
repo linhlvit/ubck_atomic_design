@@ -1,0 +1,21 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Application Processing Activity Log,Fact Append,,,,Nhật ký hoạt động xử lý hồ sơ CCHN. Ghi nhận từng bước xử lý và trạng thái hồ sơ theo thời gian.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,ACTIONLOGS,ac_lo,"id, userid, clientmachine, detail, createdat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_application_processing_activity_log_id,"hash_id('NHNCK_ActionLogs', ac_lo.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_application_processing_activity_log_code,ac_lo.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_ActionLogs',string,,,,Mã nguồn dữ liệu,,,
+4,officer_id,,string,,,,FK đến tài khoản thực hiện,,,
+5,officer_code,ac_lo.userid,string,,,,Mã tài khoản thực hiện,,,
+6,client_machine_address,ac_lo.clientmachine,string,,,,Địa chỉ IP máy thực hiện,,,
+7,activity_detail,ac_lo.detail,string,,,,Mô tả nội dung thao tác,,,
+8,created_timestamp,ac_lo.createdat,timestamp,,,,Ngày tạo,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

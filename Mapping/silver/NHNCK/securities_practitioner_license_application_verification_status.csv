@@ -1,0 +1,32 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Application Verification Status,Fact Append,,,,Bản ghi phê duyệt nội bộ hồ sơ CCHN theo cấp lãnh đạo. Ghi nhận người phê duyệt và kết quả phê duyệt tại từng cấp.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,VERIFYAPPLICATIONSTATUSES,ve_ap_st,"id, applicationid, statusid, prevstatusid, verifiedby, reason, specreason, orgreason, overviewreason, createdby, updatedby, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_application_verification_status_id,"hash_id('NHNCK_VerifyApplicationStatuses', ve_ap_st.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_application_verification_status_code,ve_ap_st.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_VerifyApplicationStatuses',string,,,,Mã nguồn dữ liệu,,,
+4,license_application_id,"hash_id('NHNCK_Applications', ve_ap_st.applicationid)",string,,,,FK đến hồ sơ,,,
+5,license_application_code,ve_ap_st.applicationid,string,,,,Mã hồ sơ,,,
+6,verification_status_code,ve_ap_st.statusid,string,,,,Trạng thái phê duyệt (FK → ApplicationStatuses),,,
+7,previous_verification_status_code,ve_ap_st.prevstatusid,string,,,,Trạng thái hồ sơ trước đó,,,
+8,verified_by_officer_id,,string,,,,FK đến người phê duyệt,,,
+9,verified_by_officer_code,ve_ap_st.verifiedby,string,,,,Mã người phê duyệt,,,
+10,rejection_reason_description,ve_ap_st.reason,string,,,,Lý do thay đổi trạng thái,,,
+11,specialization_officer_reason,ve_ap_st.specreason,string,,,,Nội dung ý kiến — Lãnh đạo chuyên môn,,,
+12,organization_officer_reason,ve_ap_st.orgreason,string,,,,Nội dung ý kiến — Lãnh đạo UBCK,,,
+13,overview_officer_reason,ve_ap_st.overviewreason,string,,,,Nội dung ý kiến — Cán bộ tổng hợp,,,
+14,created_by_officer_id,,string,,,,FK đến Officer,,,
+15,created_by_officer_code,ve_ap_st.createdby,string,,,,Mã người tạo,,,
+16,updated_by_officer_id,,string,,,,FK đến Officer,,,
+17,updated_by_officer_code,ve_ap_st.updatedby,string,,,,Mã người cập nhật,,,
+18,created_timestamp,ve_ap_st.createdat,timestamp,,,,Ngày tạo,,,
+19,updated_timestamp,ve_ap_st.updatedat,timestamp,,,,Ngày cập nhật,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Public Company.,Surrogate Key,false,false,draft,IDS.company_detail.company_profile_id,FK target: Public Company.Public Company Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.company_detail.company_profile_id,FK target: Public Company.Public Company Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã công ty đại chúng.,Text,false,false,draft,IDS.company_detail.company_profile_id,Lookup pair: Public Company.Public Company Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.company_detail,
 Address Type Code,Loại địa chỉ — trụ sở chính.,Classification Value,false,false,draft,,,IP_ADDR_TYPE=HEAD_OFFICE,HEAD_OFFICE
 Address Value,Địa chỉ trụ sở chính.,Text,true,false,draft,IDS.company_detail.head_office_addr,,IP_ADDR_TYPE=HEAD_OFFICE,

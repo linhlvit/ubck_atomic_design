@@ -1,0 +1,32 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Application Fee,Fact Append,,,,Phí thực tế phát sinh theo từng hồ sơ đăng ký CCHN. Ghi nhận loại phí và trạng thái thanh toán.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,APPLICATIONFEES,ap_fe,"id, applicationid, professionalid, feetype, fee, content, note, status, requestdate, paymentdate, expirydate, createdby, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_application_fee_id,"hash_id('NHNCK_ApplicationFees', ap_fe.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_application_fee_code,ap_fe.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_ApplicationFees',string,,,,Mã nguồn dữ liệu,,,
+4,license_application_id,"hash_id('NHNCK_Applications', ap_fe.applicationid)",string,,,,FK đến hồ sơ,,,
+5,license_application_code,ap_fe.applicationid,string,,,,Mã hồ sơ,,,
+6,practitioner_id,"hash_id('NHNCK_Professionals', ap_fe.professionalid)",string,,,,FK đến Securities Practitioner,,,
+7,practitioner_code,ap_fe.professionalid,string,,,,Mã người hành nghề,,,
+8,fee_type_code,ap_fe.feetype,string,,,,Loại phí,,,
+9,fee_amount,ap_fe.fee,"decimal(23,2)",,,,Số tiền phí (VNĐ),,,
+10,fee_content,ap_fe.content,string,,,,Nội dung phí,,,
+11,fee_note,ap_fe.note,string,,,,Ghi chú,,,
+12,payment_status_code,ap_fe.status,string,,,,Trạng thái thanh toán,,,
+13,request_date,ap_fe.requestdate,date,,,,Ngày yêu cầu thanh toán,,,
+14,payment_date,ap_fe.paymentdate,date,,,,Ngày thanh toán,,,
+15,expiry_date,ap_fe.expirydate,date,,,,Ngày hết hạn thanh toán,,,
+16,created_by_officer_id,,string,,,,FK đến Officer,,,
+17,created_by_officer_code,ap_fe.createdby,string,,,,Mã người tạo,,,
+18,created_timestamp,ap_fe.createdat,timestamp,,,,Ngày tạo,,,
+19,updated_timestamp,ap_fe.updatedat,timestamp,,,,Ngày cập nhật,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

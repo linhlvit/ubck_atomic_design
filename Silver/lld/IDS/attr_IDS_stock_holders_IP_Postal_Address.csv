@@ -1,6 +1,6 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Stock Holder.,Surrogate Key,false,false,draft,IDS.stock_holders.id,FK target: Stock Holder.Stock Holder Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã cổ đông.,Text,false,false,draft,IDS.stock_holders.id,FK target: Stock Holder.Stock Holder Code. Pair with Involved Party Id.,,
+Involved Party Code,Mã cổ đông.,Text,false,false,draft,IDS.stock_holders.id,Lookup pair: Stock Holder.Stock Holder Code. Pair with Involved Party Id.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.stock_holders,
 Address Type Code,Loại địa chỉ — địa chỉ chung (không phân biệt loại).,Classification Value,false,false,draft,,,IP_ADDR_TYPE=ADDRESS,ADDRESS
 Address Value,Địa chỉ cổ đông.,Text,true,false,draft,IDS.stock_holders.address,,IP_ADDR_TYPE=ADDRESS,

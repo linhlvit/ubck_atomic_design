@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Risk Alert Config Id,Khóa đại diện cho cấu hình ngưỡng cảnh báo chỉ tiêu rủi ro.,Surrogate Key,false,true,draft,,,,
 Risk Alert Config Code,Mã định danh cấu hình cảnh báo. BK. Map từ PK bảng nguồn.,Text,false,false,draft,QLRR.risk_alert_config.id,BK của entity.,,
 Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_alert_config,
-Risk Indicator Id,FK đến chỉ tiêu rủi ro (hệ thống hoặc tự tạo) sau gộp.,Surrogate Key,false,false,draft,QLRR.risk_alert_config.indicator_id,"FK target: Risk Indicator.Risk Indicator Id. HLD T2-02: indicator_type=1 map indicator_id; indicator_type=2 map custom_indicator_id — cả 2 về ds_indicator_id.",,
-Risk Indicator Code,Mã chỉ tiêu rủi ro.,Text,false,false,draft,QLRR.risk_alert_config.indicator_id,"FK target: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id.",,
+Risk Indicator Id,FK đến chỉ tiêu rủi ro (hệ thống hoặc tự tạo) sau gộp.,Surrogate Key,false,false,draft,QLRR.risk_alert_config.indicator_id,FK target: Risk Indicator.Risk Indicator Id. HLD T2-02: indicator_type=1 map indicator_id; indicator_type=2 map custom_indicator_id — cả 2 về ds_indicator_id.,,
+Risk Indicator Code,Mã chỉ tiêu rủi ro.,Text,false,false,draft,QLRR.risk_alert_config.indicator_id,Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id.,,
 Threshold Direction Code,"Chiều ngưỡng cảnh báo: 1=Tăng, 2=Giảm, 3=Tăng/Giảm.",Classification Value,false,false,draft,QLRR.risk_alert_config.threshold_direction,Scheme: RISK_ALERT_THRESHOLD_DIRECTION.,RISK_ALERT_THRESHOLD_DIRECTION,
 Threshold Unit Code,"Đơn vị ngưỡng: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính.",Classification Value,true,false,draft,QLRR.risk_alert_config.threshold_unit_code,Scheme: RISK_UNIT.,RISK_UNIT,
 Threshold Value,Giá trị ngưỡng kích hoạt cảnh báo.,Text,false,false,draft,QLRR.risk_alert_config.threshold_value,"Lưu dạng Text — giá trị số thập phân, parse khi sử dụng.",,

@@ -4,9 +4,9 @@ Securities Company Organization Unit Code,Mã định danh (tự động tăng).
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=SCMS.CTCK_VP_DAI_DIEN,
 Organization Unit Type Code,Loại đơn vị trực thuộc: REPRESENTATIVE_OFFICE — văn phòng đại diện.,Classification Value,false,false,draft,,Scheme: SCMS_ORG_UNIT_TYPE. ETL-derived: hardcode REPRESENTATIVE_OFFICE cho bảng này.,SCMS_ORG_UNIT_TYPE=REPRESENTATIVE_OFFICE,REPRESENTATIVE_OFFICE
 Securities Company Id,FK đến công ty chứng khoán.,Surrogate Key,false,false,draft,SCMS.CTCK_VP_DAI_DIEN.CTCK_THONG_TIN_ID,FK target: Securities Company.Securities Company Id.,,
-Securities Company Code,Mã công ty chứng khoán.,Text,false,false,draft,SCMS.CTCK_VP_DAI_DIEN.CTCK_THONG_TIN_ID,FK target: Securities Company.Securities Company Code. Pair with Securities Company Id.,,
+Securities Company Code,Mã công ty chứng khoán.,Text,false,false,draft,SCMS.CTCK_VP_DAI_DIEN.CTCK_THONG_TIN_ID,Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id.,,
 Parent Organization Unit Id,FK đến chi nhánh quản lý (cấp cha).,Surrogate Key,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.CTCK_CHI_NHANH_ID,FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Self-join — VPDD trực thuộc chi nhánh.,,
-Parent Organization Unit Code,Mã chi nhánh quản lý.,Text,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.CTCK_CHI_NHANH_ID,FK target: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Parent Organization Unit Id.,,
+Parent Organization Unit Code,Mã chi nhánh quản lý.,Text,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.CTCK_CHI_NHANH_ID,Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Parent Organization Unit Id.,,
 Organization Unit Name,Tên đầy đủ văn phòng đại diện.,Text,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.TEN_DAY_DU,,,
 Decision Number,Số quyết định thành lập/hoạt động.,Text,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.SO_QUYET_DINH,,,
 Decision Date,Ngày quyết định.,Date,true,false,draft,SCMS.CTCK_VP_DAI_DIEN.NGAY_QUYET_DINH,,,

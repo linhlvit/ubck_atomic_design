@@ -1,0 +1,23 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Regulatory Authority Organization Unit,SCD4A,,,,Đơn vị/phòng ban thuộc UBCKNN. Cấu trúc phân cấp gộp Units và Departments.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,UNITS,un,"unitcode, unitname, description, status","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,organization_unit_id,"hash_id('NHNCK_Units', un.unitcode)",string,,,,Id tự sinh (surrogate key),,,
+2,organization_unit_code,un.unitcode,string,,,,Mã đơn vị. BK,,,
+3,source_system_code,'NHNCK_Units',string,,,,Mã nguồn dữ liệu,,,
+4,organization_unit_type_code,,string,,,,Phân loại — Đơn vị (Unit),,,
+5,organization_unit_name,un.unitname,string,,,,Tên đơn vị,,,
+6,organization_unit_description,un.description,string,,,,Mô tả,,,
+7,organization_unit_status_code,un.status,string,,,,Trạng thái,,,
+8,parent_organization_unit_id,,string,,,,FK đến đơn vị cha (Units),,,
+9,parent_organization_unit_code,,string,,,,Mã đơn vị cha,,,
+10,sort_order,,string,,,,Thứ tự sắp xếp,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

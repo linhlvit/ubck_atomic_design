@@ -1,0 +1,26 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Certificate Document Activity Log,Fact Append,,,,Nhật ký hoạt động tác động lên chứng chỉ hành nghề. Ghi nhận hành động và người thực hiện.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,CERTIFICATERECORDLOGS,ce_re_lo,"id, certificaterecordid, actiontype, certificatenumber, decisionid, issuedate, note, createdby","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_certificate_document_activity_log_id,"hash_id('NHNCK_CertificateRecordLogs', ce_re_lo.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_certificate_document_activity_log_code,ce_re_lo.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_CertificateRecordLogs',string,,,,Mã nguồn dữ liệu,,,
+4,license_certificate_document_id,"hash_id('NHNCK_CertificateRecords', ce_re_lo.certificaterecordid)",string,,,,FK đến chứng chỉ,,,
+5,license_certificate_document_code,ce_re_lo.certificaterecordid,string,,,,Mã chứng chỉ,,,
+6,activity_type_code,ce_re_lo.actiontype,string,,,,Loại hành động,,,
+7,certificate_number,ce_re_lo.certificatenumber,string,,,,Số chứng chỉ tại thời điểm ghi log,,,
+8,license_decision_document_id,"hash_id('NHNCK_Decisions', ce_re_lo.decisionid)",string,,,,FK đến quyết định,,,
+9,license_decision_document_code,ce_re_lo.decisionid,string,,,,Mã quyết định,,,
+10,issue_date,ce_re_lo.issuedate,date,,,,Ngày quyết định,,,
+11,activity_note,ce_re_lo.note,string,,,,Ghi chú hoạt động,,,
+12,processed_by_officer_id,,string,,,,FK đến người xử lý,,,
+13,processed_by_officer_code,ce_re_lo.createdby,string,,,,Mã người xử lý,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

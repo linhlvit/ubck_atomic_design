@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Audit Firm Approval Id,Khóa đại diện cho hồ sơ chấp thuận công ty kiểm toán.,Surrogate Key,false,true,draft,,PK surrogate.,,
 Audit Firm Approval Code,Mã định danh (tự động tăng). BK.,Text,false,false,draft,IDS.af_approval.id,BK chính. PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=IDS.af_approval,
 Audit Firm Id,FK đến công ty kiểm toán.,Surrogate Key,false,false,draft,IDS.af_approval.af_profile_id,FK target: Audit Firm.Audit Firm Id.,,
-Audit Firm Code,Mã công ty kiểm toán.,Text,false,false,draft,IDS.af_approval.af_profile_id,FK target: Audit Firm.Audit Firm Code. Pair with Audit Firm Id.,,
+Audit Firm Code,Mã công ty kiểm toán.,Text,false,false,draft,IDS.af_approval.af_profile_id,Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id.,,
 MOF Approval Document Number,Số văn bản quyết định chấp thuận của Bộ Tài chính.,Text,true,false,draft,IDS.af_approval.mof_approval_doc_no,,,
 MOF Approval Issue Date,Ngày ban hành quyết định chấp thuận của BTC.,Date,true,false,draft,IDS.af_approval.mof_approval_issue_date,,,
 MOF Approval Start Date,Ngày bắt đầu hiệu lực quyết định chấp thuận của BTC.,Date,true,false,draft,IDS.af_approval.mof_approval_start_date,,,

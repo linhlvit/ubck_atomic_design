@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Risk Indicator Value Change Id,Khóa đại diện cho bản ghi thay đổi giá trị chỉ tiêu.,Surrogate Key,false,true,draft,,,,
 Risk Indicator Value Change Code,Mã định danh bản ghi thay đổi. BK. Map từ PK bảng nguồn.,Text,false,false,draft,QLRR.risk_indicator_value_history.id,BK của entity.,,
 Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_indicator_value_history,
 Risk Indicator Id,FK đến chỉ tiêu rủi ro.,Surrogate Key,false,false,draft,QLRR.risk_indicator_value_history.indicator_id,FK target: Risk Indicator.Risk Indicator Id.,,
-Risk Indicator Code,Mã chỉ tiêu rủi ro.,Text,false,false,draft,QLRR.risk_indicator_value_history.indicator_id,FK target: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id.,,
+Risk Indicator Code,Mã chỉ tiêu rủi ro.,Text,false,false,draft,QLRR.risk_indicator_value_history.indicator_id,Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id.,,
 Old Value,Giá trị cũ trước thay đổi (null nếu là lần tạo mới).,Text,true,false,draft,QLRR.risk_indicator_value_history.old_value,Lưu dạng Text — giá trị số thập phân.,,
 New Value,Giá trị mới sau thay đổi (null nếu là xóa).,Text,true,false,draft,QLRR.risk_indicator_value_history.new_value,Lưu dạng Text — giá trị số thập phân.,,
 Unit Code,"Đơn vị đo lường tại thời điểm thay đổi: 1=%, 2=Điểm, 3=Tỷ VND, …",Classification Value,true,false,draft,QLRR.risk_indicator_value_history.unit_code,Scheme: RISK_UNIT.,RISK_UNIT,

@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Market Surveillance Analysis Criterion Value Id,Khóa đại diện cho giá trị tiêu chí phân tích.,Surrogate Key,false,true,draft,,,,
 Market Surveillance Analysis Criterion Value Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.analysis_attribute_value.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.analysis_attribute_value,
 Market Surveillance Analysis Criterion Id,FK đến tiêu chí phân tích.,Surrogate Key,false,false,draft,GSGD.analysis_attribute_value.attribute_id,FK target: Market Surveillance Analysis Criterion.Market Surveillance Analysis Criterion Id.,,
-Market Surveillance Analysis Criterion Code,Mã tiêu chí phân tích. Denormalized.,Text,false,false,draft,GSGD.analysis_attribute_value.attribute_id,FK target: Market Surveillance Analysis Criterion.Market Surveillance Analysis Criterion Code. Pair with Market Surveillance Analysis Criterion Id.,,
+Market Surveillance Analysis Criterion Code,Mã tiêu chí phân tích. Denormalized.,Text,false,false,draft,GSGD.analysis_attribute_value.attribute_id,Lookup pair: Market Surveillance Analysis Criterion.Market Surveillance Analysis Criterion Code. Pair with Market Surveillance Analysis Criterion Id.,,
 Workflow Type Code,"Quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường.",Classification Value,false,false,draft,GSGD.analysis_attribute_value.workflow_type,Scheme: GSGD_WORKFLOW_TYPE.,GSGD_WORKFLOW_TYPE,
 Value Number,Giá trị số (nếu data_type = NUMBER).,Text,true,false,draft,GSGD.analysis_attribute_value.value_number,Lưu dạng Text — parse theo data_type khi sử dụng.,,
 Value String,Giá trị chuỗi (nếu data_type = STRING hoặc mô tả mở rộng).,Text,true,false,draft,GSGD.analysis_attribute_value.value_string,,,

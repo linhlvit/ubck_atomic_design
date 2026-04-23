@@ -1,0 +1,25 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Securities Practitioner License Certificate Group Document,SCD4A,,,,Nhóm chứng chỉ hành nghề trong một quyết định cấp/thu hồi/hủy tập thể. Liên kết với quyết định hành chính.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,CERTIFICATERECORDGROUPS,ce_re_gr,"id, groupname, type, decisionid, description, notes, status, createdat, updatedat","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,license_certificate_group_document_id,"hash_id('NHNCK_CertificateRecordGroups', ce_re_gr.id)",string,,,,Id tự sinh (surrogate key),,,
+2,license_certificate_group_document_code,ce_re_gr.id,string,,,,Mã định danh (tự động tăng). BK,,,
+3,source_system_code,'NHNCK_CertificateRecordGroups',string,,,,Mã nguồn dữ liệu,,,
+4,group_name,ce_re_gr.groupname,string,,,,Tên nhóm,,,
+5,group_type_code,ce_re_gr.type,string,,,,Loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi),,,
+6,license_decision_document_id,"hash_id('NHNCK_Decisions', ce_re_gr.decisionid)",string,,,,FK đến quyết định,,,
+7,license_decision_document_code,ce_re_gr.decisionid,string,,,,Mã quyết định,,,
+8,group_description,ce_re_gr.description,string,,,,Mô tả nhóm,,,
+9,group_notes,ce_re_gr.notes,string,,,,Ghi chú,,,
+10,group_status_code,ce_re_gr.status,string,,,,Trạng thái nhóm,,,
+11,created_timestamp,ce_re_gr.createdat,timestamp,,,,Ngày tạo,,,
+12,updated_timestamp,ce_re_gr.updatedat,timestamp,,,,Ngày cập nhật,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason

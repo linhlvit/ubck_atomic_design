@@ -1,9 +1,9 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Investor Trading Account Financial Service Id,Khóa đại diện cho dịch vụ tài chính của tài khoản.,Surrogate Key,false,true,draft,,,,
 Investor Trading Account Financial Service Code,PK kỹ thuật từ bảng nguồn. BK.,Text,false,false,draft,GSGD.account_financial_service.id,BK chính. Map từ PK nguồn.,,
 Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=GSGD.account_financial_service,
 Investor Trading Account Id,FK đến tài khoản giao dịch chứng khoán.,Surrogate Key,false,false,draft,GSGD.account_financial_service.account_id,FK target: Investor Trading Account.Investor Trading Account Id.,,
-Investor Trading Account Code,Mã tài khoản giao dịch. Denormalized.,Text,false,false,draft,GSGD.account_financial_service.account_id,FK target: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id.,,
+Investor Trading Account Code,Mã tài khoản giao dịch. Denormalized.,Text,false,false,draft,GSGD.account_financial_service.account_id,Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id.,,
 Service Type Code,"Loại dịch vụ: 1=Ký quỹ, 2=Ứng trước tiền bán, 3=HĐ tài chính khác.",Classification Value,false,false,draft,GSGD.account_financial_service.service_type,Scheme: GSGD_FINANCIAL_SERVICE_TYPE.,GSGD_FINANCIAL_SERVICE_TYPE,
 Contract Number,Số hợp đồng.,Text,true,false,draft,GSGD.account_financial_service.contract_number,,,
 Contract Date,Ngày ký hợp đồng.,Date,true,false,draft,GSGD.account_financial_service.contract_date,,,
