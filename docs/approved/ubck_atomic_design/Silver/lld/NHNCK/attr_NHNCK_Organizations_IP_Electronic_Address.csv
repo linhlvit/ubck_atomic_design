@@ -1,0 +1,12 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Securities Organization Reference,Surrogate Key,false,false,draft,NHNCK.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã tổ chức,Text,false,false,draft,NHNCK.Organizations.Id,Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Organizations,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Value,Số điện thoại,Text,true,false,draft,NHNCK.Organizations.PhoneNumber,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — số di động,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=MOBILE,
+Electronic Address Value,Số di động,Text,true,false,draft,NHNCK.Organizations.MobileNumber,,IP_ELEC_ADDR_TYPE=MOBILE,
+Electronic Address Type Code,Loại kênh liên lạc — email,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Value,Email,Text,true,false,draft,NHNCK.Organizations.Email,,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Type Code,Loại kênh liên lạc — fax,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=FAX,
+Electronic Address Value,Fax,Text,true,false,draft,NHNCK.Organizations.Fax,,IP_ELEC_ADDR_TYPE=FAX,

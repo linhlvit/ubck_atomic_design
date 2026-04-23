@@ -1,0 +1,6 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.Professionals.Id,FK target: Securities Practitioner.Practitioner Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã người hành nghề,Text,false,false,draft,NHNCK.Professionals.Id,Lookup pair: Securities Practitioner.Practitioner Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Professionals,
+Identification Type Code,Loại giấy tờ định danh — CCCD/CMND,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=CITIZEN_ID,
+Identification Number,Mã định danh giấy tờ tùy thân (FK bảng identity riêng),Text,true,false,draft,NHNCK.Professionals.IdentityId,Nguồn mới: IdentityId tham chiếu bảng identity riêng — không có detail trực tiếp trong Professionals.,IP_ALT_ID_TYPE=CITIZEN_ID,
