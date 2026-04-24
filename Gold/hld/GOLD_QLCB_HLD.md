@@ -168,7 +168,10 @@ erDiagram
         int Public_Company_Id
         string Public_Company_Code
         string Public_Company_Name
+        string Public_Company_English_Name
+        string Equity_Ticker
         varchar Industry_Category_Level1_Code
+        varchar Industry_Category_Level2_Code
         varchar Equity_Listing_Exchange_Code
         date Effective_Date
         date Expiry_Date
@@ -374,7 +377,7 @@ flowchart LR
 
 | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
 |---|---|---|---|---|
-| K_QLCB_17 | Thông tin doanh nghiệp (Mã CK, Tên DN) | — | Attribute | `SELECT Public Company Code, Public Company Name` |
+| K_QLCB_17 | Thông tin doanh nghiệp (Mã CK, Tên DN) | — | Attribute | `SELECT Equity Ticker, Public Company Name` — Equity Ticker = mã CK (IDS.company_profiles.equity_ticker); Public Company Name = tên DN |
 | K_QLCB_18 | Hình thức chào bán | — | Attribute | `SELECT Offering Type Category Code` |
 | K_QLCB_19 | Đơn vị tư vấn | — | Attribute | **PENDING** — nguồn TTHC chưa có Source Analysis |
 | K_QLCB_20 | Tổ chức kiểm toán | — | Attribute | **PENDING** — nguồn TTHC chưa có Source Analysis |
@@ -398,6 +401,7 @@ erDiagram
         string Public_Company_Code
         string Public_Company_Name
         string Public_Company_English_Name
+        string Equity_Ticker
         varchar Security_Type_Code
         varchar Offering_Type_Category_Code
         string Certificate_Number
@@ -546,7 +550,7 @@ flowchart LR
 | K_QLCB_28 | Thời điểm báo cáo | Ngày | Attribute | `Public Company Securities Offering.Certificate Issue Date` | Ngày cấp GCN — dùng làm thời điểm báo cáo |
 | K_QLCB_29 | Chuyên viên | Text | Attribute | `Public Company Securities Offering.Created By Login Name` — IDS.company_securities_issuance.created_by. Giá trị là login_name kỹ thuật (không phải tên đầy đủ). Xem O_QLCB_5 |
 | K_QLCB_30 | Tên công ty | Text | Attribute | `Public Company.Public Company Name` | |
-| K_QLCB_31 | Mã chứng khoán | Text | Attribute | `Public Company.Public Company Code` | |
+| K_QLCB_31 | Mã chứng khoán | Text | Attribute | `Public Company.Equity Ticker` — IDS.company_profiles.equity_ticker | |
 | K_QLCB_32 | Sàn | Text | Attribute | `Public Company.Equity Listing Exchange Code` | Scheme: IDS_EQUITY_LISTING_EXCH |
 | K_QLCB_33 | Loại chứng khoán | Text | Attribute | `Public Company Securities Offering.Security Type Code` | Scheme: IDS_ISSUANCE_SECURITY_TYPE |
 
