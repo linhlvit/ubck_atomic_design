@@ -1,0 +1,82 @@
+gold_entity,gold_attribute,data_type,key,description,source_entity,source_attribute
+Calendar Date Dimension,Date Dimension Id,INT,PK,Surrogate key (YYYYMMDD),Generated,Generated
+Calendar Date Dimension,Full Date,DATE,BK,Ngày đầy đủ,Generated,Generated
+Calendar Date Dimension,Year,INT,,Năm,Generated,Generated
+Calendar Date Dimension,Month,INT,,Tháng,Generated,Generated
+Listed Security Dimension,Security Dimension Id,INT,PK,Surrogate key,Generated,Generated
+Listed Security Dimension,Ticker Code,VARCHAR,BK,Mã CK (VNM / FPT / HPG…),TBD (SGDCK),TBD
+Listed Security Dimension,Ticker Name,NVARCHAR,,Tên CK,TBD (SGDCK),TBD
+Listed Security Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
+Listed Security Dimension,End Date,DATE,,9999-12-31 = hiện hành,,ETL derived
+Foreign Investor Dimension,Investor Dimension Id,INT,PK,Surrogate key,Generated,Generated
+Foreign Investor Dimension,Trading Code,VARCHAR,BK,Mã số giao dịch — định danh duy nhất NĐTNN (1 Mã GD = 1 NĐT),Foreign Investor,Trading Code
+Foreign Investor Dimension,Investor Name,NVARCHAR,,Tên NĐT — phục vụ Top NĐT vào/rút ròng,Foreign Investor,Investor Name
+Foreign Investor Dimension,Investor Type Code,VARCHAR,,Loại hình NĐT: INDIVIDUAL / FUND / OTHER_ORG. Thuộc tính bất biến — denormalize,Foreign Investor,Investor Type Code
+Foreign Investor Dimension,Investor Type Name,NVARCHAR,,Cá nhân / Quỹ / Tổ chức khác quỹ (denormalize),Classification Value,FIMS_INVESTOR_TYPE
+Foreign Investor Dimension,Registration Date,DATE,,Ngày đăng ký mã GD,Foreign Investor,Registration Date
+Foreign Investor Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
+Foreign Investor Dimension,End Date,DATE,,9999-12-31 = hiện hành,,ETL derived
+Industry Dimension,Industry Dimension Id,INT,PK,Surrogate key,Generated,Generated
+Industry Dimension,Industry Code,VARCHAR,BK,Mã ngành theo phân loại IDS-GSĐC,TBD (IDS-GSĐC),TBD
+Industry Dimension,Industry Name,NVARCHAR,,Tên ngành (Ngân hàng / Bất động sản / Công nghệ…),TBD (IDS-GSĐC),TBD
+Industry Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
+Industry Dimension,End Date,DATE,,9999-12-31 = hiện hành,,ETL derived
+Geographic Area Dimension,Country Dimension Id,INT,PK,Surrogate key,Generated,Generated
+Geographic Area Dimension,Country Code,VARCHAR,BK,Mã quốc gia,Geographic Area,Area Code
+Geographic Area Dimension,Country Name,NVARCHAR,,Tên quốc gia (Singapore / Hoa Kỳ / Nhật Bản…),Geographic Area,Area Name
+Geographic Area Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
+Geographic Area Dimension,End Date,DATE,,9999-12-31 = hiện hành,,ETL derived
+Asset Category Dimension,Asset Category Dimension Id,INT,PK,Surrogate key,Generated,Generated
+Asset Category Dimension,Asset Category Code,VARCHAR,BK,Mã loại tài sản: LISTED_EQUITY_ETF / BOND / UPCOM / PRIVATE_EQUITY_OTHER / CASH_EQUIVALENT,Member Report Value,Asset Category (BC NHLK via RPTVALUES)
+Asset Category Dimension,Asset Category Name,NVARCHAR,,CP+CCQ niêm yết / Trái phiếu / UPCoM / Vốn góp+CP tư & CK khác / Tiền & tương đương tiền,Member Report Value,Asset Category Name (BC NHLK via RPTVALUES)
+Asset Category Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
+Asset Category Dimension,End Date,DATE,,9999-12-31 = hiện hành,,ETL derived
+Fact Securities Foreign Trading Snapshot,Snapshot Date,INT,,YYYYMMDD — ngày giao dịch,TBD (SGDCK),TBD
+Fact Securities Foreign Trading Snapshot,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
+Fact Securities Foreign Trading Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
+Fact Securities Foreign Trading Snapshot,Security Dimension Id,INT,FK → Listed Security Dimension,FK mã CK,Listed Security Dimension,Security Dimension Id
+Fact Securities Foreign Trading Snapshot,Industry Dimension Id,INT,FK → Industry Dimension,FK ngành,Industry Dimension,Industry Dimension Id
+Fact Securities Foreign Trading Snapshot,Foreign Investor Buy Value,"DECIMAL(18,2)",,Giá trị mua của NĐTNN (VNĐ),TBD (SGDCK),TBD
+Fact Securities Foreign Trading Snapshot,Foreign Investor Sell Value,"DECIMAL(18,2)",,Giá trị bán của NĐTNN (VNĐ),TBD (SGDCK),TBD
+Fact Securities Foreign Trading Snapshot,Total Market Value,"DECIMAL(18,2)",,Tổng giá trị GD toàn thị trường per mã CK per ngày,TBD (SGDCK),TBD
+Fact Foreign Investor Snapshot,Snapshot Date,INT,,YYYYMMDD — ngày dữ liệu batch,TBD (VSDC / FIMS),TBD
+Fact Foreign Investor Snapshot,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
+Fact Foreign Investor Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
+Fact Foreign Investor Snapshot,Investor Dimension Id,INT,FK → Foreign Investor Dimension,FK NĐT,Foreign Investor Dimension,Investor Dimension Id
+Fact Foreign Investor Snapshot,Custodian Bank Dimension Id,INT,FK → Custodian Bank Dimension,FK NHLK quản lý NĐT,Custodian Bank Dimension,Custodian Bank Dimension Id
+Fact Foreign Investor Capital Flow,Snapshot Date,INT,,YYYYMMDD — ngày cuối kỳ nửa tháng (15 hoặc cuối tháng),Reporting Period,Period End Date
+Fact Foreign Investor Capital Flow,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
+Fact Foreign Investor Capital Flow,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
+Fact Foreign Investor Capital Flow,Investor Dimension Id,INT,FK → Foreign Investor Dimension,FK NĐT — lookup từ Member Report Value → NĐT identifier,Member Report Value,NĐT identifier (lookup)
+Fact Foreign Investor Capital Flow,Country Dimension Id,INT,FK → Geographic Area Dimension,FK quốc gia — lookup chain: Foreign Investor.Nationality Code,Foreign Investor,Nationality Code (lookup chain)
+Fact Foreign Investor Capital Flow,Capital Inflow Amount,"DECIMAL(18,2)",,Dòng vốn đầu tư vào (VNĐ),Member Report Value,Cell Value (line item: vốn vào)
+Fact Foreign Investor Capital Flow,Capital Outflow Amount,"DECIMAL(18,2)",,Dòng vốn rút ra (VNĐ),Member Report Value,Cell Value (line item: vốn rút)
+Fact Market Index Snapshot,Snapshot Date,INT,,YYYYMMDD,TBD (SGDCK),TBD
+Fact Market Index Snapshot,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
+Fact Market Index Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
+Fact Market Index Snapshot,Index Code,VARCHAR,DD,Mã chỉ số: VNINDEX,TBD (SGDCK),TBD
+Fact Market Index Snapshot,Closing Value,"DECIMAL(10,2)",,Điểm đóng cửa,TBD (SGDCK),TBD
+Fact Foreign Investor Portfolio Snapshot,Snapshot Date,INT,,YYYYMMDD — ngày cuối tháng,Reporting Period,Period End Date
+Fact Foreign Investor Portfolio Snapshot,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
+Fact Foreign Investor Portfolio Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
+Fact Foreign Investor Portfolio Snapshot,Investor Dimension Id,INT,FK → Foreign Investor Dimension,FK NĐT — lookup từ Member Report Value → NĐT identifier,Member Report Value,NĐT identifier (lookup)
+Fact Foreign Investor Portfolio Snapshot,Country Dimension Id,INT,FK → Geographic Area Dimension,FK quốc gia — lookup chain: Foreign Investor.Nationality Code,Foreign Investor,Nationality Code (lookup chain)
+Fact Foreign Investor Portfolio Snapshot,Security Dimension Id,INT,FK → Listed Security Dimension,FK mã tài sản (mã CK / CCQ / TP). Non-equity → N/A row,Member Report Value,Holding identifier (lookup)
+Fact Foreign Investor Portfolio Snapshot,Asset Category Dimension Id,INT,FK → Asset Category Dimension,FK loại tài sản,Asset Category Dimension,Asset Category Dimension Id
+Fact Foreign Investor Portfolio Snapshot,Industry Dimension Id,INT,FK → Industry Dimension,FK ngành. Equity → lookup Industry. Non-equity → N/A row,Industry Dimension,Industry Dimension Id
+Fact Foreign Investor Portfolio Snapshot,Portfolio Market Value,"DECIMAL(18,2)",,Giá trị thị trường của holding,Member Report Value,Cell Value (line item: giá trị danh mục)
+Fact Foreign Ownership Snapshot,Snapshot Date,INT,,YYYYMMDD,TBD (VSDC),TBD
+Fact Foreign Ownership Snapshot,Population Date,TIMESTAMP,,ETL load timestamp,,ETL derived
+Fact Foreign Ownership Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK lịch,Calendar Date Dimension,Date Dimension Id
+Fact Foreign Ownership Snapshot,Security Dimension Id,INT,FK → Listed Security Dimension,FK mã CK,Listed Security Dimension,Security Dimension Id
+Fact Foreign Ownership Snapshot,Industry Dimension Id,INT,FK → Industry Dimension,FK ngành,Industry Dimension,Industry Dimension Id
+Fact Foreign Ownership Snapshot,Foreign Owned Shares,BIGINT,,KL CP khối ngoại đang sở hữu. Pct tính tại presentation layer: (Max - Owned) / Max × 100,Foreign Investor Stock Portfolio Snapshot,Shares Held (field TBD via CATEGORIESSTOCK)
+Fact Foreign Ownership Snapshot,Max Foreign Shares,BIGINT,,KL CP tối đa NĐTNN được phép sở hữu,TBD (VSDC),TBD
+Foreign Investor Dimension,Nationality Code,VARCHAR,,Mã quốc tịch,Foreign Investor,Nationality Code
+Foreign Investor Dimension,Nationality Name,NVARCHAR,,Tên quốc tịch (denormalize — lookup Geographic Area),Geographic Area,Country Name (lookup)
+Foreign Investor Dimension,Director Name,NVARCHAR,,Tên đại diện giao dịch (NĐT tổ chức),Foreign Investor,Director Name
+Custodian Bank Dimension,Custodian Bank Dimension Id,INT,PK,Surrogate key,Generated,Generated
+Custodian Bank Dimension,Custodian Bank Code,VARCHAR,BK,Mã NHLK,Custodian Bank,Custodian Bank Code
+Custodian Bank Dimension,Custodian Bank Name,NVARCHAR,,Tên NHLK,Custodian Bank,Custodian Bank Name
+Custodian Bank Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
+Custodian Bank Dimension,End Date,DATE,,9999-12-31 = hiện hành,,ETL derived
