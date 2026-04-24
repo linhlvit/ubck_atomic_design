@@ -57,7 +57,7 @@ flowchart LR
 
 ### Cụm 2: Chi tiết đợt chào bán (Bảng tác nghiệp)
 
-Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 4 (bảng chi tiết số lượng CK chào bán & phát hành) và Tab DATA EXPLORER — Nhóm 8–11 (tra cứu chi tiết đợt chào bán theo 4 nhóm chỉ số). Bảng tác nghiệp nhận dữ liệu trực tiếp từ Silver, không qua Dimension.
+Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 4 (bảng chi tiết số lượng CK chào bán & phát hành) và Tab CHÀO BÁN VÀ PHÁT HÀNH — Nhóm 8–11 (tra cứu chi tiết đợt chào bán theo 4 nhóm chỉ số). Bảng tác nghiệp nhận dữ liệu trực tiếp từ Silver, không qua Dimension.
 
 ```mermaid
 flowchart LR
@@ -109,156 +109,6 @@ flowchart LR
     SV1 --> G1
     G2 --> G1
     G3 --> G1
-```
-
-
----
-
-### Cụm 4: Tra cứu cá nhân — Mạng lưới & Hồ sơ (IDS + SCMS + FMS)
-
-Phục vụ Tab TRA CỨU CÁ NHÂN — Nhóm 12 (danh sách tìm kiếm), Nhóm 13 (Mạng lưới quan hệ), Nhóm 14 (Hồ sơ: Vai trò DN / Người liên quan / Tài khoản), Nhóm 17 (Lịch sử công tác). Nguồn cross-module: IDS (Stock Holder, Stock Holder Trading Account), SCMS (Securities Company Senior Personnel, Securities Company Shareholder Related Party), FMS (Investment Fund Representative Board Member).
-
-```mermaid
-flowchart LR
-    subgraph SRC_IDS["Source IDS"]
-        S1["IDS.stock_holders"]
-        S2["IDS.account_numbers"]
-        S3["IDS.company_profiles"]
-        S4["IDS.holder_relationship"]
-    end
-
-    subgraph SRC_SCMS["Source SCMS"]
-        S5["SCMS.CTCK_NHAN_SU_CAO_CAP"]
-        S6["SCMS.CTCK_CD_MOI_QUAN_HE"]
-    end
-
-    subgraph SRC_FMS["Source FMS"]
-        S7["FMS.REPRESENT"]
-        S8["FMS.TLProfiles"]
-    end
-
-    subgraph SIL["Silver"]
-        SV1["Stock Holder"]
-        SV2["Stock Holder Trading Account"]
-        SV3["Public Company"]
-        SV4["Stock Holder Relationship"]
-        SV5["Securities Company Senior Personnel"]
-        SV6["Securities Company Shareholder Related Party"]
-        SV7["Investment Fund Representative Board Member"]
-        SV8["Fund Management Company Key Person"]
-    end
-
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
-    S5 --> SV5
-    S6 --> SV6
-    S7 --> SV7
-    S8 --> SV8
-
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
-    SV5 --> G1
-    SV6 --> G1
-    SV7 --> G1
-    SV8 --> G1
-```
-
----
-
-### Cụm 5: Tra cứu cá nhân — CCHN (NHNCK)
-
-Phục vụ Tab TRA CỨU CÁ NHÂN — Nhóm 15 (Lịch sử cấp CCHN).
-
-```mermaid
-flowchart LR
-    subgraph SRC_NHNCK["Source NHNCK"]
-        S1["NHNCK.CertificateRecords"]
-        S2["NHNCK.Professionals"]
-    end
-
-    subgraph SIL["Silver"]
-        SV1["Securities Practitioner License Certificate Document"]
-        SV2["Securities Practitioner"]
-    end
-
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-
-    S1 --> SV1
-    S2 --> SV2
-
-    SV1 --> G1
-    SV2 --> G1
-```
-
----
-
-### Cụm 6: Tra cứu cá nhân — Kiểm toán viên (IDS)
-
-Phục vụ Tab TRA CỨU CÁ NHÂN — Nhóm 16 (Thông tin kiểm toán viên). Nguồn IDS (`Auditor Approval` ← IDS.af_auditor_approval).
-
-```mermaid
-flowchart LR
-    subgraph SRC_IDS["Source IDS"]
-        S1["IDS.af_auditor_approval"]
-    end
-
-    subgraph SIL["Silver"]
-        SV1["Auditor Approval"]
-    end
-
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-
-    S1 --> SV1
-    SV1 --> G1
-```
-
----
-
-### Cụm 7: Tra cứu cá nhân — Lịch sử vi phạm (Thanh Tra)
-
-Phục vụ Tab TRA CỨU CÁ NHÂN — Nhóm 18 (Lịch sử vi phạm & xử phạt hành chính). Silver từ phân hệ Thanh Tra (cả luồng GS_ và TT_).
-
-```mermaid
-flowchart LR
-    subgraph SRC_TT["Source Thanh Tra"]
-        S1["GS_HO_SO"]
-        S2["GS_VAN_BAN_XU_LY"]
-        S3["TT_HO_SO"]
-        S4["TT_KET_LUAN"]
-    end
-
-    subgraph SIL["Silver"]
-        SV1["Surveillance Enforcement Case"]
-        SV2["Surveillance Enforcement Decision"]
-        SV3["Inspection Case"]
-        SV4["Inspection Case Conclusion"]
-    end
-
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
-
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
 ```
 
 
@@ -665,7 +515,7 @@ flowchart LR
 
 ---
 
-### Tab: DATA EXPLORER
+### Tab: CHÀO BÁN VÀ PHÁT HÀNH (Data Explorer)
 
 **Slicer chung:** Sàn (dropdown), Ngành nghề (dropdown), Khoảng thời gian (Từ ngày — Đến ngày)
 
@@ -673,7 +523,7 @@ flowchart LR
 
 ---
 
-#### Nhóm 8 — Thông tin cơ sở
+#### Nhóm 8 — Thông tin cơ sở (STT 40–45)
 
 > Phân loại: **Tác nghiệp**  
 > Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**  
@@ -710,7 +560,7 @@ flowchart LR
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R8["Tab DATA EXPLORER - Nhom 8 - K_QLCB_28-33"]
+        R8["Tab CHAO BAN VA PHAT HANH - Nhom 8 - K_QLCB_28-33"]
     end
     G1 --> R8
 ```
@@ -723,7 +573,7 @@ flowchart LR
 
 ---
 
-#### Nhóm 9 — Thông tin công văn cấp phép
+#### Nhóm 9 — Thông tin công văn cấp phép (STT 46–50)
 
 > Phân loại: **Tác nghiệp**  
 > Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**
@@ -757,7 +607,7 @@ flowchart LR
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R9["Tab DATA EXPLORER - Nhom 9 - K_QLCB_34-38"]
+        R9["Tab CHAO BAN VA PHAT HANH - Nhom 9 - K_QLCB_34-38"]
     end
     G1 --> R9
 ```
@@ -770,7 +620,7 @@ flowchart LR
 
 ---
 
-#### Nhóm 10 — Thông tin cấp phép chào bán
+#### Nhóm 10 — Thông tin cấp phép chào bán (STT 51–56)
 
 > Phân loại: **Tác nghiệp**  
 > Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**  
@@ -805,7 +655,7 @@ flowchart LR
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R10["Tab DATA EXPLORER - Nhom 10 - K_QLCB_39-44"]
+        R10["Tab CHAO BAN VA PHAT HANH - Nhom 10 - K_QLCB_39-44"]
     end
     G1 --> R10
 ```
@@ -818,7 +668,7 @@ flowchart LR
 
 ---
 
-#### Nhóm 11 — Thông tin kết quả chào bán
+#### Nhóm 11 — Thông tin kết quả chào bán (STT 57–61)
 
 > Phân loại: **Tác nghiệp**  
 > Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**
@@ -851,7 +701,7 @@ flowchart LR
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R11["Tab DATA EXPLORER - Nhom 11 - K_QLCB_45-49"]
+        R11["Tab CHAO BAN VA PHAT HANH - Nhom 11 - K_QLCB_45-49"]
     end
     G1 --> R11
 ```
@@ -861,387 +711,6 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán/phát hành |
-
-
----
-
-### Tab: TRA CỨU CÁ NHÂN
-
-**Slicer chung:** Tìm theo tên hoặc số CMND/CCCD (search box). Ngày dữ liệu (date picker).
-
-> **Ghi chú thiết kế — Cross-source 360 Profile:**
-> Tab Tra cứu cá nhân là use case lookup 1 cá nhân theo CMND/CCCD. Dữ liệu tổng hợp từ 4 nguồn (IDS, SCMS, FMS, Thanh Tra, NHNCK). Thiết kế là **1 bảng Tác nghiệp duy nhất**: `Individual 360 Profile` — denormalized, 1 row per cá nhân (latest state), lưu toàn bộ context: vai trò DN, người liên quan, tài khoản, CCHN, thông tin kiểm toán viên, lịch sử công tác, lịch sử vi phạm dưới dạng nested/array attributes.
-
----
-
-#### Nhóm 12 — Danh sách tìm kiếm cá nhân
-
-> Phân loại: **Tác nghiệp**
-> Silver: `Stock Holder` ← IDS.stock_holders — **READY**
-> Silver: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY**
-> Silver: `Investment Fund Representative Board Member` ← FMS.REPRESENT — **READY**
-
-**Mockup:**
-
-| Họ tên | Chức vụ | Công ty | Loại | ID |
-|---|---|---|---|---|
-| Nguyễn Thế Anh | Chủ tịch HĐQT | SSI Securities | BROKER | 012345678 |
-| Trần Thị B | Tổng Giám đốc | VCB | ENTERPRISE | 098765432 |
-| Lê Minh Tuấn | Thành viên HĐQT | Dragon Capital | AMC | 024681357 |
-
-**Source:** `Individual 360 Profile`
-
-**Bảng KPI:**
-
-| KPI ID | Tên | Tính chất | Nguồn Silver |
-|---|---|---|---|
-| K_QLCB_50 | Họ tên cá nhân | Attribute | `Stock Holder.Shareholder Name` / `Securities Company Senior Personnel.Full Name` |
-| K_QLCB_51 | Chức vụ | Attribute | `Stock Holder.Position Codes` / `Securities Company Senior Personnel.Position Type Code` |
-| K_QLCB_52 | Công ty | Attribute | `Stock Holder.Public Company Code` / `Securities Company Senior Personnel.Securities Company Code` |
-| K_QLCB_53 | Loại (BROKER/ENTERPRISE/AMC/FUND) | Attribute | ETL derived — từ nguồn Silver xác định loại tổ chức |
-| K_QLCB_54 | Số CMND/CCCD | Attribute | `Involved Party Alternative Identification.Identification Number` |
-
-**Schema bảng tác nghiệp:**
-
-```mermaid
-erDiagram
-    Individual_360_Profile {
-        varchar National_Id PK
-        string Full_Name
-        string Position_Name
-        string Company_Name
-        varchar Company_Type_Code
-        varchar Practice_Status_Code
-        date Since_Date
-        datetime Population_Date
-    }
-```
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph SIL["Silver"]
-        SV1["Stock Holder (IDS)"]
-        SV2["Securities Company Senior Personnel (SCMS)"]
-        SV3["Investment Fund Representative Board Member (FMS)"]
-        SV4["Securities Practitioner (NHNCK)"]
-    end
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-    subgraph RPT["Báo cáo"]
-        R12["Tab TRA CUU CA NHAN - Nhom 12 - K_QLCB_50-54"]
-    end
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
-    G1 --> R12
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| `Individual 360 Profile` | 1 row = 1 cá nhân (theo CMND/CCCD — latest state) |
-
----
-
-#### Nhóm 13 — Mạng lưới quan hệ (đồ thị)
-
-> Phân loại: **Tác nghiệp**
-> Silver: `Stock Holder` ← IDS.stock_holders — **READY**
-> Silver: `Stock Holder Relationship` ← IDS.holder_relationship — **READY** (quan hệ gia đình/liên quan giữa 2 cổ đông)
-> Silver: `Securities Company Shareholder Related Party` ← SCMS.CTCK_CD_MOI_QUAN_HE — **READY**
-> Silver: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY**
-> Silver: `Fund Management Company Key Person` ← FMS.TLProfiles — **READY** (nhân sự chủ chốt công ty QLQ)
-> Ghi chú: Đồ thị mạng lưới (graph visualization) được render tại presentation layer từ dữ liệu tác nghiệp — Gold không lưu graph structure, chỉ lưu danh sách quan hệ dạng flat.
-
-**Mockup:**
-
-```
-Đồ thị mạng lưới 360°
-● NGUYỄN THẾ ANH (Nhân sự chính) — kết nối đến:
-  ○ NGUYỄN THẾ G (Con trai) — cổ đông 50.000 CP
-  ○ TRẦN VĂN H (Em rể) — Thành viên HĐQT VCB
-  ○ LÊ THỊ HỒNG F (Vợ) — Cổ đông lớn 1.200.000 CP
-  □ VIC, VHM, HPG, FPT, TCB, VCB (DN niêm yết liên quan)
-```
-
-**Source:** `Individual 360 Profile`
-
-**Bảng KPI:**
-
-| KPI ID | Tên | Tính chất | Nguồn Silver |
-|---|---|---|---|
-| K_QLCB_55 | Danh sách người liên quan (họ tên, CCCD, mối quan hệ) | Attribute | Tổng hợp từ 3 nguồn: (1) `Stock Holder Relationship.Relationship Type Code` + `Related Stock Holder Id` → họ tên/CCCD cổ đông liên quan — IDS.holder_relationship; (2) `Securities Company Shareholder Related Party.Related Party Full Name` + `.Relationship Type Code` + CCCD — SCMS.CTCK_CD_MOI_QUAN_HE; (3) `Fund Management Company Key Person.Full Name` + `.Job Type Code` — FMS.TLProfiles |
-| K_QLCB_56 | Vai trò/Chức vụ của cá nhân tại các công ty liên quan | Attribute | Tổng hợp từ 3 nguồn: (1) `Stock Holder.Position Codes` + `Public Company Code` — IDS.stock_holders (cổ đông lớn/nội bộ tại công ty đại chúng); (2) `Securities Company Senior Personnel.Position Type Code` + `Securities Company Code` — SCMS.CTCK_NHAN_SU_CAO_CAP (nhân sự cao cấp CTCK); (3) `Fund Management Company Key Person.Job Type Code` + `Fund Management Company Code` — FMS.TLProfiles (nhân sự QLQ) |
-
-**Schema bảng tác nghiệp:** Kế thừa `Individual 360 Profile` — nested array `Related Parties[]` và `Company Roles[]`.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-    subgraph RPT["Báo cáo"]
-        R13["Tab TRA CUU CA NHAN - Nhom 13 - K_QLCB_55 56"]
-    end
-    G1 --> R13
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| `Individual 360 Profile` | 1 row = 1 cá nhân (latest state, bao gồm nested relationships) |
-
----
-
-#### Nhóm 14 — Hồ sơ: Vai trò DN / Người liên quan / Tài khoản
-
-> Phân loại: **Tác nghiệp**
-> Silver: `Stock Holder` ← IDS.stock_holders — **READY**
-> Silver: `Stock Holder Trading Account` ← IDS.account_numbers — **READY**
-> Silver: `Securities Company Shareholder Related Party` ← SCMS.CTCK_CD_MOI_QUAN_HE — **READY**
-
-**Mockup:**
-
-| VAI TRÒ TẠI DN | | MẠNG LƯỚI NGƯỜI LIÊN QUAN | | TÀI KHOẢN |
-|---|---|---|---|---|
-| VCB — Thành viên HĐQT ACTIVE (450.000 CP) | | Lê Thị Hồng F — Vợ — 250.000 CP — 0.12% | | SSI — 001C123456 — Chủ TK: Nguyễn Thế Anh |
-| FPT — Cổ đông lớn ACTIVE (2.500.000 CP) | | Nguyễn Thế G — Con trai — 50.000 CP — 0.02% | | VNDIRECT — 002C998877 — Chủ TK: Lê Thị Hồng Văn |
-
-**Source:** `Individual 360 Profile`
-
-**Bảng KPI:**
-
-| KPI ID | Tên | Tính chất | Nguồn Silver |
-|---|---|---|---|
-| K_QLCB_57 | Thông tin vai trò tại DN niêm yết (tên DN, vai trò, số CP, trạng thái) | Attribute | `Stock Holder.Public Company Code`, `.Position Codes`, `.Ownership Quantity`, `.Major Holder Flag`, `Public Company.Public Company Name` |
-| K_QLCB_58 | Thông tin người liên quan (họ tên, CCCD, nghề nghiệp, quan hệ, số CP, %) | Attribute | `Securities Company Shareholder Related Party.Related Party Full Name`, `.Relationship Type Code`, `.Share Quantity`, `.Share Ratio`, `Involved Party Alternative Identification.Identification Number` |
-| K_QLCB_59 | Danh sách tài khoản (số TK, CTCK, chủ TK) | Attribute | `Stock Holder Trading Account.Account Number`, `.Securities Company Code`, `.Account Holder Name` |
-
-**Schema bảng tác nghiệp:** Kế thừa `Individual 360 Profile`.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-    subgraph RPT["Báo cáo"]
-        R14["Tab TRA CUU CA NHAN - Nhom 14 - K_QLCB_57 58 59"]
-    end
-    G1 --> R14
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| `Individual 360 Profile` | 1 row = 1 cá nhân (latest state) |
-
----
-
-#### Nhóm 15 — Lịch sử cấp CCHN
-
-> Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
-> Silver: `Securities Practitioner` ← NHNCK.Professionals — **READY**
-
-**Mockup:**
-
-| Số CCHN | Loại hành nghề | Ngày cấp | Ngày hết hạn | Quyết định | Trạng thái |
-|---|---|---|---|---|---|
-| CCHN-001 | Môi giới CK | 01/03/2020 | 01/03/2025 | QĐ 45/UBCK | Hết hiệu lực |
-| CCHN-002 | Tư vấn đầu tư CK | 15/06/2023 | 15/06/2028 | QĐ 112/UBCK | Đang hiệu lực |
-
-**Source:** `Individual 360 Profile`
-
-**Bảng KPI:**
-
-| KPI ID | Tên | Tính chất | Nguồn Silver |
-|---|---|---|---|
-| K_QLCB_60 | Số CCHN | Attribute | `Securities Practitioner License Certificate Document.License Certificate Document Code` |
-| K_QLCB_61 | Loại hình hành nghề | Attribute | `Securities Practitioner License Certificate Document.Certificate Type Code` — Scheme: CERTIFICATE_TYPE |
-| K_QLCB_62 | Ngày cấp | Attribute | `Securities Practitioner License Certificate Document.Issue Date` (từ NHNCK.Applications.IssueDate) |
-| K_QLCB_63 | Ngày hết hạn | Attribute | `Securities Practitioner License Certificate Document.Revocation Date` — NHNCK.CertificateRecords.RevocationDate |
-| K_QLCB_64 | Quyết định | Attribute | `Securities Practitioner License Certificate Document.Issuance Decision Document Code` |
-| K_QLCB_65 | Trạng thái | Attribute | `Securities Practitioner.Practice Status Code` — Scheme: PRACTICE_STATUS |
-
-**Schema bảng tác nghiệp:** Kế thừa `Individual 360 Profile` — nested array `Certificates[]`.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-    subgraph RPT["Báo cáo"]
-        R15["Tab TRA CUU CA NHAN - Nhom 15 - K_QLCB_60-65"]
-    end
-    G1 --> R15
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| `Individual 360 Profile` | 1 row = 1 cá nhân — CCHN là nested array per cá nhân |
-
----
-
-#### Nhóm 16 — Thông tin kiểm toán viên
-
-> Phân loại: **Tác nghiệp**
-> Silver: `Auditor Approval` ← IDS.af_auditor_approval — **READY**
-
-**Mockup:**
-
-| Số GCNHN | Ngày cấp | Thời hạn | Quá trình công tác | QĐ đình chỉ |
-|---|---|---|---|---|
-| KTV-0234 | 15/04/2018 | 5 năm | Công ty KT ABC | Không |
-
-**Source:** `Individual 360 Profile`
-
-**Bảng KPI:**
-
-| KPI ID | Tên | Tính chất | Nguồn Silver |
-|---|---|---|---|
-| K_QLCB_66 | Số GCNHN | Attribute | `Auditor Approval.Audit Practice Certificate Number` — IDS.af_auditor_approval.audit_practice_cert_no |
-| K_QLCB_67 | Ngày cấp | Attribute | `Auditor Approval.MOF Approval Issue Date` — IDS.af_auditor_approval.mof_approval_issue_date |
-| K_QLCB_68 | Thời hạn | Attribute | ETL derived: `MOF Approval End Date − MOF Approval Start Date` |
-| K_QLCB_69 | Quá trình công tác | Attribute | `Auditor Approval.Auditor Full Name` + `Audit Firm Code` (xem O_QLCB_7 — không có lịch sử công tác riêng trong af_auditor_approval) |
-| K_QLCB_70 | QĐ đình chỉ | Attribute | **PENDING** — chờ trao đổi BA. Xem O_QLCB_7 |
-
-**Schema bảng tác nghiệp:** Kế thừa `Individual 360 Profile` — nested `Auditor Info{}`.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-    subgraph RPT["Báo cáo"]
-        R16["Tab TRA CUU CA NHAN - Nhom 16 - K_QLCB_66-70"]
-    end
-    G1 --> R16
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| `Individual 360 Profile` | 1 row = 1 cá nhân — thông tin kiểm toán viên là nested per cá nhân |
-
----
-
-#### Nhóm 17 — Lịch sử công tác
-
-> Phân loại: **Tác nghiệp**
-> Silver: `Stock Holder` ← IDS.stock_holders — **READY** (vai trò cổ đông lớn/nội bộ tại công ty đại chúng)
-> Silver: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY** (nhân sự cao cấp CTCK)
-> Silver: `Investment Fund Representative Board Member` ← FMS.REPRESENT — **READY** (thành viên ban đại diện quỹ)
-> Silver: `Fund Management Company Key Person` ← FMS.TLProfiles — **READY** (nhân sự chủ chốt công ty QLQ — thêm mới)
-> Ghi chú: "Thời gian làm việc" — Xem O_QLCB_8 (chờ trao đổi BA).
-
-**Mockup:**
-
-| Tên công ty | Chức vụ | Thời gian làm việc | Trạng thái |
-|---|---|---|---|
-| SSI Securities | Chủ tịch HĐQT | 2015 - Hiện nay (11 năm) | Hiện tại |
-| Công ty CP Chứng khoán SSI | Trưởng phòng Môi giới | 2018 - 2023 (5 năm) | Quá khứ |
-
-**Source:** `Individual 360 Profile`
-
-**Bảng KPI:**
-
-| KPI ID | Tên | Tính chất | Nguồn Silver | Ghi chú |
-|---|---|---|---|---|
-| K_QLCB_71 | Tên công ty | Attribute | Tổng hợp 4 nguồn: (1) `Stock Holder.Public Company Code` → tên công ty đại chúng; (2) `Securities Company Senior Personnel.Securities Company Code` → tên CTCK; (3) `Fund Management Company Key Person.Fund Management Company Code` → tên công ty QLQ; (4) `Investment Fund Representative Board Member.Investment Fund Code` → tên quỹ | ETL union 4 nguồn theo CCCD |
-| K_QLCB_72 | Chức vụ | Attribute | (1) `Stock Holder.Position Codes` — IDS; (2) `Securities Company Senior Personnel.Position Type Code` — SCMS; (3) `Fund Management Company Key Person.Job Type Code` — FMS.TLProfiles; (4) `Investment Fund Representative Board Member.Is Chair Indicator` — FMS.REPRESENT | |
-| K_QLCB_73 | Thời gian làm việc (Từ ngày — Đến ngày) | Attribute | SCMS: `Created Timestamp` → `Resignation Date`; IDS: `Ownership Date`; FMS: `Created Timestamp` → `Updated Timestamp` | Xem O_QLCB_8 — chờ BA |
-| K_QLCB_74 | Trạng thái (Hiện tại / Quá khứ) | Attribute | (1) SCMS: `Personnel Status Code`; (2) IDS: `Major/Insider Holder Active/Inactive Date`; (3) FMS: `Practice Status Code` (REPRESENT) / `Updated Timestamp` (TLProfiles) | |
-
-**Schema bảng tác nghiệp:** Kế thừa `Individual 360 Profile` — nested array `Work History[]`.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-    subgraph RPT["Báo cáo"]
-        R17["Tab TRA CUU CA NHAN - Nhom 17 - K_QLCB_71-74"]
-    end
-    G1 --> R17
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| `Individual 360 Profile` | 1 row = 1 cá nhân — lịch sử công tác là nested array |
-
----
-
-#### Nhóm 18 — Lịch sử vi phạm & xử phạt hành chính
-
-> Phân loại: **Tác nghiệp**
-> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
-> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
-> Silver: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
-> Ghi chú: Cả luồng GS_ (giám sát) và TT_ (thanh tra) đều có thể phát sinh quyết định xử phạt cá nhân. ETL union 2 luồng theo CCCD. Xem O_QLCB_9.
-
-**Mockup:**
-
-| Ngày quyết định | Số quyết định | Nội dung vi phạm | Hình thức xử phạt | Trạng thái |
-|---|---|---|---|---|
-| 15/10/2023 | 142/QĐ-XPHC | Thao túng giá chứng khoán | 550,000,000 VNĐ | Đã chấp hành |
-| 05/02/2021 | 24/QĐ-UBCK | Chậm công bố thông tin sở hữu | Cảnh cáo | Đã chốt |
-| 12/11/2019 | BC-0012/CTCK | Vi phạm quy trình mở tài khoản | Đình chỉ hành nghề 3 tháng | Hết thời hạn |
-
-**Source:** `Individual 360 Profile`
-
-**Bảng KPI:**
-
-| KPI ID | Tên | Tính chất | Nguồn Silver |
-|---|---|---|---|
-| K_QLCB_75 | Ngày quyết định | Attribute | GS_: `Surveillance Enforcement Decision.Violation Report Date`; TT_: `Inspection Case Conclusion` ngày ban hành |
-| K_QLCB_76 | Số quyết định (số hiệu) | Attribute | GS_: `Surveillance Enforcement Decision.Penalty Decision Number`; TT_: `Inspection Case Conclusion` số quyết định |
-| K_QLCB_77 | Nội dung vi phạm | Attribute | GS_: `Surveillance Enforcement Decision.Penalty Content`; TT_: `Inspection Case Conclusion.Violation Type Code` |
-| K_QLCB_78 | Hình thức xử phạt | Attribute | GS_: `Surveillance Enforcement Decision.Total Penalty Amount`; TT_: `Inspection Case Conclusion.Penalty Type Code` |
-| K_QLCB_79 | Trạng thái | Attribute | GS_: `Surveillance Enforcement Decision.Decision Status Code`; TT_: `Inspection Case Conclusion.Conclusion Status Code` |
-
-**Schema bảng tác nghiệp:** Kế thừa `Individual 360 Profile` — nested array `Violation History[]`.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Gold Mart"]
-        G1["Individual 360 Profile"]
-    end
-    subgraph RPT["Báo cáo"]
-        R18["Tab TRA CUU CA NHAN - Nhom 18 - K_QLCB_75-79"]
-    end
-    G1 --> R18
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| `Individual 360 Profile` | 1 row = 1 cá nhân — lịch sử vi phạm là nested array |
 
 
 ---
@@ -1262,14 +731,10 @@ graph TB
     FACT_OFF["Fact Securities Offering"]:::fact
 
     OPR_OFF["Securities Offering 360 Profile"]:::oper
-    OPR_IND["Individual 360 Profile"]:::oper
 
-    FACT_APP["Fact Securities Offering Application
-(PENDING — chờ Silver TTHC)"]:::pending
-    DIM_DATE2["Calendar Date Dimension
-(reuse — PENDING)"]:::pending
-    DIM_COMP2["Public Company Dimension
-(reuse — PENDING)"]:::pending
+    FACT_APP["Fact Securities Offering Application\n(PENDING — chờ Silver TTHC)"]:::pending
+    DIM_DATE2["Calendar Date Dimension\n(reuse — PENDING)"]:::pending
+    DIM_COMP2["Public Company Dimension\n(reuse — PENDING)"]:::pending
 
     DIM_DATE --> FACT_OFF
     DIM_COMPANY --> FACT_OFF
@@ -1289,8 +754,7 @@ graph TB
 
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| Securities Offering 360 Profile | 1 đợt chào bán (latest state) | K_QLCB_17–26, 28–49 | READY (một phần — K_QLCB_19–22 PENDING TTHC, K_QLCB_29 PENDING logins) |
-| Individual 360 Profile | 1 cá nhân (latest state — nested roles, CCHN, lịch sử công tác, vi phạm) | K_QLCB_50–79 | READY (một phần — xem O_QLCB_6–9) |
+| Securities Offering 360 Profile | 1 đợt chào bán (latest state) | K_QLCB_17–26, 28–49 | READY (một phần — K_QLCB_19–22 PENDING TTHC) |
 
 ### Dimension
 
@@ -1312,6 +776,3 @@ graph TB
 | O_QLCB_4 | **Toàn bộ Tab Hồ sơ đăng ký chào bán (STT 29–39) nguồn TTHC:** 11 KPI gồm 3 Nhóm (KPI Cards, donut chart, bảng chi tiết hồ sơ) đều có nguồn TTHC — không có TTHC_Source_Analysis.md. Không tìm thấy Silver entity nào lưu trạng thái hồ sơ đăng ký chào bán trong `silver_attributes.csv`. Khi có Silver TTHC, cần thiết kế thêm: `Fact Securities Offering Application` (Event, grain = 1 hồ sơ × 1 ngày nộp), `Calendar Date Dimension` (reuse), `Public Company Dimension` (reuse). | Đánh dấu PENDING toàn bộ tab. Không thiết kế mart khi chưa có Silver LLD. | K_QLCB_28–38 | **Open** |
 | O_QLCB_5 | **Chuyên viên và Giá/Đối tượng/SL NLĐ per hình thức:** (a) "Chuyên viên" = `Created By Login Name` (IDS.company_securities_issuance.created_by) — BA xác nhận dùng field này. Lưu ý giá trị là login_name kỹ thuật, không phải tên đầy đủ. ETL lấy trực tiếp, hiển thị login_name. (b) "Giá (cấp phép/thực tế)", "Số lượng NLĐ", "Đối tượng" không có field tổng hợp trên Silver — ETL pick theo `Offering Type Category Code` chính (O_QLCB_1 đã Closed). | (a) READY — map `Created By Login Name`, hiển thị login_name. (b) ETL pick theo Offering Type Category Code chính. | K_QLCB_29, K_QLCB_40, K_QLCB_42–43, K_QLCB_46, K_QLCB_48–49 | **Closed** |
 | O_QLCB_6 | **Ngày hết hạn CCHN (K_QLCB_63):** BA xác nhận map về `CertificateRecords.RevocationDate` (ngày bị thu hồi chứng chỉ). | Map về `Securities Practitioner License Certificate Document.Revocation Date` — NHNCK.CertificateRecords.RevocationDate. | K_QLCB_63 | **Closed** |
-| O_QLCB_7 | **Thông tin kiểm toán viên — QĐ đình chỉ (K_QLCB_70):** K_QLCB_69 (quá trình công tác) đã map về `Auditor Approval.Audit Firm Code` tại thời điểm chấp thuận. K_QLCB_70 (QĐ đình chỉ) cần xác nhận logic với BA — có thể join `Audit Firm Sanction` (IDS.af_sanctions) theo `Auditor Approval Id` nhưng cần BA confirm business rule. | K_QLCB_69 READY. K_QLCB_70 PENDING chờ BA. | K_QLCB_70 | **Open — chờ BA** |
-| O_QLCB_8 | **Lịch sử công tác — Từ ngày/Đến ngày (K_QLCB_73):** SCMS `Securities Company Senior Personnel` có `Created Timestamp` (ngày tạo, không phải ngày bắt đầu công tác) và `Resignation Date`. IDS `Stock Holder` có `Ownership Date` (ngày đặt tỷ lệ sở hữu, không phải ngày bắt đầu giữ chức vụ). Không có field `start_date` tường minh cho lịch sử công tác. | Chờ trao đổi BA — cần xác nhận field nào dùng làm ngày bắt đầu công tác hoặc bổ sung Silver attribute. | K_QLCB_73 | **Open — chờ BA** |
-| O_QLCB_9 | **Tra cứu vi phạm cá nhân cross-module (K_QLCB_75–79):** Silver `Surveillance Enforcement Case.Subject Full Name` (GS_HO_SO.TEN_DOI_TUONG) là text tự do — không FK sang CCCD cá nhân. Tương tự `Inspection Case.Subject Full Name` (TT_HO_SO). ETL phải resolve cá nhân qua text matching tên + CCCD. Rủi ro match sai nếu trùng tên. | Chờ trao đổi BA — cần xác nhận cơ chế resolve cá nhân. | K_QLCB_75–79 | **Open — chờ BA** |
