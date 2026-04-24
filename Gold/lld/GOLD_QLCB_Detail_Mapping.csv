@@ -1,9 +1,9 @@
 ﻿kpi_id,tab,nhom,kpi_name,tinh_chat,source_module,mart_table,mart_column,column_role,logic,ghi_chu
 K_QLCB_1,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Giá trị Cấp phép,Base,IDS,Fact Securities Offering,Planned Proceeds Amount,MEASURE,SUM(Planned Proceeds Amount),Tổng tiền dự kiến thu được per ngành × kỳ
-K_QLCB_1,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Giá trị Cấp phép,Base,IDS,Fact Securities Offering,Certificate Issue Date Dimension Id,JOIN_KEY,JOIN Calendar Date Dimension ON Certificate Issue Date Dimension Id,FK date chính — ngày cấp GCN. O_QLCB_3 Closed.
+K_QLCB_1,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Giá trị Cấp phép,Base,IDS,Fact Securities Offering,SSC Official Document Date Dimension Id,JOIN_KEY,JOIN Calendar Date Dimension ON SSC Official Document Date Dimension Id,FK date chính — ngày công văn UBCKNN. O_QLCB_3 Closed.
 K_QLCB_1,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Giá trị Cấp phép,Base,IDS,Fact Securities Offering,Industry Category Dimension Id,JOIN_KEY,JOIN Industry Category Dimension ON Industry Category Dimension Id,Lọc/group theo ngành
 K_QLCB_2,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Giá trị Huy động thành công,Base,IDS,Fact Securities Offering,Actual Proceeds Amount,MEASURE,SUM(Actual Proceeds Amount),Tổng tiền thực thu per ngành × kỳ
-K_QLCB_2,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Giá trị Huy động thành công,Base,IDS,Fact Securities Offering,Certificate Issue Date Dimension Id,JOIN_KEY,JOIN Calendar Date Dimension ON Certificate Issue Date Dimension Id,
+K_QLCB_2,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Giá trị Huy động thành công,Base,IDS,Fact Securities Offering,SSC Official Document Date Dimension Id,JOIN_KEY,JOIN Calendar Date Dimension ON SSC Official Document Date Dimension Id,FK date chính — ngày công văn UBCKNN. O_QLCB_3 Closed.
 K_QLCB_3,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,Chưa thành công,Derived,IDS,,,DERIVED,K_QLCB_1 - K_QLCB_2,Tính ở presentation layer
 K_QLCB_1_YOY,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,YoY% Giá trị Cấp phép,Derived,IDS,,,DERIVED,(K_QLCB_1[Year=Y] - K_QLCB_1[Year=Y-1]) / K_QLCB_1[Year=Y-1] * 100%,Presentation layer
 K_QLCB_2_YOY,CHÀO BÁN PHÁT HÀNH,Nhóm 1 — Tình hình chào bán,YoY% Giá trị Huy động,Derived,IDS,,,DERIVED,(K_QLCB_2[Year=Y] - K_QLCB_2[Year=Y-1]) / K_QLCB_2[Year=Y-1] * 100%,Presentation layer
@@ -44,7 +44,7 @@ K_QLCB_24,CHÀO BÁN PHÁT HÀNH,Nhóm 4 — Bảng chi tiết,Số lượng CK 
 K_QLCB_25,CHÀO BÁN PHÁT HÀNH,Nhóm 4 — Bảng chi tiết,Giá trị cấp phép,Attribute,IDS,Securities Offering 360 Profile,Planned Proceeds Amount,MEASURE,SELECT Planned Proceeds Amount,
 K_QLCB_26,CHÀO BÁN PHÁT HÀNH,Nhóm 4 — Bảng chi tiết,Giá trị chào bán thành công,Attribute,IDS,Securities Offering 360 Profile,Actual Proceeds Amount,MEASURE,SELECT Actual Proceeds Amount,
 K_QLCB_27,CHÀO BÁN PHÁT HÀNH,Nhóm 4 — Bảng chi tiết,Tỷ lệ chào bán thành công,Derived,IDS,,,DERIVED,K_QLCB_24 / K_QLCB_23 * 100%,Presentation layer
-K_QLCB_28,CHÀO BÁN VÀ PHÁT HÀNH,Nhóm 8 — Thông tin cơ sở,Thời điểm báo cáo,Attribute,IDS,Securities Offering 360 Profile,Certificate Issue Date,SLICER,SELECT Certificate Issue Date,Ngày cấp GCN
+K_QLCB_28,CHÀO BÁN VÀ PHÁT HÀNH,Nhóm 8 — Thông tin cơ sở,Thời điểm báo cáo,Attribute,IDS,Securities Offering 360 Profile,SSC Official Document Date,SLICER,SELECT SSC Official Document Date,Ngày công văn UBCKNN — FK date chính. Xem O_QLCB_3 (Closed).
 K_QLCB_29,CHÀO BÁN VÀ PHÁT HÀNH,Nhóm 8 — Thông tin cơ sở,Chuyên viên,Attribute,IDS,Securities Offering 360 Profile,Created By Login Name,SLICER,SELECT Created By Login Name,login_name kỹ thuật. O_QLCB_5 Closed.
 K_QLCB_30,CHÀO BÁN VÀ PHÁT HÀNH,Nhóm 8 — Thông tin cơ sở,Tên công ty,Attribute,IDS,Securities Offering 360 Profile,Public Company Name,SLICER,SELECT Public Company Name,
 K_QLCB_31,CHÀO BÁN VÀ PHÁT HÀNH,Nhóm 8 — Thông tin cơ sở,Mã chứng khoán,Attribute,IDS,Securities Offering 360 Profile,Equity Ticker,SLICER,SELECT Equity Ticker,Mã chứng khoán = Equity Ticker (IDS.company_profiles.equity_ticker)

@@ -203,3 +203,49 @@ erDiagram
 | Gold entity | Description | Grain | KPI |
 |---|---|---|---|
 | Investor Compliance History | Lịch sử tuân thủ — 1 row per quyết định xử phạt. Silver: Surveillance Enforcement Case + Decision | 1 row = 1 quyết định xử phạt / văn bản xử lý của 1 NĐT | K_NDTNN_C1–C5 |
+
+---
+
+## Tab DATA EXPLORER
+
+### Nhóm 11 — Data Explorer Aggregate (Reuse)
+
+> Không tạo bảng Gold mới — reuse `Fact Foreign Investor Capital Flow` và `Fact Foreign Investor Portfolio Snapshot` với chiều GROUP BY linh hoạt theo lựa chọn người dùng.
+
+#### Star schema
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Report Date Dimension Id"
+    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Investor Dimension Id"
+    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Country Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
+    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Investor Dimension Id"
+    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Country Dimension Id"
+```
+
+#### Bảng entity
+
+| Gold entity | Description | Grain | KPI |
+|---|---|---|---|
+| Fact Foreign Investor Capital Flow | Reuse — GROUP BY Tháng / Quốc gia / NĐT linh hoạt | 1 row = 1 sự kiện IN/OUT × 1 NĐT × 1 ngày | K_NDTNN_DE1 |
+| Fact Foreign Investor Portfolio Snapshot | Reuse — GROUP BY Tháng / Quốc gia / Tên NĐT linh hoạt | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_DE2 |
+| Foreign Investor Dimension | NĐT (SCD2) | 1 row = 1 NĐT NN (SCD2) | — |
+| Geographic Area Dimension | Quốc gia (SCD2) | 1 row = 1 quốc gia (SCD2) | — |
+| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+
+---
+
+### Nhóm 12 — Data Explorer Pass-through TT51
+
+> **Ghi chú:** `NDTNN Regulatory Report Store` là bảng tác nghiệp dạng Generic Store — lấy trực tiếp từ Silver `Member Regulatory Report` + `Member Report Value` + `Report Template`. Thiết kế 1 bảng cho 23 loại biểu mẫu TT51/2021 thay vì 23 bảng riêng, vì tất cả đều có cùng cấu trúc 6 trường hiển thị.
+
+#### Star schema
+
+*Không có relationship line — bảng tác nghiệp*
+
+#### Bảng entity
+
+| Gold entity | Description | Grain | KPI |
+|---|---|---|---|
+| NDTNN Regulatory Report Store | Generic store 23 loại biểu mẫu TT51/2021. Silver: Member Regulatory Report + Member Report Value + Report Template | 1 row = 1 lần nộp báo cáo × 1 chỉ tiêu (Cell Code) | K_NDTNN_DE3–DE8 |

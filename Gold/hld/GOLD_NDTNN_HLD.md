@@ -1,6 +1,6 @@
 # Gold Data Mart HLD — Phân hệ Nhà Đầu Tư Nước Ngoài (NDTNN)
 
-**Phiên bản:** 2.3
+**Phiên bản:** 2.5
 **Ngày:** 24/04/2026
 
 ---
@@ -1293,6 +1293,259 @@ flowchart LR
 
 ---
 
+---
+
+### Tab: BÁO CÁO
+
+**Slicer chung:** Kỳ báo cáo (Năm / Quý / Tháng), Loại báo cáo
+
+#### Nhóm 10 — Báo cáo thống kê tình hình giao dịch NĐTNN
+
+##### PENDING — Nhóm 10a: Báo cáo thống kê tổng hợp (STT 1–12 nhóm Báo cáo)
+
+**KPI liên quan:** GT mua/bán/ròng theo loại CK (Cổ phiếu, Trái phiếu, CCQ) — tổng hợp theo tháng/quý/năm
+
+**Lý do pending:** Phụ thuộc Silver SGDCK (khớp lệnh theo loại CK) và VSDC (danh mục lưu ký). Chưa có Silver entity.
+
+**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK), `Securities Custody Record` (VSDC)
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 loại CK × 1 kỳ
+
+##### PENDING — Nhóm 10b: Báo cáo chi tiết giao dịch (STT 1–6 nhóm Báo cáo chi tiết)
+
+**KPI liên quan:** Tài khoản GD NĐTNN, Mã CK, KL mua/bán, GT mua/bán per NĐT per kỳ
+
+**Lý do pending:** Cùng nguồn SGDCK. Grain chi tiết hơn Nhóm 10a — cần `Listed Security Dimension`.
+
+**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK)
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 NĐT × 1 mã CK × 1 ngày GD
+
+---
+
+### Tab: DATA EXPLORER
+
+**Mô tả tổng thể:** Data Explorer là tab tra cứu và xuất dữ liệu báo cáo nộp vào FIMS theo các biểu mẫu TT51/2021/TT-BTC. Người dùng chọn loại báo cáo, kỳ báo cáo rồi xem/xuất nội dung. Có 2 nhóm chức năng khác nhau.
+
+---
+
+#### Nhóm 11a — Data Explorer: Dòng vốn ròng của NĐTNN (READY)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES — sẵn sàng
+> Ghi chú: Reuse `Fact Foreign Investor Capital Flow` — không tạo bảng Gold mới
+
+**Mockup:**
+
+| Tháng | Quốc gia | Nhà đầu tư | Vốn vào ròng (Tỉ đồng) | Vốn rút ròng (Tỉ đồng) |
+|---|---|---|---|---|
+| T1/2024 | Hàn Quốc | GD437560 | +3.300 | 0 |
+| T1/2024 | Nhật Bản | GD426069 | 0 | -700 |
+| T2/2024 | Hoa Kỳ | GD133563 | +600 | 0 |
+
+> Chiều `Tháng` là SLICER bắt buộc. `Quốc gia` và `Nhà đầu tư` là GROUP BY tùy chọn — người dùng tick chọn trên panel Dimensions.
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Chiều / Measure | Mart | Logic |
+|---|---|---|---|---|
+| K_NDTNN_DE1a | Tháng | Chiều (SLICER) | Calendar Date Dimension | GROUP BY Calendar Date Dimension.Month — bắt buộc |
+| K_NDTNN_DE1b | Quốc gia | Chiều (GROUP BY tùy chọn) | Geographic Area Dimension | GROUP BY Geographic Area Dimension.Geographic Area Name |
+| K_NDTNN_DE1c | Nhà đầu tư | Chiều (GROUP BY tùy chọn) | Foreign Investor Dimension | GROUP BY Foreign Investor Dimension.Investor Name |
+| K_NDTNN_DE1d | Vốn đầu tư vào ròng | Measure | Fact Foreign Investor Capital Flow | `SUM(Capital Amount) WHERE Event Type Code = 'IN'` GROUP BY các chiều đã chọn |
+| K_NDTNN_DE1e | Vốn đầu tư rút ròng | Measure | Fact Foreign Investor Capital Flow | `SUM(Capital Amount) WHERE Event Type Code = 'OUT'` GROUP BY các chiều đã chọn |
+
+**Source:** `Fact Foreign Investor Capital Flow` → `Foreign Investor Dimension`, `Geographic Area Dimension`, `Calendar Date Dimension`
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Capital Flow"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DATA EXPLORER - Nhom 11a - Dong von rong"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+    G4 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Capital Flow | 1 row = 1 sự kiện IN/OUT × 1 NĐT × 1 ngày báo cáo (reuse) |
+
+---
+
+#### Nhóm 11b — Data Explorer: Tổng giá trị danh mục của NĐTNN (READY)
+
+> Phân loại: **Phân tích**
+> Silver: `Foreign Investor Stock Portfolio Snapshot` ← FIMS.CATEGORIESSTOCK — sẵn sàng
+> Ghi chú: Reuse `Fact Foreign Investor Portfolio Snapshot` — không tạo bảng Gold mới
+
+**Mockup:**
+
+| Tháng | Quốc gia | Tên NĐT | Tổng GTDM (Tỉ đồng) |
+|---|---|---|---|
+| T1/2024 | Hàn Quốc | GD437560 | 4.500 |
+| T1/2024 | Nhật Bản | GD426069 | 2.800 |
+| T2/2024 | Hoa Kỳ | GD133563 | 2.100 |
+
+> Chiều `Tháng` là SLICER bắt buộc. `Quốc gia` và `Tên NĐT` là GROUP BY tùy chọn.
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Chiều / Measure | Mart | Logic |
+|---|---|---|---|---|
+| K_NDTNN_DE2a | Tháng | Chiều (SLICER) | Calendar Date Dimension | GROUP BY Calendar Date Dimension.Month — bắt buộc |
+| K_NDTNN_DE2b | Quốc gia | Chiều (GROUP BY tùy chọn) | Geographic Area Dimension | GROUP BY Geographic Area Dimension.Geographic Area Name |
+| K_NDTNN_DE2c | Tên NĐT | Chiều (GROUP BY tùy chọn) | Foreign Investor Dimension | GROUP BY Foreign Investor Dimension.Investor Name |
+| K_NDTNN_DE2d | Tổng giá trị danh mục | Measure | Fact Foreign Investor Portfolio Snapshot | `SUM(Portfolio Market Value)` GROUP BY các chiều đã chọn — Snapshot Date = last_day(selected_month) |
+
+**Source:** `Fact Foreign Investor Portfolio Snapshot` → `Foreign Investor Dimension`, `Geographic Area Dimension`, `Calendar Date Dimension`
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Portfolio Snapshot"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DATA EXPLORER - Nhom 11b - Tong GTDM"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+    G4 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Portfolio Snapshot | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng (reuse) |
+
+---
+
+#### Nhóm 12 — Data Explorer Pass-through Báo cáo TT51 (READY)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES + `Report Template` ← FIMS.RPTTEMP — sẵn sàng
+> Ghi chú: **26 mẫu biểu** TT51/2021 từ 8 nhóm đối tượng nộp. Tất cả có cùng cấu trúc 6 trường. Thiết kế **1 bảng tác nghiệp Generic** (`NDTNN Regulatory Report Store`) — filter theo `Report Template Code` (placeholder) + `Member Object Type Code` để lấy đúng mẫu biểu.
+
+**Mockup:**
+
+| Loại báo cáo | Kỳ báo cáo | Mã báo cáo | Tên báo cáo | Mã chỉ tiêu | Tên chỉ tiêu | Giá trị |
+|---|---|---|---|---|---|---|
+| PLV_CTQLQ | Tháng 3/2026 | RPT-001 | Hoạt động QL DMĐT (PLV-TT51) | CT_01 | Tổng tài sản | 1,234,567 |
+| PLIII_CTCK | Tháng 3/2026 | RPT-002 | Thống kê danh mục lưu ký (PLIII-TT51) | CT_05 | Số lượng NĐT | 98,765 |
+
+**Danh sách 26 mẫu biểu — Report Template Code placeholder:**
+
+| # | Đối tượng nộp | Report Template Code | Tên mẫu biểu (rút gọn) |
+|---|---|---|---|
+| 1 | CTQLQ | `PLV_CTQLQ` | Hoạt động QL DMĐT/chỉ định ĐT cho NĐTNN (PLV-TT51) |
+| 2 | CTCK | `PLIII_CTCK` | Thống kê danh mục lưu ký NĐTNN (PLIII-TT51) |
+| 3 | CTCK | `PLV_CTCK` | Hoạt động QL DMĐT/chỉ định ĐT cho NĐTNN (PLV-TT51) |
+| 4 | Ngân hàng lưu ký | `PLIII_NHLK` | Thống kê danh mục lưu ký NĐTNN (PLIII-TT51) |
+| 5 | Ngân hàng lưu ký | `PLIV_NHLK` | Hoạt động chu chuyển vốn NĐTNN (PLIV-TT51) |
+| 6 | Ngân hàng lưu ký | `RPT_NHLK_01` | Báo cáo số liệu hoạt động NĐTNN |
+| 7 | Ngân hàng lưu ký | `RPT_NHLK_02` | Hoạt động lưu ký chứng khoán NĐTNN |
+| 8 | Đại diện CBTT | `RPT_DDCBTT_01` | Giấy chỉ định/ủy quyền CBTT |
+| 9 | Đại diện CBTT | `PLIX_DDCBTT` | Báo cáo sở hữu nhóm NĐTNN liên quan (PLIX-TT96) |
+| 10 | Đại diện CBTT | `PLX_DDCBTT` | Báo cáo thay đổi sở hữu nhóm NĐTNN liên quan (PLX-TT96) |
+| 11 | Đại diện CBTT | `RPT_DDCBTT_02` | Báo cáo ngày trở thành/không còn là cổ đông lớn |
+| 12 | Đại diện CBTT | `RPT_DDCBTT_03` | Báo cáo thay đổi sở hữu cổ đông lớn |
+| 13 | Đại diện CBTT | `PL_DDCBTT` | Cập nhật danh sách nhóm NĐT NN có liên quan (PL II-TT51) |
+| 14 | Đại diện giao dịch | `PL_DDGD` | Báo cáo tình hình hoạt động ĐT của NĐTNN (PL VIII-TT51) |
+| 15 | NĐTNN | `RPT_NDTNN_01` | Báo cáo ngày trở thành/không còn là cổ đông lớn |
+| 16 | NĐTNN | `RPT_NDTNN_02` | Báo cáo thay đổi sở hữu cổ đông lớn |
+| 17 | NĐTNN | `RPT_NDTNN_03` | Thông báo giao dịch cổ phiếu/CCQ/chứng quyền |
+| 18 | NĐTNN | `RPT_NDTNN_04` | Thông báo giao dịch trái phiếu chuyển đổi |
+| 19 | NĐTNN | `RPT_NDTNN_05` | Báo cáo kết quả giao dịch cổ phiếu/CCQ/chứng quyền |
+| 20 | NĐTNN | `RPT_NDTNN_06` | Báo cáo kết quả giao dịch trái phiếu chuyển đổi |
+| 21 | SGDCK | `PLVII_SGDCK` | Báo cáo tình hình giao dịch NĐTNN (PLVII-TT51) |
+| 22 | VSDC | `PLVI_VSDC` | Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51) |
+| 23 | VSDC | `RPT_VSDC_01` | Báo cáo danh mục của từng NĐT nước ngoài |
+| 24 | VSDC | `RPT_VSDC_02` | Thống kê tình hình nắm giữ chứng khoán NĐTNN |
+| 25 | VSDC | `RPT_VSDC_03` | Thống kê tình hình phát hành chứng khoán |
+| 26 | VSDC | `RPT_VSDC_04` | Thống kê tình hình chia cổ tức cho NĐTNN |
+
+> **Ghi chú placeholder:** `Report Template Code` là mã tạm — cần map với `FIMS.RPTTEMP.Code` thực tế sau khi Silver FIMS profile xong danh mục biểu mẫu. `Member Object Type Code` = `FUND_MGT_CO` / `SECURITIES_CO` / `CUSTODIAN_BANK` / `DISCLOSURE_REP` / `TRADING_REP` / `FOREIGN_INVESTOR` / `STOCK_EXCHANGE` / `DEPOSITORY_CTR`.
+
+**Bảng KPI** (6 trường × 1 bảng Generic — áp dụng cho cả 26 mẫu):
+
+| KPI ID | Tên | Tính chất | Mart column | Logic |
+|---|---|---|---|---|
+| K_NDTNN_DE3 | Loại báo cáo | Attribute | `Report Template Code` | SELECT DISTINCT per `Member Object Type Code` + `Report Template Code` |
+| K_NDTNN_DE4 | Kỳ báo cáo | Attribute | `Reporting Period Type Code` + `Period Value` + `Report Year` | SELECT DISTINCT kỳ WHERE `Report Template Code` = selected |
+| K_NDTNN_DE5 | Mã báo cáo | Attribute | `Member Regulatory Report Code` | SELECT WHERE `Report Template Code` = selected AND period = selected |
+| K_NDTNN_DE6 | Tên báo cáo | Attribute | `Report Template Name` | SELECT WHERE `Report Template Code` = selected |
+| K_NDTNN_DE7 | Mã chỉ tiêu | Attribute | `Cell Code` | SELECT WHERE `Member Regulatory Report Code` = selected ORDER BY Cell Code |
+| K_NDTNN_DE7b | Tên chỉ tiêu | Attribute | `Cell Name` | SELECT WHERE `Member Regulatory Report Code` = selected AND `Cell Code` = selected |
+| K_NDTNN_DE8 | Giá trị | Attribute | `Cell Value` | SELECT WHERE `Member Regulatory Report Code` = selected AND `Cell Code` = selected |
+
+**Schema bảng tác nghiệp:**
+
+```mermaid
+erDiagram
+    NDTNN_Regulatory_Report_Store {
+        varchar Member_Regulatory_Report_Code PK
+        varchar Report_Template_Code
+        string Report_Template_Name
+        varchar Member_Object_Type_Code
+        varchar Member_Code
+        varchar Reporting_Period_Type_Code
+        int Period_Value
+        int Report_Year
+        date Report_Date
+        date Submission_Date
+        varchar Submission_Status_Code
+        varchar Cell_Code
+        string Cell_Name
+        varchar Cell_Value
+        datetime Population_Date
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["NDTNN Regulatory Report Store"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DATA EXPLORER - Nhom 12 - 26 mau bieu TT51"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| NDTNN Regulatory Report Store | 1 row = 1 lần nộp báo cáo (`Member Regulatory Report`) × 1 chỉ tiêu (`Cell Code`) |
+
+**Lý do chọn Generic Store:**
+- 26 mẫu biểu TT51 đều có cùng 7 trường hiển thị — không có schema riêng theo loại
+- Silver FIMS lưu dạng generic qua `RPTMEMBER` × `RPTVALUES` — Gold denorm thêm tên biểu mẫu + tên chỉ tiêu
+- Filter theo `Report Template Code` (placeholder) + `Member Object Type Code` để lấy đúng mẫu biểu
+- Detail Mapping có 156 rows (26 mẫu × 6 fields) với placeholder cụ thể per mẫu
+
+---
+
 ## Section 3 — Mô hình tổng thể (READY only)
 
 ```mermaid
@@ -1312,6 +1565,7 @@ graph TB
 
     OPR_PROFILE["Foreign Investor 360 Profile"]:::oper
     OPR_COMPLY["Investor Compliance History"]:::oper
+    OPR_REPORT["NDTNN Regulatory Report Store"]:::oper
 
     DIM_DATE --> FACT_REG
     DIM_INVESTOR --> FACT_REG
@@ -1343,6 +1597,7 @@ graph TB
 |---|---|---|---|
 | Foreign Investor 360 Profile | 1 NĐT (trạng thái mới nhất) | K_NDTNN_L1–L4, P1–P5 | READY |
 | Investor Compliance History | 1 quyết định xử phạt per NĐT | K_NDTNN_C1–C5 | READY |
+| NDTNN Regulatory Report Store | 1 lần nộp báo cáo × 1 chỉ tiêu | K_NDTNN_DE3–DE8 | READY |
 
 ### Dimension
 

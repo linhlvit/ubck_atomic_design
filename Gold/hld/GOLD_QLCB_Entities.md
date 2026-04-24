@@ -9,7 +9,7 @@
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering : "Certificate Issue Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering : "SSC Official Document Date Dimension Id"
     Public_Company_Dimension ||--o{ Fact_Securities_Offering : "Public Company Dimension Id"
     Industry_Category_Dimension ||--o{ Fact_Securities_Offering : "Industry Category Dimension Id"
 ```
