@@ -1,0 +1,56 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Involved Party Alternative Identification,SCD4A,,,,Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,CT_KIEM_TOAN,ct_ki_to,"id, giay_phep_kinh_doanh, noi_cap_gpkd","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+2,unpivot_cte,,ct_ki_to,leg_ct_ki_to,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(2, 'GIAY PHEP KINH DOANH', giay_phep_kinh_doanh, 'NOI CAP GPKD', noi_cap_gpkd) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+3,physical_table,bronze,CTCK_NGUOI_HANH_NGHE_CK,ct_ng_ha_ng_ck,"id, so_giay_to","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+4,unpivot_cte,,ct_ng_ha_ng_ck,leg_ct_ng_ha_ng_ck,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(1, 'SO GIAY TO', so_giay_to) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+5,physical_table,bronze,CTCK_NHAN_SU_CAO_CAP,ct_nh_su_ca_ca,"id, so_cmnd, noi_cap","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+6,unpivot_cte,,ct_nh_su_ca_ca,leg_ct_nh_su_ca_ca,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(2, 'SO CMND', so_cmnd, 'NOI CAP', noi_cap) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+7,physical_table,bronze,CTCK_CO_DONG,ct_co_do,"id, so_cmnd, noi_cap","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+8,unpivot_cte,,ct_co_do,leg_ct_co_do,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(2, 'SO CMND', so_cmnd, 'NOI CAP', noi_cap) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+9,physical_table,bronze,CT_KIEM_TOAN_VIEN,ct_ki_to_vi,"id, so_chung_chi, so_chung_chi","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+10,unpivot_cte,,ct_ki_to_vi,leg_ct_ki_to_vi,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(2, 'SO CHUNG CHI', so_chung_chi, 'SO CHUNG CHI', so_chung_chi) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+11,physical_table,bronze,CTCK_CD_DAI_DIEN,ct_cd_da_di,"id, so_cmnd, noi_cap","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+12,unpivot_cte,,ct_cd_da_di,leg_ct_cd_da_di,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(2, 'SO CMND', so_cmnd, 'NOI CAP', noi_cap) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+13,physical_table,bronze,CTCK_CD_MOI_QUAN_HE,ct_cd_mo_qu_he,"id, so_cmnd, noi_cap","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+14,unpivot_cte,,ct_cd_mo_qu_he,leg_ct_cd_mo_qu_he,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(2, 'SO CMND', so_cmnd, 'NOI CAP', noi_cap) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+15,physical_table,bronze,CTCK_THONG_TIN,ct_th_ti,"id, giay_phep_kinh_doanh, noi_cap_gpkd","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+16,unpivot_cte,,ct_th_ti,leg_ct_th_ti,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(2, 'GIAY PHEP KINH DOANH', giay_phep_kinh_doanh, 'NOI CAP GPKD', noi_cap_gpkd) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,involved_party_id,"hash_id('SCMS_CT_KIEM_TOAN', leg_ct_ki_to.ip_code); hash_id('SCMS_CTCK_NGUOI_HANH_NGHE_CK', leg_ct_ng_ha_ng_ck.ip_code); hash_id('SCMS_CTCK_NHAN_SU_CAO_CAP', leg_ct_nh_su_ca_ca.ip_code); hash_id('SCMS_CTCK_CO_DONG', leg_ct_co_do.ip_code); hash_id('SCMS_CT_KIEM_TOAN_VIEN', leg_ct_ki_to_vi.ip_code); hash_id('SCMS_CTCK_CD_DAI_DIEN', leg_ct_cd_da_di.ip_code); hash_id('SCMS_CTCK_CD_MOI_QUAN_HE', leg_ct_cd_mo_qu_he.ip_code); hash_id('SCMS_CTCK_THONG_TIN', leg_ct_th_ti.ip_code)",string,,,,,,,
+2,involved_party_code,leg_ct_ki_to.ip_code; leg_ct_ng_ha_ng_ck.ip_code; leg_ct_nh_su_ca_ca.ip_code; leg_ct_co_do.ip_code; leg_ct_ki_to_vi.ip_code; leg_ct_cd_da_di.ip_code; leg_ct_cd_mo_qu_he.ip_code; leg_ct_th_ti.ip_code,string,,,,,,,
+3,source_system_code,'SCMS_CT_KIEM_TOAN'; 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'; 'SCMS_CTCK_NHAN_SU_CAO_CAP'; 'SCMS_CTCK_CO_DONG'; 'SCMS_CT_KIEM_TOAN_VIEN'; 'SCMS_CTCK_CD_DAI_DIEN'; 'SCMS_CTCK_CD_MOI_QUAN_HE'; 'SCMS_CTCK_THONG_TIN',string,,,,,,,
+4,identification_type_code,leg_ct_ki_to.type_code; leg_ct_ng_ha_ng_ck.type_code; leg_ct_nh_su_ca_ca.type_code; leg_ct_co_do.type_code; leg_ct_ki_to_vi.type_code; leg_ct_cd_da_di.type_code; leg_ct_cd_mo_qu_he.type_code; leg_ct_th_ti.type_code,string,,,,,,,
+5,identification_number,leg_ct_ki_to.address_value; leg_ct_ng_ha_ng_ck.address_value; leg_ct_nh_su_ca_ca.address_value; leg_ct_co_do.address_value; leg_ct_ki_to_vi.address_value; leg_ct_cd_da_di.address_value; leg_ct_cd_mo_qu_he.address_value; leg_ct_th_ti.address_value,string,,,,,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason
+1,UNION ALL,"SELECT * FROM leg_ct_ki_to
+UNION ALL
+SELECT * FROM leg_ct_ng_ha_ng_ck
+UNION ALL
+SELECT * FROM leg_ct_nh_su_ca_ca
+UNION ALL
+SELECT * FROM leg_ct_co_do
+UNION ALL
+SELECT * FROM leg_ct_ki_to_vi
+UNION ALL
+SELECT * FROM leg_ct_cd_da_di
+UNION ALL
+SELECT * FROM leg_ct_cd_mo_qu_he
+UNION ALL
+SELECT * FROM leg_ct_th_ti",,,,,Dùng khi merge nhiều luồng vào cùng 1 bảng đích,,,

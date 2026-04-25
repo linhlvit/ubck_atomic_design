@@ -203,43 +203,60 @@ Template được đọc bằng `csv.reader` và output ghi bằng `csv.writer` 
 
 Áp dụng cho: `Involved Party Electronic Address`, `Involved Party Postal Address`, `Involved Party Alternative Identification`.
 
-**1 source_system = 1 file** (FMS, FIMS, DCST, NHNCK → tối đa 4 files per entity).
-Mỗi file có 1 sheet, bên trong có N cặp `physical_table + unpivot_cte`.
+**1 source_system = 1 file** với tên `<entity_snake>_<sys_name>.csv` (vd: `involved_party_electronic_address_FMS.csv`). Mỗi file gồm N cặp `physical_table + unpivot_cte`.
 
 **INPUT_TABLES — 2 dòng per source table:**
 
-| # | source_type | table | alias | select_fields | filter |
+| # | source_type | table_name | alias | select_fields | filter |
 |---|---|---|---|---|---|
-| 1 | `physical_table` | `<TABLE>` | `<alias>` | `id, col1, col2, '<SSC>' AS source_system_code` | `data_date = ...` |
-| 2 | `unpivot_cte` | `<alias>` | `leg_<alias>` | `ip_code=id \| TYPE1:col1 \| TYPE2:col2 \| source_system_code` | `address_value IS NOT NULL` |
+| 1 | `physical_table` | `<TABLE>` | `<alias>` | `id, col1, col2, ...` | `data_date = ...` |
+| 2 | `unpivot_cte` | `<alias>` | `leg_<alias>` | (xem dưới — multi-line, dùng LATERAL VIEW stack) | `address_value IS NOT NULL` |
 
-**unpivot_cte select_fields convention:**
-```
-ip_code=<id_col> | <TYPE>:<val_col> | <TYPE>:<val_col> | <passthrough_col>
-```
-- `TYPE:col` = 1 unpivot leg
-- `passthrough_col` (không có `:`) = carry-through (e.g. `source_system_code`)
+**physical_table SELECT** chỉ chứa các cột thực tế cần dùng (`id` + value cols). KHÔNG hardcode `'<SSC>' AS source_system_code` — `source_system_code` được hardcode tại Mapping section (giống regular table).
 
-**source_system_code hardcode tại physical_table** → carry-through qua unpivot_cte → MAPPING select `leg.source_system_code` trực tiếp.
+**unpivot_cte select_fields convention (LATERAL VIEW stack):**
+
+Cell `Select Fields` chứa 2 dòng:
+
+```
+<id_col> AS ip_code, type_code, address_value
+LATERAL VIEW stack(<N>, '<TYPE1>', <col1>, '<TYPE2>', <col2>, ...) AS (type_code, address_value)
+```
+
+- Dòng 1: SELECT projection — 3 cột `ip_code`, `type_code`, `address_value`
+- Dòng 2: LATERAL VIEW với function `stack(N, ...)` — N là số legs, mỗi leg là cặp `'TYPE', col`
 
 **RELATIONSHIP:** bỏ trống (không có join — mỗi leg CTE độc lập).
 
-**MAPPING — 5 dòng cố định (generic, first leg alias):**
+**MAPPING — 5 dòng cố định, mỗi cell liệt kê tất cả legs ngăn cách `;`. `source_system_code` hardcode literal per leg như regular table:**
 
 | target_column | transformation |
 |---|---|
-| `involved_party_id` | `hash_id(leg_<alias>.source_system_code, leg_<alias>.ip_code)` |
-| `involved_party_code` | `leg_<alias>.ip_code` |
-| `source_system_code` | `leg_<alias>.source_system_code` |
-| `<type_code_attr>` | `leg_<alias>.type_code` |
-| `<value_attr>` | `leg_<alias>.address_value` |
+| `involved_party_id` | `hash_id('<SSC1>', leg_se.ip_code); hash_id('<SSC2>', leg_fo_ch.ip_code); ...` |
+| `involved_party_code` | `leg_se.ip_code; leg_fo_ch.ip_code; leg_ba_mo.ip_code; leg_br.ip_code` |
+| `source_system_code` | `'<SSC1>'; '<SSC2>'; '<SSC3>'; '<SSC4>'` (literal fix per leg) |
+| `<type_code_attr>` | `leg_se.type_code; leg_fo_ch.type_code; ...` |
+| `<value_attr>` | `leg_se.address_value; leg_fo_ch.address_value; ...` |
+
+Số phần tách bằng `;` = số legs. Mỗi expression dùng alias + SSC literal của leg tương ứng. Khi gen SQL, SELECT phần thứ `i` ứng với leg thứ `i` trong UNION ALL.
+
+**Ví dụ thực tế (FMS có 4 source tables):**
+```
+hash_id('FMS_SECURITIES', leg_se.ip_code); hash_id('FMS_FORBRCH', leg_fo_ch.ip_code); hash_id('FMS_BANKMONI', leg_ba_mo.ip_code); hash_id('FMS_BRANCHES', leg_br.ip_code)
+```
 
 **Final Filter — UNION ALL** khi có > 1 leg:
 ```sql
 SELECT * FROM leg_se
 UNION ALL
 SELECT * FROM leg_fo_ch
+UNION ALL
+SELECT * FROM leg_ba_mo
+UNION ALL
+SELECT * FROM leg_br
 ```
+
+Dùng để xác định danh sách legs khi gen SQL — code SQL sẽ build N SELECT block (1 per leg) nối bằng UNION ALL, mỗi block dùng expression `;`-part tương ứng từ MAPPING.
 
 **type_attr detection:** `silver_attribute != 'Source System Code'` — SSC luôn có tên cố định, không cần parse comment.
 

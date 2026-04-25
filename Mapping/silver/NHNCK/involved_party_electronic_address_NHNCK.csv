@@ -3,16 +3,17 @@ Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Updat
 ,silver,Involved Party Electronic Address,SCD4A,,,,Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn.,,,
 Input,Bảng / CTE nguồn,,,,,,,,,
 #,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
-1,physical_table,bronze,ORGANIZATIONS,org,"id, email, fax, mobilenumber, phonenumber, 'NHNCK_Organizations' AS source_system_code","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
-2,unpivot_cte,,org,leg_org,ip_code=id | EMAIL:email | FAX:fax | MOBILE:mobilenumber | PHONE:phonenumber | source_system_code,address_value IS NOT NULL,,,,
+1,physical_table,bronze,ORGANIZATIONS,org,"id, email, fax, mobilenumber, phonenumber","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+2,unpivot_cte,,org,leg_org,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(4, 'EMAIL', email, 'FAX', fax, 'MOBILE', mobilenumber, 'PHONE', phonenumber) AS (type_code, address_value)",address_value IS NOT NULL,,,,
 Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
 #,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
 ,,,,,,,,,,
 Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
 #,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
-1,involved_party_id,"hash_id(leg_org.source_system_code, leg_org.ip_code)",string,,,,,,,
+1,involved_party_id,"hash_id('NHNCK_Organizations', leg_org.ip_code)",string,,,,,,,
 2,involved_party_code,leg_org.ip_code,string,,,,,,,
-3,source_system_code,leg_org.source_system_code,string,,,,,,,
+3,source_system_code,'NHNCK_Organizations',string,,,,,,,
 4,electronic_address_type_code,leg_org.type_code,string,,,,,,,
 5,electronic_address_value,leg_org.address_value,string,,,,,,,
 Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,

@@ -354,7 +354,7 @@ def write_shared_entity_sheet(ws, tmpl_ws, entity_name, meta, sys_grp, sys_name,
     r = write_target(ws, tmpl_ws, r, entity_name, etl_handle, description)
     copy_tmpl_row(tmpl_ws, T['input_banner'], ws, r)
     r += 1; copy_tmpl_row(tmpl_ws, T['input_header'], ws, r); r += 1
-    input_seq = 1; leg_aliases = []
+    input_seq = 1; leg_aliases = []; leg_sscs = []
     for ssc in ssc_list:
         ssc_grp = sys_grp[sys_grp['_ssc'] == ssc].copy()
         id_col, legs = detect_unpivot_legs(ssc_grp)
@@ -364,15 +364,19 @@ def write_shared_entity_sheet(ws, tmpl_ws, entity_name, meta, sys_grp, sys_name,
         _, src_tbl, _ = parse_source_col(str(id_raw))
         src_tbl   = src_tbl or ssc.split('_', 1)[-1]
         alias     = make_alias(src_tbl); leg_alias = f"leg_{alias}"
-        leg_aliases.append(leg_alias)
+        leg_aliases.append(leg_alias); leg_sscs.append(ssc)
         val_cols    = [c for _, c in legs]
-        select_phys = ', '.join([id_col] + val_cols) + f", '{ssc}' AS source_system_code"
+        select_phys = ', '.join([id_col] + val_cols)
         blank_row(ws, r); put(ws,r,1,input_seq); input_seq+=1
         put(ws,r,2,'physical_table'); put(ws,r,3,'bronze')
         put(ws,r,4,src_tbl); put(ws,r,5,alias); put(ws,r,6,select_phys)
         put(ws,r,7,"data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')")
         r+=1
-        unpivot_sel = make_unpivot_select(id_col, legs, passthrough=['source_system_code'])
+        # LATERAL VIEW stack(N, 'TYPE1', col1, 'TYPE2', col2, ...) lv AS type_code, address_value
+        stack_args = ', '.join([f"'{t}', {c}" for t, c in legs])
+        stack_expr = f"stack({len(legs)}, {stack_args}) AS (type_code, address_value)"
+        unpivot_sel = (f"{id_col} AS ip_code, type_code, address_value\n"
+                       f"LATERAL VIEW {stack_expr}")
         blank_row(ws,r); put(ws,r,1,input_seq); input_seq+=1
         put(ws,r,2,'unpivot_cte'); put(ws,r,3,'')
         put(ws,r,4,alias); put(ws,r,5,leg_alias)
@@ -381,18 +385,24 @@ def write_shared_entity_sheet(ws, tmpl_ws, entity_name, meta, sys_grp, sys_name,
     copy_tmpl_row(tmpl_ws, T['rel_banner'], ws, r)
     r += 1; copy_tmpl_row(tmpl_ws, T['rel_header'], ws, r); r += 1
     blank_row(ws, r); r += 1
-    first_leg = leg_aliases[0] if leg_aliases else 'leg'
     copy_tmpl_row(tmpl_ws, T['map_banner'], ws, r)
     r += 1; copy_tmpl_row(tmpl_ws, T['map_header'], ws, r); r += 1
-    for seq, tgt, transf, dtype in [
-        (1, ip_id_attr,          f"hash_id({first_leg}.source_system_code, {first_leg}.ip_code)", 'string'),
-        (2, 'involved_party_code', f"{first_leg}.ip_code",            'string'),
-        (3, ssc_attr,              f"{first_leg}.source_system_code", 'string'),
-        (4, type_attr,             f"{first_leg}.type_code",          'string'),
-        (5, val_attr,              f"{first_leg}.address_value",      'string'),
+    # Mỗi target column liệt kê expression cho từng leg, ngăn cách bằng ";"
+    # source_system_code: literal SSC fix per leg (như regular table)
+    def list_per_leg(pattern):
+        if not leg_aliases: return ''
+        return '; '.join(
+            pattern.format(leg=leg, ssc=ssc) for leg, ssc in zip(leg_aliases, leg_sscs)
+        )
+    for seq, tgt, pattern, dtype in [
+        (1, ip_id_attr,            "hash_id('{ssc}', {leg}.ip_code)", 'string'),
+        (2, 'involved_party_code', '{leg}.ip_code',                   'string'),
+        (3, ssc_attr,              "'{ssc}'",                         'string'),
+        (4, type_attr,             '{leg}.type_code',                 'string'),
+        (5, val_attr,              '{leg}.address_value',             'string'),
     ]:
         blank_row(ws, r)
-        put(ws,r,1,seq); put(ws,r,2,tgt); put(ws,r,3,transf); put(ws,r,4,dtype)
+        put(ws,r,1,seq); put(ws,r,2,tgt); put(ws,r,3,list_per_leg(pattern)); put(ws,r,4,dtype)
         r+=1
     n_legs = len(leg_aliases)
     union_expr = '\nUNION ALL\n'.join(f"SELECT * FROM {leg}" for leg in leg_aliases) if n_legs > 1 else None
@@ -447,7 +457,7 @@ def gen_mapping(entity_filter=None, source_system_filter=None):
                 sys_grp = grp_all[grp_all['source_system'] == sys_name].reset_index(drop=True)
                 out_dir = os.path.join(MAPPING_DIR, sys_name)
                 os.makedirs(out_dir, exist_ok=True)
-                out_path = os.path.join(out_dir, f'{entity_snake}.csv')
+                out_path = os.path.join(out_dir, f'{entity_snake}_{sys_name}.csv')
                 ws = CSVSheet()
                 write_shared_entity_sheet(ws, tmpl_ws, entity_name, meta, sys_grp, sys_name,
                                           df_bz_atr, entity_ssc_map)

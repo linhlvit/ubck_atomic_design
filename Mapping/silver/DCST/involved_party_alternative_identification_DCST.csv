@@ -1,0 +1,26 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,,,,Description,Last update,Update by,Update reason
+,silver,Involved Party Alternative Identification,SCD4A,,,,Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.,,,
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,Last update,Update by,Update reason
+1,physical_table,bronze,THONG_TIN_DK_THUE,th_ti_dk_th,"id, so_giay_phep, co_quan_cap, so_quyet_dinh, co_quan_ban_hanh","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+2,unpivot_cte,,th_ti_dk_th,leg_th_ti_dk_th,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(4, 'SO GIAY PHEP', so_giay_phep, 'CO QUAN CAP', co_quan_cap, 'SO QUYET DINH', so_quyet_dinh, 'CO QUAN BAN HANH', co_quan_ban_hanh) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+3,physical_table,bronze,TTKDT_NGUOI_DAI_DIEN,tt_ng_da_di,"id, so_giay_to, so_giay_to, so_giay_to","data_date = to_date('{{ var(""etl_date"") }}', 'yyyy-MM-dd')",,,,
+4,unpivot_cte,,tt_ng_da_di,leg_tt_ng_da_di,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(3, 'SO GIAY TO', so_giay_to, 'SO GIAY TO', so_giay_to, 'SO GIAY TO', so_giay_to) AS (type_code, address_value)",address_value IS NOT NULL,,,,
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,Last update,Update by,Update reason
+,,,,,,,,,,
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+1,involved_party_id,"hash_id('DCST_THONG_TIN_DK_THUE', leg_th_ti_dk_th.ip_code); hash_id('DCST_TTKDT_NGUOI_DAI_DIEN', leg_tt_ng_da_di.ip_code)",string,,,,,,,
+2,involved_party_code,leg_th_ti_dk_th.ip_code; leg_tt_ng_da_di.ip_code,string,,,,,,,
+3,source_system_code,'DCST_THONG_TIN_DK_THUE'; 'DCST_TTKDT_NGUOI_DAI_DIEN',string,,,,,,,
+4,identification_type_code,leg_th_ti_dk_th.type_code; leg_tt_ng_da_di.type_code,string,,,,,,,
+5,identification_number,leg_th_ti_dk_th.address_value; leg_tt_ng_da_di.address_value,string,,,,,,,
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,Last update,Update by,Update reason
+1,UNION ALL,"SELECT * FROM leg_th_ti_dk_th
+UNION ALL
+SELECT * FROM leg_tt_ng_da_di",,,,,Dùng khi merge nhiều luồng vào cùng 1 bảng đích,,,
