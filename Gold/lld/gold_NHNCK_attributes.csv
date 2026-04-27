@@ -1,138 +1,113 @@
-gold_entity,gold_attribute,data_type,key,description,source_entity,source_attribute
-Calendar Date Dimension,Date Dimension Id,INT,PK,Surrogate key (YYYYMMDD),Generated,Generated
-Calendar Date Dimension,Full Date,DATE,BK,Ngày đầy đủ,Generated,Generated
-Calendar Date Dimension,Year,INT,,Năm — slicer dashboard,Generated,Generated
-Securities Practitioner Dimension,Practitioner Dimension Id,INT,PK,Surrogate key,Generated,Generated
-Securities Practitioner Dimension,Practitioner Code,VARCHAR,BK,Mã người hành nghề,Securities Practitioner,Practitioner Code
-Securities Practitioner Dimension,Full Name,NVARCHAR,,Họ và tên,Securities Practitioner,Full Name
-Securities Practitioner Dimension,Date Of Birth,DATE,,Ngày sinh,Securities Practitioner,Date Of Birth
-Securities Practitioner Dimension,Nationality Code,VARCHAR,,Quốc tịch,Securities Practitioner,Nationality Code
-Securities Practitioner Dimension,Nationality Name,NVARCHAR,,Tên quốc tịch,Classification Value,scheme = NATIONALITY
-Securities Practitioner Dimension,Education Level Code,VARCHAR,,Trình độ học vấn,Securities Practitioner,Education Level Code
-Securities Practitioner Dimension,Education Level Name,NVARCHAR,,Tên trình độ,Classification Value,scheme = EDUCATION_LEVEL
-Securities Practitioner Dimension,Practice Status Code,VARCHAR,,Trạng thái hành nghề,Securities Practitioner,Practice Status Code
-Securities Practitioner Dimension,Practice Status Name,NVARCHAR,,Tên trạng thái,Classification Value,scheme = PRACTICE_STATUS
-Securities Practitioner Dimension,Identification Number,VARCHAR,,Số CMND/CCCD/Hộ chiếu,Involved Party Alternative Identification,Identification Number
-Securities Practitioner Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
-Securities Practitioner Dimension,End Date,DATE,,Ngày kết thúc hiệu lực (9999-12-31 = hiện hành),,ETL derived
-Securities Organization Reference Dimension,Organization Dimension Id,INT,PK,Surrogate key,Generated,Generated
-Securities Organization Reference Dimension,Organization Code,VARCHAR,BK,Mã tổ chức,Securities Organization Reference,Securities Organization Reference Code
-Securities Organization Reference Dimension,Organization Name,NVARCHAR,,Tên tổ chức,Securities Organization Reference,Organization Name
-Securities Organization Reference Dimension,Organization Type Code,VARCHAR,,Loại tổ chức,Securities Organization Reference,Organization Type Code
-Securities Organization Reference Dimension,Organization Type Name,NVARCHAR,,Tên loại tổ chức,Classification Value,scheme = ORGANIZATION_TYPE
-Securities Organization Reference Dimension,Organization Status Code,VARCHAR,,Trạng thái,Securities Organization Reference,Organization Status Code
-Securities Organization Reference Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
-Securities Organization Reference Dimension,End Date,DATE,,Ngày kết thúc hiệu lực (9999-12-31 = hiện hành),,ETL derived
-Classification Dimension,Classification Dimension Id,INT,PK,Surrogate key — tự tăng / unique toàn bảng,Generated,Generated
-Classification Dimension,Scheme Code,VARCHAR,,Mã nhóm phân loại — phân biệt scheme,Classification Value,Silver scheme name
-Classification Dimension,Classification Code,VARCHAR,BK (cặp),Mã giá trị trong scheme. BK = Scheme Code + Classification Code,Classification Value,Classification Code
-Classification Dimension,Classification Name,NVARCHAR,,Tên giá trị,Classification Value,Classification Name
-Classification Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
-Classification Dimension,End Date,DATE,,Ngày kết thúc hiệu lực (9999-12-31 = hiện hành),,ETL derived
-Securities Practitioner Related Party Dimension,Related Party Dimension Id,INT,PK,Surrogate key,Generated,Generated
-Securities Practitioner Related Party Dimension,Securities Practitioner Related Party Code,VARCHAR,BK,Mã người liên quan,Securities Practitioner Related Party,Securities Practitioner Related Party Code
-Securities Practitioner Related Party Dimension,Practitioner Code,VARCHAR,,Mã NHN nếu NLQ là NHN trong hệ thống (NULL nếu không phải NHN) — dùng cho drill-through,Securities Practitioner Related Party,Practitioner Code
-Securities Practitioner Related Party Dimension,Related Party Full Name,NVARCHAR,,Họ và tên người liên quan,Securities Practitioner Related Party,Related Party Full Name
-Securities Practitioner Related Party Dimension,Occupation Name,NVARCHAR,,Nghề nghiệp,Securities Practitioner Related Party,Occupation Name
-Securities Practitioner Related Party Dimension,Workplace Name,NVARCHAR,,Nơi làm việc,Securities Practitioner Related Party,Workplace Name
-Securities Practitioner Related Party Dimension,Birth Year,VARCHAR,,Năm sinh,Securities Practitioner Related Party,Birth Year
-Securities Practitioner Related Party Dimension,Country Code,VARCHAR,,Quốc gia,Securities Practitioner Related Party,Country Code
-Securities Practitioner Related Party Dimension,Identity Reference Code,VARCHAR,,Mã định danh giấy tờ tùy thân,Securities Practitioner Related Party,Identity Reference Code
-Securities Practitioner Related Party Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
-Securities Practitioner Related Party Dimension,End Date,DATE,,Ngày kết thúc hiệu lực (9999-12-31 = hiện hành),,ETL derived
-Securities Practitioner Organization Employment Report Dimension,Organization Employment Report Dimension Id,INT,PK,Surrogate key,Generated,Generated
-Securities Practitioner Organization Employment Report Dimension,Organization Employment Report Code,VARCHAR,BK,Mã báo cáo công tác,Securities Practitioner Organization Employment Report,Organization Employment Report Code
-Securities Practitioner Organization Employment Report Dimension,Position Name,NVARCHAR,,Chức vụ / vị trí công tác,Securities Practitioner Organization Employment Report,Position Name
-Securities Practitioner Organization Employment Report Dimension,Department Name,NVARCHAR,,Phòng ban,Securities Practitioner Organization Employment Report,Department Name
-Securities Practitioner Organization Employment Report Dimension,Hire Date,DATE,,Ngày tiếp nhận,Securities Practitioner Organization Employment Report,Hire Date
-Securities Practitioner Organization Employment Report Dimension,Termination Date,DATE,,Ngày thôi việc (NULL = đang làm),Securities Practitioner Organization Employment Report,Termination Date
-Securities Practitioner Organization Employment Report Dimension,Is Current Flag,BOOLEAN,,TRUE = Termination Date IS NULL (đang công tác),,ETL derived
-Securities Practitioner Organization Employment Report Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
-Securities Practitioner Organization Employment Report Dimension,End Date,DATE,,Ngày kết thúc hiệu lực (9999-12-31 = hiện hành),,ETL derived
-Securities Practitioner Qualification Examination Assessment Dimension,Examination Assessment Dimension Id,INT,PK,Surrogate key,Generated,Generated
-Securities Practitioner Qualification Examination Assessment Dimension,Examination Assessment Code,VARCHAR,BK,Mã đợt thi,Securities Practitioner Qualification Examination Assessment,Examination Assessment Code
-Securities Practitioner Qualification Examination Assessment Dimension,Session Name,NVARCHAR,,Tên đợt thi (Đợt 1/2025),,ETL derived
-Securities Practitioner Qualification Examination Assessment Dimension,Session Number,VARCHAR,,Số thứ tự đợt thi trong năm,Securities Practitioner Qualification Examination Assessment,Session Number
-Securities Practitioner Qualification Examination Assessment Dimension,Examination Year,VARCHAR,,Năm thi,Securities Practitioner Qualification Examination Assessment,Examination Year
-Securities Practitioner Qualification Examination Assessment Dimension,Examination Start Date,DATE,,Ngày bắt đầu thi,Securities Practitioner Qualification Examination Assessment,Examination Start Date
-Securities Practitioner Qualification Examination Assessment Dimension,Examination End Date,DATE,,Ngày kết thúc thi,Securities Practitioner Qualification Examination Assessment,Examination End Date
-Securities Practitioner Qualification Examination Assessment Dimension,Organizer Name,NVARCHAR,,Đơn vị tổ chức,Securities Practitioner Qualification Examination Assessment,Organizer Name
-Securities Practitioner Qualification Examination Assessment Dimension,Decision Number,VARCHAR,,Số QĐ công nhận kết quả,Securities Practitioner License Decision Document,Decision Number
-Securities Practitioner Qualification Examination Assessment Dimension,Decision Date,DATE,,Ngày QĐ công nhận,Securities Practitioner License Decision Document,Signing Date
-Securities Practitioner Qualification Examination Assessment Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
-Securities Practitioner Qualification Examination Assessment Dimension,End Date,DATE,,Ngày kết thúc hiệu lực (9999-12-31 = hiện hành),,ETL derived
-Securities Practitioner Professional Training Class Dimension,Professional Training Class Dimension Id,INT,PK,Surrogate key,Generated,Generated
-Securities Practitioner Professional Training Class Dimension,Professional Training Class Code,VARCHAR,BK,Mã khóa học,Securities Practitioner Professional Training Class,Professional Training Class Code
-Securities Practitioner Professional Training Class Dimension,Course Name,NVARCHAR,,Tên khóa học,Securities Practitioner Professional Training Class,Course Name
-Securities Practitioner Professional Training Class Dimension,Academic Year,VARCHAR,,Năm học,Securities Practitioner Professional Training Class,Academic Year
-Securities Practitioner Professional Training Class Dimension,Exam Date,DATE,,Ngày thi,Securities Practitioner Professional Training Class,Exam Date
-Securities Practitioner Professional Training Class Dimension,Course Code,VARCHAR,,Mã khóa học nghiệp vụ,Securities Practitioner Professional Training Class,Course Code
-Securities Practitioner Professional Training Class Dimension,Effective Date,DATE,,Ngày hiệu lực SCD2,,ETL derived
-Securities Practitioner Professional Training Class Dimension,End Date,DATE,,Ngày kết thúc hiệu lực (9999-12-31 = hiện hành),,ETL derived
-Fact Securities Practitioner Snapshot,Snapshot Date,INT,,Ngày dữ liệu nghiệp vụ (YYYYMMDD),,ETL derived
-Fact Securities Practitioner Snapshot,Population Date,TIMESTAMP,,Thời gian ghi vào Database,,ETL derived
-Fact Securities Practitioner Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK → Calendar Date Dimension,Calendar Date Dimension,Date Dimension Id
-Fact Securities Practitioner Snapshot,Practitioner Dimension Id,INT,FK → Securities Practitioner Dimension,FK → Securities Practitioner Dimension,Securities Practitioner Dimension,Practitioner Dimension Id
-Fact Securities Practitioner Snapshot,Organization Dimension Id,INT,FK → Securities Organization Reference Dimension,FK → Securities Organization Reference Dimension — nơi công tác hiện tại (ETL lookup),Securities Organization Reference Dimension,Organization Dimension Id
-Fact Securities Practitioner Snapshot,Certificate Type Dimension Id,INT,FK → Classification Dimension (scheme: CERTIFICATE_TYPE),FK → Classification Dimension — loại chứng chỉ của CCHN đại diện,Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner Snapshot,Primary Certificate Number,VARCHAR,,Số chứng chỉ của CCHN đại diện,Securities Practitioner License Certificate Document,Certificate Number
-Fact Securities Practitioner Snapshot,Practitioner Consolidated Status Code,VARCHAR,,Trạng thái tổng hợp = trạng thái của CCHN đại diện,,ETL derived
-Fact Securities Practitioner License Certificate Document Snapshot,Snapshot Date,INT,,Ngày dữ liệu nghiệp vụ (YYYYMMDD),,ETL derived
-Fact Securities Practitioner License Certificate Document Snapshot,Population Date,TIMESTAMP,,Thời gian ghi vào Database,,ETL derived
-Fact Securities Practitioner License Certificate Document Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK → Calendar Date Dimension,Calendar Date Dimension,Date Dimension Id
-Fact Securities Practitioner License Certificate Document Snapshot,Practitioner Dimension Id,INT,FK → Securities Practitioner Dimension,FK → Securities Practitioner Dimension,Securities Practitioner Dimension,Practitioner Dimension Id
-Fact Securities Practitioner License Certificate Document Snapshot,Certificate Type Dimension Id,INT,FK → Classification Dimension (scheme: CERTIFICATE_TYPE),FK → Classification Dimension — loại chứng chỉ,Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner License Certificate Document Snapshot,Certificate Status Dimension Id,INT,FK → Classification Dimension (scheme: CERTIFICATE_STATUS),FK → Classification Dimension — trạng thái CCHN,Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner License Certificate Document Snapshot,Organization Dimension Id,INT,FK → Securities Organization Reference Dimension,FK → Securities Organization Reference Dimension — nơi công tác hiện tại (ETL lookup),Securities Organization Reference Dimension,Organization Dimension Id
-Fact Securities Practitioner License Certificate Document Snapshot,License Certificate Document Code,VARCHAR,DD,Mã CCHN (grain key),Securities Practitioner License Certificate Document,License Certificate Document Code
-Fact Securities Practitioner License Certificate Document Snapshot,Certificate Number,VARCHAR,DD,Số chứng chỉ (hiển thị trên UI),Securities Practitioner License Certificate Document,Certificate Number
-Fact Securities Practitioner License Certificate Document Snapshot,Certificate Issue Date,DATE,,Ngày cấp chứng chỉ,Securities Practitioner License Certificate Document,Certificate Issue Date
-Fact Securities Practitioner License Certificate Document Snapshot,Revocation Date,DATE,,Ngày thu hồi (NULL = chưa thu hồi),Securities Practitioner License Certificate Document,Revocation Date
-Fact Securities Practitioner License Certificate Document Snapshot,Issuance Decision Number,VARCHAR,,Số quyết định cấp,Securities Practitioner License Decision Document,Decision Number
-Fact Securities Practitioner License Certificate Document Snapshot,Issued In Year Flag,BOOLEAN,,TRUE = có sự kiện CẤP year-to-date,,ETL derived
-Fact Securities Practitioner License Certificate Document Snapshot,Is First Issuance Flag,BOOLEAN,,TRUE = cấp lần đầu / FALSE = cấp lại,,ETL derived
-Fact Securities Practitioner License Certificate Document Snapshot,Revoked In Year Flag,BOOLEAN,,TRUE = có sự kiện THU HỒI year-to-date,,ETL derived
-Fact Securities Practitioner Conduct Violation,Violation Date,INT,,Ngày vi phạm (YYYYMMDD),Securities Practitioner Conduct Violation,Created Timestamp
-Fact Securities Practitioner Conduct Violation,Population Date,TIMESTAMP,,Thời gian ghi vào Database,,ETL derived
-Fact Securities Practitioner Conduct Violation,Date Dimension Id,INT,FK → Calendar Date Dimension,FK → Calendar Date Dimension,Calendar Date Dimension,Date Dimension Id
-Fact Securities Practitioner Conduct Violation,Practitioner Dimension Id,INT,FK → Securities Practitioner Dimension,FK → Securities Practitioner Dimension,Securities Practitioner Dimension,Practitioner Dimension Id
-Fact Securities Practitioner Conduct Violation,Conduct Violation Type Dimension Id,INT,FK → Classification Dimension (scheme: CONDUCT_VIOLATION_TYPE),FK → Classification Dimension — loại vi phạm (Hành chính/Pháp luật),Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner Conduct Violation,Violation Status Dimension Id,INT,FK → Classification Dimension (scheme: VIOLATION_STATUS),FK → Classification Dimension — trạng thái hiệu lực,Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner Conduct Violation,Conduct Violation Code,VARCHAR,DD,Mã vi phạm (grain key),Securities Practitioner Conduct Violation,Conduct Violation Code
-Fact Securities Practitioner Conduct Violation,Decision Number,VARCHAR,DD,Số quyết định xử phạt,Securities Practitioner License Decision Document,Decision Number
-Fact Securities Practitioner Conduct Violation,Decision Date,DATE,,Ngày quyết định,Securities Practitioner License Decision Document,Signing Date
-Fact Securities Practitioner Conduct Violation,Violation Note,NVARCHAR,,Nội dung vi phạm,Securities Practitioner Conduct Violation,Violation Note
-Fact Securities Practitioner Conduct Violation,Penalty Description,NVARCHAR,,Hình thức xử phạt (O6: chờ Silver),,
-Fact Securities Practitioner Conduct Violation,Violation Execution Status Code,VARCHAR,,Trạng thái thực thi (O7: chờ Silver),,
-Fact Securities Practitioner Organization Employment Report Snapshot,Snapshot Date,INT,,Ngày dữ liệu nghiệp vụ (YYYYMMDD),,ETL derived
-Fact Securities Practitioner Organization Employment Report Snapshot,Population Date,TIMESTAMP,,Thời gian ghi vào Database,,ETL derived
-Fact Securities Practitioner Organization Employment Report Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK → Calendar Date Dimension,Calendar Date Dimension,Date Dimension Id
-Fact Securities Practitioner Organization Employment Report Snapshot,Practitioner Dimension Id,INT,FK → Securities Practitioner Dimension,FK → Securities Practitioner Dimension,Securities Practitioner Dimension,Practitioner Dimension Id
-Fact Securities Practitioner Organization Employment Report Snapshot,Organization Employment Report Dimension Id,INT,FK → Securities Practitioner Organization Employment Report Dimension,FK → Securities Practitioner Organization Employment Report Dimension — thông tin lượt công tác,Securities Practitioner Organization Employment Report Dimension,Organization Employment Report Dimension Id
-Fact Securities Practitioner Organization Employment Report Snapshot,Organization Dimension Id,INT,FK → Securities Organization Reference Dimension,FK → Securities Organization Reference Dimension — tổ chức công tác,Securities Organization Reference Dimension,Organization Dimension Id
-Fact Securities Practitioner Related Party Snapshot,Snapshot Date,INT,,Ngày dữ liệu nghiệp vụ (YYYYMMDD),,ETL derived
-Fact Securities Practitioner Related Party Snapshot,Population Date,TIMESTAMP,,Thời gian ghi vào Database,,ETL derived
-Fact Securities Practitioner Related Party Snapshot,Date Dimension Id,INT,FK → Calendar Date Dimension,FK → Calendar Date Dimension,Calendar Date Dimension,Date Dimension Id
-Fact Securities Practitioner Related Party Snapshot,Practitioner Dimension Id,INT,FK → Securities Practitioner Dimension,FK → Securities Practitioner Dimension — NHN chủ thể,Securities Practitioner Dimension,Practitioner Dimension Id
-Fact Securities Practitioner Related Party Snapshot,Related Party Dimension Id,INT,FK → Securities Practitioner Related Party Dimension,FK → Securities Practitioner Related Party Dimension — người liên quan,Securities Practitioner Related Party Dimension,Related Party Dimension Id
-Fact Securities Practitioner Related Party Snapshot,Relationship Type Dimension Id,INT,FK → Classification Dimension (scheme: RELATIONSHIP_TYPE),FK → Classification Dimension — loại quan hệ gia đình (Code 1–6),Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner Related Party Snapshot,Practitioner Relationship Code,VARCHAR,DD,Mã quan hệ (grain key),Securities Practitioner Related Party,Securities Practitioner Related Party Code
-Fact Securities Practitioner Qualification Examination Assessment Result,Examination Date,INT,,Ngày thi (YYYYMMDD),Securities Practitioner Qualification Examination Assessment,Examination Start Date
-Fact Securities Practitioner Qualification Examination Assessment Result,Population Date,TIMESTAMP,,Thời gian ghi vào Database,,ETL derived
-Fact Securities Practitioner Qualification Examination Assessment Result,Date Dimension Id,INT,FK → Calendar Date Dimension,FK → Calendar Date Dimension,Calendar Date Dimension,Date Dimension Id
-Fact Securities Practitioner Qualification Examination Assessment Result,Practitioner Dimension Id,INT,FK → Securities Practitioner Dimension,FK → Securities Practitioner Dimension,Securities Practitioner Dimension,Practitioner Dimension Id
-Fact Securities Practitioner Qualification Examination Assessment Result,Examination Assessment Dimension Id,INT,FK → Securities Practitioner Qualification Examination Assessment Dimension,FK → Securities Practitioner Qualification Examination Assessment Dimension — đợt thi,Securities Practitioner Qualification Examination Assessment Dimension,Examination Assessment Dimension Id
-Fact Securities Practitioner Qualification Examination Assessment Result,Examination Result Dimension Id,INT,FK → Classification Dimension (scheme: EXAMINATION_RESULT),FK → Classification Dimension — kết quả (Đạt/Không đạt),Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner Qualification Examination Assessment Result,Examination Assessment Result Code,VARCHAR,DD,Mã kết quả thi (grain key),Securities Practitioner Qualification Examination Assessment Result,Examination Assessment Result Code
-Fact Securities Practitioner Qualification Examination Assessment Result,Law Score,VARCHAR,,Điểm pháp luật — kết quả cá nhân,Securities Practitioner Qualification Examination Assessment Result,Law Score
-Fact Securities Practitioner Qualification Examination Assessment Result,Specialization Score,VARCHAR,,Điểm chuyên môn — kết quả cá nhân,Securities Practitioner Qualification Examination Assessment Result,Specialization Score
-Fact Securities Practitioner Qualification Examination Assessment Result,Total Score,VARCHAR,,Tổng điểm — kết quả cá nhân,,ETL derived
-Fact Securities Practitioner Professional Training Class Enrollment,Enrollment Date,INT,,Ngày sự kiện (YYYYMMDD),Securities Practitioner Professional Training Class,Exam Date
-Fact Securities Practitioner Professional Training Class Enrollment,Population Date,TIMESTAMP,,Thời gian ghi vào Database,,ETL derived
-Fact Securities Practitioner Professional Training Class Enrollment,Date Dimension Id,INT,FK → Calendar Date Dimension,FK → Calendar Date Dimension,Calendar Date Dimension,Date Dimension Id
-Fact Securities Practitioner Professional Training Class Enrollment,Practitioner Dimension Id,INT,FK → Securities Practitioner Dimension,FK → Securities Practitioner Dimension,Securities Practitioner Dimension,Practitioner Dimension Id
-Fact Securities Practitioner Professional Training Class Enrollment,Professional Training Class Dimension Id,INT,FK → Securities Practitioner Professional Training Class Dimension,FK → Securities Practitioner Professional Training Class Dimension — khóa học,Securities Practitioner Professional Training Class Dimension,Professional Training Class Dimension Id
-Fact Securities Practitioner Professional Training Class Enrollment,Training Result Dimension Id,INT,FK → Classification Dimension (scheme: TRAINING_RESULT),FK → Classification Dimension — kết quả (Đạt/Không đạt),Classification Dimension,Classification Dimension Id
-Fact Securities Practitioner Professional Training Class Enrollment,Training Enrollment Code,VARCHAR,DD,Mã đăng ký (grain key),Securities Practitioner Professional Training Class Enrollment,Professional Training Class Enrollment Code
-Fact Securities Practitioner Professional Training Class Enrollment,Assessment Score,VARCHAR,,Điểm kiểm tra — kết quả cá nhân,Securities Practitioner Professional Training Class Enrollment,Assessment Score
-Fact Securities Practitioner Professional Training Class Enrollment,Training Hours,DECIMAL,,Số giờ đào tạo (O9: chờ BA),,ETL derived
+﻿"gold_entity","gold_attribute","data_domain","key","description","source_entity","source_attribute"
+"Calendar Date Dimension","Date Dimension Id","Surrogate Key","PK","Surrogate key ETL generated","Generated","ETL derived"
+"Calendar Date Dimension","Full Date","Date","","Ngày đầy đủ — YYYYMMDD","Generated","ETL derived"
+"Calendar Date Dimension","Year","Small Counter","","Năm","Generated","ETL derived"
+"Calendar Date Dimension","Quarter","Small Counter","","Quý (1–4)","Generated","ETL derived"
+"Calendar Date Dimension","Month","Small Counter","","Tháng (1–12)","Generated","ETL derived"
+"Calendar Date Dimension","Day Of Month","Small Counter","","Ngày trong tháng","Generated","ETL derived"
+"Calendar Date Dimension","Day Of Year","Small Counter","","Ngày trong năm","Generated","ETL derived"
+"Calendar Date Dimension","Day Of Week","Small Counter","","Thứ trong tuần (1=CN)","Generated","ETL derived"
+"Calendar Date Dimension","Week Of Year","Small Counter","","Tuần trong năm","Generated","ETL derived"
+"Calendar Date Dimension","Is Weekend","Boolean","","Cờ cuối tuần","Generated","ETL derived"
+"Calendar Date Dimension","Is Holiday","Boolean","","Cờ ngày lễ Việt Nam","Generated","ETL derived"
+"Securities Practitioner Dimension","Practitioner Dimension Id","Surrogate Key","PK","Surrogate key SCD2","Generated","ETL derived"
+"Securities Practitioner Dimension","Practitioner Id","Surrogate Key","BK","Silver surrogate Id của NHN — NHNCK.Professionals (PK Silver). ETL join key.","Securities Practitioner","Practitioner Id"
+"Securities Practitioner Dimension","Practitioner Code","Text","","Mã định danh NHN — NHNCK.Professionals.Id (BK nguồn)","Securities Practitioner","Practitioner Code"
+"Securities Practitioner Dimension","Full Name","Text","","Họ và tên NHN — NHNCK.Professionals.FullName","Securities Practitioner","Full Name"
+"Securities Practitioner Dimension","Date Of Birth","Date","","Ngày sinh đầy đủ — NHNCK.ProfessionalHistories.BirthDate","Securities Practitioner","Date Of Birth"
+"Securities Practitioner Dimension","Education Level Code","Classification Value","FK → Classification Dimension (scheme: EDUCATION_LEVEL)","Trình độ học vấn — NHNCK.ProfessionalHistories.EducationLevelId","Securities Practitioner","Education Level Code"
+"Securities Practitioner Dimension","Nationality Code","Classification Value","FK → Classification Dimension (scheme: NATIONALITY)","Quốc tịch — NHNCK.ProfessionalHistories.NationalityId","Securities Practitioner","Nationality Code"
+"Securities Practitioner Dimension","Identity Reference Code","Text","","Mã định danh giấy tờ tùy thân — NHNCK.Professionals.IdentityId","Securities Practitioner","Identity Reference Code"
+"Securities Practitioner Dimension","Practice Status Code","Classification Value","FK → Classification Dimension (scheme: PRACTICE_STATUS)","Trạng thái hành nghề — NHNCK.ProfessionalHistories.StatusWork","Securities Practitioner","Practice Status Code"
+"Securities Practitioner Dimension","Effective Date","Date","","Ngày hiệu lực SCD2","Generated","ETL derived"
+"Securities Practitioner Dimension","Expiry Date","Date","","Ngày hết hiệu lực SCD2 (9999-12-31 = hiện hành)","Generated","ETL derived"
+"Fact Practitioner License Certificate Snapshot","Practitioner Dimension Id","Surrogate Dimension Key","FK → Securities Practitioner Dimension","FK NHN — ETL lookup từ Securities Practitioner License Certificate Document.Practitioner Id","Securities Practitioner License Certificate Document","Practitioner Id"
+"Fact Practitioner License Certificate Snapshot","Issue Date Dimension Id","Surrogate Dimension Key","FK → Calendar Date Dimension","FK lịch ngày cấp — ETL lookup từ Certificate Issue Date. NHNCK.CertificateRecords.IssueDate","Securities Practitioner License Certificate Document","Certificate Issue Date"
+"Fact Practitioner License Certificate Snapshot","Snapshot Date Dimension Id","Surrogate Dimension Key","FK → Calendar Date Dimension","FK lịch ngày snapshot — ETL generated theo ngày chạy","Generated","ETL derived"
+"Fact Practitioner License Certificate Snapshot","License Certificate Document Code","Text","","DD — BK CCHN. NHNCK.CertificateRecords.Id","Securities Practitioner License Certificate Document","License Certificate Document Code"
+"Fact Practitioner License Certificate Snapshot","Certificate Type Code","Classification Value","FK → Classification Dimension (scheme: CERTIFICATE_TYPE)","Loại CCHN — NHNCK.CertificateRecords.CertificateId","Securities Practitioner License Certificate Document","Certificate Type Code"
+"Fact Practitioner License Certificate Snapshot","Certificate Status Code","Classification Value","FK → Classification Dimension (scheme: CERTIFICATE_STATUS)","Trạng thái CCHN — NHNCK.CertificateRecords.Status","Securities Practitioner License Certificate Document","Certificate Status Code"
+"Fact Practitioner License Certificate Snapshot","Allow Reissue Indicator","Boolean","","Cho phép cấp lại — NHNCK.CertificateRecords.AllowReissue","Securities Practitioner License Certificate Document","Allow Reissue Indicator"
+"Fact Practitioner License Certificate Snapshot","Is Reissue Indicator","Boolean","","ETL-derived: TRUE nếu Application_Type_Code = loại cấp lại. Join CertificateRecords → Applications qua IssueDecisionId","Securities Practitioner License Application","Application Type Code"
+"Fact Practitioner License Certificate Snapshot","Certificate Issue Date","Date","","Ngày cấp CCHN — NHNCK.CertificateRecords.IssueDate","Securities Practitioner License Certificate Document","Certificate Issue Date"
+"Fact Practitioner License Certificate Snapshot","Revocation Date","Date","","Ngày thu hồi — NHNCK.CertificateRecords.RevocationDate. NULL = chưa thu hồi","Securities Practitioner License Certificate Document","Revocation Date"
+"Fact Practitioner License Certificate Snapshot","Snapshot Date","Date","","Ngày snapshot — ETL generated","Generated","ETL derived"
+"Fact Practitioner License Certificate Snapshot","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Fact Practitioner Daily Snapshot","Practitioner Dimension Id","Surrogate Dimension Key","FK → Securities Practitioner Dimension","FK NHN — ETL lookup từ Securities Practitioner.Practitioner Id","Securities Practitioner","Practitioner Id"
+"Fact Practitioner Daily Snapshot","Snapshot Date Dimension Id","Surrogate Dimension Key","FK → Calendar Date Dimension","FK lịch ngày snapshot — ETL generated theo ngày chạy","Generated","ETL derived"
+"Fact Practitioner Daily Snapshot","Age","Small Counter","","Tuổi = Year(Snapshot_Date) - Year(Date_Of_Birth). NHNCK.ProfessionalHistories.BirthDate","Securities Practitioner","Date Of Birth"
+"Fact Practitioner Daily Snapshot","Has Active Certificate","Boolean","","ETL-derived: TRUE nếu NHN có ≥1 CCHN Certificate_Status_Code = 1 (Đang sử dụng) tại ngày snapshot","Securities Practitioner License Certificate Document","Certificate Status Code"
+"Fact Practitioner Daily Snapshot","Has Active Violation","Boolean","","ETL-derived: TRUE nếu NHN có ≥1 vi phạm Violation_Status_Code = 1 (ACTIVE) tại ngày snapshot. Xem O_NHNCK_5","Securities Practitioner Conduct Violation","Violation Status Code"
+"Fact Practitioner Daily Snapshot","Snapshot Date","Date","","Ngày snapshot — ETL generated","Generated","ETL derived"
+"Fact Practitioner Daily Snapshot","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner 360 Profile","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner 360 Profile","Full Name","Text","","Họ và tên — NHNCK.Professionals.FullName","Securities Practitioner","Full Name"
+"Practitioner 360 Profile","Date Of Birth","Date","","Ngày sinh — NHNCK.ProfessionalHistories.BirthDate","Securities Practitioner","Date Of Birth"
+"Practitioner 360 Profile","Age","Small Counter","","ETL-derived: Year(Population_Date) - Year(Date_Of_Birth)","Generated","ETL derived"
+"Practitioner 360 Profile","Nationality Name","Text","","Tên quốc tịch — ETL denormalize từ Classification (scheme: NATIONALITY) theo NHNCK.ProfessionalHistories.NationalityId","Securities Practitioner","Nationality Code"
+"Practitioner 360 Profile","Identity Reference Code","Text","","Số CMND/CCCD/Hộ chiếu — NHNCK.Professionals.IdentityId","Securities Practitioner","Identity Reference Code"
+"Practitioner 360 Profile","Practice Status Code","Classification Value","","Mã trạng thái hành nghề — NHNCK.ProfessionalHistories.StatusWork. Dùng để filter danh sách","Securities Practitioner","Practice Status Code"
+"Practitioner 360 Profile","Practice Status Name","Text","","Tên trạng thái hành nghề — ETL denormalize từ Classification (scheme: PRACTICE_STATUS)","Securities Practitioner","Practice Status Code"
+"Practitioner 360 Profile","Current Organization Name","Text","","Tên tổ chức hiện tại — ETL lookup Securities Organization Reference.Organization Name theo Organization Employment Report mới nhất có Termination Date = NULL","Securities Practitioner Organization Employment Report","Securities Organization Code"
+"Practitioner 360 Profile","Active Certificate Number","Text","","Số CCHN đang hiệu lực — NHNCK.CertificateRecords.CertificateNumber WHERE Status = 1","Securities Practitioner License Certificate Document","Certificate Number"
+"Practitioner 360 Profile","Active Certificate Type Code","Classification Value","","Mã loại CCHN hiện tại — NHNCK.CertificateRecords.CertificateId WHERE Status = 1. Dùng để filter","Securities Practitioner License Certificate Document","Certificate Type Code"
+"Practitioner 360 Profile","Active Certificate Type Name","Text","","Tên loại CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_TYPE)","Securities Practitioner License Certificate Document","Certificate Type Code"
+"Practitioner 360 Profile","Related Party Count","Small Counter","","Số người liên quan — COUNT(*) từ Securities Practitioner Related Party per NHN. Xem O_NHNCK_7","Securities Practitioner Related Party","Practitioner Id"
+"Practitioner 360 Profile","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner Certificate History","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner Certificate History","License Certificate Document Code","Text","PK","BK CCHN — NHNCK.CertificateRecords.Id","Securities Practitioner License Certificate Document","License Certificate Document Code"
+"Practitioner Certificate History","Certificate Number","Text","","Số chứng chỉ — NHNCK.CertificateRecords.CertificateNumber","Securities Practitioner License Certificate Document","Certificate Number"
+"Practitioner Certificate History","Certificate Type Name","Text","","Tên loại CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_TYPE). NHNCK.CertificateRecords.CertificateId","Securities Practitioner License Certificate Document","Certificate Type Code"
+"Practitioner Certificate History","Certificate Status Name","Text","","Tên trạng thái CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_STATUS). NHNCK.CertificateRecords.Status","Securities Practitioner License Certificate Document","Certificate Status Code"
+"Practitioner Certificate History","Certificate Issue Date","Date","","Ngày cấp — NHNCK.CertificateRecords.IssueDate","Securities Practitioner License Certificate Document","Certificate Issue Date"
+"Practitioner Certificate History","Revocation Date","Date","","Ngày thu hồi — NHNCK.CertificateRecords.RevocationDate. NULL = chưa thu hồi","Securities Practitioner License Certificate Document","Revocation Date"
+"Practitioner Certificate History","Issuance Decision Number","Text","","Số quyết định cấp — NHNCK.Decisions.DecisionNumber (join qua IssueDecisionId)","Securities Practitioner License Decision Document","Decision Number"
+"Practitioner Certificate History","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner Employment History","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner Employment History","Organization Employment Report Code","Text","PK","BK báo cáo công tác — NHNCK.OrganizationReports.Id","Securities Practitioner Organization Employment Report","Organization Employment Report Code"
+"Practitioner Employment History","Securities Organization Name","Text","","Tên tổ chức — ETL lookup Securities Organization Reference.Organization Name theo NHNCK.OrganizationReports.OrganizationId","Securities Practitioner Organization Employment Report","Securities Organization Code"
+"Practitioner Employment History","Position Name","Text","","Chức vụ — NHNCK.OrganizationReports.Position","Securities Practitioner Organization Employment Report","Position Name"
+"Practitioner Employment History","Hire Date","Date","","Ngày tiếp nhận — NHNCK.OrganizationReports.HireDate","Securities Practitioner Organization Employment Report","Hire Date"
+"Practitioner Employment History","Termination Date","Date","","Ngày thôi việc — NHNCK.OrganizationReports.TerminationDate. NULL = đang làm việc","Securities Practitioner Organization Employment Report","Termination Date"
+"Practitioner Employment History","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner Violation History","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner Violation History","Conduct Violation Code","Text","PK","BK vi phạm — NHNCK.Violations.Id","Securities Practitioner Conduct Violation","Conduct Violation Code"
+"Practitioner Violation History","Conduct Violation Type Name","Text","","Tên loại vi phạm — ETL denormalize từ Classification (scheme: CONDUCT_VIOLATION_TYPE). NHNCK.Violations.Type","Securities Practitioner Conduct Violation","Conduct Violation Type Code"
+"Practitioner Violation History","Violation Note","Text","","Nội dung vi phạm — NHNCK.Violations.Note","Securities Practitioner Conduct Violation","Violation Note"
+"Practitioner Violation History","Violation Status Name","Text","","Tên trạng thái vi phạm — ETL denormalize từ Classification (scheme: VIOLATION_STATUS). NHNCK.Violations.Status","Securities Practitioner Conduct Violation","Violation Status Code"
+"Practitioner Violation History","Decision Number","Text","","Số quyết định xử phạt — NHNCK.Decisions.DecisionNumber (join qua DecisionId)","Securities Practitioner License Decision Document","Decision Number"
+"Practitioner Violation History","Decision Issue Date","Date","","Ngày ban hành quyết định — NHNCK.Decisions.SignedDate","Securities Practitioner License Decision Document","Signing Date"
+"Practitioner Violation History","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner Exam History","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner Exam History","Examination Assessment Result Code","Text","PK","BK kết quả thi — NHNCK.ExamDetails.Id","Securities Practitioner Qualification Examination Assessment Result","Examination Assessment Result Code"
+"Practitioner Exam History","Session Name","Text","","Tên đợt thi — NHNCK.ExamSessions.Name","Securities Practitioner Qualification Examination Assessment","Session Name"
+"Practitioner Exam History","Examination Start Date","Date","","Ngày thi — NHNCK.ExamSessions.ExamStartDate","Securities Practitioner Qualification Examination Assessment","Examination Start Date"
+"Practitioner Exam History","Law Score","Text","","Điểm pháp luật — NHNCK.ExamDetails.LawScore. Text do có thể là 'Vắng'/'Miễn thi'","Securities Practitioner Qualification Examination Assessment Result","Law Score"
+"Practitioner Exam History","Specialization Score","Text","","Điểm chuyên môn — NHNCK.ExamDetails.SpecializationScore","Securities Practitioner Qualification Examination Assessment Result","Specialization Score"
+"Practitioner Exam History","Examination Result Code","Classification Value","","Kết quả tổng — NHNCK.ExamDetails.Result. Scheme: EXAMINATION_RESULT (1: Đạt, 0: Không đạt)","Securities Practitioner Qualification Examination Assessment Result","Examination Result Code"
+"Practitioner Exam History","Decision Number","Text","","Số quyết định công bố kết quả — NHNCK.Decisions.DecisionNumber (join từ ExamSessions.DecisionId)","Securities Practitioner License Decision Document","Decision Number"
+"Practitioner Exam History","Decision Issue Date","Date","","Ngày ban hành quyết định công bố — NHNCK.Decisions.SignedDate","Securities Practitioner License Decision Document","Signing Date"
+"Practitioner Exam History","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner Training History","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner Training History","Enrollment Code","Text","PK","BK đăng ký khóa học — NHNCK.SpecializationCourseDetails.Id","Securities Practitioner Professional Training Class Enrollment","Professional Training Class Enrollment Code"
+"Practitioner Training History","Training Year","Small Counter","","Năm học — CAST(NHNCK.SpecializationCourses.AcademicYear AS INT)","Securities Practitioner Professional Training Class","Academic Year"
+"Practitioner Training History","Assessment Result Name","Text","","Kết quả kiểm tra — ETL denormalize từ Classification (scheme: TRAINING_RESULT). NHNCK.SpecializationCourseDetails.Result","Securities Practitioner Professional Training Class Enrollment","Assessment Result Code"
+"Practitioner Training History","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner Related Party Profile","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner Related Party Profile","Securities Practitioner Related Party Code","Text","PK","BK người liên quan — NHNCK.ProfessionalRelationships.Id","Securities Practitioner Related Party","Securities Practitioner Related Party Code"
+"Practitioner Related Party Profile","Related Party Full Name","Text","","Họ tên người liên quan — NHNCK.ProfessionalRelationships.FullName","Securities Practitioner Related Party","Related Party Full Name"
+"Practitioner Related Party Profile","Relationship Type Name","Text","","Tên mối quan hệ — ETL denormalize từ Classification (scheme: RELATIONSHIP_TYPE). NHNCK.ProfessionalRelationships.RelationshipType","Securities Practitioner Related Party","Relationship Type Code"
+"Practitioner Related Party Profile","Occupation Name","Text","","Nghề nghiệp — NHNCK.ProfessionalRelationships.Occupation","Securities Practitioner Related Party","Occupation Name"
+"Practitioner Related Party Profile","Workplace Name","Text","","Nơi làm việc — NHNCK.ProfessionalRelationships.Workplace","Securities Practitioner Related Party","Workplace Name"
+"Practitioner Related Party Profile","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
+"Practitioner Data Explorer","Practitioner Code","Text","PK","BK NHN — NHNCK.Professionals.Id","Securities Practitioner","Practitioner Code"
+"Practitioner Data Explorer","License Certificate Document Code","Text","PK","BK CCHN — NHNCK.CertificateRecords.Id","Securities Practitioner License Certificate Document","License Certificate Document Code"
+"Practitioner Data Explorer","Full Name","Text","","Họ và tên NHN — NHNCK.Professionals.FullName","Securities Practitioner","Full Name"
+"Practitioner Data Explorer","Certificate Number","Text","","Số CCHN — NHNCK.CertificateRecords.CertificateNumber","Securities Practitioner License Certificate Document","Certificate Number"
+"Practitioner Data Explorer","Certificate Type Code","Classification Value","","Mã loại CCHN — NHNCK.CertificateRecords.CertificateId. Dùng cho slicer Loại hình","Securities Practitioner License Certificate Document","Certificate Type Code"
+"Practitioner Data Explorer","Certificate Type Name","Text","","Tên loại CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_TYPE)","Securities Practitioner License Certificate Document","Certificate Type Code"
+"Practitioner Data Explorer","Certificate Status Code","Classification Value","","Mã trạng thái CCHN — NHNCK.CertificateRecords.Status. Dùng cho slicer Trạng thái","Securities Practitioner License Certificate Document","Certificate Status Code"
+"Practitioner Data Explorer","Certificate Status Name","Text","","Tên trạng thái CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_STATUS)","Securities Practitioner License Certificate Document","Certificate Status Code"
+"Practitioner Data Explorer","Certificate Issue Date","Date","","Ngày cấp CCHN — NHNCK.CertificateRecords.IssueDate","Securities Practitioner License Certificate Document","Certificate Issue Date"
+"Practitioner Data Explorer","Current Organization Name","Text","","Tên tổ chức hiện tại — ETL lookup Securities Organization Reference.Organization Name theo Organization Employment Report mới nhất có Termination Date = NULL","Securities Practitioner Organization Employment Report","Securities Organization Code"
+"Practitioner Data Explorer","Population Date","Timestamp","","ETL load timestamp","Generated","ETL derived"
