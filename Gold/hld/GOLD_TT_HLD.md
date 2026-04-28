@@ -24,10 +24,10 @@ flowchart LR
         S2["ThanhTra.TT_KET_LUAN"]
         S3["ThanhTra.TT_QUYET_DINH"]
         S4["ThanhTra.TT_QUYET_DINH_DOI_TUONG"]
-        S5["ThanhTra.DM_CONG_TY_CK (ETL lookup)"]
-        S6["ThanhTra.DM_CONG_TY_QLQ (ETL lookup)"]
-        S7["ThanhTra.DM_CONG_TY_DC (ETL lookup)"]
-        S8["ThanhTra.DM_DOI_TUONG_KHAC (ETL lookup)"]
+        S5["ThanhTra.DM_CONG_TY_CK"]
+        S6["ThanhTra.DM_CONG_TY_QLQ"]
+        S7["ThanhTra.DM_CONG_TY_DC"]
+        S8["ThanhTra.DM_DOI_TUONG_KHAC"]
     end
 
     subgraph SIL["Silver"]
@@ -47,10 +47,10 @@ flowchart LR
     S2 --> SV2
     S3 --> SV3
     S4 --> SV4
-    S5 -.->|ETL lookup| SV4
-    S6 -.->|ETL lookup| SV4
-    S7 -.->|ETL lookup| SV4
-    S8 -.->|ETL lookup| SV4
+    S5 --> SV4
+    S6 --> SV4
+    S7 --> SV4
+    S8 --> SV4
 
     SV1 --> G1
     SV2 --> G1
