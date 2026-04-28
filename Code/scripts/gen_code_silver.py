@@ -109,50 +109,71 @@ def build_merged_derived_cte(phys_row, derv_row):
     cte += "\n)"
     return cte
 
-def parse_unpivot_select(sel):
-    """'ip_code=id | TYPE1:col1 | TYPE2:col2 | passthrough' → (id_col, legs, passthroughs)."""
-    parts = [p.strip() for p in sel.split('|')]
-    id_col, legs, pass_cols = None, [], []
-    for p in parts:
-        if p.startswith('ip_code='):
-            id_col = p.split('=', 1)[1].strip()
-        elif ':' in p:
-            t, c = p.split(':', 1)
-            legs.append((t.strip(), c.strip()))
+def smart_split_args(s):
+    """Split string by top-level commas — bỏ qua comma trong quotes hoặc parens."""
+    result, current, depth, in_quote = [], '', 0, False
+    for ch in s:
+        if ch == "'":
+            in_quote = not in_quote
+            current += ch
+        elif not in_quote and ch == '(':
+            depth += 1; current += ch
+        elif not in_quote and ch == ')':
+            depth -= 1; current += ch
+        elif not in_quote and depth == 0 and ch == ',':
+            result.append(current.strip()); current = ''
         else:
-            pass_cols.append(p)
-    return id_col, legs, pass_cols
+            current += ch
+    if current.strip():
+        result.append(current.strip())
+    return result
+
+
+def format_lateral_view(lateral_view, indent='    '):
+    """Reformat LATERAL VIEW stack(N, args...) thành multi-line, 1 leg per line."""
+    m = re.match(r'(LATERAL\s+VIEW\s+stack\s*\(\s*)(\d+)\s*,\s*(.*?)\)\s*(.*)$',
+                 lateral_view, re.IGNORECASE | re.DOTALL)
+    if not m:
+        return f"{indent}{lateral_view}"
+    _, n_str, args_str, suffix = m.groups()
+    n = int(n_str)
+    args = smart_split_args(args_str)
+    if n <= 0 or len(args) % n != 0:
+        return f"{indent}{lateral_view}"
+    vals_per_leg = len(args) // n
+    legs = [args[i * vals_per_leg:(i + 1) * vals_per_leg] for i in range(n)]
+    leg_indent = indent + '    '
+    lines = [f"{indent}LATERAL VIEW stack({n},"]
+    for i, leg in enumerate(legs):
+        suffix_comma = ',' if i < len(legs) - 1 else ''
+        lines.append(f"{leg_indent}{', '.join(leg)}{suffix_comma}")
+    lines.append(f"{indent}) {suffix.strip()}".rstrip())
+    return '\n'.join(lines)
+
 
 def build_unpivot_cte(phys_row, unpv_row):
-    """physical_table + unpivot_cte → 1 CTE với UNION ALL các legs."""
+    """physical_table + unpivot_cte → 1 CTE dùng LATERAL VIEW stack().
+
+    unpv_row.select_fields format:
+        '<select_cols>\\nLATERAL VIEW stack(N, ''T1'', c1, ''T2'', c2, ...) AS (type_code, address_value)'
+    """
     p_schema, p_table, p_filter = get(phys_row,2), get(phys_row,3), get(phys_row,6)
     u_alias, u_sel, u_filter = get(unpv_row,4), get(unpv_row,5), get(unpv_row,6)
     source = f"{p_schema}.{p_table}" if p_schema else p_table
 
-    id_col, legs, pass_cols = parse_unpivot_select(u_sel)
+    # Tách select cols và lateral view từ select_fields multi-line
+    lines = [l.strip() for l in u_sel.split('\n') if l.strip()]
+    select_part = lines[0] if lines else ''
+    lateral_view = ' '.join(lines[1:]) if len(lines) > 1 else ''
 
-    leg_sqls = []
-    for type_code, val_col in legs:
-        cols_lines = [
-            f"        {id_col} AS ip_code",
-            f"        '{type_code}' AS type_code",
-            f"        {val_col} AS address_value",
-        ]
-        for pc in pass_cols:
-            cols_lines.append(f"        {pc}")
-        wheres = []
-        if p_filter:
-            wheres.append(p_filter)
-        if u_filter:
-            # replace 'address_value' placeholder with actual column for per-leg filter
-            wheres.append(u_filter.replace('address_value', val_col))
-        leg_sql = "    SELECT\n" + ",\n".join(cols_lines) + f"\n    FROM {source}"
-        if wheres:
-            leg_sql += f"\n    WHERE {format_where(' AND '.join(wheres))}"
-        leg_sqls.append(leg_sql)
-
-    body = "\n    UNION ALL\n".join(leg_sqls)
-    return f"{u_alias} AS (\n{body}\n)"
+    cte = f"{u_alias} AS (\n    SELECT {select_part}\n    FROM {source}"
+    if lateral_view:
+        cte += f"\n{format_lateral_view(lateral_view)}"
+    wheres = [w for w in (p_filter, u_filter) if w]
+    if wheres:
+        cte += f"\n    WHERE {format_where(' AND '.join(wheres))}"
+    cte += "\n)"
+    return cte
 
 
 def build_ctes(input_rows):
@@ -185,13 +206,15 @@ def build_ctes(input_rows):
 
 # ── Main SELECT ───────────────────────────────────────────────────────────────
 
-def build_select_columns(mapping_rows, alias_substitution=None):
+def build_select_columns(mapping_rows, leg_idx=None):
     """Return list of formatted column SQL strings.
 
     Rules:
     - hash_id(...) transformations: keep as-is (not cast).
     - Other transformations: format as <transf> :: <data_type>.
     - Empty transformation: NULL :: <data_type>.
+    - leg_idx (shared_entity): nếu transformation chứa ';' (vd '<expr_leg1>; <expr_leg2>; ...'),
+      pick part thứ leg_idx; fallback về part cuối nếu thiếu.
     """
     items = []
     for r in mapping_rows:
@@ -200,9 +223,9 @@ def build_select_columns(mapping_rows, alias_substitution=None):
         dtype = get(r, 3) or 'string'
         if not tgt:
             continue
-        if alias_substitution:
-            for old, new in alias_substitution.items():
-                transf = re.sub(rf'\b{re.escape(old)}\b', new, transf)
+        if leg_idx is not None and ';' in transf:
+            parts = [p.strip() for p in transf.split(';')]
+            transf = parts[leg_idx] if leg_idx < len(parts) else parts[-1]
         expr = transf if transf else 'NULL'
         is_hash = expr.lower().startswith('hash_id(')
         rendered = expr if is_hash else f"{expr} :: {dtype}"
@@ -271,18 +294,9 @@ def build_final_select(sections):
     if unpivot_aliases:
         # Lấy leg list từ UNION ALL clause nếu có, fallback về unpivot_aliases
         leg_aliases = extract_leg_aliases_from_union(union_expr) if union_expr else unpivot_aliases
-        # first_leg = alias hardcoded trong mapping transformations
-        first_leg = None
-        for r in mapping_rows:
-            m = re.search(r'\b(leg_\w+)\b', get(r, 2))
-            if m: first_leg = m.group(1); break
-        if first_leg is None and leg_aliases:
-            first_leg = leg_aliases[0]
-
         parts = []
-        for leg in leg_aliases:
-            substitution = {first_leg: leg} if first_leg and leg != first_leg else None
-            cols = build_select_columns(mapping_rows, substitution)
+        for idx, leg in enumerate(leg_aliases):
+            cols = build_select_columns(mapping_rows, leg_idx=idx)
             sel = "SELECT\n" + format_select_cols(cols) + f"\nFROM {leg}"
             parts.append(sel)
         return "\nUNION ALL\n".join(parts)

@@ -48,7 +48,6 @@ Fact Foreign Investor Portfolio Snapshot,Investor Dimension Id,Surrogate Dimensi
 Fact Foreign Investor Portfolio Snapshot,Snapshot Date Dimension Id,Surrogate Dimension Id,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Snapshot Date (ngày cuối tháng ETL-derived) → Calendar Date Dimension,Generated,ETL derived
 Fact Foreign Investor Portfolio Snapshot,Country Dimension Id,Surrogate Dimension Id,FK → Geographic Area Dimension,FK quốc tịch NĐT — lookup chain: Foreign Investor.Nationality Code → Geographic Area,Foreign Investor,Nationality Code
 Fact Foreign Investor Portfolio Snapshot,Asset Category Dimension Id,Surrogate Dimension Id,FK → Asset Category Dimension,FK loại tài sản — ETL map từ FIMS_SECURITIES_TYPE. Xem O_NDTNN_9,Asset Category Dimension,Asset Category Dimension Id
-Fact Foreign Investor Portfolio Snapshot,Industry Category Dimension Id,Surrogate Dimension Key,FK → Industry Category Dimension,FK nhóm ngành — ETL lookup từ Public Company.Industry Category Level1 Code qua Stock Code,Public Company,Industry Category Level1 Code
 Fact Foreign Investor Portfolio Snapshot,Quantity,Percentage,,Số lượng chứng khoán sở hữu — FIMS.CATEGORIESSTOCK.Quantity,Foreign Investor Stock Portfolio Snapshot,Quantity
 Fact Foreign Investor Portfolio Snapshot,Ownership Rate,Percentage,,Tỷ lệ % sở hữu — FIMS.CATEGORIESSTOCK.Rate,Foreign Investor Stock Portfolio Snapshot,Ownership Rate
 Fact Foreign Investor Portfolio Snapshot,Portfolio Market Value,Currency Amount,,Giá trị thị trường = Quantity × giá đóng cửa CK. Xem O_NDTNN_5 — pending nguồn giá,Generated,ETL derived (Quantity × closing price — pending source)
@@ -97,18 +96,3 @@ Fact Foreign Ownership Snapshot,Total Ownership Rate,Percentage,,Tổng tỷ l�
 Fact Foreign Ownership Snapshot,Max Ownership Rate,Percentage,,Room tối đa theo quy định — IDS.foreign_owner_limit.max_owner_rate. Áp dụng bản ghi có Effective From <= Snapshot Date <= Effective To,Public Company Foreign Ownership Limit,Max Ownership Rate
 Fact Foreign Ownership Snapshot,Remaining Room Rate,Percentage,,Room còn lại = Max Ownership Rate - Total Ownership Rate — ETL derived,Generated,ETL derived
 Fact Foreign Ownership Snapshot,Population Date,Timestamp,,ETL load timestamp,Generated,ETL derived
-NDTNN Regulatory Report Store,Member Regulatory Report Code,Text,BK,Mã lần nộp báo cáo — FIMS.RPTMEMBER.Id. Join key ETL.,Member Regulatory Report,Member Regulatory Report Code
-NDTNN Regulatory Report Store,Report Type Code,Classification Value,,Loại báo cáo — FIMS.RPTMEMBER.ReportTypeId. Phân biệt 23 loại biểu mẫu TT51/2021.,Member Regulatory Report,Report Type Code
-NDTNN Regulatory Report Store,Report Template Code,Text,,Mã biểu mẫu báo cáo — FIMS.RPTMEMBER.RptId lookup FIMS.RPTTEMP.Code.,Member Regulatory Report,Report Template Code
-NDTNN Regulatory Report Store,Report Template Name,Text,,Tên biểu mẫu báo cáo — FIMS.RPTTEMP.Name. Denorm từ Report Template.,Report Template,Report Template Name
-NDTNN Regulatory Report Store,Member Object Type Code,Classification Value,,Loại đối tượng nộp: CTQLQ / CTCK / NHLK / SGDCK / VSDC / Đại diện CBTT / NĐTNN.,Member Regulatory Report,Member Object Type Code
-NDTNN Regulatory Report Store,Member Code,Text,,Mã tổ chức nộp báo cáo — ETL derive từ các FK: Fund/Securities/CustodianBank/DepCenter/StockExchange/Investor Code theo ObjectType.,Generated,ETL derived
-NDTNN Regulatory Report Store,Reporting Period Type Code,Classification Value,,Loại kỳ: Tháng / Quý / Năm — FIMS.RPTMEMBER.PeriodType.,Member Regulatory Report,Reporting Period Type Code
-NDTNN Regulatory Report Store,Period Value,Small Counter,,"Giá trị kỳ (1–12 cho tháng, 1–4 cho quý) — FIMS.RPTMEMBER.PeriodValue.",Member Regulatory Report,Period Value
-NDTNN Regulatory Report Store,Report Year,Small Counter,,Năm kỳ báo cáo — FIMS.RPTMEMBER.YearValue.,Member Regulatory Report,Report Year
-NDTNN Regulatory Report Store,Report Date,Date,,Ngày báo cáo — FIMS.RPTMEMBER.DayReport.,Member Regulatory Report,Report Date
-NDTNN Regulatory Report Store,Submission Status Code,Classification Value,,Trạng thái nộp: Draft / Submitted / Approved — FIMS.RPTMEMBER.Status.,Member Regulatory Report,Submission Status Code
-NDTNN Regulatory Report Store,Cell Code,Text,,Mã chỉ tiêu trong biểu mẫu — FIMS.RPTVALUES.Code. Dùng tra cứu chỉ tiêu cụ thể.,Member Report Value,Cell Code
-NDTNN Regulatory Report Store,Cell Name,Text,,Tên chỉ tiêu — lookup từ Report Template cell definition. Tương ứng với Cell Code.,Report Template,Report Template Name
-NDTNN Regulatory Report Store,Cell Value,Text,,Giá trị chỉ tiêu — FIMS.RPTVALUES.Values. Kiểu Text vì có thể là số hoặc chuỗi tùy chỉ tiêu.,Member Report Value,Cell Value
-NDTNN Regulatory Report Store,Population Date,Timestamp,,ETL load timestamp.,Generated,ETL derived

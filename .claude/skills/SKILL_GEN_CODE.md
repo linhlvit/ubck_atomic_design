@@ -82,7 +82,7 @@ Pair detection: nếu `input_rows[i+1].Table Name == input_rows[i].Alias` → 2 
 |---|---|
 | `physical_table` đứng riêng | 1 CTE đơn giản: `SELECT <cols> FROM <schema>.<table> WHERE <filter>` |
 | `physical_table` + `derived_cte` (cặp, `Array<Text>`) | **Gộp thành 1 CTE**: `SELECT <agg_cols> FROM <schema>.<table> WHERE <filter> GROUP BY <fk>` — pre-aggregate tại nguồn, bỏ CTE trung gian `<alias>_raw` |
-| `physical_table` + `unpivot_cte` (cặp, shared_entity) | 1 CTE với UNION ALL các legs: mỗi leg hardcode type_code, chỉ SELECT các cột value non-NULL |
+| `physical_table` + `unpivot_cte` (cặp, shared_entity) | 1 CTE dùng `LATERAL VIEW stack(...)`: select_fields cell có 2 dòng — dòng 1 là SELECT projection, dòng 2 là lateral view; script reformat sang multi-line (1 leg per line, indent 8 spaces) |
 | Không có cặp, chỉ có physical | Fallback: mỗi dòng 1 CTE |
 
 ### Ví dụ merged derived_cte
@@ -103,40 +103,35 @@ fu_bu AS (
 )
 ```
 
-### Ví dụ unpivot_cte (shared_entity)
+### Ví dụ unpivot_cte (shared_entity, LATERAL VIEW stack)
 
 Mapping:
 ```
-1,physical_table,bronze,FUNDCOMPANY,fu_co,"id, email, fax, telephone, website, 'FIMS_FUNDCOMPANY' AS source_system_code",data_date = ...
-2,unpivot_cte,,fu_co,leg_fu_co,ip_code=id | EMAIL:email | FAX:fax | PHONE:telephone | WEBSITE:website | source_system_code,address_value IS NOT NULL
+1,physical_table,bronze,FUNDCOMPANY,fu_co,"id, email, fax, telephone, website",data_date = ...
+2,unpivot_cte,,fu_co,leg_fu_co,"id AS ip_code, type_code, address_value
+LATERAL VIEW stack(4, 'EMAIL', email, 'FAX', fax, 'PHONE', telephone, 'WEBSITE', website) AS (type_code, address_value)",address_value IS NOT NULL
 ```
 
-SQL:
+SQL (LATERAL VIEW reformat multi-line, 1 leg per line):
 ```sql
 leg_fu_co AS (
-    SELECT
-        id AS ip_code,
-        'EMAIL' AS type_code,
-        email AS address_value,
-        'FIMS_FUNDCOMPANY' AS source_system_code
+    SELECT id AS ip_code, type_code, address_value
     FROM bronze.FUNDCOMPANY
-    WHERE data_date = ... AND email IS NOT NULL
-    UNION ALL
-    SELECT
-        id AS ip_code,
-        'FAX' AS type_code,
-        fax AS address_value,
-        ...
-    FROM bronze.FUNDCOMPANY
-    WHERE data_date = ... AND fax IS NOT NULL
-    UNION ALL
-    ...
+    LATERAL VIEW stack(4,
+        'EMAIL', email,
+        'FAX', fax,
+        'PHONE', telephone,
+        'WEBSITE', website
+    ) AS (type_code, address_value)
+    WHERE data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
+        AND address_value IS NOT NULL
 )
 ```
 
-- `ip_code=<col>` → `<col> AS ip_code`
-- `<TYPE>:<col>` → 1 leg SELECT với `'<TYPE>' AS type_code`, `<col> AS address_value`, và filter `<col> IS NOT NULL`
-- passthrough (không có `:`) → carry-through column, giữ nguyên tên
+- physical_table SELECT chỉ chứa cột thực tế (`id` + value cols), KHÔNG có `source_system_code` (đã hardcode tại Mapping)
+- Dòng 1 trong cell unpivot_cte `Select Fields` = SELECT projection (3 cột: `ip_code`, `type_code`, `address_value`)
+- Dòng 2 = LATERAL VIEW expression — script tự reformat sang multi-line (1 leg per line, indent 8 spaces). Logic: parse `stack(N, args...)`, args chia đều thành N legs (`vals_per_leg = len(args) / N`), mỗi leg in 1 dòng
+- Filter từ physical_table và unpivot_cte gộp bằng `AND` đặt trong WHERE
 
 ---
 
@@ -217,28 +212,38 @@ Logic build SELECT:
 
 1. Liệt kê leg aliases:
    - Nếu có UNION ALL clause trong Final Filter → parse các alias từ `SELECT * FROM <leg>`
-   - Nếu không có UNION ALL → dùng alias của các dòng `unpivot_cte` (thường = 1 leg duy nhất)
-2. Tìm `first_leg` = alias hardcoded trong Mapping transformations (pattern `leg_<...>`). Fallback về leg đầu tiên nếu không tìm được.
-3. Với mỗi leg, duplicate toàn bộ SELECT của mapping section:
-   - Thay `first_leg` → `<leg_N>` trong mọi transformation
-   - `FROM <leg_N>` (không có JOIN, không có WHERE)
-4. Nếu có > 1 leg → nối bằng `UNION ALL`. Nếu chỉ 1 leg → chỉ 1 SELECT.
+   - Nếu không có UNION ALL (chỉ 1 leg) → dùng alias của các dòng `unpivot_cte`
+2. Mỗi cell `Transformation` trong Mapping section là **`;`-separated** — phần thứ `i` là expression cho leg thứ `i`. Vd: `leg_se.ip_code; leg_fo_ch.ip_code; leg_ba_mo.ip_code; leg_br.ip_code`
+3. Với leg index `i`, build SELECT block:
+   - Mỗi target column lấy phần thứ `i` của transformation (tách bằng `;`), fallback về phần cuối nếu thiếu
+   - Apply rule cast / hash_id như Case 1
+   - `FROM <leg_i>` (không JOIN, không WHERE)
+4. Nếu có > 1 leg → nối các SELECT block bằng `UNION ALL`. Nếu chỉ 1 leg → 1 SELECT.
 
 ### Ví dụ shared_entity output
 
+Mapping cells (ngăn cách `;` giữa các legs):
+- `involved_party_id` = `hash_id('FMS_SECURITIES', leg_se.ip_code); hash_id('FMS_FORBRCH', leg_fo_ch.ip_code); ...`
+- `involved_party_code` = `leg_se.ip_code; leg_fo_ch.ip_code; ...`
+- `source_system_code` = `'FMS_SECURITIES'; 'FMS_FORBRCH'; ...` (literal fix per leg)
+
+Generated SQL (mỗi leg lấy phần tương ứng theo index trong `;`-separated list):
+
 ```sql
 SELECT
-    hash_id(leg_ba_mo.source_system_code, leg_ba_mo.ip_code) AS involved_party_id,
-    CAST(leg_ba_mo.ip_code AS string)                        AS involved_party_code,
-    CAST(leg_ba_mo.source_system_code AS string)             AS source_system_code,
-    CAST(leg_ba_mo.type_code AS string)                      AS electronic_address_type_code,
-    CAST(leg_ba_mo.address_value AS string)                  AS electronic_address_value
-FROM leg_ba_mo
+    hash_id('FMS_SECURITIES', leg_se.ip_code) AS involved_party_id,
+    leg_se.ip_code :: string                  AS involved_party_code,
+    'FMS_SECURITIES' :: string                AS source_system_code,
+    leg_se.type_code :: string                AS electronic_address_type_code,
+    leg_se.address_value :: string            AS electronic_address_value
+FROM leg_se
 UNION ALL
 SELECT
-    hash_id(leg_br.source_system_code, leg_br.ip_code) AS involved_party_id,
+    hash_id('FMS_FORBRCH', leg_fo_ch.ip_code) AS involved_party_id,
+    leg_fo_ch.ip_code :: string               AS involved_party_code,
+    'FMS_FORBRCH' :: string                   AS source_system_code,
     ...
-FROM leg_br
+FROM leg_fo_ch
 UNION ALL
 ...
 ;

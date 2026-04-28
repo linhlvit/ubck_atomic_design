@@ -1,1161 +1,1258 @@
-# Gold Data Mart HLD — Phân hệ Thanh tra (TT)
+# GOLD_TT_HLD — Gold Data Mart: Phân hệ Thanh Tra (TT)
 
-**Phiên bản:** 1.8  **Ngày:** 17/04/2026
-**Phạm vi phiên bản này:** Dashboard Hoạt động Thanh tra (BA STT 1-5) + Dashboard Hoạt động Kiểm tra (BA STT 6-10) + Dashboard Hoạt động Xử phạt (BA STT 11-15) + Dashboard Tình hình Đơn thư (BA STT 16-19) + Báo cáo TT01 (BA STT 20)
-**Mô hình:** Star Schema thuần túy
-
-## Thay đổi so với v1.7
-
-- **Thêm Báo cáo Hoạt động xử lý vi phạm trên TTCK (Biểu số TT01, BA STT 20)** — 1 block mới (Nhóm 20), KPI K_TT_75..K_TT_88 (14 KPI).
-- **Không tạo scheme gold-derived** — Nhóm 20 reuse scheme `TT_VIOLATION_TYPE` đã có. 7 loại hình trong biểu TT01 tương ứng với 7 mã của TT_VIOLATION_TYPE (mã cụ thể là placeholder chờ profile Silver xác nhận).
-- **Fact sử dụng:** reuse `Fact Inspection Penalty Decision` đã có, không thêm entity mới.
-- **TT_O20 (open, parked):** 7 mã Classification cụ thể của TT_VIOLATION_TYPE cho biểu TT01 cần trao đổi với BA + khảo sát dữ liệu Silver thực tế để xác nhận mapping chính xác giữa 7 loại hình TT01 và Classification Code trong Silver.
-
-## Thay đổi so với v1.6
-
-- **Thêm Dashboard Tình hình Đơn thư (BA STT 16-19)** — 4 block mới (Nhóm 16-19), KPI K_TT_65..K_TT_77 (13 KPI).
-- **Thêm fact mới `Fact Complaint Petition`** — grain 1 row = 1 đơn thư (event tiếp nhận). Source: `Complaint Petition` (DT_DON_THU).
-- **Thêm dim mới `Complaint Petition Dimension`** — SCD2, grain 1 đơn thư. Attribute mô tả: Complaint Petition Code (BK) / Petition Name / Complainant Name / Is Anonymous / Written Date.
-- **Scheme Classification mới reuse từ Silver:** `TT_PETITION_TYPE` (4 mã) / `TT_PETITION_STATUS` (4 mã) / `TT_PARTY_TYPE` (2 mã: CA_NHAN / TO_CHUC).
-- **TT_O18 (closed):** Nhóm 18 giữ nguyên 4 loại đơn theo BA và Silver scheme TT_PETITION_TYPE (KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI). Screenshot gộp PHAN_ANH + KIEN_NGHI thành "PHẢN ÁNH KIẾN NGHỊ" chỉ là cách display UI — ETL/fact giữ 4 mã riêng biệt, UI tuỳ chọn mapping label.
-- **Label BA STT 18:** BA đặt tên "Biểu đồ cơ cấu theo đối tượng" nhưng nội dung là phân loại đơn thư (theo loại đơn). Screenshot tiêu đề "Biểu đồ cơ cấu theo loại đơn thư" mô tả đúng hơn. Xử lý theo screenshot — không ảnh hưởng thiết kế.
-
-## Thay đổi so với v1.5
-
-- **Expand star schema + bảng tham gia** ở từng block (Nhóm 6-15) — bỏ cú pháp "giống Nhóm X", viết đầy đủ để mỗi block tự đọc được.
-- **Chuẩn hoá grain mô tả** `Fact Inspection Penalty Decision` và `Inspection Case Dimension` — 2 entity khác grain nhưng mô tả rõ từng đơn vị: fact = "1 kết luận xử phạt", dim Case = "1 hồ sơ thanh tra/kiểm tra".
-- **TT_O17 (closed):** Chốt quy ước: 1 Inspection Case Conclusion = 1 hành vi vi phạm (Silver lưu Violation Type Code đơn trị trên Conclusion — giả định đây là hành vi chính). Nếu profile thực tế có nhiều hành vi trên 1 kết luận, sẽ raise issue sau. Loại khỏi Section 3 Open.
-
-## 1. Tổng quan báo cáo
-
-### Dashboard Hoạt động Thanh tra — Dashboard tổng quan
-
-**Slicer:**
-- Năm (mặc định: năm hiện tại, screenshot hiển thị NĂM 2024)
+**Phiên bản:** 2.3  
+**Ngày:** 27/04/2026  
+**Phạm vi:** Tab **TỔNG QUAN** + **KIỂM TRA** + **XỬ PHẠT** + **ĐƠN THƯ** + **Báo cáo hoạt động vi phạm TTCK** — 4 tab dashboard + 1 báo cáo, 20 nhóm (K_TT_1–88 + K_TT_89–100)
 
 ---
 
-#### Nhóm 1 — Thống kê chung (KPI cards)
+## Section 1 — Data Lineage: Source → Silver → Gold Mart
 
-**1. Mockup:**
+### Cụm 1: Thống kê & Cơ cấu vụ việc Thanh tra/Kiểm tra (Fact Inspection Case Activity)
 
+Phục vụ toàn bộ Tab TỔNG QUAN — KPI cards, biểu đồ bar theo tháng, donut cơ cấu theo hành vi và theo đối tượng.
+
+- **Grain: 1 row per `TT_QUYET_DINH_DOI_TUONG` × `TT_HO_SO`** — 1 hồ sơ có nhiều đối tượng → nhiều row. Mọi KPI đếm số hồ sơ phải dùng `COUNT(DISTINCT Inspection_Case_Code)`.
+- `Violation_Type_Dimension_Id` ← ETL-derived từ `TT_KET_LUAN.HANH_VI_VI_PHAM_ID` (scheme `TT_VIOLATION_TYPE`) → lookup `Classification Dimension` lấy surrogate key. ETL join `Inspection Case Conclusion → Inspection Case`, lấy `MAX(Conclusion_Sequence_Number)`.
+- `Inspection_Form_Type_Code` ← ETL-derived: `TT_HO_SO.QUYET_DINH_ID` → join `TT_QUYET_DINH.KE_HOACH_ID`: `NULL` → `DOT_XUAT`; `NOT NULL` → `DINH_KY`. **Lưu ý: field này chỉ lưu trong bảng tác nghiệp `Inspection Case List`, không lưu trên Fact.**
+- `Subject_Category_Code` ← ETL-derived: `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID` → lookup polymorphic sang các bảng DM_ (không load trực tiếp attribute từ DM_ vào Fact) — xem O_TT_4.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source ThanhTra"]
+        S1["ThanhTra.TT_HO_SO"]
+        S2["ThanhTra.TT_KET_LUAN"]
+        S3["ThanhTra.TT_QUYET_DINH"]
+        S4["ThanhTra.TT_QUYET_DINH_DOI_TUONG"]
+        S5["ThanhTra.DM_CONG_TY_CK (ETL lookup)"]
+        S6["ThanhTra.DM_CONG_TY_QLQ (ETL lookup)"]
+        S7["ThanhTra.DM_CONG_TY_DC (ETL lookup)"]
+        S8["ThanhTra.DM_DOI_TUONG_KHAC (ETL lookup)"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Inspection Case"]
+        SV2["Inspection Case Conclusion"]
+        SV3["Inspection Decision"]
+        SV4["Inspection Decision Subject"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Inspection Case Activity"]
+        G2["Calendar Date Dimension"]
+        G3["Classification Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+    S5 -.->|ETL lookup| SV4
+    S6 -.->|ETL lookup| SV4
+    S7 -.->|ETL lookup| SV4
+    S8 -.->|ETL lookup| SV4
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+    SV4 --> G1
+
+    G2 --> G1
+    G3 --> G1
 ```
-┌─────────────────────────┐ ┌─────────────────────────┐ ┌─────────────────────────┐
-│ TỔNG SỐ ĐOÀN THANH TRA  │ │ SỐ ĐOÀN ĐANG THỰC HIỆN  │ │ SỐ ĐOÀN ĐÃ HOÀN THÀNH   │
-│         2               │ │         2               │ │         0               │
-│ ĐOÀN        ▲ 8%        │ │ ĐOÀN        ▲ 12%       │ │ ĐOÀN        ▲ 5%        │
-└─────────────────────────┘ └─────────────────────────┘ └─────────────────────────┘
+
+### Cụm 2: Danh sách vụ việc Tác nghiệp (Inspection Case List)
+
+Phục vụ block Danh sách vụ việc Thanh tra/Kiểm tra — bảng tra cứu từng hồ sơ. `Inspection_Form_Type_Code` (DINH_KY/DOT_XUAT) ETL-derive từ `TT_QUYET_DINH.KE_HOACH_ID` và lưu trực tiếp vào bảng tác nghiệp này. Lấy dữ liệu trực tiếp từ Silver — không qua Dimension.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source ThanhTra"]
+        S1["ThanhTra.TT_HO_SO"]
+        S2["ThanhTra.TT_QUYET_DINH"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Inspection Case"]
+        SV2["Inspection Decision"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Inspection Case List"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+
+    SV1 --> G1
+    SV2 --> G1
 ```
 
-**2. Source:** `Fact Inspection Case` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_CASE_STATUS, TT_PLAN_TYPE)
+### Cụm 3: Xử phạt vi phạm (Fact Penalty Decision + Penalty Decision List)
 
-**3. Bảng KPI:**
+Phục vụ Tab XỬ PHẠT — KPI cards tổng hợp, biểu đồ dual axis theo tháng, donut cơ cấu hành vi và đối tượng, danh sách quyết định. Nguồn Silver khác hoàn toàn với Cụm 1 — từ luồng Giám sát (`GS_*`), không phải luồng Thanh tra (`TT_*`).
 
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_TT_1 | Tổng số đoàn thanh tra | Đoàn | Stock (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` WHERE `YEAR("Status As Of Date") ≤ selected year` AND `"Classification Dimension"."Classification Code" = 'THANH_TRA'` (via Inspection Type Dimension Id, scheme TT_PLAN_TYPE) |
-| 2 | K_TT_1_SSCK | Tổng số đoàn thanh tra SSCK (%) | % | Derived | `(K_TT_1 − K_TT_1 [Year − 1]) / K_TT_1 [Year − 1] × 100%` |
-| 3 | K_TT_2 | Số đoàn thanh tra đã hoàn thành | Đoàn | Stock (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` WHERE `YEAR("Status As Of Date") = selected year` AND `"Classification Dimension"."Classification Code" = 'HOAN_THANH'` (via Case Status Dimension Id) AND filter Inspection Type = 'THANH_TRA' |
-| 4 | K_TT_2_SSCK | Số đoàn thanh tra đã hoàn thành SSCK (%) | % | Derived | `(K_TT_2 − K_TT_2 [Year − 1]) / K_TT_2 [Year − 1] × 100%` |
-| 5 | K_TT_3 | Số đoàn thanh tra đang thực hiện | Đoàn | Stock (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` WHERE `YEAR("Received Date") ≤ selected year` AND `"Classification Dimension"."Classification Code" IN ('MOI_TIEP_NHAN', 'DANG_GIAI_QUYET')` (via Case Status Dimension Id) AND filter Inspection Type = 'THANH_TRA' |
-| 6 | K_TT_3_SSCK | Số đoàn thanh tra đang thực hiện SSCK (%) | % | Derived | `(K_TT_3 − K_TT_3 [Year − 1]) / K_TT_3 [Year − 1] × 100%` |
+```mermaid
+flowchart LR
+    subgraph SRC["Source ThanhTra"]
+        S1["ThanhTra.GS_VAN_BAN_XU_LY"]
+        S2["ThanhTra.GS_HO_SO"]
+    end
 
-**4. Star schema:**
+    subgraph SIL["Silver"]
+        SV1["Surveillance Enforcement Decision"]
+        SV2["Surveillance Enforcement Case"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Penalty Decision"]
+        G2["Penalty Decision List"]
+        G3["Calendar Date Dimension"]
+        G4["Classification Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+
+    SV1 --> G1
+    SV2 --> G1
+    SV1 --> G2
+    SV2 --> G2
+
+    G3 --> G1
+    G4 --> G1
+```
+
+### Cụm 4: Đơn thư khiếu nại tố cáo (Complaint Petition List)
+
+Phục vụ Tab ĐƠN THƯ — KPI aggregate (tổng, theo tháng, theo loại) và danh sách chi tiết. Toàn bộ KPI serve từ `Complaint Petition List` — không tạo Fact riêng vì grain giống hệt tác nghiệp, volume nhỏ, không có fanout.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source ThanhTra"]
+        S1["ThanhTra.DT_DON_THU"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Complaint Petition"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Complaint Petition List"]
+    end
+
+    S1 --> SV1
+    SV1 --> G1
+```
+
+### Cụm 5: Báo cáo hoạt động vi phạm TTCK (Fact Penalty Decision — reuse)
+
+Phục vụ Báo cáo STT 20 — bảng pivot nhóm đối tượng × loại vi phạm × (số lượng + số tiền). Reuse hoàn toàn `Fact Penalty Decision` từ Cụm 3 — không tạo Fact hay Silver entity mới.
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart (reuse từ Cụm 3)"]
+        G1["Fact Penalty Decision"]
+    end
+    subgraph RPT["Báo cáo STT 20"]
+        R1["Bảng pivot vi phạm TTCK"]
+    end
+    G1 --> R1
+```
+
+---
+
+## Section 2 — Tổng quan báo cáo
+
+### Tab: TỔNG QUAN
+
+**Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
+
+---
+
+#### Nhóm 1 — KPI cards Thống kê chung (STT 1)
+
+> Phân loại: **Phân tích**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Silver: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
+> Ghi chú:
+> - `Inspection_Type_Code` ← `TT_HO_SO.LOAI_HINH`, scheme `TT_PLAN_TYPE`, giá trị: `THANH_TRA / KIEM_TRA` — dùng để **lọc** TT vs KT, không hiển thị.
+> - `Case_Status_Code` ← `TT_HO_SO.TRANG_THAI_ID`, scheme `TT_CASE_STATUS`.
+
+**Mockup:**
+
+| ĐOÀN ▲ 8% | ĐOÀN ▲ 12% | ĐOÀN ▲ 5% |
+|---|---|---|
+| Tổng số đoàn thanh tra | Số đoàn đã hoàn thành | Số đoàn đang thực hiện |
+
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`, `Classification Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_1 | Tổng số đoàn thanh tra | Đoàn | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` (TT_PLAN_TYPE) AND Year=selected_year |
+| K_TT_2 | Tổng số thanh tra SSCK (%) | % | Derived | (K_TT_1[Y] − K_TT_1[Y−1]) / K_TT_1[Y−1] × 100% |
+| K_TT_3 | Số đoàn đã hoàn thành | Đoàn | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Case_Status_Code=`HOAN_THANH` (TT_CASE_STATUS) AND Year=selected_year |
+| K_TT_4 | Số đoàn hoàn thành SSCK (%) | % | Derived | (K_TT_3[Y] − K_TT_3[Y−1]) / K_TT_3[Y−1] × 100% |
+| K_TT_5 | Số đoàn đang thực hiện | Đoàn | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Case_Status_Code≠`HOAN_THANH` AND Year=selected_year |
+| K_TT_6 | Số đoàn đang thực hiện SSCK (%) | % | Derived | (K_TT_5[Y] − K_TT_5[Y−1]) / K_TT_5[Y−1] × 100% |
+
+**Star Schema:**
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Received Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Status As Of Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Case Status Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Activity : "Received Date Dimension Id"
+    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Subject Category Dimension Id"
+    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Violation Type Dimension Id"
+    Fact_Inspection_Case_Activity {
+        int Received_Date_Dimension_Id FK
+        int Subject_Category_Dimension_Id FK
+        int Violation_Type_Dimension_Id FK
+        varchar Inspection_Case_Code
+        varchar Inspection_Decision_Subject_Code
+        varchar Inspection_Type_Code
+        varchar Case_Status_Code
+        datetime Population_Date
+    }
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+        int Quarter
+    }
+    Classification_Dimension {
+        int Classification_Dimension_Id PK
+        varchar Scheme
+        varchar Code
+        varchar Name
+    }
 ```
 
-**5. Bảng tham gia:**
+*Ghi chú erDiagram — các DD trên Fact:*
 
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case | 1 row = 1 hồ sơ thanh tra/kiểm tra (latest state) |
-| Calendar Date Dimension | 1 row = 1 ngày (Received Date / Status As Of Date) |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_CASE_STATUS) | 1 row = 1 trạng thái hồ sơ |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình (THANH_TRA/KIEM_TRA) |
+| Field | Silver source | Scheme / Giá trị | Ghi chú |
+|---|---|---|---|
+| `Inspection_Case_Code` | `TT_HO_SO.ID` | — | DD — PK nguồn dùng làm degenerate key hồ sơ trên Fact. Dùng `COUNT(DISTINCT Inspection_Case_Code)` để đếm hồ sơ. (Lưu ý: `TT_HO_SO.MA_HO_SO` = business key hiển thị, lưu trong bảng tác nghiệp) |
+| `Inspection_Decision_Subject_Code` | `TT_QUYET_DINH_DOI_TUONG.ID` | — | DD — PK nguồn của đối tượng trong quyết định. Cùng với `Inspection_Case_Code` tạo composite grain key |
+| `Inspection_Type_Code` | `TT_HO_SO.LOAI_HINH` | `TT_PLAN_TYPE`: THANH_TRA / KIEM_TRA | DD — bộ lọc phân biệt TT vs KT, không hiển thị trực tiếp |
+| `Case_Status_Code` | `TT_HO_SO.TRANG_THAI_ID` | `TT_CASE_STATUS` | DD — trạng thái hồ sơ |
+| `Violation_Type_Dimension_Id` | ETL: `TT_KET_LUAN.HANH_VI_VI_PHAM_ID` → lookup `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) lấy surrogate key | scheme: `TT_VIOLATION_TYPE` | FK → Classification Dimension. 11 giá trị: CBTT / CHAO_BAN / CO_DONG_NOI_BO / GIAO_DICH / CTDC_VI_PHAM / CTCK / TO_CHUC_PHTP_VI_PHAM / THAO_TUNG / CHO_MUON / TO_CHUC_KIEM_TOAN / SO_GIAO_DICH |
+| `Subject_Category_Dimension_Id` | ETL-derived: `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID` → lookup DM_ entities → derive code | scheme: `TT_SUBJECT_CATEGORY` | FK → Classification Dimension — **6 giá trị tạm thời**: CTCK / CTQLQ / CTDC / CA_NHAN / TO_CHUC_KHAC (xem O_TT_4) |
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Inspection Case Activity"]
+        G2["Calendar Date Dimension"]
+        G3["Classification Dimension"]
+    end
+    subgraph RPT["Tab TỔNG QUAN"]
+        R1["KPI cards\n(Tổng / Hoàn thành / Đang TH)"]
+        R2["Biểu đồ bar theo tháng"]
+        R3["Donut cơ cấu theo hành vi"]
+        R4["Donut cơ cấu theo đối tượng"]
+    end
+    G2 --> G1
+    G3 --> G1
+    G1 --> R1
+    G1 --> R2
+    G1 --> R3
+    G1 --> R4
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain | Date key | Filter mặc định | Phân biệt TT/KT |
+|---|---|---|---|---|
+| Fact Inspection Case Activity | 1 hồ sơ × 1 đối tượng (`TT_HO_SO` × `TT_QUYET_DINH_DOI_TUONG`) — composite key: `Inspection_Case_Code` + `Inspection_Decision_Subject_Code`. Đếm số hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)` | `Received_Date_Dimension_Id` ← `TT_HO_SO.NGAY_NHAN_HO_SO` join Calendar Date Dimension (xem O_TT_3) | Year = selected_year (slicer NĂM 202X) | `Inspection_Type_Code` = `THANH_TRA` hoặc `KIEM_TRA` (scheme `TT_PLAN_TYPE`) |
 
 ---
 
-#### Nhóm 2 — Thống kê số vụ thanh tra (biểu đồ cột chồng + đường)
+#### Nhóm 2 — Biểu đồ Thống kê số vụ việc theo tháng (STT 2)
 
-**1. Mockup:**
+> Phân loại: **Phân tích**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Ghi chú: Reuse `Fact Inspection Case Activity` — GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer. Trục thời gian = tháng trong năm selected (slicer). Xem O_TT_3 về lựa chọn date key.
 
-```
-Thống kê số vụ thanh tra (theo tháng)
-24 ┤
-18 ┤                                                       ●
-12 ┤         ●                                        ●    ▓
- 6 ┤   ●    ▓▓   ●                              ●    ▓    ▓▓
- 0 └──T1───T2───T3───T4───T5───T6───T7───T8───T9───T10──T11──T12
-Legend: ● TỔNG SỐ VỤ (đường)  ▓ ĐANG THỰC HIỆN  █ ĐÃ HOÀN THÀNH (cột chồng)
-```
+**Mockup:**
 
-**2. Source:** `Fact Inspection Case` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_CASE_STATUS, TT_PLAN_TYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
+| Tháng | T1 | T2 | T3 | ... | T12 |
 |---|---|---|---|---|---|
-| 7 | K_TT_4 | Số lượng vụ việc thanh tra | Vụ | Flow (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` GROUP BY `MONTH("Received Date")` WHERE `YEAR("Received Date") = selected year` AND Inspection Type = 'THANH_TRA'. Đếm theo tháng nhận hồ sơ. |
-| 8 | K_TT_5 | Số vụ việc thanh tra đang thực hiện | Vụ | Flow (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` GROUP BY `MONTH("Received Date")` WHERE `YEAR("Received Date") = selected year` AND `"Classification Dimension"."Classification Code" IN ('MOI_TIEP_NHAN', 'DANG_GIAI_QUYET')` AND Inspection Type = 'THANH_TRA' |
-| 9 | K_TT_6 | Số lượng vụ thanh tra đã hoàn thành | Vụ | Flow (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` GROUP BY `MONTH("Status As Of Date")` WHERE `YEAR("Status As Of Date") = selected year` AND `"Classification Dimension"."Classification Code" = 'HOAN_THANH'` AND Inspection Type = 'THANH_TRA' |
+| Tổng số vụ | 4 | 6 | 5 | ... | 24 |
+| Đang thực hiện | 2 | 3 | 2 | ... | 12 |
+| Đã hoàn thành | 2 | 3 | 3 | ... | 12 |
 
-**4. Star schema:**
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Received Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Status As Of Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Case Status Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Type Dimension Id"
-```
+**Bảng KPI:**
 
-**5. Bảng tham gia:**
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_7 | Số vụ việc thanh tra theo tháng (tổng) | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year GROUP BY Calendar_Date_Dimension.Month |
+| K_TT_8 | Số vụ đang thực hiện theo tháng | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year AND Case_Status_Code≠`HOAN_THANH` GROUP BY Month |
+| K_TT_9 | Số vụ đã hoàn thành theo tháng | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year AND Case_Status_Code=`HOAN_THANH` GROUP BY Month |
 
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case | 1 row = 1 hồ sơ thanh tra/kiểm tra (latest state) |
-| Calendar Date Dimension | 1 row = 1 ngày (Received Date / Status As Of Date) |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_CASE_STATUS) | 1 row = 1 trạng thái hồ sơ |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
+**Bảng grain:**
+
+| Tên bảng | Grain | Date key | Filter mặc định | Phân tích theo tháng |
+|---|---|---|---|---|
+| Fact Inspection Case Activity | reuse — 1 hồ sơ × 1 đối tượng. Đếm hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)` | `Received_Date_Dimension_Id` | Year=selected_year, Inspection_Type_Code=`THANH_TRA` | GROUP BY Calendar_Date_Dimension.Month ở query time |
 
 ---
 
-#### Nhóm 3 — Cơ cấu vi phạm theo loại hành vi (biểu đồ tròn)
+#### Nhóm 3 — Cơ cấu vi phạm theo loại hành vi (STT 3)
 
-**1. Mockup:**
+> Phân loại: **Phân tích**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Silver: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
+> Ghi chú: `Violation_Type_Dimension_Id` ← ETL join `TT_HO_SO → TT_KET_LUAN` (via `Inspection Case Id`), lấy `MAX(Conclusion_Sequence_Number)`, map `HANH_VI_VI_PHAM_ID` → `Classification Dimension` (scheme `TT_VIOLATION_TYPE`). BA STT 3 định nghĩa 3 hành vi: Thao túng thị trường / Cho mượn tài khoản / CBTT.
 
-```mermaid
-pie showData
-    title Cơ cấu vi phạm theo loại hành vi (Thanh tra)
-    "Thao túng thị trường" : 40
-    "Cho mượn tài khoản" : 25
-    "CBTT" : 35
-```
-
-**2. Source:** `Fact Inspection Case Violation` → `Calendar Date Dimension`, `Inspection Case Dimension`, `Classification Dimension` (scheme: TT_VIOLATION_TYPE, TT_PENALTY_TYPE, TT_PLAN_TYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 10 | K_TT_7 | Số lượng vi phạm hành vi Thao túng thị trường | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Classification Dimension"."Classification Code" = '<code Thao túng>'` (via Violation Type Dimension Id, scheme TT_VIOLATION_TYPE) AND filter Inspection Type = 'THANH_TRA' |
-| 11 | K_TT_7_RATIO | Tỷ lệ % số lượng vi phạm hành vi Thao túng thị trường | % | Derived | `K_TT_7 / (K_TT_7 + K_TT_8 + K_TT_9) × 100%` |
-| 12 | K_TT_8 | Số lượng vi phạm hành vi Cho mượn tài khoản | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Classification Dimension"."Classification Code" = '<code Cho mượn>'` (via Violation Type Dimension Id) AND Inspection Type = 'THANH_TRA' |
-| 13 | K_TT_8_RATIO | Tỷ lệ % số lượng vi phạm hành vi Cho mượn tài khoản | % | Derived | `K_TT_8 / (K_TT_7 + K_TT_8 + K_TT_9) × 100%` |
-| 14 | K_TT_9 | Số lượng vi phạm hành vi CBTT | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Classification Dimension"."Classification Code" = '<code CBTT>'` (via Violation Type Dimension Id) AND Inspection Type = 'THANH_TRA' |
-| 15 | K_TT_9_RATIO | Tỷ lệ % số lượng vi phạm hành vi CBTT | % | Derived | `K_TT_9 / (K_TT_7 + K_TT_8 + K_TT_9) × 100%` |
-
-**4. Star schema:**
+**Mockup:**
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Violation : "Conclusion Issue Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case_Violation : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Violation Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Penalty Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Inspection Type Dimension Id"
+pie title Cơ cấu vi phạm theo loại hành vi
+    "CBTT" : 40
+    "Cho mượn tài khoản" : 35
+    "Thao túng thị trường" : 25
 ```
 
-**5. Bảng tham gia:**
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`, `Classification Dimension`
 
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case Violation | 1 row = 1 kết luận thanh tra ghi nhận 1 hành vi vi phạm × 1 hình thức phạt (event) |
-| Calendar Date Dimension | 1 row = 1 ngày ra kết luận |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_VIOLATION_TYPE) | 1 row = 1 hành vi vi phạm |
-| Classification Dimension (TT_PENALTY_TYPE) | 1 row = 1 hình thức phạt |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình (THANH_TRA/KIEM_TRA) |
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_10 | Số vi phạm Thao túng thị trường | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[THAO_TUNG] |
+| K_TT_11 | Tỷ lệ % Thao túng thị trường | % | Derived | K_TT_10 / K_TT_1 × 100% |
+| K_TT_12 | Số vi phạm Cho mượn tài khoản | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CHO_MUON] |
+| K_TT_13 | Tỷ lệ % Cho mượn tài khoản | % | Derived | K_TT_12 / K_TT_1 × 100% |
+| K_TT_14 | Số vi phạm CBTT | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CBTT] |
+| K_TT_15 | Tỷ lệ % CBTT | % | Derived | K_TT_14 / K_TT_1 × 100% |
+
+**Bảng grain:**
+
+| Tên bảng | Grain | Date key | Filter mặc định | Phân tích theo hành vi |
+|---|---|---|---|---|
+| Fact Inspection Case Activity | reuse — 1 hồ sơ × 1 đối tượng. Đếm hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)` | `Received_Date_Dimension_Id` | Year=selected_year, Inspection_Type_Code=`THANH_TRA` | GROUP BY Violation_Type_Dimension_Id join Classification Dimension (scheme TT_VIOLATION_TYPE) ở query time |
 
 ---
 
-#### Nhóm 4 — Cơ cấu vi phạm theo đối tượng (biểu đồ tròn)
+#### Nhóm 4 — Cơ cấu vi phạm theo đối tượng (STT 4)
 
-**1. Mockup:**
+> Phân loại: **Phân tích**
+> Silver: `Inspection Decision Subject` ← ThanhTra.TT_QUYET_DINH_DOI_TUONG — **READY**
+> Silver: `Securities Company` ← ThanhTra.DM_CONG_TY_CK — **READY**
+> Silver: `Fund Management Company` ← ThanhTra.DM_CONG_TY_QLQ — **READY**
+> Silver: `Public Company` ← ThanhTra.DM_CONG_TY_DC — **READY**
+> Silver: `Inspection Subject Other Party` ← ThanhTra.DM_DOI_TUONG_KHAC — **READY**
+> Ghi chú: `Subject_Category_Dimension_Id` FK → `Classification Dimension` (scheme `TT_SUBJECT_CATEGORY`). ETL resolve polymorphic FK `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID`:
+> - → `DM_CONG_TY_CK` → `CTCK`
+> - → `DM_CONG_TY_QLQ` → `CTQLQ`
+> - → `DM_CONG_TY_DC` → `CTDC`
+> - → `DM_DOI_TUONG_KHAC` AND `LOAI_DOI_TUONG=CA_NHAN` → `CA_NHAN`
+> - → `DM_DOI_TUONG_KHAC` AND `LOAI_DOI_TUONG=TO_CHUC` → `TO_CHUC_KHAC` (tạm thời — Silver `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP. Chờ khảo sát nguồn, xem O_TT_4)
+> **6 giá trị scheme tạm thời:** CTCK / CTDC / CTQLQ / CA_NHAN / TO_CHUC_KHAC. Thứ tự hiển thị theo BA STT 4: Cá nhân → CTĐC → CTCK → CTQLQ. Xem O_TT_4.
+
+**Mockup:**
 
 ```mermaid
-pie showData
-    title Cơ cấu vi phạm theo đối tượng (Thanh tra)
-    "CTCK" : 35
-    "CTQLQ" : 25
+pie title Cơ cấu vi phạm theo đối tượng
+    "Cá nhân" : 30
     "CTĐC" : 25
+    "CTCK" : 25
+    "CTQLQ" : 20
+```
+
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`, `Classification Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_16 | Số vi phạm đối tượng Cá nhân | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[CA_NHAN] (TT_SUBJECT_CATEGORY) |
+| K_TT_17 | Tỷ lệ % Cá nhân | % | Derived | K_TT_16 / K_TT_1 × 100% |
+| K_TT_18 | Số vi phạm đối tượng CTĐC | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[CTDC] |
+| K_TT_19 | Tỷ lệ % CTĐC | % | Derived | K_TT_18 / K_TT_1 × 100% |
+| K_TT_20 | Số vi phạm đối tượng CTCK | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Subject_Category_Dimension_Id=[CTCK] |
+| K_TT_21 | Tỷ lệ % CTCK | % | Derived | K_TT_20 / K_TT_1 × 100% |
+| K_TT_22 | Số vi phạm đối tượng CTQLQ | Vụ | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`THANH_TRA` AND Subject_Category_Dimension_Id=[CTQLQ] |
+| K_TT_23 | Tỷ lệ % CTQLQ | % | Derived | K_TT_22 / K_TT_1 × 100% |
+
+**Bảng grain:**
+
+| Tên bảng | Grain | Date key | Filter mặc định | Phân tích theo đối tượng |
+|---|---|---|---|---|
+| Fact Inspection Case Activity | reuse — 1 hồ sơ × 1 đối tượng. Đếm hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)` | `Received_Date_Dimension_Id` | Year=selected_year, Inspection_Type_Code=`THANH_TRA` | GROUP BY Subject_Category_Dimension_Id join Classification Dimension ở query time |
+
+---
+
+#### Nhóm 5 — Danh sách vụ việc Thanh tra/Kiểm tra (STT 5)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Silver: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
+> Ghi chú:
+> - Cột **"Mã vụ việc"** ← `TT_HO_SO.MA_HO_SO` (`Inspection Case.Case_Number`)
+> - Cột **"Đối tượng"** ← ETL: `COALESCE(TT_HO_SO.TEN_DOI_TUONG, TT_HO_SO.HO_TEN)` — Silver có 2 field: `Subject_Organization_Name` ← `TT_HO_SO.TEN_DOI_TUONG` (tổ chức) và `Subject_Full_Name` ← `TT_HO_SO.HO_TEN` (cá nhân). ETL merge thành 1 cột `Display_Name` dựa vào `LOAI_DOI_TUONG`.
+> - Cột **"Phân loại đối tượng"** ← `Subject_Category_Code` ETL-derived (resolve polymorphic `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID`)
+> - Cột **"Loại hình"** ← `Inspection_Form_Type_Code` ETL-derived: `TT_QUYET_DINH.KE_HOACH_ID IS NULL` → Đột xuất / `NOT NULL` → Định kỳ. **Không phải** `Inspection_Type_Code` (THANH_TRA/KIEM_TRA)
+> - Cột **"Trạng thái"** ← `TT_HO_SO.TRANG_THAI_ID` (`Case_Status_Code`, scheme `TT_CASE_STATUS`)
+
+**Mockup:**
+
+| Mã vụ việc | Đối tượng | Phân loại đối tượng | Loại hình | Trạng thái |
+|---|---|---|---|---|
+| INS-2024-001 | Công ty ABC | Công ty chứng khoán | Đột xuất | Tại thực địa |
+| INS-2024-002 | Công ty XYZ | Quỹ đầu tư | Định kỳ | Đang thực hiện |
+
+**Schema bảng tác nghiệp:**
+
+```mermaid
+erDiagram
+    Inspection_Case_List {
+        varchar Inspection_Case_Code PK
+        varchar Case_Number
+        varchar Display_Name
+        varchar Subject_Category_Code
+        varchar Inspection_Type_Code
+        varchar Inspection_Form_Type_Code
+        varchar Case_Status_Code
+        date Received_Date
+        int Received_Year
+        datetime Population_Date
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph SIL["Silver"]
+        SV1["Inspection Case"]
+        SV2["Inspection Decision"]
+    end
+    subgraph GOLD["Gold Mart"]
+        G1["Inspection Case List"]
+    end
+    subgraph RPT["Tab TỔNG QUAN"]
+        R1["Danh sách vụ việc TT/KT"]
+    end
+    SV1 --> G1
+    SV2 --> G1
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
+|---|---|---|---|---|
+| Inspection Case List | 1 hồ sơ TT/KT — mỗi row = 1 `TT_HO_SO` (latest state) | `Inspection Case` + `Inspection Decision` (join lấy `KE_HOACH_ID`) + ETL-derived `Subject_Category_Code` | Year=selected_year; filter Loại hình và Trạng thái ở query time | Phân trang ở presentation layer |
+
+---
+
+### Tab: KIỂM TRA
+
+**Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
+
+> Ghi chú chung Tab KIỂM TRA: Toàn bộ 5 block reuse `Fact Inspection Case Activity` và `Inspection Case List` — chỉ filter `Inspection_Type_Code = KIEM_TRA` (scheme `TT_PLAN_TYPE`). Không tạo Fact hay Tác nghiệp mới.
+
+---
+
+#### Nhóm 6 — KPI cards Thống kê chung Kiểm tra (STT 6)
+
+> Phân loại: **Phân tích**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Ghi chú: Reuse `Fact Inspection Case Activity` — filter `Inspection_Type_Code=KIEM_TRA`. Các field DD và FK giống hệt Tab TỔNG QUAN.
+
+**Mockup:**
+
+| TỔNG SỐ CUỘC KIỂM TRA ▲ 10% | TỔNG SỐ ĐÃ HOÀN THÀNH ▲ 15% | TỔNG SỐ ĐANG THỰC HIỆN ▲ 5% |
+|---|---|---|
+| 5 Số cuộc | 2 Số cuộc | 3 Số cuộc |
+
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_24 | Tổng số cuộc kiểm tra | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year |
+| K_TT_25 | Tổng số kiểm tra SSCK (%) | % | Derived | (K_TT_24[Y] − K_TT_24[Y−1]) / K_TT_24[Y−1] × 100% |
+| K_TT_26 | Số cuộc kiểm tra đã hoàn thành | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Case_Status_Code=`HOAN_THANH` AND Year=selected_year |
+| K_TT_27 | Số cuộc kiểm tra hoàn thành SSCK (%) | % | Derived | (K_TT_26[Y] − K_TT_26[Y−1]) / K_TT_26[Y−1] × 100% |
+| K_TT_28 | Số cuộc kiểm tra đang thực hiện | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Case_Status_Code≠`HOAN_THANH` AND Year=selected_year |
+| K_TT_29 | Số cuộc kiểm tra đang thực hiện SSCK (%) | % | Derived | (K_TT_28[Y] − K_TT_28[Y−1]) / K_TT_28[Y−1] × 100% |
+
+**Bảng grain:** reuse `Fact Inspection Case Activity` — filter `Inspection_Type_Code=KIEM_TRA`, `COUNT(DISTINCT Inspection_Case_Code)`.
+
+---
+
+#### Nhóm 7 — Biểu đồ xu hướng số cuộc kiểm tra theo tháng (STT 7)
+
+> Phân loại: **Phân tích**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Ghi chú: Reuse `Fact Inspection Case Activity` — GROUP BY tháng ở presentation layer. Xem O_TT_3 về lựa chọn date key.
+
+**Mockup:**
+
+| Tháng | T1 | T2 | ... | T12 |
+|---|---|---|---|---|
+| Số lượng vụ việc kiểm tra | 2 | 4 | ... | 32 |
+| Đang thực hiện | 1 | 2 | ... | 18 |
+| Đã hoàn thành | 1 | 2 | ... | 14 |
+
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_30 | Số lượng vụ việc kiểm tra theo tháng (tổng) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year GROUP BY Calendar_Date_Dimension.Month |
+| K_TT_31 | Số cuộc đang thực hiện theo tháng | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Case_Status_Code≠`HOAN_THANH` GROUP BY Month |
+| K_TT_32 | Số cuộc đã hoàn thành theo tháng | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Case_Status_Code=`HOAN_THANH` GROUP BY Month |
+
+**Bảng grain:** reuse `Fact Inspection Case Activity` — filter `Inspection_Type_Code=KIEM_TRA`, GROUP BY Month ở query time.
+
+---
+
+#### Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi (STT 8)
+
+> Phân loại: **Phân tích**
+> Silver: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
+> Ghi chú: `Violation_Type_Dimension_Id` FK → `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) ← ETL map từ `TT_KET_LUAN.HANH_VI_VI_PHAM_ID`. BA STT 8 định nghĩa **11 hành vi**: CBTT / Hoạt động chào bán / Cổ đông nội bộ+lớn / Giao dịch / CTĐC / CTCK / Tổ chức PHTP / Thao túng / Cho mượn / Tổ chức kiểm toán / Sở giao dịch. HLD thiết kế đủ 11 hành vi theo BA.
+
+**Mockup:**
+
+```mermaid
+pie title Cơ cấu kiểm tra theo loại hành vi
+    "CBTT" : 15
+    "Chào bán" : 12
+    "Cổ đông nội bộ/lớn" : 10
+    "Giao dịch" : 10
+    "CTĐC" : 10
+    "CTCK" : 10
+    "Tổ chức PHTP" : 8
+    "Thao túng" : 8
+    "Cho mượn" : 7
+    "Tổ chức kiểm toán" : 5
+    "Sở giao dịch" : 5
+```
+
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`, `Classification Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_33 | Số vi phạm CBTT (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CBTT] |
+| K_TT_34 | Tỷ lệ % CBTT (KT) | % | Derived | K_TT_33 / K_TT_24 × 100% |
+| K_TT_35 | Số vi phạm Hoạt động chào bán (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CHAO_BAN] |
+| K_TT_36 | Tỷ lệ % Hoạt động chào bán (KT) | % | Derived | K_TT_35 / K_TT_24 × 100% |
+| K_TT_37 | Số vi phạm Cổ đông nội bộ/lớn (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CO_DONG_NOI_BO] |
+| K_TT_38 | Tỷ lệ % Cổ đông nội bộ/lớn (KT) | % | Derived | K_TT_37 / K_TT_24 × 100% |
+| K_TT_39 | Số vi phạm Giao dịch (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[GIAO_DICH] |
+| K_TT_40 | Tỷ lệ % Giao dịch (KT) | % | Derived | K_TT_39 / K_TT_24 × 100% |
+| K_TT_41 | Số vi phạm CTĐC (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CTDC_VI_PHAM] |
+| K_TT_42 | Tỷ lệ % CTĐC (KT) | % | Derived | K_TT_41 / K_TT_24 × 100% |
+| K_TT_43 | Số vi phạm CTCK (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CTCK] |
+| K_TT_44 | Tỷ lệ % CTCK (KT) | % | Derived | K_TT_43 / K_TT_24 × 100% |
+| K_TT_44b | Số vi phạm Tổ chức phát hành TP (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[TO_CHUC_PHTP_VI_PHAM] |
+| K_TT_44c | Tỷ lệ % Tổ chức PHTP (KT) | % | Derived | K_TT_44b / K_TT_24 × 100% |
+| K_TT_44d | Số vi phạm Thao túng (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[THAO_TUNG] |
+| K_TT_44e | Tỷ lệ % Thao túng (KT) | % | Derived | K_TT_44d / K_TT_24 × 100% |
+| K_TT_44f | Số vi phạm Cho mượn tài khoản (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[CHO_MUON] |
+| K_TT_44g | Tỷ lệ % Cho mượn (KT) | % | Derived | K_TT_44f / K_TT_24 × 100% |
+| K_TT_44h | Số vi phạm Tổ chức kiểm toán (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[TO_CHUC_KIEM_TOAN] |
+| K_TT_44i | Tỷ lệ % Tổ chức kiểm toán (KT) | % | Derived | K_TT_44h / K_TT_24 × 100% |
+| K_TT_44j | Số vi phạm Sở giao dịch (KT) | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Violation_Type_Dimension_Id=[SO_GIAO_DICH] |
+| K_TT_44k | Tỷ lệ % Sở giao dịch (KT) | % | Derived | K_TT_44j / K_TT_24 × 100% |
+
+**Bảng grain:** reuse `Fact Inspection Case Activity` — filter `Inspection_Type_Code=KIEM_TRA`, GROUP BY Violation_Type_Dimension_Id join Classification Dimension ở query time.
+
+---
+
+#### Nhóm 9 — Cơ cấu kiểm tra theo đối tượng Cá nhân/Tổ chức (STT 9)
+
+> Phân loại: **Phân tích**
+> Silver: `Inspection Decision Subject` ← ThanhTra.TT_QUYET_DINH_DOI_TUONG — **READY**
+> Ghi chú: Reuse `Subject_Category_Dimension_Id` FK → `Classification Dimension` (scheme `TT_SUBJECT_CATEGORY`, **6 giá trị tạm thời**). BA STT 9 định nghĩa 5 nhóm (CTCK / CTQLQ+NHLK / CTĐC / CTKT / Tổ chức PHTP) nhưng Silver `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP — tạm thời các nhóm này gộp thành `TO_CHUC_KHAC`. K_TT_47, K_TT_49b, K_TT_53 PENDING chờ O_TT_4.
+
+**Mockup:**
+
+```mermaid
+pie title Cơ cấu kiểm tra theo đối tượng
+    "CTCK" : 30
+    "CTKT" : 20
+    "CTQLQ + Ngân hàng lưu ký" : 20
+    "CTĐC" : 20
+    "Tổ chức PHTP" : 10
+```
+
+**Source:** `Fact Inspection Case Activity` → `Calendar Date Dimension`, `Classification Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_45 | Số cuộc KT đối tượng CTCK | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[CTCK] |
+| K_TT_46 | Tỷ lệ % CTCK (KT) | % | Derived | K_TT_45 / K_TT_24 × 100% |
+| K_TT_47 | Số cuộc KT đối tượng CTKT | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[TO_CHUC_KHAC] — *tạm thời gộp với NHLK/TO_CHUC_PHTP, xem O_TT_4* |
+| K_TT_48 | Tỷ lệ % CTKT (KT) | % | Derived | K_TT_47 / K_TT_24 × 100% |
+| K_TT_49 | Số cuộc KT đối tượng CTQLQ | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[CTQLQ] |
+| K_TT_49b | Số cuộc KT đối tượng NHLK/TO_CHUC_PHTP | Cuộc | Base | *PENDING — chờ O_TT_4: Silver chưa phân biệt được* |
+| K_TT_50 | Tỷ lệ % TO_CHUC_KHAC (KT) | % | Derived | K_TT_47 / K_TT_24 × 100% — *tạm thời dùng TO_CHUC_KHAC gộp* |
+| K_TT_51 | Số cuộc KT đối tượng CTĐC | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[CTDC] |
+| K_TT_52 | Tỷ lệ % CTĐC (KT) | % | Derived | K_TT_51 / K_TT_24 × 100% |
+| K_TT_53 | Số cuộc KT đối tượng Tổ chức PHTP | Cuộc | Base | *PENDING — chờ O_TT_4: Silver chưa phân biệt được* |
+| K_TT_54 | Tỷ lệ % Tổ chức PHTP (KT) | % | Derived | *PENDING — chờ O_TT_4* |
+
+**Bảng grain:** reuse `Fact Inspection Case Activity` — filter `Inspection_Type_Code=KIEM_TRA`, GROUP BY Subject_Category_Dimension_Id join Classification Dimension ở query time.
+
+---
+
+#### Nhóm 10 — Danh sách vụ việc Kiểm tra (STT 10)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Silver: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
+> Ghi chú: Reuse `Inspection Case List` — filter `Inspection_Type_Code=KIEM_TRA` ở query time. Cột "Loại hình" chỉ có 2 giá trị: `ĐỊNH KỲ` / `ĐỘT XUẤT` (ETL-derived từ `TT_QUYET_DINH.KE_HOACH_ID`).
+
+**Mockup:**
+
+| Mã vụ việc | Đối tượng | Phân loại đối tượng | Loại hình | Trạng thái |
+|---|---|---|---|---|
+| EXM-2024-001 | Công ty Chứng khoán VPS | CTCK | Định kỳ | Đã kết luận |
+| EXM-2024-002 | Công ty CP Đầu tư ABC | CTĐC | Đột xuất | Đang thực hiện |
+| EXM-2024-003 | Nguyễn Văn A | Cá nhân | Định kỳ | Tại thực địa |
+| EXM-2024-004 | Quỹ Đầu tư XYZ | CTQLQ | Định kỳ | Đang thực hiện |
+| EXM-2024-005 | Công ty Chứng khoán SSI | CTCK | Đột xuất | Đã kết luận |
+
+**Schema bảng tác nghiệp:** reuse `Inspection Case List` — không tạo bảng mới.
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph SIL["Silver"]
+        SV1["Inspection Case"]
+        SV2["Inspection Decision"]
+    end
+    subgraph GOLD["Gold Mart"]
+        G1["Inspection Case List"]
+    end
+    subgraph RPT["Tab KIỂM TRA"]
+        R1["Danh sách vụ việc KT"]
+    end
+    SV1 --> G1
+    SV2 --> G1
+    G1 --> R1
+```
+
+**Bảng grain:** reuse `Inspection Case List` — filter `Inspection_Type_Code=KIEM_TRA` ở query time.
+
+---
+
+### Tab: XỬ PHẠT
+
+**Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
+
+> Ghi chú chung Tab XỬ PHẠT: Nguồn Silver khác hoàn toàn với Tab TT/KT — dùng `Surveillance Enforcement Decision` (`GS_VAN_BAN_XU_LY`) và `Surveillance Enforcement Case` (`GS_HO_SO`). Cần **Fact mới**: `Fact Penalty Decision`. Không reuse `Fact Inspection Case Activity`.
+
+---
+
+#### Nhóm 11 — KPI cards Thống kê chung Xử phạt (STT 11)
+
+> Phân loại: **Phân tích**
+> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Ghi chú: `Total_Penalty_Amount` ← `GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT` — measure tiền phạt. `Decision_Status_Code` ← `GS_VAN_BAN_XU_LY.TRANG_THAI`, scheme `TT_CASE_STATUS`.
+
+**Mockup:**
+
+| TỔNG SỐ QUYẾT ĐỊNH XỬ PHẠT ▲ 12% | TỔNG TIỀN XỬ PHẠT ▲ 18% |
+|---|---|
+| 5 Số quyết định | 1075 tỷ VNĐ |
+
+**Source:** `Fact Penalty Decision` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_55 | Tổng số quyết định xử phạt | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year |
+| K_TT_56 | Tổng số QĐXP SSCK (%) | % | Derived | (K_TT_55[Y] − K_TT_55[Y−1]) / K_TT_55[Y−1] × 100% |
+| K_TT_57 | Tổng tiền xử phạt | Tỷ VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000_000 WHERE Year=selected_year |
+| K_TT_58 | Tổng tiền xử phạt SSCK (%) | % | Derived | (K_TT_57[Y] − K_TT_57[Y−1]) / K_TT_57[Y−1] × 100% |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision : "Violation Report Date Dimension Id"
+    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Penalty Subject Category Dimension Id"
+    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Violation Type Dimension Id"
+    Fact_Penalty_Decision {
+        int Violation_Report_Date_Dimension_Id FK
+        int Penalty_Subject_Category_Dimension_Id FK
+        int Violation_Type_Dimension_Id FK
+        varchar Penalty_Decision_Code
+        float Total_Penalty_Amount
+        datetime Population_Date
+    }
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+        int Quarter
+    }
+    Classification_Dimension {
+        int Classification_Dimension_Id PK
+        varchar Scheme
+        varchar Code
+        varchar Name
+    }
+```
+
+*Ghi chú erDiagram — các field trên Fact Penalty Decision:*
+
+| Field | Silver source | Scheme / Giá trị | Ghi chú |
+|---|---|---|---|
+| `Penalty_Decision_Code` | `GS_VAN_BAN_XU_LY.ID` | — | DD — PK nguồn dùng làm degenerate key quyết định xử phạt trên Fact. Dùng `COUNT(DISTINCT Penalty_Decision_Code)` để đếm QĐ |
+| `Violation_Type_Dimension_Id` | ETL: field Silver chưa xác định → lookup `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) | scheme: `TT_VIOLATION_TYPE` | FK → Classification Dimension — dùng chung scheme với Tab TT/KT. Xem O_TT_8 |
+| `Total_Penalty_Amount` | `GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT` | — | Measure — tổng tiền phạt (VNĐ). Presentation layer chia /1_000_000_000 → tỷ VNĐ hoặc /1_000_000 → triệu VNĐ |
+| `Penalty_Subject_Category_Dimension_Id` | ETL-derived từ `GS_HO_SO` | scheme: `TT_PENALTY_SUBJECT_CATEGORY` | FK → Classification Dimension — 4 giá trị: TO_CHUC_KHAC / CTKT / GIAO_DICH_NDT / CA_NHAN (xem O_TT_9) |
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Penalty Decision"]
+        G2["Calendar Date Dimension"]
+        G3["Classification Dimension"]
+    end
+    subgraph RPT["Tab XỬ PHẠT"]
+        R1["KPI cards\n(Tổng QĐ / Tổng tiền)"]
+        R2["Biểu đồ bar+line theo tháng"]
+        R3["Donut cơ cấu theo hành vi"]
+        R4["Donut cơ cấu theo đối tượng"]
+    end
+    G2 --> G1
+    G3 --> G1
+    G1 --> R1
+    G1 --> R2
+    G1 --> R3
+    G1 --> R4
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain | Date key | Filter mặc định | Ghi chú |
+|---|---|---|---|---|
+| Fact Penalty Decision | 1 quyết định xử phạt — mỗi row = 1 `GS_VAN_BAN_XU_LY` | `Violation_Report_Date_Dimension_Id` ← `GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN` join Calendar Date Dimension | Year=selected_year | 1 hồ sơ `GS_HO_SO` có thể có nhiều QĐ — grain tự nhiên là per QĐ, không fanout |
+
+---
+
+#### Nhóm 12 — Biểu đồ thống kê xử phạt theo tháng (STT 12)
+
+> Phân loại: **Phân tích**
+> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Ghi chú: Dual axis — bar = số QĐ, line = tổng tiền phạt. Reuse `Fact Penalty Decision` — GROUP BY tháng ở presentation layer.
+
+**Mockup:**
+
+| Tháng | T1 | T2 | ... | T12 |
+|---|---|---|---|---|
+| Số QĐ xử phạt (bar) | 8 | 10 | ... | 40 |
+| Tổng tiền phạt — tỷ VNĐ (line) | 200 | 350 | ... | 11000 |
+
+**Source:** `Fact Penalty Decision` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_59 | Số QĐ xử phạt theo tháng | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year GROUP BY Calendar_Date_Dimension.Month |
+| K_TT_60 | Tổng tiền xử phạt theo tháng | Tỷ VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000_000 WHERE Year=selected_year GROUP BY Month |
+
+**Bảng grain:** reuse `Fact Penalty Decision` — GROUP BY Month ở query time.
+
+---
+
+#### Nhóm 13 — Cơ cấu xử phạt theo loại hành vi (STT 13)
+
+> Phân loại: **Phân tích**
+> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Ghi chú: `Violation_Type_Dimension_Id` FK → `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) — dùng chung scheme với Tab TT/KT. BA STT 13 định nghĩa **11 hành vi**: CBTT / Hoạt động chào bán / Cổ đông nội bộ+lớn / Giao dịch / CTĐC / CTCK / Tổ chức PHTP / Thao túng / Cho mượn / Tổ chức kiểm toán / Sở giao dịch. Xem O_TT_8 về field nguồn trong Silver.
+
+**Mockup:**
+
+```mermaid
+pie title Cơ cấu xử phạt theo loại hành vi
+    "CBTT" : 20
+    "Chào bán" : 15
+    "Cổ đông nội bộ" : 10
+    "Giao dịch" : 10
+    "CTĐC" : 10
+    "CTCK" : 10
+    "Tổ chức PHTP" : 8
+    "Thao túng" : 7
+    "Cho mượn" : 5
+    "Tổ chức KT" : 3
+    "Sở giao dịch" : 2
+```
+
+**Source:** `Fact Penalty Decision` → `Calendar Date Dimension`, `Classification Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_61 | Số QĐ XP hành vi CBTT | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CBTT] |
+| K_TT_62 | Tỷ lệ % CBTT (XP) | % | Derived | K_TT_61 / K_TT_55 × 100% |
+| K_TT_63 | Số QĐ XP Hoạt động chào bán | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CHAO_BAN] |
+| K_TT_64 | Tỷ lệ % Chào bán (XP) | % | Derived | K_TT_63 / K_TT_55 × 100% |
+| K_TT_65 | Số QĐ XP Cổ đông nội bộ/lớn | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CO_DONG_NOI_BO] |
+| K_TT_66 | Tỷ lệ % Cổ đông nội bộ/lớn (XP) | % | Derived | K_TT_65 / K_TT_55 × 100% |
+| K_TT_67 | Số QĐ XP Giao dịch | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[GIAO_DICH] |
+| K_TT_68 | Tỷ lệ % Giao dịch (XP) | % | Derived | K_TT_67 / K_TT_55 × 100% |
+| K_TT_69 | Số QĐ XP CTĐC | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CTDC_VI_PHAM] |
+| K_TT_70 | Tỷ lệ % CTĐC (XP) | % | Derived | K_TT_69 / K_TT_55 × 100% |
+| K_TT_71 | Số QĐ XP CTCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CTCK] |
+| K_TT_72 | Tỷ lệ % CTCK (XP) | % | Derived | K_TT_71 / K_TT_55 × 100% |
+| K_TT_72b | Số QĐ XP Tổ chức PHTP | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[TO_CHUC_PHTP_VI_PHAM] |
+| K_TT_72c | Tỷ lệ % Tổ chức PHTP (XP) | % | Derived | K_TT_72b / K_TT_55 × 100% |
+| K_TT_72d | Số QĐ XP Thao túng | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[THAO_TUNG] |
+| K_TT_72e | Tỷ lệ % Thao túng (XP) | % | Derived | K_TT_72d / K_TT_55 × 100% |
+| K_TT_72f | Số QĐ XP Cho mượn tài khoản | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CHO_MUON] |
+| K_TT_72g | Tỷ lệ % Cho mượn (XP) | % | Derived | K_TT_72f / K_TT_55 × 100% |
+| K_TT_72h | Số QĐ XP Tổ chức kiểm toán | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[TO_CHUC_KIEM_TOAN] |
+| K_TT_72i | Tỷ lệ % Tổ chức kiểm toán (XP) | % | Derived | K_TT_72h / K_TT_55 × 100% |
+| K_TT_72j | Số QĐ XP Sở giao dịch | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[SO_GIAO_DICH] |
+| K_TT_72k | Tỷ lệ % Sở giao dịch (XP) | % | Derived | K_TT_72j / K_TT_55 × 100% |
+
+**Bảng grain:** reuse `Fact Penalty Decision` — GROUP BY Violation_Type_Dimension_Id join Classification Dimension ở query time.
+
+---
+
+#### Nhóm 14 — Cơ cấu xử phạt theo đối tượng (STT 14)
+
+> Phân loại: **Phân tích**
+> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Ghi chú: `Penalty_Subject_Category_Dimension_Id` FK → Classification Dimension (scheme `TT_PENALTY_SUBJECT_CATEGORY`). BA STT 14 định nghĩa 4 nhóm đối tượng theo thứ tự: Tổ chức khác / CTKT / Giao dịch NĐT / Cá nhân. Xem O_TT_9 về field nguồn phân loại đối tượng trong `GS_HO_SO`.
+
+**Mockup:**
+
+```mermaid
+pie title Cơ cấu xử phạt theo đối tượng
+    "Tổ chức khác" : 35
+    "CTKT" : 30
+    "Giao dịch nhà đầu tư" : 20
     "Cá nhân" : 15
 ```
 
-**2. Source:** `Fact Inspection Case Violation` → `Calendar Date Dimension`, `Inspection Subject Dimension`, `Classification Dimension` (scheme: TT_SUBJECT_SOURCE_TYPE, TT_OTHER_PARTY_SUBTYPE, TT_PLAN_TYPE)
+**Source:** `Fact Penalty Decision` → `Calendar Date Dimension`, `Classification Dimension`
 
-**3. Bảng KPI:**
+**Bảng KPI:**
 
-KPI đọc 2 attribute trên `Inspection Subject Dimension`: `Subject Source Type Code` (4 mã gốc) + `Other Party Subtype Code` (chỉ có giá trị khi Source Type = DOI_TUONG_KHAC).
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 16 | K_TT_10 | Số lượng vi phạm đối tượng Cá nhân | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Inspection Subject Dimension"."Subject Source Type Code" = 'DOI_TUONG_KHAC'` AND `"Inspection Subject Dimension"."Other Party Subtype Code" = 'CA_NHAN'` AND Inspection Type = 'THANH_TRA' |
-| 17 | K_TT_10_RATIO | Tỷ lệ % vi phạm đối tượng Cá nhân | % | Derived | `K_TT_10 / (K_TT_10 + K_TT_11 + K_TT_12 + K_TT_13) × 100%` |
-| 18 | K_TT_11 | Số lượng vi phạm đối tượng CTĐC | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Inspection Subject Dimension"."Subject Source Type Code" = 'CTDC'` AND Inspection Type = 'THANH_TRA' |
-| 19 | K_TT_11_RATIO | Tỷ lệ % vi phạm đối tượng CTĐC | % | Derived | `K_TT_11 / (K_TT_10 + K_TT_11 + K_TT_12 + K_TT_13) × 100%` |
-| 20 | K_TT_12 | Số lượng vi phạm đối tượng CTCK | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Inspection Subject Dimension"."Subject Source Type Code" = 'CTCK'` AND Inspection Type = 'THANH_TRA' |
-| 21 | K_TT_12_RATIO | Tỷ lệ % vi phạm đối tượng CTCK | % | Derived | `K_TT_12 / (K_TT_10 + K_TT_11 + K_TT_12 + K_TT_13) × 100%` |
-| 22 | K_TT_13 | Số lượng vi phạm đối tượng CTQLQ | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Inspection Subject Dimension"."Subject Source Type Code" = 'CTQLQ'` AND Inspection Type = 'THANH_TRA' |
-| 23 | K_TT_13_RATIO | Tỷ lệ % vi phạm đối tượng CTQLQ | % | Derived | `K_TT_13 / (K_TT_10 + K_TT_11 + K_TT_12 + K_TT_13) × 100%` |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Violation : "Conclusion Issue Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case_Violation : "Inspection Case Dimension Id"
-    Inspection_Subject_Dimension ||--o{ Fact_Inspection_Case_Violation : "Inspection Subject Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Inspection Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case Violation | 1 row = 1 kết luận × 1 hành vi × 1 hình thức phạt (event) |
-| Calendar Date Dimension | 1 row = 1 ngày ra kết luận |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Inspection Subject Dimension | 1 row = 1 đối tượng thanh tra/kiểm tra (polymorphic, SCD2, 2 attribute phân loại 2 tầng) |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
-
----
-
-#### Nhóm 5 — Danh sách vụ việc thanh tra
-
-**1. Mockup:**
-
-| Mã vụ việc | Đối tượng | Phân loại đối tượng | Loại hình | Trạng thái |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| INS-2024-001 | Công ty ABC | CÔNG TY CHỨNG KHOÁN | ĐỘT XUẤT | TẠI THỰC ĐỊA |
-| INS-2024-002 | Công ty XYZ | QUỸ ĐẦU TƯ | ĐỊNH KỲ | ĐANG THỰC HIỆN |
+| K_TT_73 | Số QĐ XP đối tượng Tổ chức khác | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[TO_CHUC_KHAC] (TT_PENALTY_SUBJECT_CATEGORY) |
+| K_TT_74 | Tỷ lệ % Tổ chức khác (XP) | % | Derived | K_TT_73 / K_TT_55 × 100% |
+| K_TT_75 | Số QĐ XP đối tượng CTKT | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTKT] |
+| K_TT_76 | Tỷ lệ % CTKT (XP) | % | Derived | K_TT_75 / K_TT_55 × 100% |
+| K_TT_77 | Số QĐ XP đối tượng Giao dịch nhà đầu tư | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[GIAO_DICH_NDT] |
+| K_TT_78 | Tỷ lệ % Giao dịch NĐT (XP) | % | Derived | K_TT_77 / K_TT_55 × 100% |
+| K_TT_79 | Số QĐ XP đối tượng Cá nhân | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CA_NHAN] |
+| K_TT_80 | Tỷ lệ % Cá nhân (XP) | % | Derived | K_TT_79 / K_TT_55 × 100% |
 
-**2. Source:** `Fact Inspection Case` → `Inspection Case Dimension`, `Inspection Subject Dimension`, `Classification Dimension` (scheme: TT_INSPECTION_SCHEDULE_TYPE, TT_CASE_STATUS, TT_PLAN_TYPE, TT_SUBJECT_SOURCE_TYPE, TT_OTHER_PARTY_SUBTYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 24 | K_TT_14 | Mã vụ việc | Text | Stock | `"Inspection Case Dimension"."Case Number"` WHERE Inspection Type = 'THANH_TRA' |
-| 25 | K_TT_15 | Đối tượng | Text | Stock | `"Inspection Subject Dimension"."Subject Name"` |
-| 26 | K_TT_16 | Phân loại đối tượng | Text | Stock | Display logic: nếu `Subject Source Type Code IN ('CTDC','CTCK','CTQLQ')` → hiển thị `"Classification Dimension"."Classification Name"` (via Subject Source Type Dimension Id, scheme TT_SUBJECT_SOURCE_TYPE). Nếu `Subject Source Type Code = 'DOI_TUONG_KHAC'` → hiển thị `"Classification Dimension"."Classification Name"` (via Other Party Subtype Dimension Id, scheme TT_OTHER_PARTY_SUBTYPE) — chi tiết hơn. |
-| 27 | K_TT_17 | Loại hình (Định kỳ / Đột xuất) | Text | Stock | `"Classification Dimension"."Classification Name"` (via Inspection Schedule Type Dimension Id trên fact, scheme TT_INSPECTION_SCHEDULE_TYPE — ETL derived: Inspection Decision.Inspection Annual Plan Id IS NULL → DOT_XUAT, else → DINH_KY) |
-| 28 | K_TT_18 | Trạng thái | Text | Stock | `"Classification Dimension"."Classification Name"` (via Case Status Dimension Id, scheme TT_CASE_STATUS) |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Received Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Status As Of Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case : "Inspection Case Dimension Id"
-    Inspection_Subject_Dimension ||--o{ Fact_Inspection_Case : "Inspection Subject Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Schedule Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Case Status Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case | 1 row = 1 hồ sơ thanh tra/kiểm tra (latest state) |
-| Calendar Date Dimension | 1 row = 1 ngày (Received Date / Status As Of Date) |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Inspection Subject Dimension | 1 row = 1 đối tượng thanh tra/kiểm tra (polymorphic, SCD2, 2 attribute phân loại 2 tầng) |
-| Classification Dimension (TT_INSPECTION_SCHEDULE_TYPE) | 1 row = 1 loại lịch (ĐỊNH KỲ/ĐỘT XUẤT) |
-| Classification Dimension (TT_CASE_STATUS) | 1 row = 1 trạng thái hồ sơ |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
+**Bảng grain:** reuse `Fact Penalty Decision` — GROUP BY Penalty_Subject_Category_Dimension_Id join Classification Dimension ở query time.
 
 ---
 
-### Dashboard Hoạt động Kiểm tra — Dashboard tổng quan
-
-**Slicer:**
-- Năm (mặc định: năm hiện tại, screenshot hiển thị NĂM 2024)
-
-**Lưu ý phạm vi:** Dashboard này tái sử dụng cùng fact/dim của Dashboard Hoạt động Thanh tra. Phân biệt qua filter `Inspection Type Dimension Id → Classification Code = 'KIEM_TRA'` (scheme TT_PLAN_TYPE).
-
----
-
-#### Nhóm 6 — Thống kê chung Kiểm tra (KPI cards)
-
-**1. Mockup:**
-
-```
-┌─────────────────────────┐ ┌─────────────────────────┐ ┌─────────────────────────┐
-│ TỔNG SỐ CUỘC KIỂM TRA   │ │ TỔNG SỐ ĐÃ HOÀN THÀNH   │ │ TỔNG SỐ ĐANG THỰC HIỆN  │
-│         5               │ │         2               │ │         3               │
-│ SỐ CUỘC     ▲ 10%       │ │ SỐ CUỘC     ▲ 15%       │ │ SỐ CUỘC     ▲ 5%        │
-└─────────────────────────┘ └─────────────────────────┘ └─────────────────────────┘
-```
-
-**2. Source:** `Fact Inspection Case` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_CASE_STATUS, TT_PLAN_TYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 29 | K_TT_19 | Tổng số vụ việc kiểm tra | Cuộc | Stock (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` WHERE `YEAR("Status As Of Date") ≤ selected year` AND `"Classification Dimension"."Classification Code" = 'KIEM_TRA'` (via Inspection Type Dimension Id, scheme TT_PLAN_TYPE) |
-| 30 | K_TT_19_SSCK | Tổng số vụ việc kiểm tra SSCK (%) | % | Derived | `(K_TT_19 − K_TT_19 [Year − 1]) / K_TT_19 [Year − 1] × 100%` |
-| 31 | K_TT_20 | Số vụ việc kiểm tra đã hoàn thành | Cuộc | Stock (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` WHERE `YEAR("Status As Of Date") = selected year` AND `"Classification Dimension"."Classification Code" = 'HOAN_THANH'` (via Case Status Dimension Id) AND Inspection Type = 'KIEM_TRA' |
-| 32 | K_TT_20_SSCK | Số vụ kiểm tra đã hoàn thành SSCK (%) | % | Derived | `(K_TT_20 − K_TT_20 [Year − 1]) / K_TT_20 [Year − 1] × 100%` |
-| 33 | K_TT_21 | Số vụ kiểm tra đang thực hiện | Cuộc | Stock (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` WHERE `YEAR("Received Date") ≤ selected year` AND `"Classification Dimension"."Classification Code" IN ('MOI_TIEP_NHAN', 'DANG_GIAI_QUYET')` (via Case Status Dimension Id) AND Inspection Type = 'KIEM_TRA' |
-| 34 | K_TT_21_SSCK | Số vụ thanh tra đang thực hiện SSCK (%) | % | Derived | `(K_TT_21 − K_TT_21 [Year − 1]) / K_TT_21 [Year − 1] × 100%` |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Received Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Status As Of Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Case Status Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case | 1 row = 1 hồ sơ thanh tra/kiểm tra (latest state) |
-| Calendar Date Dimension | 1 row = 1 ngày (Received Date / Status As Of Date) |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_CASE_STATUS) | 1 row = 1 trạng thái hồ sơ |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
-
----
-
-#### Nhóm 7 — Xu hướng số cuộc kiểm tra theo tháng (biểu đồ cột chồng + đường)
-
-**1. Mockup:**
-
-```
-Xu hướng số cuộc kiểm tra (theo tháng)
-32 ┤                                                       ●
-24 ┤                                    ●   ●          ●   ▓
-16 ┤                              ●     ▓   ▓   ●      ▓   ▓▓
- 8 ┤   ●   ●    ●                                          ▓▓
- 0 └──T1───T2───T3───T4───T5───T6───T7───T8───T9───T10──T11──T12
-Legend: ● SỐ LƯỢNG VỤ VIỆC KIỂM TRA   ▓ ĐANG THỰC HIỆN   █ ĐÃ HOÀN THÀNH
-```
-
-**2. Source:** `Fact Inspection Case` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_CASE_STATUS, TT_PLAN_TYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 35 | K_TT_22 | Số lượng vụ việc kiểm tra | Vụ | Flow (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` GROUP BY `MONTH("Received Date")` WHERE `YEAR("Received Date") = selected year` AND Inspection Type = 'KIEM_TRA' |
-| 36 | K_TT_23 | Số lượng vụ kiểm tra đã hoàn thành | Vụ | Flow (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` GROUP BY `MONTH("Status As Of Date")` WHERE `YEAR("Status As Of Date") = selected year` AND `"Classification Dimension"."Classification Code" = 'HOAN_THANH'` AND Inspection Type = 'KIEM_TRA' |
-| 37 | K_TT_24 | Số lượng vụ kiểm tra đang triển khai | Vụ | Flow (Base) | `COUNT "Fact Inspection Case"."Inspection Case Dimension Id"` GROUP BY `MONTH("Received Date")` WHERE `YEAR("Received Date") = selected year` AND `"Classification Dimension"."Classification Code" IN ('MOI_TIEP_NHAN', 'DANG_GIAI_QUYET')` AND Inspection Type = 'KIEM_TRA' |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Received Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Status As Of Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Case Status Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case | 1 row = 1 hồ sơ thanh tra/kiểm tra (latest state) |
-| Calendar Date Dimension | 1 row = 1 ngày (Received Date / Status As Of Date) |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_CASE_STATUS) | 1 row = 1 trạng thái hồ sơ |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
-
----
-
-#### Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi (biểu đồ tròn)
-
-**1. Mockup:**
-
-```mermaid
-pie showData
-    title Cơ cấu kiểm tra theo loại hành vi
-    "CBTT" : 20
-    "CTCK" : 18
-    "Thao túng nội gián" : 15
-    "Vi phạm hoạt động chào bán" : 17
-    "Vi phạm hoạt động của công ty QLQ" : 16
-    "Vi phạm đăng ký CTĐC" : 14
-```
-
-**2. Source:** `Fact Inspection Case Violation` → `Calendar Date Dimension`, `Inspection Case Dimension`, `Classification Dimension` (scheme: TT_VIOLATION_TYPE, TT_PLAN_TYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 38 | K_TT_25 | Số lượng vi phạm hành vi CBTT | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Classification Dimension"."Classification Code" = '<code CBTT>'` AND Inspection Type = 'KIEM_TRA' |
-| 39 | K_TT_25_RATIO | Tỷ lệ % vi phạm hành vi CBTT | % | Derived | `K_TT_25 / TOTAL × 100%` |
-| 40 | K_TT_26 | Số lượng vi phạm hành vi CTCK | Lượt | Flow (Base) | `COUNT ... Classification Code = '<code CTCK>' AND Inspection Type = 'KIEM_TRA'` |
-| 41 | K_TT_26_RATIO | Tỷ lệ % vi phạm hành vi CTCK | % | Derived | `K_TT_26 / TOTAL × 100%` |
-| 42 | K_TT_27 | Số lượng vi phạm hành vi Thao túng nội gián | Lượt | Flow (Base) | `COUNT ... Classification Code = '<code Thao túng nội gián>' AND Inspection Type = 'KIEM_TRA'` |
-| 43 | K_TT_27_RATIO | Tỷ lệ % vi phạm hành vi Thao túng nội gián | % | Derived | `K_TT_27 / TOTAL × 100%` |
-| 44 | K_TT_28 | Số lượng vi phạm hành vi Vi phạm hoạt động chào bán | Lượt | Flow (Base) | `COUNT ... Classification Code = '<code Vi phạm hoạt động chào bán>' AND Inspection Type = 'KIEM_TRA'` |
-| 45 | K_TT_28_RATIO | Tỷ lệ % vi phạm hành vi Vi phạm hoạt động chào bán | % | Derived | `K_TT_28 / TOTAL × 100%` |
-| 46 | K_TT_29 | Số lượng vi phạm hành vi Vi phạm hoạt động của công ty QLQ | Lượt | Flow (Base) | `COUNT ... Classification Code = '<code Vi phạm hoạt động của công ty QLQ>' AND Inspection Type = 'KIEM_TRA'` |
-| 47 | K_TT_29_RATIO | Tỷ lệ % vi phạm hành vi Vi phạm hoạt động của công ty QLQ | % | Derived | `K_TT_29 / TOTAL × 100%` |
-| 48 | K_TT_30 | Số lượng vi phạm hành vi Vi phạm đăng ký CTĐC | Lượt | Flow (Base) | `COUNT ... Classification Code = '<code Vi phạm đăng ký CTĐC>' AND Inspection Type = 'KIEM_TRA'` |
-| 49 | K_TT_30_RATIO | Tỷ lệ % vi phạm hành vi Vi phạm đăng ký CTĐC | % | Derived | `K_TT_30 / TOTAL × 100%` |
-
-**Ghi chú công thức derived:** `TOTAL = K_TT_25 + K_TT_26 + K_TT_27 + K_TT_28 + K_TT_29 + K_TT_30` (sum 6 loại hành vi Dashboard Kiểm tra).
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Violation : "Conclusion Issue Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case_Violation : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Violation Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Penalty Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Inspection Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case Violation | 1 row = 1 kết luận × 1 hành vi × 1 hình thức phạt (event) |
-| Calendar Date Dimension | 1 row = 1 ngày ra kết luận |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_VIOLATION_TYPE) | 1 row = 1 hành vi vi phạm |
-| Classification Dimension (TT_PENALTY_TYPE) | 1 row = 1 hình thức phạt |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
-
----
-
-#### Nhóm 9 — Cơ cấu kiểm tra theo đối tượng (biểu đồ tròn)
-
-**1. Mockup:**
-
-```mermaid
-pie showData
-    title Cơ cấu kiểm tra theo đối tượng
-    "CTCK" : 28
-    "CTĐC" : 22
-    "CTQLQ, Ngân hàng lưu ký" : 20
-    "Tổ chức PHTP" : 20
-    "CTKT" : 10
-```
-
-**2. Source:** `Fact Inspection Case Violation` → `Calendar Date Dimension`, `Inspection Subject Dimension`, `Classification Dimension` (scheme: TT_SUBJECT_SOURCE_TYPE, TT_OTHER_PARTY_SUBTYPE, TT_PLAN_TYPE)
-
-**3. Bảng KPI:**
-
-Dashboard Kiểm tra ghép "CTQLQ" và "Ngân hàng lưu ký" thành 1 legend. KPI dùng OR condition trên 2 tầng phân loại.
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 60 | K_TT_36 | Số lượng vi phạm đối tượng CTCK | Lượt | Flow (Base) | `COUNT "Fact Inspection Case Violation"."Inspection Case Conclusion Number"` WHERE `YEAR("Conclusion Issue Date") = selected year` AND `"Inspection Subject Dimension"."Subject Source Type Code" = 'CTCK'` AND Inspection Type = 'KIEM_TRA' |
-| 61 | K_TT_36_RATIO | Tỷ lệ % vi phạm đối tượng CTCK | % | Derived | `K_TT_36 / (K_TT_36 + K_TT_37 + K_TT_38 + K_TT_39 + K_TT_40) × 100%` |
-| 62 | K_TT_37 | Số lượng vi phạm đối tượng CTQLQ, Ngân hàng lưu ký | Lượt | Flow (Base) | `COUNT ... WHERE (Subject Source Type Code = 'CTQLQ') OR (Subject Source Type Code = 'DOI_TUONG_KHAC' AND Other Party Subtype Code = 'NHLK')` AND Inspection Type = 'KIEM_TRA' |
-| 63 | K_TT_37_RATIO | Tỷ lệ % vi phạm đối tượng CTQLQ, Ngân hàng lưu ký | % | Derived | `K_TT_37 / (K_TT_36 + K_TT_37 + K_TT_38 + K_TT_39 + K_TT_40) × 100%` |
-| 64 | K_TT_38 | Số lượng vi phạm đối tượng CTĐC | Lượt | Flow (Base) | `COUNT ... Subject Source Type Code = 'CTDC' AND Inspection Type = 'KIEM_TRA'` |
-| 65 | K_TT_38_RATIO | Tỷ lệ % vi phạm đối tượng CTĐC | % | Derived | `K_TT_38 / (K_TT_36 + K_TT_37 + K_TT_38 + K_TT_39 + K_TT_40) × 100%` |
-| 66 | K_TT_39 | Số lượng vi phạm đối tượng CTKT | Lượt | Flow (Base) | `COUNT ... Subject Source Type Code = 'DOI_TUONG_KHAC' AND Other Party Subtype Code = 'CTKT' AND Inspection Type = 'KIEM_TRA'` |
-| 67 | K_TT_39_RATIO | Tỷ lệ % vi phạm đối tượng CTKT | % | Derived | `K_TT_39 / (K_TT_36 + K_TT_37 + K_TT_38 + K_TT_39 + K_TT_40) × 100%` |
-| 68 | K_TT_40 | Số lượng vi phạm đối tượng Tổ chức PHTP | Lượt | Flow (Base) | `COUNT ... Subject Source Type Code = 'DOI_TUONG_KHAC' AND Other Party Subtype Code = 'TO_CHUC_PHTP' AND Inspection Type = 'KIEM_TRA'` |
-| 69 | K_TT_40_RATIO | Tỷ lệ % vi phạm đối tượng Tổ chức PHTP | % | Derived | `K_TT_40 / (K_TT_36 + K_TT_37 + K_TT_38 + K_TT_39 + K_TT_40) × 100%` |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Violation : "Conclusion Issue Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case_Violation : "Inspection Case Dimension Id"
-    Inspection_Subject_Dimension ||--o{ Fact_Inspection_Case_Violation : "Inspection Subject Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case_Violation : "Inspection Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case Violation | 1 row = 1 kết luận × 1 hành vi × 1 hình thức phạt (event) |
-| Calendar Date Dimension | 1 row = 1 ngày ra kết luận |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Inspection Subject Dimension | 1 row = 1 đối tượng thanh tra/kiểm tra (polymorphic, SCD2, 2 attribute phân loại 2 tầng) |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
-
----
-
-#### Nhóm 10 — Danh sách vụ việc kiểm tra
-
-**1. Mockup:**
-
-| Mã vụ việc | Đối tượng | Phân loại đối tượng | Loại hình | Trạng thái |
-|---|---|---|---|---|
-| EXM-2024-001 | Công ty Chứng khoán VPS | CTCK | ĐỊNH KỲ | ĐÃ KẾT LUẬN |
-| EXM-2024-002 | Công ty CP Đầu tư ABC | CTĐC | ĐỘT XUẤT | ĐANG THỰC HIỆN |
-| EXM-2024-003 | Nguyễn Văn A | CÁ NHÂN | ĐỊNH KỲ | TẠI THỰC ĐỊA |
-| EXM-2024-004 | Quỹ Đầu tư XYZ | CTQLQ | ĐỊNH KỲ | ĐANG THỰC HIỆN |
-| EXM-2024-005 | Công ty Chứng khoán SSI | CTCK | ĐỘT XUẤT | ĐÃ KẾT LUẬN |
-
-**2. Source:** `Fact Inspection Case` → `Inspection Case Dimension`, `Inspection Subject Dimension`, `Classification Dimension` (scheme: TT_INSPECTION_SCHEDULE_TYPE, TT_CASE_STATUS, TT_PLAN_TYPE, TT_SUBJECT_SOURCE_TYPE, TT_OTHER_PARTY_SUBTYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 70 | K_TT_41 | Mã vụ việc | Text | Stock | `"Inspection Case Dimension"."Case Number"` WHERE Inspection Type = 'KIEM_TRA' |
-| 71 | K_TT_42 | Đối tượng | Text | Stock | `"Inspection Subject Dimension"."Subject Name"` |
-| 72 | K_TT_43 | Phân loại đối tượng | Text | Stock | Display logic giống K_TT_16 Nhóm 5: 2 tầng Source Type + Other Party Subtype |
-| 73 | K_TT_44 | Loại hình (Định kỳ / Đột xuất) | Text | Stock | `"Classification Dimension"."Classification Name"` (via Inspection Schedule Type Dimension Id) |
-| 74 | K_TT_45 | Trạng thái | Text | Stock | `"Classification Dimension"."Classification Name"` (via Case Status Dimension Id) |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Received Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case : "Status As Of Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Case : "Inspection Case Dimension Id"
-    Inspection_Subject_Dimension ||--o{ Fact_Inspection_Case : "Inspection Subject Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Schedule Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Case Status Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Case : "Inspection Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Case | 1 row = 1 hồ sơ thanh tra/kiểm tra (latest state) |
-| Calendar Date Dimension | 1 row = 1 ngày (Received Date / Status As Of Date) |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Inspection Subject Dimension | 1 row = 1 đối tượng thanh tra/kiểm tra (polymorphic, SCD2, 2 attribute phân loại 2 tầng) |
-| Classification Dimension (TT_INSPECTION_SCHEDULE_TYPE) | 1 row = 1 loại lịch (ĐỊNH KỲ/ĐỘT XUẤT) |
-| Classification Dimension (TT_CASE_STATUS) | 1 row = 1 trạng thái hồ sơ |
-| Classification Dimension (TT_PLAN_TYPE) | 1 row = 1 loại hình |
-
----
-
-### Dashboard Hoạt động Xử phạt — Dashboard tổng quan
-
-**Slicer:**
-- Năm (mặc định: năm hiện tại, screenshot hiển thị NĂM 2024)
-
-**Lưu ý phạm vi:** Dashboard này sử dụng fact mới `Fact Inspection Penalty Decision` (grain 1 row = 1 kết luận xử phạt) cho Nhóm 11, 12, 15 + reuse `Fact Inspection Case Violation` cho Nhóm 13, 14. Theo quy ước TT_O17 đã chốt: 1 kết luận xử phạt = 1 hành vi vi phạm (Silver lưu đơn trị Violation Type Code per Conclusion).
-
----
-
-#### Nhóm 11 — Thống kê chung Xử phạt (KPI cards)
-
-**1. Mockup:**
-
-```
-┌─────────────────────────────────────────┐ ┌─────────────────────────────────────────┐
-│ TỔNG SỐ QUYẾT ĐỊNH XỬ PHẠT             │ │ TỔNG TIỀN XỬ PHẠT                      │
-│             5                          │ │        1075 tỷ VNĐ                     │
-│ SỐ QUYẾT ĐỊNH              ▲ 12%       │ │ SỐ TIỀN                    ▲ 18%       │
-└─────────────────────────────────────────┘ └─────────────────────────────────────────┘
-```
-
-**2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Inspection Case Dimension`
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 75 | K_TT_46 | Tổng số quyết định xử phạt | Quyết định | Flow (Base) | `COUNT "Fact Inspection Penalty Decision"."Inspection Case Conclusion Number"` WHERE `YEAR("Signing Date") = selected year` |
-| 76 | K_TT_46_SSCK | Tổng số quyết định xử phạt SSCK (%) | % | Derived | `(K_TT_46 − K_TT_46 [Year − 1]) / K_TT_46 [Year − 1] × 100%` |
-| 77 | K_TT_47 | Tổng tiền xử phạt | Tỷ VNĐ | Flow (Base) | `SUM "Fact Inspection Penalty Decision"."Penalty Amount"` WHERE `YEAR("Signing Date") = selected year` / 1_000_000_000 (display in tỷ VNĐ, Silver lưu đơn vị VNĐ) |
-| 78 | K_TT_47_SSCK | Tổng tiền xử phạt SSCK (%) | % | Derived | `(K_TT_47 − K_TT_47 [Year − 1]) / K_TT_47 [Year − 1] × 100%` |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Signing Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Case Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Penalty Decision | 1 row = 1 kết luận xử phạt (event). Quy ước: 1 kết luận = 1 hành vi vi phạm (TT_O17 closed). |
-| Calendar Date Dimension | 1 row = 1 ngày ký kết luận xử phạt |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-
----
-
-#### Nhóm 12 — Thống kê xử phạt theo tháng (biểu đồ kết hợp cột + đường)
-
-**1. Mockup:**
-
-```
-Thống kê xử phạt vi phạm (Số QĐ & Số tiền)
-40 ┤                                              █     ● 12,000
-30 ┤                                         ●  ██──●
-20 ┤                              █  ●                      9,000
-   │                    ●   █  ██    ██
-10 ┤  ●  █    ●              ██                             3,000
- 0 └──T1───T2───T3───T4───T5───T6───T7───T8───T9───T10──T11──T12 0
-Legend: █ SỐ QĐXP (trục trái — cột xanh)   ● TIỀN PHẠT TỶ VNĐ (trục phải — đường cam)
-```
-
-**2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Inspection Case Dimension`
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 79 | K_TT_48 | Số lượng QĐXP | Quyết định | Flow (Base) | `COUNT "Fact Inspection Penalty Decision"."Inspection Case Conclusion Number"` GROUP BY `MONTH("Signing Date")` WHERE `YEAR("Signing Date") = selected year` |
-| 80 | K_TT_49 | Tiền phạt (tỷ đồng) | Tỷ VNĐ | Flow (Base) | `SUM "Fact Inspection Penalty Decision"."Penalty Amount" / 1_000_000_000` GROUP BY `MONTH("Signing Date")` WHERE `YEAR("Signing Date") = selected year` |
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Signing Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Case Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Penalty Decision | 1 row = 1 kết luận xử phạt (event) |
-| Calendar Date Dimension | 1 row = 1 ngày ký kết luận xử phạt |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-
----
-
-#### Nhóm 13 — Cơ cấu xử phạt theo loại hành vi (biểu đồ tròn)
-
-**1. Mockup:**
-
-```mermaid
-pie showData
-    title Cơ cấu xử phạt theo loại hành vi
-    "CBTT" : 22
-    "CTCK" : 18
-    "Thao túng nội gián" : 16
-    "Vi phạm hoạt động chào bán" : 15
-    "Vi phạm hoạt động của công ty QLQ" : 15
-    "Vi phạm đăng ký CTĐC" : 14
-```
-
-Theo screenshot — 6 loại (tương tự Nhóm 8).
-
-**2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Inspection Case Dimension`, `Classification Dimension` (scheme: TT_VIOLATION_TYPE, TT_PENALTY_TYPE)
-
-**Lưu ý:** Theo TT_O17 closed, mỗi kết luận xử phạt mang đúng 1 Violation Type Code. Do đó grain fact `Fact Inspection Penalty Decision` đã đủ để đếm "số kết luận xử phạt theo từng loại hành vi" mà không cần filter thêm điều kiện `Penalty Type IS NOT NULL` (vì mọi row trong fact này đã là QĐXP).
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 81 | K_TT_50 | Số lượng xử phạt hành vi CBTT | Quyết định | Flow (Base) | `COUNT "Fact Inspection Penalty Decision"."Inspection Case Conclusion Number"` WHERE `YEAR("Signing Date") = selected year` AND `"Classification Dimension"."Classification Code" = '<code CBTT>'` (via Violation Type Dimension Id, scheme TT_VIOLATION_TYPE) |
-| 82 | K_TT_50_RATIO | Tỷ lệ % xử phạt hành vi CBTT | % | Derived | `K_TT_50 / TOTAL × 100%` |
-| 83 | K_TT_51 | Số lượng xử phạt hành vi CTCK | Quyết định | Flow (Base) | `COUNT ... Classification Code = '<code CTCK>'` |
-| 84 | K_TT_51_RATIO | Tỷ lệ % xử phạt hành vi CTCK | % | Derived | `K_TT_51 / TOTAL × 100%` |
-| 85 | K_TT_52 | Số lượng xử phạt hành vi Thao túng nội gián | Quyết định | Flow (Base) | `COUNT ... Classification Code = '<code Thao túng nội gián>'` |
-| 86 | K_TT_52_RATIO | Tỷ lệ % xử phạt hành vi Thao túng nội gián | % | Derived | `K_TT_52 / TOTAL × 100%` |
-| 87 | K_TT_53 | Số lượng xử phạt hành vi Vi phạm hoạt động chào bán | Quyết định | Flow (Base) | `COUNT ... Classification Code = '<code Vi phạm hoạt động chào bán>'` |
-| 88 | K_TT_53_RATIO | Tỷ lệ % xử phạt hành vi Vi phạm hoạt động chào bán | % | Derived | `K_TT_53 / TOTAL × 100%` |
-| 89 | K_TT_54 | Số lượng xử phạt hành vi Vi phạm hoạt động của công ty QLQ | Quyết định | Flow (Base) | `COUNT ... Classification Code = '<code Vi phạm hoạt động của công ty QLQ>'` |
-| 90 | K_TT_54_RATIO | Tỷ lệ % xử phạt hành vi Vi phạm hoạt động của công ty QLQ | % | Derived | `K_TT_54 / TOTAL × 100%` |
-| 91 | K_TT_55 | Số lượng xử phạt hành vi Vi phạm đăng ký CTĐC | Quyết định | Flow (Base) | `COUNT ... Classification Code = '<code Vi phạm đăng ký CTĐC>'` |
-| 92 | K_TT_55_RATIO | Tỷ lệ % xử phạt hành vi Vi phạm đăng ký CTĐC | % | Derived | `K_TT_55 / TOTAL × 100%` |
-
-**Ghi chú công thức derived:** `TOTAL = K_TT_50 + K_TT_51 + K_TT_52 + K_TT_53 + K_TT_54 + K_TT_55`.
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Signing Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Penalty_Decision : "Violation Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Penalty_Decision : "Penalty Type Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Penalty Decision | 1 row = 1 kết luận xử phạt (event). 1 kết luận = 1 hành vi vi phạm. |
-| Calendar Date Dimension | 1 row = 1 ngày ký kết luận xử phạt |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_VIOLATION_TYPE) | 1 row = 1 hành vi vi phạm |
-| Classification Dimension (TT_PENALTY_TYPE) | 1 row = 1 hình thức phạt |
-
----
-
-#### Nhóm 14 — Cơ cấu xử phạt theo đối tượng (biểu đồ tròn)
-
-**1. Mockup:**
-
-```mermaid
-pie showData
-    title Cơ cấu xử phạt theo đối tượng
-    "CTKT" : 22
-    "Cá nhân" : 28
-    "Giao dịch nhà đầu tư" : 25
-    "Tổ chức khác" : 25
-```
-
-Theo BA — 4 loại, đều là subtype trong Subject Source Type = DOI_TUONG_KHAC.
-
-**2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Inspection Case Dimension`, `Inspection Subject Dimension`, `Classification Dimension` (scheme: TT_SUBJECT_SOURCE_TYPE, TT_OTHER_PARTY_SUBTYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 93 | K_TT_56 | Số lượng xử phạt đối tượng Tổ chức khác | Quyết định | Flow (Base) | `COUNT "Fact Inspection Penalty Decision"."Inspection Case Conclusion Number"` WHERE `YEAR("Signing Date") = selected year` AND `"Inspection Subject Dimension"."Subject Source Type Code" = 'DOI_TUONG_KHAC'` AND `"Inspection Subject Dimension"."Other Party Subtype Code" = 'TO_CHUC_KHAC'` |
-| 94 | K_TT_56_RATIO | Tỷ lệ % xử phạt đối tượng Tổ chức khác | % | Derived | `K_TT_56 / (K_TT_56 + K_TT_57 + K_TT_58 + K_TT_59) × 100%` |
-| 95 | K_TT_57 | Số lượng xử phạt đối tượng CTKT | Quyết định | Flow (Base) | `COUNT ... Subject Source Type Code = 'DOI_TUONG_KHAC' AND Other Party Subtype Code = 'CTKT'` |
-| 96 | K_TT_57_RATIO | Tỷ lệ % xử phạt đối tượng CTKT | % | Derived | `K_TT_57 / (K_TT_56 + K_TT_57 + K_TT_58 + K_TT_59) × 100%` |
-| 97 | K_TT_58 | Số lượng xử phạt đối tượng Giao dịch nhà đầu tư | Quyết định | Flow (Base) | `COUNT ... Subject Source Type Code = 'DOI_TUONG_KHAC' AND Other Party Subtype Code = 'NHA_DAU_TU'` |
-| 98 | K_TT_58_RATIO | Tỷ lệ % xử phạt đối tượng Giao dịch nhà đầu tư | % | Derived | `K_TT_58 / (K_TT_56 + K_TT_57 + K_TT_58 + K_TT_59) × 100%` |
-| 99 | K_TT_59 | Số lượng xử phạt đối tượng Cá nhân | Quyết định | Flow (Base) | `COUNT ... Subject Source Type Code = 'DOI_TUONG_KHAC' AND Other Party Subtype Code = 'CA_NHAN'` |
-| 100 | K_TT_59_RATIO | Tỷ lệ % xử phạt đối tượng Cá nhân | % | Derived | `K_TT_59 / (K_TT_56 + K_TT_57 + K_TT_58 + K_TT_59) × 100%` |
-
-**Ghi chú:** Đổi từ reuse `Fact Inspection Case Violation` (v1.5) → `Fact Inspection Penalty Decision` (v1.6) do TT_O17 closed đảm bảo 1 kết luận = 1 hành vi, đếm theo grain fact Penalty Decision đúng = "số QĐXP" per đối tượng, không còn cần filter `Penalty Type IS NOT NULL`.
-
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Signing Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Case Dimension Id"
-    Inspection_Subject_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Subject Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Penalty Decision | 1 row = 1 kết luận xử phạt (event). 1 kết luận = 1 hành vi vi phạm. |
-| Calendar Date Dimension | 1 row = 1 ngày ký kết luận xử phạt |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Inspection Subject Dimension | 1 row = 1 đối tượng thanh tra/kiểm tra (polymorphic, SCD2, 2 attribute phân loại 2 tầng) |
-
----
-
-#### Nhóm 15 — Danh sách quyết định xử phạt
-
-**1. Mockup:**
+#### Nhóm 15 — Danh sách quyết định xử phạt (STT 15)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Ghi chú:
+> - Cột **"Mã vụ việc"** ← `GS_VAN_BAN_XU_LY.SO_QD_XU_PHAT` (`Penalty_Decision_Number`)
+> - Cột **"Phân loại đối tượng"** ← ETL-derived `Penalty_Subject_Category_Code` (xem O_TT_9)
+> - Cột **"Đối tượng"** ← `GS_HO_SO.TEN_DOI_TUONG` (`Subject_Name` — denormalized)
+> - Cột **"Loại hình"** ← `Violation_Type_Code` (lookup từ `Violation_Type_Dimension_Id` → `Classification Dimension`, scheme `TT_VIOLATION_TYPE`, xem O_TT_8) — **không phải** Định kỳ/Đột xuất
+> - Cột **"Trạng thái"** ← `GS_VAN_BAN_XU_LY.TRANG_THAI` (`Decision_Status_Code`, scheme `TT_CASE_STATUS`)
+
+**Mockup:**
 
 | Mã vụ việc | Phân loại đối tượng | Đối tượng | Loại hình | Trạng thái |
 |---|---|---|---|---|
-| QD-2024-001 | CÁ NHÂN | Nguyễn Văn A | THAO TÚNG NỘI GIÁN | ĐÃ HOÀN THÀNH |
-| QD-2024-002 | CTCK | Công ty Chứng khoán X | CBTT | ĐÃ HOÀN THÀNH |
-| QD-2024-003 | CTĐC | Tập đoàn Bất động sản Y | VI PHẠM HOẠT ĐỘNG CHÀO BÁN | ĐÃ HOÀN THÀNH |
-| QD-2024-004 | CTQLQ | Công ty Quản lý Quỹ Z | VI PHẠM HOẠT ĐỘNG CỦA CÔNG TY QLQ | ĐÃ HOÀN THÀNH |
-| QD-2024-005 | TỔ CHỨC KHÁC | CTCP Thương mại M | VI PHẠM ĐĂNG KÝ CTĐC | ĐÃ HOÀN THÀNH |
+| QD-2024-001 | Cá nhân | Nguyễn Văn A | Thao túng nội gián | Đã hoàn thành |
+| QD-2024-002 | CTCK | Công ty Chứng khoán X | CBTT | Đã hoàn thành |
+| QD-2024-003 | CTĐC | Tập đoàn Bất động sản Y | Vi phạm hoạt động chào bán | Đã hoàn thành |
+| QD-2024-004 | CTQLQ | Công ty Quản lý Quỹ Z | Vi phạm hoạt động của công ty QLQ | Đã hoàn thành |
+| QD-2024-005 | Tổ chức khác | CTCP Thương mại M | Vi phạm đăng ký CTĐC | Đã hoàn thành |
 
-**Ghi chú:** Cột "Loại hình" Nhóm 15 là **hành vi vi phạm** (reuse TT_VIOLATION_TYPE), KHÁC với cột "Loại hình" Nhóm 5/10 (Định kỳ/Đột xuất, scheme TT_INSPECTION_SCHEDULE_TYPE).
-
-**2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Inspection Case Dimension`, `Inspection Subject Dimension`, `Classification Dimension` (scheme: TT_VIOLATION_TYPE, TT_CASE_STATUS, TT_SUBJECT_SOURCE_TYPE, TT_OTHER_PARTY_SUBTYPE)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 101 | K_TT_60 | Mã vụ việc | Text | Stock | `"Inspection Case Dimension"."Case Number"` |
-| 102 | K_TT_61 | Phân loại đối tượng | Text | Stock | Display logic 2 tầng: nếu `Subject Source Type Code IN ('CTDC','CTCK','CTQLQ')` → hiển thị scheme TT_SUBJECT_SOURCE_TYPE. Nếu `= 'DOI_TUONG_KHAC'` → hiển thị scheme TT_OTHER_PARTY_SUBTYPE (CA_NHAN/NHLK/CTKT/TO_CHUC_PHTP/NHA_DAU_TU/TO_CHUC_KHAC). |
-| 103 | K_TT_62 | Đối tượng | Text | Stock | `"Inspection Subject Dimension"."Subject Name"` |
-| 104 | K_TT_63 | Loại hình (hành vi vi phạm) | Text | Stock | `"Classification Dimension"."Classification Name"` (via Violation Type Dimension Id trên Fact Inspection Penalty Decision, scheme TT_VIOLATION_TYPE) |
-| 105 | K_TT_64 | Trạng thái | Text | Stock | `"Classification Dimension"."Classification Name"` (via Case Status Dimension Id, scheme TT_CASE_STATUS) |
-
-**4. Star schema:**
+**Schema bảng tác nghiệp:**
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Signing Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Case Dimension Id"
-    Inspection_Subject_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Subject Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Penalty_Decision : "Violation Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Penalty_Decision : "Penalty Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Penalty_Decision : "Case Status Dimension Id"
+    Penalty_Decision_List {
+        varchar Penalty_Decision_Code PK
+        varchar Penalty_Decision_Number
+        varchar Surveillance_Case_Code
+        varchar Subject_Name
+        varchar Penalty_Subject_Category_Code
+        varchar Violation_Type_Code
+        varchar Decision_Status_Code
+        date Violation_Report_Date
+        int Violation_Report_Year
+        float Total_Penalty_Amount
+        datetime Population_Date
+    }
 ```
 
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Penalty Decision | 1 row = 1 kết luận xử phạt (event). 1 kết luận = 1 hành vi vi phạm. |
-| Calendar Date Dimension | 1 row = 1 ngày ký kết luận xử phạt |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Inspection Subject Dimension | 1 row = 1 đối tượng thanh tra/kiểm tra (polymorphic, SCD2, 2 attribute phân loại 2 tầng) |
-| Classification Dimension (TT_VIOLATION_TYPE) | 1 row = 1 hành vi vi phạm |
-| Classification Dimension (TT_PENALTY_TYPE) | 1 row = 1 hình thức phạt |
-| Classification Dimension (TT_CASE_STATUS) | 1 row = 1 trạng thái hồ sơ |
-
----
-
-### Dashboard Tình hình Đơn thư — Dashboard tổng quan
-
-**Slicer:**
-- Năm (mặc định: năm hiện tại, screenshot hiển thị NĂM 2024)
-
-**Lưu ý phạm vi:** Dashboard này sử dụng fact mới `Fact Complaint Petition` (grain 1 row = 1 đơn thư) và dim mới `Complaint Petition Dimension`. Silver source độc lập với 3 dashboard trước (luồng DT_* khác luồng TT_* và GS_*).
-
----
-
-#### Nhóm 16 — Thống kê chung Đơn thư (KPI card)
-
-**1. Mockup:**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                              TỔNG SỐ ĐƠN ĐÃ XỬ LÝ           │
-│                                      286                    │
-│ ĐƠN THƯ                                       ▲ 12%         │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**2. Source:** `Fact Complaint Petition` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_PETITION_STATUS)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 106 | K_TT_65 | Tổng số đơn đã xử lý | Đơn thư | Flow (Base) | `COUNT "Fact Complaint Petition"."Complaint Petition Dimension Id"` WHERE `YEAR("Submission Date") = selected year` AND `"Classification Dimension"."Classification Code" = 'HOAN_THANH'` (via Petition Status Dimension Id, scheme TT_PETITION_STATUS) |
-| 107 | K_TT_65_SSCK | Tổng số đơn đã xử lý SSCK (%) | % | Derived | `(K_TT_65 − K_TT_65 [Year − 1]) / K_TT_65 [Year − 1] × 100%` |
-
-**4. Star schema:**
+**Lineage Mart → Báo cáo:**
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Complaint_Petition : "Submission Date Dimension Id"
-    Complaint_Petition_Dimension ||--o{ Fact_Complaint_Petition : "Complaint Petition Dimension Id"
-    Classification_Dim ||--o{ Fact_Complaint_Petition : "Petition Status Dimension Id"
+flowchart LR
+    subgraph SIL["Silver"]
+        SV1["Surveillance Enforcement Decision"]
+        SV2["Surveillance Enforcement Case"]
+    end
+    subgraph GOLD["Gold Mart"]
+        G1["Penalty Decision List"]
+    end
+    subgraph RPT["Tab XỬ PHẠT"]
+        R1["Danh sách quyết định xử phạt"]
+    end
+    SV1 --> G1
+    SV2 --> G1
+    G1 --> R1
 ```
 
-**5. Bảng tham gia:**
+**Bảng grain:**
 
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Complaint Petition | 1 row = 1 đơn thư (event tiếp nhận) |
-| Calendar Date Dimension | 1 row = 1 ngày tiếp nhận đơn |
-| Complaint Petition Dimension | 1 row = 1 đơn thư (SCD2) |
-| Classification Dimension (TT_PETITION_STATUS) | 1 row = 1 trạng thái đơn thư |
+| Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
+|---|---|---|---|---|
+| Penalty Decision List | 1 quyết định xử phạt — mỗi row = 1 `GS_VAN_BAN_XU_LY` (latest state) | `Surveillance Enforcement Decision` + `Surveillance Enforcement Case` | Year=selected_year | Phân trang ở presentation layer |
 
 ---
 
-#### Nhóm 17 — Thống kê tình hình xử lý đơn thư theo tháng (biểu đồ cột)
+### Tab: ĐƠN THƯ
 
-**1. Mockup:**
+**Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
 
-```
-Thống kê tình hình xử lý đơn thư (theo tháng)
-36 ┤                                                         █
-27 ┤                      █                          █  █    █
-18 ┤         █        █   █    █   █                 █
- 9 ┤   █   █          █                █
- 0 └──T1──T2──T3──T4──T5──T6──T7──T8──T9──T10──T11──T12
-Legend: █ Số lượng đơn thư đã xử lý
-```
+> Ghi chú chung Tab ĐƠN THƯ: Nguồn Silver `Complaint Petition` (`DT_DON_THU`). Toàn bộ KPI aggregate (tổng/tháng/loại) và danh sách đều serve từ `Complaint Petition List` — không tạo Fact riêng vì grain giống hệt, volume nhỏ, không fanout.
 
-**2. Source:** `Fact Complaint Petition` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_PETITION_STATUS)
+---
 
-**3. Bảng KPI:**
+#### Nhóm 16 — KPI card Tổng số đơn đã xử lý (STT 16)
 
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 108 | K_TT_66 | Số lượng đơn thư đã xử lý | Đơn thư | Flow (Base) | `COUNT "Fact Complaint Petition"."Complaint Petition Dimension Id"` GROUP BY `MONTH("Submission Date")` WHERE `YEAR("Submission Date") = selected year` AND `"Classification Dimension"."Classification Code" = 'HOAN_THANH'` |
+> Phân loại: **Tác nghiệp** (bảng tác nghiệp phục vụ cả KPI aggregate và danh sách)
+> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Ghi chú:
+> - `Petition_Status_Code` ← `DT_DON_THU.TRANG_THAI`, scheme `TT_PETITION_STATUS` (MOI / DANG_XU_LY / HOAN_THANH / DONG)
+> - `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE` — 3 giá trị Gold: KHIEU_NAI / TO_CAO / PHAN_ANH_KIEN_NGHI
+> - `Submission_Date` ← `DT_DON_THU.NGAY_TIEP_NHAN` — dùng `YEAR()` / `MONTH()` ở query time
 
-**4. Star schema:**
+**Mockup:**
+
+| TỔNG SỐ ĐƠN ĐÃ XỬ LÝ ▲ 12% |
+|---|
+| 286 Đơn thư |
+
+**Source:** `Complaint Petition List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_81 | Tổng số đơn đã xử lý | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year |
+| K_TT_82 | Tổng đơn đã xử lý SSCK (%) | % | Derived | (K_TT_81[Y] − K_TT_81[Y−1]) / K_TT_81[Y−1] × 100% |
+
+**Lineage Mart → Báo cáo:**
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Complaint_Petition : "Submission Date Dimension Id"
-    Complaint_Petition_Dimension ||--o{ Fact_Complaint_Petition : "Complaint Petition Dimension Id"
-    Classification_Dim ||--o{ Fact_Complaint_Petition : "Petition Status Dimension Id"
+flowchart LR
+    subgraph SIL["Silver"]
+        SV1["Complaint Petition"]
+    end
+    subgraph GOLD["Gold Mart"]
+        G1["Complaint Petition List"]
+    end
+    subgraph RPT["Tab ĐƠN THƯ"]
+        R1["KPI card Tổng đơn đã xử lý"]
+        R2["Biểu đồ tình hình xử lý"]
+        R3["Biểu đồ cơ cấu theo loại đơn"]
+    end
+    SV1 --> G1
+    G1 --> R1
+    G1 --> R2
+    G1 --> R3
 ```
 
-**5. Bảng tham gia:**
+**Bảng grain:**
 
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Complaint Petition | 1 row = 1 đơn thư (event tiếp nhận) |
-| Calendar Date Dimension | 1 row = 1 ngày tiếp nhận đơn |
-| Complaint Petition Dimension | 1 row = 1 đơn thư (SCD2) |
-| Classification Dimension (TT_PETITION_STATUS) | 1 row = 1 trạng thái đơn thư |
+| Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
+|---|---|---|---|---|
+| Complaint Petition List | 1 đơn thư — mỗi row = 1 `DT_DON_THU` (latest state) | `Complaint Petition` | YEAR(Submission_Date)=selected_year | Serve cả KPI aggregate lẫn danh sách chi tiết |
+---
+
+#### Nhóm 17 — Biểu đồ Thống kê tình hình xử lý đơn thư (STT 17)
+
+> Phân loại: **Phân tích**
+> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Ghi chú: Biểu đồ bar 1 series — số đơn đã xử lý theo tháng. Reuse `Complaint Petition List` — GROUP BY MONTH(Submission_Date) ở query time. BA STT 17 chỉ định nghĩa 1 KPI: "Số lượng đơn thư đã xử lý".
+
+**Mockup:**
+
+| Tháng | T1 | T2 | ... | T12 |
+|---|---|---|---|---|
+| Số đơn đã xử lý (bar) | 9 | 11 | ... | 35 |
+
+**Source:** `Complaint Petition List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_83 | Số đơn đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) |
+
+**Bảng grain:** reuse `Complaint Petition List` — GROUP BY MONTH(Submission_Date) ở query time.
 
 ---
 
-#### Nhóm 18 — Biểu đồ cơ cấu theo loại đơn thư (biểu đồ cột ghép)
+#### Nhóm 18 — Biểu đồ Cơ cấu theo loại đơn thư (STT 18)
 
-**1. Mockup:**
+> Phân loại: **Phân tích**
+> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Ghi chú: Biểu đồ bar grouped — 3 series theo tháng: Khiếu nại / Tố cáo / Phản ánh kiến nghị. `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE`. *Lưu ý: BA STT 18 đặt tên block là "Biểu đồ cơ cấu theo đối tượng" nhưng KPI thực tế (Rows 132–137) là phân loại theo loại đơn (Khiếu nại/Tố cáo/Phản ánh kiến nghị) — thiết kế theo nội dung KPI, không theo tên block.* ETL map PHAN_ANH và KIEN_NGHI từ Silver → 1 giá trị `PHAN_ANH_KIEN_NGHI` trên Gold (O_TT_10 Closed).
 
-```
-Biểu đồ cơ cấu theo loại đơn thư (theo tháng)
-20 ┤                                                      ▓
-15 ┤                      ▓                          ▓    ▓
-10 ┤         ▓        ▓   ▓                 ▓   ▓    ▓   ▓██
- 5 ┤   ▓     ▓▓██     ▓██     ▓ █    ▓██    ▓██      ▓██
- 0 └──T1──T2──T3──T4──T5──T6──T7──T8──T9──T10──T11──T12
-Legend: ▓ KHIẾU NẠI   ██ TỐ CÁO   (PHẢN ÁNH + KIẾN NGHỊ hiển thị riêng nếu có data)
-```
+**Mockup:**
 
-**Ghi chú display:** Screenshot gộp PHAN_ANH + KIEN_NGHI thành 1 label "PHẢN ÁNH KIẾN NGHỊ" tại UI layer. Thiết kế fact/Gold vẫn giữ 4 mã riêng biệt theo Silver scheme TT_PETITION_TYPE — UI có thể tuỳ chọn gộp/tách.
+| Tháng | T1 | T2 | ... | T12 |
+|---|---|---|---|---|
+| Khiếu nại (xanh dương) | 5 | 7 | ... | 20 |
+| Tố cáo (cam) | 2 | 2 | ... | 8 |
+| Phản ánh kiến nghị (tím) | 2 | 2 | ... | 7 |
 
-**2. Source:** `Fact Complaint Petition` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_PETITION_TYPE, TT_PETITION_STATUS)
+**Source:** `Complaint Petition List`
 
-**3. Bảng KPI:**
+**Bảng KPI:**
 
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 109 | K_TT_67 | Số lượng đơn thư Khiếu nại | Đơn thư | Flow (Base) | `COUNT "Fact Complaint Petition"."Complaint Petition Dimension Id"` GROUP BY `MONTH("Submission Date")` WHERE `YEAR("Submission Date") = selected year` AND `"Classification Dimension"."Classification Code" = 'KHIEU_NAI'` (via Petition Type Dimension Id, scheme TT_PETITION_TYPE) |
-| 110 | K_TT_67_RATIO | Tỷ lệ % đơn thư Khiếu nại | % | Derived | `K_TT_67 / (K_TT_67 + K_TT_68 + K_TT_69 + K_TT_70) × 100%` |
-| 111 | K_TT_68 | Số lượng đơn thư Tố cáo | Đơn thư | Flow (Base) | `COUNT ... GROUP BY MONTH("Submission Date") WHERE Classification Code = 'TO_CAO'` |
-| 112 | K_TT_68_RATIO | Tỷ lệ % đơn thư Tố cáo | % | Derived | `K_TT_68 / (K_TT_67 + K_TT_68 + K_TT_69 + K_TT_70) × 100%` |
-| 113 | K_TT_69 | Số lượng đơn thư Phản ánh | Đơn thư | Flow (Base) | `COUNT ... GROUP BY MONTH("Submission Date") WHERE Classification Code = 'PHAN_ANH'` |
-| 114 | K_TT_69_RATIO | Tỷ lệ % đơn thư Phản ánh | % | Derived | `K_TT_69 / (K_TT_67 + K_TT_68 + K_TT_69 + K_TT_70) × 100%` |
-| 115 | K_TT_70 | Số lượng đơn thư Kiến nghị | Đơn thư | Flow (Base) | `COUNT ... GROUP BY MONTH("Submission Date") WHERE Classification Code = 'KIEN_NGHI'` |
-| 116 | K_TT_70_RATIO | Tỷ lệ % đơn thư Kiến nghị | % | Derived | `K_TT_70 / (K_TT_67 + K_TT_68 + K_TT_69 + K_TT_70) × 100%` |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_86 | Số đơn Khiếu nại đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Type_Code=`KHIEU_NAI` AND Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) |
+| K_TT_86b | Tỷ lệ % Khiếu nại | % | Derived | K_TT_86[Month=M] / K_TT_83[Month=M] × 100% |
+| K_TT_87 | Số đơn Tố cáo đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Type_Code=`TO_CAO` AND Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) |
+| K_TT_87b | Tỷ lệ % Tố cáo | % | Derived | K_TT_87[Month=M] / K_TT_83[Month=M] × 100% |
+| K_TT_88 | Số đơn Phản ánh kiến nghị đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Type_Code=`PHAN_ANH_KIEN_NGHI` AND Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) |
+| K_TT_88b | Tỷ lệ % Phản ánh kiến nghị | % | Derived | K_TT_88[Month=M] / K_TT_83[Month=M] × 100% |
 
-**4. Star schema:**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Complaint_Petition : "Submission Date Dimension Id"
-    Complaint_Petition_Dimension ||--o{ Fact_Complaint_Petition : "Complaint Petition Dimension Id"
-    Classification_Dim ||--o{ Fact_Complaint_Petition : "Petition Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Complaint_Petition : "Petition Status Dimension Id"
-```
-
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Complaint Petition | 1 row = 1 đơn thư (event tiếp nhận) |
-| Calendar Date Dimension | 1 row = 1 ngày tiếp nhận đơn |
-| Complaint Petition Dimension | 1 row = 1 đơn thư (SCD2) |
-| Classification Dimension (TT_PETITION_TYPE) | 1 row = 1 loại đơn (KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI) |
-| Classification Dimension (TT_PETITION_STATUS) | 1 row = 1 trạng thái đơn thư |
+**Bảng grain:** reuse `Complaint Petition List` — GROUP BY MONTH(Submission_Date) + Petition_Type_Code ở query time.
 
 ---
 
-#### Nhóm 19 — Danh sách đơn thư chi tiết
+#### Nhóm 19 — Danh sách đơn thư chi tiết (STT 19)
 
-**1. Mockup:**
+> Phân loại: **Tác nghiệp**
+> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Ghi chú:
+> - Cột **"Mã đơn"** ← `DT_DON_THU.ID` (`Complaint_Petition_Code`)
+> - Cột **"Loại đơn"** ← `DT_DON_THU.LOAI_DON` (`Petition_Type_Code`, scheme `TT_PETITION_TYPE`)
+> - Cột **"Đối tượng"** ← `DT_DON_THU.TEN_TO_CHUC_CA_NHAN` (`Complaint Petition.Complainant_Name` — snapshot tại thời điểm tiếp nhận)
+> - Cột **"Trạng thái"** ← `DT_DON_THU.TRANG_THAI` (`Petition_Status_Code`, scheme `TT_PETITION_STATUS`)
+
+**Mockup:**
 
 | Mã đơn | Loại đơn | Đối tượng | Trạng thái |
 |---|---|---|---|
-| DT-2024-001 | KHIẾU NẠI | Công ty A | ĐÃ HOÀN THÀNH |
-| DT-2024-002 | TỐ CÁO | Ông Nguyễn Văn B | ĐÃ HOÀN THÀNH |
-| DT-2024-003 | PHẢN ÁNH KIẾN NGHỊ | Bà Lê Thị C | ĐÃ HOÀN THÀNH |
-| DT-2024-004 | KHIẾU NẠI | Quỹ X | ĐÃ HOÀN THÀNH |
-| DT-2024-005 | TỐ CÁO | Công ty Y | ĐÃ HOÀN THÀNH |
+| DT-2024-001 | Khiếu nại | Công ty A | Đã hoàn thành |
+| DT-2024-002 | Tố cáo | Ông Nguyễn Văn B | Đã hoàn thành |
+| DT-2024-003 | Phản ánh kiến nghị | Bà Lê Thị C | Đã hoàn thành |
+| DT-2024-004 | Khiếu nại | Quỹ X | Đã hoàn thành |
+| DT-2024-005 | Tố cáo | Công ty Y | Đã hoàn thành |
 
-**2. Source:** `Fact Complaint Petition` → `Complaint Petition Dimension`, `Classification Dimension` (scheme: TT_PETITION_TYPE, TT_PETITION_STATUS)
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 117 | K_TT_71 | Mã đơn | Text | Stock | `"Complaint Petition Dimension"."Complaint Petition Code"` |
-| 118 | K_TT_72 | Loại đơn | Text | Stock | `"Classification Dimension"."Classification Name"` (via Petition Type Dimension Id, scheme TT_PETITION_TYPE) |
-| 119 | K_TT_73 | Đối tượng | Text | Stock | `"Complaint Petition Dimension"."Complainant Name"` |
-| 120 | K_TT_74 | Trạng thái | Text | Stock | `"Classification Dimension"."Classification Name"` (via Petition Status Dimension Id, scheme TT_PETITION_STATUS) |
-
-**4. Star schema:**
+**Schema bảng tác nghiệp:**
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Complaint_Petition : "Submission Date Dimension Id"
-    Complaint_Petition_Dimension ||--o{ Fact_Complaint_Petition : "Complaint Petition Dimension Id"
-    Classification_Dim ||--o{ Fact_Complaint_Petition : "Petition Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Complaint_Petition : "Petition Status Dimension Id"
+    Complaint_Petition_List {
+        varchar Complaint_Petition_Code PK
+        varchar Petition_Type_Code
+        varchar Complainant_Name
+        varchar Petition_Status_Code
+        date Submission_Date
+        int Submission_Year
+        datetime Population_Date
+    }
 ```
 
-**5. Bảng tham gia:**
-
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Complaint Petition | 1 row = 1 đơn thư (event tiếp nhận) |
-| Calendar Date Dimension | 1 row = 1 ngày tiếp nhận đơn |
-| Complaint Petition Dimension | 1 row = 1 đơn thư (SCD2) |
-| Classification Dimension (TT_PETITION_TYPE) | 1 row = 1 loại đơn |
-| Classification Dimension (TT_PETITION_STATUS) | 1 row = 1 trạng thái đơn thư |
-
----
-
-### Báo cáo — Hoạt động xử lý vi phạm trên TTCK (Biểu số TT01)
-
-**Ngữ cảnh nghiệp vụ:**
-- Báo cáo định kỳ Tháng / Năm ban hành kèm theo Quyết định của UBCK (Biểu số **TT01**)
-- Đơn vị báo cáo: Vụ Thanh tra
-- Đơn vị nhận báo cáo: Cục Công nghệ Thông tin
-- Thời hạn: Tháng — 10 ngày kể từ ngày kết thúc tháng báo cáo. Năm — ngày 31/1 năm sau
-- **Không có giao diện UI** — báo cáo xuất file (Excel/PDF) chuyển trực tiếp đến đơn vị nhận
-
-**Slicer:**
-- Kỳ báo cáo (Tháng hoặc Năm)
-
----
-
-#### Nhóm 20 — Báo cáo hoạt động xử lý vi phạm trên TTCK (TT01)
-
-**1. Mockup:**
-
-Cấu trúc báo cáo theo biểu mẫu TT01:
-
-| STT | Loại hình xử lý vi phạm | Số lượng | Số tiền xử phạt (triệu đồng) |
-|---|---|---|---|
-| 1 | Vi phạm của công ty đại chúng, tổ chức chào bán chứng khoán | <số lượng> | <số tiền> |
-| 2 | Vi phạm của công ty chứng khoán | <số lượng> | <số tiền> |
-| 3 | Vi phạm của công ty quản lý quỹ | <số lượng> | <số tiền> |
-| 4 | Vi phạm của cổ đông lớn, cổ đông nội bộ và người có liên quan của cổ đông nội bộ | <số lượng> | <số tiền> |
-| 5 | Vi phạm giao dịch thao túng, giao dịch nội bộ | <số lượng> | <số tiền> |
-| 6 | Vi phạm về chào bán chứng khoán | <số lượng> | <số tiền> |
-| 7 | Các vi phạm khác | <số lượng> | <số tiền> |
-
-**2. Source:** `Fact Inspection Penalty Decision` → `Calendar Date Dimension`, `Classification Dimension` (scheme: TT_VIOLATION_TYPE)
-
-**Ghi chú mapping:** 7 loại hình trong biểu TT01 tương ứng với 7 mã trong scheme `TT_VIOLATION_TYPE` (Classification Dimension). Mã cụ thể `<code ...>` trong logic bên dưới là **placeholder** — cần trao đổi với BA + khảo sát dữ liệu Silver thực tế để xác nhận mapping chính xác (xem TT_O20 — Section 3).
-
-**3. Bảng KPI:**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức/Mô tả |
-|---|---|---|---|---|---|
-| 121 | K_TT_75 | Số lượng vi phạm của CTĐC, tổ chức chào bán chứng khoán | Quyết định | Flow (Base) | `COUNT "Fact Inspection Penalty Decision"."Inspection Case Conclusion Number"` WHERE period matches reporting period (Tháng/Năm trên Signing Date) AND `"Classification Dimension"."Classification Code" = '<code VP_CTDC_TCCBCK>'` (via Violation Type Dimension Id, scheme TT_VIOLATION_TYPE) |
-| 122 | K_TT_76 | Số tiền xử phạt vi phạm của CTĐC, tổ chức chào bán chứng khoán | Triệu VNĐ | Flow (Base) | `SUM "Fact Inspection Penalty Decision"."Penalty Amount" / 1_000_000` WHERE period matches AND Classification Code = '<code VP_CTDC_TCCBCK>' |
-| 123 | K_TT_77 | Số lượng vi phạm của CTCK | Quyết định | Flow (Base) | `COUNT ... WHERE Classification Code = '<code VP_CTCK>'` |
-| 124 | K_TT_78 | Số tiền xử phạt vi phạm của CTCK | Triệu VNĐ | Flow (Base) | `SUM Penalty Amount / 1_000_000 WHERE Classification Code = '<code VP_CTCK>'` |
-| 125 | K_TT_79 | Số lượng vi phạm của CTQLQ | Quyết định | Flow (Base) | `COUNT ... WHERE Classification Code = '<code VP_CTQLQ>'` |
-| 126 | K_TT_80 | Số tiền xử phạt vi phạm của CTQLQ | Triệu VNĐ | Flow (Base) | `SUM Penalty Amount / 1_000_000 WHERE Classification Code = '<code VP_CTQLQ>'` |
-| 127 | K_TT_81 | Số lượng vi phạm của CĐ lớn, CĐ nội bộ và người có liên quan của CĐNB | Quyết định | Flow (Base) | `COUNT ... WHERE Classification Code = '<code VP_CDL_CDNB>'` |
-| 128 | K_TT_82 | Số tiền xử phạt vi phạm của CĐ lớn, CĐ nội bộ và người có liên quan của CĐNB | Triệu VNĐ | Flow (Base) | `SUM Penalty Amount / 1_000_000 WHERE Classification Code = '<code VP_CDL_CDNB>'` |
-| 129 | K_TT_83 | Số lượng vi phạm giao dịch thao túng, giao dịch nội bộ | Quyết định | Flow (Base) | `COUNT ... WHERE Classification Code = '<code VP_THAO_TUNG_NOI_BO>'` |
-| 130 | K_TT_84 | Số tiền xử phạt vi phạm giao dịch thao túng, giao dịch nội bộ | Triệu VNĐ | Flow (Base) | `SUM Penalty Amount / 1_000_000 WHERE Classification Code = '<code VP_THAO_TUNG_NOI_BO>'` |
-| 131 | K_TT_85 | Số lượng vi phạm về chào bán chứng khoán | Quyết định | Flow (Base) | `COUNT ... WHERE Classification Code = '<code VP_CHAO_BAN_CK>'` |
-| 132 | K_TT_86 | Số tiền xử phạt vi phạm về chào bán chứng khoán | Triệu VNĐ | Flow (Base) | `SUM Penalty Amount / 1_000_000 WHERE Classification Code = '<code VP_CHAO_BAN_CK>'` |
-| 133 | K_TT_87 | Số lượng các vi phạm khác | Quyết định | Flow (Base) | `COUNT ... WHERE Classification Code = '<code VP_KHAC>'` |
-| 134 | K_TT_88 | Số tiền xử phạt các vi phạm khác | Triệu VNĐ | Flow (Base) | `SUM Penalty Amount / 1_000_000 WHERE Classification Code = '<code VP_KHAC>'` |
-
-**Ghi chú đơn vị tiền:** Biểu TT01 yêu cầu đơn vị "triệu đồng". Silver lưu `Penalty Amount` đơn vị VNĐ → logic KPI chia `/ 1_000_000` ở query time (không pre-aggregate trong fact).
-
-**Ghi chú kỳ báo cáo:** Báo cáo hỗ trợ 2 kỳ:
-- **Tháng:** filter `YEAR("Signing Date") = selected year AND MONTH("Signing Date") = selected month`
-- **Năm:** filter `YEAR("Signing Date") = selected year`
-
-**4. Star schema:**
+**Lineage Mart → Báo cáo:**
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Signing Date Dimension Id"
-    Inspection_Case_Dimension ||--o{ Fact_Inspection_Penalty_Decision : "Inspection Case Dimension Id"
-    Classification_Dim ||--o{ Fact_Inspection_Penalty_Decision : "Violation Type Dimension Id"
+flowchart LR
+    subgraph SIL["Silver"]
+        SV1["Complaint Petition"]
+    end
+    subgraph GOLD["Gold Mart"]
+        G1["Complaint Petition List"]
+    end
+    subgraph RPT["Tab ĐƠN THƯ"]
+        R1["Danh sách đơn thư chi tiết"]
+    end
+    SV1 --> G1
+    G1 --> R1
 ```
 
-**5. Bảng tham gia:**
+**Bảng grain:**
 
-| Tên bảng (Logical) | Grain |
-|---|---|
-| Fact Inspection Penalty Decision | 1 row = 1 kết luận xử phạt (event). 1 kết luận = 1 hành vi vi phạm. |
-| Calendar Date Dimension | 1 row = 1 ngày ký kết luận xử phạt |
-| Inspection Case Dimension | 1 row = 1 hồ sơ thanh tra/kiểm tra (SCD2) |
-| Classification Dimension (TT_VIOLATION_TYPE) | 1 row = 1 hành vi vi phạm (7 mã theo biểu TT01) |
+| Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
+|---|---|---|---|---|
+| Complaint Petition List | 1 đơn thư — mỗi row = 1 `DT_DON_THU` (latest state) | `Complaint Petition` (DT_DON_THU) | Year=selected_year | Phân trang ở presentation layer |
 
 ---
 
-## 2. Mô hình Star Schema (tổng thể)
+### Báo cáo: Hoạt động vi phạm trên TTCK (STT 20)
 
-### 2.1 Diagram
+**Slicer chung:** Năm (tương tự các tab dashboard)
+
+> Ghi chú chung: Báo cáo dạng bảng pivot — 6 nhóm đối tượng vi phạm × breakdown theo loại vi phạm × 2 measure (số lượng + số tiền). Reuse `Fact Penalty Decision` — GROUP BY `Penalty_Subject_Category_Dimension_Id` × `Violation_Type_Dimension_Id`. Xem O_TT_8, O_TT_9 về field nguồn trong Silver.
+
+---
+
+#### Nhóm 20 — Bảng báo cáo hoạt động vi phạm TTCK (STT 20)
+
+> Phân loại: **Phân tích**
+> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Ghi chú: BA STT 20 định nghĩa 6 nhóm đối tượng (CTĐC+CBCK / CTCK / CTQLQ / CĐ nội bộ / Giao dịch thao túng+nội bộ / CBCK / Vi phạm khác) nhưng mỗi nhóm có "Độ chi tiết: Loại vi phạm". Phân tích BA: các nhóm này thực chất là phân nhóm theo **loại hành vi vi phạm** của đối tượng bị xử phạt (không phải Subject_Category của Fact). ETL cần phân biệt qua kết hợp `Penalty_Subject_Category_Dimension_Id` × `Violation_Type_Dimension_Id`. Phụ thuộc O_TT_8, O_TT_9.
+
+**Mockup:**
+
+| Loại hình xử lý | Số lượng vi phạm | Số tiền xử phạt (triệu đồng) |
+|---|---|---|
+| **Vi phạm của CTĐC, tổ chức CBCK** | | |
+| — Hành vi CBTT | N | X |
+| — Hành vi Chào bán | N | X |
+| — ... | ... | ... |
+| **Vi phạm của CTCK** | | |
+| **Vi phạm của CTQLQ** | | |
+| **Vi phạm của CĐ lớn, CĐ nội bộ** | | |
+| **Vi phạm giao dịch thao túng, giao dịch nội bộ** | | |
+| **Vi phạm về CBCK** | | |
+| **Vi phạm khác** | | |
+
+**Source:** `Fact Penalty Decision` → `Calendar Date Dimension`, `Classification Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_TT_89 | Số lượng vi phạm — CTĐC/CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category IN (`CTDC`, `CBCK`) GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 |
+| K_TT_90 | Số tiền xử phạt — CTĐC/CBCK | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category IN (`CTDC`, `CBCK`) GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 |
+| K_TT_91 | Số lượng vi phạm — CTCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTCK] GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 |
+| K_TT_92 | Số tiền xử phạt — CTCK | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTCK] GROUP BY Violation_Type_Dimension_Id |
+| K_TT_93 | Số lượng vi phạm — CTQLQ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTQLQ] GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 |
+| K_TT_94 | Số tiền xử phạt — CTQLQ | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTQLQ] GROUP BY Violation_Type_Dimension_Id |
+| K_TT_95 | Số lượng vi phạm — CĐ lớn/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CA_NHAN] AND Violation_Type_Dimension_Id IN [CO_DONG_NOI_BO, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id — xem O_TT_8, O_TT_9 |
+| K_TT_96 | Số tiền xử phạt — CĐ lớn/nội bộ | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CA_NHAN] AND Violation_Type_Dimension_Id IN [CO_DONG_NOI_BO, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id |
+| K_TT_97 | Số lượng vi phạm — Giao dịch thao túng/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id IN [THAO_TUNG, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id — xem O_TT_8 |
+| K_TT_98 | Số tiền xử phạt — Giao dịch thao túng/nội bộ | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Violation_Type_Dimension_Id IN [THAO_TUNG, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id |
+| K_TT_99 | Số lượng vi phạm — CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CBTT] GROUP BY Violation_Type_Dimension_Id — xem O_TT_8 |
+| K_TT_100 | Số tiền xử phạt — CBCK | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CBTT] GROUP BY Violation_Type_Dimension_Id |
+
+*Ghi chú K_TT_89–100: BA STT 20 phân nhóm theo đối tượng bị xử phạt × loại hành vi vi phạm. Các giá trị `Penalty_Subject_Category` và `Violation_Type_Code` phụ thuộc giải quyết O_TT_8 và O_TT_9 — hiện dùng giá trị tạm thời. Nhóm "Vi phạm khác" chưa có KPI ID vì chờ BA xác nhận mapping scheme.*
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Penalty Decision"]
+        G2["Calendar Date Dimension"]
+        G3["Classification Dimension"]
+    end
+    subgraph RPT["Báo cáo vi phạm TTCK"]
+        R1["Bảng pivot: Nhóm đối tượng × Loại vi phạm × Số lượng + Số tiền"]
+    end
+    G2 --> G1
+    G3 --> G1
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain | Date key | Filter mặc định | Ghi chú |
+|---|---|---|---|---|
+| Fact Penalty Decision | reuse — 1 QĐ xử phạt | `Violation_Report_Date_Dimension_Id` | Year=selected_year | GROUP BY Penalty_Subject_Category_Dimension_Id × Violation_Type_Dimension_Id ở presentation layer — tạo bảng pivot |
+
+---
+
+## Section 3 — Mô hình tổng thể (READY only)
 
 ```mermaid
 graph TB
     classDef dim fill:#E6F1FB,stroke:#185FA5,color:#0C447C
-    classDef ref fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
     classDef fact fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
+    classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
 
     DIM_DATE["Calendar Date Dimension"]:::dim
-    DIM_CASE["Inspection Case Dimension — SCD2"]:::dim
-    DIM_SUBJECT["Inspection Subject Dimension — SCD2 (polymorphic, 2-tier classification)"]:::dim
-    DIM_DECISION["Inspection Decision Dimension — SCD2"]:::dim
-    DIM_PETITION["Complaint Petition Dimension — SCD2"]:::dim
-    DIM_CASE_STATUS["Case Status Dimension Id → Classification"]:::ref
-    DIM_PLAN_TYPE["Inspection Type Dimension Id → Classification"]:::ref
-    DIM_SCHEDULE_TYPE["Inspection Schedule Type Dimension Id → Classification"]:::ref
-    DIM_VIOLATION_TYPE["Violation Type Dimension Id → Classification"]:::ref
-    DIM_PENALTY_TYPE["Penalty Type Dimension Id → Classification"]:::ref
-    DIM_PETITION_TYPE["Petition Type Dimension Id → Classification"]:::ref
-    DIM_PETITION_STATUS["Petition Status Dimension Id → Classification"]:::ref
+    DIM_CLASS["Classification Dimension"]:::dim
+    FACT_INSP["Fact Inspection Case Activity"]:::fact
+    FACT_PEN["Fact Penalty Decision"]:::fact
+    OPR_LIST["Inspection Case List"]:::oper
+    OPR_PEN["Penalty Decision List"]:::oper
+    OPR_COMP["Complaint Petition List"]:::oper
 
-    FACT_CASE["Fact Inspection Case — 1 hồ sơ thanh tra/kiểm tra (latest state)"]:::fact
-    FACT_VIOLATION["Fact Inspection Case Violation — 1 kết luận × 1 hành vi (event)"]:::fact
-    FACT_PENALTY["Fact Inspection Penalty Decision — 1 kết luận xử phạt (event, 1 kết luận = 1 hành vi)"]:::fact
-    FACT_PETITION["Fact Complaint Petition — 1 đơn thư (event tiếp nhận)"]:::fact
-
-    FACT_CASE --> DIM_DATE
-    FACT_CASE --> DIM_CASE
-    FACT_CASE --> DIM_SUBJECT
-    FACT_CASE --> DIM_DECISION
-    FACT_CASE --> DIM_CASE_STATUS
-    FACT_CASE --> DIM_PLAN_TYPE
-    FACT_CASE --> DIM_SCHEDULE_TYPE
-
-    FACT_VIOLATION --> DIM_DATE
-    FACT_VIOLATION --> DIM_CASE
-    FACT_VIOLATION --> DIM_SUBJECT
-    FACT_VIOLATION --> DIM_VIOLATION_TYPE
-    FACT_VIOLATION --> DIM_PENALTY_TYPE
-    FACT_VIOLATION --> DIM_PLAN_TYPE
-
-    FACT_PENALTY --> DIM_DATE
-    FACT_PENALTY --> DIM_CASE
-    FACT_PENALTY --> DIM_SUBJECT
-    FACT_PENALTY --> DIM_VIOLATION_TYPE
-    FACT_PENALTY --> DIM_PENALTY_TYPE
-    FACT_PENALTY --> DIM_CASE_STATUS
-
-    FACT_PETITION --> DIM_DATE
-    FACT_PETITION --> DIM_PETITION
-    FACT_PETITION --> DIM_PETITION_TYPE
-    FACT_PETITION --> DIM_PETITION_STATUS
+    DIM_DATE --> FACT_INSP
+    DIM_CLASS --> FACT_INSP
+    DIM_CLASS --> FACT_INSP
+    DIM_DATE --> FACT_PEN
+    DIM_CLASS --> FACT_PEN
+    DIM_CLASS --> FACT_PEN
 ```
 
-### 2.2 Bảng Fact
+**Bảng Phân tích (Star Schema):**
 
-| Fact | Pattern | Grain | KPI phục vụ |
+| Bảng | Pattern | Grain | KPI | Trạng thái |
+|---|---|---|---|---|
+| Fact Inspection Case Activity | Event | 1 hồ sơ × 1 đối tượng (`TT_HO_SO` × `TT_QUYET_DINH_DOI_TUONG`) — composite key: `Inspection_Case_Code` + `Inspection_Decision_Subject_Code`. Đếm số hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)`. Date key: Received Date (xem O_TT_3) | K_TT_1–23 (TT) + K_TT_24–44k (KT, bao gồm sub-KPI và K_TT_49b PENDING) | READY |
+| Fact Penalty Decision | Event | 1 quyết định xử phạt (`GS_VAN_BAN_XU_LY`). Date key: Violation Report Date | K_TT_55–80 (XP dashboard, bao gồm sub-KPI K_TT_72b–72k) + K_TT_89–100 (Báo cáo STT 20) | READY — xem O_TT_8, O_TT_9 |
+
+**Bảng Tác nghiệp (Denormalized):**
+
+| Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| Fact Inspection Case | Event (1 row/hồ sơ, latest state) | 1 row = 1 hồ sơ thanh tra/kiểm tra với trạng thái hiện tại và 2 mốc thời gian Received Date + Status As Of Date | K_TT_1..K_TT_6, K_TT_14..K_TT_18, K_TT_19..K_TT_24, K_TT_41..K_TT_45 |
-| Fact Inspection Case Violation | Event | 1 row = 1 kết luận × 1 hành vi × 1 hình thức phạt | K_TT_7..K_TT_13, K_TT_25..K_TT_30, K_TT_36..K_TT_40 |
-| Fact Inspection Penalty Decision | Event | 1 row = 1 kết luận xử phạt. Quy ước: 1 kết luận = 1 hành vi vi phạm (TT_O17 closed). Source: `Inspection Case Conclusion` filter `Penalty Amount > 0` OR `Penalty Type Code IS NOT NULL` | K_TT_46..K_TT_49, K_TT_50..K_TT_55, K_TT_56..K_TT_59, K_TT_60..K_TT_64, K_TT_75..K_TT_88 |
-| Fact Complaint Petition | Event | 1 row = 1 đơn thư (event tiếp nhận). Source: `Complaint Petition` (DT_DON_THU). Date: Submission Date (ngày tiếp nhận đơn) | K_TT_65..K_TT_66, K_TT_67..K_TT_70, K_TT_71..K_TT_74 |
+| Inspection Case List | 1 hồ sơ TT/KT (TT_HO_SO) — latest state | Nhóm 5 (TT), Nhóm 10 (KT) | READY |
+| Penalty Decision List | 1 quyết định xử phạt (GS_VAN_BAN_XU_LY) — latest state | Nhóm 15 (XP) | READY |
+| Complaint Petition List | 1 đơn thư (DT_DON_THU) — latest state. Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19) | Nhóm 16–19 (ĐT), K_TT_81–88b | READY |
 
-### 2.3 Bảng Dimension
+**Bảng Dimension:**
 
-| Dim | Loại | Mô tả |
-|---|---|---|
-| Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng/tuần |
-| Classification Dimension | Conformed | Gộp tất cả scheme: TT_CASE_STATUS / TT_PLAN_TYPE / TT_INSPECTION_SCHEDULE_TYPE / TT_SUBJECT_SOURCE_TYPE (4 mã) / TT_OTHER_PARTY_SUBTYPE (6 mã) / TT_VIOLATION_TYPE / TT_PENALTY_TYPE / TT_PETITION_TYPE (4 mã: KHIEU_NAI/TO_CAO/PHAN_ANH/KIEN_NGHI) / TT_PETITION_STATUS (4 mã: MOI/DANG_XU_LY/HOAN_THANH/DONG) / TT_PARTY_TYPE (CA_NHAN/TO_CHUC) |
-| Inspection Case Dimension | SCD2 per TT | 1 row = 1 hồ sơ thanh tra/kiểm tra. Attribute mô tả: Case Number / Case Name / Case Content / Archive Number |
-| Inspection Subject Dimension | SCD2 per TT (polymorphic, 2-tier classification) | 1 row = 1 đối tượng thanh tra/kiểm tra. Gộp từ 4 Silver entity: Securities Company / Fund Management Company / Public Company / Inspection Subject Other Party. BK cặp: Subject Source Entity Code + Subject Source Reference Id. **2 attribute phân loại 2 tầng:** (1) `Subject Source Type Code` FK → Classification scheme TT_SUBJECT_SOURCE_TYPE (4 mã: CTDC / CTCK / CTQLQ / DOI_TUONG_KHAC) — luôn có giá trị, ETL derive từ source entity. (2) `Other Party Subtype Code` FK → Classification scheme TT_OTHER_PARTY_SUBTYPE (6 mã: CA_NHAN / NHLK / CTKT / TO_CHUC_PHTP / NHA_DAU_TU / TO_CHUC_KHAC) — chỉ có giá trị khi Subject Source Type Code = DOI_TUONG_KHAC, else NULL. ETL derive từ attribute phụ trong `Inspection Subject Other Party`. |
-| Inspection Decision Dimension | SCD2 per TT | 1 row = 1 quyết định thanh tra/kiểm tra. Attribute: Decision Number / Issue Date / Announcement Date / Inspection Annual Plan Id (nullable → ĐỘT XUẤT) |
-| Complaint Petition Dimension | SCD2 per TT | 1 row = 1 đơn thư khiếu nại/tố cáo/phản ánh/kiến nghị. Source: `Complaint Petition` (DT_DON_THU). Attribute mô tả: Complaint Petition Code (BK) / Petition Name / Complainant Name / Is Anonymous Flag / Written Date / Submission Date (snapshot tại thời điểm tiếp nhận) |
+| Dimension | Loại | Mô tả | Trạng thái |
+|---|---|---|---|
+| Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng | READY |
+| Classification Dimension | Conformed | Danh mục phân loại — phục vụ 3 scheme trên 2 Fact: (1) scheme `TT_SUBJECT_CATEGORY` (**6 giá trị tạm thời**: CTCK/CTDC/CTQLQ/CA_NHAN/TO_CHUC_KHAC — xem O_TT_4); (2) scheme `TT_PENALTY_SUBJECT_CATEGORY` (4 giá trị Tab XP — xem O_TT_9); (3) scheme `TT_VIOLATION_TYPE` (11 giá trị — dùng chung TT/KT/XP — xem O_TT_8). Mọi query JOIN Classification Dimension phải kèm filter `WHERE Scheme='...'` đúng với FK tương ứng | READY |
 
 ---
 
-## 3. Vấn đề mở & Giả định
+## Section 4 — Vấn đề mở
 
-| ID | Vấn đề | Giả định | KPI liên quan | Status |
+| ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| TT_O20 | Mapping 7 loại hình trong biểu báo cáo TT01 sang Classification Code cụ thể của scheme TT_VIOLATION_TYPE trong Silver chưa được xác nhận. Các mã `<code VP_CTDC_TCCBCK>` / `<code VP_CTCK>` / `<code VP_CTQLQ>` / `<code VP_CDL_CDNB>` / `<code VP_THAO_TUNG_NOI_BO>` / `<code VP_CHAO_BAN_CK>` / `<code VP_KHAC>` trong logic KPI Nhóm 20 hiện là placeholder. | Giả định scheme TT_VIOLATION_TYPE đã bao phủ 7 loại hình theo biểu TT01 (UBCK ban hành chính thức). Cần trao đổi với BA + khảo sát dữ liệu thực tế Silver để xác nhận mã chính xác trong Phase 2 trước khi viết Detail Mapping. | K_TT_75..K_TT_88 | Open |
+| O_TT_1 | `Violation_Type_Code` — 1 hồ sơ có thể có nhiều kết luận (sơ bộ/chính thức/bổ sung). | ETL lấy kết luận có `MAX(Conclusion_Sequence_Number)` per hồ sơ — grain Fact không fanout. | K_TT_10–15 | **Closed** |
+| O_TT_2 | "Số ngày trễ" — BA không có KPI này. | Out of scope — đã loại khỏi thiết kế. | — | **Closed (Out of scope)** |
+| O_TT_3 | Trục thời gian biểu đồ bar: dùng `Received Date` (`TT_HO_SO.NGAY_NHAN_HO_SO`) hay `Issue Date` (`TT_QUYET_DINH.NGAY_RA_QUYET_DINH`)? | Tạm thời giữ `Received Date` từ `Inspection Case` làm date key. Chờ BA xác nhận. | K_TT_7–9 | Open |
+| O_TT_4 | `Subject_Category_Code` ETL-derived từ polymorphic FK `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID`. ETL dùng `Source_System_Code` để nhận biết bảng nguồn: `ThanhTra_DM_CONG_TY_CK` → CTCK, `ThanhTra_DM_CONG_TY_QLQ` → CTQLQ, `ThanhTra_DM_CONG_TY_DC` → CTDC. Với `ThanhTra_DM_DOI_TUONG_KHAC`: `LOAI_DOI_TUONG=CA_NHAN` → CA_NHAN, `LOAI_DOI_TUONG=TO_CHUC` → **không thể phân biệt CTKT/NHLK/TO_CHUC_PHTP** vì Silver `DM_DOI_TUONG_KHAC` không có field `Organization_Type_Code`. | Tạm thời gộp tất cả `TO_CHUC` từ `DM_DOI_TUONG_KHAC` thành `TO_CHUC_KHAC` (6 giá trị scheme). Chờ khảo sát dữ liệu nguồn và trao đổi BA để bổ sung logic phân biệt chi tiết. | K_TT_16–23 (TT), K_TT_45–54 (KT) | Open |
+| O_TT_5 | `TT_QUYET_DINH_DOI_TUONG` quan hệ 1:N với `TT_QUYET_DINH` — 1 hồ sơ có thể có nhiều đối tượng thanh tra gây fanout grain Fact. | **Phương án B:** đổi grain Fact thành 1 row per hồ sơ × đối tượng. Composite key: `Inspection_Case_Code` + `Inspection_Decision_Subject_Code`. Mọi KPI đếm hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)`. | K_TT_1–23 | **Closed** |
+| O_TT_6 | Tab KIỂM TRA — cột "Loại hình" trong danh sách có xuất hiện giá trị `KIỂM TRA` bên cạnh ĐỊNH KỲ / ĐỘT XUẤT. | Xác nhận: chỉ có 2 giá trị ĐỊNH KỲ / ĐỘT XUẤT. Giá trị "KIỂM TRA" trong screenshot là dữ liệu mẫu sai — không phải giá trị nghiệp vụ. Mockup đã sửa. | Nhóm 10 | **Closed** |
+| O_TT_7 | Scheme `TT_SUBJECT_CATEGORY` — Tab KIỂM TRA screenshot hiển thị 5 nhóm riêng biệt (CTCK/CTKT/CTQLQ+NHLK/CTĐC/TO_CHUC_PHTP) nhưng Silver `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP. Tạm thời gộp thành `TO_CHUC_KHAC`. | Chờ kết quả khảo sát O_TT_4. Nếu nguồn có thể phân biệt → tách scheme thành 7+ giá trị và cập nhật K_TT_47, K_TT_49b, K_TT_53. | K_TT_45–54 | **Reopen** — phụ thuộc O_TT_4 |
+| O_TT_8 | Tab XỬ PHẠT — `Violation_Type_Code` (hành vi vi phạm) cần thiết cho cột "Loại hình" trong danh sách và donut cơ cấu theo hành vi. Silver `Surveillance Enforcement Decision` (`GS_VAN_BAN_XU_LY`) không có field này rõ ràng — `Penalty_Content` là text tự do. Silver `Surveillance Enforcement Case` (`GS_HO_SO`) cũng không có field hành vi vi phạm có thể map về scheme. Source Analysis xác nhận `DM_HANH_VI_VI_PHAM` dùng ở B.2.2 nhưng chưa tìm thấy field FK tương ứng trong Silver `GS_HO_SO` hay `GS_VAN_BAN_XU_LY`. | Cần xác nhận field nguồn trong `GS_VAN_BAN_XU_LY` hoặc `GS_HO_SO` lưu mã hành vi vi phạm. Nếu có → reuse scheme `TT_VIOLATION_TYPE`. Nếu không → PENDING. Tạm thời để `Violation_Type_Code` PENDING trên `Fact Penalty Decision`. | K_TT_61–72k, K_TT_89–100, Nhóm 15 | Open |
+| O_TT_9 | Tab XỬ PHẠT — `Penalty_Subject_Category_Code` (phân loại đối tượng: CTKT/Cá nhân/Giao dịch NĐT/Tổ chức khác) cần thiết cho donut và danh sách. Silver `GS_HO_SO.TEN_DOI_TUONG` là text tự do — không có polymorphic FK như `TT_QUYET_DINH_DOI_TUONG`. Không rõ ETL resolve phân loại đối tượng từ field nào trong `GS_HO_SO`. | Cần BA/nghiệp vụ xác nhận field phân loại đối tượng trong `GS_HO_SO` hoặc bảng liên kết khác. Scheme `TT_PENALTY_SUBJECT_CATEGORY` tạm thời có 4 giá trị từ BA STT 14: TO_CHUC_KHAC / CTKT / GIAO_DICH_NDT / CA_NHAN. | K_TT_73–80, K_TT_89–96, Nhóm 15 | Open |
+| O_TT_10 | Tab ĐƠN THƯ — Silver `TT_PETITION_TYPE` có 4 giá trị: KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI. Dashboard gộp PHAN_ANH và KIEN_NGHI thành 1 legend "Phản ánh kiến nghị". | **Closed:** Mart lưu 1 giá trị gộp `PHAN_ANH_KIEN_NGHI` theo BA. ETL map cả PHAN_ANH và KIEN_NGHI từ Silver → `PHAN_ANH_KIEN_NGHI` trên Gold. K_TT_88 đã cập nhật. | K_TT_88, Nhóm 19 | **Closed** |
