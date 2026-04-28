@@ -92,21 +92,35 @@ def _parse_fk_target(comment: str) -> tuple[str, str] | None:
     return m.group(1).strip(), m.group(2).strip()
 
 
-def load_attributes(repo_root: Path, source: str, lld_filename: str) -> list[dict[str, Any]]:
-    path = repo_root / "Silver" / "lld" / source / lld_filename
-    rows = _read_csv(path)
+def load_all_attributes(repo_root: Path) -> list[dict[str, str]]:
+    """Đọc silver_attributes.csv một lần, cache trong module scope."""
+    return _read_csv(repo_root / "Silver" / "lld" / "silver_attributes.csv")
+
+
+def load_attributes(
+    repo_root: Path,
+    source: str,
+    silver_entity: str,
+    _lld_filename: str = "",  # giữ signature tương thích, không dùng
+) -> list[dict[str, Any]]:
+    """Lấy attributes từ silver_attributes.csv, lọc theo source_system + silver_entity."""
+    all_rows = load_all_attributes(repo_root)
+    rows = [
+        r for r in all_rows
+        if r.get("source_system") == source and r.get("silver_entity") == silver_entity
+    ]
     out: list[dict[str, Any]] = []
     for r in rows:
         comment = r.get("comment", "")
         fk_target = _parse_fk_target(comment)
         out.append({
-            "attribute_name": r["attribute_name"],
+            "attribute_name": r["silver_attribute"],
             "description": r["description"],
             "data_domain": r["data_domain"],
             "nullable": _yn(r.get("nullable", "")),
             "is_primary_key": _yn(r.get("is_primary_key", "")),
             "status": r.get("status", ""),
-            "source_columns": r.get("source_columns", ""),
+            "source_columns": r.get("source_column", ""),
             "comment": comment,
             "classification_context": r.get("classification_context", ""),
             "etl_derived_value": r.get("etl_derived_value", ""),
@@ -273,7 +287,7 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
         src_table_full = f"{row['source_system']}.{row['source_table']}"
         meta = meta_lookup.get((silver_entity, src_table_full), {})
 
-        attributes = load_attributes(repo_root, source, row["lld_file"])
+        attributes = load_attributes(repo_root, source, silver_entity)
         total_attrs += len(attributes)
         tiers.add(row["group"])
 

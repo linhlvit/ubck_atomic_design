@@ -8,14 +8,14 @@
 
 **Danh sách bảng:**
 
-| STT | Tên bảng | Mô tả |
-|---|---|---|
+| STT | Thực thể | Tên bảng | Mô tả |
+|---|---|---|---|
 {% for e in entities -%}
-| {{ loop.index }} | {{ e.table_name }} | {{ e.description }} |
+| {{ loop.index }} | {{ e.entity_name }} | {{ e.table_name }} | {{ e.description }} |
 {% endfor %}
 
 {% for e in entities %}
-#### §2.{{ idx }}.{{ loop.index + 1 }} Bảng {{ e.table_name }}
+#### §2.{{ idx }}.{{ loop.index + 1 }} Bảng {{ e.entity_name }}
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|

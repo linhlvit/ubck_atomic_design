@@ -275,6 +275,21 @@ python Silver/lld/scripts/post_check_source_coverage.py --source {SOURCE}
 
 Xử lý mọi warning trước khi kết thúc Tier.
 
+### Bước 8 — Sinh physical name
+
+```bash
+python Silver/lld/scripts/transform_physical_names.py
+```
+
+Script bổ sung cột physical name trực tiếp vào 2 file output (idempotent — chạy nhiều lần không duplicate):
+- `silver_attributes.csv`: thêm `silver_table` (ngay sau `silver_entity`) và `silver_column` (ngay sau `silver_attribute`).
+- `attr_Classification_Value.csv`: thêm `silver_column` (ngay sau `attribute_name`).
+
+Tra 1 tên cụ thể để kiểm tra:
+```bash
+python Silver/lld/scripts/transform_physical_names.py --name "Fund Management Company Code"
+```
+
 ## QUY TẮC ĐẶT TÊN ATTRIBUTE
 
 ### Prefix nhất quán trong nhóm trường
