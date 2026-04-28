@@ -1,0 +1,146 @@
+// Silver Lakehouse — QLRR
+
+Project QLRR {
+  database_type: "Delta Lake"
+  Note: "Silver Lakehouse — QLRR"
+}
+
+Table "Risk Indicator Category" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
+  risk_indicator_category_id bigint [pk]
+}
+
+Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  risk_indicator_id bigint [pk]
+  risk_indicator_category_id bigint
+}
+
+Table "Risk Report Type" [note: "Danh mục loại báo cáo rủi ro (Báo cáo nhanh hàng tháng v.v.). Master entity có lifecycle. FK từ Risk Report Upload Batch."] {
+  risk_report_type_id bigint [pk]
+}
+
+Table "Risk Indicator Schedule" [note: "Cấu hình lịch chạy job đồng bộ chỉ tiêu rủi ro (frequency_type/cron_expression). Grain: 1-1 với Risk Indicator. FK → Risk Indicator."] {
+  risk_indicator_schedule_id bigint [pk]
+  risk_indicator_id bigint
+}
+
+Table "Risk Alert Config" [note: "Cấu hình ngưỡng và quy tắc kích hoạt cảnh báo cho từng chỉ tiêu rủi ro. Grain: 1 cấu hình / 1 chỉ tiêu. FK → Risk Indicator."] {
+  risk_alert_config_id bigint [pk]
+  risk_indicator_id bigint
+}
+
+Table "Risk Report Upload Batch" [note: "Đợt upload file báo cáo rủi ro định kỳ. Grain: 1 đợt upload. FK → Risk Report Type."] {
+  risk_report_upload_batch_id bigint [pk]
+  risk_report_type_id bigint
+}
+
+Table "Risk Indicator Value" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
+  risk_indicator_value_id bigint [pk]
+  risk_indicator_id bigint
+}
+
+Table "Risk Indicator Value Change" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
+  risk_indicator_value_change_id bigint [pk]
+  risk_indicator_id bigint
+}
+
+Table "Risk Alert" [note: "Bản ghi cảnh báo rủi ro phát sinh khi chỉ tiêu vượt ngưỡng cấu hình. Grain: 1 lần kích hoạt. Append-only. FK → Risk Alert Config + Risk Indicator."] {
+  risk_alert_id bigint [pk]
+  risk_alert_config_id bigint
+  risk_indicator_id bigint
+  triggered_by_schedule_id bigint
+}
+
+Table "Risk Report File" [note: "Metadata file đính kèm báo cáo rủi ro trong đợt upload. Grain: 1 file. FK → Risk Report Upload Batch."] {
+  risk_report_file_id bigint [pk]
+  risk_report_upload_batch_id bigint
+}
+
+Table "Risk Alert Resolution" [note: "Bản ghi xử lý chi tiết cho cảnh báo rủi ro (giải trình hoặc không). Grain: 1 lần xử lý. Append-only. FK → Risk Alert."] {
+  risk_alert_resolution_id bigint [pk]
+  risk_alert_id bigint
+}
+
+Table "Risk Alert Resolution File" [note: "File đính kèm giải trình cho bản ghi xử lý cảnh báo. Grain: 1 file. FK → Risk Alert Resolution."] {
+  risk_alert_resolution_file_id bigint [pk]
+  risk_alert_resolution_id bigint
+}
+
+Table "Risk Alert History" [note: "Dòng thời gian sự kiện trong vòng đời cảnh báo (phát sinh / xử lý). Grain: 1 sự kiện nghiệp vụ. Append-only. FK → Risk Alert."] {
+  risk_alert_history_id bigint [pk]
+  risk_alert_id bigint
+  risk_alert_resolution_id bigint
+}
+
+Table "Risk Alert Notification" [note: "Thông báo cảnh báo gửi từng kênh (Toast/Bell/Email) đến từng người nhận. Grain: 1 thông báo / 1 người. Append-only. FK → Risk Alert."] {
+  risk_alert_notification_id bigint [pk]
+  risk_alert_id bigint
+}
+
+TableGroup "UID001 — Khai thác Dashboard" {
+  "Risk Indicator Category"
+  "Risk Indicator"
+  "Risk Indicator Value"
+  "Risk Indicator Value Change"
+  "Risk Alert"
+}
+
+TableGroup "UID002 — Khai thác Báo cáo" {
+  "Risk Indicator"
+  "Risk Report Type"
+  "Risk Report Upload Batch"
+  "Risk Indicator Value"
+  "Risk Report File"
+}
+
+TableGroup "UID003 — Khai thác Chỉ tiêu tài chính trong nước" {
+  "Risk Indicator Category"
+  "Risk Indicator"
+  "Risk Indicator Value"
+  "Risk Indicator Value Change"
+}
+
+TableGroup "UID004 — Khai thác Chỉ tiêu tài chính quốc tế" {
+  "Risk Indicator Category"
+  "Risk Indicator"
+  "Risk Indicator Value"
+  "Risk Indicator Value Change"
+}
+
+TableGroup "UID005 — Quản lý Cảnh báo" {
+  "Risk Indicator"
+  "Risk Indicator Schedule"
+  "Risk Alert Config"
+  "Risk Alert"
+  "Risk Alert Resolution"
+  "Risk Alert Resolution File"
+  "Risk Alert History"
+  "Risk Alert Notification"
+}
+
+TableGroup "UID006 — Khai thác Phân quyền dữ liệu" {
+  "Risk Indicator"
+}
+
+TableGroup "UID007 — Quản lý tích hợp" {
+  "Risk Indicator Category"
+  "Risk Indicator"
+  "Risk Indicator Schedule"
+  "Risk Indicator Value"
+  "Risk Indicator Value Change"
+}
+
+Ref: "Risk Indicator".risk_indicator_category_id > "Risk Indicator Category".risk_indicator_category_id
+Ref: "Risk Indicator Schedule".risk_indicator_id > "Risk Indicator".risk_indicator_id
+Ref: "Risk Alert Config".risk_indicator_id > "Risk Indicator".risk_indicator_id
+Ref: "Risk Report Upload Batch".risk_report_type_id > "Risk Report Type".risk_report_type_id
+Ref: "Risk Indicator Value".risk_indicator_id > "Risk Indicator".risk_indicator_id
+Ref: "Risk Indicator Value Change".risk_indicator_id > "Risk Indicator".risk_indicator_id
+Ref: "Risk Alert".risk_alert_config_id > "Risk Alert Config".risk_alert_config_id
+Ref: "Risk Alert".risk_indicator_id > "Risk Indicator".risk_indicator_id
+Ref: "Risk Alert".triggered_by_schedule_id > "Risk Indicator Schedule".risk_indicator_schedule_id
+Ref: "Risk Report File".risk_report_upload_batch_id > "Risk Report Upload Batch".risk_report_upload_batch_id
+Ref: "Risk Alert Resolution".risk_alert_id > "Risk Alert".risk_alert_id
+Ref: "Risk Alert Resolution File".risk_alert_resolution_id > "Risk Alert Resolution".risk_alert_resolution_id
+Ref: "Risk Alert History".risk_alert_id > "Risk Alert".risk_alert_id
+Ref: "Risk Alert History".risk_alert_resolution_id > "Risk Alert Resolution".risk_alert_resolution_id
+Ref: "Risk Alert Notification".risk_alert_id > "Risk Alert".risk_alert_id

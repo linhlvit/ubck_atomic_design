@@ -1,0 +1,21 @@
+// DCST — UID01 Quản lý thông tin đăng ký thuế
+
+Project DCST_UID01 {
+  database_type: "Delta Lake"
+  Note: "DCST — UID01 Quản lý thông tin đăng ký thuế"
+}
+
+Table "Registered Taxpayer" [note: "Doanh nghiệp/hộ kinh doanh đã đăng ký thuế với cơ quan thuế. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  registered_taxpayer_id bigint [pk]
+  charter_capital_currency_code bigint
+  foreign_charter_capital_currency_code bigint
+}
+
+Table "Taxpayer Representative" [note: "Người đại diện hoặc chủ hộ kinh doanh của người nộp thuế. Ghi nhận tên và chức vụ."] {
+  taxpayer_representative_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+// Ref: "Registered Taxpayer".charter_capital_currency_code > "Currency".currency_code // out-of-source
+// Ref: "Registered Taxpayer".foreign_charter_capital_currency_code > "Currency".currency_code // out-of-source
+Ref: "Taxpayer Representative".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id

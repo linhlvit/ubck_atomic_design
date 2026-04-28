@@ -1,0 +1,286 @@
+// Silver Lakehouse — FIMS
+
+Project FIMS {
+  database_type: "Delta Lake"
+  Note: "Silver Lakehouse — FIMS"
+}
+
+Table "Stock Exchange" [note: "Sở giao dịch chứng khoán - thành viên thị trường trong hệ thống FIMS (HNX, HOSE)."] {
+  stock_exchange_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Depository Center" [note: "Trung tâm lưu ký chứng khoán quốc gia - thành viên thị trường trong hệ thống FIMS (VSD)."] {
+  depository_center_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  fund_management_company_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  securities_company_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Custodian Bank" [note: "Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ."] {
+  custodian_bank_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Fund Management Company Organization Unit" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
+  fund_management_company_organization_unit_id bigint [pk]
+  fund_management_company_id bigint
+  parent_organization_unit_id bigint
+  legal_representative_id bigint
+  country_of_registration_id bigint
+}
+
+Table "Disclosure Representative" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
+  disclosure_representative_id bigint [pk]
+  nationality_id bigint
+}
+
+Table "Foreign Investor" [note: "Danh mục nhà đầu tư đăng ký giao dịch trên thị trường chứng khoán. Bao gồm cá nhân và tổ chức, phân biệt bằng ObjectType."] {
+  foreign_investor_id bigint [pk]
+  nationality_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  capital_account_custodian_bank_id bigint
+}
+
+Table "Disclosure Representative Key Person" [note: "Nhân sự thực hiện công bố thông tin tại các tổ chức thành viên thị trường."] {
+  disclosure_representative_key_person_id bigint [pk]
+  nationality_id bigint
+  fund_management_company_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  depository_center_id bigint
+  stock_exchange_id bigint
+  disclosure_representative_id bigint
+}
+
+Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
+  report_template_id bigint [pk]
+}
+
+Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  geographic_area_id bigint [pk]
+}
+
+Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  reporting_period_id bigint [pk]
+  report_template_id bigint
+}
+
+Table "Member Regulatory Report" [note: "Báo cáo định kỳ của thành viên thị trường nộp lên UBCK. Ghi nhận biểu mẫu, kỳ, trạng thái nộp và thành viên nộp."] {
+  member_regulatory_report_id bigint [pk]
+  report_template_id bigint
+  reporting_period_id bigint
+  fund_management_company_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  depository_center_id bigint
+  stock_exchange_id bigint
+  foreign_investor_id bigint
+  fund_management_company_organization_unit_id bigint
+}
+
+Table "Member Conduct Violation" [note: "Vi phạm được ghi nhận từ cảnh báo hệ thống hoặc kiểm tra định kỳ đối với thành viên thị trường."] {
+  member_conduct_violation_id bigint [pk]
+  fund_management_company_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  depository_center_id bigint
+  stock_exchange_id bigint
+  disclosure_representative_id bigint
+  fund_management_company_organization_unit_id bigint
+}
+
+Table "Disclosure Authorization" [note: "Ủy quyền công bố thông tin của người đại diện CBTT cho nhà đầu tư nước ngoài. Ghi nhận bên được ủy quyền, loại quan hệ và thời hạn hiệu lực."] {
+  disclosure_authorization_id bigint [pk]
+  disclosure_representative_id bigint
+}
+
+Table "Disclosure Announcement" [note: "Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT."] {
+  disclosure_announcement_id bigint [pk]
+  disclosure_representative_id bigint
+}
+
+Table "Foreign Investor Securities Account" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
+  foreign_investor_securities_account_id bigint [pk]
+  securities_company_id bigint
+  foreign_investor_id bigint
+}
+
+Table "Foreign Investor Stock Portfolio Snapshot" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
+  foreign_investor_stock_portfolio_snapshot_id bigint [pk]
+  securities_company_id bigint
+  foreign_investor_id bigint
+}
+
+Table "Member Report Value" [note: "Giá trị từng chỉ tiêu trong báo cáo định kỳ của thành viên. Mỗi dòng = 1 chỉ tiêu trong 1 báo cáo."] {
+  member_report_value_id bigint [pk]
+  member_regulatory_report_id bigint
+  reporting_period_id bigint
+  report_template_id bigint
+  fund_management_company_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  depository_center_id bigint
+  stock_exchange_id bigint
+  disclosure_representative_id bigint
+  fund_management_company_organization_unit_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+  province_id bigint
+  geographic_area_id bigint
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+TableGroup "UID01 — Quản trị phân hệ" {
+  "Report Template"
+  "Geographic Area"
+  "Reporting Period"
+}
+
+TableGroup "UID03 — Đối tượng gửi báo cáo" {
+  "Stock Exchange"
+  "Depository Center"
+  "Fund Management Company"
+  "Securities Company"
+  "Custodian Bank"
+  "Fund Management Company Organization Unit"
+  "Disclosure Representative"
+  "Disclosure Representative Key Person"
+  "Geographic Area"
+}
+
+TableGroup "UID04 — Nhà đầu tư nước ngoài" {
+  "Foreign Investor"
+  "Geographic Area"
+  "Foreign Investor Securities Account"
+  "Foreign Investor Stock Portfolio Snapshot"
+}
+
+TableGroup "UID05 — Báo cáo thành viên" {
+  "Report Template"
+  "Reporting Period"
+  "Member Regulatory Report"
+  "Member Report Value"
+}
+
+TableGroup "UID07 — Ủy quyền" {
+  "Disclosure Representative"
+  "Disclosure Authorization"
+}
+
+TableGroup "UID08 — Công bố thông tin" {
+  "Disclosure Representative"
+  "Disclosure Announcement"
+}
+
+TableGroup "UID09 — Cảnh báo" {
+  "Member Conduct Violation"
+}
+
+TableGroup "UID10 — Tiện ích" {
+  "Geographic Area"
+}
+
+Ref: "Stock Exchange".country_of_registration_id > "Geographic Area".geographic_area_id
+Ref: "Depository Center".country_of_registration_id > "Geographic Area".geographic_area_id
+Ref: "Fund Management Company".country_of_registration_id > "Geographic Area".geographic_area_id
+Ref: "Securities Company".country_of_registration_id > "Geographic Area".geographic_area_id
+Ref: "Custodian Bank".country_of_registration_id > "Geographic Area".geographic_area_id
+Ref: "Fund Management Company Organization Unit".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Fund Management Company Organization Unit".parent_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+// Ref: "Fund Management Company Organization Unit".legal_representative_id > "Fund Management Company Key Person".fund_management_company_key_person_id // out-of-source
+Ref: "Fund Management Company Organization Unit".country_of_registration_id > "Geographic Area".geographic_area_id
+Ref: "Disclosure Representative".nationality_id > "Geographic Area".geographic_area_id
+Ref: "Foreign Investor".nationality_id > "Geographic Area".geographic_area_id
+Ref: "Foreign Investor".securities_company_id > "Securities Company".securities_company_id
+Ref: "Foreign Investor".custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Foreign Investor".capital_account_custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Disclosure Representative Key Person".nationality_id > "Geographic Area".geographic_area_id
+Ref: "Disclosure Representative Key Person".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Disclosure Representative Key Person".securities_company_id > "Securities Company".securities_company_id
+Ref: "Disclosure Representative Key Person".custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Disclosure Representative Key Person".depository_center_id > "Depository Center".depository_center_id
+Ref: "Disclosure Representative Key Person".stock_exchange_id > "Stock Exchange".stock_exchange_id
+Ref: "Disclosure Representative Key Person".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id
+Ref: "Reporting Period".report_template_id > "Report Template".report_template_id
+Ref: "Member Regulatory Report".report_template_id > "Report Template".report_template_id
+Ref: "Member Regulatory Report".reporting_period_id > "Reporting Period".reporting_period_id
+Ref: "Member Regulatory Report".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Member Regulatory Report".securities_company_id > "Securities Company".securities_company_id
+Ref: "Member Regulatory Report".custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Member Regulatory Report".depository_center_id > "Depository Center".depository_center_id
+Ref: "Member Regulatory Report".stock_exchange_id > "Stock Exchange".stock_exchange_id
+Ref: "Member Regulatory Report".foreign_investor_id > "Foreign Investor".foreign_investor_id
+Ref: "Member Regulatory Report".fund_management_company_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Member Conduct Violation".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Member Conduct Violation".securities_company_id > "Securities Company".securities_company_id
+Ref: "Member Conduct Violation".custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Member Conduct Violation".depository_center_id > "Depository Center".depository_center_id
+Ref: "Member Conduct Violation".stock_exchange_id > "Stock Exchange".stock_exchange_id
+Ref: "Member Conduct Violation".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id
+Ref: "Member Conduct Violation".fund_management_company_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Disclosure Authorization".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id
+Ref: "Disclosure Announcement".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id
+Ref: "Foreign Investor Securities Account".securities_company_id > "Securities Company".securities_company_id
+Ref: "Foreign Investor Securities Account".foreign_investor_id > "Foreign Investor".foreign_investor_id
+Ref: "Foreign Investor Stock Portfolio Snapshot".securities_company_id > "Securities Company".securities_company_id
+Ref: "Foreign Investor Stock Portfolio Snapshot".foreign_investor_id > "Foreign Investor".foreign_investor_id
+Ref: "Member Report Value".member_regulatory_report_id > "Member Regulatory Report".member_regulatory_report_id
+Ref: "Member Report Value".reporting_period_id > "Reporting Period".reporting_period_id
+Ref: "Member Report Value".report_template_id > "Report Template".report_template_id
+Ref: "Member Report Value".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Member Report Value".securities_company_id > "Securities Company".securities_company_id
+Ref: "Member Report Value".custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Member Report Value".depository_center_id > "Depository Center".depository_center_id
+Ref: "Member Report Value".stock_exchange_id > "Stock Exchange".stock_exchange_id
+Ref: "Member Report Value".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id
+Ref: "Member Report Value".fund_management_company_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Involved Party Postal Address".involved_party_id > "Custodian Bank".custodian_bank_id
+Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id
+Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Custodian Bank".custodian_bank_id
+Ref: "Involved Party Postal Address".involved_party_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Involved Party Postal Address".involved_party_id > "Depository Center".depository_center_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Depository Center".depository_center_id
+Ref: "Involved Party Postal Address".involved_party_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Postal Address".involved_party_id > "Disclosure Representative".disclosure_representative_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Disclosure Representative".disclosure_representative_id
+Ref: "Involved Party Postal Address".involved_party_id > "Foreign Investor".foreign_investor_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Foreign Investor".foreign_investor_id
+Ref: "Involved Party Postal Address".involved_party_id > "Securities Company".securities_company_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company".securities_company_id
+Ref: "Involved Party Postal Address".involved_party_id > "Stock Exchange".stock_exchange_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Stock Exchange".stock_exchange_id
+Ref: "Involved Party Postal Address".involved_party_id > "Disclosure Representative Key Person".disclosure_representative_key_person_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Disclosure Representative Key Person".disclosure_representative_key_person_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Custodian Bank".custodian_bank_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company".securities_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Foreign Investor".foreign_investor_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Disclosure Representative Key Person".disclosure_representative_key_person_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Disclosure Representative".disclosure_representative_id

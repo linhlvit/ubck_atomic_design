@@ -1,0 +1,57 @@
+// FMS — UID05 Quản lý báo cáo
+
+Project FMS_UID05 {
+  database_type: "Delta Lake"
+  Note: "FMS — UID05 Quản lý báo cáo"
+}
+
+Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  reporting_period_id bigint [pk]
+  report_template_id bigint
+}
+
+Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  member_periodic_report_id bigint [pk]
+  fund_management_company_id bigint
+  investment_fund_id bigint
+  custodian_bank_id bigint
+  foreign_fund_management_organization_unit_id bigint
+  report_template_id bigint
+  reporting_period_id bigint
+  securities_company_id bigint
+  report_submission_schedule_id bigint
+}
+
+Table "Member Periodic Report Status Log" [note: "Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt."] {
+  member_periodic_report_history_id bigint [pk]
+  member_periodic_report_id bigint
+  changed_by_officer_id bigint
+}
+
+Table "Report Import Value" [note: "Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào hệ thống FMS. Grain ở mức cell-level."] {
+  member_report_value_id bigint [pk]
+  member_periodic_report_id bigint
+  fund_management_company_id bigint
+  investment_fund_id bigint
+  custodian_bank_id bigint
+  foreign_fund_management_organization_unit_id bigint
+  reporting_period_id bigint
+}
+
+// Ref: "Reporting Period".report_template_id > "Report Template".report_template_id // out-of-source
+// Ref: "Member Periodic Report".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
+// Ref: "Member Periodic Report".investment_fund_id > "Investment Fund".investment_fund_id // out-of-source
+// Ref: "Member Periodic Report".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Member Periodic Report".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id // out-of-source
+// Ref: "Member Periodic Report".report_template_id > "Report Template".report_template_id // out-of-source
+Ref: "Member Periodic Report".reporting_period_id > "Reporting Period".reporting_period_id
+// Ref: "Member Periodic Report".securities_company_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Member Periodic Report".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id // out-of-source
+Ref: "Member Periodic Report Status Log".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
+// Ref: "Member Periodic Report Status Log".changed_by_officer_id > "Fund Management Company Key Person".fund_management_company_key_person_id // out-of-source
+Ref: "Report Import Value".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
+// Ref: "Report Import Value".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
+// Ref: "Report Import Value".investment_fund_id > "Investment Fund".investment_fund_id // out-of-source
+// Ref: "Report Import Value".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Report Import Value".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id // out-of-source
+Ref: "Report Import Value".reporting_period_id > "Reporting Period".reporting_period_id

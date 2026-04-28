@@ -1,0 +1,19 @@
+// DCST — UID02 Báo cáo tài chính từ Tổng cục Thuế
+
+Project DCST_UID02 {
+  database_type: "Delta Lake"
+  Note: "DCST — UID02 Báo cáo tài chính từ Tổng cục Thuế"
+}
+
+Table "Tax Financial Statement" [note: "Tờ khai tài chính điện tử nộp lên cơ quan thuế. Ghi nhận kỳ kê khai và thông tin kiểm toán."] {
+  tax_financial_statement_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Tax Financial Statement Item" [note: "Chỉ tiêu chi tiết trong tờ khai tài chính. Ghi nhận giá trị số liệu theo từng ô chỉ tiêu trong biểu mẫu."] {
+  tax_financial_statement_item_id bigint [pk]
+  tax_financial_statement_id bigint
+}
+
+// Ref: "Tax Financial Statement".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id // out-of-source
+Ref: "Tax Financial Statement Item".tax_financial_statement_id > "Tax Financial Statement".tax_financial_statement_id

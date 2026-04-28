@@ -1,0 +1,13 @@
+// NHNCK — UID01 Quản trị phân hệ
+
+Project NHNCK_UID01 {
+  database_type: "Delta Lake"
+  Note: "NHNCK — UID01 Quản trị phân hệ"
+}
+
+Table "Regulatory Authority Organization Unit" [note: "Đơn vị/phòng ban thuộc UBCKNN. Cấu trúc phân cấp gộp Units và Departments."] {
+  organization_unit_id bigint [pk]
+  parent_organization_unit_id bigint
+}
+
+Ref: "Regulatory Authority Organization Unit".parent_organization_unit_id > "Regulatory Authority Organization Unit".organization_unit_id

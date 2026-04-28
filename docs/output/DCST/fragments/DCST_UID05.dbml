@@ -1,0 +1,13 @@
+// DCST — UID05 Giám sát doanh nghiệp rủi ro cao
+
+Project DCST_UID05 {
+  database_type: "Delta Lake"
+  Note: "DCST — UID05 Giám sát doanh nghiệp rủi ro cao"
+}
+
+Table "High Risk Taxpayer Assessment Snapshot" [note: "Đánh giá xếp loại doanh nghiệp rủi ro cao về thuế theo năm. Ghi nhận thông tin tổ chức bị đánh giá rủi ro."] {
+  high_risk_taxpayer_assessment_snapshot_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+// Ref: "High Risk Taxpayer Assessment Snapshot".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id // out-of-source

@@ -1,0 +1,77 @@
+// SCMS — UID02 Quản lý CN CTCK nước ngoài tại VN
+
+Project SCMS_UID02 {
+  database_type: "Delta Lake"
+  Note: "SCMS — UID02 Quản lý CN CTCK nước ngoài tại VN"
+}
+
+Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  securities_company_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  practitioner_id bigint [pk]
+  country_of_residence_geographic_area_id bigint
+  securities_company_id bigint
+}
+
+Table "Securities Company Senior Personnel" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
+  securities_company_senior_personnel_id bigint [pk]
+  securities_company_id bigint
+  organization_unit_id bigint
+  nationality_id bigint
+}
+
+Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  member_periodic_report_id bigint [pk]
+  fund_management_company_id bigint
+  investment_fund_id bigint
+  custodian_bank_id bigint
+  foreign_fund_management_organization_unit_id bigint
+  report_template_id bigint
+  reporting_period_id bigint
+  securities_company_id bigint
+  report_submission_schedule_id bigint
+}
+
+Table "Disclosure Report Submission" [note: "Báo cáo công bố thông tin do CTCK nộp lên UBCKNN theo yêu cầu minh bạch thị trường."] {
+  disclosure_report_submission_id bigint [pk]
+  securities_company_id bigint
+}
+
+Table "Member Report Indicator Value" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
+  member_report_indicator_value_id bigint [pk]
+  report_template_id bigint
+  securities_company_id bigint
+  report_template_sheet_id bigint
+  report_template_row_id bigint
+  report_template_column_id bigint
+  member_periodic_report_id bigint
+  report_template_indicator_id bigint
+  report_indicator_id bigint
+}
+
+// Ref: "Securities Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Securities Practitioner".country_of_residence_geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Securities Practitioner".securities_company_id > "Securities Company".securities_company_id
+Ref: "Securities Company Senior Personnel".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Securities Company Senior Personnel".organization_unit_id > "Securities Company Organization Unit".securities_company_organization_unit_id // out-of-source
+// Ref: "Securities Company Senior Personnel".nationality_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Member Periodic Report".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
+// Ref: "Member Periodic Report".investment_fund_id > "Investment Fund".investment_fund_id // out-of-source
+// Ref: "Member Periodic Report".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Member Periodic Report".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id // out-of-source
+// Ref: "Member Periodic Report".report_template_id > "Report Template".report_template_id // out-of-source
+// Ref: "Member Periodic Report".reporting_period_id > "Reporting Period".reporting_period_id // out-of-source
+Ref: "Member Periodic Report".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Member Periodic Report".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id // out-of-source
+Ref: "Disclosure Report Submission".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Member Report Indicator Value".report_template_id > "Report Template".report_template_id // out-of-source
+Ref: "Member Report Indicator Value".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Member Report Indicator Value".report_template_sheet_id > "Report Template Sheet".report_template_sheet_id // out-of-source
+// Ref: "Member Report Indicator Value".report_template_row_id > "Report Template Row".report_template_row_id // out-of-source
+// Ref: "Member Report Indicator Value".report_template_column_id > "Report Template Column".report_template_column_id // out-of-source
+Ref: "Member Report Indicator Value".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
+// Ref: "Member Report Indicator Value".report_template_indicator_id > "Report Template Indicator".report_template_indicator_id // out-of-source
+// Ref: "Member Report Indicator Value".report_indicator_id > "Report Indicator".report_indicator_id // out-of-source

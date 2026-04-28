@@ -1,0 +1,53 @@
+// SCMS — UID05 Khai thác công ty kiểm toán và kiểm toán viên
+
+Project SCMS_UID05 {
+  database_type: "Delta Lake"
+  Note: "SCMS — UID05 Khai thác công ty kiểm toán và kiểm toán viên"
+}
+
+Table "Audit Firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
+  audit_firm_id bigint [pk]
+}
+
+Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  involved_party_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+  province_id bigint
+  geographic_area_id bigint
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Audit Firm Practitioner" [note: "Kiểm toán viên thuộc công ty kiểm toán. Ghi nhận chứng chỉ kiểm toán và trạng thái hành nghề."] {
+  audit_firm_practitioner_id bigint [pk]
+  audit_firm_id bigint
+}
+
+Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm".audit_firm_id
+// Ref: "Involved Party Postal Address".involved_party_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Organization Unit".securities_company_organization_unit_id // out-of-source
+// Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company Organization Unit".securities_company_organization_unit_id // out-of-source
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Practitioner".practitioner_id // out-of-source
+// Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id // out-of-source
+// Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id // out-of-source
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id // out-of-source
+// Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Shareholder".securities_company_shareholder_id // out-of-source
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder".securities_company_shareholder_id // out-of-source
+Ref: "Audit Firm Practitioner".audit_firm_id > "Audit Firm".audit_firm_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm Practitioner".audit_firm_practitioner_id
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder Representative".securities_company_shareholder_representative_id // out-of-source
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder Related Party".securities_company_shareholder_related_party_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Audit Firm".audit_firm_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm".audit_firm_id
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company".securities_company_id // out-of-source

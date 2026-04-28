@@ -1,0 +1,287 @@
+// Silver Lakehouse — ThanhTra
+
+Project ThanhTra {
+  database_type: "Delta Lake"
+  Note: "Silver Lakehouse — ThanhTra"
+}
+
+Table "Inspection Officer" [note: "Cán bộ thanh tra viên thuộc UBCKNN. Ghi nhận thông tin cá nhân và trạng thái công tác."] {
+  inspection_officer_id bigint [pk]
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+}
+
+Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  public_company_id bigint [pk]
+}
+
+Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  securities_company_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  fund_management_company_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Inspection Subject Other Party" [note: "Đối tượng thanh tra khác (cá nhân hoặc tổ chức) không thuộc danh mục CK/QLQ/ĐC. Phân biệt qua party_type_code."] {
+  inspection_subject_other_party_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Inspection Annual Plan" [note: "Kế hoạch thanh tra kiểm tra cấp năm được phê duyệt. Khởi đầu quy trình thanh tra trong năm."] {
+  inspection_annual_plan_id bigint [pk]
+}
+
+Table "Surveillance Enforcement Case" [note: "Hồ sơ xử lý vi phạm từ kết quả giám sát thị trường. Ghi nhận đối tượng và trạng thái xử lý."] {
+  surveillance_enforcement_case_id bigint [pk]
+  responsible_officer_id bigint
+  processing_officer_id bigint
+}
+
+Table "Complaint Petition" [note: "Đơn thư khiếu nại/tố cáo/phản ánh/kiến nghị nhận từ công dân hoặc tổ chức. Khởi đầu quy trình giải quyết đơn thư."] {
+  complaint_petition_id bigint [pk]
+}
+
+Table "AML Enforcement Case" [note: "Hồ sơ xử lý vi phạm phòng chống rửa tiền. Ghi nhận đối tượng vi phạm và trạng thái xử lý."] {
+  aml_enforcement_case_id bigint [pk]
+  responsible_officer_id bigint
+  processing_officer_id bigint
+}
+
+Table "Anti-Corruption Report" [note: "Báo cáo tổng hợp định kỳ về hoạt động phòng chống tham nhũng. Mỗi dòng = 1 lần lập báo cáo."] {
+  anti_corruption_report_id bigint [pk]
+}
+
+Table "AML Periodic Report" [note: "Báo cáo định kỳ về hoạt động phòng chống rửa tiền. Mỗi dòng = 1 lần lập báo cáo."] {
+  aml_periodic_report_id bigint [pk]
+}
+
+Table "Inspection Annual Plan Subject" [note: "Đối tượng thanh tra được đưa vào kế hoạch năm. Grain: 1 đối tượng × 1 kế hoạch."] {
+  inspection_annual_plan_subject_id bigint [pk]
+  inspection_annual_plan_id bigint
+}
+
+Table "Inspection Annual Plan Document Attachment" [note: "Văn bản đính kèm kế hoạch thanh tra năm. FK → Inspection Annual Plan."] {
+  inspection_annual_plan_document_attachment_id bigint [pk]
+  inspection_annual_plan_id bigint
+}
+
+Table "Inspection Decision" [note: "Quyết định thanh tra/kiểm tra cụ thể. FK → Inspection Annual Plan (nullable — thanh tra đột xuất không có kế hoạch)."] {
+  inspection_decision_id bigint [pk]
+  inspection_annual_plan_id bigint
+}
+
+Table "Complaint Processing Case" [note: "Hồ sơ giải quyết đơn thư khiếu nại/tố cáo. FK → Complaint Petition."] {
+  complaint_processing_case_id bigint [pk]
+  complaint_petition_id bigint
+}
+
+Table "Surveillance Case Document Attachment" [note: "Văn bản đính kèm hồ sơ giám sát. FK → Surveillance Enforcement Case."] {
+  surveillance_case_document_attachment_id bigint [pk]
+  surveillance_enforcement_case_id bigint
+}
+
+Table "Surveillance Enforcement Decision" [note: "Văn bản xử lý vi phạm từ giám sát. FK → Surveillance Enforcement Case."] {
+  surveillance_enforcement_decision_id bigint [pk]
+  surveillance_enforcement_case_id bigint
+}
+
+Table "AML Case Document Attachment" [note: "Văn bản đính kèm hồ sơ PCRT. FK → AML Enforcement Case."] {
+  aml_case_document_attachment_id bigint [pk]
+  aml_enforcement_case_id bigint
+}
+
+Table "AML Enforcement Decision" [note: "Văn bản xử lý vi phạm rửa tiền. FK → AML Enforcement Case."] {
+  aml_enforcement_decision_id bigint [pk]
+  aml_enforcement_case_id bigint
+}
+
+Table "Inspection Decision Subject" [note: "Đối tượng cụ thể được thanh tra theo một quyết định. FK → Inspection Decision."] {
+  inspection_decision_subject_id bigint [pk]
+  inspection_decision_id bigint
+}
+
+Table "Inspection Decision Team Member" [note: "Thành viên đoàn thanh tra chỉ định theo quyết định. FK → Inspection Decision + FK → Inspection Officer."] {
+  inspection_decision_team_member_id bigint [pk]
+  inspection_decision_id bigint
+  inspection_officer_id bigint
+}
+
+Table "Inspection Decision Document Attachment" [note: "Văn bản đính kèm quyết định thanh tra. FK → Inspection Decision."] {
+  inspection_decision_document_attachment_id bigint [pk]
+  inspection_decision_id bigint
+}
+
+Table "Inspection Case" [note: "Hồ sơ thanh tra cụ thể — tập hợp tài liệu và kết quả 1 cuộc thanh tra. FK → Inspection Decision. Thông tin đối tượng denormalized (snapshot tại thời điểm thanh tra)."] {
+  inspection_case_id bigint [pk]
+  inspection_decision_id bigint
+  responsible_officer_id bigint
+  processing_officer_id bigint
+}
+
+Table "Complaint Processing Case Document Attachment" [note: "Văn bản đính kèm hồ sơ giải quyết đơn thư. FK → Complaint Processing Case."] {
+  complaint_processing_case_document_attachment_id bigint [pk]
+  complaint_processing_case_id bigint
+}
+
+Table "Complaint Processing Conclusion" [note: "Kết luận giải quyết đơn thư. FK → Complaint Processing Case."] {
+  complaint_processing_conclusion_id bigint [pk]
+  complaint_processing_case_id bigint
+}
+
+Table "Complaint Enforcement Decision" [note: "Văn bản xử lý / quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Processing Case."] {
+  complaint_enforcement_decision_id bigint [pk]
+  complaint_processing_case_id bigint
+}
+
+Table "Surveillance Enforcement Decision File Attachment" [note: "File đính kèm văn bản xử lý giám sát. FK → Surveillance Enforcement Decision."] {
+  surveillance_enforcement_decision_file_attachment_id bigint [pk]
+  surveillance_enforcement_decision_id bigint
+}
+
+Table "Surveillance Penalty Announcement" [note: "Công bố quyết định xử phạt từ giám sát. FK → Surveillance Enforcement Decision."] {
+  surveillance_penalty_announcement_id bigint [pk]
+  surveillance_enforcement_case_id bigint
+  surveillance_enforcement_decision_id bigint
+}
+
+Table "Inspection Case Officer Assignment" [note: "Phân công cán bộ phụ trách hồ sơ thanh tra. FK → Inspection Case + FK → Inspection Officer."] {
+  inspection_case_officer_assignment_id bigint [pk]
+  inspection_case_id bigint
+  inspection_officer_id bigint
+}
+
+Table "Inspection Case Document Attachment" [note: "Văn bản đính kèm hồ sơ thanh tra (biên bản làm việc v.v.). FK → Inspection Case."] {
+  inspection_case_document_attachment_id bigint [pk]
+  inspection_case_id bigint
+}
+
+Table "Inspection Case Conclusion" [note: "Kết luận thanh tra kèm thông tin xử lý vi phạm. FK → Inspection Case."] {
+  inspection_case_conclusion_id bigint [pk]
+  inspection_case_id bigint
+}
+
+Table "Complaint Penalty Announcement" [note: "Công bố quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Enforcement Decision."] {
+  complaint_penalty_announcement_id bigint [pk]
+  complaint_processing_case_id bigint
+  complaint_enforcement_decision_id bigint
+}
+
+Table "Inspection Penalty Announcement" [note: "Công bố quyết định xử phạt từ kết luận thanh tra. FK → Inspection Case Conclusion."] {
+  inspection_penalty_announcement_id bigint [pk]
+  inspection_case_id bigint
+  inspection_case_conclusion_id bigint
+}
+
+TableGroup "UID01 — Hoạt động thanh tra - kiểm tra" {
+  "Public Company"
+  "Securities Company"
+  "Fund Management Company"
+  "Inspection Subject Other Party"
+  "Inspection Annual Plan"
+  "Inspection Annual Plan Subject"
+  "Inspection Annual Plan Document Attachment"
+  "Inspection Decision"
+  "Inspection Decision Subject"
+  "Inspection Decision Team Member"
+  "Inspection Decision Document Attachment"
+  "Inspection Case"
+  "Inspection Case Officer Assignment"
+  "Inspection Case Document Attachment"
+  "Inspection Case Conclusion"
+  "Inspection Penalty Announcement"
+}
+
+TableGroup "UID02 — Xử lý vi phạm hành chính" {
+  "Surveillance Enforcement Case"
+  "Surveillance Case Document Attachment"
+  "Surveillance Enforcement Decision"
+  "Surveillance Enforcement Decision File Attachment"
+  "Surveillance Penalty Announcement"
+}
+
+TableGroup "UID03 — Tiếp công dân, xử lý đơn thư" {
+  "Complaint Petition"
+  "Complaint Processing Case"
+  "Complaint Processing Case Document Attachment"
+  "Complaint Processing Conclusion"
+  "Complaint Enforcement Decision"
+  "Complaint Penalty Announcement"
+}
+
+TableGroup "UID04 — Phòng chống tham nhũng, tiêu cực" {
+  "Anti-Corruption Report"
+}
+
+TableGroup "UID05 — Phòng chống rửa tiền, tài trợ khủng bố" {
+  "AML Enforcement Case"
+  "AML Periodic Report"
+  "AML Case Document Attachment"
+  "AML Enforcement Decision"
+}
+
+TableGroup "UID08 — Quản trị phân hệ" {
+  "Inspection Officer"
+  "Public Company"
+  "Securities Company"
+  "Fund Management Company"
+  "Inspection Subject Other Party"
+}
+
+Ref: "Involved Party Electronic Address".involved_party_id > "Inspection Officer".inspection_officer_id
+Ref: "Involved Party Postal Address".involved_party_id > "Inspection Officer".inspection_officer_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Public Company".public_company_id
+Ref: "Involved Party Postal Address".involved_party_id > "Public Company".public_company_id
+// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Securities Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company".securities_company_id
+Ref: "Involved Party Postal Address".involved_party_id > "Securities Company".securities_company_id
+// Ref: "Fund Management Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Electronic Address".involved_party_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Postal Address".involved_party_id > "Fund Management Company".fund_management_company_id
+// Ref: "Inspection Subject Other Party".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Electronic Address".involved_party_id > "Inspection Subject Other Party".inspection_subject_other_party_id
+Ref: "Involved Party Postal Address".involved_party_id > "Inspection Subject Other Party".inspection_subject_other_party_id
+Ref: "Surveillance Enforcement Case".responsible_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "Surveillance Enforcement Case".processing_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "AML Enforcement Case".responsible_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "AML Enforcement Case".processing_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "Inspection Annual Plan Subject".inspection_annual_plan_id > "Inspection Annual Plan".inspection_annual_plan_id
+Ref: "Inspection Annual Plan Document Attachment".inspection_annual_plan_id > "Inspection Annual Plan".inspection_annual_plan_id
+Ref: "Inspection Decision".inspection_annual_plan_id > "Inspection Annual Plan".inspection_annual_plan_id
+Ref: "Complaint Processing Case".complaint_petition_id > "Complaint Petition".complaint_petition_id
+Ref: "Surveillance Case Document Attachment".surveillance_enforcement_case_id > "Surveillance Enforcement Case".surveillance_enforcement_case_id
+Ref: "Surveillance Enforcement Decision".surveillance_enforcement_case_id > "Surveillance Enforcement Case".surveillance_enforcement_case_id
+Ref: "AML Case Document Attachment".aml_enforcement_case_id > "AML Enforcement Case".aml_enforcement_case_id
+Ref: "AML Enforcement Decision".aml_enforcement_case_id > "AML Enforcement Case".aml_enforcement_case_id
+Ref: "Inspection Decision Subject".inspection_decision_id > "Inspection Decision".inspection_decision_id
+Ref: "Inspection Decision Team Member".inspection_decision_id > "Inspection Decision".inspection_decision_id
+Ref: "Inspection Decision Team Member".inspection_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "Inspection Decision Document Attachment".inspection_decision_id > "Inspection Decision".inspection_decision_id
+Ref: "Inspection Case".inspection_decision_id > "Inspection Decision".inspection_decision_id
+Ref: "Inspection Case".responsible_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "Inspection Case".processing_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "Complaint Processing Case Document Attachment".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Complaint Processing Conclusion".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Complaint Enforcement Decision".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Surveillance Enforcement Decision File Attachment".surveillance_enforcement_decision_id > "Surveillance Enforcement Decision".surveillance_enforcement_decision_id
+Ref: "Surveillance Penalty Announcement".surveillance_enforcement_case_id > "Surveillance Enforcement Case".surveillance_enforcement_case_id
+Ref: "Surveillance Penalty Announcement".surveillance_enforcement_decision_id > "Surveillance Enforcement Decision".surveillance_enforcement_decision_id
+Ref: "Inspection Case Officer Assignment".inspection_case_id > "Inspection Case".inspection_case_id
+Ref: "Inspection Case Officer Assignment".inspection_officer_id > "Inspection Officer".inspection_officer_id
+Ref: "Inspection Case Document Attachment".inspection_case_id > "Inspection Case".inspection_case_id
+Ref: "Inspection Case Conclusion".inspection_case_id > "Inspection Case".inspection_case_id
+Ref: "Complaint Penalty Announcement".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Complaint Penalty Announcement".complaint_enforcement_decision_id > "Complaint Enforcement Decision".complaint_enforcement_decision_id
+Ref: "Inspection Penalty Announcement".inspection_case_id > "Inspection Case".inspection_case_id
+Ref: "Inspection Penalty Announcement".inspection_case_conclusion_id > "Inspection Case Conclusion".inspection_case_conclusion_id

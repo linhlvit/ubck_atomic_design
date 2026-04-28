@@ -1,0 +1,27 @@
+// NHNCK — UID03 Quản lý hồ sơ
+
+Project NHNCK_UID03 {
+  database_type: "Delta Lake"
+  Note: "NHNCK — UID03 Quản lý hồ sơ"
+}
+
+Table "Securities Practitioner License Application" [note: "Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý."] {
+  license_application_id bigint [pk]
+  practitioner_id bigint
+  license_certificate_document_id bigint
+  previous_license_certificate_document_id bigint
+  examination_assessment_id bigint
+  assignee_officer_id bigint
+  license_application_verification_status_id bigint
+  created_by_officer_id bigint
+  updated_by_officer_id bigint
+}
+
+// Ref: "Securities Practitioner License Application".practitioner_id > "Securities Practitioner".practitioner_id // out-of-source
+// Ref: "Securities Practitioner License Application".license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id // out-of-source
+// Ref: "Securities Practitioner License Application".previous_license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id // out-of-source
+// Ref: "Securities Practitioner License Application".examination_assessment_id > "Securities Practitioner Qualification Examination Assessment".examination_assessment_id // out-of-source
+// Ref: "Securities Practitioner License Application".assignee_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
+// Ref: "Securities Practitioner License Application".license_application_verification_status_id > "Securities Practitioner License Application Verification Status".license_application_verification_status_id // out-of-source
+// Ref: "Securities Practitioner License Application".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
+// Ref: "Securities Practitioner License Application".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source

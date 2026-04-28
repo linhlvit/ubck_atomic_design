@@ -1,0 +1,257 @@
+// Silver Lakehouse — FMS
+
+Project FMS {
+  database_type: "Delta Lake"
+  Note: "Silver Lakehouse — FMS"
+}
+
+Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  fund_management_company_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+  province_id bigint
+  geographic_area_id bigint
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  involved_party_id bigint
+}
+
+Table "Foreign Fund Management Organization Unit" [note: "Văn phòng đại diện hoặc chi nhánh của công ty quản lý quỹ nước ngoài tại Việt Nam được UBCKNN chấp thuận hoạt động."] {
+  foreign_fund_management_organization_unit_id bigint [pk]
+}
+
+Table "Custodian Bank" [note: "Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ."] {
+  custodian_bank_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Fund Distribution Agent" [note: "Tổ chức đại lý được ủy quyền phân phối chứng chỉ quỹ đầu tư cho nhà đầu tư."] {
+  fund_distribution_agent_id bigint [pk]
+}
+
+Table "Discretionary Investment Investor" [note: "Nhà đầu tư ủy thác — cá nhân hoặc tổ chức giao tài sản cho công ty quản lý quỹ quản lý theo hợp đồng ủy thác đầu tư."] {
+  discretionary_investment_investor_id bigint [pk]
+  fund_management_company_id bigint
+}
+
+Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  reporting_period_id bigint [pk]
+  report_template_id bigint
+}
+
+Table "Member Rating Period" [note: "Kỳ đánh giá xếp loại định kỳ cho các thành viên thị trường (công ty quản lý quỹ). Xác định phạm vi thời gian áp dụng tiêu chí chấm điểm."] {
+  member_rating_period_id bigint [pk]
+}
+
+Table "Investment Fund" [note: "Quỹ đầu tư chứng khoán — pháp nhân độc lập do công ty quản lý quỹ thành lập và quản lý. Lưu thông tin pháp lý và vốn của quỹ."] {
+  investment_fund_id bigint [pk]
+  fund_management_company_id bigint
+}
+
+Table "Fund Management Company Key Person" [note: "Nhân sự chủ chốt của công ty quản lý quỹ (giám đốc/chuyên gia đầu tư/người được ủy quyền). Lưu thông tin cá nhân và chứng chỉ hành nghề."] {
+  fund_management_company_key_person_id bigint [pk]
+  fund_management_company_id bigint
+}
+
+Table "Fund Management Company Organization Unit" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
+  fund_management_company_organization_unit_id bigint [pk]
+  fund_management_company_id bigint
+  parent_organization_unit_id bigint
+  legal_representative_id bigint
+  country_of_registration_id bigint
+}
+
+Table "Fund Distribution Agent Organization Unit" [note: "Chi nhánh hoặc phòng giao dịch của tổ chức đại lý phân phối quỹ đầu tư."] {
+  fund_distribution_agent_organization_unit_id bigint [pk]
+  fund_distribution_agent_id bigint
+}
+
+Table "Discretionary Investment Account" [note: "Tài khoản đầu tư ủy thác — hợp đồng dịch vụ quản lý danh mục tài chính giữa nhà đầu tư ủy thác và công ty quản lý quỹ."] {
+  discretionary_investment_account_id bigint [pk]
+  discretionary_investment_investor_id bigint
+}
+
+Table "Member Rating" [note: "Kết quả xếp loại của một công ty quản lý quỹ trong một kỳ đánh giá. Ghi nhận điểm tổng hợp và hạng xếp loại."] {
+  member_rating_id bigint [pk]
+  fund_management_company_id bigint
+  member_rating_period_id bigint
+}
+
+Table "Rating Criterion" [note: "Tiêu chí chấm điểm đánh giá xếp loại thành viên thị trường. Lưu tên tiêu chí và điểm tối đa/trọng số. Có cấu trúc cha/con."] {
+  rating_criterion_id bigint [pk]
+  parent_rating_criterion_id bigint
+}
+
+Table "Investment Fund Investor Membership" [note: "Quan hệ thành viên của nhà đầu tư trong một quỹ đầu tư. Lưu tỷ lệ vốn góp và trạng thái tham gia."] {
+  investment_fund_investor_membership_id bigint [pk]
+  investment_fund_id bigint
+  discretionary_investment_investor_id bigint
+}
+
+Table "Investment Fund Representative Board Member" [note: "Thành viên ban đại diện hoặc hội đồng quản trị của quỹ đầu tư. Cá nhân đảm nhận vai trò quản trị trong cơ cấu tổ chức quỹ."] {
+  investment_fund_representative_board_member_id bigint [pk]
+  investment_fund_id bigint
+  fund_management_company_key_person_id bigint
+}
+
+Table "Foreign Fund Management Organization Unit Staff" [note: "Nhân sự đảm nhận chức vụ tại văn phòng đại diện/chi nhánh công ty quản lý quỹ nước ngoài. Ghi nhận vai trò và tư cách pháp lý."] {
+  foreign_fund_management_organization_unit_staff_id bigint [pk]
+  foreign_fund_management_organization_unit_id bigint
+  fund_management_company_key_person_id bigint
+}
+
+Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  member_periodic_report_id bigint [pk]
+  fund_management_company_id bigint
+  investment_fund_id bigint
+  custodian_bank_id bigint
+  foreign_fund_management_organization_unit_id bigint
+  report_template_id bigint
+  reporting_period_id bigint
+  securities_company_id bigint
+  report_submission_schedule_id bigint
+}
+
+Table "Fund Management Company Share Transfer" [note: "Giao dịch chuyển nhượng cổ phần của công ty quản lý quỹ. Ghi nhận bên chuyển nhượng/nhận nhượng và giá trị giao dịch."] {
+  fund_management_company_share_transfer_id bigint [pk]
+  fund_management_company_id bigint
+}
+
+Table "Fund Management Conduct Violation" [note: "Vi phạm pháp luật hoặc hành chính của công ty quản lý quỹ hoặc quỹ đầu tư. Ghi nhận loại vi phạm và trạng thái xử lý."] {
+  fund_management_conduct_violation_id bigint [pk]
+  fund_management_company_id bigint
+  investment_fund_id bigint
+}
+
+Table "Investment Fund Certificate Transfer" [note: "Giao dịch mua/bán chứng chỉ quỹ của nhà đầu tư thành viên. Ghi nhận số lượng và giá giao dịch theo từng quỹ."] {
+  investment_fund_investor_capital_transfer_id bigint [pk]
+  investment_fund_id bigint
+  investment_fund_investor_membership_id bigint
+}
+
+Table "Investment Fund Investor Capital Change Log" [note: "Lịch sử thay đổi phần vốn góp của nhà đầu tư trong quỹ đầu tư. Ghi nhận vốn trước/sau và lý do thay đổi."] {
+  investment_fund_investor_capital_change_log_id bigint [pk]
+  investment_fund_investor_membership_id bigint
+}
+
+Table "Member Periodic Report Status Log" [note: "Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt."] {
+  member_periodic_report_history_id bigint [pk]
+  member_periodic_report_id bigint
+  changed_by_officer_id bigint
+}
+
+Table "Report Import Value" [note: "Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào hệ thống FMS. Grain ở mức cell-level."] {
+  member_report_value_id bigint [pk]
+  member_periodic_report_id bigint
+  fund_management_company_id bigint
+  investment_fund_id bigint
+  custodian_bank_id bigint
+  foreign_fund_management_organization_unit_id bigint
+  reporting_period_id bigint
+}
+
+TableGroup "UID03 — Thông tin thành viên — Công ty QLQ" {
+  "Fund Management Company"
+  "Foreign Fund Management Organization Unit Staff"
+}
+
+TableGroup "UID04 — Quỹ đầu tư chứng khoán" {
+  "Fund Management Company"
+  "Investment Fund"
+  "Discretionary Investment Account"
+  "Investment Fund Investor Membership"
+  "Investment Fund Representative Board Member"
+  "Fund Management Company Share Transfer"
+  "Investment Fund Certificate Transfer"
+  "Investment Fund Investor Capital Change Log"
+}
+
+TableGroup "UID05 — Quản lý báo cáo" {
+  "Reporting Period"
+  "Member Periodic Report"
+  "Member Periodic Report Status Log"
+  "Report Import Value"
+}
+
+TableGroup "UID06 — Đánh giá xếp loại và cảnh báo" {
+  "Member Rating Period"
+  "Member Rating"
+  "Rating Criterion"
+}
+
+TableGroup "UID07 — Tiện ích và hệ thống" {
+  "Fund Management Conduct Violation"
+}
+
+// Ref: "Fund Management Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Fund Management Company".fund_management_company_id
+// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Electronic Address".involved_party_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Postal Address".involved_party_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id
+// Ref: "Custodian Bank".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Custodian Bank".custodian_bank_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Custodian Bank".custodian_bank_id
+Ref: "Involved Party Postal Address".involved_party_id > "Fund Distribution Agent".fund_distribution_agent_id
+Ref: "Discretionary Investment Investor".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Discretionary Investment Investor".discretionary_investment_investor_id
+// Ref: "Reporting Period".report_template_id > "Report Template".report_template_id // out-of-source
+Ref: "Investment Fund".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Investment Fund".investment_fund_id
+Ref: "Fund Management Company Key Person".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Fund Management Company Key Person".fund_management_company_key_person_id
+Ref: "Fund Management Company Organization Unit".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Fund Management Company Organization Unit".parent_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Fund Management Company Organization Unit".legal_representative_id > "Fund Management Company Key Person".fund_management_company_key_person_id
+// Ref: "Fund Management Company Organization Unit".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id
+Ref: "Fund Distribution Agent Organization Unit".fund_distribution_agent_id > "Fund Distribution Agent".fund_distribution_agent_id
+Ref: "Involved Party Postal Address".involved_party_id > "Fund Distribution Agent Organization Unit".fund_distribution_agent_organization_unit_id
+Ref: "Discretionary Investment Account".discretionary_investment_investor_id > "Discretionary Investment Investor".discretionary_investment_investor_id
+Ref: "Member Rating".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Member Rating".member_rating_period_id > "Member Rating Period".member_rating_period_id
+Ref: "Rating Criterion".parent_rating_criterion_id > "Rating Criterion".rating_criterion_id
+Ref: "Investment Fund Investor Membership".investment_fund_id > "Investment Fund".investment_fund_id
+Ref: "Investment Fund Investor Membership".discretionary_investment_investor_id > "Discretionary Investment Investor".discretionary_investment_investor_id
+Ref: "Investment Fund Representative Board Member".investment_fund_id > "Investment Fund".investment_fund_id
+Ref: "Investment Fund Representative Board Member".fund_management_company_key_person_id > "Fund Management Company Key Person".fund_management_company_key_person_id
+Ref: "Foreign Fund Management Organization Unit Staff".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id
+Ref: "Foreign Fund Management Organization Unit Staff".fund_management_company_key_person_id > "Fund Management Company Key Person".fund_management_company_key_person_id
+Ref: "Member Periodic Report".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Member Periodic Report".investment_fund_id > "Investment Fund".investment_fund_id
+Ref: "Member Periodic Report".custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Member Periodic Report".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id
+// Ref: "Member Periodic Report".report_template_id > "Report Template".report_template_id // out-of-source
+Ref: "Member Periodic Report".reporting_period_id > "Reporting Period".reporting_period_id
+// Ref: "Member Periodic Report".securities_company_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Member Periodic Report".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id // out-of-source
+Ref: "Fund Management Company Share Transfer".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Fund Management Conduct Violation".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Fund Management Conduct Violation".investment_fund_id > "Investment Fund".investment_fund_id
+Ref: "Investment Fund Certificate Transfer".investment_fund_id > "Investment Fund".investment_fund_id
+Ref: "Investment Fund Certificate Transfer".investment_fund_investor_membership_id > "Investment Fund Investor Membership".investment_fund_investor_membership_id
+Ref: "Investment Fund Investor Capital Change Log".investment_fund_investor_membership_id > "Investment Fund Investor Membership".investment_fund_investor_membership_id
+Ref: "Member Periodic Report Status Log".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
+Ref: "Member Periodic Report Status Log".changed_by_officer_id > "Fund Management Company Key Person".fund_management_company_key_person_id
+Ref: "Report Import Value".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
+Ref: "Report Import Value".fund_management_company_id > "Fund Management Company".fund_management_company_id
+Ref: "Report Import Value".investment_fund_id > "Investment Fund".investment_fund_id
+Ref: "Report Import Value".custodian_bank_id > "Custodian Bank".custodian_bank_id
+Ref: "Report Import Value".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id
+Ref: "Report Import Value".reporting_period_id > "Reporting Period".reporting_period_id

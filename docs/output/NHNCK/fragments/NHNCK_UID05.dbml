@@ -1,0 +1,15 @@
+// NHNCK — UID05 Quản lý chứng chỉ hành nghề
+
+Project NHNCK_UID05 {
+  database_type: "Delta Lake"
+  Note: "NHNCK — UID05 Quản lý chứng chỉ hành nghề"
+}
+
+Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  practitioner_id bigint [pk]
+  country_of_residence_geographic_area_id bigint
+  securities_company_id bigint
+}
+
+// Ref: "Securities Practitioner".country_of_residence_geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Securities Practitioner".securities_company_id > "Securities Company".securities_company_id // out-of-source

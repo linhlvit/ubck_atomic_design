@@ -1,0 +1,43 @@
+// ThanhTra — UID03 Tiếp công dân, xử lý đơn thư
+
+Project ThanhTra_UID03 {
+  database_type: "Delta Lake"
+  Note: "ThanhTra — UID03 Tiếp công dân, xử lý đơn thư"
+}
+
+Table "Complaint Petition" [note: "Đơn thư khiếu nại/tố cáo/phản ánh/kiến nghị nhận từ công dân hoặc tổ chức. Khởi đầu quy trình giải quyết đơn thư."] {
+  complaint_petition_id bigint [pk]
+}
+
+Table "Complaint Processing Case" [note: "Hồ sơ giải quyết đơn thư khiếu nại/tố cáo. FK → Complaint Petition."] {
+  complaint_processing_case_id bigint [pk]
+  complaint_petition_id bigint
+}
+
+Table "Complaint Processing Case Document Attachment" [note: "Văn bản đính kèm hồ sơ giải quyết đơn thư. FK → Complaint Processing Case."] {
+  complaint_processing_case_document_attachment_id bigint [pk]
+  complaint_processing_case_id bigint
+}
+
+Table "Complaint Processing Conclusion" [note: "Kết luận giải quyết đơn thư. FK → Complaint Processing Case."] {
+  complaint_processing_conclusion_id bigint [pk]
+  complaint_processing_case_id bigint
+}
+
+Table "Complaint Enforcement Decision" [note: "Văn bản xử lý / quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Processing Case."] {
+  complaint_enforcement_decision_id bigint [pk]
+  complaint_processing_case_id bigint
+}
+
+Table "Complaint Penalty Announcement" [note: "Công bố quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Enforcement Decision."] {
+  complaint_penalty_announcement_id bigint [pk]
+  complaint_processing_case_id bigint
+  complaint_enforcement_decision_id bigint
+}
+
+Ref: "Complaint Processing Case".complaint_petition_id > "Complaint Petition".complaint_petition_id
+Ref: "Complaint Processing Case Document Attachment".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Complaint Processing Conclusion".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Complaint Enforcement Decision".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Complaint Penalty Announcement".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
+Ref: "Complaint Penalty Announcement".complaint_enforcement_decision_id > "Complaint Enforcement Decision".complaint_enforcement_decision_id

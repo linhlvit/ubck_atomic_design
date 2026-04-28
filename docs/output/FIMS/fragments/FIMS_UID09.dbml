@@ -1,0 +1,25 @@
+// FIMS — UID09 Cảnh báo
+
+Project FIMS_UID09 {
+  database_type: "Delta Lake"
+  Note: "FIMS — UID09 Cảnh báo"
+}
+
+Table "Member Conduct Violation" [note: "Vi phạm được ghi nhận từ cảnh báo hệ thống hoặc kiểm tra định kỳ đối với thành viên thị trường."] {
+  member_conduct_violation_id bigint [pk]
+  fund_management_company_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  depository_center_id bigint
+  stock_exchange_id bigint
+  disclosure_representative_id bigint
+  fund_management_company_organization_unit_id bigint
+}
+
+// Ref: "Member Conduct Violation".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
+// Ref: "Member Conduct Violation".securities_company_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Member Conduct Violation".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Member Conduct Violation".depository_center_id > "Depository Center".depository_center_id // out-of-source
+// Ref: "Member Conduct Violation".stock_exchange_id > "Stock Exchange".stock_exchange_id // out-of-source
+// Ref: "Member Conduct Violation".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id // out-of-source
+// Ref: "Member Conduct Violation".fund_management_company_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id // out-of-source

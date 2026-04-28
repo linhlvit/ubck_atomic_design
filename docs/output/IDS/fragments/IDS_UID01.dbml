@@ -1,0 +1,57 @@
+// IDS — UID01 Quản lý hồ sơ công ty đại chúng
+
+Project IDS_UID01 {
+  database_type: "Delta Lake"
+  Note: "IDS — UID01 Quản lý hồ sơ công ty đại chúng"
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+  province_id bigint
+  geographic_area_id bigint
+}
+
+Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  public_company_id bigint [pk]
+}
+
+Table "Public Company Legal Representative" [note: "Người đại diện pháp luật và người CBTT của công ty đại chúng — representative_role_code phân biệt 2 vai trò. FK to Public Company."] {
+  public_company_legal_representative_id bigint [pk]
+  public_company_id bigint
+}
+
+Table "Public Company Related Entity" [note: "Công ty mẹ/con/liên kết của công ty đại chúng — tên/MST/vốn/tỷ lệ sở hữu/thời hạn hiệu lực. FK to Public Company."] {
+  public_company_related_entity_id bigint [pk]
+  public_company_id bigint
+}
+
+Table "Public Company State Capital" [note: "Thông tin sở hữu nhà nước trong công ty đại chúng — tên đại diện nhà nước và tỷ lệ sở hữu. FK to Public Company."] {
+  public_company_state_capital_id bigint [pk]
+  public_company_id bigint
+}
+
+Table "Public Company Foreign Ownership Limit" [note: "Giới hạn tỷ lệ sở hữu nước ngoài của công ty đại chúng — max_owner_rate và khoảng thời gian áp dụng. FK to Public Company."] {
+  public_company_foreign_ownership_limit_id bigint [pk]
+  public_company_id bigint
+}
+
+// Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm".audit_firm_id // out-of-source
+// Ref: "Involved Party Postal Address".involved_party_id > "Audit Firm".audit_firm_id // out-of-source
+// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Public Company".public_company_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Public Company".public_company_id
+// Ref: "Involved Party Postal Address".involved_party_id > "Stock Holder".stock_holder_id // out-of-source
+// Ref: "Involved Party Electronic Address".involved_party_id > "Stock Holder".stock_holder_id // out-of-source
+// Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm Legal Representative".audit_firm_legal_representative_id // out-of-source
+Ref: "Public Company Legal Representative".public_company_id > "Public Company".public_company_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Public Company Legal Representative".public_company_legal_representative_id
+Ref: "Public Company Related Entity".public_company_id > "Public Company".public_company_id
+Ref: "Public Company State Capital".public_company_id > "Public Company".public_company_id
+Ref: "Public Company Foreign Ownership Limit".public_company_id > "Public Company".public_company_id

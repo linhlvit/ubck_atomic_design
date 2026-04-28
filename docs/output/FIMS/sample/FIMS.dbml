@@ -1,0 +1,24 @@
+// Silver Lakehouse — FIMS
+
+Project FIMS {
+  database_type: "Delta Lake"
+  Note: "Silver Lakehouse — FIMS"
+}
+
+Table "Stock Exchange" [note: "So giao dich chung khoan - thanh vien thi truong trong he thong FIMS (HNX, HOSE)."] {
+  stock_exchange_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Depository Center" [note: "Trung tam luu ky chung khoan quoc gia - thanh vien thi truong trong he thong FIMS (VSD)."] {
+  depository_center_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+TableGroup "UID03 — Đối tượng gửi báo cáo" {
+  "Stock Exchange"
+  "Depository Center"
+}
+
+// Ref: "Stock Exchange".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Depository Center".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source

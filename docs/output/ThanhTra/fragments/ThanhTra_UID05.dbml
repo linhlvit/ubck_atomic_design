@@ -1,0 +1,31 @@
+// ThanhTra — UID05 Phòng chống rửa tiền, tài trợ khủng bố
+
+Project ThanhTra_UID05 {
+  database_type: "Delta Lake"
+  Note: "ThanhTra — UID05 Phòng chống rửa tiền, tài trợ khủng bố"
+}
+
+Table "AML Enforcement Case" [note: "Hồ sơ xử lý vi phạm phòng chống rửa tiền. Ghi nhận đối tượng vi phạm và trạng thái xử lý."] {
+  aml_enforcement_case_id bigint [pk]
+  responsible_officer_id bigint
+  processing_officer_id bigint
+}
+
+Table "AML Periodic Report" [note: "Báo cáo định kỳ về hoạt động phòng chống rửa tiền. Mỗi dòng = 1 lần lập báo cáo."] {
+  aml_periodic_report_id bigint [pk]
+}
+
+Table "AML Case Document Attachment" [note: "Văn bản đính kèm hồ sơ PCRT. FK → AML Enforcement Case."] {
+  aml_case_document_attachment_id bigint [pk]
+  aml_enforcement_case_id bigint
+}
+
+Table "AML Enforcement Decision" [note: "Văn bản xử lý vi phạm rửa tiền. FK → AML Enforcement Case."] {
+  aml_enforcement_decision_id bigint [pk]
+  aml_enforcement_case_id bigint
+}
+
+// Ref: "AML Enforcement Case".responsible_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
+// Ref: "AML Enforcement Case".processing_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
+Ref: "AML Case Document Attachment".aml_enforcement_case_id > "AML Enforcement Case".aml_enforcement_case_id
+Ref: "AML Enforcement Decision".aml_enforcement_case_id > "AML Enforcement Case".aml_enforcement_case_id

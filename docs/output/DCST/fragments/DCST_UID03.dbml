@@ -1,0 +1,25 @@
+// DCST — UID03 Cưỡng chế nợ thuế
+
+Project DCST_UID03 {
+  database_type: "Delta Lake"
+  Note: "DCST — UID03 Cưỡng chế nợ thuế"
+}
+
+Table "Tax Debt Enforcement Order" [note: "Quyết định cưỡng chế nợ thuế. Ghi nhận hình thức cưỡng chế và thông tin tài sản/tài khoản liên quan."] {
+  tax_debt_enforcement_order_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Tax Invoice Enforcement Order" [note: "Quyết định cưỡng chế nợ thuế theo hình thức ngừng sử dụng hóa đơn. Ghi nhận thông tin quyết định và thông báo."] {
+  tax_invoice_enforcement_order_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Tax Invoice Enforcement Order Item" [note: "Chi tiết hóa đơn thuộc quyết định cưỡng chế ngừng sử dụng hóa đơn. Ghi nhận số hiệu và loại hóa đơn."] {
+  tax_invoice_enforcement_order_item_id bigint [pk]
+  tax_invoice_enforcement_order_id bigint
+}
+
+// Ref: "Tax Debt Enforcement Order".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id // out-of-source
+// Ref: "Tax Invoice Enforcement Order".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id // out-of-source
+Ref: "Tax Invoice Enforcement Order Item".tax_invoice_enforcement_order_id > "Tax Invoice Enforcement Order".tax_invoice_enforcement_order_id

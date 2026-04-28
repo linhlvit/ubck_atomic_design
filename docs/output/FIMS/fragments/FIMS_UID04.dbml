@@ -1,0 +1,39 @@
+// FIMS — UID04 Nhà đầu tư nước ngoài
+
+Project FIMS_UID04 {
+  database_type: "Delta Lake"
+  Note: "FIMS — UID04 Nhà đầu tư nước ngoài"
+}
+
+Table "Foreign Investor" [note: "Danh mục nhà đầu tư đăng ký giao dịch trên thị trường chứng khoán. Bao gồm cá nhân và tổ chức, phân biệt bằng ObjectType."] {
+  foreign_investor_id bigint [pk]
+  nationality_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  capital_account_custodian_bank_id bigint
+}
+
+Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  geographic_area_id bigint [pk]
+}
+
+Table "Foreign Investor Securities Account" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
+  foreign_investor_securities_account_id bigint [pk]
+  securities_company_id bigint
+  foreign_investor_id bigint
+}
+
+Table "Foreign Investor Stock Portfolio Snapshot" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
+  foreign_investor_stock_portfolio_snapshot_id bigint [pk]
+  securities_company_id bigint
+  foreign_investor_id bigint
+}
+
+Ref: "Foreign Investor".nationality_id > "Geographic Area".geographic_area_id
+// Ref: "Foreign Investor".securities_company_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Foreign Investor".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Foreign Investor".capital_account_custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Foreign Investor Securities Account".securities_company_id > "Securities Company".securities_company_id // out-of-source
+Ref: "Foreign Investor Securities Account".foreign_investor_id > "Foreign Investor".foreign_investor_id
+// Ref: "Foreign Investor Stock Portfolio Snapshot".securities_company_id > "Securities Company".securities_company_id // out-of-source
+Ref: "Foreign Investor Stock Portfolio Snapshot".foreign_investor_id > "Foreign Investor".foreign_investor_id

@@ -1,0 +1,13 @@
+// QLRR — UID006 Khai thác Phân quyền dữ liệu
+
+Project QLRR_UID006 {
+  database_type: "Delta Lake"
+  Note: "QLRR — UID006 Khai thác Phân quyền dữ liệu"
+}
+
+Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  risk_indicator_id bigint [pk]
+  risk_indicator_category_id bigint
+}
+
+// Ref: "Risk Indicator".risk_indicator_category_id > "Risk Indicator Category".risk_indicator_category_id // out-of-source
