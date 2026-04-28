@@ -1,0 +1,41 @@
+// NHNCK — UID06 Quản lý người hành nghề chứng khoán
+
+Project NHNCK_UID06 {
+  database_type: "Delta Lake"
+  Note: "NHNCK — UID06 Quản lý người hành nghề chứng khoán"
+}
+
+Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  practitioner_id bigint [pk]
+  country_of_residence_geographic_area_id bigint
+  securities_company_id bigint
+}
+
+Table "Securities Practitioner Related Party" [note: "Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ và thông tin người liên quan."] {
+  securities_practitioner_related_party_id bigint [pk]
+  practitioner_id bigint
+}
+
+Table "Securities Practitioner Conduct Violation" [note: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán. Ghi nhận loại vi phạm và quyết định xử lý."] {
+  conduct_violation_id bigint [pk]
+  practitioner_id bigint
+  license_decision_document_id bigint
+  created_by_officer_id bigint
+  updated_by_officer_id bigint
+}
+
+Table "Securities Organization Reference" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
+  securities_organization_reference_id bigint [pk]
+  parent_organization_id bigint
+  created_by_officer_id bigint
+}
+
+// Ref: "Securities Practitioner".country_of_residence_geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Securities Practitioner".securities_company_id > "Securities Company".securities_company_id // out-of-source
+Ref: "Securities Practitioner Related Party".practitioner_id > "Securities Practitioner".practitioner_id
+Ref: "Securities Practitioner Conduct Violation".practitioner_id > "Securities Practitioner".practitioner_id
+// Ref: "Securities Practitioner Conduct Violation".license_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id // out-of-source
+// Ref: "Securities Practitioner Conduct Violation".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
+// Ref: "Securities Practitioner Conduct Violation".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
+Ref: "Securities Organization Reference".parent_organization_id > "Securities Organization Reference".securities_organization_reference_id
+// Ref: "Securities Organization Reference".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source

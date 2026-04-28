@@ -1,0 +1,41 @@
+// ThanhTra — UID02 Xử lý vi phạm hành chính
+
+Project ThanhTra_UID02 {
+  database_type: "Delta Lake"
+  Note: "ThanhTra — UID02 Xử lý vi phạm hành chính"
+}
+
+Table "Surveillance Enforcement Case" [note: "Hồ sơ xử lý vi phạm từ kết quả giám sát thị trường. Ghi nhận đối tượng và trạng thái xử lý."] {
+  surveillance_enforcement_case_id bigint [pk]
+  responsible_officer_id bigint
+  processing_officer_id bigint
+}
+
+Table "Surveillance Case Document Attachment" [note: "Văn bản đính kèm hồ sơ giám sát. FK → Surveillance Enforcement Case."] {
+  surveillance_case_document_attachment_id bigint [pk]
+  surveillance_enforcement_case_id bigint
+}
+
+Table "Surveillance Enforcement Decision" [note: "Văn bản xử lý vi phạm từ giám sát. FK → Surveillance Enforcement Case."] {
+  surveillance_enforcement_decision_id bigint [pk]
+  surveillance_enforcement_case_id bigint
+}
+
+Table "Surveillance Enforcement Decision File Attachment" [note: "File đính kèm văn bản xử lý giám sát. FK → Surveillance Enforcement Decision."] {
+  surveillance_enforcement_decision_file_attachment_id bigint [pk]
+  surveillance_enforcement_decision_id bigint
+}
+
+Table "Surveillance Penalty Announcement" [note: "Công bố quyết định xử phạt từ giám sát. FK → Surveillance Enforcement Decision."] {
+  surveillance_penalty_announcement_id bigint [pk]
+  surveillance_enforcement_case_id bigint
+  surveillance_enforcement_decision_id bigint
+}
+
+// Ref: "Surveillance Enforcement Case".responsible_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
+// Ref: "Surveillance Enforcement Case".processing_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
+Ref: "Surveillance Case Document Attachment".surveillance_enforcement_case_id > "Surveillance Enforcement Case".surveillance_enforcement_case_id
+Ref: "Surveillance Enforcement Decision".surveillance_enforcement_case_id > "Surveillance Enforcement Case".surveillance_enforcement_case_id
+Ref: "Surveillance Enforcement Decision File Attachment".surveillance_enforcement_decision_id > "Surveillance Enforcement Decision".surveillance_enforcement_decision_id
+Ref: "Surveillance Penalty Announcement".surveillance_enforcement_case_id > "Surveillance Enforcement Case".surveillance_enforcement_case_id
+Ref: "Surveillance Penalty Announcement".surveillance_enforcement_decision_id > "Surveillance Enforcement Decision".surveillance_enforcement_decision_id

@@ -1,0 +1,114 @@
+// Silver Lakehouse — DCST
+
+Project DCST {
+  database_type: "Delta Lake"
+  Note: "Silver Lakehouse — DCST"
+}
+
+Table "Registered Taxpayer" [note: "Doanh nghiệp/hộ kinh doanh đã đăng ký thuế với cơ quan thuế. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  registered_taxpayer_id bigint [pk]
+  charter_capital_currency_code bigint
+  foreign_charter_capital_currency_code bigint
+}
+
+Table "Taxpayer Representative" [note: "Người đại diện hoặc chủ hộ kinh doanh của người nộp thuế. Ghi nhận tên và chức vụ."] {
+  taxpayer_representative_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "High Risk Taxpayer Assessment Snapshot" [note: "Đánh giá xếp loại doanh nghiệp rủi ro cao về thuế theo năm. Ghi nhận thông tin tổ chức bị đánh giá rủi ro."] {
+  high_risk_taxpayer_assessment_snapshot_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  province_id bigint
+  geographic_area_id bigint
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Tax Financial Statement" [note: "Tờ khai tài chính điện tử nộp lên cơ quan thuế. Ghi nhận kỳ kê khai và thông tin kiểm toán."] {
+  tax_financial_statement_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Tax Financial Statement Item" [note: "Chỉ tiêu chi tiết trong tờ khai tài chính. Ghi nhận giá trị số liệu theo từng ô chỉ tiêu trong biểu mẫu."] {
+  tax_financial_statement_item_id bigint [pk]
+  tax_financial_statement_id bigint
+}
+
+Table "Tax Debt Enforcement Order" [note: "Quyết định cưỡng chế nợ thuế. Ghi nhận hình thức cưỡng chế và thông tin tài sản/tài khoản liên quan."] {
+  tax_debt_enforcement_order_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Tax Violation Penalty Decision" [note: "Quyết định xử lý vi phạm hành chính về thuế. Ghi nhận hành vi vi phạm và mức phạt/truy thu."] {
+  tax_violation_penalty_decision_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Tax Invoice Enforcement Order" [note: "Quyết định cưỡng chế nợ thuế theo hình thức ngừng sử dụng hóa đơn. Ghi nhận thông tin quyết định và thông báo."] {
+  tax_invoice_enforcement_order_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+Table "Tax Invoice Enforcement Order Item" [note: "Chi tiết hóa đơn thuộc quyết định cưỡng chế ngừng sử dụng hóa đơn. Ghi nhận số hiệu và loại hóa đơn."] {
+  tax_invoice_enforcement_order_item_id bigint [pk]
+  tax_invoice_enforcement_order_id bigint
+}
+
+TableGroup "UID01 — Quản lý thông tin đăng ký thuế" {
+  "Registered Taxpayer"
+  "Taxpayer Representative"
+}
+
+TableGroup "UID02 — Báo cáo tài chính từ Tổng cục Thuế" {
+  "Tax Financial Statement"
+  "Tax Financial Statement Item"
+}
+
+TableGroup "UID03 — Cưỡng chế nợ thuế" {
+  "Tax Debt Enforcement Order"
+  "Tax Invoice Enforcement Order"
+  "Tax Invoice Enforcement Order Item"
+}
+
+TableGroup "UID04 — Xử lý vi phạm pháp luật về thuế" {
+  "Tax Violation Penalty Decision"
+}
+
+TableGroup "UID05 — Giám sát doanh nghiệp rủi ro cao" {
+  "High Risk Taxpayer Assessment Snapshot"
+}
+
+// Ref: "Registered Taxpayer".charter_capital_currency_code > "Currency".currency_code // out-of-source
+// Ref: "Registered Taxpayer".foreign_charter_capital_currency_code > "Currency".currency_code // out-of-source
+Ref: "Taxpayer Representative".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "High Risk Taxpayer Assessment Snapshot".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "Involved Party Postal Address".involved_party_id > "Registered Taxpayer".registered_taxpayer_id
+// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Electronic Address".involved_party_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Taxpayer Representative".taxpayer_representative_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Taxpayer Representative".taxpayer_representative_id
+Ref: "Tax Financial Statement".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "Tax Financial Statement Item".tax_financial_statement_id > "Tax Financial Statement".tax_financial_statement_id
+Ref: "Tax Debt Enforcement Order".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "Tax Violation Penalty Decision".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "Tax Invoice Enforcement Order".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id
+Ref: "Tax Invoice Enforcement Order Item".tax_invoice_enforcement_order_id > "Tax Invoice Enforcement Order".tax_invoice_enforcement_order_id

@@ -1,0 +1,63 @@
+// FIMS — UID05 Báo cáo thành viên
+
+Project FIMS_UID05 {
+  database_type: "Delta Lake"
+  Note: "FIMS — UID05 Báo cáo thành viên"
+}
+
+Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
+  report_template_id bigint [pk]
+}
+
+Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  reporting_period_id bigint [pk]
+  report_template_id bigint
+}
+
+Table "Member Regulatory Report" [note: "Báo cáo định kỳ của thành viên thị trường nộp lên UBCK. Ghi nhận biểu mẫu, kỳ, trạng thái nộp và thành viên nộp."] {
+  member_regulatory_report_id bigint [pk]
+  report_template_id bigint
+  reporting_period_id bigint
+  fund_management_company_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  depository_center_id bigint
+  stock_exchange_id bigint
+  foreign_investor_id bigint
+  fund_management_company_organization_unit_id bigint
+}
+
+Table "Member Report Value" [note: "Giá trị từng chỉ tiêu trong báo cáo định kỳ của thành viên. Mỗi dòng = 1 chỉ tiêu trong 1 báo cáo."] {
+  member_report_value_id bigint [pk]
+  member_regulatory_report_id bigint
+  reporting_period_id bigint
+  report_template_id bigint
+  fund_management_company_id bigint
+  securities_company_id bigint
+  custodian_bank_id bigint
+  depository_center_id bigint
+  stock_exchange_id bigint
+  disclosure_representative_id bigint
+  fund_management_company_organization_unit_id bigint
+}
+
+Ref: "Reporting Period".report_template_id > "Report Template".report_template_id
+Ref: "Member Regulatory Report".report_template_id > "Report Template".report_template_id
+Ref: "Member Regulatory Report".reporting_period_id > "Reporting Period".reporting_period_id
+// Ref: "Member Regulatory Report".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
+// Ref: "Member Regulatory Report".securities_company_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Member Regulatory Report".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Member Regulatory Report".depository_center_id > "Depository Center".depository_center_id // out-of-source
+// Ref: "Member Regulatory Report".stock_exchange_id > "Stock Exchange".stock_exchange_id // out-of-source
+// Ref: "Member Regulatory Report".foreign_investor_id > "Foreign Investor".foreign_investor_id // out-of-source
+// Ref: "Member Regulatory Report".fund_management_company_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id // out-of-source
+Ref: "Member Report Value".member_regulatory_report_id > "Member Regulatory Report".member_regulatory_report_id
+Ref: "Member Report Value".reporting_period_id > "Reporting Period".reporting_period_id
+Ref: "Member Report Value".report_template_id > "Report Template".report_template_id
+// Ref: "Member Report Value".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
+// Ref: "Member Report Value".securities_company_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Member Report Value".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Member Report Value".depository_center_id > "Depository Center".depository_center_id // out-of-source
+// Ref: "Member Report Value".stock_exchange_id > "Stock Exchange".stock_exchange_id // out-of-source
+// Ref: "Member Report Value".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id // out-of-source
+// Ref: "Member Report Value".fund_management_company_organization_unit_id > "Fund Management Company Organization Unit".fund_management_company_organization_unit_id // out-of-source

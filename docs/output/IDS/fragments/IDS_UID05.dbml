@@ -1,0 +1,29 @@
+// IDS — UID05 Công bố thông tin và thông báo
+
+Project IDS_UID05 {
+  database_type: "Delta Lake"
+  Note: "IDS — UID05 Công bố thông tin và thông báo"
+}
+
+Table "Disclosure Notification" [note: "Instance thông báo CBTT gửi đi — nội dung/tiêu đề/ngày gửi/trạng thái. Grain: 1 lần gửi thông báo. FK to Disclosure Form Definition."] {
+  disclosure_notification_id bigint [pk]
+  disclosure_form_definition_id bigint
+}
+
+Table "Disclosure Form Definition" [note: "Định nghĩa loại hồ sơ/tin CBTT — loại form/quy trình duyệt/nghiệp vụ. Master entity của vòng đời CBTT. Self-join parent_form_id."] {
+  disclosure_form_definition_id bigint [pk]
+  parent_disclosure_form_definition_id bigint
+}
+
+Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  public_company_id bigint [pk]
+}
+
+Table "Disclosure Notification Config" [note: "Cấu hình thông báo CBTT — kênh gửi/hệ thống nhận/người quản lý. FK to Disclosure Notification."] {
+  disclosure_notification_config_id bigint [pk]
+  disclosure_notification_id bigint
+}
+
+Ref: "Disclosure Notification".disclosure_form_definition_id > "Disclosure Form Definition".disclosure_form_definition_id
+Ref: "Disclosure Form Definition".parent_disclosure_form_definition_id > "Disclosure Form Definition".disclosure_form_definition_id
+Ref: "Disclosure Notification Config".disclosure_notification_id > "Disclosure Notification".disclosure_notification_id

@@ -1,0 +1,19 @@
+// FIMS — UID07 Ủy quyền
+
+Project FIMS_UID07 {
+  database_type: "Delta Lake"
+  Note: "FIMS — UID07 Ủy quyền"
+}
+
+Table "Disclosure Representative" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
+  disclosure_representative_id bigint [pk]
+  nationality_id bigint
+}
+
+Table "Disclosure Authorization" [note: "Ủy quyền công bố thông tin của người đại diện CBTT cho nhà đầu tư nước ngoài. Ghi nhận bên được ủy quyền, loại quan hệ và thời hạn hiệu lực."] {
+  disclosure_authorization_id bigint [pk]
+  disclosure_representative_id bigint
+}
+
+// Ref: "Disclosure Representative".nationality_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Disclosure Authorization".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id

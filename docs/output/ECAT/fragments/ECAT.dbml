@@ -1,0 +1,39 @@
+// Silver Lakehouse — ECAT
+
+Project ECAT {
+  database_type: "Delta Lake"
+  Note: "Silver Lakehouse — ECAT"
+}
+
+Table "Geographic Area" [note: ""] {
+  _id bigint
+}
+
+Table "Currency" [note: ""] {
+  _id bigint
+}
+
+Table "Security" [note: ""] {
+  _id bigint
+}
+
+Table "Calendar Date" [note: ""] {
+  _id bigint
+}
+
+TableGroup "UID01 — Danh mục địa lý hành chính" {
+  "Geographic Area"
+}
+
+TableGroup "UID03 — Danh mục tiền tệ" {
+  "Currency"
+}
+
+TableGroup "UID04 — Danh mục chứng khoán & thị trường" {
+  "Security"
+}
+
+TableGroup "UID08 — Danh mục lịch & ngày nghỉ" {
+  "Calendar Date"
+}
+

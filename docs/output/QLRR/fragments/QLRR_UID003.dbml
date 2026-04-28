@@ -1,0 +1,29 @@
+// QLRR — UID003 Khai thác Chỉ tiêu tài chính trong nước
+
+Project QLRR_UID003 {
+  database_type: "Delta Lake"
+  Note: "QLRR — UID003 Khai thác Chỉ tiêu tài chính trong nước"
+}
+
+Table "Risk Indicator Category" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
+  risk_indicator_category_id bigint [pk]
+}
+
+Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  risk_indicator_id bigint [pk]
+  risk_indicator_category_id bigint
+}
+
+Table "Risk Indicator Value" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
+  risk_indicator_value_id bigint [pk]
+  risk_indicator_id bigint
+}
+
+Table "Risk Indicator Value Change" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
+  risk_indicator_value_change_id bigint [pk]
+  risk_indicator_id bigint
+}
+
+Ref: "Risk Indicator".risk_indicator_category_id > "Risk Indicator Category".risk_indicator_category_id
+Ref: "Risk Indicator Value".risk_indicator_id > "Risk Indicator".risk_indicator_id
+Ref: "Risk Indicator Value Change".risk_indicator_id > "Risk Indicator".risk_indicator_id

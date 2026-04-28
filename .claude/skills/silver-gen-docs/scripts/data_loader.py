@@ -47,6 +47,32 @@ import re
 from pathlib import Path
 from typing import Any
 
+# Match các format heading UID — dùng finditer, capture (uid_code, label):
+#   "## FIMS_UID03 — label"       → WORD_UIDnn  (g1,g2)
+#   "## UID-01 — label"           → UID-nn      (g1,g2)
+#   "## UID1 — label"             → UIDn        (g3,g4)  GSGD
+#   "## UID01 — label"            → UIDnn       (g3,g4)  NHNCK
+#   "## DCST-01. label"           → WORD-nn.    (g5,g6)  DCST
+#   "## QLRR001 — label"          → WORDnnn     (g7,g8)  QLRR
+#   "## FMS.1 — label"            → WORD.n      (g9,g10) FMS
+#   "## 1. SCMS_UID01 — label"    → N. WORD_UIDnn (optional numeric prefix via (?:\d+\.\s+)?)
+_UID_HEADING_RE = re.compile(
+    r"^## (?:\d+\.\s+)?(?:"
+    r"(?:\w+_UID|UID-)(\w+)\s+[—-]\s+(.+)"   # FIMS_UID03 / UID-01 / SCMS (after numeric prefix)
+    r"|UID(\d+)\s+[—-]\s+(.+)"                # UID1 / UID01 (no dash)
+    r"|[A-Z]+-(\w+)\.\s+(.+)"                 # DCST-01. / DCST-SYS.
+    r"|[A-Z]+(\d+)\s+[—-]\s+(.+)"             # QLRR001 / SOURCE_PREFIX+digits
+    r"|[A-Z]+\.(\d+)\s+[—-]\s+(.+)"           # FMS.1 — label
+    r")",
+    re.MULTILINE
+)
+_GREEN_ENTITY_RE = re.compile(
+    r"🟢\s+(?!`CV:)(?!↳)"
+    r"(?:\*\*([A-Z][^*|(\n<]+?)\*\*"      # **Bold Entity Name**
+    r"|\*([A-Z][^*|(\n<]+?)\*"            # *Italic Entity Name*
+    r"|([A-Z][^|*\n(<]+?)(?:\s*[*|(<]|$))"  # plain Entity Name
+)
+
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
     if not path.exists():
@@ -59,6 +85,47 @@ def _yn(value: str) -> bool:
     return value.strip().lower() in ("true", "yes", "y", "1", "x")
 
 
+def parse_uid_groups(repo_root: Path, source: str) -> list[dict]:
+    """Parse BRD/Source/{SOURCE}_Source_Analysis.md → list of UID group dicts.
+
+    Returns: [{"uid": "UID03", "label": "...", "entities": ["Stock Exchange", ...]}, ...]
+    Only groups that have at least 1 Silver entity are returned.
+    """
+    path = repo_root / "BRD" / "Source" / f"{source}_Source_Analysis.md"
+    if not path.exists():
+        return []
+
+    text = path.read_text(encoding="utf-8")
+    # finditer trả về từng match heading; body = text từ sau heading này đến heading tiếp theo
+    matches = list(_UID_HEADING_RE.finditer(text))
+    groups = []
+    for idx, m in enumerate(matches):
+        # group(1,2) = FIMS_UID / UID-NN
+        # group(3,4) = UID1 / UID01 (no dash)
+        # group(5,6) = DCST-01. / SOURCE-XX.
+        # group(7,8) = QLRR001 / SOURCE_PREFIX+digits
+        # group(9,10) = FMS.1 — label
+        uid_code = (m.group(1) or m.group(3) or m.group(5) or m.group(7) or m.group(9) or "").strip()
+        label = (m.group(2) or m.group(4) or m.group(6) or m.group(8) or m.group(10) or "").strip()
+        if not uid_code:
+            continue
+        body_start = m.end()
+        body_end = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
+        body = text[body_start:body_end]
+
+        entities: list[str] = []
+        for em in _GREEN_ENTITY_RE.finditer(body):
+            # group(1) = **Bold**, group(2) = *Italic*, group(3) = plain
+            name = (em.group(1) or em.group(2) or em.group(3) or "").strip().rstrip("*").strip()
+            if name and name not in entities:
+                entities.append(name)
+        if entities:
+            # Chuẩn hoá uid_code thành dạng "UID01" nếu là số, hoặc giữ nguyên ("SYS", "OUT")
+            uid_norm = f"UID{uid_code.zfill(2)}" if uid_code.isdigit() else f"UID{uid_code}"
+            groups.append({"uid": uid_norm, "label": label, "entities": entities})
+    return groups
+
+
 def load_manifest(repo_root: Path, source: str) -> list[dict[str, str]]:
     rows = _read_csv(repo_root / "Silver" / "lld" / "manifest.csv")
     return [r for r in rows if r["source_system"] == source]
@@ -66,7 +133,8 @@ def load_manifest(repo_root: Path, source: str) -> list[dict[str, str]]:
 
 def load_silver_entities(repo_root: Path, source: str) -> list[dict[str, str]]:
     rows = _read_csv(repo_root / "Silver" / "hld" / "silver_entities.csv")
-    return [r for r in rows if r["source_table"].split(".", 1)[0] == source]
+    # source_table có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
+    return [r for r in rows if any(t.strip().split(".", 1)[0] == source for t in r["source_table"].split(","))]
 
 
 # FK target syntax in LLD comments:
@@ -101,20 +169,32 @@ def load_attributes(
     repo_root: Path,
     source: str,
     silver_entity: str,
-    _lld_filename: str = "",  # giữ signature tương thích, không dùng
+    source_table: str = "",  # nếu truyền vào, lọc thêm theo source_table (dùng cho shared entity)
+    _lld_filename: str = "",
 ) -> list[dict[str, Any]]:
-    """Lấy attributes từ silver_attributes.csv, lọc theo source_system + silver_entity."""
+    """Lấy attributes từ silver_attributes.csv, lọc theo source_system + silver_entity (+ source_table nếu có)."""
     all_rows = load_all_attributes(repo_root)
     rows = [
         r for r in all_rows
         if r.get("source_system") == source and r.get("silver_entity") == silver_entity
+        and (not source_table or r.get("source_table") == source_table)
     ]
     out: list[dict[str, Any]] = []
     for r in rows:
         comment = r.get("comment", "")
         fk_target = _parse_fk_target(comment)
+        raw_src_col = r.get("source_column", "")
+        src_col_parts = raw_src_col.split(".") if raw_src_col else []
+        # source_column có dạng "SYSTEM.TABLE.COLUMN" — tách lấy phần cuối
+        src_col_name = src_col_parts[-1] if src_col_parts else ""
         out.append({
             "attribute_name": r["silver_attribute"],
+            "silver_column": r.get("silver_column", ""),
+            "silver_table": r.get("silver_table", ""),
+            "source_system": r.get("source_system", ""),
+            "source_table": r.get("source_table", ""),
+            "source_column": raw_src_col,
+            "source_column_name": src_col_name,
             "description": r["description"],
             "data_domain": r["data_domain"],
             "nullable": _yn(r.get("nullable", "")),
@@ -135,80 +215,132 @@ def _to_snake_case(name: str) -> str:
     return name.strip().lower().replace("-", "_").replace(" ", "_")
 
 
-def build_constraints(entity: dict[str, Any]) -> list[dict[str, str]]:
-    """Sinh danh sách FK constraint cho 1 entity từ attributes có fk_target_entity non-empty."""
+def build_constraints(entity: dict[str, Any], all_attrs: list[dict[str, Any]] | None = None) -> list[dict[str, str]]:
+    """Sinh danh sách FK constraint cho 1 entity từ attributes có fk_target_entity non-empty.
+
+    all_attrs: toàn bộ silver_attributes.csv (để lookup ref_col từ ref_table + ref_attribute_name).
+    """
+    # Xây lookup: (silver_entity, attribute_name) → silver_column
+    ref_col_lookup: dict[tuple[str, str], str] = {}
+    if all_attrs:
+        for r in all_attrs:
+            key = (r.get("silver_entity", ""), r.get("silver_attribute", ""))
+            if key not in ref_col_lookup:
+                ref_col_lookup[key] = r.get("silver_column", "")
+
     out: list[dict[str, str]] = []
+    seen: set[tuple[str, str, str, str]] = set()
     for a in entity["attributes"]:
         if not a["fk_target_entity"]:
             continue
+        key = (a["attribute_name"], a.get("silver_column", ""), a["fk_target_entity"], a["fk_target_attribute"])
+        if key in seen:
+            continue
+        seen.add(key)
+        ref_col = ref_col_lookup.get((a["fk_target_entity"], a["fk_target_attribute"]), "")
         out.append({
             "field": a["attribute_name"],
+            "col": a.get("silver_column", ""),
             "ref_table": a["fk_target_entity"],
             "ref_field": a["fk_target_attribute"],
+            "ref_col": ref_col,
         })
     return out
 
 
-def build_dbml(source: str, entities: list[dict[str, Any]]) -> str:
-    """Sinh DBML (https://dbml.dbdiagram.io) cho danh sách entities.
+def build_dbml(
+    source: str,
+    entities: list[dict[str, Any]],
+    uid_groups: list[dict] | None = None,
+    note: str = "",
+) -> str:
+    """Sinh DBML mức bảng (table-only, không liệt kê cột) cho danh sách entities.
 
-    Ref relations sinh từ fk_target_entity / fk_target_attribute.
-    Bỏ qua FK trỏ đến entity ngoài source (shared entity của source khác).
+    source: phải là identifier hợp lệ trong DBML (không có khoảng trắng, em dash, v.v.)
+    note: chuỗi hiển thị tự do cho Project.Note (có thể chứa ký tự đặc biệt).
+    uid_groups: nếu truyền vào, thêm TableGroup blocks phân theo mảng nghiệp vụ.
     """
+    display = note or f"Silver Lakehouse — {source}"
+    # Dedup theo silver_entity để DBML không bị lặp bảng khi shared entity có nhiều source_table
+    seen_tables: set[str] = set()
     in_scope_tables = {e["silver_entity"] for e in entities}
-    lines: list[str] = [f"// Silver Lakehouse — {source}", ""]
+    lines: list[str] = [
+        f"// {display}",
+        "",
+        f'Project {source} {{',
+        f'  database_type: "Delta Lake"',
+        f'  Note: "{display}"',
+        "}",
+        "",
+    ]
 
     for e in entities:
-        table_name = _to_snake_case(e["silver_entity"])
-        lines.append(f'Table {table_name} [note: "{e["description"][:200].replace(chr(34), "")}"] {{')
+        # Tên bảng dùng logical name (silver_entity), quoted để DBML chấp nhận khoảng trắng
+        entity_name = e["silver_entity"]
+        if not entity_name:
+            continue  # skip entity chưa có attributes (silver_entity rỗng)
+        if entity_name in seen_tables:
+            continue
+        seen_tables.add(entity_name)
+        tbl_note = e["description"][:200].replace('"', "") if e.get("description") else ""
+        lines.append(f'Table "{entity_name}" [note: "{tbl_note}"] {{')
+        # Sinh PK field(s) — field name dùng snake_case (DBML không hỗ trợ quoted field name)
         for a in e["attributes"]:
-            field = _to_snake_case(a["attribute_name"])
-            domain = a["data_domain"]
-            sql_type_map = {
-                "Text": "varchar",
-                "Date": "date",
-                "Timestamp": "timestamp",
-                "Currency Amount": "decimal(18,2)",
-                "Interest Rate": "decimal(9,6)",
-                "Exchange Rate": "decimal(18,6)",
-                "Percentage": "decimal(9,6)",
-                "Surrogate Key": "bigint",
-                "Classification Value": "varchar",
-                "Indicator": "varchar",
-                "Boolean": "boolean",
-                "Small Counter": "int",
-            }
-            sql_type = sql_type_map.get(domain, "varchar")
-
-            modifiers: list[str] = []
             if a["is_primary_key"]:
-                modifiers.append("pk")
-            if not a["nullable"]:
-                modifiers.append("not null")
-            mod_str = f" [{', '.join(modifiers)}]" if modifiers else ""
-            lines.append(f"  {field} {sql_type}{mod_str}")
+                lines.append(f'  {_to_snake_case(a["attribute_name"])} bigint [pk]')
+        # Sinh FK field(s) — cần khai báo để Ref hợp lệ
+        for a in e["attributes"]:
+            if not a["is_primary_key"] and a.get("fk_target_entity"):
+                lines.append(f'  {_to_snake_case(a["attribute_name"])} bigint')
+        # Fallback nếu không có PK lẫn FK (shared entity không có PK riêng)
+        if not any(a["is_primary_key"] or a.get("fk_target_entity") for a in e["attributes"]):
+            lines.append("  _id bigint")
         lines.append("}")
         lines.append("")
 
-    # Refs
+    # TableGroup blocks — phân theo mảng nghiệp vụ (UID groups)
+    if uid_groups:
+        for g in uid_groups:
+            group_tables = [
+                e["silver_entity"]
+                for e in entities
+                if e["silver_entity"] in g["entities"]
+                and e["silver_entity"] in seen_tables
+            ]
+            # dedup (shared entity có thể xuất hiện nhiều lần trong entities)
+            seen_group: set[str] = set()
+            unique_tables = [t for t in group_tables if not (t in seen_group or seen_group.add(t))]
+            if not unique_tables:
+                continue
+            lines.append(f'TableGroup "{g["uid"]} — {g["label"]}" {{')
+            for t in unique_tables:
+                lines.append(f'  "{t}"')
+            lines.append("}")
+            lines.append("")
+
+    # Refs — dedup theo cặp (from_table.from_col > ref_table.ref_col)
+    seen_refs: set[tuple[str, str, str, str]] = set()
     for e in entities:
-        from_table = _to_snake_case(e["silver_entity"])
+        from_table = e["silver_entity"]
+        if not from_table:
+            continue  # skip entity chưa có attributes
         for a in e["attributes"]:
             if not a["fk_target_entity"]:
                 continue
             ref_table = a["fk_target_entity"]
+            from_col = _to_snake_case(a["attribute_name"])
+            ref_col = _to_snake_case(a["fk_target_attribute"])
+            ref_key = (from_table, from_col, ref_table, ref_col)
+            if ref_key in seen_refs:
+                continue
+            seen_refs.add(ref_key)
             if ref_table not in in_scope_tables:
-                # Cross-source FK — comment out để user xem nhưng không crash dbdiagram
                 lines.append(
-                    f"// Ref: {from_table}.{_to_snake_case(a['attribute_name'])} > "
-                    f"{_to_snake_case(ref_table)}.{_to_snake_case(a['fk_target_attribute'])} "
-                    f"// out-of-source: {ref_table} không nằm trong {source}"
+                    f'// Ref: "{from_table}".{from_col} > "{ref_table}".{ref_col}'
+                    f" // out-of-source"
                 )
                 continue
-            lines.append(
-                f"Ref: {from_table}.{_to_snake_case(a['attribute_name'])} > "
-                f"{_to_snake_case(ref_table)}.{_to_snake_case(a['fk_target_attribute'])}"
-            )
+            lines.append(f'Ref: "{from_table}".{from_col} > "{ref_table}".{ref_col}')
     return "\n".join(lines) + "\n"
 
 
@@ -266,47 +398,81 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
     manifest_rows = load_manifest(repo_root, source)
     entities_meta = load_silver_entities(repo_root, source)
 
+    # source_table trong silver_entities.csv có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
+    # Tạo 1 entry trong meta_lookup cho mỗi source table riêng lẻ
     meta_lookup: dict[str, dict[str, str]] = {}
     for em in entities_meta:
-        key = (em["silver_entity"], em["source_table"])
-        meta_lookup[key] = em
+        for src_tbl in em["source_table"].split(","):
+            key = (em["silver_entity"], src_tbl.strip())
+            meta_lookup[key] = em
 
-    seen: set[str] = set()
+    seen: set[tuple[str, str]] = set()
     entities: list[dict[str, Any]] = []
     total_attrs = 0
     tiers: set[str] = set()
+
+    # Load toàn bộ silver_attributes 1 lần để dùng cho FK ref_col lookup
+    all_attrs_global = load_all_attributes(repo_root)
+
+    # Đếm số source_table khác nhau cho mỗi silver_entity để nhận diện shared entity
+    from collections import Counter
+    entity_src_count: Counter = Counter(row["silver_entity"] for row in manifest_rows)
 
     rows_to_process = manifest_rows[:sample_count] if sample else manifest_rows
 
     for row in rows_to_process:
         silver_entity = row["silver_entity"]
-        if silver_entity in seen:
+        src_table = row["source_table"]
+        dedup_key = (silver_entity, src_table)
+        if dedup_key in seen:
             continue
-        seen.add(silver_entity)
+        seen.add(dedup_key)
 
-        src_table_full = f"{row['source_system']}.{row['source_table']}"
+        src_table_full = f"{row['source_system']}.{src_table}"
         meta = meta_lookup.get((silver_entity, src_table_full), {})
 
-        attributes = load_attributes(repo_root, source, silver_entity)
+        # Shared entity: lọc attributes theo cả source_table để tách ra từng section riêng
+        attributes = load_attributes(repo_root, source, silver_entity, source_table=src_table)
         total_attrs += len(attributes)
         tiers.add(row["group"])
 
+        silver_table = attributes[0]["silver_table"] if attributes else _to_snake_case(silver_entity)
         entity = {
             "silver_entity": silver_entity,
-            "table_name": _to_snake_case(silver_entity),
-            "source_table": src_table_full,
+            "silver_table": silver_table,
+            "table_name": silver_table,
+            "is_shared": entity_src_count[silver_entity] > 1,
+            "source_system": row["source_system"],
+            "source_table": src_table,
+            "source_table_full": src_table_full,
             "tier": row["group"],
-            "lld_file": row["lld_file"],
+            "lld_file": row.get("lld_file", ""),
             "bcv_concept": meta.get("bcv_concept", ""),
             "bcv_core_object": meta.get("bcv_core_object", ""),
             "table_type": meta.get("table_type", ""),
             "description": meta.get("description", ""),
             "attributes": attributes,
         }
-        entity["constraints"] = build_constraints(entity)
+        entity["constraints"] = build_constraints(entity, all_attrs=all_attrs_global)
+        entity["primary_keys"] = [a for a in attributes if a["is_primary_key"]]
         entities.append(entity)
 
     hld_meta = parse_hld_overview(repo_root, source)
+
+    # Chỉ giữ UID groups có ít nhất 1 entity được thiết kế (có trong entities list)
+    loaded_entity_names = {e["silver_entity"] for e in entities}
+    uid_groups = [
+        g for g in parse_uid_groups(repo_root, source)
+        if any(name in loaded_entity_names for name in g["entities"])
+    ]
+
+    # Danh sách bảng dedup theo silver_entity (shared entity xuất hiện nhiều lần → giữ lần đầu)
+    seen_entity_names: set[str] = set()
+    unique_entities: list[dict[str, Any]] = []
+    for e in entities:
+        if e["silver_entity"] not in seen_entity_names:
+            seen_entity_names.add(e["silver_entity"])
+            unique_entities.append(e)
 
     return {
         "source": source,
@@ -316,7 +482,9 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
         "tier_count": len(tiers),
         "total_attrs": total_attrs,
         "entities": entities,
+        "unique_entities": unique_entities,
         "classifications": load_classifications(repo_root, source),
         "pendings": load_pendings(repo_root, source),
         "is_sample": sample,
+        "uid_groups": uid_groups,
     }

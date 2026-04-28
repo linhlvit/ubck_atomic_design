@@ -1,0 +1,179 @@
+// SCMS — UID01 Quản lý CTCK
+
+Project SCMS_UID01 {
+  database_type: "Delta Lake"
+  Note: "SCMS — UID01 Quản lý CTCK"
+}
+
+Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  securities_company_id bigint [pk]
+  country_of_registration_id bigint
+}
+
+Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  involved_party_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+  province_id bigint
+  geographic_area_id bigint
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Securities Company Organization Unit" [note: "Đơn vị trực thuộc CTCK: chi nhánh, văn phòng đại diện, phòng giao dịch. Cấu trúc self-join qua parent_org_unit_id."] {
+  securities_company_organization_unit_id bigint [pk]
+  securities_company_id bigint
+  parent_organization_unit_id bigint
+}
+
+Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  practitioner_id bigint [pk]
+  country_of_residence_geographic_area_id bigint
+  securities_company_id bigint
+}
+
+Table "Securities Company Senior Personnel" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
+  securities_company_senior_personnel_id bigint [pk]
+  securities_company_id bigint
+  organization_unit_id bigint
+  nationality_id bigint
+}
+
+Table "Securities Company Shareholder" [note: "Cổ đông của CTCK - cá nhân hoặc tổ chức. Ghi nhận tỷ lệ sở hữu và số lượng cổ phần."] {
+  securities_company_shareholder_id bigint [pk]
+  securities_company_id bigint
+  nationality_id bigint
+}
+
+Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  member_periodic_report_id bigint [pk]
+  fund_management_company_id bigint
+  investment_fund_id bigint
+  custodian_bank_id bigint
+  foreign_fund_management_organization_unit_id bigint
+  report_template_id bigint
+  reporting_period_id bigint
+  securities_company_id bigint
+  report_submission_schedule_id bigint
+}
+
+Table "Securities Company Report Violation" [note: "Vi phạm nộp báo cáo định kỳ của CTCK. Ghi nhận loại vi phạm và thông tin xử lý."] {
+  securities_company_report_violation_id bigint [pk]
+  securities_company_id bigint
+}
+
+Table "Securities Company Administrative Penalty" [note: "Quyết định xử lý hành chính đối với CTCK. Ghi nhận hành vi vi phạm và quyết định xử phạt."] {
+  securities_company_administrative_penalty_id bigint [pk]
+  securities_company_id bigint
+}
+
+Table "Disclosure Report Submission" [note: "Báo cáo công bố thông tin do CTCK nộp lên UBCKNN theo yêu cầu minh bạch thị trường."] {
+  disclosure_report_submission_id bigint [pk]
+  securities_company_id bigint
+}
+
+Table "Disclosure Securities Offering" [note: "Thông tin chào bán chứng khoán được công bố bởi CTCK. Ghi nhận loại chứng khoán và điều kiện chào bán."] {
+  disclosure_securities_offering_id bigint [pk]
+  securities_company_id bigint
+}
+
+Table "Disclosure Shareholder Change" [note: "Thông tin thay đổi cổ đông được công bố bởi CTCK. Ghi nhận cổ đông và tỷ lệ sở hữu thay đổi."] {
+  disclosure_shareholder_change_id bigint [pk]
+  securities_company_id bigint
+}
+
+Table "Member Report Indicator Value" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
+  member_report_indicator_value_id bigint [pk]
+  report_template_id bigint
+  securities_company_id bigint
+  report_template_sheet_id bigint
+  report_template_row_id bigint
+  report_template_column_id bigint
+  member_periodic_report_id bigint
+  report_template_indicator_id bigint
+  report_indicator_id bigint
+}
+
+Table "Securities Company Shareholder Transfer" [note: "Giao dịch chuyển nhượng cổ phần giữa hai cổ đông của CTCK. Ghi nhận bên chuyển/nhận, số lượng và tỷ lệ chuyển nhượng."] {
+  securities_company_shareholder_transfer_id bigint [pk]
+  securities_company_id bigint
+  from_shareholder_id bigint
+  to_shareholder_id bigint
+}
+
+Table "Securities Company Shareholder Representative" [note: "Người đại diện được ủy quyền bởi cổ đông của CTCK. Ghi nhận chức vụ và số lượng cổ phần đại diện."] {
+  securities_company_shareholder_representative_id bigint [pk]
+  securities_company_shareholder_id bigint
+  securities_company_id bigint
+}
+
+Table "Securities Company Shareholder Related Party" [note: "Người có quan hệ gia đình hoặc công tác với cổ đông của CTCK. Ghi nhận loại quan hệ và nơi làm việc."] {
+  securities_company_shareholder_related_party_id bigint [pk]
+  securities_company_shareholder_id bigint
+  securities_company_id bigint
+}
+
+// Ref: "Securities Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm".audit_firm_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Securities Company".securities_company_id
+// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company".securities_company_id
+Ref: "Securities Company Organization Unit".securities_company_id > "Securities Company".securities_company_id
+Ref: "Securities Company Organization Unit".parent_organization_unit_id > "Securities Company Organization Unit".securities_company_organization_unit_id
+Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Organization Unit".securities_company_organization_unit_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company Organization Unit".securities_company_organization_unit_id
+// Ref: "Securities Practitioner".country_of_residence_geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Securities Practitioner".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Practitioner".practitioner_id // out-of-source
+Ref: "Securities Company Senior Personnel".securities_company_id > "Securities Company".securities_company_id
+Ref: "Securities Company Senior Personnel".organization_unit_id > "Securities Company Organization Unit".securities_company_organization_unit_id
+// Ref: "Securities Company Senior Personnel".nationality_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id
+Ref: "Securities Company Shareholder".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Securities Company Shareholder".nationality_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Shareholder".securities_company_shareholder_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder".securities_company_shareholder_id
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm Practitioner".audit_firm_practitioner_id // out-of-source
+// Ref: "Member Periodic Report".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
+// Ref: "Member Periodic Report".investment_fund_id > "Investment Fund".investment_fund_id // out-of-source
+// Ref: "Member Periodic Report".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
+// Ref: "Member Periodic Report".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id // out-of-source
+// Ref: "Member Periodic Report".report_template_id > "Report Template".report_template_id // out-of-source
+// Ref: "Member Periodic Report".reporting_period_id > "Reporting Period".reporting_period_id // out-of-source
+Ref: "Member Periodic Report".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Member Periodic Report".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id // out-of-source
+Ref: "Securities Company Report Violation".securities_company_id > "Securities Company".securities_company_id
+Ref: "Securities Company Administrative Penalty".securities_company_id > "Securities Company".securities_company_id
+Ref: "Disclosure Report Submission".securities_company_id > "Securities Company".securities_company_id
+Ref: "Disclosure Securities Offering".securities_company_id > "Securities Company".securities_company_id
+Ref: "Disclosure Shareholder Change".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Member Report Indicator Value".report_template_id > "Report Template".report_template_id // out-of-source
+Ref: "Member Report Indicator Value".securities_company_id > "Securities Company".securities_company_id
+// Ref: "Member Report Indicator Value".report_template_sheet_id > "Report Template Sheet".report_template_sheet_id // out-of-source
+// Ref: "Member Report Indicator Value".report_template_row_id > "Report Template Row".report_template_row_id // out-of-source
+// Ref: "Member Report Indicator Value".report_template_column_id > "Report Template Column".report_template_column_id // out-of-source
+Ref: "Member Report Indicator Value".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
+// Ref: "Member Report Indicator Value".report_template_indicator_id > "Report Template Indicator".report_template_indicator_id // out-of-source
+// Ref: "Member Report Indicator Value".report_indicator_id > "Report Indicator".report_indicator_id // out-of-source
+Ref: "Securities Company Shareholder Transfer".securities_company_id > "Securities Company".securities_company_id
+Ref: "Securities Company Shareholder Transfer".from_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
+Ref: "Securities Company Shareholder Transfer".to_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
+Ref: "Securities Company Shareholder Representative".securities_company_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
+Ref: "Securities Company Shareholder Representative".securities_company_id > "Securities Company".securities_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder Representative".securities_company_shareholder_representative_id
+Ref: "Securities Company Shareholder Related Party".securities_company_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
+Ref: "Securities Company Shareholder Related Party".securities_company_id > "Securities Company".securities_company_id
+Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder Related Party".securities_company_shareholder_related_party_id
+// Ref: "Involved Party Postal Address".involved_party_id > "Audit Firm".audit_firm_id // out-of-source
+// Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm".audit_firm_id // out-of-source
+Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company".securities_company_id

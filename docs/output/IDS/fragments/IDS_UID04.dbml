@@ -1,0 +1,66 @@
+// IDS — UID04 Quản lý cổ đông giao dịch
+
+Project IDS_UID04 {
+  database_type: "Delta Lake"
+  Note: "IDS — UID04 Quản lý cổ đông giao dịch"
+}
+
+Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  involved_party_id bigint
+  involved_party_id bigint
+  involved_party_id bigint
+}
+
+Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  involved_party_id bigint
+  province_id bigint
+  geographic_area_id bigint
+}
+
+Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  public_company_id bigint [pk]
+}
+
+Table "Stock Holder" [note: "Cổ đông giao dịch — cá nhân hoặc tổ chức nắm giữ cổ phần công ty đại chúng. Grain: cổ đông x công ty. FK to Public Company."] {
+  stock_holder_id bigint [pk]
+  public_company_id bigint
+}
+
+Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  involved_party_id bigint
+}
+
+Table "Stock Holder Trading Account" [note: "Tài khoản giao dịch chứng khoán của cổ đông tại CTCK — số tài khoản và trạng thái. FK to Stock Holder."] {
+  stock_holder_trading_account_id bigint [pk]
+  stock_holder_id bigint
+}
+
+Table "Stock Holder Relationship" [note: "Quan hệ giữa các cổ đông giao dịch — loại quan hệ/thời hạn/trạng thái. FK to Stock Holder x 2."] {
+  stock_holder_relationship_id bigint [pk]
+  stock_holder_id bigint
+  related_stock_holder_id bigint
+}
+
+Table "Stock Control" [note: "Hạn chế chuyển nhượng cổ phiếu của cổ đông — số lượng bị hạn chế/thời gian/loại hạn chế. FK to Stock Holder."] {
+  stock_control_id bigint [pk]
+  stock_holder_id bigint
+}
+
+// Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm".audit_firm_id // out-of-source
+// Ref: "Involved Party Postal Address".involved_party_id > "Audit Firm".audit_firm_id // out-of-source
+// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
+Ref: "Involved Party Postal Address".involved_party_id > "Public Company".public_company_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Public Company".public_company_id
+Ref: "Stock Holder".public_company_id > "Public Company".public_company_id
+Ref: "Involved Party Postal Address".involved_party_id > "Stock Holder".stock_holder_id
+Ref: "Involved Party Electronic Address".involved_party_id > "Stock Holder".stock_holder_id
+// Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm Legal Representative".audit_firm_legal_representative_id // out-of-source
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm Legal Representative".audit_firm_legal_representative_id // out-of-source
+// Ref: "Involved Party Electronic Address".involved_party_id > "Public Company Legal Representative".public_company_legal_representative_id // out-of-source
+// Ref: "Involved Party Alternative Identification".involved_party_id > "Public Company Legal Representative".public_company_legal_representative_id // out-of-source
+Ref: "Involved Party Alternative Identification".involved_party_id > "Stock Holder".stock_holder_id
+Ref: "Stock Holder Trading Account".stock_holder_id > "Stock Holder".stock_holder_id
+Ref: "Stock Holder Relationship".stock_holder_id > "Stock Holder".stock_holder_id
+Ref: "Stock Holder Relationship".related_stock_holder_id > "Stock Holder".stock_holder_id
+Ref: "Stock Control".stock_holder_id > "Stock Holder".stock_holder_id

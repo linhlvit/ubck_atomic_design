@@ -1,0 +1,27 @@
+// NHNCK — UID10 Quản lý đào tạo tập huấn
+
+Project NHNCK_UID10 {
+  database_type: "Delta Lake"
+  Note: "NHNCK — UID10 Quản lý đào tạo tập huấn"
+}
+
+Table "Securities Organization Reference" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
+  securities_organization_reference_id bigint [pk]
+  parent_organization_id bigint
+  created_by_officer_id bigint
+}
+
+Table "Securities Practitioner License Decision Document" [note: "Quyết định hành chính của UBCKNN về cấp/thu hồi/hủy chứng chỉ hành nghề chứng khoán."] {
+  license_decision_document_id bigint [pk]
+  created_by_officer_id bigint
+}
+
+Table "Regulatory Authority Organization Unit" [note: "Đơn vị/phòng ban thuộc UBCKNN. Cấu trúc phân cấp gộp Units và Departments."] {
+  organization_unit_id bigint [pk]
+  parent_organization_unit_id bigint
+}
+
+Ref: "Securities Organization Reference".parent_organization_id > "Securities Organization Reference".securities_organization_reference_id
+// Ref: "Securities Organization Reference".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
+// Ref: "Securities Practitioner License Decision Document".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
+Ref: "Regulatory Authority Organization Unit".parent_organization_unit_id > "Regulatory Authority Organization Unit".organization_unit_id

@@ -1,0 +1,39 @@
+// IDS — UID06 Báo cáo tài chính và báo cáo định kỳ
+
+Project IDS_UID06 {
+  database_type: "Delta Lake"
+  Note: "IDS — UID06 Báo cáo tài chính và báo cáo định kỳ"
+}
+
+Table "Financial Report Catalog" [note: "Danh mục báo cáo tài chính — loại báo cáo/năm/scope hợp nhất/loại hình doanh nghiệp. Master entity FK từ Financial Report Row/Column Template."] {
+  financial_report_catalog_id bigint [pk]
+}
+
+Table "Financial Report Row Template" [note: "Định nghĩa hàng trong biểu mẫu BCTC — mã hàng/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
+  financial_report_row_template_id bigint [pk]
+  financial_report_catalog_id bigint
+}
+
+Table "Financial Report Column Template" [note: "Định nghĩa cột trong biểu mẫu BCTC — mã cột/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
+  financial_report_column_template_id bigint [pk]
+  financial_report_catalog_id bigint
+}
+
+Table "Periodic Report Form" [note: "Biểu mẫu báo cáo định kỳ (thường niên/quý/tháng) cho CBTT. Master entity FK từ Periodic Report Form Row/Column Template."] {
+  periodic_report_form_id bigint [pk]
+}
+
+Table "Periodic Report Form Row Template" [note: "Định nghĩa hàng trong biểu mẫu báo cáo định kỳ — tên/thứ tự/kiểu dữ liệu. FK to Periodic Report Form."] {
+  periodic_report_form_row_template_id bigint [pk]
+  periodic_report_form_id bigint
+}
+
+Table "Periodic Report Form Column Template" [note: "Định nghĩa cột trong biểu mẫu báo cáo định kỳ — tên/thứ tự/công thức. FK to Periodic Report Form."] {
+  periodic_report_form_column_template_id bigint [pk]
+  periodic_report_form_id bigint
+}
+
+Ref: "Financial Report Row Template".financial_report_catalog_id > "Financial Report Catalog".financial_report_catalog_id
+Ref: "Financial Report Column Template".financial_report_catalog_id > "Financial Report Catalog".financial_report_catalog_id
+Ref: "Periodic Report Form Row Template".periodic_report_form_id > "Periodic Report Form".periodic_report_form_id
+Ref: "Periodic Report Form Column Template".periodic_report_form_id > "Periodic Report Form".periodic_report_form_id

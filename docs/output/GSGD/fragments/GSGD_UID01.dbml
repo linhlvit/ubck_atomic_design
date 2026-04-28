@@ -1,0 +1,85 @@
+// GSGD — UID01 Nhóm chức năng: Quản lý thông tin
+
+Project GSGD_UID01 {
+  database_type: "Delta Lake"
+  Note: "GSGD — UID01 Nhóm chức năng: Quản lý thông tin"
+}
+
+Table "Investor Trading Account" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD. Grain: 1 dòng = 1 tài khoản (phân biệt theo account_code từ VSDC). Bao gồm cá nhân và tổ chức, trong nước và nước ngoài."] {
+  investor_trading_account_id bigint [pk]
+}
+
+Table "Account Investor Group" [note: "Nhóm tài khoản nhà đầu tư do nghiệp vụ giám sát xác định theo tiêu chí quan hệ (Danh tính / IP / MAC / Tiền). Grain: 1 dòng = 1 nhóm."] {
+  account_investor_group_id bigint [pk]
+}
+
+Table "Securities Watchlist Group" [note: "Nhóm chứng khoán do nghiệp vụ giám sát tạo ra (thường hoặc theo ngành). Danh sách mã CK denormalize thành ARRAY."] {
+  securities_watchlist_group_id bigint [pk]
+}
+
+Table "Abnormal Trading Report" [note: "Báo cáo giao dịch bất thường do tổ chức thành viên nộp lên UBCKNN. Grain: 1 dòng = 1 báo cáo."] {
+  abnormal_trading_report_id bigint [pk]
+}
+
+Table "Market Surveillance Compliance Report Template" [note: "Định nghĩa loại báo cáo tuân thủ trong hệ thống GSGD (tên báo cáo, kỳ báo cáo). Grain: 1 dòng = 1 loại báo cáo."] {
+  market_surveillance_compliance_report_template_id bigint [pk]
+}
+
+Table "Investor Trading Account Financial Service" [note: "Dịch vụ tài chính đăng ký trên tài khoản giao dịch (ký quỹ / ứng trước tiền bán / HĐ tài chính khác). FK Investor Trading Account."] {
+  investor_trading_account_financial_service_id bigint [pk]
+  investor_trading_account_id bigint
+}
+
+Table "Investor Trading Account Authorization" [note: "Ủy quyền giao dịch chứng khoán trên tài khoản nhà đầu tư. FK Investor Trading Account."] {
+  investor_trading_account_authorization_id bigint [pk]
+  investor_trading_account_id bigint
+}
+
+Table "Account Investor Group Member" [note: "Quan hệ thành viên giữa tài khoản nhà đầu tư và nhóm giám sát. Ghi nhận loại quan hệ và trạng thái. FK Account Investor Group + Investor Trading Account."] {
+  account_investor_group_member_id bigint [pk]
+  account_investor_group_id bigint
+  investor_trading_account_id bigint
+}
+
+Table "Investor Account Relationship" [note: "Quan hệ giữa 2 tài khoản nhà đầu tư trong giám sát (IP address, MAC address, chuyển tiền). Ghi nhận độ mạnh quan hệ. FK Investor Trading Account (x2) + Account Investor Group."] {
+  investor_account_relationship_id bigint [pk]
+  first_investor_trading_account_id bigint
+  second_investor_trading_account_id bigint
+  account_investor_group_id bigint
+}
+
+Table "Listed Company Corporate Event" [note: "Sự kiện liên quan đến tổ chức niêm yết trong phạm vi giám sát GSGD. Grain: 1 dòng = 1 sự kiện."] {
+  listed_company_corporate_event_id bigint [pk]
+}
+
+Table "Market Surveillance Compliance Report Column Config" [note: "Định nghĩa cấu trúc cột của từng loại báo cáo tuân thủ GSGD. FK Market Surveillance Compliance Report Template."] {
+  market_surveillance_compliance_report_column_config_id bigint [pk]
+  market_surveillance_compliance_report_template_id bigint
+}
+
+Table "Market Surveillance Compliance Report Instance" [note: "Instance báo cáo tuân thủ theo từng kỳ. FK Market Surveillance Compliance Report Template."] {
+  market_surveillance_compliance_report_instance_id bigint [pk]
+  market_surveillance_compliance_report_template_id bigint
+}
+
+Table "Abnormal Trading Report File Attachment" [note: "File đính kèm báo cáo giao dịch bất thường (có chữ ký số). FK Abnormal Trading Report."] {
+  abnormal_trading_report_file_attachment_id bigint [pk]
+  abnormal_trading_report_id bigint
+}
+
+Table "Market Surveillance Compliance Report Row Data" [note: "Dữ liệu từng dòng trong báo cáo tuân thủ GSGD (lưu dạng JSON). Grain: 1 dòng = 1 row x 1 kỳ. FK Market Surveillance Compliance Report Instance."] {
+  market_surveillance_compliance_report_row_data_id bigint [pk]
+  market_surveillance_compliance_report_instance_id bigint
+}
+
+Ref: "Investor Trading Account Financial Service".investor_trading_account_id > "Investor Trading Account".investor_trading_account_id
+Ref: "Investor Trading Account Authorization".investor_trading_account_id > "Investor Trading Account".investor_trading_account_id
+Ref: "Account Investor Group Member".account_investor_group_id > "Account Investor Group".account_investor_group_id
+Ref: "Account Investor Group Member".investor_trading_account_id > "Investor Trading Account".investor_trading_account_id
+Ref: "Investor Account Relationship".first_investor_trading_account_id > "Investor Trading Account".investor_trading_account_id
+Ref: "Investor Account Relationship".second_investor_trading_account_id > "Investor Trading Account".investor_trading_account_id
+Ref: "Investor Account Relationship".account_investor_group_id > "Account Investor Group".account_investor_group_id
+Ref: "Market Surveillance Compliance Report Column Config".market_surveillance_compliance_report_template_id > "Market Surveillance Compliance Report Template".market_surveillance_compliance_report_template_id
+Ref: "Market Surveillance Compliance Report Instance".market_surveillance_compliance_report_template_id > "Market Surveillance Compliance Report Template".market_surveillance_compliance_report_template_id
+Ref: "Abnormal Trading Report File Attachment".abnormal_trading_report_id > "Abnormal Trading Report".abnormal_trading_report_id
+Ref: "Market Surveillance Compliance Report Row Data".market_surveillance_compliance_report_instance_id > "Market Surveillance Compliance Report Instance".market_surveillance_compliance_report_instance_id

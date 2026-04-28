@@ -1,0 +1,13 @@
+// DCST — UID04 Xử lý vi phạm pháp luật về thuế
+
+Project DCST_UID04 {
+  database_type: "Delta Lake"
+  Note: "DCST — UID04 Xử lý vi phạm pháp luật về thuế"
+}
+
+Table "Tax Violation Penalty Decision" [note: "Quyết định xử lý vi phạm hành chính về thuế. Ghi nhận hành vi vi phạm và mức phạt/truy thu."] {
+  tax_violation_penalty_decision_id bigint [pk]
+  registered_taxpayer_id bigint
+}
+
+// Ref: "Tax Violation Penalty Decision".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id // out-of-source
