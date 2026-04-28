@@ -107,8 +107,8 @@ flowchart LR
     end
 
     subgraph GOLD["Gold"]
-        G1["Fact Penalty Decision"]
-        G2["Penalty Decision List"]
+        G2["Fact Penalty Decision"]
+        G1["Penalty Decision List"]
         G3["Calendar Date Dimension"]
         G4["Classification Dimension"]
     end
@@ -116,15 +116,15 @@ flowchart LR
     S1 --> SV1
     S2 --> SV2
 
-    SV1 --> G1
-    SV2 --> G1
     SV1 --> G2
     SV2 --> G2
+    SV1 --> G1
+    SV2 --> G1
 
     SV2 ~~~ G3
 
-    G3 --> G1
-    G4 --> G1
+    G3 --> G2
+    G4 --> G2
 ```
 
 ### Cụm 4: Đơn thư khiếu nại tố cáo (Complaint Petition List)

@@ -1,114 +1,114 @@
-﻿gold_entity,gold_attribute,data_domain,key,description,source_entity,source_attribute
-Foreign Investor Dimension,Investor Dimension Id,Surrogate Dimension Id,PK,Surrogate key,Generated,ETL derived
-Foreign Investor Dimension,Investor Id,Surrogate Key,BK,Silver surrogate Id của NĐT — FIMS.INVESTOR (PK Silver). ETL join key.,Foreign Investor,Foreign Investor Id
-Foreign Investor Dimension,Investor Code,Text,,"Mã số giao dịch MSGD (Transaction Code) — FIMS.INVESTOR.TransactionCode. Dùng hiển thị, không dùng làm join key.",Foreign Investor,Transaction Code
-Foreign Investor Dimension,Investor Name,Text,,Tên NĐT (cá nhân: họ tên / tổ chức: tên pháp lý) — FIMS.INVESTOR.name,Foreign Investor,Full Name
-Foreign Investor Dimension,English Name,Text,,Tên tiếng Anh — FIMS.INVESTOR.ename,Foreign Investor,English Name
-Foreign Investor Dimension,Investor Object Type Code,Text,,Loại đối tượng: ETL map từ FIMS.INVESTOR.ObjectType INT (1=INDIVIDUAL / 2=ORG),Foreign Investor,Investor Object Type Code
-Foreign Investor Dimension,Investor Type Code,Classification Value,FK → Classification Dimension (scheme: FIMS_INVESTOR_TYPE),Loại hình NĐT chi tiết — FIMS.INVESTOR.InvestorTypeId,Foreign Investor,Investor Type Code
-Foreign Investor Dimension,Nationality Code,Text,,Mã quốc tịch — FIMS.INVESTOR.NaId lookup Geographic Area,Foreign Investor,Nationality Code
-Foreign Investor Dimension,Custodian Bank Code,Text,,Mã NHLK — FIMS.INVESTOR.BankAddId lookup → FIMS.BANKMONI.Id. Dùng join với Custodian Bank Dimension tại query time.,Foreign Investor,Custodian Bank Code
-Foreign Investor Dimension,Director Name,Text,,Tên đại diện giao dịch (tổ chức) — FIMS.INVESTOR.Director — denormalized snapshot,Foreign Investor,Director Name
-Foreign Investor Dimension,Life Cycle Status Code,Classification Value,FK → Classification Dimension (scheme: LIFE_CYCLE_STATUS),Trạng thái hoạt động — FIMS.INVESTOR.StatusId,Foreign Investor,Life Cycle Status Code
-Foreign Investor Dimension,Created Timestamp,Timestamp,,Ngày đăng ký MSGD — FIMS.INVESTOR.DateCreated — dùng làm Registration Date trên Fact. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
-Foreign Investor Dimension,Effective Date,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
-Foreign Investor Dimension,Expiry Date,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
-Geographic Area Dimension,Geographic Area Dimension Id,Surrogate Dimension Id,PK,Surrogate key,Generated,ETL derived
-Geographic Area Dimension,Geographic Area Id,Surrogate Key,BK,Silver surrogate Id của quốc gia — FIMS.NATIONAL (PK Silver). ETL join key.,Geographic Area,Geographic Area Id
-Geographic Area Dimension,Geographic Area Code,Text,,Mã quốc gia — FIMS.NATIONAL.Id. Dùng hiển thị.,Geographic Area,Geographic Area Code
-Geographic Area Dimension,Geographic Area Short Code,Text,,Mã viết tắt — FIMS.NATIONAL.SName,Geographic Area,Geographic Area Short Code
-Geographic Area Dimension,Geographic Area Name,Text,,Tên quốc gia — FIMS.NATIONAL.Name,Geographic Area,Geographic Area Name
-Geographic Area Dimension,Life Cycle Status Code,Classification Value,FK → Classification Dimension (scheme: LIFE_CYCLE_STATUS),Trạng thái — FIMS.NATIONAL.Status,Geographic Area,Life Cycle Status Code
-Geographic Area Dimension,Effective Date,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
-Geographic Area Dimension,Expiry Date,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
-Asset Category Dimension,Asset Category Dimension Id,Surrogate Dimension Id,PK,Surrogate key,Generated,ETL derived
-Asset Category Dimension,Asset Category Code,Surrogate Key,BK,Mã loại tài sản — ETL derived từ FIMS_SECURITIES_TYPE. Xem O_NDTNN_9,Classification Value,scheme = FIMS_SECURITIES_TYPE
-Asset Category Dimension,Asset Category Name,Text,,Tên loại tài sản (Cổ phiếu CCQ niêm yết / Trái phiếu / UPCoM / Vốn góp CK khác / Tiền tương đương),Classification Value,scheme = FIMS_SECURITIES_TYPE
-Asset Category Dimension,Effective Date,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
-Asset Category Dimension,Expiry Date,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
-Calendar Date Dimension,Date Dimension Id,Surrogate Dimension Id,PK,Surrogate key = YYYYMMDD,Generated,ETL derived
-Calendar Date Dimension,Full Date,Date,,Ngày đầy đủ,Generated,ETL derived
-Calendar Date Dimension,Year,Small Counter,,Năm (YYYY),Generated,ETL derived
-Calendar Date Dimension,Month,Small Counter,,Tháng (1-12),Generated,ETL derived
-Calendar Date Dimension,Day Of Year,Small Counter,,Ngày thứ N trong năm (1-366),Generated,ETL derived
-Calendar Date Dimension,Month Start Date,Date,,Ngày đầu tháng,Generated,ETL derived
-Calendar Date Dimension,Month End Date,Date,,Ngày cuối tháng — khớp với Snapshot Date trên Fact Portfolio,Generated,ETL derived
-Fact Foreign Investor Registration,Registration Date,Small Counter,,YYYYMMDD — ETL cast từ Foreign Investor.Created Timestamp. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
-Fact Foreign Investor Registration,Investor Dimension Id,Surrogate Dimension Id,FK → Foreign Investor Dimension,FK nhà đầu tư — lookup từ Foreign Investor.Foreign Investor Id,Foreign Investor,Foreign Investor Id
-Fact Foreign Investor Registration,Registration Date Dimension Id,Surrogate Dimension Id,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Foreign Investor.Created Timestamp → Calendar Date Dimension. FIMS.INVESTOR.DateCreated. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
-Fact Foreign Investor Registration,Population Date,Timestamp,,ETL load timestamp,Generated,ETL derived
-Fact Foreign Investor Capital Flow,Report Date Dimension Id,Surrogate Dimension Id,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Member Regulatory Report.Report Date → Calendar Date Dimension. FIMS.RPTMEMBER.DayReport,Member Regulatory Report,Report Date
-Fact Foreign Investor Capital Flow,Investor Dimension Id,Surrogate Dimension Id,FK → Foreign Investor Dimension,FK nhà đầu tư — lookup từ Member Regulatory Report.Foreign Investor Id,Member Regulatory Report,Foreign Investor Id
-Fact Foreign Investor Capital Flow,Country Dimension Id,Surrogate Dimension Id,FK → Geographic Area Dimension,FK quốc tịch NĐT — lookup chain: Foreign Investor.Nationality Code → Geographic Area Id,Foreign Investor,Nationality Code
-Fact Foreign Investor Capital Flow,Event Type Code,Classification Value,FK → Classification Dimension (scheme: FIMS_CAPITAL_FLOW_TYPE),Loại sự kiện: IN = dòng tiền vào / OUT = dòng tiền ra — ETL derived từ cell code trong RPTVALUES,Generated,ETL derived
-Fact Foreign Investor Capital Flow,Capital Amount,Currency Amount,,Số tiền vào hoặc ra (VNĐ) — luôn dương; phân biệt chiều bằng Event Type Code. Từ FIMS.RPTVALUES.Values với cell code tương ứng,Member Report Value,Cell Value
-Fact Foreign Investor Capital Flow,Population Date,Timestamp,,ETL load timestamp,Generated,ETL derived
-Fact Foreign Investor Portfolio Snapshot,Snapshot Date,Small Counter,,YYYYMMDD ngày cuối tháng — ETL derived từ ngày cập nhật FIMS.CATEGORIESSTOCK,Foreign Investor Stock Portfolio Snapshot,Foreign Investor Stock Portfolio Snapshot Code
-Fact Foreign Investor Portfolio Snapshot,Investor Dimension Id,Surrogate Dimension Id,FK → Foreign Investor Dimension,FK nhà đầu tư — lookup từ Foreign Investor Stock Portfolio Snapshot.Foreign Investor Id,Foreign Investor Stock Portfolio Snapshot,Foreign Investor Id
-Fact Foreign Investor Portfolio Snapshot,Snapshot Date Dimension Id,Surrogate Dimension Id,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Snapshot Date (ngày cuối tháng ETL-derived) → Calendar Date Dimension,Generated,ETL derived
-Fact Foreign Investor Portfolio Snapshot,Country Dimension Id,Surrogate Dimension Id,FK → Geographic Area Dimension,FK quốc tịch NĐT — lookup chain: Foreign Investor.Nationality Code → Geographic Area,Foreign Investor,Nationality Code
-Fact Foreign Investor Portfolio Snapshot,Asset Category Dimension Id,Surrogate Dimension Id,FK → Asset Category Dimension,FK loại tài sản — ETL map từ FIMS_SECURITIES_TYPE. Xem O_NDTNN_9,Asset Category Dimension,Asset Category Dimension Id
-Fact Foreign Investor Portfolio Snapshot,Industry Category Dimension Id,Surrogate Dimension Key,FK → Industry Category Dimension,FK nhóm ngành — ETL lookup từ Public Company.Industry Category Level1 Code qua Stock Code,Public Company,Industry Category Level1 Code
-Fact Foreign Investor Portfolio Snapshot,Quantity,Percentage,,Số lượng chứng khoán sở hữu — FIMS.CATEGORIESSTOCK.Quantity,Foreign Investor Stock Portfolio Snapshot,Quantity
-Fact Foreign Investor Portfolio Snapshot,Ownership Rate,Percentage,,Tỷ lệ % sở hữu — FIMS.CATEGORIESSTOCK.Rate,Foreign Investor Stock Portfolio Snapshot,Ownership Rate
-Fact Foreign Investor Portfolio Snapshot,Portfolio Market Value,Currency Amount,,Giá trị thị trường = Quantity × giá đóng cửa CK. Xem O_NDTNN_5 — pending nguồn giá,Generated,ETL derived (Quantity × closing price — pending source)
-Fact Foreign Investor Portfolio Snapshot,Population Date,Timestamp,,ETL load timestamp,Generated,ETL derived
-Foreign Investor 360 Profile,Investor Code,Surrogate Dimension Id,PK,Mã MSGD — filter key — FIMS.INVESTOR.TransactionCode,Foreign Investor,Transaction Code
-Foreign Investor 360 Profile,Investor Name,Text,,Tên NĐT — FIMS.INVESTOR.name,Foreign Investor,Full Name
-Foreign Investor 360 Profile,English Name,Text,,Tên tiếng Anh — FIMS.INVESTOR.ename,Foreign Investor,English Name
-Foreign Investor 360 Profile,Investor Object Type Code,Text,,INDIVIDUAL / FUND / OTHER_ORG — ETL map từ FIMS.INVESTOR.ObjectType,Foreign Investor,Investor Object Type Code
-Foreign Investor 360 Profile,Investor Type Code,Text,,Mã loại hình — FIMS.INVESTOR.InvestorTypeId,Foreign Investor,Investor Type Code
-Foreign Investor 360 Profile,Nationality Code,Text,,Mã quốc tịch — FIMS.INVESTOR.NaId lookup,Foreign Investor,Nationality Code
-Foreign Investor 360 Profile,Custodian Bank Name,Text,,Tên NHLK — denorm từ FIMS.BANKMONI.Name qua INVESTOR.BankAddId,Custodian Bank,Custodian Bank Name
-Foreign Investor 360 Profile,Director Name,Text,,Tên đại diện giao dịch — FIMS.INVESTOR.Director,Foreign Investor,Director Name
-Foreign Investor 360 Profile,Life Cycle Status Code,Text,,Trạng thái hoạt động — FIMS.INVESTOR.StatusId,Foreign Investor,Life Cycle Status Code
-Foreign Investor 360 Profile,Created Timestamp,Timestamp,,Ngày đăng ký MSGD — FIMS.INVESTOR.DateCreated. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
-Investor Compliance History,Investor Code,Surrogate Dimension Id,PK,Mã FII — ETL resolve từ GS_HO_SO.TEN_DOI_TUONG → Mã FII. Xem O_NDTNN_7,Surveillance Enforcement Case,Subject Name
-Investor Compliance History,Enforcement Case Code,Surrogate Dimension Id,PK,Mã hồ sơ VPHC — ThanhTra.GS_HO_SO.MA_HO_SO,Surveillance Enforcement Case,Case Number
-Investor Compliance History,Decision Code,Surrogate Dimension Id,PK,Mã quyết định xử phạt — ThanhTra.GS_VAN_BAN_XU_LY.SO_QD_XU_PHAT,Surveillance Enforcement Decision,Penalty Decision Number
-Investor Compliance History,Decision Date,Date,,Ngày lập biên bản VPHC — ThanhTra.GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN. Xem O_NDTNN_8,Surveillance Enforcement Decision,Violation Report Date
-Investor Compliance History,Decision Status Code,Classification Value,FK → Classification Dimension (scheme: TT_CASE_STATUS),Trạng thái quyết định xử lý — ThanhTra.GS_VAN_BAN_XU_LY.TRANG_THAI,Surveillance Enforcement Decision,Decision Status Code
-Investor Compliance History,Penalty Content,Text,,Nội dung xử phạt — ThanhTra.GS_VAN_BAN_XU_LY.NOI_DUNG_XU_PHAT,Surveillance Enforcement Decision,Penalty Content
-Investor Compliance History,Total Penalty Amount,Currency Amount,,Tổng số tiền phạt (VNĐ) — ThanhTra.GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT,Surveillance Enforcement Decision,Total Penalty Amount
-Investor Compliance History,Case Status Code,Classification Value,FK → Classification Dimension (scheme: TT_CASE_STATUS),Trạng thái hồ sơ GS — ThanhTra.GS_HO_SO.TRANG_THAI_ID,Surveillance Enforcement Case,Case Status Code
-Investor Compliance History,Case Content,Text,,Nội dung mô tả hồ sơ — ThanhTra.GS_HO_SO.NOI_DUNG,Surveillance Enforcement Case,Case Content
-Investor Compliance History,Business Sector Code,Classification Value,FK → Classification Dimension (scheme: TT_BUSINESS_SECTOR),Mảng nghiệp vụ vi phạm — ThanhTra.GS_HO_SO.MANG_NGHIEP_VU_ID,Surveillance Enforcement Case,Business Sector Code
-Public Company Dimension,Public Company Dimension Id,Surrogate Dimension Id,PK,Surrogate key,Generated,ETL derived
-Public Company Dimension,Public Company Id,Surrogate Key,BK,Silver surrogate Id của CTĐC — IDS.company_profiles (PK Silver). ETL join key.,Public Company,Public Company Id
-Public Company Dimension,Stock Code,Text,,Mã chứng khoán (ISIN) — IDS.company_profiles.isin_cd. Dùng join với FIMS.CATEGORIESSTOCK.SecId.,Public Company,ISIN Code
-Public Company Dimension,Public Company Code,Text,,Mã công ty đại chúng — IDS.company_profiles.id,Public Company,Public Company Code
-Public Company Dimension,Public Company Name,Text,,Tên công ty tiếng Việt — IDS.company_profiles.company_name_vn,Public Company,Public Company Name
-Public Company Dimension,Industry Category Level1 Code,Surrogate Dimension Id,FK → Industry Category Dimension,Mã ngành cấp 1 — IDS.company_detail.category_l1_id,Public Company,Industry Category Level1 Code
-Public Company Dimension,Industry Category Level2 Code,Surrogate Dimension Id,FK → Industry Category Dimension,Mã ngành cấp 2 — IDS.company_detail.category_l2_id,Public Company,Industry Category Level2 Code
-Public Company Dimension,Equity Listing Exchange Code,Classification Value,FK → Classification Dimension (scheme: IDS_EQUITY_LISTING_EXCH),Sàn niêm yết — IDS.company_profiles.equity_listing_exch_cd,Public Company,Equity Listing Exchange Code
-Public Company Dimension,Life Cycle Status Code,Classification Value,FK → Classification Dimension (scheme: LIFE_CYCLE_STATUS),Trạng thái hoạt động,Public Company,Life Cycle Status Code
-Public Company Dimension,Effective Date,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
-Public Company Dimension,Expiry Date,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
-Industry Category Dimension,Industry Category Dimension Id,Surrogate Key,PK,Surrogate key — ETL generated,Generated,ETL derived
-Industry Category Dimension,Industry Category Code,Text,BK,Mã nhóm ngành — ETL extract từ Public Company.Industry Category Level1 Code (IDS.company_detail.category_l1_id). Ghi chú: Silver không có entity Category riêng — ETL derive từ Public Company.,Public Company,Industry Category Level1 Code
-Industry Category Dimension,Industry Category Name,Text,,Tên nhóm ngành hiển thị — ETL lookup từ IDS.categories.name qua category_l1_id,Public Company,Industry Category Level1 Code
-Industry Category Dimension,Parent Category Code,Text,,Mã nhóm ngành cha (cấp 1) — NULL nếu đã là cấp 1,Generated,ETL derived
-Industry Category Dimension,Effective Date,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
-Industry Category Dimension,Expiry Date,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
-Fact Foreign Ownership Snapshot,Snapshot Date,Small Counter,,YYYYMMDD — ngày snapshot — ETL derived từ ngày xử lý,Generated,ETL derived
-Fact Foreign Ownership Snapshot,Public Company Dimension Id,Surrogate Dimension Id,FK → Public Company Dimension,FK công ty đại chúng — lookup qua Stock Code,Public Company,Public Company Id
-Fact Foreign Ownership Snapshot,Snapshot Date Dimension Id,Surrogate Dimension Id,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Snapshot Date (ngày chọn) → Calendar Date Dimension,Generated,ETL derived
-Fact Foreign Ownership Snapshot,Total Ownership Rate,Percentage,,Tổng tỷ lệ sở hữu của toàn bộ NĐTNN = SUM(Ownership Rate) per mã CK — FIMS.CATEGORIESSTOCK.Rate,Foreign Investor Stock Portfolio Snapshot,Ownership Rate
-Fact Foreign Ownership Snapshot,Max Ownership Rate,Percentage,,Room tối đa theo quy định — IDS.foreign_owner_limit.max_owner_rate. Áp dụng bản ghi có Effective From <= Snapshot Date <= Effective To,Public Company Foreign Ownership Limit,Max Ownership Rate
-Fact Foreign Ownership Snapshot,Remaining Room Rate,Percentage,,Room còn lại = Max Ownership Rate - Total Ownership Rate — ETL derived,Generated,ETL derived
-Fact Foreign Ownership Snapshot,Population Date,Timestamp,,ETL load timestamp,Generated,ETL derived
-NDTNN Regulatory Report Store,Member Regulatory Report Code,Text,BK,Mã lần nộp báo cáo — FIMS.RPTMEMBER.Id. Join key ETL.,Member Regulatory Report,Member Regulatory Report Code
-NDTNN Regulatory Report Store,Report Type Code,Classification Value,,Loại báo cáo — FIMS.RPTMEMBER.ReportTypeId. Phân biệt 23 loại biểu mẫu TT51/2021.,Member Regulatory Report,Report Type Code
-NDTNN Regulatory Report Store,Report Template Code,Text,,Mã biểu mẫu báo cáo — FIMS.RPTMEMBER.RptId lookup FIMS.RPTTEMP.Code.,Member Regulatory Report,Report Template Code
-NDTNN Regulatory Report Store,Report Template Name,Text,,Tên biểu mẫu báo cáo — FIMS.RPTTEMP.Name. Denorm từ Report Template.,Report Template,Report Template Name
-NDTNN Regulatory Report Store,Member Object Type Code,Classification Value,,Loại đối tượng nộp: CTQLQ / CTCK / NHLK / SGDCK / VSDC / Đại diện CBTT / NĐTNN.,Member Regulatory Report,Member Object Type Code
-NDTNN Regulatory Report Store,Member Code,Text,,Mã tổ chức nộp báo cáo — ETL derive từ các FK: Fund/Securities/CustodianBank/DepCenter/StockExchange/Investor Code theo ObjectType.,Generated,ETL derived
-NDTNN Regulatory Report Store,Reporting Period Type Code,Classification Value,,Loại kỳ: Tháng / Quý / Năm — FIMS.RPTMEMBER.PeriodType.,Member Regulatory Report,Reporting Period Type Code
-NDTNN Regulatory Report Store,Period Value,Small Counter,,"Giá trị kỳ (1–12 cho tháng, 1–4 cho quý) — FIMS.RPTMEMBER.PeriodValue.",Member Regulatory Report,Period Value
-NDTNN Regulatory Report Store,Report Year,Small Counter,,Năm kỳ báo cáo — FIMS.RPTMEMBER.YearValue.,Member Regulatory Report,Report Year
-NDTNN Regulatory Report Store,Report Date,Date,,Ngày báo cáo — FIMS.RPTMEMBER.DayReport.,Member Regulatory Report,Report Date
-NDTNN Regulatory Report Store,Submission Status Code,Classification Value,,Trạng thái nộp: Draft / Submitted / Approved — FIMS.RPTMEMBER.Status.,Member Regulatory Report,Submission Status Code
-NDTNN Regulatory Report Store,Cell Code,Text,,Mã chỉ tiêu trong biểu mẫu — FIMS.RPTVALUES.Code. Dùng tra cứu chỉ tiêu cụ thể.,Member Report Value,Cell Code
-NDTNN Regulatory Report Store,Cell Name,Text,,Tên chỉ tiêu — lookup từ Report Template cell definition. Tương ứng với Cell Code.,Report Template,Report Template Name
-NDTNN Regulatory Report Store,Cell Value,Text,,Giá trị chỉ tiêu — FIMS.RPTVALUES.Values. Kiểu Text vì có thể là số hoặc chuỗi tùy chỉ tiêu.,Member Report Value,Cell Value
-NDTNN Regulatory Report Store,Population Date,Timestamp,,ETL load timestamp.,Generated,ETL derived
+﻿gold_entity,gold_table,gold_attribute,gold_column,data_type,nullable,data_domain,key,description,source_entity,source_attribute
+Foreign Investor Dimension,frgn_ivsr_dim,Investor Dimension Id,ivsr_dim_id,string,false,Surrogate Key,PK,Surrogate key,Generated,ETL derived
+Foreign Investor Dimension,frgn_ivsr_dim,Investor Id,ivsr_id,string,false,Surrogate Key,BK,Silver surrogate Id của NĐT — FIMS.INVESTOR (PK Silver). ETL join key.,Foreign Investor,Foreign Investor Id
+Foreign Investor Dimension,frgn_ivsr_dim,Investor Code,ivsr_code,string,true,Text,,"Mã số giao dịch MSGD (Transaction Code) — FIMS.INVESTOR.TransactionCode. Dùng hiển thị, không dùng làm join key.",Foreign Investor,Transaction Code
+Foreign Investor Dimension,frgn_ivsr_dim,Investor Name,ivsr_nm,string,true,Text,,Tên NĐT (cá nhân: họ tên / tổ chức: tên pháp lý) — FIMS.INVESTOR.name,Foreign Investor,Full Name
+Foreign Investor Dimension,frgn_ivsr_dim,English Name,english_nm,string,true,Text,,Tên tiếng Anh — FIMS.INVESTOR.ename,Foreign Investor,English Name
+Foreign Investor Dimension,frgn_ivsr_dim,Investor Object Type Code,ivsr_obj_tp_code,string,true,Text,,Loại đối tượng: ETL map từ FIMS.INVESTOR.ObjectType INT (1=INDIVIDUAL / 2=ORG),Foreign Investor,Investor Object Type Code
+Foreign Investor Dimension,frgn_ivsr_dim,Investor Type Code,ivsr_tp_code,string,false,Classification Value,FK → Classification Dimension (scheme: FIMS_INVESTOR_TYPE),Loại hình NĐT chi tiết — FIMS.INVESTOR.InvestorTypeId,Foreign Investor,Investor Type Code
+Foreign Investor Dimension,frgn_ivsr_dim,Nationality Code,nationality_code,string,true,Text,,Mã quốc tịch — FIMS.INVESTOR.NaId lookup Geographic Area,Foreign Investor,Nationality Code
+Foreign Investor Dimension,frgn_ivsr_dim,Custodian Bank Code,cstd_bnk_code,string,true,Text,,Mã NHLK — FIMS.INVESTOR.BankAddId lookup → FIMS.BANKMONI.Id. Dùng join với Custodian Bank Dimension tại query time.,Foreign Investor,Custodian Bank Code
+Foreign Investor Dimension,frgn_ivsr_dim,Director Name,director_nm,string,true,Text,,Tên đại diện giao dịch (tổ chức) — FIMS.INVESTOR.Director — denormalized snapshot,Foreign Investor,Director Name
+Foreign Investor Dimension,frgn_ivsr_dim,Life Cycle Status Code,lcs_code,string,false,Classification Value,FK → Classification Dimension (scheme: LIFE_CYCLE_STATUS),Trạng thái hoạt động — FIMS.INVESTOR.StatusId,Foreign Investor,Life Cycle Status Code
+Foreign Investor Dimension,frgn_ivsr_dim,Created Timestamp,crt_tms,timestamp,true,Timestamp,,Ngày đăng ký MSGD — FIMS.INVESTOR.DateCreated — dùng làm Registration Date trên Fact. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
+Foreign Investor Dimension,frgn_ivsr_dim,Effective Date,eff_dt,date,true,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
+Foreign Investor Dimension,frgn_ivsr_dim,Expiry Date,expiry_dt,date,true,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
+Geographic Area Dimension,geo_dim,Geographic Area Dimension Id,geo_dim_id,string,false,Surrogate Key,PK,Surrogate key,Generated,ETL derived
+Geographic Area Dimension,geo_dim,Geographic Area Id,geo_id,string,false,Surrogate Key,BK,Silver surrogate Id của quốc gia — FIMS.NATIONAL (PK Silver). ETL join key.,Geographic Area,Geographic Area Id
+Geographic Area Dimension,geo_dim,Geographic Area Code,geo_code,string,true,Text,,Mã quốc gia — FIMS.NATIONAL.Id. Dùng hiển thị.,Geographic Area,Geographic Area Code
+Geographic Area Dimension,geo_dim,Geographic Area Short Code,geo_shrt_code,string,true,Text,,Mã viết tắt — FIMS.NATIONAL.SName,Geographic Area,Geographic Area Short Code
+Geographic Area Dimension,geo_dim,Geographic Area Name,geo_nm,string,true,Text,,Tên quốc gia — FIMS.NATIONAL.Name,Geographic Area,Geographic Area Name
+Geographic Area Dimension,geo_dim,Life Cycle Status Code,lcs_code,string,false,Classification Value,FK → Classification Dimension (scheme: LIFE_CYCLE_STATUS),Trạng thái — FIMS.NATIONAL.Status,Geographic Area,Life Cycle Status Code
+Geographic Area Dimension,geo_dim,Effective Date,eff_dt,date,true,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
+Geographic Area Dimension,geo_dim,Expiry Date,expiry_dt,date,true,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
+Asset Category Dimension,ast_cgy_dim,Asset Category Dimension Id,ast_cgy_dim_id,string,false,Surrogate Key,PK,Surrogate key,Generated,ETL derived
+Asset Category Dimension,ast_cgy_dim,Asset Category Code,ast_cgy_code,string,false,Surrogate Key,BK,Mã loại tài sản — ETL derived từ FIMS_SECURITIES_TYPE. Xem O_NDTNN_9,Classification Value,scheme = FIMS_SECURITIES_TYPE
+Asset Category Dimension,ast_cgy_dim,Asset Category Name,ast_cgy_nm,string,true,Text,,Tên loại tài sản (Cổ phiếu CCQ niêm yết / Trái phiếu / UPCoM / Vốn góp CK khác / Tiền tương đương),Classification Value,scheme = FIMS_SECURITIES_TYPE
+Asset Category Dimension,ast_cgy_dim,Effective Date,eff_dt,date,true,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
+Asset Category Dimension,ast_cgy_dim,Expiry Date,expiry_dt,date,true,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
+Calendar Date Dimension,cdr_dt_dim,Date Dimension Id,dt_dim_id,string,false,Surrogate Key,PK,Surrogate key = YYYYMMDD,Generated,ETL derived
+Calendar Date Dimension,cdr_dt_dim,Full Date,full_dt,date,true,Date,,Ngày đầy đủ,Generated,ETL derived
+Calendar Date Dimension,cdr_dt_dim,Year,yr,int,true,Small Counter,,Năm (YYYY),Generated,ETL derived
+Calendar Date Dimension,cdr_dt_dim,Month,mo,int,true,Small Counter,,Tháng (1-12),Generated,ETL derived
+Calendar Date Dimension,cdr_dt_dim,Day Of Year,day_of_yr,int,true,Small Counter,,Ngày thứ N trong năm (1-366),Generated,ETL derived
+Calendar Date Dimension,cdr_dt_dim,Month Start Date,mo_strt_dt,date,true,Date,,Ngày đầu tháng,Generated,ETL derived
+Calendar Date Dimension,cdr_dt_dim,Month End Date,mo_end_dt,date,true,Date,,Ngày cuối tháng — khớp với Snapshot Date trên Fact Portfolio,Generated,ETL derived
+Fact Foreign Investor Registration,fct_frgn_ivsr_rgst,Registration Date,rgst_dt,int,true,Small Counter,,YYYYMMDD — ETL cast từ Foreign Investor.Created Timestamp. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
+Fact Foreign Investor Registration,fct_frgn_ivsr_rgst,Investor Dimension Id,ivsr_dim_id,string,false,Surrogate Dimension Key,FK → Foreign Investor Dimension,FK nhà đầu tư — lookup từ Foreign Investor.Foreign Investor Id,Foreign Investor,Foreign Investor Id
+Fact Foreign Investor Registration,fct_frgn_ivsr_rgst,Registration Date Dimension Id,rgst_dt_dim_id,string,false,Surrogate Dimension Key,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Foreign Investor.Created Timestamp → Calendar Date Dimension. FIMS.INVESTOR.DateCreated. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
+Fact Foreign Investor Registration,fct_frgn_ivsr_rgst,Population Date,ppn_dt,timestamp,true,Timestamp,,ETL load timestamp,Generated,ETL derived
+Fact Foreign Investor Capital Flow,fct_frgn_ivsr_cptl_flow,Report Date Dimension Id,rpt_dt_dim_id,string,false,Surrogate Dimension Key,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Member Regulatory Report.Report Date → Calendar Date Dimension. FIMS.RPTMEMBER.DayReport,Member Regulatory Report,Report Date
+Fact Foreign Investor Capital Flow,fct_frgn_ivsr_cptl_flow,Investor Dimension Id,ivsr_dim_id,string,false,Surrogate Dimension Key,FK → Foreign Investor Dimension,FK nhà đầu tư — lookup từ Member Regulatory Report.Foreign Investor Id,Member Regulatory Report,Foreign Investor Id
+Fact Foreign Investor Capital Flow,fct_frgn_ivsr_cptl_flow,Country Dimension Id,cty_dim_id,string,false,Surrogate Dimension Key,FK → Geographic Area Dimension,FK quốc tịch NĐT — lookup chain: Foreign Investor.Nationality Code → Geographic Area Id,Foreign Investor,Nationality Code
+Fact Foreign Investor Capital Flow,fct_frgn_ivsr_cptl_flow,Event Type Code,ev_tp_code,string,false,Classification Value,FK → Classification Dimension (scheme: FIMS_CAPITAL_FLOW_TYPE),Loại sự kiện: IN = dòng tiền vào / OUT = dòng tiền ra — ETL derived từ cell code trong RPTVALUES,Generated,ETL derived
+Fact Foreign Investor Capital Flow,fct_frgn_ivsr_cptl_flow,Capital Amount,cptl_amt,"decimal(23,2)",true,Currency Amount,,Số tiền vào hoặc ra (VNĐ) — luôn dương; phân biệt chiều bằng Event Type Code. Từ FIMS.RPTVALUES.Values với cell code tương ứng,Member Report Value,Cell Value
+Fact Foreign Investor Capital Flow,fct_frgn_ivsr_cptl_flow,Population Date,ppn_dt,timestamp,true,Timestamp,,ETL load timestamp,Generated,ETL derived
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Snapshot Date,snpst_dt,int,true,Small Counter,,YYYYMMDD ngày cuối tháng — ETL derived từ ngày cập nhật FIMS.CATEGORIESSTOCK,Foreign Investor Stock Portfolio Snapshot,Foreign Investor Stock Portfolio Snapshot Code
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Investor Dimension Id,ivsr_dim_id,string,false,Surrogate Dimension Key,FK → Foreign Investor Dimension,FK nhà đầu tư — lookup từ Foreign Investor Stock Portfolio Snapshot.Foreign Investor Id,Foreign Investor Stock Portfolio Snapshot,Foreign Investor Id
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Snapshot Date Dimension Id,snpst_dt_dim_id,string,false,Surrogate Dimension Key,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Snapshot Date (ngày cuối tháng ETL-derived) → Calendar Date Dimension,Generated,ETL derived
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Country Dimension Id,cty_dim_id,string,false,Surrogate Dimension Key,FK → Geographic Area Dimension,FK quốc tịch NĐT — lookup chain: Foreign Investor.Nationality Code → Geographic Area,Foreign Investor,Nationality Code
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Asset Category Dimension Id,ast_cgy_dim_id,string,false,Surrogate Dimension Key,FK → Asset Category Dimension,FK loại tài sản — ETL map từ FIMS_SECURITIES_TYPE. Xem O_NDTNN_9,Asset Category Dimension,Asset Category Dimension Id
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Industry Category Dimension Id,idy_cgy_dim_id,string,false,Surrogate Dimension Key,FK → Industry Category Dimension,FK nhóm ngành — ETL lookup từ Public Company.Industry Category Level1 Code qua Stock Code,Public Company,Industry Category Level1 Code
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Quantity,qty,"decimal(5,2)",true,Percentage,,Số lượng chứng khoán sở hữu — FIMS.CATEGORIESSTOCK.Quantity,Foreign Investor Stock Portfolio Snapshot,Quantity
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Ownership Rate,own_rate,"decimal(5,2)",true,Percentage,,Tỷ lệ % sở hữu — FIMS.CATEGORIESSTOCK.Rate,Foreign Investor Stock Portfolio Snapshot,Ownership Rate
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Portfolio Market Value,prtfl_mkt_val,"decimal(23,2)",true,Currency Amount,,Giá trị thị trường = Quantity × giá đóng cửa CK. Xem O_NDTNN_5 — pending nguồn giá,Generated,ETL derived (Quantity × closing price — pending source)
+Fact Foreign Investor Portfolio Snapshot,fct_frgn_ivsr_prtfl_snpst,Population Date,ppn_dt,timestamp,true,Timestamp,,ETL load timestamp,Generated,ETL derived
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Investor Code,ivsr_code,string,false,Surrogate Key,PK,Mã MSGD — filter key — FIMS.INVESTOR.TransactionCode,Foreign Investor,Transaction Code
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Investor Name,ivsr_nm,string,true,Text,,Tên NĐT — FIMS.INVESTOR.name,Foreign Investor,Full Name
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,English Name,english_nm,string,true,Text,,Tên tiếng Anh — FIMS.INVESTOR.ename,Foreign Investor,English Name
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Investor Object Type Code,ivsr_obj_tp_code,string,true,Text,,INDIVIDUAL / FUND / OTHER_ORG — ETL map từ FIMS.INVESTOR.ObjectType,Foreign Investor,Investor Object Type Code
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Investor Type Code,ivsr_tp_code,string,true,Text,,Mã loại hình — FIMS.INVESTOR.InvestorTypeId,Foreign Investor,Investor Type Code
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Nationality Code,nationality_code,string,true,Text,,Mã quốc tịch — FIMS.INVESTOR.NaId lookup,Foreign Investor,Nationality Code
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Custodian Bank Name,cstd_bnk_nm,string,true,Text,,Tên NHLK — denorm từ FIMS.BANKMONI.Name qua INVESTOR.BankAddId,Custodian Bank,Custodian Bank Name
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Director Name,director_nm,string,true,Text,,Tên đại diện giao dịch — FIMS.INVESTOR.Director,Foreign Investor,Director Name
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Life Cycle Status Code,lcs_code,string,true,Text,,Trạng thái hoạt động — FIMS.INVESTOR.StatusId,Foreign Investor,Life Cycle Status Code
+Foreign Investor 360 Profile,frgn_ivsr_360_prfl,Created Timestamp,crt_tms,timestamp,true,Timestamp,,Ngày đăng ký MSGD — FIMS.INVESTOR.DateCreated. Xem O_NDTNN_1,Foreign Investor,Created Timestamp
+Investor Compliance History,ivsr_cmpln_hist,Investor Code,ivsr_code,string,false,Surrogate Key,PK,Mã FII — ETL resolve từ GS_HO_SO.TEN_DOI_TUONG → Mã FII. Xem O_NDTNN_7,Surveillance Enforcement Case,Subject Name
+Investor Compliance History,ivsr_cmpln_hist,Enforcement Case Code,enforcement_case_code,string,false,Surrogate Key,PK,Mã hồ sơ VPHC — ThanhTra.GS_HO_SO.MA_HO_SO,Surveillance Enforcement Case,Case Number
+Investor Compliance History,ivsr_cmpln_hist,Decision Code,dcsn_code,string,false,Surrogate Key,PK,Mã quyết định xử phạt — ThanhTra.GS_VAN_BAN_XU_LY.SO_QD_XU_PHAT,Surveillance Enforcement Decision,Penalty Decision Number
+Investor Compliance History,ivsr_cmpln_hist,Decision Date,dcsn_dt,date,true,Date,,Ngày lập biên bản VPHC — ThanhTra.GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN. Xem O_NDTNN_8,Surveillance Enforcement Decision,Violation Report Date
+Investor Compliance History,ivsr_cmpln_hist,Decision Status Code,dcsn_st_code,string,false,Classification Value,FK → Classification Dimension (scheme: TT_CASE_STATUS),Trạng thái quyết định xử lý — ThanhTra.GS_VAN_BAN_XU_LY.TRANG_THAI,Surveillance Enforcement Decision,Decision Status Code
+Investor Compliance History,ivsr_cmpln_hist,Penalty Content,pny_cntnt,string,true,Text,,Nội dung xử phạt — ThanhTra.GS_VAN_BAN_XU_LY.NOI_DUNG_XU_PHAT,Surveillance Enforcement Decision,Penalty Content
+Investor Compliance History,ivsr_cmpln_hist,Total Penalty Amount,tot_pny_amt,"decimal(23,2)",true,Currency Amount,,Tổng số tiền phạt (VNĐ) — ThanhTra.GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT,Surveillance Enforcement Decision,Total Penalty Amount
+Investor Compliance History,ivsr_cmpln_hist,Case Status Code,case_st_code,string,false,Classification Value,FK → Classification Dimension (scheme: TT_CASE_STATUS),Trạng thái hồ sơ GS — ThanhTra.GS_HO_SO.TRANG_THAI_ID,Surveillance Enforcement Case,Case Status Code
+Investor Compliance History,ivsr_cmpln_hist,Case Content,case_cntnt,string,true,Text,,Nội dung mô tả hồ sơ — ThanhTra.GS_HO_SO.NOI_DUNG,Surveillance Enforcement Case,Case Content
+Investor Compliance History,ivsr_cmpln_hist,Business Sector Code,bsn_sctr_code,string,false,Classification Value,FK → Classification Dimension (scheme: TT_BUSINESS_SECTOR),Mảng nghiệp vụ vi phạm — ThanhTra.GS_HO_SO.MANG_NGHIEP_VU_ID,Surveillance Enforcement Case,Business Sector Code
+Public Company Dimension,pblc_co_dim,Public Company Dimension Id,pblc_co_dim_id,string,false,Surrogate Key,PK,Surrogate key,Generated,ETL derived
+Public Company Dimension,pblc_co_dim,Public Company Id,pblc_co_id,string,false,Surrogate Key,BK,Silver surrogate Id của CTĐC — IDS.company_profiles (PK Silver). ETL join key.,Public Company,Public Company Id
+Public Company Dimension,pblc_co_dim,Stock Code,stk_code,string,true,Text,,Mã chứng khoán (ISIN) — IDS.company_profiles.isin_cd. Dùng join với FIMS.CATEGORIESSTOCK.SecId.,Public Company,ISIN Code
+Public Company Dimension,pblc_co_dim,Public Company Code,pblc_co_code,string,true,Text,,Mã công ty đại chúng — IDS.company_profiles.id,Public Company,Public Company Code
+Public Company Dimension,pblc_co_dim,Public Company Name,pblc_co_nm,string,true,Text,,Tên công ty tiếng Việt — IDS.company_profiles.company_name_vn,Public Company,Public Company Name
+Public Company Dimension,pblc_co_dim,Industry Category Level1 Code,idy_cgy_level1_code,string,false,Surrogate Dimension Key,FK → Industry Category Dimension,Mã ngành cấp 1 — IDS.company_detail.category_l1_id,Public Company,Industry Category Level1 Code
+Public Company Dimension,pblc_co_dim,Industry Category Level2 Code,idy_cgy_level2_code,string,false,Surrogate Dimension Key,FK → Industry Category Dimension,Mã ngành cấp 2 — IDS.company_detail.category_l2_id,Public Company,Industry Category Level2 Code
+Public Company Dimension,pblc_co_dim,Equity Listing Exchange Code,eqty_listing_exg_code,string,false,Classification Value,FK → Classification Dimension (scheme: IDS_EQUITY_LISTING_EXCH),Sàn niêm yết — IDS.company_profiles.equity_listing_exch_cd,Public Company,Equity Listing Exchange Code
+Public Company Dimension,pblc_co_dim,Life Cycle Status Code,lcs_code,string,false,Classification Value,FK → Classification Dimension (scheme: LIFE_CYCLE_STATUS),Trạng thái hoạt động,Public Company,Life Cycle Status Code
+Public Company Dimension,pblc_co_dim,Effective Date,eff_dt,date,true,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
+Public Company Dimension,pblc_co_dim,Expiry Date,expiry_dt,date,true,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
+Industry Category Dimension,idy_cgy_dim,Industry Category Dimension Id,idy_cgy_dim_id,string,false,Surrogate Key,PK,Surrogate key — ETL generated,Generated,ETL derived
+Industry Category Dimension,idy_cgy_dim,Industry Category Code,idy_cgy_code,string,false,Text,BK,Mã nhóm ngành — ETL extract từ Public Company.Industry Category Level1 Code (IDS.company_detail.category_l1_id). Ghi chú: Silver không có entity Category riêng — ETL derive từ Public Company.,Public Company,Industry Category Level1 Code
+Industry Category Dimension,idy_cgy_dim,Industry Category Name,idy_cgy_nm,string,true,Text,,Tên nhóm ngành hiển thị — ETL lookup từ IDS.categories.name qua category_l1_id,Public Company,Industry Category Level1 Code
+Industry Category Dimension,idy_cgy_dim,Parent Category Code,prn_cgy_code,string,true,Text,,Mã nhóm ngành cha (cấp 1) — NULL nếu đã là cấp 1,Generated,ETL derived
+Industry Category Dimension,idy_cgy_dim,Effective Date,eff_dt,date,true,Date,,Ngày hiệu lực SCD2,Generated,ETL derived
+Industry Category Dimension,idy_cgy_dim,Expiry Date,expiry_dt,date,true,Date,,9999-12-31 = bản hiện hành,Generated,ETL derived
+Fact Foreign Ownership Snapshot,fct_frgn_own_snpst,Snapshot Date,snpst_dt,int,true,Small Counter,,YYYYMMDD — ngày snapshot — ETL derived từ ngày xử lý,Generated,ETL derived
+Fact Foreign Ownership Snapshot,fct_frgn_own_snpst,Public Company Dimension Id,pblc_co_dim_id,string,false,Surrogate Dimension Key,FK → Public Company Dimension,FK công ty đại chúng — lookup qua Stock Code,Public Company,Public Company Id
+Fact Foreign Ownership Snapshot,fct_frgn_own_snpst,Snapshot Date Dimension Id,snpst_dt_dim_id,string,false,Surrogate Dimension Key,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Snapshot Date (ngày chọn) → Calendar Date Dimension,Generated,ETL derived
+Fact Foreign Ownership Snapshot,fct_frgn_own_snpst,Total Ownership Rate,tot_own_rate,"decimal(5,2)",true,Percentage,,Tổng tỷ lệ sở hữu của toàn bộ NĐTNN = SUM(Ownership Rate) per mã CK — FIMS.CATEGORIESSTOCK.Rate,Foreign Investor Stock Portfolio Snapshot,Ownership Rate
+Fact Foreign Ownership Snapshot,fct_frgn_own_snpst,Max Ownership Rate,max_own_rate,"decimal(5,2)",true,Percentage,,Room tối đa theo quy định — IDS.foreign_owner_limit.max_owner_rate. Áp dụng bản ghi có Effective From <= Snapshot Date <= Effective To,Public Company Foreign Ownership Limit,Max Ownership Rate
+Fact Foreign Ownership Snapshot,fct_frgn_own_snpst,Remaining Room Rate,rman_room_rate,"decimal(5,2)",true,Percentage,,Room còn lại = Max Ownership Rate - Total Ownership Rate — ETL derived,Generated,ETL derived
+Fact Foreign Ownership Snapshot,fct_frgn_own_snpst,Population Date,ppn_dt,timestamp,true,Timestamp,,ETL load timestamp,Generated,ETL derived
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Member Regulatory Report Code,mbr_reg_rpt_code,string,false,Text,BK,Mã lần nộp báo cáo — FIMS.RPTMEMBER.Id. Join key ETL.,Member Regulatory Report,Member Regulatory Report Code
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Report Type Code,rpt_tp_code,string,true,Classification Value,,Loại báo cáo — FIMS.RPTMEMBER.ReportTypeId. Phân biệt 23 loại biểu mẫu TT51/2021.,Member Regulatory Report,Report Type Code
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Report Template Code,rpt_tpl_code,string,true,Text,,Mã biểu mẫu báo cáo — FIMS.RPTMEMBER.RptId lookup FIMS.RPTTEMP.Code.,Member Regulatory Report,Report Template Code
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Report Template Name,rpt_tpl_nm,string,true,Text,,Tên biểu mẫu báo cáo — FIMS.RPTTEMP.Name. Denorm từ Report Template.,Report Template,Report Template Name
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Member Object Type Code,mbr_obj_tp_code,string,true,Classification Value,,Loại đối tượng nộp: CTQLQ / CTCK / NHLK / SGDCK / VSDC / Đại diện CBTT / NĐTNN.,Member Regulatory Report,Member Object Type Code
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Member Code,mbr_code,string,true,Text,,Mã tổ chức nộp báo cáo — ETL derive từ các FK: Fund/Securities/CustodianBank/DepCenter/StockExchange/Investor Code theo ObjectType.,Generated,ETL derived
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Reporting Period Type Code,rpt_prd_tp_code,string,true,Classification Value,,Loại kỳ: Tháng / Quý / Năm — FIMS.RPTMEMBER.PeriodType.,Member Regulatory Report,Reporting Period Type Code
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Period Value,prd_val,int,true,Small Counter,,"Giá trị kỳ (1–12 cho tháng, 1–4 cho quý) — FIMS.RPTMEMBER.PeriodValue.",Member Regulatory Report,Period Value
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Report Year,rpt_yr,int,true,Small Counter,,Năm kỳ báo cáo — FIMS.RPTMEMBER.YearValue.,Member Regulatory Report,Report Year
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Report Date,rpt_dt,date,true,Date,,Ngày báo cáo — FIMS.RPTMEMBER.DayReport.,Member Regulatory Report,Report Date
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Submission Status Code,submission_st_code,string,true,Classification Value,,Trạng thái nộp: Draft / Submitted / Approved — FIMS.RPTMEMBER.Status.,Member Regulatory Report,Submission Status Code
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Cell Code,cell_code,string,true,Text,,Mã chỉ tiêu trong biểu mẫu — FIMS.RPTVALUES.Code. Dùng tra cứu chỉ tiêu cụ thể.,Member Report Value,Cell Code
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Cell Name,cell_nm,string,true,Text,,Tên chỉ tiêu — lookup từ Report Template cell definition. Tương ứng với Cell Code.,Report Template,Report Template Name
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Cell Value,cell_val,string,true,Text,,Giá trị chỉ tiêu — FIMS.RPTVALUES.Values. Kiểu Text vì có thể là số hoặc chuỗi tùy chỉ tiêu.,Member Report Value,Cell Value
+NDTNN Regulatory Report Store,ndtnn_reg_rpt_store,Population Date,ppn_dt,timestamp,true,Timestamp,,ETL load timestamp.,Generated,ETL derived
