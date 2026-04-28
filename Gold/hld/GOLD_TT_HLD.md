@@ -19,7 +19,7 @@ Phục vụ toàn bộ Tab TỔNG QUAN — KPI cards, biểu đồ bar theo thá
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source ThanhTra"]
+    subgraph SRC["Bronze"]
         S1["ThanhTra.TT_HO_SO"]
         S2["ThanhTra.TT_KET_LUAN"]
         S3["ThanhTra.TT_QUYET_DINH"]
@@ -37,7 +37,7 @@ flowchart LR
         SV4["Inspection Decision Subject"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Fact Inspection Case Activity"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -51,6 +51,8 @@ flowchart LR
     S6 --> SV4
     S7 --> SV4
     S8 --> SV4
+
+    SV3 ~~~ G2
 
     SV1 --> G1
     SV2 --> G1
@@ -67,7 +69,7 @@ Phục vụ block Danh sách vụ việc Thanh tra/Kiểm tra — bảng tra c�
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source ThanhTra"]
+    subgraph SRC["Bronze"]
         S1["ThanhTra.TT_HO_SO"]
         S2["ThanhTra.TT_QUYET_DINH"]
     end
@@ -77,7 +79,7 @@ flowchart LR
         SV2["Inspection Decision"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Inspection Case List"]
     end
 
@@ -94,7 +96,7 @@ Phục vụ Tab XỬ PHẠT — KPI cards tổng hợp, biểu đồ dual axis t
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source ThanhTra"]
+    subgraph SRC["Bronze"]
         S1["ThanhTra.GS_VAN_BAN_XU_LY"]
         S2["ThanhTra.GS_HO_SO"]
     end
@@ -104,7 +106,7 @@ flowchart LR
         SV2["Surveillance Enforcement Case"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Fact Penalty Decision"]
         G2["Penalty Decision List"]
         G3["Calendar Date Dimension"]
@@ -119,6 +121,8 @@ flowchart LR
     SV1 --> G2
     SV2 --> G2
 
+    SV2 ~~~ G3
+
     G3 --> G1
     G4 --> G1
 ```
@@ -129,7 +133,7 @@ Phục vụ Tab ĐƠN THƯ — KPI aggregate (tổng, theo tháng, theo loại) 
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source ThanhTra"]
+    subgraph SRC["Bronze"]
         S1["ThanhTra.DT_DON_THU"]
     end
 
@@ -137,7 +141,7 @@ flowchart LR
         SV1["Complaint Petition"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Complaint Petition List"]
     end
 
@@ -245,7 +249,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Fact Inspection Case Activity"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -435,7 +439,7 @@ flowchart LR
         SV1["Inspection Case"]
         SV2["Inspection Decision"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Inspection Case List"]
     end
     subgraph RPT["Tab TỔNG QUAN"]
@@ -641,7 +645,7 @@ flowchart LR
         SV1["Inspection Case"]
         SV2["Inspection Decision"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Inspection Case List"]
     end
     subgraph RPT["Tab KIỂM TRA"]
@@ -731,7 +735,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Fact Penalty Decision"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -924,7 +928,7 @@ flowchart LR
         SV1["Surveillance Enforcement Decision"]
         SV2["Surveillance Enforcement Case"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Penalty Decision List"]
     end
     subgraph RPT["Tab XỬ PHẠT"]
@@ -982,7 +986,7 @@ flowchart LR
     subgraph SIL["Silver"]
         SV1["Complaint Petition"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Complaint Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
@@ -1100,7 +1104,7 @@ flowchart LR
     subgraph SIL["Silver"]
         SV1["Complaint Petition"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Complaint Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
@@ -1173,7 +1177,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph GOLD["Gold"]
         G1["Fact Penalty Decision"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
