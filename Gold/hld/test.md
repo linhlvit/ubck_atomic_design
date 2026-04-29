@@ -2,6 +2,10 @@
 
 **Phiên bản:** 2.5
 **Ngày:** 24/04/2026
+**Phạm vi:** Tab GIAO DỊCH + Tab GIÁM SÁT DÒNG VỐN + Tab DANH MỤC + Tab NĐTNN 360 + Tab BÁO CÁO + Tab DATA EXPLORER
+**Mô hình:** Star Schema (Phân tích) + Denormalized Table (Tác nghiệp)
+**File BA nguồn:** BA_analyst_NDTNN_new.csv
+**Silver source:** FIMS_Source_Analysis.md + ThanhTra_Source_Analysis.md + IDS_Source_Analysis.md + silver_attributes.csv
 
 ---
 
@@ -22,19 +26,19 @@ Phục vụ Tab GIAO DỊCH Nhóm 1 (3 box KPI NĐT mới). Tỷ lệ tham gia (
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
+    subgraph SRC["Source FIMS"]
         S1["FIMS.INVESTOR"]
         S2["FIMS.INVESTORTYPE"]
         S3["FIMS.NATIONAL"]
     end
 
-    subgraph SIL["Atomic"]
+    subgraph SIL["Silver"]
         SV1["Foreign Investor"]
         SV2["CV FIMS_INVESTOR_TYPE"]
         SV3["Geographic Area"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Registration"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -61,7 +65,7 @@ Phục vụ Tab NĐTNN 360: danh sách tìm kiếm, hồ sơ định danh, biế
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
+    subgraph SRC["Source FIMS"]
         S1["FIMS.INVESTOR"]
         S2["FIMS.BANKMONI"]
         S3["FIMS.INVESTORTYPE"]
@@ -69,7 +73,7 @@ flowchart LR
         S5["FIMS.CATEGORIESSTOCK"]
     end
 
-    subgraph SIL["Atomic"]
+    subgraph SIL["Silver"]
         SV1["Foreign Investor"]
         SV2["Custodian Bank"]
         SV3["CV FIMS_INVESTOR_TYPE"]
@@ -77,7 +81,7 @@ flowchart LR
         SV5["Foreign Investor Stock Portfolio Snapshot"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Foreign Investor 360 Profile"]
         G2["Fact Foreign Investor Portfolio Snapshot"]
         G3["Foreign Investor Dimension"]
@@ -109,19 +113,19 @@ Phục vụ Sub-tab C — Lịch sử tuân thủ trong NĐTNN 360. Silver từ 
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
-        S1["ThanhTra.GS_HO_SO"]
-        S2["ThanhTra.GS_VAN_BAN_XU_LY"]
-        S3["ThanhTra.DM_TRANG_THAI_HO_SO"]
+    subgraph SRC["Source Thanh Tra"]
+        S1["GS_HO_SO"]
+        S2["GS_VAN_BAN_XU_LY"]
+        S3["DM_TRANG_THAI_HO_SO"]
     end
 
-    subgraph SIL["Atomic"]
+    subgraph SIL["Silver"]
         SV1["Surveillance Enforcement Case"]
         SV2["Surveillance Enforcement Decision"]
         SV3["CV TT_CASE_STATUS"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Investor Compliance History"]
     end
 
@@ -142,21 +146,21 @@ Phục vụ Tab GIÁM SÁT DÒNG VỐN Nhóm 3–5 (dòng tiền vào/ra + phân
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
+    subgraph SRC["Source FIMS"]
         S1["FIMS.RPTVALUES"]
         S2["FIMS.RPTMEMBER"]
         S3["FIMS.INVESTOR"]
         S4["FIMS.NATIONAL"]
     end
 
-    subgraph SIL["Atomic"]
+    subgraph SIL["Silver"]
         SV1["Member Report Value"]
         SV2["Member Regulatory Report"]
         SV3["Foreign Investor"]
         SV4["Geographic Area"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -186,19 +190,19 @@ Phục vụ Tab DANH MỤC Nhóm 6–7 + Sub-tab B NĐTNN 360.
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
+    subgraph SRC["Source FIMS"]
         S1["FIMS.CATEGORIESSTOCK"]
         S2["FIMS.INVESTOR"]
         S3["FIMS.NATIONAL"]
     end
 
-    subgraph SIL["Atomic"]
+    subgraph SIL["Silver"]
         SV1["Foreign Investor Stock Portfolio Snapshot"]
         SV2["Foreign Investor"]
         SV3["Geographic Area"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -228,18 +232,18 @@ Phục vụ Tab DANH MỤC Nhóm 8 (Phân ngành) + Nhóm 9 (ROOM). Silver từ 
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
+    subgraph SRC["Source IDS"]
         S1["IDS.foreign_owner_limit"]
         S2["IDS.company_profiles"]
         S3["IDS.company_detail"]
     end
 
-    subgraph SIL["Atomic"]
+    subgraph SIL["Silver"]
         SV1["Public Company Foreign Ownership Limit"]
         SV2["Public Company"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Ownership Snapshot"]
         G2["Public Company Dimension"]
         G3["Industry Category Dimension"]
@@ -346,7 +350,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Registration"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -520,7 +524,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Calendar Date Dimension"]
     end
@@ -648,7 +652,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -755,7 +759,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -920,7 +924,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Industry Category Dimension"]
         G3["Calendar Date Dimension"]
@@ -1018,7 +1022,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Ownership Snapshot"]
         G2["Public Company Dimension"]
         G3["Calendar Date Dimension"]
@@ -1122,7 +1126,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Foreign Investor 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
@@ -1205,7 +1209,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -1276,7 +1280,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Investor Compliance History"]
     end
     subgraph RPT["Báo cáo"]
@@ -1361,7 +1365,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -1415,7 +1419,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -1523,7 +1527,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph GOLD["Gold Mart"]
         G1["NDTNN Regulatory Report Store"]
     end
     subgraph RPT["Báo cáo"]
@@ -1629,3 +1633,7 @@ graph TB
 | O_NDTNN_9 | **Asset Category scheme:** 5 loại tài sản trong BRD cần mapping với scheme `FIMS_SECURITIES_TYPE`. Code cụ thể chưa profile. | Placeholder code (LISTED_EQUITY / BOND / UPCOM / OTHER_EQUITY / CASH) — chờ BA/Silver confirm. | K_NDTNN_40–44 | Open |
 | O_NDTNN_10 | **ROOM source — đã xác định là IDS:** `Public Company Foreign Ownership Limit` (IDS.foreign_owner_limit) có `Max Ownership Rate` = Room tối đa. Thiết kế `Fact Foreign Ownership Snapshot` = join FIMS.CATEGORIESSTOCK (Ownership Rate) + IDS.foreign_owner_limit (Max Ownership Rate) theo mã CK. K_NDTNN_45–49 READY. K_NDTNN_50 (Room theo ngành) PENDING vì cần thêm Industry Category join. | Thiết kế theo IDS. K_NDTNN_45–49 đã có mart. | K_NDTNN_45–50 | Closed |
 | O_NDTNN_11 | **Room theo ngành (K_NDTNN_50):** Cần tính `SUM(Quantity NĐT) / SUM(Tổng cổ phiếu niêm yết) × 100%` GROUP BY ngành. Phân tử lấy từ `Fact Foreign Ownership Snapshot`, mẫu số cần tổng cổ phiếu niêm yết per mã CK — Silver chưa có. | Thiết kế bổ sung khi có nguồn tổng cổ phiếu lưu hành. | K_NDTNN_50 | Open — chờ nguồn tổng CP |
+
+---
+
+*Phiên bản 1.8 — bổ sung IDS_Source_Analysis.md. Nhóm 8 và Nhóm 9 chuyển READY từ IDS. Đóng O_NDTNN_4 và O_NDTNN_10. Còn lại: Tab DATA EXPLORER (xem BRD — thiết kế dạng pass-through).*
