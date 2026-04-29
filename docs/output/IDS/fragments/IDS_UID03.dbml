@@ -6,18 +6,18 @@ Project IDS_UID03 {
 }
 
 Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  public_company_id bigint [pk]
+  "Public Company Id" varchar [pk]
 }
 
 Table "Public Company Inspection" [note: "Thanh tra/kiểm tra công ty đại chúng — loại/số quyết định/đơn vị chủ trì/biên bản. FK to Public Company."] {
-  public_company_inspection_id bigint [pk]
-  public_company_id bigint
+  "Public Company Inspection Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Penalty" [note: "Xử phạt hành chính công ty đại chúng hoặc nhà đầu tư liên quan — hành vi vi phạm và quyết định xử phạt. FK to Public Company."] {
-  public_company_penalty_id bigint [pk]
-  public_company_id bigint
+  "Public Company Penalty Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
-Ref: "Public Company Inspection".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Penalty".public_company_id > "Public Company".public_company_id
+Ref: "Public Company Inspection"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Penalty"."Public Company Id" > "Public Company"."Public Company Id"

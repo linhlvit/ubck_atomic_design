@@ -112,7 +112,7 @@ def load_pending_columns():
 def load_manifest(filter_source=None, filter_table=None):
     """Trả về dict: (source_system, source_table) → group — bỏ qua pending."""
     result = {}
-    with open(MANIFEST, encoding="utf-8", newline="") as f:
+    with open(MANIFEST, encoding="utf-8-sig", newline="") as f:
         for row in csv.DictReader(f):
             if row["group"] == "pending":
                 continue

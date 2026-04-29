@@ -39,18 +39,20 @@ description: |
 
 | table_type | Khi nào dùng | ETL pattern |
 |---|---|---|
-| `Fundamental` | Entity độc lập, Tier 1, có lifecycle riêng, không FK đến entity nghiệp vụ khác | SCD2, upsert theo surrogate key |
-| `Relative` | Entity phụ thuộc Fundamental (FK), mô tả trạng thái hoặc thuộc tính bổ sung | SCD1 hoặc SCD2 tùy case |
+| `Fundamental` | Entity độc lập, có lifecycle riêng, không FK đến entity nghiệp vụ khác | SCD4A |
+| `Relative` | Entity phụ thuộc Fundamental (FK), mô tả trạng thái hoặc thuộc tính bổ sung | SCD2 |
 | `Fact Append` | Log hoạt động, giao dịch, sự kiện — mỗi dòng là 1 occurrence không bị xóa/sửa | Insert-only, append, không update |
 | `Snapshot` | Chụp toàn bộ trạng thái tại 1 thời điểm — load định kỳ (hàng ngày / hàng kỳ) | Full replace theo partition ngày |
+| `Classification` | Thông tin danh mục phân loại — có thể lấy từ nguồn hoặc tự định nghĩa. Mặc định cho tất cả entity có `bcv_core_object = Common` | SCD1 |
 
 **Dấu hiệu nhận biết nhanh:**
 - Tên entity chứa "Activity Log", "Status Log", "Status History" → `Fact Append`
 - bcv_concept chứa "ETL Pattern" → `Fact Append`
 - bcv_core_object = Transaction → `Fact Append`
 - Tên entity chứa "Snapshot" → `Snapshot`
-- Tier 1, không phải log/snapshot → `Fundamental`
-- Tier 2+ không phải log/snapshot → `Relative`
+- bcv_core_object = Common → `Classification` (mặc định; điều chỉnh cá biệt theo quy trình status draft → approved trong silver_entities.csv)
+- Không thuộc các trường hợp trên, không phụ thuộc Fundamental → `Fundamental`
+- Không thuộc các trường hợp trên, có FK đến Fundamental → `Relative`
 
 ### Bước 2 — Phân tầng (Tiered Design)
 

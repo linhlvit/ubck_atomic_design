@@ -6,26 +6,26 @@ Project ThanhTra_UID05 {
 }
 
 Table "AML Enforcement Case" [note: "Hồ sơ xử lý vi phạm phòng chống rửa tiền. Ghi nhận đối tượng vi phạm và trạng thái xử lý."] {
-  aml_enforcement_case_id bigint [pk]
-  responsible_officer_id bigint
-  processing_officer_id bigint
+  "AML Enforcement Case Id" varchar [pk]
+  "Responsible Officer Id" varchar
+  "Processing Officer Id" varchar
 }
 
 Table "AML Periodic Report" [note: "Báo cáo định kỳ về hoạt động phòng chống rửa tiền. Mỗi dòng = 1 lần lập báo cáo."] {
-  aml_periodic_report_id bigint [pk]
+  "AML Periodic Report Id" varchar [pk]
 }
 
 Table "AML Case Document Attachment" [note: "Văn bản đính kèm hồ sơ PCRT. FK → AML Enforcement Case."] {
-  aml_case_document_attachment_id bigint [pk]
-  aml_enforcement_case_id bigint
+  "AML Case Document Attachment Id" varchar [pk]
+  "AML Enforcement Case Id" varchar
 }
 
 Table "AML Enforcement Decision" [note: "Văn bản xử lý vi phạm rửa tiền. FK → AML Enforcement Case."] {
-  aml_enforcement_decision_id bigint [pk]
-  aml_enforcement_case_id bigint
+  "AML Enforcement Decision Id" varchar [pk]
+  "AML Enforcement Case Id" varchar
 }
 
-// Ref: "AML Enforcement Case".responsible_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
-// Ref: "AML Enforcement Case".processing_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
-Ref: "AML Case Document Attachment".aml_enforcement_case_id > "AML Enforcement Case".aml_enforcement_case_id
-Ref: "AML Enforcement Decision".aml_enforcement_case_id > "AML Enforcement Case".aml_enforcement_case_id
+// Ref: "AML Enforcement Case"."Responsible Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
+// Ref: "AML Enforcement Case"."Processing Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
+Ref: "AML Case Document Attachment"."AML Enforcement Case Id" > "AML Enforcement Case"."AML Enforcement Case Id"
+Ref: "AML Enforcement Decision"."AML Enforcement Case Id" > "AML Enforcement Case"."AML Enforcement Case Id"

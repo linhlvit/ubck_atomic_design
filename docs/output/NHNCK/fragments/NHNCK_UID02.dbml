@@ -6,16 +6,16 @@ Project NHNCK_UID02 {
 }
 
 Table "Securities Organization Reference" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
-  securities_organization_reference_id bigint [pk]
-  parent_organization_id bigint
-  created_by_officer_id bigint
+  "Securities Organization Reference Id" varchar [pk]
+  "Parent Organization Id" varchar
+  "Created By Officer Id" varchar
 }
 
 Table "Securities Practitioner License Decision Document" [note: "Quyết định hành chính của UBCKNN về cấp/thu hồi/hủy chứng chỉ hành nghề chứng khoán."] {
-  license_decision_document_id bigint [pk]
-  created_by_officer_id bigint
+  "License Decision Document Id" varchar [pk]
+  "Created By Officer Id" varchar
 }
 
-Ref: "Securities Organization Reference".parent_organization_id > "Securities Organization Reference".securities_organization_reference_id
-// Ref: "Securities Organization Reference".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner License Decision Document".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
+Ref: "Securities Organization Reference"."Parent Organization Id" > "Securities Organization Reference"."Securities Organization Reference Id"
+// Ref: "Securities Organization Reference"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner License Decision Document"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source

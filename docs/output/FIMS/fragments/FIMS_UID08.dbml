@@ -6,14 +6,14 @@ Project FIMS_UID08 {
 }
 
 Table "Disclosure Representative" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
-  disclosure_representative_id bigint [pk]
-  nationality_id bigint
+  "Disclosure Representative Id" varchar [pk]
+  "Nationality Id" varchar
 }
 
 Table "Disclosure Announcement" [note: "Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT."] {
-  disclosure_announcement_id bigint [pk]
-  disclosure_representative_id bigint
+  "Disclosure Announcement Id" varchar [pk]
+  "Disclosure Representative Id" varchar
 }
 
-// Ref: "Disclosure Representative".nationality_id > "Geographic Area".geographic_area_id // out-of-source
-Ref: "Disclosure Announcement".disclosure_representative_id > "Disclosure Representative".disclosure_representative_id
+// Ref: "Disclosure Representative"."Nationality Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+Ref: "Disclosure Announcement"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id"

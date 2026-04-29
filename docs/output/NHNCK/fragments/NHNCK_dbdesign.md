@@ -56,53 +56,53 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Application Id | license_ap_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | Applications |  | PK surrogate. BCV: "Government Registration" (Arrangement). Hồ sơ đăng ký CCHN. |
-| 2 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | Applications | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Applications |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | Applications | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | Applications | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 6 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ đăng ký | NHNCK | Applications | CertificateId | Scheme: CERTIFICATE_TYPE. |
-| 7 | Application Status Code | ap_st_code | STRING | X |  |  |  | Trạng thái hồ sơ (FK → ApplicationStatuses) | NHNCK | Applications | StatusId | Scheme: APPLICATION_STATUS. |
-| 8 | License Certificate Document Id | license_ctf_doc_id | BIGINT | X |  | F |  | FK đến CCHN đã được cấp (nếu có) | NHNCK | Applications | CertificateRecordId | FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. |
-| 9 | License Certificate Document Code | license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN đã cấp | NHNCK | Applications | CertificateRecordId | Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id. |
-| 10 | Previous Certificate Type Code | prev_ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ trước đó | NHNCK | Applications | PreviousCertificateId | Scheme: CERTIFICATE_TYPE. |
-| 11 | Previous License Certificate Document Id | prev_license_ctf_doc_id | BIGINT | X |  | F |  | FK đến CCHN trước đó | NHNCK | Applications | PreviousCertificateRecordId | FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. |
-| 12 | Previous License Certificate Document Code | prev_license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN trước đó | NHNCK | Applications | PreviousCertificateRecordId | Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with Previous License Certificate Document Id. |
-| 13 | Examination Assessment Id | exam_ases_id | BIGINT | X |  | F |  | FK đến đợt thi (nếu hồ sơ gắn với kỳ thi) | NHNCK | Applications | ExamSessionId | FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id. |
-| 14 | Examination Assessment Code | exam_ases_code | STRING | X |  |  |  | Mã đợt thi | NHNCK | Applications | ExamSessionId | Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id. |
-| 15 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến cán bộ xử lý | NHNCK | Applications | AssigneeId | FK target: Regulatory Authority Officer.Officer Id. |
-| 16 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ xử lý | NHNCK | Applications | AssigneeId | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id. |
-| 17 | License Application Verification Status Id | license_ap_verf_st_id | BIGINT | X |  | F |  | FK đến yêu cầu phê duyệt lãnh đạo | NHNCK | Applications | InfoVerifyId | FK target: Securities Practitioner License Application Verification Status.License Application Verification Status Id. |
-| 18 | License Application Verification Status Code | license_ap_verf_st_code | STRING | X |  |  |  | Mã yêu cầu phê duyệt | NHNCK | Applications | InfoVerifyId | Lookup pair: Securities Practitioner License Application Verification Status.License Application Verification Status Code. Pair with License Application Verification Status Id. |
-| 19 | Application Code | ap_code | STRING | X |  |  |  | Mã hồ sơ (mã nghiệp vụ) | NHNCK | Applications | ApplicationCode | Mã nghiệp vụ, khác BK. |
-| 20 | Application Title | ap_ttl | STRING | X |  |  |  | Tiêu đề hồ sơ | NHNCK | Applications | Title |  |
-| 21 | Registration Type Code | rgst_tp_code | STRING | X |  |  |  | Loại đăng ký | NHNCK | Applications | RegistrationType | Scheme: REGISTRATION_TYPE. |
-| 22 | Application Type Code | ap_tp_code | STRING | X |  |  |  | Loại hồ sơ | NHNCK | Applications | ApplicationType | Scheme: APPLICATION_TYPE. |
-| 23 | Submission Date | submission_dt | DATE | X |  |  |  | Ngày nộp hồ sơ | NHNCK | Applications | SubmissionDate |  |
-| 24 | Supplement Date | supplement_dt | DATE | X |  |  |  | Ngày bổ sung hồ sơ | NHNCK | Applications | SupplementDate |  |
-| 25 | Supplement Letter Date | supplement_ltr_dt | DATE | X |  |  |  | Ngày thư yêu cầu bổ sung | NHNCK | Applications | SupplementLetterDate |  |
-| 26 | Reissue Reason | reissue_rsn | STRING | X |  |  |  | Lý do cấp lại | NHNCK | Applications | ReissueReason |  |
-| 27 | Rejection Reason | rejection_rsn | STRING | X |  |  |  | Lý do từ chối | NHNCK | Applications | RejectionReason |  |
-| 28 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ (snapshot tại thời điểm cấp) | NHNCK | Applications | CertificateNumber | Denormalized snapshot. |
-| 29 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ (snapshot) | NHNCK | Applications | IssueDate | Denormalized snapshot. |
-| 30 | Previous Certificate Number | prev_ctf_nbr | STRING | X |  |  |  | Số chứng chỉ trước đó (snapshot) | NHNCK | Applications | PreviousCertificateNumber | Denormalized snapshot. |
-| 31 | Previous Issue Date | prev_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ trước đó (snapshot) | NHNCK | Applications | PreviousIssueDate | Denormalized snapshot. |
-| 32 | Reissue HSM Code | reissue_hsm_code | STRING | X |  |  |  | Mã tái cấp HSM | NHNCK | Applications | ReissueHSM |  |
-| 33 | Certificate Receipt Method Code | ctf_recpt_mth_code | STRING | X |  |  |  | Phương thức nhận chứng chỉ | NHNCK | Applications | CertificateReceiptMethod | Scheme: RECEIPT_METHOD. |
-| 34 | Certificate Receipt Address | ctf_recpt_adr | STRING | X |  |  |  | Địa chỉ nhận chứng chỉ | NHNCK | Applications | CertificateReceiptAddress |  |
-| 35 | Certificate Receipt Phone | ctf_recpt_ph | STRING | X |  |  |  | Số điện thoại nhận chứng chỉ | NHNCK | Applications | CertificateReceiptPhone |  |
-| 36 | Receipt Status Code | recpt_st_code | STRING | X |  |  |  | Trạng thái nhận chứng chỉ | NHNCK | Applications | ReceiptStatus | Scheme: RECEIPT_STATUS. |
-| 37 | Is Violated Indicator | is_violated_ind | BOOLEAN | X |  |  |  | Cờ vi phạm | NHNCK | Applications | IsViolated |  |
-| 38 | Is Date Exploitable Indicator | is_dt_exploitable_ind | BOOLEAN | X |  |  |  | Cờ khai thác theo ngày | NHNCK | Applications | IsDateExploitable |  |
-| 39 | Application Note | ap_note | STRING | X |  |  |  | Ghi chú | NHNCK | Applications | Note |  |
-| 40 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | Applications | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 41 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | Applications | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 42 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | Applications | UpdatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 43 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK | Applications | UpdatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id. |
-| 44 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | Applications | CreatedAt |  |
-| 45 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | Applications | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Application Id | license_ap_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.Applications |  | PK surrogate. BCV: "Government Registration" (Arrangement). Hồ sơ đăng ký CCHN. |
+| 2 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.Applications | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Applications' | Mã nguồn dữ liệu | NHNCK.Applications |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.Applications | ProfessionalId |  |
+| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.Applications | ProfessionalId |  |
+| 6 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ đăng ký | NHNCK.Applications | CertificateId | Scheme: CERTIFICATE_TYPE. |
+| 7 | Application Status Code | ap_st_code | STRING | X |  |  |  | Trạng thái hồ sơ (FK → ApplicationStatuses) | NHNCK.Applications | StatusId | Scheme: APPLICATION_STATUS. |
+| 8 | License Certificate Document Id | license_ctf_doc_id | BIGINT | X |  | F |  | FK đến CCHN đã được cấp (nếu có) | NHNCK.Applications | CertificateRecordId |  |
+| 9 | License Certificate Document Code | license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN đã cấp | NHNCK.Applications | CertificateRecordId |  |
+| 10 | Previous Certificate Type Code | prev_ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ trước đó | NHNCK.Applications | PreviousCertificateId | Scheme: CERTIFICATE_TYPE. |
+| 11 | Previous License Certificate Document Id | prev_license_ctf_doc_id | BIGINT | X |  | F |  | FK đến CCHN trước đó | NHNCK.Applications | PreviousCertificateRecordId |  |
+| 12 | Previous License Certificate Document Code | prev_license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN trước đó | NHNCK.Applications | PreviousCertificateRecordId |  |
+| 13 | Examination Assessment Id | exam_ases_id | BIGINT | X |  | F |  | FK đến đợt thi (nếu hồ sơ gắn với kỳ thi) | NHNCK.Applications | ExamSessionId |  |
+| 14 | Examination Assessment Code | exam_ases_code | STRING | X |  |  |  | Mã đợt thi | NHNCK.Applications | ExamSessionId |  |
+| 15 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến cán bộ xử lý | NHNCK.Applications | AssigneeId |  |
+| 16 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ xử lý | NHNCK.Applications | AssigneeId |  |
+| 17 | License Application Verification Status Id | license_ap_verf_st_id | BIGINT | X |  | F |  | FK đến yêu cầu phê duyệt lãnh đạo | NHNCK.Applications | InfoVerifyId |  |
+| 18 | License Application Verification Status Code | license_ap_verf_st_code | STRING | X |  |  |  | Mã yêu cầu phê duyệt | NHNCK.Applications | InfoVerifyId |  |
+| 19 | Application Code | ap_code | STRING | X |  |  |  | Mã hồ sơ (mã nghiệp vụ) | NHNCK.Applications | ApplicationCode |  |
+| 20 | Application Title | ap_ttl | STRING | X |  |  |  | Tiêu đề hồ sơ | NHNCK.Applications | Title |  |
+| 21 | Registration Type Code | rgst_tp_code | STRING | X |  |  |  | Loại đăng ký | NHNCK.Applications | RegistrationType | Scheme: REGISTRATION_TYPE. |
+| 22 | Application Type Code | ap_tp_code | STRING | X |  |  |  | Loại hồ sơ | NHNCK.Applications | ApplicationType | Scheme: APPLICATION_TYPE. |
+| 23 | Submission Date | submission_dt | DATE | X |  |  |  | Ngày nộp hồ sơ | NHNCK.Applications | SubmissionDate |  |
+| 24 | Supplement Date | supplement_dt | DATE | X |  |  |  | Ngày bổ sung hồ sơ | NHNCK.Applications | SupplementDate |  |
+| 25 | Supplement Letter Date | supplement_ltr_dt | DATE | X |  |  |  | Ngày thư yêu cầu bổ sung | NHNCK.Applications | SupplementLetterDate |  |
+| 26 | Reissue Reason | reissue_rsn | STRING | X |  |  |  | Lý do cấp lại | NHNCK.Applications | ReissueReason |  |
+| 27 | Rejection Reason | rejection_rsn | STRING | X |  |  |  | Lý do từ chối | NHNCK.Applications | RejectionReason |  |
+| 28 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ (snapshot tại thời điểm cấp) | NHNCK.Applications | CertificateNumber |  |
+| 29 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ (snapshot) | NHNCK.Applications | IssueDate |  |
+| 30 | Previous Certificate Number | prev_ctf_nbr | STRING | X |  |  |  | Số chứng chỉ trước đó (snapshot) | NHNCK.Applications | PreviousCertificateNumber |  |
+| 31 | Previous Issue Date | prev_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ trước đó (snapshot) | NHNCK.Applications | PreviousIssueDate |  |
+| 32 | Reissue HSM Code | reissue_hsm_code | STRING | X |  |  |  | Mã tái cấp HSM | NHNCK.Applications | ReissueHSM |  |
+| 33 | Certificate Receipt Method Code | ctf_recpt_mth_code | STRING | X |  |  |  | Phương thức nhận chứng chỉ | NHNCK.Applications | CertificateReceiptMethod | Scheme: RECEIPT_METHOD. |
+| 34 | Certificate Receipt Address | ctf_recpt_adr | STRING | X |  |  |  | Địa chỉ nhận chứng chỉ | NHNCK.Applications | CertificateReceiptAddress |  |
+| 35 | Certificate Receipt Phone | ctf_recpt_ph | STRING | X |  |  |  | Số điện thoại nhận chứng chỉ | NHNCK.Applications | CertificateReceiptPhone |  |
+| 36 | Receipt Status Code | recpt_st_code | STRING | X |  |  |  | Trạng thái nhận chứng chỉ | NHNCK.Applications | ReceiptStatus | Scheme: RECEIPT_STATUS. |
+| 37 | Is Violated Indicator | is_violated_ind | BOOLEAN | X |  |  |  | Cờ vi phạm | NHNCK.Applications | IsViolated |  |
+| 38 | Is Date Exploitable Indicator | is_dt_exploitable_ind | BOOLEAN | X |  |  |  | Cờ khai thác theo ngày | NHNCK.Applications | IsDateExploitable |  |
+| 39 | Application Note | ap_note | STRING | X |  |  |  | Ghi chú | NHNCK.Applications | Note |  |
+| 40 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.Applications | CreatedBy |  |
+| 41 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.Applications | CreatedBy |  |
+| 42 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.Applications | UpdatedBy |  |
+| 43 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK.Applications | UpdatedBy |  |
+| 44 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.Applications | CreatedAt |  |
+| 45 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.Applications | UpdatedAt |  |
 
 
 #### 2.{IDX}.2.1 Constraint
@@ -140,23 +140,23 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Application Education Certificate Document Id | license_ap_ed_ctf_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ApplicationSpecializations |  | PK surrogate. BCV: "Documentation". Chứng chỉ chuyên môn đính kèm hồ sơ. |
-| 2 | License Application Education Certificate Document Code | license_ap_ed_ctf_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ApplicationSpecializations | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ApplicationSpecializations |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK | ApplicationSpecializations | ApplicationId | FK target: Securities Practitioner License Application.License Application Id. |
-| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK | ApplicationSpecializations | ApplicationId | Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id. |
-| 6 | Specialization Type Code | specialization_tp_code | STRING |  |  |  |  | Mã chuyên môn (FK → Specializations) | NHNCK | ApplicationSpecializations | SpecializationId | Scheme: SPECIALIZATION_TYPE. |
-| 7 | File Name | file_nm | STRING | X |  |  |  | Tên file chứng chỉ chuyên môn | NHNCK | ApplicationSpecializations | FileName |  |
-| 8 | File Path | file_path | STRING | X |  |  |  | Đường dẫn file | NHNCK | ApplicationSpecializations | FilePath |  |
-| 9 | File Format | file_fmt | STRING | X |  |  |  | Loại file | NHNCK | ApplicationSpecializations | Format |  |
-| 10 | File Size | file_sz | STRING | X |  |  |  | Dung lượng file (bytes) | NHNCK | ApplicationSpecializations | FileSize |  |
-| 11 | Specialization Note | specialization_note | STRING | X |  |  |  | Nội dung/ghi chú | NHNCK | ApplicationSpecializations | Note |  |
-| 12 | Appraisal Status Code | aprs_st_code | STRING | X |  |  |  | Trạng thái thẩm định | NHNCK | ApplicationSpecializations | Status | Scheme: APPRAISAL_STATUS. |
-| 13 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến người thẩm định | NHNCK | ApplicationSpecializations | AssigneeId | FK target: Regulatory Authority Officer.Officer Id. |
-| 14 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã người thẩm định | NHNCK | ApplicationSpecializations | AssigneeId | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id. |
-| 15 | Appraisaled Timestamp | appraisaled_tms | TIMESTAMP | X |  |  |  | Ngày thẩm định | NHNCK | ApplicationSpecializations | AppraisaledAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Application Education Certificate Document Id | license_ap_ed_ctf_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ApplicationSpecializations |  | PK surrogate. BCV: "Documentation". Chứng chỉ chuyên môn đính kèm hồ sơ. |
+| 2 | License Application Education Certificate Document Code | license_ap_ed_ctf_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ApplicationSpecializations | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ApplicationSpecializations' | Mã nguồn dữ liệu | NHNCK.ApplicationSpecializations |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK.ApplicationSpecializations | ApplicationId |  |
+| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK.ApplicationSpecializations | ApplicationId |  |
+| 6 | Specialization Type Code | specialization_tp_code | STRING |  |  |  |  | Mã chuyên môn (FK → Specializations) | NHNCK.ApplicationSpecializations | SpecializationId | Scheme: SPECIALIZATION_TYPE. |
+| 7 | File Name | file_nm | STRING | X |  |  |  | Tên file chứng chỉ chuyên môn | NHNCK.ApplicationSpecializations | FileName |  |
+| 8 | File Path | file_path | STRING | X |  |  |  | Đường dẫn file | NHNCK.ApplicationSpecializations | FilePath |  |
+| 9 | File Format | file_fmt | STRING | X |  |  |  | Loại file | NHNCK.ApplicationSpecializations | Format |  |
+| 10 | File Size | file_sz | STRING | X |  |  |  | Dung lượng file (bytes) | NHNCK.ApplicationSpecializations | FileSize |  |
+| 11 | Specialization Note | specialization_note | STRING | X |  |  |  | Nội dung/ghi chú | NHNCK.ApplicationSpecializations | Note |  |
+| 12 | Appraisal Status Code | aprs_st_code | STRING | X |  |  |  | Trạng thái thẩm định | NHNCK.ApplicationSpecializations | Status | Scheme: APPRAISAL_STATUS. |
+| 13 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến người thẩm định | NHNCK.ApplicationSpecializations | AssigneeId |  |
+| 14 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã người thẩm định | NHNCK.ApplicationSpecializations | AssigneeId |  |
+| 15 | Appraisaled Timestamp | appraisaled_tms | TIMESTAMP | X |  |  |  | Ngày thẩm định | NHNCK.ApplicationSpecializations | AppraisaledAt |  |
 
 
 #### 2.{IDX}.3.1 Constraint
@@ -188,28 +188,28 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Application Document Attachment Id | license_ap_doc_attachment_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ApplicationDocuments |  | PK surrogate. BCV: "Documentation" (Documentation). Tài liệu đính kèm hồ sơ. |
-| 2 | License Application Document Attachment Code | license_ap_doc_attachment_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ApplicationDocuments | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ApplicationDocuments |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK | ApplicationDocuments | ApplicationId | FK target: Securities Practitioner License Application.License Application Id. |
-| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK | ApplicationDocuments | ApplicationId | Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id. |
-| 6 | Document Type Code | doc_tp_code | STRING | X |  | F |  | Mã loại tài liệu (FK → Documents) | NHNCK | ApplicationDocuments | DocumentId | Scheme: DOCUMENT_TYPE. FK đến bảng Documents. |
-| 7 | Document Name | doc_nm | STRING | X |  |  |  | Tên tài liệu | NHNCK | ApplicationDocuments | DocumentName |  |
-| 8 | File Name | file_nm | STRING | X |  |  |  | Tên file | NHNCK | ApplicationDocuments | FileName |  |
-| 9 | File Path | file_path | STRING | X |  |  |  | Đường dẫn file | NHNCK | ApplicationDocuments | FilePath |  |
-| 10 | File Format | file_fmt | STRING | X |  |  |  | Loại file (pdf, docx...) | NHNCK | ApplicationDocuments | Format |  |
-| 11 | File Size | file_sz | STRING | X |  |  |  | Dung lượng file (bytes) | NHNCK | ApplicationDocuments | FileSize |  |
-| 12 | Attachment Description | attachment_dsc | STRING | X |  |  |  | Mô tả tài liệu | NHNCK | ApplicationDocuments | Description |  |
-| 13 | Attachment Note | attachment_note | STRING | X |  |  |  | Ghi chú thẩm định | NHNCK | ApplicationDocuments | Note |  |
-| 14 | Appraisal Status Code | aprs_st_code | STRING | X |  |  |  | Trạng thái thẩm định | NHNCK | ApplicationDocuments | Status | Scheme: APPRAISAL_STATUS. |
-| 15 | Is Invalid Indicator | is_inval_ind | BOOLEAN | X |  |  |  | Cờ không hợp lệ | NHNCK | ApplicationDocuments | IsInvalid |  |
-| 16 | Is Incomplete Indicator | is_incom_ind | BOOLEAN | X |  |  |  | Cờ chưa hoàn thành | NHNCK | ApplicationDocuments | IsIncomplete |  |
-| 17 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến người thẩm định | NHNCK | ApplicationDocuments | AssigneeId | FK target: Regulatory Authority Officer.Officer Id. |
-| 18 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã người thẩm định | NHNCK | ApplicationDocuments | AssigneeId | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id. |
-| 19 | Appraisaled Timestamp | appraisaled_tms | TIMESTAMP | X |  |  |  | Ngày thẩm định | NHNCK | ApplicationDocuments | AppraisaledAt |  |
-| 20 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | ApplicationDocuments | CreatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Application Document Attachment Id | license_ap_doc_attachment_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ApplicationDocuments |  | PK surrogate. BCV: "Documentation" (Documentation). Tài liệu đính kèm hồ sơ. |
+| 2 | License Application Document Attachment Code | license_ap_doc_attachment_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ApplicationDocuments | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ApplicationDocuments' | Mã nguồn dữ liệu | NHNCK.ApplicationDocuments |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK.ApplicationDocuments | ApplicationId |  |
+| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK.ApplicationDocuments | ApplicationId |  |
+| 6 | Document Type Code | doc_tp_code | STRING | X |  | F |  | Mã loại tài liệu (FK → Documents) | NHNCK.ApplicationDocuments | DocumentId | Scheme: DOCUMENT_TYPE. FK đến bảng Documents. |
+| 7 | Document Name | doc_nm | STRING | X |  |  |  | Tên tài liệu | NHNCK.ApplicationDocuments | DocumentName |  |
+| 8 | File Name | file_nm | STRING | X |  |  |  | Tên file | NHNCK.ApplicationDocuments | FileName |  |
+| 9 | File Path | file_path | STRING | X |  |  |  | Đường dẫn file | NHNCK.ApplicationDocuments | FilePath |  |
+| 10 | File Format | file_fmt | STRING | X |  |  |  | Loại file (pdf, docx...) | NHNCK.ApplicationDocuments | Format |  |
+| 11 | File Size | file_sz | STRING | X |  |  |  | Dung lượng file (bytes) | NHNCK.ApplicationDocuments | FileSize |  |
+| 12 | Attachment Description | attachment_dsc | STRING | X |  |  |  | Mô tả tài liệu | NHNCK.ApplicationDocuments | Description |  |
+| 13 | Attachment Note | attachment_note | STRING | X |  |  |  | Ghi chú thẩm định | NHNCK.ApplicationDocuments | Note |  |
+| 14 | Appraisal Status Code | aprs_st_code | STRING | X |  |  |  | Trạng thái thẩm định | NHNCK.ApplicationDocuments | Status | Scheme: APPRAISAL_STATUS. |
+| 15 | Is Invalid Indicator | is_inval_ind | BOOLEAN | X |  |  |  | Cờ không hợp lệ | NHNCK.ApplicationDocuments | IsInvalid |  |
+| 16 | Is Incomplete Indicator | is_incom_ind | BOOLEAN | X |  |  |  | Cờ chưa hoàn thành | NHNCK.ApplicationDocuments | IsIncomplete |  |
+| 17 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến người thẩm định | NHNCK.ApplicationDocuments | AssigneeId |  |
+| 18 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã người thẩm định | NHNCK.ApplicationDocuments | AssigneeId |  |
+| 19 | Appraisaled Timestamp | appraisaled_tms | TIMESTAMP | X |  |  |  | Ngày thẩm định | NHNCK.ApplicationDocuments | AppraisaledAt |  |
+| 20 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.ApplicationDocuments | CreatedAt |  |
 
 
 #### 2.{IDX}.4.1 Constraint
@@ -241,16 +241,16 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Application Processing Activity Log Id | license_ap_pcs_avy_log_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ActionLogs |  | PK surrogate. BCV: "Business Activity" — nhật ký hoạt động hệ thống. |
-| 2 | License Application Processing Activity Log Code | license_ap_pcs_avy_log_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ActionLogs | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ActionLogs |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Officer Id | ofcr_id | BIGINT | X |  | F |  | FK đến tài khoản thực hiện | NHNCK | ActionLogs | UserId | FK target: Regulatory Authority Officer.Officer Id. UserId = tài khoản thao tác. |
-| 5 | Officer Code | ofcr_code | STRING | X |  |  |  | Mã tài khoản thực hiện | NHNCK | ActionLogs | UserId | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Officer Id. |
-| 6 | Client Machine Address | clnt_mchn_adr | STRING | X |  |  |  | Địa chỉ IP máy thực hiện | NHNCK | ActionLogs | ClientMachine |  |
-| 7 | Activity Detail | avy_dtl | STRING | X |  |  |  | Mô tả nội dung thao tác | NHNCK | ActionLogs | Detail |  |
-| 8 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | ActionLogs | CreatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Application Processing Activity Log Id | license_ap_pcs_avy_log_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ActionLogs |  | PK surrogate. BCV: "Business Activity" — nhật ký hoạt động hệ thống. |
+| 2 | License Application Processing Activity Log Code | license_ap_pcs_avy_log_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ActionLogs | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ActionLogs' | Mã nguồn dữ liệu | NHNCK.ActionLogs |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Officer Id | ofcr_id | BIGINT | X |  | F |  | FK đến tài khoản thực hiện | NHNCK.ActionLogs | UserId |  |
+| 5 | Officer Code | ofcr_code | STRING | X |  |  |  | Mã tài khoản thực hiện | NHNCK.ActionLogs | UserId |  |
+| 6 | Client Machine Address | clnt_mchn_adr | STRING | X |  |  |  | Địa chỉ IP máy thực hiện | NHNCK.ActionLogs | ClientMachine |  |
+| 7 | Activity Detail | avy_dtl | STRING | X |  |  |  | Mô tả nội dung thao tác | NHNCK.ActionLogs | Detail |  |
+| 8 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.ActionLogs | CreatedAt |  |
 
 
 #### 2.{IDX}.5.1 Constraint
@@ -281,27 +281,27 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Application Fee Id | license_ap_fee_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ApplicationFees |  | PK surrogate. BCV: "Transaction" (Event). Phí thanh toán liên quan đến hồ sơ. |
-| 2 | License Application Fee Code | license_ap_fee_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ApplicationFees | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ApplicationFees |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK | ApplicationFees | ApplicationId | FK target: Securities Practitioner License Application.License Application Id. |
-| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK | ApplicationFees | ApplicationId | Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id. |
-| 6 | Practitioner Id | practitioner_id | BIGINT | X |  | F |  | FK đến Securities Practitioner | NHNCK | ApplicationFees | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 7 | Practitioner Code | practitioner_code | STRING | X |  |  |  | Mã người hành nghề | NHNCK | ApplicationFees | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 8 | Fee Type Code | fee_tp_code | STRING | X |  |  |  | Loại phí | NHNCK | ApplicationFees | FeeType | Scheme: FEE_TYPE. |
-| 9 | Fee Amount | fee_amt | DECIMAL(18,2) | X |  |  |  | Số tiền phí (VNĐ) | NHNCK | ApplicationFees | Fee |  |
-| 10 | Fee Content | fee_cntnt | STRING | X |  |  |  | Nội dung phí | NHNCK | ApplicationFees | Content |  |
-| 11 | Fee Note | fee_note | STRING | X |  |  |  | Ghi chú | NHNCK | ApplicationFees | Note |  |
-| 12 | Payment Status Code | pymt_st_code | STRING | X |  |  |  | Trạng thái thanh toán | NHNCK | ApplicationFees | Status | Scheme: PAYMENT_STATUS. |
-| 13 | Request Date | rqs_dt | DATE | X |  |  |  | Ngày yêu cầu thanh toán | NHNCK | ApplicationFees | RequestDate |  |
-| 14 | Payment Date | pymt_dt | DATE | X |  |  |  | Ngày thanh toán | NHNCK | ApplicationFees | PaymentDate |  |
-| 15 | Expiry Date | expiry_dt | DATE | X |  |  |  | Ngày hết hạn thanh toán | NHNCK | ApplicationFees | ExpiryDate |  |
-| 16 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | ApplicationFees | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 17 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | ApplicationFees | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | ApplicationFees | CreatedAt |  |
-| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | ApplicationFees | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Application Fee Id | license_ap_fee_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ApplicationFees |  | PK surrogate. BCV: "Transaction" (Event). Phí thanh toán liên quan đến hồ sơ. |
+| 2 | License Application Fee Code | license_ap_fee_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ApplicationFees | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ApplicationFees' | Mã nguồn dữ liệu | NHNCK.ApplicationFees |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK.ApplicationFees | ApplicationId |  |
+| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK.ApplicationFees | ApplicationId |  |
+| 6 | Practitioner Id | practitioner_id | BIGINT | X |  | F |  | FK đến Securities Practitioner | NHNCK.ApplicationFees | ProfessionalId |  |
+| 7 | Practitioner Code | practitioner_code | STRING | X |  |  |  | Mã người hành nghề | NHNCK.ApplicationFees | ProfessionalId |  |
+| 8 | Fee Type Code | fee_tp_code | STRING | X |  |  |  | Loại phí | NHNCK.ApplicationFees | FeeType | Scheme: FEE_TYPE. |
+| 9 | Fee Amount | fee_amt | DECIMAL(18,2) | X |  |  |  | Số tiền phí (VNĐ) | NHNCK.ApplicationFees | Fee |  |
+| 10 | Fee Content | fee_cntnt | STRING | X |  |  |  | Nội dung phí | NHNCK.ApplicationFees | Content |  |
+| 11 | Fee Note | fee_note | STRING | X |  |  |  | Ghi chú | NHNCK.ApplicationFees | Note |  |
+| 12 | Payment Status Code | pymt_st_code | STRING | X |  |  |  | Trạng thái thanh toán | NHNCK.ApplicationFees | Status | Scheme: PAYMENT_STATUS. |
+| 13 | Request Date | rqs_dt | DATE | X |  |  |  | Ngày yêu cầu thanh toán | NHNCK.ApplicationFees | RequestDate |  |
+| 14 | Payment Date | pymt_dt | DATE | X |  |  |  | Ngày thanh toán | NHNCK.ApplicationFees | PaymentDate |  |
+| 15 | Expiry Date | expiry_dt | DATE | X |  |  |  | Ngày hết hạn thanh toán | NHNCK.ApplicationFees | ExpiryDate |  |
+| 16 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.ApplicationFees | CreatedBy |  |
+| 17 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.ApplicationFees | CreatedBy |  |
+| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.ApplicationFees | CreatedAt |  |
+| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.ApplicationFees | UpdatedAt |  |
 
 
 #### 2.{IDX}.6.1 Constraint
@@ -334,27 +334,27 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Application Verification Status Id | license_ap_verf_st_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | VerifyApplicationStatuses |  | PK surrogate. BCV: "Approval Activity" (Business Activity). Phê duyệt trạng thái hồ sơ. |
-| 2 | License Application Verification Status Code | license_ap_verf_st_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | VerifyApplicationStatuses | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | VerifyApplicationStatuses |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK | VerifyApplicationStatuses | ApplicationId | FK target: Securities Practitioner License Application.License Application Id. |
-| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK | VerifyApplicationStatuses | ApplicationId | Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id. |
-| 6 | Verification Status Code | verf_st_code | STRING | X |  | F |  | Trạng thái phê duyệt (FK → ApplicationStatuses) | NHNCK | VerifyApplicationStatuses | StatusId | Scheme: APPLICATION_STATUS. FK đến bảng ApplicationStatuses. |
-| 7 | Previous Verification Status Code | prev_verf_st_code | STRING | X |  |  |  | Trạng thái hồ sơ trước đó | NHNCK | VerifyApplicationStatuses | PrevStatusId | Scheme: APPLICATION_STATUS. |
-| 8 | Verified By Officer Id | verf_by_ofcr_id | BIGINT | X |  | F |  | FK đến người phê duyệt | NHNCK | VerifyApplicationStatuses | VerifiedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 9 | Verified By Officer Code | verf_by_ofcr_code | STRING | X |  |  |  | Mã người phê duyệt | NHNCK | VerifyApplicationStatuses | VerifiedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Verified By Officer Id. |
-| 10 | Rejection Reason Description | rejection_rsn_dsc | STRING | X |  |  |  | Lý do thay đổi trạng thái | NHNCK | VerifyApplicationStatuses | Reason |  |
-| 11 | Specialization Officer Reason | specialization_ofcr_rsn | STRING | X |  |  |  | Nội dung ý kiến — Lãnh đạo chuyên môn | NHNCK | VerifyApplicationStatuses | SpecReason |  |
-| 12 | Organization Officer Reason | org_ofcr_rsn | STRING | X |  |  |  | Nội dung ý kiến — Lãnh đạo UBCK | NHNCK | VerifyApplicationStatuses | OrgReason |  |
-| 13 | Overview Officer Reason | overview_ofcr_rsn | STRING | X |  |  |  | Nội dung ý kiến — Cán bộ tổng hợp | NHNCK | VerifyApplicationStatuses | OverviewReason |  |
-| 14 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | VerifyApplicationStatuses | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 15 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | VerifyApplicationStatuses | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 16 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | VerifyApplicationStatuses | UpdatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 17 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK | VerifyApplicationStatuses | UpdatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id. |
-| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | VerifyApplicationStatuses | CreatedAt |  |
-| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | VerifyApplicationStatuses | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Application Verification Status Id | license_ap_verf_st_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.VerifyApplicationStatuses |  | PK surrogate. BCV: "Approval Activity" (Business Activity). Phê duyệt trạng thái hồ sơ. |
+| 2 | License Application Verification Status Code | license_ap_verf_st_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.VerifyApplicationStatuses | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.VerifyApplicationStatuses' | Mã nguồn dữ liệu | NHNCK.VerifyApplicationStatuses |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | License Application Id | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ | NHNCK.VerifyApplicationStatuses | ApplicationId |  |
+| 5 | License Application Code | license_ap_code | STRING |  |  |  |  | Mã hồ sơ | NHNCK.VerifyApplicationStatuses | ApplicationId |  |
+| 6 | Verification Status Code | verf_st_code | STRING | X |  | F |  | Trạng thái phê duyệt (FK → ApplicationStatuses) | NHNCK.VerifyApplicationStatuses | StatusId | Scheme: APPLICATION_STATUS. FK đến bảng ApplicationStatuses. |
+| 7 | Previous Verification Status Code | prev_verf_st_code | STRING | X |  |  |  | Trạng thái hồ sơ trước đó | NHNCK.VerifyApplicationStatuses | PrevStatusId | Scheme: APPLICATION_STATUS. |
+| 8 | Verified By Officer Id | verf_by_ofcr_id | BIGINT | X |  | F |  | FK đến người phê duyệt | NHNCK.VerifyApplicationStatuses | VerifiedBy |  |
+| 9 | Verified By Officer Code | verf_by_ofcr_code | STRING | X |  |  |  | Mã người phê duyệt | NHNCK.VerifyApplicationStatuses | VerifiedBy |  |
+| 10 | Rejection Reason Description | rejection_rsn_dsc | STRING | X |  |  |  | Lý do thay đổi trạng thái | NHNCK.VerifyApplicationStatuses | Reason |  |
+| 11 | Specialization Officer Reason | specialization_ofcr_rsn | STRING | X |  |  |  | Nội dung ý kiến — Lãnh đạo chuyên môn | NHNCK.VerifyApplicationStatuses | SpecReason |  |
+| 12 | Organization Officer Reason | org_ofcr_rsn | STRING | X |  |  |  | Nội dung ý kiến — Lãnh đạo UBCK | NHNCK.VerifyApplicationStatuses | OrgReason |  |
+| 13 | Overview Officer Reason | overview_ofcr_rsn | STRING | X |  |  |  | Nội dung ý kiến — Cán bộ tổng hợp | NHNCK.VerifyApplicationStatuses | OverviewReason |  |
+| 14 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.VerifyApplicationStatuses | CreatedBy |  |
+| 15 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.VerifyApplicationStatuses | CreatedBy |  |
+| 16 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.VerifyApplicationStatuses | UpdatedBy |  |
+| 17 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK.VerifyApplicationStatuses | UpdatedBy |  |
+| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.VerifyApplicationStatuses | CreatedAt |  |
+| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.VerifyApplicationStatuses | UpdatedAt |  |
 
 
 #### 2.{IDX}.7.1 Constraint
@@ -388,36 +388,36 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | practitioner_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | Professionals |  | PK surrogate. BCV: "Individual" (Involved Party). Domain prefix "Securities Practitioner" theo HLD. |
-| 2 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã định danh người hành nghề (tự động tăng). BK | NHNCK | Professionals | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Professionals |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên | NHNCK | Professionals | FullName | BCV: "Full Name" (Involved Party). |
-| 5 | Birth Year | brth_yr | STRING | X |  |  |  | Năm sinh | NHNCK | Professionals | BirthYear | Text vì là năm dạng "1990". Lấy từ Professionals (không có trong ProfessionalHistories). |
-| 6 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh đầy đủ (ngày/tháng/năm) | NHNCK | Professionals | BirthDate | Lấy từ bản mới nhất ProfessionalHistories (ORDER BY ChangeDate DESC). Professionals chỉ có BirthYear. |
-| 7 | Individual Gender Code | idv_gnd_code | STRING | X |  |  |  | Giới tính | NHNCK | Professionals | Gender | Scheme: INDIVIDUAL_GENDER. Lấy từ bản mới nhất ProfessionalHistories. |
-| 8 | Nationality Code | nationality_code | STRING | X |  |  |  | Quốc tịch | NHNCK | Professionals | NationalityId | Scheme: NATIONALITY. Lấy từ bản mới nhất ProfessionalHistories. Thay thế Country Code từ Professionals.CountryId (cùng ngữ nghĩa quốc tịch). |
-| 9 | Education Level Code | ed_lvl_code | STRING | X |  |  |  | Trình độ học vấn | NHNCK | Professionals | EducationLevelId | Scheme: EDUCATION_LEVEL. Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này. |
-| 10 | Birth Place | brth_plc | STRING | X |  |  |  | Nơi sinh | NHNCK | Professionals | PlaceOfBirth | Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này. |
-| 11 | Practitioner Registration Type Code | practitioner_rgst_tp_code | STRING | X |  |  |  | Hình thức đăng ký người hành nghề vào hệ thống | NHNCK | Professionals | RegistrationType | Scheme: PRACTITIONER_REGISTRATION_TYPE. Lấy từ bản mới nhất ProfessionalHistories. Khác với Applications.RegistrationType (loại đăng ký hồ sơ CCHN). |
-| 12 | Practice Status Code | practice_st_code | STRING | X |  |  |  | Trạng thái hành nghề | NHNCK | Professionals | StatusWork | Scheme: PRACTICE_STATUS. Lấy từ bản mới nhất ProfessionalHistories. 5 giá trị: 0=Chưa hành nghề; 1=Hành nghề; 2=Thu hồi cho cấp lại; 3=Thu hồi không cấp lại; 4=Hành nghề có thời hạn. |
-| 13 | Country of Residence Geographic Area Id | cty_of_rsdnc_geo_id | BIGINT | X |  | F |  | FK đến quốc gia cư trú. | NHNCK | Professionals | CountryId | FK target: Geographic Area.Geographic Area Id. |
-| 14 | Country of Residence Geographic Area Code | cty_of_rsdnc_geo_code | STRING | X |  |  |  | Mã quốc gia cư trú. | NHNCK | Professionals | CountryId | Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Residence Geographic Area Id. |
-| 15 | Identity Reference Code | identity_refr_code | STRING | X |  |  |  | Mã định danh giấy tờ tùy thân (FK bảng identity riêng) | NHNCK | Professionals | IdentityId | Bảng identity riêng không có trong scope NHNCK — lưu BK dạng Text. |
-| 16 | Relationship Type Code | rltnp_tp_code | STRING | X |  |  |  | Loại quan hệ người hành nghề | NHNCK | Professionals | RelationshipType | Scheme: PRACTITIONER_RELATIONSHIP_TYPE. |
-| 17 | Occupation Name | ocp_nm | STRING | X |  |  |  | Nghề nghiệp | NHNCK | Professionals | Occupation | Text tự do. |
-| 18 | Workplace Name | workplace_nm | STRING | X |  |  |  | Nơi làm việc | NHNCK | Professionals | Workplace | Text tự do. |
-| 19 | Practitioner Note | practitioner_note | STRING | X |  |  |  | Ghi chú | NHNCK | Professionals | Note |  |
-| 20 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | Professionals | CreatedAt |  |
-| 21 | Securities Company Id | scr_co_id | BIGINT |  |  | F |  | FK đến công ty chứng khoán nơi hành nghề. | NHNCK | Professionals |  | FK target: Securities Company.Securities Company Id. |
-| 22 | Securities Company Code | scr_co_code | STRING |  |  |  |  | Mã công ty chứng khoán. | NHNCK | Professionals |  | Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id. |
-| 23 | Employee Code | empe_code | STRING | X |  |  |  | Mã nhân viên nội bộ CTCK. | NHNCK | Professionals |  | Mã nhân viên do CTCK cấp — bổ sung từ SCMS. Không có trong NHNCK. |
-| 24 | License Number | license_nbr | STRING | X |  |  |  | Số chứng chỉ hành nghề chứng khoán. | NHNCK | Professionals |  |  |
-| 25 | Employment Start Date | emp_strt_dt | DATE | X |  |  |  | Ngày bắt đầu làm việc tại CTCK. | NHNCK | Professionals |  |  |
-| 26 | Employment End Date | emp_end_dt | DATE | X |  |  |  | Ngày nghỉ việc. | NHNCK | Professionals |  |  |
-| 27 | Note | note | STRING | X |  |  |  | Ghi chú. | NHNCK | Professionals |  |  |
-| 28 | Practitioner Status Code | practitioner_st_code | STRING | X |  |  |  | Trạng thái người hành nghề tại CTCK. | NHNCK | Professionals |  | Scheme: SCMS_COMPANY_STATUS. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Practitioner Id | practitioner_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.Professionals |  | PK surrogate. BCV: "Individual" (Involved Party). Domain prefix "Securities Practitioner" theo HLD. |
+| 2 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã định danh người hành nghề (tự động tăng). BK | NHNCK.Professionals | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Professionals' | Mã nguồn dữ liệu | NHNCK.Professionals |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên | NHNCK.Professionals | FullName |  |
+| 5 | Birth Year | brth_yr | STRING | X |  |  |  | Năm sinh | NHNCK.Professionals | BirthYear |  |
+| 6 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh đầy đủ (ngày/tháng/năm) | NHNCK.Professionals | BirthDate |  |
+| 7 | Individual Gender Code | idv_gnd_code | STRING | X |  |  |  | Giới tính | NHNCK.Professionals | Gender | Scheme: INDIVIDUAL_GENDER. Lấy từ bản mới nhất ProfessionalHistories. |
+| 8 | Nationality Code | nationality_code | STRING | X |  |  |  | Quốc tịch | NHNCK.Professionals | NationalityId | Scheme: NATIONALITY. Lấy từ bản mới nhất ProfessionalHistories. Thay thế Country Code từ Professionals.CountryId (cùng ngữ nghĩa quốc tịch). |
+| 9 | Education Level Code | ed_lvl_code | STRING | X |  |  |  | Trình độ học vấn | NHNCK.Professionals | EducationLevelId | Scheme: EDUCATION_LEVEL. Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này. |
+| 10 | Birth Place | brth_plc | STRING | X |  |  |  | Nơi sinh | NHNCK.Professionals | PlaceOfBirth |  |
+| 11 | Practitioner Registration Type Code | practitioner_rgst_tp_code | STRING | X |  |  |  | Hình thức đăng ký người hành nghề vào hệ thống | NHNCK.Professionals | RegistrationType | Scheme: PRACTITIONER_REGISTRATION_TYPE. Lấy từ bản mới nhất ProfessionalHistories. Khác với Applications.RegistrationType (loại đăng ký hồ sơ CCHN). |
+| 12 | Practice Status Code | practice_st_code | STRING | X |  |  |  | Trạng thái hành nghề | NHNCK.Professionals | StatusWork | Scheme: PRACTICE_STATUS. Lấy từ bản mới nhất ProfessionalHistories. 5 giá trị: 0=Chưa hành nghề; 1=Hành nghề; 2=Thu hồi cho cấp lại; 3=Thu hồi không cấp lại; 4=Hành nghề có thời hạn. |
+| 13 | Country of Residence Geographic Area Id | cty_of_rsdnc_geo_id | BIGINT | X |  | F |  | FK đến quốc gia cư trú. | NHNCK.Professionals | CountryId |  |
+| 14 | Country of Residence Geographic Area Code | cty_of_rsdnc_geo_code | STRING | X |  |  |  | Mã quốc gia cư trú. | NHNCK.Professionals | CountryId |  |
+| 15 | Identity Reference Code | identity_refr_code | STRING | X |  |  |  | Mã định danh giấy tờ tùy thân (FK bảng identity riêng) | NHNCK.Professionals | IdentityId |  |
+| 16 | Relationship Type Code | rltnp_tp_code | STRING | X |  |  |  | Loại quan hệ người hành nghề | NHNCK.Professionals | RelationshipType | Scheme: PRACTITIONER_RELATIONSHIP_TYPE. |
+| 17 | Occupation Name | ocp_nm | STRING | X |  |  |  | Nghề nghiệp | NHNCK.Professionals | Occupation |  |
+| 18 | Workplace Name | workplace_nm | STRING | X |  |  |  | Nơi làm việc | NHNCK.Professionals | Workplace |  |
+| 19 | Practitioner Note | practitioner_note | STRING | X |  |  |  | Ghi chú | NHNCK.Professionals | Note |  |
+| 20 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.Professionals | CreatedAt |  |
+| 21 | Securities Company Id | scr_co_id | BIGINT |  |  | F |  | FK đến công ty chứng khoán nơi hành nghề. | NHNCK.Professionals |  |  |
+| 22 | Securities Company Code | scr_co_code | STRING |  |  |  |  | Mã công ty chứng khoán. | NHNCK.Professionals |  |  |
+| 23 | Employee Code | empe_code | STRING | X |  |  |  | Mã nhân viên nội bộ CTCK. | NHNCK.Professionals |  |  |
+| 24 | License Number | license_nbr | STRING | X |  |  |  | Số chứng chỉ hành nghề chứng khoán. | NHNCK.Professionals |  |  |
+| 25 | Employment Start Date | emp_strt_dt | DATE | X |  |  |  | Ngày bắt đầu làm việc tại CTCK. | NHNCK.Professionals |  |  |
+| 26 | Employment End Date | emp_end_dt | DATE | X |  |  |  | Ngày nghỉ việc. | NHNCK.Professionals |  |  |
+| 27 | Note | note | STRING | X |  |  |  | Ghi chú. | NHNCK.Professionals |  |  |
+| 28 | Practitioner Status Code | practitioner_st_code | STRING | X |  |  |  | Trạng thái người hành nghề tại CTCK. | NHNCK.Professionals |  | Scheme: SCMS_COMPANY_STATUS. |
 
 
 #### 2.{IDX}.8.1 Constraint
@@ -449,14 +449,14 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | Professionals | Id | FK target: Securities Practitioner.Practitioner Id. Shared entity — không có PK surrogate riêng. |
-| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | Professionals | Id | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Involved Party Id. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Professionals |  |  |
-| 4 | Address Type Code | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — địa chỉ chung | NHNCK | Professionals |  |  |
-| 5 | Address Value | adr_val | STRING | X |  |  |  | Địa chỉ | NHNCK | Professionals | Address | Nguồn mới chỉ có 1 trường Address chung. |
-| 6 | Address Detail | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. | NHNCK | Professionals |  | Text tự do — denormalized. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.Professionals | Id |  |
+| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.Professionals | Id |  |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Professionals' | Mã nguồn dữ liệu | NHNCK.Professionals |  |  |
+| 4 | Address Type Code | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — địa chỉ chung | NHNCK.Professionals |  |  |
+| 5 | Address Value | adr_val | STRING | X |  |  |  | Địa chỉ | NHNCK.Professionals | Address |  |
+| 6 | Address Detail | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. | NHNCK.Professionals |  |  |
 
 
 #### 2.{IDX}.9.1 Constraint
@@ -484,11 +484,11 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | Professionals | Id | FK target: Securities Practitioner.Practitioner Id. Shared entity — không có PK surrogate riêng. |
-| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | Professionals | Id | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Involved Party Id. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Professionals |  |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.Professionals | Id |  |
+| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.Professionals | Id |  |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Professionals' | Mã nguồn dữ liệu | NHNCK.Professionals |  |  |
 
 
 #### 2.{IDX}.10.1 Constraint
@@ -516,15 +516,15 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | Professionals | Id | FK target: Securities Practitioner.Practitioner Id. Shared entity — không có PK surrogate riêng. |
-| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | Professionals | Id | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Involved Party Id. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Professionals |  |  |
-| 4 | Identification Type Code | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ định danh — CCCD/CMND | NHNCK | Professionals |  |  |
-| 5 | Identification Number | identn_nbr | STRING | X |  |  |  | Mã định danh giấy tờ tùy thân (FK bảng identity riêng) | NHNCK | Professionals | IdentityId | Nguồn mới: IdentityId tham chiếu bảng identity riêng — không có detail trực tiếp trong Professionals. |
-| 6 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày cấp CCCD/Hộ chiếu. | NHNCK | Professionals |  |  |
-| 7 | Issuing Authority Name | issuing_ahr_nm | STRING | X |  |  |  | Nơi cấp CCCD/Hộ chiếu. | NHNCK | Professionals |  | Chú ý: tên cột nguồn bị đảo — IdNo chứa nơi cấp, IdAdd chứa số CCCD. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.Professionals | Id |  |
+| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.Professionals | Id |  |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Professionals' | Mã nguồn dữ liệu | NHNCK.Professionals |  |  |
+| 4 | Identification Type Code | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ định danh — CCCD/CMND | NHNCK.Professionals |  |  |
+| 5 | Identification Number | identn_nbr | STRING | X |  |  |  | Mã định danh giấy tờ tùy thân (FK bảng identity riêng) | NHNCK.Professionals | IdentityId |  |
+| 6 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày cấp CCCD/Hộ chiếu. | NHNCK.Professionals |  |  |
+| 7 | Issuing Authority Name | issuing_ahr_nm | STRING | X |  |  |  | Nơi cấp CCCD/Hộ chiếu. | NHNCK.Professionals |  |  |
 
 
 #### 2.{IDX}.11.1 Constraint
@@ -552,32 +552,32 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | CertificateRecords |  | PK surrogate. BCV: "Government Registration Document" (Documentation). Chứng chỉ hành nghề được cấp. |
-| 2 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | CertificateRecords | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | CertificateRecords |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Practitioner Id | practitioner_id | BIGINT | X |  | F |  | FK đến Securities Practitioner | NHNCK | CertificateRecords | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 5 | Practitioner Code | practitioner_code | STRING | X |  |  |  | Mã người hành nghề | NHNCK | CertificateRecords | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 6 | Professional Full Name | prof_full_nm | STRING | X |  |  |  | Họ và tên người hành nghề (snapshot tại thời điểm cấp) | NHNCK | CertificateRecords | ProfessionalFullName | Denormalized snapshot. |
-| 7 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ | NHNCK | CertificateRecords | CertificateId | Scheme: CERTIFICATE_TYPE. |
-| 8 | Issuance Decision Document Id | issn_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định cấp | NHNCK | CertificateRecords | IssueDecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. |
-| 9 | Issuance Decision Document Code | issn_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định cấp | NHNCK | CertificateRecords | IssueDecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Issuance Decision Document Id. |
-| 10 | Revocation Decision Document Id | revocation_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định thu hồi | NHNCK | CertificateRecords | RevocationDecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. Nullable — chỉ có khi bị thu hồi. |
-| 11 | Revocation Decision Document Code | revocation_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định thu hồi | NHNCK | CertificateRecords | RevocationDecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Revocation Decision Document Id. |
-| 12 | Cancellation Decision Document Id | cncl_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định hủy | NHNCK | CertificateRecords | CannellationDecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. Nullable — chỉ có khi bị hủy. |
-| 13 | Cancellation Decision Document Code | cncl_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định hủy | NHNCK | CertificateRecords | CannellationDecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with Cancellation Decision Document Id. |
-| 14 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ | NHNCK | CertificateRecords | CertificateNumber |  |
-| 15 | Certificate Issue Date | ctf_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ | NHNCK | CertificateRecords | IssueDate |  |
-| 16 | Revocation Date | revocation_dt | DATE | X |  |  |  | Ngày thu hồi chứng chỉ | NHNCK | CertificateRecords | RevocationDate | NULL = chưa bị thu hồi. |
-| 17 | Revocation Reason | revocation_rsn | STRING | X |  |  |  | Lý do thu hồi | NHNCK | CertificateRecords | RevocationReason |  |
-| 18 | Certificate Status Code | ctf_st_code | STRING | X |  |  |  | Trạng thái (0: Chưa sử dụng, 1: Đang sử dụng, 2: Thu hồi, 3: Đã hủy) | NHNCK | CertificateRecords | Status | Scheme: CERTIFICATE_STATUS. |
-| 19 | Process Status Code | pcs_st_code | STRING | X |  |  |  | Trạng thái xử lý (Đã cấp, Đã ký, Đã trả) | NHNCK | CertificateRecords | ProcessStatus | Scheme: CERTIFICATE_PROCESS_STATUS. |
-| 20 | Certificate Description | ctf_dsc | STRING | X |  |  |  | Mô tả | NHNCK | CertificateRecords | Description |  |
-| 21 | Allow Reissue Indicator | alw_reissue_ind | BOOLEAN | X |  |  |  | Cho phép cấp lại (0: Không, 1: Có) | NHNCK | CertificateRecords | AllowReissue |  |
-| 22 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | CertificateRecords | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 23 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | CertificateRecords | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 24 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | CertificateRecords | CreatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.CertificateRecords |  | PK surrogate. BCV: "Government Registration Document" (Documentation). Chứng chỉ hành nghề được cấp. |
+| 2 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.CertificateRecords | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.CertificateRecords' | Mã nguồn dữ liệu | NHNCK.CertificateRecords |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Practitioner Id | practitioner_id | BIGINT | X |  | F |  | FK đến Securities Practitioner | NHNCK.CertificateRecords | ProfessionalId |  |
+| 5 | Practitioner Code | practitioner_code | STRING | X |  |  |  | Mã người hành nghề | NHNCK.CertificateRecords | ProfessionalId |  |
+| 6 | Professional Full Name | prof_full_nm | STRING | X |  |  |  | Họ và tên người hành nghề (snapshot tại thời điểm cấp) | NHNCK.CertificateRecords | ProfessionalFullName |  |
+| 7 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ | NHNCK.CertificateRecords | CertificateId | Scheme: CERTIFICATE_TYPE. |
+| 8 | Issuance Decision Document Id | issn_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định cấp | NHNCK.CertificateRecords | IssueDecisionId |  |
+| 9 | Issuance Decision Document Code | issn_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định cấp | NHNCK.CertificateRecords | IssueDecisionId |  |
+| 10 | Revocation Decision Document Id | revocation_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định thu hồi | NHNCK.CertificateRecords | RevocationDecisionId |  |
+| 11 | Revocation Decision Document Code | revocation_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định thu hồi | NHNCK.CertificateRecords | RevocationDecisionId |  |
+| 12 | Cancellation Decision Document Id | cncl_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định hủy | NHNCK.CertificateRecords | CannellationDecisionId |  |
+| 13 | Cancellation Decision Document Code | cncl_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định hủy | NHNCK.CertificateRecords | CannellationDecisionId |  |
+| 14 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ | NHNCK.CertificateRecords | CertificateNumber |  |
+| 15 | Certificate Issue Date | ctf_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ | NHNCK.CertificateRecords | IssueDate |  |
+| 16 | Revocation Date | revocation_dt | DATE | X |  |  |  | Ngày thu hồi chứng chỉ | NHNCK.CertificateRecords | RevocationDate |  |
+| 17 | Revocation Reason | revocation_rsn | STRING | X |  |  |  | Lý do thu hồi | NHNCK.CertificateRecords | RevocationReason |  |
+| 18 | Certificate Status Code | ctf_st_code | STRING | X |  |  |  | Trạng thái (0: Chưa sử dụng, 1: Đang sử dụng, 2: Thu hồi, 3: Đã hủy) | NHNCK.CertificateRecords | Status | Scheme: CERTIFICATE_STATUS. |
+| 19 | Process Status Code | pcs_st_code | STRING | X |  |  |  | Trạng thái xử lý (Đã cấp, Đã ký, Đã trả) | NHNCK.CertificateRecords | ProcessStatus | Scheme: CERTIFICATE_PROCESS_STATUS. |
+| 20 | Certificate Description | ctf_dsc | STRING | X |  |  |  | Mô tả | NHNCK.CertificateRecords | Description |  |
+| 21 | Allow Reissue Indicator | alw_reissue_ind | BOOLEAN | X |  |  |  | Cho phép cấp lại (0: Không, 1: Có) | NHNCK.CertificateRecords | AllowReissue |  |
+| 22 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.CertificateRecords | CreatedBy |  |
+| 23 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.CertificateRecords | CreatedBy |  |
+| 24 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.CertificateRecords | CreatedAt |  |
 
 
 #### 2.{IDX}.12.1 Constraint
@@ -612,20 +612,20 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Certificate Group Document Id | license_ctf_grp_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | CertificateRecordGroups |  | PK surrogate. BCV: "Government Registration Document". Nhóm cấp/thu hồi/hủy chứng chỉ. |
-| 2 | License Certificate Group Document Code | license_ctf_grp_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | CertificateRecordGroups | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | CertificateRecordGroups |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Group Name | grp_nm | STRING | X |  |  |  | Tên nhóm | NHNCK | CertificateRecordGroups | GroupName |  |
-| 5 | Group Type Code | grp_tp_code | STRING | X |  |  |  | Loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi) | NHNCK | CertificateRecordGroups | Type | Scheme: GROUP_TYPE. |
-| 6 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định | NHNCK | CertificateRecordGroups | DecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. |
-| 7 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK | CertificateRecordGroups | DecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id. |
-| 8 | Group Description | grp_dsc | STRING | X |  |  |  | Mô tả nhóm | NHNCK | CertificateRecordGroups | Description |  |
-| 9 | Group Notes | grp_notes | STRING | X |  |  |  | Ghi chú | NHNCK | CertificateRecordGroups | Notes |  |
-| 10 | Group Status Code | grp_st_code | STRING | X |  |  |  | Trạng thái nhóm | NHNCK | CertificateRecordGroups | Status | Scheme: GROUP_STATUS. |
-| 11 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | CertificateRecordGroups | CreatedAt |  |
-| 12 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | CertificateRecordGroups | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Certificate Group Document Id | license_ctf_grp_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.CertificateRecordGroups |  | PK surrogate. BCV: "Government Registration Document". Nhóm cấp/thu hồi/hủy chứng chỉ. |
+| 2 | License Certificate Group Document Code | license_ctf_grp_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.CertificateRecordGroups | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.CertificateRecordGroups' | Mã nguồn dữ liệu | NHNCK.CertificateRecordGroups |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Group Name | grp_nm | STRING | X |  |  |  | Tên nhóm | NHNCK.CertificateRecordGroups | GroupName |  |
+| 5 | Group Type Code | grp_tp_code | STRING | X |  |  |  | Loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi) | NHNCK.CertificateRecordGroups | Type | Scheme: GROUP_TYPE. |
+| 6 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định | NHNCK.CertificateRecordGroups | DecisionId |  |
+| 7 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK.CertificateRecordGroups | DecisionId |  |
+| 8 | Group Description | grp_dsc | STRING | X |  |  |  | Mô tả nhóm | NHNCK.CertificateRecordGroups | Description |  |
+| 9 | Group Notes | grp_notes | STRING | X |  |  |  | Ghi chú | NHNCK.CertificateRecordGroups | Notes |  |
+| 10 | Group Status Code | grp_st_code | STRING | X |  |  |  | Trạng thái nhóm | NHNCK.CertificateRecordGroups | Status | Scheme: GROUP_STATUS. |
+| 11 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.CertificateRecordGroups | CreatedAt |  |
+| 12 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.CertificateRecordGroups | UpdatedAt |  |
 
 
 #### 2.{IDX}.13.1 Constraint
@@ -656,19 +656,19 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Certificate Group Member Id | license_ctf_grp_mbr_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | CertificateRecordGroupMembers |  | PK surrogate. Junction: Certificate ↔ Group. |
-| 2 | License Certificate Group Member Code | license_ctf_grp_mbr_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | CertificateRecordGroupMembers | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | CertificateRecordGroupMembers |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | License Certificate Group Document Id | license_ctf_grp_doc_id | BIGINT |  |  | F |  | FK đến nhóm chứng chỉ | NHNCK | CertificateRecordGroupMembers | CertificateRecordGroupId | FK target: Securities Practitioner License Certificate Group Document.License Certificate Group Document Id. |
-| 5 | License Certificate Group Document Code | license_ctf_grp_doc_code | STRING |  |  |  |  | Mã nhóm | NHNCK | CertificateRecordGroupMembers | CertificateRecordGroupId | Lookup pair: Securities Practitioner License Certificate Group Document.License Certificate Group Document Code. Pair with License Certificate Group Document Id. |
-| 6 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  |  | F |  | FK đến chứng chỉ | NHNCK | CertificateRecordGroupMembers | CertificateRecordId | FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. |
-| 7 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã chứng chỉ | NHNCK | CertificateRecordGroupMembers | CertificateRecordId | Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id. |
-| 8 | Order Index | ordr_indx | INT | X |  |  |  | Thứ tự sắp xếp trong nhóm | NHNCK | CertificateRecordGroupMembers | OrderIndex |  |
-| 9 | Is Reissue Indicator | is_reissue_ind | BOOLEAN | X |  |  |  | Cờ cho phép cấp lại | NHNCK | CertificateRecordGroupMembers | IsReissue |  |
-| 10 | Revocation Reason | revocation_rsn | STRING | X |  |  |  | Lý do thu hồi/hủy | NHNCK | CertificateRecordGroupMembers | RevocationReason |  |
-| 11 | Member Status Code | mbr_st_code | STRING | X |  |  |  | Trạng thái thành viên nhóm | NHNCK | CertificateRecordGroupMembers | Status | Scheme: GROUP_MEMBER_STATUS. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Certificate Group Member Id | license_ctf_grp_mbr_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.CertificateRecordGroupMembers |  | PK surrogate. Junction: Certificate ↔ Group. |
+| 2 | License Certificate Group Member Code | license_ctf_grp_mbr_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.CertificateRecordGroupMembers | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.CertificateRecordGroupMembers' | Mã nguồn dữ liệu | NHNCK.CertificateRecordGroupMembers |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | License Certificate Group Document Id | license_ctf_grp_doc_id | BIGINT |  |  | F |  | FK đến nhóm chứng chỉ | NHNCK.CertificateRecordGroupMembers | CertificateRecordGroupId |  |
+| 5 | License Certificate Group Document Code | license_ctf_grp_doc_code | STRING |  |  |  |  | Mã nhóm | NHNCK.CertificateRecordGroupMembers | CertificateRecordGroupId |  |
+| 6 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  |  | F |  | FK đến chứng chỉ | NHNCK.CertificateRecordGroupMembers | CertificateRecordId |  |
+| 7 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã chứng chỉ | NHNCK.CertificateRecordGroupMembers | CertificateRecordId |  |
+| 8 | Order Index | ordr_indx | INT | X |  |  |  | Thứ tự sắp xếp trong nhóm | NHNCK.CertificateRecordGroupMembers | OrderIndex |  |
+| 9 | Is Reissue Indicator | is_reissue_ind | BOOLEAN | X |  |  |  | Cờ cho phép cấp lại | NHNCK.CertificateRecordGroupMembers | IsReissue |  |
+| 10 | Revocation Reason | revocation_rsn | STRING | X |  |  |  | Lý do thu hồi/hủy | NHNCK.CertificateRecordGroupMembers | RevocationReason |  |
+| 11 | Member Status Code | mbr_st_code | STRING | X |  |  |  | Trạng thái thành viên nhóm | NHNCK.CertificateRecordGroupMembers | Status | Scheme: GROUP_MEMBER_STATUS. |
 
 
 #### 2.{IDX}.14.1 Constraint
@@ -700,21 +700,21 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Certificate Document Status History Id | license_ctf_doc_st_hist_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | CertificateRecordStatusHistories |  | PK surrogate. ETL Pattern — status history. |
-| 2 | License Certificate Document Status History Code | license_ctf_doc_st_hist_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | CertificateRecordStatusHistories | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | CertificateRecordStatusHistories |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  |  | F |  | FK đến chứng chỉ | NHNCK | CertificateRecordStatusHistories | CertificateRecordId | FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. |
-| 5 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã chứng chỉ | NHNCK | CertificateRecordStatusHistories | CertificateRecordId | Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id. |
-| 6 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định | NHNCK | CertificateRecordStatusHistories | DecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. |
-| 7 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK | CertificateRecordStatusHistories | DecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id. |
-| 8 | Update Type Code | udt_tp_code | STRING | X |  |  |  | Loại cập nhật (Manual, System, Decision) | NHNCK | CertificateRecordStatusHistories | UpdateType | Scheme: STATUS_UPDATE_TYPE. |
-| 9 | Old Status Code | old_st_code | STRING | X |  |  |  | Trạng thái trước | NHNCK | CertificateRecordStatusHistories | OldStatus | Scheme: CERTIFICATE_STATUS. |
-| 10 | New Status Code | new_st_code | STRING | X |  |  |  | Trạng thái sau | NHNCK | CertificateRecordStatusHistories | NewStatus | Scheme: CERTIFICATE_STATUS. |
-| 11 | Status Change Reason Description | st_chg_rsn_dsc | STRING | X |  |  |  | Lý do thay đổi | NHNCK | CertificateRecordStatusHistories | Reason |  |
-| 12 | Status Change Timestamp | st_chg_tms | TIMESTAMP | X |  |  |  | Thời điểm thay đổi | NHNCK | CertificateRecordStatusHistories | CreatedAt | CreatedAt = thời điểm ghi lịch sử. |
-| 13 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật bản ghi | NHNCK | CertificateRecordStatusHistories | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Certificate Document Status History Id | license_ctf_doc_st_hist_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.CertificateRecordStatusHistories |  | PK surrogate. ETL Pattern — status history. |
+| 2 | License Certificate Document Status History Code | license_ctf_doc_st_hist_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.CertificateRecordStatusHistories | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.CertificateRecordStatusHistories' | Mã nguồn dữ liệu | NHNCK.CertificateRecordStatusHistories |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  |  | F |  | FK đến chứng chỉ | NHNCK.CertificateRecordStatusHistories | CertificateRecordId |  |
+| 5 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã chứng chỉ | NHNCK.CertificateRecordStatusHistories | CertificateRecordId |  |
+| 6 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định | NHNCK.CertificateRecordStatusHistories | DecisionId |  |
+| 7 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK.CertificateRecordStatusHistories | DecisionId |  |
+| 8 | Update Type Code | udt_tp_code | STRING | X |  |  |  | Loại cập nhật (Manual, System, Decision) | NHNCK.CertificateRecordStatusHistories | UpdateType | Scheme: STATUS_UPDATE_TYPE. |
+| 9 | Old Status Code | old_st_code | STRING | X |  |  |  | Trạng thái trước | NHNCK.CertificateRecordStatusHistories | OldStatus | Scheme: CERTIFICATE_STATUS. |
+| 10 | New Status Code | new_st_code | STRING | X |  |  |  | Trạng thái sau | NHNCK.CertificateRecordStatusHistories | NewStatus | Scheme: CERTIFICATE_STATUS. |
+| 11 | Status Change Reason Description | st_chg_rsn_dsc | STRING | X |  |  |  | Lý do thay đổi | NHNCK.CertificateRecordStatusHistories | Reason |  |
+| 12 | Status Change Timestamp | st_chg_tms | TIMESTAMP | X |  |  |  | Thời điểm thay đổi | NHNCK.CertificateRecordStatusHistories | CreatedAt |  |
+| 13 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật bản ghi | NHNCK.CertificateRecordStatusHistories | UpdatedAt |  |
 
 
 #### 2.{IDX}.15.1 Constraint
@@ -746,21 +746,21 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Certificate Document Activity Log Id | license_ctf_doc_avy_log_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | CertificateRecordLogs |  | PK surrogate. ETL Pattern — activity log. |
-| 2 | License Certificate Document Activity Log Code | license_ctf_doc_avy_log_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | CertificateRecordLogs | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | CertificateRecordLogs |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  |  | F |  | FK đến chứng chỉ | NHNCK | CertificateRecordLogs | CertificateRecordId | FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. |
-| 5 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã chứng chỉ | NHNCK | CertificateRecordLogs | CertificateRecordId | Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id. |
-| 6 | Activity Type Code | avy_tp_code | STRING | X |  |  |  | Loại hành động | NHNCK | CertificateRecordLogs | ActionType | Scheme: CERTIFICATE_ACTIVITY_TYPE. |
-| 7 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ tại thời điểm ghi log | NHNCK | CertificateRecordLogs | CertificateNumber | Snapshot — số chứng chỉ tại thời điểm hoạt động. |
-| 8 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định | NHNCK | CertificateRecordLogs | DecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. |
-| 9 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK | CertificateRecordLogs | DecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id. |
-| 10 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày quyết định | NHNCK | CertificateRecordLogs | IssueDate | Ngày ban hành quyết định liên quan. |
-| 11 | Activity Note | avy_note | STRING | X |  |  |  | Ghi chú hoạt động | NHNCK | CertificateRecordLogs | Note |  |
-| 12 | Processed By Officer Id | pcs_by_ofcr_id | BIGINT | X |  | F |  | FK đến người xử lý | NHNCK | CertificateRecordLogs | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 13 | Processed By Officer Code | pcs_by_ofcr_code | STRING | X |  |  |  | Mã người xử lý | NHNCK | CertificateRecordLogs | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Processed By Officer Id. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Certificate Document Activity Log Id | license_ctf_doc_avy_log_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.CertificateRecordLogs |  | PK surrogate. ETL Pattern — activity log. |
+| 2 | License Certificate Document Activity Log Code | license_ctf_doc_avy_log_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.CertificateRecordLogs | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.CertificateRecordLogs' | Mã nguồn dữ liệu | NHNCK.CertificateRecordLogs |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | License Certificate Document Id | license_ctf_doc_id | BIGINT |  |  | F |  | FK đến chứng chỉ | NHNCK.CertificateRecordLogs | CertificateRecordId |  |
+| 5 | License Certificate Document Code | license_ctf_doc_code | STRING |  |  |  |  | Mã chứng chỉ | NHNCK.CertificateRecordLogs | CertificateRecordId |  |
+| 6 | Activity Type Code | avy_tp_code | STRING | X |  |  |  | Loại hành động | NHNCK.CertificateRecordLogs | ActionType | Scheme: CERTIFICATE_ACTIVITY_TYPE. |
+| 7 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ tại thời điểm ghi log | NHNCK.CertificateRecordLogs | CertificateNumber |  |
+| 8 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định | NHNCK.CertificateRecordLogs | DecisionId |  |
+| 9 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK.CertificateRecordLogs | DecisionId |  |
+| 10 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày quyết định | NHNCK.CertificateRecordLogs | IssueDate |  |
+| 11 | Activity Note | avy_note | STRING | X |  |  |  | Ghi chú hoạt động | NHNCK.CertificateRecordLogs | Note |  |
+| 12 | Processed By Officer Id | pcs_by_ofcr_id | BIGINT | X |  | F |  | FK đến người xử lý | NHNCK.CertificateRecordLogs | CreatedBy |  |
+| 13 | Processed By Officer Code | pcs_by_ofcr_code | STRING | X |  |  |  | Mã người xử lý | NHNCK.CertificateRecordLogs | CreatedBy |  |
 
 
 #### 2.{IDX}.16.1 Constraint
@@ -793,23 +793,23 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Securities Practitioner Related Party Id | scr_practitioner_rel_p_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ProfessionalRelationships |  | PK surrogate. BCV: "Related Involved Party" (Involved Party). Quan hệ gia đình/xã hội. |
-| 2 | Securities Practitioner Related Party Code | scr_practitioner_rel_p_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ProfessionalRelationships | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ProfessionalRelationships |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | ProfessionalRelationships | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | ProfessionalRelationships | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 6 | Related Party Full Name | rel_p_full_nm | STRING | X |  |  |  | Họ và tên người liên quan | NHNCK | ProfessionalRelationships | FullName |  |
-| 7 | Relationship Type Code | rltnp_tp_code | STRING | X |  |  |  | Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà) | NHNCK | ProfessionalRelationships | RelationshipType | Scheme: RELATIONSHIP_TYPE. |
-| 8 | Birth Year | brth_yr | STRING | X |  |  |  | Năm sinh | NHNCK | ProfessionalRelationships | BirthYear | Text vì là năm dạng "1990". |
-| 9 | Country Code | cty_code | STRING | X |  |  |  | Quốc gia | NHNCK | ProfessionalRelationships | CountryId | Scheme: COUNTRY. |
-| 10 | Identity Reference Code | identity_refr_code | STRING | X |  | F |  | Mã định danh giấy tờ tùy thân | NHNCK | ProfessionalRelationships | IdentityId | FK bảng identity riêng — lưu BK dạng Text. |
-| 11 | Address | adr | STRING | X |  |  |  | Địa chỉ | NHNCK | ProfessionalRelationships | Address |  |
-| 12 | Occupation Name | ocp_nm | STRING | X |  |  |  | Nghề nghiệp | NHNCK | ProfessionalRelationships | Occupation | Text tự do. |
-| 13 | Workplace Name | workplace_nm | STRING | X |  |  |  | Nơi làm việc | NHNCK | ProfessionalRelationships | Workplace | Text tự do. |
-| 14 | Related Party Note | rel_p_note | STRING | X |  |  |  | Ghi chú | NHNCK | ProfessionalRelationships | Note |  |
-| 15 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | ProfessionalRelationships | CreatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Securities Practitioner Related Party Id | scr_practitioner_rel_p_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ProfessionalRelationships |  | PK surrogate. BCV: "Related Involved Party" (Involved Party). Quan hệ gia đình/xã hội. |
+| 2 | Securities Practitioner Related Party Code | scr_practitioner_rel_p_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ProfessionalRelationships | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ProfessionalRelationships' | Mã nguồn dữ liệu | NHNCK.ProfessionalRelationships |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.ProfessionalRelationships | ProfessionalId |  |
+| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.ProfessionalRelationships | ProfessionalId |  |
+| 6 | Related Party Full Name | rel_p_full_nm | STRING | X |  |  |  | Họ và tên người liên quan | NHNCK.ProfessionalRelationships | FullName |  |
+| 7 | Relationship Type Code | rltnp_tp_code | STRING | X |  |  |  | Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà) | NHNCK.ProfessionalRelationships | RelationshipType | Scheme: RELATIONSHIP_TYPE. |
+| 8 | Birth Year | brth_yr | STRING | X |  |  |  | Năm sinh | NHNCK.ProfessionalRelationships | BirthYear |  |
+| 9 | Country Code | cty_code | STRING | X |  |  |  | Quốc gia | NHNCK.ProfessionalRelationships | CountryId | Scheme: COUNTRY. |
+| 10 | Identity Reference Code | identity_refr_code | STRING | X |  | F |  | Mã định danh giấy tờ tùy thân | NHNCK.ProfessionalRelationships | IdentityId |  |
+| 11 | Address | adr | STRING | X |  |  |  | Địa chỉ | NHNCK.ProfessionalRelationships | Address |  |
+| 12 | Occupation Name | ocp_nm | STRING | X |  |  |  | Nghề nghiệp | NHNCK.ProfessionalRelationships | Occupation |  |
+| 13 | Workplace Name | workplace_nm | STRING | X |  |  |  | Nơi làm việc | NHNCK.ProfessionalRelationships | Workplace |  |
+| 14 | Related Party Note | rel_p_note | STRING | X |  |  |  | Ghi chú | NHNCK.ProfessionalRelationships | Note |  |
+| 15 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.ProfessionalRelationships | CreatedAt |  |
 
 
 #### 2.{IDX}.17.1 Constraint
@@ -840,27 +840,27 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Conduct Violation Id | conduct_vln_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | Violations |  | PK surrogate. BCV: "Conduct Violation" (Business Activity). |
-| 2 | Conduct Violation Code | conduct_vln_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | Violations | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Violations |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | Violations | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | Violations | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 6 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên người vi phạm (snapshot) | NHNCK | Violations | FullName | Denormalized snapshot. |
-| 7 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh (snapshot) | NHNCK | Violations | BirthDate | Denormalized snapshot. |
-| 8 | Identification Number | identn_nbr | STRING | X |  |  |  | Số CMND/CCCD (snapshot) | NHNCK | Violations | IdentityNumber | Denormalized snapshot. |
-| 9 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định xử lý vi phạm | NHNCK | Violations | DecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. |
-| 10 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK | Violations | DecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id. |
-| 11 | Conduct Violation Type Code | conduct_vln_tp_code | STRING | X |  |  |  | Loại vi phạm (1: Hành chính, 2: Pháp luật) | NHNCK | Violations | Type | Scheme: CONDUCT_VIOLATION_TYPE. |
-| 12 | Violation Note | vln_note | STRING | X |  |  |  | Ghi chú vi phạm | NHNCK | Violations | Note |  |
-| 13 | Violation Status Code | vln_st_code | STRING | X |  |  |  | Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa) | NHNCK | Violations | Status | Scheme: VIOLATION_STATUS. |
-| 14 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | Violations | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 15 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | Violations | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 16 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | Violations | UpdatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 17 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK | Violations | UpdatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id. |
-| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | Violations | CreatedAt |  |
-| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | Violations | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Conduct Violation Id | conduct_vln_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.Violations |  | PK surrogate. BCV: "Conduct Violation" (Business Activity). |
+| 2 | Conduct Violation Code | conduct_vln_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.Violations | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Violations' | Mã nguồn dữ liệu | NHNCK.Violations |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.Violations | ProfessionalId |  |
+| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.Violations | ProfessionalId |  |
+| 6 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên người vi phạm (snapshot) | NHNCK.Violations | FullName |  |
+| 7 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh (snapshot) | NHNCK.Violations | BirthDate |  |
+| 8 | Identification Number | identn_nbr | STRING | X |  |  |  | Số CMND/CCCD (snapshot) | NHNCK.Violations | IdentityNumber |  |
+| 9 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định xử lý vi phạm | NHNCK.Violations | DecisionId |  |
+| 10 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK.Violations | DecisionId |  |
+| 11 | Conduct Violation Type Code | conduct_vln_tp_code | STRING | X |  |  |  | Loại vi phạm (1: Hành chính, 2: Pháp luật) | NHNCK.Violations | Type | Scheme: CONDUCT_VIOLATION_TYPE. |
+| 12 | Violation Note | vln_note | STRING | X |  |  |  | Ghi chú vi phạm | NHNCK.Violations | Note |  |
+| 13 | Violation Status Code | vln_st_code | STRING | X |  |  |  | Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa) | NHNCK.Violations | Status | Scheme: VIOLATION_STATUS. |
+| 14 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.Violations | CreatedBy |  |
+| 15 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.Violations | CreatedBy |  |
+| 16 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.Violations | UpdatedBy |  |
+| 17 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK.Violations | UpdatedBy |  |
+| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.Violations | CreatedAt |  |
+| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.Violations | UpdatedAt |  |
 
 
 #### 2.{IDX}.18.1 Constraint
@@ -894,42 +894,42 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Organization Employment Report Id | org_emp_rpt_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | OrganizationReports |  | PK surrogate. BCV: "Employer Registration" (Documentation). |
-| 2 | Organization Employment Report Code | org_emp_rpt_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | OrganizationReports | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | OrganizationReports |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | OrganizationReports | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | OrganizationReports | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 6 | Securities Organization Id | scr_org_id | BIGINT | X |  | F |  | FK đến tổ chức | NHNCK | OrganizationReports | OrganizationId | FK target: Securities Organization Reference.Securities Organization Reference Id. |
-| 7 | Securities Organization Code | scr_org_code | STRING | X |  |  |  | Mã tổ chức | NHNCK | OrganizationReports | OrganizationId | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Securities Organization Id. |
-| 8 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ | NHNCK | OrganizationReports | CertificateId | Scheme: CERTIFICATE_TYPE. |
-| 9 | License Certificate Document Id | license_ctf_doc_id | BIGINT | X |  | F |  | FK đến chứng chỉ hành nghề | NHNCK | OrganizationReports | CertificateRecordId | FK target: Securities Practitioner License Certificate Document.License Certificate Document Id. |
-| 10 | License Certificate Document Code | license_ctf_doc_code | STRING | X |  |  |  | Mã chứng chỉ | NHNCK | OrganizationReports | CertificateRecordId | Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id. |
-| 11 | Parent Organization Employment Report Id | prn_org_emp_rpt_id | BIGINT | X |  | F |  | FK self-ref — báo cáo cha | NHNCK | OrganizationReports | ParentReportId | FK target: Securities Practitioner Organization Employment Report.Organization Employment Report Id. Self-referencing. |
-| 12 | Parent Organization Employment Report Code | prn_org_emp_rpt_code | STRING | X |  |  |  | Mã báo cáo cha | NHNCK | OrganizationReports | ParentReportId | Lookup pair: Securities Practitioner Organization Employment Report.Organization Employment Report Code. Pair with Parent Organization Employment Report Id. |
-| 13 | Report Type Code | rpt_tp_code | STRING | X |  |  |  | Loại báo cáo | NHNCK | OrganizationReports | Type | Scheme: REPORT_TYPE. |
-| 14 | Report Date | rpt_dt | DATE | X |  |  |  | Ngày báo cáo | NHNCK | OrganizationReports | ReportDate |  |
-| 15 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên (snapshot) | NHNCK | OrganizationReports | FullName | Denormalized snapshot. |
-| 16 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh (snapshot) | NHNCK | OrganizationReports | BirthDate | Denormalized snapshot. |
-| 17 | Identification Number | identn_nbr | STRING | X |  |  |  | Số chứng minh thư (snapshot) | NHNCK | OrganizationReports | IdentityNumber | Denormalized snapshot. |
-| 18 | Position Name | pos_nm | STRING | X |  |  |  | Chức vụ | NHNCK | OrganizationReports | Position | Text tự do. |
-| 19 | Department Name | dept_nm | STRING | X |  |  |  | Phòng ban | NHNCK | OrganizationReports | Department | Text tự do. |
-| 20 | Business Department Name | bsn_dept_nm | STRING | X |  |  |  | Phòng ban nghiệp vụ | NHNCK | OrganizationReports | BusinessDepartment | Phân biệt với Department Name. |
-| 21 | Workplace Name | workplace_nm | STRING | X |  |  |  | Nơi công tác | NHNCK | OrganizationReports | Workplace | Text tự do. |
-| 22 | Hire Date | hire_dt | DATE | X |  |  |  | Ngày tiếp nhận | NHNCK | OrganizationReports | HireDate |  |
-| 23 | Termination Date | tmt_dt | DATE | X |  |  |  | Ngày thôi việc | NHNCK | OrganizationReports | TerminationDate | NULL = đang làm việc. |
-| 24 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ (snapshot) | NHNCK | OrganizationReports | CertificateNumber | Denormalized snapshot. |
-| 25 | Certificate Issue Date | ctf_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ (snapshot) | NHNCK | OrganizationReports | IssueDate | Denormalized snapshot. |
-| 26 | Discipline Description | discipline_dsc | STRING | X |  |  |  | Kỷ luật (vi phạm hoặc xử phạt) | NHNCK | OrganizationReports | Disciplines |  |
-| 27 | Report Description | rpt_dsc | STRING | X |  |  |  | Mô tả báo cáo | NHNCK | OrganizationReports | Description |  |
-| 28 | Sync Id | sync_id | STRING | X |  |  |  | Mã đồng bộ | NHNCK | OrganizationReports | SyncId | Metadata đồng bộ. |
-| 29 | Sync Created Timestamp | sync_crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo đồng bộ | NHNCK | OrganizationReports | SyncCreatedAt |  |
-| 30 | Sync Updated Timestamp | sync_udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật đồng bộ | NHNCK | OrganizationReports | SyncUpdatedAt |  |
-| 31 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | OrganizationReports | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 32 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | OrganizationReports | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 33 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | OrganizationReports | CreatedAt |  |
-| 34 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | OrganizationReports | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Organization Employment Report Id | org_emp_rpt_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.OrganizationReports |  | PK surrogate. BCV: "Employer Registration" (Documentation). |
+| 2 | Organization Employment Report Code | org_emp_rpt_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.OrganizationReports | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.OrganizationReports' | Mã nguồn dữ liệu | NHNCK.OrganizationReports |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.OrganizationReports | ProfessionalId |  |
+| 5 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.OrganizationReports | ProfessionalId |  |
+| 6 | Securities Organization Id | scr_org_id | BIGINT | X |  | F |  | FK đến tổ chức | NHNCK.OrganizationReports | OrganizationId |  |
+| 7 | Securities Organization Code | scr_org_code | STRING | X |  |  |  | Mã tổ chức | NHNCK.OrganizationReports | OrganizationId |  |
+| 8 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ | NHNCK.OrganizationReports | CertificateId | Scheme: CERTIFICATE_TYPE. |
+| 9 | License Certificate Document Id | license_ctf_doc_id | BIGINT | X |  | F |  | FK đến chứng chỉ hành nghề | NHNCK.OrganizationReports | CertificateRecordId |  |
+| 10 | License Certificate Document Code | license_ctf_doc_code | STRING | X |  |  |  | Mã chứng chỉ | NHNCK.OrganizationReports | CertificateRecordId |  |
+| 11 | Parent Organization Employment Report Id | prn_org_emp_rpt_id | BIGINT | X |  | F |  | FK self-ref — báo cáo cha | NHNCK.OrganizationReports | ParentReportId |  |
+| 12 | Parent Organization Employment Report Code | prn_org_emp_rpt_code | STRING | X |  |  |  | Mã báo cáo cha | NHNCK.OrganizationReports | ParentReportId |  |
+| 13 | Report Type Code | rpt_tp_code | STRING | X |  |  |  | Loại báo cáo | NHNCK.OrganizationReports | Type | Scheme: REPORT_TYPE. |
+| 14 | Report Date | rpt_dt | DATE | X |  |  |  | Ngày báo cáo | NHNCK.OrganizationReports | ReportDate |  |
+| 15 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên (snapshot) | NHNCK.OrganizationReports | FullName |  |
+| 16 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh (snapshot) | NHNCK.OrganizationReports | BirthDate |  |
+| 17 | Identification Number | identn_nbr | STRING | X |  |  |  | Số chứng minh thư (snapshot) | NHNCK.OrganizationReports | IdentityNumber |  |
+| 18 | Position Name | pos_nm | STRING | X |  |  |  | Chức vụ | NHNCK.OrganizationReports | Position |  |
+| 19 | Department Name | dept_nm | STRING | X |  |  |  | Phòng ban | NHNCK.OrganizationReports | Department |  |
+| 20 | Business Department Name | bsn_dept_nm | STRING | X |  |  |  | Phòng ban nghiệp vụ | NHNCK.OrganizationReports | BusinessDepartment |  |
+| 21 | Workplace Name | workplace_nm | STRING | X |  |  |  | Nơi công tác | NHNCK.OrganizationReports | Workplace |  |
+| 22 | Hire Date | hire_dt | DATE | X |  |  |  | Ngày tiếp nhận | NHNCK.OrganizationReports | HireDate |  |
+| 23 | Termination Date | tmt_dt | DATE | X |  |  |  | Ngày thôi việc | NHNCK.OrganizationReports | TerminationDate |  |
+| 24 | Certificate Number | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ (snapshot) | NHNCK.OrganizationReports | CertificateNumber |  |
+| 25 | Certificate Issue Date | ctf_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ (snapshot) | NHNCK.OrganizationReports | IssueDate |  |
+| 26 | Discipline Description | discipline_dsc | STRING | X |  |  |  | Kỷ luật (vi phạm hoặc xử phạt) | NHNCK.OrganizationReports | Disciplines |  |
+| 27 | Report Description | rpt_dsc | STRING | X |  |  |  | Mô tả báo cáo | NHNCK.OrganizationReports | Description |  |
+| 28 | Sync Id | sync_id | STRING | X |  |  |  | Mã đồng bộ | NHNCK.OrganizationReports | SyncId |  |
+| 29 | Sync Created Timestamp | sync_crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo đồng bộ | NHNCK.OrganizationReports | SyncCreatedAt |  |
+| 30 | Sync Updated Timestamp | sync_udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật đồng bộ | NHNCK.OrganizationReports | SyncUpdatedAt |  |
+| 31 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.OrganizationReports | CreatedBy |  |
+| 32 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.OrganizationReports | CreatedBy |  |
+| 33 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.OrganizationReports | CreatedAt |  |
+| 34 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.OrganizationReports | UpdatedAt |  |
 
 
 #### 2.{IDX}.19.1 Constraint
@@ -964,44 +964,44 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Identity Verification Record Id | identity_verf_rcrd_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | IdentityInfoC06s |  | PK surrogate. BCV: "Verification" (Communication). Dữ liệu xác thực định danh từ C06 (Bộ Công An). |
-| 2 | Identity Verification Record Code | identity_verf_rcrd_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | IdentityInfoC06s | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | IdentityInfoC06s |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Identity Number | identity_nbr | STRING | X |  |  |  | Số định danh cá nhân (CCCD/CMND) | NHNCK | IdentityInfoC06s | IdentityNumber | Số định danh được xác thực qua C06. |
-| 5 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên | NHNCK | IdentityInfoC06s | FullName | Dữ liệu phản hồi từ C06. |
-| 6 | First Name | frst_nm | STRING | X |  |  |  | Tên | NHNCK | IdentityInfoC06s | FirstName |  |
-| 7 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh | NHNCK | IdentityInfoC06s | BirthDate |  |
-| 8 | Birth Year | brth_yr | STRING | X |  |  |  | Năm sinh | NHNCK | IdentityInfoC06s | BirthYear |  |
-| 9 | Individual Gender Code | idv_gnd_code | STRING | X |  |  |  | Giới tính (0: Nữ, 1: Nam) | NHNCK | IdentityInfoC06s | Gender | Scheme: INDIVIDUAL_GENDER. |
-| 10 | Nationality Code | nationality_code | STRING | X |  |  |  | Quốc tịch | NHNCK | IdentityInfoC06s | National | Scheme: NATIONALITY. |
-| 11 | Religion Name | rlg_nm | STRING | X |  |  |  | Tôn giáo | NHNCK | IdentityInfoC06s | Religion | Text tự do. |
-| 12 | Country Code | cty_code | STRING | X |  |  |  | Mã quốc gia | NHNCK | IdentityInfoC06s | CountryCode | Scheme: COUNTRY. |
-| 13 | Place Of Birth | plc_of_brth | STRING | X |  |  |  | Nơi sinh | NHNCK | IdentityInfoC06s | PlaceOfBirth |  |
-| 14 | Hometown | hometown | STRING | X |  |  |  | Địa chỉ quê quán | NHNCK | IdentityInfoC06s | Hometown |  |
-| 15 | Permanent Country Code | perm_cty_code | STRING | X |  |  |  | Quốc gia nguyên quán | NHNCK | IdentityInfoC06s | PermanentCountryCode | Scheme: COUNTRY. |
-| 16 | Permanent Province Code | perm_prov_code | STRING | X |  |  |  | Tỉnh thành nguyên quán | NHNCK | IdentityInfoC06s | PermanentProvinceCode | Scheme: PROVINCE. |
-| 17 | Permanent District Code | perm_dstc_code | STRING | X |  |  |  | Quận huyện nguyên quán | NHNCK | IdentityInfoC06s | PermanentDistrictCode | Scheme: DISTRICT. |
-| 18 | Permanent Address Detail | perm_adr_dtl | STRING | X |  |  |  | Địa chỉ nguyên quán chi tiết | NHNCK | IdentityInfoC06s | PermanentDetail |  |
-| 19 | Current Country Code | crn_cty_code | STRING | X |  |  |  | Quốc gia hiện tại | NHNCK | IdentityInfoC06s | CurrentCountryCode | Scheme: COUNTRY. |
-| 20 | Current Province Code | crn_prov_code | STRING | X |  |  |  | Tỉnh thành hiện tại | NHNCK | IdentityInfoC06s | CurrentProvinceCode | Scheme: PROVINCE. |
-| 21 | Current District Code | crn_dstc_code | STRING | X |  |  |  | Quận huyện hiện tại | NHNCK | IdentityInfoC06s | CurrentDistrictCode | Scheme: DISTRICT. |
-| 22 | Current Address Detail | crn_adr_dtl | STRING | X |  |  |  | Địa chỉ hiện tại chi tiết | NHNCK | IdentityInfoC06s | CurrentDetail |  |
-| 23 | Father Full Name | fthr_full_nm | STRING | X |  |  |  | Họ và tên bố | NHNCK | IdentityInfoC06s | FatherFullName |  |
-| 24 | Father Country Code | fthr_cty_code | STRING | X |  |  |  | Quốc gia của bố | NHNCK | IdentityInfoC06s | FatherCountryCode | Scheme: COUNTRY. |
-| 25 | Father Identity Number | fthr_identity_nbr | STRING | X |  |  |  | Số định danh của bố | NHNCK | IdentityInfoC06s | FatherIdentityNumber |  |
-| 26 | Father Identity Number Old | fthr_identity_nbr_old | STRING | X |  |  |  | Số định danh cũ của bố | NHNCK | IdentityInfoC06s | FatherIdentityNumberOld |  |
-| 27 | Mother Full Name | mthr_full_nm | STRING | X |  |  |  | Họ và tên mẹ | NHNCK | IdentityInfoC06s | MotherFullName |  |
-| 28 | Mother Country Code | mthr_cty_code | STRING | X |  |  |  | Quốc gia của mẹ | NHNCK | IdentityInfoC06s | MotherCountryCode | Scheme: COUNTRY. |
-| 29 | Mother Identity Number | mthr_identity_nbr | STRING | X |  |  |  | Số định danh của mẹ | NHNCK | IdentityInfoC06s | MotherIdentityNumber |  |
-| 30 | Mother Identity Number Old | mthr_identity_nbr_old | STRING | X |  |  |  | Số định danh cũ của mẹ | NHNCK | IdentityInfoC06s | MotherIdentityNumberOld |  |
-| 31 | Couple Full Name | couple_full_nm | STRING | X |  |  |  | Họ và tên vợ/chồng | NHNCK | IdentityInfoC06s | CoupleFullName |  |
-| 32 | Couple Country Code | couple_cty_code | STRING | X |  |  |  | Quốc gia của vợ/chồng | NHNCK | IdentityInfoC06s | CoupleCountryCode | Scheme: COUNTRY. |
-| 33 | Couple Identity Number | couple_identity_nbr | STRING | X |  |  |  | Số định danh của vợ/chồng | NHNCK | IdentityInfoC06s | CoupleIdentityNumber |  |
-| 34 | Couple Identity Number Old | couple_identity_nbr_old | STRING | X |  |  |  | Số định danh cũ của vợ/chồng | NHNCK | IdentityInfoC06s | CoupleIdentityNumberOld |  |
-| 35 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến người cập nhật | NHNCK | IdentityInfoC06s | UserUpdateId | FK target: Regulatory Authority Officer.Officer Id. |
-| 36 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK | IdentityInfoC06s | UserUpdateId | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Identity Verification Record Id | identity_verf_rcrd_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.IdentityInfoC06s |  | PK surrogate. BCV: "Verification" (Communication). Dữ liệu xác thực định danh từ C06 (Bộ Công An). |
+| 2 | Identity Verification Record Code | identity_verf_rcrd_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.IdentityInfoC06s | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.IdentityInfoC06s' | Mã nguồn dữ liệu | NHNCK.IdentityInfoC06s |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Identity Number | identity_nbr | STRING | X |  |  |  | Số định danh cá nhân (CCCD/CMND) | NHNCK.IdentityInfoC06s | IdentityNumber |  |
+| 5 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên | NHNCK.IdentityInfoC06s | FullName |  |
+| 6 | First Name | frst_nm | STRING | X |  |  |  | Tên | NHNCK.IdentityInfoC06s | FirstName |  |
+| 7 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh | NHNCK.IdentityInfoC06s | BirthDate |  |
+| 8 | Birth Year | brth_yr | STRING | X |  |  |  | Năm sinh | NHNCK.IdentityInfoC06s | BirthYear |  |
+| 9 | Individual Gender Code | idv_gnd_code | STRING | X |  |  |  | Giới tính (0: Nữ, 1: Nam) | NHNCK.IdentityInfoC06s | Gender | Scheme: INDIVIDUAL_GENDER. |
+| 10 | Nationality Code | nationality_code | STRING | X |  |  |  | Quốc tịch | NHNCK.IdentityInfoC06s | National | Scheme: NATIONALITY. |
+| 11 | Religion Name | rlg_nm | STRING | X |  |  |  | Tôn giáo | NHNCK.IdentityInfoC06s | Religion |  |
+| 12 | Country Code | cty_code | STRING | X |  |  |  | Mã quốc gia | NHNCK.IdentityInfoC06s | CountryCode | Scheme: COUNTRY. |
+| 13 | Place Of Birth | plc_of_brth | STRING | X |  |  |  | Nơi sinh | NHNCK.IdentityInfoC06s | PlaceOfBirth |  |
+| 14 | Hometown | hometown | STRING | X |  |  |  | Địa chỉ quê quán | NHNCK.IdentityInfoC06s | Hometown |  |
+| 15 | Permanent Country Code | perm_cty_code | STRING | X |  |  |  | Quốc gia nguyên quán | NHNCK.IdentityInfoC06s | PermanentCountryCode | Scheme: COUNTRY. |
+| 16 | Permanent Province Code | perm_prov_code | STRING | X |  |  |  | Tỉnh thành nguyên quán | NHNCK.IdentityInfoC06s | PermanentProvinceCode | Scheme: PROVINCE. |
+| 17 | Permanent District Code | perm_dstc_code | STRING | X |  |  |  | Quận huyện nguyên quán | NHNCK.IdentityInfoC06s | PermanentDistrictCode | Scheme: DISTRICT. |
+| 18 | Permanent Address Detail | perm_adr_dtl | STRING | X |  |  |  | Địa chỉ nguyên quán chi tiết | NHNCK.IdentityInfoC06s | PermanentDetail |  |
+| 19 | Current Country Code | crn_cty_code | STRING | X |  |  |  | Quốc gia hiện tại | NHNCK.IdentityInfoC06s | CurrentCountryCode | Scheme: COUNTRY. |
+| 20 | Current Province Code | crn_prov_code | STRING | X |  |  |  | Tỉnh thành hiện tại | NHNCK.IdentityInfoC06s | CurrentProvinceCode | Scheme: PROVINCE. |
+| 21 | Current District Code | crn_dstc_code | STRING | X |  |  |  | Quận huyện hiện tại | NHNCK.IdentityInfoC06s | CurrentDistrictCode | Scheme: DISTRICT. |
+| 22 | Current Address Detail | crn_adr_dtl | STRING | X |  |  |  | Địa chỉ hiện tại chi tiết | NHNCK.IdentityInfoC06s | CurrentDetail |  |
+| 23 | Father Full Name | fthr_full_nm | STRING | X |  |  |  | Họ và tên bố | NHNCK.IdentityInfoC06s | FatherFullName |  |
+| 24 | Father Country Code | fthr_cty_code | STRING | X |  |  |  | Quốc gia của bố | NHNCK.IdentityInfoC06s | FatherCountryCode | Scheme: COUNTRY. |
+| 25 | Father Identity Number | fthr_identity_nbr | STRING | X |  |  |  | Số định danh của bố | NHNCK.IdentityInfoC06s | FatherIdentityNumber |  |
+| 26 | Father Identity Number Old | fthr_identity_nbr_old | STRING | X |  |  |  | Số định danh cũ của bố | NHNCK.IdentityInfoC06s | FatherIdentityNumberOld |  |
+| 27 | Mother Full Name | mthr_full_nm | STRING | X |  |  |  | Họ và tên mẹ | NHNCK.IdentityInfoC06s | MotherFullName |  |
+| 28 | Mother Country Code | mthr_cty_code | STRING | X |  |  |  | Quốc gia của mẹ | NHNCK.IdentityInfoC06s | MotherCountryCode | Scheme: COUNTRY. |
+| 29 | Mother Identity Number | mthr_identity_nbr | STRING | X |  |  |  | Số định danh của mẹ | NHNCK.IdentityInfoC06s | MotherIdentityNumber |  |
+| 30 | Mother Identity Number Old | mthr_identity_nbr_old | STRING | X |  |  |  | Số định danh cũ của mẹ | NHNCK.IdentityInfoC06s | MotherIdentityNumberOld |  |
+| 31 | Couple Full Name | couple_full_nm | STRING | X |  |  |  | Họ và tên vợ/chồng | NHNCK.IdentityInfoC06s | CoupleFullName |  |
+| 32 | Couple Country Code | couple_cty_code | STRING | X |  |  |  | Quốc gia của vợ/chồng | NHNCK.IdentityInfoC06s | CoupleCountryCode | Scheme: COUNTRY. |
+| 33 | Couple Identity Number | couple_identity_nbr | STRING | X |  |  |  | Số định danh của vợ/chồng | NHNCK.IdentityInfoC06s | CoupleIdentityNumber |  |
+| 34 | Couple Identity Number Old | couple_identity_nbr_old | STRING | X |  |  |  | Số định danh cũ của vợ/chồng | NHNCK.IdentityInfoC06s | CoupleIdentityNumberOld |  |
+| 35 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến người cập nhật | NHNCK.IdentityInfoC06s | UserUpdateId |  |
+| 36 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK.IdentityInfoC06s | UserUpdateId |  |
 
 
 #### 2.{IDX}.20.1 Constraint
@@ -1032,26 +1032,26 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Professional Training Class Id | prof_trn_clss_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | SpecializationCourses |  | PK surrogate. BCV: "Business Activity" — khóa học chuyên môn định kỳ. |
-| 2 | Professional Training Class Code | prof_trn_clss_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | SpecializationCourses | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | SpecializationCourses |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Specialization Type Code | specialization_tp_code | STRING |  |  | F |  | Mã chuyên môn | NHNCK | SpecializationCourses | SpecializationId | Scheme: SPECIALIZATION_TYPE. FK đến bảng Specializations. |
-| 5 | Course Code | course_code | STRING | X |  |  |  | Mã khóa học (mã nghiệp vụ) | NHNCK | SpecializationCourses | CourseCode | Mã nghiệp vụ, khác BK. |
-| 6 | Course Name | course_nm | STRING | X |  |  |  | Tên khóa học | NHNCK | SpecializationCourses | CourseName |  |
-| 7 | Academic Year | academic_yr | STRING | X |  |  |  | Năm học | NHNCK | SpecializationCourses | AcademicYear | Text vì là năm dạng "2025". |
-| 8 | Exam Date | exam_dt | DATE | X |  |  |  | Ngày thi | NHNCK | SpecializationCourses | ExamDate |  |
-| 9 | Course Description | course_dsc | STRING | X |  |  |  | Mô tả khóa học | NHNCK | SpecializationCourses | Description |  |
-| 10 | Attachment File Path | attachment_file_path | STRING | X |  |  |  | Đường dẫn tài liệu | NHNCK | SpecializationCourses | FilePath |  |
-| 11 | Is Active Flag | is_actv_f | BOOLEAN | X |  |  |  | Trạng thái hoạt động | NHNCK | SpecializationCourses | IsActive |  |
-| 12 | Course Status Code | course_st_code | STRING | X |  |  |  | Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa) | NHNCK | SpecializationCourses | Status | Scheme: COURSE_STATUS. |
-| 13 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | SpecializationCourses | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 14 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | SpecializationCourses | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 15 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | SpecializationCourses | UpdatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 16 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK | SpecializationCourses | UpdatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id. |
-| 17 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | SpecializationCourses | CreatedAt |  |
-| 18 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | SpecializationCourses | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Professional Training Class Id | prof_trn_clss_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.SpecializationCourses |  | PK surrogate. BCV: "Business Activity" — khóa học chuyên môn định kỳ. |
+| 2 | Professional Training Class Code | prof_trn_clss_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.SpecializationCourses | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.SpecializationCourses' | Mã nguồn dữ liệu | NHNCK.SpecializationCourses |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Specialization Type Code | specialization_tp_code | STRING |  |  | F |  | Mã chuyên môn | NHNCK.SpecializationCourses | SpecializationId | Scheme: SPECIALIZATION_TYPE. FK đến bảng Specializations. |
+| 5 | Course Code | course_code | STRING | X |  |  |  | Mã khóa học (mã nghiệp vụ) | NHNCK.SpecializationCourses | CourseCode |  |
+| 6 | Course Name | course_nm | STRING | X |  |  |  | Tên khóa học | NHNCK.SpecializationCourses | CourseName |  |
+| 7 | Academic Year | academic_yr | STRING | X |  |  |  | Năm học | NHNCK.SpecializationCourses | AcademicYear |  |
+| 8 | Exam Date | exam_dt | DATE | X |  |  |  | Ngày thi | NHNCK.SpecializationCourses | ExamDate |  |
+| 9 | Course Description | course_dsc | STRING | X |  |  |  | Mô tả khóa học | NHNCK.SpecializationCourses | Description |  |
+| 10 | Attachment File Path | attachment_file_path | STRING | X |  |  |  | Đường dẫn tài liệu | NHNCK.SpecializationCourses | FilePath |  |
+| 11 | Is Active Flag | is_actv_f | BOOLEAN | X |  |  |  | Trạng thái hoạt động | NHNCK.SpecializationCourses | IsActive |  |
+| 12 | Course Status Code | course_st_code | STRING | X |  |  |  | Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa) | NHNCK.SpecializationCourses | Status | Scheme: COURSE_STATUS. |
+| 13 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.SpecializationCourses | CreatedBy |  |
+| 14 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.SpecializationCourses | CreatedBy |  |
+| 15 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.SpecializationCourses | UpdatedBy |  |
+| 16 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK.SpecializationCourses | UpdatedBy |  |
+| 17 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.SpecializationCourses | CreatedAt |  |
+| 18 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.SpecializationCourses | UpdatedAt |  |
 
 
 #### 2.{IDX}.21.1 Constraint
@@ -1083,33 +1083,33 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Professional Training Class Enrollment Id | prof_trn_clss_enrollment_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | SpecializationCourseDetails |  | PK surrogate. BCV: "Business Activity" — đăng ký học viên + kết quả. |
-| 2 | Professional Training Class Enrollment Code | prof_trn_clss_enrollment_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | SpecializationCourseDetails | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | SpecializationCourseDetails |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Professional Training Class Id | prof_trn_clss_id | BIGINT |  |  | F |  | FK đến khóa học | NHNCK | SpecializationCourseDetails | SpecializationCourseId | FK target: Securities Practitioner Professional Training Class.Professional Training Class Id. |
-| 5 | Professional Training Class Code | prof_trn_clss_code | STRING |  |  |  |  | Mã khóa học | NHNCK | SpecializationCourseDetails | SpecializationCourseId | Lookup pair: Securities Practitioner Professional Training Class.Professional Training Class Code. Pair with Professional Training Class Id. |
-| 6 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | SpecializationCourseDetails | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 7 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | SpecializationCourseDetails | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 8 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên học viên (snapshot) | NHNCK | SpecializationCourseDetails | Fullname | Denormalized snapshot tại thời điểm đăng ký. |
-| 9 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh (snapshot) | NHNCK | SpecializationCourseDetails | BirthDate | Denormalized snapshot. |
-| 10 | Place Of Birth | plc_of_brth | STRING | X |  |  |  | Nơi sinh (snapshot) | NHNCK | SpecializationCourseDetails | PlaceOfDate | Denormalized snapshot. |
-| 11 | Identification Number | identn_nbr | STRING | X |  |  |  | Số định danh (snapshot) | NHNCK | SpecializationCourseDetails | IdentityNumber | Denormalized snapshot. |
-| 12 | Exam Number | exam_nbr | STRING | X |  |  |  | Số dự thi | NHNCK | SpecializationCourseDetails | ExamNumber |  |
-| 13 | Enrollment Description | enrollment_dsc | STRING | X |  |  |  | Mô tả | NHNCK | SpecializationCourseDetails | Description |  |
-| 14 | Assessment Score | ases_scor | STRING | X |  |  |  | Điểm thi | NHNCK | SpecializationCourseDetails | ExamScore | Text vì có thể dạng text (VD: "Vắng"). |
-| 15 | Assessment Result Code | ases_rslt_code | STRING | X |  |  |  | Kết quả thi (1: Đạt, 0: Không đạt) | NHNCK | SpecializationCourseDetails | Result | Scheme: TRAINING_RESULT. |
-| 16 | Enrollment Note | enrollment_note | STRING | X |  |  |  | Ghi chú | NHNCK | SpecializationCourseDetails | Note |  |
-| 17 | Enrollment Status Code | enrollment_st_code | STRING | X |  |  |  | Trạng thái (0: Chờ thẩm định, 1: Xác nhận, 2: Yêu cầu nộp lại, 3: Từ chối) | NHNCK | SpecializationCourseDetails | Status | Scheme: ENROLLMENT_STATUS. |
-| 18 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến cán bộ xử lý | NHNCK | SpecializationCourseDetails | AssigneeId | FK target: Regulatory Authority Officer.Officer Id. |
-| 19 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ xử lý | NHNCK | SpecializationCourseDetails | AssigneeId | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id. |
-| 20 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | SpecializationCourseDetails | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 21 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | SpecializationCourseDetails | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 22 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | SpecializationCourseDetails | UpdatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 23 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK | SpecializationCourseDetails | UpdatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id. |
-| 24 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | SpecializationCourseDetails | CreatedAt |  |
-| 25 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | SpecializationCourseDetails | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Professional Training Class Enrollment Id | prof_trn_clss_enrollment_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.SpecializationCourseDetails |  | PK surrogate. BCV: "Business Activity" — đăng ký học viên + kết quả. |
+| 2 | Professional Training Class Enrollment Code | prof_trn_clss_enrollment_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.SpecializationCourseDetails | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.SpecializationCourseDetails' | Mã nguồn dữ liệu | NHNCK.SpecializationCourseDetails |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Professional Training Class Id | prof_trn_clss_id | BIGINT |  |  | F |  | FK đến khóa học | NHNCK.SpecializationCourseDetails | SpecializationCourseId |  |
+| 5 | Professional Training Class Code | prof_trn_clss_code | STRING |  |  |  |  | Mã khóa học | NHNCK.SpecializationCourseDetails | SpecializationCourseId |  |
+| 6 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.SpecializationCourseDetails | ProfessionalId |  |
+| 7 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.SpecializationCourseDetails | ProfessionalId |  |
+| 8 | Full Name | full_nm | STRING | X |  |  |  | Họ và tên học viên (snapshot) | NHNCK.SpecializationCourseDetails | Fullname |  |
+| 9 | Date Of Birth | dob | DATE | X |  |  |  | Ngày sinh (snapshot) | NHNCK.SpecializationCourseDetails | BirthDate |  |
+| 10 | Place Of Birth | plc_of_brth | STRING | X |  |  |  | Nơi sinh (snapshot) | NHNCK.SpecializationCourseDetails | PlaceOfDate |  |
+| 11 | Identification Number | identn_nbr | STRING | X |  |  |  | Số định danh (snapshot) | NHNCK.SpecializationCourseDetails | IdentityNumber |  |
+| 12 | Exam Number | exam_nbr | STRING | X |  |  |  | Số dự thi | NHNCK.SpecializationCourseDetails | ExamNumber |  |
+| 13 | Enrollment Description | enrollment_dsc | STRING | X |  |  |  | Mô tả | NHNCK.SpecializationCourseDetails | Description |  |
+| 14 | Assessment Score | ases_scor | STRING | X |  |  |  | Điểm thi | NHNCK.SpecializationCourseDetails | ExamScore |  |
+| 15 | Assessment Result Code | ases_rslt_code | STRING | X |  |  |  | Kết quả thi (1: Đạt, 0: Không đạt) | NHNCK.SpecializationCourseDetails | Result | Scheme: TRAINING_RESULT. |
+| 16 | Enrollment Note | enrollment_note | STRING | X |  |  |  | Ghi chú | NHNCK.SpecializationCourseDetails | Note |  |
+| 17 | Enrollment Status Code | enrollment_st_code | STRING | X |  |  |  | Trạng thái (0: Chờ thẩm định, 1: Xác nhận, 2: Yêu cầu nộp lại, 3: Từ chối) | NHNCK.SpecializationCourseDetails | Status | Scheme: ENROLLMENT_STATUS. |
+| 18 | Assignee Officer Id | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến cán bộ xử lý | NHNCK.SpecializationCourseDetails | AssigneeId |  |
+| 19 | Assignee Officer Code | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ xử lý | NHNCK.SpecializationCourseDetails | AssigneeId |  |
+| 20 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.SpecializationCourseDetails | CreatedBy |  |
+| 21 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.SpecializationCourseDetails | CreatedBy |  |
+| 22 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.SpecializationCourseDetails | UpdatedBy |  |
+| 23 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK.SpecializationCourseDetails | UpdatedBy |  |
+| 24 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.SpecializationCourseDetails | CreatedAt |  |
+| 25 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.SpecializationCourseDetails | UpdatedAt |  |
 
 
 #### 2.{IDX}.22.1 Constraint
@@ -1144,29 +1144,29 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Examination Assessment Id | exam_ases_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ExamSessions |  | PK surrogate. BCV: "Assessment" (Communication). Đợt thi sát hạch CCHN. |
-| 2 | Examination Assessment Code | exam_ases_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ExamSessions | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ExamSessions |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Session Code | ssn_code | STRING | X |  |  |  | Mã đợt thi (mã nghiệp vụ) | NHNCK | ExamSessions | Code | Mã nghiệp vụ, khác BK. |
-| 5 | Session Name | ssn_nm | STRING | X |  |  |  | Tên đợt thi | NHNCK | ExamSessions | Name |  |
-| 6 | Examination Year | exam_yr | STRING | X |  |  |  | Năm thi | NHNCK | ExamSessions | Year | Text vì là năm dạng "2025". |
-| 7 | Session Number | ssn_nbr | STRING | X |  |  |  | Đợt thi (số thứ tự trong năm) | NHNCK | ExamSessions | Session |  |
-| 8 | Organizer Name | organizer_nm | STRING | X |  |  |  | Đơn vị tổ chức | NHNCK | ExamSessions | OrganizingUnit | Suffix Name — text tự do. |
-| 9 | Registration Start Date | rgst_strt_dt | DATE | X |  |  |  | Ngày bắt đầu nhận hồ sơ | NHNCK | ExamSessions | ApplicationStartDate |  |
-| 10 | Registration End Date | rgst_end_dt | DATE | X |  |  |  | Ngày kết thúc nhận hồ sơ | NHNCK | ExamSessions | ApplicationEndDate |  |
-| 11 | Examination Start Date | exam_strt_dt | DATE | X |  |  |  | Ngày bắt đầu thi | NHNCK | ExamSessions | ExamStartDate |  |
-| 12 | Examination End Date | exam_end_dt | DATE | X |  |  |  | Ngày kết thúc thi | NHNCK | ExamSessions | ExamEndDate |  |
-| 13 | Examination Location | exam_lo | STRING | X |  |  |  | Địa điểm thi | NHNCK | ExamSessions | ExamLocations | Text tự do. |
-| 14 | Notification Date | notf_dt | DATE | X |  |  |  | Ngày thông báo kết quả | NHNCK | ExamSessions | NotiDate |  |
-| 15 | Submission Method Description | submission_mth_dsc | STRING | X |  |  |  | Phương thức nộp hồ sơ | NHNCK | ExamSessions | SubmissionMethods | Text tự do. |
-| 16 | Attachment File Path | attachment_file_path | STRING | X |  |  |  | File thông báo đính kèm | NHNCK | ExamSessions | FilePath |  |
-| 17 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định công nhận kết quả | NHNCK | ExamSessions | DecisionId | FK target: Securities Practitioner License Decision Document.License Decision Document Id. |
-| 18 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK | ExamSessions | DecisionId | Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id. |
-| 19 | Examination Status Code | exam_st_code | STRING | X |  |  |  | Trạng thái (0: Chưa hoàn thành, 1: Đã hoàn thành) | NHNCK | ExamSessions | Status | Scheme: EXAMINATION_STATUS. |
-| 20 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | ExamSessions | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 21 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | ExamSessions | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Examination Assessment Id | exam_ases_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ExamSessions |  | PK surrogate. BCV: "Assessment" (Communication). Đợt thi sát hạch CCHN. |
+| 2 | Examination Assessment Code | exam_ases_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ExamSessions | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ExamSessions' | Mã nguồn dữ liệu | NHNCK.ExamSessions |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Session Code | ssn_code | STRING | X |  |  |  | Mã đợt thi (mã nghiệp vụ) | NHNCK.ExamSessions | Code |  |
+| 5 | Session Name | ssn_nm | STRING | X |  |  |  | Tên đợt thi | NHNCK.ExamSessions | Name |  |
+| 6 | Examination Year | exam_yr | STRING | X |  |  |  | Năm thi | NHNCK.ExamSessions | Year |  |
+| 7 | Session Number | ssn_nbr | STRING | X |  |  |  | Đợt thi (số thứ tự trong năm) | NHNCK.ExamSessions | Session |  |
+| 8 | Organizer Name | organizer_nm | STRING | X |  |  |  | Đơn vị tổ chức | NHNCK.ExamSessions | OrganizingUnit |  |
+| 9 | Registration Start Date | rgst_strt_dt | DATE | X |  |  |  | Ngày bắt đầu nhận hồ sơ | NHNCK.ExamSessions | ApplicationStartDate |  |
+| 10 | Registration End Date | rgst_end_dt | DATE | X |  |  |  | Ngày kết thúc nhận hồ sơ | NHNCK.ExamSessions | ApplicationEndDate |  |
+| 11 | Examination Start Date | exam_strt_dt | DATE | X |  |  |  | Ngày bắt đầu thi | NHNCK.ExamSessions | ExamStartDate |  |
+| 12 | Examination End Date | exam_end_dt | DATE | X |  |  |  | Ngày kết thúc thi | NHNCK.ExamSessions | ExamEndDate |  |
+| 13 | Examination Location | exam_lo | STRING | X |  |  |  | Địa điểm thi | NHNCK.ExamSessions | ExamLocations |  |
+| 14 | Notification Date | notf_dt | DATE | X |  |  |  | Ngày thông báo kết quả | NHNCK.ExamSessions | NotiDate |  |
+| 15 | Submission Method Description | submission_mth_dsc | STRING | X |  |  |  | Phương thức nộp hồ sơ | NHNCK.ExamSessions | SubmissionMethods |  |
+| 16 | Attachment File Path | attachment_file_path | STRING | X |  |  |  | File thông báo đính kèm | NHNCK.ExamSessions | FilePath |  |
+| 17 | License Decision Document Id | license_dcsn_doc_id | BIGINT | X |  | F |  | FK đến quyết định công nhận kết quả | NHNCK.ExamSessions | DecisionId |  |
+| 18 | License Decision Document Code | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định | NHNCK.ExamSessions | DecisionId |  |
+| 19 | Examination Status Code | exam_st_code | STRING | X |  |  |  | Trạng thái (0: Chưa hoàn thành, 1: Đã hoàn thành) | NHNCK.ExamSessions | Status | Scheme: EXAMINATION_STATUS. |
+| 20 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.ExamSessions | CreatedBy |  |
+| 21 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.ExamSessions | CreatedBy |  |
 
 
 #### 2.{IDX}.23.1 Constraint
@@ -1198,29 +1198,29 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Examination Assessment Result Id | exam_ases_rslt_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ExamDetails |  | PK surrogate. BCV: "Assessment" (Communication). Kết quả thi của thí sinh. |
-| 2 | Examination Assessment Result Code | exam_ases_rslt_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ExamDetails | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ExamDetails |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Examination Assessment Id | exam_ases_id | BIGINT |  |  | F |  | FK đến đợt thi | NHNCK | ExamDetails | ExamSessionId | FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id. |
-| 5 | Examination Assessment Code | exam_ases_code | STRING |  |  |  |  | Mã đợt thi | NHNCK | ExamDetails | ExamSessionId | Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id. |
-| 6 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK | ExamDetails | ProfessionalId | FK target: Securities Practitioner.Practitioner Id. |
-| 7 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK | ExamDetails | ProfessionalId | Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id. |
-| 8 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ dự thi | NHNCK | ExamDetails | CertificateId | Scheme: CERTIFICATE_TYPE. |
-| 9 | License Application Id | license_ap_id | BIGINT | X |  | F |  | FK đến hồ sơ | NHNCK | ExamDetails | ApplicationId | FK target: Securities Practitioner License Application.License Application Id. |
-| 10 | License Application Code | license_ap_code | STRING | X |  |  |  | Mã hồ sơ | NHNCK | ExamDetails | ApplicationId | Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id. |
-| 11 | Sequence Number | seq_nbr | INT | X |  |  |  | Số thứ tự trong đợt thi | NHNCK | ExamDetails | SequenceNumber |  |
-| 12 | Exam Number | exam_nbr | STRING | X |  |  |  | Số báo danh | NHNCK | ExamDetails | ExamNumber |  |
-| 13 | Law Score | law_scor | STRING | X |  |  |  | Điểm pháp luật | NHNCK | ExamDetails | LawScore | Text vì có thể dạng text (VD: "Vắng", "Miễn thi"). |
-| 14 | Law Result Indicator | law_rslt_ind | BOOLEAN | X |  |  |  | Kết quả luật (1: Đạt, 0: Không đạt) | NHNCK | ExamDetails | LawResult |  |
-| 15 | Specialization Score | specialization_scor | STRING | X |  |  |  | Điểm chuyên môn | NHNCK | ExamDetails | SpecializationScore | Tương tự Law Score. |
-| 16 | Specialization Result Indicator | specialization_rslt_ind | BOOLEAN | X |  |  |  | Kết quả chuyên môn (1: Đạt, 0: Không đạt) | NHNCK | ExamDetails | SpecializationResult |  |
-| 17 | Examination Result Code | exam_rslt_code | STRING | X |  |  |  | Kết quả tổng (1: Đạt, 0: Không đạt) | NHNCK | ExamDetails | Result | Scheme: EXAMINATION_RESULT. |
-| 18 | Examination Note | exam_note | STRING | X |  |  |  | Ghi chú | NHNCK | ExamDetails | Note |  |
-| 19 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | ExamDetails | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 20 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | ExamDetails | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 21 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | ExamDetails | CreatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Examination Assessment Result Id | exam_ases_rslt_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ExamDetails |  | PK surrogate. BCV: "Assessment" (Communication). Kết quả thi của thí sinh. |
+| 2 | Examination Assessment Result Code | exam_ases_rslt_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ExamDetails | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ExamDetails' | Mã nguồn dữ liệu | NHNCK.ExamDetails |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Examination Assessment Id | exam_ases_id | BIGINT |  |  | F |  | FK đến đợt thi | NHNCK.ExamDetails | ExamSessionId |  |
+| 5 | Examination Assessment Code | exam_ases_code | STRING |  |  |  |  | Mã đợt thi | NHNCK.ExamDetails | ExamSessionId |  |
+| 6 | Practitioner Id | practitioner_id | BIGINT |  |  | F |  | FK đến Securities Practitioner | NHNCK.ExamDetails | ProfessionalId |  |
+| 7 | Practitioner Code | practitioner_code | STRING |  |  |  |  | Mã người hành nghề | NHNCK.ExamDetails | ProfessionalId |  |
+| 8 | Certificate Type Code | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ dự thi | NHNCK.ExamDetails | CertificateId | Scheme: CERTIFICATE_TYPE. |
+| 9 | License Application Id | license_ap_id | BIGINT | X |  | F |  | FK đến hồ sơ | NHNCK.ExamDetails | ApplicationId |  |
+| 10 | License Application Code | license_ap_code | STRING | X |  |  |  | Mã hồ sơ | NHNCK.ExamDetails | ApplicationId |  |
+| 11 | Sequence Number | seq_nbr | INT | X |  |  |  | Số thứ tự trong đợt thi | NHNCK.ExamDetails | SequenceNumber |  |
+| 12 | Exam Number | exam_nbr | STRING | X |  |  |  | Số báo danh | NHNCK.ExamDetails | ExamNumber |  |
+| 13 | Law Score | law_scor | STRING | X |  |  |  | Điểm pháp luật | NHNCK.ExamDetails | LawScore |  |
+| 14 | Law Result Indicator | law_rslt_ind | BOOLEAN | X |  |  |  | Kết quả luật (1: Đạt, 0: Không đạt) | NHNCK.ExamDetails | LawResult |  |
+| 15 | Specialization Score | specialization_scor | STRING | X |  |  |  | Điểm chuyên môn | NHNCK.ExamDetails | SpecializationScore |  |
+| 16 | Specialization Result Indicator | specialization_rslt_ind | BOOLEAN | X |  |  |  | Kết quả chuyên môn (1: Đạt, 0: Không đạt) | NHNCK.ExamDetails | SpecializationResult |  |
+| 17 | Examination Result Code | exam_rslt_code | STRING | X |  |  |  | Kết quả tổng (1: Đạt, 0: Không đạt) | NHNCK.ExamDetails | Result | Scheme: EXAMINATION_RESULT. |
+| 18 | Examination Note | exam_note | STRING | X |  |  |  | Ghi chú | NHNCK.ExamDetails | Note |  |
+| 19 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.ExamDetails | CreatedBy |  |
+| 20 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.ExamDetails | CreatedBy |  |
+| 21 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.ExamDetails | CreatedAt |  |
 
 
 #### 2.{IDX}.24.1 Constraint
@@ -1254,23 +1254,23 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Examination Assessment Fee Id | exam_ases_fee_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | ExamSessionFees |  | PK surrogate. BCV: "Condition" (Condition). Mức phí thi theo đợt thi + loại chứng chỉ. |
-| 2 | Examination Assessment Fee Code | exam_ases_fee_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | ExamSessionFees | Id | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | ExamSessionFees |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Examination Assessment Id | exam_ases_id | BIGINT |  |  | F |  | FK đến đợt thi | NHNCK | ExamSessionFees | ExamSessionId | FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id. |
-| 5 | Examination Assessment Code | exam_ases_code | STRING |  |  |  |  | Mã đợt thi | NHNCK | ExamSessionFees | ExamSessionId | Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id. |
-| 6 | Certificate Type Code | ctf_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ | NHNCK | ExamSessionFees | CertificateId | Scheme: CERTIFICATE_TYPE. |
-| 7 | Examination Fee Amount | exam_fee_amt | DECIMAL(18,2) | X |  |  |  | Phí thi (VNĐ) | NHNCK | ExamSessionFees | FeeExam |  |
-| 8 | Appeal Fee Amount | appeal_fee_amt | DECIMAL(18,2) | X |  |  |  | Phí phúc khảo (VNĐ) | NHNCK | ExamSessionFees | FeeAppeal |  |
-| 9 | Fee Status Code | fee_st_code | STRING | X |  |  |  | Trạng thái | NHNCK | ExamSessionFees | Status | Scheme: FEE_STATUS. |
-| 10 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | ExamSessionFees | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 11 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | ExamSessionFees | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 12 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | ExamSessionFees | UpdatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 13 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK | ExamSessionFees | UpdatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id. |
-| 14 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | ExamSessionFees | CreatedAt |  |
-| 15 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | ExamSessionFees | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Examination Assessment Fee Id | exam_ases_fee_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.ExamSessionFees |  | PK surrogate. BCV: "Condition" (Condition). Mức phí thi theo đợt thi + loại chứng chỉ. |
+| 2 | Examination Assessment Fee Code | exam_ases_fee_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.ExamSessionFees | Id | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.ExamSessionFees' | Mã nguồn dữ liệu | NHNCK.ExamSessionFees |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Examination Assessment Id | exam_ases_id | BIGINT |  |  | F |  | FK đến đợt thi | NHNCK.ExamSessionFees | ExamSessionId |  |
+| 5 | Examination Assessment Code | exam_ases_code | STRING |  |  |  |  | Mã đợt thi | NHNCK.ExamSessionFees | ExamSessionId |  |
+| 6 | Certificate Type Code | ctf_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ | NHNCK.ExamSessionFees | CertificateId | Scheme: CERTIFICATE_TYPE. |
+| 7 | Examination Fee Amount | exam_fee_amt | DECIMAL(18,2) | X |  |  |  | Phí thi (VNĐ) | NHNCK.ExamSessionFees | FeeExam |  |
+| 8 | Appeal Fee Amount | appeal_fee_amt | DECIMAL(18,2) | X |  |  |  | Phí phúc khảo (VNĐ) | NHNCK.ExamSessionFees | FeeAppeal |  |
+| 9 | Fee Status Code | fee_st_code | STRING | X |  |  |  | Trạng thái | NHNCK.ExamSessionFees | Status | Scheme: FEE_STATUS. |
+| 10 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.ExamSessionFees | CreatedBy |  |
+| 11 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.ExamSessionFees | CreatedBy |  |
+| 12 | Updated By Officer Id | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.ExamSessionFees | UpdatedBy |  |
+| 13 | Updated By Officer Code | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật | NHNCK.ExamSessionFees | UpdatedBy |  |
+| 14 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.ExamSessionFees | CreatedAt |  |
+| 15 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.ExamSessionFees | UpdatedAt |  |
 
 
 #### 2.{IDX}.25.1 Constraint
@@ -1303,36 +1303,36 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Securities Organization Reference Id | scr_org_refr_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | Organizations |  | PK surrogate. BCV: "Organization" (Involved Party). Tổ chức tham gia TTCK (CTCK, QLQ, NH...). |
-| 2 | Securities Organization Reference Code | scr_org_refr_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | Organizations | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Organizations |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Organization Code | org_code | STRING | X |  |  |  | Mã tổ chức (mã nghiệp vụ) | NHNCK | Organizations | OrganizationCode | Mã nghiệp vụ, khác BK. |
-| 5 | Organization Name | org_nm | STRING | X |  |  |  | Tên tổ chức | NHNCK | Organizations | OrganizationName |  |
-| 6 | English Name | english_nm | STRING | X |  |  |  | Tên tiếng Anh | NHNCK | Organizations | EnglishName |  |
-| 7 | Abbreviation | abr | STRING | X |  |  |  | Tên viết tắt | NHNCK | Organizations | Abbreviation |  |
-| 8 | Organization Type Code | org_tp_code | STRING | X |  |  |  | Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác) | NHNCK | Organizations | OrganizationTypeId | Scheme: ORGANIZATION_TYPE. |
-| 9 | Organization Level Code | org_lvl_code | STRING | X |  |  |  | Cấp độ tổ chức | NHNCK | Organizations | Level | Scheme: ORGANIZATION_LEVEL. |
-| 10 | Parent Organization Id | prn_org_id | BIGINT | X |  | F |  | FK self-referencing — tổ chức cha | NHNCK | Organizations | ParentId | FK target: Securities Organization Reference.Securities Organization Reference Id. Self-referencing. |
-| 11 | Parent Organization Code | prn_org_code | STRING | X |  |  |  | Mã tổ chức cha | NHNCK | Organizations | ParentId | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Parent Organization Id. |
-| 12 | Representative Name | representative_nm | STRING | X |  |  |  | Người đại diện | NHNCK | Organizations | Representative | BCV: "Designated Representative" (Involved Party). Suffix Name. Chủ thể khác — không thuộc shared entity. |
-| 13 | Charter Capital Amount | charter_cptl_amt | DECIMAL(18,2) | X |  |  |  | Vốn điều lệ | NHNCK | Organizations | CharterCapital |  |
-| 14 | License Number | license_nbr | STRING | X |  |  |  | Số giấy phép hoạt động | NHNCK | Organizations | LicenseNumber |  |
-| 15 | License Issuer | license_issur | STRING | X |  |  |  | Cơ quan cấp giấy phép | NHNCK | Organizations | LicenseIssuer |  |
-| 16 | License Date | license_dt | DATE | X |  |  |  | Ngày cấp giấy phép | NHNCK | Organizations | LicenseDate |  |
-| 17 | Website | webst | STRING | X |  |  |  | Địa chỉ website | NHNCK | Organizations | Website | Thông tin công khai — không thuộc IP Electronic Address. |
-| 18 | Organization Description | org_dsc | STRING | X |  |  |  | Mô tả | NHNCK | Organizations | Description |  |
-| 19 | Organization Status Code | org_st_code | STRING | X |  |  |  | Trạng thái | NHNCK | Organizations | Status | Scheme: ORGANIZATION_STATUS. |
-| 20 | Sort Order | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp | NHNCK | Organizations | SortOrder |  |
-| 21 | Linked Id | linked_id | STRING | X |  |  |  | ID liên kết | NHNCK | Organizations | LinkedId | Metadata liên kết hệ thống. |
-| 22 | Sync Id | sync_id | STRING | X |  |  |  | Mã đồng bộ | NHNCK | Organizations | SyncId | Metadata đồng bộ. |
-| 23 | Last Sync Date | last_sync_dt | DATE | X |  |  |  | Lần cuối đồng bộ | NHNCK | Organizations | LastSyncDate |  |
-| 24 | Sync Status Code | sync_st_code | STRING | X |  |  |  | Trạng thái đồng bộ | NHNCK | Organizations | SyncStatus | Scheme: SYNC_STATUS. |
-| 25 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | Organizations | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 26 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | Organizations | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 27 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | Organizations | CreatedAt |  |
-| 28 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | Organizations | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Securities Organization Reference Id | scr_org_refr_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.Organizations |  | PK surrogate. BCV: "Organization" (Involved Party). Tổ chức tham gia TTCK (CTCK, QLQ, NH...). |
+| 2 | Securities Organization Reference Code | scr_org_refr_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.Organizations | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Organizations' | Mã nguồn dữ liệu | NHNCK.Organizations |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Organization Code | org_code | STRING | X |  |  |  | Mã tổ chức (mã nghiệp vụ) | NHNCK.Organizations | OrganizationCode |  |
+| 5 | Organization Name | org_nm | STRING | X |  |  |  | Tên tổ chức | NHNCK.Organizations | OrganizationName |  |
+| 6 | English Name | english_nm | STRING | X |  |  |  | Tên tiếng Anh | NHNCK.Organizations | EnglishName |  |
+| 7 | Abbreviation | abr | STRING | X |  |  |  | Tên viết tắt | NHNCK.Organizations | Abbreviation |  |
+| 8 | Organization Type Code | org_tp_code | STRING | X |  |  |  | Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác) | NHNCK.Organizations | OrganizationTypeId | Scheme: ORGANIZATION_TYPE. |
+| 9 | Organization Level Code | org_lvl_code | STRING | X |  |  |  | Cấp độ tổ chức | NHNCK.Organizations | Level | Scheme: ORGANIZATION_LEVEL. |
+| 10 | Parent Organization Id | prn_org_id | BIGINT | X |  | F |  | FK self-referencing — tổ chức cha | NHNCK.Organizations | ParentId |  |
+| 11 | Parent Organization Code | prn_org_code | STRING | X |  |  |  | Mã tổ chức cha | NHNCK.Organizations | ParentId |  |
+| 12 | Representative Name | representative_nm | STRING | X |  |  |  | Người đại diện | NHNCK.Organizations | Representative |  |
+| 13 | Charter Capital Amount | charter_cptl_amt | DECIMAL(18,2) | X |  |  |  | Vốn điều lệ | NHNCK.Organizations | CharterCapital |  |
+| 14 | License Number | license_nbr | STRING | X |  |  |  | Số giấy phép hoạt động | NHNCK.Organizations | LicenseNumber |  |
+| 15 | License Issuer | license_issur | STRING | X |  |  |  | Cơ quan cấp giấy phép | NHNCK.Organizations | LicenseIssuer |  |
+| 16 | License Date | license_dt | DATE | X |  |  |  | Ngày cấp giấy phép | NHNCK.Organizations | LicenseDate |  |
+| 17 | Website | webst | STRING | X |  |  |  | Địa chỉ website | NHNCK.Organizations | Website |  |
+| 18 | Organization Description | org_dsc | STRING | X |  |  |  | Mô tả | NHNCK.Organizations | Description |  |
+| 19 | Organization Status Code | org_st_code | STRING | X |  |  |  | Trạng thái | NHNCK.Organizations | Status | Scheme: ORGANIZATION_STATUS. |
+| 20 | Sort Order | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp | NHNCK.Organizations | SortOrder |  |
+| 21 | Linked Id | linked_id | STRING | X |  |  |  | ID liên kết | NHNCK.Organizations | LinkedId |  |
+| 22 | Sync Id | sync_id | STRING | X |  |  |  | Mã đồng bộ | NHNCK.Organizations | SyncId |  |
+| 23 | Last Sync Date | last_sync_dt | DATE | X |  |  |  | Lần cuối đồng bộ | NHNCK.Organizations | LastSyncDate |  |
+| 24 | Sync Status Code | sync_st_code | STRING | X |  |  |  | Trạng thái đồng bộ | NHNCK.Organizations | SyncStatus | Scheme: SYNC_STATUS. |
+| 25 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.Organizations | CreatedBy |  |
+| 26 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.Organizations | CreatedBy |  |
+| 27 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.Organizations | CreatedAt |  |
+| 28 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.Organizations | UpdatedAt |  |
 
 
 #### 2.{IDX}.26.1 Constraint
@@ -1364,27 +1364,27 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | License Decision Document Id | license_dcsn_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | Decisions |  | PK surrogate. BCV: "Government Registration Document" (Documentation). Quyết định hành chính. |
-| 2 | License Decision Document Code | license_dcsn_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK | Decisions | Id | BK chính. PK nguồn. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Decisions |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Decision Number | dcsn_nbr | STRING | X |  |  |  | Số quyết định | NHNCK | Decisions | DecisionNumber | Mã nghiệp vụ — số hiệu quyết định hành chính. |
-| 5 | Decision Title | dcsn_ttl | STRING | X |  |  |  | Tiêu đề quyết định | NHNCK | Decisions | Title |  |
-| 6 | Decision Reference | dcsn_refr | STRING | X |  |  |  | Trích dẫn | NHNCK | Decisions | Reference |  |
-| 7 | Decision Content | dcsn_cntnt | STRING | X |  |  |  | Nội dung quyết định | NHNCK | Decisions | DecisionContent |  |
-| 8 | Signing Date | signing_dt | DATE | X |  |  |  | Ngày ký | NHNCK | Decisions | SignedDate |  |
-| 9 | Signatory Name | signatory_nm | STRING | X |  |  |  | Người ký | NHNCK | Decisions | Signatory | Suffix Name — text tự do. |
-| 10 | Signatory Position Name | signatory_pos_nm | STRING | X |  |  |  | Chức vụ người ký | NHNCK | Decisions | Position | Suffix Name — text tự do. |
-| 11 | Decision Unit Name | dcsn_unit_nm | STRING | X |  |  |  | Đơn vị ban hành | NHNCK | Decisions | DecisionUnit | Suffix Name — text tự do. |
-| 12 | Attachment File Name | attachment_file_nm | STRING | X |  |  |  | Tên file đính kèm | NHNCK | Decisions | FileName |  |
-| 13 | Attachment File Path | attachment_file_path | STRING | X |  |  |  | Đường dẫn file | NHNCK | Decisions | FilePath |  |
-| 14 | Decision Type Code | dcsn_tp_code | STRING | X |  |  |  | Loại quyết định | NHNCK | Decisions | TypeId | Scheme: DECISION_TYPE. |
-| 15 | Decision Status Code | dcsn_st_code | STRING | X |  |  |  | Trạng thái quyết định | NHNCK | Decisions | Status | Scheme: DECISION_STATUS. |
-| 16 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK | Decisions | CreatedBy | FK target: Regulatory Authority Officer.Officer Id. |
-| 17 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK | Decisions | CreatedBy | Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id. |
-| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK | Decisions | CreatedAt |  |
-| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK | Decisions | UpdatedAt |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | License Decision Document Id | license_dcsn_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.Decisions |  | PK surrogate. BCV: "Government Registration Document" (Documentation). Quyết định hành chính. |
+| 2 | License Decision Document Code | license_dcsn_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK | NHNCK.Decisions | Id | BK chính. PK nguồn. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Decisions' | Mã nguồn dữ liệu | NHNCK.Decisions |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Decision Number | dcsn_nbr | STRING | X |  |  |  | Số quyết định | NHNCK.Decisions | DecisionNumber |  |
+| 5 | Decision Title | dcsn_ttl | STRING | X |  |  |  | Tiêu đề quyết định | NHNCK.Decisions | Title |  |
+| 6 | Decision Reference | dcsn_refr | STRING | X |  |  |  | Trích dẫn | NHNCK.Decisions | Reference |  |
+| 7 | Decision Content | dcsn_cntnt | STRING | X |  |  |  | Nội dung quyết định | NHNCK.Decisions | DecisionContent |  |
+| 8 | Signing Date | signing_dt | DATE | X |  |  |  | Ngày ký | NHNCK.Decisions | SignedDate |  |
+| 9 | Signatory Name | signatory_nm | STRING | X |  |  |  | Người ký | NHNCK.Decisions | Signatory |  |
+| 10 | Signatory Position Name | signatory_pos_nm | STRING | X |  |  |  | Chức vụ người ký | NHNCK.Decisions | Position |  |
+| 11 | Decision Unit Name | dcsn_unit_nm | STRING | X |  |  |  | Đơn vị ban hành | NHNCK.Decisions | DecisionUnit |  |
+| 12 | Attachment File Name | attachment_file_nm | STRING | X |  |  |  | Tên file đính kèm | NHNCK.Decisions | FileName |  |
+| 13 | Attachment File Path | attachment_file_path | STRING | X |  |  |  | Đường dẫn file | NHNCK.Decisions | FilePath |  |
+| 14 | Decision Type Code | dcsn_tp_code | STRING | X |  |  |  | Loại quyết định | NHNCK.Decisions | TypeId | Scheme: DECISION_TYPE. |
+| 15 | Decision Status Code | dcsn_st_code | STRING | X |  |  |  | Trạng thái quyết định | NHNCK.Decisions | Status | Scheme: DECISION_STATUS. |
+| 16 | Created By Officer Id | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer | NHNCK.Decisions | CreatedBy |  |
+| 17 | Created By Officer Code | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo | NHNCK.Decisions | CreatedBy |  |
+| 18 | Created Timestamp | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo | NHNCK.Decisions | CreatedAt |  |
+| 19 | Updated Timestamp | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật | NHNCK.Decisions | UpdatedAt |  |
 
 
 #### 2.{IDX}.27.1 Constraint
@@ -1415,18 +1415,18 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Organization Unit Id | ou_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | Units |  | PK surrogate. BCV: "Organization" (Involved Party). Đơn vị thuộc UBCK. |
-| 2 | Organization Unit Code | ou_code | STRING |  |  |  |  | Mã đơn vị. BK | NHNCK | Units | UnitCode | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Units |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Organization Unit Type Code | ou_tp_code | STRING |  |  |  |  | Phân loại — Đơn vị (Unit) | NHNCK | Units |  |  |
-| 5 | Organization Unit Name | ou_nm | STRING | X |  |  |  | Tên đơn vị | NHNCK | Units | UnitName |  |
-| 6 | Organization Unit Description | ou_dsc | STRING | X |  |  |  | Mô tả | NHNCK | Units | Description |  |
-| 7 | Organization Unit Status Code | ou_st_code | STRING | X |  |  |  | Trạng thái | NHNCK | Units | Status | Scheme: ORGANIZATION_UNIT_STATUS. |
-| 8 | Parent Organization Unit Id | prn_ou_id | BIGINT | X |  | F |  | FK đến đơn vị cha (Units) | NHNCK | Units |  | FK target: Regulatory Authority Organization Unit.Organization Unit Id. |
-| 9 | Parent Organization Unit Code | prn_ou_code | STRING | X |  |  |  | Mã đơn vị cha | NHNCK | Units |  | Lookup pair: Regulatory Authority Organization Unit.Organization Unit Code. Pair with Parent Organization Unit Id. |
-| 10 | Sort Order | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp | NHNCK | Units |  |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Organization Unit Id | ou_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.Units |  | PK surrogate. BCV: "Organization" (Involved Party). Đơn vị thuộc UBCK. |
+| 2 | Organization Unit Code | ou_code | STRING |  |  |  |  | Mã đơn vị. BK | NHNCK.Units | UnitCode | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Units' | Mã nguồn dữ liệu | NHNCK.Units |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Organization Unit Type Code | ou_tp_code | STRING |  |  |  |  | Phân loại — Đơn vị (Unit) | NHNCK.Units |  |  |
+| 5 | Organization Unit Name | ou_nm | STRING | X |  |  |  | Tên đơn vị | NHNCK.Units | UnitName |  |
+| 6 | Organization Unit Description | ou_dsc | STRING | X |  |  |  | Mô tả | NHNCK.Units | Description |  |
+| 7 | Organization Unit Status Code | ou_st_code | STRING | X |  |  |  | Trạng thái | NHNCK.Units | Status | Scheme: ORGANIZATION_UNIT_STATUS. |
+| 8 | Parent Organization Unit Id | prn_ou_id | BIGINT | X |  | F |  | FK đến đơn vị cha (Units) | NHNCK.Units |  |  |
+| 9 | Parent Organization Unit Code | prn_ou_code | STRING | X |  |  |  | Mã đơn vị cha | NHNCK.Units |  |  |
+| 10 | Sort Order | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp | NHNCK.Units |  |  |
 
 
 #### 2.{IDX}.28.1 Constraint
@@ -1457,18 +1457,18 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Organization Unit Id | ou_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK | Departments |  | PK surrogate. BCV: "Organization" (Involved Party). Phòng ban thuộc đơn vị UBCK. |
-| 2 | Organization Unit Code | ou_code | STRING |  |  |  |  | Mã phòng ban. BK | NHNCK | Departments | DepartmentCode | BK chính. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Departments |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
-| 4 | Organization Unit Type Code | ou_tp_code | STRING |  |  |  |  | Phân loại — Phòng ban (Department) | NHNCK | Departments |  |  |
-| 5 | Organization Unit Name | ou_nm | STRING | X |  |  |  | Tên phòng ban | NHNCK | Departments | DepartmentName |  |
-| 6 | Organization Unit Description | ou_dsc | STRING | X |  |  |  | Mô tả | NHNCK | Departments | Description |  |
-| 7 | Organization Unit Status Code | ou_st_code | STRING | X |  |  |  | Trạng thái | NHNCK | Departments | Status | Scheme: ORGANIZATION_UNIT_STATUS. |
-| 8 | Parent Organization Unit Id | prn_ou_id | BIGINT | X |  | F |  | FK đến đơn vị cha (Units) | NHNCK | Departments | UnitId | FK target: Regulatory Authority Organization Unit.Organization Unit Id. |
-| 9 | Parent Organization Unit Code | prn_ou_code | STRING | X |  |  |  | Mã đơn vị cha | NHNCK | Departments | UnitId | Lookup pair: Regulatory Authority Organization Unit.Organization Unit Code. Pair with Parent Organization Unit Id. |
-| 10 | Sort Order | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp | NHNCK | Departments | SortOrder |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Organization Unit Id | ou_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) | NHNCK.Departments |  | PK surrogate. BCV: "Organization" (Involved Party). Phòng ban thuộc đơn vị UBCK. |
+| 2 | Organization Unit Code | ou_code | STRING |  |  |  |  | Mã phòng ban. BK | NHNCK.Departments | DepartmentCode | BK chính. |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Departments' | Mã nguồn dữ liệu | NHNCK.Departments |  | Scheme: SOURCE_SYSTEM. BK. Hardcode. |
+| 4 | Organization Unit Type Code | ou_tp_code | STRING |  |  |  |  | Phân loại — Phòng ban (Department) | NHNCK.Departments |  |  |
+| 5 | Organization Unit Name | ou_nm | STRING | X |  |  |  | Tên phòng ban | NHNCK.Departments | DepartmentName |  |
+| 6 | Organization Unit Description | ou_dsc | STRING | X |  |  |  | Mô tả | NHNCK.Departments | Description |  |
+| 7 | Organization Unit Status Code | ou_st_code | STRING | X |  |  |  | Trạng thái | NHNCK.Departments | Status | Scheme: ORGANIZATION_UNIT_STATUS. |
+| 8 | Parent Organization Unit Id | prn_ou_id | BIGINT | X |  | F |  | FK đến đơn vị cha (Units) | NHNCK.Departments | UnitId |  |
+| 9 | Parent Organization Unit Code | prn_ou_code | STRING | X |  |  |  | Mã đơn vị cha | NHNCK.Departments | UnitId |  |
+| 10 | Sort Order | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp | NHNCK.Departments | SortOrder |  |
 
 
 #### 2.{IDX}.29.1 Constraint
@@ -1499,20 +1499,20 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK | Organizations | Id | FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng. |
-| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK | Organizations | Id | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Organizations |  |  |
-| 4 | Address Type Code | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính | NHNCK | Organizations |  |  |
-| 5 | Address Value | adr_val | STRING | X |  |  |  | Địa chỉ tổ chức | NHNCK | Organizations | Address |  |
-| 6 | Province Id | prov_id | BIGINT | X |  | F |  | FK đến tỉnh/thành phố trụ sở. | NHNCK | Organizations |  | FK target: Geographic Area.Geographic Area Id. Lookup: DM_TINH_THANH. |
-| 7 | Province Code | prov_code | STRING | X |  |  |  | Mã tỉnh/thành (provinces). | NHNCK | Organizations |  | Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id. // Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS. |
-| 8 | District Name | dstc_nm | STRING | X |  |  |  | Quận/huyện trụ sở. | NHNCK | Organizations |  | Text denormalized — không có bảng lookup quận/huyện trong scope. |
-| 9 | Ward Name | ward_nm | STRING | X |  |  |  | Phường/xã trụ sở. | NHNCK | Organizations |  | Text denormalized. |
-| 10 | Geographic Area Id | geo_id | BIGINT | X |  | F |  | FK đến tỉnh/thành phố đặt trụ sở chi nhánh. | NHNCK | Organizations |  | FK target: Geographic Area.Geographic Area Id. |
-| 11 | Geographic Area Code | geo_code | STRING | X |  |  |  | Mã tỉnh/thành phố đặt trụ sở chi nhánh. | NHNCK | Organizations |  | Lookup pair: Geographic Area.Geographic Area Code. Pair with Geographic Area Id. |
-| 12 | Address Detail | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. | NHNCK | Organizations |  | Text tự do — denormalized. |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK.Organizations | Id |  |
+| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK.Organizations | Id |  |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Organizations' | Mã nguồn dữ liệu | NHNCK.Organizations |  |  |
+| 4 | Address Type Code | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính | NHNCK.Organizations |  |  |
+| 5 | Address Value | adr_val | STRING | X |  |  |  | Địa chỉ tổ chức | NHNCK.Organizations | Address |  |
+| 6 | Province Id | prov_id | BIGINT | X |  | F |  | FK đến tỉnh/thành phố trụ sở. | NHNCK.Organizations |  |  |
+| 7 | Province Code | prov_code | STRING | X |  |  |  | Mã tỉnh/thành (provinces). | NHNCK.Organizations |  |  |
+| 8 | District Name | dstc_nm | STRING | X |  |  |  | Quận/huyện trụ sở. | NHNCK.Organizations |  |  |
+| 9 | Ward Name | ward_nm | STRING | X |  |  |  | Phường/xã trụ sở. | NHNCK.Organizations |  |  |
+| 10 | Geographic Area Id | geo_id | BIGINT | X |  | F |  | FK đến tỉnh/thành phố đặt trụ sở chi nhánh. | NHNCK.Organizations |  |  |
+| 11 | Geographic Area Code | geo_code | STRING | X |  |  |  | Mã tỉnh/thành phố đặt trụ sở chi nhánh. | NHNCK.Organizations |  |  |
+| 12 | Address Detail | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. | NHNCK.Organizations |  |  |
 
 
 #### 2.{IDX}.30.1 Constraint
@@ -1542,28 +1542,28 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK | Organizations | Id | FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng. |
-| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK | Organizations | Id | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Organizations |  |  |
-| 4 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email | NHNCK | Organizations |  |  |
-| 5 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Email | NHNCK | Organizations | Email |  |
-| 6 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK | Organizations | Id | FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng. |
-| 7 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK | Organizations | Id | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id. |
-| 8 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Organizations |  |  |
-| 9 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax | NHNCK | Organizations |  |  |
-| 10 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Fax | NHNCK | Organizations | Fax |  |
-| 11 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK | Organizations | Id | FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng. |
-| 12 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK | Organizations | Id | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id. |
-| 13 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Organizations |  |  |
-| 14 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — số di động | NHNCK | Organizations |  |  |
-| 15 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Số di động | NHNCK | Organizations | MobileNumber |  |
-| 16 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK | Organizations | Id | FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng. |
-| 17 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK | Organizations | Id | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id. |
-| 18 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Organizations |  |  |
-| 19 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại | NHNCK | Organizations |  |  |
-| 20 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Số điện thoại | NHNCK | Organizations | PhoneNumber |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK.Organizations | Id |  |
+| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK.Organizations | Id |  |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Organizations' | Mã nguồn dữ liệu | NHNCK.Organizations |  |  |
+| 4 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email | NHNCK.Organizations |  |  |
+| 5 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Email | NHNCK.Organizations | Email |  |
+| 6 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK.Organizations | Id |  |
+| 7 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK.Organizations | Id |  |
+| 8 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Organizations' | Mã nguồn dữ liệu | NHNCK.Organizations |  |  |
+| 9 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax | NHNCK.Organizations |  |  |
+| 10 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Fax | NHNCK.Organizations | Fax |  |
+| 11 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK.Organizations | Id |  |
+| 12 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK.Organizations | Id |  |
+| 13 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Organizations' | Mã nguồn dữ liệu | NHNCK.Organizations |  |  |
+| 14 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — số di động | NHNCK.Organizations |  |  |
+| 15 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Số di động | NHNCK.Organizations | MobileNumber |  |
+| 16 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK.Organizations | Id |  |
+| 17 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK.Organizations | Id |  |
+| 18 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Organizations' | Mã nguồn dữ liệu | NHNCK.Organizations |  |  |
+| 19 | Electronic Address Type Code | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại | NHNCK.Organizations |  |  |
+| 20 | Electronic Address Value | elc_adr_val | STRING | X |  |  |  | Số điện thoại | NHNCK.Organizations | PhoneNumber |  |
 
 
 #### 2.{IDX}.31.1 Constraint
@@ -1591,15 +1591,15 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK | Organizations | Id | FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng. |
-| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK | Organizations | Id | Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id. |
-| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK' | Mã nguồn dữ liệu | NHNCK | Organizations |  |  |
-| 4 | Identification Type Code | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ — Số giấy phép hoạt động | NHNCK | Organizations |  |  |
-| 5 | Identification Number | identn_nbr | STRING | X |  |  |  | Số giấy phép hoạt động | NHNCK | Organizations | LicenseNumber |  |
-| 6 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày cấp giấy phép | NHNCK | Organizations | LicenseDate |  |
-| 7 | Issuing Authority Name | issuing_ahr_nm | STRING | X |  |  |  | Cơ quan cấp giấy phép | NHNCK | Organizations | LicenseIssuer |  |
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Involved Party Id | ip_id | BIGINT |  |  | F |  | FK đến Securities Organization Reference | NHNCK.Organizations | Id |  |
+| 2 | Involved Party Code | ip_code | STRING |  |  |  |  | Mã tổ chức | NHNCK.Organizations | Id |  |
+| 3 | Source System Code | src_stm_code | STRING |  |  |  | 'NHNCK.Organizations' | Mã nguồn dữ liệu | NHNCK.Organizations |  |  |
+| 4 | Identification Type Code | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ — Số giấy phép hoạt động | NHNCK.Organizations |  |  |
+| 5 | Identification Number | identn_nbr | STRING | X |  |  |  | Số giấy phép hoạt động | NHNCK.Organizations | LicenseNumber |  |
+| 6 | Issue Date | issu_dt | DATE | X |  |  |  | Ngày cấp giấy phép | NHNCK.Organizations | LicenseDate |  |
+| 7 | Issuing Authority Name | issuing_ahr_nm | STRING | X |  |  |  | Cơ quan cấp giấy phép | NHNCK.Organizations | LicenseIssuer |  |
 
 
 #### 2.{IDX}.32.1 Constraint

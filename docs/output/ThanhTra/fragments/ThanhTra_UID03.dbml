@@ -6,38 +6,38 @@ Project ThanhTra_UID03 {
 }
 
 Table "Complaint Petition" [note: "Đơn thư khiếu nại/tố cáo/phản ánh/kiến nghị nhận từ công dân hoặc tổ chức. Khởi đầu quy trình giải quyết đơn thư."] {
-  complaint_petition_id bigint [pk]
+  "Complaint Petition Id" varchar [pk]
 }
 
 Table "Complaint Processing Case" [note: "Hồ sơ giải quyết đơn thư khiếu nại/tố cáo. FK → Complaint Petition."] {
-  complaint_processing_case_id bigint [pk]
-  complaint_petition_id bigint
+  "Complaint Processing Case Id" varchar [pk]
+  "Complaint Petition Id" varchar
 }
 
 Table "Complaint Processing Case Document Attachment" [note: "Văn bản đính kèm hồ sơ giải quyết đơn thư. FK → Complaint Processing Case."] {
-  complaint_processing_case_document_attachment_id bigint [pk]
-  complaint_processing_case_id bigint
+  "Complaint Processing Case Document Attachment Id" varchar [pk]
+  "Complaint Processing Case Id" varchar
 }
 
 Table "Complaint Processing Conclusion" [note: "Kết luận giải quyết đơn thư. FK → Complaint Processing Case."] {
-  complaint_processing_conclusion_id bigint [pk]
-  complaint_processing_case_id bigint
+  "Complaint Processing Conclusion Id" varchar [pk]
+  "Complaint Processing Case Id" varchar
 }
 
 Table "Complaint Enforcement Decision" [note: "Văn bản xử lý / quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Processing Case."] {
-  complaint_enforcement_decision_id bigint [pk]
-  complaint_processing_case_id bigint
+  "Complaint Enforcement Decision Id" varchar [pk]
+  "Complaint Processing Case Id" varchar
 }
 
 Table "Complaint Penalty Announcement" [note: "Công bố quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Enforcement Decision."] {
-  complaint_penalty_announcement_id bigint [pk]
-  complaint_processing_case_id bigint
-  complaint_enforcement_decision_id bigint
+  "Complaint Penalty Announcement Id" varchar [pk]
+  "Complaint Processing Case Id" varchar
+  "Complaint Enforcement Decision Id" varchar
 }
 
-Ref: "Complaint Processing Case".complaint_petition_id > "Complaint Petition".complaint_petition_id
-Ref: "Complaint Processing Case Document Attachment".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
-Ref: "Complaint Processing Conclusion".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
-Ref: "Complaint Enforcement Decision".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
-Ref: "Complaint Penalty Announcement".complaint_processing_case_id > "Complaint Processing Case".complaint_processing_case_id
-Ref: "Complaint Penalty Announcement".complaint_enforcement_decision_id > "Complaint Enforcement Decision".complaint_enforcement_decision_id
+Ref: "Complaint Processing Case"."Complaint Petition Id" > "Complaint Petition"."Complaint Petition Id"
+Ref: "Complaint Processing Case Document Attachment"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
+Ref: "Complaint Processing Conclusion"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
+Ref: "Complaint Enforcement Decision"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
+Ref: "Complaint Penalty Announcement"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
+Ref: "Complaint Penalty Announcement"."Complaint Enforcement Decision Id" > "Complaint Enforcement Decision"."Complaint Enforcement Decision Id"

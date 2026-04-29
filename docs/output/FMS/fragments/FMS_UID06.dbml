@@ -6,20 +6,20 @@ Project FMS_UID06 {
 }
 
 Table "Member Rating Period" [note: "Kỳ đánh giá xếp loại định kỳ cho các thành viên thị trường (công ty quản lý quỹ). Xác định phạm vi thời gian áp dụng tiêu chí chấm điểm."] {
-  member_rating_period_id bigint [pk]
+  "Member Rating Period Id" varchar [pk]
 }
 
 Table "Member Rating" [note: "Kết quả xếp loại của một công ty quản lý quỹ trong một kỳ đánh giá. Ghi nhận điểm tổng hợp và hạng xếp loại."] {
-  member_rating_id bigint [pk]
-  fund_management_company_id bigint
-  member_rating_period_id bigint
+  "Member Rating Id" varchar [pk]
+  "Fund Management Company Id" varchar
+  "Member Rating Period Id" varchar
 }
 
 Table "Rating Criterion" [note: "Tiêu chí chấm điểm đánh giá xếp loại thành viên thị trường. Lưu tên tiêu chí và điểm tối đa/trọng số. Có cấu trúc cha/con."] {
-  rating_criterion_id bigint [pk]
-  parent_rating_criterion_id bigint
+  "Rating Criterion Id" varchar [pk]
+  "Parent Rating Criterion Id" varchar
 }
 
-// Ref: "Member Rating".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
-Ref: "Member Rating".member_rating_period_id > "Member Rating Period".member_rating_period_id
-Ref: "Rating Criterion".parent_rating_criterion_id > "Rating Criterion".rating_criterion_id
+// Ref: "Member Rating"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
+Ref: "Member Rating"."Member Rating Period Id" > "Member Rating Period"."Member Rating Period Id"
+Ref: "Rating Criterion"."Parent Rating Criterion Id" > "Rating Criterion"."Rating Criterion Id"

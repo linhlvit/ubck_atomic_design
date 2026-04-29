@@ -6,8 +6,8 @@ Project NHNCK_UID01 {
 }
 
 Table "Regulatory Authority Organization Unit" [note: "Đơn vị/phòng ban thuộc UBCKNN. Cấu trúc phân cấp gộp Units và Departments."] {
-  organization_unit_id bigint [pk]
-  parent_organization_unit_id bigint
+  "Organization Unit Id" varchar [pk]
+  "Parent Organization Unit Id" varchar
 }
 
-Ref: "Regulatory Authority Organization Unit".parent_organization_unit_id > "Regulatory Authority Organization Unit".organization_unit_id
+Ref: "Regulatory Authority Organization Unit"."Parent Organization Unit Id" > "Regulatory Authority Organization Unit"."Organization Unit Id"

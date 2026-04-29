@@ -6,171 +6,168 @@ Project SCMS {
 }
 
 Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  securities_company_id bigint [pk]
-  country_of_registration_id bigint
+  "Securities Company Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
 Table "Audit Firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
-  audit_firm_id bigint [pk]
+  "Audit Firm Id" varchar [pk]
 }
 
 Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Foreign Representative Office" [note: "Văn phòng đại diện của công ty chứng khoán nước ngoài tại Việt Nam. Pháp nhân độc lập, không FK đến CTCK trong nước."] {
-  foreign_representative_office_id bigint [pk]
-  nationality_id bigint
+  "Foreign Representative Office Id" varchar [pk]
+  "Nationality Id" varchar
 }
 
 Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  geographic_area_id bigint [pk]
+  "Geographic Area Id" varchar [pk]
 }
 
 Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  report_template_id bigint [pk]
+  "Report Template Id" varchar [pk]
 }
 
 Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  involved_party_id bigint
-  province_id bigint
-  geographic_area_id bigint
+  "Involved Party Id" varchar
+  "Province Id" varchar
+  "Geographic Area Id" varchar
 }
 
 Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  involved_party_id bigint
-  involved_party_id bigint
-  involved_party_id bigint
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Securities Company Organization Unit" [note: "Đơn vị trực thuộc CTCK: chi nhánh, văn phòng đại diện, phòng giao dịch. Cấu trúc self-join qua parent_org_unit_id."] {
-  securities_company_organization_unit_id bigint [pk]
-  securities_company_id bigint
-  parent_organization_unit_id bigint
+  "Securities Company Organization Unit Id" varchar [pk]
+  "Securities Company Id" varchar
+  "Parent Organization Unit Id" varchar
 }
 
 Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
-  practitioner_id bigint [pk]
-  country_of_residence_geographic_area_id bigint
-  securities_company_id bigint
+  "Practitioner Id" varchar [pk]
+  "Country of Residence Geographic Area Id" varchar
+  "Securities Company Id" varchar
 }
 
 Table "Securities Company Senior Personnel" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
-  securities_company_senior_personnel_id bigint [pk]
-  securities_company_id bigint
-  organization_unit_id bigint
-  nationality_id bigint
+  "Securities Company Senior Personnel Id" varchar [pk]
+  "Securities Company Id" varchar
+  "Organization Unit Id" varchar
+  "Nationality Id" varchar
 }
 
 Table "Securities Company Shareholder" [note: "Cổ đông của CTCK - cá nhân hoặc tổ chức. Ghi nhận tỷ lệ sở hữu và số lượng cổ phần."] {
-  securities_company_shareholder_id bigint [pk]
-  securities_company_id bigint
-  nationality_id bigint
+  "Securities Company Shareholder Id" varchar [pk]
+  "Securities Company Id" varchar
+  "Nationality Id" varchar
 }
 
 Table "Audit Firm Practitioner" [note: "Kiểm toán viên thuộc công ty kiểm toán. Ghi nhận chứng chỉ kiểm toán và trạng thái hành nghề."] {
-  audit_firm_practitioner_id bigint [pk]
-  audit_firm_id bigint
+  "Audit Firm Practitioner Id" varchar [pk]
+  "Audit Firm Id" varchar
 }
 
 Table "Report Template Sheet" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Template Row" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Template Column" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Submission Schedule" [note: "Lịch định kỳ gửi báo cáo theo biểu mẫu (hàng ngày/tuần/tháng/quý/năm). Xác định tần suất nghĩa vụ nộp báo cáo."] {
-  report_submission_schedule_id bigint [pk]
-  report_template_id bigint
+  "Report Submission Schedule Id" varchar [pk]
+  "Report Template Id" varchar
 }
 
 Table "Report Indicator" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Template Indicator" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Submission Obligation" [note: "Nghĩa vụ gửi báo cáo của từng CTCK theo định kỳ cụ thể. Xác định đơn vị nào phải nộp biểu mẫu nào theo lịch nào."] {
-  report_submission_obligation_id bigint [pk]
-  report_submission_schedule_id bigint
-  securities_company_id bigint
+  "Report Submission Obligation Id" varchar [pk]
+  "Report Submission Schedule Id" varchar
+  "Securities Company Id" varchar
 }
 
 Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
-  member_periodic_report_id bigint [pk]
-  fund_management_company_id bigint
-  investment_fund_id bigint
-  custodian_bank_id bigint
-  foreign_fund_management_organization_unit_id bigint
-  report_template_id bigint
-  reporting_period_id bigint
-  securities_company_id bigint
-  report_submission_schedule_id bigint
+  "Member Periodic Report Id" varchar [pk]
+  "Fund Management Company Id" varchar
+  "Investment Fund Id" varchar
+  "Custodian Bank Id" varchar
+  "Foreign Fund Management Organization Unit Id" varchar
+  "Report Template Id" varchar
+  "Reporting Period Id" varchar
+  "Securities Company Id" varchar
+  "Report Submission Schedule Id" varchar
 }
 
 Table "Securities Company Report Violation" [note: "Vi phạm nộp báo cáo định kỳ của CTCK. Ghi nhận loại vi phạm và thông tin xử lý."] {
-  securities_company_report_violation_id bigint [pk]
-  securities_company_id bigint
+  "Securities Company Report Violation Id" varchar [pk]
+  "Securities Company Id" varchar
 }
 
 Table "Securities Company Administrative Penalty" [note: "Quyết định xử lý hành chính đối với CTCK. Ghi nhận hành vi vi phạm và quyết định xử phạt."] {
-  securities_company_administrative_penalty_id bigint [pk]
-  securities_company_id bigint
+  "Securities Company Administrative Penalty Id" varchar [pk]
+  "Securities Company Id" varchar
 }
 
 Table "Disclosure Report Submission" [note: "Báo cáo công bố thông tin do CTCK nộp lên UBCKNN theo yêu cầu minh bạch thị trường."] {
-  disclosure_report_submission_id bigint [pk]
-  securities_company_id bigint
+  "Disclosure Report Submission Id" varchar [pk]
+  "Securities Company Id" varchar
 }
 
 Table "Disclosure Securities Offering" [note: "Thông tin chào bán chứng khoán được công bố bởi CTCK. Ghi nhận loại chứng khoán và điều kiện chào bán."] {
-  disclosure_securities_offering_id bigint [pk]
-  securities_company_id bigint
+  "Disclosure Securities Offering Id" varchar [pk]
+  "Securities Company Id" varchar
 }
 
 Table "Disclosure Shareholder Change" [note: "Thông tin thay đổi cổ đông được công bố bởi CTCK. Ghi nhận cổ đông và tỷ lệ sở hữu thay đổi."] {
-  disclosure_shareholder_change_id bigint [pk]
-  securities_company_id bigint
+  "Disclosure Shareholder Change Id" varchar [pk]
+  "Securities Company Id" varchar
 }
 
 Table "Member Report Indicator Value" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
-  member_report_indicator_value_id bigint [pk]
-  report_template_id bigint
-  securities_company_id bigint
-  report_template_sheet_id bigint
-  report_template_row_id bigint
-  report_template_column_id bigint
-  member_periodic_report_id bigint
-  report_template_indicator_id bigint
-  report_indicator_id bigint
+  "Member Report Indicator Value Id" varchar [pk]
+  "Report Template Id" varchar
+  "Securities Company Id" varchar
+  "Report Template Sheet Id" varchar
+  "Report Template Row Id" varchar
+  "Report Template Column Id" varchar
+  "Member Periodic Report Id" varchar
+  "Report Template Indicator Id" varchar
+  "Report Indicator Id" varchar
 }
 
 Table "Securities Company Shareholder Transfer" [note: "Giao dịch chuyển nhượng cổ phần giữa hai cổ đông của CTCK. Ghi nhận bên chuyển/nhận, số lượng và tỷ lệ chuyển nhượng."] {
-  securities_company_shareholder_transfer_id bigint [pk]
-  securities_company_id bigint
-  from_shareholder_id bigint
-  to_shareholder_id bigint
+  "Securities Company Shareholder Transfer Id" varchar [pk]
+  "Securities Company Id" varchar
+  "From Shareholder Id" varchar
+  "To Shareholder Id" varchar
 }
 
 Table "Securities Company Shareholder Representative" [note: "Người đại diện được ủy quyền bởi cổ đông của CTCK. Ghi nhận chức vụ và số lượng cổ phần đại diện."] {
-  securities_company_shareholder_representative_id bigint [pk]
-  securities_company_shareholder_id bigint
-  securities_company_id bigint
+  "Securities Company Shareholder Representative Id" varchar [pk]
+  "Securities Company Shareholder Id" varchar
+  "Securities Company Id" varchar
 }
 
 Table "Securities Company Shareholder Related Party" [note: "Người có quan hệ gia đình hoặc công tác với cổ đông của CTCK. Ghi nhận loại quan hệ và nơi làm việc."] {
-  securities_company_shareholder_related_party_id bigint [pk]
-  securities_company_shareholder_id bigint
-  securities_company_id bigint
+  "Securities Company Shareholder Related Party Id" varchar [pk]
+  "Securities Company Shareholder Id" varchar
+  "Securities Company Id" varchar
 }
 
 TableGroup "UID01 — Quản lý CTCK" {
@@ -243,65 +240,65 @@ TableGroup "UID08 — Quản trị phân hệ" {
   "Report Submission Obligation"
 }
 
-Ref: "Securities Company".country_of_registration_id > "Geographic Area".geographic_area_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm".audit_firm_id
-Ref: "Foreign Representative Office".nationality_id > "Geographic Area".geographic_area_id
-Ref: "Involved Party Postal Address".involved_party_id > "Securities Company".securities_company_id
-Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id
-Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company".securities_company_id
-Ref: "Securities Company Organization Unit".securities_company_id > "Securities Company".securities_company_id
-Ref: "Securities Company Organization Unit".parent_organization_unit_id > "Securities Company Organization Unit".securities_company_organization_unit_id
-Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Organization Unit".securities_company_organization_unit_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company Organization Unit".securities_company_organization_unit_id
-Ref: "Securities Practitioner".country_of_residence_geographic_area_id > "Geographic Area".geographic_area_id
-Ref: "Securities Practitioner".securities_company_id > "Securities Company".securities_company_id
-// Ref: "Involved Party Alternative Identification".involved_party_id > "Practitioner".practitioner_id // out-of-source
-Ref: "Securities Company Senior Personnel".securities_company_id > "Securities Company".securities_company_id
-Ref: "Securities Company Senior Personnel".organization_unit_id > "Securities Company Organization Unit".securities_company_organization_unit_id
-Ref: "Securities Company Senior Personnel".nationality_id > "Geographic Area".geographic_area_id
-Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Senior Personnel".securities_company_senior_personnel_id
-Ref: "Securities Company Shareholder".securities_company_id > "Securities Company".securities_company_id
-Ref: "Securities Company Shareholder".nationality_id > "Geographic Area".geographic_area_id
-Ref: "Involved Party Postal Address".involved_party_id > "Securities Company Shareholder".securities_company_shareholder_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder".securities_company_shareholder_id
-Ref: "Audit Firm Practitioner".audit_firm_id > "Audit Firm".audit_firm_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm Practitioner".audit_firm_practitioner_id
-Ref: "Report Submission Schedule".report_template_id > "Report Template".report_template_id
-Ref: "Report Submission Obligation".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id
-Ref: "Report Submission Obligation".securities_company_id > "Securities Company".securities_company_id
-// Ref: "Member Periodic Report".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
-// Ref: "Member Periodic Report".investment_fund_id > "Investment Fund".investment_fund_id // out-of-source
-// Ref: "Member Periodic Report".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
-// Ref: "Member Periodic Report".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id // out-of-source
-Ref: "Member Periodic Report".report_template_id > "Report Template".report_template_id
-// Ref: "Member Periodic Report".reporting_period_id > "Reporting Period".reporting_period_id // out-of-source
-Ref: "Member Periodic Report".securities_company_id > "Securities Company".securities_company_id
-Ref: "Member Periodic Report".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id
-Ref: "Securities Company Report Violation".securities_company_id > "Securities Company".securities_company_id
-Ref: "Securities Company Administrative Penalty".securities_company_id > "Securities Company".securities_company_id
-Ref: "Disclosure Report Submission".securities_company_id > "Securities Company".securities_company_id
-Ref: "Disclosure Securities Offering".securities_company_id > "Securities Company".securities_company_id
-Ref: "Disclosure Shareholder Change".securities_company_id > "Securities Company".securities_company_id
-Ref: "Member Report Indicator Value".report_template_id > "Report Template".report_template_id
-Ref: "Member Report Indicator Value".securities_company_id > "Securities Company".securities_company_id
-Ref: "Member Report Indicator Value".report_template_sheet_id > "Report Template Sheet".report_template_sheet_id
-Ref: "Member Report Indicator Value".report_template_row_id > "Report Template Row".report_template_row_id
-Ref: "Member Report Indicator Value".report_template_column_id > "Report Template Column".report_template_column_id
-Ref: "Member Report Indicator Value".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
-Ref: "Member Report Indicator Value".report_template_indicator_id > "Report Template Indicator".report_template_indicator_id
-Ref: "Member Report Indicator Value".report_indicator_id > "Report Indicator".report_indicator_id
-Ref: "Securities Company Shareholder Transfer".securities_company_id > "Securities Company".securities_company_id
-Ref: "Securities Company Shareholder Transfer".from_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
-Ref: "Securities Company Shareholder Transfer".to_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
-Ref: "Securities Company Shareholder Representative".securities_company_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
-Ref: "Securities Company Shareholder Representative".securities_company_id > "Securities Company".securities_company_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder Representative".securities_company_shareholder_representative_id
-Ref: "Securities Company Shareholder Related Party".securities_company_shareholder_id > "Securities Company Shareholder".securities_company_shareholder_id
-Ref: "Securities Company Shareholder Related Party".securities_company_id > "Securities Company".securities_company_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company Shareholder Related Party".securities_company_shareholder_related_party_id
-Ref: "Involved Party Postal Address".involved_party_id > "Audit Firm".audit_firm_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm".audit_firm_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Company".securities_company_id
+Ref: "Securities Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Foreign Representative Office"."Nationality Id" > "Geographic Area"."Geographic Area Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company"."Securities Company Id"
+Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id"
+Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company"."Securities Company Id"
+Ref: "Securities Company Organization Unit"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Securities Company Organization Unit"."Parent Organization Unit Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
+Ref: "Securities Practitioner"."Country of Residence Geographic Area Id" > "Geographic Area"."Geographic Area Id"
+Ref: "Securities Practitioner"."Securities Company Id" > "Securities Company"."Securities Company Id"
+// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Practitioner"."Practitioner Id" // out-of-source
+Ref: "Securities Company Senior Personnel"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Securities Company Senior Personnel"."Organization Unit Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
+Ref: "Securities Company Senior Personnel"."Nationality Id" > "Geographic Area"."Geographic Area Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id"
+Ref: "Securities Company Shareholder"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Securities Company Shareholder"."Nationality Id" > "Geographic Area"."Geographic Area Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
+Ref: "Audit Firm Practitioner"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm Practitioner"."Audit Firm Practitioner Id"
+Ref: "Report Submission Schedule"."Report Template Id" > "Report Template"."Report Template Id"
+Ref: "Report Submission Obligation"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id"
+Ref: "Report Submission Obligation"."Securities Company Id" > "Securities Company"."Securities Company Id"
+// Ref: "Member Periodic Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
+// Ref: "Member Periodic Report"."Investment Fund Id" > "Investment Fund"."Investment Fund Id" // out-of-source
+// Ref: "Member Periodic Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
+// Ref: "Member Periodic Report"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id" // out-of-source
+Ref: "Member Periodic Report"."Report Template Id" > "Report Template"."Report Template Id"
+// Ref: "Member Periodic Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id" // out-of-source
+Ref: "Member Periodic Report"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Member Periodic Report"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id"
+Ref: "Securities Company Report Violation"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Securities Company Administrative Penalty"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Disclosure Report Submission"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Disclosure Securities Offering"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Disclosure Shareholder Change"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Member Report Indicator Value"."Report Template Id" > "Report Template"."Report Template Id"
+Ref: "Member Report Indicator Value"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Member Report Indicator Value"."Report Template Sheet Id" > "Report Template Sheet"."Report Template Sheet Id"
+Ref: "Member Report Indicator Value"."Report Template Row Id" > "Report Template Row"."Report Template Row Id"
+Ref: "Member Report Indicator Value"."Report Template Column Id" > "Report Template Column"."Report Template Column Id"
+Ref: "Member Report Indicator Value"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
+Ref: "Member Report Indicator Value"."Report Template Indicator Id" > "Report Template Indicator"."Report Template Indicator Id"
+Ref: "Member Report Indicator Value"."Report Indicator Id" > "Report Indicator"."Report Indicator Id"
+Ref: "Securities Company Shareholder Transfer"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Securities Company Shareholder Transfer"."From Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
+Ref: "Securities Company Shareholder Transfer"."To Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
+Ref: "Securities Company Shareholder Representative"."Securities Company Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
+Ref: "Securities Company Shareholder Representative"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder Representative"."Securities Company Shareholder Representative Id"
+Ref: "Securities Company Shareholder Related Party"."Securities Company Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
+Ref: "Securities Company Shareholder Related Party"."Securities Company Id" > "Securities Company"."Securities Company Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder Related Party"."Securities Company Shareholder Related Party Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company"."Securities Company Id"

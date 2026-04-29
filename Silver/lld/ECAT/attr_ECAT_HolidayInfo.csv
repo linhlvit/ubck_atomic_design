@@ -1,0 +1,6 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Calendar Date Id,"Khóa ngày dương lịch dạng số nguyên yyyymmdd (ví dụ: 20250429). ETL sinh dense cho toàn bộ khoảng thời gian hệ thống theo dõi.",Small Counter,false,true,approved,,PK dạng yyyymmdd — tiện join và partition trực tiếp mà không cần surrogate số tuần tự.,,
+Calendar Date,Ngày dương lịch (duy nhất). BK của entity.,Date,false,false,approved,,"BK nghiệp vụ — unique. ETL tự sinh mọi ngày. Không phụ thuộc ECAT_29 về danh sách ngày. BCV Term: Day Of Calendar Year (Time Period).",,ETL generated (dense)
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,approved,,,SOURCE_SYSTEM=ECAT.ECAT_29_HolidayInfo,
+Holiday Flag,"Cờ ngày nghỉ lễ công cộng. Mặc định = false; set = true nếu ngày có trong ECAT_29_HolidayInfo.",Boolean,false,false,approved,ECAT.ECAT_29_HolidayInfo.calendar_date,"BCV Term: Public Holiday Flag. ETL merge: nếu calendar_date match ngày trong ECAT_29 → true, ngược lại → false.",, false
+Holiday Name,"Tên ngày lễ (ví dụ: Tết Dương lịch, Quốc khánh). NULL nếu không phải ngày nghỉ công cộng.",Text,true,false,approved,ECAT.ECAT_29_HolidayInfo.holiday_name,,,

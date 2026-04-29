@@ -6,44 +6,44 @@ Project SCMS_UID08 {
 }
 
 Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  geographic_area_id bigint [pk]
+  "Geographic Area Id" varchar [pk]
 }
 
 Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  report_template_id bigint [pk]
+  "Report Template Id" varchar [pk]
 }
 
 Table "Report Template Sheet" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Template Row" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Template Column" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Submission Schedule" [note: "Lịch định kỳ gửi báo cáo theo biểu mẫu (hàng ngày/tuần/tháng/quý/năm). Xác định tần suất nghĩa vụ nộp báo cáo."] {
-  report_submission_schedule_id bigint [pk]
-  report_template_id bigint
+  "Report Submission Schedule Id" varchar [pk]
+  "Report Template Id" varchar
 }
 
 Table "Report Indicator" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Template Indicator" [note: ""] {
-  _id bigint
+  "_id" bigint
 }
 
 Table "Report Submission Obligation" [note: "Nghĩa vụ gửi báo cáo của từng CTCK theo định kỳ cụ thể. Xác định đơn vị nào phải nộp biểu mẫu nào theo lịch nào."] {
-  report_submission_obligation_id bigint [pk]
-  report_submission_schedule_id bigint
-  securities_company_id bigint
+  "Report Submission Obligation Id" varchar [pk]
+  "Report Submission Schedule Id" varchar
+  "Securities Company Id" varchar
 }
 
-Ref: "Report Submission Schedule".report_template_id > "Report Template".report_template_id
-Ref: "Report Submission Obligation".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id
-// Ref: "Report Submission Obligation".securities_company_id > "Securities Company".securities_company_id // out-of-source
+Ref: "Report Submission Schedule"."Report Template Id" > "Report Template"."Report Template Id"
+Ref: "Report Submission Obligation"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id"
+// Ref: "Report Submission Obligation"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source

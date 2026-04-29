@@ -332,9 +332,9 @@ def _post_process_docx(docx_path: Path) -> None:
     # Column widths (twips) cho các loại bảng theo số cột — lấy từ template UBCK
     # 4 cột: STT | Thực thể | Tên bảng | Mô tả
     _COL_WIDTHS_4 = [643, 3132, 2700, 6570]
-    # 13 cột: STT | Tên trường | Tên cột | Kiểu DL | Nullable | Unique | P/F Key | Mặc định | Mô tả | HT nguồn | Schema.Table | Source Field | ETL Rules
-    # Template có 12 cột (không có "Tên cột"), bổ sung cột "Tên cột" ~ 1000 twips, scale lại
-    _COL_WIDTHS_13 = [720, 1440, 1000, 1114, 720, 720, 720, 990, 1800, 1440, 1170, 1440, 2520]
+    # 12 cột: STT | Tên trường | Tên cột | Kiểu DL | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field | ETL Rules
+    # Cột "Tên cột" mở rộng (+1440 twips) thay cho cột "Hệ thống nguồn" đã bỏ
+    _COL_WIDTHS_12 = [720, 1440, 2440, 1114, 720, 720, 720, 990, 1800, 1170, 1440, 2520]
     # 2 cột PK: Tên trường | Tên cột
     _COL_WIDTHS_PK = [2700, 2700]
     # 5 cột FK: Tên trường | Tên cột | Bảng tham chiếu | Trường tham chiếu | Cột tham chiếu
@@ -398,8 +398,8 @@ def _post_process_docx(docx_path: Path) -> None:
         # Apply column widths theo số cột
         ncols = len(table.columns)
         header_texts = [c.text.strip() for c in table.rows[0].cells] if table.rows else []
-        if ncols == 13:
-            _apply_col_widths(table, _COL_WIDTHS_13)
+        if ncols == 12:
+            _apply_col_widths(table, _COL_WIDTHS_12)
         elif ncols == 5 and "Bảng tham chiếu" in header_texts:
             # FK table (5 cột: Tên trường | Tên cột | Bảng TK | Trường TK | Cột TK)
             _apply_col_widths(table, _COL_WIDTHS_FK)

@@ -6,16 +6,16 @@ Project FMS_UID03 {
 }
 
 Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  fund_management_company_id bigint [pk]
-  country_of_registration_id bigint
+  "Fund Management Company Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
 Table "Foreign Fund Management Organization Unit Staff" [note: "Nhân sự đảm nhận chức vụ tại văn phòng đại diện/chi nhánh công ty quản lý quỹ nước ngoài. Ghi nhận vai trò và tư cách pháp lý."] {
-  foreign_fund_management_organization_unit_staff_id bigint [pk]
-  foreign_fund_management_organization_unit_id bigint
-  fund_management_company_key_person_id bigint
+  "Foreign Fund Management Organization Unit Staff Id" varchar [pk]
+  "Foreign Fund Management Organization Unit Id" varchar
+  "Fund Management Company Key Person Id" varchar
 }
 
-// Ref: "Fund Management Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Foreign Fund Management Organization Unit Staff".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id // out-of-source
-// Ref: "Foreign Fund Management Organization Unit Staff".fund_management_company_key_person_id > "Fund Management Company Key Person".fund_management_company_key_person_id // out-of-source
+// Ref: "Fund Management Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Foreign Fund Management Organization Unit Staff"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id" // out-of-source
+// Ref: "Foreign Fund Management Organization Unit Staff"."Fund Management Company Key Person Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id" // out-of-source

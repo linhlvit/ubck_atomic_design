@@ -6,16 +6,16 @@ Project FIMS_UID01 {
 }
 
 Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  report_template_id bigint [pk]
+  "Report Template Id" varchar [pk]
 }
 
 Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  geographic_area_id bigint [pk]
+  "Geographic Area Id" varchar [pk]
 }
 
 Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
-  reporting_period_id bigint [pk]
-  report_template_id bigint
+  "Reporting Period Id" varchar [pk]
+  "Report Template Id" varchar
 }
 
-Ref: "Reporting Period".report_template_id > "Report Template".report_template_id
+Ref: "Reporting Period"."Report Template Id" > "Report Template"."Report Template Id"

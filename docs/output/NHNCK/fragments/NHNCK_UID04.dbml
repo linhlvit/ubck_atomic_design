@@ -6,10 +6,10 @@ Project NHNCK_UID04 {
 }
 
 Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
-  practitioner_id bigint [pk]
-  country_of_residence_geographic_area_id bigint
-  securities_company_id bigint
+  "Practitioner Id" varchar [pk]
+  "Country of Residence Geographic Area Id" varchar
+  "Securities Company Id" varchar
 }
 
-// Ref: "Securities Practitioner".country_of_residence_geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Securities Practitioner".securities_company_id > "Securities Company".securities_company_id // out-of-source
+// Ref: "Securities Practitioner"."Country of Residence Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Securities Practitioner"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source

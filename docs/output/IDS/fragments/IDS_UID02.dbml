@@ -6,36 +6,36 @@ Project IDS_UID02 {
 }
 
 Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  public_company_id bigint [pk]
+  "Public Company Id" varchar [pk]
 }
 
 Table "Public Company Capital Mobilization" [note: "Tăng vốn trước khi thành công ty đại chúng — tổng vốn cuối năm và hình thức tăng. Grain: 1 năm x 1 công ty. FK to Public Company."] {
-  public_company_capital_mobilization_id bigint [pk]
-  public_company_id bigint
+  "Public Company Capital Mobilization Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Capital Increase" [note: "Tăng vốn điều lệ sau khi thành công ty đại chúng — vốn cuối năm tài chính và số đợt tăng. FK to Public Company."] {
-  public_company_capital_increase_id bigint [pk]
-  public_company_id bigint
+  "Public Company Capital Increase Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Securities Offering" [note: "Hoạt động chào bán/phát hành chứng khoán — loại CK/kế hoạch/kết quả thực tế theo từng hình thức. FK to Public Company."] {
-  public_company_securities_offering_id bigint [pk]
-  public_company_id bigint
+  "Public Company Securities Offering Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Tender Offer" [note: "Chào mua công khai — bên chào mua/số lượng dự kiến/kết quả/tỷ lệ sở hữu trước-sau. FK to Public Company."] {
-  public_company_tender_offer_id bigint [pk]
-  public_company_id bigint
+  "Public Company Tender Offer Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Treasury Stock Activity" [note: "Giao dịch cổ phiếu quỹ theo năm — số lượng mua/bán và số đợt. FK to Public Company."] {
-  public_company_treasury_stock_activity_id bigint [pk]
-  public_company_id bigint
+  "Public Company Treasury Stock Activity Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
-Ref: "Public Company Capital Mobilization".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Capital Increase".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Securities Offering".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Tender Offer".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Treasury Stock Activity".public_company_id > "Public Company".public_company_id
+Ref: "Public Company Capital Mobilization"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Capital Increase"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Securities Offering"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Tender Offer"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Treasury Stock Activity"."Public Company Id" > "Public Company"."Public Company Id"

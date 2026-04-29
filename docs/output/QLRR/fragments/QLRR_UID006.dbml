@@ -6,8 +6,8 @@ Project QLRR_UID006 {
 }
 
 Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
-  risk_indicator_id bigint [pk]
-  risk_indicator_category_id bigint
+  "Risk Indicator Id" varchar [pk]
+  "Risk Indicator Category Id" varchar
 }
 
-// Ref: "Risk Indicator".risk_indicator_category_id > "Risk Indicator Category".risk_indicator_category_id // out-of-source
+// Ref: "Risk Indicator"."Risk Indicator Category Id" > "Risk Indicator Category"."Risk Indicator Category Id" // out-of-source

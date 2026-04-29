@@ -6,58 +6,58 @@ Project SCMS_UID03 {
 }
 
 Table "Foreign Representative Office" [note: "Văn phòng đại diện của công ty chứng khoán nước ngoài tại Việt Nam. Pháp nhân độc lập, không FK đến CTCK trong nước."] {
-  foreign_representative_office_id bigint [pk]
-  nationality_id bigint
+  "Foreign Representative Office Id" varchar [pk]
+  "Nationality Id" varchar
 }
 
 Table "Securities Company Senior Personnel" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
-  securities_company_senior_personnel_id bigint [pk]
-  securities_company_id bigint
-  organization_unit_id bigint
-  nationality_id bigint
+  "Securities Company Senior Personnel Id" varchar [pk]
+  "Securities Company Id" varchar
+  "Organization Unit Id" varchar
+  "Nationality Id" varchar
 }
 
 Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
-  member_periodic_report_id bigint [pk]
-  fund_management_company_id bigint
-  investment_fund_id bigint
-  custodian_bank_id bigint
-  foreign_fund_management_organization_unit_id bigint
-  report_template_id bigint
-  reporting_period_id bigint
-  securities_company_id bigint
-  report_submission_schedule_id bigint
+  "Member Periodic Report Id" varchar [pk]
+  "Fund Management Company Id" varchar
+  "Investment Fund Id" varchar
+  "Custodian Bank Id" varchar
+  "Foreign Fund Management Organization Unit Id" varchar
+  "Report Template Id" varchar
+  "Reporting Period Id" varchar
+  "Securities Company Id" varchar
+  "Report Submission Schedule Id" varchar
 }
 
 Table "Member Report Indicator Value" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
-  member_report_indicator_value_id bigint [pk]
-  report_template_id bigint
-  securities_company_id bigint
-  report_template_sheet_id bigint
-  report_template_row_id bigint
-  report_template_column_id bigint
-  member_periodic_report_id bigint
-  report_template_indicator_id bigint
-  report_indicator_id bigint
+  "Member Report Indicator Value Id" varchar [pk]
+  "Report Template Id" varchar
+  "Securities Company Id" varchar
+  "Report Template Sheet Id" varchar
+  "Report Template Row Id" varchar
+  "Report Template Column Id" varchar
+  "Member Periodic Report Id" varchar
+  "Report Template Indicator Id" varchar
+  "Report Indicator Id" varchar
 }
 
-// Ref: "Foreign Representative Office".nationality_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Securities Company Senior Personnel".securities_company_id > "Securities Company".securities_company_id // out-of-source
-// Ref: "Securities Company Senior Personnel".organization_unit_id > "Securities Company Organization Unit".securities_company_organization_unit_id // out-of-source
-// Ref: "Securities Company Senior Personnel".nationality_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Member Periodic Report".fund_management_company_id > "Fund Management Company".fund_management_company_id // out-of-source
-// Ref: "Member Periodic Report".investment_fund_id > "Investment Fund".investment_fund_id // out-of-source
-// Ref: "Member Periodic Report".custodian_bank_id > "Custodian Bank".custodian_bank_id // out-of-source
-// Ref: "Member Periodic Report".foreign_fund_management_organization_unit_id > "Foreign Fund Management Organization Unit".foreign_fund_management_organization_unit_id // out-of-source
-// Ref: "Member Periodic Report".report_template_id > "Report Template".report_template_id // out-of-source
-// Ref: "Member Periodic Report".reporting_period_id > "Reporting Period".reporting_period_id // out-of-source
-// Ref: "Member Periodic Report".securities_company_id > "Securities Company".securities_company_id // out-of-source
-// Ref: "Member Periodic Report".report_submission_schedule_id > "Report Submission Schedule".report_submission_schedule_id // out-of-source
-// Ref: "Member Report Indicator Value".report_template_id > "Report Template".report_template_id // out-of-source
-// Ref: "Member Report Indicator Value".securities_company_id > "Securities Company".securities_company_id // out-of-source
-// Ref: "Member Report Indicator Value".report_template_sheet_id > "Report Template Sheet".report_template_sheet_id // out-of-source
-// Ref: "Member Report Indicator Value".report_template_row_id > "Report Template Row".report_template_row_id // out-of-source
-// Ref: "Member Report Indicator Value".report_template_column_id > "Report Template Column".report_template_column_id // out-of-source
-Ref: "Member Report Indicator Value".member_periodic_report_id > "Member Periodic Report".member_periodic_report_id
-// Ref: "Member Report Indicator Value".report_template_indicator_id > "Report Template Indicator".report_template_indicator_id // out-of-source
-// Ref: "Member Report Indicator Value".report_indicator_id > "Report Indicator".report_indicator_id // out-of-source
+// Ref: "Foreign Representative Office"."Nationality Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Securities Company Senior Personnel"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
+// Ref: "Securities Company Senior Personnel"."Organization Unit Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id" // out-of-source
+// Ref: "Securities Company Senior Personnel"."Nationality Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Member Periodic Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
+// Ref: "Member Periodic Report"."Investment Fund Id" > "Investment Fund"."Investment Fund Id" // out-of-source
+// Ref: "Member Periodic Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
+// Ref: "Member Periodic Report"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id" // out-of-source
+// Ref: "Member Periodic Report"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
+// Ref: "Member Periodic Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id" // out-of-source
+// Ref: "Member Periodic Report"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
+// Ref: "Member Periodic Report"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id" // out-of-source
+// Ref: "Member Report Indicator Value"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
+// Ref: "Member Report Indicator Value"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
+// Ref: "Member Report Indicator Value"."Report Template Sheet Id" > "Report Template Sheet"."Report Template Sheet Id" // out-of-source
+// Ref: "Member Report Indicator Value"."Report Template Row Id" > "Report Template Row"."Report Template Row Id" // out-of-source
+// Ref: "Member Report Indicator Value"."Report Template Column Id" > "Report Template Column"."Report Template Column Id" // out-of-source
+Ref: "Member Report Indicator Value"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
+// Ref: "Member Report Indicator Value"."Report Template Indicator Id" > "Report Template Indicator"."Report Template Indicator Id" // out-of-source
+// Ref: "Member Report Indicator Value"."Report Indicator Id" > "Report Indicator"."Report Indicator Id" // out-of-source

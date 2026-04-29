@@ -25,6 +25,7 @@ def make_env(templates_dir: Path) -> Environment:
     env.filters["x_or_blank"] = F.x_or_blank
     env.filters["pk_fk_label"] = F.pk_fk_label
     env.filters["default_value"] = F.default_value
+    env.filters["etl_rule"] = F.etl_rule
     return env
 
 

@@ -1,0 +1,7 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Security Id,Khóa đại diện cho chứng khoán.,Surrogate Key,false,true,approved,,PK surrogate.,,
+Security Code,"Mã chứng khoán (ví dụ: VIC, VCB, VN30F1M). Map từ PK bảng nguồn. Unique toàn thị trường.",Text,false,false,approved,ECAT.ECAT_14_Security.code,"BK của entity. Unique toàn thị trường — không cần kết hợp với market_code (D-07 HLD Overview). BCV Term: Security Instrument Identifier.",,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,approved,,,SOURCE_SYSTEM=ECAT.ECAT_14_Security,
+Security Name,Tên chứng khoán đầy đủ.,Text,false,false,approved,ECAT.ECAT_14_Security.name,,,
+Security Type Code,"Loại chứng khoán (cổ phiếu, trái phiếu, chứng chỉ quỹ, chứng quyền...).",Classification Value,true,false,approved,ECAT.ECAT_14_Security.security_type_code,"Scheme: ECAT_SECURITY_TYPE. Values load từ ECAT_12_SecurityType.",ECAT_SECURITY_TYPE=(source),
+Market Code,"Mã thị trường niêm yết/giao dịch (HOSE, HNX, UPCOM, OTC...).",Classification Value,true,false,approved,ECAT.ECAT_14_Security.market_code,"Scheme: ECAT_MARKET. Values load từ ECAT_13_Market.",ECAT_MARKET=(source),

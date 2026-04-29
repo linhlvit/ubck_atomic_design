@@ -6,14 +6,14 @@ Project DCST_UID02 {
 }
 
 Table "Tax Financial Statement" [note: "Tờ khai tài chính điện tử nộp lên cơ quan thuế. Ghi nhận kỳ kê khai và thông tin kiểm toán."] {
-  tax_financial_statement_id bigint [pk]
-  registered_taxpayer_id bigint
+  "Tax Financial Statement Id" varchar [pk]
+  "Registered Taxpayer Id" varchar
 }
 
 Table "Tax Financial Statement Item" [note: "Chỉ tiêu chi tiết trong tờ khai tài chính. Ghi nhận giá trị số liệu theo từng ô chỉ tiêu trong biểu mẫu."] {
-  tax_financial_statement_item_id bigint [pk]
-  tax_financial_statement_id bigint
+  "Tax Financial Statement Item Id" varchar [pk]
+  "Tax Financial Statement Id" varchar
 }
 
-// Ref: "Tax Financial Statement".registered_taxpayer_id > "Registered Taxpayer".registered_taxpayer_id // out-of-source
-Ref: "Tax Financial Statement Item".tax_financial_statement_id > "Tax Financial Statement".tax_financial_statement_id
+// Ref: "Tax Financial Statement"."Registered Taxpayer Id" > "Registered Taxpayer"."Registered Taxpayer Id" // out-of-source
+Ref: "Tax Financial Statement Item"."Tax Financial Statement Id" > "Tax Financial Statement"."Tax Financial Statement Id"

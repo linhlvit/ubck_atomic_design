@@ -6,28 +6,28 @@ Project ThanhTra_UID08 {
 }
 
 Table "Inspection Officer" [note: "Cán bộ thanh tra viên thuộc UBCKNN. Ghi nhận thông tin cá nhân và trạng thái công tác."] {
-  inspection_officer_id bigint [pk]
+  "Inspection Officer Id" varchar [pk]
 }
 
 Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  public_company_id bigint [pk]
+  "Public Company Id" varchar [pk]
 }
 
 Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  securities_company_id bigint [pk]
-  country_of_registration_id bigint
+  "Securities Company Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
 Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  fund_management_company_id bigint [pk]
-  country_of_registration_id bigint
+  "Fund Management Company Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
 Table "Inspection Subject Other Party" [note: "Đối tượng thanh tra khác (cá nhân hoặc tổ chức) không thuộc danh mục CK/QLQ/ĐC. Phân biệt qua party_type_code."] {
-  inspection_subject_other_party_id bigint [pk]
-  country_of_registration_id bigint
+  "Inspection Subject Other Party Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
-// Ref: "Securities Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Fund Management Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Inspection Subject Other Party".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "Securities Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Fund Management Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Inspection Subject Other Party"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source

@@ -197,6 +197,7 @@ def load_attributes(
             "source_column_name": src_col_name,
             "description": r["description"],
             "data_domain": r["data_domain"],
+            "data_type": r.get("data_type", ""),
             "nullable": _yn(r.get("nullable", "")),
             "is_primary_key": _yn(r.get("is_primary_key", "")),
             "status": r.get("status", ""),
@@ -213,6 +214,21 @@ def load_attributes(
 def _to_snake_case(name: str) -> str:
     """Convert 'Disclosure Authorization' → 'disclosure_authorization'."""
     return name.strip().lower().replace("-", "_").replace(" ", "_")
+
+
+def _dbml_type(data_type: str) -> str:
+    """Convert data_type từ silver_attributes.csv sang kiểu hợp lệ trong DBML.
+
+    Quy tắc: string → varchar, array<...> → varchar, còn lại giữ nguyên.
+    """
+    t = (data_type or "").strip()
+    if not t:
+        return "varchar"
+    if t == "string":
+        return "varchar"
+    if t.startswith("array<"):
+        return "varchar"
+    return t
 
 
 def build_constraints(entity: dict[str, Any], all_attrs: list[dict[str, Any]] | None = None) -> list[dict[str, str]]:
@@ -284,17 +300,26 @@ def build_dbml(
         seen_tables.add(entity_name)
         tbl_note = e["description"][:200].replace('"', "") if e.get("description") else ""
         lines.append(f'Table "{entity_name}" [note: "{tbl_note}"] {{')
-        # Sinh PK field(s) — field name dùng snake_case (DBML không hỗ trợ quoted field name)
+        seen_fields: set[str] = set()
+        # Sinh PK field(s) — dùng logical name (quoted), nhất quán với tên entity
         for a in e["attributes"]:
             if a["is_primary_key"]:
-                lines.append(f'  {_to_snake_case(a["attribute_name"])} bigint [pk]')
+                col = a["attribute_name"]
+                if col not in seen_fields:
+                    seen_fields.add(col)
+                    dtype = _dbml_type(a.get("data_type", ""))
+                    lines.append(f'  "{col}" {dtype} [pk]')
         # Sinh FK field(s) — cần khai báo để Ref hợp lệ
         for a in e["attributes"]:
             if not a["is_primary_key"] and a.get("fk_target_entity"):
-                lines.append(f'  {_to_snake_case(a["attribute_name"])} bigint')
+                col = a["attribute_name"]
+                if col not in seen_fields:
+                    seen_fields.add(col)
+                    dtype = _dbml_type(a.get("data_type", ""))
+                    lines.append(f'  "{col}" {dtype}')
         # Fallback nếu không có PK lẫn FK (shared entity không có PK riêng)
         if not any(a["is_primary_key"] or a.get("fk_target_entity") for a in e["attributes"]):
-            lines.append("  _id bigint")
+            lines.append('  "_id" bigint')
         lines.append("}")
         lines.append("")
 
@@ -328,19 +353,19 @@ def build_dbml(
             if not a["fk_target_entity"]:
                 continue
             ref_table = a["fk_target_entity"]
-            from_col = _to_snake_case(a["attribute_name"])
-            ref_col = _to_snake_case(a["fk_target_attribute"])
+            from_col = a["attribute_name"]
+            ref_col = a["fk_target_attribute"]
             ref_key = (from_table, from_col, ref_table, ref_col)
             if ref_key in seen_refs:
                 continue
             seen_refs.add(ref_key)
             if ref_table not in in_scope_tables:
                 lines.append(
-                    f'// Ref: "{from_table}".{from_col} > "{ref_table}".{ref_col}'
+                    f'// Ref: "{from_table}"."{from_col}" > "{ref_table}"."{ref_col}"'
                     f" // out-of-source"
                 )
                 continue
-            lines.append(f'Ref: "{from_table}".{from_col} > "{ref_table}".{ref_col}')
+            lines.append(f'Ref: "{from_table}"."{from_col}" > "{ref_table}"."{ref_col}"')
     return "\n".join(lines) + "\n"
 
 

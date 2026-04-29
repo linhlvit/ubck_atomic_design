@@ -6,96 +6,96 @@ Project GSGD_UID02 {
 }
 
 Table "Market Surveillance Case" [note: "Vụ việc giám sát giao dịch chứng khoán bất thường. Ghi nhận loại vụ việc, mã CK liên quan, nguồn thông tin và trạng thái xử lý."] {
-  market_surveillance_case_id bigint [pk]
+  "Market Surveillance Case Id" varchar [pk]
 }
 
 Table "Market Surveillance Analysis Criterion" [note: "Định nghĩa tiêu chí/công thức phân tích vụ việc giám sát (ngưỡng tỷ lệ, số phiên, v.v.). Grain: 1 dòng = 1 tiêu chí."] {
-  market_surveillance_analysis_criterion_id bigint [pk]
+  "Market Surveillance Analysis Criterion Id" varchar [pk]
 }
 
 Table "Market Surveillance Case Document Attachment" [note: "File đính kèm vụ việc giám sát (tài liệu hồ sơ, danh sách TK nghi vấn). FK Market Surveillance Case."] {
-  market_surveillance_case_document_attachment_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Case Document Attachment Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Case Workflow Step" [note: "Từng bước quy trình xử lý vụ việc giám sát. Append-only. FK Market Surveillance Case."] {
-  market_surveillance_case_workflow_step_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Case Workflow Step Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Case Approval Step Log" [note: "Nhật ký phê duyệt từng bước xử lý vụ việc giám sát. Ghi nhận người duyệt, vai trò, trạng thái và thời điểm. FK Market Surveillance Case."] {
-  market_surveillance_case_approval_step_log_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Case Approval Step Log Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Suspicious Account" [note: "Tài khoản nghi vấn được xác định trong vụ việc giám sát. FK Market Surveillance Case + Investor Trading Account."] {
-  market_surveillance_suspicious_account_id bigint [pk]
-  market_surveillance_case_id bigint
-  investor_trading_account_id bigint
+  "Market Surveillance Suspicious Account Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
+  "Investor Trading Account Id" varchar
 }
 
 Table "Market Surveillance Suspicious Account Group" [note: "Nhóm tài khoản nghi vấn trong phạm vi 1 vụ việc giám sát cụ thể. FK Market Surveillance Case."] {
-  market_surveillance_suspicious_account_group_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Suspicious Account Group Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Analysis Criterion Value" [note: "Giá trị cụ thể của tiêu chí phân tích theo từng quy trình. FK Market Surveillance Analysis Criterion."] {
-  market_surveillance_analysis_criterion_value_id bigint [pk]
-  market_surveillance_analysis_criterion_id bigint
+  "Market Surveillance Analysis Criterion Value Id" varchar [pk]
+  "Market Surveillance Analysis Criterion Id" varchar
 }
 
 Table "Market Surveillance Analysis Execution Log" [note: "Log thực thi phân tích từng biểu mẫu trong vụ việc giám sát. FK Market Surveillance Case."] {
-  market_surveillance_analysis_execution_log_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Analysis Execution Log Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Analysis Suspicious Account Snapshot" [note: "Snapshot thông tin tài khoản nghi vấn tại thời điểm phân tích biểu mẫu. FK Market Surveillance Case."] {
-  market_surveillance_analysis_suspicious_account_snapshot_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Analysis Suspicious Account Snapshot Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Suspicious Account Analysis Result" [note: "Kết quả phân tích/kiểm tra tài khoản nghi vấn trong vụ việc giám sát. FK Market Surveillance Case."] {
-  market_surveillance_suspicious_account_analysis_result_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Suspicious Account Analysis Result Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Account Relationship Analysis Result" [note: "Kết quả phân tích quan hệ giữa tài khoản nghi vấn. FK Market Surveillance Case + Investor Account Relationship."] {
-  market_surveillance_account_relationship_analysis_result_id bigint [pk]
-  market_surveillance_case_id bigint
-  investor_account_relationship_id bigint
+  "Market Surveillance Account Relationship Analysis Result Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
+  "Investor Account Relationship Id" varchar
 }
 
 Table "Market Surveillance Account Group Analysis Result" [note: "Kết quả phân tích nhóm tài khoản nghi vấn. FK Market Surveillance Case."] {
-  market_surveillance_account_group_analysis_result_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Account Group Analysis Result Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
 Table "Market Surveillance Account Group Member Analysis Result" [note: "Thành viên nhóm tài khoản trong kết quả phân tích. FK Market Surveillance Case + Investor Account Relationship."] {
-  market_surveillance_account_group_member_analysis_result_id bigint [pk]
-  market_surveillance_case_id bigint
-  account_investor_group_id bigint
-  investor_account_relationship_id bigint
+  "Market Surveillance Account Group Member Analysis Result Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
+  "Account Investor Group Id" varchar
+  "Investor Account Relationship Id" varchar
 }
 
 Table "Market Surveillance Analysis Report" [note: "Báo cáo output của quá trình phân tích vụ việc giám sát (report_type"] {
-  market_surveillance_analysis_report_id bigint [pk]
-  market_surveillance_case_id bigint
+  "Market Surveillance Analysis Report Id" varchar [pk]
+  "Market Surveillance Case Id" varchar
 }
 
-Ref: "Market Surveillance Case Document Attachment".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Case Workflow Step".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Case Approval Step Log".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Suspicious Account".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-// Ref: "Market Surveillance Suspicious Account".investor_trading_account_id > "Investor Trading Account".investor_trading_account_id // out-of-source
-Ref: "Market Surveillance Suspicious Account Group".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Analysis Criterion Value".market_surveillance_analysis_criterion_id > "Market Surveillance Analysis Criterion".market_surveillance_analysis_criterion_id
-Ref: "Market Surveillance Analysis Execution Log".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Analysis Suspicious Account Snapshot".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Suspicious Account Analysis Result".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Account Relationship Analysis Result".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-// Ref: "Market Surveillance Account Relationship Analysis Result".investor_account_relationship_id > "Investor Account Relationship".investor_account_relationship_id // out-of-source
-Ref: "Market Surveillance Account Group Analysis Result".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-Ref: "Market Surveillance Account Group Member Analysis Result".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
-// Ref: "Market Surveillance Account Group Member Analysis Result".account_investor_group_id > "Account Investor Group".account_investor_group_id // out-of-source
-// Ref: "Market Surveillance Account Group Member Analysis Result".investor_account_relationship_id > "Investor Account Relationship".investor_account_relationship_id // out-of-source
-Ref: "Market Surveillance Analysis Report".market_surveillance_case_id > "Market Surveillance Case".market_surveillance_case_id
+Ref: "Market Surveillance Case Document Attachment"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Case Workflow Step"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Case Approval Step Log"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Suspicious Account"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+// Ref: "Market Surveillance Suspicious Account"."Investor Trading Account Id" > "Investor Trading Account"."Investor Trading Account Id" // out-of-source
+Ref: "Market Surveillance Suspicious Account Group"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Analysis Criterion Value"."Market Surveillance Analysis Criterion Id" > "Market Surveillance Analysis Criterion"."Market Surveillance Analysis Criterion Id"
+Ref: "Market Surveillance Analysis Execution Log"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Analysis Suspicious Account Snapshot"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Suspicious Account Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Account Relationship Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+// Ref: "Market Surveillance Account Relationship Analysis Result"."Investor Account Relationship Id" > "Investor Account Relationship"."Investor Account Relationship Id" // out-of-source
+Ref: "Market Surveillance Account Group Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "Market Surveillance Account Group Member Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+// Ref: "Market Surveillance Account Group Member Analysis Result"."Account Investor Group Id" > "Account Investor Group"."Account Investor Group Id" // out-of-source
+// Ref: "Market Surveillance Account Group Member Analysis Result"."Investor Account Relationship Id" > "Investor Account Relationship"."Investor Account Relationship Id" // out-of-source
+Ref: "Market Surveillance Analysis Report"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"

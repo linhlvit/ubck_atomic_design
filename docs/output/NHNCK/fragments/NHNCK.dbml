@@ -6,177 +6,177 @@ Project NHNCK {
 }
 
 Table "Securities Practitioner License Application" [note: "Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý."] {
-  license_application_id bigint [pk]
-  practitioner_id bigint
-  license_certificate_document_id bigint
-  previous_license_certificate_document_id bigint
-  examination_assessment_id bigint
-  assignee_officer_id bigint
-  license_application_verification_status_id bigint
-  created_by_officer_id bigint
-  updated_by_officer_id bigint
+  "License Application Id" varchar [pk]
+  "Practitioner Id" varchar
+  "License Certificate Document Id" varchar
+  "Previous License Certificate Document Id" varchar
+  "Examination Assessment Id" varchar
+  "Assignee Officer Id" varchar
+  "License Application Verification Status Id" varchar
+  "Created By Officer Id" varchar
+  "Updated By Officer Id" varchar
 }
 
 Table "Securities Practitioner License Application Education Certificate Document" [note: "Văn bằng/chứng chỉ học tập đính kèm hồ sơ CCHN. Ghi nhận loại chuyên môn và file đính kèm kèm trạng thái thẩm định."] {
-  license_application_education_certificate_document_id bigint [pk]
-  license_application_id bigint
-  assignee_officer_id bigint
+  "License Application Education Certificate Document Id" varchar [pk]
+  "License Application Id" varchar
+  "Assignee Officer Id" varchar
 }
 
 Table "Securities Practitioner License Application Document Attachment" [note: "Tài liệu đính kèm hồ sơ CCHN. Ghi nhận loại tài liệu và trạng thái thẩm định."] {
-  license_application_document_attachment_id bigint [pk]
-  license_application_id bigint
-  assignee_officer_id bigint
+  "License Application Document Attachment Id" varchar [pk]
+  "License Application Id" varchar
+  "Assignee Officer Id" varchar
 }
 
 Table "Securities Practitioner License Application Processing Activity Log" [note: "Nhật ký hoạt động xử lý hồ sơ CCHN. Ghi nhận từng bước xử lý và trạng thái hồ sơ theo thời gian."] {
-  license_application_processing_activity_log_id bigint [pk]
-  officer_id bigint
+  "License Application Processing Activity Log Id" varchar [pk]
+  "Officer Id" varchar
 }
 
 Table "Securities Practitioner License Application Fee" [note: "Phí thực tế phát sinh theo từng hồ sơ đăng ký CCHN. Ghi nhận loại phí và trạng thái thanh toán."] {
-  license_application_fee_id bigint [pk]
-  license_application_id bigint
-  practitioner_id bigint
-  created_by_officer_id bigint
+  "License Application Fee Id" varchar [pk]
+  "License Application Id" varchar
+  "Practitioner Id" varchar
+  "Created By Officer Id" varchar
 }
 
 Table "Securities Practitioner License Application Verification Status" [note: "Bản ghi phê duyệt nội bộ hồ sơ CCHN theo cấp lãnh đạo. Ghi nhận người phê duyệt và kết quả phê duyệt tại từng cấp."] {
-  license_application_verification_status_id bigint [pk]
-  license_application_id bigint
-  verified_by_officer_id bigint
-  created_by_officer_id bigint
-  updated_by_officer_id bigint
+  "License Application Verification Status Id" varchar [pk]
+  "License Application Id" varchar
+  "Verified By Officer Id" varchar
+  "Created By Officer Id" varchar
+  "Updated By Officer Id" varchar
 }
 
 Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
-  practitioner_id bigint [pk]
-  country_of_residence_geographic_area_id bigint
-  securities_company_id bigint
+  "Practitioner Id" varchar [pk]
+  "Country of Residence Geographic Area Id" varchar
+  "Securities Company Id" varchar
 }
 
 Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Securities Practitioner License Certificate Document" [note: "Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi nhận loại chứng chỉ và quyết định cấp/thu hồi."] {
-  license_certificate_document_id bigint [pk]
-  practitioner_id bigint
-  issuance_decision_document_id bigint
-  revocation_decision_document_id bigint
-  cancellation_decision_document_id bigint
-  created_by_officer_id bigint
+  "License Certificate Document Id" varchar [pk]
+  "Practitioner Id" varchar
+  "Issuance Decision Document Id" varchar
+  "Revocation Decision Document Id" varchar
+  "Cancellation Decision Document Id" varchar
+  "Created By Officer Id" varchar
 }
 
 Table "Securities Practitioner License Certificate Group Document" [note: "Nhóm chứng chỉ hành nghề trong một quyết định cấp/thu hồi/hủy tập thể. Liên kết với quyết định hành chính."] {
-  license_certificate_group_document_id bigint [pk]
-  license_decision_document_id bigint
+  "License Certificate Group Document Id" varchar [pk]
+  "License Decision Document Id" varchar
 }
 
 Table "Securities Practitioner License Certificate Group Member" [note: "Quan hệ thành viên giữa chứng chỉ hành nghề và nhóm cấp/thu hồi. Liên kết Certificate ↔ Group ↔ Application."] {
-  license_certificate_group_member_id bigint [pk]
-  license_certificate_group_document_id bigint
-  license_certificate_document_id bigint
+  "License Certificate Group Member Id" varchar [pk]
+  "License Certificate Group Document Id" varchar
+  "License Certificate Document Id" varchar
 }
 
 Table "Securities Practitioner License Certificate Document Status History" [note: "Lịch sử thay đổi trạng thái của chứng chỉ hành nghề. Ghi nhận trạng thái trước/sau và lý do thay đổi."] {
-  license_certificate_document_status_history_id bigint [pk]
-  license_certificate_document_id bigint
-  license_decision_document_id bigint
+  "License Certificate Document Status History Id" varchar [pk]
+  "License Certificate Document Id" varchar
+  "License Decision Document Id" varchar
 }
 
 Table "Securities Practitioner License Certificate Document Activity Log" [note: "Nhật ký hoạt động tác động lên chứng chỉ hành nghề. Ghi nhận hành động và người thực hiện."] {
-  license_certificate_document_activity_log_id bigint [pk]
-  license_certificate_document_id bigint
-  license_decision_document_id bigint
-  processed_by_officer_id bigint
+  "License Certificate Document Activity Log Id" varchar [pk]
+  "License Certificate Document Id" varchar
+  "License Decision Document Id" varchar
+  "Processed By Officer Id" varchar
 }
 
 Table "Securities Practitioner Related Party" [note: "Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ và thông tin người liên quan."] {
-  securities_practitioner_related_party_id bigint [pk]
-  practitioner_id bigint
+  "Securities Practitioner Related Party Id" varchar [pk]
+  "Practitioner Id" varchar
 }
 
 Table "Securities Practitioner Conduct Violation" [note: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán. Ghi nhận loại vi phạm và quyết định xử lý."] {
-  conduct_violation_id bigint [pk]
-  practitioner_id bigint
-  license_decision_document_id bigint
-  created_by_officer_id bigint
-  updated_by_officer_id bigint
+  "Conduct Violation Id" varchar [pk]
+  "Practitioner Id" varchar
+  "License Decision Document Id" varchar
+  "Created By Officer Id" varchar
+  "Updated By Officer Id" varchar
 }
 
 Table "Securities Practitioner Organization Employment Report" [note: "Báo cáo của tổ chức về tình trạng tuyển dụng/chấm dứt hợp đồng người hành nghề chứng khoán."] {
-  organization_employment_report_id bigint [pk]
-  practitioner_id bigint
-  securities_organization_id bigint
-  license_certificate_document_id bigint
-  parent_organization_employment_report_id bigint
-  created_by_officer_id bigint
+  "Organization Employment Report Id" varchar [pk]
+  "Practitioner Id" varchar
+  "Securities Organization Id" varchar
+  "License Certificate Document Id" varchar
+  "Parent Organization Employment Report Id" varchar
+  "Created By Officer Id" varchar
 }
 
 Table "Securities Practitioner Identity Verification Record" [note: "Kết quả xác thực danh tính người hành nghề qua hệ thống C06 của Bộ Công An. Lưu trạng thái và phản hồi xác thực."] {
-  identity_verification_record_id bigint [pk]
-  updated_by_officer_id bigint
+  "Identity Verification Record Id" varchar [pk]
+  "Updated By Officer Id" varchar
 }
 
 Table "Securities Practitioner Professional Training Class" [note: "Khóa đào tạo chuyên môn nghiệp vụ chứng khoán do UBCKNN tổ chức. Ghi nhận thông tin khóa học và ngày thi."] {
-  professional_training_class_id bigint [pk]
-  created_by_officer_id bigint
-  updated_by_officer_id bigint
+  "Professional Training Class Id" varchar [pk]
+  "Created By Officer Id" varchar
+  "Updated By Officer Id" varchar
 }
 
 Table "Securities Practitioner Professional Training Class Enrollment" [note: "Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa đào tạo chuyên môn."] {
-  professional_training_class_enrollment_id bigint [pk]
-  professional_training_class_id bigint
-  practitioner_id bigint
-  assignee_officer_id bigint
-  created_by_officer_id bigint
-  updated_by_officer_id bigint
+  "Professional Training Class Enrollment Id" varchar [pk]
+  "Professional Training Class Id" varchar
+  "Practitioner Id" varchar
+  "Assignee Officer Id" varchar
+  "Created By Officer Id" varchar
+  "Updated By Officer Id" varchar
 }
 
 Table "Securities Practitioner Qualification Examination Assessment" [note: "Đợt thi sát hạch cấp chứng chỉ hành nghề chứng khoán. Ghi nhận thông tin tổ chức đợt thi và quyết định công nhận kết quả."] {
-  examination_assessment_id bigint [pk]
-  license_decision_document_id bigint
-  created_by_officer_id bigint
+  "Examination Assessment Id" varchar [pk]
+  "License Decision Document Id" varchar
+  "Created By Officer Id" varchar
 }
 
 Table "Securities Practitioner Qualification Examination Assessment Result" [note: "Kết quả thi sát hạch của từng thí sinh trong một đợt thi. Ghi nhận điểm thi và kết quả đạt/không đạt."] {
-  examination_assessment_result_id bigint [pk]
-  examination_assessment_id bigint
-  practitioner_id bigint
-  license_application_id bigint
-  created_by_officer_id bigint
+  "Examination Assessment Result Id" varchar [pk]
+  "Examination Assessment Id" varchar
+  "Practitioner Id" varchar
+  "License Application Id" varchar
+  "Created By Officer Id" varchar
 }
 
 Table "Securities Practitioner Qualification Examination Assessment Fee" [note: "Biểu phí thi sát hạch theo đợt thi và loại chứng chỉ. Ghi nhận mức phí thi và phúc khảo."] {
-  examination_assessment_fee_id bigint [pk]
-  examination_assessment_id bigint
-  created_by_officer_id bigint
-  updated_by_officer_id bigint
+  "Examination Assessment Fee Id" varchar [pk]
+  "Examination Assessment Id" varchar
+  "Created By Officer Id" varchar
+  "Updated By Officer Id" varchar
 }
 
 Table "Securities Organization Reference" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
-  securities_organization_reference_id bigint [pk]
-  parent_organization_id bigint
-  created_by_officer_id bigint
+  "Securities Organization Reference Id" varchar [pk]
+  "Parent Organization Id" varchar
+  "Created By Officer Id" varchar
 }
 
 Table "Securities Practitioner License Decision Document" [note: "Quyết định hành chính của UBCKNN về cấp/thu hồi/hủy chứng chỉ hành nghề chứng khoán."] {
-  license_decision_document_id bigint [pk]
-  created_by_officer_id bigint
+  "License Decision Document Id" varchar [pk]
+  "Created By Officer Id" varchar
 }
 
 Table "Regulatory Authority Organization Unit" [note: "Đơn vị/phòng ban thuộc UBCKNN. Cấu trúc phân cấp gộp Units và Departments."] {
-  organization_unit_id bigint [pk]
-  parent_organization_unit_id bigint
+  "Organization Unit Id" varchar [pk]
+  "Parent Organization Unit Id" varchar
 }
 
 TableGroup "UID01 — Quản trị phân hệ" {
@@ -213,77 +213,77 @@ TableGroup "UID10 — Quản lý đào tạo tập huấn" {
   "Regulatory Authority Organization Unit"
 }
 
-Ref: "Securities Practitioner License Application".practitioner_id > "Securities Practitioner".practitioner_id
-Ref: "Securities Practitioner License Application".license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id
-Ref: "Securities Practitioner License Application".previous_license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id
-Ref: "Securities Practitioner License Application".examination_assessment_id > "Securities Practitioner Qualification Examination Assessment".examination_assessment_id
-// Ref: "Securities Practitioner License Application".assignee_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner License Application".license_application_verification_status_id > "Securities Practitioner License Application Verification Status".license_application_verification_status_id
-// Ref: "Securities Practitioner License Application".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner License Application".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner License Application Education Certificate Document".license_application_id > "Securities Practitioner License Application".license_application_id
-// Ref: "Securities Practitioner License Application Education Certificate Document".assignee_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner License Application Document Attachment".license_application_id > "Securities Practitioner License Application".license_application_id
-// Ref: "Securities Practitioner License Application Document Attachment".assignee_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner License Application Processing Activity Log".officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner License Application Fee".license_application_id > "Securities Practitioner License Application".license_application_id
-Ref: "Securities Practitioner License Application Fee".practitioner_id > "Securities Practitioner".practitioner_id
-// Ref: "Securities Practitioner License Application Fee".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner License Application Verification Status".license_application_id > "Securities Practitioner License Application".license_application_id
-// Ref: "Securities Practitioner License Application Verification Status".verified_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner License Application Verification Status".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner License Application Verification Status".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner".country_of_residence_geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Securities Practitioner".securities_company_id > "Securities Company".securities_company_id // out-of-source
-Ref: "Involved Party Postal Address".involved_party_id > "Securities Practitioner".practitioner_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Securities Practitioner".practitioner_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Practitioner".practitioner_id
-Ref: "Securities Practitioner License Certificate Document".practitioner_id > "Securities Practitioner".practitioner_id
-Ref: "Securities Practitioner License Certificate Document".issuance_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-Ref: "Securities Practitioner License Certificate Document".revocation_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-Ref: "Securities Practitioner License Certificate Document".cancellation_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-// Ref: "Securities Practitioner License Certificate Document".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner License Certificate Group Document".license_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-Ref: "Securities Practitioner License Certificate Group Member".license_certificate_group_document_id > "Securities Practitioner License Certificate Group Document".license_certificate_group_document_id
-Ref: "Securities Practitioner License Certificate Group Member".license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id
-Ref: "Securities Practitioner License Certificate Document Status History".license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id
-Ref: "Securities Practitioner License Certificate Document Status History".license_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-Ref: "Securities Practitioner License Certificate Document Activity Log".license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id
-Ref: "Securities Practitioner License Certificate Document Activity Log".license_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-// Ref: "Securities Practitioner License Certificate Document Activity Log".processed_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner Related Party".practitioner_id > "Securities Practitioner".practitioner_id
-Ref: "Securities Practitioner Conduct Violation".practitioner_id > "Securities Practitioner".practitioner_id
-Ref: "Securities Practitioner Conduct Violation".license_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-// Ref: "Securities Practitioner Conduct Violation".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner Conduct Violation".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner Organization Employment Report".practitioner_id > "Securities Practitioner".practitioner_id
-Ref: "Securities Practitioner Organization Employment Report".securities_organization_id > "Securities Organization Reference".securities_organization_reference_id
-Ref: "Securities Practitioner Organization Employment Report".license_certificate_document_id > "Securities Practitioner License Certificate Document".license_certificate_document_id
-Ref: "Securities Practitioner Organization Employment Report".parent_organization_employment_report_id > "Securities Practitioner Organization Employment Report".organization_employment_report_id
-// Ref: "Securities Practitioner Organization Employment Report".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner Identity Verification Record".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner Professional Training Class".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner Professional Training Class".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner Professional Training Class Enrollment".professional_training_class_id > "Securities Practitioner Professional Training Class".professional_training_class_id
-Ref: "Securities Practitioner Professional Training Class Enrollment".practitioner_id > "Securities Practitioner".practitioner_id
-// Ref: "Securities Practitioner Professional Training Class Enrollment".assignee_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner Professional Training Class Enrollment".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner Professional Training Class Enrollment".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner Qualification Examination Assessment".license_decision_document_id > "Securities Practitioner License Decision Document".license_decision_document_id
-// Ref: "Securities Practitioner Qualification Examination Assessment".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner Qualification Examination Assessment Result".examination_assessment_id > "Securities Practitioner Qualification Examination Assessment".examination_assessment_id
-Ref: "Securities Practitioner Qualification Examination Assessment Result".practitioner_id > "Securities Practitioner".practitioner_id
-Ref: "Securities Practitioner Qualification Examination Assessment Result".license_application_id > "Securities Practitioner License Application".license_application_id
-// Ref: "Securities Practitioner Qualification Examination Assessment Result".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Practitioner Qualification Examination Assessment Fee".examination_assessment_id > "Securities Practitioner Qualification Examination Assessment".examination_assessment_id
-// Ref: "Securities Practitioner Qualification Examination Assessment Fee".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner Qualification Examination Assessment Fee".updated_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Securities Organization Reference".parent_organization_id > "Securities Organization Reference".securities_organization_reference_id
-// Ref: "Securities Organization Reference".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-// Ref: "Securities Practitioner License Decision Document".created_by_officer_id > "Regulatory Authority Officer".officer_id // out-of-source
-Ref: "Regulatory Authority Organization Unit".parent_organization_unit_id > "Regulatory Authority Organization Unit".organization_unit_id
-Ref: "Involved Party Postal Address".involved_party_id > "Securities Organization Reference".securities_organization_reference_id
-// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
-Ref: "Involved Party Electronic Address".involved_party_id > "Securities Organization Reference".securities_organization_reference_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Securities Organization Reference".securities_organization_reference_id
+Ref: "Securities Practitioner License Application"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Securities Practitioner License Application"."License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id"
+Ref: "Securities Practitioner License Application"."Previous License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id"
+Ref: "Securities Practitioner License Application"."Examination Assessment Id" > "Securities Practitioner Qualification Examination Assessment"."Examination Assessment Id"
+// Ref: "Securities Practitioner License Application"."Assignee Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner License Application"."License Application Verification Status Id" > "Securities Practitioner License Application Verification Status"."License Application Verification Status Id"
+// Ref: "Securities Practitioner License Application"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner License Application"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner License Application Education Certificate Document"."License Application Id" > "Securities Practitioner License Application"."License Application Id"
+// Ref: "Securities Practitioner License Application Education Certificate Document"."Assignee Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner License Application Document Attachment"."License Application Id" > "Securities Practitioner License Application"."License Application Id"
+// Ref: "Securities Practitioner License Application Document Attachment"."Assignee Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner License Application Processing Activity Log"."Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner License Application Fee"."License Application Id" > "Securities Practitioner License Application"."License Application Id"
+Ref: "Securities Practitioner License Application Fee"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+// Ref: "Securities Practitioner License Application Fee"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner License Application Verification Status"."License Application Id" > "Securities Practitioner License Application"."License Application Id"
+// Ref: "Securities Practitioner License Application Verification Status"."Verified By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner License Application Verification Status"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner License Application Verification Status"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner"."Country of Residence Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Securities Practitioner"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Securities Practitioner License Certificate Document"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Securities Practitioner License Certificate Document"."Issuance Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+Ref: "Securities Practitioner License Certificate Document"."Revocation Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+Ref: "Securities Practitioner License Certificate Document"."Cancellation Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+// Ref: "Securities Practitioner License Certificate Document"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner License Certificate Group Document"."License Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+Ref: "Securities Practitioner License Certificate Group Member"."License Certificate Group Document Id" > "Securities Practitioner License Certificate Group Document"."License Certificate Group Document Id"
+Ref: "Securities Practitioner License Certificate Group Member"."License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id"
+Ref: "Securities Practitioner License Certificate Document Status History"."License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id"
+Ref: "Securities Practitioner License Certificate Document Status History"."License Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+Ref: "Securities Practitioner License Certificate Document Activity Log"."License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id"
+Ref: "Securities Practitioner License Certificate Document Activity Log"."License Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+// Ref: "Securities Practitioner License Certificate Document Activity Log"."Processed By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner Related Party"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Securities Practitioner Conduct Violation"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Securities Practitioner Conduct Violation"."License Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+// Ref: "Securities Practitioner Conduct Violation"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner Conduct Violation"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner Organization Employment Report"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Securities Practitioner Organization Employment Report"."Securities Organization Id" > "Securities Organization Reference"."Securities Organization Reference Id"
+Ref: "Securities Practitioner Organization Employment Report"."License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id"
+Ref: "Securities Practitioner Organization Employment Report"."Parent Organization Employment Report Id" > "Securities Practitioner Organization Employment Report"."Organization Employment Report Id"
+// Ref: "Securities Practitioner Organization Employment Report"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner Identity Verification Record"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner Professional Training Class"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner Professional Training Class"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner Professional Training Class Enrollment"."Professional Training Class Id" > "Securities Practitioner Professional Training Class"."Professional Training Class Id"
+Ref: "Securities Practitioner Professional Training Class Enrollment"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+// Ref: "Securities Practitioner Professional Training Class Enrollment"."Assignee Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner Professional Training Class Enrollment"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner Professional Training Class Enrollment"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner Qualification Examination Assessment"."License Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id"
+// Ref: "Securities Practitioner Qualification Examination Assessment"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner Qualification Examination Assessment Result"."Examination Assessment Id" > "Securities Practitioner Qualification Examination Assessment"."Examination Assessment Id"
+Ref: "Securities Practitioner Qualification Examination Assessment Result"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
+Ref: "Securities Practitioner Qualification Examination Assessment Result"."License Application Id" > "Securities Practitioner License Application"."License Application Id"
+// Ref: "Securities Practitioner Qualification Examination Assessment Result"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Practitioner Qualification Examination Assessment Fee"."Examination Assessment Id" > "Securities Practitioner Qualification Examination Assessment"."Examination Assessment Id"
+// Ref: "Securities Practitioner Qualification Examination Assessment Fee"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner Qualification Examination Assessment Fee"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Securities Organization Reference"."Parent Organization Id" > "Securities Organization Reference"."Securities Organization Reference Id"
+// Ref: "Securities Organization Reference"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "Securities Practitioner License Decision Document"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "Regulatory Authority Organization Unit"."Parent Organization Unit Id" > "Regulatory Authority Organization Unit"."Organization Unit Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Organization Reference"."Securities Organization Reference Id"
+// Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Organization Reference"."Securities Organization Reference Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Organization Reference"."Securities Organization Reference Id"

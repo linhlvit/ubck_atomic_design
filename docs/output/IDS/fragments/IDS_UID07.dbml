@@ -6,69 +6,67 @@ Project IDS_UID07 {
 }
 
 Table "Audit Firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
-  audit_firm_id bigint [pk]
+  "Audit Firm Id" varchar [pk]
 }
 
 Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  involved_party_id bigint
-  involved_party_id bigint
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  involved_party_id bigint
-  province_id bigint
-  geographic_area_id bigint
+  "Involved Party Id" varchar
+  "Province Id" varchar
+  "Geographic Area Id" varchar
 }
 
 Table "Audit Firm Legal Representative" [note: "Người đại diện pháp luật của công ty kiểm toán — chức vụ và ngày bổ nhiệm/kết thúc nhiệm kỳ. FK to Audit Firm."] {
-  audit_firm_legal_representative_id bigint [pk]
-  audit_firm_id bigint
+  "Audit Firm Legal Representative Id" varchar [pk]
+  "Audit Firm Id" varchar
 }
 
 Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Audit Firm Approval" [note: "Quyết định chấp thuận/đình chỉ công ty kiểm toán từ BTC và UBCKNN — số văn bản/ngày/nội dung. Gộp 2 cơ quan. FK to Audit Firm."] {
-  audit_firm_approval_id bigint [pk]
-  audit_firm_id bigint
+  "Audit Firm Approval Id" varchar [pk]
+  "Audit Firm Id" varchar
 }
 
 Table "Auditor Approval" [note: "Quyết định chấp thuận/đình chỉ kiểm toán viên từ BTC và UBCKNN — chứng chỉ hành nghề/năm chấp thuận. FK to Audit Firm."] {
-  auditor_approval_id bigint [pk]
-  audit_firm_id bigint
+  "Auditor Approval Id" varchar [pk]
+  "Audit Firm Id" varchar
 }
 
 Table "Audit Firm Warning" [note: "Nhắc nhở từ BTC hoặc UBCKNN đến công ty kiểm toán hoặc kiểm toán viên — số văn bản và nội dung. FK nullable: Audit Firm Approval hoặc Auditor Approval."] {
-  audit_firm_warning_id bigint [pk]
-  audit_firm_approval_id bigint
-  auditor_approval_id bigint
+  "Audit Firm Warning Id" varchar [pk]
+  "Audit Firm Approval Id" varchar
+  "Auditor Approval Id" varchar
 }
 
 Table "Audit Firm Sanction" [note: "Xử phạt hành chính đối với công ty kiểm toán hoặc kiểm toán viên — quyết định và nội dung xử phạt. FK nullable: Audit Firm Approval hoặc Auditor Approval."] {
-  audit_firm_sanction_id bigint [pk]
-  audit_firm_approval_id bigint
-  auditor_approval_id bigint
+  "Audit Firm Sanction Id" varchar [pk]
+  "Audit Firm Approval Id" varchar
+  "Auditor Approval Id" varchar
 }
 
-Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm".audit_firm_id
-Ref: "Involved Party Postal Address".involved_party_id > "Audit Firm".audit_firm_id
-// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Involved Party Postal Address".involved_party_id > "Public Company".public_company_id // out-of-source
-// Ref: "Involved Party Electronic Address".involved_party_id > "Public Company".public_company_id // out-of-source
-// Ref: "Involved Party Postal Address".involved_party_id > "Stock Holder".stock_holder_id // out-of-source
-// Ref: "Involved Party Electronic Address".involved_party_id > "Stock Holder".stock_holder_id // out-of-source
-Ref: "Audit Firm Legal Representative".audit_firm_id > "Audit Firm".audit_firm_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm Legal Representative".audit_firm_legal_representative_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm Legal Representative".audit_firm_legal_representative_id
-Ref: "Audit Firm Approval".audit_firm_id > "Audit Firm".audit_firm_id
-Ref: "Auditor Approval".audit_firm_id > "Audit Firm".audit_firm_id
-// Ref: "Involved Party Electronic Address".involved_party_id > "Public Company Legal Representative".public_company_legal_representative_id // out-of-source
-// Ref: "Involved Party Alternative Identification".involved_party_id > "Public Company Legal Representative".public_company_legal_representative_id // out-of-source
-// Ref: "Involved Party Alternative Identification".involved_party_id > "Stock Holder".stock_holder_id // out-of-source
-Ref: "Audit Firm Warning".audit_firm_approval_id > "Audit Firm Approval".audit_firm_approval_id
-Ref: "Audit Firm Warning".auditor_approval_id > "Auditor Approval".auditor_approval_id
-Ref: "Audit Firm Sanction".audit_firm_approval_id > "Audit Firm Approval".audit_firm_approval_id
-Ref: "Audit Firm Sanction".auditor_approval_id > "Auditor Approval".auditor_approval_id
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
+// Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Involved Party Postal Address"."Involved Party Id" > "Public Company"."Public Company Id" // out-of-source
+// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company"."Public Company Id" // out-of-source
+// Ref: "Involved Party Postal Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id" // out-of-source
+// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id" // out-of-source
+Ref: "Audit Firm Legal Representative"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm Legal Representative"."Audit Firm Legal Representative Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm Legal Representative"."Audit Firm Legal Representative Id"
+Ref: "Audit Firm Approval"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Auditor Approval"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
+// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company Legal Representative"."Public Company Legal Representative Id" // out-of-source
+// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Public Company Legal Representative"."Public Company Legal Representative Id" // out-of-source
+// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Stock Holder"."Stock Holder Id" // out-of-source
+Ref: "Audit Firm Warning"."Audit Firm Approval Id" > "Audit Firm Approval"."Audit Firm Approval Id"
+Ref: "Audit Firm Warning"."Auditor Approval Id" > "Auditor Approval"."Auditor Approval Id"
+Ref: "Audit Firm Sanction"."Audit Firm Approval Id" > "Audit Firm Approval"."Audit Firm Approval Id"
+Ref: "Audit Firm Sanction"."Auditor Approval Id" > "Auditor Approval"."Auditor Approval Id"

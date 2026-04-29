@@ -6,12 +6,12 @@ Project IDS_UID08 {
 }
 
 Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  public_company_id bigint [pk]
+  "Public Company Id" varchar [pk]
 }
 
 Table "Stock Holder" [note: "Cổ đông giao dịch — cá nhân hoặc tổ chức nắm giữ cổ phần công ty đại chúng. Grain: cổ đông x công ty. FK to Public Company."] {
-  stock_holder_id bigint [pk]
-  public_company_id bigint
+  "Stock Holder Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
-Ref: "Stock Holder".public_company_id > "Public Company".public_company_id
+Ref: "Stock Holder"."Public Company Id" > "Public Company"."Public Company Id"

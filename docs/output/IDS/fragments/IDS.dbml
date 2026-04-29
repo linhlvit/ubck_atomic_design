@@ -6,173 +6,171 @@ Project IDS {
 }
 
 Table "Audit Firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
-  audit_firm_id bigint [pk]
+  "Audit Firm Id" varchar [pk]
 }
 
 Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  involved_party_id bigint
-  involved_party_id bigint
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  involved_party_id bigint
-  province_id bigint
-  geographic_area_id bigint
+  "Involved Party Id" varchar
+  "Province Id" varchar
+  "Geographic Area Id" varchar
 }
 
 Table "Financial Report Catalog" [note: "Danh mục báo cáo tài chính — loại báo cáo/năm/scope hợp nhất/loại hình doanh nghiệp. Master entity FK từ Financial Report Row/Column Template."] {
-  financial_report_catalog_id bigint [pk]
+  "Financial Report Catalog Id" varchar [pk]
 }
 
 Table "Financial Report Row Template" [note: "Định nghĩa hàng trong biểu mẫu BCTC — mã hàng/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
-  financial_report_row_template_id bigint [pk]
-  financial_report_catalog_id bigint
+  "Financial Report Row Template Id" varchar [pk]
+  "Financial Report Catalog Id" varchar
 }
 
 Table "Financial Report Column Template" [note: "Định nghĩa cột trong biểu mẫu BCTC — mã cột/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
-  financial_report_column_template_id bigint [pk]
-  financial_report_catalog_id bigint
+  "Financial Report Column Template Id" varchar [pk]
+  "Financial Report Catalog Id" varchar
 }
 
 Table "Periodic Report Form" [note: "Biểu mẫu báo cáo định kỳ (thường niên/quý/tháng) cho CBTT. Master entity FK từ Periodic Report Form Row/Column Template."] {
-  periodic_report_form_id bigint [pk]
+  "Periodic Report Form Id" varchar [pk]
 }
 
 Table "Periodic Report Form Row Template" [note: "Định nghĩa hàng trong biểu mẫu báo cáo định kỳ — tên/thứ tự/kiểu dữ liệu. FK to Periodic Report Form."] {
-  periodic_report_form_row_template_id bigint [pk]
-  periodic_report_form_id bigint
+  "Periodic Report Form Row Template Id" varchar [pk]
+  "Periodic Report Form Id" varchar
 }
 
 Table "Periodic Report Form Column Template" [note: "Định nghĩa cột trong biểu mẫu báo cáo định kỳ — tên/thứ tự/công thức. FK to Periodic Report Form."] {
-  periodic_report_form_column_template_id bigint [pk]
-  periodic_report_form_id bigint
+  "Periodic Report Form Column Template Id" varchar [pk]
+  "Periodic Report Form Id" varchar
 }
 
 Table "Disclosure Notification" [note: "Instance thông báo CBTT gửi đi — nội dung/tiêu đề/ngày gửi/trạng thái. Grain: 1 lần gửi thông báo. FK to Disclosure Form Definition."] {
-  disclosure_notification_id bigint [pk]
-  disclosure_form_definition_id bigint
+  "Disclosure Notification Id" varchar [pk]
+  "Disclosure Form Definition Id" varchar
 }
 
 Table "Disclosure Form Definition" [note: "Định nghĩa loại hồ sơ/tin CBTT — loại form/quy trình duyệt/nghiệp vụ. Master entity của vòng đời CBTT. Self-join parent_form_id."] {
-  disclosure_form_definition_id bigint [pk]
-  parent_disclosure_form_definition_id bigint
+  "Disclosure Form Definition Id" varchar [pk]
+  "Parent Disclosure Form Definition Id" varchar
 }
 
 Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  public_company_id bigint [pk]
+  "Public Company Id" varchar [pk]
 }
 
 Table "Stock Holder" [note: "Cổ đông giao dịch — cá nhân hoặc tổ chức nắm giữ cổ phần công ty đại chúng. Grain: cổ đông x công ty. FK to Public Company."] {
-  stock_holder_id bigint [pk]
-  public_company_id bigint
+  "Stock Holder Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Audit Firm Legal Representative" [note: "Người đại diện pháp luật của công ty kiểm toán — chức vụ và ngày bổ nhiệm/kết thúc nhiệm kỳ. FK to Audit Firm."] {
-  audit_firm_legal_representative_id bigint [pk]
-  audit_firm_id bigint
+  "Audit Firm Legal Representative Id" varchar [pk]
+  "Audit Firm Id" varchar
 }
 
 Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  involved_party_id bigint
+  "Involved Party Id" varchar
 }
 
 Table "Audit Firm Approval" [note: "Quyết định chấp thuận/đình chỉ công ty kiểm toán từ BTC và UBCKNN — số văn bản/ngày/nội dung. Gộp 2 cơ quan. FK to Audit Firm."] {
-  audit_firm_approval_id bigint [pk]
-  audit_firm_id bigint
+  "Audit Firm Approval Id" varchar [pk]
+  "Audit Firm Id" varchar
 }
 
 Table "Auditor Approval" [note: "Quyết định chấp thuận/đình chỉ kiểm toán viên từ BTC và UBCKNN — chứng chỉ hành nghề/năm chấp thuận. FK to Audit Firm."] {
-  auditor_approval_id bigint [pk]
-  audit_firm_id bigint
+  "Auditor Approval Id" varchar [pk]
+  "Audit Firm Id" varchar
 }
 
 Table "Disclosure Notification Config" [note: "Cấu hình thông báo CBTT — kênh gửi/hệ thống nhận/người quản lý. FK to Disclosure Notification."] {
-  disclosure_notification_config_id bigint [pk]
-  disclosure_notification_id bigint
+  "Disclosure Notification Config Id" varchar [pk]
+  "Disclosure Notification Id" varchar
 }
 
 Table "Public Company Legal Representative" [note: "Người đại diện pháp luật và người CBTT của công ty đại chúng — representative_role_code phân biệt 2 vai trò. FK to Public Company."] {
-  public_company_legal_representative_id bigint [pk]
-  public_company_id bigint
+  "Public Company Legal Representative Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Related Entity" [note: "Công ty mẹ/con/liên kết của công ty đại chúng — tên/MST/vốn/tỷ lệ sở hữu/thời hạn hiệu lực. FK to Public Company."] {
-  public_company_related_entity_id bigint [pk]
-  public_company_id bigint
+  "Public Company Related Entity Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company State Capital" [note: "Thông tin sở hữu nhà nước trong công ty đại chúng — tên đại diện nhà nước và tỷ lệ sở hữu. FK to Public Company."] {
-  public_company_state_capital_id bigint [pk]
-  public_company_id bigint
+  "Public Company State Capital Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Foreign Ownership Limit" [note: "Giới hạn tỷ lệ sở hữu nước ngoài của công ty đại chúng — max_owner_rate và khoảng thời gian áp dụng. FK to Public Company."] {
-  public_company_foreign_ownership_limit_id bigint [pk]
-  public_company_id bigint
+  "Public Company Foreign Ownership Limit Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Stock Holder Trading Account" [note: "Tài khoản giao dịch chứng khoán của cổ đông tại CTCK — số tài khoản và trạng thái. FK to Stock Holder."] {
-  stock_holder_trading_account_id bigint [pk]
-  stock_holder_id bigint
+  "Stock Holder Trading Account Id" varchar [pk]
+  "Stock Holder Id" varchar
 }
 
 Table "Stock Holder Relationship" [note: "Quan hệ giữa các cổ đông giao dịch — loại quan hệ/thời hạn/trạng thái. FK to Stock Holder x 2."] {
-  stock_holder_relationship_id bigint [pk]
-  stock_holder_id bigint
-  related_stock_holder_id bigint
+  "Stock Holder Relationship Id" varchar [pk]
+  "Stock Holder Id" varchar
+  "Related Stock Holder Id" varchar
 }
 
 Table "Stock Control" [note: "Hạn chế chuyển nhượng cổ phiếu của cổ đông — số lượng bị hạn chế/thời gian/loại hạn chế. FK to Stock Holder."] {
-  stock_control_id bigint [pk]
-  stock_holder_id bigint
+  "Stock Control Id" varchar [pk]
+  "Stock Holder Id" varchar
 }
 
 Table "Audit Firm Warning" [note: "Nhắc nhở từ BTC hoặc UBCKNN đến công ty kiểm toán hoặc kiểm toán viên — số văn bản và nội dung. FK nullable: Audit Firm Approval hoặc Auditor Approval."] {
-  audit_firm_warning_id bigint [pk]
-  audit_firm_approval_id bigint
-  auditor_approval_id bigint
+  "Audit Firm Warning Id" varchar [pk]
+  "Audit Firm Approval Id" varchar
+  "Auditor Approval Id" varchar
 }
 
 Table "Audit Firm Sanction" [note: "Xử phạt hành chính đối với công ty kiểm toán hoặc kiểm toán viên — quyết định và nội dung xử phạt. FK nullable: Audit Firm Approval hoặc Auditor Approval."] {
-  audit_firm_sanction_id bigint [pk]
-  audit_firm_approval_id bigint
-  auditor_approval_id bigint
+  "Audit Firm Sanction Id" varchar [pk]
+  "Audit Firm Approval Id" varchar
+  "Auditor Approval Id" varchar
 }
 
 Table "Public Company Capital Mobilization" [note: "Tăng vốn trước khi thành công ty đại chúng — tổng vốn cuối năm và hình thức tăng. Grain: 1 năm x 1 công ty. FK to Public Company."] {
-  public_company_capital_mobilization_id bigint [pk]
-  public_company_id bigint
+  "Public Company Capital Mobilization Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Capital Increase" [note: "Tăng vốn điều lệ sau khi thành công ty đại chúng — vốn cuối năm tài chính và số đợt tăng. FK to Public Company."] {
-  public_company_capital_increase_id bigint [pk]
-  public_company_id bigint
+  "Public Company Capital Increase Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Securities Offering" [note: "Hoạt động chào bán/phát hành chứng khoán — loại CK/kế hoạch/kết quả thực tế theo từng hình thức. FK to Public Company."] {
-  public_company_securities_offering_id bigint [pk]
-  public_company_id bigint
+  "Public Company Securities Offering Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Tender Offer" [note: "Chào mua công khai — bên chào mua/số lượng dự kiến/kết quả/tỷ lệ sở hữu trước-sau. FK to Public Company."] {
-  public_company_tender_offer_id bigint [pk]
-  public_company_id bigint
+  "Public Company Tender Offer Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Treasury Stock Activity" [note: "Giao dịch cổ phiếu quỹ theo năm — số lượng mua/bán và số đợt. FK to Public Company."] {
-  public_company_treasury_stock_activity_id bigint [pk]
-  public_company_id bigint
+  "Public Company Treasury Stock Activity Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Inspection" [note: "Thanh tra/kiểm tra công ty đại chúng — loại/số quyết định/đơn vị chủ trì/biên bản. FK to Public Company."] {
-  public_company_inspection_id bigint [pk]
-  public_company_id bigint
+  "Public Company Inspection Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 Table "Public Company Penalty" [note: "Xử phạt hành chính công ty đại chúng hoặc nhà đầu tư liên quan — hành vi vi phạm và quyết định xử phạt. FK to Public Company."] {
-  public_company_penalty_id bigint [pk]
-  public_company_id bigint
+  "Public Company Penalty Id" varchar [pk]
+  "Public Company Id" varchar
 }
 
 TableGroup "UID01 — Quản lý hồ sơ công ty đại chúng" {
@@ -244,46 +242,46 @@ TableGroup "UID08 — Lịch sử thay đổi (SCD2 kỹ thuật)" {
   "Stock Holder"
 }
 
-Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm".audit_firm_id
-Ref: "Involved Party Postal Address".involved_party_id > "Audit Firm".audit_firm_id
-// Ref: "Involved Party Postal Address".province_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Involved Party Postal Address".geographic_area_id > "Geographic Area".geographic_area_id // out-of-source
-Ref: "Financial Report Row Template".financial_report_catalog_id > "Financial Report Catalog".financial_report_catalog_id
-Ref: "Financial Report Column Template".financial_report_catalog_id > "Financial Report Catalog".financial_report_catalog_id
-Ref: "Periodic Report Form Row Template".periodic_report_form_id > "Periodic Report Form".periodic_report_form_id
-Ref: "Periodic Report Form Column Template".periodic_report_form_id > "Periodic Report Form".periodic_report_form_id
-Ref: "Disclosure Notification".disclosure_form_definition_id > "Disclosure Form Definition".disclosure_form_definition_id
-Ref: "Disclosure Form Definition".parent_disclosure_form_definition_id > "Disclosure Form Definition".disclosure_form_definition_id
-Ref: "Involved Party Postal Address".involved_party_id > "Public Company".public_company_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Public Company".public_company_id
-Ref: "Stock Holder".public_company_id > "Public Company".public_company_id
-Ref: "Involved Party Postal Address".involved_party_id > "Stock Holder".stock_holder_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Stock Holder".stock_holder_id
-Ref: "Audit Firm Legal Representative".audit_firm_id > "Audit Firm".audit_firm_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Audit Firm Legal Representative".audit_firm_legal_representative_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Audit Firm Legal Representative".audit_firm_legal_representative_id
-Ref: "Audit Firm Approval".audit_firm_id > "Audit Firm".audit_firm_id
-Ref: "Auditor Approval".audit_firm_id > "Audit Firm".audit_firm_id
-Ref: "Disclosure Notification Config".disclosure_notification_id > "Disclosure Notification".disclosure_notification_id
-Ref: "Public Company Legal Representative".public_company_id > "Public Company".public_company_id
-Ref: "Involved Party Electronic Address".involved_party_id > "Public Company Legal Representative".public_company_legal_representative_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Public Company Legal Representative".public_company_legal_representative_id
-Ref: "Public Company Related Entity".public_company_id > "Public Company".public_company_id
-Ref: "Public Company State Capital".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Foreign Ownership Limit".public_company_id > "Public Company".public_company_id
-Ref: "Involved Party Alternative Identification".involved_party_id > "Stock Holder".stock_holder_id
-Ref: "Stock Holder Trading Account".stock_holder_id > "Stock Holder".stock_holder_id
-Ref: "Stock Holder Relationship".stock_holder_id > "Stock Holder".stock_holder_id
-Ref: "Stock Holder Relationship".related_stock_holder_id > "Stock Holder".stock_holder_id
-Ref: "Stock Control".stock_holder_id > "Stock Holder".stock_holder_id
-Ref: "Audit Firm Warning".audit_firm_approval_id > "Audit Firm Approval".audit_firm_approval_id
-Ref: "Audit Firm Warning".auditor_approval_id > "Auditor Approval".auditor_approval_id
-Ref: "Audit Firm Sanction".audit_firm_approval_id > "Audit Firm Approval".audit_firm_approval_id
-Ref: "Audit Firm Sanction".auditor_approval_id > "Auditor Approval".auditor_approval_id
-Ref: "Public Company Capital Mobilization".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Capital Increase".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Securities Offering".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Tender Offer".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Treasury Stock Activity".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Inspection".public_company_id > "Public Company".public_company_id
-Ref: "Public Company Penalty".public_company_id > "Public Company".public_company_id
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
+// Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+Ref: "Financial Report Row Template"."Financial Report Catalog Id" > "Financial Report Catalog"."Financial Report Catalog Id"
+Ref: "Financial Report Column Template"."Financial Report Catalog Id" > "Financial Report Catalog"."Financial Report Catalog Id"
+Ref: "Periodic Report Form Row Template"."Periodic Report Form Id" > "Periodic Report Form"."Periodic Report Form Id"
+Ref: "Periodic Report Form Column Template"."Periodic Report Form Id" > "Periodic Report Form"."Periodic Report Form Id"
+Ref: "Disclosure Notification"."Disclosure Form Definition Id" > "Disclosure Form Definition"."Disclosure Form Definition Id"
+Ref: "Disclosure Form Definition"."Parent Disclosure Form Definition Id" > "Disclosure Form Definition"."Disclosure Form Definition Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Public Company"."Public Company Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company"."Public Company Id"
+Ref: "Stock Holder"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Involved Party Postal Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id"
+Ref: "Audit Firm Legal Representative"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm Legal Representative"."Audit Firm Legal Representative Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm Legal Representative"."Audit Firm Legal Representative Id"
+Ref: "Audit Firm Approval"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Auditor Approval"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
+Ref: "Disclosure Notification Config"."Disclosure Notification Id" > "Disclosure Notification"."Disclosure Notification Id"
+Ref: "Public Company Legal Representative"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company Legal Representative"."Public Company Legal Representative Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Public Company Legal Representative"."Public Company Legal Representative Id"
+Ref: "Public Company Related Entity"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company State Capital"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Foreign Ownership Limit"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Stock Holder"."Stock Holder Id"
+Ref: "Stock Holder Trading Account"."Stock Holder Id" > "Stock Holder"."Stock Holder Id"
+Ref: "Stock Holder Relationship"."Stock Holder Id" > "Stock Holder"."Stock Holder Id"
+Ref: "Stock Holder Relationship"."Related Stock Holder Id" > "Stock Holder"."Stock Holder Id"
+Ref: "Stock Control"."Stock Holder Id" > "Stock Holder"."Stock Holder Id"
+Ref: "Audit Firm Warning"."Audit Firm Approval Id" > "Audit Firm Approval"."Audit Firm Approval Id"
+Ref: "Audit Firm Warning"."Auditor Approval Id" > "Auditor Approval"."Auditor Approval Id"
+Ref: "Audit Firm Sanction"."Audit Firm Approval Id" > "Audit Firm Approval"."Audit Firm Approval Id"
+Ref: "Audit Firm Sanction"."Auditor Approval Id" > "Auditor Approval"."Auditor Approval Id"
+Ref: "Public Company Capital Mobilization"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Capital Increase"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Securities Offering"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Tender Offer"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Treasury Stock Activity"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Inspection"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "Public Company Penalty"."Public Company Id" > "Public Company"."Public Company Id"

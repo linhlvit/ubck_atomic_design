@@ -25,10 +25,10 @@
 - **Thời gian lưu trữ:** 5 năm
 - **Định dạng lưu trữ:** Iceberg
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
+|---|---|---|---|---|---|---|---|---|---|---|---|
 {% for a in e.attributes -%}
-| {{ loop.index }} | {{ a.attribute_name }} | {{ a.silver_column }} | {{ a.data_domain | data_domain_to_sql }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} | {{ a.source_system }} | {{ a.source_table }} | {{ a.source_column_name }} | {{ a.comment }} |
+| {{ loop.index }} | {{ a.attribute_name }} | {{ a.silver_column }} | {{ a.data_domain | data_domain_to_sql }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} | {{ a.source_system }}.{{ a.source_table }} | {{ a.source_column_name }} | {{ a | etl_rule }} |
 {% endfor %}
 
 #### 2.{{ idx }}.{{ loop.index + 1 }}.1 Constraint

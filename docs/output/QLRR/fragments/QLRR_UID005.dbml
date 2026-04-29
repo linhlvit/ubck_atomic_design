@@ -6,56 +6,56 @@ Project QLRR_UID005 {
 }
 
 Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
-  risk_indicator_id bigint [pk]
-  risk_indicator_category_id bigint
+  "Risk Indicator Id" varchar [pk]
+  "Risk Indicator Category Id" varchar
 }
 
 Table "Risk Indicator Schedule" [note: "Cấu hình lịch chạy job đồng bộ chỉ tiêu rủi ro (frequency_type/cron_expression). Grain: 1-1 với Risk Indicator. FK → Risk Indicator."] {
-  risk_indicator_schedule_id bigint [pk]
-  risk_indicator_id bigint
+  "Risk Indicator Schedule Id" varchar [pk]
+  "Risk Indicator Id" varchar
 }
 
 Table "Risk Alert Config" [note: "Cấu hình ngưỡng và quy tắc kích hoạt cảnh báo cho từng chỉ tiêu rủi ro. Grain: 1 cấu hình / 1 chỉ tiêu. FK → Risk Indicator."] {
-  risk_alert_config_id bigint [pk]
-  risk_indicator_id bigint
+  "Risk Alert Config Id" varchar [pk]
+  "Risk Indicator Id" varchar
 }
 
 Table "Risk Alert" [note: "Bản ghi cảnh báo rủi ro phát sinh khi chỉ tiêu vượt ngưỡng cấu hình. Grain: 1 lần kích hoạt. Append-only. FK → Risk Alert Config + Risk Indicator."] {
-  risk_alert_id bigint [pk]
-  risk_alert_config_id bigint
-  risk_indicator_id bigint
-  triggered_by_schedule_id bigint
+  "Risk Alert Id" varchar [pk]
+  "Risk Alert Config Id" varchar
+  "Risk Indicator Id" varchar
+  "Triggered By Schedule Id" varchar
 }
 
 Table "Risk Alert Resolution" [note: "Bản ghi xử lý chi tiết cho cảnh báo rủi ro (giải trình hoặc không). Grain: 1 lần xử lý. Append-only. FK → Risk Alert."] {
-  risk_alert_resolution_id bigint [pk]
-  risk_alert_id bigint
+  "Risk Alert Resolution Id" varchar [pk]
+  "Risk Alert Id" varchar
 }
 
 Table "Risk Alert Resolution File" [note: "File đính kèm giải trình cho bản ghi xử lý cảnh báo. Grain: 1 file. FK → Risk Alert Resolution."] {
-  risk_alert_resolution_file_id bigint [pk]
-  risk_alert_resolution_id bigint
+  "Risk Alert Resolution File Id" varchar [pk]
+  "Risk Alert Resolution Id" varchar
 }
 
 Table "Risk Alert History" [note: "Dòng thời gian sự kiện trong vòng đời cảnh báo (phát sinh / xử lý). Grain: 1 sự kiện nghiệp vụ. Append-only. FK → Risk Alert."] {
-  risk_alert_history_id bigint [pk]
-  risk_alert_id bigint
-  risk_alert_resolution_id bigint
+  "Risk Alert History Id" varchar [pk]
+  "Risk Alert Id" varchar
+  "Risk Alert Resolution Id" varchar
 }
 
 Table "Risk Alert Notification" [note: "Thông báo cảnh báo gửi từng kênh (Toast/Bell/Email) đến từng người nhận. Grain: 1 thông báo / 1 người. Append-only. FK → Risk Alert."] {
-  risk_alert_notification_id bigint [pk]
-  risk_alert_id bigint
+  "Risk Alert Notification Id" varchar [pk]
+  "Risk Alert Id" varchar
 }
 
-// Ref: "Risk Indicator".risk_indicator_category_id > "Risk Indicator Category".risk_indicator_category_id // out-of-source
-Ref: "Risk Indicator Schedule".risk_indicator_id > "Risk Indicator".risk_indicator_id
-Ref: "Risk Alert Config".risk_indicator_id > "Risk Indicator".risk_indicator_id
-Ref: "Risk Alert".risk_alert_config_id > "Risk Alert Config".risk_alert_config_id
-Ref: "Risk Alert".risk_indicator_id > "Risk Indicator".risk_indicator_id
-Ref: "Risk Alert".triggered_by_schedule_id > "Risk Indicator Schedule".risk_indicator_schedule_id
-Ref: "Risk Alert Resolution".risk_alert_id > "Risk Alert".risk_alert_id
-Ref: "Risk Alert Resolution File".risk_alert_resolution_id > "Risk Alert Resolution".risk_alert_resolution_id
-Ref: "Risk Alert History".risk_alert_id > "Risk Alert".risk_alert_id
-Ref: "Risk Alert History".risk_alert_resolution_id > "Risk Alert Resolution".risk_alert_resolution_id
-Ref: "Risk Alert Notification".risk_alert_id > "Risk Alert".risk_alert_id
+// Ref: "Risk Indicator"."Risk Indicator Category Id" > "Risk Indicator Category"."Risk Indicator Category Id" // out-of-source
+Ref: "Risk Indicator Schedule"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
+Ref: "Risk Alert Config"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
+Ref: "Risk Alert"."Risk Alert Config Id" > "Risk Alert Config"."Risk Alert Config Id"
+Ref: "Risk Alert"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
+Ref: "Risk Alert"."Triggered By Schedule Id" > "Risk Indicator Schedule"."Risk Indicator Schedule Id"
+Ref: "Risk Alert Resolution"."Risk Alert Id" > "Risk Alert"."Risk Alert Id"
+Ref: "Risk Alert Resolution File"."Risk Alert Resolution Id" > "Risk Alert Resolution"."Risk Alert Resolution Id"
+Ref: "Risk Alert History"."Risk Alert Id" > "Risk Alert"."Risk Alert Id"
+Ref: "Risk Alert History"."Risk Alert Resolution Id" > "Risk Alert Resolution"."Risk Alert Resolution Id"
+Ref: "Risk Alert Notification"."Risk Alert Id" > "Risk Alert"."Risk Alert Id"

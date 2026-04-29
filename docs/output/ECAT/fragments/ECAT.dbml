@@ -5,20 +5,21 @@ Project ECAT {
   Note: "Silver Lakehouse — ECAT"
 }
 
-Table "Geographic Area" [note: ""] {
-  _id bigint
+Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  "Geographic Area Id" varchar [pk]
+  "Parent Geographic Area Id" varchar
 }
 
 Table "Currency" [note: ""] {
-  _id bigint
+  "Currency Id" varchar [pk]
 }
 
 Table "Security" [note: ""] {
-  _id bigint
+  "Security Id" varchar [pk]
 }
 
 Table "Calendar Date" [note: ""] {
-  _id bigint
+  "Calendar Date Id" varchar [pk]
 }
 
 TableGroup "UID01 — Danh mục địa lý hành chính" {
@@ -37,3 +38,4 @@ TableGroup "UID08 — Danh mục lịch & ngày nghỉ" {
   "Calendar Date"
 }
 
+Ref: "Geographic Area"."Parent Geographic Area Id" > "Geographic Area"."Geographic Area Id"

@@ -6,104 +6,104 @@ Project ThanhTra_UID01 {
 }
 
 Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  public_company_id bigint [pk]
+  "Public Company Id" varchar [pk]
 }
 
 Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  securities_company_id bigint [pk]
-  country_of_registration_id bigint
+  "Securities Company Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
 Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  fund_management_company_id bigint [pk]
-  country_of_registration_id bigint
+  "Fund Management Company Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
 Table "Inspection Subject Other Party" [note: "Đối tượng thanh tra khác (cá nhân hoặc tổ chức) không thuộc danh mục CK/QLQ/ĐC. Phân biệt qua party_type_code."] {
-  inspection_subject_other_party_id bigint [pk]
-  country_of_registration_id bigint
+  "Inspection Subject Other Party Id" varchar [pk]
+  "Country of Registration Id" varchar
 }
 
 Table "Inspection Annual Plan" [note: "Kế hoạch thanh tra kiểm tra cấp năm được phê duyệt. Khởi đầu quy trình thanh tra trong năm."] {
-  inspection_annual_plan_id bigint [pk]
+  "Inspection Annual Plan Id" varchar [pk]
 }
 
 Table "Inspection Annual Plan Subject" [note: "Đối tượng thanh tra được đưa vào kế hoạch năm. Grain: 1 đối tượng × 1 kế hoạch."] {
-  inspection_annual_plan_subject_id bigint [pk]
-  inspection_annual_plan_id bigint
+  "Inspection Annual Plan Subject Id" varchar [pk]
+  "Inspection Annual Plan Id" varchar
 }
 
 Table "Inspection Annual Plan Document Attachment" [note: "Văn bản đính kèm kế hoạch thanh tra năm. FK → Inspection Annual Plan."] {
-  inspection_annual_plan_document_attachment_id bigint [pk]
-  inspection_annual_plan_id bigint
+  "Inspection Annual Plan Document Attachment Id" varchar [pk]
+  "Inspection Annual Plan Id" varchar
 }
 
 Table "Inspection Decision" [note: "Quyết định thanh tra/kiểm tra cụ thể. FK → Inspection Annual Plan (nullable — thanh tra đột xuất không có kế hoạch)."] {
-  inspection_decision_id bigint [pk]
-  inspection_annual_plan_id bigint
+  "Inspection Decision Id" varchar [pk]
+  "Inspection Annual Plan Id" varchar
 }
 
 Table "Inspection Decision Subject" [note: "Đối tượng cụ thể được thanh tra theo một quyết định. FK → Inspection Decision."] {
-  inspection_decision_subject_id bigint [pk]
-  inspection_decision_id bigint
+  "Inspection Decision Subject Id" varchar [pk]
+  "Inspection Decision Id" varchar
 }
 
 Table "Inspection Decision Team Member" [note: "Thành viên đoàn thanh tra chỉ định theo quyết định. FK → Inspection Decision + FK → Inspection Officer."] {
-  inspection_decision_team_member_id bigint [pk]
-  inspection_decision_id bigint
-  inspection_officer_id bigint
+  "Inspection Decision Team Member Id" varchar [pk]
+  "Inspection Decision Id" varchar
+  "Inspection Officer Id" varchar
 }
 
 Table "Inspection Decision Document Attachment" [note: "Văn bản đính kèm quyết định thanh tra. FK → Inspection Decision."] {
-  inspection_decision_document_attachment_id bigint [pk]
-  inspection_decision_id bigint
+  "Inspection Decision Document Attachment Id" varchar [pk]
+  "Inspection Decision Id" varchar
 }
 
 Table "Inspection Case" [note: "Hồ sơ thanh tra cụ thể — tập hợp tài liệu và kết quả 1 cuộc thanh tra. FK → Inspection Decision. Thông tin đối tượng denormalized (snapshot tại thời điểm thanh tra)."] {
-  inspection_case_id bigint [pk]
-  inspection_decision_id bigint
-  responsible_officer_id bigint
-  processing_officer_id bigint
+  "Inspection Case Id" varchar [pk]
+  "Inspection Decision Id" varchar
+  "Responsible Officer Id" varchar
+  "Processing Officer Id" varchar
 }
 
 Table "Inspection Case Officer Assignment" [note: "Phân công cán bộ phụ trách hồ sơ thanh tra. FK → Inspection Case + FK → Inspection Officer."] {
-  inspection_case_officer_assignment_id bigint [pk]
-  inspection_case_id bigint
-  inspection_officer_id bigint
+  "Inspection Case Officer Assignment Id" varchar [pk]
+  "Inspection Case Id" varchar
+  "Inspection Officer Id" varchar
 }
 
 Table "Inspection Case Document Attachment" [note: "Văn bản đính kèm hồ sơ thanh tra (biên bản làm việc v.v.). FK → Inspection Case."] {
-  inspection_case_document_attachment_id bigint [pk]
-  inspection_case_id bigint
+  "Inspection Case Document Attachment Id" varchar [pk]
+  "Inspection Case Id" varchar
 }
 
 Table "Inspection Case Conclusion" [note: "Kết luận thanh tra kèm thông tin xử lý vi phạm. FK → Inspection Case."] {
-  inspection_case_conclusion_id bigint [pk]
-  inspection_case_id bigint
+  "Inspection Case Conclusion Id" varchar [pk]
+  "Inspection Case Id" varchar
 }
 
 Table "Inspection Penalty Announcement" [note: "Công bố quyết định xử phạt từ kết luận thanh tra. FK → Inspection Case Conclusion."] {
-  inspection_penalty_announcement_id bigint [pk]
-  inspection_case_id bigint
-  inspection_case_conclusion_id bigint
+  "Inspection Penalty Announcement Id" varchar [pk]
+  "Inspection Case Id" varchar
+  "Inspection Case Conclusion Id" varchar
 }
 
-// Ref: "Securities Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Fund Management Company".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Inspection Subject Other Party".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
-Ref: "Inspection Annual Plan Subject".inspection_annual_plan_id > "Inspection Annual Plan".inspection_annual_plan_id
-Ref: "Inspection Annual Plan Document Attachment".inspection_annual_plan_id > "Inspection Annual Plan".inspection_annual_plan_id
-Ref: "Inspection Decision".inspection_annual_plan_id > "Inspection Annual Plan".inspection_annual_plan_id
-Ref: "Inspection Decision Subject".inspection_decision_id > "Inspection Decision".inspection_decision_id
-Ref: "Inspection Decision Team Member".inspection_decision_id > "Inspection Decision".inspection_decision_id
-// Ref: "Inspection Decision Team Member".inspection_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
-Ref: "Inspection Decision Document Attachment".inspection_decision_id > "Inspection Decision".inspection_decision_id
-Ref: "Inspection Case".inspection_decision_id > "Inspection Decision".inspection_decision_id
-// Ref: "Inspection Case".responsible_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
-// Ref: "Inspection Case".processing_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
-Ref: "Inspection Case Officer Assignment".inspection_case_id > "Inspection Case".inspection_case_id
-// Ref: "Inspection Case Officer Assignment".inspection_officer_id > "Inspection Officer".inspection_officer_id // out-of-source
-Ref: "Inspection Case Document Attachment".inspection_case_id > "Inspection Case".inspection_case_id
-Ref: "Inspection Case Conclusion".inspection_case_id > "Inspection Case".inspection_case_id
-Ref: "Inspection Penalty Announcement".inspection_case_id > "Inspection Case".inspection_case_id
-Ref: "Inspection Penalty Announcement".inspection_case_conclusion_id > "Inspection Case Conclusion".inspection_case_conclusion_id
+// Ref: "Securities Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Fund Management Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+// Ref: "Inspection Subject Other Party"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
+Ref: "Inspection Annual Plan Subject"."Inspection Annual Plan Id" > "Inspection Annual Plan"."Inspection Annual Plan Id"
+Ref: "Inspection Annual Plan Document Attachment"."Inspection Annual Plan Id" > "Inspection Annual Plan"."Inspection Annual Plan Id"
+Ref: "Inspection Decision"."Inspection Annual Plan Id" > "Inspection Annual Plan"."Inspection Annual Plan Id"
+Ref: "Inspection Decision Subject"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
+Ref: "Inspection Decision Team Member"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
+// Ref: "Inspection Decision Team Member"."Inspection Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
+Ref: "Inspection Decision Document Attachment"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
+Ref: "Inspection Case"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
+// Ref: "Inspection Case"."Responsible Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
+// Ref: "Inspection Case"."Processing Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
+Ref: "Inspection Case Officer Assignment"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
+// Ref: "Inspection Case Officer Assignment"."Inspection Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
+Ref: "Inspection Case Document Attachment"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
+Ref: "Inspection Case Conclusion"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
+Ref: "Inspection Penalty Announcement"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
+Ref: "Inspection Penalty Announcement"."Inspection Case Conclusion Id" > "Inspection Case Conclusion"."Inspection Case Conclusion Id"
