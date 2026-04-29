@@ -110,9 +110,9 @@ Phục vụ Sub-tab C — Lịch sử tuân thủ trong NĐTNN 360. Silver từ 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["GS_HO_SO"]
-        S2["GS_VAN_BAN_XU_LY"]
-        S3["DM_TRANG_THAI_HO_SO"]
+        S1["ThanhTra.GS_HO_SO"]
+        S2["ThanhTra.GS_VAN_BAN_XU_LY"]
+        S3["ThanhTra.DM_TRANG_THAI_HO_SO"]
     end
 
     subgraph SIL["Atomic"]

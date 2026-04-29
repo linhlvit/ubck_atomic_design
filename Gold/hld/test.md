@@ -1,440 +1,1639 @@
-# Thiết kế Cơ sở Dữ liệu — Quản lý chào bán (QLCB)
+# Gold Data Mart HLD — Phân hệ Nhà Đầu Tư Nước Ngoài (NDTNN)
+
+**Phiên bản:** 2.5
+**Ngày:** 24/04/2026
+**Phạm vi:** Tab GIAO DỊCH + Tab GIÁM SÁT DÒNG VỐN + Tab DANH MỤC + Tab NĐTNN 360 + Tab BÁO CÁO + Tab DATA EXPLORER
+**Mô hình:** Star Schema (Phân tích) + Denormalized Table (Tác nghiệp)
+**File BA nguồn:** BA_analyst_NDTNN_new.csv
+**Silver source:** FIMS_Source_Analysis.md + ThanhTra_Source_Analysis.md + IDS_Source_Analysis.md + silver_attributes.csv
 
 ---
 
-## 1. Mô hình dữ liệu mức High Level / Conceptual
+## Quy ước trạng thái
 
-### Sơ đồ ERD
+| Ký hiệu | Ý nghĩa |
+|---|---|
+| READY | Silver đủ — thiết kế đầy đủ |
+| PENDING | Silver chưa có — placeholder + lý do |
+
+---
+
+## Section 1 — Data Lineage: Source → Silver → Gold Mart
+
+### Cụm 1: Nhà đầu tư nước ngoài (Foreign Investor)
+
+Phục vụ Tab GIAO DỊCH Nhóm 1 (3 box KPI NĐT mới). Tỷ lệ tham gia (SGDCK) không xuất hiện vì PENDING.
 
 ```mermaid
-erDiagram
-    CALENDAR_DATE_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
-    PUBLIC_COMPANY_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
-    INDUSTRY_CATEGORY_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
-    SECURITIES_OFFERING_360_PROFILE
+flowchart LR
+    subgraph SRC["Source FIMS"]
+        S1["FIMS.INVESTOR"]
+        S2["FIMS.INVESTORTYPE"]
+        S3["FIMS.NATIONAL"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Foreign Investor"]
+        SV2["CV FIMS_INVESTOR_TYPE"]
+        SV3["Geographic Area"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Registration"]
+        G2["Foreign Investor Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV1 --> G2
+    SV2 --> G2
+    SV3 --> G2
+
+    G2 --> G1
+    G3 --> G1
 ```
 
-### Danh sách thực thể
+---
 
-| STT | Thực thể | Tên bảng | Mô tả |
-|---|---|---|---|
-| 1 | Calendar Date Dimension | cdr_dt_dim | Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian |
-| 2 | Public Company Dimension | pblc_co_dim | Công ty đại chúng — mã CK / tên / ngành / sàn niêm yết (SCD2) |
-| 3 | Industry Category Dimension | idy_cgy_dim | Nhóm ngành — ETL-derived Conformed Dim từ Public Company |
-| 4 | Fact Securities Offering | fct_scr_ofrg | Event chào bán/phát hành CK — 1 row per đợt chào bán của 1 công ty đại chúng |
-| 5 | Securities Offering 360 Profile | scr_ofrg_360_prfl | Hồ sơ 360° đợt chào bán — tra cứu chi tiết theo 4 nhóm chỉ số |
+### Cụm 2: NĐTNN 360 — Hồ sơ định danh + Biến động tài sản
+
+Phục vụ Tab NĐTNN 360: danh sách tìm kiếm, hồ sơ định danh, biến động tài sản theo tháng.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source FIMS"]
+        S1["FIMS.INVESTOR"]
+        S2["FIMS.BANKMONI"]
+        S3["FIMS.INVESTORTYPE"]
+        S4["FIMS.NATIONAL"]
+        S5["FIMS.CATEGORIESSTOCK"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Foreign Investor"]
+        SV2["Custodian Bank"]
+        SV3["CV FIMS_INVESTOR_TYPE"]
+        SV4["Geographic Area"]
+        SV5["Foreign Investor Stock Portfolio Snapshot"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Foreign Investor 360 Profile"]
+        G2["Fact Foreign Investor Portfolio Snapshot"]
+        G3["Foreign Investor Dimension"]
+        G5["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+    S5 --> SV5
+
+    SV1 --> G1
+    SV2 --> G1
+    SV5 --> G2
+    SV1 --> G3
+    SV3 --> G3
+    SV4 --> G3
+
+    G3 --> G2
+    G5 --> G2
+```
 
 ---
 
-## 2. Mô hình dữ liệu mức Logic
+### Cụm 3: Lịch sử tuân thủ NĐTNN (Thanh Tra)
 
-### Sơ đồ ERD
+Phục vụ Sub-tab C — Lịch sử tuân thủ trong NĐTNN 360. Silver từ phân hệ Thanh Tra (luồng GS_).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source Thanh Tra"]
+        S1["GS_HO_SO"]
+        S2["GS_VAN_BAN_XU_LY"]
+        S3["DM_TRANG_THAI_HO_SO"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Surveillance Enforcement Case"]
+        SV2["Surveillance Enforcement Decision"]
+        SV3["CV TT_CASE_STATUS"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Investor Compliance History"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+```
+
+---
+
+### Cụm 4: Dòng vốn đầu tư gián tiếp (Capital Flow)
+
+Phục vụ Tab GIÁM SÁT DÒNG VỐN Nhóm 3–5 (dòng tiền vào/ra + phân loại theo loại hình và quốc gia). Silver từ FIMS báo cáo NH lưu ký.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source FIMS"]
+        S1["FIMS.RPTVALUES"]
+        S2["FIMS.RPTMEMBER"]
+        S3["FIMS.INVESTOR"]
+        S4["FIMS.NATIONAL"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Member Report Value"]
+        SV2["Member Regulatory Report"]
+        SV3["Foreign Investor"]
+        SV4["Geographic Area"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Capital Flow"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G2
+    SV4 --> G3
+
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
+```
+
+---
+
+### Cụm 5: Danh mục chứng khoán (Portfolio)
+
+Phục vụ Tab DANH MỤC Nhóm 6–7 + Sub-tab B NĐTNN 360.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source FIMS"]
+        S1["FIMS.CATEGORIESSTOCK"]
+        S2["FIMS.INVESTOR"]
+        S3["FIMS.NATIONAL"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Foreign Investor Stock Portfolio Snapshot"]
+        SV2["Foreign Investor"]
+        SV3["Geographic Area"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Portfolio Snapshot"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Asset Category Dimension"]
+        G5["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G2
+    SV3 --> G3
+
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
+    G5 --> G1
+```
+
+---
+
+### Cụm 6: Giới hạn sở hữu nước ngoài + Phân ngành (IDS)
+
+Phục vụ Tab DANH MỤC Nhóm 8 (Phân ngành) + Nhóm 9 (ROOM). Silver từ IDS (`foreign_owner_limit` + `company_profiles` + `company_detail`).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Source IDS"]
+        S1["IDS.foreign_owner_limit"]
+        S2["IDS.company_profiles"]
+        S3["IDS.company_detail"]
+    end
+
+    subgraph SIL["Silver"]
+        SV1["Public Company Foreign Ownership Limit"]
+        SV2["Public Company"]
+    end
+
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Ownership Snapshot"]
+        G2["Public Company Dimension"]
+        G3["Industry Category Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV2
+
+    SV1 --> G1
+    SV2 --> G2
+    SV2 --> G3
+
+    G2 --> G1
+    G4 --> G1
+```
+
+---
+
+## Section 2 — Tổng quan báo cáo
+
+### Tab: GIAO DỊCH
+
+**Slicer chung:** Ngày (date picker — ví dụ: 12/31/2024)
+
+---
+
+#### Nhóm 1 — KPI Cards tổng quan
+
+**Mockup:**
+
+| Tỷ lệ tham gia | Tăng trưởng NĐT mới | Tăng trưởng NĐT Cá nhân mới | Tăng trưởng NĐT Tổ chức mới |
+|:---:|:---:|:---:|:---:|
+| **12.4** % | **2,450** Mã | **1,830** Mã | **620** Mã |
+
+---
+
+##### PENDING — Box 1: Tỷ lệ tham gia (STT 1–4)
+
+**KPI liên quan:** Tỷ lệ tham gia, Tổng giá trị mua NĐTNN, Tổng giá trị bán NĐTNN, Tổng giá trị giao dịch toàn thị trường
+
+**Lý do pending:** Công thức `(GT mua + GT bán NĐTNN) × 100 / (GT GD toàn thị trường × 2)` phụ thuộc hoàn toàn vào dữ liệu khớp lệnh từ SGDCK. Silver entity cho giao dịch chứng khoán của NĐTNN chưa được thiết kế — không có entity FIMS nào thay thế được cho use case này.
+
+**Silver cần bổ sung:** Entity giao dịch CK NĐTNN từ SGDCK với attributes: Foreign Investor Buy Value, Foreign Investor Sell Value, Total Market Value, mã CK, ngày GD, sàn (HOSE/HNX/UPCoM).
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày giao dịch.
+
+---
+
+##### READY — Box 2–4: Tăng trưởng NĐT mới (STT 5–7)
+
+> Phân loại: **Phân tích**
+> Silver: `Foreign Investor` ← FIMS.INVESTOR — sẵn sàng
+> Registration Date: FIMS.INVESTOR.DateCreated → Silver attribute `Created Timestamp`
+
+**Source:** `Fact Foreign Investor Registration` → `Foreign Investor Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
+|---|---|---|---|---|
+| K_NDTNN_5 | Tăng trưởng NĐT mới | Mã | Flow (Base) | `COUNT(Investor Dimension Id)` WHERE `Registration Date` BETWEEN `01/01/Year(selected)` AND `selected_date` |
+| K_NDTNN_6 | Tăng trưởng NĐT Cá nhân mới | Mã | Flow (Base) | K_NDTNN_5 + filter `Foreign Investor Dimension.Investor Object Type Code = 'INDIVIDUAL'` |
+| K_NDTNN_7 | Tăng trưởng NĐT Tổ chức mới | Mã | Flow (Base) | K_NDTNN_5 + filter `Foreign Investor Dimension.Investor Object Type Code IN ('FUND', 'OTHER_ORG')` |
+| K_NDTNN_5_YOY | YoY% NĐT mới | % | Derived | `(K_NDTNN_5[Year=Y] − K_NDTNN_5[Year=Y−1]) / K_NDTNN_5[Year=Y−1] × 100%` |
+
+> **Lưu ý:** K_NDTNN_5, 6, 7 là Base — COUNT trực tiếp event trên fact, không derive từ KPI khác. K6 + K7 = K5 (partition disjoint theo ObjectType). YTD = đếm event trong khoảng ngày, không cần diff giữa 2 snapshot. YoY là Derived — tính ở presentation layer.
+
+**Star Schema:**
 
 ```mermaid
 erDiagram
-    SECURITIES_OFFERING_360_PROFILE["Securities Offering 360 Profile"] {
-        string Securities_Offering_Code PK
-        string Public_Company_Code
-        string Public_Company_Name
-        string Public_Company_English_Name
-        string Equity_Ticker
-        string Industry_Category_Level1_Code
-        string Industry_Category_Level2_Code
-        string Equity_Listing_Exchange_Code
-        string Security_Type_Code
-        string Offering_Type_Category_Code
-        string Certificate_Number
-        date Certificate_Issue_Date
-        string SSC_Official_Document_Number
-        date SSC_Official_Document_Date
-        date Offering_Start_Date
-        date Offering_End_Date
-        string Multi_Offering_Flag
-        string Created_By_Login_Name
-        int Planned_Security_Quantity
-        float Planned_Proceeds_Amount
-        float Planned_Offering_Price
-        string Planned_Offering_Target
-        int Planned_Employee_Quantity
-        string Capital_Usage_Plan
-        string Advisory_Firm_Name
-        string Audit_Organization_Name
-        string Underwriter_Name
-        string Credit_Rating_Agency_Name
-        int Successful_Security_Quantity
-        float Actual_Proceeds_Amount
-        float Result_Offering_Price
-        string Result_Offering_Target
-        int Result_Employee_Quantity
-        timestamp Population_Date
-    }
-
-    CALENDAR_DATE_DIMENSION["Calendar Date Dimension"] {
-        string Date_Dimension_Id PK
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
         date Full_Date
         int Year
-        int Quarter
         int Month
-        string Month_Name
-        int Day_Of_Week
-        string Is_Weekend
+        int Day_Of_Year
     }
-
-    PUBLIC_COMPANY_DIMENSION["Public Company Dimension"] {
-        string Public_Company_Dimension_Id PK
-        string Public_Company_Id
-        string Public_Company_Code
-        string Public_Company_Name
-        string Public_Company_English_Name
-        string Equity_Ticker
-        string Industry_Category_Level1_Code FK
-        string Industry_Category_Level2_Code FK
-        string Equity_Listing_Exchange_Code FK
+    Foreign_Investor_Dimension {
+        int Investor_Dimension_Id PK
+        int Investor_Id
+        string Investor_Name
+        varchar Investor_Object_Type_Code
+        varchar Investor_Type_Code
+        varchar Nationality_Code
+        varchar Custodian_Bank_Code
         date Effective_Date
         date Expiry_Date
     }
+    Fact_Foreign_Investor_Registration {
+        int Registration_Date
+        int Investor_Dimension_Id FK
+        int Registration_Date_Dimension_Id FK
+        datetime Population_Date
+    }
 
-    INDUSTRY_CATEGORY_DIMENSION["Industry Category Dimension"] {
-        string Industry_Category_Dimension_Id PK
-        string Industry_Category_Level1_Code
-        string Industry_Category_Level1_Name
-        string Industry_Category_Level2_Code
-        string Industry_Category_Level2_Name
-        date Effective_Date
-        date Expiry_Date
-    }
-    
-    FACT_SECURITIES_OFFERING["Fact Securities Offering"] {
-        string SSC_Official_Document_Date_Dimension_Id FK
-        string Public_Company_Dimension_Id FK
-        string Industry_Category_Dimension_Id FK
-        string Securities_Offering_Code FK
-        string Security_Type_Code 
-        string Offering_Type_Category_Code 
-        int Planned_Security_Quantity
-        float Planned_Proceeds_Amount
-        int Successful_Security_Quantity
-        float Actual_Proceeds_Amount
-        date Certificate_Issue_Date
-        date Offering_Start_Date
-        date Offering_End_Date
-        date SSC_Official_Document_Date
-        timestamp Population_Date
-    }
-    
-    SECURITIES_OFFERING_360_PROFILE ||--o{ FACT_SECURITIES_OFFERING : " "
-    CALENDAR_DATE_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
-    PUBLIC_COMPANY_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
-    INDUSTRY_CATEGORY_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Registration : "Registration Date Dimension Id"
+    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Registration : "Investor Dimension Id"
 ```
 
-### Danh sách các bảng và thuộc tính
+**Lineage Mart → Báo cáo:**
 
-#### Calendar Date Dimension
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Registration"]
+        G2["Foreign Investor Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab GIAO DICH - Nhom 1 - Tang truong NDT moi - K_NDTNN_5 6 7"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
 
-| STT | Tên trường | Kiểu dữ liệu | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | Date Dimension Id | string | | X | P | | Surrogate key ETL generated |
-| 2 | Full Date | date | X | | | | Ngày dương lịch đầy đủ |
-| 3 | Year | int | X | | | | Năm (YYYY) |
-| 4 | Quarter | int | X | | | | Quý (1–4) |
-| 5 | Month | int | X | | | | Tháng (1–12) |
-| 6 | Month Name | string | X | | | | Tên tháng (tiếng Việt) |
-| 7 | Day Of Week | int | X | | | | Thứ trong tuần (1=Thứ 2 ... 7=Chủ nhật) |
-| 8 | Is Weekend | boolean | X | | | | Cuối tuần (True/False) |
+**Bảng grain:**
 
-#### Public Company Dimension
-
-| STT | Tên trường | Kiểu dữ liệu | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | Public Company Dimension Id | string | | X | P | | Surrogate key ETL generated |
-| 2 | Public Company Id | string | | | | | Silver surrogate Id của công ty đại chúng. ETL join key. |
-| 3 | Public Company Code | string | X | | | | Mã định danh công ty đại chúng (BK nguồn) |
-| 4 | Public Company Name | string | X | | | | Tên công ty đại chúng (tiếng Việt) |
-| 5 | Public Company English Name | string | X | | | | Tên công ty đại chúng (tiếng Anh) |
-| 6 | Equity Ticker | string | X | | | | Mã chứng khoán cổ phiếu |
-| 7 | Industry Category Level1 Code | string | | | F | | Mã ngành cấp 1 |
-| 8 | Industry Category Level2 Code | string | | | F | | Mã ngành cấp 2 |
-| 9 | Equity Listing Exchange Code | string | | | F | | Sàn niêm yết cổ phiếu (HNX/HOSE/UPCoM) |
-| 10 | Effective Date | date | X | | | | Ngày hiệu lực SCD2 |
-| 11 | Expiry Date | date | X | | | | Ngày hết hiệu lực SCD2 |
-
-#### Industry Category Dimension
-
-| STT | Tên trường | Kiểu dữ liệu | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | Industry Category Dimension Id | string | | X | P | | Surrogate key ETL generated |
-| 2 | Industry Category Level1 Code | string | | | | | Mã ngành cấp 1 (BK) |
-| 3 | Industry Category Level1 Name | string | X | | | | Tên ngành cấp 1 (tiếng Việt) |
-| 4 | Industry Category Level2 Code | string | X | | | | Mã ngành cấp 2 |
-| 5 | Industry Category Level2 Name | string | X | | | | Tên ngành cấp 2 (tiếng Việt) |
-| 6 | Effective Date | date | X | | | | Ngày hiệu lực SCD2 |
-| 7 | Expiry Date | date | X | | | | Ngày hết hiệu lực SCD2 |
-
-#### Fact Securities Offering
-
-| STT | Tên trường | Kiểu dữ liệu | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | SSC Official Document Date Dimension Id | string | | | F | | FK lịch theo ngày công văn UBCKNN |
-| 2 | Public Company Dimension Id | string | | | F | | FK công ty đại chúng |
-| 3 | Industry Category Dimension Id | string | | | F | | FK ngành cấp 1 |
-| 4 | Securities Offering Code | string | X | | | | Mã đợt chào bán (Degenerate Dimension) |
-| 5 | Security Type Code | string | | | F | | Loại CK phát hành |
-| 6 | Offering Type Category Code | string | | | F | | Loại hình chào bán (ETL derived) |
-| 7 | Planned Security Quantity | int | X | | | | Tổng số CK dự kiến chào bán |
-| 8 | Planned Proceeds Amount | decimal | X | | | | Tổng tiền dự kiến thu được (VNĐ) |
-| 9 | Successful Security Quantity | int | X | | | | Tổng số CK chào bán thành công |
-| 10 | Actual Proceeds Amount | decimal | X | | | | Tổng tiền thực thu (VNĐ) |
-| 11 | Certificate Issue Date | date | X | | | | Ngày cấp GCN chào bán |
-| 12 | Offering Start Date | date | X | | | | Ngày bắt đầu chào bán CK |
-| 13 | Offering End Date | date | X | | | | Ngày kết thúc chào bán CK |
-| 14 | SSC Official Document Date | date | X | | | | Ngày công văn UBCKNN |
-| 15 | Population Date | timestamp | X | | | | ETL load timestamp |
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Registration | 1 row = 1 NĐT NN đăng ký mã giao dịch (event — 1 lần duy nhất per NĐT) |
+| Foreign Investor Dimension | 1 row = 1 NĐT NN (SCD2) |
+| Calendar Date Dimension | 1 row = 1 ngày đăng ký |
 
 ---
 
-## 3. Mô hình dữ liệu mức Physical
+#### Nhóm 2 — Tổng giá trị mua/bán ròng của NĐTNN
 
-### Sơ đồ ERD
+**Mockup:**
+
+| Bar chart | Lũy kế mua/bán ròng |
+|:---|---:|
+| Trục X: Tháng (Jan → Oct) | -8,300 B |
+| Trục Y: Giá trị (tỉ đồng) | (lũy kế kỳ chọn) |
+
+| TOP NGÀNH BÁN RÒNG | | TOP NGÀNH MUA RÒNG | | TOP MÃ BÁN RÒNG | | TOP MÃ MUA RÒNG | |
+|:---|---:|:---|---:|:---|---:|:---|---:|
+| Bất động sản | -1200B | Ngân hàng | +4500B | VHM | -700B | HPG | +3300B |
+| Thực phẩm | -450B | Thép / Tài nguyên | +2800B | MSN | -400B | VCB | +600B |
+| Khác | -200B | Công nghệ | +1200B | VIC | -1300B | FPT | +2400B |
+| Tiện ích | -300B | Dầu khí | +150B | VNM | -1300B | TCB | +1300B |
+| Dịch vụ tài chính | -150B | Bán lẻ | +600B | STB | -700B | MWG | +1700B |
+
+**Slicer:** Từ ngày — Đến ngày (date range picker)
+
+---
+
+##### PENDING — Nhóm 2: Tổng GT mua/bán ròng + Lũy kế + Top ngành/mã (STT 8–16)
+
+**KPI liên quan:**
+
+| STT | Tên KPI | Ghi chú |
+|---|---|---|
+| 8 | Giá trị mua/bán ròng (theo tháng) | Bar chart — GT mua − GT bán per tháng |
+| 11 | Lũy kế mua/bán ròng | SUM(GT ròng) trong khoảng ngày chọn |
+| 13 | Top 5 ngành bán ròng | GROUP BY ngành, 5 ngành có GT ròng âm lớn nhất |
+| 14 | Top 5 ngành mua ròng | GROUP BY ngành, 5 ngành có GT ròng dương lớn nhất |
+| 15 | Top 5 mã bán ròng | GROUP BY mã CK, 5 mã có GT ròng âm lớn nhất |
+| 16 | Top 5 mã mua ròng | GROUP BY mã CK, 5 mã có GT ròng dương lớn nhất |
+| — | Tỷ trọng GD theo ngày | (GT mua + GT bán NĐTNN) / (GT GD toàn thị trường × 2) per ngày |
+| — | Tổng GT GD NĐTNN | GT mua + GT bán NĐTNN per ngày |
+| — | Tỷ trọng TB phiên | Trung bình tỷ trọng trong khoảng thời gian chọn |
+
+**Lý do pending:** Tất cả KPI phụ thuộc dữ liệu khớp lệnh từ SGDCK. Top ngành cần thêm IDS-GSĐC để map mã CK → nhóm ngành. Không có Silver entity FIMS nào thay thế được.
+
+**Silver cần bổ sung:**
+- `Securities Foreign Trading Record` (SGDCK): Foreign Investor Buy/Sell Value, Total Market Value, mã CK, ngày GD, sàn
+- `Listed Security` (SGDCK): mã CK, tên, sàn
+- `Industry` (IDS-GSĐC): nhóm ngành, map với mã CK
+
+**Mart dự kiến khi Silver sẵn sàng:**
+- `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày GD
+- `Listed Security Dimension` — SCD2
+- `Industry Dimension` — SCD2
+
+---
+
+#### Nhóm 3 — Tỷ trọng giao dịch NĐTNN
+
+**Mockup** *(theo screenshot)*:
+
+```
+TỶ TRỌNG GIAO DỊCH NĐTNN                    TỶ TRỌNG TB PHIÊN
+Toàn bộ thị trường với nhóm ngành                        12.4%
+
+Line chart — Trục X: ngày / Trục Y: % tỷ trọng (0–20%)
+Series: Tỷ trọng GD NĐTNN theo ngày
+
+TỶ TRỌNG THEO NGÀNH          TOP MÃ TỶ TRỌNG CAO
+Ngân hàng        19.8%        FPT   53.3%
+Bất động sản     18.4%        MWG   58.8%
+Thép/Tài nguyên  14.3%        PNJ   42.4%
+Thực phẩm        16.4%        MBB   52.7%
+Công nghệ        16.7%        CTG   63.8%
+```
+
+**Slicer:** Từ ngày — Đến ngày (date range picker)
+
+---
+
+##### PENDING — Nhóm 3: Tỷ trọng GD NĐTNN (STT 17–21)
+
+**KPI liên quan:**
+
+| KPI ID | Tên KPI | Ghi chú |
+|---|---|---|
+| K_NDTNN_17 | Tỷ trọng TB phiên | (GT mua + GT bán NĐTNN) / (GT GD toàn thị trường × 2) trung bình trong khoảng ngày chọn |
+| K_NDTNN_18 | Tỷ trọng GD NĐTNN theo ngày | Line chart — tỷ trọng per ngày GD |
+| K_NDTNN_19 | Tỷ trọng theo ngành | (GT GD NĐTNN của ngành X) / (GT GD NĐTNN tổng) × 100% GROUP BY ngành |
+| K_NDTNN_20 | Top mã tỷ trọng cao — Tỷ lệ sở hữu | Tỷ lệ sở hữu NĐTNN per mã CK (%) — từ `Fact Foreign Ownership Snapshot` |
+| K_NDTNN_21 | Tổng GT GD NĐTNN theo ngày | GT mua + GT bán NĐTNN per ngày |
+
+> **Lưu ý phân tách nguồn:**
+> - K_NDTNN_17, 18, 19, 21: nguồn SGDCK (khớp lệnh) — PENDING
+> - K_NDTNN_20 (Tỷ lệ sở hữu per mã): nguồn IDS (`Fact Foreign Ownership Snapshot`) — **READY**. Đã thiết kế tại Nhóm 9 Tab DANH MỤC (K_NDTNN_45)
+
+**Lý do pending (K_NDTNN_17–19, 21):** Phụ thuộc dữ liệu khớp lệnh từ SGDCK — GT mua/bán NĐTNN per ngày, GT GD toàn thị trường per ngày. Không có Silver entity FIMS thay thế.
+
+**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK) — Foreign Investor Buy/Sell Value per ngày GD, Total Market Value per ngày GD, mã CK, nhóm ngành.
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày GD (dùng chung với Nhóm 2).
+
+---
+
+### Tab: GIÁM SÁT DÒNG VỐN
+
+**Slicer chung:** Từ ngày — Đến ngày (date range picker)
+
+---
+
+#### Nhóm 3 — KPI Cards: Dòng tiền vào / ra / ròng (STT 23–25)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Value` ← FIMS.RPTVALUES + `Member Regulatory Report` ← FIMS.RPTMEMBER — sẵn sàng
+
+**Mockup:**
+
+| Dòng tiền vào | Dòng tiền ra | Dòng tiền ròng |
+|:---:|:---:|:---:|
+| **1,284.3** Tỉ đồng | **1,736.8** Tỉ đồng | **-452.5** Tỉ đồng |
+
+**Source:** `Fact Foreign Investor Capital Flow` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
+|---|---|---|---|---|
+| K_NDTNN_23 | Dòng tiền vào | Tỉ đồng | Flow (Base) | `SUM(Capital Amount)` WHERE `Event Type Code = 'IN'` AND `Event Date` BETWEEN Từ ngày AND Đến ngày |
+| K_NDTNN_24 | Dòng tiền ra | Tỉ đồng | Flow (Base) | `SUM(Capital Amount)` WHERE `Event Type Code = 'OUT'` AND `Event Date` BETWEEN Từ ngày AND Đến ngày |
+| K_NDTNN_25 | Dòng tiền ròng | Tỉ đồng | Derived | `K_NDTNN_23 − K_NDTNN_24` |
+
+**Star Schema:**
 
 ```mermaid
 erDiagram
-    CALENDAR_DATE_DIMENSION["Calendar Date Dimension"] {
-        string dt_dim_id PK
-        date full_dt
-        int yr
-        int qtr
-        int mo
-        string mo_nm
-        int day_of_wk
-        string is_weekend
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
     }
-    PUBLIC_COMPANY_DIMENSION["Public Company Dimension"] {
-        string pblc_co_dim_id PK
-        string pblc_co_id
-        string pblc_co_code
-        string pblc_co_nm
-        string pblc_co_english_nm
-        string eqty_ticker
-        string idy_cgy_level1_code FK
-        string idy_cgy_level2_code FK
-        string eqty_listing_exg_code FK
-        date eff_dt
-        date expiry_dt
+    Fact_Foreign_Investor_Capital_Flow {
+        int Report_Date_Dimension_Id FK
+        int Investor_Dimension_Id FK
+        int Country_Dimension_Id FK
+        varchar Event_Type_Code
+        float Capital_Amount
+        datetime Population_Date
     }
-    INDUSTRY_CATEGORY_DIMENSION["Industry Category Dimension"] {
-        string idy_cgy_dim_id PK
-        string idy_cgy_level1_code
-        string idy_cgy_level1_nm
-        string idy_cgy_level2_code
-        string idy_cgy_level2_nm
-        date eff_dt
-        date expiry_dt
-    }
-    FACT_SECURITIES_OFFERING["Fact Securities Offering"] {
-        string ssc_offc_doc_dt_dim_id FK
-        string pblc_co_dim_id FK
-        string idy_cgy_dim_id FK
-        string scr_ofrg_code
-        string scr_tp_code FK
-        string ofrg_tp_cgy_code FK
-        int pln_scr_qty
-        float pln_procd_amt
-        int scss_scr_qty
-        float act_procd_amt
-        date ctf_issu_dt
-        date ofrg_strt_dt
-        date ofrg_end_dt
-        date ssc_offc_doc_dt
-        timestamp ppn_dt
-    }
-    SECURITIES_OFFERING_360_PROFILE["Securities Offering 360 Profile"] {
-        string scr_ofrg_code PK
-        string pblc_co_code
-        string pblc_co_nm
-        string pblc_co_english_nm
-        string eqty_ticker
-        string idy_cgy_level1_code
-        string idy_cgy_level2_code
-        string eqty_listing_exg_code
-        string scr_tp_code
-        string ofrg_tp_cgy_code
-        string ctf_nbr
-        date ctf_issu_dt
-        string ssc_offc_doc_nbr
-        date ssc_offc_doc_dt
-        date ofrg_strt_dt
-        date ofrg_end_dt
-        string multi_ofrg_f
-        string crt_by_login_nm
-        int pln_scr_qty
-        float pln_procd_amt
-        float pln_ofrg_prc
-        string pln_ofrg_trgt
-        int pln_empe_qty
-        string cptl_usg_pln
-        string advisory_firm_nm
-        string audt_org_nm
-        string underwriter_nm
-        string cr_rtg_agnc_nm
-        int scss_scr_qty
-        float act_procd_amt
-        float rslt_ofrg_prc
-        string rslt_ofrg_trgt
-        int rslt_empe_qty
-        timestamp ppn_dt
-    }
-    CALENDAR_DATE_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
-    PUBLIC_COMPANY_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
-    INDUSTRY_CATEGORY_DIMENSION ||--o{ FACT_SECURITIES_OFFERING : " "
+
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Report Date Dimension Id"
 ```
 
-### Dimension — Calendar Date Dimension (cdr_dt_dim)
+**Lineage Mart → Báo cáo:**
 
-*Mô tả bảng:* Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Capital Flow"]
+        G2["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab GIAM SAT DONG VON - Nhom 3 - K_NDTNN_23 24 25"]
+    end
+    G1 --> R1
+    G2 --> R1
+```
 
-*Đường dẫn trên kho dữ liệu:*
+**Bảng grain:**
 
-*Các trường Partition:*
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Capital Flow | 1 row = 1 sự kiện vào/ra vốn của 1 NĐT NN (Event — FIMS.RPTMEMBER × cell code IN/OUT) |
+| Calendar Date Dimension | 1 row = 1 ngày (Report Date = FIMS.RPTMEMBER.DayReport) |
 
-*Thời gian lưu trữ:*
+---
 
-*Định dạng lưu trữ:*
+#### Nhóm 4 — Tương quan Net Flow & VN-Index (không STT trong BRD)
 
-| STT | Tên trường (Logical) | Tên trường (Physical) | Kiểu dữ liệu | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Silver Table | Silver Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Date Dimension Id | dt_dim_id | string | | X | P | | Surrogate key ETL generated | | | ETL derived |
-| 2 | Full Date | full_dt | date | X | | | | Ngày dương lịch đầy đủ | | | ETL derived |
-| 3 | Year | yr | int | X | | | | Năm (YYYY) | | | ETL derived |
-| 4 | Quarter | qtr | int | X | | | | Quý (1–4) | | | ETL derived |
-| 5 | Month | mo | int | X | | | | Tháng (1–12) | | | ETL derived |
-| 6 | Month Name | mo_nm | string | X | | | | Tên tháng (tiếng Việt) | | | ETL derived |
-| 7 | Day Of Week | day_of_wk | int | X | | | | Thứ trong tuần (1=Thứ 2 ... 7=Chủ nhật) | | | ETL derived |
-| 8 | Is Weekend | is_weekend | boolean | X | | | | Cuối tuần (True/False) | | | ETL derived |
+> Phân loại: **Phân tích**
+> Silver FIMS: `Member Report Value` — sẵn sàng (dòng tiền ròng)
+> Silver SGDCK: chưa có (Giá trị mua/bán ròng + VN-Index)
 
-### Dimension — Public Company Dimension (pblc_co_dim)
+**Mockup** *(theo screenshot — 3 series line chart dual Y-axis)*:
 
-*Mô tả bảng:* Công ty đại chúng — mã CK / tên / ngành / sàn niêm yết (SCD2)
+| Series | Nguồn | Trục Y | Trạng thái |
+|:---|:---|:---|:---|
+| MUA/BÁN RÒNG (đỏ) | SGDCK | Trái (Tỉ đồng) | PENDING |
+| DÒNG TIỀN RÒNG (xanh lá) | FIMS | Trái (Tỉ đồng) | READY |
+| VN-INDEX (tím) | SGDCK | Phải (Điểm) | PENDING |
 
-*Đường dẫn trên kho dữ liệu:*
+> **Ghi chú thiết kế:** 3 series từ 3 fact riêng biệt — presentation layer chịu trách nhiệm query độc lập và align theo trục tháng. Series Dòng tiền ròng reuse `Fact Foreign Investor Capital Flow` (Nhóm 3). 2 series còn lại chờ Silver SGDCK.
 
-*Các trường Partition:*
+**Bảng KPI:**
 
-*Thời gian lưu trữ:*
+| KPI ID | Tên | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_25b | Dòng tiền ròng lũy kế (tháng) | Derived — reuse K_NDTNN_25 aggregate by tháng | READY |
+| K_NDTNN_22 | Giá trị mua/bán ròng (tháng) | Derived — từ `Fact Securities Foreign Trading Snapshot` | PENDING — chờ Silver SGDCK |
+| K_NDTNN_24b | Điểm đóng cửa VN-Index | Base — từ `Fact Market Index Snapshot` | PENDING — chờ Silver SGDCK |
 
-*Định dạng lưu trữ:*
+---
 
-| STT | Tên trường (Logical) | Tên trường (Physical) | Kiểu dữ liệu | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Silver Table | Silver Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Public Company Dimension Id | pblc_co_dim_id | string | | X | P | | Surrogate key ETL generated | | | ETL derived |
-| 2 | Public Company Id | pblc_co_id | string | | | | | Silver surrogate Id của công ty đại chúng — IDS.company_profiles (PK Silver). ETL join key. | Public Company | Public Company Id | SM1:1 |
-| 3 | Public Company Code | pblc_co_code | string | X | | | | Mã định danh công ty đại chúng (BK nguồn) — IDS.company_profiles.id | Public Company | Public Company Code | SM1:1 |
-| 4 | Public Company Name | pblc_co_nm | string | X | | | | Tên công ty đại chúng (tiếng Việt) — IDS.company_profiles.company_name_vn | Public Company | Public Company Name | SM1:1 |
-| 5 | Public Company English Name | pblc_co_english_nm | string | X | | | | Tên công ty đại chúng (tiếng Anh) — IDS.company_profiles.company_name_en | Public Company | Public Company English Name | SM1:1 |
-| 6 | Equity Ticker | eqty_ticker | string | X | | | | Mã chứng khoán cổ phiếu (hiển thị trên UI) — IDS.company_profiles.equity_ticker | Public Company | Equity Ticker | SM1:1 |
-| 7 | Industry Category Level1 Code | idy_cgy_level1_code | string | | | F | | Mã ngành cấp 1 — IDS.company_detail.category_l1_id | Public Company | Industry Category Level1 Code | SM1:1 |
-| 8 | Industry Category Level2 Code | idy_cgy_level2_code | string | | | F | | Mã ngành cấp 2 — IDS.company_detail.category_l2_id | Public Company | Industry Category Level2 Code | SM1:1 |
-| 9 | Equity Listing Exchange Code | eqty_listing_exg_code | string | | | F | | Sàn niêm yết cổ phiếu (HNX/HOSE/UPCoM) — IDS.company_profiles.equity_listing_exch_cd | Public Company | Equity Listing Exchange Code | SM1:1 |
-| 10 | Effective Date | eff_dt | date | X | | | | Ngày hiệu lực SCD2 | | | ETL derived |
-| 11 | Expiry Date | expiry_dt | date | X | | | | Ngày hết hiệu lực SCD2 (9999-12-31 = bản hiện hành) | | | ETL derived |
+#### Nhóm 5 — Dòng vốn đầu tư gián tiếp nước ngoài (không STT trong BRD)
 
-### Dimension — Industry Category Dimension (idy_cgy_dim)
+> Phân loại: **Phân tích**
+> Silver: `Member Report Value` + `Foreign Investor` — sẵn sàng
 
-*Mô tả bảng:* Nhóm ngành — ETL-derived Conformed Dim từ Public Company.category_l1/l2_id. Tái sử dụng cross-module.
+**Mockup** *(theo screenshot — stacked bar theo tháng + 4 bảng Top)*:
 
-*Đường dẫn trên kho dữ liệu:*
+| Stacked bar | Trục X | Trục Y | Legend |
+|:---|:---|:---|:---|
+| Dòng vốn ròng theo loại hình NĐT | Tháng T1→T12 | Tỉ đồng | Cá nhân / Quỹ / Tổ chức khác quỹ |
 
-*Các trường Partition:*
+| TOP QUỐC GIA VÀO RÒNG | | TOP QUỐC GIA RÚT RÒNG | |
+|:---|---:|:---|---:|
+| Singapore | +450B | Trung Quốc | -380B |
+| Hoa Kỳ | +320B | Đài Loan | -210B |
+| Nhật Bản | +210B | Thái Lan | -165B |
 
-*Thời gian lưu trữ:*
+| TOP NĐT VÀO RÒNG | | TOP NĐT RÚT RÒNG | |
+|:---|---:|:---|---:|
+| Dragon Capital | +185B | iShares MSCI | -210B |
+| Fubon ETF | +162B | KIM Vietnam | -178B |
 
-*Định dạng lưu trữ:*
+**Slicer:** Từ ngày — Đến ngày + Loại hình NĐTNN + Quốc gia
 
-| STT | Tên trường (Logical) | Tên trường (Physical) | Kiểu dữ liệu | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Silver Table | Silver Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Industry Category Dimension Id | idy_cgy_dim_id | string | | X | P | | Surrogate key ETL generated | | | ETL derived |
-| 2 | Industry Category Level1 Code | idy_cgy_level1_code | string | | | | | Mã ngành cấp 1 (BK) — IDS.company_detail.category_l1_id. ETL extract từ Public Company. | Public Company | Industry Category Level1 Code | SM1:1 |
-| 3 | Industry Category Level1 Name | idy_cgy_level1_nm | string | X | | | | Tên ngành cấp 1 (tiếng Việt) — ETL lookup từ bảng danh mục ngành IDS | | | ETL derived |
-| 4 | Industry Category Level2 Code | idy_cgy_level2_code | string | X | | | | Mã ngành cấp 2 — IDS.company_detail.category_l2_id | Public Company | Industry Category Level2 Code | SM1:1 |
-| 5 | Industry Category Level2 Name | idy_cgy_level2_nm | string | X | | | | Tên ngành cấp 2 (tiếng Việt) — ETL lookup từ bảng danh mục ngành IDS | | | ETL derived |
-| 6 | Effective Date | eff_dt | date | X | | | | Ngày hiệu lực SCD2 | | | ETL derived |
-| 7 | Expiry Date | expiry_dt | date | X | | | | Ngày hết hiệu lực SCD2 (9999-12-31 = bản hiện hành) | | | ETL derived |
+**Source:** `Fact Foreign Investor Capital Flow` → `Foreign Investor Dimension`, `Geographic Area Dimension`, `Calendar Date Dimension`
 
-### Fact — Fact Securities Offering (fct_scr_ofrg)
+**Bảng KPI:**
 
-*Mô tả bảng:* Event chào bán/phát hành CK — 1 row per đợt chào bán của 1 công ty đại chúng
+| KPI ID | Tên | Tính chất | Công thức / Mô tả |
+|---|---|---|---|
+| K_NDTNN_26 | Dòng vốn ròng | Derived | `SUM(Capital Amount WHERE IN) − SUM(Capital Amount WHERE OUT)` GROUP BY tháng / loại hình / quốc gia |
+| K_NDTNN_27 | Dòng vốn ròng — Quỹ | Derived | K_NDTNN_26 WHERE `Foreign Investor Dimension.Investor Object Type Code = 'FUND'` |
+| K_NDTNN_28 | Dòng vốn ròng — Cá nhân | Derived | K_NDTNN_26 WHERE `Foreign Investor Dimension.Investor Object Type Code = 'INDIVIDUAL'` |
+| K_NDTNN_29 | Dòng vốn ròng — Tổ chức khác quỹ | Derived | K_NDTNN_26 WHERE `Foreign Investor Dimension.Investor Object Type Code = 'OTHER_ORG'` |
+| K_NDTNN_30 | Top 5 quốc gia vào ròng | Derived | `SUM(IN) − SUM(OUT)` GROUP BY `Geographic Area Dimension.Geographic Area Name`, WHERE > 0, TOP 5 DESC |
+| K_NDTNN_31 | Top 5 quốc gia rút ròng | Derived | Tương tự K_NDTNN_30, WHERE < 0, TOP 5 ASC |
+| K_NDTNN_32 | Top 5 NĐT vào ròng | Derived | `SUM(IN) − SUM(OUT)` GROUP BY `Foreign Investor Dimension.Investor Name`, WHERE > 0, TOP 5 DESC |
+| K_NDTNN_33 | Top 5 NĐT rút ròng | Derived | Tương tự K_NDTNN_32, WHERE < 0, TOP 5 ASC |
 
-*Đường dẫn trên kho dữ liệu:*
+**Star Schema:**
 
-*Các trường Partition:*
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+    }
+    Foreign_Investor_Dimension {
+        int Investor_Dimension_Id PK
+        int Investor_Id
+        string Investor_Name
+        varchar Investor_Object_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+    Geographic_Area_Dimension {
+        int Geographic_Area_Dimension_Id PK
+        int Geographic_Area_Id
+        string Geographic_Area_Name
+        date Effective_Date
+        date Expiry_Date
+    }
+    Fact_Foreign_Investor_Capital_Flow {
+        int Report_Date_Dimension_Id FK
+        int Investor_Dimension_Id FK
+        int Country_Dimension_Id FK
+        varchar Event_Type_Code
+        float Capital_Amount
+        datetime Population_Date
+    }
 
-*Thời gian lưu trữ:*
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Report Date Dimension Id"
+    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Investor Dimension Id"
+    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Country Dimension Id"
+```
 
-*Định dạng lưu trữ:*
+**Lineage Mart → Báo cáo:**
 
-| STT | Tên trường (Logical) | Tên trường (Physical) | Kiểu dữ liệu | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Silver Table | Silver Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | SSC Official Document Date Dimension Id | ssc_offc_doc_dt_dim_id | string | | | F | | FK lịch theo ngày công văn UBCKNN — ETL lookup từ Public Company Securities Offering.SSC Official Document Date | Public Company Securities Offering | SSC Official Document Date | SM1:1 |
-| 2 | Public Company Dimension Id | pblc_co_dim_id | string | | | F | | FK công ty đại chúng — ETL lookup từ Public Company Securities Offering.Public Company Id | Public Company Securities Offering | Public Company Id | SM1:1 |
-| 3 | Industry Category Dimension Id | idy_cgy_dim_id | string | | | F | | FK ngành cấp 1 — ETL lookup từ Public Company.Industry Category Level1 Code tại thời điểm ssc_official_doc_date | Public Company | Industry Category Level1 Code | SM1:1 |
-| 4 | Securities Offering Code | scr_ofrg_code | string | X | | | | Mã đợt chào bán (Degenerate Dimension) — IDS.company_securities_issuance.id | Public Company Securities Offering | Public Company Securities Offering Code | SM1:1 |
-| 5 | Security Type Code | scr_tp_code | string | | | F | | Loại CK phát hành — IDS.company_securities_issuance.security_type_cd | Public Company Securities Offering | Security Type Code | SM1:1 |
-| 6 | Offering Type Category Code | ofrg_tp_cgy_code | string | | | F | | Loại hình chào bán (ETL derived từ planned_qty cao nhất) | | | ETL derived |
-| 7 | Planned Security Quantity | pln_scr_qty | int | X | | | | Tổng số CK dự kiến chào bán — IDS.company_securities_issuance.planned_security_qty | Public Company Securities Offering | Planned Security Quantity | SM1:1 |
-| 8 | Planned Proceeds Amount | pln_procd_amt | decimal(23,2) | X | | | | Tổng tiền dự kiến thu được (VNĐ) — IDS.company_securities_issuance.planned_proceeds_am | Public Company Securities Offering | Planned Proceeds Amount | SM1:1 |
-| 9 | Successful Security Quantity | scss_scr_qty | int | X | | | | Tổng số CK chào bán thành công — IDS.company_securities_issuance.successful_security_qty | Public Company Securities Offering | Successful Security Quantity | SM1:1 |
-| 10 | Actual Proceeds Amount | act_procd_amt | decimal(23,2) | X | | | | Tổng tiền thực thu (VNĐ) — IDS.company_securities_issuance.actual_proceeds_am | Public Company Securities Offering | Actual Proceeds Amount | SM1:1 |
-| 11 | Certificate Issue Date | ctf_issu_dt | date | X | | | | Ngày cấp GCN chào bán (lưu thêm làm reference) | Public Company Securities Offering | Certificate Issue Date | SM1:1 |
-| 12 | Offering Start Date | ofrg_strt_dt | date | X | | | | Ngày bắt đầu chào bán CK — IDS.company_securities_issuance.offering_start_date | Public Company Securities Offering | Offering Start Date | SM1:1 |
-| 13 | Offering End Date | ofrg_end_dt | date | X | | | | Ngày kết thúc chào bán CK — IDS.company_securities_issuance.offering_end_date | Public Company Securities Offering | Offering End Date | SM1:1 |
-| 14 | SSC Official Document Date | ssc_offc_doc_dt | date | X | | | | Ngày công văn UBCKNN — FK date chính trên Fact | Public Company Securities Offering | SSC Official Document Date | SM1:1 |
-| 15 | Population Date | ppn_dt | timestamp | X | | | | ETL load timestamp | | | ETL derived |
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Capital Flow"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab GIAM SAT DONG VON - Nhom 5 - K_NDTNN_26-33"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+    G4 --> R1
+```
 
-### Operational — Securities Offering 360 Profile (scr_ofrg_360_prfl)
+**Bảng grain:**
 
-*Mô tả bảng:* Hồ sơ 360° đợt chào bán — tra cứu chi tiết theo 4 nhóm chỉ số (Thông tin cơ sở / Công văn / Cấp phép / Kết quả)
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Capital Flow | 1 row = 1 sự kiện vào/ra vốn của 1 NĐT NN (Event) |
+| Foreign Investor Dimension | 1 row = 1 NĐT NN (SCD2) |
+| Geographic Area Dimension | 1 row = 1 quốc gia (SCD2) |
+| Calendar Date Dimension | 1 row = 1 ngày (Report Date = FIMS.RPTMEMBER.DayReport) |
 
-*Đường dẫn trên kho dữ liệu:*
+---
 
-*Các trường Partition:*
+### Tab: DANH MỤC
 
-*Thời gian lưu trữ:*
+**Slicer chung:** Kỳ (Tháng + Năm) cho danh mục / Ngày (date picker) cho ROOM
 
-*Định dạng lưu trữ:*
+---
 
-| STT | Tên trường (Logical) | Tên trường (Physical) | Kiểu dữ liệu | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Silver Table | Silver Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Securities Offering Code | scr_ofrg_code | string |  | X | P | | Mã đợt chào bán (PK bảng tác nghiệp) — IDS.company_securities_issuance.id | Public Company Securities Offering | Public Company Securities Offering Code | SM1:1 |
-| 2 | Public Company Code | pblc_co_code | string | X |  |  | | Mã định danh công ty đại chúng — IDS.company_profiles.id | Public Company | Public Company Code | SM1:1 |
-| 3 | Public Company Name | pblc_co_nm | string | X |  |  | | Tên công ty đại chúng (tiếng Việt) — IDS.company_profiles.company_name_vn | Public Company | Public Company Name | SM1:1 |
-| 4 | Public Company English Name | pblc_co_english_nm | string | X |  |  | | Tên công ty đại chúng (tiếng Anh) — IDS.company_profiles.company_name_en | Public Company | Public Company English Name | SM1:1 |
-| 5 | Equity Ticker | eqty_ticker | string | X |  |  | | Mã chứng khoán cổ phiếu (hiển thị trên UI) — IDS.company_profiles.equity_ticker | Public Company | Equity Ticker | SM1:1 |
-| 6 | Industry Category Level1 Code | idy_cgy_level1_code | string | X |  |  | | Mã ngành cấp 1 — IDS.company_detail.category_l1_id | Public Company | Industry Category Level1 Code | SM1:1 |
-| 7 | Industry Category Level2 Code | idy_cgy_level2_code | string | X |  |  | | Mã ngành cấp 2 — IDS.company_detail.category_l2_id | Public Company | Industry Category Level2 Code | SM1:1 |
-| 8 | Equity Listing Exchange Code | eqty_listing_exg_code | string | X |  |  | | Sàn niêm yết — IDS.company_profiles.equity_listing_exch_cd | Public Company | Equity Listing Exchange Code | SM1:1 |
-| 9 | Security Type Code | scr_tp_code | string | X |  |  | | Loại CK phát hành — IDS.company_securities_issuance.security_type_cd. Scheme: IDS_ISSUANCE_SECURITY_TYPE | Public Company Securities Offering | Security Type Code | SM1:1 |
-| 10 | Offering Type Category Code | ofrg_tp_cgy_code | string | X |  |  | | Loại hình chào bán (ETL derived) — Scheme: QLCB_OFFERING_TYPE_CATEGORY. Xem O_QLCB_1 (Closed). |  |  | ETL derived |
-| 11 | Certificate Number | ctf_nbr | string | X |  |  | | Số GCN chào bán — IDS.company_securities_issuance.certificate_no | Public Company Securities Offering | Certificate Number | SM1:1 |
-| 12 | Certificate Issue Date | ctf_issu_dt | date | X |  |  | | Ngày cấp GCN chào bán — IDS.company_securities_issuance.certificate_issue_date | Public Company Securities Offering | Certificate Issue Date | SM1:1 |
-| 13 | SSC Official Document Number | ssc_offc_doc_nbr | string | X |  |  | | Số công văn UBCKNN — IDS.company_securities_issuance.ssc_official_doc_no | Public Company Securities Offering | SSC Official Document Number | SM1:1 |
-| 14 | SSC Official Document Date | ssc_offc_doc_dt | date | X |  |  | | Ngày ra công văn UBCKNN — IDS.company_securities_issuance.ssc_official_doc_date | Public Company Securities Offering | SSC Official Document Date | SM1:1 |
-| 15 | Offering Start Date | ofrg_strt_dt | date | X |  |  | | Ngày bắt đầu chào bán CK — IDS.company_securities_issuance.offering_start_date | Public Company Securities Offering | Offering Start Date | SM1:1 |
-| 16 | Offering End Date | ofrg_end_dt | date | X |  |  | | Ngày kết thúc chào bán CK — IDS.company_securities_issuance.offering_end_date | Public Company Securities Offering | Offering End Date | SM1:1 |
-| 17 | Multi Offering Flag | multi_ofrg_f | boolean | X |  |  | | Có chào bán nhiều đợt — IDS.company_securities_issuance.multi_offering_flg | Public Company Securities Offering | Multi Offering Flag | SM1:1 |
-| 18 | Created By Login Name | crt_by_login_nm | string | X |  |  | | Chuyên viên (login_name kỹ thuật) — IDS.company_securities_issuance.created_by. Xem O_QLCB_5 (Closed). | Public Company Securities Offering | Created By Login Name | SM1:1 |
-| 19 | Planned Security Quantity | pln_scr_qty | int | X |  |  | | Tổng số CK dự kiến chào bán — IDS.company_securities_issuance.planned_security_qty | Public Company Securities Offering | Planned Security Quantity | SM1:1 |
-| 20 | Planned Proceeds Amount | pln_procd_amt | decimal(23,2) | X |  |  | | Tổng tiền dự kiến thu được (VNĐ) — IDS.company_securities_issuance.planned_proceeds_am | Public Company Securities Offering | Planned Proceeds Amount | SM1:1 |
-| 21 | Planned Offering Price | pln_ofrg_prc | decimal(23,2) | X |  |  | | Giá cấp phép theo loại hình chính (ETL pick theo Offering Type Category Code). Xem O_QLCB_5 (Closed). |  |  | ETL derived |
-| 22 | Planned Offering Target | pln_ofrg_trgt | string | X |  |  | | Đối tượng cấp phép theo loại hình chính (ETL pick). Xem O_QLCB_5. |  |  | ETL derived |
-| 23 | Planned Employee Quantity | pln_empe_qty | int | X |  |  | | Số lượng NLĐ cấp phép theo loại hình chính (ETL pick). Xem O_QLCB_5. |  |  | ETL derived |
-| 24 | Capital Usage Plan | cptl_usg_pln | string | X |  |  | | Mục đích sử dụng vốn — IDS.company_securities_issuance.capital_usage_plan | Public Company Securities Offering | Capital Usage Plan | SM1:1 |
-| 25 | Advisory Firm Name | advisory_firm_nm | string | X |  |  | | Đơn vị tư vấn — PENDING (nguồn TTHC chưa có Silver). Xem O_QLCB_2. |  |  | ETL derived |
-| 26 | Audit Organization Name | audt_org_nm | string | X |  |  | | Tổ chức kiểm toán — PENDING (nguồn TTHC chưa có Silver). Xem O_QLCB_2. |  |  | ETL derived |
-| 27 | Underwriter Name | underwriter_nm | string | X |  |  | | Đơn vị bảo lãnh — PENDING (nguồn TTHC chưa có Silver). Xem O_QLCB_2. |  |  | ETL derived |
-| 28 | Credit Rating Agency Name | cr_rtg_agnc_nm | string | X |  |  | | Đơn vị xếp hạng tín nhiệm — PENDING (nguồn TTHC chưa có Silver). Xem O_QLCB_2. |  |  | ETL derived |
-| 29 | Successful Security Quantity | scss_scr_qty | int | X |  |  | | Tổng số CK chào bán thành công — IDS.company_securities_issuance.successful_security_qty | Public Company Securities Offering | Successful Security Quantity | SM1:1 |
-| 30 | Actual Proceeds Amount | act_procd_amt | decimal(23,2) | X |  |  | | Tổng tiền thực thu (VNĐ) — IDS.company_securities_issuance.actual_proceeds_am | Public Company Securities Offering | Actual Proceeds Amount | SM1:1 |
-| 31 | Result Offering Price | rslt_ofrg_prc | decimal(23,2) | X |  |  | | Giá thực tế theo loại hình chính (ETL pick). Xem O_QLCB_5. |  |  | ETL derived |
-| 32 | Result Offering Target | rslt_ofrg_trgt | string | X |  |  | | Đối tượng thực tế theo loại hình chính (ETL pick). Xem O_QLCB_5. |  |  | ETL derived |
-| 33 | Result Employee Quantity | rslt_empe_qty | int | X |  |  | | Số lượng NLĐ thực tế theo loại hình chính (ETL pick). Xem O_QLCB_5. |  |  | ETL derived |
-| 34 | Population Date | ppn_dt | timestamp | X |  |  | | ETL load timestamp |  |  | ETL derived |
+#### Nhóm 6 — KPI Cards + Top: Tổng giá trị danh mục (không STT)
+
+> Phân loại: **Phân tích**
+> Silver: `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK) — sẵn sàng. Xem O_NDTNN_5 về nguồn giá trị thị trường.
+
+**Mockup** *(theo screenshot)*:
+
+| Tổng GTDM | Danh mục Cá nhân | Danh mục Quỹ | Danh mục Tổ chức khác quỹ |
+|:---:|:---:|:---:|:---:|
+| **1,315** Tỉ đồng | **284.6** Tỉ đồng | **752.3** Tỉ đồng | **278.1** Tỉ đồng |
+
+| TOP QUỐC GIA | | TOP NĐT | |
+|:---|---:|:---|---:|
+| Singapore | 312.4B | Dragon Capital | 198.5B |
+| Hoa Kỳ | 284.1B | VinaCapital | 167.3B |
+| Nhật Bản | 198.7B | Fubon ETF | 145.8B |
+
+**Source:** `Fact Foreign Investor Portfolio Snapshot` → `Foreign Investor Dimension`, `Geographic Area Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
+|---|---|---|---|---|
+| K_NDTNN_34 | Tổng giá trị danh mục | Tỉ đồng | Stock (Base) | `SUM(Portfolio Market Value)` WHERE Snapshot Month = tháng chọn |
+| K_NDTNN_35 | Danh mục Cá nhân | Tỉ đồng | Derived | K_NDTNN_34 WHERE `Foreign Investor Dimension.Investor Object Type Code = 'INDIVIDUAL'` |
+| K_NDTNN_36 | Danh mục Quỹ | Tỉ đồng | Derived | K_NDTNN_34 WHERE `Foreign Investor Dimension.Investor Object Type Code = 'FUND'` |
+| K_NDTNN_37 | Danh mục Tổ chức khác quỹ | Tỉ đồng | Derived | K_NDTNN_34 WHERE `Foreign Investor Dimension.Investor Object Type Code = 'OTHER_ORG'` |
+| K_NDTNN_38 | Top 5 quốc gia theo GTDM | Tỉ đồng | Derived | `SUM(Portfolio Market Value)` GROUP BY `Geographic Area Dimension.Geographic Area Name`, TOP 5 DESC |
+| K_NDTNN_39 | Top 5 NĐT theo GTDM | Tỉ đồng | Derived | `SUM(Portfolio Market Value)` GROUP BY `Foreign Investor Dimension.Investor Name`, TOP 5 DESC |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+    }
+    Foreign_Investor_Dimension {
+        int Investor_Dimension_Id PK
+        int Investor_Id
+        string Investor_Name
+        varchar Investor_Object_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+    Geographic_Area_Dimension {
+        int Geographic_Area_Dimension_Id PK
+        int Geographic_Area_Id
+        string Geographic_Area_Name
+        date Effective_Date
+        date Expiry_Date
+    }
+    Fact_Foreign_Investor_Portfolio_Snapshot {
+        int Snapshot_Date
+        int Investor_Dimension_Id FK
+        int Snapshot_Date_Dimension_Id FK
+        int Country_Dimension_Id FK
+        float Quantity
+        float Ownership_Rate
+        float Portfolio_Market_Value
+        datetime Population_Date
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
+    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Investor Dimension Id"
+    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Country Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Portfolio Snapshot"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DANH MUC - Nhom 6 KPI GTDM - K_NDTNN_34-39"]
+        R2["Tab DANH MUC - Nhom 7 Co cau tai san - K_NDTNN_40-44"]
+        R3["NDTNN 360 - Sub-tab B Bien dong tai san - K_NDTNN_A1 A2"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+    G4 --> R1
+    G1 --> R2
+    G1 --> R3
+    G2 --> R3
+    G4 --> R3
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Portfolio Snapshot | 1 row = 1 NĐT NN × 1 mã tài sản × 1 tháng snapshot |
+| Foreign Investor Dimension | 1 row = 1 NĐT NN (SCD2) |
+| Geographic Area Dimension | 1 row = 1 quốc gia (SCD2) |
+| Calendar Date Dimension | 1 row = 1 ngày (ngày cuối tháng = Snapshot Date) |
+
+---
+
+#### Nhóm 7 — Cơ cấu danh mục theo loại hình tài sản (không STT)
+
+> Phân loại: **Phân tích**
+> Silver: `Foreign Investor Stock Portfolio Snapshot` — sẵn sàng. Xem O_NDTNN_2b về mapping 5 loại tài sản.
+
+**Mockup** *(theo screenshot — donut chart)*:
+
+```mermaid
+pie showData
+    title Cơ cấu danh mục theo loại hình tài sản (T4/2023)
+    "Cổ phiếu, CCQ niêm yết" : 55
+    "Trái phiếu" : 19
+    "UPCoM" : 10
+    "Vốn góp, CP tu & CK khác" : 8
+    "Tiền & tương đương tiền" : 8
+```
+
+**Source:** `Fact Foreign Investor Portfolio Snapshot` → `Asset Category Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
+|---|---|---|---|---|
+| K_NDTNN_40 | GT tài sản — Cổ phiếu/CCQ niêm yết | Tỉ đồng | Derived | `SUM(Portfolio Market Value)` WHERE `Asset Category Dimension.Asset Category Code = 'LISTED_EQUITY'` |
+| K_NDTNN_41 | GT tài sản — Trái phiếu | Tỉ đồng | Derived | WHERE `Asset Category Dimension.Asset Category Code = 'BOND'` |
+| K_NDTNN_42 | GT tài sản — UPCoM | Tỉ đồng | Derived | WHERE `Asset Category Dimension.Asset Category Code = 'UPCOM'` |
+| K_NDTNN_43 | GT tài sản — Vốn góp/CP tư/CK khác | Tỉ đồng | Derived | WHERE `Asset Category Dimension.Asset Category Code = 'OTHER_EQUITY'` |
+| K_NDTNN_44 | GT tài sản — Tiền và tương đương | Tỉ đồng | Derived | WHERE `Asset Category Dimension.Asset Category Code = 'CASH'` |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+    }
+    Asset_Category_Dimension {
+        int Asset_Category_Dimension_Id PK
+        varchar Asset_Category_Code
+        string Asset_Category_Name
+        date Effective_Date
+        date Expiry_Date
+    }
+    Fact_Foreign_Investor_Portfolio_Snapshot {
+        int Snapshot_Date
+        int Snapshot_Date_Dimension_Id FK
+        int Asset_Category_Dimension_Id FK
+        float Portfolio_Market_Value
+        datetime Population_Date
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
+    Asset_Category_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Asset Category Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Portfolio Snapshot | 1 row = 1 NĐT NN × 1 mã tài sản × 1 tháng |
+| Asset Category Dimension | 1 row = 1 loại tài sản (SCD2) |
+| Calendar Date Dimension | 1 row = 1 ngày (ngày cuối tháng) |
+
+---
+
+#### Nhóm 8 — Bản đồ nhiệt phân ngành (không STT — nguồn IDS)
+
+> Phân loại: **Phân tích**
+> Silver: `Public Company` (IDS.company_profiles + IDS.company_detail — có `Industry Category Level1/Level2 Code`) — sẵn sàng
+> **Ghi chú thiết kế:** `Industry Category Dimension` là Conformed Dim được ETL extract từ `Public Company.Industry Category Level1/Level2 Code` — Silver không có entity riêng cho danh mục ngành, nhưng Gold tạo Dim riêng để (1) đúng ngữ nghĩa khi GROUP BY ngành, (2) tái sử dụng cross-module (QLKD, NHNCK). Đây là pattern **ETL-derived Conformed Dimension** — `source_entity` trong attributes CSV ghi `Public Company`.
+> Join chain: `Fact Foreign Investor Portfolio Snapshot` → mã CK → `Public Company` (IDS) → `Industry Category Dimension`
+
+**Mockup** *(theo screenshot — treemap)*:
+
+```mermaid
+pie showData
+    title Tỷ trọng danh mục NĐTNN theo nhóm ngành (T4/2026)
+    "Ngân hàng" : 35.4
+    "Bất động sản" : 22.1
+    "Sản xuất" : 15.2
+    "Bán lẻ" : 8.5
+    "Công nghệ" : 7.4
+    "Dầu khí" : 4.2
+    "Khác" : 7.2
+```
+
+**Ghi chú thiết kế:** `FIMS.CATEGORIESSTOCK` có mã CK (`SecId`). Join sang `Public Company` qua mã CK → lấy `Industry Category Level1 Code` từ `Public Company.Industry Category Level1 Code`. ETL Gold join cross-source (FIMS × IDS).
+
+**Source:** `Fact Foreign Investor Portfolio Snapshot` → `Industry Category Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
+|---|---|---|---|---|
+| K_NDTNN_51 | Tỷ trọng danh mục theo ngành | % | Derived | `SUM(Portfolio Market Value) WHERE Industry Category Dimension.Industry Category Name = X / SUM(Portfolio Market Value) × 100%` GROUP BY `Industry Category Dimension.Industry Category Name` |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+    }
+    Industry_Category_Dimension {
+        int Industry_Category_Dimension_Id PK
+        varchar Industry_Category_Code
+        string Industry_Category_Name
+        varchar Parent_Category_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+    Fact_Foreign_Investor_Portfolio_Snapshot {
+        int Snapshot_Date
+        int Snapshot_Date_Dimension_Id FK
+        int Industry_Category_Dimension_Id FK
+        float Portfolio_Market_Value
+        datetime Population_Date
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
+    Industry_Category_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Industry Category Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Portfolio Snapshot"]
+        G2["Industry Category Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DANH MUC - Nhom 8 Phan nganh - K_NDTNN_51"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Portfolio Snapshot | 1 row = 1 NĐT NN × 1 mã tài sản × 1 tháng |
+| Industry Category Dimension | 1 row = 1 nhóm ngành — ETL extract từ Public Company.Industry Category Level1 Code (IDS) |
+| Calendar Date Dimension | 1 row = 1 ngày (ngày cuối tháng) |
+
+---
+
+#### Nhóm 9 — Sở hữu NĐT nước ngoài ROOM (không STT — nguồn IDS)
+
+> Phân loại: **Phân tích**
+> Silver: `Public Company Foreign Ownership Limit` (IDS.foreign_owner_limit) + `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK) — sẵn sàng
+> K_NDTNN_45–49: READY. K_NDTNN_50 (Room theo ngành): PENDING — cần join thêm Industry Category
+
+**Mockup** *(theo screenshot)*:
+
+| MÃ "KÍN ROOM" (Foreign Owned = 100%) | | CHẠM NGƯỠNG CẢNH BÁO (Room còn lại < 5%) | |
+|:---|---|:---|---|
+| FPT | | MWG | 0.5% |
+| | | PNJ | 0.8% |
+
+| SỞ HỮU NĐT NƯỚC NGOÀI (ROOM) — Room theo ngành (%) | |
+|:---|---:|
+| Ngân hàng | 80% |
+| Thép / Tài nguyên | 52% |
+| Bất động sản | 62% |
+| Thực phẩm | 55% |
+
+**Ghi chú thiết kế:**
+- `Room tối đa` = `Public Company Foreign Ownership Limit.Max Ownership Rate` (IDS) — grain per công ty × khoảng ngày hiệu lực
+- `Tỷ lệ sở hữu hiện tại` = `Foreign Investor Stock Portfolio Snapshot.Ownership Rate` (FIMS) — tổng % per mã CK
+- `Room còn lại` = `Max Ownership Rate − Ownership Rate` — tính ở query time
+- Fact grain = 1 mã CK × 1 ngày → ETL join FIMS.CATEGORIESSTOCK + IDS.foreign_owner_limit theo mã CK tại ngày snapshot
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Tính chất | Mô tả | Trạng thái |
+|---|---|---|---|---|
+| K_NDTNN_45 | Tỷ lệ sở hữu (theo mã CK) | Base | `SUM(Ownership Rate)` per mã CK — từ `Fact Foreign Ownership Snapshot` | READY |
+| K_NDTNN_46 | Room tối đa | Base | `Max Ownership Rate` — từ `Public Company Foreign Ownership Limit` (IDS) | READY |
+| K_NDTNN_47 | Room còn lại (%) | Derived | `K_NDTNN_46 − K_NDTNN_45` — tính query time | READY |
+| K_NDTNN_48 | Danh sách kín room (Room còn lại = 0) | Derived | Filter `K_NDTNN_47 = 0` — hiển thị danh sách mã CK | READY |
+| K_NDTNN_49 | Danh sách cảnh báo (Room còn lại < 5%) | Derived | Filter `K_NDTNN_47 < 5` ORDER BY Room còn lại ASC | READY |
+| K_NDTNN_50 | Room theo ngành (%) | Derived | `SUM(Quantity NĐT) / SUM(Tổng cổ phiếu) × 100%` GROUP BY ngành | PENDING — cần `Industry Category Dimension` |
+
+**Source:** `Fact Foreign Ownership Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+    }
+    Public_Company_Dimension {
+        int Public_Company_Dimension_Id PK
+        varchar Stock_Code
+        string Public_Company_Name
+        varchar Industry_Category_Level1_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+    Fact_Foreign_Ownership_Snapshot {
+        int Snapshot_Date
+        int Public_Company_Dimension_Id FK
+        int Snapshot_Date_Dimension_Id FK
+        float Total_Ownership_Rate
+        float Max_Ownership_Rate
+        float Remaining_Room_Rate
+        datetime Population_Date
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Ownership_Snapshot : "Snapshot Date Dimension Id"
+    Public_Company_Dimension ||--o{ Fact_Foreign_Ownership_Snapshot : "Public Company Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Ownership Snapshot"]
+        G2["Public Company Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DANH MUC - Nhom 9 ROOM - K_NDTNN_45-49"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| `Fact Foreign Ownership Snapshot` | 1 row = 1 mã CK × 1 ngày snapshot |
+| `Public Company Dimension` | 1 row = 1 công ty đại chúng (SCD2) |
+| `Calendar Date Dimension` | 1 row = 1 ngày |
+
+---
+
+### Tab: NĐTNN 360
+
+**Mô tả chung:** Tra cứu hồ sơ 360° của từng NĐT nước ngoài. Chọn NĐT qua thanh tìm kiếm (Mã FII hoặc Tên NĐT) → hiển thị 3 sub-tab: Hồ sơ định danh / Biến động tài sản / Lịch sử tuân thủ.
+
+**Slicer chung:** Mã FII hoặc Tên NĐT (search box) + Date picker.
+
+---
+
+#### Danh sách tìm kiếm NĐT
+
+**Mockup:**
+
+| # | Tên NĐT | Mã MSGD | Quốc gia | Loại hình | |
+|---|---|---|---|---|---|
+| 01 | Công ty A | FII001 | UK/VN | INSTITUTIONAL | 360° → |
+| 02 | Quỹ tín dụng B | FII002 | Taiwan | INSTITUTIONAL | 360° → |
+| 03 | Công ty C | FII003 | USA/Global | SPECIAL | 360° → |
+| 04 | Công ty D | FII004 | USA | INSTITUTIONAL | 360° → |
+| 05 | Quỹ tín dụng E | FII005 | Korea | INDIVIDUAL | 360° → |
+
+**Source:** `Foreign Investor 360 Profile`
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Tính chất | Mô tả |
+|---|---|---|---|
+| K_NDTNN_L1 | Tên NĐT | Attribute | `Foreign Investor 360 Profile.Investor Name` |
+| K_NDTNN_L2 | Mã MSGD | Attribute | `Foreign Investor 360 Profile.Investor Code` (= Transaction Code) |
+| K_NDTNN_L3 | Quốc gia | Attribute | `Foreign Investor 360 Profile.Nationality Code` |
+| K_NDTNN_L4 | Loại hình | Attribute | `Foreign Investor 360 Profile.Investor Type Code` |
+
+---
+
+#### Sub-tab A: Hồ sơ định danh — READY
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Foreign Investor` (FIMS.INVESTOR) + `Custodian Bank` (FIMS.BANKMONI)
+
+**Mockup:**
+
+| THÔNG TIN CƠ BẢN | | ĐẠI DIỆN GIAO DỊCH |
+|---|---|---|
+| QUỐC TỊCH | UK/VN | NGUYỄN VĂN A |
+| MÃ SỐ GIAO DỊCH (MSGD) | FII001 | CCCD: 0123xxxx5678 |
+| NGÂN HÀNG LƯU KÝ | Ngân hàng A | Status: Verified |
+| LOẠI HÌNH NĐT | Institutional | |
+
+**Source:** `Foreign Investor 360 Profile` — lookup 1 NĐT theo Mã FII.
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Tính chất | Mô tả — column trong bảng tác nghiệp |
+|---|---|---|---|
+| K_NDTNN_P1 | Quốc tịch | Attribute | `Nationality Code` — từ FIMS.INVESTOR.NaId lookup |
+| K_NDTNN_P2 | Mã số giao dịch (MSGD) | Attribute | `Investor Code` = Transaction Code — FIMS.INVESTOR.TransactionCode |
+| K_NDTNN_P3 | Ngân hàng lưu ký | Attribute | `Custodian Bank Name` — denorm từ FIMS.BANKMONI.Name qua INVESTOR.BankAddId |
+| K_NDTNN_P4 | Loại hình NĐT | Attribute | `Investor Type Code` — FIMS.INVESTOR.InvestorTypeId |
+| K_NDTNN_P5 | Đại diện giao dịch | Attribute | `Director Name` — FIMS.INVESTOR.Director |
+
+**Schema bảng tác nghiệp:**
+
+```mermaid
+erDiagram
+    Foreign_Investor_360_Profile {
+        varchar Investor_Code PK
+        string Investor_Name
+        string English_Name
+        varchar Investor_Object_Type_Code
+        varchar Investor_Type_Code
+        varchar Nationality_Code
+        string Custodian_Bank_Name
+        string Director_Name
+        varchar Life_Cycle_Status_Code
+        datetime Created_Timestamp
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Foreign Investor 360 Profile"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["NDTNN 360 - Danh sach tim kiem - K_NDTNN_L1 L2 L3 L4"]
+        R2["NDTNN 360 - Sub-tab A Ho so dinh danh - K_NDTNN_P1 P2 P3 P4 P5"]
+    end
+    G1 --> R1
+    G1 --> R2
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| `Foreign Investor 360 Profile` | 1 row = 1 NĐT NN (trạng thái mới nhất) |
+
+---
+
+#### Sub-tab B: Biến động tài sản — READY
+
+> Phân loại: **Phân tích**
+> Silver: `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK)
+
+**Mockup:**
+
+```
+GIÁ TRỊ DANH MỤC HIỆN TẠI
+125,000 B
+
+LỊCH SỬ BIẾN ĐỘNG TÀI SẢN (12 THÁNG)
+Line chart — Trục X: T1 đến T12 / Trục Y: Giá trị (tỉ đồng)
+Series: GIÁ TRỊ DANH MỤC (màu xanh, area fill)
+Peak: ~150,000B (T2, T7) / Bottom: ~110,000B (T3)
+```
+
+**Source:** `Fact Foreign Investor Portfolio Snapshot` → `Foreign Investor Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
+|---|---|---|---|---|
+| K_NDTNN_A1 | Giá trị danh mục hiện tại | Tỉ đồng | Stock (Base) | `SUM(Portfolio Market Value)` WHERE `Investor Dimension Id = selected` AND `Snapshot Date = MAX(Snapshot Date)` |
+| K_NDTNN_A2 | Lịch sử giá trị danh mục 12 tháng | Tỉ đồng | Stock (Base) | `SUM(Portfolio Market Value)` WHERE `Investor Dimension Id = selected` GROUP BY Snapshot Date, lấy 12 tháng gần nhất |
+
+> **Ghi chú:** Sub-tab B reuse `Fact Foreign Investor Portfolio Snapshot` — cùng fact phục vụ Tab DANH MỤC. Chỉ khác ở filter: thêm `Investor Dimension Id = selected NĐT`. Xem O_NDTNN_5 về nguồn Portfolio Market Value.
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        int Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Month
+    }
+    Foreign_Investor_Dimension {
+        int Investor_Dimension_Id PK
+        int Investor_Id
+        string Investor_Name
+        varchar Investor_Object_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+    Fact_Foreign_Investor_Portfolio_Snapshot {
+        int Snapshot_Date
+        int Investor_Dimension_Id FK
+        int Snapshot_Date_Dimension_Id FK
+        float Quantity
+        float Ownership_Rate
+        float Portfolio_Market_Value
+        datetime Population_Date
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
+    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Investor Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Portfolio Snapshot"]
+        G2["Foreign Investor Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["NDTNN 360 - Sub-tab B Bien dong tai san - K_NDTNN_A1 A2"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Portfolio Snapshot | 1 row = 1 NĐT NN × 1 mã tài sản × 1 tháng snapshot |
+| Foreign Investor Dimension | 1 row = 1 NĐT NN (SCD2) |
+| Calendar Date Dimension | 1 row = 1 ngày (ngày cuối tháng = Snapshot Date) |
+
+---
+
+#### Sub-tab C: Lịch sử tuân thủ — READY
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Surveillance Enforcement Case` (TT.GS_HO_SO) + `Surveillance Enforcement Decision` (TT.GS_VAN_BAN_XU_LY)
+
+**Mockup:**
+
+| NGÀY QUYẾT ĐỊNH | PHÂN LOẠI | NỘI DUNG / TRÍCH YẾU | MỨC ĐỘ | TRẠNG THÁI |
+|:---|:---|:---|:---|:---|
+| 15/10/2023 | REMINDER | Chậm báo cáo tỷ trọng sở hữu | LOW | Resolved |
+| 12/05/2023 | ADMINISTRATIVE SANCTION | Giao dịch không công bố đúng thời hạn | MEDIUM | Penalty Paid |
+
+**Source:** `Investor Compliance History` — denormalize từ `Surveillance Enforcement Case` + `Surveillance Enforcement Decision`, filter theo Investor Code = NĐT đang chọn.
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Tính chất | Mô tả — column và Silver source thực tế |
+|---|---|---|---|
+| K_NDTNN_C1 | Ngày quyết định | Attribute | `Decision Date` — từ GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN. Xem O_NDTNN_8 |
+| K_NDTNN_C2 | Phân loại | Attribute | `Decision Status Code` (scheme TT_CASE_STATUS) — từ GS_VAN_BAN_XU_LY.TRANG_THAI. Xem O_NDTNN_8 |
+| K_NDTNN_C3 | Nội dung / Trích yếu | Attribute | `Penalty Content` — từ GS_VAN_BAN_XU_LY.NOI_DUNG_XU_PHAT |
+| K_NDTNN_C4 | Mức độ | Attribute | `Case Status Code` (scheme TT_CASE_STATUS) — từ GS_HO_SO.TRANG_THAI_ID. Xem O_NDTNN_8 |
+| K_NDTNN_C5 | Trạng thái | Attribute | `Decision Status Code` (scheme TT_CASE_STATUS) — từ GS_VAN_BAN_XU_LY.TRANG_THAI |
+
+> **Lưu ý O_NDTNN_8:** Mockup hiển thị Phân loại = REMINDER / ADMINISTRATIVE SANCTION và Mức độ = LOW / MEDIUM / HIGH, nhưng Silver GS_ chỉ có TT_CASE_STATUS cho cả hai trường. Cần xác nhận với BA Thanh Tra cách hiển thị các giá trị này trên UI.
+
+**Schema bảng tác nghiệp:**
+
+```mermaid
+erDiagram
+    Investor_Compliance_History {
+        varchar Investor_Code PK
+        varchar Enforcement_Case_Code PK
+        varchar Decision_Code PK
+        date Decision_Date
+        varchar Decision_Status_Code
+        string Penalty_Content
+        float Total_Penalty_Amount
+        varchar Case_Status_Code
+        string Case_Content
+        varchar Business_Sector_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Investor Compliance History"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["NDTNN 360 - Sub-tab C Lich su tuan thu - K_NDTNN_C1 C2 C3 C4 C5"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| `Investor Compliance History` | 1 row = 1 quyết định xử phạt / văn bản xử lý của 1 NĐT NN |
+
+---
+
+---
+
+### Tab: BÁO CÁO
+
+**Slicer chung:** Kỳ báo cáo (Năm / Quý / Tháng), Loại báo cáo
+
+#### Nhóm 10 — Báo cáo thống kê tình hình giao dịch NĐTNN
+
+##### PENDING — Nhóm 10a: Báo cáo thống kê tổng hợp (STT 1–12 nhóm Báo cáo)
+
+**KPI liên quan:** GT mua/bán/ròng theo loại CK (Cổ phiếu, Trái phiếu, CCQ) — tổng hợp theo tháng/quý/năm
+
+**Lý do pending:** Phụ thuộc Silver SGDCK (khớp lệnh theo loại CK) và VSDC (danh mục lưu ký). Chưa có Silver entity.
+
+**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK), `Securities Custody Record` (VSDC)
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 loại CK × 1 kỳ
+
+##### PENDING — Nhóm 10b: Báo cáo chi tiết giao dịch (STT 1–6 nhóm Báo cáo chi tiết)
+
+**KPI liên quan:** Tài khoản GD NĐTNN, Mã CK, KL mua/bán, GT mua/bán per NĐT per kỳ
+
+**Lý do pending:** Cùng nguồn SGDCK. Grain chi tiết hơn Nhóm 10a — cần `Listed Security Dimension`.
+
+**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK)
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 NĐT × 1 mã CK × 1 ngày GD
+
+---
+
+### Tab: DATA EXPLORER
+
+**Mô tả tổng thể:** Data Explorer là tab tra cứu và xuất dữ liệu báo cáo nộp vào FIMS theo các biểu mẫu TT51/2021/TT-BTC. Người dùng chọn loại báo cáo, kỳ báo cáo rồi xem/xuất nội dung. Có 2 nhóm chức năng khác nhau.
+
+---
+
+#### Nhóm 11a — Data Explorer: Dòng vốn ròng của NĐTNN (READY)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES — sẵn sàng
+> Ghi chú: Reuse `Fact Foreign Investor Capital Flow` — không tạo bảng Gold mới
+
+**Mockup:**
+
+| Tháng | Quốc gia | Nhà đầu tư | Vốn vào ròng (Tỉ đồng) | Vốn rút ròng (Tỉ đồng) |
+|---|---|---|---|---|
+| T1/2024 | Hàn Quốc | GD437560 | +3.300 | 0 |
+| T1/2024 | Nhật Bản | GD426069 | 0 | -700 |
+| T2/2024 | Hoa Kỳ | GD133563 | +600 | 0 |
+
+> Chiều `Tháng` là SLICER bắt buộc. `Quốc gia` và `Nhà đầu tư` là GROUP BY tùy chọn — người dùng tick chọn trên panel Dimensions.
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Chiều / Measure | Mart | Logic |
+|---|---|---|---|---|
+| K_NDTNN_DE1a | Tháng | Chiều (SLICER) | Calendar Date Dimension | GROUP BY Calendar Date Dimension.Month — bắt buộc |
+| K_NDTNN_DE1b | Quốc gia | Chiều (GROUP BY tùy chọn) | Geographic Area Dimension | GROUP BY Geographic Area Dimension.Geographic Area Name |
+| K_NDTNN_DE1c | Nhà đầu tư | Chiều (GROUP BY tùy chọn) | Foreign Investor Dimension | GROUP BY Foreign Investor Dimension.Investor Name |
+| K_NDTNN_DE1d | Vốn đầu tư vào ròng | Measure | Fact Foreign Investor Capital Flow | `SUM(Capital Amount) WHERE Event Type Code = 'IN'` GROUP BY các chiều đã chọn |
+| K_NDTNN_DE1e | Vốn đầu tư rút ròng | Measure | Fact Foreign Investor Capital Flow | `SUM(Capital Amount) WHERE Event Type Code = 'OUT'` GROUP BY các chiều đã chọn |
+
+**Source:** `Fact Foreign Investor Capital Flow` → `Foreign Investor Dimension`, `Geographic Area Dimension`, `Calendar Date Dimension`
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Capital Flow"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DATA EXPLORER - Nhom 11a - Dong von rong"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+    G4 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Capital Flow | 1 row = 1 sự kiện IN/OUT × 1 NĐT × 1 ngày báo cáo (reuse) |
+
+---
+
+#### Nhóm 11b — Data Explorer: Tổng giá trị danh mục của NĐTNN (READY)
+
+> Phân loại: **Phân tích**
+> Silver: `Foreign Investor Stock Portfolio Snapshot` ← FIMS.CATEGORIESSTOCK — sẵn sàng
+> Ghi chú: Reuse `Fact Foreign Investor Portfolio Snapshot` — không tạo bảng Gold mới
+
+**Mockup:**
+
+| Tháng | Quốc gia | Tên NĐT | Tổng GTDM (Tỉ đồng) |
+|---|---|---|---|
+| T1/2024 | Hàn Quốc | GD437560 | 4.500 |
+| T1/2024 | Nhật Bản | GD426069 | 2.800 |
+| T2/2024 | Hoa Kỳ | GD133563 | 2.100 |
+
+> Chiều `Tháng` là SLICER bắt buộc. `Quốc gia` và `Tên NĐT` là GROUP BY tùy chọn.
+
+**Bảng KPI:**
+
+| KPI ID | Tên | Chiều / Measure | Mart | Logic |
+|---|---|---|---|---|
+| K_NDTNN_DE2a | Tháng | Chiều (SLICER) | Calendar Date Dimension | GROUP BY Calendar Date Dimension.Month — bắt buộc |
+| K_NDTNN_DE2b | Quốc gia | Chiều (GROUP BY tùy chọn) | Geographic Area Dimension | GROUP BY Geographic Area Dimension.Geographic Area Name |
+| K_NDTNN_DE2c | Tên NĐT | Chiều (GROUP BY tùy chọn) | Foreign Investor Dimension | GROUP BY Foreign Investor Dimension.Investor Name |
+| K_NDTNN_DE2d | Tổng giá trị danh mục | Measure | Fact Foreign Investor Portfolio Snapshot | `SUM(Portfolio Market Value)` GROUP BY các chiều đã chọn — Snapshot Date = last_day(selected_month) |
+
+**Source:** `Fact Foreign Investor Portfolio Snapshot` → `Foreign Investor Dimension`, `Geographic Area Dimension`, `Calendar Date Dimension`
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["Fact Foreign Investor Portfolio Snapshot"]
+        G2["Foreign Investor Dimension"]
+        G3["Geographic Area Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DATA EXPLORER - Nhom 11b - Tong GTDM"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+    G4 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Investor Portfolio Snapshot | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng (reuse) |
+
+---
+
+#### Nhóm 12 — Data Explorer Pass-through Báo cáo TT51 (READY)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES + `Report Template` ← FIMS.RPTTEMP — sẵn sàng
+> Ghi chú: **26 mẫu biểu** TT51/2021 từ 8 nhóm đối tượng nộp. Tất cả có cùng cấu trúc 6 trường. Thiết kế **1 bảng tác nghiệp Generic** (`NDTNN Regulatory Report Store`) — filter theo `Report Template Code` (placeholder) + `Member Object Type Code` để lấy đúng mẫu biểu.
+
+**Mockup:**
+
+| Loại báo cáo | Kỳ báo cáo | Mã báo cáo | Tên báo cáo | Mã chỉ tiêu | Tên chỉ tiêu | Giá trị |
+|---|---|---|---|---|---|---|
+| PLV_CTQLQ | Tháng 3/2026 | RPT-001 | Hoạt động QL DMĐT (PLV-TT51) | CT_01 | Tổng tài sản | 1,234,567 |
+| PLIII_CTCK | Tháng 3/2026 | RPT-002 | Thống kê danh mục lưu ký (PLIII-TT51) | CT_05 | Số lượng NĐT | 98,765 |
+
+**Danh sách 26 mẫu biểu — Report Template Code placeholder:**
+
+| # | Đối tượng nộp | Report Template Code | Tên mẫu biểu (rút gọn) |
+|---|---|---|---|
+| 1 | CTQLQ | `PLV_CTQLQ` | Hoạt động QL DMĐT/chỉ định ĐT cho NĐTNN (PLV-TT51) |
+| 2 | CTCK | `PLIII_CTCK` | Thống kê danh mục lưu ký NĐTNN (PLIII-TT51) |
+| 3 | CTCK | `PLV_CTCK` | Hoạt động QL DMĐT/chỉ định ĐT cho NĐTNN (PLV-TT51) |
+| 4 | Ngân hàng lưu ký | `PLIII_NHLK` | Thống kê danh mục lưu ký NĐTNN (PLIII-TT51) |
+| 5 | Ngân hàng lưu ký | `PLIV_NHLK` | Hoạt động chu chuyển vốn NĐTNN (PLIV-TT51) |
+| 6 | Ngân hàng lưu ký | `RPT_NHLK_01` | Báo cáo số liệu hoạt động NĐTNN |
+| 7 | Ngân hàng lưu ký | `RPT_NHLK_02` | Hoạt động lưu ký chứng khoán NĐTNN |
+| 8 | Đại diện CBTT | `RPT_DDCBTT_01` | Giấy chỉ định/ủy quyền CBTT |
+| 9 | Đại diện CBTT | `PLIX_DDCBTT` | Báo cáo sở hữu nhóm NĐTNN liên quan (PLIX-TT96) |
+| 10 | Đại diện CBTT | `PLX_DDCBTT` | Báo cáo thay đổi sở hữu nhóm NĐTNN liên quan (PLX-TT96) |
+| 11 | Đại diện CBTT | `RPT_DDCBTT_02` | Báo cáo ngày trở thành/không còn là cổ đông lớn |
+| 12 | Đại diện CBTT | `RPT_DDCBTT_03` | Báo cáo thay đổi sở hữu cổ đông lớn |
+| 13 | Đại diện CBTT | `PL_DDCBTT` | Cập nhật danh sách nhóm NĐT NN có liên quan (PL II-TT51) |
+| 14 | Đại diện giao dịch | `PL_DDGD` | Báo cáo tình hình hoạt động ĐT của NĐTNN (PL VIII-TT51) |
+| 15 | NĐTNN | `RPT_NDTNN_01` | Báo cáo ngày trở thành/không còn là cổ đông lớn |
+| 16 | NĐTNN | `RPT_NDTNN_02` | Báo cáo thay đổi sở hữu cổ đông lớn |
+| 17 | NĐTNN | `RPT_NDTNN_03` | Thông báo giao dịch cổ phiếu/CCQ/chứng quyền |
+| 18 | NĐTNN | `RPT_NDTNN_04` | Thông báo giao dịch trái phiếu chuyển đổi |
+| 19 | NĐTNN | `RPT_NDTNN_05` | Báo cáo kết quả giao dịch cổ phiếu/CCQ/chứng quyền |
+| 20 | NĐTNN | `RPT_NDTNN_06` | Báo cáo kết quả giao dịch trái phiếu chuyển đổi |
+| 21 | SGDCK | `PLVII_SGDCK` | Báo cáo tình hình giao dịch NĐTNN (PLVII-TT51) |
+| 22 | VSDC | `PLVI_VSDC` | Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51) |
+| 23 | VSDC | `RPT_VSDC_01` | Báo cáo danh mục của từng NĐT nước ngoài |
+| 24 | VSDC | `RPT_VSDC_02` | Thống kê tình hình nắm giữ chứng khoán NĐTNN |
+| 25 | VSDC | `RPT_VSDC_03` | Thống kê tình hình phát hành chứng khoán |
+| 26 | VSDC | `RPT_VSDC_04` | Thống kê tình hình chia cổ tức cho NĐTNN |
+
+> **Ghi chú placeholder:** `Report Template Code` là mã tạm — cần map với `FIMS.RPTTEMP.Code` thực tế sau khi Silver FIMS profile xong danh mục biểu mẫu. `Member Object Type Code` = `FUND_MGT_CO` / `SECURITIES_CO` / `CUSTODIAN_BANK` / `DISCLOSURE_REP` / `TRADING_REP` / `FOREIGN_INVESTOR` / `STOCK_EXCHANGE` / `DEPOSITORY_CTR`.
+
+**Bảng KPI** (6 trường × 1 bảng Generic — áp dụng cho cả 26 mẫu):
+
+| KPI ID | Tên | Tính chất | Mart column | Logic |
+|---|---|---|---|---|
+| K_NDTNN_DE3 | Loại báo cáo | Attribute | `Report Template Code` | SELECT DISTINCT per `Member Object Type Code` + `Report Template Code` |
+| K_NDTNN_DE4 | Kỳ báo cáo | Attribute | `Reporting Period Type Code` + `Period Value` + `Report Year` | SELECT DISTINCT kỳ WHERE `Report Template Code` = selected |
+| K_NDTNN_DE5 | Mã báo cáo | Attribute | `Member Regulatory Report Code` | SELECT WHERE `Report Template Code` = selected AND period = selected |
+| K_NDTNN_DE6 | Tên báo cáo | Attribute | `Report Template Name` | SELECT WHERE `Report Template Code` = selected |
+| K_NDTNN_DE7 | Mã chỉ tiêu | Attribute | `Cell Code` | SELECT WHERE `Member Regulatory Report Code` = selected ORDER BY Cell Code |
+| K_NDTNN_DE7b | Tên chỉ tiêu | Attribute | `Cell Name` | SELECT WHERE `Member Regulatory Report Code` = selected AND `Cell Code` = selected |
+| K_NDTNN_DE8 | Giá trị | Attribute | `Cell Value` | SELECT WHERE `Member Regulatory Report Code` = selected AND `Cell Code` = selected |
+
+**Schema bảng tác nghiệp:**
+
+```mermaid
+erDiagram
+    NDTNN_Regulatory_Report_Store {
+        varchar Member_Regulatory_Report_Code PK
+        varchar Report_Template_Code
+        string Report_Template_Name
+        varchar Member_Object_Type_Code
+        varchar Member_Code
+        varchar Reporting_Period_Type_Code
+        int Period_Value
+        int Report_Year
+        date Report_Date
+        date Submission_Date
+        varchar Submission_Status_Code
+        varchar Cell_Code
+        string Cell_Name
+        varchar Cell_Value
+        datetime Population_Date
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Gold Mart"]
+        G1["NDTNN Regulatory Report Store"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["Tab DATA EXPLORER - Nhom 12 - 26 mau bieu TT51"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| NDTNN Regulatory Report Store | 1 row = 1 lần nộp báo cáo (`Member Regulatory Report`) × 1 chỉ tiêu (`Cell Code`) |
+
+**Lý do chọn Generic Store:**
+- 26 mẫu biểu TT51 đều có cùng 7 trường hiển thị — không có schema riêng theo loại
+- Silver FIMS lưu dạng generic qua `RPTMEMBER` × `RPTVALUES` — Gold denorm thêm tên biểu mẫu + tên chỉ tiêu
+- Filter theo `Report Template Code` (placeholder) + `Member Object Type Code` để lấy đúng mẫu biểu
+- Detail Mapping có 156 rows (26 mẫu × 6 fields) với placeholder cụ thể per mẫu
+
+---
+
+## Section 3 — Mô hình tổng thể (READY only)
+
+```mermaid
+graph TB
+    classDef dim fill:#E6F1FB,stroke:#185FA5,color:#0C447C
+    classDef fact fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
+    classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
+
+    DIM_DATE["Calendar Date Dimension"]:::dim
+    DIM_INVESTOR["Foreign Investor Dimension SCD2"]:::dim
+    DIM_GEO["Geographic Area Dimension SCD2"]:::dim
+    DIM_ASSET["Asset Category Dimension SCD2"]:::dim
+
+    FACT_REG["Fact Foreign Investor Registration"]:::fact
+    FACT_PORT["Fact Foreign Investor Portfolio Snapshot"]:::fact
+    FACT_FLOW["Fact Foreign Investor Capital Flow"]:::fact
+
+    OPR_PROFILE["Foreign Investor 360 Profile"]:::oper
+    OPR_COMPLY["Investor Compliance History"]:::oper
+    OPR_REPORT["NDTNN Regulatory Report Store"]:::oper
+
+    DIM_DATE --> FACT_REG
+    DIM_INVESTOR --> FACT_REG
+
+    DIM_DATE --> FACT_PORT
+    DIM_INVESTOR --> FACT_PORT
+    DIM_GEO --> FACT_PORT
+    DIM_ASSET --> FACT_PORT
+
+    DIM_DATE --> FACT_FLOW
+    DIM_INVESTOR --> FACT_FLOW
+    DIM_GEO --> FACT_FLOW
+```
+
+### Bảng Phân tích (Star Schema)
+
+| Bảng | Pattern | Grain | KPI | Trạng thái |
+|---|---|---|---|---|
+| Fact Foreign Investor Registration | Event | 1 NĐT × 1 ngày đăng ký | K_NDTNN_5–7 | READY |
+| Fact Foreign Investor Portfolio Snapshot | Periodic Snapshot | 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_34–44, 51, A1–A2 | READY |
+| Fact Foreign Investor Capital Flow | Event | 1 sự kiện vào/ra vốn × 1 NĐT × 1 ngày | K_NDTNN_23–25, 26–33 | READY |
+| Fact Foreign Ownership Snapshot | Periodic Snapshot | 1 mã CK × 1 ngày | K_NDTNN_45–49 | READY |
+| Fact Securities Foreign Trading Snapshot | Periodic Snapshot | 1 mã CK × 1 ngày GD | K_NDTNN_1–4, 8–16, 17–19, 21, 22 | PENDING — chờ Silver SGDCK |
+| Fact Market Index Snapshot | Periodic Snapshot | 1 chỉ số × 1 ngày | K_NDTNN_24b | PENDING — chờ Silver SGDCK |
+
+### Bảng Tác nghiệp (Denormalized)
+
+| Bảng | Grain | KPI | Trạng thái |
+|---|---|---|---|
+| Foreign Investor 360 Profile | 1 NĐT (trạng thái mới nhất) | K_NDTNN_L1–L4, P1–P5 | READY |
+| Investor Compliance History | 1 quyết định xử phạt per NĐT | K_NDTNN_C1–C5 | READY |
+| NDTNN Regulatory Report Store | 1 lần nộp báo cáo × 1 chỉ tiêu | K_NDTNN_DE3–DE8 | READY |
+
+### Dimension
+
+| Dimension | Loại | Mô tả | Trạng thái |
+|---|---|---|---|
+| Calendar Date Dimension | Conformed | Lịch ngày — tĩnh / generated | READY |
+| Foreign Investor Dimension | Conformed SCD2 | NĐTNN — Mã GD / Tên / ObjectType / Loại hình / Quốc tịch / FK NHLK | READY |
+| Geographic Area Dimension | Conformed SCD2 | Quốc gia / quốc tịch — FIMS.NATIONAL | READY |
+| Asset Category Dimension | Reference SCD2 | Loại hình tài sản (5 giá trị). Xem O_NDTNN_9 | READY |
+
+| Public Company Dimension | Reference SCD2 | Công ty đại chúng — IDS.company_profiles. Chứa Stock Code + Industry Category | READY |
+| Industry Category Dimension | Conformed SCD2 | Nhóm ngành — ETL extract từ Public Company.Industry Category Level1/Level2 Code (IDS). Tái sử dụng cross-module | READY |
+| Listed Security Dimension | Conformed SCD2 | Mã CK — SGDCK | PENDING — chờ Silver SGDCK |
+
+---
+
+## Section 4 — Vấn đề mở
+
+| ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
+|---|---|---|---|---|
+| O_NDTNN_1 | **Registration Date:** `FIMS.INVESTOR.DateCreated` là ngày tạo hồ sơ trên hệ thống — có thể khác ngày cấp mã GD thực tế nếu NĐT import từ VSDC batch. Cần xác nhận với BA field nào là ngày đăng ký chính thức. | Tạm dùng `DateCreated`. Nếu BA xác nhận field khác → update Silver LLD + ETL rule. | K_NDTNN_5–7 | Open |
+| O_NDTNN_2 | **Investor Object Type mapping:** `FIMS.INVESTOR.ObjectType` là INT (1=Cá nhân / 2=Tổ chức). Tổ chức bao gồm cả Quỹ và Tổ chức khác quỹ. Cần xác nhận ETL phân biệt Quỹ vs Tổ chức khác từ `ObjectType=2` hay cần join thêm `INVESTORTYPE`. | Tạm gộp chung `ObjectType=2` → filter thêm `INVESTORTYPE` để tách nếu cần. | K_NDTNN_6, K_NDTNN_7 | Open |
+| O_NDTNN_3 | **Tỷ lệ tham gia + GT mua/bán ròng + Tỷ trọng GD (STT 1–4, 8–19, 21):** Toàn bộ phụ thuộc Silver SGDCK chưa có. | Thiết kế bổ sung khi Silver SGDCK sẵn sàng — không ảnh hưởng thiết kế hiện tại. | K_NDTNN_1–4, 8–19, 21 | Open — chờ Silver SGDCK |
+| O_NDTNN_4 | **Industry source — đã xác định là IDS:** BA ghi `IDS - GSĐC` nhưng ngành nghề công ty đại chúng nằm trong `Public Company` (IDS.company_profiles → category_l1_id/l2_id). Silver READY. Join chain: FIMS.CATEGORIESSTOCK (mã CK) → `Public Company` (IDS, có ngành) → `Industry Category Dimension`. | Thiết kế theo IDS — `Industry Category Dimension` READY. | STT 13–14, Nhóm 8 | Closed |
+| O_NDTNN_5 | **Portfolio Market Value source:** Silver `CATEGORIESSTOCK` chỉ có `Quantity` và `Ownership Rate` — không có giá trị thị trường tính sẵn. Cần giá đóng cửa CK từ SGDCK để tính `Portfolio Market Value = Quantity × giá`. Cần kiểm tra FIMS.RPTVALUES trước. | Tạm ghi ETL derived — pending xác nhận nguồn. | K_NDTNN_34–44, A1–A2 | Open |
+| O_NDTNN_6 | **Silver Thanh Tra:** Đã có `Surveillance Enforcement Case` + `Surveillance Enforcement Decision`. Đã thiết kế `Investor Compliance History`. | Đã giải quyết. | K_NDTNN_C1–C5 | Closed |
+| O_NDTNN_7 | **FK NĐT trong GS_HO_SO:** Silver chỉ có `Subject Name` (text tự do — `GS_HO_SO.TEN_DOI_TUONG`) — không có FK sang `FIMS.INVESTOR`. ETL phải resolve qua text matching hoặc lookup bảng khác. | Tạm giả định resolve qua Subject Name match với `INVESTOR.name`. | K_NDTNN_C1–C5 | Open |
+| O_NDTNN_8 | **Phân loại và Mức độ trên Sub-tab C:** Mockup hiển thị `REMINDER / ADMINISTRATIVE SANCTION` và `LOW / MEDIUM / HIGH` nhưng Silver GS_ chỉ có scheme `TT_CASE_STATUS`. Cần xác nhận với BA Thanh Tra. | Tạm map K_NDTNN_C2 = `Decision Status Code` và K_NDTNN_C4 = `Case Status Code`. | K_NDTNN_C2, K_NDTNN_C4 | Open |
+| O_NDTNN_9 | **Asset Category scheme:** 5 loại tài sản trong BRD cần mapping với scheme `FIMS_SECURITIES_TYPE`. Code cụ thể chưa profile. | Placeholder code (LISTED_EQUITY / BOND / UPCOM / OTHER_EQUITY / CASH) — chờ BA/Silver confirm. | K_NDTNN_40–44 | Open |
+| O_NDTNN_10 | **ROOM source — đã xác định là IDS:** `Public Company Foreign Ownership Limit` (IDS.foreign_owner_limit) có `Max Ownership Rate` = Room tối đa. Thiết kế `Fact Foreign Ownership Snapshot` = join FIMS.CATEGORIESSTOCK (Ownership Rate) + IDS.foreign_owner_limit (Max Ownership Rate) theo mã CK. K_NDTNN_45–49 READY. K_NDTNN_50 (Room theo ngành) PENDING vì cần thêm Industry Category join. | Thiết kế theo IDS. K_NDTNN_45–49 đã có mart. | K_NDTNN_45–50 | Closed |
+| O_NDTNN_11 | **Room theo ngành (K_NDTNN_50):** Cần tính `SUM(Quantity NĐT) / SUM(Tổng cổ phiếu niêm yết) × 100%` GROUP BY ngành. Phân tử lấy từ `Fact Foreign Ownership Snapshot`, mẫu số cần tổng cổ phiếu niêm yết per mã CK — Silver chưa có. | Thiết kế bổ sung khi có nguồn tổng cổ phiếu lưu hành. | K_NDTNN_50 | Open — chờ nguồn tổng CP |
+
+---
+
+*Phiên bản 1.8 — bổ sung IDS_Source_Analysis.md. Nhóm 8 và Nhóm 9 chuyển READY từ IDS. Đóng O_NDTNN_4 và O_NDTNN_10. Còn lại: Tab DATA EXPLORER (xem BRD — thiết kế dạng pass-through).*
