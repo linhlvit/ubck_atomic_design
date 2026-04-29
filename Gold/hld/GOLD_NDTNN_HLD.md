@@ -22,19 +22,19 @@ Phục vụ Tab GIAO DỊCH Nhóm 1 (3 box KPI NĐT mới). Tỷ lệ tham gia (
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["FIMS.INVESTOR"]
         S2["FIMS.INVESTORTYPE"]
         S3["FIMS.NATIONAL"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Foreign Investor"]
         SV2["CV FIMS_INVESTOR_TYPE"]
         SV3["Geographic Area"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Registration"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -61,7 +61,7 @@ Phục vụ Tab NĐTNN 360: danh sách tìm kiếm, hồ sơ định danh, biế
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["FIMS.INVESTOR"]
         S2["FIMS.BANKMONI"]
         S3["FIMS.INVESTORTYPE"]
@@ -69,7 +69,7 @@ flowchart LR
         S5["FIMS.CATEGORIESSTOCK"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Foreign Investor"]
         SV2["Custodian Bank"]
         SV3["CV FIMS_INVESTOR_TYPE"]
@@ -77,7 +77,7 @@ flowchart LR
         SV5["Foreign Investor Stock Portfolio Snapshot"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Foreign Investor 360 Profile"]
         G2["Fact Foreign Investor Portfolio Snapshot"]
         G3["Foreign Investor Dimension"]
@@ -109,19 +109,19 @@ Phục vụ Sub-tab C — Lịch sử tuân thủ trong NĐTNN 360. Silver từ 
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source Thanh Tra"]
+    subgraph SRC["Staging"]
         S1["GS_HO_SO"]
         S2["GS_VAN_BAN_XU_LY"]
         S3["DM_TRANG_THAI_HO_SO"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Surveillance Enforcement Case"]
         SV2["Surveillance Enforcement Decision"]
         SV3["CV TT_CASE_STATUS"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Investor Compliance History"]
     end
 
@@ -142,21 +142,21 @@ Phục vụ Tab GIÁM SÁT DÒNG VỐN Nhóm 3–5 (dòng tiền vào/ra + phân
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["FIMS.RPTVALUES"]
         S2["FIMS.RPTMEMBER"]
         S3["FIMS.INVESTOR"]
         S4["FIMS.NATIONAL"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Member Report Value"]
         SV2["Member Regulatory Report"]
         SV3["Foreign Investor"]
         SV4["Geographic Area"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -186,19 +186,19 @@ Phục vụ Tab DANH MỤC Nhóm 6–7 + Sub-tab B NĐTNN 360.
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["FIMS.CATEGORIESSTOCK"]
         S2["FIMS.INVESTOR"]
         S3["FIMS.NATIONAL"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Foreign Investor Stock Portfolio Snapshot"]
         SV2["Foreign Investor"]
         SV3["Geographic Area"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -228,18 +228,18 @@ Phục vụ Tab DANH MỤC Nhóm 8 (Phân ngành) + Nhóm 9 (ROOM). Silver từ 
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source IDS"]
+    subgraph SRC["Staging"]
         S1["IDS.foreign_owner_limit"]
         S2["IDS.company_profiles"]
         S3["IDS.company_detail"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Public Company Foreign Ownership Limit"]
         SV2["Public Company"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Ownership Snapshot"]
         G2["Public Company Dimension"]
         G3["Industry Category Dimension"]
@@ -346,7 +346,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Registration"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -520,7 +520,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Calendar Date Dimension"]
     end
@@ -648,7 +648,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -755,7 +755,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -920,7 +920,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Industry Category Dimension"]
         G3["Calendar Date Dimension"]
@@ -1018,7 +1018,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Ownership Snapshot"]
         G2["Public Company Dimension"]
         G3["Calendar Date Dimension"]
@@ -1122,7 +1122,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Foreign Investor 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
@@ -1205,7 +1205,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -1276,7 +1276,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Investor Compliance History"]
     end
     subgraph RPT["Báo cáo"]
@@ -1361,7 +1361,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -1415,7 +1415,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -1523,7 +1523,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["NDTNN Regulatory Report Store"]
     end
     subgraph RPT["Báo cáo"]

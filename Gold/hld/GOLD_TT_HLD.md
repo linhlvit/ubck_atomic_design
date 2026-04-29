@@ -19,7 +19,7 @@ Phục vụ toàn bộ Tab TỔNG QUAN — KPI cards, biểu đồ bar theo thá
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["ThanhTra.TT_HO_SO"]
         S2["ThanhTra.TT_KET_LUAN"]
         S3["ThanhTra.TT_QUYET_DINH"]
@@ -30,14 +30,14 @@ flowchart LR
         S8["ThanhTra.DM_DOI_TUONG_KHAC"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Inspection Case"]
         SV2["Inspection Case Conclusion"]
         SV3["Inspection Decision"]
         SV4["Inspection Decision Subject"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Inspection Case Activity"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -69,17 +69,17 @@ Phục vụ block Danh sách vụ việc Thanh tra/Kiểm tra — bảng tra c�
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["ThanhTra.TT_HO_SO"]
         S2["ThanhTra.TT_QUYET_DINH"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Inspection Case"]
         SV2["Inspection Decision"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Inspection Case List"]
     end
 
@@ -96,17 +96,17 @@ Phục vụ Tab XỬ PHẠT — KPI cards tổng hợp, biểu đồ dual axis t
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["ThanhTra.GS_VAN_BAN_XU_LY"]
         S2["ThanhTra.GS_HO_SO"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Surveillance Enforcement Decision"]
         SV2["Surveillance Enforcement Case"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G2["Fact Penalty Decision"]
         G1["Penalty Decision List"]
         G3["Calendar Date Dimension"]
@@ -133,15 +133,15 @@ Phục vụ Tab ĐƠN THƯ — KPI aggregate (tổng, theo tháng, theo loại) 
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["ThanhTra.DT_DON_THU"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Complaint Petition"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Complaint Petition List"]
     end
 
@@ -155,7 +155,7 @@ Phục vụ Báo cáo STT 20 — bảng pivot nhóm đối tượng × loại vi
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart (reuse từ Cụm 3)"]
+    subgraph GOLD["Datamart (reuse từ Cụm 3)"]
         G1["Fact Penalty Decision"]
     end
     subgraph RPT["Báo cáo STT 20"]
@@ -249,7 +249,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Inspection Case Activity"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -435,11 +435,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Inspection Case"]
         SV2["Inspection Decision"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Inspection Case List"]
     end
     subgraph RPT["Tab TỔNG QUAN"]
@@ -641,11 +641,11 @@ pie title Cơ cấu kiểm tra theo đối tượng
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Inspection Case"]
         SV2["Inspection Decision"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Inspection Case List"]
     end
     subgraph RPT["Tab KIỂM TRA"]
@@ -735,7 +735,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Penalty Decision"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -924,11 +924,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Surveillance Enforcement Decision"]
         SV2["Surveillance Enforcement Case"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Penalty Decision List"]
     end
     subgraph RPT["Tab XỬ PHẠT"]
@@ -983,10 +983,10 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Complaint Petition"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Complaint Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
@@ -1101,10 +1101,10 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Complaint Petition"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Complaint Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
@@ -1177,7 +1177,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Penalty Decision"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]

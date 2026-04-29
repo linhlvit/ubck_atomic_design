@@ -14,19 +14,19 @@ Phục vụ **Tab THỐNG KÊ CHUNG** — Nhóm 1 (KPI thẻ đếm CCHN theo tr
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["NHNCK.CertificateRecords"]
         S2["NHNCK.Professionals"]
         S3["NHNCK.Applications"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner"]
         SV3["Securities Practitioner License Application"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner License Certificate Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -54,18 +54,18 @@ Phục vụ **Tab THỐNG KÊ CHUNG** — Nhóm 2 (Tổng NHN, Cảnh báo NHNCK
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["NHNCK.Professionals"]
         S2["NHNCK.ProfessionalHistories"]
         S3["NHNCK.Violations"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner Conduct Violation"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -91,7 +91,7 @@ Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — màn hình danh sách tra cứu
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["NHNCK.Professionals"]
         S2["NHNCK.ProfessionalHistories"]
         S3["NHNCK.CertificateRecords"]
@@ -99,14 +99,14 @@ flowchart LR
         S5["NHNCK.ProfessionalRelationships"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner License Certificate Document"]
         SV3["Securities Practitioner Organization Employment Report"]
         SV4["Securities Practitioner Related Party"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner 360 Profile"]
     end
 
@@ -130,7 +130,7 @@ Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — 5 sub-tab chi tiết. Mỗi b�
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["NHNCK.CertificateRecords"]
         S2["NHNCK.Decisions"]
         S3["NHNCK.OrganizationReports"]
@@ -140,7 +140,7 @@ flowchart LR
         S7["NHNCK.ProfessionalRelationships"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner License Decision Document"]
         SV3["Securities Practitioner Organization Employment Report"]
@@ -151,7 +151,7 @@ flowchart LR
         SV7["Securities Practitioner Related Party"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Certificate History"]
         G2["Practitioner Employment History"]
         G3["Practitioner Violation History"]
@@ -190,20 +190,20 @@ Phục vụ **Tab DATA EXPLORER** — bảng tra cứu flat toàn bộ CCHN theo
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Bronze"]
+    subgraph SRC["Staging"]
         S1["NHNCK.CertificateRecords"]
         S2["NHNCK.Professionals"]
         S3["NHNCK.ProfessionalHistories"]
         S4["NHNCK.OrganizationReports"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner"]
         SV3["Securities Practitioner Organization Employment Report"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Data Explorer"]
     end
 
@@ -318,7 +318,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner License Certificate Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -425,7 +425,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -473,7 +473,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner License Certificate Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -566,7 +566,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -665,7 +665,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -763,13 +763,13 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner License Certificate Document"]
         SV3["Securities Practitioner Organization Employment Report"]
         SV4["Securities Practitioner Related Party"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner 360 Profile"]
     end
     subgraph RPT["Bao cao - Nhom 6"]
@@ -840,11 +840,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner License Decision Document"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Certificate History"]
     end
     subgraph RPT["Bao cao - Nhom 7"]
@@ -908,10 +908,10 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Organization Employment Report"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Employment History"]
     end
     subgraph RPT["Bao cao - Nhom 8"]
@@ -977,11 +977,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Conduct Violation"]
         SV2["Securities Practitioner License Decision Document"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Violation History"]
     end
     subgraph RPT["Bao cao - Nhom 9"]
@@ -1049,12 +1049,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Qualification Examination Assessment Result"]
         SV2["Securities Practitioner Qualification Examination Assessment"]
         SV3["Securities Practitioner License Decision Document"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Exam History"]
     end
     subgraph RPT["Bao cao - Nhom 10"]
@@ -1120,11 +1120,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Professional Training Class Enrollment"]
         SV2["Securities Practitioner Professional Training Class"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Training History"]
     end
     subgraph RPT["Bao cao - Nhom 11"]
@@ -1187,10 +1187,10 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Related Party"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Related Party Profile"]
     end
     subgraph RPT["Bao cao - Nhom 12"]
@@ -1272,12 +1272,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner License Certificate Document"]
         SV3["Securities Practitioner Organization Employment Report"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Practitioner Data Explorer"]
     end
     subgraph RPT["Bao cao - Nhom 13"]

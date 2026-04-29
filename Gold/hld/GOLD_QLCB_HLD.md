@@ -22,18 +22,18 @@ Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 1 (KPI tình hình cấp phép/
 
 ```mermaid
 flowchart LR
-    subgraph SRC_IDS["Bronze"]
+    subgraph SRC_IDS["Staging"]
         S1["IDS.company_securities_issuance"]
         S2["IDS.company_profiles"]
         S3["IDS.company_detail"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Public Company Securities Offering"]
         SV2["Public Company"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Securities Offering"]
         G2["Public Company Dimension"]
         G3["Industry Category Dimension"]
@@ -61,17 +61,17 @@ Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 4 (bảng chi tiết số lư�
 
 ```mermaid
 flowchart LR
-    subgraph SRC_IDS["Bronze"]
+    subgraph SRC_IDS["Staging"]
         S1["IDS.company_securities_issuance"]
         S2["IDS.company_profiles"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Public Company Securities Offering"]
         SV2["Public Company"]
     end
 
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Securities Offering 360 Profile"]
     end
 
@@ -90,15 +90,15 @@ Phục vụ Tab HỒ SƠ ĐĂNG KÝ CHÀO BÁN — Nhóm 5 (KPI Cards), Nhóm 6 
 
 ```mermaid
 flowchart LR
-    subgraph SRC_TTHC["Bronze (PENDING)"]
+    subgraph SRC_TTHC["Staging (PENDING)"]
         S1["TTHC.HS_DANG_KY_CHAO_BAN (dự kiến)"]
     end
 
-    subgraph SIL["Silver (PENDING)"]
+    subgraph SIL["Atomic (PENDING)"]
         SV1["Securities Offering Application (chưa thiết kế)"]
     end
 
-    subgraph GOLD["Gold (PENDING)"]
+    subgraph GOLD["Datamart (PENDING)"]
         G1["Fact Securities Offering Application (dự kiến)"]
         G2["Calendar Date Dimension (reuse)"]
         G3["Public Company Dimension (reuse)"]
@@ -210,7 +210,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Securities Offering"]
         G2["Public Company Dimension"]
         G3["Industry Category Dimension"]
@@ -276,7 +276,7 @@ Filter thêm theo `Offering Type Category Code` (FK → Classification Dimension
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Securities Offering"]
         G3["Industry Category Dimension"]
         G4["Calendar Date Dimension"]
@@ -334,7 +334,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Fact Securities Offering"]
         G3["Industry Category Dimension"]
         G4["Calendar Date Dimension"]
@@ -427,11 +427,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Public Company Securities Offering\n(IDS.company_securities_issuance)"]
         SV2["Public Company\n(IDS.company_profiles)"]
     end
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
@@ -560,7 +560,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
@@ -607,7 +607,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
@@ -655,7 +655,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
@@ -701,7 +701,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold"]
+    subgraph GOLD["Datamart"]
         G1["Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
