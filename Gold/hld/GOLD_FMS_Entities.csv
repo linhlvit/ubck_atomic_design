@@ -1,0 +1,15 @@
+﻿gold_entity,table_type,status,description,source_table,FKs
+Calendar Date Dimension,dim,draft,Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian,Generated,
+Fund Management Company Dimension,dim,draft,CTQLQ — Mã/Tên/Tên viết tắt/Vốn ĐL/Trạng thái (SCD2) ← FMS.SECURITIES,scr,
+Investment Fund Dimension,dim,draft,Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái/VĐL (SCD2) ← FMS.FUNDS. PENDING O_FMS_10 cho Fund Type Code,ivsm_fnd,
+Fact Fund Management Company Snapshot,fact,draft,Thống kê thị trường — grain 1 snapshot toàn TT × 1 tháng. COUNT db + AUM BC (PENDING O_FMS_1),scr / ivsm_fnd / frgn_fnd_mgt_ou / fund_dstr_agnt,Calendar Date Dimension.Snapshot Date Dimension Id
+Fact Discretionary Investment Contract Snapshot,fact,draft,UTDM CTQLQ — grain 1 CTQLQ × 1 Report Template × 1 Report Date. Tất cả measures PENDING O_FMS_1,mbr_prd_rpt / rpt_impr_val / rpt_prd,Calendar Date Dimension.Report Date Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id
+Fact Investment Fund NAV Snapshot,fact,draft,NAV + phân bổ tài sản + cross-module QLRR — grain 1 quỹ × 1 BC. Measures PENDING O_FMS_1,mbr_prd_rpt / rpt_impr_val / rpt_prd / rsk_ind_val,Calendar Date Dimension.Report Date Dimension Id | Investment Fund Dimension.Investment Fund Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id
+Fact Investment Fund Count Snapshot,fact,draft,Đếm quỹ theo loại hình — grain 1 snapshot toàn TT × 1 năm. Sub-type counts PENDING O_FMS_10,ivsm_fnd,Calendar Date Dimension.Snapshot Date Dimension Id
+Fact Investment Fund CCQ Snapshot,fact,draft,CCQ lưu hành per quỹ — grain 1 quỹ × 1 snapshot tháng ← FMS.TRANSFERMBF tích lũy. PENDING O_FMS_7 cho quỹ đóng,ivsm_fnd_ivsr_cptl_tfr / ivsm_fnd,Calendar Date Dimension.Report Date Dimension Id | Investment Fund Dimension.Investment Fund Dimension Id
+Fund Management Company Profile,operational,draft,"Hồ sơ CTQLQ — latest state per CTQLQ. AUM/Vốn CSH/LN PENDING O_FMS_1, O_FMS_4",scr / mbr_rtg / mbr_rtg_prd / rpt_impr_val,
+Fund Management Company Fund List,operational,draft,Bảng con drill-down danh sách quỹ per CTQLQ. NAV PENDING O_FMS_1,ivsm_fnd / rpt_impr_val / mbr_prd_rpt,
+Fund Management Company Contract List,operational,draft,Bảng con drill-down danh sách HĐ UTDM per CTQLQ ← FMS.INVESACC + FMS.INVES,dscr_ivsm_ac / dscr_ivsm_ivsr,
+Investment Fund Profile,operational,draft,Hồ sơ quỹ — latest state per quỹ. NAV/LN PENDING O_FMS_1,ivsm_fnd / mbr_prd_rpt / rpt_impr_val / scr,
+Report Pass-through View,operational,draft,Pass-through báo cáo — grain 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu. Row Name PENDING O_FMS_1,rpt_impr_val / mbr_prd_rpt / scr / ivsm_fnd / rpt_prd,
+Fund Management Company Staff Trade Report,operational,draft,Báo cáo GD nhân viên CTQLQ — K_FMS_68–72 READY. K_FMS_73–77 sổ lệnh PENDING O_FMS_11 (GSGD không có Silver),fnd_mgt_co_key_psn / invlv_pty_alt_identn / ivsr_tdg_ac,
