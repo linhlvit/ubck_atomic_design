@@ -1,2053 +1,2914 @@
-# Gold Data Mart HLD — Phân hệ Quản lý Kinh doanh Chứng khoán (QLKD)
-
-**Phiên bản:** 0.7  **Ngày:** 18/04/2026
-**Phạm vi phiên bản này:** 3 Dashboard, 39 nhóm in-scope (Dashboard 1: 10 + Dashboard 2: 7 + Dashboard 3: 22) + 3 nhóm DROP/rút scope (Nhóm 17, 32, 33)
-**Mô hình:** Star Schema thuần túy
-
-## Thay đổi so với v0.6
-
-- **QLKD_O13 chốt — refactor Nhóm 27 về star schema thuần:** Nhóm 27 (Lịch sử báo cáo tài chính) v0.6 đang dùng **2 fact JOIN với nhau** (`Fact Member Periodic Report Submission` + `Fact Securities Company Member Report Value`) để render 1 row UI — vi phạm nguyên tắc "Fact không JOIN Fact" của star schema thuần. Silver LLD xác nhận `Member Periodic Report` là entity riêng (shared SCMS.BC_THANH_VIEN + FMS.RPTMEMBER), tách biệt với `Member Report Indicator Value`. Giải pháp v0.7:
-  - **Xoá `Fact Member Periodic Report Submission`** khỏi Section 2.2
-  - **Thêm `Member Periodic Report Dimension`** (SCD2) vào Section 2.3 — chứa toàn bộ lifecycle attributes (Submission Date, Submission Deadline Date, Report Submission Status Code, Report Name, Content Summary, Version). Source Silver: `Member Periodic Report` entity.
-  - **Bổ sung FK `Member Periodic Report Dimension Id`** vào `Fact Securities Company Member Report Value` — match với Silver FK `BC_BAO_CAO_GT.BC_THANH_VIEN_ID → BC_THANH_VIEN`
-  - **Nhóm 27 refactor:** chỉ 1 fact + 5 dim (star thuần). Lifecycle attributes (Kỳ BC, Ngày nộp, Trạng thái) query từ `Member Periodic Report Dim` attributes. Measure (Doanh thu, Lợi nhuận) vẫn SUM trên Fact Report Value với filter Cell Code.
-  - **Nhóm 40 K_QLKD_122 refactor:** Đếm số báo cáo đã nộp YTD → `COUNT DISTINCT Member Periodic Report Dimension Id` trên Fact Report Value (thay vì count trên Fact Submission cũ). Nhóm 40 giờ chỉ dùng 1 fact cho K_QLKD_122 + 1 fact riêng cho K_QLKD_123 (Administrative Penalty) — 2 domain khác, mỗi card = 1 star schema độc lập.
-  - **Nhóm 41 refactor:** 5 KPI (Loại BC, Kỳ kê khai, Hạn nộp, Ngày nộp, Trạng thái) đều là **attributes của `Member Periodic Report Dimension`** → Nhóm 41 chuyển sang **dimension-only report pattern** (query trực tiếp dim, không qua fact). Acceptable Kimball pattern khi toàn bộ output = dim attributes.
-- **Rationale cho Reporting Period overlap:** `Member Periodic Report Dimension` và `Report Metadata Dimension` cùng chứa `Reporting Period Code/Name` — đây là **conformed attribute**, ETL đảm bảo nhất quán qua FK `Reporting Period Id` chung về Silver `Reporting Period` entity. Nhóm query tuỳ use case: lifecycle → dim MPR, cấu trúc biểu mẫu → dim Report Metadata. Chấp nhận trade-off này ở v0.7 để giới hạn tác động (chỉ 3 nhóm). Version sau có thể tách Report Metadata Dim thành Template Dim + Period Dim riêng nếu cần clean up hơn.
-
-## Thay đổi so với v0.5
-
-- **QLKD_O9 chốt Option B (cross-module NHNCK):** Tab 3 (Nhóm 28-30) dùng `Fact QLKD Practitioner License Certificate Snapshot` + `Securities Company Practitioner Dimension` — đọc Silver NHNCK, tạo entity riêng cho QLKD (không reuse Gold NHNCK per §7.6). Gỡ Option A khỏi design.
-- **QLKD_O10 chốt Option B (cross-module TT):** Nhóm 42 refactor — fact mới `Fact QLKD Inspection Penalty Record` source Silver TT (4 bảng: `Inspection Decision` + `Inspection Case` + `Inspection Case Conclusion` + `Inspection Decision Subject`). Silver TT cover 6/7 field BA đầy đủ với scheme chuẩn `TT_VIOLATION_TYPE` + `TT_PENALTY_TYPE`. Field 7 "Biện pháp khắc phục" không có attribute riêng — parse text từ `Conclusion Summary` query time (see QLKD_O12).
-- **Nhóm 40 K_QLKD_123 giữ nguyên SCMS:** `Fact Securities Company Administrative Penalty` (SCMS) vẫn tồn tại, dùng cho count tổng số QĐ XP ở KPI card. Nhóm 42 dùng fact TT khác — 2 fact song song cho 2 mục đích khác nhau (count nhanh vs detail đầy đủ).
-- **QLKD_O11 chốt rút scope Nhóm 32 + 33:** 2 nhóm trong screenshot (Cổ đông lớn + Lịch sử thay đổi nhân sự) không có trong BA — rút khỏi HLD v0.6. Entity Shareholder Dim + Fact Shareholder Ownership Snapshot cũng remove. Tab 4 còn 1 nhóm (Nhóm 31 Nhân sự cao cấp).
-- **QLKD_O12 mới:** "Biện pháp khắc phục" (K_QLKD_135) chưa có attribute riêng trong Silver TT — tạm parse từ `Conclusion Summary` text. Chờ Silver TT bổ sung attribute.
-- **Đóng issue đã confirmed:** QLKD_O4 (scheme SCMS_COMPANY_TYPE confirmed), QLKD_O7 (bucket ATTC query time confirmed). Chuyển sang rationale trong chat log, remove khỏi Section 3.
-- **Tối ưu wording Section 3:** rút gọn mô tả vấn đề + giả định, chuẩn hóa format `Vấn đề → Giả định tạm → Hành động`.
-
-## Thay đổi so với v0.4
-
-Thêm Dashboard 3 (24 nhóm per-CTCK drill-down) + 5 fact mới + 3 dim mới. Raise 3 issue QLKD_O9/O10/O11 (đã chốt ở v0.6).
-
-## Thay đổi so với v0.3
-
-Gộp 3 dim metadata báo cáo thành 1 `Securities Company Report Metadata Dimension` (§7.7). Thêm Dashboard 2 (7 nhóm + 1 DROP). Confirmed scheme `SCMS_OFFERING_FORM`, thu hẹp QLKD_O8 còn 4 chỉ số thị trường MSS.
-
-## Thay đổi so với v0.2
-
-Thêm Dashboard 2 (Nhóm 11→18, 7 in-scope + 1 DROP Nhóm 17 Thị phần môi giới do SGDCK chưa có Silver). Thêm fact `Fact Securities Offering Disclosure` cho Nhóm 13. Nhóm 16 chỉ thiết kế phần SCMS (Dư nợ margin), 4 chỉ số thị trường tạm out-of-scope chờ Silver MSS. Raise QLKD_O6/O7/O8.
-
-## Thay đổi so với v0.1
-
-Tách Nhóm 1 cũ thành Nhóm 1 (Snapshot) + Nhóm 2 (Member Report Value) theo quy tắc "1 nhóm = 1 star schema" (§5.3). Thêm fact `Fact Securities Company Service Registration Snapshot` cho các Nhóm dịch vụ có trạng thái per đăng ký (4, 5, 7, 8). Nhóm 3 (Nghiệp vụ) + Nhóm 6 (Duy trì GPHD) giữ flag trên Snapshot. Close QLKD_O1, O3.
+# GOLD_QLKD_HLD — High Level Design
+**Module:** QLKD — Quản lý kinh doanh (Hoạt động CTCK)
+**Phạm vi hiện tại:** Tab TỔNG QUAN + Tab GIÁM SÁT + Tab HỒ SƠ CTCK 360 + Tab TRA CỨU CÁ NHÂN + Tab DATA EXPLORER
+**Phiên bản:** 3.2 — 03/05/2026
 
 ---
 
-## 1. Tổng quan báo cáo
+## Section 1 — Data Lineage: Staging → Atomic → Datamart
 
-### Dashboard Tổng quan công ty chứng khoán toàn thị trường
+### Cụm 1: Thống kê tổng hợp CTCK (`Fact Securities Company Status Snapshot`)
 
-**Slicer toàn dashboard:**
-- Chiều thời gian theo ngày (Calendar Date Dimension)
-- Chiều thời gian theo quý (Calendar Date Dimension — Nhóm 9, 10)
-- Chiều trạng thái công ty (Classification — scheme `SCMS_COMPANY_STATUS`)
-- Chiều nghiệp vụ kinh doanh CK (Classification — scheme `FIMS_BUSINESS_TYPE`): Môi giới / Bảo lãnh phát hành / Tư vấn / Tự doanh
-- Chiều dịch vụ (Classification — scheme `SCMS_SERVICE_TYPE`): bao phủ cả dịch vụ KD CK (Ký quỹ / Ứng trước tiền bán / Lưu ký) và dịch vụ phái sinh (Môi giới PS / Tư vấn PS / Tự doanh PS / KD CKPS / Bù trừ CKPS)
-- Chiều trạng thái đăng ký dịch vụ (Classification — scheme `QLKD_SERVICE_REGISTRATION_STATUS` — xem Issue QLKD_O2): Đang duy trì tốt / Gần đến giới hạn / Không duy trì / Đã thu hồi
-- Chiều trạng thái duy trì GPHD toàn công ty (Classification — scheme `QLKD_LICENSE_MAINTENANCE_STATUS` — Nhóm 6)
-- Chiều phân loại CTCK (Classification — scheme `SCMS_COMPANY_TYPE` — xem Issue QLKD_O4)
-- Chiều danh mục chỉ tiêu BCTC (attribute `Cell Code`/`Indicator Group Code` trên `Securities Company Report Metadata Dimension` — xem Issue QLKD_O5)
+Phục vụ Tab TỔNG QUAN — Nhóm 1 (Chỉ tiêu thống kê chung): tổng số CTCK cấp phép, phân loại theo trạng thái, số tài khoản phát sinh giao dịch, số dư tiền gửi — tất cả là daily snapshot.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.CTCK_THONG_TIN"]
+        S2["SCMS.BC_BAO_CAO_GT"]
+        S3["SCMS.BC_THANH_VIEN"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Securities Company"]
+        SV2["Member Report Indicator Value"]
+        SV3["Member Periodic Report"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Status Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G2
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+
+    G2 --> G1
+    G3 --> G1
+```
 
 ---
 
-#### Nhóm 1 — Thống kê số lượng CTCK theo trạng thái
+### Cụm 2: Số lượng CTCK theo nghiệp vụ và dịch vụ (`Fact Securities Company Service Snapshot`)
 
-**1. Mockup**
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ TỔNG SỐ CTCK ĐƯỢC CẤP PHÉP                                                   │
-│     85  ↑+2.4%                                             Ẩn chi tiết  ∧   │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│ HOẠT ĐỘNG BT │ │ BỊ THU HỒI   │ │ CẢNH BÁO     │ │ KIỂM SOÁT    │
-│    60        │ │    12        │ │    5         │ │    3         │
-└──────────────┘ └──────────────┘ └──────────────┘ └──────────────┘
-
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│ KS ĐẶC BIỆT  │ │ ĐÌNH CHỈ HĐ  │ │ TRẠNG THÁI   │
-│    1         │ │    2         │ │ KHÁC   2     │
-└──────────────┘ └──────────────┘ └──────────────┘
-```
-
-Verify breakdown: 60 + 12 + 5 + 3 + 1 + 2 + 2 = 85 ✓
-
-**2. Source:** `Fact Securities Company Snapshot` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_1 | Tổng số CTCK đã được cấp phép | CTCK | Stock (Base) | `COUNT DISTINCT "Fact Securities Company Snapshot"."Securities Company Dimension Id" WHERE "Snapshot Date" = <last day of selected period>` |
-| 2 | K_QLKD_2 | Số CTCK đã bị thu hồi | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Company Status Dimension Id" lookup scheme SCMS_COMPANY_STATUS = 'REVOKED'` |
-| 3 | K_QLKD_3 | Số CTCK đang hoạt động bình thường | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Company Status Dimension Id" lookup = 'ACTIVE'` |
-| 4 | K_QLKD_4 | Số CTCK thuộc diện cảnh báo | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Company Status Dimension Id" lookup = 'WARNING'` |
-| 5 | K_QLKD_5 | Số CTCK thuộc diện kiểm soát | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Company Status Dimension Id" lookup = 'CONTROL'` |
-| 6 | K_QLKD_6 | Số CTCK thuộc diện kiểm soát đặc biệt | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Company Status Dimension Id" lookup = 'SPECIAL_CONTROL'` |
-| 7 | K_QLKD_7 | Số CTCK đình chỉ hoạt động | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Company Status Dimension Id" lookup = 'SUSPENDED'` |
-| 8 | K_QLKD_8 | Số CTCK trạng thái khác | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Company Status Dimension Id" lookup NOT IN (REVOKED, ACTIVE, WARNING, CONTROL, SPECIAL_CONTROL, SUSPENDED)` |
-| 9 | K_QLKD_1_SSCK | So sánh cùng kỳ Tổng số CTCK | % | Derived | `(K_QLKD_1 − K_QLKD_1 [Year − 1]) / K_QLKD_1 [Year − 1] × 100%` |
-
-**4. Star schema**
+Phục vụ Tab TỔNG QUAN — Nhóm 2 (Biểu đồ Nghiệp vụ), Nhóm 3 (Biểu đồ Dịch vụ), Nhóm 4 (Biểu đồ Dịch vụ phái sinh): số lượng CTCK theo từng nghiệp vụ/dịch vụ đã đăng ký. Nguồn là `Business Type Codes` (scheme `FIMS_BUSINESS_TYPE`) từ `FIMS.SECCOMBUSINES` — denormalized thành Array trên `Securities Company`.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Snapshot : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Snapshot : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Snapshot : "Company Status Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (FIMS)"]
+        S1["FIMS.SECURITIESCOMPANY"]
+        S2["FIMS.SECCOMBUSINES"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Securities Company"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Service Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Business Type Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV1
+
+    SV1 --> G2
+    SV1 --> G1
+    SV1 --> G3
+
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
 ```
 
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Snapshot | 1 row = 1 CTCK × 1 Snapshot Date (daily batch) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
+> **Ghi chú:** `Business Type Dimension` là ETL-derived Conformed Dimension — ETL UNNEST `Securities Company.Business Type Codes` (Array từ `FIMS.SECCOMBUSINES`, scheme `FIMS_BUSINESS_TYPE`). Mỗi row sau UNNEST = 1 CTCK × 1 mã nghiệp vụ/dịch vụ → đếm COUNT DISTINCT CTCK per mã. Xem O_QLKD_6 — cần xác nhận scheme cover đủ các mã trên UI.
 
 ---
 
-#### Nhóm 2 — Tài khoản & dư tiền gửi giao dịch toàn thị trường
+### Cụm 3: Duy trì điều kiện cấp phép (`Fact Securities Company License Condition Snapshot`) — PENDING
 
-**1. Mockup**
-
-```
-┌─────────────────────────────────────┐  ┌─────────────────────────────────────┐
-│ TỔNG SỐ TÀI KHOẢN CÓ PHÁT SINH GD   │  │ TỔNG SỐ DƯ TIỀN GỬI GIAO DỊCH       │
-│                                     │  │                                     │
-│       2,450,000  TÀI KHOẢN          │  │       125.400  TỶ VNĐ              │
-└─────────────────────────────────────┘  └─────────────────────────────────────┘
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_9 | Số tài khoản có phát sinh giao dịch | Tài khoản | Stock (Base) | `SUM(CAST("Fact Securities Company Member Report Value"."Cell Value" AS BIGINT)) WHERE "Cell Code" = '<mã chỉ tiêu số TK có PS GD — cần profile>' AND "Report Date" = <selected>` (cell code xem Issue QLKD_O5) |
-| 2 | K_QLKD_10 | Số dư tiền gửi giao dịch | Tỷ VNĐ | Stock (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2)) / 1e9) WHERE "Cell Code" = '<mã chỉ tiêu dư tiền gửi GD>' AND "Report Date" = <selected>` |
-
-> **Ghi chú:** Grain fact = grain Silver `Member Report Indicator Value` (1 lần nộp × 1 mã chỉ tiêu). KPI = filter theo Cell Code + aggregate + CAST inline (pattern §7.7).
-
-**4. Star schema**
+Phục vụ Tab TỔNG QUAN — Nhóm 5 (GPHL), Nhóm 6 (Phái sinh — KDCKPS), Nhóm 7 (Phái sinh — BTTT). **PENDING** — xem O_QLKD_7. Hai trường cốt lõi `License_Type_Code` và `License_Condition_Status_Code` chưa có Silver source:
+- `CTCK_DICH_VU` (loại dịch vụ CTCK đăng ký) chưa được denormalize vào `Securities Company` trong Silver LLD → không xác định được `License_Type_Code`
+- Chỉ tiêu ATTTC indicator_code chưa xác định → không tính được `License_Condition_Status_Code`
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.CTCK_THONG_TIN"]
+        S2["SCMS.CTCK_DICH_VU ❌ chưa có Silver"]
+        S3["SCMS.BC_BAO_CAO_GT"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Securities Company"]
+        SV2["Member Report Indicator Value\n(chờ xác định indicator_code ATTTC)"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company License Condition Snapshot\n⏳ PENDING"]
+    end
+
+    S1 --> SV1
+    S3 --> SV2
+
+    SV1 -.->|"PENDING: Service Codes\nchưa có trong Silver"| G1
+    SV2 -.->|"PENDING: indicator_code\nATTTC chưa xác định"| G1
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
 
 ---
 
-#### Nhóm 3 — Biểu đồ Nghiệp vụ kinh doanh chứng khoán
+### Cụm 4: Cơ cấu tài chính toàn thị trường (`Fact Securities Company Financial Structure Snapshot`)
 
-**1. Mockup**
-
-```
-SỐ LƯỢNG CTCK THEO NGHIỆP VỤ (horizontal bar)
-
-Môi giới       ████████████████████████████  68
-Bảo lãnh       █████████████████             42
-Tư vấn         ██████████████████████        55
-Tự doanh       ████████████████████████      58
-               0    20    40    60    80
-```
-
-**2. Source:** `Fact Securities Company Snapshot` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_12 | Số CTCK có nghiệp vụ Môi giới chứng khoán | CTCK | Stock (Base) | `COUNT DISTINCT "Fact Securities Company Snapshot"."Securities Company Dimension Id" WHERE "Snapshot Date" = <selected> AND "Is Brokerage Business Flag" = TRUE` |
-| 2 | K_QLKD_13 | Số CTCK có nghiệp vụ Bảo lãnh phát hành | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Is Underwriting Business Flag" = TRUE` |
-| 3 | K_QLKD_14 | Số CTCK có nghiệp vụ Tư vấn đầu tư chứng khoán | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Is Advisory Business Flag" = TRUE` |
-| 4 | K_QLKD_15 | Số CTCK có nghiệp vụ Tự doanh chứng khoán | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Is Prop Trading Business Flag" = TRUE` |
-
-> **Ghi chú thiết kế:** 4 nghiệp vụ kinh doanh CK có tính ngang hàng và tập hợp đóng (4 code cố định theo luật). Thiết kế thành 4 boolean flag riêng trên fact snapshot. Flag được ETL derive từ attribute `Business Type Codes: Array<Text>` của Silver `Securities Company` (scheme `FIMS_BUSINESS_TYPE`). Không dùng fact Service Registration cho Nhóm này vì Silver Business Type không có trạng thái riêng per đăng ký (khác dịch vụ).
-
-**4. Star schema**
+Phục vụ Tab TỔNG QUAN — Nhóm 8 (Cơ cấu tài sản), Nhóm 9 (Cơ cấu nguồn vốn): tổng hợp các chỉ tiêu BCTC theo quý toàn thị trường.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Snapshot : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Snapshot : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Snapshot : "Company Status Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.BC_BAO_CAO_GT"]
+        S2["SCMS.BC_THANH_VIEN"]
+        S3["SCMS.CTCK_THONG_TIN"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Report Indicator Value"]
+        SV2["Member Periodic Report"]
+        SV3["Securities Company"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Financial Structure Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Report Indicator Dimension"]
+        G4["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G1
+    SV1 --> G3
+    SV3 --> G2
+
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
 ```
 
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Snapshot | 1 row = 1 CTCK × 1 Snapshot Date (daily batch) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
+> **Ghi chú:** `Report Indicator Dimension` là ETL-derived Conformed Dimension — extract từ `Member Report Indicator Value.Report Indicator Id` (FK đến `DM_CHI_TIEU` trong SCMS). Lý do: chỉ tiêu BCTC cần GROUP BY theo tên chỉ tiêu; Dim này có thể tái sử dụng khi cần phân tích BCTC cross-module.
 
 ---
 
-#### Nhóm 4 — Biểu đồ Dịch vụ kinh doanh chứng khoán
+### Cụm 5: Hoạt động tài chính CTCK (`Fact Securities Company Financial Structure Snapshot`)
 
-**1. Mockup**
-
-```
-SỐ LƯỢNG CTCK THEO DỊCH VỤ (horizontal bar)
-
-Giao dịch ký quỹ   ████████████████████████  62
-Ứng trước tiền bán ████████████████████       48
-Lưu ký             ██████████████            38
-                   0    20    40    60    80
-```
-
-**2. Source:** `Fact Securities Company Service Registration Snapshot` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_16 | Số CTCK cung cấp dịch vụ Giao dịch ký quỹ | CTCK | Stock (Base) | `COUNT DISTINCT "Fact Securities Company Service Registration Snapshot"."Securities Company Dimension Id" WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup scheme SCMS_SERVICE_TYPE = '<mã ký quỹ>' AND "Service Registration Status Dimension Id" lookup NOT IN ('REVOKED')` |
-| 2 | K_QLKD_17 | Số CTCK cung cấp dịch vụ Ứng trước tiền bán | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã ứng trước>' AND "Service Registration Status Dimension Id" lookup NOT IN ('REVOKED')` |
-| 3 | K_QLKD_18 | Số CTCK cung cấp dịch vụ Lưu ký | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã lưu ký>' AND "Service Registration Status Dimension Id" lookup NOT IN ('REVOKED')` |
-
-> **Ghi chú:** Filter `Service Registration Status NOT IN ('REVOKED')` để loại CTCK đã bị thu hồi đăng ký dịch vụ — đếm các CTCK đang đăng ký active (bao gồm cả Đang duy trì tốt / Gần giới hạn / Không duy trì). Mã code chính xác cho Ký quỹ / Ứng trước / Lưu ký cần profile từ `SCMS.DM_DICH_VU`.
-
-**4. Star schema**
+Phục vụ Tab GIÁM SÁT — Sub-tab GIÁM SÁT HOẠT ĐỘNG: Nhóm GS-1 (VCSH), GS-2 (Vốn ĐT CSH), GS-3 (Nguồn vốn tăng thêm), GS-4 (TLATTC phân loại), GS-5 (Doanh thu & LNST), GS-7 (Thị phần môi giới), GS-8 (CFO). Dùng chung `Fact Securities Company Financial Structure Snapshot` với Cụm 4 — cùng Silver source `Member Report Indicator Value`, mở rộng sang các indicator_code VCSH, doanh thu, lợi nhuận, thị phần.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Registration Status Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.BC_BAO_CAO_GT"]
+        S2["SCMS.CTCK_THONG_TIN"]
+        S3["SCMS.DM_CHI_TIEU"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Report Indicator Value"]
+        SV2["Securities Company"]
+        SV3["Report Indicator Dimension"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Financial Structure Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Calendar Date Dimension"]
+        G4["Report Indicator Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G2
+    SV3 --> G4
+
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Service Registration Snapshot | 1 row = 1 CTCK × 1 Dịch vụ × 1 Snapshot Date (daily batch) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
 
 ---
 
-#### Nhóm 5 — Biểu đồ Dịch vụ phái sinh
+### Cụm 6: Tương quan Margin & Diễn biến thị trường (`Fact Securities Company Financial Structure Snapshot` + PENDING market index)
 
-**1. Mockup**
-
-```
-SỐ LƯỢNG CTCK - DỊCH VỤ PHÁI SINH (horizontal bar)
-
-Môi giới phái sinh ██████████████████████████  45
-Tư vấn phái sinh   ██████████████              28
-Tự doanh phái sinh ████████████████            32
-                   0    15    30    45    60
-```
-
-**2. Source:** `Fact Securities Company Service Registration Snapshot` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_19 | Số CTCK cung cấp dịch vụ Môi giới phái sinh | CTCK | Stock (Base) | `COUNT DISTINCT "Fact Securities Company Service Registration Snapshot"."Securities Company Dimension Id" WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup scheme SCMS_SERVICE_TYPE = '<mã MG phái sinh>' AND "Service Registration Status Dimension Id" lookup NOT IN ('REVOKED')` |
-| 2 | K_QLKD_20 | Số CTCK cung cấp dịch vụ Tư vấn phái sinh | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã TV phái sinh>' AND "Service Registration Status Dimension Id" lookup NOT IN ('REVOKED')` |
-| 3 | K_QLKD_21 | Số CTCK cung cấp dịch vụ Tự doanh phái sinh | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã TD phái sinh>' AND "Service Registration Status Dimension Id" lookup NOT IN ('REVOKED')` |
-
-> **Ghi chú:** Cùng fact với Nhóm 4, chỉ khác code filter trong cùng scheme `SCMS_SERVICE_TYPE`. Mã code cụ thể cần profile `SCMS.DM_DICH_VU` để xác định code cho 3 dịch vụ phái sinh. Filter tương tự Nhóm 4 — chỉ đếm CTCK đang đăng ký active.
-
-**4. Star schema**
+Phục vụ Tab GIÁM SÁT — Nhóm GS-6. `Dư nợ margin` từ `Member Report Indicator Value` (SCMS) — dùng chung Fact với Cụm 4/5. Các chỉ số thị trường VN-Index/HNX/UPCOM/VN30 PENDING — ứng viên tạm thời là `Risk Indicator Value` (QLRR), xem O_QLKD_8.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Registration Status Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS + QLRR)"]
+        S1["SCMS.BC_BAO_CAO_GT"]
+        S2["SCMS.CTCK_THONG_TIN"]
+        S3["QLRR.risk_indicator_value"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Report Indicator Value"]
+        SV2["Securities Company"]
+        SV3["Risk Indicator Value"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Financial Structure Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G2
+    SV3 -.->|PENDING O_QLKD_8| G1
+
+    G2 --> G1
+    G3 --> G1
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Service Registration Snapshot | 1 row = 1 CTCK × 1 Dịch vụ × 1 Snapshot Date (daily batch) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
 
 ---
 
-#### Nhóm 6 — Duy trì điều kiện cấp phép: Giấy phép hoạt động
+### Cụm 7: Tuân thủ nộp báo cáo (`Fact Securities Company Report Compliance Snapshot`)
 
-**1. Mockup**
-
-```mermaid
-pie showData
-    title GIẤY PHÉP HOẠT ĐỘNG - Trạng thái duy trì
-    "Đang duy trì tốt" : 60
-    "Không duy trì" : 17
-    "Gần đến giới hạn" : 8
-```
-
-**2. Source:** `Fact Securities Company Snapshot` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_22 | Số CTCK đang duy trì tốt Giấy phép hoạt động | CTCK | Stock (Base) | `COUNT DISTINCT "Fact Securities Company Snapshot"."Securities Company Dimension Id" WHERE "Snapshot Date" = <selected> AND "License Maintenance Status Dimension Id" lookup scheme QLKD_LICENSE_MAINTENANCE_STATUS = 'GOOD'` |
-| 2 | K_QLKD_23 | Số CTCK gần đến giới hạn duy trì Giấy phép hoạt động | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "License Maintenance Status Dimension Id" lookup = 'NEAR_LIMIT'` |
-| 3 | K_QLKD_24 | Số CTCK không duy trì điều kiện Giấy phép hoạt động | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "License Maintenance Status Dimension Id" lookup = 'FAILED'` |
-
-> **Ghi chú:** "Giấy phép hoạt động" là giấy phép thành lập công ty chung (cấp CTCK, không per dịch vụ). Trạng thái duy trì derived từ ngưỡng chỉ tiêu tài chính/nhân sự/hạ tầng cấp CTCK (vốn điều lệ, vốn khả dụng, tỷ lệ ATT, nhân sự cao cấp...) — xem Issue QLKD_O2. Phân loại CTCK (xem Issue QLKD_O4) dùng cùng dim filter bổ sung — `"Company Type Dimension Id" lookup scheme SCMS_COMPANY_TYPE`.
-
-**4. Star schema**
+Phục vụ Tab GIÁM SÁT — Sub-tab GIÁM SÁT TUÂN THỦ (Nhóm GS-9): số lượng báo cáo đúng hạn/chậm/chưa nộp + tỷ lệ tuân thủ toàn thị trường theo ngày.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Snapshot : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Snapshot : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Snapshot : "License Maintenance Status Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Snapshot : "Company Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.BC_THANH_VIEN"]
+        S2["SCMS.CTCK_THONG_TIN"]
+        S3["SCMS.BM_BAO_CAO_DINH_KY_DON_VI"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Periodic Report"]
+        SV2["Securities Company"]
+        SV3["Report Submission Obligation"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Report Compliance Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV3 --> G1
+    SV2 --> G2
+
+    G2 --> G1
+    G3 --> G1
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Snapshot | 1 row = 1 CTCK × 1 Snapshot Date (daily batch) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
 
 ---
 
-#### Nhóm 7 — Duy trì điều kiện cấp phép: Kinh doanh chứng khoán phái sinh
+### Cụm 8: Hồ sơ tổng quan 360 CTCK (Tác nghiệp)
 
-**1. Mockup**
-
-```mermaid
-pie showData
-    title KINH DOANH CKPS - Trạng thái duy trì
-    "Đang duy trì tốt" : 39
-    "Không duy trì" : 8
-    "Gần đến giới hạn" : 4
-```
-
-**2. Source:** `Fact Securities Company Service Registration Snapshot` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_25 | Số CTCK KD CKPS đang duy trì tốt | CTCK | Stock (Base) | `COUNT DISTINCT "Fact Securities Company Service Registration Snapshot"."Securities Company Dimension Id" WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup scheme SCMS_SERVICE_TYPE = '<mã KD CKPS>' AND "Service Registration Status Dimension Id" lookup scheme QLKD_SERVICE_REGISTRATION_STATUS = 'GOOD'` |
-| 2 | K_QLKD_26 | Số CTCK KD CKPS gần đến giới hạn duy trì | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã KD CKPS>' AND "Service Registration Status Dimension Id" lookup = 'NEAR_LIMIT'` |
-| 3 | K_QLKD_27 | Số CTCK KD CKPS không duy trì điều kiện | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã KD CKPS>' AND "Service Registration Status Dimension Id" lookup = 'FAILED'` |
-
-> **Ghi chú:** "KD CKPS" là 1 dịch vụ trong scheme `SCMS_SERVICE_TYPE` (code cần profile từ `DM_DICH_VU`). Trạng thái duy trì lấy trực tiếp từ `TRANG_THAI` của Silver `Securities Company Service Registration` (bảng nguồn `CTCK_DICH_VU`). Nếu Silver TRANG_THAI chỉ có 2 mức (đăng ký / thu hồi) — cần ETL derive thêm các mức Đang duy trì / Gần giới hạn / Không duy trì từ threshold (xem Issue QLKD_O2).
-
-**4. Star schema**
+Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Tổng quan: bảng Tác nghiệp `Securities Company 360 Profile` (1 row per CTCK) chứa 5 chỉ tiêu snapshot nhanh (Vốn CSH, VĐL, Dư nợ margin, TLATTC, Số nhân viên). Tất cả 5 chỉ tiêu từ `Member Report Indicator Value` (BC_BAO_CAO_GT) — K_QLKD_78 chờ xác định indicator_code (xem O_QLKD_11). Thông tin định danh CTCK (tên, mã, ngày thành lập, trạng thái) từ `Securities Company`.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Registration Status Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.BC_BAO_CAO_GT"]
+        S3["SCMS.CTCK_THONG_TIN"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Report Indicator Value"]
+        SV3["Securities Company"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G2["Securities Company 360 Profile"]
+    end
+
+    S1 --> SV1
+    S3 --> SV3
+
+    SV1 --> G2
+    SV3 --> G2
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Service Registration Snapshot | 1 row = 1 CTCK × 1 Dịch vụ × 1 Snapshot Date (daily batch) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
 
 ---
 
-#### Nhóm 8 — Duy trì điều kiện cấp phép: Bù trừ, thanh toán giao dịch chứng khoán phái sinh
+### Cụm 9: Nhân sự & Quản trị CTCK (Tác nghiệp)
 
-**1. Mockup**
-
-```mermaid
-pie showData
-    title BÙ TRỪ THANH TOÁN GD CKPS - Trạng thái duy trì
-    "Đang duy trì tốt" : 27
-    "Không duy trì" : 4
-    "Gần đến giới hạn" : 2
-```
-
-**2. Source:** `Fact Securities Company Service Registration Snapshot` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_28 | Số CTCK Bù trừ CKPS đang duy trì tốt | CTCK | Stock (Base) | `COUNT DISTINCT "Fact Securities Company Service Registration Snapshot"."Securities Company Dimension Id" WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã Bù trừ CKPS>' AND "Service Registration Status Dimension Id" lookup = 'GOOD'` |
-| 2 | K_QLKD_29 | Số CTCK Bù trừ CKPS gần đến giới hạn duy trì | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã Bù trừ CKPS>' AND "Service Registration Status Dimension Id" lookup = 'NEAR_LIMIT'` |
-| 3 | K_QLKD_30 | Số CTCK Bù trừ CKPS không duy trì điều kiện | CTCK | Stock (Base) | `COUNT DISTINCT ... WHERE "Snapshot Date" = <selected> AND "Service Type Dimension Id" lookup = '<mã Bù trừ CKPS>' AND "Service Registration Status Dimension Id" lookup = 'FAILED'` |
-
-> **Ghi chú:** Cùng fact với Nhóm 7, chỉ khác code filter Service Type (Bù trừ CKPS thay cho KD CKPS). Logic trạng thái tương tự Nhóm 7.
-
-**4. Star schema**
+Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Nhân sự: HĐQT/HĐTV/BKS/BĐH cards + Cổ đông lớn table + Lịch sử thay đổi nhân sự. Tất cả là dạng lookup 1 CTCK — bảng Tác nghiệp.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Type Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Service_Registration_Snapshot : "Service Registration Status Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.CTCK_NHAN_SU_CAO_CAP"]
+        S2["SCMS.CTCK_CO_DONG"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Securities Company Senior Personnel"]
+        SV2["Securities Company Shareholder"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Securities Company Personnel Profile"]
+        G2["Securities Company Shareholder Profile"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+
+    SV1 --> G1
+    SV2 --> G2
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Service Registration Snapshot | 1 row = 1 CTCK × 1 Dịch vụ × 1 Snapshot Date (daily batch) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
 
 ---
 
-#### Nhóm 9 — Biểu đồ Cơ cấu tài sản toàn thị trường
+### Cụm 10: CN, PGD, VPĐD & NHNCK CTCK (Tác nghiệp)
 
-**1. Mockup**
-
-```
-CƠ CẤU TÀI SẢN (stacked column theo quý, unit: nghìn tỷ)
-
-160K                                  [151K]
-         [133K]  [133K]  [143K]        ▓▓▓  ← Các khoản cho vay (tím)
-120K      ▓▓▓    ▓▓▓    ▓▓▓          ░░░  ← Khác (xám)
-          ░░░    ░░░    ░░░           ▒▒▒  ← TS tài chính sẵn sàng để bán (xanh dương nhạt)
- 80K      ▒▒▒    ▒▒▒    ▒▒▒           ███  ← TS tài chính qua lãi/lỗ (xanh dương)
-          ███    ███    ███           ▓▓▓  ← Đầu tư nắm giữ đến hạn (vàng)
- 40K      ▓▓▓    ▓▓▓    ▓▓▓           ███  ← Tiền và tương đương (xanh lá)
-          ███    ███    ███
-  0    Q4/23   Q1/24   Q2/24   Q3/24
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_31 | Tiền và tương đương tiền — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST("Fact Securities Company Member Report Value"."Cell Value" AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Tiền và tương đương>' AND "Report Metadata Dimension"."Reporting Period Code" = <quý chọn>` |
-| 2 | K_QLKD_32 | Tài sản tài chính ghi nhận thông qua lãi/lỗ — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - FVTPL>' AND "Reporting Period" = <quý chọn>` |
-| 3 | K_QLKD_33 | Các khoản đầu tư nắm giữ đến ngày đáo hạn — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - HTM>' AND "Reporting Period" = <quý chọn>` |
-| 4 | K_QLKD_34 | Tài sản tài chính sẵn sàng để bán — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - AFS>' AND "Reporting Period" = <quý chọn>` |
-| 5 | K_QLKD_35 | Các khoản cho vay — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Cho vay>' AND "Reporting Period" = <quý chọn>` |
-| 6 | K_QLKD_36 | Tài sản khác — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Tài sản khác>' AND "Reporting Period" = <quý chọn>` |
-
-> **Ghi chú:** Mã cell code cụ thể cho từng chỉ tiêu BCTC phải profile từ Silver `SCMS.BC_BAO_CAO_GT` + `SCMS.BM_BAO_CAO_CT` — xem Issue QLKD_O5. Khi profile xong, cập nhật Detail Mapping (Phase 3).
-
-**4. Star schema**
+Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab NHNCK và Sub-tab CN, PGD, VPĐD: thông tin mạng lưới và người hành nghề của 1 CTCK.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS + NHNCK)"]
+        S1["SCMS.CTCK_CHI_NHANH"]
+        S2["SCMS.CTCK_PHONG_GIAO_DICH"]
+        S3["SCMS.CTCK_VP_DAI_DIEN"]
+        S4["SCMS.CTCK_NGUOI_HANH_NGHE_CK"]
+        S5["NHNCK.Practitioners"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Securities Company Organization Unit"]
+        SV2["Securities Practitioner"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Securities Company Organization Unit Profile"]
+        G2["Securities Company Practitioner Profile"]
+    end
+
+    S1 --> SV1
+    S2 --> SV1
+    S3 --> SV1
+    S4 --> SV2
+    S5 --> SV2
+
+    SV1 --> G1
+    SV2 --> G2
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
----
-
-#### Nhóm 10 — Biểu đồ Cơ cấu nguồn vốn toàn thị trường
-
-**1. Mockup**
-
-```
-CƠ CẤU NGUỒN VỐN (stacked column theo quý, unit: nghìn tỷ)
-
-180K                                  [161K]
-         [141K]  [143K]  [152K]        ███  ← Vốn chủ sở hữu (xanh lá)
-135K      ███    ███    ███           ▓▓▓  ← Vay và nợ ngắn hạn (cam)
-          ▓▓▓    ▓▓▓    ▓▓▓           ░░░  ← Nợ phải trả dài hạn (đỏ cam)
- 90K      ░░░    ░░░    ░░░           ▒▒▒  ← Nợ khác (xám)
-          ▒▒▒    ▒▒▒    ▒▒▒
- 45K
-  0    Q4/23   Q1/24   Q2/24   Q3/24
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_37 | Vay và nợ thuê tài chính ngắn hạn — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Vay ngắn hạn>' AND "Reporting Period" = <quý chọn>` |
-| 2 | K_QLKD_38 | Nợ phải trả dài hạn — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Nợ dài hạn>' AND "Reporting Period" = <quý chọn>` |
-| 3 | K_QLKD_39 | Vốn chủ sở hữu — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Vốn CSH>' AND "Reporting Period" = <quý chọn>` |
-| 4 | K_QLKD_40 | Nợ khác — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Nợ khác>' AND "Reporting Period" = <quý chọn>` |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
----
----
-
-### Dashboard Giám sát tình hình hoạt động của CTCK toàn thị trường
-
-**Slicer toàn dashboard:**
-- Chiều thời gian theo quý (Nhóm 11, 12, 15) / theo tháng (Nhóm 13, 14, 16) / theo ngày (Nhóm 18) — Calendar Date Dimension
-- Chiều phân loại hình thức tăng vốn (Classification — scheme `SCMS_OFFERING_FORM` — xem Issue QLKD_O6): Chào bán công chúng / Chào bán riêng lẻ / Chào bán khác / Phát hành trái phiếu riêng lẻ / Phát hành trái phiếu công chúng
-- Chiều phân loại tỷ lệ vốn khả dụng (Classification — scheme `QLKD_CAPITAL_ADEQUACY_LEVEL` — xem Issue QLKD_O7): Cao (>150%) / Trung bình (120-150%) / Thấp (<120%)
-- Chiều danh mục chỉ tiêu BCTC (attribute `Cell Code`/`Indicator Group Code` trên `Securities Company Report Metadata Dimension` — xem Issue QLKD_O5)
-- Chiều mã CTCK (Securities Company Dimension — Nhóm 18)
-
----
-
-#### Nhóm 11 — Cơ cấu vốn chủ sở hữu toàn thị trường
-
-**1. Mockup**
-
-```
-CƠ CẤU VỐN CHỦ SỞ HỮU (stacked column theo quý, nghìn tỷ VNĐ)
-
-207K
-         [165.400] [168.800] [172.200] [176.600]
-165K      ░░░       ░░░       ░░░       ░░░       ← Vốn khác (xám)
-          ▓▓▓       ▓▓▓       ▓▓▓       ▓▓▓       ← Quỹ, thặng dư vốn CP (vàng)
-110K      ███       ███       ███       ███       ← Lợi nhuận sau thuế chưa PP (xanh lá)
-          ███       ███       ███       ███       ← Vốn đầu tư của CSH (tím)
- 55K      ███       ███       ███       ███
-   0    Q1/24     Q2/24     Q3/24     Q4/24
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_41 | Vốn điều lệ (Vốn góp CSH) — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST("Fact Securities Company Member Report Value"."Cell Value" AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Vốn điều lệ>' AND "Report Metadata Dimension"."Reporting Period Code" = <quý chọn>` |
-| 2 | K_QLKD_42 | Lợi nhuận sau thuế chưa phân phối — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - LNST chưa PP>' AND "Reporting Period" = <quý chọn>` |
-| 3 | K_QLKD_43 | Quỹ, thặng dư vốn cổ phần — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Quỹ + thặng dư>' AND "Reporting Period" = <quý chọn>` |
-| 4 | K_QLKD_44 | Vốn khác — toàn thị trường | Nghìn tỷ VNĐ | Flow (Base) | `SUM(CAST(...AS DECIMAL(20,2))) / 1e12 WHERE "Cell Code" = '<mã BCTC - Vốn khác CSH>' AND "Reporting Period" = <quý chọn>` |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
----
-
-#### Nhóm 12 — Biến động Vốn đầu tư chủ sở hữu theo quý
-
-**1. Mockup**
-
-```
-VỐN GÓP CHỦ SỞ HỮU (line chart, Q1/2020 → Q4/2024, tỷ VNĐ)
-
-32K                                                          ●
-                                                      ●───●
-24K                                           ●───●
-                                    ●───●
-                             ●───●
-16K  ●───●───●
-   2020Q1  2020Q4  2021Q3  2022Q2  2023Q1  2023Q4  2024Q4
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_45 | Vốn góp của chủ sở hữu trên BCTC — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - Vốn góp CSH>' AND "Report Metadata Dimension"."Reporting Period Code" = <quý chọn>` |
-
-> **Ghi chú:** KPI này có thể chia sẻ cùng cell code với K_QLKD_41 (Vốn điều lệ = Vốn góp CSH trên BCTC của CTCK). UI render line chart theo trục thời gian đa quý, không phải stack column như Nhóm 11. Cùng cell code → cùng fact, chỉ khác filter time range.
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
----
-
-#### Nhóm 13 — Nguồn vốn tăng thêm trong kỳ (chào bán + phát hành)
-
-**1. Mockup**
-
-```
-NGUỒN VỐN TĂNG THÊM (stacked column theo tháng, tỷ VNĐ)
-                                                              [9.100]
-10K                                               [8.000]  [8.400]
-                          [7.000]          [7.500]  [7.000]   ▓▓▓  ← Trái phiếu riêng lẻ (hồng)
- 8K              [5.300]   [5.500] [6.400]   ▓▓▓   ▓▓▓   ▓▓▓  ▓▓▓  ← Trái phiếu công chúng (cam)
-         [5.700]  ▓▓▓      ▓▓▓    ▓▓▓   ▓▓▓ ▓▓▓   ▓▓▓   ▓▓▓  ▓▓▓  ← Chào bán riêng lẻ (xanh dương)
- 5K      ▓▓▓    ▓▓▓      ▓▓▓    ▓▓▓   ▓▓▓ ▓▓▓   ▓▓▓   ▓▓▓  ▓▓▓  ← Chào bán khác (tím)
-         ███    ███      ███    ███   ███ ███   ███   ███  ███  ← Chào bán công chúng (xanh lá)
- 3K      ███    ███      ███    ███   ███ ███   ███   ███  ███
-   0    T1/24 T2/24 T3/24 T4/24 T5/24 T6/24 T7/24 T8/24 T9/24 T10 T11 T12
-```
-
-**2. Source:** `Fact Securities Offering Disclosure` → `Securities Company Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_46 | Vốn tăng thêm do chào bán công chúng | Tỷ VNĐ | Flow (Base) | `SUM("Fact Securities Offering Disclosure"."Offering Value Amount") / 1e9 WHERE "Offering Form Dimension Id" lookup scheme SCMS_OFFERING_FORM = '<mã chào bán công chúng>' AND "Disclosure Date" BETWEEN <tháng chọn start, end>` |
-| 2 | K_QLKD_47 | Vốn tăng thêm do chào bán riêng lẻ | Tỷ VNĐ | Flow (Base) | `SUM("Offering Value Amount") / 1e9 WHERE "Offering Form Dimension Id" lookup = '<mã chào bán riêng lẻ>' AND "Disclosure Date" BETWEEN ...` |
-| 3 | K_QLKD_48 | Vốn tăng thêm do chào bán khác | Tỷ VNĐ | Flow (Base) | `SUM("Offering Value Amount") / 1e9 WHERE "Offering Form Dimension Id" lookup = '<mã chào bán khác>' AND "Disclosure Date" BETWEEN ...` |
-| 4 | K_QLKD_49 | Vốn tăng thêm do phát hành trái phiếu riêng lẻ | Tỷ VNĐ | Flow (Base) | `SUM("Offering Value Amount") / 1e9 WHERE "Offering Form Dimension Id" lookup = '<mã trái phiếu riêng lẻ>' AND "Disclosure Date" BETWEEN ...` |
-| 5 | K_QLKD_50 | Vốn tăng thêm do phát hành trái phiếu ra công chúng | Tỷ VNĐ | Flow (Base) | `SUM("Offering Value Amount") / 1e9 WHERE "Offering Form Dimension Id" lookup = '<mã trái phiếu công chúng>' AND "Disclosure Date" BETWEEN ...` |
-
-> **Ghi chú:** Fact mới `Fact Securities Offering Disclosure` là event fact (grain = 1 công bố chào bán/phát hành). Source Silver: `Disclosure Securities Offering` (SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN). Measure `Offering Value Amount` lấy trực tiếp từ Silver attribute `Offering Value`. Mã scheme `SCMS_OFFERING_FORM` cho 5 hình thức cần profile `SCMS.HINH_THUC_CHAO_BAN` → xem Issue QLKD_O6.
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Disclosure : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Offering_Disclosure : "Securities Company Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Offering_Disclosure : "Offering Form Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Offering_Disclosure : "Disclosure Status Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Offering Disclosure | 1 row = 1 công bố chào bán/phát hành chứng khoán (event) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày công bố |
-
----
-
-#### Nhóm 14 — Tỷ lệ an toàn tài chính (số lượng CTCK theo mức tỷ lệ vốn khả dụng)
-
-**1. Mockup**
-
-```
-TỶ LỆ AN TOÀN TÀI CHÍNH (stacked column theo tháng — số CTCK)
-
-100
- 75    ▓▓        ▓▓         ▓▓        ▓▓         ← Thấp (<120%) — hồng
-       ▓▓▓       ▓▓▓        ▓▓▓       ▓▓▓        ← Trung bình (120-150%) — cam
- 50    ▓▓▓       ▓▓▓        ▓▓▓       ▓▓▓        ← Cao (>150%) — xanh lá
-       ███       ███        ███       ███
- 25    ███       ███        ███       ███
-       ███       ███        ███       ███
-   0  T1/23   T6/23   T12/23   T6/24   T12/24
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_51 | Số lượng CTCK tỷ lệ vốn khả dụng ở mức Cao (>150%) | CTCK | Stock (Base) | `COUNT DISTINCT "Securities Company Dimension Id" FROM "Fact Securities Company Member Report Value" WHERE "Cell Code" = '<mã VKD ratio>' AND "Report Date" = <tháng chọn> AND CAST("Cell Value" AS DECIMAL(10,4)) > 1.5` |
-| 2 | K_QLKD_52 | Số lượng CTCK tỷ lệ vốn khả dụng ở mức Trung bình (120-150%) | CTCK | Stock (Base) | `COUNT DISTINCT "Securities Company Dimension Id" ... WHERE "Cell Code" = '<mã VKD ratio>' AND "Report Date" = <tháng chọn> AND CAST("Cell Value" AS DECIMAL(10,4)) BETWEEN 1.2 AND 1.5` |
-| 3 | K_QLKD_53 | Số lượng CTCK tỷ lệ vốn khả dụng ở mức Thấp (<120%) | CTCK | Stock (Base) | `COUNT DISTINCT "Securities Company Dimension Id" ... WHERE "Cell Code" = '<mã VKD ratio>' AND "Report Date" = <tháng chọn> AND CAST("Cell Value" AS DECIMAL(10,4)) < 1.2` |
-
-> **Ghi chú:** Bucket (Cao / Trung bình / Thấp) tính query time từ giá trị `Cell Value` (pattern §7.7 — CAST inline tại Detail Mapping). Không pre-aggregate bucket lên fact (giữ grain Silver). Ngưỡng `>150%` / `120-150%` / `<120%` lấy từ legend screenshot. Mã cell code chính xác cho chỉ tiêu VKD (có thể là "CAR", "Tỷ lệ VKD", "Vốn khả dụng/Tổng rủi ro") cần profile `SCMS.DM_CHI_TIEU` — xem Issue QLKD_O7.
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
----
-
-#### Nhóm 15 — Doanh thu và lợi nhuận toàn thị trường (theo nghiệp vụ)
-
-**1. Mockup**
-
-```
-DOANH THU & LỢI NHUẬN (stacked column + line, theo quý — tỷ VNĐ)
-
-32K    ●───●───●───●  ← TỔNG DOANH THU (line đen)
-       [31K] [31K] [31K] [32K]
-24K    ▓▓▓   ▓▓▓   ▓▓▓   ▓▓▓   ← Tự doanh (tím)
-       ░░░   ░░░   ░░░   ░░░   ← Khác (xám)
-16K    ███   ███   ███   ███   ← Môi giới (xanh lá)
-       ▒▒▒   ▒▒▒   ▒▒▒   ▒▒▒   ← Tư vấn (xanh lá nhạt)
- 8K    ●───●───●───●   ← LỢI NHUẬN SAU THUẾ (line đỏ)
-       ███   ███   ███   ███   ← Bảo lãnh phát hành (xanh đậm)
-   0  2024Q1 2024Q2 2024Q3 2024Q4
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_54 | Tổng doanh thu — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - Tổng doanh thu>' AND "Reporting Period" = <quý chọn>` |
-| 2 | K_QLKD_55 | Lợi nhuận sau thuế — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - LNST>' AND "Reporting Period" = <quý chọn>` |
-| 3 | K_QLKD_56 | Doanh thu theo nghiệp vụ Môi giới — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - DT môi giới, chỉ tiêu 1.6>' AND "Reporting Period" = <quý chọn>` |
-| 4 | K_QLKD_57 | Doanh thu theo nghiệp vụ Tự doanh — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - DT tự doanh>' AND "Reporting Period" = <quý chọn>` |
-| 5 | K_QLKD_58 | Doanh thu theo nghiệp vụ Tư vấn — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - DT tư vấn>' AND "Reporting Period" = <quý chọn>` |
-| 6 | K_QLKD_59 | Doanh thu theo nghiệp vụ Bảo lãnh phát hành — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - DT bảo lãnh, chỉ tiêu 1.7>' AND "Reporting Period" = <quý chọn>` |
-| 7 | K_QLKD_60 | Doanh thu hoạt động khác — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" IN (<mã các chỉ tiêu 1.3, 1.11, ...>) AND "Reporting Period" = <quý chọn>` |
-
-> **Ghi chú:** "Doanh thu hoạt động khác" (K_QLKD_60) theo BA là tổng của khoản 1.3 (Lãi cho vay và phải thu) + 1.11 (Thu nhập khác). Ở Detail Mapping sẽ liệt kê cell codes cụ thể — filter IN (...). Đây vẫn là **base metric** (SUM aggregation tại query time), không vi phạm "không pre-aggregate".
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
----
-
-#### Nhóm 16 — Biến động dư nợ margin (phần in-scope SCMS)
-
-**1. Mockup**
-
-```
-DƯ NỢ MARGIN (bar) + CHỈ SỐ THỊ TRƯỜNG (line, theo tháng)
-
-60K                                               ▓▓              1425
-                                              ▓▓ ▓▓
-45K                                    VN-Idx line ──── 1330
-                                ▓▓ ▓▓ ▓▓                    1235
-30K                   ▓▓ ▓▓ ▓▓                              1140
-         ▓▓ ▓▓ ▓▓                                            1045
-15K  ▓▓
-   T1/23 T6/23 T12/23 T6/24 T12/24
-
-— BAR: Tổng dư nợ Margin (tỷ VNĐ) — in-scope SCMS (K_QLKD_61)
-— LINE: VN-Index, HNX, UPCOM, VN30 — out-of-scope (chờ Silver MSS)
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_61 | Tổng dư nợ margin — toàn thị trường | Tỷ VNĐ | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(20,2))) / 1e9 WHERE "Cell Code" = '<mã BCTC - Dư nợ margin>' AND "Report Date" = <tháng chọn>` |
-
-> **Ghi chú phạm vi:** 4 chỉ số thị trường theo BA (VN-Index, HNX Index, UPCOM Index, VN30) **out-of-scope** ở v0.3 — BA cột I ghi MSS/SCMS, nhưng Silver MSS chưa thiết kế và SCMS không có entity chỉ số thị trường. Chờ Silver MSS sẵn sàng → thiết kế fact mới `Fact Market Index Snapshot` (grain = 1 chỉ số × 1 ngày). Issue QLKD_O8.
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
----
-
-#### Nhóm 18 — Lưu chuyển tiền thuần từ hoạt động kinh doanh (CFO) per CTCK
-
-**1. Mockup**
-
-```
-CFO PER CTCK (card matrix — tô đỏ nếu CFO < 0)
-
-┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-│    S     │ │    V     │ │   VS🔴   │ │    VI    │ │    TC    │ │    HC    │ │    MS    │ │   SH🔴   │
-│ CFO 4500 │ │ CFO 2100 │ │CFO -1200 │ │ CFO 1800 │ │ CFO 5200 │ │ CFO 1500 │ │ CFO  850 │ │ CFO -450 │
-│ LNST 3200│ │ LNST 1850│ │ LNST  920│ │ LNST 1450│ │ LNST 4800│ │ LNST 1200│ │ LNST  620│ │ LNST  310│
-└──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘
-┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-│    KS    │ │    MA    │ │   TI🔴   │ │    PS    │ │    VX    │ │    BS    │ │    CS    │ │   OS🔴   │
-│ CFO 1100 │ │ CFO 1400 │ │CFO -2500 │ │ CFO  210 │ │ CFO 3200 │ │ CFO  450 │ │ CFO  620 │ │ CFO -820 │
-│ LNST  950│ │ LNST 1250│ │ LNST -450│ │ LNST  185│ │ LNST 2800│ │ LNST  380│ │ LNST  510│ │ LNST  420│
-└──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Classification Dimension`, `Calendar Date Dimension`.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_62 | Lưu chuyển tiền thuần từ HĐKD (CFO) per CTCK | Tỷ VNĐ | Flow (Base) | `CAST("Cell Value" AS DECIMAL(20,2)) / 1e9 WHERE "Cell Code" = '<mã BCLC tiền tệ - CFO>' AND "Report Date" = <ngày BCTC mới nhất per CTCK> AND "Securities Company Dimension Id" = <CTCK filter>` |
-| 2 | K_QLKD_63 | Lợi nhuận sau thuế (LNST) per CTCK | Tỷ VNĐ | Flow (Base) | `CAST("Cell Value" AS DECIMAL(20,2)) / 1e9 WHERE "Cell Code" = '<mã BCTC - LNST>' AND "Report Date" = <ngày BCTC mới nhất per CTCK> AND "Securities Company Dimension Id" = <CTCK filter>` |
-
-> **Ghi chú grain hiển thị:** Dashboard hiển thị card per CTCK (grain fact đã per CTCK). Logic "BCTC mới nhất" = max Report Date trong kỳ báo cáo hiện hành cho mỗi CTCK — derived tại query time, không lưu mart. Cảnh báo màu (đỏ = CFO < 0 hoặc LNST < 0) là UI styling, không phải measure.
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dim ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày báo cáo |
-
-
-### Dashboard Tra cứu hồ sơ 360° CTCK
-
-**Mô tả:** Dashboard drill-down per-CTCK. Trang entry hiển thị danh sách CTCK (search + filter trạng thái). Click 1 CTCK → modal tabs 6 phần: Tổng quan / Tài chính / NHNCK / Nhân sự / Tuân thủ / CN, PGD, VPĐD.
-
-**Slicer toàn dashboard:**
-- **Securities Company** (bắt buộc — 1 CTCK duy nhất, mã hoặc tên CTCK) — screen header
-- **Calendar Date** (thời điểm báo cáo) — tab Tổng quan mặc định tháng mới nhất; tab Tài chính chọn kỳ quý báo cáo; tab CN/PGD/VPĐD chọn ngày cụ thể
-- **Company Status** — entry screen filter (Active / Đã thu hồi...)
-
-**Ghi chú quan trọng:** Tất cả nhóm trong Dashboard 3 đều có **filter bắt buộc `Securities Company Dimension Id = <selected CTCK>`**. KPI "card toàn thị trường" trên các dashboard 1/2 khi thêm filter này trở thành "card per CTCK" với cùng KPI ID cơ sở — không tạo KPI ID mới nếu công thức base trùng. KPI ID mới chỉ khi có measure/derivation mới (VD Margin/VCSH%).
-
----
-
-#### Tab 1 — Tổng quan
-
-##### Nhóm 19 — Biểu đồ Thống kê chung (KPI cards tổng quan CTCK)
-
-**1. Mockup**
-
-```
-┌────────────────┐  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐
-│ $    VỐN CSH   │  │ 🏢 VỐN ĐIỀU LỆ │  │ 📈 DƯ NỢ MARGIN│  │ 📊 TỶ LỆ ATTC  │  │ 🏛 NHÂN VIÊN   │
-│ 3.900 Tỷ VND   │  │ 3.315 Tỷ VND   │  │ 3.200 Tỷ VND   │  │ 168 %          │  │ 50 người       │
-│ +8.5%          │  │ 0              │  │ +12.3%         │  │ -2.1%          │  │                │
-└────────────────┘  └────────────────┘  └────────────────┘  └────────────────┘  └────────────────┘
-```
-
-5 KPI card hiển thị giá trị CTCK tại tháng chọn. Số phía trên (+8.5%, +12.3%, -2.1%) là % change so với tháng trước — derived.
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_41 (reuse) | Vốn chủ sở hữu | Tỷ VND | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(18,2)))` WHERE `"Cell Code" = 'EQUITY'` AND `"Securities Company Dimension Id" = <selected>` AND `"Report Date" = last available month <= selected month`. Chuyển đổi /1.000.000.000. |
-| 2 | K_QLKD_64 (mới) | Vốn điều lệ | Tỷ VND | Stock (Base) | `SUM(CAST("Cell Value" AS DECIMAL(18,2)))` WHERE `"Cell Code" = 'CHARTER_CAPITAL'` AND `"Securities Company Dimension Id" = <selected>` AND Report Date = last month. |
-| 3 | K_QLKD_61 (reuse) | Dư nợ margin | Tỷ VND | Stock (Base) | `SUM(CAST("Cell Value" AS DECIMAL(18,2)))` WHERE `"Cell Code" = 'MARGIN_BALANCE'` AND `"Securities Company Dimension Id" = <selected>` AND Report Date = last month. |
-| 4 | K_QLKD_51 (reuse) | Tỷ lệ ATTC | % | Stock (Base) | `MAX(CAST("Cell Value" AS DECIMAL(10,2)))` WHERE `"Cell Code" = 'CAPITAL_ADEQUACY_RATIO'` AND `"Securities Company Dimension Id" = <selected>` AND Report Date = last month. |
-| 5 | K_QLKD_8 (reuse) | Số nhân viên | người | Stock (Base) | `SUM(CAST("Cell Value" AS INT))` WHERE `"Cell Code" = 'TOTAL_EMPLOYEES'` AND `"Securities Company Dimension Id" = <selected>` AND Report Date = last month. HOẶC nếu có fact Snapshot chứa Total Employee Count → COUNT lấy trực tiếp. |
-| 6 | K_QLKD_41_MOM (mới) | % thay đổi VCSH (MoM) | % | Derived | `(K_QLKD_41 [Month = selected] − K_QLKD_41 [Month − 1]) / K_QLKD_41 [Month − 1] × 100%` |
-| 7 | K_QLKD_61_MOM (mới) | % thay đổi Dư nợ margin (MoM) | % | Derived | `(K_QLKD_61 [Month = selected] − K_QLKD_61 [Month − 1]) / K_QLKD_61 [Month − 1] × 100%` |
-| 8 | K_QLKD_51_MOM (mới) | % thay đổi Tỷ lệ ATTC (MoM) | % | Derived | `(K_QLKD_51 [Month = selected] − K_QLKD_51 [Month − 1]) / K_QLKD_51 [Month − 1] × 100%` |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ báo cáo × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-
----
-
-##### Nhóm 20 — Biểu đồ Biến động Vốn CSH per CTCK (theo quý)
-
-**1. Mockup**
-
-```
-Vốn chủ sở hữu (Tỷ VND)
-  |
-4k|   ┌───┐
-  |   │   │   ┌───┐   ┌───┐
-3k|   │   │   │   │   │   │   ┌───┐
-  |   │   │   │   │   │   │   │   │
-2k|   │   │   │   │   │   │   │   │
-  |___└───┘___└───┘___└───┘___└───┘___
-      Q1       Q2       Q3       Q4
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_41 (reuse) | Chỉ tiêu vốn CSH trên BCTC | Tỷ VND | Flow (Base) | Giống Nhóm 19 nhưng group by Quarter. `SUM(CAST("Cell Value" AS DECIMAL))` WHERE `"Cell Code" = 'EQUITY'` AND `"Securities Company Dimension Id" = <selected>` GROUP BY `"Calendar Year"`, `"Calendar Quarter"`. |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 21 — Biểu đồ Cơ cấu tổng tài sản CTCK (theo quý)
-
-**1. Mockup:** Stacked bar per quarter, 6 cấu phần tài sản (Tiền & TĐ tiền, TSTC ghi nhận qua lãi/lỗ, Đầu tư giữ đến đáo hạn, TSTC sẵn sàng bán, Các khoản cho vay, Khác). Giống Nhóm 9 nhưng filter 1 CTCK.
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_31 (reuse) | Tiền và tương đương tiền | Tỷ VND | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL))` WHERE `"Cell Code" = 'CASH_AND_EQUIVALENTS'` AND CTCK = selected, group by quarter |
-| 2 | K_QLKD_32 (reuse) | TSTC ghi nhận qua lãi/lỗ | Tỷ VND | Flow (Base) | `... "Cell Code" = 'FVTPL_FIN_ASSETS' ...` |
-| 3 | K_QLKD_33 (reuse) | Đầu tư giữ đến đáo hạn | Tỷ VND | Flow (Base) | `... "Cell Code" = 'HTM_INVESTMENTS' ...` |
-| 4 | K_QLKD_34 (reuse) | TSTC sẵn sàng bán | Tỷ VND | Flow (Base) | `... "Cell Code" = 'AFS_FIN_ASSETS' ...` |
-| 5 | K_QLKD_35 (reuse) | Các khoản cho vay | Tỷ VND | Flow (Base) | `... "Cell Code" = 'LOANS_RECEIVABLE' ...` |
-| 6 | K_QLKD_36 (reuse) | Khác | Tỷ VND | Derived | `K_QLKD_36 = Tổng TS − (K_QLKD_31..35)` |
-
-**4. Star schema:** Giống Nhóm 20 (cùng Fact Member Report Value + 3 dim).
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 22 — Biểu đồ Cơ cấu nguồn vốn CTCK (theo quý)
-
-**1. Mockup:** Stacked bar per quarter, 4 cấu phần nguồn vốn (Vay nợ ngắn hạn, Nợ dài hạn, VCSH, Khác). Giống Nhóm 10 nhưng filter 1 CTCK.
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_37 (reuse) | Vay và nợ thuê TC ngắn hạn | Tỷ VND | Flow (Base) | `"Cell Code" = 'SHORT_TERM_DEBT'` AND CTCK = selected, group by quarter |
-| 2 | K_QLKD_38 (reuse) | Nợ phải trả dài hạn | Tỷ VND | Flow (Base) | `"Cell Code" = 'LONG_TERM_LIABILITIES'` |
-| 3 | K_QLKD_39 (reuse) | Vốn chủ sở hữu | Tỷ VND | Flow (Base) | `"Cell Code" = 'EQUITY'` — same K_QLKD_41 semantics |
-| 4 | K_QLKD_40 (reuse) | Khác (nguồn vốn) | Tỷ VND | Derived | `= Tổng nguồn vốn − (K_QLKD_37 + K_QLKD_38 + K_QLKD_39)` |
-
-**4. Star schema:** Identical pattern như Nhóm 21.
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 23 — Biểu đồ Doanh thu, Lợi nhuận sau thuế CTCK (theo quý)
-
-**1. Mockup:** Stacked bar doanh thu per nghiệp vụ (Môi giới / Tự doanh / Tư vấn / Bảo lãnh) + line Lợi nhuận sau thuế overlay. Giống Nhóm 15 nhưng filter 1 CTCK.
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_54 (reuse) | DT môi giới | Tỷ VND | Flow (Base) | `"Cell Code" = 'REV_BROKERAGE'` AND CTCK = selected, group by quarter |
-| 2 | K_QLKD_55 (reuse) | DT tự doanh | Tỷ VND | Flow (Base) | `"Cell Code" = 'REV_PROP_TRADING'` |
-| 3 | K_QLKD_56 (reuse) | DT tư vấn | Tỷ VND | Flow (Base) | `"Cell Code" = 'REV_ADVISORY'` |
-| 4 | K_QLKD_57 (reuse) | DT bảo lãnh | Tỷ VND | Flow (Base) | `"Cell Code" = 'REV_UNDERWRITING'` |
-| 5 | K_QLKD_58 (reuse) | Tổng doanh thu | Tỷ VND | Flow (Base) | `"Cell Code" = 'TOTAL_REVENUE'` |
-| 6 | K_QLKD_59 (reuse) | Lợi nhuận sau thuế | Tỷ VND | Flow (Base) | `"Cell Code" = 'NET_PROFIT_AFTER_TAX'` |
-
-**4. Star schema:** Giống Nhóm 21.
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 24 — Biểu đồ Chỉ số Dư nợ margin / Vốn CSH (%) theo tháng
-
-**1. Mockup:** Line chart tỷ lệ Margin/VCSH % theo tháng (12 tháng gần nhất).
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_65 (mới) | Margin / VCSH (%) | % | Derived | `K_QLKD_65 = K_QLKD_61 [Month = T] / K_QLKD_41 [Month = T] × 100%` — computed per month per CTCK. BA ghi "Chỉ tiêu phái sinh" → derived, không lưu mart. |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 25 — Biểu đồ Tỷ lệ ATTC theo tháng
-
-**1. Mockup:** Line chart Tỷ lệ an toàn tài chính (%) theo tháng (12 tháng gần nhất). Vạch ngưỡng cảnh báo 150% và 120%.
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_51 (reuse) | Tỷ lệ an toàn tài chính | % | Stock (Base) | `MAX(CAST("Cell Value" AS DECIMAL(10,2)))` WHERE `"Cell Code" = 'CAPITAL_ADEQUACY_RATIO'` AND CTCK = selected, group by month |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-#### Tab 2 — Tài chính
-
-##### Nhóm 26 — KPI cards Tài chính (Doanh thu YTD / LN YTD / ROA / ROE)
-
-**1. Mockup**
-
-```
-┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐
-│ 📈 TỔNG DOANH THU │  │ 💰 TỔNG LỢI NHUẬN │  │ % ROA (%)         │  │ % ROE (%)         │
-│ 4.725 B           │  │ 336 B             │  │ 2.15 %            │  │ 12.80 %           │
-└───────────────────┘  └───────────────────┘  └───────────────────┘  └───────────────────┘
-```
-
-Slicer: Filter kỳ báo cáo "Từ [Year-Quarter] ĐẾN [Year-Quarter]". YTD tính từ đầu năm đến quarter chọn.
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_66 (mới) | Doanh thu YTD | Tỷ VND | Derived | `SUM(K_QLKD_58 [Year = selected.Year AND Quarter ≤ selected.Quarter])` — YTD tổng doanh thu từ Q1 đến Q chọn. |
-| 2 | K_QLKD_67 (mới) | Lợi nhuận sau thuế YTD | Tỷ VND | Derived | `SUM(K_QLKD_59 [Year = selected.Year AND Quarter ≤ selected.Quarter])` |
-| 3 | K_QLKD_68 (mới) | ROA (%) | % | Derived | `K_QLKD_67 / (K_QLKD_69 [Year = selected.Year]) × 100%` với `K_QLKD_69 = Tổng tài sản`. Cần `"Cell Code" = 'TOTAL_ASSETS'` là base measure. |
-| 4 | K_QLKD_69 (mới) | Tổng tài sản (quarter selected) | Tỷ VND | Stock (Base) | `SUM(CAST("Cell Value" AS DECIMAL))` WHERE `"Cell Code" = 'TOTAL_ASSETS'` AND CTCK = selected AND Report Date = quarter chọn. Lưu mart vì cần cho ROA. |
-| 5 | K_QLKD_70 (mới) | ROE (%) | % | Derived | `K_QLKD_67 / K_QLKD_41 [Year = selected.Year] × 100%` |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 27 — Bảng lịch sử báo cáo tài chính (IDS Lakehouse)
-
-**1. Mockup (bảng)**
-
-| KỲ BÁO CÁO | DOANH THU (B) | LỢI NHUẬN (B) | ROA (%) | ROE (%) | NGÀY NỘP | TRẠNG THÁI |
-|---|---|---|---|---|---|---|
-| Q3/2024 | 4.725 | 336 | 2.15% | 12.8% | 25/10/2024 | ĐÚNG HẠN |
-
-**2. Source:** `Fact Securities Company Member Report Value` → `Member Periodic Report Dimension`, `Securities Company Dimension`, `Securities Company Report Metadata Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**Ghi chú kiến trúc:** Nhóm 27 dùng **1 fact + 5 dim** (star schema thuần). Lifecycle attributes của lần nộp báo cáo (Ngày nộp, Trạng thái, Kỳ BC) lấy từ `Member Periodic Report Dimension` — đây là dim SCD2 source từ Silver entity `Member Periodic Report` (shared SCMS.BC_THANH_VIEN + FMS.RPTMEMBER). Measure (Doanh thu, Lợi nhuận) SUM trên cell values của Fact Report Value, filter theo Cell Code. 1 row UI = 1 group-by trên `Member Periodic Report Dimension Id` của fact.
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_71 (mới) | Kỳ báo cáo | label | Base (FK) | `"Member Periodic Report Dimension"."Reporting Period Name"` (VD "Q3/2024") |
-| 2 | K_QLKD_72 (mới) | Doanh thu của kỳ | Tỷ VND | Flow (Base) | `SUM(CAST("Cell Value" AS DECIMAL(18,2))) / 1e9` trên `Fact Securities Company Member Report Value` WHERE `"Report Metadata Dimension"."Cell Code" = 'TOTAL_REVENUE'` AND `"Member Periodic Report Dimension Id" = <row>` |
-| 3 | K_QLKD_73 (mới) | Lợi nhuận của kỳ | Tỷ VND | Flow (Base) | Same as K_QLKD_72 với `"Cell Code" = 'NET_PROFIT_AFTER_TAX'` |
-| 4 | K_QLKD_68 (reuse) | ROA (%) | % | Derived | `K_QLKD_73 / K_QLKD_69 [Year = selected.Year] × 100%` (công thức Nhóm 26) |
-| 5 | K_QLKD_70 (reuse) | ROE (%) | % | Derived | `K_QLKD_73 / K_QLKD_41 [Year = selected.Year] × 100%` (công thức Nhóm 26) |
-| 6 | K_QLKD_74 (mới) | Ngày nộp | date | Base (FK) | `"Member Periodic Report Dimension"."Submission Date"` |
-| 7 | K_QLKD_75 (mới) | Trạng thái nộp | label | Base (FK) | `"Member Periodic Report Dimension"."Report Submission Status Code"` → FK Classification Dim (scheme `FMS_REPORT_SUBMISSION_STATUS`). Decoded: ĐÚNG HẠN / QUÁ HẠN / CHƯA NỘP / ... |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Member_Periodic_Report_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Periodic Report Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Date Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Object Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu báo cáo (grain = Silver Member Report Indicator Value) |
-| Member Periodic Report Dimension | 1 row = 1 lần nộp báo cáo của 1 CTCK cho 1 kỳ báo cáo (SCD2) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Calendar Date Dimension | 1 row = 1 ngày |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
 
 ---
 
 
-#### Tab 3 — NHNCK của CTCK
+---
 
-##### Nhóm 28 — KPI cards NHNCK (Tổng LĐ / Có CCHN / Chưa có CC)
+### Cụm 11: Lịch sử báo cáo tài chính CTCK (Tác nghiệp)
 
-**1. Mockup**
-
-```
-┌──────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐
-│ 🔵 TỔNG LAO ĐỘNG │  │ 🟢 CÓ CHỨNG CHỈ HN   │  │ 🟠 CHƯA CÓ CHỨNG CHỈ │
-│ 50 NHÂN VIÊN     │  │ 38 — 76.0% TỶ LỆ CC  │  │ 12 — 24.0% CHƯA CC   │
-└──────────────────┘  └──────────────────────┘  └──────────────────────┘
-```
-
-**2. Source:**
-- Tổng lao động (K_QLKD_8): `Fact Securities Company Member Report Value` (Report Value cell `TOTAL_EMPLOYEES`) → `Securities Company Report Metadata Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-- Số NHN có CCHN (K_QLKD_76): `Fact QLKD Practitioner License Certificate Snapshot` (cross-module Silver NHNCK) → `Securities Company Practitioner Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_8 (reuse) | Tổng lao động | người | Stock (Base) | `SUM(CAST("Cell Value" AS INT))` WHERE `"Cell Code" = 'TOTAL_EMPLOYEES'` AND CTCK = selected AND Report Date = latest month |
-| 2 | K_QLKD_76 | Tổng số LĐ có CCHN | người | Stock (Base) | `COUNT DISTINCT "Practitioner Dimension Id"` trên `Fact QLKD Practitioner License Certificate Snapshot` WHERE `"Managing Securities Company Dimension Id" = <selected>` AND `"Is Active Flag" = TRUE` AND Snapshot Date = T |
-| 3 | K_QLKD_77 | Tổng số LĐ chưa có CCHN | người | Derived | `K_QLKD_77 = K_QLKD_8 − K_QLKD_76` |
-| 4 | K_QLKD_78 | Tỷ lệ có CCHN (%) | % | Derived | `K_QLKD_76 / K_QLKD_8 × 100%` |
-
-**4. Star schema**
+Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Tài chính: bảng lịch sử BC tài chính per CTCK per kỳ. 4 thẻ tổng hợp (DT YTD, LN YTD, ROA, ROE) tính aggregate từ các row chi tiết. ETL từ `Member Report Indicator Value` (giá trị chỉ tiêu) + `Member Periodic Report` (kỳ BC, ngày nộp, trạng thái).
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Securities_Company_Report_Metadata_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Metadata Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Managing Securities Company Dimension Id"
-    Securities_Company_Practitioner_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Practitioner Dimension Id"
-    Classification_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Certificate Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.BC_BAO_CAO_GT"]
+        S2["SCMS.BC_THANH_VIEN"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Report Indicator Value"]
+        SV2["Member Periodic Report"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Securities Company Financial Report History"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+
+    SV1 --> G1
+    SV2 --> G1
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu |
-| Fact QLKD Practitioner License Certificate Snapshot | 1 row = 1 NHN × 1 loại CCHN × 1 Snapshot Date (cross-module Silver NHNCK, entity riêng QLKD) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Report Metadata Dimension | 1 row = 1 tổ hợp (Biểu mẫu × Kỳ × Mã chỉ tiêu) — SCD2 |
-| Securities Company Practitioner Dimension | 1 row = 1 NHN (SCD2) — source Silver NHNCK `Securities Practitioner` |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
 
 ---
 
-##### Nhóm 29 — Số lượng NHN theo 4 nghiệp vụ
+### Cụm 12: Tuân thủ & vi phạm CTCK — Hồ sơ 360 (Tác nghiệp)
 
-**1. Mockup (bar chart)**
-
-```
-Nhân sự theo 4 nghiệp vụ
-20│              17
-  │      11           13
-15│     ┌──┐  ┌──┐  ┌──┐         9
-  │     │  │  │  │  │  │       ┌──┐
-10│     │  │  │  │  │  │       │  │
-  │     │  │  │  │  │  │       │  │
- 5│     │  │  │  │  │  │       │  │
-  │_____└──┘__└──┘__└──┘_______└──┘__
-      Tự doanh  Môi giới  Tư vấn  Bảo lãnh
-```
-
-**2. Source:** `Fact QLKD Practitioner License Certificate Snapshot` → `Securities Company Practitioner Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension` (scheme `NHNCK_CERTIFICATE_TYPE` — loại CCHN theo nghiệp vụ)
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_79 | Số NHN môi giới | người | Stock (Base) | `COUNT DISTINCT "Practitioner Dimension Id"` WHERE CTCK = selected AND `"Certificate Type Code" = 'BROKERAGE'` AND `"Is Active Flag" = TRUE` AND Snapshot Date = T |
-| 2 | K_QLKD_80 | Số NHN bảo lãnh phát hành | người | Stock (Base) | `... "Certificate Type Code" = 'UNDERWRITING' ...` |
-| 3 | K_QLKD_81 | Số NHN tư vấn | người | Stock (Base) | `... "Certificate Type Code" = 'ADVISORY' ...` |
-| 4 | K_QLKD_82 | Số NHN tự doanh | người | Stock (Base) | `... "Certificate Type Code" = 'PROPRIETARY_TRADING' ...` |
-
-**4. Star schema**
+Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Tuân thủ: danh sách BC tuân thủ (đúng hạn/trễ hạn) + lịch sử thanh tra/xử phạt per CTCK. `Member Periodic Report` phục vụ danh sách BC; `Inspection Case` + `Inspection Case Conclusion` phục vụ lịch sử thanh tra/xử phạt.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Managing Securities Company Dimension Id"
-    Securities_Company_Practitioner_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Practitioner Dimension Id"
-    Classification_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Certificate Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS + ThanhTra)"]
+        S1["SCMS.BC_THANH_VIEN"]
+        S2["ThanhTra.TT_HO_SO"]
+        S3["ThanhTra.TT_KET_LUAN"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Periodic Report"]
+        SV2["Inspection Case"]
+        SV3["Inspection Case Conclusion"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Securities Company Compliance History"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact QLKD Practitioner License Certificate Snapshot | 1 row = 1 NHN × 1 loại CCHN × 1 Snapshot Date |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Practitioner Dimension | 1 row = 1 NHN (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
 
 ---
 
-##### Nhóm 30 — Số lượng NHN theo dịch vụ CKPS (môi giới PS / tư vấn PS / tự doanh PS)
+### Cụm 13: Tra cứu & Mạng lưới cá nhân (Tác nghiệp)
 
-**1. Mockup (bar chart)**
-
-```
-Nhân sự theo dịch vụ phái sinh
-12│           11
-  │    6           5
- 9│   ┌──┐  ┌──┐  ┌──┐
-  │   │  │  │  │  │  │
- 6│   │  │  │  │  │  │
-  │   │  │  │  │  │  │
- 3│   │  │  │  │  │  │
-  │___└──┘__└──┘__└──┘___
-     Tự doanh  Môi giới  Tư vấn
-       PD        PD       PD
-```
-
-**2. Source:** `Fact QLKD Practitioner License Certificate Snapshot` → `Securities Company Practitioner Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension` (scheme `NHNCK_CERTIFICATE_TYPE` — filter các code phái sinh)
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_83 | Số NHN môi giới CKPS | người | Stock (Base) | `COUNT DISTINCT "Practitioner Dimension Id"` WHERE CTCK = selected AND `"Certificate Type Code" = 'DERIVATIVE_BROKERAGE'` AND `"Is Active Flag" = TRUE` AND Snapshot Date = T |
-| 2 | K_QLKD_84 | Số NHN tư vấn CKPS | người | Stock (Base) | `... "Certificate Type Code" = 'DERIVATIVE_ADVISORY' ...` |
-| 3 | K_QLKD_85 | Số NHN tự doanh CKPS | người | Stock (Base) | `... "Certificate Type Code" = 'DERIVATIVE_PROP_TRADING' ...` |
-
-**4. Star schema**
+Phục vụ Tab TRA CỨU CÁ NHÂN — Landing page (danh sách cá nhân) + Sub-tab Mạng lưới 360°. `Individual Profile` là bảng Tác nghiệp tổng hợp thông tin định danh cá nhân từ `Securities Company Senior Personnel` (SCMS) và `Securities Practitioner` (NHNCK). `Individual Related Party Network` lưu mạng lưới người liên quan.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Managing Securities Company Dimension Id"
-    Securities_Company_Practitioner_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Practitioner Dimension Id"
-    Classification_Dimension ||--o{ Fact_QLKD_Practitioner_License_Certificate_Snapshot : "Certificate Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS + NHNCK + IDS)"]
+        S1["SCMS.CTCK_NHAN_SU_CAO_CAP"]
+        S2["SCMS.CTCK_CD_MOI_QUAN_HE"]
+        S3["NHNCK.Professionals"]
+        S4["NHNCK.ProfessionalRelationships"]
+        S5["NHNCK.CertificateRecords"]
+        S6["IDS.company_relationship"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Securities Company Senior Personnel"]
+        SV2["Securities Company Shareholder Related Party"]
+        SV3["Securities Practitioner"]
+        SV4["Securities Practitioner Related Party"]
+        SV5["Involved Party Alternative Identification"]
+        SV6["Securities Practitioner License Certificate Document"]
+        SV7["Public Company Related Entity"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Individual Profile"]
+        G2["Individual Related Party Network"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+    S3 --> SV5
+    S5 --> SV6
+    S6 --> SV7
+
+    SV1 --> G1
+    SV3 --> G1
+    SV5 --> G1
+    SV6 --> G1
+    SV2 --> G2
+    SV4 --> G2
+    SV7 --> G2
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact QLKD Practitioner License Certificate Snapshot | 1 row = 1 NHN × 1 loại CCHN × 1 Snapshot Date |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Practitioner Dimension | 1 row = 1 NHN (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
 
 ---
 
+### Cụm 14: Hồ sơ cá nhân — Vai trò DN niêm yết & Tài khoản (Tác nghiệp)
 
-#### Tab 4 — Nhân sự
-
-> **Ghi chú rút scope (QLKD_O11):** Screenshot tab Nhân sự hiển thị thêm 2 nhóm không có trong BA — **Cổ đông lớn nắm giữ trên 5% vốn điều lệ** và **Lịch sử thay đổi nhân sự**. Theo chốt với BA, 2 nhóm này rút khỏi v0.6, KPI ID K_QLKD_95..100 giữ gap để không xáo trộn KPI ID nhóm sau. Khi BA bổ sung, sẽ design lại: Cổ đông dùng fact mới `Fact Securities Company Shareholder Ownership Snapshot` (periodic, source Silver `Securities Company Shareholder` SCMS.CTCK_CO_DONG); Lịch sử thay đổi nhân sự reuse `Fact Securities Company Senior Personnel Tenure` với derive event từ Tenure Start/End Date.
-
-##### Nhóm 31 — Nhân sự cao cấp (HĐQT / HĐTV / BKS-UB KT / Ban điều hành)
-
-**1. Mockup** (4 section cards, mỗi section có số thành viên + danh sách card)
-
-```
-🛡 HỘI ĐỒNG QUẢN TRỊ  (3 thành viên)
-┌─────────────────────┐ ┌─────────────────────┐ ┌─────────────────────┐
-│ Nguyễn Văn An       │ │ Trần Thị Bình       │ │ Lê Văn Cường        │
-│ Chủ tịch HĐQT       │ │ Phó Chủ tịch HĐQT   │ │ Thành viên HĐQT     │
-│ 📅 Từ 01-01-2020    │ │ 📅 Từ 01-01-2020    │ │ 📅 Từ 15-06-2021    │
-│ ✉ an.nguyen@...     │ │ ✉ binh.tran@...     │ │ ✉ cuong.le@...      │
-│ ☎ 0901234567        │ │ ☎ 0901234568        │ │ ☎ 0901234569        │
-└─────────────────────┘ └─────────────────────┘ └─────────────────────┘
-
-👥 HỘI ĐỒNG THÀNH VIÊN  (2 thành viên)   ...
-🛡 BAN KIỂM SOÁT / UB KIỂM TOÁN  (2 thành viên)   ...
-💼 BAN ĐIỀU HÀNH  (4 thành viên)   ...
-```
-
-**2. Source:** `Fact Securities Company Senior Personnel Tenure` (NEW) → `Securities Company Senior Personnel Dimension` (NEW), `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_86 | Họ và tên | label | Base (DD) | `"Senior Personnel Dimension"."Full Name"` — filter CTCK = selected AND Tenure active |
-| 2 | K_QLKD_87 | Email | label | Base (DD) | `"Senior Personnel Dimension"."Email Disclosure"` |
-| 3 | K_QLKD_88 | Số điện thoại | label | Base (DD) | `"Senior Personnel Dimension"."Phone Number"` |
-| 4 | K_QLKD_89 | Chức vụ | label | Base (FK) | FK `"Position Type Dimension Id"` → Classification (scheme `SCMS_POSITION_TYPE`). Dashboard group theo nhóm chức vụ (HĐQT / HĐTV / BKS / BĐH) dùng attribute `"Position Group Code"` trên Classification Dim hoặc derive từ parent code. |
-| 5 | K_QLKD_90 | Thời gian bắt đầu làm việc | date | Base | `"Fact Senior Personnel Tenure"."Tenure Start Date"` — lookup `"Calendar Date Dimension"."Calendar Date"` |
-| 6 | K_QLKD_91 | COUNT thành viên HĐQT | người | Derived | `COUNT DISTINCT "Senior Personnel Dimension Id"` WHERE CTCK = selected AND `"Position Type Code" IN ('HDQT_CHAIRMAN', 'HDQT_VICE', 'HDQT_MEMBER')` AND `"Tenure End Date" IS NULL` |
-| 7 | K_QLKD_92 | COUNT thành viên HĐTV | người | Derived | `... IN ('HDTV_MEMBER')` |
-| 8 | K_QLKD_93 | COUNT thành viên BKS/UB KT | người | Derived | `... IN ('BKS_HEAD', 'BKS_MEMBER', 'AUDIT_COMMITTEE_MEMBER')` |
-| 9 | K_QLKD_94 | COUNT thành viên Ban điều hành | người | Derived | `... IN ('CEO', 'DEPUTY_CEO', 'CFO', 'CHIEF_ACCOUNTANT', ...)` |
-
-**4. Star schema**
+Phục vụ Tab TRA CỨU CÁ NHÂN — Sub-tab Hồ sơ: block Vai trò tại DN niêm yết (IDS source) + block Tài khoản (PENDING — chưa xác định Silver entity). `Individual Listed Company Role` lưu vai trò + số CP tại từng DN niêm yết per cá nhân.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Senior_Personnel_Tenure : "Tenure Start Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Senior_Personnel_Tenure : "Securities Company Dimension Id"
-    Securities_Company_Senior_Personnel_Dimension ||--o{ Fact_Securities_Company_Senior_Personnel_Tenure : "Senior Personnel Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Senior_Personnel_Tenure : "Position Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS + IDS)"]
+        S1["IDS.company_relationship"]
+        S2["SCMS.CTCK_CO_DONG"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Public Company Related Entity"]
+        SV2["Securities Company Shareholder"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Individual Listed Company Role"]
+        G2["Individual Trading Account"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+
+    SV1 --> G1
+    SV2 --> G2
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Senior Personnel Tenure | 1 row = 1 nhiệm kỳ nhân sự cao cấp (1 cá nhân × 1 CTCK × 1 vị trí) — accumulating snapshot với milestone Tenure Start + Tenure End |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Senior Personnel Dimension | 1 row = 1 nhân sự cao cấp (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
 
 ---
 
-##### Nhóm 34 — KPI cards Tổng số CN / PGD / VPĐD
+### Cụm 15: Quá trình hành nghề & Lịch sử vi phạm cá nhân (Tác nghiệp)
 
-**1. Mockup**
-
-```
-┌──────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐
-│ 🔵 CHI NHÁNH     │  │ 🟢 PHÒNG GIAO DỊCH   │  │ 🟣 VĂN PHÒNG ĐẠI DIỆN│
-│ 2                │  │ 0                    │  │ 1                    │
-└──────────────────┘  └──────────────────────┘  └──────────────────────┘
-```
-
-Slicer: date picker "31-12-2024" hoặc "HIỆN TẠI" (latest snapshot).
-
-**2. Source:** `Fact Securities Company Organization Unit Snapshot` (NEW) → `Securities Company Organization Unit Dimension` (NEW), `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_101 | Số lượng chi nhánh | đơn vị | Stock (Base) | `COUNT DISTINCT "Organization Unit Dimension Id"` WHERE CTCK = selected AND `"Organization Unit Type Code" = 'BRANCH'` AND `"Is Active Flag" = TRUE` AND Snapshot Date = selected |
-| 2 | K_QLKD_102 | Số lượng phòng giao dịch | đơn vị | Stock (Base) | `... "Organization Unit Type Code" = 'TRANSACTION_OFFICE' ...` |
-| 3 | K_QLKD_103 | Số lượng văn phòng đại diện | đơn vị | Stock (Base) | `... "Organization Unit Type Code" = 'REPRESENTATIVE_OFFICE' ...` |
-
-**4. Star schema**
+Phục vụ Tab TRA CỨU CÁ NHÂN — Sub-tab Quá trình hành nghề (timeline công tác) + Sub-tab Lịch sử vi phạm. Lịch sử vi phạm từ `Inspection Case` + `Inspection Case Conclusion` (ThanhTra) — BA ghi `src=SCMS` nhưng thực tế data từ ThanhTra. `Inspection Case` có field `Subject Id Number` (SO_CMND) và `Subject Full Name` cho cá nhân — filter chính xác hơn `Surveillance Enforcement Case`. Xem O_QLKD_14.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Securities Company Dimension Id"
-    Securities_Company_Organization_Unit_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Organization Unit Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Organization Unit Type Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS + ThanhTra)"]
+        S1["SCMS.CTCK_NHAN_SU_CAO_CAP"]
+        S2["ThanhTra.TT_HO_SO"]
+        S3["ThanhTra.TT_KET_LUAN"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Securities Company Senior Personnel"]
+        SV2["Inspection Case"]
+        SV3["Inspection Case Conclusion"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Individual Work History"]
+        G2["Individual Violation History"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G2
+    SV3 --> G2
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Organization Unit Snapshot | 1 row = 1 đơn vị (CN/PGD/VPĐD) × 1 Snapshot Date — periodic snapshot |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Organization Unit Dimension | 1 row = 1 đơn vị trực thuộc (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày snapshot |
 
 ---
 
-##### Nhóm 35 — Số lượng CN, PGD, VPĐD theo nghiệp vụ (MG/BL/TV/TD)
+### Cụm 16: Data Explorer — Báo cáo biểu mẫu định kỳ CTCK (Tác nghiệp)
 
-**1. Mockup (horizontal bar)**
-
-```
-Môi giới        ┃████  1
-Bảo lãnh phát   ┃████████  2
-Tư vấn          ┃████  1
-Tự doanh        ┃████  1
-              0   1   2
-```
-
-**2. Source:** `Fact Securities Company Organization Unit Snapshot` → `Organization Unit Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_104 | SL CN/PGD/VPĐD theo môi giới | đơn vị | Stock (Base) | `COUNT DISTINCT "Organization Unit Dimension Id"` WHERE CTCK = selected AND `"Is Brokerage Flag" = TRUE` AND `"Is Active Flag" = TRUE` AND Snapshot Date = selected |
-| 2 | K_QLKD_105 | SL theo bảo lãnh | đơn vị | Stock (Base) | `... "Is Underwriting Flag" = TRUE ...` |
-| 3 | K_QLKD_106 | SL theo tư vấn | đơn vị | Stock (Base) | `... "Is Advisory Flag" = TRUE ...` |
-| 4 | K_QLKD_107 | SL theo tự doanh | đơn vị | Stock (Base) | `... "Is Proprietary Trading Flag" = TRUE ...` |
-
-**4. Star schema**
+Phục vụ Tab DATA EXPLORER — tra cứu raw data 102 biểu mẫu báo cáo định kỳ (STT 42–143). Toàn bộ giá trị chỉ tiêu lưu theo pattern EAV trong `Member Report Indicator Value` (BC_BAO_CAO_GT). Metadata biểu mẫu và kỳ báo cáo từ `Member Periodic Report` (BC_THANH_VIEN). ETL denormalize thành bảng Tác nghiệp `Securities Company Report Data` với đầy đủ context để filter và hiển thị.
 
 ```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Securities Company Dimension Id"
-    Securities_Company_Organization_Unit_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Organization Unit Dimension Id"
+flowchart LR
+    subgraph SRC["Staging (SCMS)"]
+        S1["SCMS.BC_BAO_CAO_GT"]
+        S2["SCMS.BC_THANH_VIEN"]
+        S3["SCMS.BM_BAO_CAO"]
+        S4["SCMS.DM_CHI_TIEU"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Member Report Indicator Value"]
+        SV2["Member Periodic Report"]
+        SV3["Report Template"]
+        SV4["Report Indicator Dimension"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Securities Company Report Data"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+    SV4 --> G1
 ```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Organization Unit Snapshot | 1 row = 1 đơn vị × 1 Snapshot Date |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Organization Unit Dimension | 1 row = 1 đơn vị trực thuộc (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
 
 ---
 
-##### Nhóm 36 — Số lượng CN, PGD, VPĐD theo dịch vụ KD CK (ký quỹ / ứng trước tiền bán / lưu ký)
+## Section 2 — Tổng quan báo cáo
 
-**1. Mockup (horizontal bar)**
+### Tab: TỔNG QUAN
 
-```
-Giao dịch ký quỹ   ┃████████  2
-Ứng trước tiền bán ┃████  1
-Lưu ký             ┃████  1
-                 0   1   2
-```
-
-**2. Source:** `Fact Securities Company Organization Unit Service Registration Snapshot` (NEW) → `Securities Company Organization Unit Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_108 | SL theo dịch vụ GD ký quỹ | đơn vị | Stock (Base) | `COUNT DISTINCT "Organization Unit Dimension Id"` WHERE CTCK = selected AND `"Service Type Code" = 'MARGIN_TRADING'` AND `"Service Registration Status Code" = 'ACTIVE'` AND Snapshot Date = selected |
-| 2 | K_QLKD_109 | SL theo ứng trước tiền bán | đơn vị | Stock (Base) | `... "Service Type Code" = 'ADVANCE_SALE_PROCEEDS' ...` |
-| 3 | K_QLKD_110 | SL theo lưu ký | đơn vị | Stock (Base) | `... "Service Type Code" = 'SECURITIES_DEPOSITORY' ...` |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Securities Company Dimension Id"
-    Securities_Company_Organization_Unit_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Organization Unit Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Service Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Organization Unit Service Registration Snapshot | 1 row = 1 đơn vị × 1 dịch vụ × 1 Snapshot Date — periodic snapshot |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Organization Unit Dimension | 1 row = 1 đơn vị trực thuộc (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
+**Slicer chung:** Thời điểm (date picker — mặc định ngày gần nhất có dữ liệu)
 
 ---
 
-##### Nhóm 37 — Số lượng CN, PGD, VPĐD theo dịch vụ phái sinh
+#### Nhóm 1 — Chỉ tiêu thống kê chung (STT 1–14)
 
-**1. Mockup (horizontal bar)**
+> Phân loại: **Phân tích**
+> Silver: `Securities Company` ← SCMS.CTCK_THONG_TIN — **READY**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+
+**Ghi chú UI:** Nhóm 1 hiển thị 3 block độc lập trên màn hình:
+- **Block 1a** — Banner tổng số CTCK: hiển thị K_QLKD_1 + K_QLKD_2 (YoY%). Có nút expand → hiển thị 7 thẻ trạng thái con (K_QLKD_3–9). K_QLKD_3–9 là **filter GROUP BY** trên `Company_Status_Code` của cùng 1 snapshot — không phải measure độc lập.
+- **Block 1b** — Thẻ số tài khoản phát sinh GD: K_QLKD_10
+- **Block 1c** — Thẻ số dư tiền gửi GD: K_QLKD_11
+
+**Mockup:**
 
 ```
-Môi giới phái sinh    ┃████████  1
-Tư vấn phái sinh      ┃████████  1
-Tự doanh phái sinh    ┃████████  1
-                     0   0.5   1
+┌─────────────────────────────────────────────────────┐
+│  TỔNG SỐ CTCK ĐƯỢC CẤP PHÉP    85   ↑ +2.4%   [Xem chi tiết ∧]
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+│  │ Hoạt động│ │ Bị thu hồi│ │ Cảnh báo │ │ Kiểm soát│
+│  │    60    │ │    12    │ │     5    │ │     3    │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐
+│  │KS đặc biệt│ │Đình chỉ  │ │ Khác     │
+│  │     1    │ │     2    │ │     2    │
+│  └──────────┘ └──────────┘ └──────────┘
+├──────────────────────────┬──────────────────────────┤
+│  TK phát sinh GD         │  Số dư tiền gửi GD       │
+│  2,450,000 TÀI KHOẢN     │  125,400 TỶ VND           │
+└──────────────────────────┴──────────────────────────┘
 ```
 
-**2. Source:** Giống Nhóm 36 — `Fact Securities Company Organization Unit Service Registration Snapshot`
+**Source:** `Fact Securities Company Status Snapshot` → `Securities Company Dimension`, `Calendar Date Dimension`
 
-**3. Bảng KPI**
+**Bảng KPI:**
 
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_111 | SL theo môi giới CKPS | đơn vị | Stock (Base) | `... "Service Type Code" = 'DERIVATIVE_BROKERAGE' ...` |
-| 2 | K_QLKD_112 | SL theo tư vấn CKPS | đơn vị | Stock (Base) | `... "Service Type Code" = 'DERIVATIVE_ADVISORY' ...` |
-| 3 | K_QLKD_113 | SL theo tự doanh CKPS | đơn vị | Stock (Base) | `... "Service Type Code" = 'DERIVATIVE_PROP_TRADING' ...` |
-
-**4. Star schema:** Giống Nhóm 36.
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Securities Company Dimension Id"
-    Securities_Company_Organization_Unit_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Organization Unit Dimension Id"
-    Classification_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Service_Registration_Snapshot : "Service Type Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Organization Unit Service Registration Snapshot | 1 row = 1 đơn vị × 1 dịch vụ × 1 Snapshot Date |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Organization Unit Dimension | 1 row = 1 đơn vị trực thuộc (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 38 — Duy trì điều kiện cấp phép (donut 3 mức)
-
-**1. Mockup**
-
-```mermaid
-pie showData
-    title Duy trì điều kiện cấp phép CN/PGD/VPĐD
-    "Đang duy trì tốt" : 3
-    "Gần đến giới hạn" : 0
-    "Không duy trì" : 0
-```
-
-**2. Source:** `Fact Securities Company Organization Unit Snapshot` → `Securities Company Organization Unit Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_114 | SL CN/PGD/VPĐD duy trì tốt | đơn vị | Stock (Base) | `COUNT DISTINCT "Organization Unit Dimension Id"` WHERE CTCK = selected AND `"Is License Maintained Good Flag" = TRUE` AND Snapshot Date = selected |
-| 2 | K_QLKD_115 | SL gần đến giới hạn | đơn vị | Stock (Base) | `... "Is License Maintained Near Limit Flag" = TRUE ...` |
-| 3 | K_QLKD_116 | SL không duy trì | đơn vị | Stock (Base) | `... "Is License Not Maintained Flag" = TRUE ...` |
-
-**Ghi chú:** Logic xác định 3 mức giống Nhóm 6/7/8 (GPHD CTCK) — dùng scheme `QLKD_LICENSE_MAINTENANCE_STATUS` từ issue QLKD_O2. ETL derive từ threshold chỉ tiêu cảnh báo của đơn vị.
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Securities Company Dimension Id"
-    Securities_Company_Organization_Unit_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Organization Unit Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Organization Unit Snapshot | 1 row = 1 đơn vị × 1 Snapshot Date |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Organization Unit Dimension | 1 row = 1 đơn vị trực thuộc (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-##### Nhóm 39 — Danh sách CN, PGD, VPĐD (table)
-
-**1. Mockup (table — inferred từ BA STT 37, không hiển thị trong screenshot)**
-
-| TÊN CN/PGD/VPĐD | ĐỊA CHỈ | NGHIỆP VỤ | NGÀY THÀNH LẬP | GIÁM ĐỐC CN / TRƯỞNG VPĐD |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
 |---|---|---|---|---|
-| CN Hà Nội | 123 Nguyễn Trãi, HN | Môi giới, Tự doanh | 15/03/2015 | Nguyễn Văn A |
+| K_QLKD_1 | Tổng số CTCK được cấp phép | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) tại Snapshot Date = selected_date |
+| K_QLKD_2 | So sánh cùng kỳ năm trước — tổng CTCK | % | Phái sinh | (K_QLKD_1[Year=Y] − K_QLKD_1[Year=Y−1]) / K_QLKD_1[Year=Y−1] × 100% |
+| K_QLKD_3 | Số CTCK hoạt động bình thường | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = ACTIVE |
+| K_QLKD_4 | Số CTCK bị thu hồi | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = REVOKED |
+| K_QLKD_5 | Số CTCK thuộc diện cảnh báo | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = WARNING |
+| K_QLKD_6 | Số CTCK thuộc diện kiểm soát | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = CONTROLLED |
+| K_QLKD_7 | Số CTCK thuộc diện kiểm soát đặc biệt | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = SPECIAL_CONTROLLED |
+| K_QLKD_8 | Số CTCK đình chỉ hoạt động | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = SUSPENDED |
+| K_QLKD_9 | Số CTCK trạng thái khác | CTCK | Cơ sở | COUNT WHERE Company_Status_Code NOT IN (ACTIVE, REVOKED, WARNING, CONTROLLED, SPECIAL_CONTROLLED, SUSPENDED) |
+| K_QLKD_10 | Số tài khoản có phát sinh giao dịch | Tài khoản | Cơ sở | SUM(Indicator_Value_Amount) WHERE Report_Indicator_Code = SCMS_IND_TRADING_ACCOUNT tại selected_date — nguồn: `Fact Securities Company Status Snapshot`.Trading_Account_Count |
+| K_QLKD_11 | Số dư tiền gửi giao dịch | Tỷ VND | Cơ sở | SUM(Indicator_Value_Amount) WHERE Report_Indicator_Code = SCMS_IND_DEPOSIT_BALANCE tại selected_date — nguồn: `Fact Securities Company Status Snapshot`.Deposit_Balance_Amount |
 
-**2. Source:** `Fact Securities Company Organization Unit Snapshot` → `Securities Company Organization Unit Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
+> **Thiết kế grain K_QLKD_1–9:** Fact lưu 1 row per CTCK × ngày — `Company_Status_Code` là DD trên Fact. COUNT GROUP BY status → ra K_QLKD_3–9. SUM tất cả → K_QLKD_1. Không cần tách Fact riêng cho từng trạng thái.
 
-**3. Bảng KPI**
+> **Thiết kế K_QLKD_10–11:** Hai measure này có nguồn từ báo cáo ATTTC/BCTC định kỳ (BC_BAO_CAO_GT). Lưu trực tiếp trên cùng `Fact Securities Company Status Snapshot` tại grain ngày, aggregate SUM toàn thị trường. Xem O_QLKD_4.
 
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_117 | Tên CN, PGD, VPĐD | label | Base (DD) | `"Organization Unit Dimension"."Organization Unit Name"` |
-| 2 | K_QLKD_118 | Địa chỉ CN, PGD, VPĐD | label | Base (DD) | `"Organization Unit Dimension"."Address"` |
-| 3 | K_QLKD_119 | Nghiệp vụ | label | Derived | Concat các nghiệp vụ active: `CASE WHEN "Is Brokerage Flag"=TRUE THEN 'Môi giới' END || ', ' || ...` query time |
-| 4 | K_QLKD_120 | Ngày thành lập | date | Base (DD) | `"Organization Unit Dimension"."Establishment Date"` |
-| 5 | K_QLKD_121 | Giám đốc CN / Trưởng VPĐD | label | Base (DD) | `"Organization Unit Dimension"."Representative Name"` |
-
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Securities Company Dimension Id"
-    Securities_Company_Organization_Unit_Dimension ||--o{ Fact_Securities_Company_Organization_Unit_Snapshot : "Organization Unit Dimension Id"
-```
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Securities Company Organization Unit Snapshot | 1 row = 1 đơn vị × 1 Snapshot Date |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Securities Company Organization Unit Dimension | 1 row = 1 đơn vị trực thuộc (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
-
----
-
-#### Tab 6 — Tuân thủ
-
-##### Nhóm 40 — KPI cards Tuân thủ (Báo cáo YTD / Số QĐ xử phạt)
-
-**1. Mockup**
-
-```
-┌────────────────────────┐  ┌────────────────────────────┐
-│ 📄 BÁO CÁO (YTD)       │  │ ⚠️ SỐ LƯỢNG QĐ XỬ PHẠT     │
-│ 24                     │  │ 3                          │
-└────────────────────────┘  └────────────────────────────┘
-```
-
-**2. Source:** `Fact Securities Company Member Report Value` (reuse Nhóm 27, COUNT DISTINCT trên FK `Member Periodic Report Dimension Id`) + `Fact Securities Company Administrative Penalty` (SCMS, source `CTCK_XU_LY_HANH_CHINH`) → `Member Periodic Report Dimension`, `Securities Company Dimension`, `Calendar Date Dimension`
-
-Nhóm này composite — 2 KPI cards từ 2 fact khác nhau, mỗi card là 1 star schema độc lập (không JOIN giữa 2 fact). Cùng 1 nhóm vì đều thuộc tab "Tuân thủ" của 1 CTCK.
-
-> **Ghi chú 2 fact cho xử phạt:** Nhóm 40 dùng `Fact Securities Company Administrative Penalty` (SCMS) cover mọi QĐ XP hành chính CTCK (bao gồm XP phát sinh từ vi phạm CBTT, không qua thanh tra). Nhóm 42 dùng `Fact QLKD Inspection Penalty Record` (Silver TT cross-module) chỉ cover XP phát sinh từ quá trình thanh tra/kiểm tra. **2 tập dữ liệu không phải subset của nhau** — đây là lý do tồn tại 2 fact song song (không phải "count nhanh vs detail đầy đủ").
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
-|---|---|---|---|---|---|
-| 1 | K_QLKD_122 | Số báo cáo đã nộp (YTD) | lần | Flow (Base) | `COUNT DISTINCT "Member Periodic Report Dimension Id"` trên `Fact Securities Company Member Report Value` WHERE `"Securities Company Dimension Id" = <selected>` AND `"Member Periodic Report Dimension"."Submission Date" BETWEEN 01/01/selected.Year AND selected.Date` |
-| 2 | K_QLKD_123 | Số lượng quyết định xử phạt | quyết định | Flow (Base) | `COUNT DISTINCT "Administrative Penalty Decision Code"` trên `Fact Securities Company Administrative Penalty` WHERE CTCK = selected AND `"Penalty Decision Date" BETWEEN 01/01/selected.Year AND selected.Date` |
-
-**4. Star schema**
+**Star Schema:**
 
 ```mermaid
 erDiagram
-    Member_Periodic_Report_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Member Periodic Report Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Securities Company Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Member_Report_Value : "Report Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Administrative_Penalty : "Penalty Decision Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Administrative_Penalty : "Securities Company Dimension Id"
+    Fact_Securities_Company_Status_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        string Company_Status_Code
+        float Trading_Account_Count
+        float Deposit_Balance_Amount
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : "Securities Company Dimension Id"
 ```
 
-**5. Bảng tham gia**
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Status Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+
+    subgraph RPT["Báo cáo — Nhóm 1"]
+        R1["Tổng CTCK cấp phép (K_QLKD_1)"]
+        R2["YoY% (K_QLKD_2)"]
+        R3["Chi tiết 7 trạng thái (K_QLKD_3–9)\nGROUP BY Company_Status_Code"]
+        R4["Số TK phát sinh GD (K_QLKD_10)"]
+        R5["Số dư tiền gửi (K_QLKD_11)"]
+    end
+
+    G3 --> G1
+    G2 --> G1
+    G1 --> R1
+    G1 --> R2
+    G1 --> R3
+    G1 --> R4
+    G1 --> R5
+```
+
+**Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Member Report Value | 1 row = 1 lần nộp × 1 mã chỉ tiêu báo cáo |
-| Fact Securities Company Administrative Penalty | 1 row = 1 quyết định xử phạt (event) |
-| Member Periodic Report Dimension | 1 row = 1 lần nộp báo cáo của 1 CTCK cho 1 kỳ báo cáo (SCD2) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
+| Fact Securities Company Status Snapshot | 1 CTCK × 1 ngày snapshot |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Calendar Date Dimension | 1 ngày |
 
 ---
 
-##### Nhóm 41 — Lịch sử nộp báo cáo của CTCK (table)
+#### Nhóm 2 — Biểu đồ Nghiệp vụ (STT 15–20)
 
-**1. Mockup (table — inferred từ BA STT 39)**
+> Phân loại: **Phân tích**
+> Silver: `Securities Company` ← FIMS.SECCOMBUSINES (via FIMS.SECURITIESCOMPANY) — **READY**
+> Ghi chú: `Business Type Dimension` là ETL-derived Conformed Dimension — ETL UNNEST `Securities Company.Business Type Codes` (Array, scheme `FIMS_BUSINESS_TYPE`). Xem O_QLKD_6 — cần xác nhận scheme cover đủ mã nghiệp vụ (môi giới, bảo lãnh, tư vấn, tự doanh).
 
-| LOẠI BÁO CÁO | KỲ KÊ KHAI | HẠN NỘP | NGÀY NỘP | TRẠNG THÁI |
+**Mockup:**
+
+```
+SỐ LƯỢNG CTCK THEO NGHIỆP VỤ (horizontal bar chart)
+Môi giới:         68 ████████████████████
+Bảo lãnh phát hành: 42 ████████████
+Tư vấn:           55 ████████████████
+Tự doanh:         58 █████████████████
+```
+
+**Source:** `Fact Securities Company Service Snapshot` → `Securities Company Dimension`, `Business Type Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| Báo cáo tỷ lệ ATTC | Q3/2024 | 25/10/2024 | 25/10/2024 | ĐÚNG HẠN |
-| BCTC quý | Q3/2024 | 20/10/2024 | 22/10/2024 | QUÁ HẠN |
+| K_QLKD_12 | Số CTCK theo nghiệp vụ môi giới | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã môi giới — xem O_QLKD_6] |
+| K_QLKD_13 | Số CTCK theo nghiệp vụ bảo lãnh | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã bảo lãnh — xem O_QLKD_6] |
+| K_QLKD_14 | Số CTCK theo nghiệp vụ tư vấn | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã tư vấn — xem O_QLKD_6] |
+| K_QLKD_15 | Số CTCK theo nghiệp vụ tự doanh | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã tự doanh — xem O_QLKD_6] |
 
-**2. Source:** `Member Periodic Report Dimension` → `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
+**Star Schema:**
 
-**Ghi chú kiến trúc:** Nhóm 41 dùng pattern **dimension-only report** — toàn bộ 5 KPI đều là attributes của `Member Periodic Report Dimension` (source Silver `Member Periodic Report` entity), không có measure thực. Kimball chấp nhận pattern này khi output đầy đủ từ dim attributes; không cần fact cho nhóm này. Query trực tiếp `Member Periodic Report Dim` với filter `Securities Company Dimension Id = <selected>` + range Submission Date.
+```mermaid
+erDiagram
+    Fact_Securities_Company_Service_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Business_Type_Dimension_Id FK
+        string Business_Category_Code
+        float Company_Count
+        datetime Population_Date
+    }
 
-**3. Bảng KPI**
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
 
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
+    Business_Type_Dimension {
+        string Business_Type_Dimension_Id PK
+        string Business_Type_Code
+        string Business_Type_Name
+        string Business_Category_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Securities Company Dimension Id"
+    Business_Type_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Business Type Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Service Snapshot"]
+        G2["Business Type Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+
+    subgraph RPT["Báo cáo — Nhóm 2/3/4"]
+        R1["SL CTCK theo nghiệp vụ (K_QLKD_12–15)"]
+        R2["SL CTCK theo dịch vụ (K_QLKD_16–18)"]
+        R3["SL CTCK dịch vụ phái sinh (K_QLKD_19–21)"]
+    end
+
+    G2 --> G1
+    G3 --> G1
+    G1 --> R1
+    G1 --> R2
+    G1 --> R3
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Service Snapshot | 1 CTCK × 1 nghiệp vụ/dịch vụ × 1 ngày snapshot |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Business Type Dimension | 1 mã nghiệp vụ/dịch vụ (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm 3 — Biểu đồ Dịch vụ (STT 21–25)
+
+> Phân loại: **Phân tích**
+> Silver: `Securities Company` ← FIMS.SECCOMBUSINES (via FIMS.SECURITIESCOMPANY) — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Service Snapshot` và `Business Type Dimension` với Nhóm 2, phân biệt bằng `Business_Category_Code` = DICH_VU. Xem O_QLKD_6 — cần xác nhận scheme `FIMS_BUSINESS_TYPE` có mã cho dịch vụ ký quỹ, ứng trước, lưu ký.
+
+**Mockup:**
+```
+BIỂU ĐỒ DỊCH VỤ — Số CTCK theo dịch vụ được cấp phép
+[Bar ngang]:
+  Giao dịch ký quỹ:   45 ██████████████████
+  Ứng trước tiền bán: 38 ████████████████
+  Lưu ký:             52 █████████████████████
+```
+
+**Source:** `Fact Securities Company Service Snapshot` → `Securities Company Dimension`, `Business Type Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_16 | Số CTCK theo dịch vụ giao dịch ký quỹ | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã ký quỹ — xem O_QLKD_6] |
+| K_QLKD_17 | Số CTCK theo dịch vụ ứng trước tiền bán | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã ứng trước — xem O_QLKD_6] |
+| K_QLKD_18 | Số CTCK theo dịch vụ lưu ký | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã lưu ký — xem O_QLKD_6] |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Service_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Business_Type_Dimension_Id FK
+        string Business_Category_Code
+        float Company_Count
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Business_Type_Dimension {
+        string Business_Type_Dimension_Id PK
+        string Business_Type_Code
+        string Business_Type_Name
+        string Business_Category_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Securities Company Dimension Id"
+    Business_Type_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Business Type Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Service Snapshot | 1 CTCK × 1 nghiệp vụ/dịch vụ × 1 ngày snapshot |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Business Type Dimension | 1 mã nghiệp vụ/dịch vụ (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm 4 — Biểu đồ Dịch vụ phái sinh (STT 26–30)
+
+> Phân loại: **Phân tích**
+> Silver: `Securities Company` ← FIMS.SECCOMBUSINES (via FIMS.SECURITIESCOMPANY) — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Service Snapshot`, phân biệt bằng `Business_Category_Code` = DICH_VU_PHAI_SINH. Xem O_QLKD_6 — cần xác nhận scheme `FIMS_BUSINESS_TYPE` có mã cho dịch vụ phái sinh (môi giới, tư vấn, tự doanh phái sinh).
+
+**Mockup:**
+```
+BIỂU ĐỒ DỊCH VỤ PHÁI SINH — Số CTCK theo dịch vụ CKPS
+[Bar ngang]:
+  Môi giới CKPS:  28 ████████████
+  Tư vấn CKPS:   15 ███████
+  Tự doanh CKPS: 10 █████
+```
+
+**Source:** `Fact Securities Company Service Snapshot` → `Securities Company Dimension`, `Business Type Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_19 | Số CTCK phái sinh dịch vụ môi giới | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã môi giới phái sinh — xem O_QLKD_6] |
+| K_QLKD_20 | Số CTCK phái sinh dịch vụ tư vấn | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã tư vấn phái sinh — xem O_QLKD_6] |
+| K_QLKD_21 | Số CTCK phái sinh dịch vụ tự doanh | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Business_Type_Code = [mã tự doanh phái sinh — xem O_QLKD_6] |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Service_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Business_Type_Dimension_Id FK
+        string Business_Category_Code
+        float Company_Count
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Business_Type_Dimension {
+        string Business_Type_Dimension_Id PK
+        string Business_Type_Code
+        string Business_Type_Name
+        string Business_Category_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Securities Company Dimension Id"
+    Business_Type_Dimension ||--o{ Fact_Securities_Company_Service_Snapshot : "Business Type Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Service Snapshot | 1 CTCK × 1 nghiệp vụ/dịch vụ × 1 ngày snapshot |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Business Type Dimension | 1 mã nghiệp vụ/dịch vụ (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm 5/6/7 — Duy trì điều kiện cấp phép (STT 31–44)
+
+##### PENDING — Duy trì điều kiện cấp phép — Giấy phép hoạt động (STT 31–36)
+
+**KPI liên quan:** K_QLKD_22, K_QLKD_23, K_QLKD_24
+
+**Lý do pending:** Hai trường cốt lõi chưa có Silver source:
+1. `License_Type_Code` (GPHL / KDCKPS / BTTT) — cần biết dịch vụ CTCK đăng ký. `CTCK_DICH_VU` ghi nhận trong Source Analysis là sẽ denormalize vào `Securities Company`, nhưng field `Service Codes` (scheme `SCMS_SERVICE_TYPE`) hiện **vắng mặt trong Silver LLD**
+2. `License_Condition_Status_Code` (tốt / gần hạn / không duy trì) — cần giá trị chỉ tiêu ATTTC từ `Member Report Indicator Value.Value`, nhưng indicator_code ATTTC chưa xác định — chờ data profiling
+
+**Silver cần bổ sung:**
+- `Securities Company.Service Codes` (Array\<Text\>, scheme `SCMS_SERVICE_TYPE`) — ETL từ `SCMS.CTCK_DICH_VU`
+- Xác định indicator_code ATTTC trong `SCMS.DM_CHI_TIEU` và ngưỡng phân loại tốt/gần hạn/không duy trì
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Company License Condition Snapshot` — grain = 1 CTCK × 1 loại giấy phép × 1 ngày snapshot
+
+---
+
+##### PENDING — Duy trì điều kiện cấp phép — Phái sinh: Kinh doanh CKPS (STT 37–40)
+
+**KPI liên quan:** K_QLKD_25, K_QLKD_26, K_QLKD_27
+
+**Lý do pending:** Cùng lý do Nhóm 5 — xem O_QLKD_7.
+
+**Silver cần bổ sung:** Như Nhóm 5.
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Company License Condition Snapshot` — grain = 1 CTCK × 1 loại giấy phép × 1 ngày snapshot
+
+---
+
+##### PENDING — Duy trì điều kiện cấp phép — Phái sinh: Bù trừ thanh toán (STT 41–44)
+
+**KPI liên quan:** K_QLKD_28, K_QLKD_29, K_QLKD_30
+
+**Lý do pending:** Cùng lý do Nhóm 5 — xem O_QLKD_7.
+
+**Silver cần bổ sung:** Như Nhóm 5.
+
+**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Company License Condition Snapshot` — grain = 1 CTCK × 1 loại giấy phép × 1 ngày snapshot
+
+---
+
+#### Nhóm 8 — Cơ cấu tài sản (STT 45–51)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+> Ghi chú: `Report Indicator Dimension` là ETL-derived Conformed Dimension — extract từ `Member Report Indicator Value.Report Indicator Code` (FK đến SCMS.DM_CHI_TIEU). Lý do: GROUP BY theo tên chỉ tiêu BCTC; tái sử dụng cross-module.
+
+**Mockup:**
+
+```
+CƠ CẤU TÀI SẢN — stacked bar chart theo quý
+Q4/23: 133K tỷ  [Cho vay][TS TC ghi nhận L/L][TS sẵn sàng bán][TS đến hạn][T&TĐT][Khác]
+Q1/24: 133K tỷ ...
+Q2/24: 143K tỷ ...
+Q3/24: 151K tỷ ...
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_31 | Tiền và tương đương tiền — toàn TT | Tỷ VND | Cơ sở | SUM(Indicator Value Amount) WHERE Report Indicator Code = TIEN_VA_TUONG_DUONG GROUP BY quarter |
+| K_QLKD_32 | TS TC ghi nhận qua lãi/lỗ — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = TS_TC_LAI_LO |
+| K_QLKD_33 | Đầu tư nắm giữ đến đáo hạn — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = DTKGDH |
+| K_QLKD_34 | TS TC sẵn sàng để bán — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = TS_SAN_SANG_BAN |
+| K_QLKD_35 | Các khoản cho vay — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = CHO_VAY |
+| K_QLKD_36 | Tài sản khác — toàn TT | Tỷ VND | Cơ sở | Tổng tài sản − các mục trên (derive tại presentation layer) |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Financial Structure Snapshot"]
+        G2["Report Indicator Dimension"]
+        G3["Calendar Date Dimension"]
+        G4["Securities Company Dimension"]
+    end
+
+    subgraph RPT["Báo cáo — Nhóm 8/9"]
+        R1["Cơ cấu tài sản theo quý (K_QLKD_31–36)"]
+        R2["Cơ cấu nguồn vốn theo quý (K_QLKD_37–40)"]
+    end
+
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
+    G1 --> R1
+    G1 --> R2
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm 9 — Cơ cấu nguồn vốn (STT 52–56)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Financial Structure Snapshot` với Nhóm 8, phân biệt bằng `Financial Structure Category Code = NGUON_VON`.
+
+**Mockup:**
+```
+CƠ CẤU NGUỒN VỐN toàn thị trường (donut)
+  Vốn chủ sở hữu: 38% ████████████████
+  Nợ phải trả:    62% █████████████████████████
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_37 | Vay và nợ thuê tài chính ngắn hạn — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = VAY_NO_NH |
+| K_QLKD_38 | Nợ phải trả dài hạn — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = NO_PT_DH |
+| K_QLKD_39 | Vốn chủ sở hữu — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = VCSH |
+| K_QLKD_40 | Nguồn vốn khác — toàn TT | Tỷ VND | Cơ sở | Tổng nguồn vốn − các mục trên (derive tại presentation layer) |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+### Tab: GIÁM SÁT
+
+**Slicer chung:** Khoảng thời gian TỪ/ĐẾN (từng sub-tab có grain riêng: quý / tháng / ngày tùy biểu đồ)
+
+---
+
+#### Sub-tab: GIÁM SÁT HOẠT ĐỘNG
+
+---
+
+#### Nhóm GS-1 — Cơ cấu vốn chủ sở hữu (STT 11)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+> Ghi chú: Sử dụng `Fact Securities Company Financial Structure Snapshot` với `Financial Structure Category Code` = VCSH. Grain quý. Xem O_QLKD_4.
+
+**Mockup:**
+```
+CƠ CẤU VỐN CHỦ SỞ HỮU — stacked bar theo quý (tỷ đồng)
+Q1/24: 165,400  [Vốn ĐL][LNST chưa PP][Quỹ+thặng dư][Vốn khác]
+Q2/24: 169,000  ...
+Q3/24: 172,200  ...
+Q4/24: 176,600  ...
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_41 | Vốn điều lệ — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = VON_DIEU_LE GROUP BY quarter |
+| K_QLKD_42 | Lợi nhuận sau thuế chưa phân phối — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = LNST_CHUA_PP |
+| K_QLKD_43 | Quỹ và thặng dư vốn cổ phần — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = QUY_THANG_DU |
+| K_QLKD_44 | Vốn khác — toàn TT | Tỷ VND | Cơ sở | Tổng VCSH − các mục trên (derive tại presentation layer) |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Financial Structure Snapshot"]
+        G2["Report Indicator Dimension"]
+        G3["Calendar Date Dimension"]
+        G4["Securities Company Dimension"]
+    end
+
+    subgraph RPT["Báo cáo — GS-1 đến GS-5, GS-7, GS-8"]
+        R1["Cơ cấu VCSH theo quý (K_QLKD_41–44)"]
+        R2["Vốn ĐT CSH theo quý (K_QLKD_45)"]
+        R3["Nguồn vốn tăng thêm theo tháng (K_QLKD_46–50)"]
+        R4["TLATTC phân loại theo tháng (K_QLKD_51–53)"]
+        R5["Doanh thu & LNST theo quý (K_QLKD_54–59)"]
+        R6["Dư nợ Margin theo tháng (K_QLKD_61)"]
+        R7["Thị phần môi giới (K_QLKD_66–67)"]
+        R8["CFO per CTCK (K_QLKD_68–69)"]
+    end
+
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
+    G1 --> R1
+    G1 --> R2
+    G1 --> R3
+    G1 --> R4
+    G1 --> R5
+    G1 --> R6
+    G1 --> R7
+    G1 --> R8
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm GS-2 — Vốn đầu tư CSH theo quý (STT 12)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Financial Structure Snapshot`, `Financial Structure Category Code` = VON_DAU_TU_CSH. Grain quý. Xem O_QLKD_4.
+
+**Mockup:**
+```
+VỐN ĐẦU TƯ CSH THEO QUÝ — line chart (tỷ đồng, từ 2020)
+Trục Y: 0 – 32K tỷ
+2020-Q1: 16,000  ●
+2020-Q4: 17,500  ●
+...
+2023-Q4: 27,000  ●
+2024-Q4: 31,500  ● (điểm cao nhất)
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_45 | Vốn đầu tư của chủ sở hữu — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = VON_DAU_TU_CSH GROUP BY quarter (trendline từ 2020) |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm GS-3 — Nguồn vốn tăng thêm (STT 13)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Financial Structure Snapshot`, `Financial Structure Category Code` = NGUON_VON_TANG. Grain tháng. Xem O_QLKD_4.
+
+**Mockup:**
+```
+NGUỒN VỐN TĂNG THÊM — stacked bar theo tháng (tỷ đồng, năm 2024)
+         T1      T2      T3      T4      T5      T6    ...  T12
+Tổng:  2,500   2,200   2,800   3,400   2,800   2,800 ... 9,100
+[CB công chúng][CB khác][CB riêng lẻ][TP công chúng][TP riêng lẻ]
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_46 | Vốn tăng thêm do chào bán công chúng | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = TANG_CB_CONG_CHUNG GROUP BY month |
+| K_QLKD_47 | Vốn tăng thêm do chào bán khác | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = TANG_CB_KHAC |
+| K_QLKD_48 | Vốn tăng thêm do chào bán riêng lẻ | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = TANG_CB_RIENG_LE |
+| K_QLKD_49 | Vốn tăng thêm do phát hành TP công chúng | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = TANG_TP_CONG_CHUNG |
+| K_QLKD_50 | Vốn tăng thêm do phát hành TP riêng lẻ | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = TANG_TP_RIENG_LE |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm GS-4 — Tỷ lệ an toàn tài chính — Số lượng CTCK (STT 14)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Financial Structure Snapshot`. Grain tháng. `Financial Structure Category Code` = TLATTC. Xem O_QLKD_4 — indicator_code TLATTC cần xác nhận.
+
+**Mockup:**
+```
+TỶ LỆ AN TOÀN TÀI CHÍNH (SỐ LƯỢNG CTCK) — stacked bar 100% theo tháng
+T1/23 → T12/24 (24 cột)
+Mỗi cột = ~85 CTCK tổng, chia 3 vùng:
+  ████ Cao (>180%) — xanh lá
+  ████ Trung bình (120–180%) — cam
+  ████ Thấp (<120%) — đỏ
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_51 | Số CTCK TLVKD mức cao (>180%) | CTCK | Cơ sở | COUNT WHERE TLATTC > 180% GROUP BY month — xem O_QLKD_4 |
+| K_QLKD_52 | Số CTCK TLVKD mức thấp (<120%) | CTCK | Cơ sở | COUNT WHERE TLATTC < 120% GROUP BY month |
+| K_QLKD_53 | Số CTCK TLVKD mức trung bình (120–180%) | CTCK | Cơ sở | COUNT WHERE 120% ≤ TLATTC ≤ 180% GROUP BY month |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm GS-5 — Doanh thu & Lợi nhuận (STT 15)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Financial Structure Snapshot`. Grain quý. `Financial Structure Category Code` = DOANH_THU_LNST. Xem O_QLKD_4.
+
+**Mockup:**
+```
+DOANH THU & LỢI NHUẬN — stacked bar (DT) + line (LNST) theo quý
+         Q1/24    Q2/24    Q3/24    Q4/24
+Tổng DT: 18,000   20,000   24,000   28,000  (tỷ)
+  [Bảo lãnh PH][Khác][Môi giới][Tư vấn][Tự doanh]
+LNST: ●−−−●−−−●−−−● (line đỏ, trục phải)
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_54 | Tổng doanh thu — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = DOANH_THU GROUP BY quarter |
+| K_QLKD_55 | Lợi nhuận sau thuế — toàn TT | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = LNST |
+| K_QLKD_56 | Cơ cấu DT nghiệp vụ môi giới | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = DT_MOI_GIOI |
+| K_QLKD_57 | Cơ cấu DT nghiệp vụ tự doanh | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = DT_TU_DOANH |
+| K_QLKD_58 | Cơ cấu DT nghiệp vụ tư vấn | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = DT_TU_VAN |
+| K_QLKD_59 | Cơ cấu DT nghiệp vụ bảo lãnh | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = DT_BAO_LANH |
+| K_QLKD_60 | Cơ cấu DT nghiệp vụ khác | Tỷ VND | Cơ sở | SUM WHERE Report Indicator Code = DT_KHAC |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường (STT 16)
+
+> Phân loại: **Phân tích**
+> Silver (Dư nợ Margin): `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Silver (Chỉ số thị trường): `Risk Indicator Value` ← QLRR — **tạm dùng, chờ xác nhận** — xem O_QLKD_8
+> Ghi chú: Grain tháng. Biểu đồ combo: bar = dư nợ margin (trục trái), line = các chỉ số thị trường VN-Index/HNX/UPCOM/VN30 (trục phải). Nguồn cho chỉ số thị trường chờ kết quả khảo sát dữ liệu QLRR.
+
+**Mockup:**
+```
+TƯƠNG QUAN MARGIN & DIỄN BIẾN THỊ TRƯỜNG — bar + multi-line theo tháng
+         T1/23 T2/23 ... T12/23 T1/24 ... T12/24
+DU NO:   150K  160K  ...  200K   180K  ...  450K  (tỷ, bar xám — trục trái)
+VN-Index: ─────────────────────────── (line xanh — trục phải, ~1045–1625)
+HNX:      ─────────────────────────── (toggle)
+UPCOM:    ─────────────────────────── (toggle)
+VN30:     ─────────────────────────── (toggle)
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`. Chỉ số thị trường (VN-Index/HNX/UPCOM/VN30) từ `Risk Indicator Value` (QLRR) — tạm dùng, xem O_QLKD_8.
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Nguồn | Công thức |
 |---|---|---|---|---|---|
-| 1 | K_QLKD_124 | Loại báo cáo | label | Base (FK) | `"Member Periodic Report Dimension"."Report Template Name"` (denormalized từ Report Template lookup) |
-| 2 | K_QLKD_125 | Kỳ kê khai | label | Base (FK) | `"Member Periodic Report Dimension"."Reporting Period Name"` (VD "Q3/2024") |
-| 3 | K_QLKD_126 | Hạn nộp | date | Base (FK) | `"Member Periodic Report Dimension"."Submission Deadline Date"` — FK Calendar Date Dim |
-| 4 | K_QLKD_127 | Ngày nộp | date | Base (FK) | `"Member Periodic Report Dimension"."Submission Date"` — FK Calendar Date Dim |
-| 5 | K_QLKD_128 | Trạng thái | label | Base (FK) | `"Member Periodic Report Dimension"."Report Submission Status Code"` — FK Classification Dim (scheme `FMS_REPORT_SUBMISSION_STATUS`). Decoded: ĐÚNG HẠN / QUÁ HẠN / CHƯA NỘP / ... |
+| K_QLKD_61 | Tổng dư nợ margin — toàn TT | Tỷ VND | Cơ sở | SCMS | SUM WHERE Report Indicator Code = DU_NO_MARGIN GROUP BY month — xem O_QLKD_4 |
+| K_QLKD_62 | Chỉ số VN-Index | Điểm | Cơ sở | QLRR (tạm) | Risk Indicator Value.Value WHERE Risk Indicator Code = VN_INDEX per ngày — xem O_QLKD_8 |
+| K_QLKD_63 | Chỉ số HNX Index | Điểm | Cơ sở | QLRR (tạm) | Risk Indicator Value.Value WHERE Risk Indicator Code = HNX_INDEX — xem O_QLKD_8 |
+| K_QLKD_64 | Chỉ số UPCOM Index | Điểm | Cơ sở | QLRR (tạm) | Risk Indicator Value.Value WHERE Risk Indicator Code = UPCOM_INDEX — xem O_QLKD_8 |
+| K_QLKD_65 | Chỉ số VN30 | Điểm | Cơ sở | SCMS/QLRR (tạm) | Risk Indicator Value.Value WHERE Risk Indicator Code = VN30 — xem O_QLKD_8 |
 
-**4. Star schema**
-
-```mermaid
-erDiagram
-    Securities_Company_Dimension ||--o{ Member_Periodic_Report_Dimension : "Securities Company Dimension Id"
-    Calendar_Date_Dimension ||--o{ Member_Periodic_Report_Dimension : "Submission Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Member_Periodic_Report_Dimension : "Submission Deadline Date Dimension Id"
-    Classification_Dimension ||--o{ Member_Periodic_Report_Dimension : "Report Submission Status Dimension Id"
-```
-
-Ghi chú: Đây là quan hệ giữa các dim (dim `Member Periodic Report` có FK đến các dim khác — acceptable trong Kimball khi là outrigger reference; không snowflake vì Nhóm 27 + Nhóm 40 vẫn access các dim này qua Fact Report Value trực tiếp, không force JOIN chain).
-
-**5. Bảng tham gia**
-
-| Tên bảng | Grain |
-|---|---|
-| Member Periodic Report Dimension | 1 row = 1 lần nộp báo cáo của 1 CTCK cho 1 kỳ báo cáo (SCD2) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Calendar Date Dimension | 1 row = 1 ngày |
-| Classification Dimension | 1 row = 1 classification value (SCD2) |
-
----
-
-##### Nhóm 42 — Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK
-
-**1. Mockup (table)**
-
-| LOẠI TT, KT | NGÀY BAN HÀNH QĐ TT, KT | SỐ QĐ XỬ PHẠT | NGÀY BAN HÀNH QĐ XP | HÀNH VI VI PHẠM | HÌNH THỨC XP BỔ SUNG | BIỆN PHÁP KHẮC PHỤC |
-|---|---|---|---|---|---|---|
-| Thanh tra định kỳ 2023 | 15-05-2023 | 145/QĐ-XPHC | 20-06-2023 | Vi phạm tỷ lệ an toàn vốn và cho vay Margin | Phạt tiền 125.000.000 VNĐ | Cơ cấu lại danh mục cho vay |
-| Kiểm tra đột xuất Margin | 01-12-2022 | 12/QĐ-UBCK | 15-02-2024 | Vi phạm nghiêm trọng quy trình quản lý rủi ro | Đình chỉ hoạt động 03 tháng | Chấn chỉnh công tác quản trị |
-| Kiểm tra tuân thủ định kỳ | 10-10-2021 | 89/QĐ-UBCK | 20-10-2021 | Công bố thông tin không đúng thời hạn | - | - |
-
-**2. Source:** `Fact QLKD Inspection Penalty Record` (NEW, cross-module Silver TT) → `Securities Company Dimension`, `Calendar Date Dimension`, `Classification Dimension`
-
-**Cross-module reference:** Fact này đọc 4 bảng Silver TT (`Inspection Decision` / `Inspection Case` / `Inspection Case Conclusion` / `Inspection Decision Subject`), **không reuse Gold fact module TT** (§7.6). Module QLKD tạo entity riêng, ETL build bằng JOIN chain:
-```
-Inspection Decision Subject (lọc CTCK = selected)
-  → Inspection Decision (lấy Loại TT/KT, Ngày QĐ TT/KT)
-  → Inspection Case
-  → Inspection Case Conclusion (lấy Số + Ngày QĐ XP, Hành vi VP, Hình thức phạt, Số tiền)
-```
-
-**3. Bảng KPI**
-
-| # | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả | Silver TT source |
-|---|---|---|---|---|---|---|
-| 1 | K_QLKD_129 | Loại thanh tra, kiểm tra | label | Base (FK) | FK `"Inspection Type Dimension Id"` → Classification (scheme `TT_PLAN_TYPE`: THANH_TRA / KIEM_TRA) | `Inspection Decision.Inspection Type Code` |
-| 2 | K_QLKD_130 | Ngày ban hành QĐ thanh tra, kiểm tra | date | Base (FK) | `"Inspection Decision Issue Date"` — FK Calendar Date | `Inspection Decision.Issue Date` (NGAY_RA_QUYET_DINH) |
-| 3 | K_QLKD_131 | Số quyết định xử phạt | label | Base (DD) | `"Conclusion Document Number"` | `Inspection Case Conclusion.Conclusion Document Number` |
-| 4 | K_QLKD_132 | Ngày ban hành QĐ xử phạt | date | Base (FK) | `"Conclusion Signing Date"` — FK Calendar Date | `Inspection Case Conclusion.Signing Date` |
-| 5 | K_QLKD_133 | Hành vi vi phạm | label | Base (FK) | FK `"Violation Type Dimension Id"` → Classification (scheme `TT_VIOLATION_TYPE`, danh mục chuẩn) + text `"Violation Clause"` (điều khoản) | `Inspection Case Conclusion.Violation Type Code` + `Violation Clause` |
-| 6 | K_QLKD_134 | Hình thức xử phạt bổ sung | label | Base (FK) + amount | FK `"Penalty Type Dimension Id"` → Classification (scheme `TT_PENALTY_TYPE`) + `"Penalty Amount"` decimal + text `"Penalty Clause"` | `Inspection Case Conclusion.Penalty Type Code` + `Penalty Amount` + `Penalty Clause` |
-| 7 | K_QLKD_135 | Biện pháp khắc phục | text | Base (DD) | Parse query-time từ text `"Conclusion Summary"` (NOI_DUNG). Chờ Silver TT bổ sung attribute riêng — xem QLKD_O12. | `Inspection Case Conclusion.Conclusion Summary` (parse) |
-
-**4. Star schema**
+**Star Schema:**
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Inspection Decision Issue Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Conclusion Signing Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Securities Company Dimension Id"
-    Classification_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Inspection Type Dimension Id"
-    Classification_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Violation Type Dimension Id"
-    Classification_Dimension ||--o{ Fact_QLKD_Inspection_Penalty_Record : "Penalty Type Dimension Id"
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
 ```
 
-**Ghi chú text fields trên fact:** `Violation Clause`, `Penalty Clause`, `Conclusion Summary` là text tự do, per §7.1 đây là ngoại lệ được phép — text là thuộc tính cốt lõi của 1 event xử phạt, không thuộc entity có BK riêng. Giữ dạng degenerate.
-
-**5. Bảng tham gia**
+**Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact QLKD Inspection Penalty Record | 1 row = 1 kết luận thanh tra × 1 CTCK đối tượng (event, source Silver TT cross-module) |
-| Securities Company Dimension | 1 row = 1 CTCK (SCD2) |
-| Classification Dimension | 1 row = 1 classification value (SCD2) — scheme mới `TT_PLAN_TYPE`, `TT_VIOLATION_TYPE`, `TT_PENALTY_TYPE` |
-| Calendar Date Dimension | 1 row = 1 ngày |
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
 
 ---
 
-## 2. Mô hình Star Schema (tổng thể)
+#### Nhóm GS-7 — Thị phần môi giới (STT 17)
 
-### 2.1 Diagram
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Financial Structure Snapshot`. Grain quý. `Financial Structure Category Code` = THI_PHAN_MOI_GIOI. Donut chart — tỷ lệ % per CTCK. BA có chiều sàn giao dịch và Top N — filter bằng `Exchange_Code` (DD trên Fact) và TOP N tại presentation layer.
+
+**Mockup:**
+```
+THỊ PHẦN MÔI GIỚI — donut chart (KỲ: 2024 Q1, Sàn: Tất cả, Top: 6)
+  SSI    (14.3%)  ████
+  VND    (11.1%)  ███
+  VPS    (17.0%)  █████
+  HBC    (10.0%)  ███
+  MBS    ( 8.3%)  ██
+  TCBS   ( 7.4%)  ██
+  Khác   (31.9%)  ████████
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_66 | Thị phần môi giới của từng CTCK | % | Cơ sở | Indicator_Value_Amount WHERE Report Indicator Code = THI_PHAN_MOI_GIOI per CTCK per kỳ. Slicer: Sàn giao dịch (`Exchange_Code`), Top N CTCK |
+| K_QLKD_67 | Xếp hạng thị phần môi giới | Thứ hạng | Phái sinh | RANK() OVER (PARTITION BY period, Exchange_Code ORDER BY K_QLKD_66 DESC) — tính tại presentation layer |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm GS-8 — Lưu chuyển tiền thuần CFO (STT 18)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Ghi chú: Sử dụng chung `Fact Securities Company Financial Structure Snapshot`. Hiển thị per CTCK (bar chart). BA ghi grain theo ngày nhưng đây là chỉ tiêu BCTC — khả năng grain thực tế là quý. Xem O_QLKD_4.
+
+**Mockup:**
+```
+LƯU CHUYỂN TIỀN THUẦN CFO — bar chart per CTCK
+  S    ██  CFO: 2,000 | LNST: 1,500
+  V    ██  CFO: 1,800 | LNST: 1,200
+  VS   ██  CFO: -500  | LNST: 200   (bar âm)
+  VI   ██  CFO: 3,200 | LNST: 2,800
+  TC   ██  ...
+  ...
+Màu xanh = CFO dương, đỏ = CFO âm
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_68 | LNST — per CTCK | Tỷ VND | Cơ sở | Indicator_Value_Amount WHERE Report Indicator Code = LNST per CTCK per kỳ — xem O_QLKD_4 (grain ngày vs quý) |
+| K_QLKD_69 | CFO (dòng tiền hoạt động KD) — per CTCK | Tỷ VND | Cơ sở | Indicator_Value_Amount WHERE Report Indicator Code = CFO per CTCK per kỳ — xem O_QLKD_4 |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Financial_Structure_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        int Report_Indicator_Dimension_Id FK
+        string Financial_Structure_Category_Code
+        float Indicator_Value_Amount
+        string Report_Period_Type_Code
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Report_Indicator_Dimension {
+        string Report_Indicator_Dimension_Id PK
+        string Report_Indicator_Code
+        string Report_Indicator_Name
+        string Indicator_Group_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng tùy biểu đồ) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Sub-tab: GIÁM SÁT TUÂN THỦ
+
+---
+
+#### Nhóm GS-9 — Giám sát tuân thủ nộp báo cáo (STT 10)
+
+> Phân loại: **Phân tích**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+> Silver: `Report Submission Obligation` ← SCMS.BM_BAO_CAO_DINH_KY_DON_VI — **READY**
+> Silver: `Securities Company` ← SCMS.CTCK_THONG_TIN — **READY**
+
+**Mockup:**
+```
+GIÁM SÁT TUÂN THỦ — Giám sát nghĩa vụ báo cáo
+Slicer: date picker đơn (ngày snapshot — VD: 31/12/2024)
+
+┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐
+│ ✅ BC ĐÚNG HẠN   │ │ 🕐 BÁO CÁO CHẬM  │ │ ❗ CHƯA BÁO CÁO  │ │ 📈 TỶ LỆ TUÂN THỦ│
+│       16         │ │        1         │ │        0         │ │     94.1%        │
+│      94.1%       │ │       5.9%       │ │       0.0%       │ │  16/17 báo cáo   │
+└──────────────────┘ └──────────────────┘ └──────────────────┘ └──────────────────┘
+```
+
+**Source:** `Fact Securities Company Report Compliance Snapshot` → `Securities Company Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_70 | Số báo cáo đúng hạn | Báo cáo | Cơ sở | COUNT WHERE `Submission_Date` ≤ `Submission_Deadline_Date` AND `Submission_Status_Code` = SUBMITTED tại snapshot_date |
+| K_QLKD_71 | Số báo cáo chậm | Báo cáo | Cơ sở | COUNT WHERE `Submission_Date` > `Submission_Deadline_Date` AND `Submission_Status_Code` = SUBMITTED tại snapshot_date |
+| K_QLKD_72 | Số báo cáo chưa nộp | Báo cáo | Cơ sở | COUNT nghĩa vụ đã đến hạn WHERE chưa có `Submission_Date` tại snapshot_date |
+| K_QLKD_73 | Tỷ lệ tuân thủ | % | Phái sinh | K_QLKD_70 / (K_QLKD_70 + K_QLKD_71 + K_QLKD_72) × 100% — UI hiển thị dạng "16/17 báo cáo" |
+
+> **Ghi chú grain GS-9:** Slicer là date picker đơn — grain Fact = 1 nghĩa vụ báo cáo per CTCK per ngày snapshot. Tỷ lệ tuân thủ tính trên tổng số nghĩa vụ đến hạn tại ngày đó (mẫu số = 17 trong ví dụ screenshot).
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Securities_Company_Report_Compliance_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Securities_Company_Dimension_Id FK
+        string Report_Template_Code
+        string Submission_Status_Code
+        date Submission_Deadline_Date
+        date Submission_Date
+        datetime Population_Date
+    }
+
+    Securities_Company_Dimension {
+        string Securities_Company_Dimension_Id PK
+        string Securities_Company_Id
+        string Securities_Company_Code
+        string Securities_Company_Name
+        string Company_Type_Code
+        date Effective_Date
+        date Expiry_Date
+    }
+
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Full_Date
+        int Year
+        int Quarter
+        int Month
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : "Snapshot Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : "Securities Company Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fact Securities Company Report Compliance Snapshot"]
+        G2["Securities Company Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+
+    subgraph RPT["Báo cáo — GS-9"]
+        R1["SL BC đúng hạn/chậm/chưa (K_QLKD_70–72)"]
+        R2["Tỷ lệ tuân thủ (K_QLKD_73)"]
+    end
+
+    G2 --> G1
+    G3 --> G1
+    G1 --> R1
+    G1 --> R2
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Report Compliance Snapshot | 1 CTCK × 1 biểu mẫu báo cáo × 1 kỳ nghĩa vụ |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+### Tab: HỒ SƠ CTCK 360
+
+**Slicer chung:** Mã hoặc tên CTCK (search box) + filter trạng thái. Mỗi hồ sơ là 1 CTCK cụ thể — toàn bộ sub-tab là **Tác nghiệp** (lookup 1 đối tượng), ngoại trừ các biểu đồ tài chính tái sử dụng Fact hiện có.
+
+---
+
+#### Sub-tab: Tổng quan
+
+---
+
+#### Nhóm 360-1 — Banner tổng quan CTCK (STT 19)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company` ← SCMS.CTCK_THONG_TIN — **READY**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Ghi chú: `Securities Company 360 Profile` là bảng Tác nghiệp, 1 row per CTCK (latest state). Tra cứu theo `Securities Company Id` = selected ra ngay 5 chỉ tiêu banner. ETL populate từ `Member Report Indicator Value` (kỳ gần nhất per CTCK) + thông tin định danh từ `Securities Company`.
+
+**Mockup:**
+```
+CTCP Chứng khoán HC  [ACTIVE]  HC • Thành lập 2002
+Slicer: THỜI ĐIỂM BÁO CÁO (month picker — VD: 09/2025)
+
+┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+│ VỐN CSH  │ │ VỐN ĐL   │ │ DƯ NỢ MG │ │ TL ATTC  │ │ NHÂN VIÊN│
+│  +8.5%   │ │   (0)    │ │  +12.3%  │ │  -2.1%   │ │          │
+│ 3,900 Tỷ │ │ 3,315 Tỷ │ │ 3,200 Tỷ │ │   168%   │ │  50 người│
+└──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘
+```
+
+**Source:** `Securities Company 360 Profile` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_74 | Vốn chủ sở hữu — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = VCSH tại tháng báo cáo — xem O_QLKD_4 |
+| K_QLKD_75 | Vốn điều lệ — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = VON_DIEU_LE |
+| K_QLKD_76 | Dư nợ margin — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = DU_NO_MARGIN |
+| K_QLKD_77 | Tỷ lệ ATTC — per CTCK | % | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = TLATTC — xem O_QLKD_4 |
+| K_QLKD_78 | Số nhân viên — per CTCK | Người | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = [mã chỉ tiêu số lao động — xem O_QLKD_11] |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Securities Company 360 Profile | 1 CTCK (latest state) |
+
+---
+
+#### Nhóm 360-2 — Cơ cấu tổng tài sản & nguồn vốn (STT 21, 22)
+
+> Phân loại: **Phân tích** (tái sử dụng Fact)
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+
+**Mockup:**
+```
+CƠ CẤU TÀI SẢN & NGUỒN VỐN  Xem theo quý báo cáo: [2024-Q3 ▼]
+
+[Donut trái — TỔNG TÀI SẢN 16,800 Tỷ]        [Donut phải — NGUỒN VỐN 16,800 Tỷ]
+Tiền & TĐ: 6,100    Đầu tư HTM: 2,900          Vốn CSH: 3,900    Vay ngắn hạn: 7,400
+TSTC: 4,700         Cho vay: 1,800              Nợ dài hạn: 3,800  Khác: 1,700
+Khác: 1,300
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_79 | Cơ cấu tổng tài sản — per CTCK (các mục) | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code IN (TIEN_TDT, TSTC_LALO, DTU_HTM, TSTC_SAN_SANG_BAN, CHO_VAY, TS_KHAC) AND Securities Company Id = selected |
+| K_QLKD_80 | Cơ cấu nguồn vốn — per CTCK (các mục) | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code IN (VCSH, VAY_NH, NO_DH, NV_KHAC) AND Securities Company Id = selected |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm 360-3 — Biến động vốn CSH (STT 20)
+
+> Phân loại: **Phân tích** (tái sử dụng Fact)
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+
+**Mockup:**
+```
+BIẾN ĐỘNG VỐN CSH — line chart per CTCK theo quý (từ ngày thành lập)
+X: 2002-Q4 → 2024-Q4   Y: 0–4,000 Tỷ
+● 2004-Q4: Vốn CSH = 1,418 Tỷ
+● 2024-Q4: Vốn CSH = ~4,000 Tỷ (điểm cao nhất)
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_81 | Biến động vốn CSH theo quý — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = VCSH per quarter từ đầu đến nay, Securities Company Id = selected |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm 360-4 — Doanh thu & Lợi nhuận per CTCK (STT 23)
+
+> Phân loại: **Phân tích** (tái sử dụng Fact)
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+
+**Mockup:**
+```
+DOANH THU & LỢI NHUẬN — stacked bar + line theo quý
+Tooltip 2023-Q4: Bảo lãnh PH: 47 (9%) | Môi giới: 239 (46%) | Tư vấn: 73 (14%) | Tự doanh: 161 (31%)
+Tổng DT: 519 Tỷ | LNST: 123 Tỷ (line đỏ)
+Slicer: Từ [2023 Q1] Đến [2024 Q4]
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_82 | Doanh thu theo nghiệp vụ — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount per Report Indicator Code (DT_MOI_GIOI, DT_TU_DOANH, DT_TU_VAN, DT_BAO_LANH) per quarter |
+| K_QLKD_83 | Tổng doanh thu — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = DOANH_THU per quarter |
+| K_QLKD_84 | Lợi nhuận sau thuế — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = LNST per quarter |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Nhóm 360-5 — Dư nợ Margin/VCSH & TLATTC per CTCK (STT 24, 25)
+
+> Phân loại: **Phân tích** (tái sử dụng Fact)
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+
+**Mockup:**
+```
+DƯ NỢ MARGIN / VỐN CSH (line %, theo tháng)   BIẾN ĐỘNG VỐN CSH (line Tỷ, theo quý)
+T2/2024–T12/2024: 75%–85%                      2002-Q4–2024-Q4: xu hướng tăng dài hạn
+
+TỶ LỆ AN TOÀN TÀI CHÍNH (line %, theo tháng)
+T1/2024–T12/2024: ~160%–180%   Tooltip 2024-11: 170.69%
+```
+
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_85 | Tỷ lệ dư nợ Margin/VCSH — per CTCK | % | Phái sinh | K_QLKD_76 / K_QLKD_74 × 100% per tháng |
+| K_QLKD_86 | Tỷ lệ ATTC theo tháng — per CTCK | % | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = TLATTC per tháng — xem O_QLKD_4 |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (quý/tháng) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+#### Sub-tab: Tài chính
+
+---
+
+#### Nhóm 360-6 — Lịch sử báo cáo tài chính (STT 26, 27)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+
+**Mockup:**
+```
+KỲ BÁO CÁO: Từ [2024 Q3] Đến [2024 Q3]
+
+4 thẻ: TỔNG DOANH THU 4,725B | TỔNG LỢI NHUẬN 336B | ROA 2.15% | ROE 12.80%
+
+LỊCH SỬ BÁO CÁO TÀI CHÍNH (IDS Lakehouse):
+KỲ BC | DT (B) | LN (B) | ROA | ROE | NGÀY NỘP | TRẠNG THÁI
+Q3/2024  4,725    336    2.15%  12.8%  25/10/2024  ĐÚNG HẠN
+```
+
+**Source:** `Securities Company Financial Report History` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_87 | Doanh thu YTD — per CTCK | Tỷ VND | Cơ sở | SUM DT từ Q1 đến kỳ được chọn, Securities Company Id = selected |
+| K_QLKD_88 | Lợi nhuận sau thuế YTD — per CTCK | Tỷ VND | Cơ sở | SUM LNST từ Q1 đến kỳ được chọn |
+| K_QLKD_89 | ROA — per CTCK | % | Phái sinh | LNST / Tổng tài sản × 100% — tính tại presentation layer |
+| K_QLKD_90 | ROE — per CTCK | % | Phái sinh | LNST / VCSH × 100% — tính tại presentation layer |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Securities Company Financial Report History | 1 CTCK × 1 kỳ báo cáo BCTC |
+
+---
+
+#### Sub-tab: NHNCK
+
+---
+
+#### Nhóm 360-7 — Người hành nghề chứng khoán per CTCK (STT 28, 29, 30)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Practitioner` ← SCMS.CTCK_NGUOI_HANH_NGHE_CK + NHNCK.Practitioners — **READY**
+> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
+> Silver: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
+> Ghi chú: K_QLKD_91–93 READY. K_QLKD_94–95 **PENDING** — xem O_QLKD_10.
+
+**Mockup:**
+```
+Slicer: LỊCH SỬ (date picker)
+
+3 thẻ READY:
+  TỔNG SỐ LĐ 50  |  CÓ CCHN 38 (76%)  |  CHƯA CC 12 (24%)
+
+2 bar chart PENDING (chờ xác nhận mapping CERTIFICATE_TYPE → nghiệp vụ):
+  NHÂN SỰ THEO 4 NGHIỆP VỤ (bar)    NHÂN SỰ THEO DV PHÁI SINH (bar)
+  [Tự doanh / Môi giới / Tư vấn /    [Tự doanh PD / Môi giới PD / Tư vấn PD]
+   Bảo lãnh]
+```
+
+**Source:** `Securities Company Practitioner Profile` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
+|---|---|---|---|---|---|
+| K_QLKD_91 | Tổng số lao động — per CTCK | Người | Cơ sở | COUNT `Securities Practitioner` WHERE `Securities_Company_Id` = selected AND `Employment_End_Date` IS NULL tại snapshot_date | READY |
+| K_QLKD_92 | Số lao động có CCHN — per CTCK | Người | Cơ sở | COUNT `Securities Practitioner` WHERE có `License Certificate Document.Certificate_Status_Code` = ACTIVE | READY |
+| K_QLKD_93 | Số lao động chưa có CCHN — per CTCK | Người | Cơ sở | K_QLKD_91 − K_QLKD_92 | READY |
+| K_QLKD_94 | NHN theo 4 nghiệp vụ — per CTCK | Người | Cơ sở | COUNT per nghiệp vụ (môi giới, bảo lãnh, tư vấn, tự doanh) — **PENDING**: chưa xác định được field phân loại. `Organization Employment Report` không có field nghiệp vụ mã hóa; `Certificate_Type_Code` (CERTIFICATE_TYPE) là ứng viên nhưng chưa có data dictionary xác nhận mapping → xem O_QLKD_10 | PENDING |
+| K_QLKD_95 | NHN theo dịch vụ CK phái sinh — per CTCK | Người | Cơ sở | COUNT per dịch vụ phái sinh — **PENDING**: cùng lý do K_QLKD_94 — xem O_QLKD_10 | PENDING |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Securities Company Practitioner Profile | 1 người hành nghề × 1 CTCK (tại snapshot) |
+
+---
+
+#### Sub-tab: Nhân sự
+
+---
+
+#### Nhóm 360-8 — Ban quản trị, điều hành, cổ đông lớn (STT 31)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY**
+> Silver: `Securities Company Shareholder` ← SCMS.CTCK_CO_DONG — **READY**
+
+**Mockup:**
+```
+Slicer: date picker (31-12-2024) + nút HIỆN TẠI
+
+HĐQT (3 thành viên):
+  [Nguyễn Văn An — Chủ tịch HĐQT — Từ 01/01/2020 — email — phone]
+  [Trần Thị Bình — Phó CT — Từ 01/01/2020]  [Lê Văn Cường — TV — Từ 15/06/2021]
+
+HĐTV (2 TV) | BKS/UB Kiểm toán (2 TV) | BAN ĐIỀU HÀNH (4 TV — TGĐ, PTGĐ, GĐ TC)
+
+CỔ ĐÔNG LỚN (>5% VĐL):
+  Tập đoàn TC A: 35.5% — 35,500,000 CP
+  NH Phát triển B: 15.2% | Quỹ ĐT C: 8.4% | Ông NVX: 5.1%
+
+LỊCH SỬ THAY ĐỔI NHÂN SỰ (timeline):
+  15/01/2021 — Bổ nhiệm Phó TGĐ | 15/06/2021 — Bổ sung TV HĐQT | ...
+```
+
+**Source:** `Securities Company Personnel Profile` (tác nghiệp) + `Securities Company Shareholder Profile` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_96 | Danh sách ban quản trị/điều hành — per CTCK | Attribute | Cơ sở | Lookup `Securities Company Senior Personnel` theo Position Type Code (HĐQT/HĐTV/BKS/BĐH) tại snapshot_date. Attributes hiển thị per nhân sự: Full Name, Position Type Code (từ `Securities Company Senior Personnel`); Electronic Address Value — Email (`Involved Party Electronic Address`, src `EMAIL`), Phone (`Involved Party Electronic Address`, src `DIEN_THOAI`) |
+| K_QLKD_97 | Cổ đông lớn nắm giữ >5% VĐL — per CTCK | Attribute | Cơ sở | `Securities Company Shareholder` WHERE Share_Ratio > 5% AND Securities Company Id = selected |
+| K_QLKD_98 | Lịch sử thay đổi nhân sự — per CTCK | Attribute | Cơ sở | Timeline sự kiện từ `Securities Company Senior Personnel` (Effective Date, Position Type Code, Full Name) |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK (latest state) |
+| Securities Company Shareholder Profile | 1 cổ đông × 1 CTCK (latest state) |
+
+---
+
+#### Sub-tab: Tuân thủ
+
+---
+
+#### Nhóm 360-9 — Tình hình tuân thủ & vi phạm per CTCK (STT 38, 39, 40)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Silver: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
+> Ghi chú: STT 39 (danh sách BC tuân thủ) từ SCMS; STT 40 (lịch sử thanh tra, kiểm tra, xử phạt) từ **Thanh tra** — `Inspection Case` cung cấp loại hình + ngày ban hành QĐ; `Inspection Case Conclusion` cung cấp số QĐ xử phạt, hành vi vi phạm, hình thức xử phạt bổ sung, biện pháp khắc phục.
+
+**Mockup:**
+```
+Slicer: date picker (31-12-2024) + HIỆN TẠI
+
+[BÁO CÁO YTD: 42/43  97%]   [QĐ XỬ PHẠT: 3 Quyết định]
+
+BÁO CÁO TUÂN THỦ & ĐỊNH KỲ (list):
+BCTC Q3/2023    Hạn: 30/10 | Nộp: 28/10  ĐÚNG HẠN
+BC TH Hoạt động T10  Hạn: 20/11 | Nộp: 21/11  TRỄ HẠN
+
+LỊCH SỬ XỬ PHẠT, THANH TRA, KIỂM TRA:
+Thanh tra ĐK 2023 | 15/05/2023 | QĐ 145/QĐ-XPHC | 20/06/2023 | Vi phạm TLATTV
+```
+
+**Source:** `Securities Company Compliance History` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_99 | Báo cáo YTD đã nộp / tổng nghĩa vụ | Ratio | Cơ sở | COUNT submitted / COUNT total obligations tại snapshot_date |
+| K_QLKD_100 | Số quyết định xử phạt — per CTCK | QĐ | Cơ sở | COUNT `Inspection Penalty Decision` WHERE Securities Company Id = selected |
+| K_QLKD_101 | Danh sách BC tuân thủ (loại BC, kỳ, hạn, ngày nộp, trạng thái) | Attribute | Cơ sở | Lookup `Member Periodic Report` WHERE Securities Company Id = selected, lọc theo kỳ |
+| K_QLKD_102 | Lịch sử thanh tra, kiểm tra, xử phạt | Attribute | Cơ sở | Lookup `Inspection Case` (Inspection Type Code, Case Name) + `Inspection Case Conclusion` (Conclusion Document Number, Signing Date, Violation Type Code, Penalty Type Code, Conclusion Summary) WHERE `Subject Organization Short Name` = selected CTCK short name — xem O_QLKD_13 |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Securities Company Compliance History | 1 CTCK × 1 sự kiện (BC nộp hoặc quyết định TT/XP) |
+
+---
+
+#### Sub-tab: CN, PGD, VPĐD
+
+---
+
+#### Nhóm 360-10 — Mạng lưới CN, PGD, VPĐD per CTCK (STT 32–37)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company Organization Unit` ← SCMS.CTCK_CHI_NHANH, SCMS.CTCK_PHONG_GIAO_DICH, SCMS.CTCK_VP_DAI_DIEN — **READY**
+> Ghi chú: STT 36 (Duy trì điều kiện cấp phép cho CN/PGD/VPĐD) liên quan O_QLKD_7 — PENDING cùng lý do với Nhóm 5/6/7 Tab TỔNG QUAN.
+
+**Mockup:**
+```
+Slicer: date picker (31-12-2024) + HIỆN TẠI
+
+3 thẻ đếm: CHI NHÁNH: 2 | PHÒNG GIAO DỊCH: 0 | VĂN PHÒNG ĐẠI DIỆN: 1
+
+NGHIỆP VỤ & DỊCH VỤ ĐƯỢC CẤP PHÉP:
+[Bar ngang — SL CN, PGD, VPĐD THEO NGHIỆP VỤ]  [Bar — THEO DỊCH VỤ]  [Bar — PHÁI SINH]
+Môi giới: 1 | Bảo lãnh: 2 | Tư vấn: 1 | Tự doanh: 1
+Ký quỹ: 2 | Ứng trước: 1 | Lưu ký: 1
+Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
+
+DUY TRÌ ĐIỀU KIỆN CẤP PHÉP (donut):
+Đang duy trì tốt: 3 ████ (xanh)
+Gần đến giới hạn: 0 | Không duy trì: 0 ← PENDING — xem O_QLKD_7
+
+DANH SÁCH CN, PGD, VPĐD (table):
+Tên | Địa chỉ | Nghiệp vụ | Ngày thành lập | Giám đốc CN/Trưởng VPĐD
+```
+
+**Source:** `Securities Company Organization Unit Profile` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_103 | Số lượng CN, PGD, VPĐD — per CTCK | Đơn vị | Cơ sở | COUNT per `Organization_Unit_Type_Code` (BRANCH / TRANSACTION_OFFICE / REP_OFFICE) |
+| K_QLKD_104 | SL CN, PGD, VPĐD theo nghiệp vụ — per CTCK | Đơn vị | Cơ sở | **PENDING** — `Securities Company Organization Unit` không có field nghiệp vụ mã hóa; `Business Sector Name` là text tự do, không GROUP BY được — xem O_QLKD_12 |
+| K_QLKD_105 | SL CN, PGD, VPĐD theo dịch vụ — per CTCK | Đơn vị | Cơ sở | **PENDING** — cùng lý do K_QLKD_104 — xem O_QLKD_12 |
+| K_QLKD_106 | SL CN, PGD, VPĐD theo dịch vụ phái sinh — per CTCK | Đơn vị | Cơ sở | **PENDING** — cùng lý do K_QLKD_104 — xem O_QLKD_12 |
+| K_QLKD_107 | Duy trì điều kiện cấp phép — CN, PGD, VPĐD | Đơn vị | Cơ sở | COUNT per trạng thái duy trì — PENDING O_QLKD_7 |
+| K_QLKD_108 | Danh sách CN, PGD, VPĐD — per CTCK | Attribute | Cơ sở | Lookup `Securities Company Organization Unit` WHERE Securities Company Id = selected, status = ACTIVE |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Profile | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_109 | READY |
+| Individual Trading Account | 1 tài khoản × 1 CTCK × 1 cá nhân | K_QLKD_118 | READY |
+| Individual Related Party Network | 1 người liên quan × 1 cá nhân | K_QLKD_110–111, 114–117 | READY (K_QLKD_117 xem O_QLKD_15) |
+| Individual Listed Company Role | 1 vai trò × 1 DN niêm yết × 1 cá nhân | K_QLKD_112–113 | READY |
+| Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_119–122 | READY (xem O_QLKD_16) |
+| Individual Violation History | 1 QĐ xử phạt × 1 cá nhân | K_QLKD_123–127 | READY (xem O_QLKD_14) |
+| Securities Company Report Data | 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu | K_QLKD_128 | READY |
+
+---
+
+---
+
+### Tab: TRA CỨU CÁ NHÂN
+
+**Slicer chung:** Tìm kiếm theo tên, CMND/CCCD, số chứng chỉ, chức vụ + filter CTCK. Toàn bộ tab là **Tác nghiệp** — lookup 1 cá nhân cụ thể.
+
+---
+
+#### Nhóm TCA-1 — Landing page: Danh sách cá nhân (STT 41)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY**
+> Silver: `Involved Party Alternative Identification` ← SCMS.CTCK_NHAN_SU_CAO_CAP (SO_CMND) — **READY**
+> Silver: `Securities Practitioner` ← NHNCK.Professionals — **READY**
+> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
+> Ghi chú: `Individual Profile` là bảng Tác nghiệp gộp `Securities Company Senior Personnel` (SCMS — người nội bộ) và `Securities Practitioner` (NHNCK — người hành nghề). ETL merge key = `Involved Party Alternative Identification.Identification Number` (SCMS.SO_CMND) khớp với `Securities Practitioner.Identity Reference Code` (NHNCK.IdentityId) — cùng CMND/CCCD = cùng 1 người → dedup thành 1 row. CCCD hiển thị trên card từ `Involved Party Alternative Identification`. Số GCN hành nghề từ `Securities Practitioner License Certificate Document`.
+
+**Mockup:**
+```
+TRA CỨU CÁ NHÂN — Người nội bộ, Người hành nghề CK tại CTCK
+[Tìm theo họ tên, CMND/CCCD, số chứng chỉ, chức vụ...]  [Tất cả CTCK ▼]
+
+Card: [N] QUẢN LÝ QUỸ          Card: [T] MÔI GIỚI
+Nguyễn Thế Anh                 Trần Minh Hòa
+Chủ tịch HĐQT                  Tổng Giám đốc
+🏢 CTCP CK S                   🏢 CTCP CK S
+🪪 CCCD: 012345678             🪪 CCCD: 012345679
+📋 GCN-PM-001                  📋 GCN-MG-002
+[XEM HỒ SƠ CÁ NHÂN →]         [XEM HỒ SƠ CÁ NHÂN →]
+```
+
+**Source:** `Individual Profile` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_109 | Danh sách cá nhân nội bộ/hành nghề — per CTCK | Attribute | Cơ sở | Lookup `Individual Profile` WHERE Securities Company Code = filter AND (Full Name LIKE search OR Identification Number = search OR License Certificate Number = search OR Position Name LIKE search). Attributes hiển thị per card: Full Name, Position Type Code (chức vụ), Securities Company Code (CTCK), Identification Number (CCCD), License Certificate Number (GCN), Practice Type Tag (nghiệp vụ — từ License Certificate Document.Certificate Type Code), INSIDER VERIFIED flag (ETL-derived: merge thành công SCMS+NHNCK) |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Profile | 1 cá nhân × 1 CTCK (latest state) |
+
+---
+
+#### Nhóm TCA-2 — Mạng lưới quan hệ 360° (STT 41)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company Shareholder Related Party` ← SCMS.CTCK_CD_MOI_QUAN_HE — **READY**
+> Silver: `Securities Practitioner Related Party` ← NHNCK.ProfessionalRelationships — **READY**
+> Silver: `Public Company Related Entity` ← IDS.company_relationship — **READY**
+> Ghi chú: `Individual Related Party Network` tổng hợp người liên quan từ 2 nguồn + nodes DN niêm yết từ IDS. Node phân loại: Nhân sự chính (xanh lá — từ `Individual Profile`) + Người liên quan (xanh dương — từ `Securities Company Shareholder Related Party` và `Securities Practitioner Related Party`) + DN niêm yết (xám — từ `Public Company Related Entity`). `INSIDER VERIFIED` = ETL-derived flag (merge thành công SCMS + NHNCK theo CCCD). `Since [date]` = ngày bắt đầu công tác hiện tại, lấy từ K_QLKD_121 (`Individual Work History`). Liên kết người liên quan → Senior Personnel: Senior Personnel → (match CMND/CCCD) → `Securities Company Shareholder` → `Securities Company Shareholder Related Party` (CTCK_CD_MOI_QUAN_HE).
+
+**Mockup:**
+```
+INSIDER VERIFIED  Since 15/03/2015
+Nguyễn Thế Anh — Chủ tịch HĐQT   [3 Người liên quan] [4 DN tham gia]
+NGÀY DỮ LIỆU: 02/05/2026 [📅]
+
+ĐỒ THỊ MẠNG LƯỚI QUAN HỆ 360°
+PHÁT HIỆN DỰA TRÊN CMND/CCCD & DỮ LIỆU QUẢN TRỊ
+[Network graph: N=Nguyễn Thế Anh (center, xanh lá)
+  → Con trai: Nguyễn Thế G (xanh dương) — Cổ đông 65,000 CP
+  → Em rể: Trần Văn H (xanh dương) — Thành viên HĐQT 850,000 CP
+  → Vợ: Lê Thị Hồng F (xanh dương) — Cổ đông lớn 1,300,000 CP
+  → VCB, FPT, HPG, VHM... (xám = DN niêm yết)]
+● NHÂN SỰ CHÍNH  ● NGƯỜI LIÊN QUAN  ○ DOANH NGHIỆP NIÊM YẾT
+```
+
+**Source:** `Individual Related Party Network` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_110 | Số người liên quan — per cá nhân | Người | Cơ sở | COUNT `Individual Related Party Network` WHERE Individual Id = selected |
+| K_QLKD_111 | Danh sách mạng lưới quan hệ — per cá nhân | Attribute | Cơ sở | Lookup `Individual Related Party Network` WHERE Individual Id = selected: Related Party Full Name, Relationship Type Code, Identity Reference Code, Occupation Name, Share Quantity |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính |
+
+---
+
+#### Nhóm TCA-3 — Hồ sơ: Vai trò tại DN niêm yết (STT 41)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Public Company Related Entity` ← IDS.company_relationship — **READY**
+> Ghi chú: Phản ánh vai trò của cá nhân tại các DN niêm yết/ĐKGD trên sàn (VCB, FPT, HPG...) — không phải CTCK. BA ghi `src=SCMS` nhưng Silver SCMS không có entity cấu trúc cho quan hệ này — nguồn đúng là `Public Company Related Entity` (IDS). Join key giữa IDS person record và `Individual Profile` chưa xác nhận — xem O_QLKD_17.
+
+**Mockup:**
+```
+SUB-TAB HỒ SƠ
+
+VAI TRÒ TẠI CÁC DN NIÊM YẾT   3
+┌────────────────────────────────────┐
+│ VCB                      ACTIVE   │
+│ Thành viên HĐQT                   │
+│ SỞ HỮU: 450,000 CP                │
+└────────────────────────────────────┘
+┌────────────────────────────────────┐
+│ FPT                      ACTIVE   │
+│ Cổ đông lớn                       │
+│ SỞ HỮU: 2,500,000 CP              │
+└────────────────────────────────────┘
+```
+
+**Source:** `Individual Listed Company Role` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_112 | Số DN niêm yết cá nhân tham gia — per cá nhân | DN | Cơ sở | COUNT DISTINCT `Public Company Code` từ `Individual Listed Company Role` WHERE Individual Profile Id = selected |
+| K_QLKD_113 | Danh sách vai trò tại DN niêm yết — per cá nhân | Attribute | Cơ sở | Lookup `Individual Listed Company Role` WHERE Individual Profile Id = selected: Public Company Code, Relationship Type Code (vai trò: TV HĐQT / Cổ đông lớn / Cố vấn...), Owned Share Quantity, Ownership Ratio, Effective From Date, Life Cycle Status Code |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Listed Company Role | 1 vai trò × 1 DN niêm yết × 1 cá nhân |
+
+---
+
+#### Nhóm TCA-4 — Hồ sơ: Mạng lưới người liên quan chi tiết (STT 41)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company Shareholder Related Party` ← SCMS.CTCK_CD_MOI_QUAN_HE — **READY**
+> Silver: `Securities Practitioner Related Party` ← NHNCK.ProfessionalRelationships — **READY**
+> Ghi chú: Tái sử dụng `Individual Related Party Network` — hiển thị dạng card thay vì đồ thị. Thêm thông tin chi tiết: CCCD người liên quan, nghề nghiệp, số CP sở hữu, tỷ lệ %.
+
+**Mockup:**
+```
+MẠNG LƯỚI NGƯỜI LIÊN QUAN   3
+┌─────────────────────────────────────────────────────┐
+│ [L] Lê Thị Hồng F                          VỢ      │
+│     CCCD: 123xxxxxx012   Kinh doanh tự do           │
+│     250,000 CP                            0.12%     │
+└─────────────────────────────────────────────────────┘
+```
+
+**Source:** `Individual Related Party Network` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_114 | Danh sách chi tiết người liên quan — per cá nhân | Attribute | Cơ sở | Lookup `Individual Related Party Network` WHERE Individual Profile Id = selected: Related Party Full Name (K_QLKD_114a), Relationship Type Code / mối quan hệ (K_QLKD_114b — scheme: SCMS_SHAREHOLDER_RELATION_TYPE), Related Party Job Position Name / Occupation Name (K_QLKD_114c), Identity Reference Code (CCCD người liên quan), Share Quantity |
+| K_QLKD_117 | Tỷ lệ sở hữu cổ phần người liên quan | % | Cơ sở | `Individual Related Party Network.Share Ratio` — xem O_QLKD_15 (src BA ghi VSDC, Silver SCMS chỉ có giá trị CTCK khai báo) |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính |
+
+---
+
+#### Nhóm TCA-4b — Hồ sơ: Tài khoản giao dịch (STT 41)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company Shareholder` ← SCMS.CTCK_CO_DONG — **READY**
+> Ghi chú: `Securities Company Shareholder.Trading Account Number` (SCMS.CTCK_CO_DONG.TAI_KHOAN_GD) lưu số tài khoản giao dịch CK của cổ đông tại CTCK. Grain = 1 cổ đông × 1 CTCK → 1 người có thể có tài khoản tại nhiều CTCK = nhiều rows. `Individual Trading Account` lấy dữ liệu từ đây, filter theo cá nhân được chọn.
+
+**Mockup:**
+```
+TÀI KHOẢN   3
+┌──────────────────────────────────────────┐
+│ SSI                                      │
+│ 001C123456   Chủ TK: Nguyễn Thế Anh     │
+└──────────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│ VNDIRECT                                 │
+│ 002C998877   Chủ TK: Lê Thị Hồng Vân    │
+└──────────────────────────────────────────┘
+```
+
+**Source:** `Individual Trading Account` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_118 | Danh sách tài khoản giao dịch — per cá nhân | Attribute | Cơ sở | Lookup `Individual Trading Account` WHERE Individual Profile Id = selected: Securities Company Code (CTCK), Trading Account Number (số TK), Shareholder Name (chủ TK) |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân |
+
+---
+
+#### Nhóm TCA-5 — Quá trình hành nghề: Lịch sử công tác (STT 41)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY**
+> Ghi chú: Mỗi record trong `Securities Company Senior Personnel` là 1 lần bổ nhiệm/công tác tại 1 CTCK. Timeline hiển thị theo thứ tự `Created Timestamp` (ngày bổ nhiệm) đến `Resignation Date` (ngày thôi việc). Silver không có `Employment Start Date` riêng — dùng `Created Timestamp` làm ngày bắt đầu tạm thời, xem O_QLKD_16.
+
+**Mockup:**
+```
+SUB-TAB QUÁ TRÌNH HÀNH NGHỀ
+
+LỊCH SỬ CÔNG TÁC
+● [S] Chủ tịch HĐQT                              HIỆN TẠI
+      15/03/2015 – HIỆN NAY  ⏱ 11 NĂM CÔNG TÁC
+
+○ Công ty CP Chứng khoán SSI                      QUÁ KHỨ
+  Trưởng phòng Môi giới
+  2018 – 2023  ⏱ 5 NĂM CÔNG TÁC
+```
+
+**Source:** `Individual Work History` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_119 | Tên công ty công tác | Attribute | Cơ sở | `Individual Work History.Securities Company Code` → lookup tên CTCK |
+| K_QLKD_120 | Chức vụ tại công ty | Attribute | Cơ sở | `Individual Work History.Position Type Code` (scheme: SCMS_POSITION_TYPE) |
+| K_QLKD_121 | Thời gian làm việc (Từ ngày – Đến ngày) | Attribute | Cơ sở | `Created Timestamp` (tạm dùng làm start) → `Resignation Date` (NULL = HIỆN TẠI) — xem O_QLKD_16 |
+| K_QLKD_122 | Trạng thái công tác | Attribute | Cơ sở | Derive: `Resignation Date IS NULL` → HIỆN TẠI; có `Resignation Date` → QUÁ KHỨ |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân |
+
+---
+
+#### Nhóm TCA-6 — Lịch sử vi phạm & xử phạt cá nhân (STT 41)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Silver: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
+> Ghi chú: BA ghi `src=SCMS` nhưng dữ liệu vi phạm, xử phạt cá nhân thực tế từ ThanhTra — xem O_QLKD_14. `Inspection Case` có `Subject Id Number` (SO_CMND) và `Subject Full Name` cho cá nhân — filter qua CMND/CCCD khi có, fallback `Subject Full Name` khi không có. `Inspection Case Conclusion` cung cấp số QĐ, nội dung vi phạm, hình thức xử phạt.
+
+**Mockup:**
+```
+SUB-TAB LỊCH SỬ VI PHẠM
+
+LỊCH SỬ VI PHẠM & XỬ PHẠT HÀNH CHÍNH
+NGÀY QĐ      SỐ QĐ             NỘI DUNG VI PHẠM             HÌNH THỨC XỬ PHẠT    TRẠNG THÁI
+15/10/2023   142/QĐ-XPHC       Thao túng giá CK             550,000,000 VND       ĐÃ CHẤP HÀNH
+05/02/2021   24/QĐ-UBCK        Chậm CBTT sở hữu             Cảnh cáo              ĐÃ CHỐT
+12/11/2019   BC-0012/CTCK      Vi phạm quy trình mở TK      Đình chỉ HN 3 tháng  HẾT THỜI HẠN
+```
+
+**Source:** `Individual Violation History` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_123 | Ngày ban hành quyết định xử phạt | Attribute | Cơ sở | `Inspection Case Conclusion.Signing Date` WHERE `Inspection Case.Subject Id Number` = CMND/CCCD cá nhân (fallback: `Subject Full Name`) |
+| K_QLKD_124 | Số quyết định xử phạt | Attribute | Cơ sở | `Inspection Case Conclusion.Conclusion Document Number` |
+| K_QLKD_125 | Nội dung vi phạm | Attribute | Cơ sở | `Inspection Case Conclusion.Conclusion Summary` + `Violation Type Code` |
+| K_QLKD_126 | Hình thức xử phạt | Attribute | Cơ sở | `Inspection Case Conclusion.Penalty Type Code` + `Penalty Amount` |
+| K_QLKD_127 | Trạng thái quyết định | Attribute | Cơ sở | `Inspection Case Conclusion.Conclusion Status Code` (scheme: TT_CASE_STATUS) |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Individual Violation History | 1 quyết định xử phạt × 1 cá nhân |
+
+---
+
+### Tab: DATA EXPLORER
+
+**Slicer chung:** Loại báo cáo + Kỳ báo cáo + Mã báo cáo + Tên báo cáo + Mã chỉ tiêu + Tên chỉ tiêu + filter CTCK. Tab này là **công cụ drill-down** — người dùng chọn 1 biểu mẫu báo cáo, 1 kỳ, xem giá trị từng chỉ tiêu raw theo từng CTCK. — người dùng chọn 1 biểu mẫu báo cáo, 1 kỳ, xem giá trị từng chỉ tiêu raw theo từng CTCK.
+
+---
+
+#### Nhóm DE-1 — Tra cứu báo cáo biểu mẫu định kỳ (STT 42–143)
+
+> Phân loại: **Tác nghiệp**
+> Silver: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
+> Silver: `Member Periodic Report` ← SCMS.BC_THANH_VIEN — **READY**
+> Silver: `Report Template` ← SCMS — **READY**
+> Silver: `Report Submission Schedule` ← SCMS — **READY**
+> Ghi chú: Data Explorer phục vụ 102 biểu mẫu báo cáo định kỳ CTCK nộp cho UBCKNN, nhóm thành 17 nhóm báo cáo (STT 42–143). Toàn bộ 3263 chỉ tiêu trong BA đều dùng chung 1 pattern: **EAV (Entity-Attribute-Value)** — 1 row per chỉ tiêu per kỳ per CTCK. Không thiết kế riêng từng biểu mẫu mà dùng 1 bảng Gold duy nhất `Securities Company Report Data` với grain đủ nhỏ để cover tất cả. 6 Chiều đồng nhất trên 98/102 tab: Loại báo cáo / Kỳ báo cáo / Mã báo cáo / Tên báo cáo / Mã chỉ tiêu / Tên chỉ tiêu — đây chính là slicer filter của Data Explorer. 4 tab ngoại lệ (STT 141–143 Ngân hàng lưu ký/thanh toán) có Chiều khác nhưng vẫn dùng cùng bảng Gold.
+
+**Mockup:**
+```
+DATA EXPLORER — Tra cứu báo cáo biểu mẫu định kỳ
+[Loại BC ▼] [Kỳ BC ▼] [Mã BC ▼] [Tên BC ▼] [Mã chỉ tiêu ▼] [Tên chỉ tiêu ▼]
+[CTCK ▼] [Thời điểm báo cáo ▼]
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ Báo cáo TT121 - I.1 - Tình hình hoạt động CTCK                    │
+│ Kỳ: Tháng 03/2026  |  Hạn nộp: 15/04/2026  |  Đã nộp: 28/03/2026 │
+├────────────────────┬────────────────────────────┬───────────────────┤
+│ Mã chỉ tiêu       │ Tên chỉ tiêu               │ Giá trị           │
+├────────────────────┼────────────────────────────┼───────────────────┤
+│ I.1.1             │ Tổng tài sản               │ 2,350,000,000,000 │
+│ I.1.2             │ Vốn chủ sở hữu             │   820,000,000,000 │
+│ I.1.3             │ Dư nợ margin               │   450,000,000,000 │
+│ ...               │ ...                        │ ...               │
+└────────────────────┴────────────────────────────┴───────────────────┘
+Họ tên chuyên viên: Nguyễn Văn A  |  Tên CTCK: CTCP CK S
+```
+
+**Mockup:**
+```
+DATA EXPLORER — Tra cứu báo cáo biểu mẫu định kỳ
+[Loại BC ▼]  [Kỳ BC ▼]  [Mã BC ▼]  [Tên BC ▼]
+[Mã chỉ tiêu ▼]  [Tên chỉ tiêu ▼]  [CTCK ▼]
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ Báo cáo TT121 — I.1 — Tình hình hoạt động CTCK   Kỳ: Tháng 03/2026   │
+│ CTCK: CTCP Chứng khoán S  |  Hạn nộp: 15/04/2026  |  Nộp: 28/03/2026 │
+├────────────────┬─────────────────────────────────────┬──────────────────┤
+│ Mã chỉ tiêu   │ Tên chỉ tiêu                        │ Giá trị          │
+├────────────────┼─────────────────────────────────────┼──────────────────┤
+│ I.1.1         │ Tổng tài sản                        │ 2,350,000,000,000│
+│ I.1.2         │ Vốn chủ sở hữu                      │   820,000,000,000│
+│ I.1.3         │ Dư nợ cho vay margin                │   450,000,000,000│
+│ ...           │ ...                                 │ ...              │
+└────────────────┴─────────────────────────────────────┴──────────────────┘
+```
+
+**Source:** `Securities Company Report Data` (tác nghiệp)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
+|---|---|---|---|---|
+| K_QLKD_128 | Giá trị chỉ tiêu báo cáo biểu mẫu định kỳ | Text/Number | Cơ sở | `SELECT Indicator_Value FROM Securities_Company_Report_Data WHERE Report_Type_Code = {LOAI_BAO_CAO} AND Report_Period = {KY_BAO_CAO} AND Report_Template_Code = {MA_BAO_CAO} AND Securities_Company_Code = {CTCK} AND Report_Indicator_Code = {MA_CHI_TIEU}`. Áp dụng cho toàn bộ 3263 chỉ tiêu thuộc 102 biểu mẫu (STT 42–143). Attributes hiển thị kèm context: Securities Company Name, Report Template Name, Report Indicator Name, Submission Date, Submission Deadline Date. |
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Securities Company Report Data | 1 chỉ tiêu × 1 kỳ báo cáo × 1 CTCK × 1 biểu mẫu |
+| Report Indicator Dimension | 1 chỉ tiêu (Mã chỉ tiêu + Tên chỉ tiêu) |
+| Calendar Date Dimension | 1 ngày |
+
+---
+
+## Section 3 — Mô hình tổng thể (READY only)
 
 ```mermaid
 graph TB
-    subgraph Shared_Dimensions
-        CAL[Calendar Date Dimension]
-        CLS[Classification Dimension]
-    end
-    subgraph Module_Dimensions
-        SCD[Securities Company Dimension]
-        RMD[Securities Company Report Metadata Dimension]
-        MPR[Member Periodic Report Dimension - v0.7]
-        SPD[Securities Company Senior Personnel Dimension]
-        OUD[Securities Company Organization Unit Dimension]
-        PRD[Securities Company Practitioner Dimension - cross-module Silver NHNCK]
-    end
-    subgraph Facts_Dashboard_1_2
-        F_SCS[Fact Securities Company Snapshot]
-        F_SRS[Fact Securities Company Service Registration Snapshot]
-        F_MRV[Fact Securities Company Member Report Value]
-        F_SOD[Fact Securities Offering Disclosure]
-    end
-    subgraph Facts_Dashboard_3_NEW
-        F_SPT[Fact Securities Company Senior Personnel Tenure - accumulating]
-        F_OUS[Fact Securities Company Organization Unit Snapshot - periodic]
-        F_OSR[Fact Securities Company Organization Unit Service Registration Snapshot - periodic]
-        F_AP[Fact Securities Company Administrative Penalty - event, source SCMS]
-        F_IPR[Fact QLKD Inspection Penalty Record - event, cross-module Silver TT]
-        F_PLC[Fact QLKD Practitioner License Certificate Snapshot - cross-module Silver NHNCK]
-    end
+    classDef dim fill:#E6F1FB,stroke:#185FA5,color:#0C447C
+    classDef fact fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
+    classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
 
-    CAL --> F_SCS
-    SCD --> F_SCS
-    CLS --> F_SCS
+    DIM_DATE["Calendar Date Dimension"]:::dim
+    DIM_SCR_CO["Securities Company Dimension SCD2"]:::dim
+    DIM_BSN["Business Type Dimension SCD2"]:::dim
+    DIM_IND["Report Indicator Dimension SCD2"]:::dim
 
-    CAL --> F_SRS
-    SCD --> F_SRS
-    CLS --> F_SRS
+    FACT_ST["Fact Securities Company Status Snapshot"]:::fact
+    FACT_SVC["Fact Securities Company Service Snapshot"]:::fact
+    FACT_LC["Fact Securities Company License Condition Snapshot"]:::fact
+    FACT_FNC["Fact Securities Company Financial Structure Snapshot"]:::fact
+    FACT_CPL["Fact Securities Company Report Compliance Snapshot"]:::fact
 
-    CAL --> F_MRV
-    SCD --> F_MRV
-    RMD --> F_MRV
-    MPR --> F_MRV
-    CLS --> F_MRV
+    OPR_360["Securities Company 360 Profile"]:::oper
+    OPR_FRH["Securities Company Financial Report History"]:::oper
+    OPR_PRS["Securities Company Personnel Profile"]:::oper
+    OPR_SHR["Securities Company Shareholder Profile"]:::oper
+    OPR_PRC["Securities Company Practitioner Profile"]:::oper
+    OPR_CPL["Securities Company Compliance History"]:::oper
+    OPR_OU["Securities Company Organization Unit Profile"]:::oper
+    OPR_IP["Individual Profile"]:::oper
+    OPR_TA["Individual Trading Account"]:::oper
+    OPR_RPN["Individual Related Party Network"]:::oper
+    OPR_LCR["Individual Listed Company Role"]:::oper
+    OPR_WH["Individual Work History"]:::oper
+    OPR_VH["Individual Violation History"]:::oper
+    OPR_RD["Securities Company Report Data"]:::oper
 
-    CAL --> F_SOD
-    SCD --> F_SOD
-    CLS --> F_SOD
+    DIM_DATE --> FACT_ST
+    DIM_SCR_CO --> FACT_ST
 
-    CAL --> F_SPT
-    SCD --> F_SPT
-    SPD --> F_SPT
-    CLS --> F_SPT
+    DIM_DATE --> FACT_SVC
+    DIM_SCR_CO --> FACT_SVC
+    DIM_BSN --> FACT_SVC
 
-    CAL --> F_OUS
-    SCD --> F_OUS
-    OUD --> F_OUS
-    CLS --> F_OUS
+    DIM_DATE --> FACT_LC
+    DIM_SCR_CO --> FACT_LC
 
-    CAL --> F_OSR
-    SCD --> F_OSR
-    OUD --> F_OSR
-    CLS --> F_OSR
+    DIM_DATE --> FACT_FNC
+    DIM_SCR_CO --> FACT_FNC
+    DIM_IND --> FACT_FNC
 
-    CAL --> F_AP
-    SCD --> F_AP
-    CLS --> F_AP
-
-    CAL --> F_IPR
-    SCD --> F_IPR
-    CLS --> F_IPR
-
-    CAL --> F_PLC
-    SCD --> F_PLC
-    PRD --> F_PLC
-    CLS --> F_PLC
-
-    SCD --> MPR
-    CAL --> MPR
-    CLS --> MPR
+    DIM_DATE --> FACT_CPL
+    DIM_SCR_CO --> FACT_CPL
 ```
 
-### 2.2 Bảng Fact
+**Bảng Phân tích (Star Schema):**
 
-| Fact | Pattern | Grain | KPI phục vụ | Source module |
+| Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Securities Company Snapshot | Periodic Snapshot (daily) | 1 CTCK × 1 Snapshot Date | K_QLKD_1..8 + K_QLKD_1_SSCK (Nhóm 1); K_QLKD_12..15 (Nhóm 3); K_QLKD_22..24 (Nhóm 6) | SCMS |
-| Fact Securities Company Service Registration Snapshot | Periodic Snapshot (daily) | 1 CTCK × 1 Dịch vụ × 1 Snapshot Date | K_QLKD_16..18 (Nhóm 4); K_QLKD_19..21 (Nhóm 5); K_QLKD_25..27 (Nhóm 7); K_QLKD_28..30 (Nhóm 8) | SCMS |
-| Fact Securities Company Member Report Value | Event (Report Value Fact §7.7) | 1 lần nộp báo cáo × 1 mã chỉ tiêu báo cáo | K_QLKD_8, 9, 10 (Nhóm 2, 19); K_QLKD_31..36 (Nhóm 9, 21); K_QLKD_37..40 (Nhóm 10, 22); K_QLKD_41..44 (Nhóm 11); K_QLKD_45 (Nhóm 12, 20); K_QLKD_51..53 (Nhóm 14, 25); K_QLKD_54..60 (Nhóm 15, 23); K_QLKD_61 (Nhóm 16, 19, 24); K_QLKD_62..63 (Nhóm 18); K_QLKD_64 (Nhóm 19); K_QLKD_66..70 (Nhóm 26); K_QLKD_72..73 (Nhóm 27); K_QLKD_122 (Nhóm 40) | SCMS |
-| Fact Securities Offering Disclosure | Event | 1 công bố chào bán/phát hành chứng khoán | K_QLKD_46..50 (Nhóm 13) | SCMS |
-| **Fact Securities Company Senior Personnel Tenure** (mới D3) | Accumulating Snapshot | 1 nhiệm kỳ nhân sự cao cấp (1 cá nhân × 1 CTCK × 1 vị trí) — milestone Tenure Start + Tenure End | K_QLKD_86..94 (Nhóm 31) | SCMS |
-| **Fact Securities Company Organization Unit Snapshot** (mới D3) | Periodic Snapshot | 1 đơn vị (CN/PGD/VPĐD) × 1 Snapshot Date | K_QLKD_101..107 (Nhóm 34, 35); K_QLKD_114..116 (Nhóm 38); K_QLKD_117..121 (Nhóm 39) | SCMS |
-| **Fact Securities Company Organization Unit Service Registration Snapshot** (mới D3) | Periodic Snapshot | 1 đơn vị × 1 dịch vụ × 1 Snapshot Date | K_QLKD_108..113 (Nhóm 36, 37) | SCMS |
-| **Fact Securities Company Administrative Penalty** (mới D3) | Event | 1 quyết định xử phạt hành chính (từ SCMS sync) | K_QLKD_123 (Nhóm 40) | SCMS |
-| **Fact QLKD Inspection Penalty Record** (mới D3) | Event | 1 kết luận thanh tra × 1 CTCK đối tượng (detail đầy đủ) | K_QLKD_129..135 (Nhóm 42) | **TT (cross-module)** — tạo entity riêng QLKD per §7.6 |
-| **Fact QLKD Practitioner License Certificate Snapshot** (mới D3) | Periodic Snapshot | 1 NHN × 1 loại CCHN × 1 Snapshot Date | K_QLKD_76..85 (Nhóm 28, 29, 30) | **NHNCK (cross-module)** — tạo entity riêng QLKD per §7.6 |
+| Fact Securities Company Status Snapshot | Periodic Snapshot | 1 CTCK × 1 ngày | K_QLKD_1–11 | READY |
+| Fact Securities Company Service Snapshot | Periodic Snapshot | 1 CTCK × 1 mã nghiệp vụ/dịch vụ × 1 ngày | K_QLKD_12–21 | READY |
+| Fact Securities Company License Condition Snapshot | Periodic Snapshot | 1 CTCK × 1 loại giấy phép × 1 ngày | K_QLKD_22–30 | **PENDING** |
+| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_31–40, K_QLKD_41–69, K_QLKD_79–86 | READY |
+| Fact Securities Company Report Compliance Snapshot | Periodic Snapshot | 1 CTCK × 1 biểu mẫu × 1 kỳ nghĩa vụ | K_QLKD_70–73 | READY |
 
-### 2.3 Bảng Dimension
+**Bảng Tác nghiệp (Denormalized):**
 
-| Dim | Loại | Mô tả |
-|---|---|---|
-| Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer toàn dashboard |
-| Classification Dimension | Conformed | Gộp tất cả classification value theo scheme sau:<br/>**Base (v0.4):** `SCMS_COMPANY_STATUS` / `SCMS_COMPANY_TYPE` / `FIMS_BUSINESS_TYPE` / `SCMS_SERVICE_TYPE` / `QLKD_SERVICE_REGISTRATION_STATUS` / `QLKD_LICENSE_MAINTENANCE_STATUS` / `SCMS_OFFERING_FORM` / `SCMS_DISCLOSURE_STATUS` / `SCMS_MEMBER_OBJECT_TYPE` / `QLKD_CAPITAL_ADEQUACY_LEVEL`<br/>**D3 mới (SCMS):** `SCMS_POSITION_TYPE` / `SCMS_PERSONNEL_STATUS` / `SCMS_ORG_UNIT_TYPE` (BRANCH/TRANSACTION_OFFICE/REPRESENTATIVE_OFFICE) / `SCMS_ORG_UNIT_STATUS` / `FMS_REPORT_SUBMISSION_STATUS` / `FMS_REPORTING_PERIOD_TYPE` / `SCMS_PENALTY_FORM` (Nhóm 40) / `INDIVIDUAL_GENDER`<br/>**D3 mới (cross-module):** `NHNCK_CERTIFICATE_TYPE` (Nhóm 28-30, Silver NHNCK) / `TT_PLAN_TYPE` (Nhóm 42) / `TT_VIOLATION_TYPE` (Nhóm 42) / `TT_PENALTY_TYPE` (Nhóm 42) |
-| Securities Company Dimension | Reference per module | CTCK — tên TV/EN/viết tắt/mã số thuế/vốn điều lệ/loại hình/quốc gia đăng ký (SCD2). Source Silver: `Securities Company`. Module QLKD tạo dim riêng — không reuse cross-module. |
-| Securities Company Report Metadata Dimension | Reference per module | Dim gộp theo pattern §7.7. Grain: 1 row = 1 tổ hợp (Report Template × Reporting Period × Cell Code). BK composite. SCD2. Cardinality ~100K rows. Source: JOIN 4 bảng SCMS (BM_BAO_CAO + BM_BAO_CAO_DINH_KY + BM_BAO_CAO_CT + DM_CHI_TIEU). |
-| **Member Periodic Report Dimension** (mới v0.7) | Reference per module | Lần nộp báo cáo định kỳ của CTCK. Grain: 1 row = 1 lần nộp (1 CTCK × 1 Report Template × 1 Reporting Period) — SCD2. Cardinality ~50K-200K rows (cộng SCD2 versions). Attributes lifecycle: Submission Date, Submission Deadline Date, Submission Timestamp, Report Submission Status Code (FK Classification scheme `FMS_REPORT_SUBMISSION_STATUS`), Report Name, Content Summary, Version, Re Submission Reason, Is Import Indicator. Denormalized lookup: Report Template Name, Reporting Period Code, Reporting Period Name (giữ nhất quán với Report Metadata Dim qua ETL — conformed attribute). FK đến: Securities Company Dim, Calendar Date Dim (Submission Date, Deadline Date), Classification Dim (Status). Source Silver: `Member Periodic Report` entity (shared SCMS.BC_THANH_VIEN + FMS.RPTMEMBER). Phục vụ: K_QLKD_71, 74, 75 (Nhóm 27); K_QLKD_122 (Nhóm 40, qua FK trên Fact Report Value); K_QLKD_124..128 (Nhóm 41, dimension-only report). |
-| **Securities Company Senior Personnel Dimension** (mới D3) | Reference per module | Nhân sự cao cấp CTCK (HĐQT / HĐTV / BKS / BĐH). Grain: 1 row = 1 cá nhân (SCD2). Attributes: Full Name, Date Of Birth, Birth Place, Gender Code, Nationality Code, Email Disclosure, Phone Number, Fax Number, Identification Number. Source Silver: `Securities Company Senior Personnel` (SCMS.CTCK_NHAN_SU_CAO_CAP) + `Involved Party Electronic Address`. |
-| **Securities Company Organization Unit Dimension** (mới D3) | Reference per module | Đơn vị trực thuộc CTCK (CN/PGD/VPĐD). Grain: 1 row = 1 đơn vị (SCD2). Attributes: Organization Unit Name, Organization Unit Type Code, Address, Representative Name, Establishment Date, Decision Number, Decision Date, Parent Organization Unit (self-ref cho PGD trực thuộc CN). Source Silver: `Securities Company Organization Unit` (union SCMS.CTCK_CHI_NHANH + CTCK_PHONG_GIAO_DICH + CTCK_VP_DAI_DIEN). |
-| **Securities Company Practitioner Dimension** (mới D3, cross-module) | Reference per module | NHN (người hành nghề chứng khoán). Grain: 1 row = 1 NHN (SCD2). Source Silver cross-module: NHNCK `Securities Practitioner` — **tạo dim riêng QLKD, không reuse Gold dim NHNCK** per §7.6. |
+| Bảng | Grain | KPI | Trạng thái |
+|---|---|---|---|
+| Securities Company 360 Profile | 1 CTCK (latest state) | K_QLKD_74–77 READY; K_QLKD_78 PENDING (O_QLKD_11) | READY (partial) |
+| Securities Company Financial Report History | 1 CTCK × 1 kỳ BC BCTC | K_QLKD_87–90 | READY |
+| Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK | K_QLKD_96–98 | READY |
+| Securities Company Shareholder Profile | 1 cổ đông × 1 CTCK | K_QLKD_97 | READY |
+| Securities Company Practitioner Profile | 1 người HN × 1 CTCK | K_QLKD_91–93 READY; K_QLKD_94–95 PENDING | READY (partial) |
+| Securities Company Compliance History | 1 CTCK × 1 sự kiện | K_QLKD_99–102 | READY |
+| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK | K_QLKD_103 READY; K_QLKD_104–106 PENDING (O_QLKD_12); K_QLKD_107 PENDING (O_QLKD_7); K_QLKD_108 READY | READY (partial) |
+
+**Bảng Dimension:**
+
+| Dimension | Loại | Mô tả | Trạng thái |
+|---|---|---|---|
+| Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng | READY |
+| Securities Company Dimension | Reference (QLKD) | CTCK — mã, tên, loại hình, trạng thái (SCD2) | READY |
+| Business Type Dimension | ETL-derived Conformed | Nghiệp vụ/dịch vụ CTCK — mã, tên, loại (SCD2). ETL UNNEST từ `Business Type Codes` (FIMS_BUSINESS_TYPE) | READY |
+| Report Indicator Dimension | ETL-derived Conformed | Chỉ tiêu báo cáo BCTC — mã, tên, nhóm (SCD2) | READY |
 
 ---
 
-## 3. Vấn đề mở & Giả định
+## Section 4 — Vấn đề mở
 
-Chỉ liệt kê issue **Open**. Issue đã Confirmed / Closed không hiển thị trong file HLD (giữ trong chat log).
+| ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
+|---|---|---|---|---|
+| O_QLKD_1 | Chỉ tiêu "Số tài khoản có phát sinh giao dịch" (K_QLKD_10) và "Số dư tiền gửi giao dịch" (K_QLKD_11) — cần xác nhận indicator_code cụ thể trong `SCMS.DM_CHI_TIEU` để filter đúng row trong `Member Report Indicator Value` | Lấy giá trị từ `Member Report Indicator Value.Value` qua `BC_BAO_CAO_GT` — chờ data profiling xác định indicator_code | K_QLKD_10–11 | Open |
+| O_QLKD_2 | `BC_CANH_BAO` không được sử dụng trong thiết kế — xác nhận không bỏ sót logic | **Confirmed:** Thiết kế không dùng `BC_CANH_BAO` là đúng. `BC_CANH_BAO` đánh dấu 🔴 Out of scope Silver trong Source Analysis. Không có Silver entity tương ứng | K_QLKD_22–30 | Closed |
+| O_QLKD_3 | Phân loại CTCK trong Nhóm 5 ("CTCK không có dịch vụ CKPS / có CKPS không đăng ký lưu ký / có CKPS và đăng ký lưu ký") — trường `Securities_Company_Category_Code` là ETL-computed, không có Silver column trực tiếp | ETL derive từ `Business Type Codes` (FIMS_BUSINESS_TYPE) array — blocked bởi O_QLKD_7 (Silver chưa đủ) | K_QLKD_22–24 | Open — blocked bởi O_QLKD_7 |
+| O_QLKD_4 | Nhiều biểu đồ Tab GIÁM SÁT cần xác nhận indicator_code ATTTC, dư nợ margin, doanh thu, CFO, thị phần môi giới... trong `SCMS.DM_CHI_TIEU`. BA ghi grain theo ngày nhưng UI hiển thị theo quý/tháng — cần xác nhận `Member Report Indicator Value.Report Date` là ngày cuối kỳ hay ngày báo cáo | Giả định grain = kỳ cuối (ngày cuối quý/tháng) của biểu mẫu BCTC tương ứng — chờ data profiling | K_QLKD_31–64 | Open |
+| O_QLKD_5 | K_QLKD_10–11 — cần xác nhận nguồn báo cáo (ATTTC hay báo cáo khác) và grain theo ngày hay theo kỳ | Trao đổi sau với BA | K_QLKD_10–11 | Open |
+| O_QLKD_6 | Scheme `FIMS_BUSINESS_TYPE` (`FIMS.SECCOMBUSINES`) — chưa có dữ liệu nguồn xác nhận đủ mã cho: nghiệp vụ (môi giới, bảo lãnh, tư vấn, tự doanh), dịch vụ (ký quỹ, ứng trước, lưu ký), dịch vụ phái sinh (môi giới PS, tư vấn PS, tự doanh PS) | Tạm map theo ngữ nghĩa — chờ data profiling liệt kê giá trị thực tế trong `FIMS.SECCOMBUSINES` | K_QLKD_12–21 | Open |
+| O_QLKD_7 | **Nhóm 5/6/7 PENDING:** `License_Type_Code` và `License_Condition_Status_Code` chưa có Silver source. (1) `CTCK_DICH_VU` được ghi nhận sẽ denormalize vào `Securities Company` nhưng field `Service Codes` (scheme `SCMS_SERVICE_TYPE`) hiện **vắng mặt trong Silver LLD** → không xác định được loại giấy phép/dịch vụ CTCK đăng ký. (2) indicator_code ATTTC trong `SCMS.DM_CHI_TIEU` chưa xác định → không tính được tình trạng duy trì. Cần: (a) Silver bổ sung `Service Codes` từ `CTCK_DICH_VU`; (b) data profiling xác định indicator_code ATTTC và ngưỡng phân loại | PENDING — không thiết kế cho đến khi đủ điều kiện | K_QLKD_22–30 | Open |
+| O_QLKD_8 | **Nhóm GS-6 — Chỉ số thị trường (K_QLKD_62–65):** BA ghi `src=MSS` nhưng không có Silver entity tương ứng trong GSGD. Tạm dùng `Risk Indicator Value` (QLRR) làm nguồn — entity tồn tại trong Silver, attribute `Risk Indicator Code` dùng để filter chỉ số. Cần khảo sát xác nhận: (1) `Risk Indicator Value` có chứa VN-Index/HNX/UPCOM/VN30 không; (2) `Risk Indicator Code` values tương ứng là gì | Tạm dùng `Risk Indicator Value.Value WHERE Risk Indicator Code = [VN_INDEX/HNX_INDEX/UPCOM_INDEX/VN30]` — chờ data profiling QLRR | K_QLKD_62–65 | Open |
+| O_QLKD_9 | **Tab HỒ SƠ 360 — Nhóm 360-9 (Thanh tra):** STT 40 (lịch sử thanh tra, kiểm tra, xử phạt) có `src=Thanh tra`. Đã cross-check ThanhTra_Source_Analysis.md — Silver entity đã xác định: `Inspection Case` ← `ThanhTra.TT_HO_SO` (loại hình + ngày ban hành QĐ thanh tra/kiểm tra) và `Inspection Case Conclusion` ← `ThanhTra.TT_KET_LUAN` (kết luận, số QĐ xử phạt, hành vi vi phạm, hình thức xử phạt bổ sung, biện pháp khắc phục). Cả hai entity đều 🟢 READY trong Silver | **Closed** — đã xác định rõ source | K_QLKD_102 | Closed |
+| O_QLKD_10 | **Tab HỒ SƠ 360 — Nhóm 360-7 (NHNCK) — Phân loại NHN theo nghiệp vụ:** K_QLKD_91–93 (tổng LĐ, có/chưa CCHN) READY — source `Securities Practitioner` (SCMS) + `License Certificate Document` (NHNCK), `Certificate Status Code = ACTIVE`. K_QLKD_94–95 (NHN theo 4 nghiệp vụ + phái sinh) **PENDING** — lý do: (1) `Organization Employment Report` không có field nghiệp vụ mã hóa; (2) `Certificate Type Code` (scheme `CERTIFICATE_TYPE`) là ứng viên gần nhất nhưng chưa có data dictionary xác nhận mapping → môi giới / bảo lãnh / tư vấn / tự doanh | PENDING K_QLKD_94–95 — chờ BA cung cấp data dictionary scheme `CERTIFICATE_TYPE` | K_QLKD_91–95 | Open |
+| O_QLKD_11 | **Tab HỒ SƠ 360 — K_QLKD_78 (Số nhân viên):** "Số nhân viên" của CTCK giả định là 1 chỉ tiêu trong báo cáo định kỳ CTCK nộp qua BC_BAO_CAO_GT (SCMS). Cần data profiling xác định `Report Indicator Code` tương ứng trong `SCMS.DM_CHI_TIEU`. Nếu không tìm thấy → xác nhận nguồn thay thế với BA (ví dụ: `Securities Practitioner` — NHNCK, hoặc báo cáo nhân sự riêng) | Tạm giả định từ `Member Report Indicator Value` — chờ data profiling | K_QLKD_78 | Open |
+| O_QLKD_12 | **Tab HỒ SƠ 360 — K_QLKD_104–106 (CN/PGD/VPĐD theo nghiệp vụ/dịch vụ):** `Securities Company Organization Unit` (Silver) không có field nghiệp vụ hoặc dịch vụ mã hóa per đơn vị trực thuộc — chỉ có `Business Sector Name` là text tự do, không GROUP BY được. Cần Silver bổ sung field `Business Type Codes` (Array, scheme FIMS_BUSINESS_TYPE) hoặc `Service Type Codes` (scheme SCMS_SERVICE_TYPE) denormalized tương tự pattern của `Securities Company.Business Type Codes` | PENDING — không thiết kế cho đến khi Silver bổ sung field mã hóa | K_QLKD_104–106 | Open |
+| O_QLKD_13 | **Tab HỒ SƠ 360 — K_QLKD_102 (Lịch sử thanh tra):** `Inspection Case.Subject Organization Short Name` (`TT_HO_SO.TEN_VIET_TAT`) là text tự do do cán bộ nhập tay — không đảm bảo đồng nhất tên CTCK giữa các hồ sơ (ví dụ: "CTCK HC" vs "HC"). ETL filter theo `Subject Organization Short Name` = tên viết tắt CTCK đang xem, có thể bỏ sót hồ sơ nếu tên không nhất quán. Cần data profiling kiểm tra mức độ nhất quán của `TEN_VIET_TAT` trong `ThanhTra.TT_HO_SO` | Tạm dùng `Subject Organization Short Name` match — chờ data profiling xác nhận chất lượng | K_QLKD_102 | Open |
+| O_QLKD_17 | **Tab TRA CỨU CÁ NHÂN — Nhóm TCA-3 (Vai trò tại DN niêm yết):** BA ghi `src=SCMS` nhưng sau khi phân tích toàn bộ SCMS Silver entities, không có entity nào lưu quan hệ có cấu trúc giữa cá nhân và DN niêm yết (VCB/FPT/HPG). `Securities Company Shareholder.Job Position Name` và `Workplace Name` chỉ là text tự do — không có FK đến Public Company. Entity duy nhất có quan hệ có cấu trúc là `Public Company Related Entity` (IDS) với `Relationship Type Code`, `Owned Share Quantity`, `Ownership Ratio`. Vấn đề còn lại: IDS không có CCCD/identity field trực tiếp trên `Public Company Related Entity` để join với `Individual Profile` — cần BA/DA xác nhận cơ chế định danh trong IDS (IDS.identity.identity_no có đủ tin cậy không) | Tạm dùng `Public Company Related Entity` (IDS) — chờ BA xác nhận nguồn và DA xác nhận join key IDS person → Individual Profile | K_QLKD_112–113 | Open |
+| O_QLKD_14 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_123–127 (Lịch sử vi phạm cá nhân):** BA ghi `src=SCMS` nhưng dữ liệu vi phạm, xử phạt cá nhân nằm trong ThanhTra — đã xác định đúng entity: `Inspection Case` (TT_HO_SO) + `Inspection Case Conclusion` (TT_KET_LUAN). Filter cá nhân qua `Subject Id Number` (SO_CMND) = CCCD cá nhân khi có; fallback `Subject Full Name` khi không có. Rủi ro fallback text match — cần data profiling xác nhận mức độ nhất quán `HO_TEN` trong TT_HO_SO | Filter ưu tiên `Subject Id Number` = CMND/CCCD; fallback `Subject Full Name` text match | K_QLKD_123–127 | Confirmed |
+| O_QLKD_15 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_117 (Tỷ lệ sở hữu cổ phần người liên quan):** BA ghi `src=VSDC`. Silver LLD không có entity từ VSDC trong SCMS_Source_Analysis. `Securities Company Shareholder Related Party.Share Ratio` (SCMS.CTCK_CD_MOI_QUAN_HE.TY_LE_NAM_GIU) là giá trị CTCK tự khai báo — có thể không khớp với dữ liệu sở hữu chính thức từ VSDC. Cần xác nhận BA muốn dùng nguồn nào | Tạm dùng `Share Ratio` từ SCMS (khai báo tự nguyện) — chờ xác nhận với BA về nguồn VSDC | K_QLKD_117 | Confirmed |
+| O_QLKD_16 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_121 (Thời gian làm việc):** `Securities Company Senior Personnel` không có field `Employment Start Date` riêng. Tạm dùng `Created Timestamp` (ngày tạo bản ghi) làm ngày bắt đầu công tác — có thể không chính xác nếu bản ghi được tạo muộn hơn ngày thực tế bổ nhiệm. Cần data profiling xác nhận mức độ sai lệch | Tạm dùng `Created Timestamp` làm start date — chờ data profiling | K_QLKD_121 | Confirmed | **Tab HỒ SƠ 360 — Nhóm 360-7 (NHNCK) — Phân loại NHN theo nghiệp vụ:** K_QLKD_91–93 (tổng LĐ, có/chưa CCHN) READY — source `Securities Practitioner` (SCMS) + `License Certificate Document` (NHNCK), `Certificate_Status_Code = ACTIVE`. K_QLKD_94–95 (NHN theo 4 nghiệp vụ + phái sinh) **PENDING** — lý do: (1) `Organization Employment Report` không có field nghiệp vụ mã hóa — `Position_Name`, `Department_Name`, `Business_Department_Name` đều là **Text tự do**, không GROUP BY được; (2) `Certificate_Type_Code` (scheme `CERTIFICATE_TYPE`) là ứng viên gần nhất nhưng Silver LLD không có data dictionary cho scheme này — chưa xác nhận được mapping `CERTIFICATE_TYPE` values → môi giới / bảo lãnh / tư vấn / tự doanh. Cần BA cung cấp danh sách giá trị scheme `CERTIFICATE_TYPE` và mapping tương ứng | PENDING K_QLKD_94–95 — chờ BA cung cấp data dictionary scheme `CERTIFICATE_TYPE` | K_QLKD_91–95 | Open |
 
-| ID | Vấn đề | Giả định tạm | Hành động cần | KPI liên quan | Status |
-|---|---|---|---|---|---|
-| QLKD_O2 | Silver `CTCK_DICH_VU.TRANG_THAI` có thể chỉ là nhị phân (đăng ký/thu hồi) — không đủ 3 mức duy trì tốt / gần giới hạn / không duy trì. | Scheme `QLKD_SERVICE_REGISTRATION_STATUS` (4 code: GOOD/NEAR_LIMIT/FAILED/REVOKED). ETL derive 2 bước: (1) lookup TRANG_THAI cho REVOKED/active; (2) active → threshold từ `DM_CANH_BAO` + `BC_BAO_CAO_GT` cho 3 mức. Nhóm 6 GPHD dùng scheme riêng `QLKD_LICENSE_MAINTENANCE_STATUS` (3 mức, không có REVOKED). | Reviewer confirm cấu trúc `CTCK_DICH_VU.TRANG_THAI` + quy tắc threshold. | K_QLKD_22..30 | Open |
-| QLKD_O5 | Cell code cụ thể cho các KPI Report Value (BCTC, ATTC) chưa biết chính xác. | Cell code tồn tại trong Silver `Report Template Indicator` (đã gộp vào Report Metadata Dim). Phase 3 Detail Mapping điền cell code thực tế. | Reviewer cung cấp data mẫu / danh sách cell code. | K_QLKD_9, 10, 31..40, 41..44, 51..53, 54..60, 61, 62..63, 64, 66..70, 72..73 | Open — pending data |
-| QLKD_O8 | 4 chỉ số thị trường (VN-Index / HNX / UPCOM / VN30) và Thị phần môi giới Nhóm 17 cần Silver MSS/SGDCK chưa thiết kế. | Out-of-scope tạm thời. Khi Silver MSS sẵn sàng → add `Fact Market Index Snapshot` (1 chỉ số × 1 ngày). Nhóm 17 vẫn DROP chờ SGDCK. | Chờ Silver MSS + SGDCK. | Nhóm 16 (4 line chỉ số), Nhóm 17 (drop) | Open — pending Silver |
-| QLKD_O12 | Silver TT `Inspection Case Conclusion` không có attribute riêng cho "Biện pháp khắc phục" — chỉ có text tự do trong `Conclusion Summary` (NOI_DUNG). | Field 7 K_QLKD_135 parse query-time từ text `Conclusion Summary`. Chấp nhận độ chính xác thấp cho v1 (phụ thuộc pattern text nhất quán của TT). | (1) Reviewer confirm phương án parse text. (2) Đề xuất Silver TT bổ sung attribute `Remediation Measure` trong `Inspection Case Conclusion` ở version sau. | K_QLKD_135 (Nhóm 42) | Open — pending Silver |
+
