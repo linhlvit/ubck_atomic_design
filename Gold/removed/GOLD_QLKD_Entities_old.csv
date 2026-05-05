@@ -1,25 +1,23 @@
 ﻿gold_entity,table_type,status,description,source_table,FKs
 Calendar Date Dimension,dim,draft,Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series,Generated,
-Securities Company Dimension,dim,draft,"CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2)",Securities Company,
-Business Type Dimension,dim,draft,Nghiệp vụ CTCK (FIMS_BUSINESS_TYPE) — môi giới/bảo lãnh/tư vấn/tự doanh (SCD2),Generated,
-Service Type Dimension,dim,draft,Dịch vụ CTCK (SCMS_SERVICE_TYPE) — ký quỹ/ứng trước/lưu ký/phái sinh (SCD2),Generated,
+Securities Company Dimension,dim,draft,"CTCK — tên, mã, trạng thái, vốn, giấy phép (SCD2)",Securities Company,
+Business Type Dimension,dim,draft,"Nghiệp vụ/dịch vụ CTCK — môi giới, tự doanh, bảo lãnh... (SCD2)",Generated,
 Report Indicator Dimension,dim,draft,"Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu",Member Report Indicator Value,
 Fact Securities Company Status Snapshot,fact,draft,Periodic Snapshot tình trạng CTCK — 1 CTCK × 1 ngày,Member Report Indicator Value / Securities Company,Calendar Date Dimension.Snapshot Date Dimension Id | Securities Company Dimension.Securities Company Dimension Id
-Fact Securities Company Business Type Snapshot,fact,draft,Periodic Snapshot nghiệp vụ CTCK (FIMS) — 1 CTCK × 1 nghiệp vụ × 1 ngày,Securities Company,Calendar Date Dimension.Snapshot Date Dimension Id | Securities Company Dimension.Securities Company Dimension Id | Business Type Dimension.Business Type Dimension Id
-Fact Securities Company Service Registration,fact,draft,Event đăng ký dịch vụ CTCK (SCMS) — 1 CTCK × 1 dịch vụ × 1 lần đăng ký,Securities Company Service Registration,Calendar Date Dimension.Registration Date Dimension Id | Securities Company Dimension.Securities Company Dimension Id | Service Type Dimension.Service Type Dimension Id
-Fact Securities Company Financial Structure Snapshot,fact,draft,Periodic Snapshot chỉ tiêu BCTC — 1 CTCK × 1 chỉ tiêu × 1 kỳ,Member Periodic Report / Member Report Indicator Value,Calendar Date Dimension.Report Date Dimension Id | Securities Company Dimension.Securities Company Dimension Id | Report Indicator Dimension.Report Indicator Dimension Id
+Fact Securities Company Service Snapshot,fact,draft,Periodic Snapshot nghiệp vụ/dịch vụ CTCK — 1 CTCK × 1 mã nghiệp vụ × 1 ngày,Securities Company,Calendar Date Dimension.Snapshot Date Dimension Id | Securities Company Dimension.Securities Company Dimension Id | Business Type Dimension.Business Type Dimension Id
+Fact Securities Company Financial Structure Snapshot,fact,draft,Periodic Snapshot chỉ tiêu BCTC toàn thị trường — 1 CTCK × 1 chỉ tiêu × 1 kỳ,Member Periodic Report / Member Report Indicator Value,Calendar Date Dimension.Report Date Dimension Id | Securities Company Dimension.Securities Company Dimension Id | Report Indicator Dimension.Report Indicator Dimension Id
 Fact Securities Company Report Compliance Snapshot,fact,draft,Periodic Snapshot tuân thủ nộp báo cáo — 1 CTCK × 1 biểu mẫu × 1 kỳ,Member Periodic Report,Calendar Date Dimension.Snapshot Date Dimension Id | Securities Company Dimension.Securities Company Dimension Id
 Securities Company 360 Profile,operational,draft,Hồ sơ tổng quan CTCK — latest state / banner 5 thẻ KPI,Member Report Indicator Value / Securities Company,
 Securities Company Financial Report History,operational,draft,Lịch sử BCTC CTCK — 1 CTCK × 1 biểu mẫu × 1 kỳ × 1 chỉ tiêu,Member Periodic Report / Member Report Indicator Value,
-Securities Company Personnel Profile,operational,draft,"Nhân sự cao cấp CTCK — HĐQT/BĐH/BKS, thông tin cá nhân, email, phone",Involved Party Alternative Identification / Involved Party Electronic Address / Securities Company Senior Personnel,
+Securities Company Personnel Profile,operational,draft,"Nhân sự cao cấp CTCK — HĐQT/BĐH/BKS, thông tin cá nhân",Involved Party Alternative Identification / Securities Company Senior Personnel,
 Securities Company Shareholder Profile,operational,draft,"Cổ đông CTCK — tên, tỷ lệ sở hữu, số tài khoản",Involved Party Alternative Identification / Securities Company Shareholder,
 Securities Company Practitioner Profile,operational,draft,"Người hành nghề CK tại CTCK — GCN, chứng chỉ, trạng thái",Securities Practitioner / Securities Practitioner License Certificate Document,
 Securities Company Compliance History,operational,draft,Lịch sử tuân thủ & vi phạm CTCK — BC định kỳ + thanh tra,Inspection Case / Inspection Case Conclusion / Member Periodic Report,
-Securities Company Organization Unit Profile,operational,draft,"CN/PGD/VPĐD của CTCK — tên, địa chỉ, ngày thành lập",Involved Party Postal Address / Securities Company Organization Unit,
+Securities Company Organization Unit Profile,operational,draft,"CN/PGD/VPĐD của CTCK — tên, địa chỉ, ngày thành lập",Securities Company Organization Unit,
 Individual Profile,operational,draft,Hồ sơ cá nhân nội bộ/NHN — merge SCMS + NHNCK theo CMND/CCCD,Involved Party Alternative Identification / Securities Company Senior Personnel / Securities Practitioner / Securities Practitioner License Certificate Document,
-Individual Related Party Network,operational,draft,Mạng lưới người liên quan — gia đình + DN niêm yết nodes,Involved Party Alternative Identification / Public Company Related Entity / Securities Company Shareholder Related Party,
+Individual Related Party Network,operational,draft,Mạng lưới người liên quan cá nhân — gia đình + DN niêm yết nodes,Involved Party Alternative Identification / Public Company Related Entity / Securities Company Shareholder Related Party,
 Individual Listed Company Role,operational,draft,Vai trò cá nhân tại DN niêm yết — VCB/FPT/HPG... (IDS),Public Company Related Entity,
 Individual Trading Account,operational,draft,Tài khoản giao dịch CK cá nhân mở tại CTCK,Securities Company Shareholder,
 Individual Work History,operational,draft,Lịch sử công tác CTCK — 1 cá nhân × 1 lần bổ nhiệm × 1 CTCK,Securities Company Senior Personnel,
-Individual Violation History,operational,draft,Lịch sử vi phạm & xử phạt cá nhân — ThanhTra TT_HO_SO + TT_KET_LUAN,Inspection Case / Inspection Case Conclusion,
+Individual Violation History,operational,draft,Lịch sử vi phạm & xử phạt cá nhân — từ ThanhTra TT_HO_SO + TT_KET_LUAN,Inspection Case / Inspection Case Conclusion,
 Securities Company Report Data,operational,draft,Báo cáo biểu mẫu định kỳ EAV — 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu,Member Periodic Report / Member Report Indicator Value,
