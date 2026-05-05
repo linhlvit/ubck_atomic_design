@@ -155,6 +155,7 @@ erDiagram
 | 2 | `CTCK_THONG_TIN.CTCK_THONG_TIN_ID` — business key hay FK cha? | ✅ Đã quyết định | Là Business Key (BK) — mã nghiệp vụ dùng trong liên hệ với hệ thống khác. Map thành `securities_company_bk` trên Silver. |
 | 3 | `CT_KIEM_TOAN` — có entity liên kết ở Tier 2/3 không? | ⚠️ Note | Vẫn thiết kế entity. FK inbound hiện chỉ từ CT_KIEM_TOAN_VIEN. Yêu cầu liên kết CTCK→CT_KIEM_TOAN sẽ bổ sung sau. |
 | 4 | `BM_BAO_CAO` và FIMS.RPTTEMP — cùng entity hay extend? | ✅ Đã quyết định | Cùng là mẫu báo cáo, phục vụ nguồn khác nhau → bổ sung `SCMS.BM_BAO_CAO` vào source_table của entity `Report Template` đã approved. Không extend attribute. |
+| 5 | `CTCK_DICH_VU` — denormalize vào `Securities Company` hay tách entity con? | ✅ Đã quyết định | Tách entity con **`Securities Company Service Registration`** (Tier 2). Lý do: có metadata đăng ký đầy đủ (TRANG_THAI, NGAY_DANG_KY, NGAY_KET_THUC, SO_VB_DANG_KY) — không phải pure junction như `LK_CTCK_NGANH_NGHE_KD`. Scheme: `SCMS_SERVICE_TYPE` (loại dịch vụ), `SCMS_SERVICE_STATUS` (trạng thái). LLD: `attr_SCMS_CTCK_DICH_VU.csv`. |
 
 ---
 

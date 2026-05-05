@@ -54,7 +54,7 @@
 | ├── `CTCK_PHONG_GIAO_DICH` | Phòng giao dịch | 🟢 Securities Company Organization Unit |
 | │⠀⠀├── *(1:N)* | Địa chỉ bưu chính PGD | 🟢 Involved Party Postal Address *(shared)* |
 | │⠀⠀└── *(1:N)* | Liên lạc điện tử PGD | 🟢 Involved Party Electronic Address *(shared)* |
-| ├── `CTCK_DICH_VU` | Dịch vụ đăng ký của CTCK | 🟢 ↳ denormalize vào *Securities Company* |
+| ├── `CTCK_DICH_VU` | Dịch vụ đăng ký của CTCK | 🟢 *Securities Company Service Registration* (entity con Tier 2 — có metadata đăng ký: TRANG_THAI, NGAY_DANG_KY, NGAY_KET_THUC, SO_VB_DANG_KY) |
 | ├── `LK_CTCK_NGANH_NGHE_KD` | Liên kết CTCK — ngành nghề KD (junction) | 🟢 ↳ denormalize vào *Securities Company* |
 | ├── `CTCK_HS_LICH_SU` | Lịch sử thay đổi hồ sơ | 🔴 (Out of scope) *Audit Log nguồn* |
 | ├── `CTCK_LICH_SU_XOA` | Lịch sử xóa hồ sơ | 🔴 (Out of scope) *Audit Log nguồn* |
