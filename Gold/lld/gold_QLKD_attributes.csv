@@ -1,145 +1,256 @@
-gold_entity,gold_attribute,data_type,key,description,source_entity,source_attribute
-Calendar Date Dimension,Date Dimension Id,INT,PK,Surrogate key YYYYMMDD,Generated,ETL derived
-Calendar Date Dimension,Full Date,DATE,BK,Ngày đầy đủ,Generated,ETL derived
-Calendar Date Dimension,Calendar Year,INT,,Năm — slicer dashboard + filter YoY/SSCK/YTD,Generated,ETL derived
-Calendar Date Dimension,Calendar Quarter,INT,,Quý (1-4) — slicer + GROUP BY BCTC quý,Generated,ETL derived
-Calendar Date Dimension,Calendar Month,INT,,Tháng (1-12) — slicer + MoM derived,Generated,ETL derived
-Calendar Date Dimension,Year Quarter Label,VARCHAR,,Nhãn năm-quý (VD Q3/2024) — trục X chart quý,Generated,ETL derived
-Calendar Date Dimension,Year Month Label,VARCHAR,,Nhãn năm-tháng (VD T10/2024) — trục X chart tháng,Generated,ETL derived
-Classification Dimension,Classification Dimension Id,INT,PK,Surrogate key tự tăng unique toàn bảng,Generated,ETL derived
-Classification Dimension,Scheme Code,VARCHAR,BK (cặp),Mã nhóm phân loại — phân biệt scheme,Classification Value,scheme = <assigned>
-Classification Dimension,Classification Code,VARCHAR,BK (cặp),Mã giá trị trong scheme — filter KPI (VD BROKERAGE/GOOD/REVOKED),Classification Value,source_table
-Classification Dimension,Classification Name,NVARCHAR,,Tên hiển thị — decoded label trên UI,Classification Value,source_table
-Classification Dimension,Parent Classification Code,VARCHAR,,Code cha — group Position Type thành Position Group (HDQT/HDTV/BKS/BDH) cho K_QLKD_89,Classification Value,etl_derived
-Classification Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
-Classification Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
-Securities Company Dimension,Securities Company Dimension Id,INT,PK,Surrogate key — FK trên mọi fact QLKD,Generated,ETL derived
-Securities Company Dimension,Securities Company Code,VARCHAR,BK,Mã CTCK — filter <selected> trong Dashboard 3,Securities Company,Securities Company Code
-Securities Company Dimension,Securities Company Name,NVARCHAR,,Tên tiếng Việt — slicer + header dashboard,Securities Company,Securities Company Name
-Securities Company Dimension,Securities Company Short Name,NVARCHAR,,Tên viết tắt — hiển thị compact trên UI,Securities Company,Securities Company Short Name
-Securities Company Dimension,Charter Capital Amount,DECIMAL,,Vốn điều lệ — header dashboard 3 per CTCK card,Securities Company,Charter Capital Amount
-Securities Company Dimension,Company Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_COMPANY_TYPE),Loại hình công ty — slicer Block 6,Classification Value,scheme = SCMS_COMPANY_TYPE
-Securities Company Dimension,Company Status Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_COMPANY_STATUS),Trạng thái hoạt động — slicer entry screen D3,Classification Value,scheme = SCMS_COMPANY_STATUS
-Securities Company Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
-Securities Company Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
-Securities Company Report Metadata Dimension,Report Metadata Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
-Securities Company Report Metadata Dimension,Report Template Code,VARCHAR,BK (cặp),Mã biểu mẫu báo cáo,Report Template,Report Template Code
-Securities Company Report Metadata Dimension,Reporting Period Code,VARCHAR,BK (cặp),Mã kỳ báo cáo — filter K_QLKD_31..45 quý chọn,Reporting Period,Reporting Period Code
-Securities Company Report Metadata Dimension,Cell Code,VARCHAR,BK (cặp),Mã chỉ tiêu báo cáo — filter chính cho mọi KPI Report Value,Report Template Indicator,Report Template Indicator Code
-Securities Company Report Metadata Dimension,Reporting Period Name,NVARCHAR,,Tên kỳ báo cáo (VD Q3/2024) — label trục X chart quý,Reporting Period,Reporting Period Name
-Securities Company Report Metadata Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
-Securities Company Report Metadata Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
-Member Periodic Report Dimension,Member Periodic Report Dimension Id,INT,PK,Surrogate key — FK trên Fact Report Value (v0.7 mới),Generated,ETL derived
-Member Periodic Report Dimension,Member Periodic Report Code,VARCHAR,BK,Mã lần nộp báo cáo,Member Periodic Report,Member Periodic Report Code
-Member Periodic Report Dimension,Securities Company Dimension Id,INT,FK → Securities Company Dimension,FK CTCK nộp báo cáo — filter Block 27/40/41 per CTCK,Member Periodic Report,Securities Company Code
-Member Periodic Report Dimension,Report Template Name,NVARCHAR,,Tên biểu mẫu (K_QLKD_124 Loại báo cáo),Report Template,Report Template Name
-Member Periodic Report Dimension,Reporting Period Name,NVARCHAR,,Tên kỳ báo cáo (K_QLKD_71 / K_QLKD_125),Reporting Period,Reporting Period Name
-Member Periodic Report Dimension,Submission Date,DATE,,Ngày gửi (K_QLKD_74 / K_QLKD_127 / K_QLKD_122 filter time range),Member Periodic Report,Submission Date
-Member Periodic Report Dimension,Submission Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup Calendar Date cho Submission Date,Member Periodic Report,Submission Date
-Member Periodic Report Dimension,Submission Deadline Date,DATE,,Hạn nộp (K_QLKD_126),Member Periodic Report,Submission Deadline Date
-Member Periodic Report Dimension,Report Submission Status Dimension Id,INT,FK → Classification Dimension (scheme: FMS_REPORT_SUBMISSION_STATUS),Trạng thái nộp (K_QLKD_75 / K_QLKD_128 — ĐÚNG HẠN / QUÁ HẠN / CHƯA NỘP),Classification Value,scheme = FMS_REPORT_SUBMISSION_STATUS
-Member Periodic Report Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
-Member Periodic Report Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
-Securities Company Senior Personnel Dimension,Senior Personnel Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
-Securities Company Senior Personnel Dimension,Senior Personnel Code,VARCHAR,BK,Mã nhân sự cao cấp,Securities Company Senior Personnel,Securities Company Senior Personnel Code
-Securities Company Senior Personnel Dimension,Full Name,NVARCHAR,,Họ và tên (K_QLKD_86),Securities Company Senior Personnel,Full Name
-Securities Company Senior Personnel Dimension,Email Disclosure,VARCHAR,,Email (K_QLKD_87),Involved Party Electronic Address,Electronic Address Value
-Securities Company Senior Personnel Dimension,Phone Number,VARCHAR,,Số điện thoại (K_QLKD_88),Involved Party Electronic Address,Electronic Address Value
-Securities Company Senior Personnel Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
-Securities Company Senior Personnel Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
-Securities Company Organization Unit Dimension,Organization Unit Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
-Securities Company Organization Unit Dimension,Organization Unit Code,VARCHAR,BK,Mã đơn vị trực thuộc,Securities Company Organization Unit,Securities Company Organization Unit Code
-Securities Company Organization Unit Dimension,Organization Unit Name,NVARCHAR,,Tên CN/PGD/VPĐD (K_QLKD_117),Securities Company Organization Unit,Organization Unit Name
-Securities Company Organization Unit Dimension,Address,NVARCHAR,,Địa chỉ (K_QLKD_118),Involved Party Postal Address,Address Value
-Securities Company Organization Unit Dimension,Representative Name,NVARCHAR,,Giám đốc CN / Trưởng VPĐD (K_QLKD_121),Securities Company Organization Unit,Representative Name
-Securities Company Organization Unit Dimension,Establishment Date,DATE,,Ngày thành lập (K_QLKD_120),Securities Company Organization Unit,Decision Date
-Securities Company Organization Unit Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
-Securities Company Organization Unit Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
-Securities Company Practitioner Dimension,Practitioner Dimension Id,INT,PK,Surrogate key,Generated,ETL derived
-Securities Company Practitioner Dimension,Practitioner Code,VARCHAR,BK,Mã NHN,Securities Practitioner,Practitioner Code
-Securities Company Practitioner Dimension,Effective Date,DATE,,SCD2 ngày hiệu lực,Generated,ETL derived
-Securities Company Practitioner Dimension,End Date,DATE,,SCD2 9999-12-31 = hiện hành,Generated,ETL derived
-Fact Securities Company Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot — filter K_QLKD_1..8 / 12..15 / 22..24,Generated,ETL derived
-Fact Securities Company Snapshot,Snapshot Date,DATE,,Ngày snapshot (T-1 batch T) — grain,Generated,ETL derived
-Fact Securities Company Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — COUNT DISTINCT trên FK này,Securities Company,Securities Company Code
-Fact Securities Company Snapshot,Company Status Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_COMPANY_STATUS),Trạng thái CTCK tại snapshot — filter K_QLKD_2..8,Classification Value,scheme = SCMS_COMPANY_STATUS
-Fact Securities Company Snapshot,License Maintenance Status Dimension Id,INT,FK → Classification Dimension (scheme: QLKD_LICENSE_MAINTENANCE_STATUS),Trạng thái duy trì GPHD — filter K_QLKD_22..24,Classification Value,scheme = QLKD_LICENSE_MAINTENANCE_STATUS
-Fact Securities Company Snapshot,Is Brokerage Business Flag,BOOLEAN,,Cờ có nghiệp vụ Môi giới — K_QLKD_12,Securities Company,Business Sector Codes
-Fact Securities Company Snapshot,Is Underwriting Business Flag,BOOLEAN,,Cờ có nghiệp vụ Bảo lãnh — K_QLKD_13,Securities Company,Business Sector Codes
-Fact Securities Company Snapshot,Is Advisory Business Flag,BOOLEAN,,Cờ có nghiệp vụ Tư vấn — K_QLKD_14,Securities Company,Business Sector Codes
-Fact Securities Company Snapshot,Is Prop Trading Business Flag,BOOLEAN,,Cờ có nghiệp vụ Tự doanh — K_QLKD_15,Securities Company,Business Sector Codes
-Fact Securities Company Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact Securities Company Service Registration Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
-Fact Securities Company Service Registration Snapshot,Snapshot Date,DATE,,Ngày snapshot — grain,Generated,ETL derived
-Fact Securities Company Service Registration Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — COUNT DISTINCT cho K_QLKD_16..21 / 25..30,Securities Company Service Registration,Securities Company Code
-Fact Securities Company Service Registration Snapshot,Service Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_SERVICE_TYPE),Loại dịch vụ — filter KPI theo mã dịch vụ,Classification Value,scheme = SCMS_SERVICE_TYPE
-Fact Securities Company Service Registration Snapshot,Service Registration Status Dimension Id,INT,FK → Classification Dimension (scheme: QLKD_SERVICE_REGISTRATION_STATUS),Trạng thái đăng ký — filter K_QLKD_16..21 NOT IN REVOKED / K_QLKD_25..30 filter 3 mức,Classification Value,scheme = QLKD_SERVICE_REGISTRATION_STATUS
-Fact Securities Company Service Registration Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact Securities Company Member Report Value,Report Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày số liệu báo cáo,Member Periodic Report,Report Date
-Fact Securities Company Member Report Value,Report Date,DATE,,Ngày số liệu báo cáo — filter KPI tháng/quý,Member Periodic Report,Report Date
-Fact Securities Company Member Report Value,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK nộp báo cáo,Member Report Indicator Value,Securities Company Code
-Fact Securities Company Member Report Value,Report Metadata Dimension Id,INT,FK → Securities Company Report Metadata Dimension,Lookup tổ hợp (Template × Period × Cell Code) — filter chính,Member Report Indicator Value,Report Template Indicator Code
-Fact Securities Company Member Report Value,Member Periodic Report Dimension Id,INT,FK → Member Periodic Report Dimension,Lookup lần nộp báo cáo (v0.7) — JOIN lấy Submission Date/Status + COUNT DISTINCT K_QLKD_122,Member Report Indicator Value,Member Periodic Report Code
-Fact Securities Company Member Report Value,Member Object Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_MEMBER_OBJECT_TYPE),Loại đối tượng nộp báo cáo — filter chỉ CTCK,Classification Value,scheme = SCMS_MEMBER_OBJECT_TYPE
-Fact Securities Company Member Report Value,Cell Value,VARCHAR,,Giá trị ô chỉ tiêu (text) — CAST query-time DECIMAL/BIGINT — measure chính của mọi KPI Report Value,Member Report Indicator Value,Cell Value
-Fact Securities Company Member Report Value,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact Securities Offering Disclosure,Disclosure Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày công bố — filter K_QLKD_46..50 BETWEEN tháng chọn,Disclosure Securities Offering,Disclosure Date
-Fact Securities Offering Disclosure,Disclosure Date,DATE,,Ngày công bố thông tin — grain event,Disclosure Securities Offering,Disclosure Date
-Fact Securities Offering Disclosure,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK phát hành,Disclosure Securities Offering,Securities Company Code
-Fact Securities Offering Disclosure,Offering Form Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_OFFERING_FORM),Hình thức chào bán — filter K_QLKD_46..50,Classification Value,scheme = SCMS_OFFERING_FORM
-Fact Securities Offering Disclosure,Offering Value Amount,DECIMAL,,Giá trị chào bán VNĐ — SUM measure cho K_QLKD_46..50,Disclosure Securities Offering,Offering Value
-Fact Securities Offering Disclosure,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact Securities Company Senior Personnel Tenure,Tenure Start Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày bắt đầu nhiệm kỳ (milestone 1) — K_QLKD_90,Generated,ETL derived
-Fact Securities Company Senior Personnel Tenure,Tenure Start Date,DATE,,Ngày bắt đầu nhiệm kỳ,Generated,ETL derived
-Fact Securities Company Senior Personnel Tenure,Tenure End Date,DATE,,Ngày kết thúc nhiệm kỳ (NULL = đương nhiệm) — filter K_QLKD_91..94 active,Securities Company Senior Personnel,Resignation Date
-Fact Securities Company Senior Personnel Tenure,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — filter per CTCK,Securities Company Senior Personnel,Securities Company Code
-Fact Securities Company Senior Personnel Tenure,Senior Personnel Dimension Id,INT,FK → Securities Company Senior Personnel Dimension,Lookup nhân sự — COUNT DISTINCT cho K_QLKD_91..94,Securities Company Senior Personnel,Securities Company Senior Personnel Code
-Fact Securities Company Senior Personnel Tenure,Position Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_POSITION_TYPE),Chức vụ (K_QLKD_89) + filter K_QLKD_91..94 IN (HDQT_*/HDTV_*/BKS_*/CEO/...),Classification Value,scheme = SCMS_POSITION_TYPE
-Fact Securities Company Senior Personnel Tenure,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact Securities Company Organization Unit Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
-Fact Securities Company Organization Unit Snapshot,Snapshot Date,DATE,,Ngày snapshot,Generated,ETL derived
-Fact Securities Company Organization Unit Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — filter per CTCK,Securities Company Organization Unit,Securities Company Code
-Fact Securities Company Organization Unit Snapshot,Organization Unit Dimension Id,INT,FK → Securities Company Organization Unit Dimension,Lookup đơn vị — COUNT DISTINCT cho K_QLKD_101..107 / 114..116,Securities Company Organization Unit,Securities Company Organization Unit Code
-Fact Securities Company Organization Unit Snapshot,Organization Unit Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_ORG_UNIT_TYPE),Loại đơn vị (BRANCH/TRANSACTION_OFFICE/REPRESENTATIVE_OFFICE) — filter K_QLKD_101..103,Classification Value,scheme = SCMS_ORG_UNIT_TYPE
-Fact Securities Company Organization Unit Snapshot,Is Active Flag,BOOLEAN,,Cờ đơn vị đang hoạt động — filter K_QLKD_101..107,Generated,ETL derived (Securities Company Organization Unit - Organization Unit Status Code)
-Fact Securities Company Organization Unit Snapshot,Is Brokerage Flag,BOOLEAN,,Cờ có nghiệp vụ Môi giới tại đơn vị — K_QLKD_104 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
-Fact Securities Company Organization Unit Snapshot,Is Underwriting Flag,BOOLEAN,,Cờ có nghiệp vụ Bảo lãnh — K_QLKD_105 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
-Fact Securities Company Organization Unit Snapshot,Is Advisory Flag,BOOLEAN,,Cờ có nghiệp vụ Tư vấn — K_QLKD_106 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
-Fact Securities Company Organization Unit Snapshot,Is Proprietary Trading Flag,BOOLEAN,,Cờ có nghiệp vụ Tự doanh — K_QLKD_107 + K_QLKD_119,Generated,ETL derived (Securities Company Organization Unit - Business Sector Name)
-Fact Securities Company Organization Unit Snapshot,Is License Maintained Good Flag,BOOLEAN,,Cờ GPHD đơn vị đang duy trì tốt — K_QLKD_114,Generated,ETL derived (chờ dữ liệu)
-Fact Securities Company Organization Unit Snapshot,Is License Maintained Near Limit Flag,BOOLEAN,,Cờ GPHD gần giới hạn — K_QLKD_115,Generated,ETL derived (chờ dữ liệu)
-Fact Securities Company Organization Unit Snapshot,Is License Not Maintained Flag,BOOLEAN,,Cờ GPHD không duy trì — K_QLKD_116,Generated,ETL derived (chờ dữ liệu)
-Fact Securities Company Organization Unit Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact Securities Company Organization Unit Service Registration Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
-Fact Securities Company Organization Unit Service Registration Snapshot,Snapshot Date,DATE,,Ngày snapshot,Generated,ETL derived
-Fact Securities Company Organization Unit Service Registration Snapshot,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK — filter per CTCK,Securities Company Organization Unit,Securities Company Code
-Fact Securities Company Organization Unit Service Registration Snapshot,Organization Unit Dimension Id,INT,FK → Securities Company Organization Unit Dimension,Lookup đơn vị — COUNT DISTINCT K_QLKD_108..113,Securities Company Organization Unit,Securities Company Organization Unit Code
-Fact Securities Company Organization Unit Service Registration Snapshot,Service Type Dimension Id,INT,FK → Classification Dimension (scheme: SCMS_SERVICE_TYPE),Loại dịch vụ đơn vị đăng ký — filter K_QLKD_108..113,Classification Value,scheme = SCMS_SERVICE_TYPE
-Fact Securities Company Organization Unit Service Registration Snapshot,Service Registration Status Dimension Id,INT,FK → Classification Dimension (scheme: QLKD_SERVICE_REGISTRATION_STATUS),Trạng thái đăng ký (ACTIVE/...) — filter K_QLKD_108..113,Classification Value,scheme = QLKD_SERVICE_REGISTRATION_STATUS
-Fact Securities Company Organization Unit Service Registration Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact Securities Company Administrative Penalty,Decision Number,VARCHAR,DD,Mã QĐ xử phạt (COUNT DISTINCT cho K_QLKD_123),Securities Company Administrative Penalty,Decision Number
-Fact Securities Company Administrative Penalty,Penalty Decision Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày QĐ xử phạt,Securities Company Administrative Penalty,Decision Date
-Fact Securities Company Administrative Penalty,Penalty Decision Date,DATE,,Ngày quyết định xử phạt — filter K_QLKD_123 BETWEEN 01/01/Year AND selected,Securities Company Administrative Penalty,Decision Date
-Fact Securities Company Administrative Penalty,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK bị xử phạt,Securities Company Administrative Penalty,Securities Company Code
-Fact Securities Company Administrative Penalty,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact QLKD Inspection Penalty Record,Inspection Decision Issue Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày ban hành QĐ TT/KT — K_QLKD_130,Inspection Decision,Issue Date
-Fact QLKD Inspection Penalty Record,Inspection Decision Issue Date,DATE,,Ngày ban hành QĐ thanh tra/kiểm tra (K_QLKD_130),Inspection Decision,Issue Date
-Fact QLKD Inspection Penalty Record,Conclusion Signing Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày ban hành QĐ xử phạt — K_QLKD_132,Inspection Case Conclusion,Signing Date
-Fact QLKD Inspection Penalty Record,Conclusion Signing Date,DATE,,Ngày ban hành QĐ xử phạt (K_QLKD_132),Inspection Case Conclusion,Signing Date
-Fact QLKD Inspection Penalty Record,Securities Company Dimension Id,INT,FK → Securities Company Dimension,Lookup CTCK đối tượng — filter per CTCK,Inspection Decision Subject,Securities Company Code
-Fact QLKD Inspection Penalty Record,Inspection Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PLAN_TYPE),Loại TT/KT — K_QLKD_129,Classification Value,scheme = TT_PLAN_TYPE
-Fact QLKD Inspection Penalty Record,Violation Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_VIOLATION_TYPE),Loại hành vi vi phạm — K_QLKD_133,Classification Value,scheme = TT_VIOLATION_TYPE
-Fact QLKD Inspection Penalty Record,Penalty Type Dimension Id,INT,FK → Classification Dimension (scheme: TT_PENALTY_TYPE),Loại hình thức phạt — K_QLKD_134,Classification Value,scheme = TT_PENALTY_TYPE
-Fact QLKD Inspection Penalty Record,Conclusion Document Number,VARCHAR,DD,Số QĐ xử phạt (K_QLKD_131),Inspection Case Conclusion,Conclusion Document Number
-Fact QLKD Inspection Penalty Record,Violation Clause,NVARCHAR,DD,Điều khoản vi phạm (K_QLKD_133 supplementary text),Inspection Case Conclusion,Violation Clause
-Fact QLKD Inspection Penalty Record,Penalty Amount,DECIMAL,,Số tiền phạt (K_QLKD_134 amount),Inspection Case Conclusion,Penalty Amount
-Fact QLKD Inspection Penalty Record,Penalty Clause,NVARCHAR,DD,Điều khoản xử phạt (K_QLKD_134 supplementary text),Inspection Case Conclusion,Penalty Clause
-Fact QLKD Inspection Penalty Record,Conclusion Summary,NVARCHAR,DD,Tóm tắt kết luận (K_QLKD_135 parse Biện pháp khắc phục — xem QLKD_O12),Inspection Case Conclusion,Conclusion Summary
-Fact QLKD Inspection Penalty Record,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
-Fact QLKD Practitioner License Certificate Snapshot,Snapshot Date Dimension Id,INT,FK → Calendar Date Dimension,Lookup ngày snapshot,Generated,ETL derived
-Fact QLKD Practitioner License Certificate Snapshot,Snapshot Date,DATE,,Ngày snapshot,Generated,ETL derived
-Fact QLKD Practitioner License Certificate Snapshot,Practitioner Dimension Id,INT,FK → Securities Company Practitioner Dimension,Lookup NHN — COUNT DISTINCT cho K_QLKD_76 / 79..85,Securities Practitioner License Certificate Document,Practitioner Code
-Fact QLKD Practitioner License Certificate Snapshot,Managing Securities Company Dimension Id,INT,FK → Securities Company Dimension,CTCK đang quản lý NHN — filter per CTCK,Securities Practitioner Organization Employment Report,Securities Organization Code
-Fact QLKD Practitioner License Certificate Snapshot,Certificate Type Dimension Id,INT,FK → Classification Dimension (scheme: NHNCK_CERTIFICATE_TYPE),Loại CCHN — filter K_QLKD_79..85,Classification Value,scheme = NHNCK_CERTIFICATE_TYPE
-Fact QLKD Practitioner License Certificate Snapshot,Is Active Flag,BOOLEAN,,Cờ CCHN đang hoạt động — filter K_QLKD_76 / 79..85,Generated,ETL derived
-Fact QLKD Practitioner License Certificate Snapshot,Population Date,TIMESTAMP,,ETL load time,Generated,ETL derived
+﻿gold_entity,gold_table,gold_attribute,gold_column,nullable,data_domain,data_type,key,description,source_entity,silver_table,source_attribute,silver_column
+Calendar Date Dimension,cdr_dt_dim,Calendar Date Dimension Id,cdr_dt_dim_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Date Key,dt_key,false,Small Counter,int,,Ngày dạng INT YYYYMMDD,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Full Date,full_dt,false,Date,date,,Ngày đầy đủ,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Year,yr,false,Small Counter,int,,Năm,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Quarter,qtr,false,Small Counter,int,,Quý (1–4),Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Month,mo,false,Small Counter,int,,Tháng (1–12),Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Day Of Month,day_of_mo,false,Small Counter,int,,Ngày trong tháng,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Day Of Week,day_of_wk,false,Small Counter,int,,Ngày trong tuần (1=CN),Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Week Of Year,wk_of_yr,false,Small Counter,int,,Tuần trong năm,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Is Weekend,is_weekend,false,Boolean,boolean,,Cờ cuối tuần,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Is Holiday,is_hol,false,Boolean,boolean,,Cờ ngày lễ,Generated,,ETL derived,
+Calendar Date Dimension,cdr_dt_dim,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Securities Company Dimension Id,scr_co_dim_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Securities Company Id,scr_co_id,false,Surrogate Key,string,BK,Silver surrogate Id của CTCK — SCMS.CTCK_THONG_TIN (PK Silver). ETL join key.,Securities Company,scr_co,Securities Company Id,scr_co_id
+Securities Company Dimension,scr_co_dim,Securities Company Code,scr_co_code,true,Text,string,,Mã CTCK — SCMS.CTCK_THONG_TIN.MA_CONG_TY,Securities Company,scr_co,Securities Company Code,scr_co_code
+Securities Company Dimension,scr_co_dim,Securities Company Name,scr_co_nm,true,Text,string,,Tên đầy đủ CTCK tiếng Việt,Securities Company,scr_co,Securities Company Name,scr_co_nm
+Securities Company Dimension,scr_co_dim,Securities Company Short Name,scr_co_shrt_nm,true,Text,string,,Tên viết tắt CTCK,Securities Company,scr_co,Securities Company Short Name,scr_co_shrt_nm
+Securities Company Dimension,scr_co_dim,Company Status Code,co_st_code,true,Classification Value,string,,Trạng thái CTCK (scheme: SCMS_COMPANY_STATUS),Securities Company,scr_co,Company Status Code,co_st_code
+Securities Company Dimension,scr_co_dim,Is Listed Indicator,is_list_ind,true,Indicator,string,,Cờ niêm yết trên sàn chứng khoán,Securities Company,scr_co,Is Listed Indicator,is_list_ind
+Securities Company Dimension,scr_co_dim,Stock Exchange Name,stk_exg_nm,true,Text,string,,Tên sàn niêm yết,Securities Company,scr_co,Stock Exchange Name,stk_exg_nm
+Securities Company Dimension,scr_co_dim,Charter Capital Amount,charter_cptl_amt,true,Currency Amount,"decimal(23,2)",,Vốn điều lệ (đồng),Securities Company,scr_co,Charter Capital Amount,charter_cptl_amt
+Securities Company Dimension,scr_co_dim,License Number,license_nbr,true,Text,string,,Số giấy phép thành lập và hoạt động,Securities Company,scr_co,Business License Number,bsn_lcs_nbr
+Securities Company Dimension,scr_co_dim,License Date,license_dt,true,Date,date,,Ngày cấp giấy phép lần đầu,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Business Registration Number,bsn_rgst_nbr,true,Text,string,,Mã số doanh nghiệp,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Address,adr,true,Text,string,,Địa chỉ trụ sở chính,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Phone Number,ph_nbr,true,Text,string,,Số điện thoại,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Website,webst,true,Text,string,,Website,Securities Company,scr_co,Website,webst
+Securities Company Dimension,scr_co_dim,Effective Date,eff_dt,true,Date,date,DD,Ngày hiệu lực SCD2,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Expiry Date,expiry_dt,true,Date,date,DD,Ngày hết hiệu lực SCD2 — 9999-12-31 = current,Generated,,ETL derived,
+Securities Company Dimension,scr_co_dim,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Business Type Dimension Id,bsn_tp_dim_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Business Type Id,bsn_tp_id,false,Surrogate Key,string,BK,Silver surrogate Id — ETL derived từ FIMS.SECCOMBUSINES. ETL join key.,Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Business Type Code,bsn_tp_code,false,Classification Value,string,,Mã nghiệp vụ/dịch vụ (scheme: FIMS_BUSINESS_TYPE),Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Business Type Name,bsn_tp_nm,true,Text,string,,Tên nghiệp vụ/dịch vụ tiếng Việt,Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Business Category Code,bsn_cgy_code,true,Classification Value,string,,Phân loại: NGHIEP_VU / DICH_VU / DICH_VU_PHAI_SINH,Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Effective Date,eff_dt,true,Date,date,DD,Ngày hiệu lực SCD2,Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Expiry Date,expiry_dt,true,Date,date,DD,Ngày hết hiệu lực SCD2,Generated,,ETL derived,
+Business Type Dimension,bsn_tp_dim,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Report Indicator Dimension,rpt_ind_dim,Report Indicator Dimension Id,rpt_ind_dim_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Report Indicator Dimension,rpt_ind_dim,Report Indicator Id,rpt_ind_id,false,Surrogate Key,string,BK,Silver surrogate Id — SCMS.DM_CHI_TIEU. ETL join key.,Member Report Indicator Value,mbr_rpt_ind_val,Report Indicator Id,rpt_ind_id
+Report Indicator Dimension,rpt_ind_dim,Report Indicator Code,rpt_ind_code,false,Text,string,,Mã chỉ tiêu danh mục,Member Report Indicator Value,mbr_rpt_ind_val,Report Indicator Code,rpt_ind_code
+Report Indicator Dimension,rpt_ind_dim,Report Template Code,rpt_tpl_code,true,Text,string,,Mã biểu mẫu báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Report Template Code,rpt_tpl_code
+Report Indicator Dimension,rpt_ind_dim,Report Template Name,rpt_tpl_nm,true,Text,string,,Tên biểu mẫu báo cáo,Generated,,ETL derived,
+Report Indicator Dimension,rpt_ind_dim,Sheet Name,shet_nm,true,Text,string,,Tên sheet báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Sheet Name,shet_nm
+Report Indicator Dimension,rpt_ind_dim,Row Name,row_nm,true,Text,string,,Tên hàng báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Row Name,row_nm
+Report Indicator Dimension,rpt_ind_dim,Column Name,clmn_nm,true,Text,string,,Tên cột báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Column Name,clmn_nm
+Report Indicator Dimension,rpt_ind_dim,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Fact Securities Company Status Snapshot,fct_scr_co_st_snpst,Snapshot Date Dimension Id,snpst_dt_dim_id,false,Surrogate Dimension Key,string,FK → Calendar Date Dimension,FK lịch — ETL lookup từ Securities Company snapshot date,Securities Company,,ETL derived,
+Fact Securities Company Status Snapshot,fct_scr_co_st_snpst,Securities Company Dimension Id,scr_co_dim_id,false,Surrogate Dimension Key,string,FK → Securities Company Dimension,FK CTCK,Securities Company,scr_co,Securities Company Id,scr_co_id
+Fact Securities Company Status Snapshot,fct_scr_co_st_snpst,Company Status Code,co_st_code,false,Classification Value,string,FK → Classification Dimension (scheme: SCMS_COMPANY_STATUS),Trạng thái CTCK,Securities Company,scr_co,Company Status Code,co_st_code
+Fact Securities Company Status Snapshot,fct_scr_co_st_snpst,Indicator Value Amount,ind_val_amt,true,Currency Amount,"decimal(23,2)",,Giá trị chỉ tiêu số từ BC_BAO_CAO_GT,Member Report Indicator Value,mbr_rpt_ind_val,Value,val
+Fact Securities Company Status Snapshot,fct_scr_co_st_snpst,Report Indicator Code,rpt_ind_code,true,Text,string,,"Mã chỉ tiêu (K_QLKD_10,11 — xem O_QLKD_1)",Member Report Indicator Value,mbr_rpt_ind_val,Report Indicator Code,rpt_ind_code
+Fact Securities Company Status Snapshot,fct_scr_co_st_snpst,Report Date,rpt_dt,true,Date,date,,Ngày số liệu báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Report Date,rpt_dt
+Fact Securities Company Status Snapshot,fct_scr_co_st_snpst,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Fact Securities Company Service Snapshot,fct_scr_co_svc_snpst,Snapshot Date Dimension Id,snpst_dt_dim_id,false,Surrogate Dimension Key,string,FK → Calendar Date Dimension,FK lịch — ngày snapshot,Generated,,ETL derived,
+Fact Securities Company Service Snapshot,fct_scr_co_svc_snpst,Securities Company Dimension Id,scr_co_dim_id,false,Surrogate Dimension Key,string,FK → Securities Company Dimension,FK CTCK,Securities Company,scr_co,Securities Company Id,scr_co_id
+Fact Securities Company Service Snapshot,fct_scr_co_svc_snpst,Business Type Dimension Id,bsn_tp_dim_id,false,Surrogate Dimension Key,string,FK → Business Type Dimension,FK nghiệp vụ/dịch vụ,Generated,,ETL derived,
+Fact Securities Company Service Snapshot,fct_scr_co_svc_snpst,Business Type Code,bsn_tp_code,false,Classification Value,string,FK → Classification Dimension (scheme: FIMS_BUSINESS_TYPE),Mã nghiệp vụ/dịch vụ,Generated,,ETL derived,
+Fact Securities Company Service Snapshot,fct_scr_co_svc_snpst,Is Active Indicator,is_actv_ind,true,Indicator,string,,Cờ đang hoạt động,Generated,,ETL derived,
+Fact Securities Company Service Snapshot,fct_scr_co_svc_snpst,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Fact Securities Company Financial Structure Snapshot,fct_scr_co_fnc_stc_snpst,Report Date Dimension Id,rpt_dt_dim_id,false,Surrogate Dimension Key,string,FK → Calendar Date Dimension,FK lịch — ngày số liệu báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Report Date,rpt_dt
+Fact Securities Company Financial Structure Snapshot,fct_scr_co_fnc_stc_snpst,Securities Company Dimension Id,scr_co_dim_id,false,Surrogate Dimension Key,string,FK → Securities Company Dimension,FK CTCK,Member Report Indicator Value,mbr_rpt_ind_val,Securities Company Id,scr_co_id
+Fact Securities Company Financial Structure Snapshot,fct_scr_co_fnc_stc_snpst,Report Indicator Dimension Id,rpt_ind_dim_id,false,Surrogate Dimension Key,string,FK → Report Indicator Dimension,FK chỉ tiêu danh mục,Member Report Indicator Value,mbr_rpt_ind_val,Report Indicator Id,rpt_ind_id
+Fact Securities Company Financial Structure Snapshot,fct_scr_co_fnc_stc_snpst,Report Template Code,rpt_tpl_code,true,Text,string,,Mã biểu mẫu (DD),Member Report Indicator Value,mbr_rpt_ind_val,Report Template Code,rpt_tpl_code
+Fact Securities Company Financial Structure Snapshot,fct_scr_co_fnc_stc_snpst,Report Period Type Code,rpt_prd_tp_code,false,Classification Value,string,FK → Classification Dimension (scheme: SCMS_REPORT_PERIOD_TYPE),Kỳ báo cáo: tháng/quý/năm,Member Periodic Report,mbr_prd_rpt,Reporting Period Type Code,rpt_prd_tp_code
+Fact Securities Company Financial Structure Snapshot,fct_scr_co_fnc_stc_snpst,Indicator Value Amount,ind_val_amt,true,Currency Amount,"decimal(23,2)",,Giá trị chỉ tiêu — cast từ Value (Text),Member Report Indicator Value,mbr_rpt_ind_val,Value,val
+Fact Securities Company Financial Structure Snapshot,fct_scr_co_fnc_stc_snpst,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Snapshot Date Dimension Id,snpst_dt_dim_id,false,Surrogate Dimension Key,string,FK → Calendar Date Dimension,FK lịch — ngày snapshot tuân thủ,Generated,,ETL derived,
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Securities Company Dimension Id,scr_co_dim_id,false,Surrogate Dimension Key,string,FK → Securities Company Dimension,FK CTCK,Member Periodic Report,mbr_prd_rpt,Securities Company Id,scr_co_id
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Report Template Code,rpt_tpl_code,true,Text,string,,Mã biểu mẫu (DD),Member Periodic Report,mbr_prd_rpt,Report Template Code,rpt_tpl_code
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Submission Date,submission_dt,true,Date,date,,Ngày nộp thực tế,Member Periodic Report,mbr_prd_rpt,Submission Date,subm_dt
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Submission Deadline Date,submission_ddln_dt,true,Date,date,,Ngày hạn nộp,Member Periodic Report,mbr_prd_rpt,Submission Deadline Date,subm_ddln_dt
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Submission Status Code,submission_st_code,false,Classification Value,string,FK → Classification Dimension (scheme: SCMS_SUBMISSION_STATUS),Trạng thái nộp báo cáo,Member Periodic Report,mbr_prd_rpt,Submission Status Code,subm_st_code
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Report Period Year,rpt_prd_yr,true,Small Counter,int,,Năm kỳ báo cáo,Member Periodic Report,mbr_prd_rpt,Year Value,yr_val
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Report Period Type Code,rpt_prd_tp_code,false,Classification Value,string,FK → Classification Dimension (scheme: SCMS_REPORT_PERIOD_TYPE),Kỳ báo cáo,Member Periodic Report,mbr_prd_rpt,Reporting Period Type Code,rpt_prd_tp_code
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Is On Time Indicator,is_on_tm_ind,true,Indicator,string,,Cờ nộp đúng hạn — ETL derived,Generated,,ETL derived,
+Fact Securities Company Report Compliance Snapshot,fct_scr_co_rpt_cmpln_snpst,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company 360 Profile,scr_co_360_prfl,Securities Company Id,scr_co_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company 360 Profile,scr_co_360_prfl,Securities Company Code,scr_co_code,false,Text,string,BK,Mã CTCK — ETL join key,Securities Company,scr_co,Securities Company Code,scr_co_code
+Securities Company 360 Profile,scr_co_360_prfl,Securities Company Name,scr_co_nm,true,Text,string,,Tên đầy đủ CTCK,Securities Company,scr_co,Securities Company Name,scr_co_nm
+Securities Company 360 Profile,scr_co_360_prfl,Securities Company Short Name,scr_co_shrt_nm,true,Text,string,,Tên viết tắt,Securities Company,scr_co,Securities Company Short Name,scr_co_shrt_nm
+Securities Company 360 Profile,scr_co_360_prfl,Company Status Code,co_st_code,true,Classification Value,string,,Trạng thái hoạt động,Securities Company,scr_co,Company Status Code,co_st_code
+Securities Company 360 Profile,scr_co_360_prfl,License Number,license_nbr,true,Text,string,,Số giấy phép TLHĐ,Securities Company,scr_co,Business License Number,bsn_lcs_nbr
+Securities Company 360 Profile,scr_co_360_prfl,License Date,license_dt,true,Date,date,,Ngày cấp phép lần đầu,Generated,,ETL derived,
+Securities Company 360 Profile,scr_co_360_prfl,Charter Capital Amount,charter_cptl_amt,true,Currency Amount,"decimal(23,2)",,Vốn điều lệ (đồng),Securities Company,scr_co,Charter Capital Amount,charter_cptl_amt
+Securities Company 360 Profile,scr_co_360_prfl,Is Listed Indicator,is_list_ind,true,Indicator,string,,Cờ niêm yết,Securities Company,scr_co,Is Listed Indicator,is_list_ind
+Securities Company 360 Profile,scr_co_360_prfl,Stock Exchange Name,stk_exg_nm,true,Text,string,,Tên sàn niêm yết,Securities Company,scr_co,Stock Exchange Name,stk_exg_nm
+Securities Company 360 Profile,scr_co_360_prfl,Business Type Codes,bsn_tp_codes,true,Text,string,,Danh sách mã nghiệp vụ/dịch vụ (scheme: FIMS_BUSINESS_TYPE),Securities Company,scr_co,Business Type Codes,bsn_tp_codes
+Securities Company 360 Profile,scr_co_360_prfl,Personnel Count,psn_cnt,true,Small Counter,int,,"Số nhân viên — từ Member Report Indicator Value, xem O_QLKD_11",Member Report Indicator Value,mbr_rpt_ind_val,Value,val
+Securities Company 360 Profile,scr_co_360_prfl,Indicator Value Amount,ind_val_amt,true,Currency Amount,"decimal(23,2)",,Giá trị chỉ tiêu tài chính summary,Member Report Indicator Value,mbr_rpt_ind_val,Value,val
+Securities Company 360 Profile,scr_co_360_prfl,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Financial Report History Id,fnc_rpt_hist_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Securities Company Code,scr_co_code,false,Text,string,BK,Mã CTCK,Member Periodic Report,mbr_prd_rpt,Securities Company Code,scr_co_code
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Report Template Code,rpt_tpl_code,false,Text,string,,Mã biểu mẫu báo cáo,Member Periodic Report,mbr_prd_rpt,Report Template Code,rpt_tpl_code
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Report Period Year,rpt_prd_yr,false,Small Counter,int,,Năm kỳ báo cáo,Member Periodic Report,mbr_prd_rpt,Year Value,yr_val
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Report Period Type Code,rpt_prd_tp_code,false,Classification Value,string,,Kỳ: tháng/quý/năm/bán niên,Member Periodic Report,mbr_prd_rpt,Reporting Period Type Code,rpt_prd_tp_code
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Report Date,rpt_dt,true,Date,date,,Ngày số liệu báo cáo,Member Periodic Report,mbr_prd_rpt,Report Date,rpt_dt
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Submission Date,submission_dt,true,Date,date,,Ngày nộp thực tế,Member Periodic Report,mbr_prd_rpt,Submission Date,subm_dt
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Submission Deadline Date,submission_ddln_dt,true,Date,date,,Hạn nộp,Member Periodic Report,mbr_prd_rpt,Submission Deadline Date,subm_ddln_dt
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Submission Status Code,submission_st_code,true,Classification Value,string,,Trạng thái nộp,Member Periodic Report,mbr_prd_rpt,Submission Status Code,subm_st_code
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Indicator Value Amount,ind_val_amt,true,Currency Amount,"decimal(23,2)",,Giá trị chỉ tiêu BCTC — cast từ Value,Member Report Indicator Value,mbr_rpt_ind_val,Value,val
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Report Indicator Code,rpt_ind_code,true,Text,string,,Mã chỉ tiêu,Member Report Indicator Value,mbr_rpt_ind_val,Report Indicator Code,rpt_ind_code
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Row Name,row_nm,true,Text,string,,Tên hàng chỉ tiêu,Member Report Indicator Value,mbr_rpt_ind_val,Row Name,row_nm
+Securities Company Financial Report History,scr_co_fnc_rpt_hist,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Personnel Profile,scr_co_psn_prfl,Personnel Profile Id,psn_prfl_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Personnel Profile,scr_co_psn_prfl,Securities Company Senior Personnel Id,scr_co_snr_psn_id,false,Surrogate Key,string,BK,Silver surrogate Id nhân sự — ETL join key,Securities Company Senior Personnel,scr_co_snr_psn,Securities Company Senior Personnel Id,scr_co_snr_psn_id
+Securities Company Personnel Profile,scr_co_psn_prfl,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK,Securities Company Senior Personnel,scr_co_snr_psn,Securities Company Code,scr_co_code
+Securities Company Personnel Profile,scr_co_psn_prfl,Full Name,full_nm,false,Text,string,,Họ tên nhân sự,Securities Company Senior Personnel,scr_co_snr_psn,Full Name,full_nm
+Securities Company Personnel Profile,scr_co_psn_prfl,Position Type Code,pos_tp_code,true,Classification Value,string,,Chức vụ (scheme: SCMS_POSITION_TYPE),Securities Company Senior Personnel,scr_co_snr_psn,Position Type Code,pos_tp_code
+Securities Company Personnel Profile,scr_co_psn_prfl,Date Of Birth,dob,true,Date,date,,Ngày sinh,Securities Company Senior Personnel,scr_co_snr_psn,Date Of Birth,dob
+Securities Company Personnel Profile,scr_co_psn_prfl,Individual Gender Code,idv_gnd_code,true,Classification Value,string,,Giới tính (scheme: INDIVIDUAL_GENDER),Securities Company Senior Personnel,scr_co_snr_psn,Individual Gender Code,idv_gnd_code
+Securities Company Personnel Profile,scr_co_psn_prfl,Identification Number,identn_nbr,true,Text,string,,CMND/CCCD — từ Involved Party Alternative Identification,Involved Party Alternative Identification,ip_alt_identn,Identification Number,identn_nbr
+Securities Company Personnel Profile,scr_co_psn_prfl,Email Address,email_adr,true,Text,string,,Email — từ Involved Party Electronic Address,Generated,,ETL derived,
+Securities Company Personnel Profile,scr_co_psn_prfl,Phone Number,ph_nbr,true,Text,string,,Điện thoại — từ Involved Party Electronic Address,Generated,,ETL derived,
+Securities Company Personnel Profile,scr_co_psn_prfl,Personnel Status Code,psn_st_code,true,Classification Value,string,,Trạng thái nhân sự (scheme: SCMS_PERSONNEL_STATUS),Securities Company Senior Personnel,scr_co_snr_psn,Personnel Status Code,psn_st_code
+Securities Company Personnel Profile,scr_co_psn_prfl,Created Timestamp,crt_tms,true,Timestamp,timestamp,,Ngày tạo bản ghi — dùng làm proxy ngày bổ nhiệm,Securities Company Senior Personnel,scr_co_snr_psn,Created Timestamp,crt_tms
+Securities Company Personnel Profile,scr_co_psn_prfl,Resignation Date,resignation_dt,true,Date,date,,Ngày thôi việc,Securities Company Senior Personnel,scr_co_snr_psn,Resignation Date,resignation_dt
+Securities Company Personnel Profile,scr_co_psn_prfl,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Shareholder Profile Id,shrhlr_prfl_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Securities Company Shareholder Id,scr_co_shrhlr_id,false,Surrogate Key,string,BK,Silver surrogate Id cổ đông — ETL join key,Securities Company Shareholder,scr_co_shrhlr,Securities Company Shareholder Id,scr_co_shrhlr_id
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK,Securities Company Shareholder,scr_co_shrhlr,Securities Company Code,scr_co_code
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Shareholder Name,shrhlr_nm,false,Text,string,,Tên cổ đông,Securities Company Shareholder,scr_co_shrhlr,Shareholder Name,shrhlr_nm
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Is Individual Indicator,is_idv_ind,true,Indicator,string,,Cổ đông cá nhân hay tổ chức,Securities Company Shareholder,scr_co_shrhlr,Is Individual Indicator,is_idv_ind
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Shareholder Type Code,shrhlr_tp_code,true,Classification Value,string,,Loại cổ đông (scheme: SCMS_SHAREHOLDER_RELATION_TYPE),Securities Company Shareholder,scr_co_shrhlr,Shareholder Type Code,shrhlr_tp_code
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Share Quantity,shr_qty,true,Small Counter,int,,Số CP nắm giữ tại CTCK,Securities Company Shareholder,scr_co_shrhlr,Share Quantity,shr_qty
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Share Ratio,shr_rto,true,Percentage,"decimal(5,2)",,Tỷ lệ sở hữu CP (%),Securities Company Shareholder,scr_co_shrhlr,Share Ratio,shr_rto
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Identification Number,identn_nbr,true,Text,string,,CMND/CCCD cổ đông — từ Involved Party Alternative Identification,Involved Party Alternative Identification,ip_alt_identn,Identification Number,identn_nbr
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Job Position Name,job_pos_nm,true,Text,string,,Chức vụ cổ đông tại nơi khác (text tự do),Securities Company Shareholder,scr_co_shrhlr,Job Position Name,job_pos_nm
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Workplace Name,workplace_nm,true,Text,string,,Nơi làm việc của cổ đông (text tự do),Securities Company Shareholder,scr_co_shrhlr,Workplace Name,workplace_nm
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Trading Account Number,tdg_ac_nbr,true,Text,string,,Số TK giao dịch tại CTCK này,Securities Company Shareholder,scr_co_shrhlr,Trading Account Number,tdg_ac_nbr
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Shareholder Status Code,shrhlr_st_code,true,Classification Value,string,,Trạng thái cổ đông (scheme: SCMS_SHAREHOLDER_STATUS),Securities Company Shareholder,scr_co_shrhlr,Shareholder Status Code,shrhlr_st_code
+Securities Company Shareholder Profile,scr_co_shrhlr_prfl,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Practitioner Profile Id,practitioner_prfl_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Practitioner Id,practitioner_id,false,Surrogate Key,string,BK,Silver surrogate Id NHN (NHNCK) — ETL join key,Securities Practitioner,scr_prac,Practitioner Id,prac_id
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK,Securities Practitioner,scr_prac,Securities Company Code,scr_co_code
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Full Name,full_nm,false,Text,string,,Họ tên NHN,Securities Practitioner,scr_prac,Full Name,full_nm
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Identity Reference Code,identity_refr_code,true,Text,string,,CMND/CCCD NHN,Securities Practitioner,scr_prac,Identity Reference Code,id_refr_code
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Practice Status Code,practice_st_code,true,Classification Value,string,,Trạng thái hành nghề (scheme: NHNCK_PRACTICE_STATUS),Securities Practitioner,scr_prac,Practice Status Code,practice_st_code
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Practitioner Registration Type Code,practitioner_rgst_tp_code,true,Classification Value,string,,Loại đăng ký HN (scheme: NHNCK_REGISTRATION_TYPE),Securities Practitioner,scr_prac,Practitioner Registration Type Code,prac_rgst_tp_code
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,License Certificate Number,license_ctf_nbr,true,Text,string,,Số GCN hành nghề,Securities Practitioner License Certificate Document,scr_prac_license_ctf_doc,Certificate Number,ctf_nbr
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Certificate Type Code,ctf_tp_code,true,Classification Value,string,,Loại chứng chỉ/nghiệp vụ (scheme: CERTIFICATE_TYPE) — xem O_QLKD_10,Securities Practitioner License Certificate Document,scr_prac_license_ctf_doc,Certificate Type Code,ctf_tp_code
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Certificate Status Code,ctf_st_code,true,Classification Value,string,,Trạng thái GCN (scheme: NHNCK_CERT_STATUS),Securities Practitioner License Certificate Document,scr_prac_license_ctf_doc,Certificate Status Code,ctf_st_code
+Securities Company Practitioner Profile,scr_co_practitioner_prfl,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Compliance History,scr_co_cmpln_hist,Compliance History Id,cmpln_hist_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Compliance History,scr_co_cmpln_hist,Securities Company Code,scr_co_code,false,Text,string,BK,Mã CTCK — ETL join key cho filter,Member Periodic Report,mbr_prd_rpt,Securities Company Code,scr_co_code
+Securities Company Compliance History,scr_co_cmpln_hist,Report Template Code,rpt_tpl_code,false,Text,string,,Mã biểu mẫu,Member Periodic Report,mbr_prd_rpt,Report Template Code,rpt_tpl_code
+Securities Company Compliance History,scr_co_cmpln_hist,Report Period Year,rpt_prd_yr,false,Small Counter,int,,Năm kỳ,Member Periodic Report,mbr_prd_rpt,Year Value,yr_val
+Securities Company Compliance History,scr_co_cmpln_hist,Submission Date,submission_dt,true,Date,date,,Ngày nộp thực tế,Member Periodic Report,mbr_prd_rpt,Submission Date,subm_dt
+Securities Company Compliance History,scr_co_cmpln_hist,Submission Deadline Date,submission_ddln_dt,true,Date,date,,Hạn nộp,Member Periodic Report,mbr_prd_rpt,Submission Deadline Date,subm_ddln_dt
+Securities Company Compliance History,scr_co_cmpln_hist,Submission Status Code,submission_st_code,true,Classification Value,string,,Trạng thái nộp (scheme: SCMS_SUBMISSION_STATUS),Member Periodic Report,mbr_prd_rpt,Submission Status Code,subm_st_code
+Securities Company Compliance History,scr_co_cmpln_hist,Subject Organization Short Name,sbj_org_shrt_nm,true,Text,string,,"Tên viết tắt CTCK từ Inspection Case — text match filter, xem O_QLKD_13",Inspection Case,insp_case,Subject Organization Short Name,sbj_org_shrt_nm
+Securities Company Compliance History,scr_co_cmpln_hist,Inspection Type Code,inspection_tp_code,true,Classification Value,string,,Loại hình thanh/kiểm tra (scheme: TT_PLAN_TYPE),Inspection Case,insp_case,Inspection Type Code,insp_tp_code
+Securities Company Compliance History,scr_co_cmpln_hist,Case Name,case_nm,true,Text,string,,Tên hồ sơ thanh tra/kiểm tra,Inspection Case,insp_case,Case Name,case_nm
+Securities Company Compliance History,scr_co_cmpln_hist,Conclusion Document Number,conclusion_doc_nbr,true,Text,string,,Số QĐ kết luận xử phạt,Inspection Case Conclusion,insp_case_conclusion,Conclusion Document Number,conclusion_doc_nbr
+Securities Company Compliance History,scr_co_cmpln_hist,Signing Date,signing_dt,true,Date,date,,Ngày ký kết luận,Inspection Case Conclusion,insp_case_conclusion,Signing Date,signing_dt
+Securities Company Compliance History,scr_co_cmpln_hist,Penalty Type Code,pny_tp_code,true,Classification Value,string,,Hình thức xử phạt (scheme: TT_PENALTY_TYPE),Inspection Case Conclusion,insp_case_conclusion,Penalty Type Code,pny_tp_code
+Securities Company Compliance History,scr_co_cmpln_hist,Penalty Amount,pny_amt,true,Currency Amount,"decimal(23,2)",,Số tiền phạt (VND),Inspection Case Conclusion,insp_case_conclusion,Penalty Amount,pny_amt
+Securities Company Compliance History,scr_co_cmpln_hist,Conclusion Status Code,conclusion_st_code,true,Classification Value,string,,Trạng thái kết luận (scheme: TT_CASE_STATUS),Inspection Case Conclusion,insp_case_conclusion,Conclusion Status Code,conclusion_st_code
+Securities Company Compliance History,scr_co_cmpln_hist,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Organization Unit Profile Id,ou_prfl_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Securities Company Organization Unit Id,scr_co_ou_id,false,Surrogate Key,string,BK,Silver surrogate Id đơn vị trực thuộc — ETL join key,Securities Company Organization Unit,scr_co_ou,Securities Company Organization Unit Id,scr_co_ou_id
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK,Securities Company Organization Unit,scr_co_ou,Securities Company Code,scr_co_code
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Organization Unit Name,ou_nm,false,Text,string,,Tên CN/PGD/VPĐD,Securities Company Organization Unit,scr_co_ou,Organization Unit Name,ou_nm
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Organization Unit Type Code,ou_tp_code,false,Classification Value,string,,Loại đơn vị: BRANCH/TRANSACTION_OFFICE/REP_OFFICE,Securities Company Organization Unit,scr_co_ou,Organization Unit Type Code,ou_tp_code
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Address,adr,true,Text,string,,Địa chỉ,Generated,,ETL derived,
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Established Date,estb_dt,true,Date,date,,Ngày thành lập/khai trương,Securities Company Organization Unit,scr_co_ou,Decision Date,dcsn_dt
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Life Cycle Status Code,lcs_code,true,Classification Value,string,,Trạng thái (scheme: LIFE_CYCLE_STATUS),Securities Company Organization Unit,scr_co_ou,Life Cycle Status Code,lcs_code
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Business Sector Name,bsn_sctr_nm,true,Text,string,,Tên lĩnh vực nghiệp vụ (text tự do — xem O_QLKD_12),Securities Company Organization Unit,scr_co_ou,Business Sector Name,bsn_sctr_nm
+Securities Company Organization Unit Profile,scr_co_ou_prfl,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Individual Profile,idv_prfl,Individual Profile Id,idv_prfl_id,false,Surrogate Key,string,PK,Surrogate key ETL generated — merge SCMS + NHNCK theo CMND/CCCD,Generated,,ETL derived,
+Individual Profile,idv_prfl,Senior Personnel Id,snr_psn_id,true,Surrogate Key,string,BK,Silver Id Senior Personnel (SCMS) — NULL nếu chỉ có NHNCK,Securities Company Senior Personnel,scr_co_snr_psn,Securities Company Senior Personnel Id,scr_co_snr_psn_id
+Individual Profile,idv_prfl,Practitioner Id,practitioner_id,true,Surrogate Key,string,,Silver Id Practitioner (NHNCK) — NULL nếu chỉ có SCMS,Securities Practitioner,scr_prac,Practitioner Id,prac_id
+Individual Profile,idv_prfl,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK,Securities Company Senior Personnel,scr_co_snr_psn,Securities Company Code,scr_co_code
+Individual Profile,idv_prfl,Full Name,full_nm,false,Text,string,,Họ tên cá nhân,Securities Company Senior Personnel,scr_co_snr_psn,Full Name,full_nm
+Individual Profile,idv_prfl,Position Type Code,pos_tp_code,true,Classification Value,string,,Chức vụ tại CTCK (scheme: SCMS_POSITION_TYPE),Securities Company Senior Personnel,scr_co_snr_psn,Position Type Code,pos_tp_code
+Individual Profile,idv_prfl,Identification Number,identn_nbr,true,Text,string,,CMND/CCCD — từ Involved Party Alternative Identification (SCMS.SO_CMND) hoặc Securities Practitioner.Identity Reference Code (NHNCK),Involved Party Alternative Identification,ip_alt_identn,Identification Number,identn_nbr
+Individual Profile,idv_prfl,License Certificate Number,license_ctf_nbr,true,Text,string,,Số GCN hành nghề,Securities Practitioner License Certificate Document,scr_prac_license_ctf_doc,Certificate Number,ctf_nbr
+Individual Profile,idv_prfl,Certificate Type Code,ctf_tp_code,true,Classification Value,string,,Loại chứng chỉ/nghiệp vụ (scheme: CERTIFICATE_TYPE),Securities Practitioner License Certificate Document,scr_prac_license_ctf_doc,Certificate Type Code,ctf_tp_code
+Individual Profile,idv_prfl,Is Insider Verified,is_insider_verf,true,Indicator,string,,Cờ INSIDER VERIFIED: 1 nếu merge thành công SCMS + NHNCK theo CMND/CCCD,Generated,,ETL derived,
+Individual Profile,idv_prfl,Personnel Status Code,psn_st_code,true,Classification Value,string,,Trạng thái nhân sự,Securities Company Senior Personnel,scr_co_snr_psn,Personnel Status Code,psn_st_code
+Individual Profile,idv_prfl,Practice Status Code,practice_st_code,true,Classification Value,string,,Trạng thái hành nghề,Securities Practitioner,scr_prac,Practice Status Code,practice_st_code
+Individual Profile,idv_prfl,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Individual Related Party Network,idv_rel_p_ntw,Related Party Network Id,rel_p_ntw_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Individual Related Party Network,idv_rel_p_ntw,Individual Profile Id,idv_prfl_id,false,Surrogate Key,string,BK,FK đến Individual Profile (ETL derived),Generated,,ETL derived,
+Individual Related Party Network,idv_rel_p_ntw,Related Party Full Name,rel_p_full_nm,false,Text,string,,Tên người liên quan,Securities Company Shareholder Related Party,scr_co_shrhlr_rel_p,Related Party Full Name,rel_p_full_nm
+Individual Related Party Network,idv_rel_p_ntw,Relationship Type Code,rltnp_tp_code,true,Classification Value,string,,Mối quan hệ (scheme: SCMS_SHAREHOLDER_RELATION_TYPE / NHNCK),Securities Company Shareholder Related Party,scr_co_shrhlr_rel_p,Relationship Type Code,rltnp_tp_code
+Individual Related Party Network,idv_rel_p_ntw,Related Party Identity Reference Code,rel_p_identity_refr_code,true,Text,string,,CMND/CCCD người liên quan,Involved Party Alternative Identification,ip_alt_identn,Identification Number,identn_nbr
+Individual Related Party Network,idv_rel_p_ntw,Related Party Job Position Name,rel_p_job_pos_nm,true,Text,string,,Chức vụ/nghề nghiệp người liên quan (text),Securities Company Shareholder Related Party,scr_co_shrhlr_rel_p,Related Party Job Position Name,rel_p_job_pos_nm
+Individual Related Party Network,idv_rel_p_ntw,Share Quantity,shr_qty,true,Small Counter,int,,Số CP người liên quan nắm giữ,Securities Company Shareholder Related Party,scr_co_shrhlr_rel_p,Share Quantity,shr_qty
+Individual Related Party Network,idv_rel_p_ntw,Share Ratio,shr_rto,true,Percentage,"decimal(5,2)",,Tỷ lệ sở hữu — xem O_QLKD_15,Securities Company Shareholder Related Party,scr_co_shrhlr_rel_p,Share Ratio,shr_rto
+Individual Related Party Network,idv_rel_p_ntw,Source System Code,src_stm_code,false,Classification Value,string,,Nguồn: SCMS (Shareholder Related Party) hoặc NHNCK (Practitioner Related Party),Generated,,ETL derived,
+Individual Related Party Network,idv_rel_p_ntw,Public Company Code,pblc_co_code,true,Text,string,,Mã DN niêm yết node (từ Public Company Related Entity),Public Company Related Entity,pblc_co_rel_ent,Public Company Code,pblc_co_code
+Individual Related Party Network,idv_rel_p_ntw,Public Company Name,pblc_co_nm,true,Text,string,,Tên DN niêm yết node,Public Company Related Entity,pblc_co_rel_ent,Related Entity Name,rel_ent_nm
+Individual Related Party Network,idv_rel_p_ntw,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Individual Listed Company Role,idv_list_co_rl,Listed Company Role Id,list_co_rl_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Individual Listed Company Role,idv_list_co_rl,Individual Profile Id,idv_prfl_id,false,Surrogate Key,string,BK,FK đến Individual Profile (ETL derived),Generated,,ETL derived,
+Individual Listed Company Role,idv_list_co_rl,Public Company Code,pblc_co_code,false,Text,string,,Mã DN niêm yết/ĐKGD,Public Company Related Entity,pblc_co_rel_ent,Public Company Code,pblc_co_code
+Individual Listed Company Role,idv_list_co_rl,Relationship Type Code,rltnp_tp_code,true,Classification Value,string,,Vai trò: TV HĐQT / Cổ đông lớn / Cố vấn... (scheme: IDS_RELATIONSHIP_TYPE — xem O_QLKD_17),Public Company Related Entity,pblc_co_rel_ent,Relationship Type Code,rltnp_tp_code
+Individual Listed Company Role,idv_list_co_rl,Related Entity Name,rel_ent_nm,true,Text,string,,Tên người liên quan trong IDS,Public Company Related Entity,pblc_co_rel_ent,Related Entity Name,rel_ent_nm
+Individual Listed Company Role,idv_list_co_rl,Owned Share Quantity,own_shr_qty,true,Small Counter,int,,Số CP sở hữu tại DN niêm yết,Public Company Related Entity,pblc_co_rel_ent,Owned Share Quantity,own_shr_qty
+Individual Listed Company Role,idv_list_co_rl,Ownership Ratio,own_rto,true,Percentage,"decimal(5,2)",,Tỷ lệ sở hữu tại DN niêm yết,Public Company Related Entity,pblc_co_rel_ent,Ownership Ratio,own_rto
+Individual Listed Company Role,idv_list_co_rl,Effective From Date,eff_fm_dt,true,Date,date,,Ngày bắt đầu vai trò,Public Company Related Entity,pblc_co_rel_ent,Effective From Date,eff_fm_dt
+Individual Listed Company Role,idv_list_co_rl,Effective To Date,eff_to_dt,true,Date,date,,Ngày kết thúc vai trò,Public Company Related Entity,pblc_co_rel_ent,Effective To Date,eff_to_dt
+Individual Listed Company Role,idv_list_co_rl,Life Cycle Status Code,lcs_code,true,Classification Value,string,,Trạng thái vai trò (ACTIVE/INACTIVE),Generated,,ETL derived,
+Individual Listed Company Role,idv_list_co_rl,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Individual Trading Account,idv_tdg_ac,Trading Account Id,tdg_ac_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Individual Trading Account,idv_tdg_ac,Individual Profile Id,idv_prfl_id,false,Surrogate Key,string,BK,FK đến Individual Profile (ETL derived),Generated,,ETL derived,
+Individual Trading Account,idv_tdg_ac,Securities Company Shareholder Id,scr_co_shrhlr_id,false,Surrogate Key,string,,Silver surrogate Id cổ đông — join key,Securities Company Shareholder,scr_co_shrhlr,Securities Company Shareholder Id,scr_co_shrhlr_id
+Individual Trading Account,idv_tdg_ac,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK nơi mở TK,Securities Company Shareholder,scr_co_shrhlr,Securities Company Code,scr_co_code
+Individual Trading Account,idv_tdg_ac,Trading Account Number,tdg_ac_nbr,false,Text,string,,Số tài khoản giao dịch CK,Securities Company Shareholder,scr_co_shrhlr,Trading Account Number,tdg_ac_nbr
+Individual Trading Account,idv_tdg_ac,Shareholder Name,shrhlr_nm,true,Text,string,,Tên chủ tài khoản,Securities Company Shareholder,scr_co_shrhlr,Shareholder Name,shrhlr_nm
+Individual Trading Account,idv_tdg_ac,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Individual Work History,idv_wrk_hist,Work History Id,wrk_hist_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Individual Work History,idv_wrk_hist,Individual Profile Id,idv_prfl_id,false,Surrogate Key,string,BK,FK đến Individual Profile (ETL derived),Generated,,ETL derived,
+Individual Work History,idv_wrk_hist,Securities Company Senior Personnel Id,scr_co_snr_psn_id,false,Surrogate Key,string,,Silver surrogate Id — join key,Securities Company Senior Personnel,scr_co_snr_psn,Securities Company Senior Personnel Id,scr_co_snr_psn_id
+Individual Work History,idv_wrk_hist,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK công tác,Securities Company Senior Personnel,scr_co_snr_psn,Securities Company Code,scr_co_code
+Individual Work History,idv_wrk_hist,Position Type Code,pos_tp_code,false,Classification Value,string,,Chức vụ (scheme: SCMS_POSITION_TYPE),Securities Company Senior Personnel,scr_co_snr_psn,Position Type Code,pos_tp_code
+Individual Work History,idv_wrk_hist,Employment Start Date,emp_strt_dt,true,Date,date,,"Ngày bắt đầu công tác — tạm dùng Created Timestamp, xem O_QLKD_16",Securities Company Senior Personnel,scr_co_snr_psn,Created Timestamp,crt_tms
+Individual Work History,idv_wrk_hist,Resignation Date,resignation_dt,true,Date,date,,Ngày thôi việc — NULL = đang công tác,Securities Company Senior Personnel,scr_co_snr_psn,Resignation Date,resignation_dt
+Individual Work History,idv_wrk_hist,Is Current Indicator,is_crn_ind,true,Indicator,string,,Cờ đang công tác — ETL derived: Resignation Date IS NULL,Generated,,ETL derived,
+Individual Work History,idv_wrk_hist,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Individual Violation History,idv_vltn_hist,Violation History Id,vln_hist_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Individual Violation History,idv_vltn_hist,Individual Profile Id,idv_prfl_id,false,Surrogate Key,string,BK,"FK đến Individual Profile — ETL match qua Subject Id Number = CMND/CCCD, xem O_QLKD_14",Generated,,ETL derived,
+Individual Violation History,idv_vltn_hist,Inspection Case Code,inspection_case_code,false,Text,string,,Mã hồ sơ thanh tra/kiểm tra (giám sát),Inspection Case,insp_case,Inspection Case Code,insp_case_code
+Individual Violation History,idv_vltn_hist,Subject Id Number,sbj_id_nbr,true,Text,string,,CMND/CCCD đối tượng vi phạm,Inspection Case,insp_case,Subject Id Number,sbj_id_nbr
+Individual Violation History,idv_vltn_hist,Subject Full Name,sbj_full_nm,true,Text,string,,Họ tên đối tượng vi phạm (fallback filter),Inspection Case,insp_case,Subject Full Name,sbj_full_nm
+Individual Violation History,idv_vltn_hist,Inspection Type Code,inspection_tp_code,true,Classification Value,string,,Loại hình thanh/kiểm tra (scheme: TT_PLAN_TYPE),Inspection Case,insp_case,Inspection Type Code,insp_tp_code
+Individual Violation History,idv_vltn_hist,Case Name,case_nm,true,Text,string,,Tên hồ sơ,Inspection Case,insp_case,Case Name,case_nm
+Individual Violation History,idv_vltn_hist,Signing Date,signing_dt,true,Date,date,,Ngày ký kết luận xử phạt,Inspection Case Conclusion,insp_case_conclusion,Signing Date,signing_dt
+Individual Violation History,idv_vltn_hist,Conclusion Document Number,conclusion_doc_nbr,true,Text,string,,Số QĐ xử phạt,Inspection Case Conclusion,insp_case_conclusion,Conclusion Document Number,conclusion_doc_nbr
+Individual Violation History,idv_vltn_hist,Conclusion Summary,conclusion_smy,true,Text,string,,Nội dung kết luận vi phạm — K_QLKD_125,Inspection Case Conclusion,insp_case_conclusion,Conclusion Summary,conclusion_smy
+Individual Violation History,idv_vltn_hist,Violation Type Code,vln_tp_code,true,Classification Value,string,,Hành vi vi phạm (scheme: TT_VIOLATION_TYPE),Inspection Case Conclusion,insp_case_conclusion,Violation Type Code,vln_tp_code
+Individual Violation History,idv_vltn_hist,Penalty Type Code,pny_tp_code,true,Classification Value,string,,Hình thức xử phạt (scheme: TT_PENALTY_TYPE),Inspection Case Conclusion,insp_case_conclusion,Penalty Type Code,pny_tp_code
+Individual Violation History,idv_vltn_hist,Penalty Amount,pny_amt,true,Currency Amount,"decimal(23,2)",,Số tiền phạt (VND),Inspection Case Conclusion,insp_case_conclusion,Penalty Amount,pny_amt
+Individual Violation History,idv_vltn_hist,Conclusion Status Code,conclusion_st_code,true,Classification Value,string,,Trạng thái kết luận (scheme: TT_CASE_STATUS),Inspection Case Conclusion,insp_case_conclusion,Conclusion Status Code,conclusion_st_code
+Individual Violation History,idv_vltn_hist,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
+Securities Company Report Data,scr_co_rpt_data,Report Data Id,rpt_data_id,false,Surrogate Key,string,PK,Surrogate key ETL generated,Generated,,ETL derived,
+Securities Company Report Data,scr_co_rpt_data,Member Periodic Report Id,mbr_prd_rpt_id,false,Surrogate Key,string,BK,Silver surrogate Id lần nộp BC — SCMS.BC_THANH_VIEN,Member Periodic Report,mbr_prd_rpt,Member Periodic Report Id,mbr_prd_rpt_id
+Securities Company Report Data,scr_co_rpt_data,Securities Company Code,scr_co_code,false,Text,string,,Mã CTCK,Member Periodic Report,mbr_prd_rpt,Securities Company Code,scr_co_code
+Securities Company Report Data,scr_co_rpt_data,Report Template Code,rpt_tpl_code,false,Text,string,,Mã biểu mẫu báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Report Template Code,rpt_tpl_code
+Securities Company Report Data,scr_co_rpt_data,Report Type Code,rpt_tp_code,true,Classification Value,string,,Loại báo cáo (scheme: SCMS_REPORT_TYPE),Member Periodic Report,mbr_prd_rpt,Report Type Code,rpt_tp_code
+Securities Company Report Data,scr_co_rpt_data,Report Period Type Code,rpt_prd_tp_code,true,Classification Value,string,,Kỳ báo cáo (scheme: SCMS_REPORT_PERIOD_TYPE),Member Periodic Report,mbr_prd_rpt,Reporting Period Type Code,rpt_prd_tp_code
+Securities Company Report Data,scr_co_rpt_data,Year Value,yr_val,true,Text,string,,Năm kỳ báo cáo,Member Periodic Report,mbr_prd_rpt,Year Value,yr_val
+Securities Company Report Data,scr_co_rpt_data,Report Date,rpt_dt,true,Date,date,,Ngày số liệu báo cáo,Member Periodic Report,mbr_prd_rpt,Report Date,rpt_dt
+Securities Company Report Data,scr_co_rpt_data,Submission Date,submission_dt,true,Date,date,,Ngày nộp thực tế,Member Periodic Report,mbr_prd_rpt,Submission Date,subm_dt
+Securities Company Report Data,scr_co_rpt_data,Submission Deadline Date,submission_ddln_dt,true,Date,date,,Hạn nộp,Member Periodic Report,mbr_prd_rpt,Submission Deadline Date,subm_ddln_dt
+Securities Company Report Data,scr_co_rpt_data,Report Indicator Code,rpt_ind_code,false,Text,string,,Mã chỉ tiêu danh mục (DM_CHI_TIEU),Member Report Indicator Value,mbr_rpt_ind_val,Report Indicator Code,rpt_ind_code
+Securities Company Report Data,scr_co_rpt_data,Report Template Indicator Code,rpt_tpl_ind_code,true,Text,string,,Mã chỉ tiêu trong biểu mẫu (BM_BAO_CAO_CT),Member Report Indicator Value,mbr_rpt_ind_val,Report Template Indicator Code,rpt_tpl_ind_code
+Securities Company Report Data,scr_co_rpt_data,Row Name,row_nm,true,Text,string,,Tên hàng chỉ tiêu (denormalized),Member Report Indicator Value,mbr_rpt_ind_val,Row Name,row_nm
+Securities Company Report Data,scr_co_rpt_data,Column Name,clmn_nm,true,Text,string,,Tên cột chỉ tiêu (denormalized),Member Report Indicator Value,mbr_rpt_ind_val,Column Name,clmn_nm
+Securities Company Report Data,scr_co_rpt_data,Sheet Name,shet_nm,true,Text,string,,Tên sheet báo cáo (denormalized),Member Report Indicator Value,mbr_rpt_ind_val,Sheet Name,shet_nm
+Securities Company Report Data,scr_co_rpt_data,Value,val,true,Text,string,,Giá trị chỉ tiêu (Text — kiểu thực tế phụ thuộc KIEU_DU_LIEU),Member Report Indicator Value,mbr_rpt_ind_val,Value,val
+Securities Company Report Data,scr_co_rpt_data,Row Sequence,row_seq,true,Small Counter,int,,Số thứ tự dòng (cho chỉ tiêu lặp),Member Report Indicator Value,mbr_rpt_ind_val,Row Sequence,row_seq
+Securities Company Report Data,scr_co_rpt_data,Version,vrsn,true,Text,string,,Phiên bản báo cáo,Member Report Indicator Value,mbr_rpt_ind_val,Version,vrsn
+Securities Company Report Data,scr_co_rpt_data,Population Date,ppn_dt,true,Timestamp,timestamp,,ETL load timestamp,Generated,,ETL derived,
