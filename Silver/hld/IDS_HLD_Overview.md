@@ -56,11 +56,9 @@
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| Intermediate | company_data | Bảng trung gian lưu forms thuộc company_profiles | Intermediate linking table — không có business lifecycle độc lập |
 | Junction | noti_config_apply | Junction giữa noti_config và company_profiles | Pure junction table — không có business attribute |
-| Cascade drop | report_approval | Phê duyệt báo cáo (FK company_data) | Cascade drop từ company_data |
-| Cascade drop | report_extensions | Gia hạn báo cáo (FK company_data) | Cascade drop từ company_data |
-| Cascade drop | data | BCTC cell values (FK company_data) | Cascade drop từ company_data |
+| Cascade drop | report_approval | Phê duyệt báo cáo (FK company_data) | Cascade drop — quy trình phê duyệt nội bộ hệ thống, không có giá trị nghiệp vụ Silver |
+| Cascade drop | report_extensions | Gia hạn báo cáo (FK company_data) | Cascade drop — gia hạn kỹ thuật, không có giá trị nghiệp vụ Silver |
 | Cascade drop | data_values | Form field values (FK company_data) | Cascade drop từ company_data. Nếu anchor khôi phục, cần map cả field_id và form_field_id |
 | Operational / System | logins | Tài khoản đăng nhập hệ thống | Bảng hệ thống — không có giá trị nghiệp vụ Silver |
 | Operational / System | users | Người dùng hệ thống | Bảng hệ thống — không có giá trị nghiệp vụ Silver |
@@ -182,8 +180,8 @@ graph TD
 | D-02 | notifications là Fact Append (instance), không phải Fundamental (template) | notifications lưu instance gửi đi — sent_date, news_status_cd. |
 | D-03 | stock_holders → Stock Holder (entity mới) + extend shared Involved Party Postal/Electronic Address | Grain cổ đông × công ty (company_profile_id bắt buộc) nên tạo entity riêng. Nhưng address/phone → shared IP address entities. |
 | D-04 | identity → extend shared Involved Party Alternative Identification | User xác nhận map vào shared entity, không tạo IDS-specific entity. |
-| D-05 | company_data drop khỏi scope | Bảng trung gian — không có business lifecycle độc lập. |
-| D-06 | Cascade drop: report_approval, report_extensions, data, data_values | Phụ thuộc company_data (đã drop). data_values cần map cả field_id + form_field_id nếu anchor khôi phục. |
+| D-05 | company_data → **Silver entity `Public Company Report Submission` (Tier 3)** | ✅ Đảo quyết định: Gold cần dữ liệu BCTC thực tế từ `data`. company_data là anchor bắt buộc để biết công ty nào nộp kỳ nào. Filter: news_status_cd = 'APPROVED'. LLD: attr_IDS_company_data.csv. |
+| D-06 | data → **Silver entity `Public Company Financial Report Value` (Tier 4, Fact Append)**; report_approval + report_extensions vẫn out-of-scope; data_values vẫn out-of-scope | ✅ Đảo quyết định cho `data`: Gold requirement mới cần giá trị ô BCTC (data_value, row_cd, col_cd). LLD: attr_IDS_data.csv. `report_approval`, `report_extensions`, `data_values` vẫn out-of-scope. |
 | D-07 | af_approval: gộp BTC + SSC vào 1 entity | Cùng grain (1 hồ sơ per công ty KT), cùng nguồn af_approval. |
 | D-08 | categories là Classification Value, không phải Silver entity | Chỉ có code + name + parent_id. Scheme IDS_INDUSTRY_CATEGORY. |
 | D-09 | Không dùng prefix "IDS" trong tên Silver entity | Entity name theo pattern [Domain BCV Term], không theo source system. |

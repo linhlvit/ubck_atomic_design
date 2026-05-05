@@ -294,7 +294,7 @@ Danh mục tham chiếu: `lookup_values` (CV: `IDS_STOCK_RESTRICTION_TYPE`).
 
 Quản lý các **form công bố thông tin** (CBTT) được công ty đại chúng nộp lên UBCKNN, cùng hệ thống thông báo (notifications) phát đi khi có sự kiện CBTT. Đây là luồng phức tạp nhất trong IDS, bao gồm: định nghĩa form động (template form + field), dữ liệu form đã nhập, phê duyệt, gia hạn, và thông báo (email/SMS/push).
 
-> **Chú ý quan trọng về scope Silver:** Theo HLD, phần lớn cấu trúc lưu dữ liệu form động (`company_data`, `data_values`, `fields`, `form_fields`, và các bảng phụ thuộc `report_approval`, `report_extensions`, `data`) đều **out-of-scope** do là bảng trung gian/metadata. Chỉ `forms`, `notifications`, và `noti_config` được giữ lại ở Silver layer.
+> **Cập nhật scope Silver:** `company_data` và `data` đã được đưa vào scope Silver (quyết định D-05/D-06 đảo chiều) do Gold có requirement mới cần giá trị ô BCTC thực tế. `data_values`, `report_approval`, `report_extensions`, `fields`, `form_fields` vẫn out-of-scope.
 
 ### 5.1 Định nghĩa form CBTT
 
@@ -317,18 +317,18 @@ Danh mục tham chiếu: `lookup_values` (CV: `IDS_FORM_TYPE`, `IDS_NEWS_TYPE`, 
 
 **Nghiệp vụ:** Khi công ty đại chúng nộp một form CBTT, một bản ghi `company_data` được tạo (liên kết `company_profile_id` với `form_id`), và các giá trị nhập vào được lưu trong `data_values` theo từng field. Bản ghi trải qua quy trình phê duyệt (`report_approval`) và có thể được gia hạn nộp (`report_extensions`). Bảng `data` phục vụ lưu dữ liệu báo cáo tài chính (giao thoa với UID-06).
 
-> Toàn bộ nhóm bảng này **out-of-scope Silver** do `company_data` là bảng trung gian không có business lifecycle độc lập, các bảng còn lại cascade drop theo.
+> **Cập nhật:** `company_data` → 🟢 **Public Company Report Submission** (Tier 3, filter: news_status_cd = 'APPROVED'); `data` → 🟢 **Public Company Financial Report Value** (Tier 4, Fact Append). Các bảng còn lại (`data_values`, `report_approval`, `report_extensions`) vẫn out-of-scope.
 
 **Quan hệ dữ liệu:**
 
 | Bảng | Ý nghĩa | Ánh xạ Silver |
 |---|---|---|
 | `company_profiles` | Công ty đại chúng (xem 1.1) | 🟢 Public Company |
-| └── `company_data` | Bảng trung gian: forms dữ liệu đã nộp của công ty | 🔴 (Out of scope) *Bảng trung gian (intermediate linking table) — không có business lifecycle độc lập* |
-| &nbsp;&nbsp;&nbsp;&nbsp;├── `data_values` | Giá trị nhập ứng với form, fields | 🔴 (Out of scope) *Cascade drop từ company_data; nếu anchor khôi phục cần map cả field_id + form_field_id* |
-| &nbsp;&nbsp;&nbsp;&nbsp;├── `report_approval` | Phê duyệt tin công bố | 🔴 (Out of scope) *Cascade drop từ company_data* |
-| &nbsp;&nbsp;&nbsp;&nbsp;├── `report_extensions` | Gia hạn nộp báo cáo | 🔴 (Out of scope) *Cascade drop từ company_data* |
-| &nbsp;&nbsp;&nbsp;&nbsp;└── `data` | Dữ liệu hàng/cột báo cáo tài chính (xem UID-06) | 🔴 (Out of scope) *Cascade drop từ company_data* |
+| └── `company_data` | Lần nộp báo cáo/tin CBTT của công ty (filter: APPROVED) | 🟢 *Public Company Report Submission* (Tier 3) |
+| &nbsp;&nbsp;&nbsp;&nbsp;├── `data_values` | Giá trị nhập ứng với form, fields | 🔴 (Out of scope) *Field-level data động — cần map cả field_id + form_field_id, chưa có Gold requirement* |
+| &nbsp;&nbsp;&nbsp;&nbsp;├── `report_approval` | Phê duyệt tin công bố | 🔴 (Out of scope) *Quy trình nội bộ hệ thống* |
+| &nbsp;&nbsp;&nbsp;&nbsp;├── `report_extensions` | Gia hạn nộp báo cáo | 🔴 (Out of scope) *Quy trình nội bộ hệ thống* |
+| &nbsp;&nbsp;&nbsp;&nbsp;└── `data` | Dữ liệu hàng/cột báo cáo tài chính (xem UID-06) | 🟢 *Public Company Financial Report Value* (Tier 4, Fact Append) |
 
 ### 5.3 Thông báo CBTT (Notifications)
 
@@ -352,7 +352,7 @@ IDS quản lý 2 họ template báo cáo song song:
 - **Báo cáo tài chính** (dùng bộ bảng `report_catalog` / `rrow` / `rcol`): template cho các báo cáo tài chính IFRS/VAS của công ty đại chúng, với khái niệm "hàng" (row) và "cột" (column) linh hoạt.
 - **Báo cáo định kỳ** (dùng bộ bảng `rep_forms` / `rep_row` / `rep_column`): template cho các báo cáo định kỳ khác (tháng/quý/năm/bán niên), độc lập với báo cáo tài chính.
 
-Dữ liệu thực tế nhập vào các template này được lưu tại `data` (liên kết ngược qua `company_data` — nằm out-of-scope, xem UID-05).
+Dữ liệu thực tế nhập vào các template này được lưu tại `data` (liên kết ngược qua `company_data` — xem UID-05.2; cả hai đã được đưa vào scope Silver).
 
 ### 6.1 Báo cáo tài chính — Template
 
@@ -365,7 +365,7 @@ Dữ liệu thực tế nhập vào các template này được lưu tại `data
 | `report_catalog` | Danh mục báo cáo tài chính | 🟢 Financial Report Catalog |
 | ├── `rrow` | Hàng của báo cáo tài chính | 🟢 Financial Report Row Template |
 | ├── `rcol` | Cột của báo cáo tài chính | 🟢 Financial Report Column Template |
-| └── `data` | Dữ liệu hàng/cột báo cáo (xem UID-05.2) | 🔴 (Out of scope) *Cascade drop từ company_data* |
+| └── `data` | Dữ liệu hàng/cột báo cáo (xem UID-05.2) | 🟢 *Public Company Financial Report Value* (Tier 4, Fact Append) |
 
 CV column-level: `report_catalog.rc_type_cd` → `IDS_REPORT_CATALOG_TYPE`; `rrow.row_type_cd` → `IDS_REPORT_ROW_TYPE`.
 Danh mục tham chiếu: `lookup_values` (CV: `IDS_REPORT_SCOPE`, `IDS_ENTERPRISE_TYPE`).
