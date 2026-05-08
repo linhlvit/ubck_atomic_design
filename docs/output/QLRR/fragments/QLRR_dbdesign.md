@@ -269,7 +269,7 @@
 | 8 | Threshold Value | thrs_val | STRING |  |  |  |  | Giá trị ngưỡng kích hoạt cảnh báo. | QLRR.risk_alert_config | threshold_value |  |
 | 9 | Compare Period Count | cmpr_prd_cnt | INT | X |  |  |  | Số kỳ cần so sánh để đánh giá ngưỡng. | QLRR.risk_alert_config | compare_period_time |  |
 | 10 | Alert Message Template | alert_msg_tpl | STRING | X |  |  |  | Nội dung mẫu thông báo cảnh báo. | QLRR.risk_alert_config | alert_message_template |  |
-| 11 | Handler User Id | handler_usr_id | STRING | X |  |  |  | User ID người xử lý chính (denormalized — không có User entity trên Silver). | QLRR.risk_alert_config | handler_user_id |  |
+| 11 | Handler User Id | handler_usr_id | STRING | X |  |  |  | User ID người xử lý chính (denormalized — không có User entity trên Atomic). | QLRR.risk_alert_config | handler_user_id |  |
 | 12 | Handler User Name | handler_usr_nm | STRING | X |  |  |  | Tên người xử lý chính (denormalized). | QLRR.risk_alert_config | handler_user_name |  |
 | 13 | Notify Bell Flag | notf_bell_f | BOOLEAN |  |  |  |  | Hiển thị thông báo chuông: 0=Không, 1=Có. | QLRR.risk_alert_config | notify_bell_flag |  |
 | 14 | Notify Email Flag | notf_email_f | BOOLEAN |  |  |  |  | Gửi email cảnh báo: 0=Không, 1=Có. | QLRR.risk_alert_config | notify_email_flag |  |

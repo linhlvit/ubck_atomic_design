@@ -3,29 +3,29 @@
 **Phân hệ:** GSGD (Giám sát giao dịch chứng khoán)
 **Chủ đầu tư:** Ban Công nghệ và Chuyển đổi số — UBCKNN
 **Đơn vị sử dụng:** Ban Giám sát thị trường (Ban GSTT)
-**Mục đích:** Tài liệu tham chiếu cho thiết kế Silver layer — tổng hợp nghiệp vụ nguồn, quan hệ bảng, và ánh xạ Silver entity theo từng nhóm chức năng.
+**Mục đích:** Tài liệu tham chiếu cho thiết kế Atomic layer — tổng hợp nghiệp vụ nguồn, quan hệ bảng, và ánh xạ Atomic entity theo từng nhóm chức năng.
 
 **Nguồn tài liệu:**
 - Đặc tả yêu cầu: `New_UBCKNN_Dac_ta_yeu_cau_GSGD_18_03_2026.docx`
 - Thiết kế CSDL: `New_UBCKNN_Thiet_ke_co_so_du_lieu_GSGD_18_03_2026.docx`
-- HLD Silver Overview: `GSGD_HLD_Overview.md`
-- Silver mapping: `silver_entities.csv`
+- HLD Atomic Overview: `GSGD_HLD_Overview.md`
+- Atomic mapping: `atomic_entities.csv`
 - Classification Value registry: `ref_shared_entity_classifications.csv`
 
-**Phạm vi CSDL nguồn:** 47 bảng — 28 bảng map Silver entity, 19 bảng ngoài scope.
+**Phạm vi CSDL nguồn:** 47 bảng — 28 bảng map Atomic entity, 19 bảng ngoài scope.
 
 ---
 
 ## Bảng quy ước
 
-Cột **Ánh xạ Silver** sử dụng các ký hiệu sau:
+Cột **Ánh xạ Atomic** sử dụng các ký hiệu sau:
 
 | Ký hiệu | Ý nghĩa |
 |---|---|
-| 🟢 Tên entity | Silver entity được thiết kế cho bảng nguồn này |
+| 🟢 Tên entity | Atomic entity được thiết kế cho bảng nguồn này |
 | 🟢 `CV: CODE` | Classification Value — bảng/cột nguồn map thành danh mục mã hóa |
 | 🟢 ↳ denormalize vào *Entity* | Junction table — flatten thành `Array<Text>` trên entity chính |
-| 🔴 (Out of scope) *lý do* | Bảng ngoài scope Silver với lý do cụ thể |
+| 🔴 (Out of scope) *lý do* | Bảng ngoài scope Atomic với lý do cụ thể |
 
 Cấu trúc phân cấp dùng ký hiệu tree:
 - `├──` / `└──` — quan hệ FK cha-con (indent 1 cấp)
@@ -62,7 +62,7 @@ Nhóm chức năng phục vụ Ban GSTT khai thác thông tin cơ bản: tài kh
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `investor_account` | Tài khoản nhà đầu tư (gốc từ VSDC) | 🟢 **Investor Trading Account** |
 | ├── `investor_account_history` | Lịch sử thay đổi thông tin TK | 🔴 (Out of scope) *Audit Log nguồn* |
@@ -81,7 +81,7 @@ Nhóm chức năng phục vụ Ban GSTT khai thác thông tin cơ bản: tài kh
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `company_event` | Sự kiện tổ chức niêm yết | 🟢 **Listed Company Corporate Event** |
 | └── `company_event_history` | Lịch sử thay đổi sự kiện TCNY | 🔴 (Out of scope) *Audit Log nguồn* |
@@ -94,7 +94,7 @@ Nhóm chức năng phục vụ Ban GSTT khai thác thông tin cơ bản: tài kh
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `securities_group` | Nhóm chứng khoán (watchlist) | 🟢 **Securities Watchlist Group** |
 | ├── `securities_group_member` | Thành viên nhóm chứng khoán | 🟢 ↳ denormalize vào *Securities Watchlist Group* (`Array<Text>`) |
@@ -108,7 +108,7 @@ Nhóm chức năng phục vụ Ban GSTT khai thác thông tin cơ bản: tài kh
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `abnormal_report` | Báo cáo bất thường từ SGDCK/VSDC | 🟢 **Abnormal Trading Report** |
 | └── `abnormal_report_file` | File đính kèm (PDF, chữ ký số) | 🟢 **Abnormal Trading Report File Attachment** |
@@ -131,7 +131,7 @@ Nhóm chức năng trọng tâm của phân hệ GSGD — xử lý vụ việc g
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `case_file` | Vụ việc giám sát | 🟢 **Market Surveillance Case** |
 | ├── `case_attach_file` | File đính kèm vụ việc (hồ sơ Sở, danh sách TK nghi vấn) | 🟢 **Market Surveillance Case Document Attachment** |
@@ -146,7 +146,7 @@ Nhóm chức năng trọng tâm của phân hệ GSGD — xử lý vụ việc g
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `analysis_attribute_define` | Định nghĩa tiêu chí phân tích | 🟢 **Market Surveillance Analysis Criterion** |
 | └── `analysis_attribute_value` | Giá trị tiêu chí theo từng lần chạy | 🟢 **Market Surveillance Analysis Criterion Value** |
@@ -159,7 +159,7 @@ Nhóm chức năng trọng tâm của phân hệ GSGD — xử lý vụ việc g
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `case_file` | Vụ việc (xem 2.1) | 🟢 **Market Surveillance Case** *(xem 2.1)* |
 | ├── `analysis_execution_log` | Log thực thi phân tích (trạng thái, thời gian, tham số) | 🟢 **Market Surveillance Analysis Execution Log** |
@@ -178,7 +178,7 @@ Nhóm chức năng trọng tâm của phân hệ GSGD — xử lý vụ việc g
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `case_file` | Vụ việc (xem 2.1) | 🟢 **Market Surveillance Case** *(xem 2.1)* |
 | ├── `suspicious_account` | TK nghi vấn cuối cùng của vụ việc | 🟢 **Market Surveillance Suspicious Account** |
@@ -190,11 +190,11 @@ Nhóm chức năng trọng tâm của phân hệ GSGD — xử lý vụ việc g
 
 ## UID3 — Nhóm chức năng: Quản trị phân hệ & tiện ích
 
-Nhóm chức năng phục vụ Quản trị phân hệ cấu hình hệ thống (quy trình vụ việc, trạng thái, tham số, biểu mẫu báo cáo động, bảng điều hành dashboard, nhóm quyền truy cập). Đồng thời quản lý nhật ký hệ thống (audit trail) và các tiện ích người dùng (hướng dẫn sử dụng, thông báo, biểu mẫu văn bản đi BM109–BM121). Toàn bộ nhóm chức năng này là **operational/system data** phục vụ vận hành phân hệ, không có giá trị nghiệp vụ cho Silver layer.
+Nhóm chức năng phục vụ Quản trị phân hệ cấu hình hệ thống (quy trình vụ việc, trạng thái, tham số, biểu mẫu báo cáo động, bảng điều hành dashboard, nhóm quyền truy cập). Đồng thời quản lý nhật ký hệ thống (audit trail) và các tiện ích người dùng (hướng dẫn sử dụng, thông báo, biểu mẫu văn bản đi BM109–BM121). Toàn bộ nhóm chức năng này là **operational/system data** phục vụ vận hành phân hệ, không có giá trị nghiệp vụ cho Atomic layer.
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `system_user` | Người dùng hệ thống | 🔴 (Out of scope) *Operational/system data* |
 | ├── `user_group` | Nhóm người dùng | 🔴 (Out of scope) *Operational/system data* |
@@ -208,17 +208,17 @@ Nhóm chức năng phục vụ Quản trị phân hệ cấu hình hệ thống 
 | └── `report_template_workflow` | Cấu hình biểu mẫu cho quy trình phân tích | 🔴 (Out of scope) *Operational/system data* |
 | `analysis_define_report_template` | Tham số cấu hình biểu mẫu báo cáo phân tích | 🔴 (Out of scope) *Pure junction, không có giá trị nghiệp vụ* |
 
-**Danh mục dùng chung (Reference Data):** `category_config` và `category_item` — xem [Phụ lục](#phụ-lục-danh-mục-dùng-chung) bên dưới. Hai bảng này được xử lý thành các Classification Value thay vì tạo Silver entity.
+**Danh mục dùng chung (Reference Data):** `category_config` và `category_item` — xem [Phụ lục](#phụ-lục-danh-mục-dùng-chung) bên dưới. Hai bảng này được xử lý thành các Classification Value thay vì tạo Atomic entity.
 
 ---
 
 ## Phụ lục: Danh mục dùng chung
 
-Hai bảng `category_config` và `category_item` lưu trữ toàn bộ danh mục dùng chung của phân hệ GSGD (dropdown, listbox, loại, trạng thái...). Thay vì tạo Silver entity, chúng được xử lý thành **Classification Value schemes** theo Silver design convention.
+Hai bảng `category_config` và `category_item` lưu trữ toàn bộ danh mục dùng chung của phân hệ GSGD (dropdown, listbox, loại, trạng thái...). Thay vì tạo Atomic entity, chúng được xử lý thành **Classification Value schemes** theo Atomic design convention.
 
 **Ánh xạ bảng-level:**
 
-| Bảng | Ý nghĩa | Sử dụng bởi | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Sử dụng bởi | Ánh xạ Atomic |
 |---|---|---|---|
 | `category_config` | Cấu hình danh mục dùng chung (tên, mã danh mục) | Toàn phân hệ | 🔴 (Out of scope) *Reference Data — xử lý thành Classification Value* |
 | `category_item` | Item trong danh mục dùng chung | Toàn phân hệ | 🔴 (Out of scope) *Reference Data — xử lý thành Classification Value* |
@@ -239,7 +239,7 @@ Có 27 scheme Classification được sinh từ dữ liệu nguồn GSGD, chia t
 | `GSGD_INFORMATION_SOURCE` | Nguồn thông tin vụ việc (Báo cáo Sở / UBCKNN) | `case_file.information_source` |
 | `GSGD_RELATIONSHIP_CRITERIA` | Tiêu chí phân nhóm TK nghi vấn | `suspicious_account_group.relationship_criteria` |
 
-**Nhóm 2 — Column-level (20 scheme, `source_type=etl_derived`/`modeler_defined`):** Các scheme này được ETL derive từ giá trị enum trong cột nghiệp vụ (không tham chiếu `category_item`). Bảng cha vẫn giữ Silver entity riêng.
+**Nhóm 2 — Column-level (20 scheme, `source_type=etl_derived`/`modeler_defined`):** Các scheme này được ETL derive từ giá trị enum trong cột nghiệp vụ (không tham chiếu `category_item`). Bảng cha vẫn giữ Atomic entity riêng.
 
 | Scheme | Cột nguồn | Mô tả |
 |---|---|---|
@@ -269,7 +269,7 @@ Có 27 scheme Classification được sinh từ dữ liệu nguồn GSGD, chia t
 ## Ghi chú tổng hợp
 
 **Coverage đầy đủ của 47 bảng nguồn:**
-- **29 bảng** → Silver entity
+- **29 bảng** → Atomic entity
 - **4 bảng** → Audit Log nguồn (history tables)
 - **12 bảng** → Operational/system data (user management, audit log, UI metadata, config)
 - **2 bảng** → Reference Data → Classification Value (`category_config`, `category_item`)
@@ -277,7 +277,7 @@ Có 27 scheme Classification được sinh từ dữ liệu nguồn GSGD, chia t
 
 **Điểm cần xác nhận (từ HLD 7e):**
 1. `account_group.case_file_id` — tiềm ẩn circular dependency account_group ↔ case_file. Đề xuất giữ T1, FK nullable.
-2. `abnormal_report.submitter_id` — text không có FK đến entity Silver. Đề xuất giữ denormalized đến khi có mapping tường minh.
+2. `abnormal_report.submitter_id` — text không có FK đến entity Atomic. Đề xuất giữ denormalized đến khi có mapping tường minh.
 3. `case_file.securities_code_id` — FK đến `securities_code` ngoài scope GSGD. Cần xác nhận system nguồn (VSD/HoSE/HNX) để ghi nhận cross-system dependency.
-4. `compliance_report_data.row_data` — JSON blob không có schema ổn định. Giữ Silver entity với row_data dạng Text (raw JSON).
+4. `compliance_report_data.row_data` — JSON blob không có schema ổn định. Giữ Atomic entity với row_data dạng Text (raw JSON).
 

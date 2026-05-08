@@ -193,7 +193,7 @@
 | 14 | Latest Registration Date | latest_rgst_dt | DATE | X |  |  |  | Ngày cấp gần nhất. | ThanhTra.DM_CONG_TY_DC |  |  |
 | 15 | Latest Registration Province Code | latest_rgst_prov_code | STRING | X |  |  |  | Tỉnh/thành nơi cấp gần nhất (mã tỉnh từ provinces). | ThanhTra.DM_CONG_TY_DC |  |  |
 | 16 | Industry Category Id | idy_cgy_id | BIGINT | X |  | F |  | Id ngành nghề (categories). | ThanhTra.DM_CONG_TY_DC |  |  |
-| 17 | Industry Category Code | idy_cgy_code | STRING | X |  |  |  | Mã ngành nghề (categories). | ThanhTra.DM_CONG_TY_DC |  | Scheme: IDS_INDUSTRY_CATEGORY. Pair with Industry Category Id. Theo HLD T1-04: categories là Classification Value không phải Silver entity. |
+| 17 | Industry Category Code | idy_cgy_code | STRING | X |  |  |  | Mã ngành nghề (categories). | ThanhTra.DM_CONG_TY_DC |  | Scheme: IDS_INDUSTRY_CATEGORY. Pair with Industry Category Id. Theo HLD T1-04: categories là Classification Value không phải Atomic entity. |
 | 18 | Industry Category Level1 Code | idy_cgy_level1_code | STRING | X |  |  |  | Ngành nghề cấp 1 (mã categories cấp 1). | ThanhTra.DM_CONG_TY_DC |  | Scheme: IDS_INDUSTRY_CATEGORY. Cùng scheme với Industry Category Code — denormalize cấp 1. |
 | 19 | Industry Category Level2 Code | idy_cgy_level2_code | STRING | X |  |  |  | Ngành nghề cấp 2 (mã categories cấp 2). | ThanhTra.DM_CONG_TY_DC |  | Scheme: IDS_INDUSTRY_CATEGORY. Cùng scheme với Industry Category Code — denormalize cấp 2. |
 | 20 | IDS Status Code | ids_st_code | STRING | X |  |  |  | Trạng thái niêm yết IDS. | ThanhTra.DM_CONG_TY_DC |  | Scheme: IDS_COMPANY_STATUS. |

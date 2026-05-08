@@ -1,7 +1,7 @@
 """
 build_glossary.py
 =================
-Tạo business_glossary.csv và glossary_mappings.csv từ silver_attributes.csv (NHNCK).
+Tạo business_glossary.csv và glossary_mappings.csv từ atomic_attributes.csv (NHNCK).
 
 Output:
   DG/glossary/business_glossary.csv   — 1 dòng = 1 business term
@@ -31,8 +31,8 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ('utf-8', 'utf-8-s
 
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = SCRIPT_DIR.parent.parent   # ubck_atomic_design/
-ATTRS_PATH = REPO_ROOT / 'Silver' / 'lld' / 'silver_attributes.csv'
-SILVER_ENTITIES_PATH = REPO_ROOT / 'Silver' / 'hld' / 'silver_entities.csv'
+ATTRS_PATH = REPO_ROOT / 'Atomic' / 'lld' / 'atomic_attributes.csv'
+ATOMIC_ENTITIES_PATH = REPO_ROOT / 'Atomic' / 'hld' / 'atomic_entities.csv'
 OUT_GLOSSARY = SCRIPT_DIR / 'business_glossary.csv'
 OUT_MAPPINGS = SCRIPT_DIR / 'glossary_mappings.csv'
 
@@ -72,7 +72,7 @@ GRAIN_MAP = {
 
 GFIELDS = ['term_id', 'parent_term_id', 'term_name', 'definition', 'primary_grain',
            'data_domain', 'source_tags', 'entity_tags', 'status', 'notes']
-MFIELDS = ['term_id', 'silver_entity', 'silver_attribute', 'entity_grain', 'mapping_type']
+MFIELDS = ['term_id', 'atomic_entity', 'atomic_attribute', 'entity_grain', 'mapping_type']
 
 # Homonym splitting: attributes that carry genuinely different meanings across entities.
 # Each entry defines how to split 1 "merged" term into parent + children.
@@ -82,7 +82,7 @@ MFIELDS = ['term_id', 'silver_entity', 'silver_attribute', 'entity_grain', 'mapp
 #     'parent_name': display name for the abstract parent term (no mapping rows),
 #     'children': [
 #       {
-#         'entities': set of silver_entity that belong to this child,
+#         'entities': set of atomic_entity that belong to this child,
 #         'term_name': override term name for child (if different from attr_name),
 #         'primary_entity_override': which entity is home for this child,
 #       },
@@ -220,8 +220,8 @@ def load_filtered_attrs(source_system: str = 'NHNCK') -> list[dict]:
         for row in csv.DictReader(f):
             if row['source_system'] != source_system:
                 continue
-            entity = row['silver_entity']
-            attr = row['silver_attribute']
+            entity = row['atomic_entity']
+            attr = row['atomic_attribute']
             key = (entity, attr)
             if key in seen:
                 continue
@@ -238,12 +238,12 @@ def filter_id_pairs(rows: list[dict]) -> list[dict]:
     """Loại attribute ' Id' khi cùng entity có ' Code' tương ứng."""
     entity_attrs: dict[str, set] = defaultdict(set)
     for row in rows:
-        entity_attrs[row['silver_entity']].add(row['silver_attribute'])
+        entity_attrs[row['atomic_entity']].add(row['atomic_attribute'])
 
     result = []
     for row in rows:
-        attr = row['silver_attribute']
-        entity = row['silver_entity']
+        attr = row['atomic_attribute']
+        entity = row['atomic_entity']
         if attr.endswith(' Id'):
             code_pair = attr[:-3] + ' Code'
             if code_pair in entity_attrs[entity]:
@@ -256,8 +256,8 @@ def build_glossary(rows: list[dict]) -> tuple[list[dict], list[dict]]:
     # Group by attr_name, preserving order of first appearance
     attr_order: OrderedDict[str, dict] = OrderedDict()
     for row in rows:
-        attr = row['silver_attribute']
-        entity = row['silver_entity']
+        attr = row['atomic_attribute']
+        entity = row['atomic_entity']
         if attr not in attr_order:
             attr_order[attr] = {}
         attr_order[attr][entity] = row
@@ -323,8 +323,8 @@ def build_glossary(rows: list[dict]) -> tuple[list[dict], list[dict]]:
                     is_primary = (entity == primary_entity)
                     mapping_rows.append({
                         'term_id': child_term_id,
-                        'silver_entity': entity,
-                        'silver_attribute': attr_name,
+                        'atomic_entity': entity,
+                        'atomic_attribute': attr_name,
                         'entity_grain': get_grain(entity),
                         'mapping_type': 'primary' if is_primary else 'reference',
                     })
@@ -357,8 +357,8 @@ def build_glossary(rows: list[dict]) -> tuple[list[dict], list[dict]]:
             is_primary = (entity == primary_entity)
             mapping_rows.append({
                 'term_id': term_id,
-                'silver_entity': entity,
-                'silver_attribute': attr_name,
+                'atomic_entity': entity,
+                'atomic_attribute': attr_name,
                 'entity_grain': get_grain(entity),
                 'mapping_type': 'primary' if is_primary else 'reference',
             })
@@ -375,12 +375,12 @@ def write_csv(path: Path, fields: list[str], rows: list[dict]):
 
 
 def load_fundamental_entities() -> set[str]:
-    entities_path = SILVER_ENTITIES_PATH
+    entities_path = ATOMIC_ENTITIES_PATH
     result = set()
     with open(entities_path, encoding='utf-8-sig', newline='') as f:
         for row in csv.DictReader(f):
             if row.get('table_type', '').strip().lower() == 'fundamental':
-                result.add(row['silver_entity'])
+                result.add(row['atomic_entity'])
     return result
 
 
@@ -388,7 +388,7 @@ def main():
     global FUNDAMENTAL_ENTITIES
     FUNDAMENTAL_ENTITIES = load_fundamental_entities()
     print(f'Loaded {len(FUNDAMENTAL_ENTITIES)} Fundamental entities', file=sys.stderr)
-    print('Load và lọc silver_attributes...', file=sys.stderr)
+    print('Load và lọc atomic_attributes...', file=sys.stderr)
     rows = load_filtered_attrs('NHNCK')
     rows = filter_id_pairs(rows)
     print(f'  {len(rows)} attribute rows sau lọc', file=sys.stderr)

@@ -281,7 +281,7 @@
 | 7 | Period Value | prd_val | STRING | X |  |  |  | Giá trị kỳ báo cáo (ví dụ: tháng 1 = 1). | GSGD.abnormal_report | period_value |  |
 | 8 | Period Year | prd_yr | INT | X |  |  |  | Năm kỳ báo cáo. | GSGD.abnormal_report | period_year |  |
 | 9 | Submitter Type Code | submitter_tp_code | STRING | X |  |  |  | Loại người nộp (Tổ chức / Cá nhân). | GSGD.abnormal_report | submitter_type | Scheme: GSGD_SUBMITTER_TYPE. |
-| 10 | Submitter Id | submitter_id | STRING | X |  |  |  | Mã người/tổ chức nộp báo cáo. Denormalized — không có FK tường minh đến entity Silver. | GSGD.abnormal_report | submitter_id |  |
+| 10 | Submitter Id | submitter_id | STRING | X |  |  |  | Mã người/tổ chức nộp báo cáo. Denormalized — không có FK tường minh đến entity Atomic. | GSGD.abnormal_report | submitter_id |  |
 | 11 | Submitter Name | submitter_nm | STRING | X |  |  |  | Tên người/tổ chức nộp báo cáo. | GSGD.abnormal_report | submitter_name |  |
 | 12 | Submission Date | submission_dt | DATE | X |  |  |  | Ngày nộp báo cáo. | GSGD.abnormal_report | submission_date |  |
 | 13 | Approval Status Code | aprv_st_code | STRING | X |  |  |  | Trạng thái: 0=Chờ duyệt, 1=Đã duyệt, 2=Từ chối, 3=Yêu cầu nộp lại. | GSGD.abnormal_report | approval_status | Scheme: GSGD_APPROVAL_STATUS. |

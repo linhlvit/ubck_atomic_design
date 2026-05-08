@@ -1,11 +1,11 @@
-# QLRR — Tài liệu khảo sát nguồn & ánh xạ Silver
+# QLRR — Tài liệu khảo sát nguồn & ánh xạ Atomic
 
 **Phân hệ:** QLRR — Quản lý rủi ro về thị trường chứng khoán
-**Mục đích:** Tổng hợp nghiệp vụ nguồn, quan hệ bảng CSDL, và ánh xạ Silver entity theo từng nhóm chức năng (UID) — làm tham chiếu cho thiết kế Silver layer.
+**Mục đích:** Tổng hợp nghiệp vụ nguồn, quan hệ bảng CSDL, và ánh xạ Atomic entity theo từng nhóm chức năng (UID) — làm tham chiếu cho thiết kế Atomic layer.
 **Nguồn tài liệu:**
 - Đặc tả yêu cầu: `New_UBCKNN_Dac_ta_yeu_cau_QLRR_09_03_2026.docx`
 - Thiết kế CSDL: `New_UBCKNN_Thiet_ke_co_so_du_lieu_QLRR_02_04_2026.docx`
-- HLD Silver Overview: `RISK_HLD_Overview.md` (phần 7a, 7c, 7d, 7f)
+- HLD Atomic Overview: `RISK_HLD_Overview.md` (phần 7a, 7c, 7d, 7f)
 - Classification registry: `ref_shared_entity_classifications.csv`
 
 ---
@@ -14,14 +14,14 @@
 
 | Ký hiệu | Ý nghĩa |
 |---|---|
-| 🟢 **Tên entity** | Silver entity được thiết kế (xem HLD 7a) |
+| 🟢 **Tên entity** | Atomic entity được thiết kế (xem HLD 7a) |
 | 🟢 `CV: SCHEME_CODE` | Classification Value — danh mục mã hóa (xem HLD 7c và registry CSV) |
 | 🟢 ↳ denormalize vào *Entity* | Junction table flatten vào entity chính (QLRR không có — xem HLD 7d) |
-| 🔴 (Out of scope) *lý do* | Ngoài scope Silver (xem HLD 7f) |
+| 🔴 (Out of scope) *lý do* | Ngoài scope Atomic (xem HLD 7f) |
 | ├── └── | Quan hệ FK cha-con theo tree |
 | *(xem X.X)* | Bảng đã mô tả ở sub-section khác — tránh lặp |
 
-**Lưu ý riêng cho QLRR:** Phân hệ không có bảng `DM_*` dictionary riêng — các giá trị danh mục (bộ chỉ tiêu, tần suất, đơn vị, trạng thái, loại sự kiện, kênh thông báo…) lưu dưới dạng enum/code inline trong bảng nghiệp vụ. Các enum này được chuẩn hóa thành **17 Classification Value schemes** trong Silver (xem Phụ lục).
+**Lưu ý riêng cho QLRR:** Phân hệ không có bảng `DM_*` dictionary riêng — các giá trị danh mục (bộ chỉ tiêu, tần suất, đơn vị, trạng thái, loại sự kiện, kênh thông báo…) lưu dưới dạng enum/code inline trong bảng nghiệp vụ. Các enum này được chuẩn hóa thành **17 Classification Value schemes** trong Atomic (xem Phụ lục).
 
 ---
 
@@ -48,7 +48,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_indicator_category` | Nhóm chỉ tiêu — dùng để filter biểu đồ theo nhóm (vĩ mô, tiền tệ, cổ phiếu…) | 🟢 **Risk Indicator Category** |
 | └── `risk_indicator` | Master chỉ tiêu — FK `category_id` → category | 🟢 **Risk Indicator** |
@@ -66,11 +66,11 @@
 
 ### 2.1. Khai thác loại báo cáo và template
 
-**Nghiệp vụ:** Quản lý danh mục loại báo cáo và template kèm placeholder `{{CODE}}`. Cấu hình placeholder định nghĩa mỗi placeholder trỏ đến cột dữ liệu nào trong CSDL nguồn hoặc công thức. Cấu hình này là thông tin kỹ thuật runtime, không lưu xuống Silver.
+**Nghiệp vụ:** Quản lý danh mục loại báo cáo và template kèm placeholder `{{CODE}}`. Cấu hình placeholder định nghĩa mỗi placeholder trỏ đến cột dữ liệu nào trong CSDL nguồn hoặc công thức. Cấu hình này là thông tin kỹ thuật runtime, không lưu xuống Atomic.
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_report_type` | Danh mục loại báo cáo + template content | 🟢 **Risk Report Type** |
 | └── `risk_report_placeholder_config` | Cấu hình mapping placeholder ↔ nguồn dữ liệu | 🔴 (Out of scope) *Config kỹ thuật — operational/system data* |
@@ -81,7 +81,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_report_type` | Loại báo cáo được tổng hợp | 🟢 **Risk Report Type** *(xem 2.1)* |
 | └── `risk_report_upload_batch` | Lượt tổng hợp/upload — 1 lần xuất = 1 batch | 🟢 **Risk Report Upload Batch** |
@@ -99,11 +99,11 @@
 
 ### 3.1. Khai thác danh mục chỉ tiêu trong nước và số liệu theo kỳ
 
-**Nghiệp vụ:** Mỗi chỉ tiêu có các thuộc tính: mã, tên, nhóm, tần suất (ngày/tháng/quý/năm), đơn vị, nguồn, giá trị kỳ trước/hiện tại/chênh lệch. Người dùng có thể tạo chỉ tiêu tự tạo (`risk_indicator_custom`) — được gộp chung với chỉ tiêu hệ thống thành entity `Risk Indicator` duy nhất trong Silver, phân biệt qua CV `RISK_INDICATOR_TYPE` (1=hệ thống, 2=tự tạo). Dữ liệu đến từ 2 nguồn: API đồng bộ (CSDL tập trung) hoặc người dùng chỉnh sửa thủ công — phân biệt qua CV `RISK_DATA_ORIGIN`.
+**Nghiệp vụ:** Mỗi chỉ tiêu có các thuộc tính: mã, tên, nhóm, tần suất (ngày/tháng/quý/năm), đơn vị, nguồn, giá trị kỳ trước/hiện tại/chênh lệch. Người dùng có thể tạo chỉ tiêu tự tạo (`risk_indicator_custom`) — được gộp chung với chỉ tiêu hệ thống thành entity `Risk Indicator` duy nhất trong Atomic, phân biệt qua CV `RISK_INDICATOR_TYPE` (1=hệ thống, 2=tự tạo). Dữ liệu đến từ 2 nguồn: API đồng bộ (CSDL tập trung) hoặc người dùng chỉnh sửa thủ công — phân biệt qua CV `RISK_DATA_ORIGIN`.
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_indicator_category` | Nhóm chỉ tiêu (`set_code=1` = Trong nước; `category_code`: MACRO, MONETARY, STOCK_MARKET, DERIVATIVES, GOV_BOND, CORP_BOND, FUND, FOREIGN_INVESTOR, SECURITIES_FIRM…) | 🟢 **Risk Indicator Category** |
 | └── `risk_indicator` | Master chỉ tiêu hệ thống — FK `category_id` | 🟢 **Risk Indicator** |
@@ -121,11 +121,11 @@
 
 ### 4.1. Khai thác danh mục chỉ tiêu quốc tế và số liệu theo kỳ
 
-**Nghiệp vụ:** Cùng schema với chỉ tiêu trong nước — chỉ khác filter `set_code = 2 (Quốc tế)` và `source_code = 1 (Investing)` là mặc định. Việc phân biệt trong nước / quốc tế hoàn toàn ở tầng Silver thông qua CV `RISK_INDICATOR_SET`, không cần entity riêng.
+**Nghiệp vụ:** Cùng schema với chỉ tiêu trong nước — chỉ khác filter `set_code = 2 (Quốc tế)` và `source_code = 1 (Investing)` là mặc định. Việc phân biệt trong nước / quốc tế hoàn toàn ở tầng Atomic thông qua CV `RISK_INDICATOR_SET`, không cần entity riêng.
 
 **Quan hệ dữ liệu:** Bảng và quan hệ **giống hệt mục 3.1** — chỉ khác giá trị `set_code`.
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_indicator_category` | Nhóm chỉ tiêu quốc tế (`set_code=2`) | 🟢 **Risk Indicator Category** *(xem 3.1)* |
 | └── `risk_indicator` | Master chỉ tiêu quốc tế | 🟢 **Risk Indicator** *(xem 3.1)* |
@@ -147,7 +147,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_alert_config` | Cấu hình ngưỡng cảnh báo + người xử lý | 🟢 **Risk Alert Config** |
 | &nbsp;&nbsp;*FK →* `risk_indicator` | Chỉ tiêu hệ thống được giám sát (khi `indicator_type=1`) | 🟢 **Risk Indicator** *(xem 3.1)* |
@@ -161,7 +161,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_alert_config` | Cấu hình gốc sinh ra cảnh báo | 🟢 **Risk Alert Config** *(xem 5.1)* |
 | └── `risk_alert` | Bản ghi cảnh báo thực tế — FK `alert_config_id` | 🟢 **Risk Alert** |
@@ -176,7 +176,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_alert` | Cảnh báo được xử lý | 🟢 **Risk Alert** *(xem 5.2)* |
 | ├── `risk_alert_resolution` | Bản ghi xử lý — Quick / Detailed | 🟢 **Risk Alert Resolution** |
@@ -191,7 +191,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_alert` | Cảnh báo nguồn phát thông báo | 🟢 **Risk Alert** *(xem 5.2)* |
 | └── `risk_notification` | Thông báo gửi đi (toast/bell/email) | 🟢 **Risk Alert Notification** |
@@ -210,14 +210,14 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `permission_group` | Nhóm quyền | 🔴 (Out of scope) *Operational/system data — không có giá trị nghiệp vụ* |
 | ├── `permission_group_user` | Gán user vào nhóm | 🔴 (Out of scope) *Operational/system data* |
 | └── `permission_group_indicator` | Gán chỉ tiêu được phép xem | 🔴 (Out of scope) *Operational/system data* |
 | `risk_indicator` | Đối tượng được phân quyền | 🟢 **Risk Indicator** *(xem 3.1)* |
 
-*Ghi chú:* Cả 3 bảng phân quyền đều **ngoài scope Silver** theo HLD 7f — quyền xem dữ liệu là tầng ứng dụng, không phải tầng dữ liệu phân tích.
+*Ghi chú:* Cả 3 bảng phân quyền đều **ngoài scope Atomic** theo HLD 7f — quyền xem dữ liệu là tầng ứng dụng, không phải tầng dữ liệu phân tích.
 
 ---
 
@@ -231,7 +231,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `risk_indicator` | Chỉ tiêu cần đồng bộ | 🟢 **Risk Indicator** *(xem 3.1)* |
 | └── `risk_indicator_schedule` | Cấu hình + trạng thái job (1-1 với chỉ tiêu) | 🟢 **Risk Indicator Schedule** |
@@ -249,7 +249,7 @@
 
 QLRR **không có bảng `DM_*` dictionary riêng**. Các bảng sau đóng vai trò master được tham chiếu xuyên UID:
 
-| Bảng | Ý nghĩa | Sử dụng bởi | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Sử dụng bởi | Ánh xạ Atomic |
 |---|---|---|---|
 | `risk_indicator_category` | Nhóm chỉ tiêu (vĩ mô, tiền tệ, cổ phiếu…) | QLRR001, QLRR003, QLRR004, QLRR007 | 🟢 **Risk Indicator Category** |
 | `risk_indicator` | Master chỉ tiêu hệ thống | QLRR001, QLRR002, QLRR003, QLRR004, QLRR005, QLRR006, QLRR007 | 🟢 **Risk Indicator** |
@@ -261,7 +261,7 @@ QLRR **không có bảng `DM_*` dictionary riêng**. Các bảng sau đóng vai 
 
 Các giá trị danh mục trong QLRR được chuẩn hóa thành Classification Value thay vì bảng dictionary riêng.
 
-| Scheme Code | Mô tả | Nguồn cột | Dùng bởi entity Silver |
+| Scheme Code | Mô tả | Nguồn cột | Dùng bởi entity Atomic |
 |---|---|---|---|
 | `RISK_INDICATOR_SET` | Bộ chỉ tiêu (1=Trong nước, 2=Quốc tế) | `risk_indicator.set_code` | Risk Indicator, Risk Indicator Category |
 | `RISK_INDICATOR_TYPE` | Loại chỉ tiêu (1=hệ thống, 2=tự tạo — derived) | `risk_indicator` / `risk_indicator_custom` | Risk Indicator |
@@ -281,7 +281,7 @@ Các giá trị danh mục trong QLRR được chuẩn hóa thành Classificatio
 | `RISK_NOTIFICATION_SEND_STATUS` | Trạng thái gửi (1=SENT, 2=FAILED) | `risk_notification.send_status` | Risk Alert Notification |
 | `RISK_NOTIFICATION_READ_STATUS` | Trạng thái đọc (0=Chưa đọc, 1=Đã đọc) | `risk_notification.read_status` | Risk Alert Notification |
 
-### C. Bảng ngoài scope Silver
+### C. Bảng ngoài scope Atomic
 
 | Bảng | Lý do ngoài scope |
 |---|---|
@@ -295,8 +295,8 @@ Các giá trị danh mục trong QLRR được chuẩn hóa thành Classificatio
 ## Tổng kết ánh xạ
 
 - **Tổng số bảng nguồn:** 19
-- **Bảng trong scope Silver:** 15 (risk_indicator + risk_indicator_custom gộp thành 1 entity)
-- **Số Silver entity:** 14
+- **Bảng trong scope Atomic:** 15 (risk_indicator + risk_indicator_custom gộp thành 1 entity)
+- **Số Atomic entity:** 14
 - **Bảng out of scope:** 4 (1 config kỹ thuật + 3 phân quyền)
 - **Số Classification Value schemes:** 17
 - **Số junction table:** 0 *(QLRR không có pure junction)*

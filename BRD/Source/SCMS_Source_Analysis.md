@@ -1,17 +1,17 @@
 # SCMS — Khảo sát nguồn: Quản lý giám sát Công ty chứng khoán
 
 > **Phân hệ:** SCMS — Securities Company Management System
-> **Mục đích:** Tài liệu tham chiếu cho thiết kế Silver layer — hiểu nghiệp vụ nguồn, cấu trúc bảng, quan hệ dữ liệu, và ánh xạ Silver entity.
-> **Nguồn:** Đặc tả yêu cầu SCMS (11/03/2026) + Thiết kế CSDL SCMS (19/03/2026) + HLD Overview SCMS + Silver manifest
+> **Mục đích:** Tài liệu tham chiếu cho thiết kế Atomic layer — hiểu nghiệp vụ nguồn, cấu trúc bảng, quan hệ dữ liệu, và ánh xạ Atomic entity.
+> **Nguồn:** Đặc tả yêu cầu SCMS (11/03/2026) + Thiết kế CSDL SCMS (19/03/2026) + HLD Overview SCMS + Atomic manifest
 
-### Quy ước cột Ánh xạ Silver
+### Quy ước cột Ánh xạ Atomic
 
 | Ký hiệu | Ý nghĩa |
 |---|---|
-| 🟢 Tên entity | Silver entity được thiết kế (xem HLD 7a) |
+| 🟢 Tên entity | Atomic entity được thiết kế (xem HLD 7a) |
 | 🟢 `CV: CODE` | Classification Value — danh mục mã hóa (xem HLD 7c) |
 | 🟢 ↳ denormalize vào *Entity* | Junction table — flatten vào entity chính (xem HLD 7d) |
-| 🔴 (Out of scope) *lý do* | Ngoài scope Silver (xem HLD 7f) |
+| 🔴 (Out of scope) *lý do* | Ngoài scope Atomic (xem HLD 7f) |
 
 ---
 
@@ -39,7 +39,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CTCK_THONG_TIN` | Bảng master — thông tin CTCK | 🟢 Securities Company |
 | ├── *(1:N)* | Địa chỉ bưu chính CTCK | 🟢 Involved Party Postal Address *(shared)* |
@@ -66,7 +66,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CTCK_THONG_TIN` | *(master — xem 1.1)* | 🟢 Securities Company |
 | ├── `CTCK_NGUOI_HANH_NGHE_CK` | Người hành nghề CK tại CTCK | 🟢 Securities Practitioner *(shared — bổ sung source)* |
@@ -90,7 +90,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BC_THANH_VIEN` | Bản ghi báo cáo đơn vị đã gửi theo kỳ | 🟢 Member Periodic Report *(shared — bổ sung source)* |
 | ├── `BC_THANH_VIEN_LS` | Lịch sử thay đổi trạng thái báo cáo | 🔴 (Out of scope) *Audit Log nguồn* |
@@ -107,7 +107,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CBTT_BAO_CAO` | Tin công bố thông tin của CTCK | 🟢 Disclosure Report Submission |
 | `CBTT_CHAO_BAN_CHUNG_KHOAN` | Thông tin chào bán CK được công bố | 🟢 Disclosure Securities Offering |
@@ -119,7 +119,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BC_KHAI_THAC` | Phiên khai thác báo cáo tổng hợp | 🔴 (Out of scope) *Gold/intermediate* |
 | └── `BC_KHAI_THAC_GT` | Giá trị dữ liệu khai thác tổng hợp | 🔴 (Out of scope) *Gold/intermediate* |
@@ -130,7 +130,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BC_KHAI_THAC` | *(xem 1.5)* | 🔴 (Out of scope) *Gold/intermediate* |
 | └── `BC_KHAI_THAC_GT` | *(xem 1.5)* | 🔴 (Out of scope) *Gold/intermediate* |
@@ -141,7 +141,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BC_KHAI_THAC` | *(xem 1.5)* | 🔴 (Out of scope) *Gold/intermediate* |
 
@@ -157,7 +157,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CTCK_THONG_TIN` | Hồ sơ CN CTCK NN (phân biệt bằng loại công ty) | 🟢 Securities Company *(xem 1.1)* |
 | └── `CTCK_HS_LICH_SU` | Lịch sử thay đổi hồ sơ | 🔴 (Out of scope) *Audit Log nguồn* |
@@ -168,7 +168,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CTCK_THONG_TIN` | *(master — xem 2.1)* | 🟢 Securities Company |
 | ├── `CTCK_NHAN_SU_CAO_CAP` | Nhân sự cao cấp CN CTCK NN | 🟢 Securities Company Senior Personnel *(xem 1.2)* |
@@ -180,7 +180,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BC_THANH_VIEN` | Báo cáo CN CTCK NN đã gửi | 🟢 Member Periodic Report *(shared)* |
 | └── `BC_BAO_CAO_GT` | Giá trị chỉ tiêu báo cáo | 🟢 Member Report Indicator Value |
@@ -193,7 +193,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CBTT_BAO_CAO` | Tin công bố thông tin CN CTCK NN | 🟢 Disclosure Report Submission |
 
@@ -209,7 +209,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CTCK_VP_DAI_DIEN_NN` | Bảng master — hồ sơ VPDD CTCK NN (pháp nhân độc lập) | 🟢 Foreign Representative Office |
 | └── `CTCK_HS_LICH_SU` | Lịch sử thay đổi hồ sơ | 🔴 (Out of scope) *Audit Log nguồn* |
@@ -220,7 +220,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CTCK_VP_DAI_DIEN_NN` | *(master — xem 3.1)* | 🟢 Foreign Representative Office |
 | └── `CTCK_NHAN_SU_CAO_CAP` | Nhân sự VPDD CTCK NN | 🟢 Securities Company Senior Personnel *(xem 1.2)* |
@@ -231,7 +231,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BC_THANH_VIEN` | Báo cáo VPDD đã gửi | 🟢 Member Periodic Report *(shared)* |
 | └── `BC_BAO_CAO_GT` | Giá trị chỉ tiêu báo cáo | 🟢 Member Report Indicator Value |
@@ -250,7 +250,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CTCK_THONG_TIN` | Hồ sơ ngân hàng (phân biệt bằng loại công ty) | 🟢 Securities Company *(xem 1.1)* |
 | └── `CTCK_HS_LICH_SU` | Lịch sử thay đổi hồ sơ | 🔴 (Out of scope) *Audit Log nguồn* |
@@ -261,7 +261,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BC_THANH_VIEN` | Báo cáo ngân hàng đã gửi | 🟢 Member Periodic Report *(shared)* |
 | └── `BC_BAO_CAO_GT` | Giá trị chỉ tiêu báo cáo | 🟢 Member Report Indicator Value |
@@ -281,7 +281,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `CT_KIEM_TOAN` | Công ty kiểm toán được chấp thuận | 🟢 Audit Firm |
 | ├── *(1:N)* | Địa chỉ bưu chính CT kiểm toán | 🟢 Involved Party Postal Address *(shared)* |
@@ -302,7 +302,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `DM_CANH_BAO` | Danh mục tham số cảnh báo | 🟢 `CV: SCMS_REPORT_WARNING_RULE` *(cần xác nhận)* |
 | `DM_CHI_TIEU` | Danh mục chỉ tiêu báo cáo | 🟢 Report Indicator |
@@ -314,9 +314,9 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
-| `BC_CANH_BAO` | Kết quả cảnh báo vi phạm | 🔴 (Out of scope) *Chờ thiết kế — kết quả thực tế cần lên Silver (xem HLD 7e #1)* |
+| `BC_CANH_BAO` | Kết quả cảnh báo vi phạm | 🔴 (Out of scope) *Chờ thiết kế — kết quả thực tế cần lên Atomic (xem HLD 7e #1)* |
 | `BC_THANH_VIEN` | *(nguồn dữ liệu tính toán — xem 1.3)* | 🟢 Member Periodic Report *(shared)* |
 | └── `BC_BAO_CAO_GT` | *(nguồn dữ liệu tính toán — xem 1.3)* | 🟢 Member Report Indicator Value |
 
@@ -332,7 +332,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `QT_LOG_HE_THONG` | Log thao tác và thông báo hệ thống | 🔴 (Out of scope) *Operational/system data* |
 | `QT_LICH_HE_THONG` | Lịch biểu hệ thống (job tự động) | 🔴 (Out of scope) *Operational/system data* |
@@ -343,7 +343,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `QT_LOG_HE_THONG` | *(xem 7.1)* | 🔴 (Out of scope) *Operational/system data* |
 | `QT_NGUOI_DUNG` | Người dùng hệ thống | 🔴 (Out of scope) *Operational/system data* |
@@ -360,7 +360,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `BM_BAO_CAO` | Danh sách biểu mẫu báo cáo | 🟢 Report Template *(shared — bổ sung source)* |
 | ├── `BM_SHEET` | Sheet trong biểu mẫu | 🟢 Report Template Sheet |
@@ -381,7 +381,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `DM_SU_VU` | Danh mục sự vụ — nghĩa vụ pháp lý | 🟢 `CV: SCMS_INCIDENT_TYPE` |
 | `DM_NGANH_NGHE_KD` | Danh mục nghiệp vụ kinh doanh CK | 🟢 `CV: SCMS_BUSINESS_SECTOR` |
@@ -395,7 +395,7 @@
 
 **Quan hệ dữ liệu:**
 
-| Bảng | Ý nghĩa | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Ánh xạ Atomic |
 |---|---|---|
 | `QT_NGUOI_DUNG` | Người dùng hệ thống | 🔴 (Out of scope) *Operational/system data* |
 | ├── `QT_NGUOI_DUNG_IP` | Quản lý IP đăng ký | 🔴 (Out of scope) *Operational/system data* |
@@ -413,7 +413,7 @@
 
 Các bảng danh mục (DM_*) được tham chiếu xuyên suốt nhiều nhóm chức năng.
 
-| Bảng | Ý nghĩa | Sử dụng bởi | Ánh xạ Silver |
+| Bảng | Ý nghĩa | Sử dụng bởi | Ánh xạ Atomic |
 |---|---|---|---|
 | `DM_TINH_THANH` | Danh mục tỉnh thành | UID01, UID02, UID03 | 🟢 Geographic Area *(shared)* |
 | `DM_QUOC_TICH` | Danh mục quốc tịch | UID01, UID02, UID03 | 🟢 Geographic Area *(shared)* |

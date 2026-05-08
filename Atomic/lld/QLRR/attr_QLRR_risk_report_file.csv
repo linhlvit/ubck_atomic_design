@@ -1,0 +1,12 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Risk Report File Id,Khóa đại diện cho file báo cáo đính kèm.,Surrogate Key,false,true,draft,,,,
+Risk Report File Code,Mã định danh file báo cáo. BK. Map từ PK bảng nguồn.,Text,false,false,draft,QLRR.risk_report_file.id,BK của entity.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=QLRR.risk_report_file,
+Risk Report Upload Batch Id,FK đến đợt upload báo cáo.,Surrogate Key,false,false,draft,QLRR.risk_report_file.batch_id,FK target: Risk Report Upload Batch.Risk Report Upload Batch Id.,,
+Risk Report Upload Batch Code,Mã đợt upload báo cáo.,Text,false,false,draft,QLRR.risk_report_file.batch_id,Lookup pair: Risk Report Upload Batch.Risk Report Upload Batch Code. Pair with Risk Report Upload Batch Id.,,
+File Name,Tên file hiển thị (VD: Báo cáo TTCK Q4-2025.docx).,Text,false,false,draft,QLRR.risk_report_file.file_name,,,
+File Path,Đường dẫn lưu file trên hệ thống (filesystem hoặc object storage).,Text,false,false,draft,QLRR.risk_report_file.file_path,,,
+File Size Bytes,Dung lượng file tính bằng bytes.,Small Counter,true,false,draft,QLRR.risk_report_file.file_size,,,
+File Type Code,"Loại file: DOCX, XLSX, PDF, …",Classification Value,true,false,draft,QLRR.risk_report_file.file_type,Scheme: RISK_FILE_TYPE.,RISK_FILE_TYPE,
+Uploaded At,Thời điểm upload file.,Timestamp,false,false,draft,QLRR.risk_report_file.uploaded_at,,,
+Uploaded By Id,User ID người nộp file (denormalized).,Text,true,false,draft,QLRR.risk_report_file.uploaded_by_id,Denormalized — không có User entity trên Atomic.,,

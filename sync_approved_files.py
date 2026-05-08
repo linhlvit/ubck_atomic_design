@@ -37,7 +37,7 @@ for client_id in CLIENT_IDS:
 
         for key, rv in approved.items():
             # key format: "{repo}/{filePath}"
-            # e.g. "ubck_atomic_design/Silver/hld/DCST_relationship_diagram.md"
+            # e.g. "ubck_atomic_design/Atomic/hld/DCST_relationship_diagram.md"
             parts = key.split("/", 1)
             if len(parts) < 2:
                 print(f"  [SKIP] bad key format: {key}")
