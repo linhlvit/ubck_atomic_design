@@ -74,11 +74,14 @@ Output: `docs/output/{SOURCE}/sample/sample_dbdesign.md` (chứa 1-2 entity tiê
 
 **CHECKPOINT BẮT BUỘC** — User mở file sample trong VS Code và xác nhận:
 
-- [ ] Tên Atomic entity (logical name) đúng trong tiêu đề bảng
-- [ ] Tên bảng (atomic_table, snake_case) đúng trong danh sách bảng
+- [ ] Tiêu đề heading mỗi bảng dùng tên vật lý (snake_case, ví dụ `Bảng fims_disclosure_authorization`)
+- [ ] Tên bảng (snake_case) đúng trong danh sách bảng (mục Các mô hình quan hệ dữ liệu)
+- [ ] Entity có nhiều nguồn → xuất hiện sub-section `#### Từ {SOURCE}.{TABLE}` bên trong heading entity
 - [ ] Mô tả tiếng Việt đầy đủ, không mất diacritic
-- [ ] Bảng attribute hiển thị đủ 13 cột
-- [ ] Section Constraint có PK và FK (5 cột, kể cả Cột tham chiếu)
+- [ ] Bảng attribute hiển thị đủ 8 cột: STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả
+- [ ] Cột "Tên trường" hiển thị tên vật lý (snake_case), không phải logical name
+- [ ] Không có cột Schema.Table, Source Field Name, ETL Rules
+- [ ] Section Constraint có PK và FK (5 cột, kể cả Cột tham chiếu); "Bảng tham chiếu" dùng tên vật lý
 - [ ] Bullet metadata (Mô tả, Tên vật lý, Đường dẫn, Partition, Thời gian, Định dạng)
 
 Nếu user reject → sửa template MD hoặc data_loader, rerun bước 1. **Không** chạy bước 2 cho đến khi sample được duyệt.

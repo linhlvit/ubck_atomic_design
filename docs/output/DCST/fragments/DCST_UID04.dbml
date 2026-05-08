@@ -5,9 +5,9 @@ Project DCST_UID04 {
   Note: "DCST — UID04 Xử lý vi phạm pháp luật về thuế"
 }
 
-Table "Tax Violation Penalty Decision" [note: "Quyết định xử lý vi phạm hành chính về thuế. Ghi nhận hành vi vi phạm và mức phạt/truy thu."] {
-  "Tax Violation Penalty Decision Id" varchar [pk]
-  "Registered Taxpayer Id" varchar
+Table "tax_vln_pny_dcsn" [note: "Quyết định xử lý vi phạm hành chính về thuế. Ghi nhận hành vi vi phạm và mức phạt/truy thu."] {
+  "tax_vln_pny_dcsn_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
 }
 
-// Ref: "Tax Violation Penalty Decision"."Registered Taxpayer Id" > "Registered Taxpayer"."Registered Taxpayer Id" // out-of-source
+// Ref: "tax_vln_pny_dcsn"."rgst_taxpayer_id" > "registered_taxpayer"."registered_taxpayer_id" // out-of-source

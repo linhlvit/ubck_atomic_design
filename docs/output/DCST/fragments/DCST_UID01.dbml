@@ -5,17 +5,17 @@ Project DCST_UID01 {
   Note: "DCST — UID01 Quản lý thông tin đăng ký thuế"
 }
 
-Table "Registered Taxpayer" [note: "Doanh nghiệp/hộ kinh doanh đã đăng ký thuế với cơ quan thuế. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Registered Taxpayer Id" varchar [pk]
-  "Charter Capital Currency Code" varchar
-  "Foreign Charter Capital Currency Code" varchar
+Table "rgst_taxpayer" [note: "Doanh nghiệp/hộ kinh doanh đã đăng ký thuế với cơ quan thuế. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "rgst_taxpayer_id" varchar [pk]
+  "charter_cptl_ccy_code" varchar
+  "frgn_charter_cptl_ccy_code" varchar
 }
 
-Table "Taxpayer Representative" [note: "Người đại diện hoặc chủ hộ kinh doanh của người nộp thuế. Ghi nhận tên và chức vụ."] {
-  "Taxpayer Representative Id" varchar [pk]
-  "Registered Taxpayer Id" varchar
+Table "taxpayer_rprs" [note: "Người đại diện hoặc chủ hộ kinh doanh của người nộp thuế. Ghi nhận tên và chức vụ."] {
+  "taxpayer_rprs_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
 }
 
-// Ref: "Registered Taxpayer"."Charter Capital Currency Code" > "Currency"."Currency Code" // out-of-source
-// Ref: "Registered Taxpayer"."Foreign Charter Capital Currency Code" > "Currency"."Currency Code" // out-of-source
-Ref: "Taxpayer Representative"."Registered Taxpayer Id" > "Registered Taxpayer"."Registered Taxpayer Id"
+// Ref: "rgst_taxpayer"."charter_cptl_ccy_code" > "currency"."currency_code" // out-of-source
+// Ref: "rgst_taxpayer"."frgn_charter_cptl_ccy_code" > "currency"."currency_code" // out-of-source
+Ref: "taxpayer_rprs"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"

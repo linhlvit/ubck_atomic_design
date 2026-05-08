@@ -5,15 +5,15 @@ Project FIMS_UID08 {
   Note: "FIMS — UID08 Công bố thông tin"
 }
 
-Table "Disclosure Representative" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
-  "Disclosure Representative Id" varchar [pk]
-  "Nationality Id" varchar
+Table "dscl_rprs" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
+  "dscl_rprs_id" varchar [pk]
+  "nat_id" varchar
 }
 
-Table "Disclosure Announcement" [note: "Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT."] {
-  "Disclosure Announcement Id" varchar [pk]
-  "Disclosure Representative Id" varchar
+Table "dscl_ancm" [note: "Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT."] {
+  "dscl_ancm_id" varchar [pk]
+  "dscl_rprs_id" varchar
 }
 
-// Ref: "Disclosure Representative"."Nationality Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Disclosure Announcement"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id"
+// Ref: "dscl_rprs"."nat_id" > "geographic_area"."geographic_area_id" // out-of-source
+Ref: "dscl_ancm"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"

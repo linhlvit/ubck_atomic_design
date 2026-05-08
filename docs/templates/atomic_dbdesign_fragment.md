@@ -9,37 +9,33 @@
 
 **Danh sách bảng:**
 
-| STT | Thực thể | Tên bảng | Mô tả |
-|---|---|---|---|
+| STT | Tên bảng | Mô tả |
+|---|---|---|
 {% for e in unique_entities -%}
-| {{ loop.index }} | {{ e.atomic_entity }} | {{ e.atomic_table }} | {{ e.description }} |
+| {{ loop.index }} | {{ e.atomic_table }} | {{ e.description }} |
 {% endfor %}
 
-{% for e in entities %}
-### 2.{{ idx }}.{{ loop.index + 1 }} Bảng {{ e.atomic_entity }}{% if e.is_shared %} — {{ e.source_system }}.{{ e.source_table }}{% endif %}
+{% for ue in unique_entities %}
+{% set grp = entities | selectattr("atomic_entity", "equalto", ue.atomic_entity) | list %}
+### 2.{{ idx }}.{{ loop.index + 1 }} Bảng {{ ue.atomic_table }}
 
-- **Mô tả:** {{ e.description }}
-- **Tên vật lý:** {{ e.atomic_table }}
-- **Đường dẫn trên kho dữ liệu:**
-- **Các trường partition:**
-- **Thời gian lưu trữ:** 5 năm
-- **Định dạng lưu trữ:** Iceberg
+{% if ue.is_shared %}
+{% for e in grp %}
+#### Từ {{ e.source_system }}.{{ e.source_table }}
 
-| STT | Tên trường | Tên cột | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field Name | ETL Rules |
-|---|---|---|---|---|---|---|---|---|---|---|---|
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
 {% for a in e.attributes -%}
-| {{ loop.index }} | {{ a.attribute_name }} | {{ a.atomic_column }} | {{ a.data_domain | data_domain_to_sql }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} | {{ a.source_system }}.{{ a.source_table }} | {{ a.source_column_name }} | {{ a | etl_rule }} |
+| {{ loop.index }} | {{ a.atomic_column }} | {{ a.data_domain | data_domain_to_sql }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} |
 {% endfor %}
-
-#### 2.{{ idx }}.{{ loop.index + 1 }}.1 Constraint
 
 **Khóa chính (Primary Key):**
 
 {% if e.primary_keys -%}
-| Tên trường | Tên cột |
-|---|---|
+| Tên trường |
+|---|
 {% for pk in e.primary_keys -%}
-| {{ pk.attribute_name }} | {{ pk.atomic_column }} |
+| {{ pk.atomic_column }} |
 {% endfor %}
 {% else -%}
 *Không có Primary Key.*
@@ -48,13 +44,49 @@
 **Khóa phụ (Foreign Key):**
 
 {% if e.constraints -%}
-| Tên trường | Tên cột | Bảng tham chiếu | Trường tham chiếu | Cột tham chiếu |
-|---|---|---|---|---|
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
 {% for c in e.constraints -%}
-| {{ c.field }} | {{ c.col }} | {{ c.ref_table }} | {{ c.ref_field }} | {{ c.ref_col }} |
+| {{ c.col }} | {{ c.ref_table_physical }} | {{ c.ref_col }} |
 {% endfor %}
 {% else -%}
 *Không có Foreign Key.*
 {% endif %}
 
+{% endfor %}
+{% else %}
+{% set e = grp[0] %}
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+{% for a in e.attributes -%}
+| {{ loop.index }} | {{ a.atomic_column }} | {{ a.data_domain | data_domain_to_sql }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} |
+{% endfor %}
+
+#### 2.{{ idx }}.{{ loop.index + 1 }}.1 Constraint
+
+**Khóa chính (Primary Key):**
+
+{% if e.primary_keys -%}
+| Tên trường |
+|---|
+{% for pk in e.primary_keys -%}
+| {{ pk.atomic_column }} |
+{% endfor %}
+{% else -%}
+*Không có Primary Key.*
+{% endif %}
+
+**Khóa phụ (Foreign Key):**
+
+{% if e.constraints -%}
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+{% for c in e.constraints -%}
+| {{ c.col }} | {{ c.ref_table_physical }} | {{ c.ref_col }} |
+{% endfor %}
+{% else -%}
+*Không có Foreign Key.*
+{% endif %}
+
+{% endif %}
 {% endfor %}

@@ -234,15 +234,21 @@ def _dbml_type(data_type: str) -> str:
 def build_constraints(entity: dict[str, Any], all_attrs: list[dict[str, Any]] | None = None) -> list[dict[str, str]]:
     """Sinh danh sách FK constraint cho 1 entity từ attributes có fk_target_entity non-empty.
 
-    all_attrs: toàn bộ atomic_attributes.csv (để lookup ref_col từ ref_table + ref_attribute_name).
+    all_attrs: toàn bộ atomic_attributes.csv (để lookup ref_col và ref_table_physical).
     """
     # Xây lookup: (atomic_entity, attribute_name) → atomic_column
     ref_col_lookup: dict[tuple[str, str], str] = {}
+    # Xây lookup: atomic_entity → atomic_table (tên vật lý)
+    ref_table_lookup: dict[str, str] = {}
     if all_attrs:
         for r in all_attrs:
             key = (r.get("atomic_entity", ""), r.get("atomic_attribute", ""))
             if key not in ref_col_lookup:
                 ref_col_lookup[key] = r.get("atomic_column", "")
+            entity_name = r.get("atomic_entity", "")
+            tbl = r.get("atomic_table", "")
+            if entity_name and tbl and entity_name not in ref_table_lookup:
+                ref_table_lookup[entity_name] = tbl
 
     out: list[dict[str, str]] = []
     seen: set[tuple[str, str, str, str]] = set()
@@ -254,10 +260,12 @@ def build_constraints(entity: dict[str, Any], all_attrs: list[dict[str, Any]] | 
             continue
         seen.add(key)
         ref_col = ref_col_lookup.get((a["fk_target_entity"], a["fk_target_attribute"]), "")
+        ref_table_physical = ref_table_lookup.get(a["fk_target_entity"], _to_snake_case(a["fk_target_entity"]))
         out.append({
             "field": a["attribute_name"],
             "col": a.get("atomic_column", ""),
             "ref_table": a["fk_target_entity"],
+            "ref_table_physical": ref_table_physical,
             "ref_field": a["fk_target_attribute"],
             "ref_col": ref_col,
         })
@@ -275,11 +283,32 @@ def build_dbml(
     source: phải là identifier hợp lệ trong DBML (không có khoảng trắng, em dash, v.v.)
     note: chuỗi hiển thị tự do cho Project.Note (có thể chứa ký tự đặc biệt).
     uid_groups: nếu truyền vào, thêm TableGroup blocks phân theo mảng nghiệp vụ.
+
+    Tên bảng và cột trong DBML dùng tên vật lý (snake_case).
     """
     display = note or f"Atomic Lakehouse — {source}"
-    # Dedup theo atomic_entity để DBML không bị lặp bảng khi shared entity có nhiều source_table
+
+    # Xây lookup: logical entity name → physical table name (atomic_table)
+    entity_to_table: dict[str, str] = {}
+    for e in entities:
+        ae = e.get("atomic_entity", "")
+        if ae and ae not in entity_to_table:
+            entity_to_table[ae] = e.get("atomic_table") or _to_snake_case(ae)
+
+    # Xây lookup: (logical_entity, logical_attr) → physical column — dùng cho Refs
+    local_col_lookup: dict[tuple[str, str], str] = {}
+    for e in entities:
+        ae = e.get("atomic_entity", "")
+        for a in e.get("attributes", []):
+            key = (ae, a["attribute_name"])
+            if key not in local_col_lookup:
+                local_col_lookup[key] = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
+
+    # Dedup theo physical table name
     seen_tables: set[str] = set()
-    in_scope_tables = {e["atomic_entity"] for e in entities}
+    # in_scope_entities dùng logical names để check FK scope
+    in_scope_entities = {e["atomic_entity"] for e in entities}
+
     lines: list[str] = [
         f"// {display}",
         "",
@@ -291,28 +320,27 @@ def build_dbml(
     ]
 
     for e in entities:
-        # Tên bảng dùng logical name (atomic_entity), quoted để DBML chấp nhận khoảng trắng
-        entity_name = e["atomic_entity"]
+        entity_name = entity_to_table.get(e.get("atomic_entity", ""), "")
         if not entity_name:
-            continue  # skip entity chưa có attributes (atomic_entity rỗng)
+            continue
         if entity_name in seen_tables:
             continue
         seen_tables.add(entity_name)
         tbl_note = e["description"][:200].replace('"', "") if e.get("description") else ""
         lines.append(f'Table "{entity_name}" [note: "{tbl_note}"] {{')
         seen_fields: set[str] = set()
-        # Sinh PK field(s) — dùng logical name (quoted), nhất quán với tên entity
+        # PK fields — dùng physical column name
         for a in e["attributes"]:
             if a["is_primary_key"]:
-                col = a["attribute_name"]
+                col = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
                 if col not in seen_fields:
                     seen_fields.add(col)
                     dtype = _dbml_type(a.get("data_type", ""))
                     lines.append(f'  "{col}" {dtype} [pk]')
-        # Sinh FK field(s) — cần khai báo để Ref hợp lệ
+        # FK fields — dùng physical column name
         for a in e["attributes"]:
             if not a["is_primary_key"] and a.get("fk_target_entity"):
-                col = a["attribute_name"]
+                col = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
                 if col not in seen_fields:
                     seen_fields.add(col)
                     dtype = _dbml_type(a.get("data_type", ""))
@@ -327,12 +355,12 @@ def build_dbml(
     if uid_groups:
         for g in uid_groups:
             group_tables = [
-                e["atomic_entity"]
+                entity_to_table[e["atomic_entity"]]
                 for e in entities
                 if e["atomic_entity"] in g["entities"]
-                and e["atomic_entity"] in seen_tables
+                and entity_to_table.get(e["atomic_entity"], "") in seen_tables
             ]
-            # dedup (shared entity có thể xuất hiện nhiều lần trong entities)
+            # dedup
             seen_group: set[str] = set()
             unique_tables = [t for t in group_tables if not (t in seen_group or seen_group.add(t))]
             if not unique_tables:
@@ -343,23 +371,25 @@ def build_dbml(
             lines.append("}")
             lines.append("")
 
-    # Refs — dedup theo cặp (from_table.from_col > ref_table.ref_col)
+    # Refs — dedup, dùng physical names
     seen_refs: set[tuple[str, str, str, str]] = set()
     for e in entities:
-        from_table = e["atomic_entity"]
+        from_table = entity_to_table.get(e.get("atomic_entity", ""), "")
         if not from_table:
-            continue  # skip entity chưa có attributes
+            continue
         for a in e["attributes"]:
             if not a["fk_target_entity"]:
                 continue
-            ref_table = a["fk_target_entity"]
-            from_col = a["attribute_name"]
-            ref_col = a["fk_target_attribute"]
+            ref_entity = a["fk_target_entity"]
+            ref_table = entity_to_table.get(ref_entity, _to_snake_case(ref_entity))
+            from_col = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
+            ref_col = local_col_lookup.get((ref_entity, a["fk_target_attribute"]),
+                                           _to_snake_case(a["fk_target_attribute"]))
             ref_key = (from_table, from_col, ref_table, ref_col)
             if ref_key in seen_refs:
                 continue
             seen_refs.add(ref_key)
-            if ref_table not in in_scope_tables:
+            if ref_entity not in in_scope_entities:
                 lines.append(
                     f'// Ref: "{from_table}"."{from_col}" > "{ref_table}"."{ref_col}"'
                     f" // out-of-source"
@@ -440,13 +470,18 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
     all_attrs_global = load_all_attributes(repo_root)
 
     # Đếm số source_table khác nhau cho mỗi atomic_entity để nhận diện shared entity
+    # Bỏ qua row chưa được thiết kế (atomic_entity rỗng)
     from collections import Counter
-    entity_src_count: Counter = Counter(row["atomic_entity"] for row in manifest_rows)
+    entity_src_count: Counter = Counter(
+        row["atomic_entity"] for row in manifest_rows if row["atomic_entity"]
+    )
 
     rows_to_process = manifest_rows[:sample_count] if sample else manifest_rows
 
     for row in rows_to_process:
         atomic_entity = row["atomic_entity"]
+        if not atomic_entity:
+            continue  # bỏ qua row chưa thiết kế (pending)
         src_table = row["source_table"]
         dedup_key = (atomic_entity, src_table)
         if dedup_key in seen:

@@ -1,0 +1,47 @@
+// Atomic Lakehouse — NHNCK
+
+Project NHNCK {
+  database_type: "Delta Lake"
+  Note: "Atomic Lakehouse — NHNCK"
+}
+
+Table "scr_prac_license_ap" [note: "Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý."] {
+  "license_ap_id" varchar [pk]
+  "prac_id" varchar
+  "license_ctf_doc_id" varchar
+  "prev_license_ctf_doc_id" varchar
+  "exam_ases_id" varchar
+  "assignee_ofcr_id" varchar
+  "license_ap_verf_st_id" varchar
+  "crt_by_ofcr_id" varchar
+  "udt_by_ofcr_id" varchar
+}
+
+Table "scr_prac_license_ap_ed_ctf_doc" [note: "Văn bằng/chứng chỉ học tập đính kèm hồ sơ CCHN. Ghi nhận loại chuyên môn và file đính kèm kèm trạng thái thẩm định."] {
+  "license_ap_ed_ctf_doc_id" varchar [pk]
+  "license_ap_id" varchar
+  "assignee_ofcr_id" varchar
+}
+
+Table "scr_prac_license_ap_doc_attch" [note: "Tài liệu đính kèm hồ sơ CCHN. Ghi nhận loại tài liệu và trạng thái thẩm định."] {
+  "license_ap_doc_attch_id" varchar [pk]
+  "license_ap_id" varchar
+  "assignee_ofcr_id" varchar
+}
+
+TableGroup "UID03 — Quản lý hồ sơ" {
+  "scr_prac_license_ap"
+}
+
+// Ref: "scr_prac_license_ap"."prac_id" > "securities_practitioner"."practitioner_id" // out-of-source
+// Ref: "scr_prac_license_ap"."license_ctf_doc_id" > "securities_practitioner_license_certificate_document"."license_certificate_document_id" // out-of-source
+// Ref: "scr_prac_license_ap"."prev_license_ctf_doc_id" > "securities_practitioner_license_certificate_document"."license_certificate_document_id" // out-of-source
+// Ref: "scr_prac_license_ap"."exam_ases_id" > "securities_practitioner_qualification_examination_assessment"."examination_assessment_id" // out-of-source
+// Ref: "scr_prac_license_ap"."assignee_ofcr_id" > "regulatory_authority_officer"."officer_id" // out-of-source
+// Ref: "scr_prac_license_ap"."license_ap_verf_st_id" > "securities_practitioner_license_application_verification_status"."license_application_verification_status_id" // out-of-source
+// Ref: "scr_prac_license_ap"."crt_by_ofcr_id" > "regulatory_authority_officer"."officer_id" // out-of-source
+// Ref: "scr_prac_license_ap"."udt_by_ofcr_id" > "regulatory_authority_officer"."officer_id" // out-of-source
+Ref: "scr_prac_license_ap_ed_ctf_doc"."license_ap_id" > "scr_prac_license_ap"."license_ap_id"
+// Ref: "scr_prac_license_ap_ed_ctf_doc"."assignee_ofcr_id" > "regulatory_authority_officer"."officer_id" // out-of-source
+Ref: "scr_prac_license_ap_doc_attch"."license_ap_id" > "scr_prac_license_ap"."license_ap_id"
+// Ref: "scr_prac_license_ap_doc_attch"."assignee_ofcr_id" > "regulatory_authority_officer"."officer_id" // out-of-source

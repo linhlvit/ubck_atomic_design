@@ -5,59 +5,59 @@ Project FIMS_UID05 {
   Note: "FIMS — UID05 Báo cáo thành viên"
 }
 
-Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  "Report Template Id" varchar [pk]
+Table "rpt_tpl" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
+  "rpt_tpl_id" varchar [pk]
 }
 
-Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
-  "Reporting Period Id" varchar [pk]
-  "Report Template Id" varchar
+Table "rpt_prd" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  "rpt_prd_id" varchar [pk]
+  "rpt_tpl_id" varchar
 }
 
-Table "Member Regulatory Report" [note: "Báo cáo định kỳ của thành viên thị trường nộp lên UBCK. Ghi nhận biểu mẫu, kỳ, trạng thái nộp và thành viên nộp."] {
-  "Member Regulatory Report Id" varchar [pk]
-  "Report Template Id" varchar
-  "Reporting Period Id" varchar
-  "Fund Management Company Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Depository Center Id" varchar
-  "Stock Exchange Id" varchar
-  "Foreign Investor Id" varchar
-  "Fund Management Company Organization Unit Id" varchar
+Table "mbr_reg_rpt" [note: "Báo cáo định kỳ của thành viên thị trường nộp lên UBCK. Ghi nhận biểu mẫu, kỳ, trạng thái nộp và thành viên nộp."] {
+  "mbr_reg_rpt_id" varchar [pk]
+  "rpt_tpl_id" varchar
+  "rpt_prd_id" varchar
+  "fnd_mgt_co_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "depst_cntr_id" varchar
+  "stk_exg_id" varchar
+  "frgn_ivsr_id" varchar
+  "fnd_mgt_co_ou_id" varchar
 }
 
-Table "Member Report Value" [note: "Giá trị từng chỉ tiêu trong báo cáo định kỳ của thành viên. Mỗi dòng = 1 chỉ tiêu trong 1 báo cáo."] {
-  "Member Report Value Id" varchar [pk]
-  "Member Regulatory Report Id" varchar
-  "Reporting Period Id" varchar
-  "Report Template Id" varchar
-  "Fund Management Company Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Depository Center Id" varchar
-  "Stock Exchange Id" varchar
-  "Disclosure Representative Id" varchar
-  "Fund Management Company Organization Unit Id" varchar
+Table "mbr_rpt_val" [note: "Giá trị từng chỉ tiêu trong báo cáo định kỳ của thành viên. Mỗi dòng = 1 chỉ tiêu trong 1 báo cáo."] {
+  "mbr_rpt_val_id" varchar [pk]
+  "mbr_reg_rpt_id" varchar
+  "rpt_prd_id" varchar
+  "rpt_tpl_id" varchar
+  "fnd_mgt_co_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "depst_cntr_id" varchar
+  "stk_exg_id" varchar
+  "dscl_rprs_id" varchar
+  "fnd_mgt_co_ou_id" varchar
 }
 
-Ref: "Reporting Period"."Report Template Id" > "Report Template"."Report Template Id"
-Ref: "Member Regulatory Report"."Report Template Id" > "Report Template"."Report Template Id"
-Ref: "Member Regulatory Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
-// Ref: "Member Regulatory Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Member Regulatory Report"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Member Regulatory Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Member Regulatory Report"."Depository Center Id" > "Depository Center"."Depository Center Id" // out-of-source
-// Ref: "Member Regulatory Report"."Stock Exchange Id" > "Stock Exchange"."Stock Exchange Id" // out-of-source
-// Ref: "Member Regulatory Report"."Foreign Investor Id" > "Foreign Investor"."Foreign Investor Id" // out-of-source
-// Ref: "Member Regulatory Report"."Fund Management Company Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id" // out-of-source
-Ref: "Member Report Value"."Member Regulatory Report Id" > "Member Regulatory Report"."Member Regulatory Report Id"
-Ref: "Member Report Value"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
-Ref: "Member Report Value"."Report Template Id" > "Report Template"."Report Template Id"
-// Ref: "Member Report Value"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Member Report Value"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Member Report Value"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Member Report Value"."Depository Center Id" > "Depository Center"."Depository Center Id" // out-of-source
-// Ref: "Member Report Value"."Stock Exchange Id" > "Stock Exchange"."Stock Exchange Id" // out-of-source
-// Ref: "Member Report Value"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id" // out-of-source
-// Ref: "Member Report Value"."Fund Management Company Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id" // out-of-source
+Ref: "rpt_prd"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+Ref: "mbr_reg_rpt"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+Ref: "mbr_reg_rpt"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
+// Ref: "mbr_reg_rpt"."fnd_mgt_co_id" > "fund_management_company"."fund_management_company_id" // out-of-source
+// Ref: "mbr_reg_rpt"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+// Ref: "mbr_reg_rpt"."cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
+// Ref: "mbr_reg_rpt"."depst_cntr_id" > "depository_center"."depository_center_id" // out-of-source
+// Ref: "mbr_reg_rpt"."stk_exg_id" > "stock_exchange"."stock_exchange_id" // out-of-source
+// Ref: "mbr_reg_rpt"."frgn_ivsr_id" > "foreign_investor"."foreign_investor_id" // out-of-source
+// Ref: "mbr_reg_rpt"."fnd_mgt_co_ou_id" > "fund_management_company_organization_unit"."fund_management_company_organization_unit_id" // out-of-source
+Ref: "mbr_rpt_val"."mbr_reg_rpt_id" > "mbr_reg_rpt"."mbr_reg_rpt_id"
+Ref: "mbr_rpt_val"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
+Ref: "mbr_rpt_val"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+// Ref: "mbr_rpt_val"."fnd_mgt_co_id" > "fund_management_company"."fund_management_company_id" // out-of-source
+// Ref: "mbr_rpt_val"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+// Ref: "mbr_rpt_val"."cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
+// Ref: "mbr_rpt_val"."depst_cntr_id" > "depository_center"."depository_center_id" // out-of-source
+// Ref: "mbr_rpt_val"."stk_exg_id" > "stock_exchange"."stock_exchange_id" // out-of-source
+// Ref: "mbr_rpt_val"."dscl_rprs_id" > "disclosure_representative"."disclosure_representative_id" // out-of-source
+// Ref: "mbr_rpt_val"."fnd_mgt_co_ou_id" > "fund_management_company_organization_unit"."fund_management_company_organization_unit_id" // out-of-source

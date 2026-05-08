@@ -5,21 +5,21 @@ Project FIMS_UID09 {
   Note: "FIMS — UID09 Cảnh báo"
 }
 
-Table "Member Conduct Violation" [note: "Vi phạm được ghi nhận từ cảnh báo hệ thống hoặc kiểm tra định kỳ đối với thành viên thị trường."] {
-  "Member Conduct Violation Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Depository Center Id" varchar
-  "Stock Exchange Id" varchar
-  "Disclosure Representative Id" varchar
-  "Fund Management Company Organization Unit Id" varchar
+Table "mbr_conduct_vln" [note: "Vi phạm được ghi nhận từ cảnh báo hệ thống hoặc kiểm tra định kỳ đối với thành viên thị trường."] {
+  "mbr_conduct_vln_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "depst_cntr_id" varchar
+  "stk_exg_id" varchar
+  "dscl_rprs_id" varchar
+  "fnd_mgt_co_ou_id" varchar
 }
 
-// Ref: "Member Conduct Violation"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Member Conduct Violation"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Member Conduct Violation"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Member Conduct Violation"."Depository Center Id" > "Depository Center"."Depository Center Id" // out-of-source
-// Ref: "Member Conduct Violation"."Stock Exchange Id" > "Stock Exchange"."Stock Exchange Id" // out-of-source
-// Ref: "Member Conduct Violation"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id" // out-of-source
-// Ref: "Member Conduct Violation"."Fund Management Company Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id" // out-of-source
+// Ref: "mbr_conduct_vln"."fnd_mgt_co_id" > "fund_management_company"."fund_management_company_id" // out-of-source
+// Ref: "mbr_conduct_vln"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+// Ref: "mbr_conduct_vln"."cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
+// Ref: "mbr_conduct_vln"."depst_cntr_id" > "depository_center"."depository_center_id" // out-of-source
+// Ref: "mbr_conduct_vln"."stk_exg_id" > "stock_exchange"."stock_exchange_id" // out-of-source
+// Ref: "mbr_conduct_vln"."dscl_rprs_id" > "disclosure_representative"."disclosure_representative_id" // out-of-source
+// Ref: "mbr_conduct_vln"."fnd_mgt_co_ou_id" > "fund_management_company_organization_unit"."fund_management_company_organization_unit_id" // out-of-source

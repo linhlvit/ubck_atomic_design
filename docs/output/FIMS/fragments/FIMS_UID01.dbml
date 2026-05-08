@@ -5,17 +5,19 @@ Project FIMS_UID01 {
   Note: "FIMS — UID01 Quản trị phân hệ"
 }
 
-Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  "Report Template Id" varchar [pk]
+Table "rpt_tpl" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
+  "rpt_tpl_id" varchar [pk]
 }
 
-Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  "Geographic Area Id" varchar [pk]
+Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  "geo_id" varchar [pk]
+  "prn_geo_id" varchar
 }
 
-Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
-  "Reporting Period Id" varchar [pk]
-  "Report Template Id" varchar
+Table "rpt_prd" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  "rpt_prd_id" varchar [pk]
+  "rpt_tpl_id" varchar
 }
 
-Ref: "Reporting Period"."Report Template Id" > "Report Template"."Report Template Id"
+Ref: "geo"."prn_geo_id" > "geo"."geo_id"
+Ref: "rpt_prd"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"

@@ -1,0 +1,108 @@
+// Atomic Lakehouse — DCST
+
+Project DCST {
+  database_type: "Delta Lake"
+  Note: "Atomic Lakehouse — DCST"
+}
+
+Table "rgst_taxpayer" [note: "Doanh nghiệp/hộ kinh doanh đã đăng ký thuế với cơ quan thuế. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "rgst_taxpayer_id" varchar [pk]
+  "charter_cptl_ccy_code" varchar
+  "frgn_charter_cptl_ccy_code" varchar
+}
+
+Table "taxpayer_rprs" [note: "Người đại diện hoặc chủ hộ kinh doanh của người nộp thuế. Ghi nhận tên và chức vụ."] {
+  "taxpayer_rprs_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
+}
+
+Table "hrsk_taxpayer_ases_snpst" [note: "Đánh giá xếp loại doanh nghiệp rủi ro cao về thuế theo năm. Ghi nhận thông tin tổ chức bị đánh giá rủi ro."] {
+  "hrsk_taxpayer_ases_snpst_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
+}
+
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+  "prov_id" varchar
+  "geo_id" varchar
+}
+
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
+}
+
+Table "ip_alt_identn" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  "ip_id" varchar
+}
+
+Table "tax_fnc_stmt" [note: "Tờ khai tài chính điện tử nộp lên cơ quan thuế. Ghi nhận kỳ kê khai và thông tin kiểm toán."] {
+  "tax_fnc_stmt_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
+}
+
+Table "tax_fnc_stmt_itm" [note: "Chỉ tiêu chi tiết trong tờ khai tài chính. Ghi nhận giá trị số liệu theo từng ô chỉ tiêu trong biểu mẫu."] {
+  "tax_fnc_stmt_itm_id" varchar [pk]
+  "tax_fnc_stmt_id" varchar
+}
+
+Table "tax_dbt_nfrc_ordr" [note: "Quyết định cưỡng chế nợ thuế. Ghi nhận hình thức cưỡng chế và thông tin tài sản/tài khoản liên quan."] {
+  "tax_dbt_nfrc_ordr_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
+}
+
+Table "tax_vln_pny_dcsn" [note: "Quyết định xử lý vi phạm hành chính về thuế. Ghi nhận hành vi vi phạm và mức phạt/truy thu."] {
+  "tax_vln_pny_dcsn_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
+}
+
+Table "tax_inv_nfrc_ordr" [note: "Quyết định cưỡng chế nợ thuế theo hình thức ngừng sử dụng hóa đơn. Ghi nhận thông tin quyết định và thông báo."] {
+  "tax_inv_nfrc_ordr_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
+}
+
+Table "tax_inv_nfrc_ordr_itm" [note: "Chi tiết hóa đơn thuộc quyết định cưỡng chế ngừng sử dụng hóa đơn. Ghi nhận số hiệu và loại hóa đơn."] {
+  "tax_inv_nfrc_ordr_itm_id" varchar [pk]
+  "tax_inv_nfrc_ordr_id" varchar
+}
+
+TableGroup "UID01 — Quản lý thông tin đăng ký thuế" {
+  "rgst_taxpayer"
+  "taxpayer_rprs"
+}
+
+TableGroup "UID02 — Báo cáo tài chính từ Tổng cục Thuế" {
+  "tax_fnc_stmt"
+  "tax_fnc_stmt_itm"
+}
+
+TableGroup "UID03 — Cưỡng chế nợ thuế" {
+  "tax_dbt_nfrc_ordr"
+  "tax_inv_nfrc_ordr"
+  "tax_inv_nfrc_ordr_itm"
+}
+
+TableGroup "UID04 — Xử lý vi phạm pháp luật về thuế" {
+  "tax_vln_pny_dcsn"
+}
+
+TableGroup "UID05 — Giám sát doanh nghiệp rủi ro cao" {
+  "hrsk_taxpayer_ases_snpst"
+}
+
+// Ref: "rgst_taxpayer"."charter_cptl_ccy_code" > "currency"."currency_code" // out-of-source
+// Ref: "rgst_taxpayer"."frgn_charter_cptl_ccy_code" > "currency"."currency_code" // out-of-source
+Ref: "taxpayer_rprs"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "hrsk_taxpayer_ases_snpst"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "ip_pst_adr"."ip_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+// Ref: "ip_pst_adr"."prov_id" > "geographic_area"."geographic_area_id" // out-of-source
+// Ref: "ip_pst_adr"."geo_id" > "geographic_area"."geographic_area_id" // out-of-source
+Ref: "ip_elc_adr"."ip_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "ip_alt_identn"."ip_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "ip_elc_adr"."ip_id" > "taxpayer_rprs"."taxpayer_rprs_id"
+Ref: "ip_alt_identn"."ip_id" > "taxpayer_rprs"."taxpayer_rprs_id"
+Ref: "tax_fnc_stmt"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "tax_fnc_stmt_itm"."tax_fnc_stmt_id" > "tax_fnc_stmt"."tax_fnc_stmt_id"
+Ref: "tax_dbt_nfrc_ordr"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "tax_vln_pny_dcsn"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "tax_inv_nfrc_ordr"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+Ref: "tax_inv_nfrc_ordr_itm"."tax_inv_nfrc_ordr_id" > "tax_inv_nfrc_ordr"."tax_inv_nfrc_ordr_id"

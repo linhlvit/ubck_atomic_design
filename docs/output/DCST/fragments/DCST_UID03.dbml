@@ -5,21 +5,21 @@ Project DCST_UID03 {
   Note: "DCST — UID03 Cưỡng chế nợ thuế"
 }
 
-Table "Tax Debt Enforcement Order" [note: "Quyết định cưỡng chế nợ thuế. Ghi nhận hình thức cưỡng chế và thông tin tài sản/tài khoản liên quan."] {
-  "Tax Debt Enforcement Order Id" varchar [pk]
-  "Registered Taxpayer Id" varchar
+Table "tax_dbt_nfrc_ordr" [note: "Quyết định cưỡng chế nợ thuế. Ghi nhận hình thức cưỡng chế và thông tin tài sản/tài khoản liên quan."] {
+  "tax_dbt_nfrc_ordr_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
 }
 
-Table "Tax Invoice Enforcement Order" [note: "Quyết định cưỡng chế nợ thuế theo hình thức ngừng sử dụng hóa đơn. Ghi nhận thông tin quyết định và thông báo."] {
-  "Tax Invoice Enforcement Order Id" varchar [pk]
-  "Registered Taxpayer Id" varchar
+Table "tax_inv_nfrc_ordr" [note: "Quyết định cưỡng chế nợ thuế theo hình thức ngừng sử dụng hóa đơn. Ghi nhận thông tin quyết định và thông báo."] {
+  "tax_inv_nfrc_ordr_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
 }
 
-Table "Tax Invoice Enforcement Order Item" [note: "Chi tiết hóa đơn thuộc quyết định cưỡng chế ngừng sử dụng hóa đơn. Ghi nhận số hiệu và loại hóa đơn."] {
-  "Tax Invoice Enforcement Order Item Id" varchar [pk]
-  "Tax Invoice Enforcement Order Id" varchar
+Table "tax_inv_nfrc_ordr_itm" [note: "Chi tiết hóa đơn thuộc quyết định cưỡng chế ngừng sử dụng hóa đơn. Ghi nhận số hiệu và loại hóa đơn."] {
+  "tax_inv_nfrc_ordr_itm_id" varchar [pk]
+  "tax_inv_nfrc_ordr_id" varchar
 }
 
-// Ref: "Tax Debt Enforcement Order"."Registered Taxpayer Id" > "Registered Taxpayer"."Registered Taxpayer Id" // out-of-source
-// Ref: "Tax Invoice Enforcement Order"."Registered Taxpayer Id" > "Registered Taxpayer"."Registered Taxpayer Id" // out-of-source
-Ref: "Tax Invoice Enforcement Order Item"."Tax Invoice Enforcement Order Id" > "Tax Invoice Enforcement Order"."Tax Invoice Enforcement Order Id"
+// Ref: "tax_dbt_nfrc_ordr"."rgst_taxpayer_id" > "registered_taxpayer"."registered_taxpayer_id" // out-of-source
+// Ref: "tax_inv_nfrc_ordr"."rgst_taxpayer_id" > "registered_taxpayer"."registered_taxpayer_id" // out-of-source
+Ref: "tax_inv_nfrc_ordr_itm"."tax_inv_nfrc_ordr_id" > "tax_inv_nfrc_ordr"."tax_inv_nfrc_ordr_id"

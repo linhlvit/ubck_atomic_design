@@ -5,35 +5,37 @@ Project FIMS_UID04 {
   Note: "FIMS — UID04 Nhà đầu tư nước ngoài"
 }
 
-Table "Foreign Investor" [note: "Danh mục nhà đầu tư đăng ký giao dịch trên thị trường chứng khoán. Bao gồm cá nhân và tổ chức, phân biệt bằng ObjectType."] {
-  "Foreign Investor Id" varchar [pk]
-  "Nationality Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Capital Account Custodian Bank Id" varchar
+Table "frgn_ivsr" [note: "Danh mục nhà đầu tư đăng ký giao dịch trên thị trường chứng khoán. Bao gồm cá nhân và tổ chức, phân biệt bằng ObjectType."] {
+  "frgn_ivsr_id" varchar [pk]
+  "nat_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "cptl_ac_cstd_bnk_id" varchar
 }
 
-Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  "Geographic Area Id" varchar [pk]
+Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  "geo_id" varchar [pk]
+  "prn_geo_id" varchar
 }
 
-Table "Foreign Investor Securities Account" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
-  "Foreign Investor Securities Account Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Foreign Investor Id" varchar
+Table "frgn_ivsr_scr_ac" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
+  "frgn_ivsr_scr_ac_id" varchar [pk]
+  "scr_co_id" varchar
+  "frgn_ivsr_id" varchar
 }
 
-Table "Foreign Investor Stock Portfolio Snapshot" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
-  "Foreign Investor Stock Portfolio Snapshot Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Foreign Investor Id" varchar
+Table "frgn_ivsr_stk_prtfl_snpst" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
+  "frgn_ivsr_stk_prtfl_snpst_id" varchar [pk]
+  "scr_co_id" varchar
+  "frgn_ivsr_id" varchar
 }
 
-Ref: "Foreign Investor"."Nationality Id" > "Geographic Area"."Geographic Area Id"
-// Ref: "Foreign Investor"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Foreign Investor"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Foreign Investor"."Capital Account Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Foreign Investor Securities Account"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-Ref: "Foreign Investor Securities Account"."Foreign Investor Id" > "Foreign Investor"."Foreign Investor Id"
-// Ref: "Foreign Investor Stock Portfolio Snapshot"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-Ref: "Foreign Investor Stock Portfolio Snapshot"."Foreign Investor Id" > "Foreign Investor"."Foreign Investor Id"
+Ref: "frgn_ivsr"."nat_id" > "geo"."geo_id"
+// Ref: "frgn_ivsr"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+// Ref: "frgn_ivsr"."cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
+// Ref: "frgn_ivsr"."cptl_ac_cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
+Ref: "geo"."prn_geo_id" > "geo"."geo_id"
+// Ref: "frgn_ivsr_scr_ac"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+Ref: "frgn_ivsr_scr_ac"."frgn_ivsr_id" > "frgn_ivsr"."frgn_ivsr_id"
+// Ref: "frgn_ivsr_stk_prtfl_snpst"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+Ref: "frgn_ivsr_stk_prtfl_snpst"."frgn_ivsr_id" > "frgn_ivsr"."frgn_ivsr_id"

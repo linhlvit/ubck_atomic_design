@@ -5,278 +5,280 @@ Project FIMS {
   Note: "Atomic Lakehouse — FIMS"
 }
 
-Table "Stock Exchange" [note: "Sở giao dịch chứng khoán - thành viên thị trường trong hệ thống FIMS (HNX, HOSE)."] {
-  "Stock Exchange Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "stk_exg" [note: "Sở giao dịch chứng khoán - thành viên thị trường trong hệ thống FIMS (HNX, HOSE)."] {
+  "stk_exg_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Depository Center" [note: "Trung tâm lưu ký chứng khoán quốc gia - thành viên thị trường trong hệ thống FIMS (VSD)."] {
-  "Depository Center Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "depst_cntr" [note: "Trung tâm lưu ký chứng khoán quốc gia - thành viên thị trường trong hệ thống FIMS (VSD)."] {
+  "depst_cntr_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  "Fund Management Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "fnd_mgt_co" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  "fnd_mgt_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  "Securities Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "scr_co" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  "scr_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Custodian Bank" [note: "Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ."] {
-  "Custodian Bank Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "cstd_bnk" [note: "Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ."] {
+  "cstd_bnk_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Fund Management Company Organization Unit" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
-  "Fund Management Company Organization Unit Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Parent Organization Unit Id" varchar
-  "Legal Representative Id" varchar
-  "Country of Registration Id" varchar
+Table "fnd_mgt_co_ou" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
+  "fnd_mgt_co_ou_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "prn_ou_id" varchar
+  "lgl_rprs_id" varchar
+  "cty_of_rgst_id" varchar
 }
 
-Table "Disclosure Representative" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
-  "Disclosure Representative Id" varchar [pk]
-  "Nationality Id" varchar
+Table "dscl_rprs" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
+  "dscl_rprs_id" varchar [pk]
+  "nat_id" varchar
 }
 
-Table "Foreign Investor" [note: "Danh mục nhà đầu tư đăng ký giao dịch trên thị trường chứng khoán. Bao gồm cá nhân và tổ chức, phân biệt bằng ObjectType."] {
-  "Foreign Investor Id" varchar [pk]
-  "Nationality Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Capital Account Custodian Bank Id" varchar
+Table "frgn_ivsr" [note: "Danh mục nhà đầu tư đăng ký giao dịch trên thị trường chứng khoán. Bao gồm cá nhân và tổ chức, phân biệt bằng ObjectType."] {
+  "frgn_ivsr_id" varchar [pk]
+  "nat_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "cptl_ac_cstd_bnk_id" varchar
 }
 
-Table "Disclosure Representative Key Person" [note: "Nhân sự thực hiện công bố thông tin tại các tổ chức thành viên thị trường."] {
-  "Disclosure Representative Key Person Id" varchar [pk]
-  "Nationality Id" varchar
-  "Fund Management Company Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Depository Center Id" varchar
-  "Stock Exchange Id" varchar
-  "Disclosure Representative Id" varchar
+Table "dscl_rprs_key_psn" [note: "Nhân sự thực hiện công bố thông tin tại các tổ chức thành viên thị trường."] {
+  "dscl_rprs_key_psn_id" varchar [pk]
+  "nat_id" varchar
+  "fnd_mgt_co_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "depst_cntr_id" varchar
+  "stk_exg_id" varchar
+  "dscl_rprs_id" varchar
 }
 
-Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  "Report Template Id" varchar [pk]
+Table "rpt_tpl" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
+  "rpt_tpl_id" varchar [pk]
 }
 
-Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  "Geographic Area Id" varchar [pk]
+Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  "geo_id" varchar [pk]
+  "prn_geo_id" varchar
 }
 
-Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
-  "Reporting Period Id" varchar [pk]
-  "Report Template Id" varchar
+Table "rpt_prd" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  "rpt_prd_id" varchar [pk]
+  "rpt_tpl_id" varchar
 }
 
-Table "Member Regulatory Report" [note: "Báo cáo định kỳ của thành viên thị trường nộp lên UBCK. Ghi nhận biểu mẫu, kỳ, trạng thái nộp và thành viên nộp."] {
-  "Member Regulatory Report Id" varchar [pk]
-  "Report Template Id" varchar
-  "Reporting Period Id" varchar
-  "Fund Management Company Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Depository Center Id" varchar
-  "Stock Exchange Id" varchar
-  "Foreign Investor Id" varchar
-  "Fund Management Company Organization Unit Id" varchar
+Table "mbr_reg_rpt" [note: "Báo cáo định kỳ của thành viên thị trường nộp lên UBCK. Ghi nhận biểu mẫu, kỳ, trạng thái nộp và thành viên nộp."] {
+  "mbr_reg_rpt_id" varchar [pk]
+  "rpt_tpl_id" varchar
+  "rpt_prd_id" varchar
+  "fnd_mgt_co_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "depst_cntr_id" varchar
+  "stk_exg_id" varchar
+  "frgn_ivsr_id" varchar
+  "fnd_mgt_co_ou_id" varchar
 }
 
-Table "Member Conduct Violation" [note: "Vi phạm được ghi nhận từ cảnh báo hệ thống hoặc kiểm tra định kỳ đối với thành viên thị trường."] {
-  "Member Conduct Violation Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Depository Center Id" varchar
-  "Stock Exchange Id" varchar
-  "Disclosure Representative Id" varchar
-  "Fund Management Company Organization Unit Id" varchar
+Table "mbr_conduct_vln" [note: "Vi phạm được ghi nhận từ cảnh báo hệ thống hoặc kiểm tra định kỳ đối với thành viên thị trường."] {
+  "mbr_conduct_vln_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "depst_cntr_id" varchar
+  "stk_exg_id" varchar
+  "dscl_rprs_id" varchar
+  "fnd_mgt_co_ou_id" varchar
 }
 
-Table "Disclosure Authorization" [note: "Ủy quyền công bố thông tin của người đại diện CBTT cho nhà đầu tư nước ngoài. Ghi nhận bên được ủy quyền, loại quan hệ và thời hạn hiệu lực."] {
-  "Disclosure Authorization Id" varchar [pk]
-  "Disclosure Representative Id" varchar
+Table "dscl_ahr" [note: "Ủy quyền công bố thông tin của người đại diện CBTT cho nhà đầu tư nước ngoài. Ghi nhận bên được ủy quyền, loại quan hệ và thời hạn hiệu lực."] {
+  "dscl_ahr_id" varchar [pk]
+  "dscl_rprs_id" varchar
 }
 
-Table "Disclosure Announcement" [note: "Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT."] {
-  "Disclosure Announcement Id" varchar [pk]
-  "Disclosure Representative Id" varchar
+Table "dscl_ancm" [note: "Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT."] {
+  "dscl_ancm_id" varchar [pk]
+  "dscl_rprs_id" varchar
 }
 
-Table "Foreign Investor Securities Account" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
-  "Foreign Investor Securities Account Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Foreign Investor Id" varchar
+Table "frgn_ivsr_scr_ac" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
+  "frgn_ivsr_scr_ac_id" varchar [pk]
+  "scr_co_id" varchar
+  "frgn_ivsr_id" varchar
 }
 
-Table "Foreign Investor Stock Portfolio Snapshot" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
-  "Foreign Investor Stock Portfolio Snapshot Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Foreign Investor Id" varchar
+Table "frgn_ivsr_stk_prtfl_snpst" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
+  "frgn_ivsr_stk_prtfl_snpst_id" varchar [pk]
+  "scr_co_id" varchar
+  "frgn_ivsr_id" varchar
 }
 
-Table "Member Report Value" [note: "Giá trị từng chỉ tiêu trong báo cáo định kỳ của thành viên. Mỗi dòng = 1 chỉ tiêu trong 1 báo cáo."] {
-  "Member Report Value Id" varchar [pk]
-  "Member Regulatory Report Id" varchar
-  "Reporting Period Id" varchar
-  "Report Template Id" varchar
-  "Fund Management Company Id" varchar
-  "Securities Company Id" varchar
-  "Custodian Bank Id" varchar
-  "Depository Center Id" varchar
-  "Stock Exchange Id" varchar
-  "Disclosure Representative Id" varchar
-  "Fund Management Company Organization Unit Id" varchar
+Table "mbr_rpt_val" [note: "Giá trị từng chỉ tiêu trong báo cáo định kỳ của thành viên. Mỗi dòng = 1 chỉ tiêu trong 1 báo cáo."] {
+  "mbr_rpt_val_id" varchar [pk]
+  "mbr_reg_rpt_id" varchar
+  "rpt_prd_id" varchar
+  "rpt_tpl_id" varchar
+  "fnd_mgt_co_id" varchar
+  "scr_co_id" varchar
+  "cstd_bnk_id" varchar
+  "depst_cntr_id" varchar
+  "stk_exg_id" varchar
+  "dscl_rprs_id" varchar
+  "fnd_mgt_co_ou_id" varchar
 }
 
-Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  "Involved Party Id" varchar
-  "Province Id" varchar
-  "Geographic Area Id" varchar
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+  "prov_id" varchar
+  "geo_id" varchar
 }
 
-Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "ip_alt_identn" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
 TableGroup "UID01 — Quản trị phân hệ" {
-  "Report Template"
-  "Geographic Area"
-  "Reporting Period"
+  "rpt_tpl"
+  "geo"
+  "rpt_prd"
 }
 
 TableGroup "UID03 — Đối tượng gửi báo cáo" {
-  "Stock Exchange"
-  "Depository Center"
-  "Fund Management Company"
-  "Securities Company"
-  "Custodian Bank"
-  "Fund Management Company Organization Unit"
-  "Disclosure Representative"
-  "Disclosure Representative Key Person"
-  "Geographic Area"
+  "stk_exg"
+  "depst_cntr"
+  "fnd_mgt_co"
+  "scr_co"
+  "cstd_bnk"
+  "fnd_mgt_co_ou"
+  "dscl_rprs"
+  "dscl_rprs_key_psn"
+  "geo"
 }
 
 TableGroup "UID04 — Nhà đầu tư nước ngoài" {
-  "Foreign Investor"
-  "Geographic Area"
-  "Foreign Investor Securities Account"
-  "Foreign Investor Stock Portfolio Snapshot"
+  "frgn_ivsr"
+  "geo"
+  "frgn_ivsr_scr_ac"
+  "frgn_ivsr_stk_prtfl_snpst"
 }
 
 TableGroup "UID05 — Báo cáo thành viên" {
-  "Report Template"
-  "Reporting Period"
-  "Member Regulatory Report"
-  "Member Report Value"
+  "rpt_tpl"
+  "rpt_prd"
+  "mbr_reg_rpt"
+  "mbr_rpt_val"
 }
 
 TableGroup "UID07 — Ủy quyền" {
-  "Disclosure Representative"
-  "Disclosure Authorization"
+  "dscl_rprs"
+  "dscl_ahr"
 }
 
 TableGroup "UID08 — Công bố thông tin" {
-  "Disclosure Representative"
-  "Disclosure Announcement"
+  "dscl_rprs"
+  "dscl_ancm"
 }
 
 TableGroup "UID09 — Cảnh báo" {
-  "Member Conduct Violation"
+  "mbr_conduct_vln"
 }
 
 TableGroup "UID10 — Tiện ích" {
-  "Geographic Area"
+  "geo"
 }
 
-Ref: "Stock Exchange"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Depository Center"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Fund Management Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Securities Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Custodian Bank"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Fund Management Company Organization Unit"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Fund Management Company Organization Unit"."Parent Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-// Ref: "Fund Management Company Organization Unit"."Legal Representative Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id" // out-of-source
-Ref: "Fund Management Company Organization Unit"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Disclosure Representative"."Nationality Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Foreign Investor"."Nationality Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Foreign Investor"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Foreign Investor"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Foreign Investor"."Capital Account Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Disclosure Representative Key Person"."Nationality Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Disclosure Representative Key Person"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Disclosure Representative Key Person"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Disclosure Representative Key Person"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Disclosure Representative Key Person"."Depository Center Id" > "Depository Center"."Depository Center Id"
-Ref: "Disclosure Representative Key Person"."Stock Exchange Id" > "Stock Exchange"."Stock Exchange Id"
-Ref: "Disclosure Representative Key Person"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id"
-Ref: "Reporting Period"."Report Template Id" > "Report Template"."Report Template Id"
-Ref: "Member Regulatory Report"."Report Template Id" > "Report Template"."Report Template Id"
-Ref: "Member Regulatory Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
-Ref: "Member Regulatory Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Member Regulatory Report"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Member Regulatory Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Member Regulatory Report"."Depository Center Id" > "Depository Center"."Depository Center Id"
-Ref: "Member Regulatory Report"."Stock Exchange Id" > "Stock Exchange"."Stock Exchange Id"
-Ref: "Member Regulatory Report"."Foreign Investor Id" > "Foreign Investor"."Foreign Investor Id"
-Ref: "Member Regulatory Report"."Fund Management Company Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Member Conduct Violation"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Member Conduct Violation"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Member Conduct Violation"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Member Conduct Violation"."Depository Center Id" > "Depository Center"."Depository Center Id"
-Ref: "Member Conduct Violation"."Stock Exchange Id" > "Stock Exchange"."Stock Exchange Id"
-Ref: "Member Conduct Violation"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id"
-Ref: "Member Conduct Violation"."Fund Management Company Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Disclosure Authorization"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id"
-Ref: "Disclosure Announcement"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id"
-Ref: "Foreign Investor Securities Account"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Foreign Investor Securities Account"."Foreign Investor Id" > "Foreign Investor"."Foreign Investor Id"
-Ref: "Foreign Investor Stock Portfolio Snapshot"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Foreign Investor Stock Portfolio Snapshot"."Foreign Investor Id" > "Foreign Investor"."Foreign Investor Id"
-Ref: "Member Report Value"."Member Regulatory Report Id" > "Member Regulatory Report"."Member Regulatory Report Id"
-Ref: "Member Report Value"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
-Ref: "Member Report Value"."Report Template Id" > "Report Template"."Report Template Id"
-Ref: "Member Report Value"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Member Report Value"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Member Report Value"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Member Report Value"."Depository Center Id" > "Depository Center"."Depository Center Id"
-Ref: "Member Report Value"."Stock Exchange Id" > "Stock Exchange"."Stock Exchange Id"
-Ref: "Member Report Value"."Disclosure Representative Id" > "Disclosure Representative"."Disclosure Representative Id"
-Ref: "Member Report Value"."Fund Management Company Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Depository Center"."Depository Center Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Depository Center"."Depository Center Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Disclosure Representative"."Disclosure Representative Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Disclosure Representative"."Disclosure Representative Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Foreign Investor"."Foreign Investor Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Foreign Investor"."Foreign Investor Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company"."Securities Company Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company"."Securities Company Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Stock Exchange"."Stock Exchange Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Stock Exchange"."Stock Exchange Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Disclosure Representative Key Person"."Disclosure Representative Key Person Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Disclosure Representative Key Person"."Disclosure Representative Key Person Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company"."Securities Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Foreign Investor"."Foreign Investor Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Disclosure Representative Key Person"."Disclosure Representative Key Person Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Disclosure Representative"."Disclosure Representative Id"
+Ref: "stk_exg"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "depst_cntr"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "fnd_mgt_co"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "scr_co"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "cstd_bnk"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "fnd_mgt_co_ou"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "fnd_mgt_co_ou"."prn_ou_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+// Ref: "fnd_mgt_co_ou"."lgl_rprs_id" > "fund_management_company_key_person"."fund_management_company_key_person_id" // out-of-source
+Ref: "fnd_mgt_co_ou"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "dscl_rprs"."nat_id" > "geo"."geo_id"
+Ref: "frgn_ivsr"."nat_id" > "geo"."geo_id"
+Ref: "frgn_ivsr"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "frgn_ivsr"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "frgn_ivsr"."cptl_ac_cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "dscl_rprs_key_psn"."nat_id" > "geo"."geo_id"
+Ref: "dscl_rprs_key_psn"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "dscl_rprs_key_psn"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "dscl_rprs_key_psn"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "dscl_rprs_key_psn"."depst_cntr_id" > "depst_cntr"."depst_cntr_id"
+Ref: "dscl_rprs_key_psn"."stk_exg_id" > "stk_exg"."stk_exg_id"
+Ref: "dscl_rprs_key_psn"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "geo"."prn_geo_id" > "geo"."geo_id"
+Ref: "rpt_prd"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+Ref: "mbr_reg_rpt"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+Ref: "mbr_reg_rpt"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
+Ref: "mbr_reg_rpt"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "mbr_reg_rpt"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "mbr_reg_rpt"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "mbr_reg_rpt"."depst_cntr_id" > "depst_cntr"."depst_cntr_id"
+Ref: "mbr_reg_rpt"."stk_exg_id" > "stk_exg"."stk_exg_id"
+Ref: "mbr_reg_rpt"."frgn_ivsr_id" > "frgn_ivsr"."frgn_ivsr_id"
+Ref: "mbr_reg_rpt"."fnd_mgt_co_ou_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "mbr_conduct_vln"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "mbr_conduct_vln"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "mbr_conduct_vln"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "mbr_conduct_vln"."depst_cntr_id" > "depst_cntr"."depst_cntr_id"
+Ref: "mbr_conduct_vln"."stk_exg_id" > "stk_exg"."stk_exg_id"
+Ref: "mbr_conduct_vln"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "mbr_conduct_vln"."fnd_mgt_co_ou_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "dscl_ahr"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "dscl_ancm"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "frgn_ivsr_scr_ac"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "frgn_ivsr_scr_ac"."frgn_ivsr_id" > "frgn_ivsr"."frgn_ivsr_id"
+Ref: "frgn_ivsr_stk_prtfl_snpst"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "frgn_ivsr_stk_prtfl_snpst"."frgn_ivsr_id" > "frgn_ivsr"."frgn_ivsr_id"
+Ref: "mbr_rpt_val"."mbr_reg_rpt_id" > "mbr_reg_rpt"."mbr_reg_rpt_id"
+Ref: "mbr_rpt_val"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
+Ref: "mbr_rpt_val"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+Ref: "mbr_rpt_val"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "mbr_rpt_val"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "mbr_rpt_val"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "mbr_rpt_val"."depst_cntr_id" > "depst_cntr"."depst_cntr_id"
+Ref: "mbr_rpt_val"."stk_exg_id" > "stk_exg"."stk_exg_id"
+Ref: "mbr_rpt_val"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "mbr_rpt_val"."fnd_mgt_co_ou_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "ip_pst_adr"."ip_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "ip_pst_adr"."prov_id" > "geo"."geo_id"
+Ref: "ip_pst_adr"."geo_id" > "geo"."geo_id"
+Ref: "ip_elc_adr"."ip_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "ip_pst_adr"."ip_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "ip_elc_adr"."ip_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "ip_pst_adr"."ip_id" > "depst_cntr"."depst_cntr_id"
+Ref: "ip_elc_adr"."ip_id" > "depst_cntr"."depst_cntr_id"
+Ref: "ip_pst_adr"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ip_elc_adr"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ip_pst_adr"."ip_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "ip_elc_adr"."ip_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "ip_pst_adr"."ip_id" > "frgn_ivsr"."frgn_ivsr_id"
+Ref: "ip_elc_adr"."ip_id" > "frgn_ivsr"."frgn_ivsr_id"
+Ref: "ip_pst_adr"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_elc_adr"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_pst_adr"."ip_id" > "stk_exg"."stk_exg_id"
+Ref: "ip_elc_adr"."ip_id" > "stk_exg"."stk_exg_id"
+Ref: "ip_pst_adr"."ip_id" > "dscl_rprs_key_psn"."dscl_rprs_key_psn_id"
+Ref: "ip_elc_adr"."ip_id" > "dscl_rprs_key_psn"."dscl_rprs_key_psn_id"
+Ref: "ip_alt_identn"."ip_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "ip_alt_identn"."ip_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "ip_alt_identn"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ip_alt_identn"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_alt_identn"."ip_id" > "frgn_ivsr"."frgn_ivsr_id"
+Ref: "ip_alt_identn"."ip_id" > "dscl_rprs_key_psn"."dscl_rprs_key_psn_id"
+Ref: "ip_alt_identn"."ip_id" > "dscl_rprs"."dscl_rprs_id"

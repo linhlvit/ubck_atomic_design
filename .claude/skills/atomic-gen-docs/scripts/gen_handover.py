@@ -277,26 +277,43 @@ def _post_process_docx(docx_path: Path) -> None:
 
     doc = Document(str(docx_path))
 
-    # --- Landscape A4, margin 15mm ---
+    # --- Portrait A4, margin theo template UBCK (top/bottom=25mm, left=30mm, right=20mm) ---
     for section in doc.sections:
-        section.page_width = Mm(297)
-        section.page_height = Mm(210)
+        section.page_width = Mm(210)
+        section.page_height = Mm(297)
         pgSz = section._sectPr.find(qn("w:pgSz"))
         if pgSz is None:
             pgSz = OxmlElement("w:pgSz")
             section._sectPr.append(pgSz)
-        pgSz.set(qn("w:orient"), "landscape")
-        section.top_margin = Mm(15)
-        section.bottom_margin = Mm(15)
-        section.left_margin = Mm(15)
-        section.right_margin = Mm(15)
+        # Xoá orient attribute (hoặc đặt portrait) để tránh kế thừa landscape từ run trước
+        pgSz.attrib.pop(qn("w:orient"), None)
+        section.top_margin = Mm(25)
+        section.bottom_margin = Mm(25)
+        section.left_margin = Mm(30)
+        section.right_margin = Mm(20)
+        section.header_distance = Mm(12.7)
+        section.footer_distance = Mm(12.7)
 
     # --- Fix indent + style cho tất cả para ngoài bảng ---
     _HEADING_STYLES = {"Heading 1", "Heading 2", "Heading 3", "Heading 4",
                        "Heading 5", "Heading 6"}
+
+    # --- Thay space → tab sau chỉ số mục (vd "2.1 DCST" → "2.1\tDCST") ---
+    # Template UBCK dùng tab stop để căn chỉnh; Pandoc chỉ sinh space thường.
+    import re as _re
+    _HDG_NUM_RE = _re.compile(r'^(\d+(?:\.\d+)+) ')
     for para in doc.paragraphs:
         style_name = para.style.name if para.style else ""
-        # Heading: giữ nguyên
+        if style_name not in _HEADING_STYLES or not para.runs:
+            continue
+        first_run = para.runs[0]
+        m = _HDG_NUM_RE.match(first_run.text)
+        if m:
+            first_run.text = m.group(1) + "\t" + first_run.text[m.end():]
+
+    for para in doc.paragraphs:
+        style_name = para.style.name if para.style else ""
+        # Heading: giữ nguyên (chỉ xử lý tab ở trên)
         if style_name in _HEADING_STYLES:
             continue
         # List Paragraph (bullet): giữ numPr, chỉ fix bold inheritance + keepNext
@@ -330,15 +347,17 @@ def _post_process_docx(docx_path: Path) -> None:
                 pPr.insert(0, pStyle)
 
     # Column widths (twips) cho các loại bảng theo số cột — lấy từ template UBCK
-    # 4 cột: STT | Thực thể | Tên bảng | Mô tả
-    _COL_WIDTHS_4 = [643, 3132, 2700, 6570]
-    # 12 cột: STT | Tên trường | Tên cột | Kiểu DL | Nullable | Unique | P/F Key | Mặc định | Mô tả | Schema.Table | Source Field | ETL Rules
-    # Cột "Tên cột" mở rộng (+1440 twips) thay cho cột "Hệ thống nguồn" đã bỏ
-    _COL_WIDTHS_12 = [720, 1440, 2440, 1114, 720, 720, 720, 990, 1800, 1170, 1440, 2520]
-    # 2 cột PK: Tên trường | Tên cột
-    _COL_WIDTHS_PK = [2700, 2700]
-    # 5 cột FK: Tên trường | Tên cột | Bảng tham chiếu | Trường tham chiếu | Cột tham chiếu
-    _COL_WIDTHS_FK = [1800, 1400, 2200, 2000, 1400]
+    # Portrait A4, margin left=30mm right=20mm → content width = 160mm = 9072 twips
+    # Tỷ lệ cột 8-col đo từ template (Table 6): [744,1104,1518,1105,968,831,968,1653] tổng=8891
+    # Scale lên 9072: nhân 9072/8891 ≈ 1.0204
+    # 3 cột: STT | Tên bảng | Mô tả  (Danh sách bảng)
+    _COL_WIDTHS_3 = [759, 2280, 6033]       # tổng = 9072
+    # 8 cột: STT | Tên trường | Kiểu DL | Nullable | Unique | P/F Key | Mặc định | Mô tả
+    _COL_WIDTHS_8 = [759, 1127, 1550, 1128, 988, 848, 988, 1684]  # tổng = 9072
+    # 1 cột PK: Tên trường (physical)
+    _COL_WIDTHS_PK = [9072]
+    # 3 cột FK: Tên trường | Bảng tham chiếu | Cột tham chiếu
+    _COL_WIDTHS_FK = [2040, 2450, 4582]     # tổng = 9072
 
     def _apply_col_widths(table, widths: list[int]) -> None:
         if len(table.columns) != len(widths):
@@ -363,21 +382,23 @@ def _post_process_docx(docx_path: Path) -> None:
             tblPr = OxmlElement("w:tblPr")
             table._tbl.insert(0, tblPr)
 
-        # Set table width = auto (Word tự tính từ tcW của từng cột)
+        # Set table width = 100% trang (pct: 5000 = 100% trong OOXML)
         tblW = tblPr.find(qn("w:tblW"))
         if tblW is None:
             tblW = OxmlElement("w:tblW")
             tblPr.append(tblW)
-        tblW.set(qn("w:w"), "0")
-        tblW.set(qn("w:type"), "auto")
+        tblW.set(qn("w:w"), "5000")
+        tblW.set(qn("w:type"), "pct")
 
-        # Override tblCellMar để ghi đè style "Normal Table" (left=108 twips)
+        # Cell margin: left/right=108 twips (≈1.9mm, chuẩn Normal Table Word),
+        # top/bottom=57 twips (≈1mm) — khớp với padding template UBCK
         for old in tblPr.findall(qn("w:tblCellMar")):
             tblPr.remove(old)
         tblCellMar = OxmlElement("w:tblCellMar")
-        for side in ("top", "left", "bottom", "right"):
+        _CELL_MARGINS = {"top": "57", "left": "108", "bottom": "57", "right": "108"}
+        for side, val in _CELL_MARGINS.items():
             el = OxmlElement(f"w:{side}")
-            el.set(qn("w:w"), "30")   # 30 twips ≈ 0.5mm
+            el.set(qn("w:w"), val)
             el.set(qn("w:type"), "dxa")
             tblCellMar.append(el)
         tblPr.append(tblCellMar)
@@ -398,16 +419,17 @@ def _post_process_docx(docx_path: Path) -> None:
         # Apply column widths theo số cột
         ncols = len(table.columns)
         header_texts = [c.text.strip() for c in table.rows[0].cells] if table.rows else []
-        if ncols == 12:
-            _apply_col_widths(table, _COL_WIDTHS_12)
-        elif ncols == 5 and "Bảng tham chiếu" in header_texts:
-            # FK table (5 cột: Tên trường | Tên cột | Bảng TK | Trường TK | Cột TK)
+        if ncols == 8 and header_texts and header_texts[0] == "STT" and "Tên trường" in header_texts:
+            # Bảng thuộc tính: STT | Tên trường | Kiểu DL | Nullable | Unique | P/F Key | Mặc định | Mô tả
+            _apply_col_widths(table, _COL_WIDTHS_8)
+        elif ncols == 3 and "Bảng tham chiếu" in header_texts:
+            # FK table (3 cột: Tên trường | Bảng tham chiếu | Cột tham chiếu)
             _apply_col_widths(table, _COL_WIDTHS_FK)
-        elif ncols == 4:
-            if header_texts and header_texts[0] == "STT" and "Thực thể" in header_texts:
-                _apply_col_widths(table, _COL_WIDTHS_4)
-        elif ncols == 2:
-            # PK table
+        elif ncols == 3 and header_texts and header_texts[0] == "STT" and "Tên bảng" in header_texts:
+            # Danh sách bảng: STT | Tên bảng | Mô tả
+            _apply_col_widths(table, _COL_WIDTHS_3)
+        elif ncols == 1:
+            # PK table (1 cột: Tên trường physical)
             _apply_col_widths(table, _COL_WIDTHS_PK)
 
         for row_idx, row in enumerate(table.rows):
@@ -444,17 +466,25 @@ def _post_process_docx(docx_path: Path) -> None:
                     pStyle = pPr.find(qn("w:pStyle"))
                     if pStyle is not None:
                         pStyle.set(qn("w:val"), "Normal")
-                    # font size qua rPr default của paragraph
+                    # font size + font name qua rPr default của paragraph
                     rPrDef = pPr.find(qn("w:rPr"))
                     if rPrDef is None:
                         rPrDef = OxmlElement("w:rPr")
                         pPr.append(rPrDef)
+                    # Times New Roman
+                    rFonts = rPrDef.find(qn("w:rFonts"))
+                    if rFonts is None:
+                        rFonts = OxmlElement("w:rFonts")
+                        rPrDef.insert(0, rFonts)
+                    rFonts.set(qn("w:ascii"), "Times New Roman")
+                    rFonts.set(qn("w:hAnsi"), "Times New Roman")
+                    rFonts.set(qn("w:cs"), "Times New Roman")
                     for tag in ("w:sz", "w:szCs"):
                         el = rPrDef.find(qn(tag))
                         if el is None:
                             el = OxmlElement(tag)
                             rPrDef.append(el)
-                        el.set(qn("w:val"), "18")  # 18 half-points = 9pt
+                        el.set(qn("w:val"), "24")  # 24 half-points = 12pt
                     if is_header:
                         for tag in ("w:b", "w:bCs"):
                             el = rPrDef.find(qn(tag))
@@ -471,7 +501,8 @@ def _post_process_docx(docx_path: Path) -> None:
                             el.set(qn("w:val"), "0")
                     # font size + bold/italic cho từng run
                     for run in para.runs:
-                        run.font.size = Pt(9)
+                        run.font.size = Pt(12)
+                        run.font.name = "Times New Roman"
                         if is_header:
                             run.font.bold = True
                             rPr = run._r.get_or_add_rPr()
@@ -489,7 +520,7 @@ def _post_process_docx(docx_path: Path) -> None:
                                 el.set(qn("w:val"), "0")
 
     doc.save(str(docx_path))
-    print(f"Post-process done (landscape A4, col widths, font 9pt, header bold): {docx_path}", file=sys.stderr)
+    print(f"Post-process done (portrait A4, margin 25/25/30/20mm, col widths, font 12pt Times New Roman, header bold): {docx_path}", file=sys.stderr)
 
 
 def main() -> None:

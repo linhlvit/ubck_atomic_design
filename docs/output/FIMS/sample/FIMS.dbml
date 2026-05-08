@@ -5,20 +5,20 @@ Project FIMS {
   Note: "Atomic Lakehouse — FIMS"
 }
 
-Table "Stock Exchange" [note: "So giao dich chung khoan - thanh vien thi truong trong he thong FIMS (HNX, HOSE)."] {
-  stock_exchange_id bigint [pk]
-  country_of_registration_id bigint
+Table "stk_exg" [note: "Sở giao dịch chứng khoán - thành viên thị trường trong hệ thống FIMS (HNX, HOSE)."] {
+  "stk_exg_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Depository Center" [note: "Trung tam luu ky chung khoan quoc gia - thanh vien thi truong trong he thong FIMS (VSD)."] {
-  depository_center_id bigint [pk]
-  country_of_registration_id bigint
+Table "depst_cntr" [note: "Trung tâm lưu ký chứng khoán quốc gia - thành viên thị trường trong hệ thống FIMS (VSD)."] {
+  "depst_cntr_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
 TableGroup "UID03 — Đối tượng gửi báo cáo" {
-  "Stock Exchange"
-  "Depository Center"
+  "stk_exg"
+  "depst_cntr"
 }
 
-// Ref: "Stock Exchange".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
-// Ref: "Depository Center".country_of_registration_id > "Geographic Area".geographic_area_id // out-of-source
+// Ref: "stk_exg"."cty_of_rgst_id" > "geographic_area"."geographic_area_id" // out-of-source
+// Ref: "depst_cntr"."cty_of_rgst_id" > "geographic_area"."geographic_area_id" // out-of-source
