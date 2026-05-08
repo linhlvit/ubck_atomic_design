@@ -191,11 +191,22 @@ erDiagram
         int Public_Company_Dimension_Id FK
         int Industry_Category_Dimension_Id FK
         float Planned_Proceeds_Amount
+        float Planned_Public_Offering_Amount
+        float Planned_Private_Placement_Amount
+        float Planned_ESOP_Amount
+        int Planned_Dividend_Issuance_Quantity
+        int Planned_Owner_Capital_Issuance_Quantity
+        float Planned_Other_Amount
         float Actual_Proceeds_Amount
+        float Actual_Public_Offering_Amount
+        float Actual_Private_Placement_Amount
+        float Actual_ESOP_Amount
+        int Actual_Dividend_Issuance_Quantity
+        int Actual_Owner_Capital_Issuance_Quantity
+        float Actual_Other_Amount
         int Planned_Security_Quantity
         int Successful_Security_Quantity
         varchar Security_Type_Code
-        varchar Offering_Type_Category_Code
         date Offering_Start_Date
         date Offering_End_Date
         datetime Population_Date
@@ -239,8 +250,7 @@ flowchart LR
 #### Nhóm 2 — Giá trị cấp phép chào bán phát hành theo ngành
 
 > Phân loại: **Phân tích**  
-> Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**  
-> Xem Issue O_QLCB_1 về logic mapping loại hình phát hành
+> Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**
 
 **Mockup:**
 
@@ -254,23 +264,22 @@ flowchart LR
 | Khác | 600 | 3% |
 
 **Source:** `Fact Securities Offering` → `Industry Category Dimension`, `Calendar Date Dimension`
-Filter thêm theo `Offering Type Category Code` (FK → Classification Dimension, scheme: `QLCB_OFFERING_TYPE_CATEGORY`)
 
 **Bảng KPI:**
 
 | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
 |---|---|---|---|---|
-| K_QLCB_4 | Loại hình phát hành | — | Chiều | `GROUP BY Offering Type Category Code` — scheme: `QLCB_OFFERING_TYPE_CATEGORY` |
-| K_QLCB_5 | Giá trị cấp phép — Công chúng | Tỷ VNĐ | Derived | `SUM(Planned Proceeds Amount) WHERE Offering Type Category Code = 'PUBLIC'` |
-| K_QLCB_6 | Giá trị cấp phép — Riêng lẻ | Tỷ VNĐ | Derived | `SUM(Planned Proceeds Amount) WHERE Offering Type Category Code = 'PRIVATE'` |
-| K_QLCB_7 | Giá trị cấp phép — ESOP | Tỷ VNĐ | Derived | `SUM(Planned Proceeds Amount) WHERE Offering Type Category Code = 'ESOP'` |
-| K_QLCB_8 | Giá trị cấp phép — Trả cổ tức | Tỷ VNĐ | Derived | `SUM(Planned Proceeds Amount) WHERE Offering Type Category Code = 'DIVIDEND'` |
-| K_QLCB_9 | Giá trị cấp phép — Tăng vốn từ VCSH | Tỷ VNĐ | Derived | `SUM(Planned Proceeds Amount) WHERE Offering Type Category Code = 'OWNER_CAPITAL'` |
-| K_QLCB_10 | Giá trị cấp phép — Các loại khác | Tỷ VNĐ | Derived | `SUM(Planned Proceeds Amount) WHERE Offering Type Category Code = 'OTHER'` |
+| K_QLCB_4 | Loại hình phát hành | — | Chiều | `GROUP BY Offering Type Category Code` — 6 loại hình: PUBLIC / PRIVATE / ESOP / DIVIDEND / OWNER_CAPITAL / OTHER |
+| K_QLCB_5 | Giá trị cấp phép — Công chúng | Tỷ VNĐ | Derived | `SUM(Planned Public Offering Amount)` |
+| K_QLCB_6 | Giá trị cấp phép — Riêng lẻ | Tỷ VNĐ | Derived | `SUM(Planned Private Placement Amount)` |
+| K_QLCB_7 | Giá trị cấp phép — ESOP | Tỷ VNĐ | Derived | `SUM(Planned ESOP Amount)` |
+| K_QLCB_8 | Giá trị cấp phép — Trả cổ tức | Tỷ VNĐ | Derived | `SUM(Planned Dividend Amount)` |
+| K_QLCB_9 | Giá trị cấp phép — Tăng vốn từ VCSH | Tỷ VNĐ | Derived | `SUM(Planned Owner Capital Amount)` |
+| K_QLCB_10 | Giá trị cấp phép — Các loại khác | Tỷ VNĐ | Derived | `SUM(Planned Other Amount)` |
 
-> **Lưu ý:** K_QLCB_5–10 đều là Derived từ K_QLCB_1 với filter loại hình — tính ở presentation layer. Tổng K_QLCB_5 + ... + K_QLCB_10 = K_QLCB_1. Xem O_QLCB_1 về business rule mapping loại hình từ Silver.
+> **Lưu ý — Per-type amount columns (cập nhật từ BA mới):** Mỗi đợt chào bán trên Silver có thể sử dụng nhiều loại hình đồng thời (mixed-type) — `planned_proceeds_am` là tổng toàn bộ, không tách được per loại hình. Do đó Fact lưu thêm các cột ETL-derived tại grain level: `Planned_Public_Offering_Amount`, `Planned_Private_Placement_Amount`, `Planned_ESOP_Amount`, `Planned_Other_Amount` (4 cột Currency Amount — loại hình có tiền mặt); `Planned_Dividend_Issuance_Quantity`, `Planned_Owner_Capital_Issuance_Quantity` (2 cột Small Counter — loại hình không huy động tiền mặt, Silver không có price field). Tổng 4 cột Amount = `Planned_Proceeds_Amount`. K_QLCB_5–10 là Derived — tính ở presentation layer. Xem O_QLCB_7.
 
-**Star Schema:** Kế thừa từ Nhóm 1 — thêm filter theo `Offering Type Category Code` và GROUP BY `Industry Category Dimension`.
+**Star Schema:** Kế thừa từ Nhóm 1 — GROUP BY `Industry Category Dimension`. Mỗi loại hình tương ứng 1 cột per-type Amount trên Fact.
 
 **Lineage Mart → Báo cáo:**
 
@@ -302,8 +311,7 @@ flowchart LR
 #### Nhóm 3 — Giá trị phát hành theo hình thức phát hành và nhóm ngành
 
 > Phân loại: **Phân tích**  
-> Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**  
-> Xem Issue O_QLCB_1 về logic mapping loại hình phát hành
+> Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**
 
 **Mockup:**
 
@@ -319,16 +327,16 @@ flowchart LR
 
 | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả |
 |---|---|---|---|---|
-| K_QLCB_11 | Giá trị huy động — Công chúng | Tỷ VNĐ | Derived | `SUM(Actual Proceeds Amount) WHERE Offering Type Category Code = 'PUBLIC'` GROUP BY ngành |
-| K_QLCB_12 | Giá trị huy động — Riêng lẻ | Tỷ VNĐ | Derived | `SUM(Actual Proceeds Amount) WHERE Offering Type Category Code = 'PRIVATE'` GROUP BY ngành |
-| K_QLCB_13 | Giá trị huy động — ESOP | Tỷ VNĐ | Derived | `SUM(Actual Proceeds Amount) WHERE Offering Type Category Code = 'ESOP'` GROUP BY ngành |
-| K_QLCB_14 | Giá trị huy động — Trả cổ tức | Tỷ VNĐ | Derived | `SUM(Actual Proceeds Amount) WHERE Offering Type Category Code = 'DIVIDEND'` GROUP BY ngành |
-| K_QLCB_15 | Giá trị huy động — Tăng vốn từ VCSH | Tỷ VNĐ | Derived | `SUM(Actual Proceeds Amount) WHERE Offering Type Category Code = 'OWNER_CAPITAL'` GROUP BY ngành |
-| K_QLCB_16 | Giá trị huy động — Các loại khác | Tỷ VNĐ | Derived | `SUM(Actual Proceeds Amount) WHERE Offering Type Category Code = 'OTHER'` GROUP BY ngành |
+| K_QLCB_11 | Giá trị huy động — Công chúng | Tỷ VNĐ | Derived | `SUM(Actual Public Offering Amount)` GROUP BY ngành |
+| K_QLCB_12 | Giá trị huy động — Riêng lẻ | Tỷ VNĐ | Derived | `SUM(Actual Private Placement Amount)` GROUP BY ngành |
+| K_QLCB_13 | Giá trị huy động — ESOP | Tỷ VNĐ | Derived | `SUM(Actual ESOP Amount)` GROUP BY ngành |
+| K_QLCB_14 | Giá trị huy động — Trả cổ tức | Tỷ VNĐ | Derived | `SUM(Actual Dividend Amount)` GROUP BY ngành |
+| K_QLCB_15 | Giá trị huy động — Tăng vốn từ VCSH | Tỷ VNĐ | Derived | `SUM(Actual Owner Capital Amount)` GROUP BY ngành |
+| K_QLCB_16 | Giá trị huy động — Các loại khác | Tỷ VNĐ | Derived | `SUM(Actual Other Amount)` GROUP BY ngành |
 
-> **Lưu ý:** Nhóm 3 khác Nhóm 2 ở chỗ dùng `Actual Proceeds Amount` (thực tế huy động) thay vì `Planned Proceeds Amount` (cấp phép). Cùng 1 Fact, GROUP BY ngành × loại hình thay vì chỉ theo loại hình.
+> **Lưu ý:** Nhóm 3 khác Nhóm 2 ở chỗ dùng các cột Actual per loại hình (`Actual_Public_Offering_Amount`, `Actual_Private_Placement_Amount`, `Actual_ESOP_Amount`, `Actual_Other_Amount`) thay vì Planned. Loại hình Trả cổ tức và Tăng vốn VCSH dùng cột số lượng (`Actual_Dividend_Issuance_Quantity`, `Actual_Owner_Capital_Issuance_Quantity`) — không có giá trị tiền. Cùng 1 Fact, GROUP BY `Industry Category Dimension` × per-type column. Tổng 4 cột Amount = `Actual_Proceeds_Amount`. Xem O_QLCB_7.
 
-**Star Schema:** Cùng star schema với Nhóm 1 — GROUP BY `Industry Category Dimension` × `Offering Type Category Code`.
+**Star Schema:** Cùng star schema với Nhóm 1 — GROUP BY `Industry Category Dimension`. Mỗi loại hình tương ứng 1 cột per-type Amount trên Fact.
 
 **Lineage Mart → Báo cáo:**
 
@@ -383,10 +391,10 @@ flowchart LR
 | K_QLCB_20 | Tổ chức kiểm toán | — | Attribute | **PENDING** — nguồn TTHC chưa có Source Analysis |
 | K_QLCB_21 | Đơn vị bảo lãnh | — | Attribute | **PENDING** — nguồn TTHC chưa có Source Analysis |
 | K_QLCB_22 | Đơn vị xếp hạng tín nhiệm | — | Attribute | **PENDING** — nguồn TTHC chưa có Source Analysis |
-| K_QLCB_23 | Số lượng CK được cấp phép | CK | Attribute | `Planned Security Quantity` — IDS.company_securities_issuance.planned_security_qty |
-| K_QLCB_24 | Số lượng CK chào bán thành công | CK | Attribute | `Successful Security Quantity` — IDS.company_securities_issuance.successful_security_qty |
-| K_QLCB_25 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Planned Proceeds Amount` — IDS.company_securities_issuance.planned_proceeds_am |
-| K_QLCB_26 | Giá trị chào bán thành công | Tỷ VNĐ | Attribute | `Actual Proceeds Amount` — IDS.company_securities_issuance.actual_proceeds_am |
+| K_QLCB_23 | Số lượng CK được cấp phép | CK | Attribute | `SUM(Planned Offering Quantity)` GROUP BY Securities Offering Code — tổng số lượng CK cấp phép của đợt |
+| K_QLCB_24 | Số lượng CK chào bán thành công | CK | Attribute | `SUM(Actual Offering Quantity)` GROUP BY Securities Offering Code — tổng số lượng CK thực tế của đợt |
+| K_QLCB_25 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `SUM(Planned Offering Amount)` GROUP BY Securities Offering Code — tổng giá trị cấp phép của đợt |
+| K_QLCB_26 | Giá trị chào bán thành công | Tỷ VNĐ | Attribute | `SUM(Actual Offering Amount)` GROUP BY Securities Offering Code — tổng giá trị thực tế của đợt |
 | K_QLCB_27 | Tỷ lệ chào bán thành công | % | Derived | `K_QLCB_24 / K_QLCB_23 × 100%` — tính ở presentation layer |
 
 > **PENDING — K_QLCB_19 đến K_QLCB_22:** 4 KPI có nguồn TTHC. Không có TTHC_Source_Analysis.md → không xác định được Silver entity. Giữ placeholder NULL trong `Securities Offering 360 Profile`.  
@@ -398,24 +406,29 @@ flowchart LR
 erDiagram
     Securities_Offering_360_Profile {
         varchar Securities_Offering_Code PK
+        varchar Offering_Type_Category_Code PK
         string Public_Company_Code
         string Public_Company_Name
         string Public_Company_English_Name
         string Equity_Ticker
         varchar Security_Type_Code
-        varchar Offering_Type_Category_Code
+        int Planned_Offering_Quantity
+        float Planned_Offering_Amount
+        string Planned_Offering_Target
+        int Planned_Offering_Employee_Quantity
+        int Actual_Offering_Quantity
+        float Actual_Offering_Amount
+        string Actual_Offering_Target
+        int Actual_Offering_Employee_Quantity
         string Certificate_Number
         date Certificate_Issue_Date
         string SSC_Official_Document_Number
         date SSC_Official_Document_Date
-        boolean Multi_Offering_Flag
-        int Planned_Security_Quantity
-        float Planned_Proceeds_Amount
-        int Successful_Security_Quantity
-        float Actual_Proceeds_Amount
-        string Capital_Usage_Plan
         date Offering_Start_Date
         date Offering_End_Date
+        boolean Multi_Offering_Flag
+        string Created_By_Login_Name
+        string Capital_Usage_Plan
         varchar Industry_Category_Level1_Code
         varchar Industry_Category_Level2_Code
         varchar Equity_Listing_Exchange_Code
@@ -446,7 +459,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán/phát hành (latest state — 1 row per company_securities_issuance) |
+| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình có qty > 0. Composite PK: (Securities Offering Code, Offering Type Category Code) |
 
 ---
 
@@ -573,7 +586,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán/phát hành (1 row per company_securities_issuance) |
+| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình có qty > 0. Composite PK: (Securities Offering Code, Offering Type Category Code) |
 
 ---
 
@@ -599,7 +612,7 @@ flowchart LR
 | K_QLCB_35 | Ngày cấp giấy chứng nhận | Ngày | Attribute | `Public Company Securities Offering.Certificate Issue Date` — IDS.company_securities_issuance.certificate_issue_date |
 | K_QLCB_36 | Số công văn gửi công ty | Text | Attribute | `Public Company Securities Offering.SSC Official Document Number` — IDS.company_securities_issuance.ssc_official_doc_no |
 | K_QLCB_37 | Ngày công văn | Ngày | Attribute | `Public Company Securities Offering.SSC Official Document Date` — IDS.company_securities_issuance.ssc_official_doc_date |
-| K_QLCB_38 | Hình thức phát hành | Text | Attribute | `Securities Offering 360 Profile.Offering Type Category Code` — ETL derived từ plan_xxx_qty. Xem O_QLCB_1 |
+| K_QLCB_38 | Hình thức phát hành | Text | Attribute | `Securities Offering 360 Profile.Offering Type Category Code` — PK component 2; ETL sinh 1 row per loại hình có qty > 0 |
 
 **Schema bảng tác nghiệp:** Kế thừa `Securities Offering 360 Profile`.
 
@@ -620,7 +633,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán/phát hành |
+| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình có qty > 0. Composite PK: (Securities Offering Code, Offering Type Category Code) |
 
 ---
 
@@ -628,7 +641,7 @@ flowchart LR
 
 > Phân loại: **Tác nghiệp**  
 > Silver: `Public Company Securities Offering` ← IDS.company_securities_issuance — **READY**  
-> Ghi chú: "Giá (cấp phép)" — Silver lưu giá riêng per hình thức (plan_esop_price, plan_single_price...), không có giá tổng hợp. Cần giải quyết qua O_QLCB_1 (Offering Type Category). "Số lượng người lao động" và "Đối tượng" là các text field riêng per hình thức — đã có trong Silver (`plan_esop_no`, `plan_single_obj`...).
+> Ghi chú: Với pivot design, mỗi row 360 Profile là 1 loại hình cụ thể — `Planned_Offering_Target`, `Planned_Offering_Employee_Quantity` lấy trực tiếp từ row tương ứng, không cần ETL pick nữa. `Planned_Offering_Price` không lưu trên mart (derive được = `Planned_Offering_Amount / Planned_Offering_Quantity` tại presentation layer).
 
 **Mockup:**
 
@@ -643,10 +656,10 @@ flowchart LR
 | KPI ID | Tên | Đơn vị | Tính chất | Nguồn Silver |
 |---|---|---|---|---|
 | K_QLCB_39 | Số lượng cấp phép | CK | Attribute | `Public Company Securities Offering.Planned Security Quantity` — IDS.company_securities_issuance.planned_security_qty |
-| K_QLCB_40 | Giá (cấp phép) | VNĐ | Attribute | ETL derived — giá theo `Offering Type Category Code` chính. Xem O_QLCB_1 |
-| K_QLCB_41 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering.Planned Proceeds Amount` — IDS.company_securities_issuance.planned_proceeds_am |
-| K_QLCB_42 | Số lượng người lao động | Người | Attribute | ETL derived — từ `plan_esop_no` / `plan_bonus_share_no` tùy hình thức. Xem O_QLCB_5 |
-| K_QLCB_43 | Đối tượng | Text | Attribute | ETL derived — từ `plan_esop_no` / `plan_single_obj` / `plan_shareholder_qty`... tùy hình thức |
+| K_QLCB_40 | Giá (cấp phép) | VNĐ | Derived | `Planned Offering Amount / Planned Offering Quantity` — giá bình quân gia quyền; tính ở presentation layer. NULL với Dividend/Owner Capital (không có Amount) |
+| K_QLCB_41 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Securities Offering 360 Profile.Planned Offering Amount` — `qty × price` của loại hình; NULL với Dividend/Owner Capital |
+| K_QLCB_42 | Số lượng người lao động | Người | Attribute | `Securities Offering 360 Profile.Planned Offering Employee Quantity` — SL NLĐ; chỉ có giá trị với ESOP/Bonus Share; NULL với các loại hình khác |
+| K_QLCB_43 | Đối tượng | Text | Attribute | `Securities Offering 360 Profile.Planned Offering Target` — đối tượng chào bán của loại hình; NULL với Dividend/Owner Capital/Public |
 | K_QLCB_44 | Mục đích sử dụng vốn | Text | Attribute | `Public Company Securities Offering.Capital Usage Plan` — IDS.company_securities_issuance.capital_usage_plan |
 
 **Schema bảng tác nghiệp:** Kế thừa `Securities Offering 360 Profile` — cần bổ sung thêm các attribute ESOP/bonus/private target.
@@ -668,7 +681,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán/phát hành |
+| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình có qty > 0. Composite PK: (Securities Offering Code, Offering Type Category Code) |
 
 ---
 
@@ -689,11 +702,11 @@ flowchart LR
 
 | KPI ID | Tên | Đơn vị | Tính chất | Nguồn Silver |
 |---|---|---|---|---|
-| K_QLCB_45 | Số lượng thực tế | CK | Attribute | `Public Company Securities Offering.Successful Security Quantity` — IDS.company_securities_issuance.successful_security_qty |
-| K_QLCB_46 | Giá thực tế | VNĐ | Attribute | ETL derived — giá theo `Offering Type Category Code` chính (result). Xem O_QLCB_1 |
-| K_QLCB_47 | Giá trị thực tế | Tỷ VNĐ | Attribute | `Public Company Securities Offering.Actual Proceeds Amount` — IDS.company_securities_issuance.actual_proceeds_am |
-| K_QLCB_48 | Số lượng người lao động (TT) | Người | Attribute | ETL derived — từ `result_esop_no` / `result_bonus_share_no` tùy hình thức. Xem O_QLCB_5 |
-| K_QLCB_49 | Đối tượng (thực tế) | Text | Attribute | ETL derived — từ `result_esop_no` / `result_single_obj`... tùy hình thức |
+| K_QLCB_45 | Số lượng thực tế | CK | Attribute | `SUM(Actual Offering Quantity)` GROUP BY Securities Offering Code — tổng số lượng CK thực tế của đợt |
+| K_QLCB_46 | Giá thực tế | VNĐ | Derived | `Actual Offering Amount / Actual Offering Quantity` — giá bình quân gia quyền; tính ở presentation layer. NULL với Dividend/Owner Capital (không có Amount) |
+| K_QLCB_47 | Giá trị thực tế | Tỷ VNĐ | Attribute | `Securities Offering 360 Profile.Actual Offering Amount` — `qty × price` thực tế của loại hình; NULL với Dividend/Owner Capital |
+| K_QLCB_48 | Số lượng người lao động (TT) | Người | Attribute | `Securities Offering 360 Profile.Actual Offering Employee Quantity` — SL NLĐ thực tế; chỉ có giá trị với ESOP/Bonus Share |
+| K_QLCB_49 | Đối tượng (thực tế) | Text | Attribute | `Securities Offering 360 Profile.Actual Offering Target` — đối tượng thực tế của loại hình |
 
 **Schema bảng tác nghiệp:** Kế thừa `Securities Offering 360 Profile`.
 
@@ -714,7 +727,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán/phát hành |
+| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình có qty > 0. Composite PK: (Securities Offering Code, Offering Type Category Code) |
 
 
 ---
@@ -774,9 +787,10 @@ graph TB
 
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_QLCB_1 | **Mapping Loại hình phát hành:** Silver `Public Company Securities Offering` không có field `offering_type_category` thống nhất — các loại hình lưu dưới dạng nhiều cặp field riêng biệt (`plan_public_company_qty`, `plan_single_qty`, `plan_dividend_qty`, `plan_bonus_share_qty`, `plan_owner_qty`...). | BA đồng ý ETL derived từ Silver — ETL sinh `Offering Type Category Code` từ field `planned_qty` cao nhất. Scheme: `QLCB_OFFERING_TYPE_CATEGORY`. | K_QLCB_4–16 | **Closed** |
+| O_QLCB_1 | **Mapping Loại hình phát hành trên 360 Profile:** Silver `Public Company Securities Offering` lưu qty/price riêng cho từng loại hình. Cần xác định loại hình nào "active" (qty > 0) để sinh row trên 360 Profile. | ETL sinh 1 row trên `Securities Offering 360 Profile` per loại hình có qty > 0 trong đợt chào bán. `Offering Type Category Code` = PK component 2 (không còn ETL pick type chính). Fact Securities Offering không lưu `Offering Type Category Code` — dùng 6 cột per-type Amount thay thế. | K_QLCB_18, 38 | **Closed** |
 | O_QLCB_2 | **KPI nguồn TTHC:** 4 KPI trong Nhóm 4 (Đơn vị tư vấn, Tổ chức kiểm toán, Đơn vị bảo lãnh, Đơn vị XHTN) có nguồn TTHC — không có TTHC_Source_Analysis.md trong project knowledge. Không thể xác định Silver entity, tên bảng nguồn hay field tương ứng. | Đánh dấu PENDING, giữ placeholder NULL trong `Securities Offering 360 Profile`. ETL bổ sung sau khi có Silver TTHC. | K_QLCB_19–22 | **Open** |
 | O_QLCB_3 | **Ngày làm FK date trên Fact:** Silver `Public Company Securities Offering` có 3 trường ngày: `certificate_issue_date` (ngày cấp GCN chào bán), `offering_start_date` (ngày chào bán chứng khoán), `ssc_official_doc_date` (ngày ra công văn UBCKNN). | BA xác nhận (cập nhật): FK date chính = `ssc_official_doc_date` (ngày công văn UBCKNN) → `SSC Official Document Date Dimension Id`. `certificate_issue_date` và `offering_start_date` lưu thêm dạng date field trên Fact/Tác nghiệp nhưng không làm FK date chính. | K_QLCB_1–16 | **Closed** |
 | O_QLCB_4 | **Toàn bộ Tab Hồ sơ đăng ký chào bán (STT 29–39) nguồn TTHC:** 11 KPI gồm 3 Nhóm (KPI Cards, donut chart, bảng chi tiết hồ sơ) đều có nguồn TTHC — không có TTHC_Source_Analysis.md. Không tìm thấy Silver entity nào lưu trạng thái hồ sơ đăng ký chào bán trong `silver_attributes.csv`. Khi có Silver TTHC, cần thiết kế thêm: `Fact Securities Offering Application` (Event, grain = 1 hồ sơ × 1 ngày nộp), `Calendar Date Dimension` (reuse), `Public Company Dimension` (reuse). | Đánh dấu PENDING toàn bộ tab. Không thiết kế mart khi chưa có Silver LLD. | K_QLCB_28–38 | **Open** |
-| O_QLCB_5 | **Chuyên viên và Giá/Đối tượng/SL NLĐ per hình thức:** (a) "Chuyên viên" = `Created By Login Name` (IDS.company_securities_issuance.created_by) — BA xác nhận dùng field này. Lưu ý giá trị là login_name kỹ thuật, không phải tên đầy đủ. ETL lấy trực tiếp, hiển thị login_name. (b) "Giá (cấp phép/thực tế)", "Số lượng NLĐ", "Đối tượng" không có field tổng hợp trên Silver — ETL pick theo `Offering Type Category Code` chính (O_QLCB_1 đã Closed). | (a) READY — map `Created By Login Name`, hiển thị login_name. (b) ETL pick theo Offering Type Category Code chính. | K_QLCB_29, K_QLCB_40, K_QLCB_42–43, K_QLCB_46, K_QLCB_48–49 | **Closed** |
+| O_QLCB_5 | **Chuyên viên và Giá/Đối tượng/SL NLĐ per hình thức:** (a) "Chuyên viên" = `Created By Login Name` (IDS.company_securities_issuance.created_by) — BA xác nhận dùng field này. Giá trị là login_name kỹ thuật, không phải tên đầy đủ. (b) Với pivot design trên 360 Profile, mỗi row đã là 1 loại hình cụ thể — `Planned/Actual Offering Target`, `Planned/Actual Offering Employee Quantity` lấy trực tiếp từ row tương ứng, không cần ETL pick nữa. `Planned/Actual Offering Price` không lưu trên mart — derive tại presentation layer = Amount / Quantity. | (a) READY — map `Created By Login Name`. (b) RESOLVED bởi pivot design — xem O_QLCB_1 (Closed). | K_QLCB_29, K_QLCB_40, K_QLCB_42–43, K_QLCB_46, K_QLCB_48–49 | **Closed** |
 | O_QLCB_6 | **Ngày hết hạn CCHN (K_QLCB_63):** BA xác nhận map về `CertificateRecords.RevocationDate` (ngày bị thu hồi chứng chỉ). | Map về `Securities Practitioner License Certificate Document.Revocation Date` — NHNCK.CertificateRecords.RevocationDate. | K_QLCB_63 | **Closed** |
+| O_QLCB_7 | **Per-type amount columns trên Fact:** Silver `company_securities_issuance` lưu qty và price riêng per loại hình. Một đợt chào bán có thể dùng nhiều loại hình đồng thời (mixed-type). `planned_proceeds_am` / `actual_proceeds_am` là tổng tất cả loại hình — không thể filter per-type chính xác. Ngoài ra Silver **không có price field** cho loại hình Trả cổ tức (`plan_dividend_qty`) và Tăng vốn từ VCSH (`plan_owner_qty`) — 2 loại hình này phát hành bằng chuyển đổi vốn chủ sở hữu, không huy động tiền mặt. | Bổ sung vào `Fact Securities Offering`: (1) 4 cột Currency Amount ETL-derived cho loại hình có tiền mặt: `Planned/Actual Public Offering Amount`, `Planned/Actual Private Placement Amount`, `Planned/Actual ESOP Amount`, `Planned/Actual Other Amount`. `Other Amount` = `proceeds_am − (Public + Private + ESOP)`. (2) 4 cột Small Counter map thẳng từ Silver cho loại hình không có tiền: `Planned/Actual Dividend Issuance Quantity`, `Planned/Actual Owner Capital Issuance Quantity`. Lưu ý: BA file có lỗi đánh máy tại công thức Dividend và OwnerCapital (qty×qty thay vì qty×price) — đã xử lý bằng thiết kế lưu số lượng thay vì giá trị. | K_QLCB_5–16 | **Closed** |
