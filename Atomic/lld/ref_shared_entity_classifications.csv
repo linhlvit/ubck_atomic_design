@@ -1,4 +1,4 @@
-scheme_code,code,name,source_type,source_table,used_in_entities
+﻿scheme_code,code,name,source_type,source_table,used_in_entities
 IP_ALT_ID_TYPE,NATIONAL_ID,CMND,etl_derived,,IP Alt Identification
 IP_ALT_ID_TYPE,CITIZEN_ID,CCCD,etl_derived,,IP Alt Identification
 IP_ALT_ID_TYPE,PASSPORT,Hộ chiếu,etl_derived,,IP Alt Identification
@@ -405,3 +405,23 @@ ECAT_ENTERPRISE_TYPE,(source),Loại hình doanh nghiệp — values from ECAT_4
 ECAT_FUND_TYPE,(source),Loại hình quỹ đầu tư — values from ECAT_44_FundType,source_table,ECAT.ECAT_44_FundType,(Classification Value — không gắn Atomic entity)
 ECAT_OPERATING_STATUS,(source),Trạng thái hoạt động — values from ECAT_45_OperatingStatus,source_table,ECAT.ECAT_45_OperatingStatus,(Classification Value — không gắn Atomic entity)
 ECAT_SHAREHOLDER_TYPE,(source),Loại hình cổ đông/nhà đầu tư — values from ECAT_46_ShareholderType,source_table,ECAT.ECAT_46_ShareholderType,(Classification Value — không gắn Atomic entity)
+MDDS_MARKET_ID,(source),ID/mã sàn giao dịch và chỉ số tổng hợp: 10=HOSE / 02=HNX / 04=UPCOM / 06=Corp Bond / VN30 / HNX30...,source_table,MDDS.MarketInfor,Market Snapshot
+MDDS_MARKET_STATUS,(source),Trạng thái phiên giao dịch tổng hợp sàn: ATO / Continuous / ATC / Closed,source_table,MDDS.MarketInfor,Market Snapshot
+MDDS_INDEX_TYPE,(source),Loại chỉ số: 0=Toàn thị trường / 1=Bảng giao dịch / 2=Phức hợp / 3=Ngành / 4=Top ranking,source_table,MDDS.IDXInfor,Market Index Snapshot
+MDDS_INDEX_STATUS,(source),Trạng thái chỉ số (1=bình thường — cần profile thêm),source_table,MDDS.IDXInfor,Market Index Snapshot
+MDDS_FLOOR_CODE,(source),Mã sàn giao dịch: 02=HNX / 04=UPCOM / 10=HOSE / 03=FDS (phái sinh) / 06=Corp Bond,source_table,MDDS.StockInfor,"Security Trading Snapshot, Corporate Bond Trading Snapshot"
+MDDS_STOCK_TYPE,(source),Loại chứng khoán theo sàn — HNX: BO/ST/MF/FU/OP/EF; HOSE: B/S/U/E/D/W. Parse kết hợp FloorCode,source_table,MDDS.StockInfor,Security Trading Snapshot
+MDDS_TRADING_SESSION,(source),Mã phiên giao dịch: ATO / Continuous / ATC / ...,source_table,MDDS.StockInfor,Security Trading Snapshot
+MDDS_COVERED_WARRANT_TYPE,(source),Loại chứng quyền — chỉ áp dụng khi StockType=W,source_table,MDDS.StockInfor,Security Trading Snapshot
+MDDS_MATCH_DIRECTION,(source),Chiều giao dịch chủ động: B=Mua chủ động / S=Bán chủ động / O=ATO / C=ATC,source_table,MDDS.TransLog,"Security Match Log, Corporate Bond Match Log"
+MDDS_PERIOD_UNIT,(source),Đơn vị kỳ hạn: 1=Ngày / 2=Tuần / 3=Tháng / 4=Năm,source_table,MDDS.CorpBondInfor,Corporate Bond Trading Snapshot
+MDDS_BOND_INTEREST_TYPE,(source),Loại hình lãi suất: 1=Coupon / 2=Zero Coupon,source_table,MDDS.CorpBondInfor,Corporate Bond Trading Snapshot
+MDDS_INTEREST_RATE_TYPE,(source),Loại lãi suất: 1=Cố định / 2=Thả nổi,source_table,MDDS.CorpBondInfor,Corporate Bond Trading Snapshot
+MDDS_COUPON_TYPE,(source),Kiểu coupon: 1=Standard / 2=Long Coupon / 3=Short Coupon / 4=Khác,source_table,MDDS.CorpBondInfor,Corporate Bond Trading Snapshot
+MDDS_INTEREST_PAYMENT_TYPE,(source),Phương thức trả lãi: 1=Định kỳ cuối kỳ / 2=Định kỳ đầu kỳ,source_table,MDDS.CorpBondInfor,Corporate Bond Trading Snapshot
+MDDS_SECURITY_TRADING_STATUS,(source),Trạng thái trái phiếu: 0=Bình thường / 1=Tạm ngừng nghỉ lễ / 2=Ngừng GD / 10=Tạm ngừng GD / 11=Hạn chế GD / 25=GD đặc biệt,source_table,MDDS.CorpBondInfor,Corporate Bond Trading Snapshot
+MDDS_TRAD_SES_STATUS,(source),Trạng thái phiên TPDN: 1=Đang nhận lệnh / 2=Tạm dừng / 13=Kết thúc nhận lệnh / 90=Chờ nhận lệnh / 97=Đóng cửa,source_table,MDDS.CorpBondInfor,Corporate Bond Trading Snapshot
+MDDS_LISTING_STATUS,(source),Trạng thái niêm yết HNX/UPCOM: parse từ Status vị trí 1 (LISTTING_STATUS),source_table,MDDS.StockInfor,Security Trading Snapshot
+MDDS_DELIST_FLAG,(source),Cờ hủy niêm yết HOSE: parse từ Status vị trí 1 (DELIST_ALPH),source_table,MDDS.StockInfor,Security Trading Snapshot
+MDDS_SUSPENSION_FLAG,(source),Cờ đình chỉ giao dịch HOSE: parse từ Status vị trí 2 (SUSPENSION_ALPH),source_table,MDDS.StockInfor,Security Trading Snapshot
+MDDS_HALT_RESUME_FLAG,(source),Cờ tạm ngừng/khôi phục HOSE: parse từ Status vị trí 3 (HALT_RESUME_FLAG_ALPH),source_table,MDDS.StockInfor,Security Trading Snapshot

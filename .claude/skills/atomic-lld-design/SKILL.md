@@ -42,6 +42,7 @@ description: |
 1. **HLD Overview** (`{SOURCE}_HLD_Overview.md`) → tổng quan entity, quan hệ, BCV Concept đã thống nhất.
 2. **HLD Tier tương ứng** (`{SOURCE}_HLD_Tier{N}.md`) → chi tiết entity và quan hệ Tier đang thiết kế.
 3. **Source columns** (`Source/{SOURCE}_Tables.csv`, `{SOURCE}_Columns.csv`) → cột, data type, mô tả gốc.
+   Ghi nhận data type của từng cột nguồn — dùng ở Bước 3b để review conversion risk và ghi chú khi data type nguồn không khai báo rõ ràng.
 4. **Tất cả file LLD đã có** trong cùng source system (`Atomic/lld/{SOURCE}/`):
    - Entity đã thiết kế và cấu trúc attribute.
    - Pattern FK đã dùng (tên trường, data domain).
@@ -72,7 +73,31 @@ Copy [`templates/attr_main_entity.csv`](templates/attr_main_entity.csv) làm sta
 - **Tiếng Việt PHẢI có dấu đầy đủ** (Unicode UTF-8). Không viết Việt-không-dấu, không viết tắt. Hiển thị trực tiếp trong tài liệu Word handover (`atomic-gen-docs`). Nếu mô tả gốc từ CSDL nguồn không có dấu → bổ sung dấu khi copy.
 
 #### 3b. Data Domain
-Dùng đúng 1 trong 12 Data Domain chuẩn (chi tiết xem [`reference/data_domains.md`](reference/data_domains.md)). 2 Data Domain mở rộng cho junction denormalized: `Array<Text>`, `Array<Struct>`.
+
+Dùng Data Domain phù hợp nhất với **ý nghĩa nghiệp vụ** của attribute (chi tiết xem [`reference/data_domains.md`](reference/data_domains.md)). 2 Data Domain mở rộng cho junction denormalized: `Array<Text>`, `Array<Struct>`.
+
+**Bước 1 — Chọn Data Domain theo nghĩa nghiệp vụ (ưu tiên ngữ nghĩa, không ép theo data type nguồn):**
+- Ý nghĩa là tiền tệ → `Currency Amount`, dù nguồn lưu `varchar`
+- Ý nghĩa là lãi suất → `Interest Rate`; tỷ giá → `Exchange Rate`; phần trăm → `Percentage`
+- Ý nghĩa là ngày (không có giờ) → `Date`; ngày + giờ → `Timestamp`
+- Ý nghĩa là cờ True/False → `Boolean`; số đếm/version → `Small Counter`
+- Ý nghĩa là mã phân loại → `Classification Value`; FK surrogate → `Surrogate Key`
+- Không thuộc các loại trên → `Text`
+
+Nếu ý nghĩa nghiệp vụ không ánh xạ được vào bất kỳ Data Domain hiện có nào → **đề xuất Data Domain mới** kèm định nghĩa và data type vật lý dự kiến, ghi vào comment với tag `[PROPOSE NEW DOMAIN]` để reviewer xem xét bổ sung vào `reference/data_domains.md`.
+
+**Bước 2 — Review conversion risk: đối chiếu Data Domain đã chọn với data type nguồn:**
+
+Sau khi chọn xong Data Domain, đọc lại data type của cột nguồn trong Columns.csv và ghi chú nếu có chênh lệch:
+
+| Tình huống | Hành động |
+|---|---|
+| Data type nguồn khớp tự nhiên với domain (ví dụ: `date` → `Date`, `decimal` → `Currency Amount`) | Không cần ghi chú thêm |
+| Data type nguồn là `string`/`varchar` nhưng domain chọn là số (`Small Counter`, `Currency Amount`...) | Ghi chú vào comment: `"Nguồn lưu dạng string — ETL cần cast/parse sang [data type vật lý]. Cần validate không có giá trị non-numeric."` |
+| Data type nguồn là số (`int`, `decimal`) nhưng domain chọn là `Text` hoặc `Classification Value` | Ghi chú: `"Nguồn lưu dạng số — ETL cần convert sang string. Giữ nguyên leading zeros nếu có."` |
+| Data type nguồn không khai báo trong Columns.csv | Ghi chú: `"Data type nguồn không rõ — cần profile trước khi ETL. Domain tạm chọn dựa trên mô tả cột."` |
+
+Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà là **ghi nhận conversion risk** để team ETL biết trước. Chuẩn hóa dữ liệu theo ngữ nghĩa là đúng; ép kiểu cần được thực hiện có kiểm soát.
 
 #### 3c. FK đến Fundamental entity
 - **Luôn tạo cặp `[Entity] Id` + `[Entity] Code`** — kể cả khi nullable.
@@ -188,6 +213,8 @@ Trước khi xuất file:
 - [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (`Charter Capital Amount`, `Life Cycle Status Code`...)?
 - [ ] **Entity dùng chung nhiều source:** attribute tên công ty/tên tắt/tên tiếng Anh phải dùng **prefix entity** nhất quán (`Fund Management Company Name`, `Custodian Bank Short Name`) — KHÔNG dùng `Full Name` / `Abbreviation` / `English Name` cho entity shared.
 - [ ] Format `nullable` nhất quán: `true`/`false` — không dùng `Yes`/`No`.
+- [ ] **Conversion risk:** Mọi attribute có Data Domain không khớp tự nhiên với data type nguồn (ví dụ: nguồn `string` → domain `Small Counter`) đã có comment ghi chú conversion risk chưa? Nếu data type nguồn không khai báo → đã ghi "cần profile" trong comment?
+- [ ] **Domain mới:** Nếu có attribute dùng tag `[PROPOSE NEW DOMAIN]` → đã tách thành điểm cần xác nhận riêng để reviewer quyết định bổ sung vào `reference/data_domains.md`?
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.
