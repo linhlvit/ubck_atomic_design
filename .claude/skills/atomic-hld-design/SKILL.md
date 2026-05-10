@@ -42,14 +42,18 @@ description: |
 | `Fundamental` | Entity độc lập, có lifecycle riêng, không FK đến entity nghiệp vụ khác | SCD4A |
 | `Relative` | Entity phụ thuộc Fundamental (FK), mô tả trạng thái hoặc thuộc tính bổ sung | SCD2 |
 | `Fact Append` | Log hoạt động, giao dịch, sự kiện — mỗi dòng là 1 occurrence không bị xóa/sửa | Insert-only, append, không update |
-| `Snapshot` | Chụp toàn bộ trạng thái tại 1 thời điểm — load định kỳ (hàng ngày / hàng kỳ) | Full replace theo partition ngày |
+| `Fact Snapshot` | Chụp trạng thái tại 1 thời điểm/kỳ — giữ lịch sử nhiều kỳ, không overwrite | Insert-only theo partition ngày/kỳ, giữ lịch sử |
 | `Classification` | Thông tin danh mục phân loại — có thể lấy từ nguồn hoặc tự định nghĩa. Mặc định cho tất cả entity có `bcv_core_object = Common` | SCD1 |
+
+**Phân biệt `Fact Append` vs `Fact Snapshot`:**
+- `Fact Append`: grain = 1 event/occurrence (tick khớp lệnh, log hoạt động). Mỗi dòng là 1 sự kiện xảy ra.
+- `Fact Snapshot`: grain = 1 trạng thái tại 1 thời điểm/kỳ (bảng giá cuối ngày, danh mục theo kỳ). Mỗi dòng là 1 lần chụp — có thể nhiều dòng cùng key nghiệp vụ qua các kỳ khác nhau.
 
 **Dấu hiệu nhận biết nhanh:**
 - Tên entity chứa "Activity Log", "Status Log", "Status History" → `Fact Append`
 - bcv_concept chứa "ETL Pattern" → `Fact Append`
 - bcv_core_object = Transaction → `Fact Append`
-- Tên entity chứa "Snapshot" → `Snapshot`
+- Tên entity chứa "Snapshot" → `Fact Snapshot`
 - bcv_core_object = Common → `Classification` (mặc định; điều chỉnh cá biệt theo quy trình status draft → approved trong atomic_entities.csv)
 - Không thuộc các trường hợp trên, không phụ thuộc Fundamental → `Fundamental`
 - Không thuộc các trường hợp trên, có FK đến Fundamental → `Relative`

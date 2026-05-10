@@ -9,13 +9,13 @@
 
 | Tier | Atomic Entity | BCV Core Object | BCV Concept | table_type | Source Table(s) | Ghi chú |
 |---|---|---|---|---|---|---|
-| T1 | Market Snapshot | Group | `[Group] Share Index` | Snapshot | MDDS.MarketInfor | Snapshot tổng hợp toàn sàn (grain: sàn × thời điểm) |
-| T1 | Market Index Snapshot | Group | `[Group] Share Index` | Snapshot | MDDS.IDXInfor | Snapshot chỉ số (grain: mã chỉ số × thời điểm) |
-| T1 | Security Trading Snapshot | Product | `[Product] Financial Market Instrument` | Snapshot | MDDS.StockInfor | Snapshot bảng giá đa loại instrument (grain: symbol × thời điểm) |
-| T1 | Corporate Bond Trading Snapshot | Product | `[Product] Debt Instrument` | Snapshot | MDDS.CorpBondInfor | Snapshot bảng giá TPDN (grain: symbol × thời điểm) |
+| T1 | Market Snapshot | Group | `[Group] Share Index` | Fact Snapshot | MDDS.MarketInfor | Snapshot tổng hợp toàn sàn (grain: sàn × thời điểm) |
+| T1 | Market Index Snapshot | Group | `[Group] Share Index` | Fact Snapshot | MDDS.IDXInfor | Snapshot chỉ số (grain: mã chỉ số × thời điểm) |
+| T1 | Security Trading Snapshot | Product | `[Product] Financial Market Instrument` | Fact Snapshot | MDDS.StockInfor | Snapshot bảng giá đa loại instrument (grain: symbol × thời điểm) |
+| T1 | Corporate Bond Trading Snapshot | Product | `[Product] Debt Instrument` | Fact Snapshot | MDDS.CorpBondInfor | Snapshot bảng giá TPDN (grain: symbol × thời điểm) |
 | T2 | Security Match Log | Transaction | `[Transaction] Sell Transaction` | Fact Append | MDDS.TransLog | Tick-by-tick match log cổ phiếu (grain: symbol × ngày × sequenceMsg) |
 | T2 | Corporate Bond Match Log | Transaction | `[Transaction] Sell Transaction` | Fact Append | MDDS.CorpBondMatch | Tick-by-tick match log TPDN (grain: symbol × ngày × ConfirmNo) |
-| T2 | Index Constituent Snapshot | Group | `[Group] Share Index` | Snapshot | MDDS.CSIDXInfor | Thành phần rổ chỉ số có attribute (Weighted, AddDate) — grain: (IndexCode × Symbol × ngày) |
+| T2 | Index Constituent Snapshot | Group | `[Group] Share Index` | Fact Snapshot | MDDS.CSIDXInfor | Thành phần rổ chỉ số có attribute (Weighted, AddDate) — grain: (IndexCode × Symbol × ngày) |
 
 **Tổng: 7 Atomic entities** (4 Tier 1, 3 Tier 2)
 
