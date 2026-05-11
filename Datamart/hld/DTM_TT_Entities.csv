@@ -1,4 +1,4 @@
-﻿gold_entity,table_type,status,description,source_table,FKs
+﻿datamart_entity,table_type,status,description,source_table,FKs
 Calendar Date Dimension,dim,draft,Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian,Generated,
 Classification Dimension,dim,draft,Danh mục phân loại — phục vụ 3 scheme trên 2 Fact: TT_SUBJECT_CATEGORY (6 giá trị tạm thời) / TT_PENALTY_SUBJECT_CATEGORY (4 giá trị) / TT_VIOLATION_TYPE (11 giá trị). Mọi query JOIN phải kèm WHERE Scheme='...',Generated,
 Fact Inspection Case Activity,fact,draft,Event vụ việc TT/KT — 1 row per hồ sơ × đối tượng. Đếm hồ sơ dùng COUNT(DISTINCT Inspection_Case_Code). Date key: Received Date (xem O_TT_3),Inspection Case / Inspection Decision Subject / Inspection Case Conclusion,Calendar Date Dimension.Received Date Dimension Id | Classification Dimension.Subject Category Dimension Id | Classification Dimension.Violation Type Dimension Id

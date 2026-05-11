@@ -1,10 +1,10 @@
-# Gold Entities Overview — NHNCK (Người hành nghề chứng khoán)
+# Datamart Entities Overview — NHNCK (Người hành nghề chứng khoán)
 
 ---
 
-## Tổng quan toàn bộ Star Schema — GOLD NHNCK
+## Tổng quan toàn bộ Star Schema — DATAMART NHNCK
 
-> Hình này thể hiện toàn bộ 12 entities của Gold Mart NHNCK: 2 Fact, 2 Dimension và 8 bảng Tác nghiệp, cùng các mối quan hệ giữa Fact và Dimension.
+> Hình này thể hiện toàn bộ 12 entities của Data Mart NHNCK: 2 Fact, 2 Dimension và 8 bảng Tác nghiệp, cùng các mối quan hệ giữa Fact và Dimension.
 
 ```mermaid
 graph TB
@@ -51,7 +51,7 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Practitioner License Certificate Snapshot | Periodic Snapshot tháng — đếm CCHN theo trạng thái, loại hình, cấp mới, thu hồi | 1 CCHN × 1 tháng | K_NHNCK_2, 2a, 2b, 3, 5–8 |
 | Securities Practitioner Dimension | NHN — định danh, trình độ, quốc tịch (SCD2) | 1 NHN per SCD2 version | — |
@@ -71,7 +71,7 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Practitioner Daily Snapshot | Periodic Snapshot ngày — đếm tổng NHN đang hành nghề và NHN có cảnh báo vi phạm | 1 NHN × 1 ngày | K_NHNCK_1, 4 |
 | Securities Practitioner Dimension | NHN — định danh, trình độ, quốc tịch (SCD2) | 1 NHN per SCD2 version | — |
@@ -92,7 +92,7 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Practitioner License Certificate Snapshot | Dùng chung với Nhóm 1 — GROUP BY Certificate_Type_Code tại snapshot cuối năm | 1 CCHN × 1 tháng | K_NHNCK_17–22 |
 | Securities Practitioner Dimension | NHN — định danh (SCD2) | 1 NHN per SCD2 version | — |
@@ -112,7 +112,7 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Practitioner Daily Snapshot | Dùng chung với Nhóm 2 — filter Has_Active_Certificate = true, GROUP BY Education_Level_Code | 1 NHN × 1 ngày | K_NHNCK_9–14 |
 | Securities Practitioner Dimension | NHN — Education Level Code (SCD2) | 1 NHN per SCD2 version | — |
@@ -132,7 +132,7 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Practitioner Daily Snapshot | Dùng chung với Nhóm 2 — filter Has_Active_Certificate = true, GROUP BY Age band + Nationality_Code | 1 NHN × 1 ngày | K_NHNCK_23–32 |
 | Securities Practitioner Dimension | NHN — Nationality Code (SCD2) | 1 NHN per SCD2 version | — |
@@ -144,7 +144,7 @@ erDiagram
 
 ### Nhóm 6 — Danh sách & Header NHN 360°
 
-> **Ghi chú:** `Practitioner 360 Profile` là bảng tác nghiệp — lấy trực tiếp từ Silver `Securities Practitioner`, `Securities Practitioner License Certificate Document`, `Securities Practitioner Organization Employment Report`, `Securities Practitioner Related Party`, không join qua Dimension.
+> **Ghi chú:** `Practitioner 360 Profile` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner`, `Securities Practitioner License Certificate Document`, `Securities Practitioner Organization Employment Report`, `Securities Practitioner Related Party`, không join qua Dimension.
 
 #### Star schema
 
@@ -152,15 +152,15 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner 360 Profile | Hồ sơ 360° NHN — latest state. Silver: Securities Practitioner + License Certificate Document + Organization Employment Report + Related Party | 1 NHN | K_NHNCK_33–42 |
+| Practitioner 360 Profile | Hồ sơ 360° NHN — latest state. Atomic: Securities Practitioner + License Certificate Document + Organization Employment Report + Related Party | 1 NHN | K_NHNCK_33–42 |
 
 ---
 
 ### Nhóm 7 — Lịch sử cấp chứng chỉ hành nghề
 
-> **Ghi chú:** `Practitioner Certificate History` là bảng tác nghiệp — lấy trực tiếp từ Silver `Securities Practitioner License Certificate Document` và `Securities Practitioner License Decision Document`.
+> **Ghi chú:** `Practitioner Certificate History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner License Certificate Document` và `Securities Practitioner License Decision Document`.
 
 #### Star schema
 
@@ -168,15 +168,15 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner Certificate History | Lịch sử cấp CCHN — toàn bộ CCHN per NHN. Silver: License Certificate Document + License Decision Document | 1 CCHN per NHN | K_NHNCK_43–48 |
+| Practitioner Certificate History | Lịch sử cấp CCHN — toàn bộ CCHN per NHN. Atomic: License Certificate Document + License Decision Document | 1 CCHN per NHN | K_NHNCK_43–48 |
 
 ---
 
 ### Nhóm 8 — Quá trình hành nghề
 
-> **Ghi chú:** `Practitioner Employment History` là bảng tác nghiệp — lấy trực tiếp từ Silver `Securities Practitioner Organization Employment Report`.
+> **Ghi chú:** `Practitioner Employment History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Organization Employment Report`.
 
 #### Star schema
 
@@ -184,15 +184,15 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner Employment History | Quá trình hành nghề — toàn bộ lần công tác per NHN. Silver: Organization Employment Report | 1 lần công tác per NHN | K_NHNCK_49–53 |
+| Practitioner Employment History | Quá trình hành nghề — toàn bộ lần công tác per NHN. Atomic: Organization Employment Report | 1 lần công tác per NHN | K_NHNCK_49–53 |
 
 ---
 
 ### Nhóm 9 — Lịch sử vi phạm & xử phạt
 
-> **Ghi chú:** `Practitioner Violation History` là bảng tác nghiệp — lấy trực tiếp từ Silver `Securities Practitioner Conduct Violation` và `Securities Practitioner License Decision Document`.
+> **Ghi chú:** `Practitioner Violation History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Conduct Violation` và `Securities Practitioner License Decision Document`.
 
 #### Star schema
 
@@ -200,15 +200,15 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner Violation History | Lịch sử vi phạm — toàn bộ vi phạm per NHN. Silver: Conduct Violation + License Decision Document | 1 vi phạm per NHN | K_NHNCK_54–58 |
+| Practitioner Violation History | Lịch sử vi phạm — toàn bộ vi phạm per NHN. Atomic: Conduct Violation + License Decision Document | 1 vi phạm per NHN | K_NHNCK_54–58 |
 
 ---
 
 ### Nhóm 10 — Đợt thi sát hạch
 
-> **Ghi chú:** `Practitioner Exam History` là bảng tác nghiệp — lấy trực tiếp từ Silver `Securities Practitioner Qualification Examination Assessment Result`, `Securities Practitioner Qualification Examination Assessment` và `Securities Practitioner License Decision Document`.
+> **Ghi chú:** `Practitioner Exam History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Qualification Examination Assessment Result`, `Securities Practitioner Qualification Examination Assessment` và `Securities Practitioner License Decision Document`.
 
 #### Star schema
 
@@ -216,15 +216,15 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner Exam History | Lịch sử thi sát hạch — toàn bộ lần thi per NHN. Silver: Examination Assessment Result + Examination Assessment + License Decision Document | 1 lần thi per NHN | K_NHNCK_59–63 |
+| Practitioner Exam History | Lịch sử thi sát hạch — toàn bộ lần thi per NHN. Atomic: Examination Assessment Result + Examination Assessment + License Decision Document | 1 lần thi per NHN | K_NHNCK_59–63 |
 
 ---
 
 ### Nhóm 11 — Cập nhật kiến thức hành nghề
 
-> **Ghi chú:** `Practitioner Training History` là bảng tác nghiệp — lấy trực tiếp từ Silver `Securities Practitioner Professional Training Class Enrollment` và `Securities Practitioner Professional Training Class`. **DRAFT** — thiếu Training Hours (xem O_NHNCK_9).
+> **Ghi chú:** `Practitioner Training History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Professional Training Class Enrollment` và `Securities Practitioner Professional Training Class`. **DRAFT** — thiếu Training Hours (xem O_NHNCK_9).
 
 #### Star schema
 
@@ -232,15 +232,15 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner Training History | Lịch sử cập nhật kiến thức — 1 enrollment per NHN, GROUP BY Training_Year khi hiển thị. Silver: Training Class Enrollment + Training Class | 1 enrollment per NHN | K_NHNCK_64–67 (partial — xem O_NHNCK_9) |
+| Practitioner Training History | Lịch sử cập nhật kiến thức — 1 enrollment per NHN, GROUP BY Training_Year khi hiển thị. Atomic: Training Class Enrollment + Training Class | 1 enrollment per NHN | K_NHNCK_64–67 (partial — xem O_NHNCK_9) |
 
 ---
 
 ### Nhóm 12 — Mạng lưới người liên quan
 
-> **Ghi chú:** `Practitioner Related Party Profile` là bảng tác nghiệp — lấy trực tiếp từ Silver `Securities Practitioner Related Party`.
+> **Ghi chú:** `Practitioner Related Party Profile` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Related Party`.
 
 #### Star schema
 
@@ -248,9 +248,9 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner Related Party Profile | Mạng lưới người liên quan — toàn bộ người liên quan per NHN. Silver: Securities Practitioner Related Party | 1 người liên quan per NHN | K_NHNCK_75–78 |
+| Practitioner Related Party Profile | Mạng lưới người liên quan — toàn bộ người liên quan per NHN. Atomic: Securities Practitioner Related Party | 1 người liên quan per NHN | K_NHNCK_75–78 |
 
 ---
 
@@ -258,7 +258,7 @@ erDiagram
 
 ### Nhóm 13 — Data Explorer (Tra cứu tổng hợp CCHN)
 
-> **Ghi chú:** `Practitioner Data Explorer` là bảng tác nghiệp dạng flat list — lấy trực tiếp từ Silver `Securities Practitioner License Certificate Document`, `Securities Practitioner` và `Securities Practitioner Organization Employment Report`. Slicer Loại hình và Trạng thái filter tại query time.
+> **Ghi chú:** `Practitioner Data Explorer` là bảng tác nghiệp dạng flat list — lấy trực tiếp từ Atomic `Securities Practitioner License Certificate Document`, `Securities Practitioner` và `Securities Practitioner Organization Employment Report`. Slicer Loại hình và Trạng thái filter tại query time.
 
 #### Star schema
 
@@ -266,15 +266,15 @@ erDiagram
 
 #### Bảng entity
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Practitioner Data Explorer | Flat list CCHN toàn thị trường — toàn bộ trạng thái. Silver: License Certificate Document + Securities Practitioner + Organization Employment Report | 1 CCHN per NHN | K_NHNCK_68–74 |
+| Practitioner Data Explorer | Flat list CCHN toàn thị trường — toàn bộ trạng thái. Atomic: License Certificate Document + Securities Practitioner + Organization Employment Report | 1 CCHN per NHN | K_NHNCK_68–74 |
 
 ---
 
 ## Tổng hợp tất cả entities
 
-| Gold entity | table_type | status | Grain | KPI | source_table |
+| Datamart entity | table_type | status | Grain | KPI | source_table |
 |---|---|---|---|---|---|
 | `Calendar Date Dimension` | dim | draft | 1 ngày | — | Generated |
 | `Securities Practitioner Dimension` | dim | draft | 1 NHN per SCD2 version | — | Securities Practitioner |

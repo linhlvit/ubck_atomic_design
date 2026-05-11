@@ -1,4 +1,4 @@
-# GOLD_QLCB_Entities — Star Schema per nhóm báo cáo
+# DTM_QLCB_Entities — Star Schema per nhóm báo cáo
 
 **Module:** QLCB — Quản lý Chào bán  
 **Ngày:** 07/05/2026
@@ -14,7 +14,7 @@ erDiagram
     Industry_Category_Dimension ||--o{ Fact_Securities_Offering : "Industry Category Dimension Id"
 ```
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Securities Offering | Event chào bán/phát hành CK — lưu 6 cột per-type Amount/Quantity | 1 row = 1 đợt chào bán × 1 công ty đại chúng | K_QLCB_1–2, 4–16 |
 | Public Company Dimension | Công ty đại chúng — mã CK / tên / ngành / sàn (SCD2) | 1 công ty đại chúng | — |
@@ -55,7 +55,7 @@ erDiagram
     }
 ```
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Securities Offering 360 Profile | Hồ sơ 360° đợt chào bán — pivot theo loại hình. Composite PK: (Securities Offering Code, Offering Type Category Code) | 1 row = 1 đợt × 1 loại hình có qty > 0 (PUBLIC/PRIVATE/ESOP/DIVIDEND/OWNER_CAPITAL/OTHER) | K_QLCB_17–27, 28–49 |
 
@@ -63,10 +63,10 @@ erDiagram
 
 ## Nhóm 5–7: Hồ sơ đăng ký chào bán (PENDING — TTHC)
 
-> Toàn bộ PENDING — chờ Silver TTHC. Không có star schema thiết kế tại thời điểm này.
+> Toàn bộ PENDING — chờ Atomic TTHC. Không có star schema thiết kế tại thời điểm này.
 
-| Gold entity | Description | Grain | KPI | Trạng thái |
+| Datamart entity | Description | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Securities Offering Application | Event hồ sơ đăng ký chào bán | 1 hồ sơ × 1 ngày nộp | K_QLCB_28–38 (PENDING) | PENDING — chờ Silver TTHC |
+| Fact Securities Offering Application | Event hồ sơ đăng ký chào bán | 1 hồ sơ × 1 ngày nộp | K_QLCB_28–38 (PENDING) | PENDING — chờ Atomic TTHC |
 | Calendar Date Dimension | Lịch ngày (reuse) | 1 ngày | — | PENDING |
 | Public Company Dimension | Công ty đại chúng (reuse) | 1 công ty (SCD2) | — | PENDING |

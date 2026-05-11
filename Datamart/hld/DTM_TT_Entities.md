@@ -1,8 +1,8 @@
-# GOLD_TT_Entities — Gold Data Mart: Phân hệ Thanh Tra (TT)
+# DTM_TT_Entities — Data Mart: Phân hệ Thanh Tra (TT)
 
 **Phiên bản:** 1.0  
 **Ngày:** 28/04/2026  
-**Phạm vi:** 7 Gold entities — 2 Fact + 2 Dim + 3 Tác nghiệp
+**Phạm vi:** 7 Datamart entities — 2 Fact + 2 Dim + 3 Tác nghiệp
 
 ---
 
@@ -21,7 +21,7 @@ erDiagram
 
 **Bảng entity:**
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Inspection Case Activity | Event vụ việc TT/KT — 1 hồ sơ × 1 đối tượng | 1 row per `TT_HO_SO` × `TT_QUYET_DINH_DOI_TUONG`. Đếm hồ sơ: COUNT(DISTINCT Inspection_Case_Code) | K_TT_1–54 |
 | Calendar Date Dimension | Lịch ngày — slicer NĂM, GROUP BY tháng | 1 ngày | — |
@@ -53,7 +53,7 @@ erDiagram
 
 **Bảng entity:**
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Inspection Case List | Hồ sơ TT/KT — latest state | 1 row per hồ sơ (`TT_HO_SO`) | Nhóm 5, Nhóm 10 |
 
@@ -74,7 +74,7 @@ erDiagram
 
 **Bảng entity:**
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Penalty Decision | Event quyết định xử phạt | 1 row per QĐ (`GS_VAN_BAN_XU_LY`) | K_TT_55–80, K_TT_89–100 |
 | Calendar Date Dimension | Lịch ngày — slicer NĂM, GROUP BY tháng | 1 ngày | — |
@@ -107,7 +107,7 @@ erDiagram
 
 **Bảng entity:**
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Penalty Decision List | Quyết định xử phạt — latest state | 1 row per QĐ (`GS_VAN_BAN_XU_LY`) | Nhóm 15 |
 
@@ -134,7 +134,7 @@ erDiagram
 
 **Bảng entity:**
 
-| Gold entity | Description | Grain | KPI |
+| Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Complaint Petition List | Đơn thư khiếu nại tố cáo — latest state | 1 row per đơn (`DT_DON_THU`) | K_TT_81–88b, Nhóm 16–19 |
 
@@ -154,7 +154,7 @@ erDiagram
 
 **Bảng tổng hợp:**
 
-| Gold entity | Loại | Grain | Source Silver | KPI phục vụ |
+| Datamart entity | Loại | Grain | Source Atomic | KPI phục vụ |
 |---|---|---|---|---|
 | Fact Inspection Case Activity | Fact — Event | 1 hồ sơ × 1 đối tượng | Inspection Case / Inspection Decision Subject / Inspection Case Conclusion | K_TT_1–54 |
 | Fact Penalty Decision | Fact — Event | 1 QĐXP | Surveillance Enforcement Decision | K_TT_55–80, K_TT_89–100 |
