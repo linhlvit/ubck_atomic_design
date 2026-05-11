@@ -1,4 +1,4 @@
-# GOLD_TT_HLD — Gold Data Mart: Phân hệ Thanh Tra (TT)
+# DTM_TT_HLD — Data Mart: Phân hệ Thanh Tra (TT)
 
 **Phiên bản:** 2.3  
 **Ngày:** 27/04/2026  
@@ -6,7 +6,7 @@
 
 ---
 
-## Section 1 — Data Lineage: Source → Silver → Gold Mart
+## Section 1 — Data Lineage: Source → Atomic → Data Mart
 
 ### Cụm 1: Thống kê & Cơ cấu vụ việc Thanh tra/Kiểm tra (Fact Inspection Case Activity)
 
@@ -37,7 +37,7 @@ flowchart LR
         SV4["Inspection Decision Subject"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Inspection Case Activity"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -65,7 +65,7 @@ flowchart LR
 
 ### Cụm 2: Danh sách vụ việc Tác nghiệp (Inspection Case List)
 
-Phục vụ block Danh sách vụ việc Thanh tra/Kiểm tra — bảng tra cứu từng hồ sơ. `Inspection_Form_Type_Code` (DINH_KY/DOT_XUAT) ETL-derive từ `TT_QUYET_DINH.KE_HOACH_ID` và lưu trực tiếp vào bảng tác nghiệp này. Lấy dữ liệu trực tiếp từ Silver — không qua Dimension.
+Phục vụ block Danh sách vụ việc Thanh tra/Kiểm tra — bảng tra cứu từng hồ sơ. `Inspection_Form_Type_Code` (DINH_KY/DOT_XUAT) ETL-derive từ `TT_QUYET_DINH.KE_HOACH_ID` và lưu trực tiếp vào bảng tác nghiệp này. Lấy dữ liệu trực tiếp từ Atomic — không qua Dimension.
 
 ```mermaid
 flowchart LR
@@ -79,7 +79,7 @@ flowchart LR
         SV2["Inspection Decision"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Inspection Case List"]
     end
 
@@ -92,7 +92,7 @@ flowchart LR
 
 ### Cụm 3: Xử phạt vi phạm (Fact Penalty Decision + Penalty Decision List)
 
-Phục vụ Tab XỬ PHẠT — KPI cards tổng hợp, biểu đồ dual axis theo tháng, donut cơ cấu hành vi và đối tượng, danh sách quyết định. Nguồn Silver khác hoàn toàn với Cụm 1 — từ luồng Giám sát (`GS_*`), không phải luồng Thanh tra (`TT_*`).
+Phục vụ Tab XỬ PHẠT — KPI cards tổng hợp, biểu đồ dual axis theo tháng, donut cơ cấu hành vi và đối tượng, danh sách quyết định. Nguồn Atomic khác hoàn toàn với Cụm 1 — từ luồng Giám sát (`GS_*`), không phải luồng Thanh tra (`TT_*`).
 
 ```mermaid
 flowchart LR
@@ -106,7 +106,7 @@ flowchart LR
         SV2["Surveillance Enforcement Case"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G2["Fact Penalty Decision"]
         G1["Penalty Decision List"]
         G3["Calendar Date Dimension"]
@@ -141,7 +141,7 @@ flowchart LR
         SV1["Complaint Petition"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Complaint Petition List"]
     end
 
@@ -151,11 +151,11 @@ flowchart LR
 
 ### Cụm 5: Báo cáo hoạt động vi phạm TTCK (Fact Penalty Decision — reuse)
 
-Phục vụ Báo cáo STT 20 — bảng pivot nhóm đối tượng × loại vi phạm × (số lượng + số tiền). Reuse hoàn toàn `Fact Penalty Decision` từ Cụm 3 — không tạo Fact hay Silver entity mới.
+Phục vụ Báo cáo STT 20 — bảng pivot nhóm đối tượng × loại vi phạm × (số lượng + số tiền). Reuse hoàn toàn `Fact Penalty Decision` từ Cụm 3 — không tạo Fact hay Atomic entity mới.
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart (reuse từ Cụm 3)"]
+    subgraph Datamart["Datamart (reuse từ Cụm 3)"]
         G1["Fact Penalty Decision"]
     end
     subgraph RPT["Báo cáo STT 20"]
@@ -177,8 +177,8 @@ flowchart LR
 #### Nhóm 1 — KPI cards Thống kê chung (STT 1)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
-> Silver: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
+> Atomic: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Atomic: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
 > Ghi chú:
 > - `Inspection_Type_Code` ← `TT_HO_SO.LOAI_HINH`, scheme `TT_PLAN_TYPE`, giá trị: `THANH_TRA / KIEM_TRA` — dùng để **lọc** TT vs KT, không hiển thị.
 > - `Case_Status_Code` ← `TT_HO_SO.TRANG_THAI_ID`, scheme `TT_CASE_STATUS`.
@@ -236,7 +236,7 @@ erDiagram
 
 *Ghi chú erDiagram — các DD trên Fact:*
 
-| Field | Silver source | Scheme / Giá trị | Ghi chú |
+| Field | Atomic source | Scheme / Giá trị | Ghi chú |
 |---|---|---|---|
 | `Inspection_Case_Code` | `TT_HO_SO.ID` | — | DD — PK nguồn dùng làm degenerate key hồ sơ trên Fact. Dùng `COUNT(DISTINCT Inspection_Case_Code)` để đếm hồ sơ. (Lưu ý: `TT_HO_SO.MA_HO_SO` = business key hiển thị, lưu trong bảng tác nghiệp) |
 | `Inspection_Decision_Subject_Code` | `TT_QUYET_DINH_DOI_TUONG.ID` | — | DD — PK nguồn của đối tượng trong quyết định. Cùng với `Inspection_Case_Code` tạo composite grain key |
@@ -249,7 +249,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Inspection Case Activity"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -279,7 +279,7 @@ flowchart LR
 #### Nhóm 2 — Biểu đồ Thống kê số vụ việc theo tháng (STT 2)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Atomic: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
 > Ghi chú: Reuse `Fact Inspection Case Activity` — GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer. Trục thời gian = tháng trong năm selected (slicer). Xem O_TT_3 về lựa chọn date key.
 
 **Mockup:**
@@ -311,8 +311,8 @@ flowchart LR
 #### Nhóm 3 — Cơ cấu vi phạm theo loại hành vi (STT 3)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
-> Silver: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
+> Atomic: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Atomic: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
 > Ghi chú: `Violation_Type_Dimension_Id` ← ETL join `TT_HO_SO → TT_KET_LUAN` (via `Inspection Case Id`), lấy `MAX(Conclusion_Sequence_Number)`, map `HANH_VI_VI_PHAM_ID` → `Classification Dimension` (scheme `TT_VIOLATION_TYPE`). BA STT 3 định nghĩa 3 hành vi: Thao túng thị trường / Cho mượn tài khoản / CBTT.
 
 **Mockup:**
@@ -348,17 +348,17 @@ pie title Cơ cấu vi phạm theo loại hành vi
 #### Nhóm 4 — Cơ cấu vi phạm theo đối tượng (STT 4)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Decision Subject` ← ThanhTra.TT_QUYET_DINH_DOI_TUONG — **READY**
-> Silver: `Securities Company` ← ThanhTra.DM_CONG_TY_CK — **READY**
-> Silver: `Fund Management Company` ← ThanhTra.DM_CONG_TY_QLQ — **READY**
-> Silver: `Public Company` ← ThanhTra.DM_CONG_TY_DC — **READY**
-> Silver: `Inspection Subject Other Party` ← ThanhTra.DM_DOI_TUONG_KHAC — **READY**
+> Atomic: `Inspection Decision Subject` ← ThanhTra.TT_QUYET_DINH_DOI_TUONG — **READY**
+> Atomic: `Securities Company` ← ThanhTra.DM_CONG_TY_CK — **READY**
+> Atomic: `Fund Management Company` ← ThanhTra.DM_CONG_TY_QLQ — **READY**
+> Atomic: `Public Company` ← ThanhTra.DM_CONG_TY_DC — **READY**
+> Atomic: `Inspection Subject Other Party` ← ThanhTra.DM_DOI_TUONG_KHAC — **READY**
 > Ghi chú: `Subject_Category_Dimension_Id` FK → `Classification Dimension` (scheme `TT_SUBJECT_CATEGORY`). ETL resolve polymorphic FK `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID`:
 > - → `DM_CONG_TY_CK` → `CTCK`
 > - → `DM_CONG_TY_QLQ` → `CTQLQ`
 > - → `DM_CONG_TY_DC` → `CTDC`
 > - → `DM_DOI_TUONG_KHAC` AND `LOAI_DOI_TUONG=CA_NHAN` → `CA_NHAN`
-> - → `DM_DOI_TUONG_KHAC` AND `LOAI_DOI_TUONG=TO_CHUC` → `TO_CHUC_KHAC` (tạm thời — Silver `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP. Chờ khảo sát nguồn, xem O_TT_4)
+> - → `DM_DOI_TUONG_KHAC` AND `LOAI_DOI_TUONG=TO_CHUC` → `TO_CHUC_KHAC` (tạm thời — Atomic `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP. Chờ khảo sát nguồn, xem O_TT_4)
 > **6 giá trị scheme tạm thời:** CTCK / CTDC / CTQLQ / CA_NHAN / TO_CHUC_KHAC. Thứ tự hiển thị theo BA STT 4: Cá nhân → CTĐC → CTCK → CTQLQ. Xem O_TT_4.
 
 **Mockup:**
@@ -397,11 +397,11 @@ pie title Cơ cấu vi phạm theo đối tượng
 #### Nhóm 5 — Danh sách vụ việc Thanh tra/Kiểm tra (STT 5)
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
-> Silver: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
+> Atomic: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Atomic: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
 > Ghi chú:
 > - Cột **"Mã vụ việc"** ← `TT_HO_SO.MA_HO_SO` (`Inspection Case.Case_Number`)
-> - Cột **"Đối tượng"** ← ETL: `COALESCE(TT_HO_SO.TEN_DOI_TUONG, TT_HO_SO.HO_TEN)` — Silver có 2 field: `Subject_Organization_Name` ← `TT_HO_SO.TEN_DOI_TUONG` (tổ chức) và `Subject_Full_Name` ← `TT_HO_SO.HO_TEN` (cá nhân). ETL merge thành 1 cột `Display_Name` dựa vào `LOAI_DOI_TUONG`.
+> - Cột **"Đối tượng"** ← ETL: `COALESCE(TT_HO_SO.TEN_DOI_TUONG, TT_HO_SO.HO_TEN)` — Atomic có 2 field: `Subject_Organization_Name` ← `TT_HO_SO.TEN_DOI_TUONG` (tổ chức) và `Subject_Full_Name` ← `TT_HO_SO.HO_TEN` (cá nhân). ETL merge thành 1 cột `Display_Name` dựa vào `LOAI_DOI_TUONG`.
 > - Cột **"Phân loại đối tượng"** ← `Subject_Category_Code` ETL-derived (resolve polymorphic `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID`)
 > - Cột **"Loại hình"** ← `Inspection_Form_Type_Code` ETL-derived: `TT_QUYET_DINH.KE_HOACH_ID IS NULL` → Đột xuất / `NOT NULL` → Định kỳ. **Không phải** `Inspection_Type_Code` (THANH_TRA/KIEM_TRA)
 > - Cột **"Trạng thái"** ← `TT_HO_SO.TRANG_THAI_ID` (`Case_Status_Code`, scheme `TT_CASE_STATUS`)
@@ -439,7 +439,7 @@ flowchart LR
         SV1["Inspection Case"]
         SV2["Inspection Decision"]
     end
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Inspection Case List"]
     end
     subgraph RPT["Tab TỔNG QUAN"]
@@ -469,7 +469,7 @@ flowchart LR
 #### Nhóm 6 — KPI cards Thống kê chung Kiểm tra (STT 6)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Atomic: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
 > Ghi chú: Reuse `Fact Inspection Case Activity` — filter `Inspection_Type_Code=KIEM_TRA`. Các field DD và FK giống hệt Tab TỔNG QUAN.
 
 **Mockup:**
@@ -498,7 +498,7 @@ flowchart LR
 #### Nhóm 7 — Biểu đồ xu hướng số cuộc kiểm tra theo tháng (STT 7)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Atomic: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
 > Ghi chú: Reuse `Fact Inspection Case Activity` — GROUP BY tháng ở presentation layer. Xem O_TT_3 về lựa chọn date key.
 
 **Mockup:**
@@ -526,7 +526,7 @@ flowchart LR
 #### Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi (STT 8)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
+> Atomic: `Inspection Case Conclusion` ← ThanhTra.TT_KET_LUAN — **READY**
 > Ghi chú: `Violation_Type_Dimension_Id` FK → `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) ← ETL map từ `TT_KET_LUAN.HANH_VI_VI_PHAM_ID`. BA STT 8 định nghĩa **11 hành vi**: CBTT / Hoạt động chào bán / Cổ đông nội bộ+lớn / Giao dịch / CTĐC / CTCK / Tổ chức PHTP / Thao túng / Cho mượn / Tổ chức kiểm toán / Sở giao dịch. HLD thiết kế đủ 11 hành vi theo BA.
 
 **Mockup:**
@@ -582,8 +582,8 @@ pie title Cơ cấu kiểm tra theo loại hành vi
 #### Nhóm 9 — Cơ cấu kiểm tra theo đối tượng Cá nhân/Tổ chức (STT 9)
 
 > Phân loại: **Phân tích**
-> Silver: `Inspection Decision Subject` ← ThanhTra.TT_QUYET_DINH_DOI_TUONG — **READY**
-> Ghi chú: Reuse `Subject_Category_Dimension_Id` FK → `Classification Dimension` (scheme `TT_SUBJECT_CATEGORY`, **6 giá trị tạm thời**). BA STT 9 định nghĩa 5 nhóm (CTCK / CTQLQ+NHLK / CTĐC / CTKT / Tổ chức PHTP) nhưng Silver `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP — tạm thời các nhóm này gộp thành `TO_CHUC_KHAC`. K_TT_47, K_TT_49b, K_TT_53 PENDING chờ O_TT_4.
+> Atomic: `Inspection Decision Subject` ← ThanhTra.TT_QUYET_DINH_DOI_TUONG — **READY**
+> Ghi chú: Reuse `Subject_Category_Dimension_Id` FK → `Classification Dimension` (scheme `TT_SUBJECT_CATEGORY`, **6 giá trị tạm thời**). BA STT 9 định nghĩa 5 nhóm (CTCK / CTQLQ+NHLK / CTĐC / CTKT / Tổ chức PHTP) nhưng Atomic `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP — tạm thời các nhóm này gộp thành `TO_CHUC_KHAC`. K_TT_47, K_TT_49b, K_TT_53 PENDING chờ O_TT_4.
 
 **Mockup:**
 
@@ -607,11 +607,11 @@ pie title Cơ cấu kiểm tra theo đối tượng
 | K_TT_47 | Số cuộc KT đối tượng CTKT | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[TO_CHUC_KHAC] — *tạm thời gộp với NHLK/TO_CHUC_PHTP, xem O_TT_4* |
 | K_TT_48 | Tỷ lệ % CTKT (KT) | % | Derived | K_TT_47 / K_TT_24 × 100% |
 | K_TT_49 | Số cuộc KT đối tượng CTQLQ | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[CTQLQ] |
-| K_TT_49b | Số cuộc KT đối tượng NHLK/TO_CHUC_PHTP | Cuộc | Base | *PENDING — chờ O_TT_4: Silver chưa phân biệt được* |
+| K_TT_49b | Số cuộc KT đối tượng NHLK/TO_CHUC_PHTP | Cuộc | Base | *PENDING — chờ O_TT_4: Atomic chưa phân biệt được* |
 | K_TT_50 | Tỷ lệ % TO_CHUC_KHAC (KT) | % | Derived | K_TT_47 / K_TT_24 × 100% — *tạm thời dùng TO_CHUC_KHAC gộp* |
 | K_TT_51 | Số cuộc KT đối tượng CTĐC | Cuộc | Base | COUNT(DISTINCT Inspection_Case_Code) WHERE Inspection_Type_Code=`KIEM_TRA` AND Year=selected_year AND Subject_Category_Dimension_Id=[CTDC] |
 | K_TT_52 | Tỷ lệ % CTĐC (KT) | % | Derived | K_TT_51 / K_TT_24 × 100% |
-| K_TT_53 | Số cuộc KT đối tượng Tổ chức PHTP | Cuộc | Base | *PENDING — chờ O_TT_4: Silver chưa phân biệt được* |
+| K_TT_53 | Số cuộc KT đối tượng Tổ chức PHTP | Cuộc | Base | *PENDING — chờ O_TT_4: Atomic chưa phân biệt được* |
 | K_TT_54 | Tỷ lệ % Tổ chức PHTP (KT) | % | Derived | *PENDING — chờ O_TT_4* |
 
 **Bảng grain:** reuse `Fact Inspection Case Activity` — filter `Inspection_Type_Code=KIEM_TRA`, GROUP BY Subject_Category_Dimension_Id join Classification Dimension ở query time.
@@ -621,8 +621,8 @@ pie title Cơ cấu kiểm tra theo đối tượng
 #### Nhóm 10 — Danh sách vụ việc Kiểm tra (STT 10)
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
-> Silver: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
+> Atomic: `Inspection Case` ← ThanhTra.TT_HO_SO — **READY**
+> Atomic: `Inspection Decision` ← ThanhTra.TT_QUYET_DINH — **READY**
 > Ghi chú: Reuse `Inspection Case List` — filter `Inspection_Type_Code=KIEM_TRA` ở query time. Cột "Loại hình" chỉ có 2 giá trị: `ĐỊNH KỲ` / `ĐỘT XUẤT` (ETL-derived từ `TT_QUYET_DINH.KE_HOACH_ID`).
 
 **Mockup:**
@@ -645,7 +645,7 @@ flowchart LR
         SV1["Inspection Case"]
         SV2["Inspection Decision"]
     end
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Inspection Case List"]
     end
     subgraph RPT["Tab KIỂM TRA"]
@@ -664,15 +664,15 @@ flowchart LR
 
 **Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
 
-> Ghi chú chung Tab XỬ PHẠT: Nguồn Silver khác hoàn toàn với Tab TT/KT — dùng `Surveillance Enforcement Decision` (`GS_VAN_BAN_XU_LY`) và `Surveillance Enforcement Case` (`GS_HO_SO`). Cần **Fact mới**: `Fact Penalty Decision`. Không reuse `Fact Inspection Case Activity`.
+> Ghi chú chung Tab XỬ PHẠT: Nguồn Atomic khác hoàn toàn với Tab TT/KT — dùng `Surveillance Enforcement Decision` (`GS_VAN_BAN_XU_LY`) và `Surveillance Enforcement Case` (`GS_HO_SO`). Cần **Fact mới**: `Fact Penalty Decision`. Không reuse `Fact Inspection Case Activity`.
 
 ---
 
 #### Nhóm 11 — KPI cards Thống kê chung Xử phạt (STT 11)
 
 > Phân loại: **Phân tích**
-> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
-> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Atomic: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Atomic: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
 > Ghi chú: `Total_Penalty_Amount` ← `GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT` — measure tiền phạt. `Decision_Status_Code` ← `GS_VAN_BAN_XU_LY.TRANG_THAI`, scheme `TT_CASE_STATUS`.
 
 **Mockup:**
@@ -724,10 +724,10 @@ erDiagram
 
 *Ghi chú erDiagram — các field trên Fact Penalty Decision:*
 
-| Field | Silver source | Scheme / Giá trị | Ghi chú |
+| Field | Atomic source | Scheme / Giá trị | Ghi chú |
 |---|---|---|---|
 | `Penalty_Decision_Code` | `GS_VAN_BAN_XU_LY.ID` | — | DD — PK nguồn dùng làm degenerate key quyết định xử phạt trên Fact. Dùng `COUNT(DISTINCT Penalty_Decision_Code)` để đếm QĐ |
-| `Violation_Type_Dimension_Id` | ETL: field Silver chưa xác định → lookup `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) | scheme: `TT_VIOLATION_TYPE` | FK → Classification Dimension — dùng chung scheme với Tab TT/KT. Xem O_TT_8 |
+| `Violation_Type_Dimension_Id` | ETL: field Atomic chưa xác định → lookup `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) | scheme: `TT_VIOLATION_TYPE` | FK → Classification Dimension — dùng chung scheme với Tab TT/KT. Xem O_TT_8 |
 | `Total_Penalty_Amount` | `GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT` | — | Measure — tổng tiền phạt (VNĐ). Presentation layer chia /1_000_000_000 → tỷ VNĐ hoặc /1_000_000 → triệu VNĐ |
 | `Penalty_Subject_Category_Dimension_Id` | ETL-derived từ `GS_HO_SO` | scheme: `TT_PENALTY_SUBJECT_CATEGORY` | FK → Classification Dimension — 4 giá trị: TO_CHUC_KHAC / CTKT / GIAO_DICH_NDT / CA_NHAN (xem O_TT_9) |
 
@@ -735,7 +735,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Penalty Decision"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -765,7 +765,7 @@ flowchart LR
 #### Nhóm 12 — Biểu đồ thống kê xử phạt theo tháng (STT 12)
 
 > Phân loại: **Phân tích**
-> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Atomic: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
 > Ghi chú: Dual axis — bar = số QĐ, line = tổng tiền phạt. Reuse `Fact Penalty Decision` — GROUP BY tháng ở presentation layer.
 
 **Mockup:**
@@ -791,8 +791,8 @@ flowchart LR
 #### Nhóm 13 — Cơ cấu xử phạt theo loại hành vi (STT 13)
 
 > Phân loại: **Phân tích**
-> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
-> Ghi chú: `Violation_Type_Dimension_Id` FK → `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) — dùng chung scheme với Tab TT/KT. BA STT 13 định nghĩa **11 hành vi**: CBTT / Hoạt động chào bán / Cổ đông nội bộ+lớn / Giao dịch / CTĐC / CTCK / Tổ chức PHTP / Thao túng / Cho mượn / Tổ chức kiểm toán / Sở giao dịch. Xem O_TT_8 về field nguồn trong Silver.
+> Atomic: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Ghi chú: `Violation_Type_Dimension_Id` FK → `Classification Dimension` (scheme `TT_VIOLATION_TYPE`) — dùng chung scheme với Tab TT/KT. BA STT 13 định nghĩa **11 hành vi**: CBTT / Hoạt động chào bán / Cổ đông nội bộ+lớn / Giao dịch / CTĐC / CTCK / Tổ chức PHTP / Thao túng / Cho mượn / Tổ chức kiểm toán / Sở giao dịch. Xem O_TT_8 về field nguồn trong Atomic.
 
 **Mockup:**
 
@@ -847,7 +847,7 @@ pie title Cơ cấu xử phạt theo loại hành vi
 #### Nhóm 14 — Cơ cấu xử phạt theo đối tượng (STT 14)
 
 > Phân loại: **Phân tích**
-> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Atomic: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
 > Ghi chú: `Penalty_Subject_Category_Dimension_Id` FK → Classification Dimension (scheme `TT_PENALTY_SUBJECT_CATEGORY`). BA STT 14 định nghĩa 4 nhóm đối tượng theo thứ tự: Tổ chức khác / CTKT / Giao dịch NĐT / Cá nhân. Xem O_TT_9 về field nguồn phân loại đối tượng trong `GS_HO_SO`.
 
 **Mockup:**
@@ -882,8 +882,8 @@ pie title Cơ cấu xử phạt theo đối tượng
 #### Nhóm 15 — Danh sách quyết định xử phạt (STT 15)
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
-> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Atomic: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Atomic: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
 > Ghi chú:
 > - Cột **"Mã vụ việc"** ← `GS_VAN_BAN_XU_LY.SO_QD_XU_PHAT` (`Penalty_Decision_Number`)
 > - Cột **"Phân loại đối tượng"** ← ETL-derived `Penalty_Subject_Category_Code` (xem O_TT_9)
@@ -928,7 +928,7 @@ flowchart LR
         SV1["Surveillance Enforcement Decision"]
         SV2["Surveillance Enforcement Case"]
     end
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Penalty Decision List"]
     end
     subgraph RPT["Tab XỬ PHẠT"]
@@ -951,17 +951,17 @@ flowchart LR
 
 **Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
 
-> Ghi chú chung Tab ĐƠN THƯ: Nguồn Silver `Complaint Petition` (`DT_DON_THU`). Toàn bộ KPI aggregate (tổng/tháng/loại) và danh sách đều serve từ `Complaint Petition List` — không tạo Fact riêng vì grain giống hệt, volume nhỏ, không fanout.
+> Ghi chú chung Tab ĐƠN THƯ: Nguồn Atomic `Complaint Petition` (`DT_DON_THU`). Toàn bộ KPI aggregate (tổng/tháng/loại) và danh sách đều serve từ `Complaint Petition List` — không tạo Fact riêng vì grain giống hệt, volume nhỏ, không fanout.
 
 ---
 
 #### Nhóm 16 — KPI card Tổng số đơn đã xử lý (STT 16)
 
 > Phân loại: **Tác nghiệp** (bảng tác nghiệp phục vụ cả KPI aggregate và danh sách)
-> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Atomic: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
 > Ghi chú:
 > - `Petition_Status_Code` ← `DT_DON_THU.TRANG_THAI`, scheme `TT_PETITION_STATUS` (MOI / DANG_XU_LY / HOAN_THANH / DONG)
-> - `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE` — 3 giá trị Gold: KHIEU_NAI / TO_CAO / PHAN_ANH_KIEN_NGHI
+> - `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE` — 3 giá trị Datamart: KHIEU_NAI / TO_CAO / PHAN_ANH_KIEN_NGHI
 > - `Submission_Date` ← `DT_DON_THU.NGAY_TIEP_NHAN` — dùng `YEAR()` / `MONTH()` ở query time
 
 **Mockup:**
@@ -986,7 +986,7 @@ flowchart LR
     subgraph SIL["Atomic"]
         SV1["Complaint Petition"]
     end
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Complaint Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
@@ -1010,7 +1010,7 @@ flowchart LR
 #### Nhóm 17 — Biểu đồ Thống kê tình hình xử lý đơn thư (STT 17)
 
 > Phân loại: **Phân tích**
-> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Atomic: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
 > Ghi chú: Biểu đồ bar 1 series — số đơn đã xử lý theo tháng. Reuse `Complaint Petition List` — GROUP BY MONTH(Submission_Date) ở query time. BA STT 17 chỉ định nghĩa 1 KPI: "Số lượng đơn thư đã xử lý".
 
 **Mockup:**
@@ -1034,8 +1034,8 @@ flowchart LR
 #### Nhóm 18 — Biểu đồ Cơ cấu theo loại đơn thư (STT 18)
 
 > Phân loại: **Phân tích**
-> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
-> Ghi chú: Biểu đồ bar grouped — 3 series theo tháng: Khiếu nại / Tố cáo / Phản ánh kiến nghị. `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE`. *Lưu ý: BA STT 18 đặt tên block là "Biểu đồ cơ cấu theo đối tượng" nhưng KPI thực tế (Rows 132–137) là phân loại theo loại đơn (Khiếu nại/Tố cáo/Phản ánh kiến nghị) — thiết kế theo nội dung KPI, không theo tên block.* ETL map PHAN_ANH và KIEN_NGHI từ Silver → 1 giá trị `PHAN_ANH_KIEN_NGHI` trên Gold (O_TT_10 Closed).
+> Atomic: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Ghi chú: Biểu đồ bar grouped — 3 series theo tháng: Khiếu nại / Tố cáo / Phản ánh kiến nghị. `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE`. *Lưu ý: BA STT 18 đặt tên block là "Biểu đồ cơ cấu theo đối tượng" nhưng KPI thực tế (Rows 132–137) là phân loại theo loại đơn (Khiếu nại/Tố cáo/Phản ánh kiến nghị) — thiết kế theo nội dung KPI, không theo tên block.* ETL map PHAN_ANH và KIEN_NGHI từ Atomic → 1 giá trị `PHAN_ANH_KIEN_NGHI` trên Datamart (O_TT_10 Closed).
 
 **Mockup:**
 
@@ -1065,7 +1065,7 @@ flowchart LR
 #### Nhóm 19 — Danh sách đơn thư chi tiết (STT 19)
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
+> Atomic: `Complaint Petition` ← ThanhTra.DT_DON_THU — **READY**
 > Ghi chú:
 > - Cột **"Mã đơn"** ← `DT_DON_THU.ID` (`Complaint_Petition_Code`)
 > - Cột **"Loại đơn"** ← `DT_DON_THU.LOAI_DON` (`Petition_Type_Code`, scheme `TT_PETITION_TYPE`)
@@ -1104,7 +1104,7 @@ flowchart LR
     subgraph SIL["Atomic"]
         SV1["Complaint Petition"]
     end
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Complaint Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
@@ -1126,15 +1126,15 @@ flowchart LR
 
 **Slicer chung:** Năm (tương tự các tab dashboard)
 
-> Ghi chú chung: Báo cáo dạng bảng pivot — 6 nhóm đối tượng vi phạm × breakdown theo loại vi phạm × 2 measure (số lượng + số tiền). Reuse `Fact Penalty Decision` — GROUP BY `Penalty_Subject_Category_Dimension_Id` × `Violation_Type_Dimension_Id`. Xem O_TT_8, O_TT_9 về field nguồn trong Silver.
+> Ghi chú chung: Báo cáo dạng bảng pivot — 6 nhóm đối tượng vi phạm × breakdown theo loại vi phạm × 2 measure (số lượng + số tiền). Reuse `Fact Penalty Decision` — GROUP BY `Penalty_Subject_Category_Dimension_Id` × `Violation_Type_Dimension_Id`. Xem O_TT_8, O_TT_9 về field nguồn trong Atomic.
 
 ---
 
 #### Nhóm 20 — Bảng báo cáo hoạt động vi phạm TTCK (STT 20)
 
 > Phân loại: **Phân tích**
-> Silver: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
-> Silver: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
+> Atomic: `Surveillance Enforcement Decision` ← ThanhTra.GS_VAN_BAN_XU_LY — **READY**
+> Atomic: `Surveillance Enforcement Case` ← ThanhTra.GS_HO_SO — **READY**
 > Ghi chú: BA STT 20 định nghĩa 6 nhóm đối tượng (CTĐC+CBCK / CTCK / CTQLQ / CĐ nội bộ / Giao dịch thao túng+nội bộ / CBCK / Vi phạm khác) nhưng mỗi nhóm có "Độ chi tiết: Loại vi phạm". Phân tích BA: các nhóm này thực chất là phân nhóm theo **loại hành vi vi phạm** của đối tượng bị xử phạt (không phải Subject_Category của Fact). ETL cần phân biệt qua kết hợp `Penalty_Subject_Category_Dimension_Id` × `Violation_Type_Dimension_Id`. Phụ thuộc O_TT_8, O_TT_9.
 
 **Mockup:**
@@ -1177,7 +1177,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Penalty Decision"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -1253,10 +1253,10 @@ graph TB
 | O_TT_1 | `Violation_Type_Code` — 1 hồ sơ có thể có nhiều kết luận (sơ bộ/chính thức/bổ sung). | ETL lấy kết luận có `MAX(Conclusion_Sequence_Number)` per hồ sơ — grain Fact không fanout. | K_TT_10–15 | **Closed** |
 | O_TT_2 | "Số ngày trễ" — BA không có KPI này. | Out of scope — đã loại khỏi thiết kế. | — | **Closed (Out of scope)** |
 | O_TT_3 | Trục thời gian biểu đồ bar: dùng `Received Date` (`TT_HO_SO.NGAY_NHAN_HO_SO`) hay `Issue Date` (`TT_QUYET_DINH.NGAY_RA_QUYET_DINH`)? | Tạm thời giữ `Received Date` từ `Inspection Case` làm date key. Chờ BA xác nhận. | K_TT_7–9 | Open |
-| O_TT_4 | `Subject_Category_Code` ETL-derived từ polymorphic FK `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID`. ETL dùng `Source_System_Code` để nhận biết bảng nguồn: `ThanhTra_DM_CONG_TY_CK` → CTCK, `ThanhTra_DM_CONG_TY_QLQ` → CTQLQ, `ThanhTra_DM_CONG_TY_DC` → CTDC. Với `ThanhTra_DM_DOI_TUONG_KHAC`: `LOAI_DOI_TUONG=CA_NHAN` → CA_NHAN, `LOAI_DOI_TUONG=TO_CHUC` → **không thể phân biệt CTKT/NHLK/TO_CHUC_PHTP** vì Silver `DM_DOI_TUONG_KHAC` không có field `Organization_Type_Code`. | Tạm thời gộp tất cả `TO_CHUC` từ `DM_DOI_TUONG_KHAC` thành `TO_CHUC_KHAC` (6 giá trị scheme). Chờ khảo sát dữ liệu nguồn và trao đổi BA để bổ sung logic phân biệt chi tiết. | K_TT_16–23 (TT), K_TT_45–54 (KT) | Open |
+| O_TT_4 | `Subject_Category_Code` ETL-derived từ polymorphic FK `TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID`. ETL dùng `Source_System_Code` để nhận biết bảng nguồn: `ThanhTra_DM_CONG_TY_CK` → CTCK, `ThanhTra_DM_CONG_TY_QLQ` → CTQLQ, `ThanhTra_DM_CONG_TY_DC` → CTDC. Với `ThanhTra_DM_DOI_TUONG_KHAC`: `LOAI_DOI_TUONG=CA_NHAN` → CA_NHAN, `LOAI_DOI_TUONG=TO_CHUC` → **không thể phân biệt CTKT/NHLK/TO_CHUC_PHTP** vì Atomic `DM_DOI_TUONG_KHAC` không có field `Organization_Type_Code`. | Tạm thời gộp tất cả `TO_CHUC` từ `DM_DOI_TUONG_KHAC` thành `TO_CHUC_KHAC` (6 giá trị scheme). Chờ khảo sát dữ liệu nguồn và trao đổi BA để bổ sung logic phân biệt chi tiết. | K_TT_16–23 (TT), K_TT_45–54 (KT) | Open |
 | O_TT_5 | `TT_QUYET_DINH_DOI_TUONG` quan hệ 1:N với `TT_QUYET_DINH` — 1 hồ sơ có thể có nhiều đối tượng thanh tra gây fanout grain Fact. | **Phương án B:** đổi grain Fact thành 1 row per hồ sơ × đối tượng. Composite key: `Inspection_Case_Code` + `Inspection_Decision_Subject_Code`. Mọi KPI đếm hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)`. | K_TT_1–23 | **Closed** |
 | O_TT_6 | Tab KIỂM TRA — cột "Loại hình" trong danh sách có xuất hiện giá trị `KIỂM TRA` bên cạnh ĐỊNH KỲ / ĐỘT XUẤT. | Xác nhận: chỉ có 2 giá trị ĐỊNH KỲ / ĐỘT XUẤT. Giá trị "KIỂM TRA" trong screenshot là dữ liệu mẫu sai — không phải giá trị nghiệp vụ. Mockup đã sửa. | Nhóm 10 | **Closed** |
-| O_TT_7 | Scheme `TT_SUBJECT_CATEGORY` — Tab KIỂM TRA screenshot hiển thị 5 nhóm riêng biệt (CTCK/CTKT/CTQLQ+NHLK/CTĐC/TO_CHUC_PHTP) nhưng Silver `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP. Tạm thời gộp thành `TO_CHUC_KHAC`. | Chờ kết quả khảo sát O_TT_4. Nếu nguồn có thể phân biệt → tách scheme thành 7+ giá trị và cập nhật K_TT_47, K_TT_49b, K_TT_53. | K_TT_45–54 | **Reopen** — phụ thuộc O_TT_4 |
-| O_TT_8 | Tab XỬ PHẠT — `Violation_Type_Code` (hành vi vi phạm) cần thiết cho cột "Loại hình" trong danh sách và donut cơ cấu theo hành vi. Silver `Surveillance Enforcement Decision` (`GS_VAN_BAN_XU_LY`) không có field này rõ ràng — `Penalty_Content` là text tự do. Silver `Surveillance Enforcement Case` (`GS_HO_SO`) cũng không có field hành vi vi phạm có thể map về scheme. Source Analysis xác nhận `DM_HANH_VI_VI_PHAM` dùng ở B.2.2 nhưng chưa tìm thấy field FK tương ứng trong Silver `GS_HO_SO` hay `GS_VAN_BAN_XU_LY`. | Cần xác nhận field nguồn trong `GS_VAN_BAN_XU_LY` hoặc `GS_HO_SO` lưu mã hành vi vi phạm. Nếu có → reuse scheme `TT_VIOLATION_TYPE`. Nếu không → PENDING. Tạm thời để `Violation_Type_Code` PENDING trên `Fact Penalty Decision`. | K_TT_61–72k, K_TT_89–100, Nhóm 15 | Open |
-| O_TT_9 | Tab XỬ PHẠT — `Penalty_Subject_Category_Code` (phân loại đối tượng: CTKT/Cá nhân/Giao dịch NĐT/Tổ chức khác) cần thiết cho donut và danh sách. Silver `GS_HO_SO.TEN_DOI_TUONG` là text tự do — không có polymorphic FK như `TT_QUYET_DINH_DOI_TUONG`. Không rõ ETL resolve phân loại đối tượng từ field nào trong `GS_HO_SO`. | Cần BA/nghiệp vụ xác nhận field phân loại đối tượng trong `GS_HO_SO` hoặc bảng liên kết khác. Scheme `TT_PENALTY_SUBJECT_CATEGORY` tạm thời có 4 giá trị từ BA STT 14: TO_CHUC_KHAC / CTKT / GIAO_DICH_NDT / CA_NHAN. | K_TT_73–80, K_TT_89–96, Nhóm 15 | Open |
-| O_TT_10 | Tab ĐƠN THƯ — Silver `TT_PETITION_TYPE` có 4 giá trị: KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI. Dashboard gộp PHAN_ANH và KIEN_NGHI thành 1 legend "Phản ánh kiến nghị". | **Closed:** Mart lưu 1 giá trị gộp `PHAN_ANH_KIEN_NGHI` theo BA. ETL map cả PHAN_ANH và KIEN_NGHI từ Silver → `PHAN_ANH_KIEN_NGHI` trên Gold. K_TT_88 đã cập nhật. | K_TT_88, Nhóm 19 | **Closed** |
+| O_TT_7 | Scheme `TT_SUBJECT_CATEGORY` — Tab KIỂM TRA screenshot hiển thị 5 nhóm riêng biệt (CTCK/CTKT/CTQLQ+NHLK/CTĐC/TO_CHUC_PHTP) nhưng Atomic `DM_DOI_TUONG_KHAC` không có field phân biệt CTKT/NHLK/TO_CHUC_PHTP. Tạm thời gộp thành `TO_CHUC_KHAC`. | Chờ kết quả khảo sát O_TT_4. Nếu nguồn có thể phân biệt → tách scheme thành 7+ giá trị và cập nhật K_TT_47, K_TT_49b, K_TT_53. | K_TT_45–54 | **Reopen** — phụ thuộc O_TT_4 |
+| O_TT_8 | Tab XỬ PHẠT — `Violation_Type_Code` (hành vi vi phạm) cần thiết cho cột "Loại hình" trong danh sách và donut cơ cấu theo hành vi. Atomic `Surveillance Enforcement Decision` (`GS_VAN_BAN_XU_LY`) không có field này rõ ràng — `Penalty_Content` là text tự do. Atomic `Surveillance Enforcement Case` (`GS_HO_SO`) cũng không có field hành vi vi phạm có thể map về scheme. Source Analysis xác nhận `DM_HANH_VI_VI_PHAM` dùng ở B.2.2 nhưng chưa tìm thấy field FK tương ứng trong Atomic `GS_HO_SO` hay `GS_VAN_BAN_XU_LY`. | Cần xác nhận field nguồn trong `GS_VAN_BAN_XU_LY` hoặc `GS_HO_SO` lưu mã hành vi vi phạm. Nếu có → reuse scheme `TT_VIOLATION_TYPE`. Nếu không → PENDING. Tạm thời để `Violation_Type_Code` PENDING trên `Fact Penalty Decision`. | K_TT_61–72k, K_TT_89–100, Nhóm 15 | Open |
+| O_TT_9 | Tab XỬ PHẠT — `Penalty_Subject_Category_Code` (phân loại đối tượng: CTKT/Cá nhân/Giao dịch NĐT/Tổ chức khác) cần thiết cho donut và danh sách. Atomic `GS_HO_SO.TEN_DOI_TUONG` là text tự do — không có polymorphic FK như `TT_QUYET_DINH_DOI_TUONG`. Không rõ ETL resolve phân loại đối tượng từ field nào trong `GS_HO_SO`. | Cần BA/nghiệp vụ xác nhận field phân loại đối tượng trong `GS_HO_SO` hoặc bảng liên kết khác. Scheme `TT_PENALTY_SUBJECT_CATEGORY` tạm thời có 4 giá trị từ BA STT 14: TO_CHUC_KHAC / CTKT / GIAO_DICH_NDT / CA_NHAN. | K_TT_73–80, K_TT_89–96, Nhóm 15 | Open |
+| O_TT_10 | Tab ĐƠN THƯ — Atomic `TT_PETITION_TYPE` có 4 giá trị: KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI. Dashboard gộp PHAN_ANH và KIEN_NGHI thành 1 legend "Phản ánh kiến nghị". | **Closed:** Mart lưu 1 giá trị gộp `PHAN_ANH_KIEN_NGHI` theo BA. ETL map cả PHAN_ANH và KIEN_NGHI từ Atomic → `PHAN_ANH_KIEN_NGHI` trên Datamart. K_TT_88 đã cập nhật. | K_TT_88, Nhóm 19 | **Closed** |

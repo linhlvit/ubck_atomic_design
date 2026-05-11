@@ -1,4 +1,4 @@
-# Gold Data Mart HLD — Phân hệ Nhà Đầu Tư Nước Ngoài (NDTNN)
+# Data Mart HLD — Phân hệ Nhà Đầu Tư Nước Ngoài (NDTNN)
 
 **Phiên bản:** 2.5
 **Ngày:** 24/04/2026
@@ -9,12 +9,12 @@
 
 | Ký hiệu | Ý nghĩa |
 |---|---|
-| READY | Silver đủ — thiết kế đầy đủ |
-| PENDING | Silver chưa có — placeholder + lý do |
+| READY | Atomic đủ — thiết kế đầy đủ |
+| PENDING | Atomic chưa có — placeholder + lý do |
 
 ---
 
-## Section 1 — Data Lineage: Source → Silver → Gold Mart
+## Section 1 — Data Lineage: Source → Atomic → Data Mart
 
 ### Cụm 1: Nhà đầu tư nước ngoài (Foreign Investor)
 
@@ -34,7 +34,7 @@ flowchart LR
         SV3["Geographic Area"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Registration"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -77,7 +77,7 @@ flowchart LR
         SV5["Foreign Investor Stock Portfolio Snapshot"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Foreign Investor 360 Profile"]
         G2["Fact Foreign Investor Portfolio Snapshot"]
         G3["Foreign Investor Dimension"]
@@ -105,7 +105,7 @@ flowchart LR
 
 ### Cụm 3: Lịch sử tuân thủ NĐTNN (Thanh Tra)
 
-Phục vụ Sub-tab C — Lịch sử tuân thủ trong NĐTNN 360. Silver từ phân hệ Thanh Tra (luồng GS_).
+Phục vụ Sub-tab C — Lịch sử tuân thủ trong NĐTNN 360. Atomic từ phân hệ Thanh Tra (luồng GS_).
 
 ```mermaid
 flowchart LR
@@ -121,7 +121,7 @@ flowchart LR
         SV3["CV TT_CASE_STATUS"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Investor Compliance History"]
     end
 
@@ -138,7 +138,7 @@ flowchart LR
 
 ### Cụm 4: Dòng vốn đầu tư gián tiếp (Capital Flow)
 
-Phục vụ Tab GIÁM SÁT DÒNG VỐN Nhóm 3–5 (dòng tiền vào/ra + phân loại theo loại hình và quốc gia). Silver từ FIMS báo cáo NH lưu ký.
+Phục vụ Tab GIÁM SÁT DÒNG VỐN Nhóm 3–5 (dòng tiền vào/ra + phân loại theo loại hình và quốc gia). Atomic từ FIMS báo cáo NH lưu ký.
 
 ```mermaid
 flowchart LR
@@ -156,7 +156,7 @@ flowchart LR
         SV4["Geographic Area"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -198,7 +198,7 @@ flowchart LR
         SV3["Geographic Area"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -224,7 +224,7 @@ flowchart LR
 
 ### Cụm 6: Giới hạn sở hữu nước ngoài + Phân ngành (IDS)
 
-Phục vụ Tab DANH MỤC Nhóm 8 (Phân ngành) + Nhóm 9 (ROOM). Silver từ IDS (`foreign_owner_limit` + `company_profiles` + `company_detail`).
+Phục vụ Tab DANH MỤC Nhóm 8 (Phân ngành) + Nhóm 9 (ROOM). Atomic từ IDS (`foreign_owner_limit` + `company_profiles` + `company_detail`).
 
 ```mermaid
 flowchart LR
@@ -239,7 +239,7 @@ flowchart LR
         SV2["Public Company"]
     end
 
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Ownership Snapshot"]
         G2["Public Company Dimension"]
         G3["Industry Category Dimension"]
@@ -282,19 +282,19 @@ flowchart LR
 
 **KPI liên quan:** Tỷ lệ tham gia, Tổng giá trị mua NĐTNN, Tổng giá trị bán NĐTNN, Tổng giá trị giao dịch toàn thị trường
 
-**Lý do pending:** Công thức `(GT mua + GT bán NĐTNN) × 100 / (GT GD toàn thị trường × 2)` phụ thuộc hoàn toàn vào dữ liệu khớp lệnh từ SGDCK. Silver entity cho giao dịch chứng khoán của NĐTNN chưa được thiết kế — không có entity FIMS nào thay thế được cho use case này.
+**Lý do pending:** Công thức `(GT mua + GT bán NĐTNN) × 100 / (GT GD toàn thị trường × 2)` phụ thuộc hoàn toàn vào dữ liệu khớp lệnh từ SGDCK. Atomic entity cho giao dịch chứng khoán của NĐTNN chưa được thiết kế — không có entity FIMS nào thay thế được cho use case này.
 
-**Silver cần bổ sung:** Entity giao dịch CK NĐTNN từ SGDCK với attributes: Foreign Investor Buy Value, Foreign Investor Sell Value, Total Market Value, mã CK, ngày GD, sàn (HOSE/HNX/UPCoM).
+**Atomic cần bổ sung:** Entity giao dịch CK NĐTNN từ SGDCK với attributes: Foreign Investor Buy Value, Foreign Investor Sell Value, Total Market Value, mã CK, ngày GD, sàn (HOSE/HNX/UPCoM).
 
-**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày giao dịch.
+**Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày giao dịch.
 
 ---
 
 ##### READY — Box 2–4: Tăng trưởng NĐT mới (STT 5–7)
 
 > Phân loại: **Phân tích**
-> Silver: `Foreign Investor` ← FIMS.INVESTOR — sẵn sàng
-> Registration Date: FIMS.INVESTOR.DateCreated → Silver attribute `Created Timestamp`
+> Atomic: `Foreign Investor` ← FIMS.INVESTOR — sẵn sàng
+> Registration Date: FIMS.INVESTOR.DateCreated → Atomic attribute `Created Timestamp`
 
 **Source:** `Fact Foreign Investor Registration` → `Foreign Investor Dimension`, `Calendar Date Dimension`
 
@@ -346,7 +346,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Registration"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -406,14 +406,14 @@ flowchart LR
 | — | Tổng GT GD NĐTNN | GT mua + GT bán NĐTNN per ngày |
 | — | Tỷ trọng TB phiên | Trung bình tỷ trọng trong khoảng thời gian chọn |
 
-**Lý do pending:** Tất cả KPI phụ thuộc dữ liệu khớp lệnh từ SGDCK. Top ngành cần thêm IDS-GSĐC để map mã CK → nhóm ngành. Không có Silver entity FIMS nào thay thế được.
+**Lý do pending:** Tất cả KPI phụ thuộc dữ liệu khớp lệnh từ SGDCK. Top ngành cần thêm IDS-GSĐC để map mã CK → nhóm ngành. Không có Atomic entity FIMS nào thay thế được.
 
-**Silver cần bổ sung:**
+**Atomic cần bổ sung:**
 - `Securities Foreign Trading Record` (SGDCK): Foreign Investor Buy/Sell Value, Total Market Value, mã CK, ngày GD, sàn
 - `Listed Security` (SGDCK): mã CK, tên, sàn
 - `Industry` (IDS-GSĐC): nhóm ngành, map với mã CK
 
-**Mart dự kiến khi Silver sẵn sàng:**
+**Mart dự kiến khi Atomic sẵn sàng:**
 - `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày GD
 - `Listed Security Dimension` — SCD2
 - `Industry Dimension` — SCD2
@@ -459,11 +459,11 @@ Công nghệ        16.7%        CTG   63.8%
 > - K_NDTNN_17, 18, 19, 21: nguồn SGDCK (khớp lệnh) — PENDING
 > - K_NDTNN_20 (Tỷ lệ sở hữu per mã): nguồn IDS (`Fact Foreign Ownership Snapshot`) — **READY**. Đã thiết kế tại Nhóm 9 Tab DANH MỤC (K_NDTNN_45)
 
-**Lý do pending (K_NDTNN_17–19, 21):** Phụ thuộc dữ liệu khớp lệnh từ SGDCK — GT mua/bán NĐTNN per ngày, GT GD toàn thị trường per ngày. Không có Silver entity FIMS thay thế.
+**Lý do pending (K_NDTNN_17–19, 21):** Phụ thuộc dữ liệu khớp lệnh từ SGDCK — GT mua/bán NĐTNN per ngày, GT GD toàn thị trường per ngày. Không có Atomic entity FIMS thay thế.
 
-**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK) — Foreign Investor Buy/Sell Value per ngày GD, Total Market Value per ngày GD, mã CK, nhóm ngành.
+**Atomic cần bổ sung:** `Securities Foreign Trading Record` (SGDCK) — Foreign Investor Buy/Sell Value per ngày GD, Total Market Value per ngày GD, mã CK, nhóm ngành.
 
-**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày GD (dùng chung với Nhóm 2).
+**Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 ngày GD (dùng chung với Nhóm 2).
 
 ---
 
@@ -476,7 +476,7 @@ Công nghệ        16.7%        CTG   63.8%
 #### Nhóm 3 — KPI Cards: Dòng tiền vào / ra / ròng (STT 23–25)
 
 > Phân loại: **Phân tích**
-> Silver: `Member Report Value` ← FIMS.RPTVALUES + `Member Regulatory Report` ← FIMS.RPTMEMBER — sẵn sàng
+> Atomic: `Member Report Value` ← FIMS.RPTVALUES + `Member Regulatory Report` ← FIMS.RPTMEMBER — sẵn sàng
 
 **Mockup:**
 
@@ -520,7 +520,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Calendar Date Dimension"]
     end
@@ -543,8 +543,8 @@ flowchart LR
 #### Nhóm 4 — Tương quan Net Flow & VN-Index (không STT trong BRD)
 
 > Phân loại: **Phân tích**
-> Silver FIMS: `Member Report Value` — sẵn sàng (dòng tiền ròng)
-> Silver SGDCK: chưa có (Giá trị mua/bán ròng + VN-Index)
+> Atomic FIMS: `Member Report Value` — sẵn sàng (dòng tiền ròng)
+> Atomic SGDCK: chưa có (Giá trị mua/bán ròng + VN-Index)
 
 **Mockup** *(theo screenshot — 3 series line chart dual Y-axis)*:
 
@@ -554,22 +554,22 @@ flowchart LR
 | DÒNG TIỀN RÒNG (xanh lá) | FIMS | Trái (Tỉ đồng) | READY |
 | VN-INDEX (tím) | SGDCK | Phải (Điểm) | PENDING |
 
-> **Ghi chú thiết kế:** 3 series từ 3 fact riêng biệt — presentation layer chịu trách nhiệm query độc lập và align theo trục tháng. Series Dòng tiền ròng reuse `Fact Foreign Investor Capital Flow` (Nhóm 3). 2 series còn lại chờ Silver SGDCK.
+> **Ghi chú thiết kế:** 3 series từ 3 fact riêng biệt — presentation layer chịu trách nhiệm query độc lập và align theo trục tháng. Series Dòng tiền ròng reuse `Fact Foreign Investor Capital Flow` (Nhóm 3). 2 series còn lại chờ Atomic SGDCK.
 
 **Bảng KPI:**
 
 | KPI ID | Tên | Tính chất | Trạng thái |
 |---|---|---|---|
 | K_NDTNN_25b | Dòng tiền ròng lũy kế (tháng) | Derived — reuse K_NDTNN_25 aggregate by tháng | READY |
-| K_NDTNN_22 | Giá trị mua/bán ròng (tháng) | Derived — từ `Fact Securities Foreign Trading Snapshot` | PENDING — chờ Silver SGDCK |
-| K_NDTNN_24b | Điểm đóng cửa VN-Index | Base — từ `Fact Market Index Snapshot` | PENDING — chờ Silver SGDCK |
+| K_NDTNN_22 | Giá trị mua/bán ròng (tháng) | Derived — từ `Fact Securities Foreign Trading Snapshot` | PENDING — chờ Atomic SGDCK |
+| K_NDTNN_24b | Điểm đóng cửa VN-Index | Base — từ `Fact Market Index Snapshot` | PENDING — chờ Atomic SGDCK |
 
 ---
 
 #### Nhóm 5 — Dòng vốn đầu tư gián tiếp nước ngoài (không STT trong BRD)
 
 > Phân loại: **Phân tích**
-> Silver: `Member Report Value` + `Foreign Investor` — sẵn sàng
+> Atomic: `Member Report Value` + `Foreign Investor` — sẵn sàng
 
 **Mockup** *(theo screenshot — stacked bar theo tháng + 4 bảng Top)*:
 
@@ -648,7 +648,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -683,7 +683,7 @@ flowchart LR
 #### Nhóm 6 — KPI Cards + Top: Tổng giá trị danh mục (không STT)
 
 > Phân loại: **Phân tích**
-> Silver: `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK) — sẵn sàng. Xem O_NDTNN_5 về nguồn giá trị thị trường.
+> Atomic: `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK) — sẵn sàng. Xem O_NDTNN_5 về nguồn giá trị thị trường.
 
 **Mockup** *(theo screenshot)*:
 
@@ -755,7 +755,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -790,7 +790,7 @@ flowchart LR
 #### Nhóm 7 — Cơ cấu danh mục theo loại hình tài sản (không STT)
 
 > Phân loại: **Phân tích**
-> Silver: `Foreign Investor Stock Portfolio Snapshot` — sẵn sàng. Xem O_NDTNN_2b về mapping 5 loại tài sản.
+> Atomic: `Foreign Investor Stock Portfolio Snapshot` — sẵn sàng. Xem O_NDTNN_2b về mapping 5 loại tài sản.
 
 **Mockup** *(theo screenshot — donut chart)*:
 
@@ -858,8 +858,8 @@ erDiagram
 #### Nhóm 8 — Bản đồ nhiệt phân ngành (không STT — nguồn IDS)
 
 > Phân loại: **Phân tích**
-> Silver: `Public Company` (IDS.company_profiles + IDS.company_detail — có `Industry Category Level1/Level2 Code`) — sẵn sàng
-> **Ghi chú thiết kế:** `Industry Category Dimension` là Conformed Dim được ETL extract từ `Public Company.Industry Category Level1/Level2 Code` — Silver không có entity riêng cho danh mục ngành, nhưng Gold tạo Dim riêng để (1) đúng ngữ nghĩa khi GROUP BY ngành, (2) tái sử dụng cross-module (QLKD, NHNCK). Đây là pattern **ETL-derived Conformed Dimension** — `source_entity` trong attributes CSV ghi `Public Company`.
+> Atomic: `Public Company` (IDS.company_profiles + IDS.company_detail — có `Industry Category Level1/Level2 Code`) — sẵn sàng
+> **Ghi chú thiết kế:** `Industry Category Dimension` là Conformed Dim được ETL extract từ `Public Company.Industry Category Level1/Level2 Code` — Atomic không có entity riêng cho danh mục ngành, nhưng Datamart tạo Dim riêng để (1) đúng ngữ nghĩa khi GROUP BY ngành, (2) tái sử dụng cross-module (QLKD, NHNCK). Đây là pattern **ETL-derived Conformed Dimension** — `source_entity` trong attributes CSV ghi `Public Company`.
 > Join chain: `Fact Foreign Investor Portfolio Snapshot` → mã CK → `Public Company` (IDS) → `Industry Category Dimension`
 
 **Mockup** *(theo screenshot — treemap)*:
@@ -876,7 +876,7 @@ pie showData
     "Khác" : 7.2
 ```
 
-**Ghi chú thiết kế:** `FIMS.CATEGORIESSTOCK` có mã CK (`SecId`). Join sang `Public Company` qua mã CK → lấy `Industry Category Level1 Code` từ `Public Company.Industry Category Level1 Code`. ETL Gold join cross-source (FIMS × IDS).
+**Ghi chú thiết kế:** `FIMS.CATEGORIESSTOCK` có mã CK (`SecId`). Join sang `Public Company` qua mã CK → lấy `Industry Category Level1 Code` từ `Public Company.Industry Category Level1 Code`. ETL Datamart join cross-source (FIMS × IDS).
 
 **Source:** `Fact Foreign Investor Portfolio Snapshot` → `Industry Category Dimension`, `Calendar Date Dimension`
 
@@ -920,7 +920,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Industry Category Dimension"]
         G3["Calendar Date Dimension"]
@@ -946,7 +946,7 @@ flowchart LR
 #### Nhóm 9 — Sở hữu NĐT nước ngoài ROOM (không STT — nguồn IDS)
 
 > Phân loại: **Phân tích**
-> Silver: `Public Company Foreign Ownership Limit` (IDS.foreign_owner_limit) + `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK) — sẵn sàng
+> Atomic: `Public Company Foreign Ownership Limit` (IDS.foreign_owner_limit) + `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK) — sẵn sàng
 > K_NDTNN_45–49: READY. K_NDTNN_50 (Room theo ngành): PENDING — cần join thêm Industry Category
 
 **Mockup** *(theo screenshot)*:
@@ -1018,7 +1018,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Ownership Snapshot"]
         G2["Public Company Dimension"]
         G3["Calendar Date Dimension"]
@@ -1077,7 +1077,7 @@ flowchart LR
 #### Sub-tab A: Hồ sơ định danh — READY
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Foreign Investor` (FIMS.INVESTOR) + `Custodian Bank` (FIMS.BANKMONI)
+> Atomic: `Foreign Investor` (FIMS.INVESTOR) + `Custodian Bank` (FIMS.BANKMONI)
 
 **Mockup:**
 
@@ -1122,7 +1122,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Foreign Investor 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
@@ -1144,7 +1144,7 @@ flowchart LR
 #### Sub-tab B: Biến động tài sản — READY
 
 > Phân loại: **Phân tích**
-> Silver: `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK)
+> Atomic: `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK)
 
 **Mockup:**
 
@@ -1205,7 +1205,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Calendar Date Dimension"]
@@ -1231,7 +1231,7 @@ flowchart LR
 #### Sub-tab C: Lịch sử tuân thủ — READY
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Surveillance Enforcement Case` (TT.GS_HO_SO) + `Surveillance Enforcement Decision` (TT.GS_VAN_BAN_XU_LY)
+> Atomic: `Surveillance Enforcement Case` (TT.GS_HO_SO) + `Surveillance Enforcement Decision` (TT.GS_VAN_BAN_XU_LY)
 
 **Mockup:**
 
@@ -1244,7 +1244,7 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên | Tính chất | Mô tả — column và Silver source thực tế |
+| KPI ID | Tên | Tính chất | Mô tả — column và Atomic source thực tế |
 |---|---|---|---|
 | K_NDTNN_C1 | Ngày quyết định | Attribute | `Decision Date` — từ GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN. Xem O_NDTNN_8 |
 | K_NDTNN_C2 | Phân loại | Attribute | `Decision Status Code` (scheme TT_CASE_STATUS) — từ GS_VAN_BAN_XU_LY.TRANG_THAI. Xem O_NDTNN_8 |
@@ -1252,7 +1252,7 @@ flowchart LR
 | K_NDTNN_C4 | Mức độ | Attribute | `Case Status Code` (scheme TT_CASE_STATUS) — từ GS_HO_SO.TRANG_THAI_ID. Xem O_NDTNN_8 |
 | K_NDTNN_C5 | Trạng thái | Attribute | `Decision Status Code` (scheme TT_CASE_STATUS) — từ GS_VAN_BAN_XU_LY.TRANG_THAI |
 
-> **Lưu ý O_NDTNN_8:** Mockup hiển thị Phân loại = REMINDER / ADMINISTRATIVE SANCTION và Mức độ = LOW / MEDIUM / HIGH, nhưng Silver GS_ chỉ có TT_CASE_STATUS cho cả hai trường. Cần xác nhận với BA Thanh Tra cách hiển thị các giá trị này trên UI.
+> **Lưu ý O_NDTNN_8:** Mockup hiển thị Phân loại = REMINDER / ADMINISTRATIVE SANCTION và Mức độ = LOW / MEDIUM / HIGH, nhưng Atomic GS_ chỉ có TT_CASE_STATUS cho cả hai trường. Cần xác nhận với BA Thanh Tra cách hiển thị các giá trị này trên UI.
 
 **Schema bảng tác nghiệp:**
 
@@ -1276,7 +1276,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Investor Compliance History"]
     end
     subgraph RPT["Báo cáo"]
@@ -1305,11 +1305,11 @@ flowchart LR
 
 **KPI liên quan:** GT mua/bán/ròng theo loại CK (Cổ phiếu, Trái phiếu, CCQ) — tổng hợp theo tháng/quý/năm
 
-**Lý do pending:** Phụ thuộc Silver SGDCK (khớp lệnh theo loại CK) và VSDC (danh mục lưu ký). Chưa có Silver entity.
+**Lý do pending:** Phụ thuộc Atomic SGDCK (khớp lệnh theo loại CK) và VSDC (danh mục lưu ký). Chưa có Atomic entity.
 
-**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK), `Securities Custody Record` (VSDC)
+**Atomic cần bổ sung:** `Securities Foreign Trading Record` (SGDCK), `Securities Custody Record` (VSDC)
 
-**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 loại CK × 1 kỳ
+**Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 mã CK × 1 loại CK × 1 kỳ
 
 ##### PENDING — Nhóm 10b: Báo cáo chi tiết giao dịch (STT 1–6 nhóm Báo cáo chi tiết)
 
@@ -1317,9 +1317,9 @@ flowchart LR
 
 **Lý do pending:** Cùng nguồn SGDCK. Grain chi tiết hơn Nhóm 10a — cần `Listed Security Dimension`.
 
-**Silver cần bổ sung:** `Securities Foreign Trading Record` (SGDCK)
+**Atomic cần bổ sung:** `Securities Foreign Trading Record` (SGDCK)
 
-**Mart dự kiến khi Silver sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 NĐT × 1 mã CK × 1 ngày GD
+**Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Foreign Trading Snapshot` — grain = 1 NĐT × 1 mã CK × 1 ngày GD
 
 ---
 
@@ -1332,8 +1332,8 @@ flowchart LR
 #### Nhóm 11a — Data Explorer: Dòng vốn ròng của NĐTNN (READY)
 
 > Phân loại: **Phân tích**
-> Silver: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES — sẵn sàng
-> Ghi chú: Reuse `Fact Foreign Investor Capital Flow` — không tạo bảng Gold mới
+> Atomic: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES — sẵn sàng
+> Ghi chú: Reuse `Fact Foreign Investor Capital Flow` — không tạo bảng Datamart mới
 
 **Mockup:**
 
@@ -1361,7 +1361,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Capital Flow"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -1387,8 +1387,8 @@ flowchart LR
 #### Nhóm 11b — Data Explorer: Tổng giá trị danh mục của NĐTNN (READY)
 
 > Phân loại: **Phân tích**
-> Silver: `Foreign Investor Stock Portfolio Snapshot` ← FIMS.CATEGORIESSTOCK — sẵn sàng
-> Ghi chú: Reuse `Fact Foreign Investor Portfolio Snapshot` — không tạo bảng Gold mới
+> Atomic: `Foreign Investor Stock Portfolio Snapshot` ← FIMS.CATEGORIESSTOCK — sẵn sàng
+> Ghi chú: Reuse `Fact Foreign Investor Portfolio Snapshot` — không tạo bảng Datamart mới
 
 **Mockup:**
 
@@ -1415,7 +1415,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Foreign Investor Portfolio Snapshot"]
         G2["Foreign Investor Dimension"]
         G3["Geographic Area Dimension"]
@@ -1441,7 +1441,7 @@ flowchart LR
 #### Nhóm 12 — Data Explorer Pass-through Báo cáo TT51 (READY)
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES + `Report Template` ← FIMS.RPTTEMP — sẵn sàng
+> Atomic: `Member Regulatory Report` ← FIMS.RPTMEMBER + `Member Report Value` ← FIMS.RPTVALUES + `Report Template` ← FIMS.RPTTEMP — sẵn sàng
 > Ghi chú: **26 mẫu biểu** TT51/2021 từ 8 nhóm đối tượng nộp. Tất cả có cùng cấu trúc 6 trường. Thiết kế **1 bảng tác nghiệp Generic** (`NDTNN Regulatory Report Store`) — filter theo `Report Template Code` (placeholder) + `Member Object Type Code` để lấy đúng mẫu biểu.
 
 **Mockup:**
@@ -1482,7 +1482,7 @@ flowchart LR
 | 25 | VSDC | `RPT_VSDC_03` | Thống kê tình hình phát hành chứng khoán |
 | 26 | VSDC | `RPT_VSDC_04` | Thống kê tình hình chia cổ tức cho NĐTNN |
 
-> **Ghi chú placeholder:** `Report Template Code` là mã tạm — cần map với `FIMS.RPTTEMP.Code` thực tế sau khi Silver FIMS profile xong danh mục biểu mẫu. `Member Object Type Code` = `FUND_MGT_CO` / `SECURITIES_CO` / `CUSTODIAN_BANK` / `DISCLOSURE_REP` / `TRADING_REP` / `FOREIGN_INVESTOR` / `STOCK_EXCHANGE` / `DEPOSITORY_CTR`.
+> **Ghi chú placeholder:** `Report Template Code` là mã tạm — cần map với `FIMS.RPTTEMP.Code` thực tế sau khi Atomic FIMS profile xong danh mục biểu mẫu. `Member Object Type Code` = `FUND_MGT_CO` / `SECURITIES_CO` / `CUSTODIAN_BANK` / `DISCLOSURE_REP` / `TRADING_REP` / `FOREIGN_INVESTOR` / `STOCK_EXCHANGE` / `DEPOSITORY_CTR`.
 
 **Bảng KPI** (6 trường × 1 bảng Generic — áp dụng cho cả 26 mẫu):
 
@@ -1523,7 +1523,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Datamart"]
+    subgraph Datamart["Datamart"]
         G1["NDTNN Regulatory Report Store"]
     end
     subgraph RPT["Báo cáo"]
@@ -1540,7 +1540,7 @@ flowchart LR
 
 **Lý do chọn Generic Store:**
 - 26 mẫu biểu TT51 đều có cùng 7 trường hiển thị — không có schema riêng theo loại
-- Silver FIMS lưu dạng generic qua `RPTMEMBER` × `RPTVALUES` — Gold denorm thêm tên biểu mẫu + tên chỉ tiêu
+- Atomic FIMS lưu dạng generic qua `RPTMEMBER` × `RPTVALUES` — Datamart denorm thêm tên biểu mẫu + tên chỉ tiêu
 - Filter theo `Report Template Code` (placeholder) + `Member Object Type Code` để lấy đúng mẫu biểu
 - Detail Mapping có 156 rows (26 mẫu × 6 fields) với placeholder cụ thể per mẫu
 
@@ -1588,8 +1588,8 @@ graph TB
 | Fact Foreign Investor Portfolio Snapshot | Periodic Snapshot | 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_34–44, 51, A1–A2 | READY |
 | Fact Foreign Investor Capital Flow | Event | 1 sự kiện vào/ra vốn × 1 NĐT × 1 ngày | K_NDTNN_23–25, 26–33 | READY |
 | Fact Foreign Ownership Snapshot | Periodic Snapshot | 1 mã CK × 1 ngày | K_NDTNN_45–49 | READY |
-| Fact Securities Foreign Trading Snapshot | Periodic Snapshot | 1 mã CK × 1 ngày GD | K_NDTNN_1–4, 8–16, 17–19, 21, 22 | PENDING — chờ Silver SGDCK |
-| Fact Market Index Snapshot | Periodic Snapshot | 1 chỉ số × 1 ngày | K_NDTNN_24b | PENDING — chờ Silver SGDCK |
+| Fact Securities Foreign Trading Snapshot | Periodic Snapshot | 1 mã CK × 1 ngày GD | K_NDTNN_1–4, 8–16, 17–19, 21, 22 | PENDING — chờ Atomic SGDCK |
+| Fact Market Index Snapshot | Periodic Snapshot | 1 chỉ số × 1 ngày | K_NDTNN_24b | PENDING — chờ Atomic SGDCK |
 
 ### Bảng Tác nghiệp (Denormalized)
 
@@ -1610,7 +1610,7 @@ graph TB
 
 | Public Company Dimension | Reference SCD2 | Công ty đại chúng — IDS.company_profiles. Chứa Stock Code + Industry Category | READY |
 | Industry Category Dimension | Conformed SCD2 | Nhóm ngành — ETL extract từ Public Company.Industry Category Level1/Level2 Code (IDS). Tái sử dụng cross-module | READY |
-| Listed Security Dimension | Conformed SCD2 | Mã CK — SGDCK | PENDING — chờ Silver SGDCK |
+| Listed Security Dimension | Conformed SCD2 | Mã CK — SGDCK | PENDING — chờ Atomic SGDCK |
 
 ---
 
@@ -1618,14 +1618,14 @@ graph TB
 
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_NDTNN_1 | **Registration Date:** `FIMS.INVESTOR.DateCreated` là ngày tạo hồ sơ trên hệ thống — có thể khác ngày cấp mã GD thực tế nếu NĐT import từ VSDC batch. Cần xác nhận với BA field nào là ngày đăng ký chính thức. | Tạm dùng `DateCreated`. Nếu BA xác nhận field khác → update Silver LLD + ETL rule. | K_NDTNN_5–7 | Open |
+| O_NDTNN_1 | **Registration Date:** `FIMS.INVESTOR.DateCreated` là ngày tạo hồ sơ trên hệ thống — có thể khác ngày cấp mã GD thực tế nếu NĐT import từ VSDC batch. Cần xác nhận với BA field nào là ngày đăng ký chính thức. | Tạm dùng `DateCreated`. Nếu BA xác nhận field khác → update Atomic LLD + ETL rule. | K_NDTNN_5–7 | Open |
 | O_NDTNN_2 | **Investor Object Type mapping:** `FIMS.INVESTOR.ObjectType` là INT (1=Cá nhân / 2=Tổ chức). Tổ chức bao gồm cả Quỹ và Tổ chức khác quỹ. Cần xác nhận ETL phân biệt Quỹ vs Tổ chức khác từ `ObjectType=2` hay cần join thêm `INVESTORTYPE`. | Tạm gộp chung `ObjectType=2` → filter thêm `INVESTORTYPE` để tách nếu cần. | K_NDTNN_6, K_NDTNN_7 | Open |
-| O_NDTNN_3 | **Tỷ lệ tham gia + GT mua/bán ròng + Tỷ trọng GD (STT 1–4, 8–19, 21):** Toàn bộ phụ thuộc Silver SGDCK chưa có. | Thiết kế bổ sung khi Silver SGDCK sẵn sàng — không ảnh hưởng thiết kế hiện tại. | K_NDTNN_1–4, 8–19, 21 | Open — chờ Silver SGDCK |
-| O_NDTNN_4 | **Industry source — đã xác định là IDS:** BA ghi `IDS - GSĐC` nhưng ngành nghề công ty đại chúng nằm trong `Public Company` (IDS.company_profiles → category_l1_id/l2_id). Silver READY. Join chain: FIMS.CATEGORIESSTOCK (mã CK) → `Public Company` (IDS, có ngành) → `Industry Category Dimension`. | Thiết kế theo IDS — `Industry Category Dimension` READY. | STT 13–14, Nhóm 8 | Closed |
-| O_NDTNN_5 | **Portfolio Market Value source:** Silver `CATEGORIESSTOCK` chỉ có `Quantity` và `Ownership Rate` — không có giá trị thị trường tính sẵn. Cần giá đóng cửa CK từ SGDCK để tính `Portfolio Market Value = Quantity × giá`. Cần kiểm tra FIMS.RPTVALUES trước. | Tạm ghi ETL derived — pending xác nhận nguồn. | K_NDTNN_34–44, A1–A2 | Open |
-| O_NDTNN_6 | **Silver Thanh Tra:** Đã có `Surveillance Enforcement Case` + `Surveillance Enforcement Decision`. Đã thiết kế `Investor Compliance History`. | Đã giải quyết. | K_NDTNN_C1–C5 | Closed |
-| O_NDTNN_7 | **FK NĐT trong GS_HO_SO:** Silver chỉ có `Subject Name` (text tự do — `GS_HO_SO.TEN_DOI_TUONG`) — không có FK sang `FIMS.INVESTOR`. ETL phải resolve qua text matching hoặc lookup bảng khác. | Tạm giả định resolve qua Subject Name match với `INVESTOR.name`. | K_NDTNN_C1–C5 | Open |
-| O_NDTNN_8 | **Phân loại và Mức độ trên Sub-tab C:** Mockup hiển thị `REMINDER / ADMINISTRATIVE SANCTION` và `LOW / MEDIUM / HIGH` nhưng Silver GS_ chỉ có scheme `TT_CASE_STATUS`. Cần xác nhận với BA Thanh Tra. | Tạm map K_NDTNN_C2 = `Decision Status Code` và K_NDTNN_C4 = `Case Status Code`. | K_NDTNN_C2, K_NDTNN_C4 | Open |
-| O_NDTNN_9 | **Asset Category scheme:** 5 loại tài sản trong BRD cần mapping với scheme `FIMS_SECURITIES_TYPE`. Code cụ thể chưa profile. | Placeholder code (LISTED_EQUITY / BOND / UPCOM / OTHER_EQUITY / CASH) — chờ BA/Silver confirm. | K_NDTNN_40–44 | Open |
+| O_NDTNN_3 | **Tỷ lệ tham gia + GT mua/bán ròng + Tỷ trọng GD (STT 1–4, 8–19, 21):** Toàn bộ phụ thuộc Atomic SGDCK chưa có. | Thiết kế bổ sung khi Atomic SGDCK sẵn sàng — không ảnh hưởng thiết kế hiện tại. | K_NDTNN_1–4, 8–19, 21 | Open — chờ Atomic SGDCK |
+| O_NDTNN_4 | **Industry source — đã xác định là IDS:** BA ghi `IDS - GSĐC` nhưng ngành nghề công ty đại chúng nằm trong `Public Company` (IDS.company_profiles → category_l1_id/l2_id). Atomic READY. Join chain: FIMS.CATEGORIESSTOCK (mã CK) → `Public Company` (IDS, có ngành) → `Industry Category Dimension`. | Thiết kế theo IDS — `Industry Category Dimension` READY. | STT 13–14, Nhóm 8 | Closed |
+| O_NDTNN_5 | **Portfolio Market Value source:** Atomic `CATEGORIESSTOCK` chỉ có `Quantity` và `Ownership Rate` — không có giá trị thị trường tính sẵn. Cần giá đóng cửa CK từ SGDCK để tính `Portfolio Market Value = Quantity × giá`. Cần kiểm tra FIMS.RPTVALUES trước. | Tạm ghi ETL derived — pending xác nhận nguồn. | K_NDTNN_34–44, A1–A2 | Open |
+| O_NDTNN_6 | **Atomic Thanh Tra:** Đã có `Surveillance Enforcement Case` + `Surveillance Enforcement Decision`. Đã thiết kế `Investor Compliance History`. | Đã giải quyết. | K_NDTNN_C1–C5 | Closed |
+| O_NDTNN_7 | **FK NĐT trong GS_HO_SO:** Atomic chỉ có `Subject Name` (text tự do — `GS_HO_SO.TEN_DOI_TUONG`) — không có FK sang `FIMS.INVESTOR`. ETL phải resolve qua text matching hoặc lookup bảng khác. | Tạm giả định resolve qua Subject Name match với `INVESTOR.name`. | K_NDTNN_C1–C5 | Open |
+| O_NDTNN_8 | **Phân loại và Mức độ trên Sub-tab C:** Mockup hiển thị `REMINDER / ADMINISTRATIVE SANCTION` và `LOW / MEDIUM / HIGH` nhưng Atomic GS_ chỉ có scheme `TT_CASE_STATUS`. Cần xác nhận với BA Thanh Tra. | Tạm map K_NDTNN_C2 = `Decision Status Code` và K_NDTNN_C4 = `Case Status Code`. | K_NDTNN_C2, K_NDTNN_C4 | Open |
+| O_NDTNN_9 | **Asset Category scheme:** 5 loại tài sản trong BRD cần mapping với scheme `FIMS_SECURITIES_TYPE`. Code cụ thể chưa profile. | Placeholder code (LISTED_EQUITY / BOND / UPCOM / OTHER_EQUITY / CASH) — chờ BA/Atomic confirm. | K_NDTNN_40–44 | Open |
 | O_NDTNN_10 | **ROOM source — đã xác định là IDS:** `Public Company Foreign Ownership Limit` (IDS.foreign_owner_limit) có `Max Ownership Rate` = Room tối đa. Thiết kế `Fact Foreign Ownership Snapshot` = join FIMS.CATEGORIESSTOCK (Ownership Rate) + IDS.foreign_owner_limit (Max Ownership Rate) theo mã CK. K_NDTNN_45–49 READY. K_NDTNN_50 (Room theo ngành) PENDING vì cần thêm Industry Category join. | Thiết kế theo IDS. K_NDTNN_45–49 đã có mart. | K_NDTNN_45–50 | Closed |
-| O_NDTNN_11 | **Room theo ngành (K_NDTNN_50):** Cần tính `SUM(Quantity NĐT) / SUM(Tổng cổ phiếu niêm yết) × 100%` GROUP BY ngành. Phân tử lấy từ `Fact Foreign Ownership Snapshot`, mẫu số cần tổng cổ phiếu niêm yết per mã CK — Silver chưa có. | Thiết kế bổ sung khi có nguồn tổng cổ phiếu lưu hành. | K_NDTNN_50 | Open — chờ nguồn tổng CP |
+| O_NDTNN_11 | **Room theo ngành (K_NDTNN_50):** Cần tính `SUM(Quantity NĐT) / SUM(Tổng cổ phiếu niêm yết) × 100%` GROUP BY ngành. Phân tử lấy từ `Fact Foreign Ownership Snapshot`, mẫu số cần tổng cổ phiếu niêm yết per mã CK — Atomic chưa có. | Thiết kế bổ sung khi có nguồn tổng cổ phiếu lưu hành. | K_NDTNN_50 | Open — chờ nguồn tổng CP |

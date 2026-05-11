@@ -1,0 +1,6 @@
+﻿datamart_entity,table_type,status,description,source_table,FKs
+Calendar Date Dimension,dim,draft,Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian,Generated,
+Public Company Dimension,dim,draft,Công ty đại chúng — mã CK / tên / ngành / sàn niêm yết (SCD2),Public Company,
+Industry Category Dimension,dim,draft,Nhóm ngành — ETL-derived Conformed Dim từ Public Company.category_l1/l2_id. Tái sử dụng cross-module.,Public Company,
+Fact Securities Offering,fact,draft,Event chào bán/phát hành CK — 1 row per đợt chào bán của 1 công ty đại chúng. Lưu 6 cột per-type Amount/Quantity phục vụ breakdown loại hình.,Public Company Securities Offering,Calendar Date Dimension.SSC Official Document Date Dimension Id | Public Company Dimension.Public Company Dimension Id | Industry Category Dimension.Industry Category Dimension Id
+Securities Offering 360 Profile,operational,draft,"Hồ sơ 360° đợt chào bán — pivot theo loại hình chào bán. Grain: 1 row = 1 đợt × 1 loại hình có qty > 0. Composite PK: (Securities Offering Code, Offering Type Category Code). Một phần PENDING (TTHC).",Public Company Securities Offering / Public Company,

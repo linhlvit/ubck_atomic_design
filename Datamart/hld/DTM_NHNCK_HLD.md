@@ -1,4 +1,4 @@
-# GOLD_NHNCK_HLD — High Level Design
+# DTM_NHNCK_HLD — High Level Design
 **Module:** NHNCK — Người hành nghề chứng khoán  
 **Phiên bản:** 6.3  
 **Ngày:** 27/04/2026  
@@ -6,7 +6,7 @@
 
 ---
 
-## Section 1 — Data Lineage: Source → Silver → Gold Mart
+## Section 1 — Data Lineage: Source → Atomic → Data Mart
 
 ### Cụm 1: Chứng chỉ hành nghề — Thống kê tổng hợp (`Fact Practitioner License Certificate Snapshot`)
 
@@ -20,13 +20,13 @@ flowchart LR
         S3["NHNCK.Applications"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner"]
         SV3["Securities Practitioner License Application"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Practitioner License Certificate Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -60,12 +60,12 @@ flowchart LR
         S3["NHNCK.Violations"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner Conduct Violation"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -99,14 +99,14 @@ flowchart LR
         S5["NHNCK.ProfessionalRelationships"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner License Certificate Document"]
         SV3["Securities Practitioner Organization Employment Report"]
         SV4["Securities Practitioner Related Party"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner 360 Profile"]
     end
 
@@ -126,7 +126,7 @@ flowchart LR
 
 ### Cụm 4: Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức
 
-Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — 5 sub-tab chi tiết. Mỗi bảng là Tác nghiệp — lookup 1 NHN cụ thể, lấy trực tiếp từ Silver.
+Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — 5 sub-tab chi tiết. Mỗi bảng là Tác nghiệp — lookup 1 NHN cụ thể, lấy trực tiếp từ Atomic.
 
 ```mermaid
 flowchart LR
@@ -140,7 +140,7 @@ flowchart LR
         S7["NHNCK.ProfessionalRelationships"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner License Decision Document"]
         SV3["Securities Practitioner Organization Employment Report"]
@@ -151,7 +151,7 @@ flowchart LR
         SV7["Securities Practitioner Related Party"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Certificate History"]
         G2["Practitioner Employment History"]
         G3["Practitioner Violation History"]
@@ -180,13 +180,13 @@ flowchart LR
     SV7 --> G6
 ```
 
-> **Ghi chú Cụm 4:** `Practitioner Employment History` (G2) nguồn từ `Securities Practitioner Organization Employment Report` (SV3) ← `NHNCK.OrganizationReports`. Không có Silver entity `Securities Practitioner Employment Status` từ `ProfessionalWorkHistories` trong scope này.
+> **Ghi chú Cụm 4:** `Practitioner Employment History` (G2) nguồn từ `Securities Practitioner Organization Employment Report` (SV3) ← `NHNCK.OrganizationReports`. Không có Atomic entity `Securities Practitioner Employment Status` từ `ProfessionalWorkHistories` trong scope này.
 
 ---
 
 ### Cụm 5: Data Explorer — Tra cứu danh sách CCHN (`Practitioner Data Explorer`)
 
-Phục vụ **Tab DATA EXPLORER** — bảng tra cứu flat toàn bộ CCHN theo filter Loại chứng chỉ và Trạng thái. Lấy trực tiếp từ Silver, không khai thác qua Fact/Dim.
+Phục vụ **Tab DATA EXPLORER** — bảng tra cứu flat toàn bộ CCHN theo filter Loại chứng chỉ và Trạng thái. Lấy trực tiếp từ Atomic, không khai thác qua Fact/Dim.
 
 ```mermaid
 flowchart LR
@@ -197,13 +197,13 @@ flowchart LR
         S4["NHNCK.OrganizationReports"]
     end
 
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner"]
         SV3["Securities Practitioner Organization Employment Report"]
     end
 
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Data Explorer"]
     end
 
@@ -230,8 +230,8 @@ flowchart LR
 #### Nhóm 1 — Các chỉ tiêu tổng hợp thông tin chung (KPI thẻ)
 
 > Phân loại: **Phân tích**
-> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
-> Silver: `Securities Practitioner License Application` ← NHNCK.Applications — **READY**
+> Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
+> Atomic: `Securities Practitioner License Application` ← NHNCK.Applications — **READY**
 > Ghi chú: `Certificate_Type_Code` (scheme: CERTIFICATE_TYPE) và `Certificate_Status_Code` (scheme: CERTIFICATE_STATUS) là FK → Classification Dimension — không vẽ relationship line trong erDiagram.
 
 **Mockup:**
@@ -319,7 +319,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Practitioner License Certificate Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -356,8 +356,8 @@ flowchart LR
 #### Nhóm 2 — Tổng người hành nghề & Cảnh báo NHNCK
 
 > Phân loại: **Phân tích**
-> Silver: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
-> Silver: `Securities Practitioner Conduct Violation` ← NHNCK.Violations — **READY**
+> Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
+> Atomic: `Securities Practitioner Conduct Violation` ← NHNCK.Violations — **READY**
 
 **Source:** `Fact Practitioner Daily Snapshot` → `Securities Practitioner Dimension`, `Calendar Date Dimension`
 
@@ -426,7 +426,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -454,7 +454,7 @@ flowchart LR
 #### Nhóm 3 — Biểu đồ cơ cấu theo loại hình CCHN
 
 > Phân loại: **Phân tích**
-> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
+> Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
 > Ghi chú: Dùng chung `Fact Practitioner License Certificate Snapshot` với Nhóm 1 — không thiết kế bảng mới.
 
 **Source:** `Fact Practitioner License Certificate Snapshot` → `Securities Practitioner Dimension`, `Calendar Date Dimension`, `Classification Dimension`
@@ -474,7 +474,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Practitioner License Certificate Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -502,7 +502,7 @@ flowchart LR
 #### Nhóm 4 — Biểu đồ trình độ chuyên môn
 
 > Phân loại: **Phân tích**
-> Silver: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
+> Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
 
 **Source:** `Fact Practitioner Daily Snapshot` → `Securities Practitioner Dimension`, `Calendar Date Dimension`
 
@@ -574,7 +574,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -602,7 +602,7 @@ flowchart LR
 #### Nhóm 5 — Biểu đồ phân bổ độ tuổi
 
 > Phân loại: **Phân tích**
-> Silver: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
+> Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
 
 **Source:** `Fact Practitioner Daily Snapshot` → `Securities Practitioner Dimension`, `Calendar Date Dimension`
 
@@ -680,7 +680,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -712,10 +712,10 @@ flowchart LR
 #### Nhóm 6 — Màn hình danh sách & Header NHN 360°
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
-> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
-> Silver: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
-> Silver: `Securities Practitioner Related Party` ← NHNCK.ProfessionalRelationships — **READY**
+> Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
+> Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
+> Atomic: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
+> Atomic: `Securities Practitioner Related Party` ← NHNCK.ProfessionalRelationships — **READY**
 
 **Mockup — Danh sách:**
 
@@ -733,7 +733,7 @@ flowchart LR
 AS OF: 30/09/2025 | 3 N/Quan | 4 Doanh nghiệp (PENDING SGDCK)
 ```
 
-**Source:** `Practitioner 360 Profile` (Tác nghiệp — trực tiếp từ Silver)
+**Source:** `Practitioner 360 Profile` (Tác nghiệp — trực tiếp từ Atomic)
 
 **Bảng KPI:**
 
@@ -778,13 +778,13 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner License Certificate Document"]
         SV3["Securities Practitioner Organization Employment Report"]
         SV4["Securities Practitioner Related Party"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner 360 Profile"]
     end
     subgraph RPT["Bao cao - Nhom 6"]
@@ -808,8 +808,8 @@ flowchart LR
 #### Nhóm 7 — Sub-tab Lịch sử cấp chứng chỉ hành nghề
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
-> Silver: `Securities Practitioner License Decision Document` ← NHNCK.Decisions — **READY**
+> Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
+> Atomic: `Securities Practitioner License Decision Document` ← NHNCK.Decisions — **READY**
 
 **Mockup:**
 
@@ -855,11 +855,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner License Decision Document"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Certificate History"]
     end
     subgraph RPT["Bao cao - Nhom 7"]
@@ -881,7 +881,7 @@ flowchart LR
 #### Nhóm 8 — Sub-tab Quá trình hành nghề
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
+> Atomic: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
 > Ghi chú: Nguồn là `NHNCK.OrganizationReports` — không phải `ProfessionalWorkHistories`. `Current_Organization_Name` ETL-derived qua join `Securities Organization Reference`.Organization Name theo `Securities_Organization_Code`.
 
 **Mockup:**
@@ -923,10 +923,10 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Organization Employment Report"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Employment History"]
     end
     subgraph RPT["Bao cao - Nhom 8"]
@@ -947,8 +947,8 @@ flowchart LR
 #### Nhóm 9 — Sub-tab Lịch sử vi phạm & xử phạt hành chính
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner Conduct Violation` ← NHNCK.Violations — **READY**
-> Silver: `Securities Practitioner License Decision Document` ← NHNCK.Decisions — **READY**
+> Atomic: `Securities Practitioner Conduct Violation` ← NHNCK.Violations — **READY**
+> Atomic: `Securities Practitioner License Decision Document` ← NHNCK.Decisions — **READY**
 
 **Mockup:**
 
@@ -992,11 +992,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Conduct Violation"]
         SV2["Securities Practitioner License Decision Document"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Violation History"]
     end
     subgraph RPT["Bao cao - Nhom 9"]
@@ -1018,9 +1018,9 @@ flowchart LR
 #### Nhóm 10 — Sub-tab Đợt thi sát hạch
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner Qualification Examination Assessment Result` ← NHNCK.ExamDetails — **READY**
-> Silver: `Securities Practitioner Qualification Examination Assessment` ← NHNCK.ExamSessions — **READY**
-> Silver: `Securities Practitioner License Decision Document` ← NHNCK.Decisions — **READY**
+> Atomic: `Securities Practitioner Qualification Examination Assessment Result` ← NHNCK.ExamDetails — **READY**
+> Atomic: `Securities Practitioner Qualification Examination Assessment` ← NHNCK.ExamSessions — **READY**
+> Atomic: `Securities Practitioner License Decision Document` ← NHNCK.Decisions — **READY**
 
 **Mockup:**
 
@@ -1040,7 +1040,7 @@ flowchart LR
 | K_NHNCK_60 | Ngày thi | Date | Base | Examination Start Date |
 | K_NHNCK_61 | Điểm thi | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Law Score / Specialization Score |
 | K_NHNCK_62 | Số quyết định công bố | Text | Base | `Securities Practitioner License Decision Document`.Decision Number — Decision trên ExamSession |
-| K_NHNCK_63 | Trạng thái Đạt/Không đạt | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Examination Result Code — map từ `ExamDetails.Result` (kết quả tổng Đạt/Không đạt của cá nhân NHN, xác nhận BA v2). Scheme: EXAMINATION_RESULT (1: Đạt, 0: Không đạt). Không phải ExamSessions.Status (trạng thái đợt thi). — Silver READY, không cần derive |
+| K_NHNCK_63 | Trạng thái Đạt/Không đạt | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Examination Result Code — map từ `ExamDetails.Result` (kết quả tổng Đạt/Không đạt của cá nhân NHN, xác nhận BA v2). Scheme: EXAMINATION_RESULT (1: Đạt, 0: Không đạt). Không phải ExamSessions.Status (trạng thái đợt thi). — Atomic READY, không cần derive |
 
 **Schema bảng tác nghiệp:**
 
@@ -1064,12 +1064,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Qualification Examination Assessment Result"]
         SV2["Securities Practitioner Qualification Examination Assessment"]
         SV3["Securities Practitioner License Decision Document"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Exam History"]
     end
     subgraph RPT["Bao cao - Nhom 10"]
@@ -1092,9 +1092,9 @@ flowchart LR
 #### Nhóm 11 — Sub-tab Cập nhật kiến thức hành nghề
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner Professional Training Class Enrollment` ← NHNCK.SpecializationCourseDetails — **READY**
-> Silver: `Securities Practitioner Professional Training Class` ← NHNCK.SpecializationCourses — **READY**
-> Ghi chú: Silver `SpecializationCourses` phục vụ khóa học chứng chỉ chuyên môn (CPA, CFA...) theo UID04, đồng thời UID10 dùng cùng bảng này cho cập nhật kiến thức hành nghề. Cần BA xác nhận Silver có attribute giờ học không — xem O_NHNCK_9.
+> Atomic: `Securities Practitioner Professional Training Class Enrollment` ← NHNCK.SpecializationCourseDetails — **READY**
+> Atomic: `Securities Practitioner Professional Training Class` ← NHNCK.SpecializationCourses — **READY**
+> Ghi chú: Atomic `SpecializationCourses` phục vụ khóa học chứng chỉ chuyên môn (CPA, CFA...) theo UID04, đồng thời UID10 dùng cùng bảng này cho cập nhật kiến thức hành nghề. Cần BA xác nhận Atomic có attribute giờ học không — xem O_NHNCK_9.
 
 **Mockup:**
 
@@ -1112,7 +1112,7 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Nguồn |
 |---|---|---|---|---|
 | K_NHNCK_64 | Năm cập nhật | Int | Base | `Securities Practitioner Professional Training Class`.Academic Year (CAST sang int) |
-| K_NHNCK_65 | Số giờ cập nhật | Float | Base | Chưa xác định attribute trong Silver — xem O_NHNCK_9 |
+| K_NHNCK_65 | Số giờ cập nhật | Float | Base | Chưa xác định attribute trong Atomic — xem O_NHNCK_9 |
 | K_NHNCK_66 | Kết quả kiểm tra | Text | Base | `Securities Practitioner Professional Training Class Enrollment`.Assessment Result Code — ETL denormalize Assessment Result Name khi populate bảng |
 | K_NHNCK_67 | Trạng thái đủ 8h | Text | Derived | **PENDING** — phụ thuộc O_NHNCK_9: cần có `Training_Hours` trước khi có thể derive. Logic dự kiến: SUM(Training_Hours) WHERE Training_Year = Y ≥ 8 → "Đã đủ 8h" |
 
@@ -1129,17 +1129,17 @@ erDiagram
     }
 ```
 
-> **Ghi chú:** `Training_Hours` bị xóa khỏi schema — chưa tìm thấy attribute tương ứng trong Silver. `Is_Hours_Sufficient` bị xóa — phụ thuộc việc có `Training_Hours` không. Xem O_NHNCK_9.
+> **Ghi chú:** `Training_Hours` bị xóa khỏi schema — chưa tìm thấy attribute tương ứng trong Atomic. `Is_Hours_Sufficient` bị xóa — phụ thuộc việc có `Training_Hours` không. Xem O_NHNCK_9.
 
 **Lineage Mart → Báo cáo — Nhóm 11:**
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Professional Training Class Enrollment"]
         SV2["Securities Practitioner Professional Training Class"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Training History"]
     end
     subgraph RPT["Bao cao - Nhom 11"]
@@ -1161,7 +1161,7 @@ flowchart LR
 #### Nhóm 12 — Sub-tab Hồ sơ / Mạng lưới người liên quan
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner Related Party` ← NHNCK.ProfessionalRelationships — **READY**
+> Atomic: `Securities Practitioner Related Party` ← NHNCK.ProfessionalRelationships — **READY**
 > Ghi chú: Phục vụ phần "Mạng lưới người liên quan" trong sub-tab Hồ sơ. Mỗi row = 1 người liên quan của NHN (vợ/chồng, con, bố/mẹ...). Cần BA xác nhận filter loại quan hệ — xem O_NHNCK_7.
 
 **Mockup:**
@@ -1172,7 +1172,7 @@ flowchart LR
 | Nguyễn Thế B | Con trai | Du học sinh | — |
 | Trần Văn C | Em rể | Giám đốc DN tư nhân | — |
 
-**Source:** `Practitioner Related Party Profile` (Tác nghiệp — trực tiếp từ Silver)
+**Source:** `Practitioner Related Party Profile` (Tác nghiệp — trực tiếp từ Atomic)
 
 **Bảng KPI:**
 
@@ -1202,10 +1202,10 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner Related Party"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Related Party Profile"]
     end
     subgraph RPT["Bao cao - Nhom 12"]
@@ -1234,10 +1234,10 @@ flowchart LR
 #### Nhóm 13 — Practitioner Data Explorer (bảng tra cứu tổng hợp)
 
 > Phân loại: **Tác nghiệp**
-> Silver: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
-> Silver: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
-> Silver: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
-> Ghi chú: Bảng flat denormalized ETL trực tiếp từ Silver — không khai thác qua Fact/Dim. Grain = 1 CCHN per NHN (latest active state). Slicer Loại chứng chỉ và Trạng thái filter trực tiếp trên `Certificate_Type_Code` và `Certificate_Status_Code` trong bảng này.
+> Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
+> Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
+> Atomic: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
+> Ghi chú: Bảng flat denormalized ETL trực tiếp từ Atomic — không khai thác qua Fact/Dim. Grain = 1 CCHN per NHN (latest active state). Slicer Loại chứng chỉ và Trạng thái filter trực tiếp trên `Certificate_Type_Code` và `Certificate_Status_Code` trong bảng này.
 
 **Mockup:**
 
@@ -1248,7 +1248,7 @@ flowchart LR
 | Trần Minh C | CCHN-QLQ-2019-112 | Quản lý quỹ | GOOGLE | 05/01/2019 | Đang hoạt động |
 | Đinh Quốc G | CCHN-QLQ-2020-055 | Quản lý quỹ | DEEPSEEK | 22/07/2020 | Đang hoạt động |
 
-**Source:** `Practitioner Data Explorer` (Tác nghiệp — trực tiếp từ Silver)
+**Source:** `Practitioner Data Explorer` (Tác nghiệp — trực tiếp từ Atomic)
 
 **Bảng KPI:**
 
@@ -1287,12 +1287,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Silver"]
+    subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner License Certificate Document"]
         SV3["Securities Practitioner Organization Employment Report"]
     end
-    subgraph GOLD["Gold Mart"]
+    subgraph Datamart["Datamart"]
         G1["Practitioner Data Explorer"]
     end
     subgraph RPT["Bao cao - Nhom 13"]
@@ -1321,7 +1321,7 @@ flowchart LR
 > - Chức vụ, vai trò → `OrganizationReports.Position` → `Practitioner Employment History` (Nhóm 8) — READY
 > - Họ tên / Mối quan hệ / Nghề nghiệp / Chức vụ người liên quan → `ProfessionalRelationships.*` → `Practitioner Related Party Profile` (Nhóm 12) — READY
 >
-> Dashboard Mạng lưới sử dụng dữ liệu từ `Practitioner Employment History` + `Practitioner Related Party Profile` — không cần Silver SGDCK/VSDC. Xem O_NHNCK_6 cập nhật.
+> Dashboard Mạng lưới sử dụng dữ liệu từ `Practitioner Employment History` + `Practitioner Related Party Profile` — không cần Atomic SGDCK/VSDC. Xem O_NHNCK_6 cập nhật.
 
 ---
 
@@ -1329,11 +1329,11 @@ flowchart LR
 
 **KPI liên quan:** Tên DN niêm yết/UPCOM, Vai trò (HĐQT, Cổ đông lớn, Cố vấn...), Trạng thái, Số lượng cổ phiếu sở hữu
 
-**Lý do pending:** BA v2 field "Tên DN niêm yết" map về `OrganizationReports.OrganizationId` nhưng đánh dấu "Hỏi HTTT" (chưa xác nhận). Chưa rõ `NHNCK.OrganizationReports` có bao gồm DN niêm yết/UPCOM hay chỉ tổ chức KDCK. Số lượng cổ phiếu sở hữu nguồn VSDC chưa có Silver. Giữ toàn bộ PENDING cho đến khi HTTT xác nhận đầy đủ.
+**Lý do pending:** BA v2 field "Tên DN niêm yết" map về `OrganizationReports.OrganizationId` nhưng đánh dấu "Hỏi HTTT" (chưa xác nhận). Chưa rõ `NHNCK.OrganizationReports` có bao gồm DN niêm yết/UPCOM hay chỉ tổ chức KDCK. Số lượng cổ phiếu sở hữu nguồn VSDC chưa có Atomic. Giữ toàn bộ PENDING cho đến khi HTTT xác nhận đầy đủ.
 
-**Silver cần bổ sung:** (1) HTTT xác nhận `OrganizationReports` có bao gồm DN niêm yết/UPCOM không; (2) Entity sở hữu cổ phần cá nhân (VSDC) có FK về `Securities Practitioner`.
+**Atomic cần bổ sung:** (1) HTTT xác nhận `OrganizationReports` có bao gồm DN niêm yết/UPCOM không; (2) Entity sở hữu cổ phần cá nhân (VSDC) có FK về `Securities Practitioner`.
 
-**Mart dự kiến khi Silver sẵn sàng:** `Practitioner Listed Company Role` — grain = 1 vai trò per NHN per DN niêm yết.
+**Mart dự kiến khi Atomic sẵn sàng:** `Practitioner Listed Company Role` — grain = 1 vai trò per NHN per DN niêm yết.
 
 ---
 
@@ -1341,11 +1341,11 @@ flowchart LR
 
 **KPI liên quan:** Mã CTCK, Số tài khoản, Tên chủ tài khoản, Mã CK nắm giữ chính (tối đa 2 mã lớn nhất), Số dư tài khoản (tỷ VNĐ) (nguồn VSDC)
 
-**Lý do pending:** Silver VSDC chưa có entity tài khoản giao dịch cá nhân join được với `Securities Practitioner`.
+**Lý do pending:** Atomic VSDC chưa có entity tài khoản giao dịch cá nhân join được với `Securities Practitioner`.
 
-**Silver cần bổ sung:** Entity tài khoản giao dịch (VSDC) có FK về `Securities Practitioner` qua CMND/CCCD hoặc mã NHN.
+**Atomic cần bổ sung:** Entity tài khoản giao dịch (VSDC) có FK về `Securities Practitioner` qua CMND/CCCD hoặc mã NHN.
 
-**Mart dự kiến khi Silver sẵn sàng:** `Practitioner Brokerage Account` — grain = 1 tài khoản per NHN per CTCK.
+**Mart dự kiến khi Atomic sẵn sàng:** `Practitioner Brokerage Account` — grain = 1 tài khoản per NHN per CTCK.
 
 ---
 
@@ -1419,13 +1419,13 @@ graph TB
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
 | O_NHNCK_1 | Phân biệt Thu hồi 3 năm vs Thu hồi vĩnh viễn qua `Allow_Reissue_Indicator`. | `Allow Reissue Indicator = 1` → Thu hồi 3 năm; `= 0` → Thu hồi vĩnh viễn. Đã xác nhận. | K_NHNCK_6, K_NHNCK_7 | Closed |
-| O_NHNCK_2 | `Nationality_Code` nguồn từ `ProfessionalHistories.NationalityCode`. | Đã xác nhận — có trên Silver. | K_NHNCK_23–32 | Closed |
+| O_NHNCK_2 | `Nationality_Code` nguồn từ `ProfessionalHistories.NationalityCode`. | Đã xác nhận — có trên Atomic. | K_NHNCK_23–32 | Closed |
 | O_NHNCK_3 | Logic YTD: năm hiện tại đến today; năm quá khứ đến 31/12/Y. | Đã xác nhận. | K_NHNCK_2, 2a, 2b | Closed |
 | O_NHNCK_4 | Tuổi tính từ `Date_Of_Birth` (date) từ `ProfessionalHistories.BirthDate`. | `Age = Year(Snapshot_Date) − Year(Date_Of_Birth)`. Đã xác nhận. | K_NHNCK_23–32, K_NHNCK_35 | Closed |
-| O_NHNCK_5 | `Has_Active_Violation`: ETL tính tại thời điểm snapshot chạy hàng ngày — Silver không lưu lịch sử thay đổi trạng thái vi phạm theo ngày nên không thể tính point-in-time chính xác. Logic tạm: `Has_Active_Violation = TRUE` nếu NHN có ít nhất 1 `Conduct Violation` có `Violation_Status_Code = 1 (ACTIVE)` tại thời điểm ETL chạy. Slicer năm lấy row Snapshot_Date = 31/12/Y (quá khứ) hoặc MAX ngày (hiện tại). | Tạm chấp nhận — cần BA xác nhận có đúng yêu cầu nghiệp vụ không. | K_NHNCK_4 | Open |
-| O_NHNCK_6 | (Cập nhật v6.3) Scope còn lại PENDING: (1) Dashboard Mạng lưới — đã READY, dùng Employment History + Related Party Profile (nguồn NHNCK). (2) Vai trò tại DN niêm yết — toàn bộ PENDING: BA v2 field "Tên DN" đánh dấu "Hỏi HTTT", chưa xác nhận OrganizationReports có bao gồm DN niêm yết/UPCOM không; Số cổ phiếu sở hữu nguồn VSDC chưa có Silver. Giữ PENDING đến khi HTTT xác nhận đầy đủ. (3) Tài khoản & Số dư Cross-broker — PENDING VSDC. Cần: (a) HTTT xác nhận phạm vi OrganizationReports; (b) Silver VSDC entity sở hữu cổ phần + tài khoản giao dịch có FK về Securities Practitioner. | PENDING — Vai trò DN niêm yết + Tài khoản & Số dư. Dashboard Mạng lưới đã READY (Nhóm 8 + Nhóm 12). | K_NHNCK_33 (một phần) | Open |
-| O_NHNCK_7 | Counter "N N/Quan": nguồn `Securities Practitioner Related Party` (NHNCK) READY. Cần BA xác nhận filter loại quan hệ: toàn bộ hay chỉ một số loại (vợ/chồng, con, bố/mẹ...)? Counter "N Doanh nghiệp": PENDING chờ Silver SGDCK. | `Related_Party_Count` = COUNT(*) từ `Securities Practitioner Related Party` — tạm tính toàn bộ. | K_NHNCK_42 | Open |
-| O_NHNCK_8 | Logic Đạt/Không đạt trong `Practitioner Exam History`: Silver `ExamDetails` có `Examination_Result_Code` (scheme: EXAMINATION_RESULT — 1: Đạt, 0: Không đạt) — đã có sẵn, không cần derive. | Dùng `Examination_Result_Code` trực tiếp từ Silver. Đã xác nhận. | K_NHNCK_63 | Closed |
-| O_NHNCK_9 | `Training_Hours` (số giờ cập nhật kiến thức) hiển thị trên màn hình nhưng không tìm thấy attribute tương ứng trong Silver `SpecializationCourseDetails`. BA v2 xác nhận: "Chưa biết tính như nào ra số giờ" — chờ HTTT cung cấp thêm thông tin về cách tính số giờ từ nguồn. K_NHNCK_65 và K_NHNCK_67 giữ PENDING cho đến khi HTTT làm rõ. | `Practitioner Training History` ở trạng thái DRAFT — thiếu attribute giờ học. K_NHNCK_65, K_NHNCK_67 PENDING chờ HTTT. | K_NHNCK_65, K_NHNCK_67 | Open |
+| O_NHNCK_5 | `Has_Active_Violation`: ETL tính tại thời điểm snapshot chạy hàng ngày — Atomic không lưu lịch sử thay đổi trạng thái vi phạm theo ngày nên không thể tính point-in-time chính xác. Logic tạm: `Has_Active_Violation = TRUE` nếu NHN có ít nhất 1 `Conduct Violation` có `Violation_Status_Code = 1 (ACTIVE)` tại thời điểm ETL chạy. Slicer năm lấy row Snapshot_Date = 31/12/Y (quá khứ) hoặc MAX ngày (hiện tại). | Tạm chấp nhận — cần BA xác nhận có đúng yêu cầu nghiệp vụ không. | K_NHNCK_4 | Open |
+| O_NHNCK_6 | (Cập nhật v6.3) Scope còn lại PENDING: (1) Dashboard Mạng lưới — đã READY, dùng Employment History + Related Party Profile (nguồn NHNCK). (2) Vai trò tại DN niêm yết — toàn bộ PENDING: BA v2 field "Tên DN" đánh dấu "Hỏi HTTT", chưa xác nhận OrganizationReports có bao gồm DN niêm yết/UPCOM không; Số cổ phiếu sở hữu nguồn VSDC chưa có Atomic. Giữ PENDING đến khi HTTT xác nhận đầy đủ. (3) Tài khoản & Số dư Cross-broker — PENDING VSDC. Cần: (a) HTTT xác nhận phạm vi OrganizationReports; (b) Atomic VSDC entity sở hữu cổ phần + tài khoản giao dịch có FK về Securities Practitioner. | PENDING — Vai trò DN niêm yết + Tài khoản & Số dư. Dashboard Mạng lưới đã READY (Nhóm 8 + Nhóm 12). | K_NHNCK_33 (một phần) | Open |
+| O_NHNCK_7 | Counter "N N/Quan": nguồn `Securities Practitioner Related Party` (NHNCK) READY. Cần BA xác nhận filter loại quan hệ: toàn bộ hay chỉ một số loại (vợ/chồng, con, bố/mẹ...)? Counter "N Doanh nghiệp": PENDING chờ Atomic SGDCK. | `Related_Party_Count` = COUNT(*) từ `Securities Practitioner Related Party` — tạm tính toàn bộ. | K_NHNCK_42 | Open |
+| O_NHNCK_8 | Logic Đạt/Không đạt trong `Practitioner Exam History`: Atomic `ExamDetails` có `Examination_Result_Code` (scheme: EXAMINATION_RESULT — 1: Đạt, 0: Không đạt) — đã có sẵn, không cần derive. | Dùng `Examination_Result_Code` trực tiếp từ Atomic. Đã xác nhận. | K_NHNCK_63 | Closed |
+| O_NHNCK_9 | `Training_Hours` (số giờ cập nhật kiến thức) hiển thị trên màn hình nhưng không tìm thấy attribute tương ứng trong Atomic `SpecializationCourseDetails`. BA v2 xác nhận: "Chưa biết tính như nào ra số giờ" — chờ HTTT cung cấp thêm thông tin về cách tính số giờ từ nguồn. K_NHNCK_65 và K_NHNCK_67 giữ PENDING cho đến khi HTTT làm rõ. | `Practitioner Training History` ở trạng thái DRAFT — thiếu attribute giờ học. K_NHNCK_65, K_NHNCK_67 PENDING chờ HTTT. | K_NHNCK_65, K_NHNCK_67 | Open |
 | O_NHNCK_10 | `Is_Reissue_Indicator` trên Fact Certificate Snapshot: ETL-derived bằng cách join `CertificateRecords → Applications` lấy `Application_Type_Code` (scheme: APPLICATION_TYPE). BA v2 xác nhận scheme APPLICATION_TYPE có 4 giá trị: (1) "Hồ sơ cấp mới" → `Is_Reissue_Indicator = FALSE`; (2) "Hồ sơ cấp lại do thu hồi", (3) "Hồ sơ cấp lại do hỏng mất", (4) "Hồ sơ cấp lại do thay đổi thông tin" → `Is_Reissue_Indicator = TRUE`. ETL logic: nếu Application_Type_Code thuộc nhóm (2)/(3)/(4) thì TRUE, chỉ (1) là FALSE. K_NHNCK_2b đếm tất cả 3 loại cấp lại gộp chung. | `Is_Reissue_Indicator = TRUE` nếu ApplicationType ∈ {cấp lại do thu hồi, do hỏng mất, do thay đổi thông tin}. Đã xác nhận logic với BA v2. | K_NHNCK_2a, K_NHNCK_2b | Closed |
 | O_NHNCK_11 | "Mạng lưới người có liên quan" (STT 3.2.2.3) — BA v2 + Screenshot xác nhận toàn bộ map về `NHNCK.ProfessionalRelationships` (Họ tên: ProfessionalRelationships.FullName, Mối quan hệ: .RelationshipType, Nghề nghiệp: .Occupation). Nguồn là NHNCK không phải SGDCK. `Practitioner Related Party Profile` (Nhóm 12) đã thiết kế đúng và đủ. | Đã xác nhận nguồn NHNCK READY. Nhóm 12 (`Practitioner Related Party Profile`) phục vụ toàn bộ. | K_NHNCK_75–78 | Closed |
