@@ -43,7 +43,7 @@ description: |
 | `Relative` | Entity phụ thuộc Fundamental (FK), mô tả trạng thái hoặc thuộc tính bổ sung | SCD2 |
 | `Fact Append` | Log hoạt động, giao dịch, sự kiện — mỗi dòng là 1 occurrence không bị xóa/sửa | Insert-only, append, không update |
 | `Fact Snapshot` | Chụp trạng thái tại 1 thời điểm/kỳ — giữ lịch sử nhiều kỳ, không overwrite | Insert-only theo partition ngày/kỳ, giữ lịch sử |
-| `Classification` | Thông tin danh mục phân loại — có thể lấy từ nguồn hoặc tự định nghĩa. Mặc định cho tất cả entity có `bcv_core_object = Common` | SCD1 |
+| `Classification` | Thông tin danh mục phân loại — có thể lấy từ nguồn hoặc tự định nghĩa. Mặc định cho tất cả entity có `bcv_core_object = Common` | Upsert |
 
 **Phân biệt `Fact Append` vs `Fact Snapshot`:**
 - `Fact Append`: grain = 1 event/occurrence (tick khớp lệnh, log hoạt động). Mỗi dòng là 1 sự kiện xảy ra.
