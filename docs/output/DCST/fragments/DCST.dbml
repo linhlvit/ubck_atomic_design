@@ -89,13 +89,13 @@ TableGroup "UID05 — Giám sát doanh nghiệp rủi ro cao" {
   "hrsk_taxpayer_ases_snpst"
 }
 
-// Ref: "rgst_taxpayer"."charter_cptl_ccy_code" > "currency"."currency_code" // out-of-source
-// Ref: "rgst_taxpayer"."frgn_charter_cptl_ccy_code" > "currency"."currency_code" // out-of-source
+// Ref: "rgst_taxpayer"."charter_cptl_ccy_code" > ""."" // out-of-source
+// Ref: "rgst_taxpayer"."frgn_charter_cptl_ccy_code" > ""."" // out-of-source
 Ref: "taxpayer_rprs"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
 Ref: "hrsk_taxpayer_ases_snpst"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
 Ref: "ip_pst_adr"."ip_id" > "rgst_taxpayer"."rgst_taxpayer_id"
-// Ref: "ip_pst_adr"."prov_id" > "geographic_area"."geographic_area_id" // out-of-source
-// Ref: "ip_pst_adr"."geo_id" > "geographic_area"."geographic_area_id" // out-of-source
+// Ref: "ip_pst_adr"."prov_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."geo_id" > ""."" // out-of-source
 Ref: "ip_elc_adr"."ip_id" > "rgst_taxpayer"."rgst_taxpayer_id"
 Ref: "ip_alt_identn"."ip_id" > "rgst_taxpayer"."rgst_taxpayer_id"
 Ref: "ip_elc_adr"."ip_id" > "taxpayer_rprs"."taxpayer_rprs_id"

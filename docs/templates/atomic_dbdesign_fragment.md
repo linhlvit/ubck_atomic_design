@@ -26,7 +26,7 @@
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 {% for a in e.attributes -%}
-| {{ loop.index }} | {{ a.atomic_column }} | {{ a.data_domain | data_domain_to_sql }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} |
+| {{ loop.index }} | {{ a.atomic_column }} | {{ a | display_data_type }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} |
 {% endfor %}
 
 **Khóa chính (Primary Key):**
@@ -53,13 +53,17 @@
 *Không có Foreign Key.*
 {% endif %}
 
+**Index:** N/A
+
+**Trigger:** N/A
+
 {% endfor %}
 {% else %}
 {% set e = grp[0] %}
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 {% for a in e.attributes -%}
-| {{ loop.index }} | {{ a.atomic_column }} | {{ a.data_domain | data_domain_to_sql }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} |
+| {{ loop.index }} | {{ a.atomic_column }} | {{ a | display_data_type }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} |
 {% endfor %}
 
 #### 2.{{ idx }}.{{ loop.index + 1 }}.1 Constraint
@@ -88,5 +92,21 @@
 *Không có Foreign Key.*
 {% endif %}
 
+#### 2.{{ idx }}.{{ loop.index + 1 }}.2 Index
+
+N/A
+
+#### 2.{{ idx }}.{{ loop.index + 1 }}.3 Trigger
+
+N/A
+
 {% endif %}
 {% endfor %}
+
+### 2.{{ idx }}.{{ unique_entities | length + 2 }} Stored Procedure/Function
+
+N/A
+
+### 2.{{ idx }}.{{ unique_entities | length + 3 }} Package
+
+N/A

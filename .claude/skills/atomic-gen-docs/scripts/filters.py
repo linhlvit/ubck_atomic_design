@@ -35,6 +35,18 @@ def data_domain_to_sql(domain: str) -> str:
     return DATA_DOMAIN_SQL_MAP.get(domain.strip(), domain.strip())
 
 
+def display_data_type(attr: dict) -> str:
+    """Lấy kiểu dữ liệu vật lý để hiển thị trong tài liệu.
+
+    Ưu tiên data_type từ CSV (do transform_physical_names.py sinh ra).
+    Fallback về data_domain_to_sql nếu data_type rỗng.
+    """
+    dt = (attr.get("data_type") or "").strip().upper()
+    if dt:
+        return dt
+    return data_domain_to_sql(attr.get("data_domain", ""))
+
+
 def x_or_blank(value) -> str:
     """True → 'X', False → ''."""
     if isinstance(value, bool):

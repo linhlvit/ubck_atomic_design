@@ -22,6 +22,7 @@ def make_env(templates_dir: Path) -> Environment:
         keep_trailing_newline=True,
     )
     env.filters["data_domain_to_sql"] = F.data_domain_to_sql
+    env.filters["display_data_type"] = F.display_data_type
     env.filters["x_or_blank"] = F.x_or_blank
     env.filters["pk_fk_label"] = F.pk_fk_label
     env.filters["default_value"] = F.default_value

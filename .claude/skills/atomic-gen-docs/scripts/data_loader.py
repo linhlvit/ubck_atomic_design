@@ -260,7 +260,7 @@ def build_constraints(entity: dict[str, Any], all_attrs: list[dict[str, Any]] | 
             continue
         seen.add(key)
         ref_col = ref_col_lookup.get((a["fk_target_entity"], a["fk_target_attribute"]), "")
-        ref_table_physical = ref_table_lookup.get(a["fk_target_entity"], _to_snake_case(a["fk_target_entity"]))
+        ref_table_physical = ref_table_lookup.get(a["fk_target_entity"], "")
         out.append({
             "field": a["attribute_name"],
             "col": a.get("atomic_column", ""),
@@ -293,7 +293,7 @@ def build_dbml(
     for e in entities:
         ae = e.get("atomic_entity", "")
         if ae and ae not in entity_to_table:
-            entity_to_table[ae] = e.get("atomic_table") or _to_snake_case(ae)
+            entity_to_table[ae] = e.get("atomic_table", "")
 
     # Xây lookup: (logical_entity, logical_attr) → physical column — dùng cho Refs
     local_col_lookup: dict[tuple[str, str], str] = {}
@@ -302,7 +302,7 @@ def build_dbml(
         for a in e.get("attributes", []):
             key = (ae, a["attribute_name"])
             if key not in local_col_lookup:
-                local_col_lookup[key] = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
+                local_col_lookup[key] = a.get("atomic_column", "")
 
     # Dedup theo physical table name
     seen_tables: set[str] = set()
@@ -332,7 +332,7 @@ def build_dbml(
         # PK fields — dùng physical column name
         for a in e["attributes"]:
             if a["is_primary_key"]:
-                col = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
+                col = a.get("atomic_column", "")
                 if col not in seen_fields:
                     seen_fields.add(col)
                     dtype = _dbml_type(a.get("data_type", ""))
@@ -340,7 +340,7 @@ def build_dbml(
         # FK fields — dùng physical column name
         for a in e["attributes"]:
             if not a["is_primary_key"] and a.get("fk_target_entity"):
-                col = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
+                col = a.get("atomic_column", "")
                 if col not in seen_fields:
                     seen_fields.add(col)
                     dtype = _dbml_type(a.get("data_type", ""))
@@ -381,10 +381,9 @@ def build_dbml(
             if not a["fk_target_entity"]:
                 continue
             ref_entity = a["fk_target_entity"]
-            ref_table = entity_to_table.get(ref_entity, _to_snake_case(ref_entity))
-            from_col = a.get("atomic_column") or _to_snake_case(a["attribute_name"])
-            ref_col = local_col_lookup.get((ref_entity, a["fk_target_attribute"]),
-                                           _to_snake_case(a["fk_target_attribute"]))
+            ref_table = entity_to_table.get(ref_entity, "")
+            from_col = a.get("atomic_column", "")
+            ref_col = local_col_lookup.get((ref_entity, a["fk_target_attribute"]), "")
             ref_key = (from_table, from_col, ref_table, ref_col)
             if ref_key in seen_refs:
                 continue
@@ -496,7 +495,7 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
         total_attrs += len(attributes)
         tiers.add(row["group"])
 
-        atomic_table = attributes[0]["atomic_table"] if attributes else _to_snake_case(atomic_entity)
+        atomic_table = attributes[0]["atomic_table"] if attributes else ""
         entity = {
             "atomic_entity": atomic_entity,
             "atomic_table": atomic_table,

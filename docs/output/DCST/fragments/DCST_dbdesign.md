@@ -37,14 +37,14 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | rgst_taxpayer_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | rgst_taxpayer_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | rgst_taxpayer_code | STRING |  |  |  |  | ID bản ghi đăng ký thuế. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE |
 | 4 | full_nm | STRING | X |  |  |  | Tên người nộp thuế |
 | 5 | org_tax_identn_nbr | STRING | X |  |  |  | Mã số thuế |
-| 6 | charter_cptl_amt | DECIMAL(18,2) | X |  |  |  | Vốn điều lệ |
+| 6 | charter_cptl_amt | DECIMAL(23,2) | X |  |  |  | Vốn điều lệ |
 | 7 | charter_cptl_ccy_code | STRING | X |  | F |  | Loại tiền vốn điều lệ |
-| 8 | frgn_charter_cptl_amt | DECIMAL(18,2) | X |  |  |  | Vốn điều lệ nước ngoài |
+| 8 | frgn_charter_cptl_amt | DECIMAL(23,2) | X |  |  |  | Vốn điều lệ nước ngoài |
 | 9 | frgn_charter_cptl_ccy_code | STRING | X |  | F |  | Loại tiền vốn điều lệ nước ngoài |
 | 10 | bsn_line_code | STRING | X |  |  |  | Mã ngành nghề kinh doanh |
 | 11 | bsn_line_dsc | STRING | X |  |  |  | Ngành nghề kinh doanh |
@@ -92,6 +92,14 @@
 
 
 
+#### 2.{IDX}.2.2 Index
+
+N/A
+
+#### 2.{IDX}.2.3 Trigger
+
+N/A
+
 
 
 
@@ -101,10 +109,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | taxpayer_rprs_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | taxpayer_rprs_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | taxpayer_rprs_code | STRING |  |  |  |  | ID bản ghi người đại diện. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TTKDT_NGUOI_DAI_DIEN' | Mã nguồn dữ liệu. Giá trị: DCST.TTKDT_NGUOI_DAI_DIEN |
-| 4 | rgst_taxpayer_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 4 | rgst_taxpayer_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 5 | rgst_taxpayer_code | STRING |  |  |  |  | Mã NNT |
 | 6 | rprs_nm | STRING | X |  |  |  | Tên người đại diện/chủ hộ KD |
 | 7 | pos_ttl | STRING | X |  |  |  | Chức vụ người đại diện/chủ hộ KD |
@@ -128,6 +136,14 @@
 
 
 
+#### 2.{IDX}.3.2 Index
+
+N/A
+
+#### 2.{IDX}.3.3 Trigger
+
+N/A
+
 
 
 
@@ -137,10 +153,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | hrsk_taxpayer_ases_snpst_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | hrsk_taxpayer_ases_snpst_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | hrsk_taxpayer_ases_snpst_code | STRING |  |  |  |  | ID bản ghi đánh giá rủi ro. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.DN_RUI_RO_CAO' | Mã nguồn dữ liệu. Giá trị: DCST.DN_RUI_RO_CAO |
-| 4 | rgst_taxpayer_id | BIGINT | X |  | F |  | FK đến Registered Taxpayer — resolve qua MST |
+| 4 | rgst_taxpayer_id | STRING | X |  | F |  | FK đến Registered Taxpayer — resolve qua MST |
 | 5 | rgst_taxpayer_code | STRING | X |  |  |  | Mã NNT — resolve qua MST |
 | 6 | org_tax_identn_nbr | STRING | X |  |  |  | Mã số doanh nghiệp |
 | 7 | org_full_nm | STRING | X |  |  |  | Tên doanh nghiệp |
@@ -167,6 +183,14 @@
 
 
 
+#### 2.{IDX}.4.2 Index
+
+N/A
+
+#### 2.{IDX}.4.3 Trigger
+
+N/A
+
 
 
 
@@ -176,7 +200,7 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 1 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 2 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — kinh doanh. |
@@ -188,16 +212,16 @@
 | 10 | ward_code | STRING | X |  |  |  | Mã xã kinh doanh |
 | 11 | ward_nm | STRING | X |  |  |  | Tên xã kinh doanh |
 | 12 | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. |
-| 13 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 13 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 14 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 15 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 16 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính. |
 | 17 | adr_val | STRING | X |  |  |  | Địa chỉ trụ sở chính |
-| 18 | prov_id | BIGINT | X |  | F |  | FK đến tỉnh/thành phố trụ sở. |
+| 18 | prov_id | STRING | X |  | F |  | FK đến tỉnh/thành phố trụ sở. |
 | 19 | prov_code | STRING | X |  |  |  | Mã tỉnh/thành (provinces). |
 | 20 | dstc_nm | STRING | X |  |  |  | Quận/huyện trụ sở. |
 | 21 | ward_nm | STRING | X |  |  |  | Phường/xã trụ sở. |
-| 22 | geo_id | BIGINT | X |  | F |  | FK đến tỉnh/thành phố đặt trụ sở chi nhánh. |
+| 22 | geo_id | STRING | X |  | F |  | FK đến tỉnh/thành phố đặt trụ sở chi nhánh. |
 | 23 | geo_code | STRING | X |  |  |  | Mã tỉnh/thành phố đặt trụ sở chi nhánh. |
 | 24 | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. |
 
@@ -219,6 +243,14 @@
 
 
 
+#### 2.{IDX}.5.2 Index
+
+N/A
+
+#### 2.{IDX}.5.3 Trigger
+
+N/A
+
 
 
 
@@ -230,27 +262,27 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 1 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 2 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email kinh doanh. |
 | 5 | elc_adr_val | STRING | X |  |  |  | Email kinh doanh |
-| 6 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 6 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 7 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 8 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 9 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax kinh doanh. |
 | 10 | elc_adr_val | STRING | X |  |  |  | Fax kinh doanh |
-| 11 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 11 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 12 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 13 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 14 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax trụ sở. |
 | 15 | elc_adr_val | STRING | X |  |  |  | Fax trụ sở chính |
-| 16 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 16 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 17 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 18 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 19 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại kinh doanh. |
 | 20 | elc_adr_val | STRING | X |  |  |  | Số điện thoại kinh doanh |
-| 21 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 21 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 22 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 23 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 24 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại trụ sở. |
@@ -270,22 +302,26 @@
 
 
 
+**Index:** N/A
+
+**Trigger:** N/A
+
 
 #### Từ DCST.TTKDT_NGUOI_DAI_DIEN
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | ip_id | BIGINT |  |  | F |  | FK đến Taxpayer Representative |
+| 1 | ip_id | STRING |  |  | F |  | FK đến Taxpayer Representative |
 | 2 | ip_code | STRING |  |  |  |  | Mã người đại diện |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TTKDT_NGUOI_DAI_DIEN' | Mã nguồn dữ liệu. |
 | 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email. |
 | 5 | elc_adr_val | STRING | X |  |  |  | Email |
-| 6 | ip_id | BIGINT |  |  | F |  | FK đến Taxpayer Representative |
+| 6 | ip_id | STRING |  |  | F |  | FK đến Taxpayer Representative |
 | 7 | ip_code | STRING |  |  |  |  | Mã người đại diện |
 | 8 | src_stm_code | STRING |  |  |  | 'DCST.TTKDT_NGUOI_DAI_DIEN' | Mã nguồn dữ liệu. |
 | 9 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax. |
 | 10 | elc_adr_val | STRING | X |  |  |  | Fax |
-| 11 | ip_id | BIGINT |  |  | F |  | FK đến Taxpayer Representative |
+| 11 | ip_id | STRING |  |  | F |  | FK đến Taxpayer Representative |
 | 12 | ip_code | STRING |  |  |  |  | Mã người đại diện |
 | 13 | src_stm_code | STRING |  |  |  | 'DCST.TTKDT_NGUOI_DAI_DIEN' | Mã nguồn dữ liệu. |
 | 14 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại. |
@@ -305,6 +341,10 @@
 
 
 
+**Index:** N/A
+
+**Trigger:** N/A
+
 
 
 
@@ -317,14 +357,14 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 1 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 2 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 4 | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ — giấy phép thành lập. |
 | 5 | identn_nbr | STRING | X |  |  |  | Số giấy phép thành lập |
 | 6 | issu_dt | DATE | X |  |  |  | Ngày cấp giấy phép |
 | 7 | issu_ahr_nm | STRING | X |  |  |  | Cơ quan cấp giấy phép thành lập |
-| 8 | ip_id | BIGINT |  |  | F |  | FK đến Registered Taxpayer |
+| 8 | ip_id | STRING |  |  | F |  | FK đến Registered Taxpayer |
 | 9 | ip_code | STRING |  |  |  |  | Mã NNT |
 | 10 | src_stm_code | STRING |  |  |  | 'DCST.THONG_TIN_DK_THUE' | Mã nguồn dữ liệu. |
 | 11 | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ — quyết định thành lập. |
@@ -346,26 +386,30 @@
 
 
 
+**Index:** N/A
+
+**Trigger:** N/A
+
 
 #### Từ DCST.TTKDT_NGUOI_DAI_DIEN
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | ip_id | BIGINT |  |  | F |  | FK đến Taxpayer Representative |
+| 1 | ip_id | STRING |  |  | F |  | FK đến Taxpayer Representative |
 | 2 | ip_code | STRING |  |  |  |  | Mã người đại diện |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TTKDT_NGUOI_DAI_DIEN' | Mã nguồn dữ liệu. |
 | 4 | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ — CCCD. |
 | 5 | identn_nbr | STRING | X |  |  |  | Số CCCD |
 | 6 | issu_dt | DATE | X |  |  |  | Ngày cấp CCCD |
 | 7 | issu_ahr_nm | STRING | X |  |  |  | Nơi cấp CCCD/Hộ chiếu. |
-| 8 | ip_id | BIGINT |  |  | F |  | FK đến Taxpayer Representative |
+| 8 | ip_id | STRING |  |  | F |  | FK đến Taxpayer Representative |
 | 9 | ip_code | STRING |  |  |  |  | Mã người đại diện |
 | 10 | src_stm_code | STRING |  |  |  | 'DCST.TTKDT_NGUOI_DAI_DIEN' | Mã nguồn dữ liệu. |
 | 11 | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ — CMND. |
 | 12 | identn_nbr | STRING | X |  |  |  | Số CMND |
 | 13 | issu_dt | DATE | X |  |  |  | Ngày cấp CMND |
 | 14 | issu_ahr_nm | STRING | X |  |  |  | Nơi cấp CMND/CCCD. |
-| 15 | ip_id | BIGINT |  |  | F |  | FK đến Taxpayer Representative |
+| 15 | ip_id | STRING |  |  | F |  | FK đến Taxpayer Representative |
 | 16 | ip_code | STRING |  |  |  |  | Mã người đại diện |
 | 17 | src_stm_code | STRING |  |  |  | 'DCST.TTKDT_NGUOI_DAI_DIEN' | Mã nguồn dữ liệu. |
 | 18 | identn_tp_code | STRING |  |  |  |  | Loại giấy tờ — hộ chiếu. |
@@ -386,6 +430,10 @@
 
 
 
+**Index:** N/A
+
+**Trigger:** N/A
+
 
 
 
@@ -396,10 +444,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | tax_fnc_stmt_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | tax_fnc_stmt_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | tax_fnc_stmt_code | STRING |  |  |  |  | Mã định danh bản ghi trong DCST. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TCT_BAO_CAO' | Mã nguồn dữ liệu. Giá trị: DCST.TCT_BAO_CAO |
-| 4 | rgst_taxpayer_id | BIGINT | X |  | F |  | Mã số thuế. FK đến Registered Taxpayer |
+| 4 | rgst_taxpayer_id | STRING | X |  | F |  | Mã số thuế. FK đến Registered Taxpayer |
 | 5 | rgst_taxpayer_code | STRING | X |  |  |  | Mã số thuế |
 | 6 | taxpayer_nm | STRING | X |  |  |  | Tên người nộp thuế |
 | 7 | taxpayer_adr | STRING | X |  |  |  | Địa chỉ người nộp thuế |
@@ -474,6 +522,14 @@
 
 
 
+#### 2.{IDX}.8.2 Index
+
+N/A
+
+#### 2.{IDX}.8.3 Trigger
+
+N/A
+
 
 
 
@@ -483,10 +539,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | tax_fnc_stmt_itm_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | tax_fnc_stmt_itm_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | tax_fnc_stmt_itm_code | STRING |  |  |  |  | Mã định danh bản ghi trong DCST. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TCT_BAO_CAO_CHI_TIET' | Mã nguồn dữ liệu. Giá trị: DCST.TCT_BAO_CAO_CHI_TIET |
-| 4 | tax_fnc_stmt_id | BIGINT |  |  | F |  | ID bảng TCT_BAO_CAO. FK đến Tax Financial Statement |
+| 4 | tax_fnc_stmt_id | STRING |  |  | F |  | ID bảng TCT_BAO_CAO. FK đến Tax Financial Statement |
 | 5 | tax_fnc_stmt_code | STRING |  |  |  |  | ID bảng TCT_BAO_CAO |
 | 6 | line_itm_code | STRING | X |  |  |  | Mã chỉ tiêu |
 | 7 | line_itm_nm | STRING | X |  |  |  | Tên chỉ tiêu |
@@ -534,6 +590,14 @@
 
 
 
+#### 2.{IDX}.9.2 Index
+
+N/A
+
+#### 2.{IDX}.9.3 Trigger
+
+N/A
+
 
 
 
@@ -543,10 +607,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | tax_dbt_nfrc_ordr_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | tax_dbt_nfrc_ordr_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | tax_dbt_nfrc_ordr_code | STRING |  |  |  |  | Mã định danh bản ghi trong DCST. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TCT_TT_CUONG_CHE_NO' | Mã nguồn dữ liệu. Giá trị: DCST.TCT_TT_CUONG_CHE_NO |
-| 4 | rgst_taxpayer_id | BIGINT | X |  | F |  | Mã người nhận. FK đến Registered Taxpayer |
+| 4 | rgst_taxpayer_id | STRING | X |  | F |  | Mã người nhận. FK đến Registered Taxpayer |
 | 5 | rgst_taxpayer_code | STRING | X |  |  |  | Mã người nhận |
 | 6 | taxpayer_nm | STRING | X |  |  |  | Tên người nhận |
 | 7 | taxpayer_bsn_idy | STRING | X |  |  |  | Ngành kinh doanh đối tượng bị cưỡng chế |
@@ -593,6 +657,14 @@
 
 
 
+#### 2.{IDX}.10.2 Index
+
+N/A
+
+#### 2.{IDX}.10.3 Trigger
+
+N/A
+
 
 
 
@@ -602,10 +674,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | tax_vln_pny_dcsn_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | tax_vln_pny_dcsn_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | tax_vln_pny_dcsn_code | STRING |  |  |  |  | Mã định danh bản ghi trong DCST. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TT_XLY_VI_PHAM' | Mã nguồn dữ liệu. Giá trị: DCST.TT_XLY_VI_PHAM |
-| 4 | rgst_taxpayer_id | BIGINT | X |  | F |  | Mã số thuế. FK đến Registered Taxpayer |
+| 4 | rgst_taxpayer_id | STRING | X |  | F |  | Mã số thuế. FK đến Registered Taxpayer |
 | 5 | rgst_taxpayer_code | STRING | X |  |  |  | Mã số thuế |
 | 6 | taxpayer_nm | STRING | X |  |  |  | Tên đối tượng |
 | 7 | ordr_nbr | STRING | X |  |  |  | Số quyết định xử lý |
@@ -634,6 +706,14 @@
 
 
 
+#### 2.{IDX}.11.2 Index
+
+N/A
+
+#### 2.{IDX}.11.3 Trigger
+
+N/A
+
 
 
 
@@ -643,10 +723,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | tax_inv_nfrc_ordr_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | tax_inv_nfrc_ordr_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | tax_inv_nfrc_ordr_code | STRING |  |  |  |  | Mã định danh bản ghi trong DCST. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.TCT_TTCCN_HOA_DON' | Mã nguồn dữ liệu. Giá trị: DCST.TCT_TTCCN_HOA_DON |
-| 4 | rgst_taxpayer_id | BIGINT | X |  | F |  | Mã số thuế của người nộp thuế. FK đến Registered Taxpayer |
+| 4 | rgst_taxpayer_id | STRING | X |  | F |  | Mã số thuế của người nộp thuế. FK đến Registered Taxpayer |
 | 5 | rgst_taxpayer_code | STRING | X |  |  |  | Mã số thuế của người nộp thuế |
 | 6 | taxpayer_nm | STRING | X |  |  |  | Tên người nộp thuế |
 | 7 | spvsr_tax_ahr_code | STRING | X |  |  |  | Mã cơ quan quản lý trực tiếp |
@@ -688,6 +768,14 @@
 
 
 
+#### 2.{IDX}.12.2 Index
+
+N/A
+
+#### 2.{IDX}.12.3 Trigger
+
+N/A
+
 
 
 
@@ -697,10 +785,10 @@
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | tax_inv_nfrc_ordr_itm_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
+| 1 | tax_inv_nfrc_ordr_itm_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
 | 2 | tax_inv_nfrc_ordr_itm_code | STRING |  |  |  |  | Mã định danh bản ghi trong DCST. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'DCST.HOA_DON_CHI_TIET' | Mã nguồn dữ liệu. Giá trị: DCST.HOA_DON_CHI_TIET |
-| 4 | tax_inv_nfrc_ordr_id | BIGINT |  |  | F |  | ID Thông tin cưỡng chế nợ theo hóa đơn. FK đến Tax Invoice Enforcement Order |
+| 4 | tax_inv_nfrc_ordr_id | STRING |  |  | F |  | ID Thông tin cưỡng chế nợ theo hóa đơn. FK đến Tax Invoice Enforcement Order |
 | 5 | tax_inv_nfrc_ordr_code | STRING |  |  |  |  | ID Thông tin cưỡng chế nợ theo hóa đơn |
 | 6 | inv_tpl_symb | STRING | X |  |  |  | Ký hiệu mẫu |
 | 7 | inv_series_symb | STRING | X |  |  |  | Ký hiệu hóa đơn |
@@ -726,5 +814,21 @@
 
 
 
+#### 2.{IDX}.13.2 Index
+
+N/A
+
+#### 2.{IDX}.13.3 Trigger
+
+N/A
 
 
+
+
+### 2.{IDX}.14 Stored Procedure/Function
+
+N/A
+
+### 2.{IDX}.15 Package
+
+N/A
