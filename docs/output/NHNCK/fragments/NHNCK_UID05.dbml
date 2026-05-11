@@ -5,11 +5,11 @@ Project NHNCK_UID05 {
   Note: "NHNCK — UID05 Quản lý chứng chỉ hành nghề"
 }
 
-Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
-  "Practitioner Id" varchar [pk]
-  "Country of Residence Geographic Area Id" varchar
-  "Securities Company Id" varchar
+Table "scr_prac" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  "prac_id" varchar [pk]
+  "cty_of_rsdnc_geo_id" varchar
+  "scr_co_id" varchar
 }
 
-// Ref: "Securities Practitioner"."Country of Residence Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Securities Practitioner"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
+// Ref: "scr_prac"."cty_of_rsdnc_geo_id" > ""."" // out-of-source
+// Ref: "scr_prac"."scr_co_id" > ""."" // out-of-source

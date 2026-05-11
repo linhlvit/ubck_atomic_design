@@ -5,25 +5,41 @@ Project IDS_UID05 {
   Note: "IDS — UID05 Công bố thông tin và thông báo"
 }
 
-Table "Disclosure Notification" [note: "Instance thông báo CBTT gửi đi — nội dung/tiêu đề/ngày gửi/trạng thái. Grain: 1 lần gửi thông báo. FK to Disclosure Form Definition."] {
-  "Disclosure Notification Id" varchar [pk]
-  "Disclosure Form Definition Id" varchar
+Table "dscl_notf" [note: "Instance thông báo CBTT gửi đi — nội dung/tiêu đề/ngày gửi/trạng thái. Grain: 1 lần gửi thông báo. FK to Disclosure Form Definition."] {
+  "dscl_notf_id" varchar [pk]
+  "dscl_form_defn_id" varchar
 }
 
-Table "Disclosure Form Definition" [note: "Định nghĩa loại hồ sơ/tin CBTT — loại form/quy trình duyệt/nghiệp vụ. Master entity của vòng đời CBTT. Self-join parent_form_id."] {
-  "Disclosure Form Definition Id" varchar [pk]
-  "Parent Disclosure Form Definition Id" varchar
+Table "dscl_form_defn" [note: "Định nghĩa loại hồ sơ/tin CBTT — loại form/quy trình duyệt/nghiệp vụ. Master entity của vòng đời CBTT. Self-join parent_form_id."] {
+  "dscl_form_defn_id" varchar [pk]
+  "prn_dscl_form_defn_id" varchar
 }
 
-Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Public Company Id" varchar [pk]
+Table "dscl_notf_config" [note: "Cấu hình thông báo CBTT — kênh gửi/hệ thống nhận/người quản lý. FK to Disclosure Notification."] {
+  "dscl_notf_config_id" varchar [pk]
+  "dscl_notf_id" varchar
 }
 
-Table "Disclosure Notification Config" [note: "Cấu hình thông báo CBTT — kênh gửi/hệ thống nhận/người quản lý. FK to Disclosure Notification."] {
-  "Disclosure Notification Config Id" varchar [pk]
-  "Disclosure Notification Id" varchar
+Table "pblc_co_fnc_rpt_val" [note: "Giá trị từng ô BCTC trong một lần nộp báo cáo đã duyệt. Grain: 1 dòng = 1 ô (lần nộp × biểu mẫu × hàng × cột). FK to Public Company Report Submission và Financial Report Catalog."] {
+  "pblc_co_fnc_rpt_val_id" varchar [pk]
+  "pblc_co_rpt_subm_id" varchar
+  "fnc_rpt_ctlg_id" varchar
 }
 
-Ref: "Disclosure Notification"."Disclosure Form Definition Id" > "Disclosure Form Definition"."Disclosure Form Definition Id"
-Ref: "Disclosure Form Definition"."Parent Disclosure Form Definition Id" > "Disclosure Form Definition"."Disclosure Form Definition Id"
-Ref: "Disclosure Notification Config"."Disclosure Notification Id" > "Disclosure Notification"."Disclosure Notification Id"
+Table "pblc_co_rpt_subm" [note: "Lần nộp báo cáo/tin CBTT của công ty đại chúng đã được phê duyệt (news_status_cd = APPROVED). Grain: 1 dòng = 1 lần nộp. FK to Public Company và Disclosure Form Definition."] {
+  "pblc_co_rpt_subm_id" varchar [pk]
+  "pblc_co_id" varchar
+  "dscl_form_defn_id" varchar
+}
+
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
+}
+
+Ref: "dscl_notf"."dscl_form_defn_id" > "dscl_form_defn"."dscl_form_defn_id"
+Ref: "dscl_form_defn"."prn_dscl_form_defn_id" > "dscl_form_defn"."dscl_form_defn_id"
+Ref: "dscl_notf_config"."dscl_notf_id" > "dscl_notf"."dscl_notf_id"
+Ref: "pblc_co_fnc_rpt_val"."pblc_co_rpt_subm_id" > "pblc_co_rpt_subm"."pblc_co_rpt_subm_id"
+// Ref: "pblc_co_fnc_rpt_val"."fnc_rpt_ctlg_id" > ""."" // out-of-source
+Ref: "pblc_co_rpt_subm"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_rpt_subm"."dscl_form_defn_id" > "dscl_form_defn"."dscl_form_defn_id"

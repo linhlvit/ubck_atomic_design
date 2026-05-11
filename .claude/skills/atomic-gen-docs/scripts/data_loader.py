@@ -131,6 +131,32 @@ def load_manifest(repo_root: Path, source: str) -> list[dict[str, str]]:
     return [r for r in rows if r["source_system"] == source]
 
 
+def enumerate_source_entities(repo_root: Path, source: str) -> list[dict[str, str]]:
+    """Enumerate distinct (atomic_entity, source_table) từ atomic_attributes.csv.
+
+    Thay thế manifest làm driver cho load_source(). Chỉ trả về entity
+    đã có attributes thực sự (đã aggregate + transform). Bỏ qua pending.
+    Thứ tự: theo thứ tự xuất hiện trong CSV (bcv_core_object → entity → source_table).
+    """
+    all_rows = load_all_attributes(repo_root)
+    seen: set[tuple[str, str]] = set()
+    result: list[dict[str, str]] = []
+    for r in all_rows:
+        if r.get("source_system") != source:
+            continue
+        ae = r.get("atomic_entity", "")
+        st_full = r.get("source_table", "")
+        # source_table trong attr CSV có dạng "SCMS.CTCK_THONG_TIN" hoặc chỉ "CTCK_THONG_TIN"
+        st = st_full.split(".", 1)[-1] if "." in st_full else st_full
+        if not ae or not st:
+            continue
+        key = (ae, st)
+        if key not in seen:
+            seen.add(key)
+            result.append({"atomic_entity": ae, "source_table": st, "source_system": source})
+    return result
+
+
 def load_atomic_entities(repo_root: Path, source: str) -> list[dict[str, str]]:
     rows = _read_csv(repo_root / "Atomic" / "hld" / "atomic_entities.csv")
     # source_table có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
@@ -428,6 +454,12 @@ def parse_hld_overview(repo_root: Path, source: str) -> dict[str, str]:
     }
 
 
+def load_source_systems(repo_root: Path) -> dict[str, str]:
+    """Đọc Source/source_systems.csv → {source_system: description}."""
+    rows = _read_csv(repo_root / "Source" / "source_systems.csv")
+    return {r["source_system"]: r["description"] for r in rows if r.get("source_system")}
+
+
 def load_classifications(repo_root: Path, source: str) -> list[dict[str, str]]:
     rows = _read_csv(repo_root / "Atomic" / "lld" / "ref_shared_entity_classifications.csv")
     out = []
@@ -447,9 +479,10 @@ def load_pendings(repo_root: Path, source: str) -> list[dict[str, str]]:
 def load_source(repo_root: Path, source: str, sample: bool = False, sample_count: int = 2) -> dict[str, Any]:
     """Tổng hợp toàn bộ artifacts cho 1 source.
 
-    sample=True: chỉ lấy `sample_count` entity đầu tiên (theo order manifest).
+    Driver: atomic_attributes.csv (chỉ entity đã aggregate + transform, bỏ qua pending).
+    sample=True: chỉ lấy `sample_count` entity đầu tiên (theo order CSV).
     """
-    manifest_rows = load_manifest(repo_root, source)
+    entity_rows = enumerate_source_entities(repo_root, source)
     entities_meta = load_atomic_entities(repo_root, source)
 
     # source_table trong atomic_entities.csv có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
@@ -460,7 +493,6 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
             key = (em["atomic_entity"], src_tbl.strip())
             meta_lookup[key] = em
 
-    seen: set[tuple[str, str]] = set()
     entities: list[dict[str, Any]] = []
     total_attrs = 0
     tiers: set[str] = set()
@@ -469,31 +501,21 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
     all_attrs_global = load_all_attributes(repo_root)
 
     # Đếm số source_table khác nhau cho mỗi atomic_entity để nhận diện shared entity
-    # Bỏ qua row chưa được thiết kế (atomic_entity rỗng)
     from collections import Counter
-    entity_src_count: Counter = Counter(
-        row["atomic_entity"] for row in manifest_rows if row["atomic_entity"]
-    )
+    entity_src_count: Counter = Counter(row["atomic_entity"] for row in entity_rows)
 
-    rows_to_process = manifest_rows[:sample_count] if sample else manifest_rows
+    rows_to_process = entity_rows[:sample_count] if sample else entity_rows
 
     for row in rows_to_process:
         atomic_entity = row["atomic_entity"]
-        if not atomic_entity:
-            continue  # bỏ qua row chưa thiết kế (pending)
         src_table = row["source_table"]
-        dedup_key = (atomic_entity, src_table)
-        if dedup_key in seen:
-            continue
-        seen.add(dedup_key)
 
-        src_table_full = f"{row['source_system']}.{src_table}"
+        src_table_full = f"{source}.{src_table}"
         meta = meta_lookup.get((atomic_entity, src_table_full), {})
 
         # Shared entity: lọc attributes theo cả source_table để tách ra từng section riêng
         attributes = load_attributes(repo_root, source, atomic_entity, source_table=src_table)
         total_attrs += len(attributes)
-        tiers.add(row["group"])
 
         atomic_table = attributes[0]["atomic_table"] if attributes else ""
         entity = {
@@ -501,11 +523,10 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
             "atomic_table": atomic_table,
             "table_name": atomic_table,
             "is_shared": entity_src_count[atomic_entity] > 1,
-            "source_system": row["source_system"],
+            "source_system": source,
             "source_table": src_table,
             "source_table_full": src_table_full,
-            "tier": row["group"],
-            "lld_file": row.get("lld_file", ""),
+            "tier": "",
             "bcv_concept": meta.get("bcv_concept", ""),
             "bcv_core_object": meta.get("bcv_core_object", ""),
             "table_type": meta.get("table_type", ""),
@@ -533,9 +554,12 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
             seen_entity_names.add(e["atomic_entity"])
             unique_entities.append(e)
 
+    source_systems_map = load_source_systems(repo_root)
+    source_desc = source_systems_map.get(source) or hld_meta["source_desc"]
+
     return {
         "source": source,
-        "source_desc": hld_meta["source_desc"],
+        "source_desc": source_desc,
         "scope_desc": hld_meta["scope_desc"],
         "atomic_diagram_mermaid": hld_meta["atomic_diagram_mermaid"],
         "tier_count": len(tiers),

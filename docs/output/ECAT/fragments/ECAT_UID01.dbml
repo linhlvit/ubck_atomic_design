@@ -5,9 +5,9 @@ Project ECAT_UID01 {
   Note: "ECAT — UID01 Danh mục địa lý hành chính"
 }
 
-Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  "Geographic Area Id" varchar [pk]
-  "Parent Geographic Area Id" varchar
+Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  "geo_id" varchar [pk]
+  "prn_geo_id" varchar
 }
 
-Ref: "Geographic Area"."Parent Geographic Area Id" > "Geographic Area"."Geographic Area Id"
+Ref: "geo"."prn_geo_id" > "geo"."geo_id"

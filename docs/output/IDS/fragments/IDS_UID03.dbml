@@ -5,19 +5,19 @@ Project IDS_UID03 {
   Note: "IDS — UID03 Giám sát và xử phạt CTĐC"
 }
 
-Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Public Company Id" varchar [pk]
+Table "pblc_co_insp" [note: "Thanh tra/kiểm tra công ty đại chúng — loại/số quyết định/đơn vị chủ trì/biên bản. FK to Public Company."] {
+  "pblc_co_insp_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company Inspection" [note: "Thanh tra/kiểm tra công ty đại chúng — loại/số quyết định/đơn vị chủ trì/biên bản. FK to Public Company."] {
-  "Public Company Inspection Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co_pny" [note: "Xử phạt hành chính công ty đại chúng hoặc nhà đầu tư liên quan — hành vi vi phạm và quyết định xử phạt. FK to Public Company."] {
+  "pblc_co_pny_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company Penalty" [note: "Xử phạt hành chính công ty đại chúng hoặc nhà đầu tư liên quan — hành vi vi phạm và quyết định xử phạt. FK to Public Company."] {
-  "Public Company Penalty Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
 }
 
-Ref: "Public Company Inspection"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Public Company Penalty"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "pblc_co_insp"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_pny"."pblc_co_id" > "pblc_co"."pblc_co_id"

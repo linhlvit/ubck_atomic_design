@@ -5,17 +5,17 @@ Project NHNCK_UID02 {
   Note: "NHNCK — UID02 Quản lý danh mục dùng riêng"
 }
 
-Table "Securities Organization Reference" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
-  "Securities Organization Reference Id" varchar [pk]
-  "Parent Organization Id" varchar
-  "Created By Officer Id" varchar
+Table "scr_prac_license_dcsn_doc" [note: "Quyết định hành chính của UBCKNN về cấp/thu hồi/hủy chứng chỉ hành nghề chứng khoán."] {
+  "license_dcsn_doc_id" varchar [pk]
+  "crt_by_ofcr_id" varchar
 }
 
-Table "Securities Practitioner License Decision Document" [note: "Quyết định hành chính của UBCKNN về cấp/thu hồi/hủy chứng chỉ hành nghề chứng khoán."] {
-  "License Decision Document Id" varchar [pk]
-  "Created By Officer Id" varchar
+Table "scr_org_refr" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
+  "scr_org_refr_id" varchar [pk]
+  "prn_org_id" varchar
+  "crt_by_ofcr_id" varchar
 }
 
-Ref: "Securities Organization Reference"."Parent Organization Id" > "Securities Organization Reference"."Securities Organization Reference Id"
-// Ref: "Securities Organization Reference"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
-// Ref: "Securities Practitioner License Decision Document"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "scr_prac_license_dcsn_doc"."crt_by_ofcr_id" > ""."" // out-of-source
+Ref: "scr_org_refr"."prn_org_id" > "scr_org_refr"."scr_org_refr_id"
+// Ref: "scr_org_refr"."crt_by_ofcr_id" > ""."" // out-of-source

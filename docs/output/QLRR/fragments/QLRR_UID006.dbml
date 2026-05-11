@@ -5,9 +5,9 @@ Project QLRR_UID006 {
   Note: "QLRR — UID006 Khai thác Phân quyền dữ liệu"
 }
 
-Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
-  "Risk Indicator Id" varchar [pk]
-  "Risk Indicator Category Id" varchar
+Table "rsk_ind" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  "rsk_ind_id" varchar [pk]
+  "rsk_ind_cgy_id" varchar
 }
 
-// Ref: "Risk Indicator"."Risk Indicator Category Id" > "Risk Indicator Category"."Risk Indicator Category Id" // out-of-source
+// Ref: "rsk_ind"."rsk_ind_cgy_id" > ""."" // out-of-source

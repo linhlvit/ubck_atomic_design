@@ -5,37 +5,37 @@ Project ECAT {
   Note: "Atomic Lakehouse — ECAT"
 }
 
-Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  "Geographic Area Id" varchar [pk]
-  "Parent Geographic Area Id" varchar
+Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  "geo_id" varchar [pk]
+  "prn_geo_id" varchar
 }
 
-Table "Currency" [note: ""] {
-  "Currency Id" varchar [pk]
+Table "cdr_dt" [note: "Ngày dương lịch dense (ETL tự sinh mọi ngày trong phạm vi hệ thống). ECAT_29_HolidayInfo bổ sung cờ ngày nghỉ lễ công cộng (holiday_flag) và tên ngày lễ. PK dạng yyyymmdd."] {
+  "cdr_dt_id" int [pk]
 }
 
-Table "Security" [note: ""] {
-  "Security Id" varchar [pk]
+Table "ccy" [note: "Đơn vị tiền tệ theo chuẩn ISO 4217. ECAT là source chuẩn (authoritative). Currency là data domain riêng theo quy tắc #4 — không có surrogate key, BK = currency_code 3 ký tự."] {
+  "ccy_code" varchar [pk]
 }
 
-Table "Calendar Date" [note: ""] {
-  "Calendar Date Id" varchar [pk]
+Table "scr" [note: "Danh mục chứng khoán đang/đã lưu hành trên thị trường Việt Nam (cổ phiếu, trái phiếu, chứng chỉ quỹ, chứng quyền...). ECAT là source chuẩn cho Code + Name. Các source khác (GSGD/FIMS/IDS) sẽ mở rộng a"] {
+  "scr_id" varchar [pk]
 }
 
 TableGroup "UID01 — Danh mục địa lý hành chính" {
-  "Geographic Area"
+  "geo"
 }
 
 TableGroup "UID03 — Danh mục tiền tệ" {
-  "Currency"
+  "ccy"
 }
 
 TableGroup "UID04 — Danh mục chứng khoán & thị trường" {
-  "Security"
+  "scr"
 }
 
 TableGroup "UID08 — Danh mục lịch & ngày nghỉ" {
-  "Calendar Date"
+  "cdr_dt"
 }
 
-Ref: "Geographic Area"."Parent Geographic Area Id" > "Geographic Area"."Geographic Area Id"
+Ref: "geo"."prn_geo_id" > "geo"."geo_id"

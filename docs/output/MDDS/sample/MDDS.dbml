@@ -1,0 +1,20 @@
+// Atomic Lakehouse — MDDS
+
+Project MDDS {
+  database_type: "Delta Lake"
+  Note: "Atomic Lakehouse — MDDS"
+}
+
+Table "mkt_snpst" [note: "Snapshot trạng thái tổng hợp toàn sàn giao dịch (HOSE/HNX/UPCOM) tại mỗi thời điểm: điểm chỉ số sàn"] {
+  "mkt_snpst_id" varchar [pk]
+}
+
+Table "mkt_indx_snpst" [note: "Snapshot thông tin chỉ số thị trường chứng khoán (VN30/VNINDEX/HNX30...) tại thời điểm phát sinh: giá trị chỉ số"] {
+  "mkt_indx_snpst_id" varchar [pk]
+}
+
+TableGroup "UID01 — Thị trường và chỉ số tổng hợp" {
+  "mkt_snpst"
+  "mkt_indx_snpst"
+}
+

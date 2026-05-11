@@ -483,6 +483,19 @@ def main():
         print(f"  {len(attr_rows)} attribute rows", file=sys.stderr)
         write_csv(OUT_ATTRS, ATTR_FIELDS, attr_rows, dry_run=args.dry_run)
 
+        # Tự động bổ sung physical names ngay sau khi ghi file
+        if not args.dry_run:
+            print("Sinh physical names (atomic_table, atomic_column, data_type)...", file=sys.stderr)
+            import importlib.util as _ilu
+            _tfn_path = SCRIPT_DIR / "transform_physical_names.py"
+            _spec = _ilu.spec_from_file_location("transform_physical_names", _tfn_path)
+            _tfn = _ilu.module_from_spec(_spec)
+            _spec.loader.exec_module(_tfn)
+            _entries = _tfn.load_dict(_tfn.DICT_PATH)
+            _domain_map = _tfn.load_data_type_rules(_tfn.DATA_TYPE_PATH)
+            n = _tfn.patch_atomic_attributes(_entries, _domain_map, dry_run=False)
+            print(f"  Physical names: {n} dong", file=sys.stderr)
+
     print("Hoàn thành.", file=sys.stderr)
 
 

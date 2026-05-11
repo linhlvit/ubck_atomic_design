@@ -5,25 +5,25 @@ Project QLRR_UID003 {
   Note: "QLRR — UID003 Khai thác Chỉ tiêu tài chính trong nước"
 }
 
-Table "Risk Indicator Category" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
-  "Risk Indicator Category Id" varchar [pk]
+Table "rsk_ind_val" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
+  "rsk_ind_val_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
-  "Risk Indicator Id" varchar [pk]
-  "Risk Indicator Category Id" varchar
+Table "rsk_ind_val_chg" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
+  "rsk_ind_val_chg_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Indicator Value" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
-  "Risk Indicator Value Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_ind" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  "rsk_ind_id" varchar [pk]
+  "rsk_ind_cgy_id" varchar
 }
 
-Table "Risk Indicator Value Change" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
-  "Risk Indicator Value Change Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_ind_cgy" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
+  "rsk_ind_cgy_id" varchar [pk]
 }
 
-Ref: "Risk Indicator"."Risk Indicator Category Id" > "Risk Indicator Category"."Risk Indicator Category Id"
-Ref: "Risk Indicator Value"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Indicator Value Change"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
+Ref: "rsk_ind_val"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_ind_val_chg"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_ind"."rsk_ind_cgy_id" > "rsk_ind_cgy"."rsk_ind_cgy_id"

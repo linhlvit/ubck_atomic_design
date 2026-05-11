@@ -5,300 +5,283 @@ Project SCMS {
   Note: "Atomic Lakehouse — SCMS"
 }
 
-Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  "Securities Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "dscl_rpt_subm" [note: "Báo cáo công bố thông tin do CTCK nộp lên UBCKNN theo yêu cầu minh bạch thị trường."] {
+  "dscl_rpt_subm_id" varchar [pk]
+  "scr_co_id" varchar
 }
 
-Table "Audit Firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
-  "Audit Firm Id" varchar [pk]
+Table "dscl_scr_ofrg" [note: "Thông tin chào bán chứng khoán được công bố bởi CTCK. Ghi nhận loại chứng khoán và điều kiện chào bán."] {
+  "dscl_scr_ofrg_id" varchar [pk]
+  "scr_co_id" varchar
 }
 
-Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "dscl_shrhlr_chg" [note: "Thông tin thay đổi cổ đông được công bố bởi CTCK. Ghi nhận cổ đông và tỷ lệ sở hữu thay đổi."] {
+  "dscl_shrhlr_chg_id" varchar [pk]
+  "scr_co_id" varchar
 }
 
-Table "Foreign Representative Office" [note: "Văn phòng đại diện của công ty chứng khoán nước ngoài tại Việt Nam. Pháp nhân độc lập, không FK đến CTCK trong nước."] {
-  "Foreign Representative Office Id" varchar [pk]
-  "Nationality Id" varchar
+Table "scr_co_admn_pny" [note: "Quyết định xử lý hành chính đối với CTCK. Ghi nhận hành vi vi phạm và quyết định xử phạt."] {
+  "scr_co_admn_pny_id" varchar [pk]
+  "scr_co_id" varchar
 }
 
-Table "Geographic Area" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  "Geographic Area Id" varchar [pk]
+Table "scr_co_rpt_vln" [note: "Vi phạm nộp báo cáo định kỳ của CTCK. Ghi nhận loại vi phạm và thông tin xử lý."] {
+  "scr_co_rpt_vln_id" varchar [pk]
+  "scr_co_id" varchar
 }
 
-Table "Report Template" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  "Report Template Id" varchar [pk]
+Table "mbr_prd_rpt" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  "mbr_prd_rpt_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
+  "cstd_bnk_id" varchar
+  "frgn_fnd_mgt_ou_id" varchar
+  "rpt_tpl_id" varchar
+  "rpt_prd_id" varchar
+  "scr_co_id" varchar
+  "rpt_subm_shd_id" varchar
 }
 
-Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  "Involved Party Id" varchar
-  "Province Id" varchar
-  "Geographic Area Id" varchar
+Table "rpt_subm_oblg" [note: "Nghĩa vụ gửi báo cáo của từng CTCK theo định kỳ cụ thể. Xác định đơn vị nào phải nộp biểu mẫu nào theo lịch nào."] {
+  "rpt_subm_oblg_id" varchar [pk]
+  "rpt_subm_shd_id" varchar
+  "scr_co_id" varchar
 }
 
-Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "rpt_subm_shd" [note: "Lịch định kỳ gửi báo cáo theo biểu mẫu (hàng ngày/tuần/tháng/quý/năm). Xác định tần suất nghĩa vụ nộp báo cáo."] {
+  "rpt_subm_shd_id" varchar [pk]
+  "rpt_tpl_id" varchar
 }
 
-Table "Securities Company Organization Unit" [note: "Đơn vị trực thuộc CTCK: chi nhánh, văn phòng đại diện, phòng giao dịch. Cấu trúc self-join qua parent_org_unit_id."] {
-  "Securities Company Organization Unit Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Parent Organization Unit Id" varchar
+Table "mbr_rpt_ind_val" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
+  "mbr_rpt_ind_val_id" varchar [pk]
+  "rpt_tpl_id" varchar
+  "scr_co_id" varchar
+  "rpt_tpl_shet_id" varchar
+  "rpt_tpl_row_id" varchar
+  "rpt_tpl_clmn_id" varchar
+  "mbr_prd_rpt_id" varchar
+  "rpt_tpl_ind_id" varchar
+  "rpt_ind_id" varchar
 }
 
-Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
-  "Practitioner Id" varchar [pk]
-  "Country of Residence Geographic Area Id" varchar
-  "Securities Company Id" varchar
+Table "rpt_tpl" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
+  "rpt_tpl_id" varchar [pk]
 }
 
-Table "Securities Company Senior Personnel" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
-  "Securities Company Senior Personnel Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Organization Unit Id" varchar
-  "Nationality Id" varchar
+Table "audt_firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
+  "audt_firm_id" varchar [pk]
 }
 
-Table "Securities Company Shareholder" [note: "Cổ đông của CTCK - cá nhân hoặc tổ chức. Ghi nhận tỷ lệ sở hữu và số lượng cổ phần."] {
-  "Securities Company Shareholder Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Nationality Id" varchar
+Table "audt_firm_prac" [note: "Kiểm toán viên thuộc công ty kiểm toán. Ghi nhận chứng chỉ kiểm toán và trạng thái hành nghề."] {
+  "audt_firm_prac_id" varchar [pk]
+  "audt_firm_id" varchar
 }
 
-Table "Audit Firm Practitioner" [note: "Kiểm toán viên thuộc công ty kiểm toán. Ghi nhận chứng chỉ kiểm toán và trạng thái hành nghề."] {
-  "Audit Firm Practitioner Id" varchar [pk]
-  "Audit Firm Id" varchar
+Table "frgn_rprs_offc" [note: "Văn phòng đại diện của công ty chứng khoán nước ngoài tại Việt Nam. Pháp nhân độc lập, không FK đến CTCK trong nước."] {
+  "frgn_rprs_offc_id" varchar [pk]
+  "nat_id" varchar
 }
 
-Table "Report Template Sheet" [note: ""] {
-  "_id" bigint
+Table "scr_co" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  "scr_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Report Template Row" [note: ""] {
-  "_id" bigint
+Table "scr_co_ou" [note: "Đơn vị trực thuộc CTCK: chi nhánh, văn phòng đại diện, phòng giao dịch. Cấu trúc self-join qua parent_org_unit_id."] {
+  "scr_co_ou_id" varchar [pk]
+  "scr_co_id" varchar
+  "prn_ou_id" varchar
 }
 
-Table "Report Template Column" [note: ""] {
-  "_id" bigint
+Table "scr_co_snr_psn" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
+  "scr_co_snr_psn_id" varchar [pk]
+  "scr_co_id" varchar
+  "ou_id" varchar
+  "nat_id" varchar
 }
 
-Table "Report Submission Schedule" [note: "Lịch định kỳ gửi báo cáo theo biểu mẫu (hàng ngày/tuần/tháng/quý/năm). Xác định tần suất nghĩa vụ nộp báo cáo."] {
-  "Report Submission Schedule Id" varchar [pk]
-  "Report Template Id" varchar
+Table "scr_co_svc_rgst" [note: "Đăng ký dịch vụ của CTCK tại UBCKNN. Grain: 1 dòng = 1 dịch vụ x 1 CTCK. Ghi nhận loại dịch vụ — số văn bản và ngày đăng ký/kết thúc — trạng thái hiệu lực."] {
+  "scr_co_svc_rgst_id" varchar [pk]
+  "scr_co_id" varchar
 }
 
-Table "Report Indicator" [note: ""] {
-  "_id" bigint
+Table "scr_co_shrhlr" [note: "Cổ đông của CTCK - cá nhân hoặc tổ chức. Ghi nhận tỷ lệ sở hữu và số lượng cổ phần."] {
+  "scr_co_shrhlr_id" varchar [pk]
+  "scr_co_id" varchar
+  "nat_id" varchar
 }
 
-Table "Report Template Indicator" [note: ""] {
-  "_id" bigint
+Table "scr_co_shrhlr_rel_p" [note: "Người có quan hệ gia đình hoặc công tác với cổ đông của CTCK. Ghi nhận loại quan hệ và nơi làm việc."] {
+  "scr_co_shrhlr_rel_p_id" varchar [pk]
+  "scr_co_shrhlr_id" varchar
+  "scr_co_id" varchar
 }
 
-Table "Report Submission Obligation" [note: "Nghĩa vụ gửi báo cáo của từng CTCK theo định kỳ cụ thể. Xác định đơn vị nào phải nộp biểu mẫu nào theo lịch nào."] {
-  "Report Submission Obligation Id" varchar [pk]
-  "Report Submission Schedule Id" varchar
-  "Securities Company Id" varchar
+Table "scr_co_shrhlr_rprs" [note: "Người đại diện được ủy quyền bởi cổ đông của CTCK. Ghi nhận chức vụ và số lượng cổ phần đại diện."] {
+  "scr_co_shrhlr_rprs_id" varchar [pk]
+  "scr_co_shrhlr_id" varchar
+  "scr_co_id" varchar
 }
 
-Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
-  "Member Periodic Report Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
-  "Custodian Bank Id" varchar
-  "Foreign Fund Management Organization Unit Id" varchar
-  "Report Template Id" varchar
-  "Reporting Period Id" varchar
-  "Securities Company Id" varchar
-  "Report Submission Schedule Id" varchar
+Table "scr_prac" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  "prac_id" varchar [pk]
+  "cty_of_rsdnc_geo_id" varchar
+  "scr_co_id" varchar
 }
 
-Table "Securities Company Report Violation" [note: "Vi phạm nộp báo cáo định kỳ của CTCK. Ghi nhận loại vi phạm và thông tin xử lý."] {
-  "Securities Company Report Violation Id" varchar [pk]
-  "Securities Company Id" varchar
+Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
+  "geo_id" varchar [pk]
+  "prn_geo_id" varchar
 }
 
-Table "Securities Company Administrative Penalty" [note: "Quyết định xử lý hành chính đối với CTCK. Ghi nhận hành vi vi phạm và quyết định xử phạt."] {
-  "Securities Company Administrative Penalty Id" varchar [pk]
-  "Securities Company Id" varchar
+Table "scr_co_shrhlr_tfr" [note: "Giao dịch chuyển nhượng cổ phần giữa hai cổ đông của CTCK. Ghi nhận bên chuyển/nhận, số lượng và tỷ lệ chuyển nhượng."] {
+  "scr_co_shrhlr_tfr_id" varchar [pk]
+  "scr_co_id" varchar
+  "fm_shrhlr_id" varchar
+  "to_shrhlr_id" varchar
 }
 
-Table "Disclosure Report Submission" [note: "Báo cáo công bố thông tin do CTCK nộp lên UBCKNN theo yêu cầu minh bạch thị trường."] {
-  "Disclosure Report Submission Id" varchar [pk]
-  "Securities Company Id" varchar
+Table "ip_alt_identn" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Disclosure Securities Offering" [note: "Thông tin chào bán chứng khoán được công bố bởi CTCK. Ghi nhận loại chứng khoán và điều kiện chào bán."] {
-  "Disclosure Securities Offering Id" varchar [pk]
-  "Securities Company Id" varchar
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Disclosure Shareholder Change" [note: "Thông tin thay đổi cổ đông được công bố bởi CTCK. Ghi nhận cổ đông và tỷ lệ sở hữu thay đổi."] {
-  "Disclosure Shareholder Change Id" varchar [pk]
-  "Securities Company Id" varchar
-}
-
-Table "Member Report Indicator Value" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
-  "Member Report Indicator Value Id" varchar [pk]
-  "Report Template Id" varchar
-  "Securities Company Id" varchar
-  "Report Template Sheet Id" varchar
-  "Report Template Row Id" varchar
-  "Report Template Column Id" varchar
-  "Member Periodic Report Id" varchar
-  "Report Template Indicator Id" varchar
-  "Report Indicator Id" varchar
-}
-
-Table "Securities Company Shareholder Transfer" [note: "Giao dịch chuyển nhượng cổ phần giữa hai cổ đông của CTCK. Ghi nhận bên chuyển/nhận, số lượng và tỷ lệ chuyển nhượng."] {
-  "Securities Company Shareholder Transfer Id" varchar [pk]
-  "Securities Company Id" varchar
-  "From Shareholder Id" varchar
-  "To Shareholder Id" varchar
-}
-
-Table "Securities Company Shareholder Representative" [note: "Người đại diện được ủy quyền bởi cổ đông của CTCK. Ghi nhận chức vụ và số lượng cổ phần đại diện."] {
-  "Securities Company Shareholder Representative Id" varchar [pk]
-  "Securities Company Shareholder Id" varchar
-  "Securities Company Id" varchar
-}
-
-Table "Securities Company Shareholder Related Party" [note: "Người có quan hệ gia đình hoặc công tác với cổ đông của CTCK. Ghi nhận loại quan hệ và nơi làm việc."] {
-  "Securities Company Shareholder Related Party Id" varchar [pk]
-  "Securities Company Shareholder Id" varchar
-  "Securities Company Id" varchar
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+  "prov_id" varchar
+  "geo_id" varchar
 }
 
 TableGroup "UID01 — Quản lý CTCK" {
-  "Securities Company"
-  "Involved Party Alternative Identification"
-  "Involved Party Postal Address"
-  "Involved Party Electronic Address"
-  "Securities Company Organization Unit"
-  "Securities Practitioner"
-  "Securities Company Senior Personnel"
-  "Securities Company Shareholder"
-  "Member Periodic Report"
-  "Securities Company Report Violation"
-  "Securities Company Administrative Penalty"
-  "Disclosure Report Submission"
-  "Disclosure Securities Offering"
-  "Disclosure Shareholder Change"
-  "Member Report Indicator Value"
-  "Securities Company Shareholder Transfer"
-  "Securities Company Shareholder Representative"
-  "Securities Company Shareholder Related Party"
+  "dscl_rpt_subm"
+  "dscl_scr_ofrg"
+  "dscl_shrhlr_chg"
+  "scr_co_admn_pny"
+  "scr_co_rpt_vln"
+  "mbr_prd_rpt"
+  "mbr_rpt_ind_val"
+  "scr_co"
+  "scr_co_ou"
+  "scr_co_snr_psn"
+  "scr_co_svc_rgst"
+  "scr_co_shrhlr"
+  "scr_co_shrhlr_rel_p"
+  "scr_co_shrhlr_rprs"
+  "scr_prac"
+  "scr_co_shrhlr_tfr"
+  "ip_alt_identn"
+  "ip_elc_adr"
+  "ip_pst_adr"
 }
 
 TableGroup "UID02 — Quản lý CN CTCK nước ngoài tại VN" {
-  "Securities Company"
-  "Securities Practitioner"
-  "Securities Company Senior Personnel"
-  "Member Periodic Report"
-  "Disclosure Report Submission"
-  "Member Report Indicator Value"
+  "dscl_rpt_subm"
+  "mbr_prd_rpt"
+  "mbr_rpt_ind_val"
+  "scr_co"
+  "scr_co_snr_psn"
+  "scr_prac"
 }
 
 TableGroup "UID03 — Quản lý VPDD CTCK nước ngoài tại VN" {
-  "Foreign Representative Office"
-  "Securities Company Senior Personnel"
-  "Member Periodic Report"
-  "Member Report Indicator Value"
+  "mbr_prd_rpt"
+  "mbr_rpt_ind_val"
+  "frgn_rprs_offc"
+  "scr_co_snr_psn"
 }
 
 TableGroup "UID04 — Quản lý ngân hàng thanh toán, lưu ký" {
-  "Securities Company"
-  "Member Periodic Report"
-  "Securities Company Report Violation"
-  "Member Report Indicator Value"
+  "scr_co_rpt_vln"
+  "mbr_prd_rpt"
+  "mbr_rpt_ind_val"
+  "scr_co"
 }
 
 TableGroup "UID05 — Khai thác công ty kiểm toán và kiểm toán viên" {
-  "Audit Firm"
-  "Involved Party Alternative Identification"
-  "Involved Party Postal Address"
-  "Involved Party Electronic Address"
-  "Audit Firm Practitioner"
+  "audt_firm"
+  "audt_firm_prac"
+  "ip_alt_identn"
+  "ip_elc_adr"
+  "ip_pst_adr"
 }
 
 TableGroup "UID06 — Cảnh báo vi phạm" {
-  "Report Indicator"
-  "Member Periodic Report"
-  "Member Report Indicator Value"
+  "mbr_prd_rpt"
+  "mbr_rpt_ind_val"
 }
 
 TableGroup "UID08 — Quản trị phân hệ" {
-  "Geographic Area"
-  "Report Template"
-  "Report Template Sheet"
-  "Report Template Row"
-  "Report Template Column"
-  "Report Submission Schedule"
-  "Report Indicator"
-  "Report Template Indicator"
-  "Report Submission Obligation"
+  "rpt_subm_oblg"
+  "rpt_subm_shd"
+  "rpt_tpl"
+  "geo"
 }
 
-Ref: "Securities Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
-Ref: "Foreign Representative Office"."Nationality Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company"."Securities Company Id"
-Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company"."Securities Company Id"
-Ref: "Securities Company Organization Unit"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Securities Company Organization Unit"."Parent Organization Unit Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
-Ref: "Securities Practitioner"."Country of Residence Geographic Area Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Securities Practitioner"."Securities Company Id" > "Securities Company"."Securities Company Id"
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Practitioner"."Practitioner Id" // out-of-source
-Ref: "Securities Company Senior Personnel"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Securities Company Senior Personnel"."Organization Unit Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id"
-Ref: "Securities Company Senior Personnel"."Nationality Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id"
-Ref: "Securities Company Shareholder"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Securities Company Shareholder"."Nationality Id" > "Geographic Area"."Geographic Area Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
-Ref: "Audit Firm Practitioner"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm Practitioner"."Audit Firm Practitioner Id"
-Ref: "Report Submission Schedule"."Report Template Id" > "Report Template"."Report Template Id"
-Ref: "Report Submission Obligation"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id"
-Ref: "Report Submission Obligation"."Securities Company Id" > "Securities Company"."Securities Company Id"
-// Ref: "Member Periodic Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Member Periodic Report"."Investment Fund Id" > "Investment Fund"."Investment Fund Id" // out-of-source
-// Ref: "Member Periodic Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Member Periodic Report"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id" // out-of-source
-Ref: "Member Periodic Report"."Report Template Id" > "Report Template"."Report Template Id"
-// Ref: "Member Periodic Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id" // out-of-source
-Ref: "Member Periodic Report"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Member Periodic Report"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id"
-Ref: "Securities Company Report Violation"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Securities Company Administrative Penalty"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Disclosure Report Submission"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Disclosure Securities Offering"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Disclosure Shareholder Change"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Member Report Indicator Value"."Report Template Id" > "Report Template"."Report Template Id"
-Ref: "Member Report Indicator Value"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Member Report Indicator Value"."Report Template Sheet Id" > "Report Template Sheet"."Report Template Sheet Id"
-Ref: "Member Report Indicator Value"."Report Template Row Id" > "Report Template Row"."Report Template Row Id"
-Ref: "Member Report Indicator Value"."Report Template Column Id" > "Report Template Column"."Report Template Column Id"
-Ref: "Member Report Indicator Value"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
-Ref: "Member Report Indicator Value"."Report Template Indicator Id" > "Report Template Indicator"."Report Template Indicator Id"
-Ref: "Member Report Indicator Value"."Report Indicator Id" > "Report Indicator"."Report Indicator Id"
-Ref: "Securities Company Shareholder Transfer"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Securities Company Shareholder Transfer"."From Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
-Ref: "Securities Company Shareholder Transfer"."To Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
-Ref: "Securities Company Shareholder Representative"."Securities Company Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
-Ref: "Securities Company Shareholder Representative"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder Representative"."Securities Company Shareholder Representative Id"
-Ref: "Securities Company Shareholder Related Party"."Securities Company Shareholder Id" > "Securities Company Shareholder"."Securities Company Shareholder Id"
-Ref: "Securities Company Shareholder Related Party"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder Related Party"."Securities Company Shareholder Related Party Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company"."Securities Company Id"
+Ref: "dscl_rpt_subm"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "dscl_scr_ofrg"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "dscl_shrhlr_chg"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_admn_pny"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_rpt_vln"."scr_co_id" > "scr_co"."scr_co_id"
+// Ref: "mbr_prd_rpt"."fnd_mgt_co_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."ivsm_fnd_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."cstd_bnk_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."frgn_fnd_mgt_ou_id" > ""."" // out-of-source
+Ref: "mbr_prd_rpt"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+// Ref: "mbr_prd_rpt"."rpt_prd_id" > ""."" // out-of-source
+Ref: "mbr_prd_rpt"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "mbr_prd_rpt"."rpt_subm_shd_id" > "rpt_subm_shd"."rpt_subm_shd_id"
+Ref: "rpt_subm_oblg"."rpt_subm_shd_id" > "rpt_subm_shd"."rpt_subm_shd_id"
+Ref: "rpt_subm_oblg"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "rpt_subm_shd"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+Ref: "mbr_rpt_ind_val"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
+Ref: "mbr_rpt_ind_val"."scr_co_id" > "scr_co"."scr_co_id"
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_shet_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_row_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_clmn_id" > ""."" // out-of-source
+Ref: "mbr_rpt_ind_val"."mbr_prd_rpt_id" > "mbr_prd_rpt"."mbr_prd_rpt_id"
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_ind_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_ind_val"."rpt_ind_id" > ""."" // out-of-source
+Ref: "audt_firm_prac"."audt_firm_id" > "audt_firm"."audt_firm_id"
+Ref: "frgn_rprs_offc"."nat_id" > "geo"."geo_id"
+Ref: "scr_co"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "scr_co_ou"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_ou"."prn_ou_id" > "scr_co_ou"."scr_co_ou_id"
+Ref: "scr_co_snr_psn"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_snr_psn"."ou_id" > "scr_co_ou"."scr_co_ou_id"
+Ref: "scr_co_snr_psn"."nat_id" > "geo"."geo_id"
+Ref: "scr_co_svc_rgst"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_shrhlr"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_shrhlr"."nat_id" > "geo"."geo_id"
+Ref: "scr_co_shrhlr_rel_p"."scr_co_shrhlr_id" > "scr_co_shrhlr"."scr_co_shrhlr_id"
+Ref: "scr_co_shrhlr_rel_p"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_shrhlr_rprs"."scr_co_shrhlr_id" > "scr_co_shrhlr"."scr_co_shrhlr_id"
+Ref: "scr_co_shrhlr_rprs"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_prac"."cty_of_rsdnc_geo_id" > "geo"."geo_id"
+Ref: "scr_prac"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "geo"."prn_geo_id" > "geo"."geo_id"
+Ref: "scr_co_shrhlr_tfr"."scr_co_id" > "scr_co"."scr_co_id"
+Ref: "scr_co_shrhlr_tfr"."fm_shrhlr_id" > "scr_co_shrhlr"."scr_co_shrhlr_id"
+Ref: "scr_co_shrhlr_tfr"."to_shrhlr_id" > "scr_co_shrhlr"."scr_co_shrhlr_id"
+Ref: "ip_alt_identn"."ip_id" > "audt_firm"."audt_firm_id"
+// Ref: "ip_alt_identn"."ip_id" > ""."" // out-of-source
+Ref: "ip_alt_identn"."ip_id" > "scr_co_snr_psn"."scr_co_snr_psn_id"
+Ref: "ip_alt_identn"."ip_id" > "scr_co_shrhlr"."scr_co_shrhlr_id"
+Ref: "ip_alt_identn"."ip_id" > "audt_firm_prac"."audt_firm_prac_id"
+Ref: "ip_alt_identn"."ip_id" > "scr_co_shrhlr_rprs"."scr_co_shrhlr_rprs_id"
+Ref: "ip_alt_identn"."ip_id" > "scr_co_shrhlr_rel_p"."scr_co_shrhlr_rel_p_id"
+Ref: "ip_alt_identn"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_elc_adr"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_elc_adr"."ip_id" > "scr_co_ou"."scr_co_ou_id"
+Ref: "ip_elc_adr"."ip_id" > "scr_co_snr_psn"."scr_co_snr_psn_id"
+Ref: "ip_elc_adr"."ip_id" > "audt_firm"."audt_firm_id"
+Ref: "ip_pst_adr"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_pst_adr"."prov_id" > "geo"."geo_id"
+Ref: "ip_pst_adr"."geo_id" > "geo"."geo_id"
+Ref: "ip_pst_adr"."ip_id" > "scr_co_ou"."scr_co_ou_id"
+Ref: "ip_pst_adr"."ip_id" > "scr_co_snr_psn"."scr_co_snr_psn_id"
+Ref: "ip_pst_adr"."ip_id" > "scr_co_shrhlr"."scr_co_shrhlr_id"
+Ref: "ip_pst_adr"."ip_id" > "audt_firm"."audt_firm_id"

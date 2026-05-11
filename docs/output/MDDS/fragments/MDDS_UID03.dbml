@@ -1,0 +1,17 @@
+// MDDS — UID03 Trái phiếu doanh nghiệp
+
+Project MDDS_UID03 {
+  database_type: "Delta Lake"
+  Note: "MDDS — UID03 Trái phiếu doanh nghiệp"
+}
+
+Table "corp_bond_mtch_log" [note: "Log tick-by-tick từng lần khớp lệnh trái phiếu doanh nghiệp theo thứ tự ConfirmNoCorpBond. Grain: 1 dòng = 1 lần khớp (symbol × ngày × confirm_no). Insert-only."] {
+  "corp_bond_mtch_log_id" varchar [pk]
+  "corp_bond_tdg_snpst_id" varchar
+}
+
+Table "corp_bond_tdg_snpst" [note: "Snapshot trạng thái giao dịch trái phiếu doanh nghiệp niêm yết HNX tại thời điểm phát sinh thay đổi: giá tham chiếu/trần/sàn/khớp"] {
+  "corp_bond_tdg_snpst_id" varchar [pk]
+}
+
+Ref: "corp_bond_mtch_log"."corp_bond_tdg_snpst_id" > "corp_bond_tdg_snpst"."corp_bond_tdg_snpst_id"

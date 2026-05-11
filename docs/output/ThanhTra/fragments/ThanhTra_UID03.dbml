@@ -5,39 +5,39 @@ Project ThanhTra_UID03 {
   Note: "ThanhTra — UID03 Tiếp công dân, xử lý đơn thư"
 }
 
-Table "Complaint Petition" [note: "Đơn thư khiếu nại/tố cáo/phản ánh/kiến nghị nhận từ công dân hoặc tổ chức. Khởi đầu quy trình giải quyết đơn thư."] {
-  "Complaint Petition Id" varchar [pk]
+Table "cpln_nfrc_dcsn" [note: "Văn bản xử lý / quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Processing Case."] {
+  "cpln_nfrc_dcsn_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
 }
 
-Table "Complaint Processing Case" [note: "Hồ sơ giải quyết đơn thư khiếu nại/tố cáo. FK → Complaint Petition."] {
-  "Complaint Processing Case Id" varchar [pk]
-  "Complaint Petition Id" varchar
+Table "cpln_pny_ancm" [note: "Công bố quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Enforcement Decision."] {
+  "cpln_pny_ancm_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
+  "cpln_nfrc_dcsn_id" varchar
 }
 
-Table "Complaint Processing Case Document Attachment" [note: "Văn bản đính kèm hồ sơ giải quyết đơn thư. FK → Complaint Processing Case."] {
-  "Complaint Processing Case Document Attachment Id" varchar [pk]
-  "Complaint Processing Case Id" varchar
+Table "cpln_petition" [note: "Đơn thư khiếu nại/tố cáo/phản ánh/kiến nghị nhận từ công dân hoặc tổ chức. Khởi đầu quy trình giải quyết đơn thư."] {
+  "cpln_petition_id" varchar [pk]
 }
 
-Table "Complaint Processing Conclusion" [note: "Kết luận giải quyết đơn thư. FK → Complaint Processing Case."] {
-  "Complaint Processing Conclusion Id" varchar [pk]
-  "Complaint Processing Case Id" varchar
+Table "cpln_pcs_case" [note: "Hồ sơ giải quyết đơn thư khiếu nại/tố cáo. FK → Complaint Petition."] {
+  "cpln_pcs_case_id" varchar [pk]
+  "cpln_petition_id" varchar
 }
 
-Table "Complaint Enforcement Decision" [note: "Văn bản xử lý / quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Processing Case."] {
-  "Complaint Enforcement Decision Id" varchar [pk]
-  "Complaint Processing Case Id" varchar
+Table "cpln_pcs_conclusion" [note: "Kết luận giải quyết đơn thư. FK → Complaint Processing Case."] {
+  "cpln_pcs_conclusion_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
 }
 
-Table "Complaint Penalty Announcement" [note: "Công bố quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Enforcement Decision."] {
-  "Complaint Penalty Announcement Id" varchar [pk]
-  "Complaint Processing Case Id" varchar
-  "Complaint Enforcement Decision Id" varchar
+Table "cpln_pcs_case_doc_attch" [note: "Văn bản đính kèm hồ sơ giải quyết đơn thư. FK → Complaint Processing Case."] {
+  "cpln_pcs_case_doc_attch_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
 }
 
-Ref: "Complaint Processing Case"."Complaint Petition Id" > "Complaint Petition"."Complaint Petition Id"
-Ref: "Complaint Processing Case Document Attachment"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
-Ref: "Complaint Processing Conclusion"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
-Ref: "Complaint Enforcement Decision"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
-Ref: "Complaint Penalty Announcement"."Complaint Processing Case Id" > "Complaint Processing Case"."Complaint Processing Case Id"
-Ref: "Complaint Penalty Announcement"."Complaint Enforcement Decision Id" > "Complaint Enforcement Decision"."Complaint Enforcement Decision Id"
+Ref: "cpln_nfrc_dcsn"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"
+Ref: "cpln_pny_ancm"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"
+Ref: "cpln_pny_ancm"."cpln_nfrc_dcsn_id" > "cpln_nfrc_dcsn"."cpln_nfrc_dcsn_id"
+Ref: "cpln_pcs_case"."cpln_petition_id" > "cpln_petition"."cpln_petition_id"
+Ref: "cpln_pcs_conclusion"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"
+Ref: "cpln_pcs_case_doc_attch"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"

@@ -5,36 +5,13 @@ Project FIMS_UID03 {
   Note: "FIMS — UID03 Đối tượng gửi báo cáo"
 }
 
-Table "stk_exg" [note: "Sở giao dịch chứng khoán - thành viên thị trường trong hệ thống FIMS (HNX, HOSE)."] {
-  "stk_exg_id" varchar [pk]
-  "cty_of_rgst_id" varchar
-}
-
-Table "depst_cntr" [note: "Trung tâm lưu ký chứng khoán quốc gia - thành viên thị trường trong hệ thống FIMS (VSD)."] {
-  "depst_cntr_id" varchar [pk]
-  "cty_of_rgst_id" varchar
-}
-
-Table "fnd_mgt_co" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  "fnd_mgt_co_id" varchar [pk]
-  "cty_of_rgst_id" varchar
-}
-
-Table "scr_co" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  "scr_co_id" varchar [pk]
-  "cty_of_rgst_id" varchar
-}
-
 Table "cstd_bnk" [note: "Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ."] {
   "cstd_bnk_id" varchar [pk]
   "cty_of_rgst_id" varchar
 }
 
-Table "fnd_mgt_co_ou" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
-  "fnd_mgt_co_ou_id" varchar [pk]
-  "fnd_mgt_co_id" varchar
-  "prn_ou_id" varchar
-  "lgl_rprs_id" varchar
+Table "depst_cntr" [note: "Trung tâm lưu ký chứng khoán quốc gia - thành viên thị trường trong hệ thống FIMS (VSD)."] {
+  "depst_cntr_id" varchar [pk]
   "cty_of_rgst_id" varchar
 }
 
@@ -54,20 +31,36 @@ Table "dscl_rprs_key_psn" [note: "Nhân sự thực hiện công bố thông tin
   "dscl_rprs_id" varchar
 }
 
+Table "fnd_mgt_co" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  "fnd_mgt_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
+}
+
+Table "fnd_mgt_co_ou" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
+  "fnd_mgt_co_ou_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "prn_ou_id" varchar
+  "lgl_rprs_id" varchar
+  "cty_of_rgst_id" varchar
+}
+
+Table "scr_co" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  "scr_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
+}
+
+Table "stk_exg" [note: "Sở giao dịch chứng khoán - thành viên thị trường trong hệ thống FIMS (HNX, HOSE)."] {
+  "stk_exg_id" varchar [pk]
+  "cty_of_rgst_id" varchar
+}
+
 Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
   "geo_id" varchar [pk]
   "prn_geo_id" varchar
 }
 
-Ref: "stk_exg"."cty_of_rgst_id" > "geo"."geo_id"
-Ref: "depst_cntr"."cty_of_rgst_id" > "geo"."geo_id"
-Ref: "fnd_mgt_co"."cty_of_rgst_id" > "geo"."geo_id"
-Ref: "scr_co"."cty_of_rgst_id" > "geo"."geo_id"
 Ref: "cstd_bnk"."cty_of_rgst_id" > "geo"."geo_id"
-Ref: "fnd_mgt_co_ou"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
-Ref: "fnd_mgt_co_ou"."prn_ou_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
-// Ref: "fnd_mgt_co_ou"."lgl_rprs_id" > "fund_management_company_key_person"."fund_management_company_key_person_id" // out-of-source
-Ref: "fnd_mgt_co_ou"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "depst_cntr"."cty_of_rgst_id" > "geo"."geo_id"
 Ref: "dscl_rprs"."nat_id" > "geo"."geo_id"
 Ref: "dscl_rprs_key_psn"."nat_id" > "geo"."geo_id"
 Ref: "dscl_rprs_key_psn"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
@@ -76,4 +69,11 @@ Ref: "dscl_rprs_key_psn"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
 Ref: "dscl_rprs_key_psn"."depst_cntr_id" > "depst_cntr"."depst_cntr_id"
 Ref: "dscl_rprs_key_psn"."stk_exg_id" > "stk_exg"."stk_exg_id"
 Ref: "dscl_rprs_key_psn"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"
+Ref: "fnd_mgt_co"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "fnd_mgt_co_ou"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "fnd_mgt_co_ou"."prn_ou_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+// Ref: "fnd_mgt_co_ou"."lgl_rprs_id" > ""."" // out-of-source
+Ref: "fnd_mgt_co_ou"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "scr_co"."cty_of_rgst_id" > "geo"."geo_id"
+Ref: "stk_exg"."cty_of_rgst_id" > "geo"."geo_id"
 Ref: "geo"."prn_geo_id" > "geo"."geo_id"

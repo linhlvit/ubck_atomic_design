@@ -5,31 +5,31 @@ Project QLRR_UID002 {
   Note: "QLRR — UID002 Khai thác Báo cáo"
 }
 
-Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
-  "Risk Indicator Id" varchar [pk]
-  "Risk Indicator Category Id" varchar
+Table "rsk_rpt_upload_btch" [note: "Đợt upload file báo cáo rủi ro định kỳ. Grain: 1 đợt upload. FK → Risk Report Type."] {
+  "rsk_rpt_upload_btch_id" varchar [pk]
+  "rsk_rpt_tp_id" varchar
 }
 
-Table "Risk Report Type" [note: "Danh mục loại báo cáo rủi ro (Báo cáo nhanh hàng tháng v.v.). Master entity có lifecycle. FK từ Risk Report Upload Batch."] {
-  "Risk Report Type Id" varchar [pk]
+Table "rsk_rpt_file" [note: "Metadata file đính kèm báo cáo rủi ro trong đợt upload. Grain: 1 file. FK → Risk Report Upload Batch."] {
+  "rsk_rpt_file_id" varchar [pk]
+  "rsk_rpt_upload_btch_id" varchar
 }
 
-Table "Risk Report Upload Batch" [note: "Đợt upload file báo cáo rủi ro định kỳ. Grain: 1 đợt upload. FK → Risk Report Type."] {
-  "Risk Report Upload Batch Id" varchar [pk]
-  "Risk Report Type Id" varchar
+Table "rsk_rpt_tp" [note: "Danh mục loại báo cáo rủi ro (Báo cáo nhanh hàng tháng v.v.). Master entity có lifecycle. FK từ Risk Report Upload Batch."] {
+  "rsk_rpt_tp_id" varchar [pk]
 }
 
-Table "Risk Indicator Value" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
-  "Risk Indicator Value Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_ind_val" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
+  "rsk_ind_val_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Report File" [note: "Metadata file đính kèm báo cáo rủi ro trong đợt upload. Grain: 1 file. FK → Risk Report Upload Batch."] {
-  "Risk Report File Id" varchar [pk]
-  "Risk Report Upload Batch Id" varchar
+Table "rsk_ind" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  "rsk_ind_id" varchar [pk]
+  "rsk_ind_cgy_id" varchar
 }
 
-// Ref: "Risk Indicator"."Risk Indicator Category Id" > "Risk Indicator Category"."Risk Indicator Category Id" // out-of-source
-Ref: "Risk Report Upload Batch"."Risk Report Type Id" > "Risk Report Type"."Risk Report Type Id"
-Ref: "Risk Indicator Value"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Report File"."Risk Report Upload Batch Id" > "Risk Report Upload Batch"."Risk Report Upload Batch Id"
+Ref: "rsk_rpt_upload_btch"."rsk_rpt_tp_id" > "rsk_rpt_tp"."rsk_rpt_tp_id"
+Ref: "rsk_rpt_file"."rsk_rpt_upload_btch_id" > "rsk_rpt_upload_btch"."rsk_rpt_upload_btch_id"
+Ref: "rsk_ind_val"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+// Ref: "rsk_ind"."rsk_ind_cgy_id" > ""."" // out-of-source

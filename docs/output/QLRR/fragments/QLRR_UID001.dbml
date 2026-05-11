@@ -5,35 +5,35 @@ Project QLRR_UID001 {
   Note: "QLRR — UID001 Khai thác Dashboard"
 }
 
-Table "Risk Indicator Category" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
-  "Risk Indicator Category Id" varchar [pk]
+Table "rsk_alert" [note: "Bản ghi cảnh báo rủi ro phát sinh khi chỉ tiêu vượt ngưỡng cấu hình. Grain: 1 lần kích hoạt. Append-only. FK → Risk Alert Config + Risk Indicator."] {
+  "rsk_alert_id" varchar [pk]
+  "rsk_alert_config_id" varchar
+  "rsk_ind_id" varchar
+  "triggered_by_shd_id" varchar
 }
 
-Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
-  "Risk Indicator Id" varchar [pk]
-  "Risk Indicator Category Id" varchar
+Table "rsk_ind_val" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
+  "rsk_ind_val_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Indicator Value" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
-  "Risk Indicator Value Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_ind_val_chg" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
+  "rsk_ind_val_chg_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Indicator Value Change" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
-  "Risk Indicator Value Change Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_ind" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  "rsk_ind_id" varchar [pk]
+  "rsk_ind_cgy_id" varchar
 }
 
-Table "Risk Alert" [note: "Bản ghi cảnh báo rủi ro phát sinh khi chỉ tiêu vượt ngưỡng cấu hình. Grain: 1 lần kích hoạt. Append-only. FK → Risk Alert Config + Risk Indicator."] {
-  "Risk Alert Id" varchar [pk]
-  "Risk Alert Config Id" varchar
-  "Risk Indicator Id" varchar
-  "Triggered By Schedule Id" varchar
+Table "rsk_ind_cgy" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
+  "rsk_ind_cgy_id" varchar [pk]
 }
 
-Ref: "Risk Indicator"."Risk Indicator Category Id" > "Risk Indicator Category"."Risk Indicator Category Id"
-Ref: "Risk Indicator Value"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Indicator Value Change"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-// Ref: "Risk Alert"."Risk Alert Config Id" > "Risk Alert Config"."Risk Alert Config Id" // out-of-source
-Ref: "Risk Alert"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-// Ref: "Risk Alert"."Triggered By Schedule Id" > "Risk Indicator Schedule"."Risk Indicator Schedule Id" // out-of-source
+// Ref: "rsk_alert"."rsk_alert_config_id" > ""."" // out-of-source
+Ref: "rsk_alert"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+// Ref: "rsk_alert"."triggered_by_shd_id" > ""."" // out-of-source
+Ref: "rsk_ind_val"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_ind_val_chg"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_ind"."rsk_ind_cgy_id" > "rsk_ind_cgy"."rsk_ind_cgy_id"

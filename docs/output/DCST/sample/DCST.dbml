@@ -5,22 +5,23 @@ Project DCST {
   Note: "Atomic Lakehouse — DCST"
 }
 
-Table "rgst_taxpayer" [note: "Doanh nghiệp/hộ kinh doanh đã đăng ký thuế với cơ quan thuế. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "rgst_taxpayer_id" varchar [pk]
-  "charter_cptl_ccy_code" varchar
-  "frgn_charter_cptl_ccy_code" varchar
-}
-
-Table "taxpayer_rprs" [note: "Người đại diện hoặc chủ hộ kinh doanh của người nộp thuế. Ghi nhận tên và chức vụ."] {
-  "taxpayer_rprs_id" varchar [pk]
+Table "tax_vln_pny_dcsn" [note: "Quyết định xử lý vi phạm hành chính về thuế. Ghi nhận hành vi vi phạm và mức phạt/truy thu."] {
+  "tax_vln_pny_dcsn_id" varchar [pk]
   "rgst_taxpayer_id" varchar
 }
 
-TableGroup "UID01 — Quản lý thông tin đăng ký thuế" {
-  "rgst_taxpayer"
-  "taxpayer_rprs"
+Table "tax_dbt_nfrc_ordr" [note: "Quyết định cưỡng chế nợ thuế. Ghi nhận hình thức cưỡng chế và thông tin tài sản/tài khoản liên quan."] {
+  "tax_dbt_nfrc_ordr_id" varchar [pk]
+  "rgst_taxpayer_id" varchar
 }
 
-// Ref: "rgst_taxpayer"."charter_cptl_ccy_code" > ""."" // out-of-source
-// Ref: "rgst_taxpayer"."frgn_charter_cptl_ccy_code" > ""."" // out-of-source
-Ref: "taxpayer_rprs"."rgst_taxpayer_id" > "rgst_taxpayer"."rgst_taxpayer_id"
+TableGroup "UID03 — Cưỡng chế nợ thuế" {
+  "tax_dbt_nfrc_ordr"
+}
+
+TableGroup "UID04 — Xử lý vi phạm pháp luật về thuế" {
+  "tax_vln_pny_dcsn"
+}
+
+// Ref: "tax_vln_pny_dcsn"."rgst_taxpayer_id" > ""."" // out-of-source
+// Ref: "tax_dbt_nfrc_ordr"."rgst_taxpayer_id" > ""."" // out-of-source

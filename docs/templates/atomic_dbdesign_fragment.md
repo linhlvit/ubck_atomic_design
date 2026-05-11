@@ -1,11 +1,8 @@
-## 2.{{ idx }} {{ source }} — {{ source_desc }}
+## {{ source }} — {{ source_desc }}
 
-### 2.{{ idx }}.1 Các mô hình quan hệ dữ liệu
+### Các mô hình quan hệ dữ liệu
 
-- DBML tổng hợp (tất cả bảng): [`{{ source }}.dbml`]({{ source }}.dbml) — paste vào https://dbdiagram.io để render.
-{% if uid_groups %}- Diagram theo mảng nghiệp vụ:
-{% for g in uid_groups %}  - **{{ g.uid }} — {{ g.label }}**: [`{{ source }}_{{ g.uid }}.dbml`]({{ source }}_{{ g.uid }}.dbml)
-{% endfor %}{% endif %}
+![Mô hình quan hệ dữ liệu {{ source }}]({{ source }}/fragments/{{ source }}_diagram.png)
 
 **Danh sách bảng:**
 
@@ -17,7 +14,7 @@
 
 {% for ue in unique_entities %}
 {% set grp = entities | selectattr("atomic_entity", "equalto", ue.atomic_entity) | list %}
-### 2.{{ idx }}.{{ loop.index + 1 }} Bảng {{ ue.atomic_table }}
+### Bảng {{ ue.atomic_table }}
 
 {% if ue.is_shared %}
 {% for e in grp %}
@@ -66,7 +63,7 @@
 | {{ loop.index }} | {{ a.atomic_column }} | {{ a | display_data_type }} | {{ a.nullable | x_or_blank }} | {{ a.is_primary_key | x_or_blank }} | {{ a | pk_fk_label }} | {{ a | default_value(source) }} | {{ a.description }} |
 {% endfor %}
 
-#### 2.{{ idx }}.{{ loop.index + 1 }}.1 Constraint
+#### Constraint
 
 **Khóa chính (Primary Key):**
 
@@ -92,21 +89,21 @@
 *Không có Foreign Key.*
 {% endif %}
 
-#### 2.{{ idx }}.{{ loop.index + 1 }}.2 Index
+#### Index
 
 N/A
 
-#### 2.{{ idx }}.{{ loop.index + 1 }}.3 Trigger
+#### Trigger
 
 N/A
 
 {% endif %}
 {% endfor %}
 
-### 2.{{ idx }}.{{ unique_entities | length + 2 }} Stored Procedure/Function
+### Stored Procedure/Function
 
 N/A
 
-### 2.{{ idx }}.{{ unique_entities | length + 3 }} Package
+### Package
 
 N/A

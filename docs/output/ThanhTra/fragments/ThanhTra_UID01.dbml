@@ -5,105 +5,105 @@ Project ThanhTra_UID01 {
   Note: "ThanhTra — UID01 Hoạt động thanh tra - kiểm tra"
 }
 
-Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Public Company Id" varchar [pk]
+Table "insp_anul_pln" [note: "Kế hoạch thanh tra kiểm tra cấp năm được phê duyệt. Khởi đầu quy trình thanh tra trong năm."] {
+  "insp_anul_pln_id" varchar [pk]
 }
 
-Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  "Securities Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "insp_anul_pln_sbj" [note: "Đối tượng thanh tra được đưa vào kế hoạch năm. Grain: 1 đối tượng × 1 kế hoạch."] {
+  "insp_anul_pln_sbj_id" varchar [pk]
+  "insp_anul_pln_id" varchar
 }
 
-Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  "Fund Management Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "insp_case" [note: "Hồ sơ thanh tra cụ thể — tập hợp tài liệu và kết quả 1 cuộc thanh tra. FK → Inspection Decision. Thông tin đối tượng denormalized (snapshot tại thời điểm thanh tra)."] {
+  "insp_case_id" varchar [pk]
+  "insp_dcsn_id" varchar
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
 }
 
-Table "Inspection Subject Other Party" [note: "Đối tượng thanh tra khác (cá nhân hoặc tổ chức) không thuộc danh mục CK/QLQ/ĐC. Phân biệt qua party_type_code."] {
-  "Inspection Subject Other Party Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "insp_case_conclusion" [note: "Kết luận thanh tra kèm thông tin xử lý vi phạm. FK → Inspection Case."] {
+  "insp_case_conclusion_id" varchar [pk]
+  "insp_case_id" varchar
 }
 
-Table "Inspection Annual Plan" [note: "Kế hoạch thanh tra kiểm tra cấp năm được phê duyệt. Khởi đầu quy trình thanh tra trong năm."] {
-  "Inspection Annual Plan Id" varchar [pk]
+Table "insp_case_ofcr_asgnm" [note: "Phân công cán bộ phụ trách hồ sơ thanh tra. FK → Inspection Case + FK → Inspection Officer."] {
+  "insp_case_ofcr_asgnm_id" varchar [pk]
+  "insp_case_id" varchar
+  "insp_ofcr_id" varchar
 }
 
-Table "Inspection Annual Plan Subject" [note: "Đối tượng thanh tra được đưa vào kế hoạch năm. Grain: 1 đối tượng × 1 kế hoạch."] {
-  "Inspection Annual Plan Subject Id" varchar [pk]
-  "Inspection Annual Plan Id" varchar
+Table "insp_dcsn" [note: "Quyết định thanh tra/kiểm tra cụ thể. FK → Inspection Annual Plan (nullable — thanh tra đột xuất không có kế hoạch)."] {
+  "insp_dcsn_id" varchar [pk]
+  "insp_anul_pln_id" varchar
 }
 
-Table "Inspection Annual Plan Document Attachment" [note: "Văn bản đính kèm kế hoạch thanh tra năm. FK → Inspection Annual Plan."] {
-  "Inspection Annual Plan Document Attachment Id" varchar [pk]
-  "Inspection Annual Plan Id" varchar
+Table "insp_dcsn_sbj" [note: "Đối tượng cụ thể được thanh tra theo một quyết định. FK → Inspection Decision."] {
+  "insp_dcsn_sbj_id" varchar [pk]
+  "insp_dcsn_id" varchar
 }
 
-Table "Inspection Decision" [note: "Quyết định thanh tra/kiểm tra cụ thể. FK → Inspection Annual Plan (nullable — thanh tra đột xuất không có kế hoạch)."] {
-  "Inspection Decision Id" varchar [pk]
-  "Inspection Annual Plan Id" varchar
+Table "insp_dcsn_team_mbr" [note: "Thành viên đoàn thanh tra chỉ định theo quyết định. FK → Inspection Decision + FK → Inspection Officer."] {
+  "insp_dcsn_team_mbr_id" varchar [pk]
+  "insp_dcsn_id" varchar
+  "insp_ofcr_id" varchar
 }
 
-Table "Inspection Decision Subject" [note: "Đối tượng cụ thể được thanh tra theo một quyết định. FK → Inspection Decision."] {
-  "Inspection Decision Subject Id" varchar [pk]
-  "Inspection Decision Id" varchar
+Table "insp_pny_ancm" [note: "Công bố quyết định xử phạt từ kết luận thanh tra. FK → Inspection Case Conclusion."] {
+  "insp_pny_ancm_id" varchar [pk]
+  "insp_case_id" varchar
+  "insp_case_conclusion_id" varchar
 }
 
-Table "Inspection Decision Team Member" [note: "Thành viên đoàn thanh tra chỉ định theo quyết định. FK → Inspection Decision + FK → Inspection Officer."] {
-  "Inspection Decision Team Member Id" varchar [pk]
-  "Inspection Decision Id" varchar
-  "Inspection Officer Id" varchar
+Table "insp_anul_pln_doc_attch" [note: "Văn bản đính kèm kế hoạch thanh tra năm. FK → Inspection Annual Plan."] {
+  "insp_anul_pln_doc_attch_id" varchar [pk]
+  "insp_anul_pln_id" varchar
 }
 
-Table "Inspection Decision Document Attachment" [note: "Văn bản đính kèm quyết định thanh tra. FK → Inspection Decision."] {
-  "Inspection Decision Document Attachment Id" varchar [pk]
-  "Inspection Decision Id" varchar
+Table "insp_case_doc_attch" [note: "Văn bản đính kèm hồ sơ thanh tra (biên bản làm việc v.v.). FK → Inspection Case."] {
+  "insp_case_doc_attch_id" varchar [pk]
+  "insp_case_id" varchar
 }
 
-Table "Inspection Case" [note: "Hồ sơ thanh tra cụ thể — tập hợp tài liệu và kết quả 1 cuộc thanh tra. FK → Inspection Decision. Thông tin đối tượng denormalized (snapshot tại thời điểm thanh tra)."] {
-  "Inspection Case Id" varchar [pk]
-  "Inspection Decision Id" varchar
-  "Responsible Officer Id" varchar
-  "Processing Officer Id" varchar
+Table "insp_dcsn_doc_attch" [note: "Văn bản đính kèm quyết định thanh tra. FK → Inspection Decision."] {
+  "insp_dcsn_doc_attch_id" varchar [pk]
+  "insp_dcsn_id" varchar
 }
 
-Table "Inspection Case Officer Assignment" [note: "Phân công cán bộ phụ trách hồ sơ thanh tra. FK → Inspection Case + FK → Inspection Officer."] {
-  "Inspection Case Officer Assignment Id" varchar [pk]
-  "Inspection Case Id" varchar
-  "Inspection Officer Id" varchar
+Table "fnd_mgt_co" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  "fnd_mgt_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Inspection Case Document Attachment" [note: "Văn bản đính kèm hồ sơ thanh tra (biên bản làm việc v.v.). FK → Inspection Case."] {
-  "Inspection Case Document Attachment Id" varchar [pk]
-  "Inspection Case Id" varchar
+Table "insp_sbj_othr_p" [note: "Đối tượng thanh tra khác (cá nhân hoặc tổ chức) không thuộc danh mục CK/QLQ/ĐC. Phân biệt qua party_type_code."] {
+  "insp_sbj_othr_p_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Inspection Case Conclusion" [note: "Kết luận thanh tra kèm thông tin xử lý vi phạm. FK → Inspection Case."] {
-  "Inspection Case Conclusion Id" varchar [pk]
-  "Inspection Case Id" varchar
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
 }
 
-Table "Inspection Penalty Announcement" [note: "Công bố quyết định xử phạt từ kết luận thanh tra. FK → Inspection Case Conclusion."] {
-  "Inspection Penalty Announcement Id" varchar [pk]
-  "Inspection Case Id" varchar
-  "Inspection Case Conclusion Id" varchar
+Table "scr_co" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  "scr_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-// Ref: "Securities Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Fund Management Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Inspection Subject Other Party"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Inspection Annual Plan Subject"."Inspection Annual Plan Id" > "Inspection Annual Plan"."Inspection Annual Plan Id"
-Ref: "Inspection Annual Plan Document Attachment"."Inspection Annual Plan Id" > "Inspection Annual Plan"."Inspection Annual Plan Id"
-Ref: "Inspection Decision"."Inspection Annual Plan Id" > "Inspection Annual Plan"."Inspection Annual Plan Id"
-Ref: "Inspection Decision Subject"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
-Ref: "Inspection Decision Team Member"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
-// Ref: "Inspection Decision Team Member"."Inspection Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-Ref: "Inspection Decision Document Attachment"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
-Ref: "Inspection Case"."Inspection Decision Id" > "Inspection Decision"."Inspection Decision Id"
-// Ref: "Inspection Case"."Responsible Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-// Ref: "Inspection Case"."Processing Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-Ref: "Inspection Case Officer Assignment"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
-// Ref: "Inspection Case Officer Assignment"."Inspection Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-Ref: "Inspection Case Document Attachment"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
-Ref: "Inspection Case Conclusion"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
-Ref: "Inspection Penalty Announcement"."Inspection Case Id" > "Inspection Case"."Inspection Case Id"
-Ref: "Inspection Penalty Announcement"."Inspection Case Conclusion Id" > "Inspection Case Conclusion"."Inspection Case Conclusion Id"
+Ref: "insp_anul_pln_sbj"."insp_anul_pln_id" > "insp_anul_pln"."insp_anul_pln_id"
+Ref: "insp_case"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+// Ref: "insp_case"."rspl_ofcr_id" > ""."" // out-of-source
+// Ref: "insp_case"."pcs_ofcr_id" > ""."" // out-of-source
+Ref: "insp_case_conclusion"."insp_case_id" > "insp_case"."insp_case_id"
+Ref: "insp_case_ofcr_asgnm"."insp_case_id" > "insp_case"."insp_case_id"
+// Ref: "insp_case_ofcr_asgnm"."insp_ofcr_id" > ""."" // out-of-source
+Ref: "insp_dcsn"."insp_anul_pln_id" > "insp_anul_pln"."insp_anul_pln_id"
+Ref: "insp_dcsn_sbj"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+Ref: "insp_dcsn_team_mbr"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+// Ref: "insp_dcsn_team_mbr"."insp_ofcr_id" > ""."" // out-of-source
+Ref: "insp_pny_ancm"."insp_case_id" > "insp_case"."insp_case_id"
+Ref: "insp_pny_ancm"."insp_case_conclusion_id" > "insp_case_conclusion"."insp_case_conclusion_id"
+Ref: "insp_anul_pln_doc_attch"."insp_anul_pln_id" > "insp_anul_pln"."insp_anul_pln_id"
+Ref: "insp_case_doc_attch"."insp_case_id" > "insp_case"."insp_case_id"
+Ref: "insp_dcsn_doc_attch"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+// Ref: "fnd_mgt_co"."cty_of_rgst_id" > ""."" // out-of-source
+// Ref: "insp_sbj_othr_p"."cty_of_rgst_id" > ""."" // out-of-source
+// Ref: "scr_co"."cty_of_rgst_id" > ""."" // out-of-source

@@ -5,11 +5,11 @@ Project FMS_UID07 {
   Note: "FMS — UID07 Tiện ích và hệ thống"
 }
 
-Table "Fund Management Conduct Violation" [note: "Vi phạm pháp luật hoặc hành chính của công ty quản lý quỹ hoặc quỹ đầu tư. Ghi nhận loại vi phạm và trạng thái xử lý."] {
-  "Fund Management Conduct Violation Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
+Table "fnd_mgt_conduct_vln" [note: "Vi phạm pháp luật hoặc hành chính của công ty quản lý quỹ hoặc quỹ đầu tư. Ghi nhận loại vi phạm và trạng thái xử lý."] {
+  "fnd_mgt_conduct_vln_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
 }
 
-// Ref: "Fund Management Conduct Violation"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Fund Management Conduct Violation"."Investment Fund Id" > "Investment Fund"."Investment Fund Id" // out-of-source
+// Ref: "fnd_mgt_conduct_vln"."fnd_mgt_co_id" > ""."" // out-of-source
+// Ref: "fnd_mgt_conduct_vln"."ivsm_fnd_id" > ""."" // out-of-source

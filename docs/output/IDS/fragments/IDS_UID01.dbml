@@ -5,51 +5,48 @@ Project IDS_UID01 {
   Note: "IDS — UID01 Quản lý hồ sơ công ty đại chúng"
 }
 
-Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "pblc_co_ste_cptl" [note: "Thông tin sở hữu nhà nước trong công ty đại chúng — tên đại diện nhà nước và tỷ lệ sở hữu. FK to Public Company."] {
+  "pblc_co_ste_cptl_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  "Involved Party Id" varchar
-  "Province Id" varchar
-  "Geographic Area Id" varchar
+Table "pblc_co_frgn_own_lmt" [note: "Giới hạn tỷ lệ sở hữu nước ngoài của công ty đại chúng — max_owner_rate và khoảng thời gian áp dụng. FK to Public Company."] {
+  "pblc_co_frgn_own_lmt_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Public Company Id" varchar [pk]
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
 }
 
-Table "Public Company Legal Representative" [note: "Người đại diện pháp luật và người CBTT của công ty đại chúng — representative_role_code phân biệt 2 vai trò. FK to Public Company."] {
-  "Public Company Legal Representative Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co_lgl_rprs" [note: "Người đại diện pháp luật và người CBTT của công ty đại chúng — representative_role_code phân biệt 2 vai trò. FK to Public Company."] {
+  "pblc_co_lgl_rprs_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company Related Entity" [note: "Công ty mẹ/con/liên kết của công ty đại chúng — tên/MST/vốn/tỷ lệ sở hữu/thời hạn hiệu lực. FK to Public Company."] {
-  "Public Company Related Entity Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co_rel_ent" [note: "Công ty mẹ/con/liên kết của công ty đại chúng — tên/MST/vốn/tỷ lệ sở hữu/thời hạn hiệu lực. FK to Public Company."] {
+  "pblc_co_rel_ent_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company State Capital" [note: "Thông tin sở hữu nhà nước trong công ty đại chúng — tên đại diện nhà nước và tỷ lệ sở hữu. FK to Public Company."] {
-  "Public Company State Capital Id" varchar [pk]
-  "Public Company Id" varchar
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Public Company Foreign Ownership Limit" [note: "Giới hạn tỷ lệ sở hữu nước ngoài của công ty đại chúng — max_owner_rate và khoảng thời gian áp dụng. FK to Public Company."] {
-  "Public Company Foreign Ownership Limit Id" varchar [pk]
-  "Public Company Id" varchar
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+  "prov_id" varchar
+  "geo_id" varchar
 }
 
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Public Company"."Public Company Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company"."Public Company Id"
-// Ref: "Involved Party Postal Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id" // out-of-source
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id" // out-of-source
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm Legal Representative"."Audit Firm Legal Representative Id" // out-of-source
-Ref: "Public Company Legal Representative"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company Legal Representative"."Public Company Legal Representative Id"
-Ref: "Public Company Related Entity"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Public Company State Capital"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Public Company Foreign Ownership Limit"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "pblc_co_ste_cptl"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_frgn_own_lmt"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_lgl_rprs"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_rel_ent"."pblc_co_id" > "pblc_co"."pblc_co_id"
+// Ref: "ip_elc_adr"."ip_id" > ""."" // out-of-source
+Ref: "ip_elc_adr"."ip_id" > "pblc_co"."pblc_co_id"
+Ref: "ip_elc_adr"."ip_id" > "pblc_co_lgl_rprs"."pblc_co_lgl_rprs_id"
+// Ref: "ip_pst_adr"."ip_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."prov_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."geo_id" > ""."" // out-of-source
+Ref: "ip_pst_adr"."ip_id" > "pblc_co"."pblc_co_id"

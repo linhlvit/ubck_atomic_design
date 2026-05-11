@@ -5,37 +5,37 @@ Project IDS_UID02 {
   Note: "IDS — UID02 Hoạt động kinh doanh / Corporate Actions của CTĐC"
 }
 
-Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Public Company Id" varchar [pk]
+Table "pblc_co_cptl_incr" [note: "Tăng vốn điều lệ sau khi thành công ty đại chúng — vốn cuối năm tài chính và số đợt tăng. FK to Public Company."] {
+  "pblc_co_cptl_incr_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company Capital Mobilization" [note: "Tăng vốn trước khi thành công ty đại chúng — tổng vốn cuối năm và hình thức tăng. Grain: 1 năm x 1 công ty. FK to Public Company."] {
-  "Public Company Capital Mobilization Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co_cptl_mobilization" [note: "Tăng vốn trước khi thành công ty đại chúng — tổng vốn cuối năm và hình thức tăng. Grain: 1 năm x 1 công ty. FK to Public Company."] {
+  "pblc_co_cptl_mobilization_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company Capital Increase" [note: "Tăng vốn điều lệ sau khi thành công ty đại chúng — vốn cuối năm tài chính và số đợt tăng. FK to Public Company."] {
-  "Public Company Capital Increase Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co_scr_ofrg" [note: "Hoạt động chào bán/phát hành chứng khoán — loại CK/kế hoạch/kết quả thực tế theo từng hình thức. FK to Public Company."] {
+  "pblc_co_scr_ofrg_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company Securities Offering" [note: "Hoạt động chào bán/phát hành chứng khoán — loại CK/kế hoạch/kết quả thực tế theo từng hình thức. FK to Public Company."] {
-  "Public Company Securities Offering Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co_tender_ofr" [note: "Chào mua công khai — bên chào mua/số lượng dự kiến/kết quả/tỷ lệ sở hữu trước-sau. FK to Public Company."] {
+  "pblc_co_tender_ofr_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Public Company Tender Offer" [note: "Chào mua công khai — bên chào mua/số lượng dự kiến/kết quả/tỷ lệ sở hữu trước-sau. FK to Public Company."] {
-  "Public Company Tender Offer Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
 }
 
-Table "Public Company Treasury Stock Activity" [note: "Giao dịch cổ phiếu quỹ theo năm — số lượng mua/bán và số đợt. FK to Public Company."] {
-  "Public Company Treasury Stock Activity Id" varchar [pk]
-  "Public Company Id" varchar
+Table "pblc_co_trsr_stk_avy" [note: "Giao dịch cổ phiếu quỹ theo năm — số lượng mua/bán và số đợt. FK to Public Company."] {
+  "pblc_co_trsr_stk_avy_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Ref: "Public Company Capital Mobilization"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Public Company Capital Increase"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Public Company Securities Offering"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Public Company Tender Offer"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Public Company Treasury Stock Activity"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "pblc_co_cptl_incr"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_cptl_mobilization"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_scr_ofrg"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_tender_ofr"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "pblc_co_trsr_stk_avy"."pblc_co_id" > "pblc_co"."pblc_co_id"

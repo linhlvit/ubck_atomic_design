@@ -5,60 +5,57 @@ Project IDS_UID04 {
   Note: "IDS — UID04 Quản lý cổ đông giao dịch"
 }
 
-Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "stk_hldr_tdg_ac" [note: "Tài khoản giao dịch chứng khoán của cổ đông tại CTCK — số tài khoản và trạng thái. FK to Stock Holder."] {
+  "stk_hldr_tdg_ac_id" varchar [pk]
+  "stk_hldr_id" varchar
 }
 
-Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  "Involved Party Id" varchar
-  "Province Id" varchar
-  "Geographic Area Id" varchar
+Table "stk_cntl" [note: "Hạn chế chuyển nhượng cổ phiếu của cổ đông — số lượng bị hạn chế/thời gian/loại hạn chế. FK to Stock Holder."] {
+  "stk_cntl_id" varchar [pk]
+  "stk_hldr_id" varchar
 }
 
-Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Public Company Id" varchar [pk]
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
 }
 
-Table "Stock Holder" [note: "Cổ đông giao dịch — cá nhân hoặc tổ chức nắm giữ cổ phần công ty đại chúng. Grain: cổ đông x công ty. FK to Public Company."] {
-  "Stock Holder Id" varchar [pk]
-  "Public Company Id" varchar
+Table "stk_hldr" [note: "Cổ đông giao dịch — cá nhân hoặc tổ chức nắm giữ cổ phần công ty đại chúng. Grain: cổ đông x công ty. FK to Public Company."] {
+  "stk_hldr_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "stk_hldr_rltnp" [note: "Quan hệ giữa các cổ đông giao dịch — loại quan hệ/thời hạn/trạng thái. FK to Stock Holder x 2."] {
+  "stk_hldr_rltnp_id" varchar [pk]
+  "stk_hldr_id" varchar
+  "rel_stk_hldr_id" varchar
 }
 
-Table "Stock Holder Trading Account" [note: "Tài khoản giao dịch chứng khoán của cổ đông tại CTCK — số tài khoản và trạng thái. FK to Stock Holder."] {
-  "Stock Holder Trading Account Id" varchar [pk]
-  "Stock Holder Id" varchar
+Table "ip_alt_identn" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Stock Holder Relationship" [note: "Quan hệ giữa các cổ đông giao dịch — loại quan hệ/thời hạn/trạng thái. FK to Stock Holder x 2."] {
-  "Stock Holder Relationship Id" varchar [pk]
-  "Stock Holder Id" varchar
-  "Related Stock Holder Id" varchar
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Stock Control" [note: "Hạn chế chuyển nhượng cổ phiếu của cổ đông — số lượng bị hạn chế/thời gian/loại hạn chế. FK to Stock Holder."] {
-  "Stock Control Id" varchar [pk]
-  "Stock Holder Id" varchar
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+  "prov_id" varchar
+  "geo_id" varchar
 }
 
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Public Company"."Public Company Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company"."Public Company Id"
-Ref: "Stock Holder"."Public Company Id" > "Public Company"."Public Company Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Stock Holder"."Stock Holder Id"
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm Legal Representative"."Audit Firm Legal Representative Id" // out-of-source
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm Legal Representative"."Audit Firm Legal Representative Id" // out-of-source
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Public Company Legal Representative"."Public Company Legal Representative Id" // out-of-source
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Public Company Legal Representative"."Public Company Legal Representative Id" // out-of-source
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Stock Holder"."Stock Holder Id"
-Ref: "Stock Holder Trading Account"."Stock Holder Id" > "Stock Holder"."Stock Holder Id"
-Ref: "Stock Holder Relationship"."Stock Holder Id" > "Stock Holder"."Stock Holder Id"
-Ref: "Stock Holder Relationship"."Related Stock Holder Id" > "Stock Holder"."Stock Holder Id"
-Ref: "Stock Control"."Stock Holder Id" > "Stock Holder"."Stock Holder Id"
+Ref: "stk_hldr_tdg_ac"."stk_hldr_id" > "stk_hldr"."stk_hldr_id"
+Ref: "stk_cntl"."stk_hldr_id" > "stk_hldr"."stk_hldr_id"
+Ref: "stk_hldr"."pblc_co_id" > "pblc_co"."pblc_co_id"
+Ref: "stk_hldr_rltnp"."stk_hldr_id" > "stk_hldr"."stk_hldr_id"
+Ref: "stk_hldr_rltnp"."rel_stk_hldr_id" > "stk_hldr"."stk_hldr_id"
+// Ref: "ip_alt_identn"."ip_id" > ""."" // out-of-source
+Ref: "ip_alt_identn"."ip_id" > "stk_hldr"."stk_hldr_id"
+// Ref: "ip_elc_adr"."ip_id" > ""."" // out-of-source
+Ref: "ip_elc_adr"."ip_id" > "pblc_co"."pblc_co_id"
+Ref: "ip_elc_adr"."ip_id" > "stk_hldr"."stk_hldr_id"
+// Ref: "ip_pst_adr"."ip_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."prov_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."geo_id" > ""."" // out-of-source
+Ref: "ip_pst_adr"."ip_id" > "pblc_co"."pblc_co_id"
+Ref: "ip_pst_adr"."ip_id" > "stk_hldr"."stk_hldr_id"

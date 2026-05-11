@@ -5,23 +5,23 @@ Project NHNCK_UID03 {
   Note: "NHNCK — UID03 Quản lý hồ sơ"
 }
 
-Table "Securities Practitioner License Application" [note: "Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý."] {
-  "License Application Id" varchar [pk]
-  "Practitioner Id" varchar
-  "License Certificate Document Id" varchar
-  "Previous License Certificate Document Id" varchar
-  "Examination Assessment Id" varchar
-  "Assignee Officer Id" varchar
-  "License Application Verification Status Id" varchar
-  "Created By Officer Id" varchar
-  "Updated By Officer Id" varchar
+Table "scr_prac_license_ap" [note: "Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý."] {
+  "license_ap_id" varchar [pk]
+  "prac_id" varchar
+  "license_ctf_doc_id" varchar
+  "prev_license_ctf_doc_id" varchar
+  "exam_ases_id" varchar
+  "assignee_ofcr_id" varchar
+  "license_ap_verf_st_id" varchar
+  "crt_by_ofcr_id" varchar
+  "udt_by_ofcr_id" varchar
 }
 
-// Ref: "Securities Practitioner License Application"."Practitioner Id" > "Securities Practitioner"."Practitioner Id" // out-of-source
-// Ref: "Securities Practitioner License Application"."License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id" // out-of-source
-// Ref: "Securities Practitioner License Application"."Previous License Certificate Document Id" > "Securities Practitioner License Certificate Document"."License Certificate Document Id" // out-of-source
-// Ref: "Securities Practitioner License Application"."Examination Assessment Id" > "Securities Practitioner Qualification Examination Assessment"."Examination Assessment Id" // out-of-source
-// Ref: "Securities Practitioner License Application"."Assignee Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
-// Ref: "Securities Practitioner License Application"."License Application Verification Status Id" > "Securities Practitioner License Application Verification Status"."License Application Verification Status Id" // out-of-source
-// Ref: "Securities Practitioner License Application"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
-// Ref: "Securities Practitioner License Application"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+// Ref: "scr_prac_license_ap"."prac_id" > ""."" // out-of-source
+// Ref: "scr_prac_license_ap"."license_ctf_doc_id" > ""."" // out-of-source
+// Ref: "scr_prac_license_ap"."prev_license_ctf_doc_id" > ""."" // out-of-source
+// Ref: "scr_prac_license_ap"."exam_ases_id" > ""."" // out-of-source
+// Ref: "scr_prac_license_ap"."assignee_ofcr_id" > ""."" // out-of-source
+// Ref: "scr_prac_license_ap"."license_ap_verf_st_id" > ""."" // out-of-source
+// Ref: "scr_prac_license_ap"."crt_by_ofcr_id" > ""."" // out-of-source
+// Ref: "scr_prac_license_ap"."udt_by_ofcr_id" > ""."" // out-of-source

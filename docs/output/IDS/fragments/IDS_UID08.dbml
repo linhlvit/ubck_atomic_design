@@ -5,13 +5,13 @@ Project IDS_UID08 {
   Note: "IDS — UID08 Lịch sử thay đổi (SCD2 kỹ thuật)"
 }
 
-Table "Public Company" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
-  "Public Company Id" varchar [pk]
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
 }
 
-Table "Stock Holder" [note: "Cổ đông giao dịch — cá nhân hoặc tổ chức nắm giữ cổ phần công ty đại chúng. Grain: cổ đông x công ty. FK to Public Company."] {
-  "Stock Holder Id" varchar [pk]
-  "Public Company Id" varchar
+Table "stk_hldr" [note: "Cổ đông giao dịch — cá nhân hoặc tổ chức nắm giữ cổ phần công ty đại chúng. Grain: cổ đông x công ty. FK to Public Company."] {
+  "stk_hldr_id" varchar [pk]
+  "pblc_co_id" varchar
 }
 
-Ref: "Stock Holder"."Public Company Id" > "Public Company"."Public Company Id"
+Ref: "stk_hldr"."pblc_co_id" > "pblc_co"."pblc_co_id"

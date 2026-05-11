@@ -5,46 +5,36 @@ Project SCMS_UID05 {
   Note: "SCMS — UID05 Khai thác công ty kiểm toán và kiểm toán viên"
 }
 
-Table "Audit Firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
-  "Audit Firm Id" varchar [pk]
+Table "audt_firm" [note: "Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động."] {
+  "audt_firm_id" varchar [pk]
 }
 
-Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "audt_firm_prac" [note: "Kiểm toán viên thuộc công ty kiểm toán. Ghi nhận chứng chỉ kiểm toán và trạng thái hành nghề."] {
+  "audt_firm_prac_id" varchar [pk]
+  "audt_firm_id" varchar
 }
 
-Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  "Involved Party Id" varchar
-  "Province Id" varchar
-  "Geographic Area Id" varchar
+Table "ip_alt_identn" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Audit Firm Practitioner" [note: "Kiểm toán viên thuộc công ty kiểm toán. Ghi nhận chứng chỉ kiểm toán và trạng thái hành nghề."] {
-  "Audit Firm Practitioner Id" varchar [pk]
-  "Audit Firm Id" varchar
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+  "prov_id" varchar
+  "geo_id" varchar
 }
 
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
-// Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id" // out-of-source
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id" // out-of-source
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Practitioner"."Practitioner Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id" // out-of-source
-// Ref: "Involved Party Electronic Address"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id" // out-of-source
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Senior Personnel"."Securities Company Senior Personnel Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Involved Party Id" > "Securities Company Shareholder"."Securities Company Shareholder Id" // out-of-source
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder"."Securities Company Shareholder Id" // out-of-source
-Ref: "Audit Firm Practitioner"."Audit Firm Id" > "Audit Firm"."Audit Firm Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Audit Firm Practitioner"."Audit Firm Practitioner Id"
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder Representative"."Securities Company Shareholder Representative Id" // out-of-source
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company Shareholder Related Party"."Securities Company Shareholder Related Party Id" // out-of-source
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Audit Firm"."Audit Firm Id"
-// Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Securities Company"."Securities Company Id" // out-of-source
+Ref: "audt_firm_prac"."audt_firm_id" > "audt_firm"."audt_firm_id"
+Ref: "ip_alt_identn"."ip_id" > "audt_firm"."audt_firm_id"
+// Ref: "ip_alt_identn"."ip_id" > ""."" // out-of-source
+Ref: "ip_alt_identn"."ip_id" > "audt_firm_prac"."audt_firm_prac_id"
+// Ref: "ip_elc_adr"."ip_id" > ""."" // out-of-source
+Ref: "ip_elc_adr"."ip_id" > "audt_firm"."audt_firm_id"
+// Ref: "ip_pst_adr"."ip_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."prov_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."geo_id" > ""."" // out-of-source
+Ref: "ip_pst_adr"."ip_id" > "audt_firm"."audt_firm_id"

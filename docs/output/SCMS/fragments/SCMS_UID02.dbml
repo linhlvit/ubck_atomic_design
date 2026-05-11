@@ -5,73 +5,73 @@ Project SCMS_UID02 {
   Note: "SCMS — UID02 Quản lý CN CTCK nước ngoài tại VN"
 }
 
-Table "Securities Company" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
-  "Securities Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "dscl_rpt_subm" [note: "Báo cáo công bố thông tin do CTCK nộp lên UBCKNN theo yêu cầu minh bạch thị trường."] {
+  "dscl_rpt_subm_id" varchar [pk]
+  "scr_co_id" varchar
 }
 
-Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
-  "Practitioner Id" varchar [pk]
-  "Country of Residence Geographic Area Id" varchar
-  "Securities Company Id" varchar
+Table "mbr_prd_rpt" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  "mbr_prd_rpt_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
+  "cstd_bnk_id" varchar
+  "frgn_fnd_mgt_ou_id" varchar
+  "rpt_tpl_id" varchar
+  "rpt_prd_id" varchar
+  "scr_co_id" varchar
+  "rpt_subm_shd_id" varchar
 }
 
-Table "Securities Company Senior Personnel" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
-  "Securities Company Senior Personnel Id" varchar [pk]
-  "Securities Company Id" varchar
-  "Organization Unit Id" varchar
-  "Nationality Id" varchar
+Table "mbr_rpt_ind_val" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
+  "mbr_rpt_ind_val_id" varchar [pk]
+  "rpt_tpl_id" varchar
+  "scr_co_id" varchar
+  "rpt_tpl_shet_id" varchar
+  "rpt_tpl_row_id" varchar
+  "rpt_tpl_clmn_id" varchar
+  "mbr_prd_rpt_id" varchar
+  "rpt_tpl_ind_id" varchar
+  "rpt_ind_id" varchar
 }
 
-Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
-  "Member Periodic Report Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
-  "Custodian Bank Id" varchar
-  "Foreign Fund Management Organization Unit Id" varchar
-  "Report Template Id" varchar
-  "Reporting Period Id" varchar
-  "Securities Company Id" varchar
-  "Report Submission Schedule Id" varchar
+Table "scr_co" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  "scr_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Disclosure Report Submission" [note: "Báo cáo công bố thông tin do CTCK nộp lên UBCKNN theo yêu cầu minh bạch thị trường."] {
-  "Disclosure Report Submission Id" varchar [pk]
-  "Securities Company Id" varchar
+Table "scr_co_snr_psn" [note: "Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận."] {
+  "scr_co_snr_psn_id" varchar [pk]
+  "scr_co_id" varchar
+  "ou_id" varchar
+  "nat_id" varchar
 }
 
-Table "Member Report Indicator Value" [note: "Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report."] {
-  "Member Report Indicator Value Id" varchar [pk]
-  "Report Template Id" varchar
-  "Securities Company Id" varchar
-  "Report Template Sheet Id" varchar
-  "Report Template Row Id" varchar
-  "Report Template Column Id" varchar
-  "Member Periodic Report Id" varchar
-  "Report Template Indicator Id" varchar
-  "Report Indicator Id" varchar
+Table "scr_prac" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  "prac_id" varchar [pk]
+  "cty_of_rsdnc_geo_id" varchar
+  "scr_co_id" varchar
 }
 
-// Ref: "Securities Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Securities Practitioner"."Country of Residence Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Securities Practitioner"."Securities Company Id" > "Securities Company"."Securities Company Id"
-Ref: "Securities Company Senior Personnel"."Securities Company Id" > "Securities Company"."Securities Company Id"
-// Ref: "Securities Company Senior Personnel"."Organization Unit Id" > "Securities Company Organization Unit"."Securities Company Organization Unit Id" // out-of-source
-// Ref: "Securities Company Senior Personnel"."Nationality Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Member Periodic Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Member Periodic Report"."Investment Fund Id" > "Investment Fund"."Investment Fund Id" // out-of-source
-// Ref: "Member Periodic Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Member Periodic Report"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id" // out-of-source
-// Ref: "Member Periodic Report"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
-// Ref: "Member Periodic Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id" // out-of-source
-Ref: "Member Periodic Report"."Securities Company Id" > "Securities Company"."Securities Company Id"
-// Ref: "Member Periodic Report"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id" // out-of-source
-Ref: "Disclosure Report Submission"."Securities Company Id" > "Securities Company"."Securities Company Id"
-// Ref: "Member Report Indicator Value"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
-Ref: "Member Report Indicator Value"."Securities Company Id" > "Securities Company"."Securities Company Id"
-// Ref: "Member Report Indicator Value"."Report Template Sheet Id" > "Report Template Sheet"."Report Template Sheet Id" // out-of-source
-// Ref: "Member Report Indicator Value"."Report Template Row Id" > "Report Template Row"."Report Template Row Id" // out-of-source
-// Ref: "Member Report Indicator Value"."Report Template Column Id" > "Report Template Column"."Report Template Column Id" // out-of-source
-Ref: "Member Report Indicator Value"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
-// Ref: "Member Report Indicator Value"."Report Template Indicator Id" > "Report Template Indicator"."Report Template Indicator Id" // out-of-source
-// Ref: "Member Report Indicator Value"."Report Indicator Id" > "Report Indicator"."Report Indicator Id" // out-of-source
+Ref: "dscl_rpt_subm"."scr_co_id" > "scr_co"."scr_co_id"
+// Ref: "mbr_prd_rpt"."fnd_mgt_co_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."ivsm_fnd_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."cstd_bnk_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."frgn_fnd_mgt_ou_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."rpt_tpl_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."rpt_prd_id" > ""."" // out-of-source
+Ref: "mbr_prd_rpt"."scr_co_id" > "scr_co"."scr_co_id"
+// Ref: "mbr_prd_rpt"."rpt_subm_shd_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_id" > ""."" // out-of-source
+Ref: "mbr_rpt_ind_val"."scr_co_id" > "scr_co"."scr_co_id"
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_shet_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_row_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_clmn_id" > ""."" // out-of-source
+Ref: "mbr_rpt_ind_val"."mbr_prd_rpt_id" > "mbr_prd_rpt"."mbr_prd_rpt_id"
+// Ref: "mbr_rpt_ind_val"."rpt_tpl_ind_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_ind_val"."rpt_ind_id" > ""."" // out-of-source
+// Ref: "scr_co"."cty_of_rgst_id" > ""."" // out-of-source
+Ref: "scr_co_snr_psn"."scr_co_id" > "scr_co"."scr_co_id"
+// Ref: "scr_co_snr_psn"."ou_id" > ""."" // out-of-source
+// Ref: "scr_co_snr_psn"."nat_id" > ""."" // out-of-source
+// Ref: "scr_prac"."cty_of_rsdnc_geo_id" > ""."" // out-of-source
+Ref: "scr_prac"."scr_co_id" > "scr_co"."scr_co_id"

@@ -75,6 +75,22 @@ def cmd_sample(source: str, sample_count: int = 2) -> Path:
     return md_file
 
 
+def _render_dbml_diagram(dbml_path: Path, png_path: Path) -> bool:
+    """Gọi Node.js script để render DBML → PNG. Trả về True nếu thành công."""
+    node = shutil.which("node")
+    if not node:
+        print("[WARN] Node.js không tìm thấy — bỏ qua render diagram.", file=sys.stderr)
+        return False
+    script = SCRIPTS_DIR / "render_dbml_diagram.js"
+    result = subprocess.run([node, str(script), str(dbml_path), str(png_path)],
+                            capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"[WARN] render_dbml_diagram lỗi: {result.stderr[:300]}", file=sys.stderr)
+        return False
+    print(f"Diagram PNG: {png_path}", file=sys.stderr)
+    return True
+
+
 def cmd_full(source: str) -> Path:
     """Render fragment đầy đủ cho 1 source. Idempotent — chỉ ghi đè file của source đó.
 
@@ -104,6 +120,9 @@ def cmd_full(source: str) -> Path:
     dbml_file = frag_dir / f"{source}.dbml"
     dbml_file.write_text(DL.build_dbml(source, all_entities, uid_groups), encoding="utf-8")
     print(f"DBML (full): {dbml_file}", file=sys.stderr)
+
+    # Render DBML diagram → PNG
+    _render_dbml_diagram(dbml_file, frag_dir / f"{source}_diagram.png")
 
     # DBML riêng theo từng UID group
     for g in uid_groups:
@@ -232,6 +251,7 @@ def cmd_docx(source_filter: str | None = None) -> Path:
         "--from", "markdown+pipe_tables+auto_identifiers",
         "--to", "docx",
         "--output", str(tmp_out),
+        "--resource-path", str(OUTPUT_DIR),
     ]
     # Copy reference-doc ra temp để tránh OneDrive/Word lock
     tmp_ref = None
@@ -268,6 +288,134 @@ def cmd_docx(source_filter: str | None = None) -> Path:
     return out_docx
 
 
+def _enable_heading_numbering(doc) -> None:
+    """Link Heading 1–4 vào abstractNum outline numbering; set H1 start = 2.
+
+    Tìm abstractNum có lvlText="%1.%2" tại ilvl=1 (hierarchical outline trong template UBCK),
+    link Heading 1–4 vào đó (ilvl 0–3), và override start value của H1 = 2.
+    """
+    from docx.oxml.ns import qn
+    from docx.oxml import OxmlElement
+
+    numbering_part = doc.part.numbering_part
+    if numbering_part is None:
+        return
+    np_elem = numbering_part._element
+
+    # Tìm abstractNum có cấu trúc hierarchical (%1.%2 ở ilvl=1) — abstractNum id=5 trong template UBCK
+    abstract_num_id = None
+    for absnm in np_elem.findall(qn("w:abstractNum")):
+        for lvl in absnm.findall(qn("w:lvl")):
+            if lvl.get(qn("w:ilvl")) == "1":
+                lt = lvl.find(qn("w:lvlText"))
+                if lt is not None and lt.get(qn("w:val")) == "%1.%2":
+                    abstract_num_id = absnm.get(qn("w:abstractNumId"))
+                    break
+        if abstract_num_id is not None:
+            break
+
+    if abstract_num_id is None:
+        return
+
+    # Tìm hoặc tạo <w:num> trỏ vào abstractNumId này
+    num_id = None
+    for nm in np_elem.findall(qn("w:num")):
+        aref = nm.find(qn("w:abstractNumId"))
+        if aref is not None and aref.get(qn("w:val")) == abstract_num_id:
+            num_id = nm.get(qn("w:numId"))
+            break
+
+    if num_id is None:
+        all_ids = [int(n.get(qn("w:numId"), 0)) for n in np_elem.findall(qn("w:num"))]
+        num_id = str(max(all_ids, default=0) + 1)
+        new_num = OxmlElement("w:num")
+        new_num.set(qn("w:numId"), num_id)
+        aref_el = OxmlElement("w:abstractNumId")
+        aref_el.set(qn("w:val"), abstract_num_id)
+        new_num.append(aref_el)
+        np_elem.append(new_num)
+
+    # Link Heading 1–4 → ilvl 0–3
+    heading_map = {"Heading 1": "0", "Heading 2": "1", "Heading 3": "2", "Heading 4": "3"}
+    for style in doc.styles:
+        if style.name not in heading_map:
+            continue
+        ilvl_val = heading_map[style.name]
+        pPr = style.element.find(qn("w:pPr"))
+        if pPr is None:
+            pPr = OxmlElement("w:pPr")
+            style.element.append(pPr)
+        for old in pPr.findall(qn("w:numPr")):
+            pPr.remove(old)
+        numPr = OxmlElement("w:numPr")
+        ilvl_el = OxmlElement("w:ilvl")
+        ilvl_el.set(qn("w:val"), ilvl_val)
+        numId_el = OxmlElement("w:numId")
+        numId_el.set(qn("w:val"), num_id)
+        numPr.append(ilvl_el)
+        numPr.append(numId_el)
+        pPr.insert(0, numPr)
+
+    # Set H1 start = 2 via lvlOverride trên <w:num>
+    for nm in np_elem.findall(qn("w:num")):
+        if nm.get(qn("w:numId")) == num_id:
+            for old_ov in nm.findall(qn("w:lvlOverride")):
+                if old_ov.get(qn("w:ilvl")) == "0":
+                    nm.remove(old_ov)
+            ov = OxmlElement("w:lvlOverride")
+            ov.set(qn("w:ilvl"), "0")
+            start_ov = OxmlElement("w:startOverride")
+            start_ov.set(qn("w:val"), "2")
+            ov.append(start_ov)
+            nm.append(ov)
+            break
+
+
+def _fix_diagram_captions(doc) -> None:
+    """Pandoc đặt caption (alt text) DƯỚI ảnh, căn trái. Chuyển lên TRÊN ảnh, căn giữa, in nghiêng."""
+    from docx.oxml.ns import qn
+    from docx.oxml import OxmlElement
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+
+    body = doc.element.body
+    paragraphs = list(doc.paragraphs)
+
+    for i, para in enumerate(paragraphs):
+        # Kiểm tra para chứa inline drawing (ảnh)
+        has_drawing = para._p.find(f".//{qn('w:drawing')}") is not None
+        if not has_drawing:
+            continue
+        # Caption là paragraph tiếp theo (nếu tồn tại)
+        if i + 1 >= len(paragraphs):
+            continue
+        caption_para = paragraphs[i + 1]
+        # Xác nhận đây là caption (có run italic hoặc text chứa "Mô hình")
+        caption_text = caption_para.text.strip()
+        if not caption_text:
+            continue
+        is_caption = any(r.italic for r in caption_para.runs) or "Mô hình" in caption_text
+        if not is_caption:
+            continue
+
+        # Di chuyển caption_para._p lên trước para._p trong body XML
+        img_p = para._p
+        cap_p = caption_para._p
+        # Remove caption từ vị trí hiện tại, insert trước ảnh
+        cap_p.getparent().remove(cap_p)
+        img_p.addprevious(cap_p)
+
+        # Căn giữa + in nghiêng cho caption
+        pPr = cap_p.get_or_add_pPr()
+        jc = pPr.find(qn("w:jc"))
+        if jc is None:
+            jc = OxmlElement("w:jc")
+            pPr.append(jc)
+        jc.set(qn("w:val"), "center")
+
+        for run in caption_para.runs:
+            run.italic = True
+
+
 def _post_process_docx(docx_path: Path) -> None:
     """Post-process DOCX: landscape A4 + fix table cell styling (font 9pt, no indent, header bold)."""
     from docx import Document
@@ -297,19 +445,6 @@ def _post_process_docx(docx_path: Path) -> None:
     # --- Fix indent + style cho tất cả para ngoài bảng ---
     _HEADING_STYLES = {"Heading 1", "Heading 2", "Heading 3", "Heading 4",
                        "Heading 5", "Heading 6"}
-
-    # --- Thay space → tab sau chỉ số mục (vd "2.1 DCST" → "2.1\tDCST") ---
-    # Template UBCK dùng tab stop để căn chỉnh; Pandoc chỉ sinh space thường.
-    import re as _re
-    _HDG_NUM_RE = _re.compile(r'^(\d+(?:\.\d+)+) ')
-    for para in doc.paragraphs:
-        style_name = para.style.name if para.style else ""
-        if style_name not in _HEADING_STYLES or not para.runs:
-            continue
-        first_run = para.runs[0]
-        m = _HDG_NUM_RE.match(first_run.text)
-        if m:
-            first_run.text = m.group(1) + "\t" + first_run.text[m.end():]
 
     for para in doc.paragraphs:
         style_name = para.style.name if para.style else ""
@@ -519,6 +654,10 @@ def _post_process_docx(docx_path: Path) -> None:
                                     rPr.append(el)
                                 el.set(qn("w:val"), "0")
 
+    # --- Fix diagram caption: Pandoc đặt caption DƯỚI ảnh, căn trái → chuyển LÊN TRÊN ảnh, căn giữa, in nghiêng ---
+    _fix_diagram_captions(doc)
+
+    _enable_heading_numbering(doc)
     doc.save(str(docx_path))
     print(f"Post-process done (portrait A4, margin 25/25/30/20mm, col widths, font 12pt Times New Roman, header bold): {docx_path}", file=sys.stderr)
 

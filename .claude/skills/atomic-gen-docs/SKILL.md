@@ -55,8 +55,7 @@ docs/output/
 ## Điều kiện tiên quyết
 
 - [ ] `Atomic/hld/{SOURCE}_HLD_Overview.md` tồn tại
-- [ ] `Atomic/lld/atomic_attributes.csv` đã sync (đã chạy `aggregate_atomic.py`)
-- [ ] `Atomic/lld/manifest.csv` đã sync (chứa rows của SOURCE)
+- [ ] `Atomic/lld/atomic_attributes.csv` đã sync — chạy `aggregate_atomic.py` (tự động sinh luôn `atomic_table`, `atomic_column`, `data_type`)
 - [ ] `Atomic/hld/atomic_entities.csv` đã sync (đã chạy `aggregate_atomic.py`)
 - [ ] Python deps: `python -c "import jinja2"` OK
 - [ ] `pandoc --version` ≥ 3.0 — chỉ cần cho `--mode docx`
@@ -129,7 +128,7 @@ Thứ tự source trong master MD:
 | Lỗi | Nguyên nhân | Fix |
 |---|---|---|
 | `FileNotFoundError: Atomic/hld/{X}_HLD_Overview.md` | HLD chưa tạo | Báo user — phải hoàn thành HLD trước. STOP. |
-| `Không tìm thấy entity nào cho source 'X'` | Manifest chưa có rows source X | Kiểm tra `Atomic/lld/manifest.csv` — chạy `aggregate_atomic.py` từ skill atomic-lld-design |
+| `Không tìm thấy entity nào cho source 'X'` | `atomic_attributes.csv` chưa có rows source X | Chạy `aggregate_atomic.py` từ skill atomic-lld-design để rebuild file này |
 | Diacritic vỡ | CSV không phải UTF-8 BOM | Re-encode `attr_*.csv` về `utf-8-sig` |
 | `jinja2.exceptions.UndefinedError` | Field thiếu trong source data | Sửa `data_loader.py` để default empty string, hoặc cập nhật template `\| default('')` |
 | Không sinh DBML per-UID | Format heading UID trong Source Analysis không match | Các format hỗ trợ: `FIMS_UID03 —`, `UID-01 —`, `DCST-01.` |

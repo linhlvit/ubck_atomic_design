@@ -5,142 +5,142 @@ Project QLRR {
   Note: "Atomic Lakehouse — QLRR"
 }
 
-Table "Risk Indicator Category" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
-  "Risk Indicator Category Id" varchar [pk]
+Table "rsk_alert_rsl" [note: "Bản ghi xử lý chi tiết cho cảnh báo rủi ro (giải trình hoặc không). Grain: 1 lần xử lý. Append-only. FK → Risk Alert."] {
+  "rsk_alert_rsl_id" varchar [pk]
+  "rsk_alert_id" varchar
 }
 
-Table "Risk Indicator" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
-  "Risk Indicator Id" varchar [pk]
-  "Risk Indicator Category Id" varchar
+Table "rsk_rpt_upload_btch" [note: "Đợt upload file báo cáo rủi ro định kỳ. Grain: 1 đợt upload. FK → Risk Report Type."] {
+  "rsk_rpt_upload_btch_id" varchar [pk]
+  "rsk_rpt_tp_id" varchar
 }
 
-Table "Risk Report Type" [note: "Danh mục loại báo cáo rủi ro (Báo cáo nhanh hàng tháng v.v.). Master entity có lifecycle. FK từ Risk Report Upload Batch."] {
-  "Risk Report Type Id" varchar [pk]
+Table "rsk_alert_notf" [note: "Thông báo cảnh báo gửi từng kênh (Toast/Bell/Email) đến từng người nhận. Grain: 1 thông báo / 1 người. Append-only. FK → Risk Alert."] {
+  "rsk_alert_notf_id" varchar [pk]
+  "rsk_alert_id" varchar
 }
 
-Table "Risk Indicator Schedule" [note: "Cấu hình lịch chạy job đồng bộ chỉ tiêu rủi ro (frequency_type/cron_expression). Grain: 1-1 với Risk Indicator. FK → Risk Indicator."] {
-  "Risk Indicator Schedule Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_alert_config" [note: "Cấu hình ngưỡng và quy tắc kích hoạt cảnh báo cho từng chỉ tiêu rủi ro. Grain: 1 cấu hình / 1 chỉ tiêu. FK → Risk Indicator."] {
+  "rsk_alert_config_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Alert Config" [note: "Cấu hình ngưỡng và quy tắc kích hoạt cảnh báo cho từng chỉ tiêu rủi ro. Grain: 1 cấu hình / 1 chỉ tiêu. FK → Risk Indicator."] {
-  "Risk Alert Config Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_ind_shd" [note: "Cấu hình lịch chạy job đồng bộ chỉ tiêu rủi ro (frequency_type/cron_expression). Grain: 1-1 với Risk Indicator. FK → Risk Indicator."] {
+  "rsk_ind_shd_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Report Upload Batch" [note: "Đợt upload file báo cáo rủi ro định kỳ. Grain: 1 đợt upload. FK → Risk Report Type."] {
-  "Risk Report Upload Batch Id" varchar [pk]
-  "Risk Report Type Id" varchar
+Table "rsk_alert_rsl_file" [note: "File đính kèm giải trình cho bản ghi xử lý cảnh báo. Grain: 1 file. FK → Risk Alert Resolution."] {
+  "rsk_alert_rsl_file_id" varchar [pk]
+  "rsk_alert_rsl_id" varchar
 }
 
-Table "Risk Indicator Value" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
-  "Risk Indicator Value Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_rpt_file" [note: "Metadata file đính kèm báo cáo rủi ro trong đợt upload. Grain: 1 file. FK → Risk Report Upload Batch."] {
+  "rsk_rpt_file_id" varchar [pk]
+  "rsk_rpt_upload_btch_id" varchar
 }
 
-Table "Risk Indicator Value Change" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
-  "Risk Indicator Value Change Id" varchar [pk]
-  "Risk Indicator Id" varchar
+Table "rsk_rpt_tp" [note: "Danh mục loại báo cáo rủi ro (Báo cáo nhanh hàng tháng v.v.). Master entity có lifecycle. FK từ Risk Report Upload Batch."] {
+  "rsk_rpt_tp_id" varchar [pk]
 }
 
-Table "Risk Alert" [note: "Bản ghi cảnh báo rủi ro phát sinh khi chỉ tiêu vượt ngưỡng cấu hình. Grain: 1 lần kích hoạt. Append-only. FK → Risk Alert Config + Risk Indicator."] {
-  "Risk Alert Id" varchar [pk]
-  "Risk Alert Config Id" varchar
-  "Risk Indicator Id" varchar
-  "Triggered By Schedule Id" varchar
+Table "rsk_alert" [note: "Bản ghi cảnh báo rủi ro phát sinh khi chỉ tiêu vượt ngưỡng cấu hình. Grain: 1 lần kích hoạt. Append-only. FK → Risk Alert Config + Risk Indicator."] {
+  "rsk_alert_id" varchar [pk]
+  "rsk_alert_config_id" varchar
+  "rsk_ind_id" varchar
+  "triggered_by_shd_id" varchar
 }
 
-Table "Risk Report File" [note: "Metadata file đính kèm báo cáo rủi ro trong đợt upload. Grain: 1 file. FK → Risk Report Upload Batch."] {
-  "Risk Report File Id" varchar [pk]
-  "Risk Report Upload Batch Id" varchar
+Table "rsk_alert_hist" [note: "Dòng thời gian sự kiện trong vòng đời cảnh báo (phát sinh / xử lý). Grain: 1 sự kiện nghiệp vụ. Append-only. FK → Risk Alert."] {
+  "rsk_alert_hist_id" varchar [pk]
+  "rsk_alert_id" varchar
+  "rsk_alert_rsl_id" varchar
 }
 
-Table "Risk Alert Resolution" [note: "Bản ghi xử lý chi tiết cho cảnh báo rủi ro (giải trình hoặc không). Grain: 1 lần xử lý. Append-only. FK → Risk Alert."] {
-  "Risk Alert Resolution Id" varchar [pk]
-  "Risk Alert Id" varchar
+Table "rsk_ind_val" [note: "Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator."] {
+  "rsk_ind_val_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Alert Resolution File" [note: "File đính kèm giải trình cho bản ghi xử lý cảnh báo. Grain: 1 file. FK → Risk Alert Resolution."] {
-  "Risk Alert Resolution File Id" varchar [pk]
-  "Risk Alert Resolution Id" varchar
+Table "rsk_ind_val_chg" [note: "Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator."] {
+  "rsk_ind_val_chg_id" varchar [pk]
+  "rsk_ind_id" varchar
 }
 
-Table "Risk Alert History" [note: "Dòng thời gian sự kiện trong vòng đời cảnh báo (phát sinh / xử lý). Grain: 1 sự kiện nghiệp vụ. Append-only. FK → Risk Alert."] {
-  "Risk Alert History Id" varchar [pk]
-  "Risk Alert Id" varchar
-  "Risk Alert Resolution Id" varchar
+Table "rsk_ind" [note: "Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không"] {
+  "rsk_ind_id" varchar [pk]
+  "rsk_ind_cgy_id" varchar
 }
 
-Table "Risk Alert Notification" [note: "Thông báo cảnh báo gửi từng kênh (Toast/Bell/Email) đến từng người nhận. Grain: 1 thông báo / 1 người. Append-only. FK → Risk Alert."] {
-  "Risk Alert Notification Id" varchar [pk]
-  "Risk Alert Id" varchar
+Table "rsk_ind_cgy" [note: "Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator."] {
+  "rsk_ind_cgy_id" varchar [pk]
 }
 
 TableGroup "UID001 — Khai thác Dashboard" {
-  "Risk Indicator Category"
-  "Risk Indicator"
-  "Risk Indicator Value"
-  "Risk Indicator Value Change"
-  "Risk Alert"
+  "rsk_alert"
+  "rsk_ind_val"
+  "rsk_ind_val_chg"
+  "rsk_ind"
+  "rsk_ind_cgy"
 }
 
 TableGroup "UID002 — Khai thác Báo cáo" {
-  "Risk Indicator"
-  "Risk Report Type"
-  "Risk Report Upload Batch"
-  "Risk Indicator Value"
-  "Risk Report File"
+  "rsk_rpt_upload_btch"
+  "rsk_rpt_file"
+  "rsk_rpt_tp"
+  "rsk_ind_val"
+  "rsk_ind"
 }
 
 TableGroup "UID003 — Khai thác Chỉ tiêu tài chính trong nước" {
-  "Risk Indicator Category"
-  "Risk Indicator"
-  "Risk Indicator Value"
-  "Risk Indicator Value Change"
+  "rsk_ind_val"
+  "rsk_ind_val_chg"
+  "rsk_ind"
+  "rsk_ind_cgy"
 }
 
 TableGroup "UID004 — Khai thác Chỉ tiêu tài chính quốc tế" {
-  "Risk Indicator Category"
-  "Risk Indicator"
-  "Risk Indicator Value"
-  "Risk Indicator Value Change"
+  "rsk_ind_val"
+  "rsk_ind_val_chg"
+  "rsk_ind"
+  "rsk_ind_cgy"
 }
 
 TableGroup "UID005 — Quản lý Cảnh báo" {
-  "Risk Indicator"
-  "Risk Indicator Schedule"
-  "Risk Alert Config"
-  "Risk Alert"
-  "Risk Alert Resolution"
-  "Risk Alert Resolution File"
-  "Risk Alert History"
-  "Risk Alert Notification"
+  "rsk_alert_rsl"
+  "rsk_alert_notf"
+  "rsk_alert_config"
+  "rsk_ind_shd"
+  "rsk_alert_rsl_file"
+  "rsk_alert"
+  "rsk_alert_hist"
+  "rsk_ind"
 }
 
 TableGroup "UID006 — Khai thác Phân quyền dữ liệu" {
-  "Risk Indicator"
+  "rsk_ind"
 }
 
 TableGroup "UID007 — Quản lý tích hợp" {
-  "Risk Indicator Category"
-  "Risk Indicator"
-  "Risk Indicator Schedule"
-  "Risk Indicator Value"
-  "Risk Indicator Value Change"
+  "rsk_ind_shd"
+  "rsk_ind_val"
+  "rsk_ind_val_chg"
+  "rsk_ind"
+  "rsk_ind_cgy"
 }
 
-Ref: "Risk Indicator"."Risk Indicator Category Id" > "Risk Indicator Category"."Risk Indicator Category Id"
-Ref: "Risk Indicator Schedule"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Alert Config"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Report Upload Batch"."Risk Report Type Id" > "Risk Report Type"."Risk Report Type Id"
-Ref: "Risk Indicator Value"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Indicator Value Change"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Alert"."Risk Alert Config Id" > "Risk Alert Config"."Risk Alert Config Id"
-Ref: "Risk Alert"."Risk Indicator Id" > "Risk Indicator"."Risk Indicator Id"
-Ref: "Risk Alert"."Triggered By Schedule Id" > "Risk Indicator Schedule"."Risk Indicator Schedule Id"
-Ref: "Risk Report File"."Risk Report Upload Batch Id" > "Risk Report Upload Batch"."Risk Report Upload Batch Id"
-Ref: "Risk Alert Resolution"."Risk Alert Id" > "Risk Alert"."Risk Alert Id"
-Ref: "Risk Alert Resolution File"."Risk Alert Resolution Id" > "Risk Alert Resolution"."Risk Alert Resolution Id"
-Ref: "Risk Alert History"."Risk Alert Id" > "Risk Alert"."Risk Alert Id"
-Ref: "Risk Alert History"."Risk Alert Resolution Id" > "Risk Alert Resolution"."Risk Alert Resolution Id"
-Ref: "Risk Alert Notification"."Risk Alert Id" > "Risk Alert"."Risk Alert Id"
+Ref: "rsk_alert_rsl"."rsk_alert_id" > "rsk_alert"."rsk_alert_id"
+Ref: "rsk_rpt_upload_btch"."rsk_rpt_tp_id" > "rsk_rpt_tp"."rsk_rpt_tp_id"
+Ref: "rsk_alert_notf"."rsk_alert_id" > "rsk_alert"."rsk_alert_id"
+Ref: "rsk_alert_config"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_ind_shd"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_alert_rsl_file"."rsk_alert_rsl_id" > "rsk_alert_rsl"."rsk_alert_rsl_id"
+Ref: "rsk_rpt_file"."rsk_rpt_upload_btch_id" > "rsk_rpt_upload_btch"."rsk_rpt_upload_btch_id"
+Ref: "rsk_alert"."rsk_alert_config_id" > "rsk_alert_config"."rsk_alert_config_id"
+Ref: "rsk_alert"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_alert"."triggered_by_shd_id" > "rsk_ind_shd"."rsk_ind_shd_id"
+Ref: "rsk_alert_hist"."rsk_alert_id" > "rsk_alert"."rsk_alert_id"
+Ref: "rsk_alert_hist"."rsk_alert_rsl_id" > "rsk_alert_rsl"."rsk_alert_rsl_id"
+Ref: "rsk_ind_val"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_ind_val_chg"."rsk_ind_id" > "rsk_ind"."rsk_ind_id"
+Ref: "rsk_ind"."rsk_ind_cgy_id" > "rsk_ind_cgy"."rsk_ind_cgy_id"

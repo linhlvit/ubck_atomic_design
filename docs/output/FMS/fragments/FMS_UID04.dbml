@@ -5,57 +5,57 @@ Project FMS_UID04 {
   Note: "FMS — UID04 Quỹ đầu tư chứng khoán"
 }
 
-Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  "Fund Management Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "dscr_ivsm_ac" [note: "Tài khoản đầu tư ủy thác — hợp đồng dịch vụ quản lý danh mục tài chính giữa nhà đầu tư ủy thác và công ty quản lý quỹ."] {
+  "dscr_ivsm_ac_id" varchar [pk]
+  "dscr_ivsm_ivsr_id" varchar
 }
 
-Table "Investment Fund" [note: "Quỹ đầu tư chứng khoán — pháp nhân độc lập do công ty quản lý quỹ thành lập và quản lý. Lưu thông tin pháp lý và vốn của quỹ."] {
-  "Investment Fund Id" varchar [pk]
-  "Fund Management Company Id" varchar
+Table "ivsm_fnd_ivsr_cptl_chg_log" [note: "Lịch sử thay đổi phần vốn góp của nhà đầu tư trong quỹ đầu tư. Ghi nhận vốn trước/sau và lý do thay đổi."] {
+  "ivsm_fnd_ivsr_cptl_chg_log_id" varchar [pk]
+  "ivsm_fnd_ivsr_mbr_id" varchar
 }
 
-Table "Discretionary Investment Account" [note: "Tài khoản đầu tư ủy thác — hợp đồng dịch vụ quản lý danh mục tài chính giữa nhà đầu tư ủy thác và công ty quản lý quỹ."] {
-  "Discretionary Investment Account Id" varchar [pk]
-  "Discretionary Investment Investor Id" varchar
+Table "fnd_mgt_co" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  "fnd_mgt_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Investment Fund Investor Membership" [note: "Quan hệ thành viên của nhà đầu tư trong một quỹ đầu tư. Lưu tỷ lệ vốn góp và trạng thái tham gia."] {
-  "Investment Fund Investor Membership Id" varchar [pk]
-  "Investment Fund Id" varchar
-  "Discretionary Investment Investor Id" varchar
+Table "ivsm_fnd" [note: "Quỹ đầu tư chứng khoán — pháp nhân độc lập do công ty quản lý quỹ thành lập và quản lý. Lưu thông tin pháp lý và vốn của quỹ."] {
+  "ivsm_fnd_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
 }
 
-Table "Investment Fund Representative Board Member" [note: "Thành viên ban đại diện hoặc hội đồng quản trị của quỹ đầu tư. Cá nhân đảm nhận vai trò quản trị trong cơ cấu tổ chức quỹ."] {
-  "Investment Fund Representative Board Member Id" varchar [pk]
-  "Investment Fund Id" varchar
-  "Fund Management Company Key Person Id" varchar
+Table "ivsm_fnd_ivsr_mbr" [note: "Quan hệ thành viên của nhà đầu tư trong một quỹ đầu tư. Lưu tỷ lệ vốn góp và trạng thái tham gia."] {
+  "ivsm_fnd_ivsr_mbr_id" varchar [pk]
+  "ivsm_fnd_id" varchar
+  "dscr_ivsm_ivsr_id" varchar
 }
 
-Table "Fund Management Company Share Transfer" [note: "Giao dịch chuyển nhượng cổ phần của công ty quản lý quỹ. Ghi nhận bên chuyển nhượng/nhận nhượng và giá trị giao dịch."] {
-  "Fund Management Company Share Transfer Id" varchar [pk]
-  "Fund Management Company Id" varchar
+Table "ivsm_fnd_rprs_board_mbr" [note: "Thành viên ban đại diện hoặc hội đồng quản trị của quỹ đầu tư. Cá nhân đảm nhận vai trò quản trị trong cơ cấu tổ chức quỹ."] {
+  "ivsm_fnd_rprs_board_mbr_id" varchar [pk]
+  "ivsm_fnd_id" varchar
+  "fnd_mgt_co_key_psn_id" varchar
 }
 
-Table "Investment Fund Certificate Transfer" [note: "Giao dịch mua/bán chứng chỉ quỹ của nhà đầu tư thành viên. Ghi nhận số lượng và giá giao dịch theo từng quỹ."] {
-  "Investment Fund Investor Capital Transfer Id" varchar [pk]
-  "Investment Fund Id" varchar
-  "Investment Fund Investor Membership Id" varchar
+Table "fnd_mgt_co_shr_tfr" [note: "Giao dịch chuyển nhượng cổ phần của công ty quản lý quỹ. Ghi nhận bên chuyển nhượng/nhận nhượng và giá trị giao dịch."] {
+  "fnd_mgt_co_shr_tfr_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
 }
 
-Table "Investment Fund Investor Capital Change Log" [note: "Lịch sử thay đổi phần vốn góp của nhà đầu tư trong quỹ đầu tư. Ghi nhận vốn trước/sau và lý do thay đổi."] {
-  "Investment Fund Investor Capital Change Log Id" varchar [pk]
-  "Investment Fund Investor Membership Id" varchar
+Table "ivsm_fnd_ctf_tfr" [note: "Giao dịch mua/bán chứng chỉ quỹ của nhà đầu tư thành viên. Ghi nhận số lượng và giá giao dịch theo từng quỹ."] {
+  "ivsm_fnd_ivsr_cptl_tfr_id" varchar [pk]
+  "ivsm_fnd_id" varchar
+  "ivsm_fnd_ivsr_mbr_id" varchar
 }
 
-// Ref: "Fund Management Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Investment Fund"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-// Ref: "Discretionary Investment Account"."Discretionary Investment Investor Id" > "Discretionary Investment Investor"."Discretionary Investment Investor Id" // out-of-source
-Ref: "Investment Fund Investor Membership"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-// Ref: "Investment Fund Investor Membership"."Discretionary Investment Investor Id" > "Discretionary Investment Investor"."Discretionary Investment Investor Id" // out-of-source
-Ref: "Investment Fund Representative Board Member"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-// Ref: "Investment Fund Representative Board Member"."Fund Management Company Key Person Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id" // out-of-source
-Ref: "Fund Management Company Share Transfer"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Investment Fund Certificate Transfer"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Investment Fund Certificate Transfer"."Investment Fund Investor Membership Id" > "Investment Fund Investor Membership"."Investment Fund Investor Membership Id"
-Ref: "Investment Fund Investor Capital Change Log"."Investment Fund Investor Membership Id" > "Investment Fund Investor Membership"."Investment Fund Investor Membership Id"
+// Ref: "dscr_ivsm_ac"."dscr_ivsm_ivsr_id" > ""."" // out-of-source
+Ref: "ivsm_fnd_ivsr_cptl_chg_log"."ivsm_fnd_ivsr_mbr_id" > "ivsm_fnd_ivsr_mbr"."ivsm_fnd_ivsr_mbr_id"
+// Ref: "fnd_mgt_co"."cty_of_rgst_id" > ""."" // out-of-source
+Ref: "ivsm_fnd"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ivsm_fnd_ivsr_mbr"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+// Ref: "ivsm_fnd_ivsr_mbr"."dscr_ivsm_ivsr_id" > ""."" // out-of-source
+Ref: "ivsm_fnd_rprs_board_mbr"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+// Ref: "ivsm_fnd_rprs_board_mbr"."fnd_mgt_co_key_psn_id" > ""."" // out-of-source
+Ref: "fnd_mgt_co_shr_tfr"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ivsm_fnd_ctf_tfr"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "ivsm_fnd_ctf_tfr"."ivsm_fnd_ivsr_mbr_id" > "ivsm_fnd_ivsr_mbr"."ivsm_fnd_ivsr_mbr_id"

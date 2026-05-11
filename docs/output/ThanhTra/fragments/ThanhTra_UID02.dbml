@@ -5,37 +5,37 @@ Project ThanhTra_UID02 {
   Note: "ThanhTra — UID02 Xử lý vi phạm hành chính"
 }
 
-Table "Surveillance Enforcement Case" [note: "Hồ sơ xử lý vi phạm từ kết quả giám sát thị trường. Ghi nhận đối tượng và trạng thái xử lý."] {
-  "Surveillance Enforcement Case Id" varchar [pk]
-  "Responsible Officer Id" varchar
-  "Processing Officer Id" varchar
+Table "surveil_nfrc_case" [note: "Hồ sơ xử lý vi phạm từ kết quả giám sát thị trường. Ghi nhận đối tượng và trạng thái xử lý."] {
+  "surveil_nfrc_case_id" varchar [pk]
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
 }
 
-Table "Surveillance Case Document Attachment" [note: "Văn bản đính kèm hồ sơ giám sát. FK → Surveillance Enforcement Case."] {
-  "Surveillance Case Document Attachment Id" varchar [pk]
-  "Surveillance Enforcement Case Id" varchar
+Table "surveil_nfrc_dcsn" [note: "Văn bản xử lý vi phạm từ giám sát. FK → Surveillance Enforcement Case."] {
+  "surveil_nfrc_dcsn_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
 }
 
-Table "Surveillance Enforcement Decision" [note: "Văn bản xử lý vi phạm từ giám sát. FK → Surveillance Enforcement Case."] {
-  "Surveillance Enforcement Decision Id" varchar [pk]
-  "Surveillance Enforcement Case Id" varchar
+Table "surveil_pny_ancm" [note: "Công bố quyết định xử phạt từ giám sát. FK → Surveillance Enforcement Decision."] {
+  "surveil_pny_ancm_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
+  "surveil_nfrc_dcsn_id" varchar
 }
 
-Table "Surveillance Enforcement Decision File Attachment" [note: "File đính kèm văn bản xử lý giám sát. FK → Surveillance Enforcement Decision."] {
-  "Surveillance Enforcement Decision File Attachment Id" varchar [pk]
-  "Surveillance Enforcement Decision Id" varchar
+Table "surveil_case_doc_attch" [note: "Văn bản đính kèm hồ sơ giám sát. FK → Surveillance Enforcement Case."] {
+  "surveil_case_doc_attch_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
 }
 
-Table "Surveillance Penalty Announcement" [note: "Công bố quyết định xử phạt từ giám sát. FK → Surveillance Enforcement Decision."] {
-  "Surveillance Penalty Announcement Id" varchar [pk]
-  "Surveillance Enforcement Case Id" varchar
-  "Surveillance Enforcement Decision Id" varchar
+Table "surveil_nfrc_dcsn_file_attch" [note: "File đính kèm văn bản xử lý giám sát. FK → Surveillance Enforcement Decision."] {
+  "surveil_nfrc_dcsn_file_attch_id" varchar [pk]
+  "surveil_nfrc_dcsn_id" varchar
 }
 
-// Ref: "Surveillance Enforcement Case"."Responsible Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-// Ref: "Surveillance Enforcement Case"."Processing Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-Ref: "Surveillance Case Document Attachment"."Surveillance Enforcement Case Id" > "Surveillance Enforcement Case"."Surveillance Enforcement Case Id"
-Ref: "Surveillance Enforcement Decision"."Surveillance Enforcement Case Id" > "Surveillance Enforcement Case"."Surveillance Enforcement Case Id"
-Ref: "Surveillance Enforcement Decision File Attachment"."Surveillance Enforcement Decision Id" > "Surveillance Enforcement Decision"."Surveillance Enforcement Decision Id"
-Ref: "Surveillance Penalty Announcement"."Surveillance Enforcement Case Id" > "Surveillance Enforcement Case"."Surveillance Enforcement Case Id"
-Ref: "Surveillance Penalty Announcement"."Surveillance Enforcement Decision Id" > "Surveillance Enforcement Decision"."Surveillance Enforcement Decision Id"
+// Ref: "surveil_nfrc_case"."rspl_ofcr_id" > ""."" // out-of-source
+// Ref: "surveil_nfrc_case"."pcs_ofcr_id" > ""."" // out-of-source
+Ref: "surveil_nfrc_dcsn"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_pny_ancm"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_pny_ancm"."surveil_nfrc_dcsn_id" > "surveil_nfrc_dcsn"."surveil_nfrc_dcsn_id"
+Ref: "surveil_case_doc_attch"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_nfrc_dcsn_file_attch"."surveil_nfrc_dcsn_id" > "surveil_nfrc_dcsn"."surveil_nfrc_dcsn_id"

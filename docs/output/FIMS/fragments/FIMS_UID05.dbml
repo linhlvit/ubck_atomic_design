@@ -5,10 +5,6 @@ Project FIMS_UID05 {
   Note: "FIMS — UID05 Báo cáo thành viên"
 }
 
-Table "rpt_tpl" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
-  "rpt_tpl_id" varchar [pk]
-}
-
 Table "rpt_prd" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
   "rpt_prd_id" varchar [pk]
   "rpt_tpl_id" varchar
@@ -41,23 +37,27 @@ Table "mbr_rpt_val" [note: "Giá trị từng chỉ tiêu trong báo cáo địn
   "fnd_mgt_co_ou_id" varchar
 }
 
+Table "rpt_tpl" [note: "Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định."] {
+  "rpt_tpl_id" varchar [pk]
+}
+
 Ref: "rpt_prd"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
 Ref: "mbr_reg_rpt"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
 Ref: "mbr_reg_rpt"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
-// Ref: "mbr_reg_rpt"."fnd_mgt_co_id" > "fund_management_company"."fund_management_company_id" // out-of-source
-// Ref: "mbr_reg_rpt"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
-// Ref: "mbr_reg_rpt"."cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
-// Ref: "mbr_reg_rpt"."depst_cntr_id" > "depository_center"."depository_center_id" // out-of-source
-// Ref: "mbr_reg_rpt"."stk_exg_id" > "stock_exchange"."stock_exchange_id" // out-of-source
-// Ref: "mbr_reg_rpt"."frgn_ivsr_id" > "foreign_investor"."foreign_investor_id" // out-of-source
-// Ref: "mbr_reg_rpt"."fnd_mgt_co_ou_id" > "fund_management_company_organization_unit"."fund_management_company_organization_unit_id" // out-of-source
+// Ref: "mbr_reg_rpt"."fnd_mgt_co_id" > ""."" // out-of-source
+// Ref: "mbr_reg_rpt"."scr_co_id" > ""."" // out-of-source
+// Ref: "mbr_reg_rpt"."cstd_bnk_id" > ""."" // out-of-source
+// Ref: "mbr_reg_rpt"."depst_cntr_id" > ""."" // out-of-source
+// Ref: "mbr_reg_rpt"."stk_exg_id" > ""."" // out-of-source
+// Ref: "mbr_reg_rpt"."frgn_ivsr_id" > ""."" // out-of-source
+// Ref: "mbr_reg_rpt"."fnd_mgt_co_ou_id" > ""."" // out-of-source
 Ref: "mbr_rpt_val"."mbr_reg_rpt_id" > "mbr_reg_rpt"."mbr_reg_rpt_id"
 Ref: "mbr_rpt_val"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
 Ref: "mbr_rpt_val"."rpt_tpl_id" > "rpt_tpl"."rpt_tpl_id"
-// Ref: "mbr_rpt_val"."fnd_mgt_co_id" > "fund_management_company"."fund_management_company_id" // out-of-source
-// Ref: "mbr_rpt_val"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
-// Ref: "mbr_rpt_val"."cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
-// Ref: "mbr_rpt_val"."depst_cntr_id" > "depository_center"."depository_center_id" // out-of-source
-// Ref: "mbr_rpt_val"."stk_exg_id" > "stock_exchange"."stock_exchange_id" // out-of-source
-// Ref: "mbr_rpt_val"."dscl_rprs_id" > "disclosure_representative"."disclosure_representative_id" // out-of-source
-// Ref: "mbr_rpt_val"."fnd_mgt_co_ou_id" > "fund_management_company_organization_unit"."fund_management_company_organization_unit_id" // out-of-source
+// Ref: "mbr_rpt_val"."fnd_mgt_co_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_val"."scr_co_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_val"."cstd_bnk_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_val"."depst_cntr_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_val"."stk_exg_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_val"."dscl_rprs_id" > ""."" // out-of-source
+// Ref: "mbr_rpt_val"."fnd_mgt_co_ou_id" > ""."" // out-of-source

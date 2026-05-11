@@ -5,21 +5,21 @@ Project FMS_UID06 {
   Note: "FMS — UID06 Đánh giá xếp loại và cảnh báo"
 }
 
-Table "Member Rating Period" [note: "Kỳ đánh giá xếp loại định kỳ cho các thành viên thị trường (công ty quản lý quỹ). Xác định phạm vi thời gian áp dụng tiêu chí chấm điểm."] {
-  "Member Rating Period Id" varchar [pk]
+Table "mbr_rtg_prd" [note: "Kỳ đánh giá xếp loại định kỳ cho các thành viên thị trường (công ty quản lý quỹ). Xác định phạm vi thời gian áp dụng tiêu chí chấm điểm."] {
+  "mbr_rtg_prd_id" varchar [pk]
 }
 
-Table "Member Rating" [note: "Kết quả xếp loại của một công ty quản lý quỹ trong một kỳ đánh giá. Ghi nhận điểm tổng hợp và hạng xếp loại."] {
-  "Member Rating Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Member Rating Period Id" varchar
+Table "rtg_criterion" [note: "Tiêu chí chấm điểm đánh giá xếp loại thành viên thị trường. Lưu tên tiêu chí và điểm tối đa/trọng số. Có cấu trúc cha/con."] {
+  "rtg_criterion_id" varchar [pk]
+  "prn_rtg_criterion_id" varchar
 }
 
-Table "Rating Criterion" [note: "Tiêu chí chấm điểm đánh giá xếp loại thành viên thị trường. Lưu tên tiêu chí và điểm tối đa/trọng số. Có cấu trúc cha/con."] {
-  "Rating Criterion Id" varchar [pk]
-  "Parent Rating Criterion Id" varchar
+Table "mbr_rtg" [note: "Kết quả xếp loại của một công ty quản lý quỹ trong một kỳ đánh giá. Ghi nhận điểm tổng hợp và hạng xếp loại."] {
+  "mbr_rtg_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "mbr_rtg_prd_id" varchar
 }
 
-// Ref: "Member Rating"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-Ref: "Member Rating"."Member Rating Period Id" > "Member Rating Period"."Member Rating Period Id"
-Ref: "Rating Criterion"."Parent Rating Criterion Id" > "Rating Criterion"."Rating Criterion Id"
+Ref: "rtg_criterion"."prn_rtg_criterion_id" > "rtg_criterion"."rtg_criterion_id"
+// Ref: "mbr_rtg"."fnd_mgt_co_id" > ""."" // out-of-source
+Ref: "mbr_rtg"."mbr_rtg_prd_id" > "mbr_rtg_prd"."mbr_rtg_prd_id"

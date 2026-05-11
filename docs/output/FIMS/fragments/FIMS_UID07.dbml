@@ -5,15 +5,15 @@ Project FIMS_UID07 {
   Note: "FIMS — UID07 Ủy quyền"
 }
 
-Table "dscl_rprs" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
-  "dscl_rprs_id" varchar [pk]
-  "nat_id" varchar
-}
-
 Table "dscl_ahr" [note: "Ủy quyền công bố thông tin của người đại diện CBTT cho nhà đầu tư nước ngoài. Ghi nhận bên được ủy quyền, loại quan hệ và thời hạn hiệu lực."] {
   "dscl_ahr_id" varchar [pk]
   "dscl_rprs_id" varchar
 }
 
-// Ref: "dscl_rprs"."nat_id" > "geographic_area"."geographic_area_id" // out-of-source
+Table "dscl_rprs" [note: "Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán."] {
+  "dscl_rprs_id" varchar [pk]
+  "nat_id" varchar
+}
+
 Ref: "dscl_ahr"."dscl_rprs_id" > "dscl_rprs"."dscl_rprs_id"
+// Ref: "dscl_rprs"."nat_id" > ""."" // out-of-source

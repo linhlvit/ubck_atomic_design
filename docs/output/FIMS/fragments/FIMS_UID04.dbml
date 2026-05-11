@@ -5,6 +5,18 @@ Project FIMS_UID04 {
   Note: "FIMS — UID04 Nhà đầu tư nước ngoài"
 }
 
+Table "frgn_ivsr_scr_ac" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
+  "frgn_ivsr_scr_ac_id" varchar [pk]
+  "scr_co_id" varchar
+  "frgn_ivsr_id" varchar
+}
+
+Table "frgn_ivsr_stk_prtfl_snpst" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
+  "frgn_ivsr_stk_prtfl_snpst_id" varchar [pk]
+  "scr_co_id" varchar
+  "frgn_ivsr_id" varchar
+}
+
 Table "frgn_ivsr" [note: "Danh mục nhà đầu tư đăng ký giao dịch trên thị trường chứng khoán. Bao gồm cá nhân và tổ chức, phân biệt bằng ObjectType."] {
   "frgn_ivsr_id" varchar [pk]
   "nat_id" varchar
@@ -18,24 +30,12 @@ Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia
   "prn_geo_id" varchar
 }
 
-Table "frgn_ivsr_scr_ac" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán."] {
-  "frgn_ivsr_scr_ac_id" varchar [pk]
-  "scr_co_id" varchar
-  "frgn_ivsr_id" varchar
-}
-
-Table "frgn_ivsr_stk_prtfl_snpst" [note: "Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán."] {
-  "frgn_ivsr_stk_prtfl_snpst_id" varchar [pk]
-  "scr_co_id" varchar
-  "frgn_ivsr_id" varchar
-}
-
-Ref: "frgn_ivsr"."nat_id" > "geo"."geo_id"
-// Ref: "frgn_ivsr"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
-// Ref: "frgn_ivsr"."cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
-// Ref: "frgn_ivsr"."cptl_ac_cstd_bnk_id" > "custodian_bank"."custodian_bank_id" // out-of-source
-Ref: "geo"."prn_geo_id" > "geo"."geo_id"
-// Ref: "frgn_ivsr_scr_ac"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+// Ref: "frgn_ivsr_scr_ac"."scr_co_id" > ""."" // out-of-source
 Ref: "frgn_ivsr_scr_ac"."frgn_ivsr_id" > "frgn_ivsr"."frgn_ivsr_id"
-// Ref: "frgn_ivsr_stk_prtfl_snpst"."scr_co_id" > "securities_company"."securities_company_id" // out-of-source
+// Ref: "frgn_ivsr_stk_prtfl_snpst"."scr_co_id" > ""."" // out-of-source
 Ref: "frgn_ivsr_stk_prtfl_snpst"."frgn_ivsr_id" > "frgn_ivsr"."frgn_ivsr_id"
+Ref: "frgn_ivsr"."nat_id" > "geo"."geo_id"
+// Ref: "frgn_ivsr"."scr_co_id" > ""."" // out-of-source
+// Ref: "frgn_ivsr"."cstd_bnk_id" > ""."" // out-of-source
+// Ref: "frgn_ivsr"."cptl_ac_cstd_bnk_id" > ""."" // out-of-source
+Ref: "geo"."prn_geo_id" > "geo"."geo_id"

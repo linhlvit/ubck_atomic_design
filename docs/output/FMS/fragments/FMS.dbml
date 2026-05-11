@@ -5,250 +5,250 @@ Project FMS {
   Note: "Atomic Lakehouse — FMS"
 }
 
-Table "Fund Management Company" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
-  "Fund Management Company Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "dscr_ivsm_ac" [note: "Tài khoản đầu tư ủy thác — hợp đồng dịch vụ quản lý danh mục tài chính giữa nhà đầu tư ủy thác và công ty quản lý quỹ."] {
+  "dscr_ivsm_ac_id" varchar [pk]
+  "dscr_ivsm_ivsr_id" varchar
 }
 
-Table "Involved Party Postal Address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  "Involved Party Id" varchar
-  "Province Id" varchar
-  "Geographic Area Id" varchar
+Table "fnd_mgt_conduct_vln" [note: "Vi phạm pháp luật hoặc hành chính của công ty quản lý quỹ hoặc quỹ đầu tư. Ghi nhận loại vi phạm và trạng thái xử lý."] {
+  "fnd_mgt_conduct_vln_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
 }
 
-Table "Involved Party Electronic Address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "ivsm_fnd_ivsr_cptl_chg_log" [note: "Lịch sử thay đổi phần vốn góp của nhà đầu tư trong quỹ đầu tư. Ghi nhận vốn trước/sau và lý do thay đổi."] {
+  "ivsm_fnd_ivsr_cptl_chg_log_id" varchar [pk]
+  "ivsm_fnd_ivsr_mbr_id" varchar
 }
 
-Table "Involved Party Alternative Identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
-  "Involved Party Id" varchar
+Table "mbr_prd_rpt_st_log" [note: "Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt."] {
+  "mbr_prd_rpt_hist_id" varchar [pk]
+  "mbr_prd_rpt_id" varchar
+  "changed_by_ofcr_id" varchar
 }
 
-Table "Foreign Fund Management Organization Unit" [note: "Văn phòng đại diện hoặc chi nhánh của công ty quản lý quỹ nước ngoài tại Việt Nam được UBCKNN chấp thuận hoạt động."] {
-  "Foreign Fund Management Organization Unit Id" varchar [pk]
+Table "mbr_prd_rpt" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  "mbr_prd_rpt_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
+  "cstd_bnk_id" varchar
+  "frgn_fnd_mgt_ou_id" varchar
+  "rpt_tpl_id" varchar
+  "rpt_prd_id" varchar
+  "scr_co_id" varchar
+  "rpt_subm_shd_id" varchar
 }
 
-Table "Custodian Bank" [note: "Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ."] {
-  "Custodian Bank Id" varchar [pk]
-  "Country of Registration Id" varchar
+Table "mbr_rtg_prd" [note: "Kỳ đánh giá xếp loại định kỳ cho các thành viên thị trường (công ty quản lý quỹ). Xác định phạm vi thời gian áp dụng tiêu chí chấm điểm."] {
+  "mbr_rtg_prd_id" varchar [pk]
 }
 
-Table "Fund Distribution Agent" [note: "Tổ chức đại lý được ủy quyền phân phối chứng chỉ quỹ đầu tư cho nhà đầu tư."] {
-  "Fund Distribution Agent Id" varchar [pk]
+Table "rtg_criterion" [note: "Tiêu chí chấm điểm đánh giá xếp loại thành viên thị trường. Lưu tên tiêu chí và điểm tối đa/trọng số. Có cấu trúc cha/con."] {
+  "rtg_criterion_id" varchar [pk]
+  "prn_rtg_criterion_id" varchar
 }
 
-Table "Discretionary Investment Investor" [note: "Nhà đầu tư ủy thác — cá nhân hoặc tổ chức giao tài sản cho công ty quản lý quỹ quản lý theo hợp đồng ủy thác đầu tư."] {
-  "Discretionary Investment Investor Id" varchar [pk]
-  "Fund Management Company Id" varchar
+Table "rpt_prd" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  "rpt_prd_id" varchar [pk]
+  "rpt_tpl_id" varchar
 }
 
-Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
-  "Reporting Period Id" varchar [pk]
-  "Report Template Id" varchar
+Table "rpt_impr_val" [note: "Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào hệ thống FMS. Grain ở mức cell-level."] {
+  "mbr_rpt_val_id" varchar [pk]
+  "mbr_prd_rpt_id" varchar
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
+  "cstd_bnk_id" varchar
+  "frgn_fnd_mgt_ou_id" varchar
+  "rpt_prd_id" varchar
 }
 
-Table "Member Rating Period" [note: "Kỳ đánh giá xếp loại định kỳ cho các thành viên thị trường (công ty quản lý quỹ). Xác định phạm vi thời gian áp dụng tiêu chí chấm điểm."] {
-  "Member Rating Period Id" varchar [pk]
+Table "cstd_bnk" [note: "Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ."] {
+  "cstd_bnk_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Investment Fund" [note: "Quỹ đầu tư chứng khoán — pháp nhân độc lập do công ty quản lý quỹ thành lập và quản lý. Lưu thông tin pháp lý và vốn của quỹ."] {
-  "Investment Fund Id" varchar [pk]
-  "Fund Management Company Id" varchar
+Table "dscr_ivsm_ivsr" [note: "Nhà đầu tư ủy thác — cá nhân hoặc tổ chức giao tài sản cho công ty quản lý quỹ quản lý theo hợp đồng ủy thác đầu tư."] {
+  "dscr_ivsm_ivsr_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
 }
 
-Table "Fund Management Company Key Person" [note: "Nhân sự chủ chốt của công ty quản lý quỹ (giám đốc/chuyên gia đầu tư/người được ủy quyền). Lưu thông tin cá nhân và chứng chỉ hành nghề."] {
-  "Fund Management Company Key Person Id" varchar [pk]
-  "Fund Management Company Id" varchar
+Table "frgn_fnd_mgt_ou" [note: "Văn phòng đại diện hoặc chi nhánh của công ty quản lý quỹ nước ngoài tại Việt Nam được UBCKNN chấp thuận hoạt động."] {
+  "frgn_fnd_mgt_ou_id" varchar [pk]
 }
 
-Table "Fund Management Company Organization Unit" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
-  "Fund Management Company Organization Unit Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Parent Organization Unit Id" varchar
-  "Legal Representative Id" varchar
-  "Country of Registration Id" varchar
+Table "frgn_fnd_mgt_ou_stff" [note: "Nhân sự đảm nhận chức vụ tại văn phòng đại diện/chi nhánh công ty quản lý quỹ nước ngoài. Ghi nhận vai trò và tư cách pháp lý."] {
+  "frgn_fnd_mgt_ou_stff_id" varchar [pk]
+  "frgn_fnd_mgt_ou_id" varchar
+  "fnd_mgt_co_key_psn_id" varchar
 }
 
-Table "Fund Distribution Agent Organization Unit" [note: "Chi nhánh hoặc phòng giao dịch của tổ chức đại lý phân phối quỹ đầu tư."] {
-  "Fund Distribution Agent Organization Unit Id" varchar [pk]
-  "Fund Distribution Agent Id" varchar
+Table "fnd_dstr_agnt" [note: "Tổ chức đại lý được ủy quyền phân phối chứng chỉ quỹ đầu tư cho nhà đầu tư."] {
+  "fnd_dstr_agnt_id" varchar [pk]
 }
 
-Table "Discretionary Investment Account" [note: "Tài khoản đầu tư ủy thác — hợp đồng dịch vụ quản lý danh mục tài chính giữa nhà đầu tư ủy thác và công ty quản lý quỹ."] {
-  "Discretionary Investment Account Id" varchar [pk]
-  "Discretionary Investment Investor Id" varchar
+Table "fnd_dstr_agnt_ou" [note: "Chi nhánh hoặc phòng giao dịch của tổ chức đại lý phân phối quỹ đầu tư."] {
+  "fnd_dstr_agnt_ou_id" varchar [pk]
+  "fnd_dstr_agnt_id" varchar
 }
 
-Table "Member Rating" [note: "Kết quả xếp loại của một công ty quản lý quỹ trong một kỳ đánh giá. Ghi nhận điểm tổng hợp và hạng xếp loại."] {
-  "Member Rating Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Member Rating Period Id" varchar
+Table "fnd_mgt_co" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  "fnd_mgt_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
 }
 
-Table "Rating Criterion" [note: "Tiêu chí chấm điểm đánh giá xếp loại thành viên thị trường. Lưu tên tiêu chí và điểm tối đa/trọng số. Có cấu trúc cha/con."] {
-  "Rating Criterion Id" varchar [pk]
-  "Parent Rating Criterion Id" varchar
+Table "fnd_mgt_co_key_psn" [note: "Nhân sự chủ chốt của công ty quản lý quỹ (giám đốc/chuyên gia đầu tư/người được ủy quyền). Lưu thông tin cá nhân và chứng chỉ hành nghề."] {
+  "fnd_mgt_co_key_psn_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
 }
 
-Table "Investment Fund Investor Membership" [note: "Quan hệ thành viên của nhà đầu tư trong một quỹ đầu tư. Lưu tỷ lệ vốn góp và trạng thái tham gia."] {
-  "Investment Fund Investor Membership Id" varchar [pk]
-  "Investment Fund Id" varchar
-  "Discretionary Investment Investor Id" varchar
+Table "fnd_mgt_co_ou" [note: "Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng."] {
+  "fnd_mgt_co_ou_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "prn_ou_id" varchar
+  "lgl_rprs_id" varchar
+  "cty_of_rgst_id" varchar
 }
 
-Table "Investment Fund Representative Board Member" [note: "Thành viên ban đại diện hoặc hội đồng quản trị của quỹ đầu tư. Cá nhân đảm nhận vai trò quản trị trong cơ cấu tổ chức quỹ."] {
-  "Investment Fund Representative Board Member Id" varchar [pk]
-  "Investment Fund Id" varchar
-  "Fund Management Company Key Person Id" varchar
+Table "ivsm_fnd" [note: "Quỹ đầu tư chứng khoán — pháp nhân độc lập do công ty quản lý quỹ thành lập và quản lý. Lưu thông tin pháp lý và vốn của quỹ."] {
+  "ivsm_fnd_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
 }
 
-Table "Foreign Fund Management Organization Unit Staff" [note: "Nhân sự đảm nhận chức vụ tại văn phòng đại diện/chi nhánh công ty quản lý quỹ nước ngoài. Ghi nhận vai trò và tư cách pháp lý."] {
-  "Foreign Fund Management Organization Unit Staff Id" varchar [pk]
-  "Foreign Fund Management Organization Unit Id" varchar
-  "Fund Management Company Key Person Id" varchar
+Table "ivsm_fnd_ivsr_mbr" [note: "Quan hệ thành viên của nhà đầu tư trong một quỹ đầu tư. Lưu tỷ lệ vốn góp và trạng thái tham gia."] {
+  "ivsm_fnd_ivsr_mbr_id" varchar [pk]
+  "ivsm_fnd_id" varchar
+  "dscr_ivsm_ivsr_id" varchar
 }
 
-Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
-  "Member Periodic Report Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
-  "Custodian Bank Id" varchar
-  "Foreign Fund Management Organization Unit Id" varchar
-  "Report Template Id" varchar
-  "Reporting Period Id" varchar
-  "Securities Company Id" varchar
-  "Report Submission Schedule Id" varchar
+Table "ivsm_fnd_rprs_board_mbr" [note: "Thành viên ban đại diện hoặc hội đồng quản trị của quỹ đầu tư. Cá nhân đảm nhận vai trò quản trị trong cơ cấu tổ chức quỹ."] {
+  "ivsm_fnd_rprs_board_mbr_id" varchar [pk]
+  "ivsm_fnd_id" varchar
+  "fnd_mgt_co_key_psn_id" varchar
 }
 
-Table "Fund Management Company Share Transfer" [note: "Giao dịch chuyển nhượng cổ phần của công ty quản lý quỹ. Ghi nhận bên chuyển nhượng/nhận nhượng và giá trị giao dịch."] {
-  "Fund Management Company Share Transfer Id" varchar [pk]
-  "Fund Management Company Id" varchar
+Table "mbr_rtg" [note: "Kết quả xếp loại của một công ty quản lý quỹ trong một kỳ đánh giá. Ghi nhận điểm tổng hợp và hạng xếp loại."] {
+  "mbr_rtg_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "mbr_rtg_prd_id" varchar
 }
 
-Table "Fund Management Conduct Violation" [note: "Vi phạm pháp luật hoặc hành chính của công ty quản lý quỹ hoặc quỹ đầu tư. Ghi nhận loại vi phạm và trạng thái xử lý."] {
-  "Fund Management Conduct Violation Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
+Table "fnd_mgt_co_shr_tfr" [note: "Giao dịch chuyển nhượng cổ phần của công ty quản lý quỹ. Ghi nhận bên chuyển nhượng/nhận nhượng và giá trị giao dịch."] {
+  "fnd_mgt_co_shr_tfr_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
 }
 
-Table "Investment Fund Certificate Transfer" [note: "Giao dịch mua/bán chứng chỉ quỹ của nhà đầu tư thành viên. Ghi nhận số lượng và giá giao dịch theo từng quỹ."] {
-  "Investment Fund Investor Capital Transfer Id" varchar [pk]
-  "Investment Fund Id" varchar
-  "Investment Fund Investor Membership Id" varchar
+Table "ivsm_fnd_ctf_tfr" [note: "Giao dịch mua/bán chứng chỉ quỹ của nhà đầu tư thành viên. Ghi nhận số lượng và giá giao dịch theo từng quỹ."] {
+  "ivsm_fnd_ivsr_cptl_tfr_id" varchar [pk]
+  "ivsm_fnd_id" varchar
+  "ivsm_fnd_ivsr_mbr_id" varchar
 }
 
-Table "Investment Fund Investor Capital Change Log" [note: "Lịch sử thay đổi phần vốn góp của nhà đầu tư trong quỹ đầu tư. Ghi nhận vốn trước/sau và lý do thay đổi."] {
-  "Investment Fund Investor Capital Change Log Id" varchar [pk]
-  "Investment Fund Investor Membership Id" varchar
+Table "ip_alt_identn" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Member Periodic Report Status Log" [note: "Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt."] {
-  "Member Periodic Report History Id" varchar [pk]
-  "Member Periodic Report Id" varchar
-  "Changed By Officer Id" varchar
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
 }
 
-Table "Report Import Value" [note: "Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào hệ thống FMS. Grain ở mức cell-level."] {
-  "Member Report Value Id" varchar [pk]
-  "Member Periodic Report Id" varchar
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
-  "Custodian Bank Id" varchar
-  "Foreign Fund Management Organization Unit Id" varchar
-  "Reporting Period Id" varchar
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+  "prov_id" varchar
+  "geo_id" varchar
 }
 
 TableGroup "UID03 — Thông tin thành viên — Công ty QLQ" {
-  "Fund Management Company"
-  "Foreign Fund Management Organization Unit Staff"
+  "frgn_fnd_mgt_ou_stff"
+  "fnd_mgt_co"
 }
 
 TableGroup "UID04 — Quỹ đầu tư chứng khoán" {
-  "Fund Management Company"
-  "Investment Fund"
-  "Discretionary Investment Account"
-  "Investment Fund Investor Membership"
-  "Investment Fund Representative Board Member"
-  "Fund Management Company Share Transfer"
-  "Investment Fund Certificate Transfer"
-  "Investment Fund Investor Capital Change Log"
+  "dscr_ivsm_ac"
+  "ivsm_fnd_ivsr_cptl_chg_log"
+  "fnd_mgt_co"
+  "ivsm_fnd"
+  "ivsm_fnd_ivsr_mbr"
+  "ivsm_fnd_rprs_board_mbr"
+  "fnd_mgt_co_shr_tfr"
+  "ivsm_fnd_ctf_tfr"
 }
 
 TableGroup "UID05 — Quản lý báo cáo" {
-  "Reporting Period"
-  "Member Periodic Report"
-  "Member Periodic Report Status Log"
-  "Report Import Value"
+  "mbr_prd_rpt_st_log"
+  "mbr_prd_rpt"
+  "rpt_prd"
+  "rpt_impr_val"
 }
 
 TableGroup "UID06 — Đánh giá xếp loại và cảnh báo" {
-  "Member Rating Period"
-  "Member Rating"
-  "Rating Criterion"
+  "mbr_rtg_prd"
+  "rtg_criterion"
+  "mbr_rtg"
 }
 
 TableGroup "UID07 — Tiện ích và hệ thống" {
-  "Fund Management Conduct Violation"
+  "fnd_mgt_conduct_vln"
 }
 
-// Ref: "Fund Management Company"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Fund Management Company"."Fund Management Company Id"
-// Ref: "Involved Party Postal Address"."Province Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Involved Party Postal Address"."Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id"
-// Ref: "Custodian Bank"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Fund Distribution Agent"."Fund Distribution Agent Id"
-Ref: "Discretionary Investment Investor"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Discretionary Investment Investor"."Discretionary Investment Investor Id"
-// Ref: "Reporting Period"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
-Ref: "Investment Fund"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Fund Management Company Key Person"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id"
-Ref: "Fund Management Company Organization Unit"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Fund Management Company Organization Unit"."Parent Organization Unit Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Fund Management Company Organization Unit"."Legal Representative Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id"
-// Ref: "Fund Management Company Organization Unit"."Country of Registration Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Involved Party Electronic Address"."Involved Party Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Involved Party Alternative Identification"."Involved Party Id" > "Fund Management Company Organization Unit"."Fund Management Company Organization Unit Id"
-Ref: "Fund Distribution Agent Organization Unit"."Fund Distribution Agent Id" > "Fund Distribution Agent"."Fund Distribution Agent Id"
-Ref: "Involved Party Postal Address"."Involved Party Id" > "Fund Distribution Agent Organization Unit"."Fund Distribution Agent Organization Unit Id"
-Ref: "Discretionary Investment Account"."Discretionary Investment Investor Id" > "Discretionary Investment Investor"."Discretionary Investment Investor Id"
-Ref: "Member Rating"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Member Rating"."Member Rating Period Id" > "Member Rating Period"."Member Rating Period Id"
-Ref: "Rating Criterion"."Parent Rating Criterion Id" > "Rating Criterion"."Rating Criterion Id"
-Ref: "Investment Fund Investor Membership"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Investment Fund Investor Membership"."Discretionary Investment Investor Id" > "Discretionary Investment Investor"."Discretionary Investment Investor Id"
-Ref: "Investment Fund Representative Board Member"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Investment Fund Representative Board Member"."Fund Management Company Key Person Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id"
-Ref: "Foreign Fund Management Organization Unit Staff"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id"
-Ref: "Foreign Fund Management Organization Unit Staff"."Fund Management Company Key Person Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id"
-Ref: "Member Periodic Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Member Periodic Report"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Member Periodic Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Member Periodic Report"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id"
-// Ref: "Member Periodic Report"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
-Ref: "Member Periodic Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
-// Ref: "Member Periodic Report"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Member Periodic Report"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id" // out-of-source
-Ref: "Fund Management Company Share Transfer"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Fund Management Conduct Violation"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Fund Management Conduct Violation"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Investment Fund Certificate Transfer"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Investment Fund Certificate Transfer"."Investment Fund Investor Membership Id" > "Investment Fund Investor Membership"."Investment Fund Investor Membership Id"
-Ref: "Investment Fund Investor Capital Change Log"."Investment Fund Investor Membership Id" > "Investment Fund Investor Membership"."Investment Fund Investor Membership Id"
-Ref: "Member Periodic Report Status Log"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
-Ref: "Member Periodic Report Status Log"."Changed By Officer Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id"
-Ref: "Report Import Value"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
-Ref: "Report Import Value"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id"
-Ref: "Report Import Value"."Investment Fund Id" > "Investment Fund"."Investment Fund Id"
-Ref: "Report Import Value"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id"
-Ref: "Report Import Value"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id"
-Ref: "Report Import Value"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
+Ref: "dscr_ivsm_ac"."dscr_ivsm_ivsr_id" > "dscr_ivsm_ivsr"."dscr_ivsm_ivsr_id"
+Ref: "fnd_mgt_conduct_vln"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "fnd_mgt_conduct_vln"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "ivsm_fnd_ivsr_cptl_chg_log"."ivsm_fnd_ivsr_mbr_id" > "ivsm_fnd_ivsr_mbr"."ivsm_fnd_ivsr_mbr_id"
+Ref: "mbr_prd_rpt_st_log"."mbr_prd_rpt_id" > "mbr_prd_rpt"."mbr_prd_rpt_id"
+Ref: "mbr_prd_rpt_st_log"."changed_by_ofcr_id" > "fnd_mgt_co_key_psn"."fnd_mgt_co_key_psn_id"
+Ref: "mbr_prd_rpt"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "mbr_prd_rpt"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "mbr_prd_rpt"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "mbr_prd_rpt"."frgn_fnd_mgt_ou_id" > "frgn_fnd_mgt_ou"."frgn_fnd_mgt_ou_id"
+// Ref: "mbr_prd_rpt"."rpt_tpl_id" > ""."" // out-of-source
+Ref: "mbr_prd_rpt"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
+// Ref: "mbr_prd_rpt"."scr_co_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."rpt_subm_shd_id" > ""."" // out-of-source
+Ref: "rtg_criterion"."prn_rtg_criterion_id" > "rtg_criterion"."rtg_criterion_id"
+// Ref: "rpt_prd"."rpt_tpl_id" > ""."" // out-of-source
+Ref: "rpt_impr_val"."mbr_prd_rpt_id" > "mbr_prd_rpt"."mbr_prd_rpt_id"
+Ref: "rpt_impr_val"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "rpt_impr_val"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "rpt_impr_val"."cstd_bnk_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "rpt_impr_val"."frgn_fnd_mgt_ou_id" > "frgn_fnd_mgt_ou"."frgn_fnd_mgt_ou_id"
+Ref: "rpt_impr_val"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
+// Ref: "cstd_bnk"."cty_of_rgst_id" > ""."" // out-of-source
+Ref: "dscr_ivsm_ivsr"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "frgn_fnd_mgt_ou_stff"."frgn_fnd_mgt_ou_id" > "frgn_fnd_mgt_ou"."frgn_fnd_mgt_ou_id"
+Ref: "frgn_fnd_mgt_ou_stff"."fnd_mgt_co_key_psn_id" > "fnd_mgt_co_key_psn"."fnd_mgt_co_key_psn_id"
+Ref: "fnd_dstr_agnt_ou"."fnd_dstr_agnt_id" > "fnd_dstr_agnt"."fnd_dstr_agnt_id"
+// Ref: "fnd_mgt_co"."cty_of_rgst_id" > ""."" // out-of-source
+Ref: "fnd_mgt_co_key_psn"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "fnd_mgt_co_ou"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "fnd_mgt_co_ou"."prn_ou_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "fnd_mgt_co_ou"."lgl_rprs_id" > "fnd_mgt_co_key_psn"."fnd_mgt_co_key_psn_id"
+// Ref: "fnd_mgt_co_ou"."cty_of_rgst_id" > ""."" // out-of-source
+Ref: "ivsm_fnd"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ivsm_fnd_ivsr_mbr"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "ivsm_fnd_ivsr_mbr"."dscr_ivsm_ivsr_id" > "dscr_ivsm_ivsr"."dscr_ivsm_ivsr_id"
+Ref: "ivsm_fnd_rprs_board_mbr"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "ivsm_fnd_rprs_board_mbr"."fnd_mgt_co_key_psn_id" > "fnd_mgt_co_key_psn"."fnd_mgt_co_key_psn_id"
+Ref: "mbr_rtg"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "mbr_rtg"."mbr_rtg_prd_id" > "mbr_rtg_prd"."mbr_rtg_prd_id"
+Ref: "fnd_mgt_co_shr_tfr"."fnd_mgt_co_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ivsm_fnd_ctf_tfr"."ivsm_fnd_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "ivsm_fnd_ctf_tfr"."ivsm_fnd_ivsr_mbr_id" > "ivsm_fnd_ivsr_mbr"."ivsm_fnd_ivsr_mbr_id"
+Ref: "ip_alt_identn"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ip_alt_identn"."ip_id" > "frgn_fnd_mgt_ou"."frgn_fnd_mgt_ou_id"
+Ref: "ip_alt_identn"."ip_id" > "dscr_ivsm_ivsr"."dscr_ivsm_ivsr_id"
+Ref: "ip_alt_identn"."ip_id" > "ivsm_fnd"."ivsm_fnd_id"
+Ref: "ip_alt_identn"."ip_id" > "fnd_mgt_co_key_psn"."fnd_mgt_co_key_psn_id"
+Ref: "ip_alt_identn"."ip_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "ip_elc_adr"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ip_elc_adr"."ip_id" > "frgn_fnd_mgt_ou"."frgn_fnd_mgt_ou_id"
+Ref: "ip_elc_adr"."ip_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "ip_elc_adr"."ip_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "ip_pst_adr"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+// Ref: "ip_pst_adr"."prov_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."geo_id" > ""."" // out-of-source
+Ref: "ip_pst_adr"."ip_id" > "frgn_fnd_mgt_ou"."frgn_fnd_mgt_ou_id"
+Ref: "ip_pst_adr"."ip_id" > "cstd_bnk"."cstd_bnk_id"
+Ref: "ip_pst_adr"."ip_id" > "fnd_dstr_agnt"."fnd_dstr_agnt_id"
+Ref: "ip_pst_adr"."ip_id" > "fnd_mgt_co_ou"."fnd_mgt_co_ou_id"
+Ref: "ip_pst_adr"."ip_id" > "fnd_dstr_agnt_ou"."fnd_dstr_agnt_ou_id"

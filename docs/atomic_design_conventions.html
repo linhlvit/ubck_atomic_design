@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>atomic_design_conventions.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="quy-ước-thiết-kế-atomic-layer">Quy ước thiết kế Atomic Layer</h1>
+<h2 id="1-các-loại-bảng-table-type-trên-atomic">1. Các loại bảng (Table Type) trên Atomic</h2>
+<p>Atomic layer có 5 loại bảng, phân biệt theo bản chất nghiệp vụ và chiến lược ETL:</p>
+<table>
+<thead>
+<tr>
+<th>Table Type</th>
+<th>Khi nào dùng</th>
+<th>ETL Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Fundamental</code></td>
+<td>Entity độc lập, có lifecycle riêng. Không có FK đến entity nghiệp vụ khác (chỉ có FK đến bảng danh mục).</td>
+<td>SCD4A</td>
+</tr>
+<tr>
+<td><code>Relative</code></td>
+<td>Entity phụ thuộc Fundamental — mô tả trạng thái hoặc thuộc tính bổ sung của entity cha. Có FK đến Fundamental.</td>
+<td>SCD2</td>
+</tr>
+<tr>
+<td><code>Fact Append</code></td>
+<td>Log hoạt động, giao dịch, sự kiện. Grain = 1 event/occurrence. Mỗi dòng là 1 sự kiện xảy ra — không xóa, không sửa.</td>
+<td>Insert-only, append</td>
+</tr>
+<tr>
+<td><code>Fact Snapshot</code></td>
+<td>Chụp trạng thái tại 1 thời điểm/kỳ. Grain = 1 trạng thái tại 1 thời điểm. Cùng business key có thể có nhiều dòng qua các kỳ khác nhau.</td>
+<td>Insert-only theo partition ngày/kỳ, giữ lịch sử</td>
+</tr>
+<tr>
+<td><code>Classification</code></td>
+<td>Danh mục phân loại — lấy từ nguồn hoặc tự định nghĩa. Mặc định cho tất cả entity có <code>bcv_core_object = Common</code>.</td>
+<td>SCD1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phân-biệt-fact-append-và-fact-snapshot">Phân biệt Fact Append và Fact Snapshot</h3>
+<table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>Fact Append</th>
+<th>Fact Snapshot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grain</td>
+<td>1 event/occurrence</td>
+<td>1 trạng thái tại 1 thời điểm/kỳ</td>
+</tr>
+<tr>
+<td>Ví dụ</td>
+<td>Tick khớp lệnh, log thay đổi trạng thái</td>
+<td>Bảng giá cuối ngày, danh mục theo kỳ</td>
+</tr>
+<tr>
+<td>Nhiều dòng cùng business key?</td>
+<td>Có (mỗi lần xảy ra là 1 dòng mới)</td>
+<td>Có (mỗi kỳ chụp là 1 dòng mới)</td>
+</tr>
+<tr>
+<td>Overwrite dòng cũ?</td>
+<td>Không</td>
+<td>Không</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dấu-hiệu-nhận-biết-nhanh">Dấu hiệu nhận biết nhanh</h3>
+<table>
+<thead>
+<tr>
+<th>Dấu hiệu</th>
+<th>Table Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tên entity chứa &quot;Activity Log&quot;, &quot;Status Log&quot;, &quot;Status History&quot;</td>
+<td><code>Fact Append</code></td>
+</tr>
+<tr>
+<td><code>bcv_core_object = Transaction</code></td>
+<td><code>Fact Append</code></td>
+</tr>
+<tr>
+<td>Tên entity chứa &quot;Snapshot&quot;</td>
+<td><code>Fact Snapshot</code></td>
+</tr>
+<tr>
+<td><code>bcv_core_object = Common</code></td>
+<td><code>Classification</code></td>
+</tr>
+<tr>
+<td>Không có FK đến entity nghiệp vụ khác; không thuộc các trường hợp trên</td>
+<td><code>Fundamental</code></td>
+</tr>
+<tr>
+<td>Có FK đến Fundamental; không thuộc các trường hợp trên</td>
+<td><code>Relative</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-technical-fields-trên-atomic">2. Technical Fields trên Atomic</h2>
+<p>Tất cả technical field trên Atomic có prefix <code>ds_</code> để phân biệt với trường nghiệp vụ. ETL framework tự động thêm vào khi load — <strong>không thiết kế trong file LLD</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Technical Field</th>
+<th>Data Domain</th>
+<th>Nullable</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ds_record_status</code></td>
+<td>Classification Value</td>
+<td>false</td>
+<td>Trạng thái bản ghi trên Atomic (ACTIVE / INACTIVE). Được ETL quản lý — khác với <code>RECORD.STATUS</code> T24 (chỉ dữ liệu <code>LIVE</code> từ T24 mới được load lên Atomic).</td>
+</tr>
+<tr>
+<td><code>ds_source_system_code</code></td>
+<td>Classification Value</td>
+<td>false</td>
+<td>Mã hệ thống nguồn. Ghi đến mức bảng nguồn: ví dụ <code>DCST.THONG_TIN_DK_THUE</code>, không chỉ <code>DCST</code>.</td>
+</tr>
+<tr>
+<td><code>ds_insert_datetime</code></td>
+<td>Timestamp</td>
+<td>false</td>
+<td>Thời điểm ETL insert bản ghi vào Atomic lần đầu.</td>
+</tr>
+<tr>
+<td><code>ds_update_datetime</code></td>
+<td>Timestamp</td>
+<td>false</td>
+<td>Thời điểm ETL cập nhật bản ghi gần nhất.</td>
+</tr>
+<tr>
+<td><code>ds_batch_id</code></td>
+<td>Text</td>
+<td>false</td>
+<td>ID của batch ETL tạo ra bản ghi — dùng để trace lineage và debug.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quy-tắc-liên-quan">Quy tắc liên quan</h3>
+<ul>
+<li><strong>Không</strong> đặt tên trường nghiệp vụ với prefix <code>ds_</code>.</li>
+<li>Trường metadata truyền nhận từ nguồn (ví dụ: <code>GOI_TIN_ID</code>) là trường nghiệp vụ bình thường — không đưa vào nhóm <code>ds_</code>.</li>
+<li>File LLD (<code>attr_*.csv</code>) <strong>không</strong> bao gồm technical fields — chỉ thiết kế attribute nghiệp vụ.</li>
+</ul>
+<hr>
+<h2 id="3-data-domain-trên-atomic">3. Data Domain trên Atomic</h2>
+<p>Mỗi attribute Atomic phải dùng đúng 1 Data Domain trong danh sách chuẩn dưới đây. Data Domain phản ánh <strong>ý nghĩa nghiệp vụ</strong> của attribute — không ép theo data type nguồn.</p>
+<h3 id="31-12-data-domain-chuẩn">3.1 12 Data Domain chuẩn</h3>
+<table>
+<thead>
+<tr>
+<th>Data Domain</th>
+<th>Dùng cho</th>
+<th>Physical Data Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Text</code></td>
+<td>Chuỗi ký tự thông thường</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td>Ngày (không có giờ)</td>
+<td><code>date</code></td>
+</tr>
+<tr>
+<td><code>Timestamp</code></td>
+<td>Ngày + giờ</td>
+<td><code>timestamp</code></td>
+</tr>
+<tr>
+<td><code>Currency Amount</code></td>
+<td>Giá trị tiền tệ</td>
+<td><code>decimal(23,2)</code></td>
+</tr>
+<tr>
+<td><code>Interest Rate</code></td>
+<td>Lãi suất</td>
+<td><code>decimal(8,5)</code></td>
+</tr>
+<tr>
+<td><code>Exchange Rate</code></td>
+<td>Tỷ giá</td>
+<td><code>decimal(12,7)</code></td>
+</tr>
+<tr>
+<td><code>Percentage</code></td>
+<td>Phần trăm (không phải lãi suất)</td>
+<td><code>decimal(5,2)</code></td>
+</tr>
+<tr>
+<td><code>Surrogate Key</code></td>
+<td>Khóa đại diện — FK đến Id của entity</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td><code>Classification Value</code></td>
+<td>Mã phân loại — FK đến Classification Value hoặc Currency</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td><code>Indicator</code></td>
+<td>Cờ đánh dấu — bản thân giá trị đã mang ý nghĩa tường minh</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td><code>Boolean</code></td>
+<td>Giá trị True / False</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td><code>Small Counter</code></td>
+<td>Số đếm nhỏ, version number</td>
+<td><code>int</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-data-domain-mở-rộng--junction-denormalized">3.2 Data Domain mở rộng — Junction denormalized</h3>
+<p>Dùng khi HLD quyết định denormalize bảng junction thành ARRAY trên entity cha.</p>
+<table>
+<thead>
+<tr>
+<th>Data Domain</th>
+<th>Dùng cho</th>
+<th>Physical Data Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Array&lt;Text&gt;</code></td>
+<td>Mảng chuỗi — junction chỉ chứa code hoặc text</td>
+<td><code>array&lt;string&gt;</code></td>
+</tr>
+<tr>
+<td><code>Array&lt;Struct&gt;</code></td>
+<td>Mảng struct — junction chứa cặp Id + Code. Ghi schema struct vào comment: <code>Struct: {field1: Domain1; field2: Domain2}</code></td>
+<td><code>array&lt;struct&lt;...&gt;&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-quy-tắc-chọn-data-domain">3.3 Quy tắc chọn Data Domain</h3>
+<p><strong>Bước 1 — Chọn theo ý nghĩa nghiệp vụ (ưu tiên ngữ nghĩa, không ép theo data type nguồn):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Ý nghĩa attribute</th>
+<th>Data Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Giá trị tiền tệ</td>
+<td><code>Currency Amount</code> — dù nguồn lưu <code>varchar</code></td>
+</tr>
+<tr>
+<td>Lãi suất</td>
+<td><code>Interest Rate</code></td>
+</tr>
+<tr>
+<td>Tỷ giá</td>
+<td><code>Exchange Rate</code></td>
+</tr>
+<tr>
+<td>Phần trăm (không phải lãi suất)</td>
+<td><code>Percentage</code></td>
+</tr>
+<tr>
+<td>Ngày không có giờ</td>
+<td><code>Date</code></td>
+</tr>
+<tr>
+<td>Ngày có giờ</td>
+<td><code>Timestamp</code></td>
+</tr>
+<tr>
+<td>Cờ True/False</td>
+<td><code>Boolean</code></td>
+</tr>
+<tr>
+<td>Số đếm, version</td>
+<td><code>Small Counter</code></td>
+</tr>
+<tr>
+<td>Mã phân loại (danh mục)</td>
+<td><code>Classification Value</code></td>
+</tr>
+<tr>
+<td>FK surrogate</td>
+<td><code>Surrogate Key</code></td>
+</tr>
+<tr>
+<td>Không thuộc các loại trên</td>
+<td><code>Text</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bước 2 — Ghi nhận conversion risk</strong> (không thay đổi domain đã chọn):</p>
+<table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Hành động</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data type nguồn khớp tự nhiên với domain (ví dụ: <code>date</code> → <code>Date</code>, <code>decimal</code> → <code>Currency Amount</code>)</td>
+<td>Không cần ghi chú thêm</td>
+</tr>
+<tr>
+<td>Nguồn lưu <code>string</code>/<code>varchar</code> nhưng domain là số (<code>Small Counter</code>, <code>Currency Amount</code>...)</td>
+<td>Ghi vào comment: <code>&quot;Nguồn lưu dạng string — ETL cần cast/parse sang [data type vật lý]. Cần validate không có giá trị non-numeric.&quot;</code></td>
+</tr>
+<tr>
+<td>Nguồn lưu số (<code>int</code>, <code>decimal</code>) nhưng domain là <code>Text</code> hoặc <code>Classification Value</code></td>
+<td>Ghi vào comment: <code>&quot;Nguồn lưu dạng số — ETL cần convert sang string. Giữ nguyên leading zeros nếu có.&quot;</code></td>
+</tr>
+<tr>
+<td>Data type nguồn không khai báo trong Columns.csv</td>
+<td>Ghi vào comment: <code>&quot;Data type nguồn không rõ — cần profile trước khi ETL. Domain tạm chọn dựa trên mô tả cột.&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Đề xuất Data Domain mới:</strong> Nếu ý nghĩa nghiệp vụ không ánh xạ được vào bất kỳ domain hiện có → đề xuất kèm định nghĩa và data type vật lý dự kiến, ghi vào comment với tag <code>[PROPOSE NEW DOMAIN]</code>.</p>
+<h3 id="34-lưu-ý-đặc-biệt">3.4 Lưu ý đặc biệt</h3>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Lưu ý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Currency Amount</code></td>
+<td>Không viết tắt thành &quot;Amount&quot; trong tên attribute</td>
+</tr>
+<tr>
+<td><code>Classification Value</code></td>
+<td>Chỉ 1 trường Code — <strong>không</strong> tạo cặp Id + Code (khác với FK đến Fundamental entity)</td>
+</tr>
+<tr>
+<td><code>Surrogate Key</code></td>
+<td>Luôn đi kèm với trường Code tương ứng (Text) — xem Pattern Id + Code</td>
+</tr>
+<tr>
+<td><code>Indicator</code></td>
+<td>Khác <code>Boolean</code> — Indicator có giá trị tường minh (ví dụ: <code>'Y'</code>/<code>'N'</code>, <code>'BUY'</code>/<code>'SELL'</code>), không nhất thiết là True/False</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>

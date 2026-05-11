@@ -5,37 +5,37 @@ Project NHNCK_UID06 {
   Note: "NHNCK — UID06 Quản lý người hành nghề chứng khoán"
 }
 
-Table "Securities Practitioner" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
-  "Practitioner Id" varchar [pk]
-  "Country of Residence Geographic Area Id" varchar
-  "Securities Company Id" varchar
+Table "scr_prac_conduct_vln" [note: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán. Ghi nhận loại vi phạm và quyết định xử lý."] {
+  "conduct_vln_id" varchar [pk]
+  "prac_id" varchar
+  "license_dcsn_doc_id" varchar
+  "crt_by_ofcr_id" varchar
+  "udt_by_ofcr_id" varchar
 }
 
-Table "Securities Practitioner Related Party" [note: "Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ và thông tin người liên quan."] {
-  "Securities Practitioner Related Party Id" varchar [pk]
-  "Practitioner Id" varchar
+Table "scr_org_refr" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
+  "scr_org_refr_id" varchar [pk]
+  "prn_org_id" varchar
+  "crt_by_ofcr_id" varchar
 }
 
-Table "Securities Practitioner Conduct Violation" [note: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán. Ghi nhận loại vi phạm và quyết định xử lý."] {
-  "Conduct Violation Id" varchar [pk]
-  "Practitioner Id" varchar
-  "License Decision Document Id" varchar
-  "Created By Officer Id" varchar
-  "Updated By Officer Id" varchar
+Table "scr_prac" [note: "Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full"] {
+  "prac_id" varchar [pk]
+  "cty_of_rsdnc_geo_id" varchar
+  "scr_co_id" varchar
 }
 
-Table "Securities Organization Reference" [note: "Tổ chức tham gia thị trường chứng khoán (CTCK/QLQ/NH) được UBCKNN quản lý. Danh mục tổ chức tham chiếu trong hệ thống NHNCK."] {
-  "Securities Organization Reference Id" varchar [pk]
-  "Parent Organization Id" varchar
-  "Created By Officer Id" varchar
+Table "scr_prac_rel_p" [note: "Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ và thông tin người liên quan."] {
+  "scr_prac_rel_p_id" varchar [pk]
+  "prac_id" varchar
 }
 
-// Ref: "Securities Practitioner"."Country of Residence Geographic Area Id" > "Geographic Area"."Geographic Area Id" // out-of-source
-// Ref: "Securities Practitioner"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-Ref: "Securities Practitioner Related Party"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
-Ref: "Securities Practitioner Conduct Violation"."Practitioner Id" > "Securities Practitioner"."Practitioner Id"
-// Ref: "Securities Practitioner Conduct Violation"."License Decision Document Id" > "Securities Practitioner License Decision Document"."License Decision Document Id" // out-of-source
-// Ref: "Securities Practitioner Conduct Violation"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
-// Ref: "Securities Practitioner Conduct Violation"."Updated By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
-Ref: "Securities Organization Reference"."Parent Organization Id" > "Securities Organization Reference"."Securities Organization Reference Id"
-// Ref: "Securities Organization Reference"."Created By Officer Id" > "Regulatory Authority Officer"."Officer Id" // out-of-source
+Ref: "scr_prac_conduct_vln"."prac_id" > "scr_prac"."prac_id"
+// Ref: "scr_prac_conduct_vln"."license_dcsn_doc_id" > ""."" // out-of-source
+// Ref: "scr_prac_conduct_vln"."crt_by_ofcr_id" > ""."" // out-of-source
+// Ref: "scr_prac_conduct_vln"."udt_by_ofcr_id" > ""."" // out-of-source
+Ref: "scr_org_refr"."prn_org_id" > "scr_org_refr"."scr_org_refr_id"
+// Ref: "scr_org_refr"."crt_by_ofcr_id" > ""."" // out-of-source
+// Ref: "scr_prac"."cty_of_rsdnc_geo_id" > ""."" // out-of-source
+// Ref: "scr_prac"."scr_co_id" > ""."" // out-of-source
+Ref: "scr_prac_rel_p"."prac_id" > "scr_prac"."prac_id"

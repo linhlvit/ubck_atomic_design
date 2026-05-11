@@ -5,27 +5,27 @@ Project ThanhTra_UID05 {
   Note: "ThanhTra — UID05 Phòng chống rửa tiền, tài trợ khủng bố"
 }
 
-Table "AML Enforcement Case" [note: "Hồ sơ xử lý vi phạm phòng chống rửa tiền. Ghi nhận đối tượng vi phạm và trạng thái xử lý."] {
-  "AML Enforcement Case Id" varchar [pk]
-  "Responsible Officer Id" varchar
-  "Processing Officer Id" varchar
+Table "aml_nfrc_case" [note: "Hồ sơ xử lý vi phạm phòng chống rửa tiền. Ghi nhận đối tượng vi phạm và trạng thái xử lý."] {
+  "aml_nfrc_case_id" varchar [pk]
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
 }
 
-Table "AML Periodic Report" [note: "Báo cáo định kỳ về hoạt động phòng chống rửa tiền. Mỗi dòng = 1 lần lập báo cáo."] {
-  "AML Periodic Report Id" varchar [pk]
+Table "aml_nfrc_dcsn" [note: "Văn bản xử lý vi phạm rửa tiền. FK → AML Enforcement Case."] {
+  "aml_nfrc_dcsn_id" varchar [pk]
+  "aml_nfrc_case_id" varchar
 }
 
-Table "AML Case Document Attachment" [note: "Văn bản đính kèm hồ sơ PCRT. FK → AML Enforcement Case."] {
-  "AML Case Document Attachment Id" varchar [pk]
-  "AML Enforcement Case Id" varchar
+Table "aml_prd_rpt" [note: "Báo cáo định kỳ về hoạt động phòng chống rửa tiền. Mỗi dòng = 1 lần lập báo cáo."] {
+  "aml_prd_rpt_id" varchar [pk]
 }
 
-Table "AML Enforcement Decision" [note: "Văn bản xử lý vi phạm rửa tiền. FK → AML Enforcement Case."] {
-  "AML Enforcement Decision Id" varchar [pk]
-  "AML Enforcement Case Id" varchar
+Table "aml_case_doc_attch" [note: "Văn bản đính kèm hồ sơ PCRT. FK → AML Enforcement Case."] {
+  "aml_case_doc_attch_id" varchar [pk]
+  "aml_nfrc_case_id" varchar
 }
 
-// Ref: "AML Enforcement Case"."Responsible Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-// Ref: "AML Enforcement Case"."Processing Officer Id" > "Inspection Officer"."Inspection Officer Id" // out-of-source
-Ref: "AML Case Document Attachment"."AML Enforcement Case Id" > "AML Enforcement Case"."AML Enforcement Case Id"
-Ref: "AML Enforcement Decision"."AML Enforcement Case Id" > "AML Enforcement Case"."AML Enforcement Case Id"
+// Ref: "aml_nfrc_case"."rspl_ofcr_id" > ""."" // out-of-source
+// Ref: "aml_nfrc_case"."pcs_ofcr_id" > ""."" // out-of-source
+Ref: "aml_nfrc_dcsn"."aml_nfrc_case_id" > "aml_nfrc_case"."aml_nfrc_case_id"
+Ref: "aml_case_doc_attch"."aml_nfrc_case_id" > "aml_nfrc_case"."aml_nfrc_case_id"

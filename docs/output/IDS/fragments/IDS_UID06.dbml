@@ -5,35 +5,43 @@ Project IDS_UID06 {
   Note: "IDS — UID06 Báo cáo tài chính và báo cáo định kỳ"
 }
 
-Table "Financial Report Catalog" [note: "Danh mục báo cáo tài chính — loại báo cáo/năm/scope hợp nhất/loại hình doanh nghiệp. Master entity FK từ Financial Report Row/Column Template."] {
-  "Financial Report Catalog Id" varchar [pk]
+Table "fnc_rpt_ctlg" [note: "Danh mục báo cáo tài chính — loại báo cáo/năm/scope hợp nhất/loại hình doanh nghiệp. Master entity FK từ Financial Report Row/Column Template."] {
+  "fnc_rpt_ctlg_id" varchar [pk]
 }
 
-Table "Financial Report Row Template" [note: "Định nghĩa hàng trong biểu mẫu BCTC — mã hàng/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
-  "Financial Report Row Template Id" varchar [pk]
-  "Financial Report Catalog Id" varchar
+Table "fnc_rpt_clmn_tpl" [note: "Định nghĩa cột trong biểu mẫu BCTC — mã cột/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
+  "fnc_rpt_clmn_tpl_id" varchar [pk]
+  "fnc_rpt_ctlg_id" varchar
 }
 
-Table "Financial Report Column Template" [note: "Định nghĩa cột trong biểu mẫu BCTC — mã cột/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
-  "Financial Report Column Template Id" varchar [pk]
-  "Financial Report Catalog Id" varchar
+Table "fnc_rpt_row_tpl" [note: "Định nghĩa hàng trong biểu mẫu BCTC — mã hàng/tên/công thức/thứ tự. FK to Financial Report Catalog."] {
+  "fnc_rpt_row_tpl_id" varchar [pk]
+  "fnc_rpt_ctlg_id" varchar
 }
 
-Table "Periodic Report Form" [note: "Biểu mẫu báo cáo định kỳ (thường niên/quý/tháng) cho CBTT. Master entity FK từ Periodic Report Form Row/Column Template."] {
-  "Periodic Report Form Id" varchar [pk]
+Table "prd_rpt_form" [note: "Biểu mẫu báo cáo định kỳ (thường niên/quý/tháng) cho CBTT. Master entity FK từ Periodic Report Form Row/Column Template."] {
+  "prd_rpt_form_id" varchar [pk]
 }
 
-Table "Periodic Report Form Row Template" [note: "Định nghĩa hàng trong biểu mẫu báo cáo định kỳ — tên/thứ tự/kiểu dữ liệu. FK to Periodic Report Form."] {
-  "Periodic Report Form Row Template Id" varchar [pk]
-  "Periodic Report Form Id" varchar
+Table "prd_rpt_form_clmn_tpl" [note: "Định nghĩa cột trong biểu mẫu báo cáo định kỳ — tên/thứ tự/công thức. FK to Periodic Report Form."] {
+  "prd_rpt_form_clmn_tpl_id" varchar [pk]
+  "prd_rpt_form_id" varchar
 }
 
-Table "Periodic Report Form Column Template" [note: "Định nghĩa cột trong biểu mẫu báo cáo định kỳ — tên/thứ tự/công thức. FK to Periodic Report Form."] {
-  "Periodic Report Form Column Template Id" varchar [pk]
-  "Periodic Report Form Id" varchar
+Table "prd_rpt_form_row_tpl" [note: "Định nghĩa hàng trong biểu mẫu báo cáo định kỳ — tên/thứ tự/kiểu dữ liệu. FK to Periodic Report Form."] {
+  "prd_rpt_form_row_tpl_id" varchar [pk]
+  "prd_rpt_form_id" varchar
 }
 
-Ref: "Financial Report Row Template"."Financial Report Catalog Id" > "Financial Report Catalog"."Financial Report Catalog Id"
-Ref: "Financial Report Column Template"."Financial Report Catalog Id" > "Financial Report Catalog"."Financial Report Catalog Id"
-Ref: "Periodic Report Form Row Template"."Periodic Report Form Id" > "Periodic Report Form"."Periodic Report Form Id"
-Ref: "Periodic Report Form Column Template"."Periodic Report Form Id" > "Periodic Report Form"."Periodic Report Form Id"
+Table "pblc_co_fnc_rpt_val" [note: "Giá trị từng ô BCTC trong một lần nộp báo cáo đã duyệt. Grain: 1 dòng = 1 ô (lần nộp × biểu mẫu × hàng × cột). FK to Public Company Report Submission và Financial Report Catalog."] {
+  "pblc_co_fnc_rpt_val_id" varchar [pk]
+  "pblc_co_rpt_subm_id" varchar
+  "fnc_rpt_ctlg_id" varchar
+}
+
+Ref: "fnc_rpt_clmn_tpl"."fnc_rpt_ctlg_id" > "fnc_rpt_ctlg"."fnc_rpt_ctlg_id"
+Ref: "fnc_rpt_row_tpl"."fnc_rpt_ctlg_id" > "fnc_rpt_ctlg"."fnc_rpt_ctlg_id"
+Ref: "prd_rpt_form_clmn_tpl"."prd_rpt_form_id" > "prd_rpt_form"."prd_rpt_form_id"
+Ref: "prd_rpt_form_row_tpl"."prd_rpt_form_id" > "prd_rpt_form"."prd_rpt_form_id"
+// Ref: "pblc_co_fnc_rpt_val"."pblc_co_rpt_subm_id" > ""."" // out-of-source
+Ref: "pblc_co_fnc_rpt_val"."fnc_rpt_ctlg_id" > "fnc_rpt_ctlg"."fnc_rpt_ctlg_id"

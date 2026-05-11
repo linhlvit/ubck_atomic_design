@@ -1,0 +1,19 @@
+// MDDS — UID02 Bảng giá chứng khoán và khớp lệnh
+
+Project MDDS_UID02 {
+  database_type: "Delta Lake"
+  Note: "MDDS — UID02 Bảng giá chứng khoán và khớp lệnh"
+}
+
+Table "scr_mtch_log" [note: "Log tick-by-tick từng lần khớp lệnh chứng khoán theo thứ tự sequenceMsg. Grain: 1 dòng = 1 lần khớp (symbol × ngày × sequenceMsg). Insert-only. Chứa chiều giao dịch chủ động (lastColor) và tích lũy KL"] {
+  "scr_mtch_log_id" varchar [pk]
+  "scr_tdg_snpst_id" varchar
+}
+
+Table "scr_tdg_snpst" [note: "Snapshot trạng thái giao dịch đa loại chứng khoán (cổ phiếu/CCQ/chứng quyền/phái sinh) tại thời điểm có thay đổi lệnh/khớp lệnh: giá tham chiếu/trần/sàn"] {
+  "scr_tdg_snpst_id" varchar [pk]
+  "ulyg_imt_id" varchar
+}
+
+Ref: "scr_mtch_log"."scr_tdg_snpst_id" > "scr_tdg_snpst"."scr_tdg_snpst_id"
+Ref: "scr_tdg_snpst"."ulyg_imt_id" > "scr_tdg_snpst"."scr_tdg_snpst_id"

@@ -5,53 +5,53 @@ Project FMS_UID05 {
   Note: "FMS — UID05 Quản lý báo cáo"
 }
 
-Table "Reporting Period" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
-  "Reporting Period Id" varchar [pk]
-  "Report Template Id" varchar
+Table "mbr_prd_rpt_st_log" [note: "Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt."] {
+  "mbr_prd_rpt_hist_id" varchar [pk]
+  "mbr_prd_rpt_id" varchar
+  "changed_by_ofcr_id" varchar
 }
 
-Table "Member Periodic Report" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
-  "Member Periodic Report Id" varchar [pk]
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
-  "Custodian Bank Id" varchar
-  "Foreign Fund Management Organization Unit Id" varchar
-  "Report Template Id" varchar
-  "Reporting Period Id" varchar
-  "Securities Company Id" varchar
-  "Report Submission Schedule Id" varchar
+Table "mbr_prd_rpt" [note: "Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn."] {
+  "mbr_prd_rpt_id" varchar [pk]
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
+  "cstd_bnk_id" varchar
+  "frgn_fnd_mgt_ou_id" varchar
+  "rpt_tpl_id" varchar
+  "rpt_prd_id" varchar
+  "scr_co_id" varchar
+  "rpt_subm_shd_id" varchar
 }
 
-Table "Member Periodic Report Status Log" [note: "Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt."] {
-  "Member Periodic Report History Id" varchar [pk]
-  "Member Periodic Report Id" varchar
-  "Changed By Officer Id" varchar
+Table "rpt_prd" [note: "Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN."] {
+  "rpt_prd_id" varchar [pk]
+  "rpt_tpl_id" varchar
 }
 
-Table "Report Import Value" [note: "Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào hệ thống FMS. Grain ở mức cell-level."] {
-  "Member Report Value Id" varchar [pk]
-  "Member Periodic Report Id" varchar
-  "Fund Management Company Id" varchar
-  "Investment Fund Id" varchar
-  "Custodian Bank Id" varchar
-  "Foreign Fund Management Organization Unit Id" varchar
-  "Reporting Period Id" varchar
+Table "rpt_impr_val" [note: "Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào hệ thống FMS. Grain ở mức cell-level."] {
+  "mbr_rpt_val_id" varchar [pk]
+  "mbr_prd_rpt_id" varchar
+  "fnd_mgt_co_id" varchar
+  "ivsm_fnd_id" varchar
+  "cstd_bnk_id" varchar
+  "frgn_fnd_mgt_ou_id" varchar
+  "rpt_prd_id" varchar
 }
 
-// Ref: "Reporting Period"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
-// Ref: "Member Periodic Report"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Member Periodic Report"."Investment Fund Id" > "Investment Fund"."Investment Fund Id" // out-of-source
-// Ref: "Member Periodic Report"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Member Periodic Report"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id" // out-of-source
-// Ref: "Member Periodic Report"."Report Template Id" > "Report Template"."Report Template Id" // out-of-source
-Ref: "Member Periodic Report"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
-// Ref: "Member Periodic Report"."Securities Company Id" > "Securities Company"."Securities Company Id" // out-of-source
-// Ref: "Member Periodic Report"."Report Submission Schedule Id" > "Report Submission Schedule"."Report Submission Schedule Id" // out-of-source
-Ref: "Member Periodic Report Status Log"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
-// Ref: "Member Periodic Report Status Log"."Changed By Officer Id" > "Fund Management Company Key Person"."Fund Management Company Key Person Id" // out-of-source
-Ref: "Report Import Value"."Member Periodic Report Id" > "Member Periodic Report"."Member Periodic Report Id"
-// Ref: "Report Import Value"."Fund Management Company Id" > "Fund Management Company"."Fund Management Company Id" // out-of-source
-// Ref: "Report Import Value"."Investment Fund Id" > "Investment Fund"."Investment Fund Id" // out-of-source
-// Ref: "Report Import Value"."Custodian Bank Id" > "Custodian Bank"."Custodian Bank Id" // out-of-source
-// Ref: "Report Import Value"."Foreign Fund Management Organization Unit Id" > "Foreign Fund Management Organization Unit"."Foreign Fund Management Organization Unit Id" // out-of-source
-Ref: "Report Import Value"."Reporting Period Id" > "Reporting Period"."Reporting Period Id"
+Ref: "mbr_prd_rpt_st_log"."mbr_prd_rpt_id" > "mbr_prd_rpt"."mbr_prd_rpt_id"
+// Ref: "mbr_prd_rpt_st_log"."changed_by_ofcr_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."fnd_mgt_co_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."ivsm_fnd_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."cstd_bnk_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."frgn_fnd_mgt_ou_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."rpt_tpl_id" > ""."" // out-of-source
+Ref: "mbr_prd_rpt"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"
+// Ref: "mbr_prd_rpt"."scr_co_id" > ""."" // out-of-source
+// Ref: "mbr_prd_rpt"."rpt_subm_shd_id" > ""."" // out-of-source
+// Ref: "rpt_prd"."rpt_tpl_id" > ""."" // out-of-source
+Ref: "rpt_impr_val"."mbr_prd_rpt_id" > "mbr_prd_rpt"."mbr_prd_rpt_id"
+// Ref: "rpt_impr_val"."fnd_mgt_co_id" > ""."" // out-of-source
+// Ref: "rpt_impr_val"."ivsm_fnd_id" > ""."" // out-of-source
+// Ref: "rpt_impr_val"."cstd_bnk_id" > ""."" // out-of-source
+// Ref: "rpt_impr_val"."frgn_fnd_mgt_ou_id" > ""."" // out-of-source
+Ref: "rpt_impr_val"."rpt_prd_id" > "rpt_prd"."rpt_prd_id"

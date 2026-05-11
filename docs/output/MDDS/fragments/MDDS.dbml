@@ -1,0 +1,62 @@
+// Atomic Lakehouse — MDDS
+
+Project MDDS {
+  database_type: "Delta Lake"
+  Note: "Atomic Lakehouse — MDDS"
+}
+
+Table "corp_bond_mtch_log" [note: "Log tick-by-tick từng lần khớp lệnh trái phiếu doanh nghiệp theo thứ tự ConfirmNoCorpBond. Grain: 1 dòng = 1 lần khớp (symbol × ngày × confirm_no). Insert-only."] {
+  "corp_bond_mtch_log_id" varchar [pk]
+  "corp_bond_tdg_snpst_id" varchar
+}
+
+Table "scr_mtch_log" [note: "Log tick-by-tick từng lần khớp lệnh chứng khoán theo thứ tự sequenceMsg. Grain: 1 dòng = 1 lần khớp (symbol × ngày × sequenceMsg). Insert-only. Chứa chiều giao dịch chủ động (lastColor) và tích lũy KL"] {
+  "scr_mtch_log_id" varchar [pk]
+  "scr_tdg_snpst_id" varchar
+}
+
+Table "corp_bond_tdg_snpst" [note: "Snapshot trạng thái giao dịch trái phiếu doanh nghiệp niêm yết HNX tại thời điểm phát sinh thay đổi: giá tham chiếu/trần/sàn/khớp"] {
+  "corp_bond_tdg_snpst_id" varchar [pk]
+}
+
+Table "indx_constituent_snpst" [note: "Snapshot thành phần rổ chỉ số thị trường: mã chứng khoán thuộc rổ nào (IndexCode × Symbol × ngày giao dịch). Có attribute nghiệp vụ: tỷ trọng (Weighted) và ngày vào rổ (AddDate)."] {
+  "indx_constituent_snpst_id" varchar [pk]
+  "mkt_indx_snpst_id" varchar
+  "scr_tdg_snpst_id" varchar
+}
+
+Table "mkt_indx_snpst" [note: "Snapshot thông tin chỉ số thị trường chứng khoán (VN30/VNINDEX/HNX30...) tại thời điểm phát sinh: giá trị chỉ số"] {
+  "mkt_indx_snpst_id" varchar [pk]
+}
+
+Table "mkt_snpst" [note: "Snapshot trạng thái tổng hợp toàn sàn giao dịch (HOSE/HNX/UPCOM) tại mỗi thời điểm: điểm chỉ số sàn"] {
+  "mkt_snpst_id" varchar [pk]
+}
+
+Table "scr_tdg_snpst" [note: "Snapshot trạng thái giao dịch đa loại chứng khoán (cổ phiếu/CCQ/chứng quyền/phái sinh) tại thời điểm có thay đổi lệnh/khớp lệnh: giá tham chiếu/trần/sàn"] {
+  "scr_tdg_snpst_id" varchar [pk]
+  "ulyg_imt_id" varchar
+}
+
+TableGroup "UID01 — Thị trường và chỉ số tổng hợp" {
+  "indx_constituent_snpst"
+  "mkt_indx_snpst"
+  "mkt_snpst"
+  "scr_tdg_snpst"
+}
+
+TableGroup "UID02 — Bảng giá chứng khoán và khớp lệnh" {
+  "scr_mtch_log"
+  "scr_tdg_snpst"
+}
+
+TableGroup "UID03 — Trái phiếu doanh nghiệp" {
+  "corp_bond_mtch_log"
+  "corp_bond_tdg_snpst"
+}
+
+Ref: "corp_bond_mtch_log"."corp_bond_tdg_snpst_id" > "corp_bond_tdg_snpst"."corp_bond_tdg_snpst_id"
+Ref: "scr_mtch_log"."scr_tdg_snpst_id" > "scr_tdg_snpst"."scr_tdg_snpst_id"
+Ref: "indx_constituent_snpst"."mkt_indx_snpst_id" > "mkt_indx_snpst"."mkt_indx_snpst_id"
+Ref: "indx_constituent_snpst"."scr_tdg_snpst_id" > "scr_tdg_snpst"."scr_tdg_snpst_id"
+Ref: "scr_tdg_snpst"."ulyg_imt_id" > "scr_tdg_snpst"."scr_tdg_snpst_id"

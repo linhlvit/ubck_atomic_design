@@ -5,210 +5,210 @@ Project GSGD {
   Note: "Atomic Lakehouse — GSGD"
 }
 
-Table "Investor Trading Account" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD. Grain: 1 dòng = 1 tài khoản (phân biệt theo account_code từ VSDC). Bao gồm cá nhân và tổ chức, trong nước và nước ngoài."] {
-  "Investor Trading Account Id" varchar [pk]
+Table "ivsr_ac_rltnp" [note: "Quan hệ giữa 2 tài khoản nhà đầu tư trong giám sát (IP address, MAC address, chuyển tiền). Ghi nhận độ mạnh quan hệ. FK Investor Trading Account (x2) + Account Investor Group."] {
+  "ivsr_ac_rltnp_id" varchar [pk]
+  "frst_ivsr_tdg_ac_id" varchar
+  "scd_ivsr_tdg_ac_id" varchar
+  "ac_ivsr_grp_id" varchar
 }
 
-Table "Account Investor Group" [note: "Nhóm tài khoản nhà đầu tư do nghiệp vụ giám sát xác định theo tiêu chí quan hệ (Danh tính / IP / MAC / Tiền). Grain: 1 dòng = 1 nhóm."] {
-  "Account Investor Group Id" varchar [pk]
+Table "ivsr_tdg_ac" [note: "Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD. Grain: 1 dòng = 1 tài khoản (phân biệt theo account_code từ VSDC). Bao gồm cá nhân và tổ chức, trong nước và nước ngoài."] {
+  "ivsr_tdg_ac_id" varchar [pk]
 }
 
-Table "Securities Watchlist Group" [note: "Nhóm chứng khoán do nghiệp vụ giám sát tạo ra (thường hoặc theo ngành). Danh sách mã CK denormalize thành ARRAY."] {
-  "Securities Watchlist Group Id" varchar [pk]
+Table "ivsr_tdg_ac_ahr" [note: "Ủy quyền giao dịch chứng khoán trên tài khoản nhà đầu tư. FK Investor Trading Account."] {
+  "ivsr_tdg_ac_ahr_id" varchar [pk]
+  "ivsr_tdg_ac_id" varchar
 }
 
-Table "Market Surveillance Case" [note: "Vụ việc giám sát giao dịch chứng khoán bất thường. Ghi nhận loại vụ việc, mã CK liên quan, nguồn thông tin và trạng thái xử lý."] {
-  "Market Surveillance Case Id" varchar [pk]
+Table "ivsr_tdg_ac_fnc_svc" [note: "Dịch vụ tài chính đăng ký trên tài khoản giao dịch (ký quỹ / ứng trước tiền bán / HĐ tài chính khác). FK Investor Trading Account."] {
+  "ivsr_tdg_ac_fnc_svc_id" varchar [pk]
+  "ivsr_tdg_ac_id" varchar
 }
 
-Table "Market Surveillance Analysis Criterion" [note: "Định nghĩa tiêu chí/công thức phân tích vụ việc giám sát (ngưỡng tỷ lệ, số phiên, v.v.). Grain: 1 dòng = 1 tiêu chí."] {
-  "Market Surveillance Analysis Criterion Id" varchar [pk]
+Table "mkt_surveil_ac_grp_anl_rslt" [note: "Kết quả phân tích nhóm tài khoản nghi vấn. FK Market Surveillance Case."] {
+  "mkt_surveil_ac_grp_anl_rslt_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Abnormal Trading Report" [note: "Báo cáo giao dịch bất thường do tổ chức thành viên nộp lên UBCKNN. Grain: 1 dòng = 1 báo cáo."] {
-  "Abnormal Trading Report Id" varchar [pk]
+Table "mkt_surveil_ac_grp_mbr_anl_rslt" [note: "Thành viên nhóm tài khoản trong kết quả phân tích. FK Market Surveillance Case + Investor Account Relationship."] {
+  "mkt_surveil_ac_grp_mbr_anl_rslt_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
+  "ac_ivsr_grp_id" varchar
+  "ivsr_ac_rltnp_id" varchar
 }
 
-Table "Market Surveillance Compliance Report Template" [note: "Định nghĩa loại báo cáo tuân thủ trong hệ thống GSGD (tên báo cáo, kỳ báo cáo). Grain: 1 dòng = 1 loại báo cáo."] {
-  "Market Surveillance Compliance Report Template Id" varchar [pk]
+Table "mkt_surveil_ac_rltnp_anl_rslt" [note: "Kết quả phân tích quan hệ giữa tài khoản nghi vấn. FK Market Surveillance Case + Investor Account Relationship."] {
+  "mkt_surveil_ac_rltnp_anl_rslt_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
+  "ivsr_ac_rltnp_id" varchar
 }
 
-Table "Investor Trading Account Financial Service" [note: "Dịch vụ tài chính đăng ký trên tài khoản giao dịch (ký quỹ / ứng trước tiền bán / HĐ tài chính khác). FK Investor Trading Account."] {
-  "Investor Trading Account Financial Service Id" varchar [pk]
-  "Investor Trading Account Id" varchar
+Table "mkt_surveil_anl_exec_log" [note: "Log thực thi phân tích từng biểu mẫu trong vụ việc giám sát. FK Market Surveillance Case."] {
+  "mkt_surveil_anl_exec_log_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Investor Trading Account Authorization" [note: "Ủy quyền giao dịch chứng khoán trên tài khoản nhà đầu tư. FK Investor Trading Account."] {
-  "Investor Trading Account Authorization Id" varchar [pk]
-  "Investor Trading Account Id" varchar
+Table "mkt_surveil_anl_sspcs_ac_snpst" [note: "Snapshot thông tin tài khoản nghi vấn tại thời điểm phân tích biểu mẫu. FK Market Surveillance Case."] {
+  "mkt_surveil_anl_sspcs_ac_snpst_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Account Investor Group Member" [note: "Quan hệ thành viên giữa tài khoản nhà đầu tư và nhóm giám sát. Ghi nhận loại quan hệ và trạng thái. FK Account Investor Group + Investor Trading Account."] {
-  "Account Investor Group Member Id" varchar [pk]
-  "Account Investor Group Id" varchar
-  "Investor Trading Account Id" varchar
+Table "mkt_surveil_case" [note: "Vụ việc giám sát giao dịch chứng khoán bất thường. Ghi nhận loại vụ việc, mã CK liên quan, nguồn thông tin và trạng thái xử lý."] {
+  "mkt_surveil_case_id" varchar [pk]
 }
 
-Table "Investor Account Relationship" [note: "Quan hệ giữa 2 tài khoản nhà đầu tư trong giám sát (IP address, MAC address, chuyển tiền). Ghi nhận độ mạnh quan hệ. FK Investor Trading Account (x2) + Account Investor Group."] {
-  "Investor Account Relationship Id" varchar [pk]
-  "First Investor Trading Account Id" varchar
-  "Second Investor Trading Account Id" varchar
-  "Account Investor Group Id" varchar
+Table "mkt_surveil_case_aprv_step_log" [note: "Nhật ký phê duyệt từng bước xử lý vụ việc giám sát. Ghi nhận người duyệt, vai trò, trạng thái và thời điểm. FK Market Surveillance Case."] {
+  "mkt_surveil_case_aprv_step_log_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Listed Company Corporate Event" [note: "Sự kiện liên quan đến tổ chức niêm yết trong phạm vi giám sát GSGD. Grain: 1 dòng = 1 sự kiện."] {
-  "Listed Company Corporate Event Id" varchar [pk]
+Table "mkt_surveil_case_workflow_step" [note: "Từng bước quy trình xử lý vụ việc giám sát. Append-only. FK Market Surveillance Case."] {
+  "mkt_surveil_case_workflow_step_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Market Surveillance Case Document Attachment" [note: "File đính kèm vụ việc giám sát (tài liệu hồ sơ, danh sách TK nghi vấn). FK Market Surveillance Case."] {
-  "Market Surveillance Case Document Attachment Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "mkt_surveil_sspcs_ac_anl_rslt" [note: "Kết quả phân tích/kiểm tra tài khoản nghi vấn trong vụ việc giám sát. FK Market Surveillance Case."] {
+  "mkt_surveil_sspcs_ac_anl_rslt_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Market Surveillance Case Workflow Step" [note: "Từng bước quy trình xử lý vụ việc giám sát. Append-only. FK Market Surveillance Case."] {
-  "Market Surveillance Case Workflow Step Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "mkt_surveil_anl_criterion" [note: "Định nghĩa tiêu chí/công thức phân tích vụ việc giám sát (ngưỡng tỷ lệ, số phiên, v.v.). Grain: 1 dòng = 1 tiêu chí."] {
+  "mkt_surveil_anl_criterion_id" varchar [pk]
 }
 
-Table "Market Surveillance Case Approval Step Log" [note: "Nhật ký phê duyệt từng bước xử lý vụ việc giám sát. Ghi nhận người duyệt, vai trò, trạng thái và thời điểm. FK Market Surveillance Case."] {
-  "Market Surveillance Case Approval Step Log Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "mkt_surveil_anl_criterion_val" [note: "Giá trị cụ thể của tiêu chí phân tích theo từng quy trình. FK Market Surveillance Analysis Criterion."] {
+  "mkt_surveil_anl_criterion_val_id" varchar [pk]
+  "mkt_surveil_anl_criterion_id" varchar
 }
 
-Table "Market Surveillance Suspicious Account" [note: "Tài khoản nghi vấn được xác định trong vụ việc giám sát. FK Market Surveillance Case + Investor Trading Account."] {
-  "Market Surveillance Suspicious Account Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
-  "Investor Trading Account Id" varchar
+Table "mkt_surveil_cmpln_rpt_tpl" [note: "Định nghĩa loại báo cáo tuân thủ trong hệ thống GSGD (tên báo cáo, kỳ báo cáo). Grain: 1 dòng = 1 loại báo cáo."] {
+  "mkt_surveil_cmpln_rpt_tpl_id" varchar [pk]
 }
 
-Table "Market Surveillance Suspicious Account Group" [note: "Nhóm tài khoản nghi vấn trong phạm vi 1 vụ việc giám sát cụ thể. FK Market Surveillance Case."] {
-  "Market Surveillance Suspicious Account Group Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "abnormal_tdg_rpt" [note: "Báo cáo giao dịch bất thường do tổ chức thành viên nộp lên UBCKNN. Grain: 1 dòng = 1 báo cáo."] {
+  "abnormal_tdg_rpt_id" varchar [pk]
 }
 
-Table "Market Surveillance Analysis Criterion Value" [note: "Giá trị cụ thể của tiêu chí phân tích theo từng quy trình. FK Market Surveillance Analysis Criterion."] {
-  "Market Surveillance Analysis Criterion Value Id" varchar [pk]
-  "Market Surveillance Analysis Criterion Id" varchar
+Table "abnormal_tdg_rpt_file_attch" [note: "File đính kèm báo cáo giao dịch bất thường (có chữ ký số). FK Abnormal Trading Report."] {
+  "abnormal_tdg_rpt_file_attch_id" varchar [pk]
+  "abnormal_tdg_rpt_id" varchar
 }
 
-Table "Market Surveillance Compliance Report Column Config" [note: "Định nghĩa cấu trúc cột của từng loại báo cáo tuân thủ GSGD. FK Market Surveillance Compliance Report Template."] {
-  "Market Surveillance Compliance Report Column Config Id" varchar [pk]
-  "Market Surveillance Compliance Report Template Id" varchar
+Table "mkt_surveil_anl_rpt" [note: "Báo cáo output của quá trình phân tích vụ việc giám sát (report_type"] {
+  "mkt_surveil_anl_rpt_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Market Surveillance Compliance Report Instance" [note: "Instance báo cáo tuân thủ theo từng kỳ. FK Market Surveillance Compliance Report Template."] {
-  "Market Surveillance Compliance Report Instance Id" varchar [pk]
-  "Market Surveillance Compliance Report Template Id" varchar
+Table "mkt_surveil_case_doc_attch" [note: "File đính kèm vụ việc giám sát (tài liệu hồ sơ, danh sách TK nghi vấn). FK Market Surveillance Case."] {
+  "mkt_surveil_case_doc_attch_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Abnormal Trading Report File Attachment" [note: "File đính kèm báo cáo giao dịch bất thường (có chữ ký số). FK Abnormal Trading Report."] {
-  "Abnormal Trading Report File Attachment Id" varchar [pk]
-  "Abnormal Trading Report Id" varchar
+Table "mkt_surveil_cmpln_rpt_clmn_config" [note: "Định nghĩa cấu trúc cột của từng loại báo cáo tuân thủ GSGD. FK Market Surveillance Compliance Report Template."] {
+  "mkt_surveil_cmpln_rpt_clmn_config_id" varchar [pk]
+  "mkt_surveil_cmpln_rpt_tpl_id" varchar
 }
 
-Table "Market Surveillance Compliance Report Row Data" [note: "Dữ liệu từng dòng trong báo cáo tuân thủ GSGD (lưu dạng JSON). Grain: 1 dòng = 1 row x 1 kỳ. FK Market Surveillance Compliance Report Instance."] {
-  "Market Surveillance Compliance Report Row Data Id" varchar [pk]
-  "Market Surveillance Compliance Report Instance Id" varchar
+Table "mkt_surveil_cmpln_rpt_instn" [note: "Instance báo cáo tuân thủ theo từng kỳ. FK Market Surveillance Compliance Report Template."] {
+  "mkt_surveil_cmpln_rpt_instn_id" varchar [pk]
+  "mkt_surveil_cmpln_rpt_tpl_id" varchar
 }
 
-Table "Market Surveillance Analysis Execution Log" [note: "Log thực thi phân tích từng biểu mẫu trong vụ việc giám sát. FK Market Surveillance Case."] {
-  "Market Surveillance Analysis Execution Log Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "mkt_surveil_cmpln_rpt_row_data" [note: "Dữ liệu từng dòng trong báo cáo tuân thủ GSGD (lưu dạng JSON). Grain: 1 dòng = 1 row x 1 kỳ. FK Market Surveillance Compliance Report Instance."] {
+  "mkt_surveil_cmpln_rpt_row_data_id" varchar [pk]
+  "mkt_surveil_cmpln_rpt_instn_id" varchar
 }
 
-Table "Market Surveillance Analysis Suspicious Account Snapshot" [note: "Snapshot thông tin tài khoản nghi vấn tại thời điểm phân tích biểu mẫu. FK Market Surveillance Case."] {
-  "Market Surveillance Analysis Suspicious Account Snapshot Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "list_co_corp_ev" [note: "Sự kiện liên quan đến tổ chức niêm yết trong phạm vi giám sát GSGD. Grain: 1 dòng = 1 sự kiện."] {
+  "list_co_corp_ev_id" varchar [pk]
 }
 
-Table "Market Surveillance Suspicious Account Analysis Result" [note: "Kết quả phân tích/kiểm tra tài khoản nghi vấn trong vụ việc giám sát. FK Market Surveillance Case."] {
-  "Market Surveillance Suspicious Account Analysis Result Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "mkt_surveil_sspcs_ac" [note: "Tài khoản nghi vấn được xác định trong vụ việc giám sát. FK Market Surveillance Case + Investor Trading Account."] {
+  "mkt_surveil_sspcs_ac_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
+  "ivsr_tdg_ac_id" varchar
 }
 
-Table "Market Surveillance Account Relationship Analysis Result" [note: "Kết quả phân tích quan hệ giữa tài khoản nghi vấn. FK Market Surveillance Case + Investor Account Relationship."] {
-  "Market Surveillance Account Relationship Analysis Result Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
-  "Investor Account Relationship Id" varchar
+Table "mkt_surveil_sspcs_ac_grp" [note: "Nhóm tài khoản nghi vấn trong phạm vi 1 vụ việc giám sát cụ thể. FK Market Surveillance Case."] {
+  "mkt_surveil_sspcs_ac_grp_id" varchar [pk]
+  "mkt_surveil_case_id" varchar
 }
 
-Table "Market Surveillance Account Group Analysis Result" [note: "Kết quả phân tích nhóm tài khoản nghi vấn. FK Market Surveillance Case."] {
-  "Market Surveillance Account Group Analysis Result Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "ac_ivsr_grp" [note: "Nhóm tài khoản nhà đầu tư do nghiệp vụ giám sát xác định theo tiêu chí quan hệ (Danh tính / IP / MAC / Tiền). Grain: 1 dòng = 1 nhóm."] {
+  "ac_ivsr_grp_id" varchar [pk]
 }
 
-Table "Market Surveillance Account Group Member Analysis Result" [note: "Thành viên nhóm tài khoản trong kết quả phân tích. FK Market Surveillance Case + Investor Account Relationship."] {
-  "Market Surveillance Account Group Member Analysis Result Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
-  "Account Investor Group Id" varchar
-  "Investor Account Relationship Id" varchar
+Table "ac_ivsr_grp_mbr" [note: "Quan hệ thành viên giữa tài khoản nhà đầu tư và nhóm giám sát. Ghi nhận loại quan hệ và trạng thái. FK Account Investor Group + Investor Trading Account."] {
+  "ac_ivsr_grp_mbr_id" varchar [pk]
+  "ac_ivsr_grp_id" varchar
+  "ivsr_tdg_ac_id" varchar
 }
 
-Table "Market Surveillance Analysis Report" [note: "Báo cáo output của quá trình phân tích vụ việc giám sát (report_type"] {
-  "Market Surveillance Analysis Report Id" varchar [pk]
-  "Market Surveillance Case Id" varchar
+Table "scr_watchlist_grp" [note: "Nhóm chứng khoán do nghiệp vụ giám sát tạo ra (thường hoặc theo ngành). Danh sách mã CK denormalize thành ARRAY."] {
+  "scr_watchlist_grp_id" varchar [pk]
 }
 
 TableGroup "UID01 — Nhóm chức năng: Quản lý thông tin" {
-  "Investor Trading Account"
-  "Account Investor Group"
-  "Securities Watchlist Group"
-  "Abnormal Trading Report"
-  "Market Surveillance Compliance Report Template"
-  "Investor Trading Account Financial Service"
-  "Investor Trading Account Authorization"
-  "Account Investor Group Member"
-  "Investor Account Relationship"
-  "Listed Company Corporate Event"
-  "Market Surveillance Compliance Report Column Config"
-  "Market Surveillance Compliance Report Instance"
-  "Abnormal Trading Report File Attachment"
-  "Market Surveillance Compliance Report Row Data"
+  "ivsr_ac_rltnp"
+  "ivsr_tdg_ac"
+  "ivsr_tdg_ac_ahr"
+  "ivsr_tdg_ac_fnc_svc"
+  "mkt_surveil_cmpln_rpt_tpl"
+  "abnormal_tdg_rpt"
+  "abnormal_tdg_rpt_file_attch"
+  "mkt_surveil_cmpln_rpt_clmn_config"
+  "mkt_surveil_cmpln_rpt_instn"
+  "mkt_surveil_cmpln_rpt_row_data"
+  "list_co_corp_ev"
+  "ac_ivsr_grp"
+  "ac_ivsr_grp_mbr"
+  "scr_watchlist_grp"
 }
 
 TableGroup "UID02 — Nhóm chức năng: Phân tích chuyên sâu vụ việc" {
-  "Market Surveillance Case"
-  "Market Surveillance Analysis Criterion"
-  "Market Surveillance Case Document Attachment"
-  "Market Surveillance Case Workflow Step"
-  "Market Surveillance Case Approval Step Log"
-  "Market Surveillance Suspicious Account"
-  "Market Surveillance Suspicious Account Group"
-  "Market Surveillance Analysis Criterion Value"
-  "Market Surveillance Analysis Execution Log"
-  "Market Surveillance Analysis Suspicious Account Snapshot"
-  "Market Surveillance Suspicious Account Analysis Result"
-  "Market Surveillance Account Relationship Analysis Result"
-  "Market Surveillance Account Group Analysis Result"
-  "Market Surveillance Account Group Member Analysis Result"
-  "Market Surveillance Analysis Report"
+  "mkt_surveil_ac_grp_anl_rslt"
+  "mkt_surveil_ac_grp_mbr_anl_rslt"
+  "mkt_surveil_ac_rltnp_anl_rslt"
+  "mkt_surveil_anl_exec_log"
+  "mkt_surveil_anl_sspcs_ac_snpst"
+  "mkt_surveil_case"
+  "mkt_surveil_case_aprv_step_log"
+  "mkt_surveil_case_workflow_step"
+  "mkt_surveil_sspcs_ac_anl_rslt"
+  "mkt_surveil_anl_criterion"
+  "mkt_surveil_anl_criterion_val"
+  "mkt_surveil_anl_rpt"
+  "mkt_surveil_case_doc_attch"
+  "mkt_surveil_sspcs_ac"
+  "mkt_surveil_sspcs_ac_grp"
 }
 
-Ref: "Investor Trading Account Financial Service"."Investor Trading Account Id" > "Investor Trading Account"."Investor Trading Account Id"
-Ref: "Investor Trading Account Authorization"."Investor Trading Account Id" > "Investor Trading Account"."Investor Trading Account Id"
-Ref: "Account Investor Group Member"."Account Investor Group Id" > "Account Investor Group"."Account Investor Group Id"
-Ref: "Account Investor Group Member"."Investor Trading Account Id" > "Investor Trading Account"."Investor Trading Account Id"
-Ref: "Investor Account Relationship"."First Investor Trading Account Id" > "Investor Trading Account"."Investor Trading Account Id"
-Ref: "Investor Account Relationship"."Second Investor Trading Account Id" > "Investor Trading Account"."Investor Trading Account Id"
-Ref: "Investor Account Relationship"."Account Investor Group Id" > "Account Investor Group"."Account Investor Group Id"
-Ref: "Market Surveillance Case Document Attachment"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Case Workflow Step"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Case Approval Step Log"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Suspicious Account"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Suspicious Account"."Investor Trading Account Id" > "Investor Trading Account"."Investor Trading Account Id"
-Ref: "Market Surveillance Suspicious Account Group"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Analysis Criterion Value"."Market Surveillance Analysis Criterion Id" > "Market Surveillance Analysis Criterion"."Market Surveillance Analysis Criterion Id"
-Ref: "Market Surveillance Compliance Report Column Config"."Market Surveillance Compliance Report Template Id" > "Market Surveillance Compliance Report Template"."Market Surveillance Compliance Report Template Id"
-Ref: "Market Surveillance Compliance Report Instance"."Market Surveillance Compliance Report Template Id" > "Market Surveillance Compliance Report Template"."Market Surveillance Compliance Report Template Id"
-Ref: "Abnormal Trading Report File Attachment"."Abnormal Trading Report Id" > "Abnormal Trading Report"."Abnormal Trading Report Id"
-Ref: "Market Surveillance Compliance Report Row Data"."Market Surveillance Compliance Report Instance Id" > "Market Surveillance Compliance Report Instance"."Market Surveillance Compliance Report Instance Id"
-Ref: "Market Surveillance Analysis Execution Log"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Analysis Suspicious Account Snapshot"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Suspicious Account Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Account Relationship Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Account Relationship Analysis Result"."Investor Account Relationship Id" > "Investor Account Relationship"."Investor Account Relationship Id"
-Ref: "Market Surveillance Account Group Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Account Group Member Analysis Result"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
-Ref: "Market Surveillance Account Group Member Analysis Result"."Account Investor Group Id" > "Account Investor Group"."Account Investor Group Id"
-Ref: "Market Surveillance Account Group Member Analysis Result"."Investor Account Relationship Id" > "Investor Account Relationship"."Investor Account Relationship Id"
-Ref: "Market Surveillance Analysis Report"."Market Surveillance Case Id" > "Market Surveillance Case"."Market Surveillance Case Id"
+Ref: "ivsr_ac_rltnp"."frst_ivsr_tdg_ac_id" > "ivsr_tdg_ac"."ivsr_tdg_ac_id"
+Ref: "ivsr_ac_rltnp"."scd_ivsr_tdg_ac_id" > "ivsr_tdg_ac"."ivsr_tdg_ac_id"
+Ref: "ivsr_ac_rltnp"."ac_ivsr_grp_id" > "ac_ivsr_grp"."ac_ivsr_grp_id"
+Ref: "ivsr_tdg_ac_ahr"."ivsr_tdg_ac_id" > "ivsr_tdg_ac"."ivsr_tdg_ac_id"
+Ref: "ivsr_tdg_ac_fnc_svc"."ivsr_tdg_ac_id" > "ivsr_tdg_ac"."ivsr_tdg_ac_id"
+Ref: "mkt_surveil_ac_grp_anl_rslt"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_ac_grp_mbr_anl_rslt"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_ac_grp_mbr_anl_rslt"."ac_ivsr_grp_id" > "ac_ivsr_grp"."ac_ivsr_grp_id"
+Ref: "mkt_surveil_ac_grp_mbr_anl_rslt"."ivsr_ac_rltnp_id" > "ivsr_ac_rltnp"."ivsr_ac_rltnp_id"
+Ref: "mkt_surveil_ac_rltnp_anl_rslt"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_ac_rltnp_anl_rslt"."ivsr_ac_rltnp_id" > "ivsr_ac_rltnp"."ivsr_ac_rltnp_id"
+Ref: "mkt_surveil_anl_exec_log"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_anl_sspcs_ac_snpst"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_case_aprv_step_log"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_case_workflow_step"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_sspcs_ac_anl_rslt"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_anl_criterion_val"."mkt_surveil_anl_criterion_id" > "mkt_surveil_anl_criterion"."mkt_surveil_anl_criterion_id"
+Ref: "abnormal_tdg_rpt_file_attch"."abnormal_tdg_rpt_id" > "abnormal_tdg_rpt"."abnormal_tdg_rpt_id"
+Ref: "mkt_surveil_anl_rpt"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_case_doc_attch"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_cmpln_rpt_clmn_config"."mkt_surveil_cmpln_rpt_tpl_id" > "mkt_surveil_cmpln_rpt_tpl"."mkt_surveil_cmpln_rpt_tpl_id"
+Ref: "mkt_surveil_cmpln_rpt_instn"."mkt_surveil_cmpln_rpt_tpl_id" > "mkt_surveil_cmpln_rpt_tpl"."mkt_surveil_cmpln_rpt_tpl_id"
+Ref: "mkt_surveil_cmpln_rpt_row_data"."mkt_surveil_cmpln_rpt_instn_id" > "mkt_surveil_cmpln_rpt_instn"."mkt_surveil_cmpln_rpt_instn_id"
+Ref: "mkt_surveil_sspcs_ac"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "mkt_surveil_sspcs_ac"."ivsr_tdg_ac_id" > "ivsr_tdg_ac"."ivsr_tdg_ac_id"
+Ref: "mkt_surveil_sspcs_ac_grp"."mkt_surveil_case_id" > "mkt_surveil_case"."mkt_surveil_case_id"
+Ref: "ac_ivsr_grp_mbr"."ac_ivsr_grp_id" > "ac_ivsr_grp"."ac_ivsr_grp_id"
+Ref: "ac_ivsr_grp_mbr"."ivsr_tdg_ac_id" > "ivsr_tdg_ac"."ivsr_tdg_ac_id"
