@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-anti-corruption_rpt-ThanhTra.PCTN_BAO_CAO
+  logical_name: "Atomic - Anti-Corruption Report – source ThanhTra.PCTN_BAO_CAO"
+  physical_name: anti-corruption_rpt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: |
+    Báo cáo tổng hợp định kỳ về hoạt động phòng chống tham nhũng. Mỗi dòng = 1 lần lập báo cáo.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-PCTN_BAO_CAO
+
+attributes:
+  - name: "Anti-Corruption Report Id"
+    physical_name: anti-corruption_rpt_id
+    business_meaning: Khóa đại diện cho báo cáo phòng chống tham nhũng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: "Anti-Corruption Report Code"
+    physical_name: anti-corruption_rpt_code
+    business_meaning: Mã báo cáo PCTN. Map từ PK ThanhTra.PCTN_BAO_CAO.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo phòng chống tham nhũng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.TEN_BAO_CAO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày lập báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.NGAY_LAP_BAO_CAO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Sent Date
+    physical_name: rpt_snd_dt
+    business_meaning: Ngày gửi báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.NGAY_GUI_BAO_CAO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Period From Date
+    physical_name: prd_fm_dt
+    business_meaning: Từ ngày tổng hợp.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.TU_NGAY_TONG_HOP
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Period To Date
+    physical_name: prd_to_dt
+    business_meaning: Đến ngày tổng hợp.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.DEN_NGAY_TONG_HOP
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Citizen Reception Result
+    physical_name: citizen_rcptn_rslt
+    business_meaning: Kết quả tiếp công dân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.KET_QUA_TIEP_CONG_DAN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Complaint Processing Result
+    physical_name: cpln_pcs_rslt
+    business_meaning: Kết quả xử lý khiếu nại tố cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.KET_QUA_XU_LY_KNTC
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report File URL
+    physical_name: rpt_file_url
+    business_meaning: Đường dẫn file báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PCTN_BAO_CAO
+    source_column: ThanhTra.PCTN_BAO_CAO.FILE_BAO_CAO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_PCTN_BAO_CAO'"
+    etl_derived_value: null

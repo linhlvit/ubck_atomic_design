@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-frgn_ivsr_stk_prtfl_snpst-FIMS.CATEGORIESSTOCK
+  logical_name: "Atomic - Foreign Investor Stock Portfolio Snapshot – source FIMS.CATEGORIESSTOCK"
+  physical_name: frgn_ivsr_stk_prtfl_snpst
+  version: "1.0"
+  status: approved
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Financial Market Position"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Append
+  source: FIMS
+  description: |
+    Danh mục sở hữu chứng khoán của nhà đầu tư nước ngoài tại từng công ty chứng khoán.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-CATEGORIESSTOCK
+
+attributes:
+  - name: Foreign Investor Stock Portfolio Snapshot Id
+    physical_name: frgn_ivsr_stk_prtfl_snpst_id
+    business_meaning: Khóa đại diện cho vị thế sở hữu chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Stock Portfolio Snapshot Code
+    physical_name: frgn_ivsr_stk_prtfl_snpst_code
+    business_meaning: Mã vị thế. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán lưu giữ danh mục.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.SecId
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán lưu giữ danh mục.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.SecId
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Id
+    physical_name: frgn_ivsr_id
+    business_meaning: FK đến nhà đầu tư nước ngoài sở hữu danh mục.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.InvesId
+    comment: "FK target: Foreign Investor.Foreign Investor Id."
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Code
+    physical_name: frgn_ivsr_code
+    business_meaning: Mã nhà đầu tư nước ngoài sở hữu danh mục.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.InvesId
+    comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Foreign Investor Id."
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Quantity
+    physical_name: qty
+    business_meaning: Số lượng chứng khoán sở hữu.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.Quantity
+    comment: null
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null
+
+  - name: Ownership Rate
+    physical_name: own_rate
+    business_meaning: "Tỷ lệ % sở hữu chứng khoán."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.Rate
+    comment: null
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: null

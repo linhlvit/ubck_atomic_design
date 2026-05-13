@@ -1,0 +1,260 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_alert_config-QLRR.risk_alert_config
+  logical_name: "Atomic - Risk Alert Config – source QLRR.risk_alert_config"
+  physical_name: rsk_alert_config
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: QLRR
+  description: |
+    Cấu hình ngưỡng và quy tắc kích hoạt cảnh báo cho từng chỉ tiêu rủi ro. Grain: 1 cấu hình / 1 chỉ tiêu. FK → Risk Indicator.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_alert_config
+
+attributes:
+  - name: Risk Alert Config Id
+    physical_name: rsk_alert_config_id
+    business_meaning: Khóa đại diện cho cấu hình ngưỡng cảnh báo chỉ tiêu rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Risk Alert Config Code
+    physical_name: rsk_alert_config_code
+    business_meaning: Mã định danh cấu hình cảnh báo. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Id
+    physical_name: rsk_ind_id
+    business_meaning: FK đến chỉ tiêu rủi ro (hệ thống hoặc tự tạo) sau gộp.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.indicator_id
+    comment: "FK target: Risk Indicator.Risk Indicator Id. HLD T2-02: indicator_type=1 map indicator_id; indicator_type=2 map custom_indicator_id — cả 2 về ds_indicator_id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Code
+    physical_name: rsk_ind_code
+    business_meaning: Mã chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.indicator_id
+    comment: "Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Threshold Direction Code
+    physical_name: thrs_drc_code
+    business_meaning: "Chiều ngưỡng cảnh báo: 1=Tăng, 2=Giảm, 3=Tăng/Giảm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.threshold_direction
+    comment: "Scheme: RISK_ALERT_THRESHOLD_DIRECTION."
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Threshold Unit Code
+    physical_name: thrs_unit_code
+    business_meaning: "Đơn vị ngưỡng: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.threshold_unit_code
+    comment: "Scheme: RISK_UNIT."
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Threshold Value
+    physical_name: thrs_val
+    business_meaning: Giá trị ngưỡng kích hoạt cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.threshold_value
+    comment: "Lưu dạng Text — giá trị số thập phân, parse khi sử dụng."
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Compare Period Count
+    physical_name: cmpr_prd_cnt
+    business_meaning: Số kỳ cần so sánh để đánh giá ngưỡng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.compare_period_time
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Alert Message Template
+    physical_name: alert_msg_tpl
+    business_meaning: Nội dung mẫu thông báo cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.alert_message_template
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Handler User Id
+    physical_name: handler_usr_id
+    business_meaning: User ID người xử lý chính (denormalized — không có User entity trên Atomic).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.handler_user_id
+    comment: "Denormalized. HLD T2-01: không có User entity trên Atomic."
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Handler User Name
+    physical_name: handler_usr_nm
+    business_meaning: Tên người xử lý chính (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.handler_user_name
+    comment: Denormalized. Pair với Handler User Id.
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Notify Bell Flag
+    physical_name: notf_bell_f
+    business_meaning: "Hiển thị thông báo chuông: 0=Không, 1=Có."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.notify_bell_flag
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Notify Email Flag
+    physical_name: notf_email_f
+    business_meaning: "Gửi email cảnh báo: 0=Không, 1=Có."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.notify_email_flag
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Notify Toast Flag
+    physical_name: notf_toast_f
+    business_meaning: "Thông báo toast: 0=Không, 1=Có."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.notify_toast_flag
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Display Order
+    physical_name: dspl_ordr
+    business_meaning: Thứ tự hiển thị của cấu hình cảnh báo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.display_order
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null
+
+  - name: Active Flag
+    physical_name: actv_f
+    business_meaning: "Trạng thái: 0=Không hoạt động, 1=Đang hoạt động."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_config
+    source_column: QLRR.risk_alert_config.is_active
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_config'"
+    etl_derived_value: null

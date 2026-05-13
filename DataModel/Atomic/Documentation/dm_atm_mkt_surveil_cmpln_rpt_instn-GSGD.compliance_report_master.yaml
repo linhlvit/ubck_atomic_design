@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_cmpln_rpt_instn-GSGD.compliance_report_master
+  logical_name: "Atomic - Market Surveillance Compliance Report Instance – source GSGD.compliance_report_master"
+  physical_name: mkt_surveil_cmpln_rpt_instn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Instance báo cáo tuân thủ theo từng kỳ. FK Market Surveillance Compliance Report Template.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-compliance_report_master
+
+attributes:
+  - name: Market Surveillance Compliance Report Instance Id
+    physical_name: mkt_surveil_cmpln_rpt_instn_id
+    business_meaning: Khóa đại diện cho instance báo cáo tuân thủ theo kỳ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Instance Code
+    physical_name: mkt_surveil_cmpln_rpt_instn_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: GSGD.compliance_report_master.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Template Id
+    physical_name: mkt_surveil_cmpln_rpt_tpl_id
+    business_meaning: FK đến mẫu báo cáo tuân thủ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: GSGD.compliance_report_master.template_id
+    comment: "FK target: Market Surveillance Compliance Report Template.Market Surveillance Compliance Report Template Id."
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Template Code
+    physical_name: mkt_surveil_cmpln_rpt_tpl_code
+    business_meaning: Mã mẫu báo cáo tuân thủ. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: GSGD.compliance_report_master.template_id
+    comment: "Lookup pair: Market Surveillance Compliance Report Template.Market Surveillance Compliance Report Template Code. Pair with Market Surveillance Compliance Report Template Id."
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: prd_tp_code
+    business_meaning: Loại kỳ báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: GSGD.compliance_report_master.period_type
+    comment: "Scheme: GSGD_PERIOD_TYPE."
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: prd_val
+    business_meaning: "Giá trị kỳ báo cáo (ví dụ: tháng 1 = 1)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: GSGD.compliance_report_master.period_value
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Period Year
+    physical_name: prd_yr
+    business_meaning: Năm kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: GSGD.compliance_report_master.period_year
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null
+
+  - name: Instance Status Code
+    physical_name: instn_st_code
+    business_meaning: Trạng thái instance báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_master
+    source_column: GSGD.compliance_report_master.status
+    comment: "Scheme: GSGD_APPROVAL_STATUS."
+    classification_context: "Source System Code = 'GSGD_compliance_report_master'"
+    etl_derived_value: null

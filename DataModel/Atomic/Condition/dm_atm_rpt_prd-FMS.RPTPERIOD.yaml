@@ -1,0 +1,316 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rpt_prd-FMS.RPTPERIOD
+  logical_name: "Atomic - Reporting Period – source FMS.RPTPERIOD"
+  physical_name: rpt_prd
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Kỳ báo cáo định kỳ (ngày/tuần/tháng/quý/bán niên/năm) mà thành viên thị trường phải nộp báo cáo lên UBCKNN.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RPTPERIOD
+
+attributes:
+  - name: Reporting Period Id
+    physical_name: rpt_prd_id
+    business_meaning: Khóa đại diện cho kỳ báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Reporting Period Code
+    physical_name: rpt_prd_code
+    business_meaning: Mã định danh kỳ báo cáo. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: FMS.RPTPERIOD.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Reporting Period Name
+    physical_name: rpt_prd_nm
+    business_meaning: Tên kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: FMS.RPTPERIOD.PeriodName
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Reporting Period Type Code
+    physical_name: rpt_prd_tp_code
+    business_meaning: Kiểu kỳ báo cáo (tháng/quý/năm...).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: FMS.RPTPERIOD.PeriodType
+    comment: "Scheme: FMS_REPORTING_PERIOD_TYPE."
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Is Active Flag
+    physical_name: is_actv_f
+    business_meaning: Kỳ báo cáo đang hoạt động.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: FMS.RPTPERIOD.IsActive
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: FMS.RPTPERIOD.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: FMS.RPTPERIOD.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: FMS.RPTPERIOD.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: "Self-set Period Id"
+    physical_name: self-set_prd_id
+    business_meaning: FK đến kỳ báo cáo do cán bộ UB tự thiết lập (SELFSETPD). Nullable.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: "FK target: SELFSETPD entity — chưa được thiết kế lên Atomic."
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: "Self-set Period Code"
+    physical_name: self-set_prd_code
+    business_meaning: Mã kỳ báo cáo tự thiết lập.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: "Lookup pair: SELFSETPD entity — chưa được thiết kế lên Atomic. Pair with Self-set Period Id."
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Report Template Id
+    physical_name: rpt_tpl_id
+    business_meaning: FK đến biểu mẫu báo cáo áp dụng cho kỳ này.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: "FK target: Report Template.Report Template Id."
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Report Template Code
+    physical_name: rpt_tpl_code
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: "Lookup pair: Report Template.Report Template Code. Pair with Report Template Id."
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Submission Deadline Date
+    physical_name: subm_ddln_dt
+    business_meaning: Thời hạn gửi báo cáo muộn nhất (áp dụng cho kỳ ngày/tuần).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: Thời gian gửi báo cáo muộn nhất.
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Submission Deadline Week
+    physical_name: subm_ddln_wk
+    business_meaning: Thời hạn gửi báo cáo muộn nhất (tuần).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: Thời gian gửi muộn nhất — đơn vị tuần.
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Repeat Interval
+    physical_name: repeat_itrv
+    business_meaning: Lặp lại sau bao nhiêu đơn vị kỳ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Counting Start Date
+    physical_name: counting_strt_dt
+    business_meaning: Ngày bắt đầu tính hạn nộp báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Is Working Day Indicator
+    physical_name: is_wrk_day_ind
+    business_meaning: "Đơn vị tính hạn nộp: 0: Ngày lịch 1: Ngày làm việc."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Submit Within Days
+    physical_name: submit_wi_dys
+    business_meaning: Số ngày/ngày làm việc được phép gửi báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: "Trạng thái: 0: Không sử dụng 1: Sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTPERIOD
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTPERIOD'"
+    etl_derived_value: null

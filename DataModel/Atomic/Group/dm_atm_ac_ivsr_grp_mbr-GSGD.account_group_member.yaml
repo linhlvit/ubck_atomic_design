@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ac_ivsr_grp_mbr-GSGD.account_group_member
+  logical_name: "Atomic - Account Investor Group Member – source GSGD.account_group_member"
+  physical_name: ac_ivsr_grp_mbr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Group
+  bcv_concept: "[Involved Party] Involved Party Group Membership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Quan hệ thành viên giữa tài khoản nhà đầu tư và nhóm giám sát. Ghi nhận loại quan hệ và trạng thái. FK Account Investor Group + Investor Trading Account.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-account_group_member
+
+attributes:
+  - name: Account Investor Group Member Id
+    physical_name: ac_ivsr_grp_mbr_id
+    business_meaning: Khóa đại diện cho thành viên nhóm tài khoản.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Member Code
+    physical_name: ac_ivsr_grp_mbr_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: GSGD.account_group_member.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Id
+    physical_name: ac_ivsr_grp_id
+    business_meaning: FK đến nhóm tài khoản.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: GSGD.account_group_member.group_id
+    comment: "FK target: Account Investor Group.Account Investor Group Id."
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Code
+    physical_name: ac_ivsr_grp_code
+    business_meaning: Mã nhóm tài khoản. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: GSGD.account_group_member.group_id
+    comment: "Lookup pair: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id."
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Id
+    physical_name: ivsr_tdg_ac_id
+    business_meaning: FK đến tài khoản giao dịch chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: GSGD.account_group_member.account_id
+    comment: "FK target: Investor Trading Account.Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Code
+    physical_name: ivsr_tdg_ac_code
+    business_meaning: Mã tài khoản giao dịch. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: GSGD.account_group_member.account_id
+    comment: "Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Member Status Code
+    physical_name: mbr_st_code
+    business_meaning: Trạng thái tài khoản trong nhóm.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: GSGD.account_group_member.status
+    comment: "Scheme: GSGD_ACCOUNT_STATUS."
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null
+
+  - name: Relationship Type
+    physical_name: rltnp_tp
+    business_meaning: "Mối quan hệ: Danh tính, IP, MAC, Tiền."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group_member
+    source_column: GSGD.account_group_member.relationship_type
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_group_member'"
+    etl_derived_value: null

@@ -1,0 +1,274 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-surveil_nfrc_case-ThanhTra.GS_HO_SO
+  logical_name: "Atomic - Surveillance Enforcement Case – source ThanhTra.GS_HO_SO"
+  physical_name: surveil_nfrc_case
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: |
+    Hồ sơ xử lý vi phạm từ kết quả giám sát thị trường. Ghi nhận đối tượng và trạng thái xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-GS_HO_SO
+
+attributes:
+  - name: Surveillance Enforcement Case Id
+    physical_name: surveil_nfrc_case_id
+    business_meaning: Khóa đại diện cho hồ sơ xử lý vi phạm từ giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Case Code
+    physical_name: surveil_nfrc_case_code
+    business_meaning: Mã hồ sơ. Map từ PK ThanhTra.GS_HO_SO.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Case Number
+    physical_name: case_nbr
+    business_meaning: Mã hồ sơ nghiệp vụ (duy nhất trong hệ thống).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.MA_HO_SO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Case Name
+    physical_name: case_nm
+    business_meaning: Tên hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.TEN_HO_SO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Archive Number
+    physical_name: archv_nbr
+    business_meaning: Mã số lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.MA_SO_LUU_TRU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Received Date
+    physical_name: rcvd_dt
+    business_meaning: Ngày nhận hồ sơ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.NGAY_NHAN_HO_SO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Business Sector Code
+    physical_name: bsn_sctr_code
+    business_meaning: Mảng nghiệp vụ liên quan.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.MANG_NGHIEP_VU_ID
+    comment: "Scheme: TT_BUSINESS_SECTOR."
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Data Source Description
+    physical_name: data_src_dsc
+    business_meaning: "Nguồn cung cấp hồ sơ (nhiều nguồn, lưu text)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.NGUON_CUNG_CAP
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Case Content
+    physical_name: case_cntnt
+    business_meaning: Nội dung hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.NOI_DUNG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Security Level Code
+    physical_name: scr_lvl_code
+    business_meaning: Mức độ bảo mật hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.MUC_DO_BAO_MAT_ID
+    comment: "Scheme: TT_SECURITY_LEVEL."
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Subject Name
+    physical_name: sbj_nm
+    business_meaning: Tên đối tượng vi phạm (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.TEN_DOI_TUONG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Case Status Code
+    physical_name: case_st_code
+    business_meaning: Trạng thái hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.TRANG_THAI_ID
+    comment: "Scheme: TT_CASE_STATUS."
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Remark
+    physical_name: remark
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Responsible Officer Id
+    physical_name: rspl_ofcr_id
+    business_meaning: FK đến Inspection Officer — lãnh đạo phụ trách.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.LANH_DAO_PHU_TRACH
+    comment: "FK target: Inspection Officer.Inspection Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Responsible Officer Code
+    physical_name: rspl_ofcr_code
+    business_meaning: Mã cán bộ lãnh đạo phụ trách.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.LANH_DAO_PHU_TRACH
+    comment: "Lookup pair: Inspection Officer.Inspection Officer Code. Pair with Responsible Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Processing Officer Id
+    physical_name: pcs_ofcr_id
+    business_meaning: FK đến Inspection Officer — chuyên viên xử lý.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.CHUYEN_VIEN_XU_LY
+    comment: "FK target: Inspection Officer.Inspection Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null
+
+  - name: Processing Officer Code
+    physical_name: pcs_ofcr_code
+    business_meaning: Mã cán bộ chuyên viên xử lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_HO_SO
+    source_column: ThanhTra.GS_HO_SO.CHUYEN_VIEN_XU_LY
+    comment: "Lookup pair: Inspection Officer.Inspection Officer Code. Pair with Processing Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_HO_SO'"
+    etl_derived_value: null

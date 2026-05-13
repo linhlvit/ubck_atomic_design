@@ -1,0 +1,288 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ap_verf_st-NHNCK.VerifyApplicationStatuses
+  logical_name: "Atomic - Securities Practitioner License Application Verification Status – source NHNCK.VerifyApplicationStatuses"
+  physical_name: scr_prac_license_ap_verf_st
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Approval Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: NHNCK
+  description: |
+    Bản ghi phê duyệt nội bộ hồ sơ CCHN theo cấp lãnh đạo. Ghi nhận người phê duyệt và kết quả phê duyệt tại từng cấp.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-VerifyApplicationStatuses
+
+attributes:
+  - name: License Application Verification Status Id
+    physical_name: license_ap_verf_st_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: null
+    comment: "PK surrogate. BCV: \"Approval Activity\" (Business Activity). Phê duyệt trạng thái hồ sơ."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: License Application Verification Status Code
+    physical_name: license_ap_verf_st_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.Id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: License Application Id
+    physical_name: license_ap_id
+    business_meaning: FK đến hồ sơ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.ApplicationId
+    comment: "FK target: Securities Practitioner License Application.License Application Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: License Application Code
+    physical_name: license_ap_code
+    business_meaning: Mã hồ sơ
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.ApplicationId
+    comment: "Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Verification Status Code
+    physical_name: verf_st_code
+    business_meaning: Trạng thái phê duyệt (FK → ApplicationStatuses)
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.StatusId
+    comment: "Scheme: APPLICATION_STATUS. FK đến bảng ApplicationStatuses."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Previous Verification Status Code
+    physical_name: prev_verf_st_code
+    business_meaning: Trạng thái hồ sơ trước đó
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.PrevStatusId
+    comment: "Scheme: APPLICATION_STATUS."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Verified By Officer Id
+    physical_name: verf_by_ofcr_id
+    business_meaning: FK đến người phê duyệt
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.VerifiedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Verified By Officer Code
+    physical_name: verf_by_ofcr_code
+    business_meaning: Mã người phê duyệt
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.VerifiedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Verified By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Rejection Reason Description
+    physical_name: rejection_rsn_dsc
+    business_meaning: Lý do thay đổi trạng thái
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.Reason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Specialization Officer Reason
+    physical_name: specialization_ofcr_rsn
+    business_meaning: Nội dung ý kiến — Lãnh đạo chuyên môn
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.SpecReason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Organization Officer Reason
+    physical_name: org_ofcr_rsn
+    business_meaning: Nội dung ý kiến — Lãnh đạo UBCK
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.OrgReason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Overview Officer Reason
+    physical_name: overview_ofcr_rsn
+    business_meaning: Nội dung ý kiến — Cán bộ tổng hợp
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.OverviewReason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.CreatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã người tạo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.CreatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.UpdatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã người cập nhật
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.UpdatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VerifyApplicationStatuses
+    source_column: NHNCK.VerifyApplicationStatuses.UpdatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_VerifyApplicationStatuses'"
+    etl_derived_value: null

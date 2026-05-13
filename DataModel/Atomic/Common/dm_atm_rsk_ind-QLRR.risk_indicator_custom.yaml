@@ -1,0 +1,246 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_ind-QLRR.risk_indicator_custom
+  logical_name: "Atomic - Risk Indicator – source QLRR.risk_indicator_custom"
+  physical_name: rsk_ind
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Classification"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: QLRR
+  description: |
+    Danh mục chỉ tiêu tài chính rủi ro — gộp chỉ tiêu hệ thống (risk_indicator) và tự tạo (risk_indicator_custom). Phân biệt bằng indicator_type_code. indicator_category_id nullable (chỉ tiêu tự tạo không có category).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_indicator_custom
+
+attributes:
+  - name: Risk Indicator Id
+    physical_name: rsk_ind_id
+    business_meaning: Khóa đại diện cho chỉ tiêu rủi ro (hệ thống hoặc tự tạo).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Code
+    physical_name: rsk_ind_code
+    business_meaning: "Mã định danh duy nhất của chỉ tiêu. BK. Hệ thống: map từ risk_indicator.id; Tự tạo: map từ risk_indicator_custom.id với prefix 'CUS_'."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: "QLRR.risk_indicator.id,QLRR.risk_indicator_custom.id"
+    comment: "BK của entity. Hệ thống dùng risk_indicator.id; tự tạo dùng 'CUS_' + risk_indicator_custom.id để tránh conflict."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Indicator Type Code
+    physical_name: ind_tp_code
+    business_meaning: "Phân loại chỉ tiêu sau gộp: 1=Hệ thống (risk_indicator), 2=Tự tạo (risk_indicator_custom)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: null
+    comment: "ETL-derived. Scheme: RISK_INDICATOR_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Indicator Name
+    physical_name: ind_nm
+    business_meaning: "Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: "QLRR.risk_indicator.indicator_name,QLRR.risk_indicator_custom.indicator_name"
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Indicator Set Code
+    physical_name: ind_set_code
+    business_meaning: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế. Chỉ áp dụng cho chỉ tiêu hệ thống."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: QLRR.risk_indicator.set_code
+    comment: "Scheme: RISK_INDICATOR_SET. Nullable — chỉ tiêu tự tạo không có set_code."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Business Key
+    physical_name: bsn_key
+    business_meaning: "Mã nghiệp vụ chỉ tiêu hệ thống (VD: GDP_VN, CPI_VN). Chỉ có ở chỉ tiêu hệ thống."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: QLRR.risk_indicator.indicator_code
+    comment: Nullable — chỉ tiêu tự tạo không có indicator_code.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Category Id
+    physical_name: rsk_ind_cgy_id
+    business_meaning: FK đến nhóm chỉ tiêu rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: QLRR.risk_indicator.category_id
+    comment: "FK target: Risk Indicator Category.Risk Indicator Category Id. Nullable — chỉ tiêu tự tạo không có category."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Category Code
+    physical_name: rsk_ind_cgy_code
+    business_meaning: Mã nhóm chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: QLRR.risk_indicator.category_id
+    comment: "Lookup pair: Risk Indicator Category.Risk Indicator Category Code. Pair with Risk Indicator Category Id. Nullable — chỉ tiêu tự tạo không có category."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Unit Code
+    physical_name: unit_code
+    business_meaning: "Đơn vị mặc định: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: "QLRR.risk_indicator.unit_code,QLRR.risk_indicator_custom.unit_code"
+    comment: "Scheme: RISK_UNIT."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning: "Nguồn dữ liệu mặc định: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà nước, 4=Nội bộ, 5=HNX, 6=VSDC."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: "QLRR.risk_indicator.source_code,QLRR.risk_indicator_custom.source_code"
+    comment: "Scheme: RISK_DATA_SOURCE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: prd_tp_code
+    business_meaning: "Tần suất chỉ tiêu: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: "QLRR.risk_indicator.period_type,QLRR.risk_indicator_custom.period_type"
+    comment: "Scheme: RISK_PERIOD_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Last Sync Time
+    physical_name: last_sync_tm
+    business_meaning: Thời điểm đồng bộ dữ liệu gần nhất. Chỉ áp dụng cho chỉ tiêu hệ thống.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: QLRR.risk_indicator.last_sync_time
+    comment: Nullable — chỉ tiêu tự tạo không có last_sync_time.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Display Order
+    physical_name: dspl_ordr
+    business_meaning: Thứ tự hiển thị của chỉ tiêu trên màn hình.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: QLRR.risk_indicator.display_order
+    comment: Nullable — chỉ tiêu tự tạo không có display_order.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Display Flag
+    physical_name: dspl_f
+    business_meaning: "Có hiển thị trên màn hình không: 0=Không, 1=Có. Chỉ áp dụng cho chỉ tiêu hệ thống."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: QLRR.risk_indicator.is_display
+    comment: Nullable — chỉ tiêu tự tạo không có is_display.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null
+
+  - name: Active Flag
+    physical_name: actv_f
+    business_meaning: "Trạng thái hoạt động: 0=Không hoạt động, 1=Hoạt động."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_custom
+    source_column: "QLRR.risk_indicator.status,QLRR.risk_indicator_custom.status"
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_custom'"
+    etl_derived_value: null

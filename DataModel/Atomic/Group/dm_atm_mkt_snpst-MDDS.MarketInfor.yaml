@@ -1,0 +1,498 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_snpst-MDDS.MarketInfor
+  logical_name: "Atomic - Market Snapshot – source MDDS.MarketInfor"
+  physical_name: mkt_snpst
+  version: "1.0"
+  status: approved
+  bcv_core_object: Group
+  bcv_concept: "[Group] Share Index"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Append
+  source: MDDS
+  description: |
+    Snapshot trạng thái tổng hợp toàn sàn giao dịch (HOSE/HNX/UPCOM) tại mỗi thời điểm: điểm chỉ số sàn
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-MDDS-MarketInfor
+
+attributes:
+  - name: Market Snapshot Id
+    physical_name: mkt_snpst_id
+    business_meaning: Khóa đại diện cho bản tin tổng quan thị trường.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Market Snapshot Code
+    physical_name: mkt_snpst_code
+    business_meaning: Định danh duy nhất bản tin (GUID). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.id
+    comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Market Id
+    physical_name: mkt_id
+    business_meaning: "ID sàn/chỉ số: 10=HOSE / 02=HNX / 04=UPCOM / 06=Corp Bond / VN30 / HNX30... BK."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.marketId
+    comment: "Scheme: MDDS_MARKET_ID. BK phân biệt bản tin theo sàn/chỉ số. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Market Code
+    physical_name: mkt_code
+    business_meaning: Mã chỉ số tương ứng với marketId.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.marketCode
+    comment: Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning: Ngày giao dịch.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.tradingdate
+    comment: Nguồn field không có kiểu dữ liệu trong Columns.csv — cần profile. Domain chọn Date theo ngữ nghĩa. ETL cần parse sang Date.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Sequence Message
+    physical_name: seq_msg
+    business_meaning: Số thứ tự tăng dần trong ngày — đảm bảo thứ tự xử lý bản tin.
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.sequenceMsg
+    comment: Nguồn int — khớp tự nhiên với Small Counter.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Index Time
+    physical_name: indx_tm
+    business_meaning: Thời gian cập nhật chỉ số.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.indexTime
+    comment: Nguồn string (HHmmss) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Market Status Code
+    physical_name: mkt_st_code
+    business_meaning: Trạng thái phiên giao dịch (ATO / Continuous / ATC / Closed...).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.marketStatus
+    comment: "Scheme: MDDS_MARKET_STATUS. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Market Index Value
+    physical_name: mkt_indx_val
+    business_meaning: Điểm chỉ số thị trường hiện tại.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.marketIndex
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Index Change Value
+    physical_name: indx_chg_val
+    business_meaning: Thay đổi điểm chỉ số so với đầu ngày (tham chiếu).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.indexChange
+    comment: Nguồn string — ETL cần parse sang decimal. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Index Change Percentage
+    physical_name: indx_chg_pct
+    business_meaning: Phần trăm thay đổi điểm chỉ số so với đầu ngày.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.indexPercentChange
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Index Color
+    physical_name: indx_color
+    business_meaning: Màu hiển thị chỉ số (tăng/giảm/đứng).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.indexColor
+    comment: Nguồn string — khớp tự nhiên với Text. Indicator hiển thị UI.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Prior Market Index Value
+    physical_name: prev_mkt_indx_val
+    business_meaning: Chỉ số tham chiếu — giá trị đóng cửa phiên giao dịch gần nhất.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.PRV_PRIOR_MARKET_INDEX
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Average Market Index Value
+    physical_name: av_mkt_indx_val
+    business_meaning: Chỉ số trung bình của thị trường trong phiên.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.AVR_MARKET_INDEX
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Average Prior Market Index Value
+    physical_name: av_prev_mkt_indx_val
+    business_meaning: Chỉ số trung bình đóng cửa phiên giao dịch gần nhất.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.AVR_PRIOR_MARKET_INDEX
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Average Index Change Value
+    physical_name: av_indx_chg_val
+    business_meaning: Thay đổi của chỉ số trung bình.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.AVR_CHG_INDEX
+    comment: Nguồn string — ETL cần parse sang decimal. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Average Index Change Percentage
+    physical_name: av_indx_chg_pct
+    business_meaning: Phần trăm thay đổi của chỉ số trung bình.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.AVR_PCT_INDEX
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Trade Count
+    physical_name: tot_mtch_trd_cnt
+    business_meaning: "Tổng số lệnh khớp (FloorCode=02: cổ phiếu; FloorCode=03: trái phiếu)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.totalTrade
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Volume
+    physical_name: tot_mtch_vol
+    business_meaning: Tổng khối lượng khớp lệnh thường toàn thị trường.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.totalVolume
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX (khối lượng toàn sàn HOSE có thể lớn)."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Value
+    physical_name: tot_mtch_val
+    business_meaning: Tổng giá trị khớp lệnh thường toàn thị trường.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.totalValue
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Advance Count
+    physical_name: advnc_cnt
+    business_meaning: Số mã tăng giá.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.advances
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Decline Count
+    physical_name: decline_cnt
+    business_meaning: Số mã giảm giá.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.declines
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: No Change Count
+    physical_name: no_chg_cnt
+    business_meaning: Số mã không đổi giá.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.noChange
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Advance Volume
+    physical_name: advnc_vol
+    business_meaning: Tổng khối lượng chứng khoán tăng giá (bao gồm giao dịch thỏa thuận).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.advancesVolumn
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Decline Volume
+    physical_name: decline_vol
+    business_meaning: Tổng khối lượng chứng khoán giảm giá (bao gồm giao dịch thỏa thuận).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.declinesVolumn
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: No Change Volume
+    physical_name: no_chg_vol
+    business_meaning: Tổng khối lượng chứng khoán đứng giá (bao gồm giao dịch thỏa thuận).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.noChangeVolumn
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Ceiling Count
+    physical_name: ceiling_cnt
+    business_meaning: Số mã tăng trần.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.numberOfCe
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Floor Count
+    physical_name: flr_cnt
+    business_meaning: Số mã giảm sàn.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.numberOfFl
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Trade Count
+    physical_name: pt_tot_trd_cnt
+    business_meaning: Tổng số lệnh giao dịch thỏa thuận.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.PT_TOTAL_QTTY
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Volume
+    physical_name: pt_tot_vol
+    business_meaning: Tổng khối lượng giao dịch thỏa thuận.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.PT_TOTAL_TRADE
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Value
+    physical_name: pt_tval
+    business_meaning: Tổng giá trị giao dịch thỏa thuận.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.PT_TOTAL_VALUE
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Odd Lot Total Volume
+    physical_name: odd_lot_tot_vol
+    business_meaning: Tổng khối lượng giao dịch lô lẻ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.oddLotTotalVolume
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null
+
+  - name: Odd Lot Total Value
+    physical_name: odd_lot_tval
+    business_meaning: Tổng giá trị giao dịch lô lẻ.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: MarketInfor
+    source_column: MDDS.MarketInfor.oddLotTotalValue
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_MarketInfor'"
+    etl_derived_value: null

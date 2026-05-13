@@ -1,0 +1,288 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_conduct_vln-NHNCK.Violations
+  logical_name: "Atomic - Securities Practitioner Conduct Violation – source NHNCK.Violations"
+  physical_name: scr_prac_conduct_vln
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: NHNCK
+  description: |
+    Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán. Ghi nhận loại vi phạm và quyết định xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-Violations
+
+attributes:
+  - name: Conduct Violation Id
+    physical_name: conduct_vln_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: Violations
+    source_column: null
+    comment: "PK surrogate. BCV: \"Conduct Violation\" (Business Activity)."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Conduct Violation Code
+    physical_name: conduct_vln_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Practitioner Id
+    physical_name: prac_id
+    business_meaning: FK đến Securities Practitioner
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.ProfessionalId
+    comment: "FK target: Securities Practitioner.Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Practitioner Code
+    physical_name: prac_code
+    business_meaning: Mã người hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.ProfessionalId
+    comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên người vi phạm (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.FullName
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh (snapshot)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.BirthDate
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số CMND/CCCD (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.IdentityNumber
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: License Decision Document Id
+    physical_name: license_dcsn_doc_id
+    business_meaning: FK đến quyết định xử lý vi phạm
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.DecisionId
+    comment: "FK target: Securities Practitioner License Decision Document.License Decision Document Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: License Decision Document Code
+    physical_name: license_dcsn_doc_code
+    business_meaning: Mã quyết định
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.DecisionId
+    comment: "Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Conduct Violation Type Code
+    physical_name: conduct_vln_tp_code
+    business_meaning: "Loại vi phạm (1: Hành chính, 2: Pháp luật)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.Type
+    comment: "Scheme: CONDUCT_VIOLATION_TYPE."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Violation Note
+    physical_name: vln_note
+    business_meaning: Ghi chú vi phạm
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.Note
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Violation Status Code
+    physical_name: vln_st_code
+    business_meaning: "Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.Status
+    comment: "Scheme: VIOLATION_STATUS."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.CreatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã người tạo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.CreatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.UpdatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã người cập nhật
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.UpdatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Violations
+    source_column: NHNCK.Violations.UpdatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Violations'"
+    etl_derived_value: null

@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-insp_dcsn_team_mbr-ThanhTra.TT_QUYET_DINH_THANH_PHAN
+  logical_name: "Atomic - Inspection Decision Team Member – source ThanhTra.TT_QUYET_DINH_THANH_PHAN"
+  physical_name: insp_dcsn_team_mbr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: |
+    Thành viên đoàn thanh tra chỉ định theo quyết định. FK → Inspection Decision + FK → Inspection Officer.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-TT_QUYET_DINH_THANH_PHAN
+
+attributes:
+  - name: Inspection Decision Team Member Id
+    physical_name: insp_dcsn_team_mbr_id
+    business_meaning: Khóa đại diện cho thành viên đoàn thanh tra trong quyết định.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Inspection Decision Team Member Code
+    physical_name: insp_dcsn_team_mbr_code
+    business_meaning: Mã thành viên. Map từ PK ThanhTra.TT_QUYET_DINH_THANH_PHAN.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: ThanhTra.TT_QUYET_DINH_THANH_PHAN.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Inspection Decision Id
+    physical_name: insp_dcsn_id
+    business_meaning: FK đến Inspection Decision.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: ThanhTra.TT_QUYET_DINH_THANH_PHAN.QUYET_DINH_ID
+    comment: "FK target: Inspection Decision.Inspection Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Inspection Decision Code
+    physical_name: insp_dcsn_code
+    business_meaning: Mã quyết định.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: ThanhTra.TT_QUYET_DINH_THANH_PHAN.QUYET_DINH_ID
+    comment: "Lookup pair: Inspection Decision.Inspection Decision Code. Pair with Inspection Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Inspection Officer Id
+    physical_name: insp_ofcr_id
+    business_meaning: FK đến Inspection Officer — cán bộ trong đoàn.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: ThanhTra.TT_QUYET_DINH_THANH_PHAN.CAN_BO_ID
+    comment: "FK target: Inspection Officer.Inspection Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Inspection Officer Code
+    physical_name: insp_ofcr_code
+    business_meaning: Mã cán bộ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: ThanhTra.TT_QUYET_DINH_THANH_PHAN.CAN_BO_ID
+    comment: "Lookup pair: Inspection Officer.Inspection Officer Code. Pair with Inspection Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Team Role Description
+    physical_name: team_rl_dsc
+    business_meaning: "Vai trò trong đoàn (trưởng đoàn, thành viên...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: ThanhTra.TT_QUYET_DINH_THANH_PHAN.VAI_TRO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null
+
+  - name: Sequence Number
+    physical_name: seq_nbr
+    business_meaning: Số thứ tự trong đoàn.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_THANH_PHAN
+    source_column: ThanhTra.TT_QUYET_DINH_THANH_PHAN.STT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_THANH_PHAN'"
+    etl_derived_value: null

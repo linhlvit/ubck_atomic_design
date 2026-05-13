@@ -1,0 +1,358 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_alert-QLRR.risk_alert
+  logical_name: "Atomic - Risk Alert – source QLRR.risk_alert"
+  physical_name: rsk_alert
+  version: "1.0"
+  status: approved
+  bcv_core_object: Event
+  bcv_concept: "[Event]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: QLRR
+  description: |
+    Bản ghi cảnh báo rủi ro phát sinh khi chỉ tiêu vượt ngưỡng cấu hình. Grain: 1 lần kích hoạt. Append-only. FK → Risk Alert Config + Risk Indicator.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_alert
+
+attributes:
+  - name: Risk Alert Id
+    physical_name: rsk_alert_id
+    business_meaning: Khóa đại diện cho bản ghi cảnh báo rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Risk Alert Code
+    physical_name: rsk_alert_code
+    business_meaning: Mã định danh cảnh báo. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Risk Alert Config Id
+    physical_name: rsk_alert_config_id
+    business_meaning: FK đến cấu hình ngưỡng cảnh báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.alert_config_id
+    comment: "FK target: Risk Alert Config.Risk Alert Config Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Risk Alert Config Code
+    physical_name: rsk_alert_config_code
+    business_meaning: Mã cấu hình cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.alert_config_id
+    comment: "Lookup pair: Risk Alert Config.Risk Alert Config Code. Pair with Risk Alert Config Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Id
+    physical_name: rsk_ind_id
+    business_meaning: FK đến chỉ tiêu rủi ro (hệ thống lẫn tự tạo sau gộp).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.indicator_id
+    comment: "FK target: Risk Indicator.Risk Indicator Id. HLD T2-02: indicator_type=1 map indicator_id; indicator_type=2 map custom_indicator_id — cả 2 về ds_indicator_id."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Code
+    physical_name: rsk_ind_code
+    business_meaning: Mã chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.indicator_id
+    comment: "Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Period Date
+    physical_name: prd_dt
+    business_meaning: Kỳ dữ liệu bị cảnh báo.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.period_date
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Current Value
+    physical_name: crn_val
+    business_meaning: Giá trị chỉ tiêu tại kỳ bị cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.current_value
+    comment: Lưu dạng Text — giá trị số thập phân.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Previous Value
+    physical_name: prev_val
+    business_meaning: "Giá trị kỳ trước (dùng để hiển thị, null nếu không xác định)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.previous_value
+    comment: Lưu dạng Text — giá trị số thập phân.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Change Amount
+    physical_name: chg_amt
+    business_meaning: Giá trị chênh lệch tuyệt đối.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.change_amount
+    comment: Lưu dạng Text — giá trị số thập phân.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Change Percent
+    physical_name: chg_pct
+    business_meaning: Chênh lệch phần trăm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.change_percent
+    comment: Lưu dạng Text — giá trị số thập phân.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Threshold Direction Code
+    physical_name: thrs_drc_code
+    business_meaning: "Chiều ngưỡng tại thời điểm phát cảnh báo: 1=Tăng, 2=Giảm, 3=Tăng/Giảm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.threshold_direction
+    comment: "Scheme: RISK_ALERT_THRESHOLD_DIRECTION. Snapshot ngưỡng tại thời điểm phát cảnh báo."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Threshold Unit Code
+    physical_name: thrs_unit_code
+    business_meaning: "Đơn vị ngưỡng tại thời điểm phát cảnh báo: 1=%, 2=Điểm, …"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.threshold_unit_code
+    comment: "Scheme: RISK_UNIT. Snapshot."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Threshold Value
+    physical_name: thrs_val
+    business_meaning: Giá trị ngưỡng tại thời điểm phát cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.threshold_value
+    comment: Lưu dạng Text. Snapshot ngưỡng.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Compare Period Count
+    physical_name: cmpr_prd_cnt
+    business_meaning: Số kỳ so sánh tại thời điểm phát cảnh báo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.compare_period_time
+    comment: Snapshot.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Alert Message
+    physical_name: alert_msg
+    business_meaning: Nội dung thông báo cảnh báo (đã render từ template).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.alert_message
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Triggered At
+    physical_name: triggered_at
+    business_meaning: Thời điểm phát sinh cảnh báo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.triggered_at
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Triggered By Schedule Id
+    physical_name: triggered_by_shd_id
+    business_meaning: FK đến lịch đồng bộ đã kích hoạt cảnh báo. Nullable khi alert thủ công.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.triggered_by_job_id
+    comment: "FK target: Risk Indicator Schedule.Risk Indicator Schedule Id. Nullable — HLD T3-02: alert thủ công không có triggered_by_job_id."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Triggered By Schedule Code
+    physical_name: triggered_by_shd_code
+    business_meaning: Mã lịch đồng bộ đã kích hoạt cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.triggered_by_job_id
+    comment: "Lookup pair: Risk Indicator Schedule.Risk Indicator Schedule Code. Pair with Triggered By Schedule Id. Nullable."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Handler User Id
+    physical_name: handler_usr_id
+    business_meaning: User ID người được giao xử lý cảnh báo (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.handler_user_id
+    comment: Denormalized — không có User entity trên Atomic.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Handler User Name
+    physical_name: handler_usr_nm
+    business_meaning: Tên người được giao xử lý cảnh báo (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.handler_user_name
+    comment: Denormalized. Pair với Handler User Id.
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Alert Status Code
+    physical_name: alert_st_code
+    business_meaning: "Trạng thái cảnh báo: 0=Chưa xử lý, 1=Đang xử lý, 2=Đã xử lý, 3=Đã huỷ/Đã bỏ qua."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.status
+    comment: "Scheme: RISK_ALERT_STATUS."
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null
+
+  - name: Assigned At
+    physical_name: asgn_at
+    business_meaning: Thời điểm phân công xử lý cảnh báo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert
+    source_column: QLRR.risk_alert.assigned_at
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert'"
+    etl_derived_value: null

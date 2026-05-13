@@ -1,0 +1,610 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mbr_prd_rpt-FMS.RPTMEMBER
+  logical_name: "Atomic - Member Periodic Report – source FMS.RPTMEMBER"
+  physical_name: mbr_prd_rpt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Communication
+  bcv_concept: "[Event] Communication"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Báo cáo định kỳ do thành viên thị trường nộp lên UBCKNN theo từng kỳ báo cáo. Ghi nhận trạng thái nộp và thời hạn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RPTMEMBER
+
+attributes:
+  - name: Member Periodic Report Id
+    physical_name: mbr_prd_rpt_id
+    business_meaning: Khóa đại diện cho báo cáo định kỳ thành viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report Code
+    physical_name: mbr_prd_rpt_code
+    business_meaning: Mã định danh báo cáo. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Investment Fund Id
+    physical_name: ivsm_fnd_id
+    business_meaning: FK đến quỹ đầu tư nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.FndId
+    comment: "FK target: Investment Fund.Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: ivsm_fnd_code
+    business_meaning: Mã quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.FndId
+    comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Id
+    physical_name: cstd_bnk_id
+    business_meaning: FK đến ngân hàng LKGS nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.BkMId
+    comment: "FK target: Custodian Bank.Custodian Bank Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: cstd_bnk_code
+    business_meaning: Mã ngân hàng LKGS.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.BkMId
+    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: frgn_fnd_mgt_ou_id
+    business_meaning: FK đến VPĐD/CN QLQ NN nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.FrBrId
+    comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: frgn_fnd_mgt_ou_code
+    business_meaning: Mã VPĐD/CN QLQ NN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.FrBrId
+    comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Foreign Fund Management Organization Unit Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Template Id
+    physical_name: rpt_tpl_id
+    business_meaning: FK đến biểu mẫu báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.RptId
+    comment: "FK target: Report Template.Report Template Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Template Code
+    physical_name: rpt_tpl_code
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.RptId
+    comment: "Lookup pair: Report Template.Report Template Code. Pair with Report Template Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Reporting Period Id
+    physical_name: rpt_prd_id
+    business_meaning: FK đến kỳ báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.PrdId
+    comment: "FK target: Reporting Period.Reporting Period Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Reporting Period Code
+    physical_name: rpt_prd_code
+    business_meaning: Mã kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.PrdId
+    comment: "Lookup pair: Reporting Period.Reporting Period Code. Pair with Reporting Period Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Is Import Indicator
+    physical_name: is_impr_ind
+    business_meaning: "Là báo cáo có import: 1-Có; 2-Không."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.IsImport
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.RptName
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Content Summary
+    physical_name: cntnt_smy
+    business_meaning: Tóm tắt nội dung báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.ContentSummary
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: "Loại báo cáo: định kỳ hoặc bất thường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.ReportType
+    comment: "Scheme: FMS_REPORT_TYPE."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Reporting Member Type Code
+    physical_name: rpt_mbr_tp_code
+    business_meaning: Loại thành viên nộp báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.Type
+    comment: "Scheme: FMS_REPORTING_MEMBER_TYPE."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Reporting Period Type Code
+    physical_name: rpt_prd_tp_code
+    business_meaning: Kiểu kỳ báo cáo (tháng/quý/năm).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.PeriodType
+    comment: "Scheme: FMS_REPORTING_PERIOD_TYPE."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Year Value
+    physical_name: yr_val
+    business_meaning: Năm báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.YearValue
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Day Report
+    physical_name: day_rpt
+    business_meaning: Ngày trong kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.DayReport
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Submission Deadline Date
+    physical_name: subm_ddln_dt
+    business_meaning: Thời hạn nộp báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.DeadlineSend
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: subm_dt
+    business_meaning: Ngày nộp báo cáo thực tế.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.DateSubmitted
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Submission Status Code
+    physical_name: rpt_subm_st_code
+    business_meaning: Trạng thái nộp báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.Status
+    comment: "Scheme: FMS_REPORT_SUBMISSION_STATUS."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: FMS.RPTMEMBER.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Submission Schedule Id
+    physical_name: rpt_subm_shd_id
+    business_meaning: FK đến định kỳ gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: "FK target: Report Submission Schedule.Report Submission Schedule Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Submission Schedule Code
+    physical_name: rpt_subm_shd_code
+    business_meaning: Mã định kỳ gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: "Lookup pair: Report Submission Schedule.Report Submission Schedule Code. Pair with Report Submission Schedule Id."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả lần gửi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Reason
+    physical_name: rsn
+    business_meaning: Lý do gửi (áp dụng gửi lại).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Re Submission Reason
+    physical_name: re_subm_rsn
+    business_meaning: Lý do gửi lại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Attachment File
+    physical_name: attch_file
+    business_meaning: Tệp đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày số liệu báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Submission Timestamp
+    physical_name: subm_tms
+    business_meaning: Thời điểm gửi chính xác.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Is Deleted Indicator
+    physical_name: is_del_ind
+    business_meaning: "Cờ xóa tạm: 1-Xóa; 0-Không xóa."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Submission Status Code
+    physical_name: subm_st_code
+    business_meaning: "Trạng thái lần gửi: 4-Đã gửi; 5-Yêu cầu gửi lại; 6-Đã gửi lại."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS."
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null
+
+  - name: Version
+    physical_name: vrsn
+    business_meaning: Phiên bản báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMEMBER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMEMBER'"
+    etl_derived_value: null

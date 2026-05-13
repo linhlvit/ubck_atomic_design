@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-geo-ECAT.ECAT_06_WardOld
+  logical_name: "Atomic - Geographic Area – source ECAT.ECAT_06_WardOld"
+  physical_name: geo
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: "[Location] Geographic Area"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ECAT
+  description: |
+    Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code. Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ECAT-ECAT_06_WardOld
+
+attributes:
+  - name: Geographic Area Id
+    physical_name: geo_id
+    business_meaning: Khóa đại diện cho khu vực địa lý.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Geographic Area Code
+    physical_name: geo_code
+    business_meaning: Mã khu vực địa lý. Map từ PK bảng nguồn (cột code/id tùy bảng). Dùng chung cho mọi cấp hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: "ECAT.ECAT_01_Country.code, ECAT.ECAT_02_Region.code, ECAT.ECAT_03_ProvinceOld.code, ECAT.ECAT_04_Province.code, ECAT.ECAT_05_DistrictOld.code, ECAT.ECAT_06_WardOld.code, ECAT.ECAT_07_Ward.code"
+    comment: BK của entity. Mã được gán bởi HTTT/ECAT — unique trong từng cấp hành chính. ETL cần namespace nếu trùng code giữa các cấp.
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Geographic Area Short Code
+    physical_name: geo_shrt_code
+    business_meaning: Mã viết tắt quốc tịch/quốc gia.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: Mã ISO hoặc mã nghiệp vụ do FIMS định nghĩa.
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Geographic Area Name
+    physical_name: geo_nm
+    business_meaning: Tên khu vực địa lý (tên đầy đủ tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: "ECAT.ECAT_01_Country.name, ECAT.ECAT_02_Region.name, ECAT.ECAT_03_ProvinceOld.name, ECAT.ECAT_04_Province.name, ECAT.ECAT_05_DistrictOld.name, ECAT.ECAT_06_WardOld.name, ECAT.ECAT_07_Ward.name"
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: "Trạng thái: 0: Không sử dụng 1: Sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Geographic Area Type Code
+    physical_name: geo_tp_code
+    business_meaning: "Loại khu vực địa lý — phân biệt cấp hành chính: COUNTRY/REGION/PROVINCE/PROVINCE_OLD/DISTRICT_OLD/WARD/WARD_OLD."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: ETL derives từ bảng nguồn (ECAT_01→COUNTRY; ECAT_02→REGION; ECAT_03→PROVINCE_OLD; ECAT_04→PROVINCE; ECAT_05→DISTRICT_OLD; ECAT_06→WARD_OLD; ECAT_07→WARD)
+
+  - name: Geographic Area Business Code
+    physical_name: geo_bsn_code
+    business_meaning: Mã quốc tịch/quốc gia (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Id
+    physical_name: prn_geo_id
+    business_meaning: FK tự tham chiếu đến khu vực cha trong phân cấp hành chính.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: null
+    comment: "FK target: Geographic Area.Geographic Area Id. Self-join phân cấp: COUNTRY (cha=null) → REGION → PROVINCE_OLD/PROVINCE → DISTRICT_OLD → WARD_OLD/WARD. ETL resolve parent_code sang surrogate Id."
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Code
+    physical_name: prn_geo_code
+    business_meaning: Mã khu vực cha — denormalized để tiện tra cứu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_06_WardOld
+    source_column: "ECAT.ECAT_02_Region.parent_code, ECAT.ECAT_03_ProvinceOld.parent_code, ECAT.ECAT_04_Province.parent_code, ECAT.ECAT_05_DistrictOld.parent_code, ECAT.ECAT_06_WardOld.parent_code, ECAT.ECAT_07_Ward.parent_code"
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic Area Id. ECAT_01_Country không có parent_code (NULL)."
+    classification_context: "Source System Code = 'ECAT_ECAT_06_WardOld'"
+    etl_derived_value: null

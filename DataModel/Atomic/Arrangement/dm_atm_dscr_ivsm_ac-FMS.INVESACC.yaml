@@ -1,0 +1,246 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscr_ivsm_ac-FMS.INVESACC
+  logical_name: "Atomic - Discretionary Investment Account – source FMS.INVESACC"
+  physical_name: dscr_ivsm_ac
+  version: "1.0"
+  status: approved
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Financial Portfolio Management Arrangement"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Tài khoản đầu tư ủy thác — hợp đồng dịch vụ quản lý danh mục tài chính giữa nhà đầu tư ủy thác và công ty quản lý quỹ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-INVESACC
+
+attributes:
+  - name: Discretionary Investment Account Id
+    physical_name: dscr_ivsm_ac_id
+    business_meaning: Khóa đại diện cho hợp đồng ủy thác quản lý danh mục.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: INVESACC
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Discretionary Investment Account Code
+    physical_name: dscr_ivsm_ac_code
+    business_meaning: Mã định danh tài khoản ủy thác. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Discretionary Investment Investor Id
+    physical_name: dscr_ivsm_ivsr_id
+    business_meaning: FK đến nhà đầu tư ủy thác.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.InvesId
+    comment: "FK target: Discretionary Investment Investor.Discretionary Investment Investor Id."
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Discretionary Investment Investor Code
+    physical_name: dscr_ivsm_ivsr_code
+    business_meaning: Mã nhà đầu tư ủy thác.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.InvesId
+    comment: "Lookup pair: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Discretionary Investment Investor Id."
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Account Number
+    physical_name: ac_nbr
+    business_meaning: Số tài khoản ủy thác.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.Account
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Account Place
+    physical_name: ac_plc
+    business_meaning: Nơi lưu ký tài khoản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.AccPlace
+    comment: "Cần xác nhận: có phải FK đến Custodian Bank không? Tạm giữ dạng Text."
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Contract Number
+    physical_name: ctr_nbr
+    business_meaning: Số hợp đồng ủy thác quản lý danh mục.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.ContractNo
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Committed Capital Amount
+    physical_name: cmmt_cptl_amt
+    business_meaning: Quy mô vốn ủy thác cam kết (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.ActScale
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Actual Capital Amount
+    physical_name: act_cptl_amt
+    business_meaning: Quy mô vốn ủy thác thực tế (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.AdScale
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Management Fee Rate
+    physical_name: mgt_fee_rate
+    business_meaning: "Phí quản lý theo điều khoản hợp đồng (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.ManagerFee
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hợp đồng ủy thác.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.Status
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.DateReport
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVESACC
+    source_column: FMS.INVESACC.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVESACC'"
+    etl_derived_value: null

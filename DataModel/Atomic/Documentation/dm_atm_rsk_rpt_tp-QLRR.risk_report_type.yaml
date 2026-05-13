@@ -1,0 +1,120 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_rpt_tp-QLRR.risk_report_type
+  logical_name: "Atomic - Risk Report Type – source QLRR.risk_report_type"
+  physical_name: rsk_rpt_tp
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: QLRR
+  description: |
+    Danh mục loại báo cáo rủi ro (Báo cáo nhanh hàng tháng v.v.). Master entity có lifecycle. FK từ Risk Report Upload Batch.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_report_type
+
+attributes:
+  - name: Risk Report Type Id
+    physical_name: rsk_rpt_tp_id
+    business_meaning: Khóa đại diện cho loại báo cáo rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_report_type
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_type'"
+    etl_derived_value: null
+
+  - name: Risk Report Type Code
+    physical_name: rsk_rpt_tp_code
+    business_meaning: Mã loại báo cáo. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_type
+    source_column: QLRR.risk_report_type.code
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_report_type'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_type
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_type'"
+    etl_derived_value: null
+
+  - name: Report Type Name
+    physical_name: rpt_tp_nm
+    business_meaning: Tên loại báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_type
+    source_column: QLRR.risk_report_type.name
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_type'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả loại báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_type
+    source_column: QLRR.risk_report_type.description
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_type'"
+    etl_derived_value: null
+
+  - name: Display Order
+    physical_name: dspl_ordr
+    business_meaning: Thứ tự hiển thị.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_type
+    source_column: QLRR.risk_report_type.display_order
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_type'"
+    etl_derived_value: null
+
+  - name: Active Flag
+    physical_name: actv_f
+    business_meaning: "Trạng thái: 0=Không hoạt động, 1=Hoạt động."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_type
+    source_column: QLRR.risk_report_type.is_active
+    comment: "Chốt T1-01: template_content không lưu trên Atomic — config kỹ thuật."
+    classification_context: "Source System Code = 'QLRR_risk_report_type'"
+    etl_derived_value: null

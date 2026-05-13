@@ -1,0 +1,260 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscl_rprs-FIMS.INFODISCREPRES
+  logical_name: "Atomic - Disclosure Representative – source FIMS.INFODISCREPRES"
+  physical_name: dscl_rprs
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Người hoặc tổ chức đại diện thực hiện công bố thông tin trên thị trường chứng khoán.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-INFODISCREPRES
+
+attributes:
+  - name: Disclosure Representative Id
+    physical_name: dscl_rprs_id
+    business_meaning: Khóa đại diện cho người/tổ chức đại diện công bố thông tin.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Disclosure Representative Code
+    physical_name: dscl_rprs_code
+    business_meaning: Mã định danh người đại diện CBTT. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nat_id
+    business_meaning: FK đến quốc tịch của người đại diện CBTT.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.NaId
+    comment: "FK target: Geographic Area.Geographic Area Id. ID quốc tịch lấy từ bảng NATIONAL."
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Mã quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.NaId
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality Id."
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên người đại diện CBTT.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.Name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: English Name
+    physical_name: en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.EName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Abbreviation
+    physical_name: abr
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.ShortName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Representative Type Code
+    physical_name: rprs_tp_code
+    business_meaning: "Loại hình: 1: Cá nhân 2: Tổ chức. Phân biệt cá nhân và tổ chức là đầu mối CBTT."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.ObjectType
+    comment: "Scheme: FIMS_MEMBER_STATUS. Lưu ý: ObjectType dùng chung scheme hay riêng — kiểm tra với FIMS_CBTT_OBJECT_TYPE nếu cần tách."
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh (áp dụng khi là cá nhân).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.DateOfBirth
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Gender Code
+    physical_name: gnd_code
+    business_meaning: "Giới tính: 1: Nam 2: Nữ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.Sex
+    comment: "Scheme: IP_GENDER. modeler_defined nếu chưa có scheme."
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.StatusId
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Business Type Codes
+    physical_name: bsn_tp_codes
+    business_meaning: Danh sách mã nghiệp vụ kinh doanh. Từ bảng junction INDIREBUSINESS.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INDIREBUSINESS.BuId
+    comment: "Pure junction INDIREBUSINESS → denormalize thành ARRAY. Scheme: FIMS_BUSINESS_TYPE. HLD decision: FIMS_HLD_Tier1.md."
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INFODISCREPRES
+    source_column: FIMS.INFODISCREPRES.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INFODISCREPRES'"
+    etl_derived_value: null

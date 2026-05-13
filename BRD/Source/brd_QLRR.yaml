@@ -1,0 +1,359 @@
+source: QLRR
+description: "Quản lý rủi ro về thị trường chứng khoán"
+brd_entries:
+  # QLRR001/003/004 — Chỉ tiêu tài chính (dùng chung schema)
+  - brd_id: BRD-SRC-QLRR-risk_indicator_category
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_category"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhóm chỉ tiêu trong 1 bộ (Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ phiếu, …)"
+      functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_indicator
+          relation: "1-N — master chỉ tiêu thuộc nhóm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_indicator
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chỉ tiêu tài chính (trong nước & quốc tế)"
+      functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_indicator_category
+          relation: "FK cha — nhóm chỉ tiêu"
+        - table: risk_indicator_value
+          relation: "1-N — số liệu hiện tại theo kỳ"
+        - table: risk_indicator_value_history
+          relation: "1-N — lịch sử thay đổi số liệu"
+        - table: risk_indicator_schedule
+          relation: "1-1 — cấu hình job đồng bộ"
+        - table: risk_alert_config
+          relation: "1-N — cấu hình cảnh báo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_indicator_custom
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_custom"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chỉ tiêu tự tạo"
+      functional_group: "QLRR003/004 Khai thác Chỉ tiêu tài chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_indicator
+          relation: "Gộp chung entity với risk_indicator — phân biệt qua CV RISK_INDICATOR_TYPE=2"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_indicator_value
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_value"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Số liệu hiện tại của chỉ tiêu theo từng kỳ (ngày/tháng/quý/năm)"
+      functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_indicator
+          relation: "FK cha — master chỉ tiêu"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_indicator_value_history
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_value_history"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thay đổi số liệu chỉ tiêu (tự động và thủ công)"
+      functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_indicator
+          relation: "FK cha — master chỉ tiêu"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_indicator_schedule
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_schedule"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình job đồng bộ chỉ tiêu"
+      functional_group: "QLRR007 Quản lý tích hợp"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_indicator
+          relation: "1-1 FK cha — chỉ tiêu cần đồng bộ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # QLRR002 — Khai thác Báo cáo
+  - brd_id: BRD-SRC-QLRR-risk_report_type
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_report_type"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại báo cáo"
+      functional_group: "QLRR002 Khai thác Báo cáo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_report_placeholder_config
+          relation: "1-N — cấu hình placeholder (out of scope)"
+        - table: risk_report_upload_batch
+          relation: "1-N — lượt tổng hợp/upload"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_report_placeholder_config
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_report_placeholder_config"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình \"đục lỗ\""
+      functional_group: "QLRR002 Khai thác Báo cáo"
+      scope_status: out_of_scope
+      scope_reason: "Config kỹ thuật — operational/system data"
+      related_tables:
+        - table: risk_report_type
+          relation: "FK cha — loại báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_report_upload_batch
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_report_upload_batch"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lượt upload file"
+      functional_group: "QLRR002 Khai thác Báo cáo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_report_type
+          relation: "FK cha — loại báo cáo"
+        - table: risk_report_file
+          relation: "1-N — file kết quả"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_report_file
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_report_file"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "File đính kèm báo cáo"
+      functional_group: "QLRR002 Khai thác Báo cáo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_report_upload_batch
+          relation: "FK cha — lượt upload"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # QLRR005 — Quản lý Cảnh báo
+  - brd_id: BRD-SRC-QLRR-risk_alert_config
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert_config"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình ngưỡng cảnh báo và người xử lý theo từng chỉ tiêu"
+      functional_group: "QLRR005 Quản lý Cảnh báo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_indicator
+          relation: "FK — chỉ tiêu hệ thống được giám sát"
+        - table: risk_alert
+          relation: "1-N — cảnh báo thực tế được kích hoạt"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_alert
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bản ghi cảnh báo thực tế được kích hoạt khi chỉ tiêu vượt ngưỡng"
+      functional_group: "QLRR005 Quản lý Cảnh báo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_alert_config
+          relation: "FK cha — cấu hình cảnh báo gốc"
+        - table: risk_indicator_schedule
+          relation: "FK (nullable) — job trigger"
+        - table: risk_alert_resolution
+          relation: "1-N — bản ghi xử lý"
+        - table: risk_alert_history
+          relation: "1-N — log sự kiện dòng thời gian"
+        - table: risk_notification
+          relation: "1-N — thông báo gửi đi"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_alert_resolution
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert_resolution"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bản ghi xử lý chi tiết cho cảnh báo"
+      functional_group: "QLRR005 Quản lý Cảnh báo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_alert
+          relation: "FK cha — cảnh báo được xử lý"
+        - table: risk_alert_resolution_file
+          relation: "1-N — file giải trình đính kèm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_alert_resolution_file
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert_resolution_file"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "File đính kèm theo giải trình cảnh báo"
+      functional_group: "QLRR005 Quản lý Cảnh báo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_alert_resolution
+          relation: "FK cha — bản ghi xử lý cảnh báo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_alert_history
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert_history"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử xử lý cảnh báo theo dòng thời gian"
+      functional_group: "QLRR005 Quản lý Cảnh báo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_alert
+          relation: "FK cha — cảnh báo"
+        - table: risk_alert_resolution
+          relation: "FK (nullable) — bản ghi xử lý liên kết"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-risk_notification
+    brd_name: "Design Atomic từ nguồn QLRR bảng risk_notification"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu trữ thông báo"
+      functional_group: "QLRR005 Quản lý Cảnh báo"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: risk_alert
+          relation: "FK cha — cảnh báo nguồn phát thông báo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # QLRR006 — Phân quyền dữ liệu (out of scope)
+  - brd_id: BRD-SRC-QLRR-permission_group
+    brd_name: "Design Atomic từ nguồn QLRR bảng permission_group"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhóm quyền"
+      functional_group: "QLRR006 Khai thác Phân quyền dữ liệu"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — phân quyền tầng ứng dụng"
+      related_tables:
+        - table: permission_group_user
+          relation: "1-N — gán user vào nhóm"
+        - table: permission_group_indicator
+          relation: "1-N — gán chỉ tiêu được phép xem"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-permission_group_user
+    brd_name: "Design Atomic từ nguồn QLRR bảng permission_group_user"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền người dùng theo nhóm quyền"
+      functional_group: "QLRR006 Khai thác Phân quyền dữ liệu"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — phân quyền tầng ứng dụng"
+      related_tables:
+        - table: permission_group
+          relation: "FK cha — nhóm quyền"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-QLRR-permission_group_indicator
+    brd_name: "Design Atomic từ nguồn QLRR bảng permission_group_indicator"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền chỉ tiêu theo nhóm quyền"
+      functional_group: "QLRR006 Khai thác Phân quyền dữ liệu"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — phân quyền tầng ứng dụng"
+      related_tables:
+        - table: permission_group
+          relation: "FK cha — nhóm quyền"
+        - table: risk_indicator
+          relation: "FK — chỉ tiêu được phân quyền"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null

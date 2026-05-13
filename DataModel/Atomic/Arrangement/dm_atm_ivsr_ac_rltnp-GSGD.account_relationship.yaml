@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ivsr_ac_rltnp-GSGD.account_relationship
+  logical_name: "Atomic - Investor Account Relationship – source GSGD.account_relationship"
+  physical_name: ivsr_ac_rltnp
+  version: "1.0"
+  status: approved
+  bcv_core_object: Arrangement
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: GSGD
+  description: |
+    Quan hệ giữa 2 tài khoản nhà đầu tư trong giám sát (IP address, MAC address, chuyển tiền). Ghi nhận độ mạnh quan hệ. FK Investor Trading Account (x2) + Account Investor Group.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-account_relationship
+
+attributes:
+  - name: Investor Account Relationship Id
+    physical_name: ivsr_ac_rltnp_id
+    business_meaning: Khóa đại diện cho mối quan hệ giữa các tài khoản nhà đầu tư.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Investor Account Relationship Code
+    physical_name: ivsr_ac_rltnp_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: First Investor Trading Account Id
+    physical_name: frst_ivsr_tdg_ac_id
+    business_meaning: FK đến tài khoản giao dịch thứ nhất.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.account_id_1
+    comment: "FK target: Investor Trading Account.Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: First Investor Trading Account Code
+    physical_name: frst_ivsr_tdg_ac_code
+    business_meaning: Mã tài khoản giao dịch thứ nhất. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.account_id_1
+    comment: "Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with First Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Second Investor Trading Account Id
+    physical_name: scd_ivsr_tdg_ac_id
+    business_meaning: FK đến tài khoản giao dịch thứ hai.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.account_id_2
+    comment: "FK target: Investor Trading Account.Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Second Investor Trading Account Code
+    physical_name: scd_ivsr_tdg_ac_code
+    business_meaning: Mã tài khoản giao dịch thứ hai. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.account_id_2
+    comment: "Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Second Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Id
+    physical_name: ac_ivsr_grp_id
+    business_meaning: FK đến nhóm tài khoản.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.account_group_id
+    comment: "FK target: Account Investor Group.Account Investor Group Id."
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Code
+    physical_name: ac_ivsr_grp_code
+    business_meaning: Mã nhóm tài khoản. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.account_group_id
+    comment: "Lookup pair: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id."
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Relation Type Code
+    physical_name: relation_tp_code
+    business_meaning: Loại quan hệ (Danh tính / IP / MAC / Tiền).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.category_item_id
+    comment: "Scheme: GSGD_ACCOUNT_RELATION_TYPE. FK suy luận → category_item."
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Relationship Value
+    physical_name: rltnp_val
+    business_meaning: "Giá trị quan hệ (IP address, MAC address, etc.)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.relationship_value
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null
+
+  - name: Strength
+    physical_name: strength
+    business_meaning: "Độ mạnh quan hệ (1-100). Điểm tính — không phải %."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_relationship
+    source_column: GSGD.account_relationship.strength
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_relationship'"
+    etl_derived_value: null

@@ -1,0 +1,386 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co_tender_ofr-IDS.company_tender_offer
+  logical_name: "Atomic - Public Company Tender Offer – source IDS.company_tender_offer"
+  physical_name: pblc_co_tender_ofr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: |
+    Chào mua công khai — bên chào mua/số lượng dự kiến/kết quả/tỷ lệ sở hữu trước-sau. FK to Public Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-company_tender_offer
+
+attributes:
+  - name: Public Company Tender Offer Id
+    physical_name: pblc_co_tender_ofr_id
+    business_meaning: Khóa đại diện cho đợt chào mua công khai.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Public Company Tender Offer Code
+    physical_name: pblc_co_tender_ofr_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: FK đến công ty đại chúng (công ty mục tiêu).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.company_profile_id
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.company_profile_id
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Tender Offeror Name
+    physical_name: tender_offeror_nm
+    business_meaning: Tên tổ chức/cá nhân chào mua công khai (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.tender_offeror_name_vi
+    comment: Text denormalized — bên chào mua không có entity Involved Party riêng trong scope IDS.
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Tender Offeror English Name
+    physical_name: tender_offeror_en_nm
+    business_meaning: Tên tổ chức/cá nhân chào mua công khai (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.tender_offeror_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Tender Offeror Identification Number
+    physical_name: tender_offeror_identn_nbr
+    business_meaning: Số CMND/Hộ chiếu/GCN ĐKDN của bên chào mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.offeror_id_no
+    comment: Text denormalized — bên chào mua không có entity riêng.
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Tender Offeror Relationship
+    physical_name: tender_offeror_rltnp
+    business_meaning: Mối quan hệ giữa bên chào mua với công ty mục tiêu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.offeror_relationship
+    comment: Text tự do từ nguồn.
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Securities Agent Name
+    physical_name: scr_agnt_nm
+    business_meaning: Tên công ty chứng khoán làm đại lý (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.securities_agent_name_vi
+    comment: Text denormalized — đại lý chứng khoán không có entity Involved Party trong scope IDS.
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Securities Agent English Name
+    physical_name: scr_agnt_en_nm
+    business_meaning: Tên công ty chứng khoán làm đại lý (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.securities_agent_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Planned Offer From Date
+    physical_name: pln_ofr_fm_dt
+    business_meaning: Thời gian dự kiến chào mua — từ ngày.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.planned_offer_from_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Planned Offer To Date
+    physical_name: pln_ofr_to_dt
+    business_meaning: Thời gian dự kiến chào mua — đến ngày.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.planned_offer_to_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Pre Offer Share Quantity
+    physical_name: pre_ofr_shr_qty
+    business_meaning: Số cổ phiếu sở hữu trước khi chào mua.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.pre_offer_share_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Pre Offer Share Ratio
+    physical_name: pre_ofr_shr_rto
+    business_meaning: Tỷ lệ cổ phiếu sở hữu trước khi chào mua.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.pre_offer_share_ratio
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Planned Offer Share Quantity
+    physical_name: pln_ofr_shr_qty
+    business_meaning: Số cổ phiếu dự kiến chào mua.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.planned_offer_share_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Planned Offer Share Ratio
+    physical_name: pln_ofr_shr_rto
+    business_meaning: Tỷ lệ cổ phiếu dự kiến chào mua.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.planned_offer_share_ratio
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Planned Offer Price Amount
+    physical_name: pln_ofr_prc_amt
+    business_meaning: Giá chào mua.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.planned_offer_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Acquired Share Quantity
+    physical_name: acq_shr_qty
+    business_meaning: Số cổ phiếu mua được trong đợt chào mua.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.acquired_share_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Acquired Share Ratio
+    physical_name: acq_shr_rto
+    business_meaning: Tỷ lệ cổ phiếu mua được trong đợt chào mua.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.acquired_share_ratio
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Post Offer Share Quantity
+    physical_name: pst_ofr_shr_qty
+    business_meaning: Số cổ phiếu sở hữu sau khi chào mua.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.post_offer_share_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Post Offer Share Ratio
+    physical_name: pst_ofr_shr_rto
+    business_meaning: Tỷ lệ cổ phiếu sở hữu sau khi chào mua.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.post_offer_share_ratio
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_tender_offer
+    source_column: IDS.company_tender_offer.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_tender_offer'"
+    etl_derived_value: null

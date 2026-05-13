@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_alert_rsl_file-QLRR.risk_alert_resolution_file
+  logical_name: "Atomic - Risk Alert Resolution File – source QLRR.risk_alert_resolution_file"
+  physical_name: rsk_alert_rsl_file
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Supporting Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: QLRR
+  description: |
+    File đính kèm giải trình cho bản ghi xử lý cảnh báo. Grain: 1 file. FK → Risk Alert Resolution.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_alert_resolution_file
+
+attributes:
+  - name: Risk Alert Resolution File Id
+    physical_name: rsk_alert_rsl_file_id
+    business_meaning: Khóa đại diện cho file đính kèm giải trình cảnh báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: Risk Alert Resolution File Code
+    physical_name: rsk_alert_rsl_file_code
+    business_meaning: Mã định danh file giải trình. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: Risk Alert Resolution Id
+    physical_name: rsk_alert_rsl_id
+    business_meaning: FK đến bản ghi xử lý giải trình.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.resolution_id
+    comment: "FK target: Risk Alert Resolution.Risk Alert Resolution Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: Risk Alert Resolution Code
+    physical_name: rsk_alert_rsl_code
+    business_meaning: Mã bản ghi xử lý giải trình.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.resolution_id
+    comment: "Lookup pair: Risk Alert Resolution.Risk Alert Resolution Code. Pair with Risk Alert Resolution Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: File Name
+    physical_name: file_nm
+    business_meaning: Tên file giải trình.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.file_name
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: File Path
+    physical_name: file_path
+    business_meaning: Đường dẫn lưu file giải trình trên hệ thống.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.file_path
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: File Size Bytes
+    physical_name: file_sz_bytes
+    business_meaning: Dung lượng file tính bằng bytes.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.file_size
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: File Type Code
+    physical_name: file_tp_code
+    business_meaning: "Loại file giải trình: PDF, DOCX, XLSX, PNG, JPG, …"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.file_type
+    comment: "Scheme: RISK_FILE_TYPE. Dùng chung với Risk Report File (Tier 3 — HLD Tier 4 note)."
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: Uploaded At
+    physical_name: uploaded_at
+    business_meaning: Thời điểm upload file giải trình.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.uploaded_at
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null
+
+  - name: Uploaded By Id
+    physical_name: uploaded_by_id
+    business_meaning: User ID người upload file giải trình (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution_file
+    source_column: QLRR.risk_alert_resolution_file.uploaded_by_id
+    comment: Denormalized — không có User entity trên Atomic.
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution_file'"
+    etl_derived_value: null

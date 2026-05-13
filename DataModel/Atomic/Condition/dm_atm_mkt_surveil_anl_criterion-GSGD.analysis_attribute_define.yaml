@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_anl_criterion-GSGD.analysis_attribute_define
+  logical_name: "Atomic - Market Surveillance Analysis Criterion – source GSGD.analysis_attribute_define"
+  physical_name: mkt_surveil_anl_criterion
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Định nghĩa tiêu chí/công thức phân tích vụ việc giám sát (ngưỡng tỷ lệ, số phiên, v.v.). Grain: 1 dòng = 1 tiêu chí.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-analysis_attribute_define
+
+attributes:
+  - name: Market Surveillance Analysis Criterion Id
+    physical_name: mkt_surveil_anl_criterion_id
+    business_meaning: Khóa đại diện cho tiêu chí phân tích giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Analysis Criterion Code
+    physical_name: mkt_surveil_anl_criterion_code
+    business_meaning: "Mã tiêu chí (ví dụ: CT_01_THRESHOLD_A). BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.attribute_code
+    comment: BK chính.
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Criterion Name
+    physical_name: criterion_nm
+    business_meaning: "Tên hiển thị tiêu chí (ví dụ: Tỷ trọng đặt/khớp lệnh > A% trong X ngày)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.attribute_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: "Mô tả chi tiết tiêu chí, dùng cho BA/SA."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.description
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Workflow Type Code
+    physical_name: workflow_tp_code
+    business_meaning: "Quy trình áp dụng: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.workflow_type
+    comment: "Scheme: GSGD_WORKFLOW_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Data Type Code
+    physical_name: data_tp_code
+    business_meaning: "Kiểu dữ liệu: NUMBER, STRING, DATE, BOOLEAN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.data_type
+    comment: "Scheme: GSGD_DATA_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Default Value
+    physical_name: dflt_val
+    business_meaning: "Giá trị mặc định (lưu dạng text, parse theo data_type)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.default_value
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Min Value
+    physical_name: min_val
+    business_meaning: Giá trị tối thiểu (nếu là NUMBER/DATE).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.min_value
+    comment: Lưu dạng Text — parse theo data_type khi sử dụng.
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Max Value
+    physical_name: max_val
+    business_meaning: Giá trị tối đa (nếu là NUMBER/DATE).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.max_value
+    comment: Lưu dạng Text — parse theo data_type khi sử dụng.
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Unit
+    physical_name: unit
+    business_meaning: "Đơn vị: %, ngày, phiên,..."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.unit
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Step
+    physical_name: step
+    business_meaning: Bước nhảy cho slider (nếu áp dụng).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.step
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Display Group
+    physical_name: dspl_grp
+    business_meaning: "Nhóm hiển thị trên màn hình (ví dụ: Tham số cấu hình báo cáo)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.display_group
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Display Order
+    physical_name: dspl_ordr
+    business_meaning: Thứ tự hiển thị.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.display_order
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null
+
+  - name: Active Flag
+    physical_name: actv_f
+    business_meaning: "Trạng thái sử dụng: 0=Không dùng, 1=Đang dùng."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_define
+    source_column: GSGD.analysis_attribute_define.active_flag
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_define'"
+    etl_derived_value: null

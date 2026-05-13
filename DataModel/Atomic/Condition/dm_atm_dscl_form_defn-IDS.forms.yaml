@@ -1,0 +1,400 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscl_form_defn-IDS.forms
+  logical_name: "Atomic - Disclosure Form Definition – source IDS.forms"
+  physical_name: dscl_form_defn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Định nghĩa loại hồ sơ/tin CBTT — loại form/quy trình duyệt/nghiệp vụ. Master entity của vòng đời CBTT. Self-join parent_form_id.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-forms
+
+attributes:
+  - name: Disclosure Form Definition Id
+    physical_name: dscl_form_defn_id
+    business_meaning: Khóa đại diện cho định nghĩa loại hồ sơ/tin CBTT.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: forms
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Disclosure Form Definition Code
+    physical_name: dscl_form_defn_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Disclosure Form Definition Business Code
+    physical_name: dscl_form_defn_bsn_code
+    business_meaning: Mã form (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.form_cd
+    comment: Mã nghiệp vụ — khác BK kỹ thuật.
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Disclosure Form Definition Name
+    physical_name: dscl_form_defn_nm
+    business_meaning: Tên form (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.form_name_vi
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Disclosure Form Definition English Name
+    physical_name: dscl_form_defn_en_nm
+    business_meaning: Tên form (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.form_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Form Type Code
+    physical_name: form_tp_code
+    business_meaning: "Loại tin hay hồ sơ (hồ sơ, cbtt)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.form_type_cd
+    comment: "Scheme: IDS_FORM_TYPE."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: News Type Code
+    physical_name: news_tp_code
+    business_meaning: Loại tin gốc.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.news_type_cd
+    comment: "Scheme: IDS_NEWS_TYPE. Dùng chung với notifications.news_type_cd."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Sub News Type Code
+    physical_name: sub_news_tp_code
+    business_meaning: Loại tin con.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.sub_news_type_cd
+    comment: "Scheme: IDS_SUB_NEWS_TYPE."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Officer Approval Flag
+    physical_name: ofcr_aprv_f
+    business_meaning: "Chuyên viên tự động duyệt (1=đã duyệt / 0=chưa duyệt)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.officer_approval_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Post Checked Flag
+    physical_name: pst_checked_f
+    business_meaning: "Hậu kiểm tin (1=đã kiểm tra / 0=chưa kiểm tra)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.post_checked_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Activated Flag
+    physical_name: activated_f
+    business_meaning: "Kích hoạt (1=đã kích hoạt / 0=chưa kích hoạt)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.activated_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: CA Signed Flag
+    physical_name: ca_signed_f
+    business_meaning: "Ký CA (chứng thư số): 0=bắt buộc / 1=không bắt buộc."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.ca_signed_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Leader Approval Flag
+    physical_name: leader_aprv_f
+    business_meaning: "Form tự động duyệt cấp lãnh đạo (1=đã duyệt / 0=chưa duyệt)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.leader_approval_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Published Flag
+    physical_name: published_f
+    business_meaning: "Form được công bố (1=được công bố / 0=chưa công bố)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.published_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Title Formula
+    physical_name: ttl_frml
+    business_meaning: Công thức cho tiêu đề form tin.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.title_formula
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Parent Disclosure Form Definition Id
+    physical_name: prn_dscl_form_defn_id
+    business_meaning: "FK đến form cha (self-join)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.parent_id
+    comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Self-join."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Parent Disclosure Form Definition Code
+    physical_name: prn_dscl_form_defn_code
+    business_meaning: Mã form cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.parent_id
+    comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code. Pair with Parent Disclosure Form Definition Id. Self-join."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Report Type
+    physical_name: rpt_tp
+    business_meaning: "Loại báo cáo (tháng, quý, năm, bán niên...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.report_type
+    comment: Text denormalized — không có scheme tài liệu hóa.
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Control Unit Code
+    physical_name: cntl_unit_code
+    business_meaning: Đơn vị kiểm soát (Dept_cd của bảng departments).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.control_unit_cd
+    comment: "Denormalized text — departments out-of-scope theo HLD; FK Regulatory Authority Organization Unit không có lookup trong IDS scope."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Operating Unit Codes
+    physical_name: oprg_unit_codes
+    business_meaning: "Đơn vị sử dụng (nhiều đơn vị cách nhau bằng \";\" Dept_cd của bảng departments)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.operating_unit_cd
+    comment: "Denormalized text — multi-value chuỗi delimited; departments out-of-scope."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Created User
+    physical_name: crt_usr
+    business_meaning: User khi tạo hồ sơ thuộc (ny/tv).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.created_user
+    comment: Text tự do từ nguồn.
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.created_at
+    comment: Nguồn dùng tên cột created_at (khác các bảng khác dùng created_date).
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Created Date
+    physical_name: crt_dt
+    business_meaning: Ngày tạo (legacy field).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.created_date
+    comment: Nguồn có cả created_at lẫn created_date — giữ cả hai.
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: forms
+    source_column: IDS.forms.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_forms'"
+    etl_derived_value: null

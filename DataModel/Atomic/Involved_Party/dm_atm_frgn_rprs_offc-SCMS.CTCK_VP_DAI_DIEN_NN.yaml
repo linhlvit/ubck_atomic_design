@@ -1,0 +1,302 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-frgn_rprs_offc-SCMS.CTCK_VP_DAI_DIEN_NN
+  logical_name: "Atomic - Foreign Representative Office – source SCMS.CTCK_VP_DAI_DIEN_NN"
+  physical_name: frgn_rprs_offc
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization Unit"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Văn phòng đại diện của công ty chứng khoán nước ngoài tại Việt Nam. Pháp nhân độc lập, không FK đến CTCK trong nước.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_VP_DAI_DIEN_NN
+
+attributes:
+  - name: Foreign Representative Office Id
+    physical_name: frgn_rprs_offc_id
+    business_meaning: Khóa đại diện cho văn phòng đại diện nước ngoài.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Foreign Representative Office Code
+    physical_name: frgn_rprs_offc_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Parent Company Name
+    physical_name: prn_co_nm
+    business_meaning: Tên công ty mẹ (công ty chứng khoán nước ngoài).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.TEN_CONG_TY_ME
+    comment: Tên pháp nhân nước ngoài — denormalized text.
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Parent Company Address
+    physical_name: prn_co_adr
+    business_meaning: Địa chỉ trụ sở công ty mẹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.DIA_CHI
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Parent Company License Number
+    physical_name: prn_co_license_nbr
+    business_meaning: Số giấy phép kinh doanh công ty mẹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.GIAY_PHEP_KINH_DOANH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Parent Company License Date
+    physical_name: prn_co_license_dt
+    business_meaning: Ngày cấp giấy phép kinh doanh công ty mẹ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.NGAY_CAP_GPKD
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Parent Company License Issuer
+    physical_name: prn_co_license_issur
+    business_meaning: Nơi cấp giấy phép kinh doanh công ty mẹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.NOI_CAP_GPKD
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Office Name
+    physical_name: offc_nm
+    business_meaning: Tên văn phòng đại diện tại Việt Nam.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.TEN_VAN_PHONG_DAI_DIEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Office Address
+    physical_name: offc_adr
+    business_meaning: Địa chỉ văn phòng đại diện tại Việt Nam.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.DIA_CHI_VAN_PHONG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Office License Number
+    physical_name: offc_license_nbr
+    business_meaning: Số giấy phép hoạt động văn phòng đại diện tại VN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.GIAY_PHEP_KINH_DOANH_VP
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Office License Date
+    physical_name: offc_license_dt
+    business_meaning: Ngày cấp giấy phép văn phòng đại diện.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.NGAY_CAP_GPKD_VP
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Office License Issuer
+    physical_name: offc_license_issur
+    business_meaning: Nơi cấp giấy phép văn phòng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.NOI_CAP_GPKD_VP
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Representative Name
+    physical_name: rprs_nm
+    business_meaning: Trưởng văn phòng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.TRUONG_DAI_DIEN
+    comment: Denormalized — tên cá nhân đảm nhận chức vụ.
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nat_id
+    business_meaning: FK đến quốc tịch trưởng đại diện.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.QUOC_TICH_ID
+    comment: "FK target: Geographic Area.Geographic Area Id. Lookup: DM_QUOC_TICH."
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Mã quốc tịch trưởng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.QUOC_TICH_ID
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Foreign Representative Office Status Code
+    physical_name: frgn_rprs_offc_st_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.TRANG_THAI
+    comment: "Scheme: SCMS_COMPANY_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_VP_DAI_DIEN_NN
+    source_column: SCMS.CTCK_VP_DAI_DIEN_NN.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_VP_DAI_DIEN_NN'"
+    etl_derived_value: null

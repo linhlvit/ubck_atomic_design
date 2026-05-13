@@ -1,0 +1,161 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnd_dstr_agnt-FMS.AGENCIES
+  logical_name: "Atomic - Fund Distribution Agent – source FMS.AGENCIES"
+  physical_name: fnd_dstr_agnt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Mutual Fund Distributor"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: Tổ chức đại lý được ủy quyền phân phối chứng chỉ quỹ đầu tư cho nhà đầu tư.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-AGENCIES
+
+attributes:
+  - name: Fund Distribution Agent Id
+    physical_name: fnd_dstr_agnt_id
+    business_meaning: Khóa đại diện cho tổ chức đại lý phân phối quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Code
+    physical_name: fnd_dstr_agnt_code
+    business_meaning: Mã định danh đại lý phân phối quỹ. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Name
+    physical_name: fnd_dstr_agnt_nm
+    business_meaning: Tên đầy đủ đại lý phân phối quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.Name
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Short Name
+    physical_name: fnd_dstr_agnt_shrt_nm
+    business_meaning: Tên viết tắt đại lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.ShortName
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Agency Type Code
+    physical_name: agnc_tp_code
+    business_meaning: Loại đại lý phân phối quỹ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.AgencyTypeId
+    comment: "Scheme: FMS_AGENCY_TYPE."
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.Status
+    comment: "Scheme: FMS_OPERATION_STATUS."
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES
+    source_column: FMS.AGENCIES.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIES'"
+    etl_derived_value: null

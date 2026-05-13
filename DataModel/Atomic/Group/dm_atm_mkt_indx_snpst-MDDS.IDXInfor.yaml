@@ -1,0 +1,414 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_indx_snpst-MDDS.IDXInfor
+  logical_name: "Atomic - Market Index Snapshot – source MDDS.IDXInfor"
+  physical_name: mkt_indx_snpst
+  version: "1.0"
+  status: approved
+  bcv_core_object: Group
+  bcv_concept: "[Group] Share Index"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Append
+  source: MDDS
+  description: |
+    Snapshot thông tin chỉ số thị trường chứng khoán (VN30/VNINDEX/HNX30...) tại thời điểm phát sinh: giá trị chỉ số
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-MDDS-IDXInfor
+
+attributes:
+  - name: Market Index Snapshot Id
+    physical_name: mkt_indx_snpst_id
+    business_meaning: Khóa đại diện cho bản tin thông tin chỉ số thị trường.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Market Index Snapshot Code
+    physical_name: mkt_indx_snpst_code
+    business_meaning: Định danh duy nhất bản tin (GUID). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.ID
+    comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Index Code
+    physical_name: indx_code
+    business_meaning: Mã chỉ số (VNINDEX / HNXINDEX / VN30 / HNX30 / UPCOMINDEX...). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.IndexCode
+    comment: BK nghiệp vụ. Phân biệt chỉ số trong ngày giao dịch. Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning: Ngày giao dịch. BK.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.TradingDate
+    comment: BK. Nguồn string — ETL cần parse sang Date. Cần validate format ngày hợp lệ.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Update Time
+    physical_name: udt_tm
+    business_meaning: Thời gian cập nhật theo giờ máy chủ. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.Time
+    comment: BK — lưu dạng Text vì nguồn string là chuỗi thời gian trong ngày (HHmmss) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Index Name
+    physical_name: indx_nm
+    business_meaning: Tên đầy đủ của chỉ số.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.IndexName
+    comment: Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Floor Code
+    physical_name: flr_code
+    business_meaning: Mã sàn giao dịch của chỉ số.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.FloorCode
+    comment: "Scheme: MDDS_FLOOR_CODE. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Index Type Code
+    physical_name: indx_tp_code
+    business_meaning: "Loại chỉ số: 0=Toàn thị trường / 1=Bảng giao dịch / 2=Phức hợp / 3=Ngành / 4=Top ranking."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.TypeIndex
+    comment: "Scheme: MDDS_INDEX_TYPE. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số (0 / 1 / 2 / 3 / 4) làm code."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Current Status Code
+    physical_name: crn_st_code
+    business_meaning: "Trạng thái chỉ số (=1 bình thường)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.CurrentStatus
+    comment: "Scheme: MDDS_INDEX_STATUS. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số làm code."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Index Id
+    physical_name: indx_id
+    business_meaning: ID số của sàn giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.IndexId
+    comment: Nguồn int — ETL cần convert sang string. Mã số nội bộ sàn — denormalized text.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Index Value
+    physical_name: indx_val
+    business_meaning: Giá trị chỉ số hiện tại.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.IndexValue
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Prior Index Value
+    physical_name: prev_indx_val
+    business_meaning: Giá trị chỉ số tham chiếu (đóng cửa phiên gần nhất).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.PriorIndexVal
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Highest Index Value
+    physical_name: high_indx_val
+    business_meaning: Giá trị chỉ số cao nhất trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.HighestIndex
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Lowest Index Value
+    physical_name: lws_indx_val
+    business_meaning: Giá trị chỉ số thấp nhất trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.LowestIndex
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Close Index Value
+    physical_name: cls_indx_val
+    business_meaning: Giá trị chỉ số đóng cửa (cập nhật sau khi kết thúc phiên).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.CloseIndex
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Index Change Value
+    physical_name: indx_chg_val
+    business_meaning: Thay đổi giá trị chỉ số so với phiên trước (tuyệt đối).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.Change
+    comment: Nguồn double — khớp tự nhiên với Currency Amount. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Index Change Ratio
+    physical_name: indx_chg_rto
+    business_meaning: Tỷ lệ phần trăm thay đổi so với phiên trước.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.RatioChange
+    comment: Nguồn double — khớp tự nhiên với Percentage.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Volume
+    physical_name: tot_mtch_vol
+    business_meaning: Tổng khối lượng khớp lệnh thường (lô chẵn) tích lũy.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.TotalQtty
+    comment: Nguồn double — ETL cần cast sang int. Cần validate không vượt quá INT_MAX (double có thể lưu giá trị lớn hơn int).
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Value
+    physical_name: tot_mtch_val
+    business_meaning: Tổng giá trị khớp lệnh thường (lô chẵn) tích lũy.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.TotalValue
+    comment: Nguồn double — khớp tự nhiên với Currency Amount (decimal).
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Volume
+    physical_name: pt_tot_vol
+    business_meaning: Tổng khối lượng khớp lệnh thỏa thuận tích lũy.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.TotalQttyPT
+    comment: Nguồn double — ETL cần cast sang int. Cần validate không vượt quá INT_MAX.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Value
+    physical_name: pt_tval
+    business_meaning: Tổng giá trị khớp lệnh thỏa thuận tích lũy.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.TotalValuePT
+    comment: Nguồn double — khớp tự nhiên với Currency Amount (decimal).
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Total Stock Count
+    physical_name: tot_stk_cnt
+    business_meaning: Tổng số mã chứng khoán trong rổ tính chỉ số.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.TotalStock
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Advance Count
+    physical_name: advnc_cnt
+    business_meaning: Tổng số mã chứng khoán tăng giá trong rổ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.Up
+    comment: Nguồn int — khớp tự nhiên với Small Counter.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Decline Count
+    physical_name: decline_cnt
+    business_meaning: Tổng số mã chứng khoán giảm giá trong rổ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.Down
+    comment: Nguồn int — khớp tự nhiên với Small Counter.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: No Change Count
+    physical_name: no_chg_cnt
+    business_meaning: Tổng số mã chứng khoán đứng giá trong rổ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.NoChange
+    comment: Nguồn int — khớp tự nhiên với Small Counter.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Ceiling Count
+    physical_name: ceiling_cnt
+    business_meaning: Tổng số mã chứng khoán tăng trần trong rổ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.Ceiling
+    comment: Nguồn int — khớp tự nhiên với Small Counter.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null
+
+  - name: Floor Limit Count
+    physical_name: flr_lmt_cnt
+    business_meaning: Tổng số mã chứng khoán giảm sàn trong rổ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: IDXInfor
+    source_column: MDDS.IDXInfor.Floor
+    comment: Nguồn int — khớp tự nhiên với Small Counter.
+    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    etl_derived_value: null

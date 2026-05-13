@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscl_shrhlr_chg-SCMS.CBTT_CO_DONG
+  logical_name: "Atomic - Disclosure Shareholder Change – source SCMS.CBTT_CO_DONG"
+  physical_name: dscl_shrhlr_chg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  description: |
+    Thông tin thay đổi cổ đông được công bố bởi CTCK. Ghi nhận cổ đông và tỷ lệ sở hữu thay đổi.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CBTT_CO_DONG
+
+attributes:
+  - name: Disclosure Shareholder Change Id
+    physical_name: dscl_shrhlr_chg_id
+    business_meaning: Khóa đại diện cho thông tin cổ đông được công bố.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Disclosure Shareholder Change Code
+    physical_name: dscl_shrhlr_chg_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán công bố.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Transaction Type Code
+    physical_name: txn_tp_code
+    business_meaning: Loại giao dịch cổ đông.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.LOAI_GIAO_DICH_ID
+    comment: "Scheme: SCMS_SHAREHOLDER_TXN_TYPE. FK đến bảng danh mục DM_LOAI_GIAO_DICH_CD — lưu dạng Classification Value."
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Disclosure Date
+    physical_name: dscl_dt
+    business_meaning: Ngày công bố thông tin.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.NGAY_CONG_BO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Content
+    physical_name: cntnt
+    business_meaning: Nội dung công bố.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.NOI_DUNG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Attachment File
+    physical_name: attch_file
+    business_meaning: Tệp đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.FILE_DINH_KEM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Disclosure Status Code
+    physical_name: dscl_st_code
+    business_meaning: Trạng thái công bố.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.TRANG_THAI
+    comment: "Scheme: SCMS_DISCLOSURE_STATUS."
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CO_DONG
+    source_column: SCMS.CBTT_CO_DONG.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CO_DONG'"
+    etl_derived_value: null

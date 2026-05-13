@@ -1,0 +1,106 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr-ECAT.ECAT_14_Security
+  logical_name: "Atomic - Security – source ECAT.ECAT_14_Security"
+  physical_name: scr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Product
+  bcv_concept: "[Product] Security Instrument"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ECAT
+  description: |
+    Danh mục chứng khoán đang/đã lưu hành trên thị trường Việt Nam (cổ phiếu, trái phiếu, chứng chỉ quỹ, chứng quyền...). ECAT là source chuẩn cho Code + Name. Các source khác (GSGD/FIMS/IDS) sẽ mở rộng attribute sau.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ECAT-ECAT_14_Security
+
+attributes:
+  - name: Security Id
+    physical_name: scr_id
+    business_meaning: Khóa đại diện cho chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ECAT
+    source_table: ECAT_14_Security
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'ECAT_ECAT_14_Security'"
+    etl_derived_value: null
+
+  - name: Security Code
+    physical_name: scr_code
+    business_meaning: "Mã chứng khoán (ví dụ: VIC, VCB, VN30F1M). Map từ PK bảng nguồn. Unique toàn thị trường."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_14_Security
+    source_column: ECAT.ECAT_14_Security.code
+    comment: "BK của entity. Unique toàn thị trường — không cần kết hợp với market_code (D-07 HLD Overview). BCV Term: Security Instrument Identifier."
+    classification_context: "Source System Code = 'ECAT_ECAT_14_Security'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_14_Security
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_14_Security'"
+    etl_derived_value: null
+
+  - name: Security Name
+    physical_name: scr_nm
+    business_meaning: Tên chứng khoán đầy đủ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_14_Security
+    source_column: ECAT.ECAT_14_Security.name
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_14_Security'"
+    etl_derived_value: null
+
+  - name: Security Type Code
+    physical_name: scr_tp_code
+    business_meaning: "Loại chứng khoán (cổ phiếu, trái phiếu, chứng chỉ quỹ, chứng quyền...)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_14_Security
+    source_column: ECAT.ECAT_14_Security.security_type_code
+    comment: "Scheme: ECAT_SECURITY_TYPE. Values load từ ECAT_12_SecurityType."
+    classification_context: "Source System Code = 'ECAT_ECAT_14_Security'"
+    etl_derived_value: null
+
+  - name: Market Code
+    physical_name: mkt_code
+    business_meaning: "Mã thị trường niêm yết/giao dịch (HOSE, HNX, UPCOM, OTC...)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_14_Security
+    source_column: ECAT.ECAT_14_Security.market_code
+    comment: "Scheme: ECAT_MARKET. Values load từ ECAT_13_Market."
+    classification_context: "Source System Code = 'ECAT_ECAT_14_Security'"
+    etl_derived_value: null

@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co_ste_cptl-IDS.state_capital
+  logical_name: "Atomic - Public Company State Capital – source IDS.state_capital"
+  physical_name: pblc_co_ste_cptl
+  version: "1.0"
+  status: approved
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Thông tin sở hữu nhà nước trong công ty đại chúng — tên đại diện nhà nước và tỷ lệ sở hữu. FK to Public Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-state_capital
+
+attributes:
+  - name: Public Company State Capital Id
+    physical_name: pblc_co_ste_cptl_id
+    business_meaning: Khóa đại diện cho bản ghi sở hữu nhà nước trong công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: state_capital
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Public Company State Capital Code
+    physical_name: pblc_co_ste_cptl_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: FK đến công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.company_profile_id
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.company_profile_id
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: State Representative Name
+    physical_name: ste_rprs_nm
+    business_meaning: Tên đại diện nhà nước (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.state_rep_name_vi
+    comment: null
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: State Representative English Name
+    physical_name: ste_rprs_en_nm
+    business_meaning: Tên đại diện nhà nước (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.state_rep_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Owned Share Quantity
+    physical_name: own_shr_qty
+    business_meaning: Số cổ phiếu sở hữu nhà nước.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.owned_share_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Ownership Ratio
+    physical_name: own_rto
+    business_meaning: Tỷ lệ phần trăm sở hữu nhà nước.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.ownership_ratio
+    comment: null
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: state_capital
+    source_column: IDS.state_capital.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_state_capital'"
+    etl_derived_value: null

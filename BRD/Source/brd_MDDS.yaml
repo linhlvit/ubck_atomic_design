@@ -1,0 +1,128 @@
+source: MDDS
+description: "Hệ thống phân phối dữ liệu thị trường — Bảng giá, sổ khớp, chỉ số thị trường realtime"
+brd_entries:
+  # UID-01 — Thị trường và chỉ số tổng hợp
+  - brd_id: BRD-SRC-MDDS-MarketInfor
+    brd_name: "Design Atomic từ nguồn MDDS bảng MarketInfor"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Snapshot tổng hợp trạng thái sàn/chỉ số — điểm chỉ số, tổng KL/GT, số mã tăng/giảm/trần/sàn, trạng thái phiên, giao dịch thỏa thuận"
+      functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: IDXInfor
+          relation: "Tham chiếu — chi tiết chỉ số thị trường"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-MDDS-IDXInfor
+    brd_name: "Design Atomic từ nguồn MDDS bảng IDXInfor"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Snapshot đầy đủ của một chỉ số thị trường: giá trị, OHLC trong ngày, thống kê mã trong rổ, phân loại loại chỉ số"
+      functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CSIDXInfor
+          relation: "1-N — thành phần rổ chỉ số"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-MDDS-CSIDXInfor
+    brd_name: "Design Atomic từ nguồn MDDS bảng CSIDXInfor"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thành phần rổ chỉ số: cặp (IndexCode × Symbol) với tỷ trọng và ngày vào rổ"
+      functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: IDXInfor
+          relation: "FK — chỉ số cha của constituent"
+        - table: StockInfor
+          relation: "FK — mã chứng khoán trong rổ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID-02 — Bảng giá chứng khoán và khớp lệnh
+  - brd_id: BRD-SRC-MDDS-StockInfor
+    brd_name: "Design Atomic từ nguồn MDDS bảng StockInfor"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Snapshot bảng giá đa loại instrument tại một thời điểm — giá, sổ lệnh, tổng tích lũy, NĐTNN, đặc thù derivative/warrant"
+      functional_group: "UID-02 Bảng giá chứng khoán và khớp lệnh"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TransLog
+          relation: "1-N — log khớp lệnh tick-by-tick"
+        - table: CSIDXInfor
+          relation: "1-N — thành phần rổ chỉ số"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-MDDS-TransLog
+    brd_name: "Design Atomic từ nguồn MDDS bảng TransLog"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Log tick-by-tick từng lần khớp lệnh cổ phiếu: giá khớp, KL khớp, chiều chủ động, tích lũy KL/GT"
+      functional_group: "UID-02 Bảng giá chứng khoán và khớp lệnh"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: StockInfor
+          relation: "FK cha — mã chứng khoán được khớp lệnh"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID-03 — Trái phiếu doanh nghiệp
+  - brd_id: BRD-SRC-MDDS-CorpBondInfor
+    brd_name: "Design Atomic từ nguồn MDDS bảng CorpBondInfor"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Snapshot bảng giá TPDN: giá, order book thỏa thuận Outright (PT_*), đặc thù bond (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát hành/đáo hạn)"
+      functional_group: "UID-03 Trái phiếu doanh nghiệp"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CorpBondMatch
+          relation: "1-N — log khớp lệnh tick-by-tick TPDN"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-MDDS-CorpBondMatch
+    brd_name: "Design Atomic từ nguồn MDDS bảng CorpBondMatch"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Log tick-by-tick từng lần khớp lệnh TPDN: giá khớp, KL khớp, chiều chủ động, tích lũy KL/GT"
+      functional_group: "UID-03 Trái phiếu doanh nghiệp"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CorpBondInfor
+          relation: "FK cha — mã trái phiếu doanh nghiệp"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null

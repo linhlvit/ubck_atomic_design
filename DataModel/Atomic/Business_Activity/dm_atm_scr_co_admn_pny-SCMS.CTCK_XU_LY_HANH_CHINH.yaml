@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_admn_pny-SCMS.CTCK_XU_LY_HANH_CHINH
+  logical_name: "Atomic - Securities Company Administrative Penalty – source SCMS.CTCK_XU_LY_HANH_CHINH"
+  physical_name: scr_co_admn_pny
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  description: |
+    Quyết định xử lý hành chính đối với CTCK. Ghi nhận hành vi vi phạm và quyết định xử phạt.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_XU_LY_HANH_CHINH
+
+attributes:
+  - name: Securities Company Administrative Penalty Id
+    physical_name: scr_co_admn_pny_id
+    business_meaning: Khóa đại diện cho quyết định xử lý hành chính.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Securities Company Administrative Penalty Code
+    physical_name: scr_co_admn_pny_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán bị xử lý.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Penalty Form Code
+    physical_name: pny_form_code
+    business_meaning: Hình thức xử lý hành chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.HINH_THUC
+    comment: "Scheme: SCMS_PENALTY_FORM."
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Content
+    physical_name: cntnt
+    business_meaning: Nội dung quyết định xử lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.NOI_DUNG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Penalty Amount
+    physical_name: pny_amt
+    business_meaning: Số tiền phạt.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.SO_TIEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Additional Penalty
+    physical_name: adl_pny
+    business_meaning: Hình phạt bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.HINH_PHAT_BO_SUNG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Additional Penalty Date
+    physical_name: adl_pny_dt
+    business_meaning: Ngày áp dụng hình phạt bổ sung.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.NGAY_PHAT_BO_SUNG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Decision Number
+    physical_name: dcsn_nbr
+    business_meaning: Số quyết định xử lý hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.QUYET_DINH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Decision Date
+    physical_name: dcsn_dt
+    business_meaning: Ngày quyết định.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.NGAY_QUYET_DINH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Penalty Status Code
+    physical_name: pny_st_code
+    business_meaning: Trạng thái quyết định xử lý.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.TRANG_THAI
+    comment: "Scheme: SCMS_PENALTY_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_XU_LY_HANH_CHINH
+    source_column: SCMS.CTCK_XU_LY_HANH_CHINH.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_XU_LY_HANH_CHINH'"
+    etl_derived_value: null

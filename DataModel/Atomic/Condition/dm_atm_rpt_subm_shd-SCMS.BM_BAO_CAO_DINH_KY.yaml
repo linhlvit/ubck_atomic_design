@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rpt_subm_shd-SCMS.BM_BAO_CAO_DINH_KY
+  logical_name: "Atomic - Report Submission Schedule – source SCMS.BM_BAO_CAO_DINH_KY"
+  physical_name: rpt_subm_shd
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Lịch định kỳ gửi báo cáo theo biểu mẫu (hàng ngày/tuần/tháng/quý/năm). Xác định tần suất nghĩa vụ nộp báo cáo.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-BM_BAO_CAO_DINH_KY
+
+attributes:
+  - name: Report Submission Schedule Id
+    physical_name: rpt_subm_shd_id
+    business_meaning: Khóa đại diện cho định kỳ gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Report Submission Schedule Code
+    physical_name: rpt_subm_shd_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Report Template Id
+    physical_name: rpt_tpl_id
+    business_meaning: FK đến biểu mẫu báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.BM_BAO_CAO_ID
+    comment: "FK target: Report Template.Report Template Id."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Report Template Code
+    physical_name: rpt_tpl_code
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.BM_BAO_CAO_ID
+    comment: "Lookup pair: Report Template.Report Template Code. Pair with Report Template Id."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Version
+    physical_name: vrsn
+    business_meaning: Phiên bản định kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.PHIEN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Reporting Period Type Code
+    physical_name: rpt_prd_tp_code
+    business_meaning: Kỳ báo cáo (tần suất định kỳ).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.KY_BAO_CAO
+    comment: "Scheme: SCMS_SCHEDULE_STATUS. Giá trị kỳ báo cáo — cần profile data để xác định scheme đầy đủ."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Grace Period Days
+    physical_name: grc_prd_dys
+    business_meaning: Khoảng thời gian gia hạn T+ (số ngày).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.T
+    comment: "T+: số ngày gia hạn cho kỳ báo cáo."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Submission Deadline
+    physical_name: subm_ddln
+    business_meaning: Thời gian nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.THOI_GIAN
+    comment: Text — cần xác nhận format (ngày/giờ hoặc quy tắc T+N).
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Is Active Flag
+    physical_name: is_actv_f
+    business_meaning: "Trạng thái sử dụng: 1-Sử dụng; 0-Không sử dụng."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.SU_DUNG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY
+    source_column: SCMS.BM_BAO_CAO_DINH_KY.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY'"
+    etl_derived_value: null

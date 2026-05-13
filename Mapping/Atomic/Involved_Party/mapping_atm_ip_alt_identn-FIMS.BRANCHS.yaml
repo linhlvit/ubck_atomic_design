@@ -1,0 +1,138 @@
+schema_type: mapping
+schema_version: "1.0"
+
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+
+mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.BRANCHS
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.BRANCHS"
+  physical_name: ip_alt_identn
+  pattern: unpivot
+  etl_pattern: SCD4A
+  dm_ref: ATM-ip_alt_identn-FIMS.BRANCHS
+  brd_ref: BRD-SRC-FIMS-BRANCHS
+
+target:
+  schema: atomic
+  physical_name: ip_alt_identn
+  etl_handle: SCD4A
+  description: |
+    Lưu trữ các giấy tờ định danh của Fund Management Company Organization Unit từ FIMS.BRANCHS.
+    2 legs: BUSINESS_LICENSE (IdNo/IdDate/IdAdd) và OPERATING_LICENSE (RegNo/RegDate/RegAdd).
+
+input:
+  - seq: 1
+    source_type: physical_table
+    schema: bronze
+    table_name: BRANCHS
+    alias: br
+    select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
+    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+
+relationship: []
+
+mapping_legs:
+  - leg: BUSINESS_LICENSE
+    filter: "br.idno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_BRANCHS', br.id)"
+        source_column: FIMS.BRANCHS.id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: br.id
+        source_column: FIMS.BRANCHS.id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_BRANCHS'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'BUSINESS_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: BUSINESS_LICENSE
+
+      - target_column: identn_nbr
+        transformation: br.idno
+        source_column: FIMS.BRANCHS.IdNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: br.iddate
+        source_column: FIMS.BRANCHS.IdDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: br.idadd
+        source_column: FIMS.BRANCHS.IdAdd
+        data_type: string
+
+  - leg: OPERATING_LICENSE
+    filter: "br.regno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_BRANCHS', br.id)"
+        source_column: FIMS.BRANCHS.id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: br.id
+        source_column: FIMS.BRANCHS.id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_BRANCHS'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'OPERATING_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: OPERATING_LICENSE
+
+      - target_column: identn_nbr
+        transformation: br.regno
+        source_column: FIMS.BRANCHS.RegNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: br.regdate
+        source_column: FIMS.BRANCHS.RegDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: br.regadd
+        source_column: FIMS.BRANCHS.RegAdd
+        data_type: string
+
+mapping_columns: null
+
+final_filter:
+  - seq: 1
+    clause_type: UNION ALL
+    expression: |
+      SELECT -- BUSINESS_LICENSE leg
+        hash_id('FIMS_BRANCHS', br.id) AS ip_id,
+        br.id AS ip_code,
+        'FIMS_BRANCHS' AS src_stm_code,
+        'BUSINESS_LICENSE' AS identn_tp_code,
+        br.idno AS identn_nbr,
+        br.iddate AS issu_dt,
+        br.idadd AS issu_ahr_nm
+      FROM br WHERE br.idno IS NOT NULL
+      UNION ALL
+      SELECT -- OPERATING_LICENSE leg
+        hash_id('FIMS_BRANCHS', br.id) AS ip_id,
+        br.id AS ip_code,
+        'FIMS_BRANCHS' AS src_stm_code,
+        'OPERATING_LICENSE' AS identn_tp_code,
+        br.regno AS identn_nbr,
+        br.regdate AS issu_dt,
+        br.regadd AS issu_ahr_nm
+      FROM br WHERE br.regno IS NOT NULL
+    description: UNION ALL 2 legs từ cùng 1 physical table BRANCHS.

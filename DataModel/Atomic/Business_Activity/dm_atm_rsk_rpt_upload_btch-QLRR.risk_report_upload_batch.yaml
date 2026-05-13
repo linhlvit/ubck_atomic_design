@@ -1,0 +1,120 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_rpt_upload_btch-QLRR.risk_report_upload_batch
+  logical_name: "Atomic - Risk Report Upload Batch – source QLRR.risk_report_upload_batch"
+  physical_name: rsk_rpt_upload_btch
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: QLRR
+  description: |
+    Đợt upload file báo cáo rủi ro định kỳ. Grain: 1 đợt upload. FK → Risk Report Type.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_report_upload_batch
+
+attributes:
+  - name: Risk Report Upload Batch Id
+    physical_name: rsk_rpt_upload_btch_id
+    business_meaning: Khóa đại diện cho đợt upload báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_report_upload_batch
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_upload_batch'"
+    etl_derived_value: null
+
+  - name: Risk Report Upload Batch Code
+    physical_name: rsk_rpt_upload_btch_code
+    business_meaning: Mã định danh đợt upload. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_upload_batch
+    source_column: QLRR.risk_report_upload_batch.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_report_upload_batch'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_upload_batch
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_upload_batch'"
+    etl_derived_value: null
+
+  - name: Risk Report Type Id
+    physical_name: rsk_rpt_tp_id
+    business_meaning: FK đến loại báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_upload_batch
+    source_column: QLRR.risk_report_upload_batch.report_type_id
+    comment: "FK target: Risk Report Type.Risk Report Type Id."
+    classification_context: "Source System Code = 'QLRR_risk_report_upload_batch'"
+    etl_derived_value: null
+
+  - name: Risk Report Type Code
+    physical_name: rsk_rpt_tp_code
+    business_meaning: Mã loại báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_upload_batch
+    source_column: QLRR.risk_report_upload_batch.report_type_id
+    comment: "Lookup pair: Risk Report Type.Risk Report Type Code. Pair with Risk Report Type Id."
+    classification_context: "Source System Code = 'QLRR_risk_report_upload_batch'"
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Thời gian báo cáo (do người dùng chọn khi upload).
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_upload_batch
+    source_column: QLRR.risk_report_upload_batch.report_date
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_upload_batch'"
+    etl_derived_value: null
+
+  - name: File Count
+    physical_name: file_cnt
+    business_meaning: Số lượng file trong đợt upload.
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_upload_batch
+    source_column: QLRR.risk_report_upload_batch.file_count
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_upload_batch'"
+    etl_derived_value: null

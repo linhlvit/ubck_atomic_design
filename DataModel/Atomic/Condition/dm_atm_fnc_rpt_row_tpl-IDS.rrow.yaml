@@ -1,0 +1,274 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnc_rpt_row_tpl-IDS.rrow
+  logical_name: "Atomic - Financial Report Row Template – source IDS.rrow"
+  physical_name: fnc_rpt_row_tpl
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Định nghĩa hàng trong biểu mẫu BCTC — mã hàng/tên/công thức/thứ tự. FK to Financial Report Catalog.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-rrow
+
+attributes:
+  - name: Financial Report Row Template Id
+    physical_name: fnc_rpt_row_tpl_id
+    business_meaning: Khóa đại diện cho hàng biểu mẫu BCTC.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: rrow
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Financial Report Row Template Code
+    physical_name: fnc_rpt_row_tpl_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Financial Report Catalog Id
+    physical_name: fnc_rpt_ctlg_id
+    business_meaning: FK đến biểu mẫu BCTC.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.report_catalog_id
+    comment: "FK target: Financial Report Catalog.Financial Report Catalog Id."
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Financial Report Catalog Code
+    physical_name: fnc_rpt_ctlg_code
+    business_meaning: Mã biểu mẫu BCTC.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.report_catalog_id
+    comment: "Lookup pair: Financial Report Catalog.Financial Report Catalog Code. Pair with Financial Report Catalog Id."
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Row Code
+    physical_name: row_code
+    business_meaning: "Mã hàng (auto-generated theo quy tắc r+sequence)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.row_cd
+    comment: null
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Row Name
+    physical_name: row_nm
+    business_meaning: Tên hàng (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.row_name_vi
+    comment: null
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Row English Name
+    physical_name: row_en_nm
+    business_meaning: Tên hàng (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.row_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Row Type Code
+    physical_name: row_tp_code
+    business_meaning: "Kiểu giá trị của hàng: v=value, f=formula, d=description."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.row_type_cd
+    comment: "Scheme: IDS_REPORT_ROW_TYPE."
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Row Formula
+    physical_name: row_frml
+    business_meaning: Công thức của hàng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.row_formula
+    comment: null
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Row Description Column Code
+    physical_name: row_dsc_clmn_code
+    business_meaning: Mô tả nội dung của hàng (hiện đang lưu mã cột).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.col_cd
+    comment: Denormalized text — nguồn lưu mã cột làm mô tả.
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_indx
+    business_meaning: Thứ tự hàng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.row_index
+    comment: null
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_yr
+    business_meaning: Năm tạo báo cáo (denormalized từ report_catalog).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.report_year
+    comment: Trường lưu dư thừa — đã có Financial Report Catalog Id.
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Report Direction Type Code
+    physical_name: rpt_drc_tp_code
+    business_meaning: Loại báo cáo (denormalized từ report_catalog).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.rc_type_cd
+    comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial Report Catalog Id."
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rrow
+    source_column: IDS.rrow.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_rrow'"
+    etl_derived_value: null

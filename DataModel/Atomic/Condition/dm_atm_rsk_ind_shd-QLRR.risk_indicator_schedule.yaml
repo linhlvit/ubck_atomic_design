@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_ind_shd-QLRR.risk_indicator_schedule
+  logical_name: "Atomic - Risk Indicator Schedule – source QLRR.risk_indicator_schedule"
+  physical_name: rsk_ind_shd
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: QLRR
+  description: |
+    Cấu hình lịch chạy job đồng bộ chỉ tiêu rủi ro (frequency_type/cron_expression). Grain: 1-1 với Risk Indicator. FK → Risk Indicator.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_indicator_schedule
+
+attributes:
+  - name: Risk Indicator Schedule Id
+    physical_name: rsk_ind_shd_id
+    business_meaning: Khóa đại diện cho lịch đồng bộ chỉ tiêu rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Schedule Code
+    physical_name: rsk_ind_shd_code
+    business_meaning: Mã định danh lịch đồng bộ. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Id
+    physical_name: rsk_ind_id
+    business_meaning: FK đến chỉ tiêu rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.indicator_id
+    comment: "FK target: Risk Indicator.Risk Indicator Id."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Code
+    physical_name: rsk_ind_code
+    business_meaning: Mã chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.indicator_id
+    comment: "Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Frequency Type Code
+    physical_name: frq_tp_code
+    business_meaning: "Tần suất chạy job: 1=Giờ, 2=Ngày, 3=Tháng, 4=Quý, 5=Năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.frequency_type
+    comment: "Scheme: RISK_JOB_FREQUENCY_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Frequency Value
+    physical_name: frq_val
+    business_meaning: "Mỗi bao nhiêu đơn vị (VD: mỗi 2 ngày)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.frequency_value
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Start Time
+    physical_name: strt_tm
+    business_meaning: Ngày giờ bắt đầu chạy job.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.start_time
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Next Run Time
+    physical_name: nxt_run_tm
+    business_meaning: "Lịch chạy tiếp theo (auto-calculated)."
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.next_run_time
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Last Run Time
+    physical_name: last_run_tm
+    business_meaning: Lần chạy gần nhất.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.last_run_time
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Cron Expression
+    physical_name: cron_expression
+    business_meaning: Quartz cron expression định nghĩa lịch chạy.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.cron_expression
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Enabled Flag
+    physical_name: enabled_f
+    business_meaning: "Trạng thái kích hoạt job: 0=Không hoạt động, 1=Hoạt động."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.is_enabled
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Total Run Count
+    physical_name: tot_run_cnt
+    business_meaning: Số lần job đã chạy (thống kê tích lũy).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.total_runs
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Last Run Status Code
+    physical_name: last_run_st_code
+    business_meaning: "Kết quả lần chạy gần nhất: SUCCESS, FAILED."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.last_status
+    comment: "Scheme: RISK_JOB_RUN_STATUS."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null
+
+  - name: Last Error
+    physical_name: last_err
+    business_meaning: Thông tin lỗi lần chạy gần nhất (nếu có).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_schedule
+    source_column: QLRR.risk_indicator_schedule.last_error
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_schedule'"
+    etl_derived_value: null

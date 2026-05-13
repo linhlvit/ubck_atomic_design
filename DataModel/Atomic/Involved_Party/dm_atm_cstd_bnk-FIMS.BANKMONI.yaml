@@ -1,0 +1,260 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cstd_bnk-FIMS.BANKMONI
+  logical_name: "Atomic - Custodian Bank – source FIMS.BANKMONI"
+  physical_name: cstd_bnk
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Custodian"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Ngân hàng lưu ký giám sát tài sản quỹ đầu tư chứng khoán được UBCKNN chấp thuận. Chịu trách nhiệm lưu giữ và giám sát tài sản của quỹ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-BANKMONI
+
+attributes:
+  - name: Custodian Bank Id
+    physical_name: cstd_bnk_id
+    business_meaning: Khóa đại diện cho ngân hàng lưu ký giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: PK surrogate. Entity dùng chung với FMS.BANKMONI — ETL merge theo business key.
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: cstd_bnk_code
+    business_meaning: Mã định danh ngân hàng LKGS. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Id
+    comment: BK chính trong scope FIMS. ETL cần resolve sang surrogate của entity dùng chung. Pair với Source System Code để tạo composite BK.
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Name
+    physical_name: cstd_bnk_nm
+    business_meaning: Tên ngân hàng lưu ký giám sát.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Short Name
+    physical_name: cstd_bnk_shrt_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.ShortName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: "Scheme: FMS_OPERATION_STATUS."
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: cty_of_rgst_id
+    business_meaning: FK đến quốc gia đăng ký của ngân hàng LKGS.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.NaId
+    comment: "FK target: Geographic Area.Geographic Area Id. ID quốc gia lấy từ bảng NATIONAL."
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: cty_of_rgst_code
+    business_meaning: Mã quốc gia đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.NaId
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank English Name
+    physical_name: cstd_bnk_en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.EName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_cptl_amt
+    business_meaning: Vốn điều lệ (VNĐ). Thông tin bổ sung của FIMS không có trong FMS.BANKMONI.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Capital
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.StatusId
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Director Name
+    physical_name: director_nm
+    business_meaning: Tên Tổng giám đốc (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Director
+    comment: Denormalized snapshot — không dùng để join.
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Depository Certificate Number
+    physical_name: depst_ctf_nbr
+    business_meaning: Chứng nhận lưu ký — thông tin bổ sung của FIMS không có trong FMS.BANKMONI.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.DepCert
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: null

@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_case-GSGD.case_file
+  logical_name: "Atomic - Market Surveillance Case – source GSGD.case_file"
+  physical_name: mkt_surveil_case
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Vụ việc giám sát giao dịch chứng khoán bất thường. Ghi nhận loại vụ việc, mã CK liên quan, nguồn thông tin và trạng thái xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-case_file
+
+attributes:
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: Khóa đại diện cho vụ việc giám sát giao dịch.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: case_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: "Mã vụ việc (tự sinh: MãCK+DDMMYYYY). BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.case_file_code
+    comment: BK chính.
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Case Type Code
+    physical_name: case_tp_code
+    business_meaning: Loại vụ việc (Sơ bộ / Thao túng / Nội gián / Liên thị trường).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.case_file_type
+    comment: "Scheme: GSGD_CASE_TYPE."
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Securities Code
+    physical_name: scr_code
+    business_meaning: Mã chứng khoán liên quan. Denormalized — bảng securities_code ngoài scope GSGD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.securities_code
+    comment: "Pending dependency: cần xác nhận bảng securities_code thuộc hệ thống nào (VSD/HoSE/HNX)."
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Information Source Code
+    physical_name: inf_src_code
+    business_meaning: Nguồn thông tin vụ việc.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.information_source
+    comment: "Scheme: GSGD_INFORMATION_SOURCE."
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Information Source Detail
+    physical_name: inf_src_dtl
+    business_meaning: Nguồn thông tin chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.information_source_detail
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Start Date
+    physical_name: strt_dt
+    business_meaning: Ngày bắt đầu vụ việc.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.start_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày kết thúc vụ việc.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.end_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Completion Date
+    physical_name: compl_dt
+    business_meaning: Thời gian hoàn thành vụ việc.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.completion_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Assigned To
+    physical_name: asgn_to
+    business_meaning: Người được phân công xử lý vụ việc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.assigned_to
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Case Status Code
+    physical_name: case_st_code
+    business_meaning: Trạng thái vụ việc.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.case_file_status
+    comment: "Scheme: GSGD_CASE_STATUS."
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null
+
+  - name: Notes
+    physical_name: notes
+    business_meaning: Ghi chú vụ việc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_file
+    source_column: GSGD.case_file.notes
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_file'"
+    etl_derived_value: null

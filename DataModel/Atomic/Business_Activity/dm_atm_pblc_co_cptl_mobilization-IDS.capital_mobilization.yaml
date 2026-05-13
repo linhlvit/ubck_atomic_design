@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co_cptl_mobilization-IDS.capital_mobilization
+  logical_name: "Atomic - Public Company Capital Mobilization – source IDS.capital_mobilization"
+  physical_name: pblc_co_cptl_mobilization
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: |
+    Tăng vốn trước khi thành công ty đại chúng — tổng vốn cuối năm và hình thức tăng. Grain: 1 năm x 1 công ty. FK to Public Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-capital_mobilization
+
+attributes:
+  - name: Public Company Capital Mobilization Id
+    physical_name: pblc_co_cptl_mobilization_id
+    business_meaning: Khóa đại diện cho bản ghi tăng vốn trước khi thành công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Public Company Capital Mobilization Code
+    physical_name: pblc_co_cptl_mobilization_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: FK đến công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.company_profile_id
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.company_profile_id
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_yr
+    business_meaning: Năm điều chỉnh vốn góp.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.report_year
+    comment: null
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Paid In Capital End Of Year Amount
+    physical_name: paid_in_cptl_eoy_amt
+    business_meaning: Vốn điều lệ thực góp tính đến thời điểm cuối năm.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.paid_in_capital_eoy
+    comment: null
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Capital Increase Count
+    physical_name: cptl_incr_cnt
+    business_meaning: Số đợt tăng vốn trong năm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.capital_increase_count
+    comment: null
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Capital Increase Method
+    physical_name: cptl_incr_mth
+    business_meaning: Hình thức tăng vốn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.capital_increase_method
+    comment: Text tự do từ nguồn — không có scheme tài liệu hóa.
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Audit Firm Name
+    physical_name: audt_firm_nm
+    business_meaning: Tên công ty kiểm toán xác nhận (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.audit_firm_name_vi
+    comment: Text denormalized — nguồn chỉ lưu tên không có mã; không có FK trực tiếp đến Audit Firm entity.
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Audit Firm English Name
+    physical_name: audt_firm_en_nm
+    business_meaning: Tên công ty kiểm toán xác nhận (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.audit_firm_name_en
+    comment: Text denormalized — nguồn chỉ lưu tên không có mã.
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: capital_mobilization
+    source_column: IDS.capital_mobilization.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_capital_mobilization'"
+    etl_derived_value: null

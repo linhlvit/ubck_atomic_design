@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ivsm_fnd_rprs_board_mbr-FMS.REPRESENT
+  logical_name: "Atomic - Investment Fund Representative Board Member – source FMS.REPRESENT"
+  physical_name: ivsm_fnd_rprs_board_mbr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Role"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Thành viên ban đại diện hoặc hội đồng quản trị của quỹ đầu tư. Cá nhân đảm nhận vai trò quản trị trong cơ cấu tổ chức quỹ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-REPRESENT
+
+attributes:
+  - name: Investment Fund Representative Board Member Id
+    physical_name: ivsm_fnd_rprs_board_mbr_id
+    business_meaning: Khóa đại diện cho thành viên ban đại diện quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Investment Fund Representative Board Member Code
+    physical_name: ivsm_fnd_rprs_board_mbr_code
+    business_meaning: Mã định danh thành viên ban đại diện. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Investment Fund Id
+    physical_name: ivsm_fnd_id
+    business_meaning: FK đến quỹ đầu tư.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.FndId
+    comment: "FK target: Investment Fund.Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: ivsm_fnd_code
+    business_meaning: Mã quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.FndId
+    comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Id
+    physical_name: fnd_mgt_co_key_psn_id
+    business_meaning: FK đến nhân sự giữ vai trò thành viên ban đại diện.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.TLId
+    comment: "FK target: Fund Management Company Key Person.Fund Management Company Key Person Id."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Code
+    physical_name: fnd_mgt_co_key_psn_code
+    business_meaning: Mã nhân sự.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.TLId
+    comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company Key Person Code. Pair with Fund Management Company Key Person Id."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Is Chair Indicator
+    physical_name: is_chair_ind
+    business_meaning: Cờ đánh dấu trưởng ban đại diện.
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.IsChair
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái tham gia ban đại diện.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.Status
+    comment: "Scheme: FMS_REPRESENT_STATUS."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null

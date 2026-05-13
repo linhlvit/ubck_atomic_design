@@ -1,0 +1,218 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-frgn_fnd_mgt_ou-FMS.FORBRCH
+  logical_name: "Atomic - Foreign Fund Management Organization Unit – source FMS.FORBRCH"
+  physical_name: frgn_fnd_mgt_ou
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization Unit"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Văn phòng đại diện hoặc chi nhánh của công ty quản lý quỹ nước ngoài tại Việt Nam được UBCKNN chấp thuận hoạt động.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FORBRCH
+
+attributes:
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: frgn_fnd_mgt_ou_id
+    business_meaning: Khóa đại diện cho VPĐD/CN công ty QLQ nước ngoài tại VN.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: frgn_fnd_mgt_ou_code
+    business_meaning: Mã định danh VPĐD/CN QLQ NN. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Name
+    physical_name: frgn_fnd_mgt_ou_nm
+    business_meaning: Tên VPĐD/CN công ty QLQ nước ngoài tại VN.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.Name
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit English Name
+    physical_name: frgn_fnd_mgt_ou_en_nm
+    business_meaning: Tên tiếng Anh VPĐD/CN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.EnName
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.Status
+    comment: "Scheme: FMS_OPERATION_STATUS."
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày chấm dứt hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.EndDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Change License Number
+    physical_name: chg_license_nbr
+    business_meaning: Số giấy phép điều chỉnh gần nhất.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.ChangeLicense
+    comment: Denormalized — map vào IP Alt Identification.
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Change License Date
+    physical_name: chg_license_dt
+    business_meaning: Ngày cấp giấy phép điều chỉnh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.ChangeLicenseDate
+    comment: Denormalized — map vào IP Alt Identification.
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Change Note
+    physical_name: chg_note
+    business_meaning: Nội dung thay đổi theo giấy phép điều chỉnh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.ChangeNote
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Business Type Codes
+    physical_name: bsn_tp_codes
+    business_meaning: Danh sách mã ngành nghề kinh doanh.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FGBUSINESS.BuId
+    comment: "Pure junction FGBUSINESS → denormalize thành ARRAY. HLD decision: FMS_HLD_Tier2.md."
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH'"
+    etl_derived_value: null

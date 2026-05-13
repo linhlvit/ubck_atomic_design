@@ -1,0 +1,316 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_ou-SCMS.CTCK_PHONG_GIAO_DICH
+  logical_name: "Atomic - Securities Company Organization Unit – source SCMS.CTCK_PHONG_GIAO_DICH"
+  physical_name: scr_co_ou
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization Unit"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Đơn vị trực thuộc CTCK: chi nhánh, văn phòng đại diện, phòng giao dịch. Cấu trúc self-join qua parent_org_unit_id.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_PHONG_GIAO_DICH
+
+attributes:
+  - name: Securities Company Organization Unit Id
+    physical_name: scr_co_ou_id
+    business_meaning: Khóa đại diện cho đơn vị trực thuộc CTCK.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Securities Company Organization Unit Code
+    physical_name: scr_co_ou_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Organization Unit Type Code
+    physical_name: ou_tp_code
+    business_meaning: "Loại đơn vị trực thuộc: TRANSACTION_OFFICE — phòng giao dịch."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: null
+    comment: "Scheme: SCMS_ORG_UNIT_TYPE. ETL-derived: hardcode TRANSACTION_OFFICE cho bảng này."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: TRANSACTION_OFFICE
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Organization Unit Name
+    physical_name: ou_nm
+    business_meaning: Tên đầy đủ phòng giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.TEN_DAY_DU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Decision Number
+    physical_name: dcsn_nbr
+    business_meaning: Số quyết định thành lập/hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.SO_QUYET_DINH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Decision Date
+    physical_name: dcsn_dt
+    business_meaning: Ngày quyết định.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.NGAY_QUYET_DINH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Valid Document Date
+    physical_name: vld_doc_dt
+    business_meaning: Ngày hồ sơ hợp lệ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.NGAY_HS_HOP_LE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Director Name
+    physical_name: director_nm
+    business_meaning: Giám đốc chi nhánh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: null
+    comment: Denormalized — tên cá nhân đảm nhận chức vụ.
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Business Sector Name
+    physical_name: bsn_sctr_nm
+    business_meaning: Ngành nghề kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: null
+    comment: Text tự do — không link với bảng ngành nghề.
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Organization Unit Status Code
+    physical_name: ou_st_code
+    business_meaning: Trạng thái phòng giao dịch.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.TRANG_THAI_PGD
+    comment: "Scheme: SCMS_ORG_UNIT_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Is Draft Indicator
+    physical_name: is_drft_ind
+    business_meaning: "Cờ bảng tạm: 1-Bảng tạm; 0-Chính thức."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.IS_BANG_TAM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái bản ghi chung.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.TRANG_THAI
+    comment: "Scheme: LIFE_CYCLE_STATUS. Cần profile data để xác định giá trị."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Parent Organization Unit Id
+    physical_name: prn_ou_id
+    business_meaning: FK đến chi nhánh quản lý (cấp cha).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.CTCK_CHI_NHANH_ID
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Self-join — PGD trực thuộc chi nhánh."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Parent Organization Unit Code
+    physical_name: prn_ou_code
+    business_meaning: Mã chi nhánh quản lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.CTCK_CHI_NHANH_ID
+    comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Parent Organization Unit Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null
+
+  - name: Representative Name
+    physical_name: rprs_nm
+    business_meaning: Người đại diện phòng giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_PHONG_GIAO_DICH
+    source_column: SCMS.CTCK_PHONG_GIAO_DICH.NGUOI_DAI_DIEN
+    comment: Denormalized — tên cá nhân đảm nhận chức vụ.
+    classification_context: "Source System Code = 'SCMS_CTCK_PHONG_GIAO_DICH'"
+    etl_derived_value: null

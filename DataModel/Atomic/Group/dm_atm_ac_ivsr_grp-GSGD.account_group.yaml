@@ -1,0 +1,92 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ac_ivsr_grp-GSGD.account_group
+  logical_name: "Atomic - Account Investor Group – source GSGD.account_group"
+  physical_name: ac_ivsr_grp
+  version: "1.0"
+  status: approved
+  bcv_core_object: Group
+  bcv_concept: "[Involved Party] Group"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Nhóm tài khoản nhà đầu tư do nghiệp vụ giám sát xác định theo tiêu chí quan hệ (Danh tính / IP / MAC / Tiền). Grain: 1 dòng = 1 nhóm.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-account_group
+
+attributes:
+  - name: Account Investor Group Id
+    physical_name: ac_ivsr_grp_id
+    business_meaning: Khóa đại diện cho nhóm tài khoản nhà đầu tư.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: account_group
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_group'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Code
+    physical_name: ac_ivsr_grp_code
+    business_meaning: Mã nhóm (hệ thống tự sinh). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group
+    source_column: GSGD.account_group.group_code
+    comment: BK chính.
+    classification_context: "Source System Code = 'GSGD_account_group'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_group'"
+    etl_derived_value: null
+
+  - name: Group Name
+    physical_name: grp_nm
+    business_meaning: Tên nhóm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group
+    source_column: GSGD.account_group.group_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_group'"
+    etl_derived_value: null
+
+  - name: Group Type Code
+    physical_name: grp_tp_code
+    business_meaning: "Loại nhóm: 1=Thường, 2=Nghi vấn."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_group
+    source_column: GSGD.account_group.group_type
+    comment: "Scheme: GSGD_ACCOUNT_GROUP_TYPE."
+    classification_context: "Source System Code = 'GSGD_account_group'"
+    etl_derived_value: null

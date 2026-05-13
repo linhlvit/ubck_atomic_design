@@ -1,0 +1,1036 @@
+source: ThanhTra
+description: "Phân hệ Thanh tra — Quản lý hoạt động thanh tra, kiểm tra, xử lý vi phạm hành chính, tiếp công dân và đơn thư KNTC trong lĩnh vực chứng khoán"
+brd_entries:
+  # B.1 — Hoạt động thanh tra - kiểm tra
+
+  - brd_id: BRD-SRC-ThanhTra-TT_KE_HOACH
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_KE_HOACH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Kế hoạch thanh tra, kiểm tra hàng năm"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH_DOI_TUONG
+          relation: "1-N — đối tượng thanh tra trong kế hoạch"
+        - table: TT_KE_HOACH_VAN_BAN
+          relation: "1-N — văn bản đính kèm kế hoạch"
+        - table: TT_QUYET_DINH
+          relation: "1-N — quyết định phát sinh từ kế hoạch"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_KE_HOACH_DOI_TUONG
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_KE_HOACH_DOI_TUONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Đối tượng thanh tra trong kế hoạch"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH
+          relation: "FK cha — kế hoạch thanh tra chứa đối tượng này"
+        - table: DM_CONG_TY_DC
+          relation: "FK tham chiếu — công ty đại chúng là đối tượng"
+        - table: DM_CONG_TY_CK
+          relation: "FK tham chiếu — công ty chứng khoán là đối tượng"
+        - table: DM_CONG_TY_QLQ
+          relation: "FK tham chiếu — công ty quản lý quỹ là đối tượng"
+        - table: DM_DOI_TUONG_KHAC
+          relation: "FK tham chiếu — đối tượng khác (cá nhân/tổ chức)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_KE_HOACH_VAN_BAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_KE_HOACH_VAN_BAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản kèm theo kế hoạch thanh tra"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH
+          relation: "FK cha — kế hoạch thanh tra chứa văn bản này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_QUYET_DINH
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_QUYET_DINH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quyết định thanh tra, kiểm tra"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH
+          relation: "FK cha — kế hoạch thanh tra phát sinh quyết định này"
+        - table: TT_QUYET_DINH_DOI_TUONG
+          relation: "1-N — đối tượng trong quyết định"
+        - table: TT_QUYET_DINH_THANH_PHAN
+          relation: "1-N — thành phần đoàn thanh tra"
+        - table: TT_QUYET_DINH_VAN_BAN
+          relation: "1-N — văn bản đính kèm quyết định"
+        - table: TT_HO_SO
+          relation: "1-N — hồ sơ thanh tra phát sinh từ quyết định này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_QUYET_DINH_DOI_TUONG
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_QUYET_DINH_DOI_TUONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Đối tượng trong quyết định thanh tra"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_QUYET_DINH
+          relation: "FK cha — quyết định thanh tra chứa đối tượng này"
+        - table: DM_CONG_TY_DC
+          relation: "FK tham chiếu — công ty đại chúng là đối tượng"
+        - table: DM_CONG_TY_CK
+          relation: "FK tham chiếu — công ty chứng khoán là đối tượng"
+        - table: DM_CONG_TY_QLQ
+          relation: "FK tham chiếu — công ty quản lý quỹ là đối tượng"
+        - table: DM_DOI_TUONG_KHAC
+          relation: "FK tham chiếu — đối tượng khác (cá nhân/tổ chức)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_QUYET_DINH_THANH_PHAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_QUYET_DINH_THANH_PHAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thành phần đoàn thanh tra"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_QUYET_DINH
+          relation: "FK cha — quyết định thanh tra chứa thành phần đoàn"
+        - table: DM_CAN_BO
+          relation: "FK tham chiếu — cán bộ thanh tra trong đoàn"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_QUYET_DINH_VAN_BAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_QUYET_DINH_VAN_BAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản kèm theo quyết định"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_QUYET_DINH
+          relation: "FK cha — quyết định thanh tra chứa văn bản này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_HO_SO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_HO_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ thanh tra, kiểm tra"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_QUYET_DINH
+          relation: "FK cha — quyết định thanh tra phát sinh hồ sơ này"
+        - table: TT_HO_SO_CAN_BO
+          relation: "1-N — phân công cán bộ xử lý hồ sơ"
+        - table: TT_HO_SO_VAN_BAN
+          relation: "1-N — văn bản đính kèm hồ sơ"
+        - table: TT_KET_LUAN
+          relation: "1-1 — kết luận thanh tra của hồ sơ này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_HO_SO_CAN_BO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_HO_SO_CAN_BO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân công cán bộ xử lý hồ sơ thanh tra"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_HO_SO
+          relation: "FK cha — hồ sơ thanh tra được phân công"
+        - table: DM_CAN_BO
+          relation: "FK tham chiếu — cán bộ được phân công xử lý"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_HO_SO_VAN_BAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_HO_SO_VAN_BAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản đính kèm hồ sơ thanh tra"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_HO_SO
+          relation: "FK cha — hồ sơ thanh tra chứa văn bản này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_KET_LUAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_KET_LUAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Kết luận thanh tra và văn bản xử lý"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_HO_SO
+          relation: "FK cha — hồ sơ thanh tra phát sinh kết luận này"
+        - table: TT_CONG_BO_XU_PHAT
+          relation: "1-1 — công bố xử phạt từ kết luận thanh tra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-TT_CONG_BO_XU_PHAT
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_CONG_BO_XU_PHAT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Công bố quyết định xử phạt (Thanh tra)"
+      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KET_LUAN
+          relation: "FK cha — kết luận thanh tra dẫn đến công bố xử phạt"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # B.2 — Xử lý vi phạm hành chính
+
+  - brd_id: BRD-SRC-ThanhTra-GS_HO_SO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng GS_HO_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ xử lý vi phạm từ kết quả giám sát"
+      functional_group: "B.2 Xử lý vi phạm hành chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: GS_HO_SO_VAN_BAN
+          relation: "1-N — văn bản đính kèm hồ sơ giám sát"
+        - table: GS_VAN_BAN_XU_LY
+          relation: "1-N — văn bản xử lý vi phạm (QĐ xử phạt, BB VPHC)"
+        - table: GS_CONG_BO_XU_PHAT
+          relation: "1-1 — công bố quyết định xử phạt"
+        - table: DM_CAN_BO
+          relation: "FK tham chiếu — cán bộ phụ trách hồ sơ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-GS_HO_SO_VAN_BAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng GS_HO_SO_VAN_BAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản đính kèm hồ sơ giám sát"
+      functional_group: "B.2 Xử lý vi phạm hành chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: GS_HO_SO
+          relation: "FK cha — hồ sơ giám sát chứa văn bản này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-GS_VAN_BAN_XU_LY
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng GS_VAN_BAN_XU_LY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản về việc xử lý vi phạm giám sát"
+      functional_group: "B.2 Xử lý vi phạm hành chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: GS_HO_SO
+          relation: "FK cha — hồ sơ giám sát phát sinh văn bản xử lý"
+        - table: GS_VAN_BAN_XU_LY_FILE
+          relation: "1-N — file đính kèm văn bản xử lý"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-GS_VAN_BAN_XU_LY_FILE
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng GS_VAN_BAN_XU_LY_FILE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "File đính kèm văn bản xử lý giám sát"
+      functional_group: "B.2 Xử lý vi phạm hành chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: GS_VAN_BAN_XU_LY
+          relation: "FK cha — văn bản xử lý giám sát chứa file đính kèm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-GS_CONG_BO_XU_PHAT
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng GS_CONG_BO_XU_PHAT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Công bố quyết định xử phạt (Giám sát)"
+      functional_group: "B.2 Xử lý vi phạm hành chính"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: GS_HO_SO
+          relation: "FK cha — hồ sơ giám sát dẫn đến công bố xử phạt"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # B.3 — Tiếp công dân, xử lý đơn thư
+
+  - brd_id: BRD-SRC-ThanhTra-DT_DON_THU
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DT_DON_THU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Đơn thư KNTC, phản ánh kiến nghị"
+      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_HO_SO
+          relation: "1-N — hồ sơ giải quyết phát sinh từ đơn thư"
+        - table: DM_TINH_THANH
+          relation: "FK tham chiếu — tỉnh thành của người gửi đơn"
+        - table: DM_QUOC_GIA
+          relation: "FK tham chiếu — quốc gia của người gửi đơn"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DT_HO_SO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DT_HO_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ giải quyết đơn thư"
+      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_DON_THU
+          relation: "FK cha — đơn thư phát sinh hồ sơ giải quyết này"
+        - table: DT_HO_SO_VAN_BAN
+          relation: "1-N — văn bản đính kèm hồ sơ đơn thư"
+        - table: DT_KET_LUAN
+          relation: "1-1 — kết luận giải quyết đơn thư"
+        - table: DT_VAN_BAN_XU_LY
+          relation: "1-N — văn bản xử lý / quyết định xử phạt"
+        - table: DM_CAN_BO
+          relation: "FK tham chiếu — cán bộ phụ trách hồ sơ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DT_HO_SO_VAN_BAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DT_HO_SO_VAN_BAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản đính kèm hồ sơ đơn thư"
+      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_HO_SO
+          relation: "FK cha — hồ sơ đơn thư chứa văn bản này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DT_KET_LUAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DT_KET_LUAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Kết luận giải quyết đơn thư"
+      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_HO_SO
+          relation: "FK cha — hồ sơ đơn thư phát sinh kết luận này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DT_VAN_BAN_XU_LY
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DT_VAN_BAN_XU_LY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản xử lý / quyết định xử phạt đơn thư"
+      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_HO_SO
+          relation: "FK cha — hồ sơ đơn thư phát sinh văn bản xử lý"
+        - table: DT_CONG_BO_XU_PHAT
+          relation: "1-1 — công bố xử phạt từ văn bản xử lý đơn thư"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DT_CONG_BO_XU_PHAT
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DT_CONG_BO_XU_PHAT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Công bố quyết định xử phạt (Đơn thư)"
+      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_VAN_BAN_XU_LY
+          relation: "FK cha — văn bản xử lý đơn thư dẫn đến công bố xử phạt"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # B.4 — Phòng chống tham nhũng, tiêu cực
+
+  - brd_id: BRD-SRC-ThanhTra-PCTN_BAO_CAO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng PCTN_BAO_CAO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Báo cáo phòng chống tham nhũng"
+      functional_group: "B.4 Phòng chống tham nhũng, tiêu cực"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DM_CAN_BO
+          relation: "FK tham chiếu — cán bộ lập báo cáo PCTN"
+        - table: DM_BIEU_MAU
+          relation: "FK tham chiếu — biểu mẫu/đề cương báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # B.5 — Phòng chống rửa tiền, tài trợ khủng bố
+
+  - brd_id: BRD-SRC-ThanhTra-PCRT_HO_SO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng PCRT_HO_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ phòng chống rửa tiền"
+      functional_group: "B.5 Phòng chống rửa tiền, tài trợ khủng bố"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: PCRT_HO_SO_VAN_BAN
+          relation: "1-N — văn bản đính kèm hồ sơ PCRT"
+        - table: PCRT_VAN_BAN_XU_LY
+          relation: "1-N — văn bản xử lý vi phạm PCRT"
+        - table: DM_CAN_BO
+          relation: "FK tham chiếu — cán bộ phụ trách hồ sơ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-PCRT_HO_SO_VAN_BAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng PCRT_HO_SO_VAN_BAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản đính kèm hồ sơ rửa tiền"
+      functional_group: "B.5 Phòng chống rửa tiền, tài trợ khủng bố"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: PCRT_HO_SO
+          relation: "FK cha — hồ sơ PCRT chứa văn bản này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-PCRT_VAN_BAN_XU_LY
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng PCRT_VAN_BAN_XU_LY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản xử lý vi phạm rửa tiền"
+      functional_group: "B.5 Phòng chống rửa tiền, tài trợ khủng bố"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: PCRT_HO_SO
+          relation: "FK cha — hồ sơ PCRT phát sinh văn bản xử lý"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-PCRT_BAO_CAO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng PCRT_BAO_CAO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Báo cáo phòng chống rửa tiền"
+      functional_group: "B.5 Phòng chống rửa tiền, tài trợ khủng bố"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: PCRT_HO_SO
+          relation: "Tham chiếu — đọc dữ liệu hồ sơ PCRT để tổng hợp báo cáo"
+        - table: GS_VAN_BAN_XU_LY
+          relation: "Tham chiếu — đọc QĐ xử phạt có nội dung PCRT để thống kê"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # B.8 — Quản trị phân hệ (out of scope)
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_NGUOI_DUNG
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_NGUOI_DUNG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Người dùng hệ thống"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — dữ liệu quản trị tài khoản người dùng"
+      related_tables:
+        - table: SYS_NGUOI_DUNG_NHOM
+          relation: "1-N — quan hệ người dùng – nhóm quyền"
+        - table: SYS_NHAT_KY
+          relation: "1-N — nhật ký hoạt động của người dùng"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_NHOM_NGUOI_DUNG
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_NHOM_NGUOI_DUNG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhóm người dùng"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — cấu hình phân quyền hệ thống"
+      related_tables:
+        - table: SYS_NGUOI_DUNG_NHOM
+          relation: "1-N — quan hệ người dùng – nhóm quyền"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_NGUOI_DUNG_NHOM
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_NGUOI_DUNG_NHOM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quan hệ người dùng – nhóm quyền"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — junction table phân quyền hệ thống"
+      related_tables:
+        - table: SYS_NGUOI_DUNG
+          relation: "FK — người dùng"
+        - table: SYS_NHOM_NGUOI_DUNG
+          relation: "FK — nhóm quyền"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_NHAT_KY
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_NHAT_KY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký hoạt động hệ thống"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Audit Log nguồn — nhật ký hoạt động người dùng, không phải dữ liệu nghiệp vụ"
+      related_tables:
+        - table: SYS_NGUOI_DUNG
+          relation: "FK — người dùng tạo ra nhật ký"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_THAM_SO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_THAM_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tham số cấu hình hệ thống"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — tham số cấu hình kỹ thuật hệ thống"
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_SAO_LUU
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_SAO_LUU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sao lưu tự động"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — lịch và cấu hình sao lưu kỹ thuật"
+      related_tables:
+        - table: SYS_NHAT_KY_SAO_LUU
+          relation: "1-N — nhật ký các lần sao lưu"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_NHAT_KY_SAO_LUU
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_NHAT_KY_SAO_LUU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký sao lưu dữ liệu"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — lịch sử các lần sao lưu kỹ thuật"
+      related_tables:
+        - table: SYS_SAO_LUU
+          relation: "FK cha — cấu hình sao lưu"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-SYS_VAN_BAN_PHAP_QUY
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng SYS_VAN_BAN_PHAP_QUY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Văn bản pháp quy hệ thống"
+      functional_group: "B.8 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Regulatory reference — văn bản pháp quy tham chiếu nội bộ hệ thống, ngoài scope Atomic"
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # Phụ lục — Danh mục dùng chung: Atomic entities
+
+  - brd_id: BRD-SRC-ThanhTra-DM_CAN_BO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_CAN_BO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục cán bộ thanh tra"
+      functional_group: "Phụ lục — Danh mục đối tượng thanh tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_HO_SO_CAN_BO
+          relation: "1-N — phân công cán bộ xử lý hồ sơ thanh tra"
+        - table: TT_QUYET_DINH_THANH_PHAN
+          relation: "1-N — tham gia đoàn thanh tra"
+        - table: GS_HO_SO
+          relation: "1-N — phụ trách hồ sơ xử lý VPHC"
+        - table: DT_HO_SO
+          relation: "1-N — phụ trách hồ sơ giải quyết đơn thư"
+        - table: PCRT_HO_SO
+          relation: "1-N — phụ trách hồ sơ PCRT"
+        - table: PCTN_BAO_CAO
+          relation: "1-N — cán bộ lập báo cáo PCTN"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_CONG_TY_DC
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_CONG_TY_DC"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục công ty đại chúng"
+      functional_group: "Phụ lục — Danh mục đối tượng thanh tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH_DOI_TUONG
+          relation: "1-N — công ty đại chúng là đối tượng trong kế hoạch"
+        - table: TT_QUYET_DINH_DOI_TUONG
+          relation: "1-N — công ty đại chúng là đối tượng trong quyết định"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_CONG_TY_CK
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_CONG_TY_CK"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục công ty chứng khoán"
+      functional_group: "Phụ lục — Danh mục đối tượng thanh tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH_DOI_TUONG
+          relation: "1-N — công ty chứng khoán là đối tượng trong kế hoạch"
+        - table: TT_QUYET_DINH_DOI_TUONG
+          relation: "1-N — công ty chứng khoán là đối tượng trong quyết định"
+      notes: "Shared entity — dùng chung với SCMS và các nguồn khác (bổ sung source ThanhTra)"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_CONG_TY_QLQ
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_CONG_TY_QLQ"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục công ty quản lý quỹ và quỹ đầu tư chứng khoán"
+      functional_group: "Phụ lục — Danh mục đối tượng thanh tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH_DOI_TUONG
+          relation: "1-N — công ty QLQ là đối tượng trong kế hoạch"
+        - table: TT_QUYET_DINH_DOI_TUONG
+          relation: "1-N — công ty QLQ là đối tượng trong quyết định"
+      notes: "Shared entity — dùng chung với các nguồn khác (bổ sung source ThanhTra)"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_DOI_TUONG_KHAC
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_DOI_TUONG_KHAC"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục đối tượng thanh tra khác"
+      functional_group: "Phụ lục — Danh mục đối tượng thanh tra"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: TT_KE_HOACH_DOI_TUONG
+          relation: "1-N — đối tượng khác trong kế hoạch thanh tra"
+        - table: TT_QUYET_DINH_DOI_TUONG
+          relation: "1-N — đối tượng khác trong quyết định thanh tra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # Phụ lục — Danh mục dùng chung: Classification Values
+
+  - brd_id: BRD-SRC-ThanhTra-DM_BIEU_MAU
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_BIEU_MAU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục biểu mẫu"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_FORM_TYPE. Bảng chỉ có Code + Name."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_CHUC_VU
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_CHUC_VU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chức vụ"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_POSITION_TYPE."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_DON_VI
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_DON_VI"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục đơn vị"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_UNIT_TYPE. Cấu trúc cây đơn vị tổ chức."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_HO_SO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_HO_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục hồ sơ"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_CASE_TYPE."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_TRANG_THAI_HO_SO
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_TRANG_THAI_HO_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục trạng thái hồ sơ"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_CASE_STATUS."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_LINH_VUC
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_LINH_VUC"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục lĩnh vực"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_INSPECTION_SECTOR. Lĩnh vực chứng khoán trong thanh tra."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_HANH_VI_VI_PHAM
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_HANH_VI_VI_PHAM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục hành vi vi phạm"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_VIOLATION_TYPE."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_HINH_THUC_PHAT
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_HINH_THUC_PHAT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục hình thức phạt"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_PENALTY_TYPE."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_HINH_THUC_VAN_BAN
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_HINH_THUC_VAN_BAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục hình thức văn bản"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_DOCUMENT_FORM_TYPE."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_MANG_NGHIEP_VU
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_MANG_NGHIEP_VU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục mảng nghiệp vụ"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_BUSINESS_SECTOR."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_MUC_DO_BAO_MAT
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_MUC_DO_BAO_MAT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục mức độ bảo mật"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_SECURITY_LEVEL."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_CAN_CU_THANH_TRA
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_CAN_CU_THANH_TRA"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục căn cứ thanh tra"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_LEGAL_BASIS_TYPE. Căn cứ pháp lý cho hoạt động thanh tra."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_DANH_MUC_KHAC
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_DANH_MUC_KHAC"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục khác (dùng chung)"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: []
+      notes: "Classification Value — CV: TT_MISC_CATEGORY. Danh mục tổng hợp dùng chung cho nhiều nghiệp vụ."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # Phụ lục — Danh mục dùng chung: Geographic Area (shared)
+
+  - brd_id: BRD-SRC-ThanhTra-DM_QUOC_GIA
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_QUOC_GIA"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục quốc gia"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_DON_THU
+          relation: "1-N — quốc gia của người gửi đơn thư"
+      notes: "Geographic Area shared (COUNTRY) — bổ sung source ThanhTra."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-ThanhTra-DM_TINH_THANH
+    brd_name: "Design Atomic từ nguồn ThanhTra bảng DM_TINH_THANH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục tỉnh thành"
+      functional_group: "Phụ lục — Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DT_DON_THU
+          relation: "1-N — tỉnh thành của người gửi đơn thư"
+        - table: DT_HO_SO
+          relation: "1-N — tỉnh thành liên quan hồ sơ đơn thư"
+      notes: "Geographic Area shared (PROVINCE) — bổ sung source ThanhTra."
+      data_volume_hint: null
+      refresh_frequency: null

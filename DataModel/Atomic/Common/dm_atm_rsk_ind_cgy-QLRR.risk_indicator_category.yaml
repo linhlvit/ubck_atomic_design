@@ -1,0 +1,106 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_ind_cgy-QLRR.risk_indicator_category
+  logical_name: "Atomic - Risk Indicator Category – source QLRR.risk_indicator_category"
+  physical_name: rsk_ind_cgy
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Classification"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: QLRR
+  description: |
+    Nhóm phân loại chỉ tiêu tài chính rủi ro theo bộ (trong nước/quốc tế) và nhóm nghiệp vụ (vĩ mô/tiền tệ/thị trường CK). FK nguồn cho Risk Indicator.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_indicator_category
+
+attributes:
+  - name: Risk Indicator Category Id
+    physical_name: rsk_ind_cgy_id
+    business_meaning: Khóa đại diện cho nhóm chỉ tiêu rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_indicator_category
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_category'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Category Code
+    physical_name: rsk_ind_cgy_code
+    business_meaning: "Mã nhóm chỉ tiêu (VD: MACRO, MONETARY, STOCK_MARKET). BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_category
+    source_column: QLRR.risk_indicator_category.category_code
+    comment: BK của entity. Unique globally.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_category'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_category
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_category'"
+    etl_derived_value: null
+
+  - name: Indicator Set Code
+    physical_name: ind_set_code
+    business_meaning: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế. Attribute bổ sung — không phân biệt entity."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_category
+    source_column: QLRR.risk_indicator_category.set_code
+    comment: "Scheme: RISK_INDICATOR_SET. set_code chỉ là thông tin mô tả bổ sung; category_code unique globally."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_category'"
+    etl_derived_value: null
+
+  - name: Category Name
+    physical_name: cgy_nm
+    business_meaning: "Tên nhóm chỉ tiêu (VD: Yếu tố vĩ mô)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_category
+    source_column: QLRR.risk_indicator_category.category_name
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_category'"
+    etl_derived_value: null
+
+  - name: Active Flag
+    physical_name: actv_f
+    business_meaning: "Trạng thái hoạt động: 0=Không hoạt động, 1=Hoạt động."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_category
+    source_column: QLRR.risk_indicator_category.status
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_category'"
+    etl_derived_value: null

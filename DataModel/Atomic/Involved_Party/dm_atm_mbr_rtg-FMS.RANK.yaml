@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mbr_rtg-FMS.RANK
+  logical_name: "Atomic - Member Rating – source FMS.RANK"
+  physical_name: mbr_rtg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Rating"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Kết quả xếp loại của một công ty quản lý quỹ trong một kỳ đánh giá. Ghi nhận điểm tổng hợp và hạng xếp loại.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RANK
+
+attributes:
+  - name: Member Rating Id
+    physical_name: mbr_rtg_id
+    business_meaning: Khóa đại diện cho kết quả xếp hạng thành viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RANK
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Member Rating Code
+    physical_name: mbr_rtg_code
+    business_meaning: Mã định danh kết quả xếp hạng. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ được xếp hạng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ được xếp hạng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Member Rating Period Id
+    physical_name: mbr_rtg_prd_id
+    business_meaning: FK đến kỳ đánh giá xếp loại.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.RatingPdId
+    comment: "FK target: Member Rating Period.Member Rating Period Id."
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Member Rating Period Code
+    physical_name: mbr_rtg_prd_code
+    business_meaning: Mã kỳ đánh giá xếp loại.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.RatingPdId
+    comment: "Lookup pair: Member Rating Period.Member Rating Period Code. Pair with Member Rating Period Id."
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Total Score
+    physical_name: tot_scor
+    business_meaning: Tổng điểm đánh giá.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.TotalScore
+    comment: null
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Rank Value
+    physical_name: rank_val
+    business_meaning: Giá trị xếp hạng (thứ tự).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.RankValue
+    comment: null
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Rank Class Code
+    physical_name: rank_clss_code
+    business_meaning: Xếp loại kết quả đánh giá.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.RankClass
+    comment: "Scheme: FMS_RATING_CLASS."
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RANK
+    source_column: FMS.RANK.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_RANK'"
+    etl_derived_value: null

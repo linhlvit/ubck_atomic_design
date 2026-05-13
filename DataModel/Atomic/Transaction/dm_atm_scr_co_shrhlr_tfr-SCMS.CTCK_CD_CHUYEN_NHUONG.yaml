@@ -1,0 +1,288 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_shrhlr_tfr-SCMS.CTCK_CD_CHUYEN_NHUONG
+  logical_name: "Atomic - Securities Company Shareholder Transfer – source SCMS.CTCK_CD_CHUYEN_NHUONG"
+  physical_name: scr_co_shrhlr_tfr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Event] Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  description: |
+    Giao dịch chuyển nhượng cổ phần giữa hai cổ đông của CTCK. Ghi nhận bên chuyển/nhận, số lượng và tỷ lệ chuyển nhượng.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_CD_CHUYEN_NHUONG
+
+attributes:
+  - name: Securities Company Shareholder Transfer Id
+    physical_name: scr_co_shrhlr_tfr_id
+    business_meaning: Khóa đại diện cho giao dịch chuyển nhượng cổ phần.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Transfer Code
+    physical_name: scr_co_shrhlr_tfr_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: From Shareholder Id
+    physical_name: fm_shrhlr_id
+    business_meaning: FK đến cổ đông chuyển nhượng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.CTCK_CD_CHUYEN
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: From Shareholder Code
+    physical_name: fm_shrhlr_code
+    business_meaning: Mã cổ đông chuyển nhượng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.CTCK_CD_CHUYEN
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with From Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: To Shareholder Id
+    physical_name: to_shrhlr_id
+    business_meaning: FK đến cổ đông nhận chuyển nhượng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.CTCK_CD_NHAN
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: To Shareholder Code
+    physical_name: to_shrhlr_code
+    business_meaning: Mã cổ đông nhận chuyển nhượng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.CTCK_CD_NHAN
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with To Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: doc_nbr
+    business_meaning: Số văn bản chuyển nhượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.SO_VAN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Document Date
+    physical_name: doc_dt
+    business_meaning: Ngày văn bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.NGAY_VAN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Transfer Date
+    physical_name: tfr_dt
+    business_meaning: Ngày chuyển nhượng hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.NGAY_CHUYEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Transfer Quantity
+    physical_name: tfr_qty
+    business_meaning: Số lượng cổ phần chuyển nhượng.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.SO_LUONG_CHUYEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Transfer Ratio
+    physical_name: tfr_rto
+    business_meaning: "Tỷ lệ cổ phần chuyển nhượng (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.TY_LE_CHUYEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Attachment File
+    physical_name: attch_file
+    business_meaning: Tệp đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.FILE_DINH_KEM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Transfer Status Code
+    physical_name: tfr_st_code
+    business_meaning: Trạng thái chuyển nhượng.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.TRANG_THAI
+    comment: "Scheme: SCMS_SHAREHOLDER_TRANSFER_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_CHUYEN_NHUONG
+    source_column: SCMS.CTCK_CD_CHUYEN_NHUONG.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_CHUYEN_NHUONG'"
+    etl_derived_value: null

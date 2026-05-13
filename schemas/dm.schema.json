@@ -1,0 +1,305 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/dm.schema.json",
+  "title": "Data Model Design Schema",
+  "description": "Schema định nghĩa định dạng YAML cho Data Model (DM) — kết hợp LDM + PDM ở cấp độ Atomic entity. Dùng để validate và parse các file dm_*.yaml trong thư mục DataModel/Atomic/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ldm", "attributes"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "data_model",
+      "description": "Khai báo loại schema — dùng để xác định file type"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema (semantic versioning)"
+    },
+    "ldm": {
+      "$ref": "#/definitions/ldm_header"
+    },
+    "attributes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Danh sách attribute của Atomic entity",
+      "items": {
+        "$ref": "#/definitions/attribute"
+      }
+    }
+  },
+  "definitions": {
+    "ldm_header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "logical_name",
+        "physical_name",
+        "version",
+        "status",
+        "bcv_core_object",
+        "bcv_concept",
+        "table_type",
+        "etl_pattern",
+        "source",
+        "description",
+        "owner",
+        "references"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^ATM-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
+          "description": "Định danh duy nhất của entity: ATM-{physical_name}-{SOURCE}.{TABLE}"
+        },
+        "logical_name": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Tên đầy đủ — thường là 'Atomic - {Entity} – source {SOURCE}.{TABLE}'"
+        },
+        "physical_name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Tên bảng Delta Lake (snake_case, không dấu)"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+          "description": "Phiên bản thiết kế"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "approved"],
+          "description": "Trạng thái thiết kế"
+        },
+        "bcv_core_object": {
+          "type": "string",
+          "enum": [
+            "Arrangement",
+            "Business Activity",
+            "Common",
+            "Communication",
+            "Condition",
+            "Documentation",
+            "Event",
+            "Group",
+            "Involved Party",
+            "Location",
+            "Product",
+            "Transaction"
+          ],
+          "description": "BCV Core Object trong 9 data concepts"
+        },
+        "bcv_concept": {
+          "type": "string",
+          "minLength": 3,
+          "description": "BCV Concept đầy đủ, VD: '[Arrangement] Authorization'"
+        },
+        "table_type": {
+          "type": "string",
+          "enum": ["Fundamental", "Fact Append", "Fact Snapshot", "Relative", "Classification"],
+          "description": "Loại bảng Atomic theo mô hình dữ liệu"
+        },
+        "etl_pattern": {
+          "type": "string",
+          "enum": ["SCD4A", "SCD2", "Fact Append", "Upsert"],
+          "description": "Technical table type / ETL pattern. Mapping: Fundamental→SCD4A, Relative→SCD2, Fact Append→Fact Append, Fact Snapshot→Fact Append, Classification→Upsert"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "DCST",
+            "ECAT",
+            "FIMS",
+            "FMS",
+            "GSGD",
+            "IDS",
+            "MDDS",
+            "NHNCK",
+            "OrderTrade",
+            "QLRR",
+            "SCMS",
+            "ThanhTra"
+          ],
+          "description": "Source system code"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Mô tả nghiệp vụ của entity"
+        },
+        "owner": {
+          "$ref": "#/definitions/owner"
+        },
+        "references": {
+          "$ref": "#/definitions/references"
+        }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steward", "data_modeler"],
+      "properties": {
+        "steward": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+          "description": "Email Data Steward"
+        },
+        "data_modeler": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+          "description": "Email Data Modeler"
+        }
+      }
+    },
+    "references": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["brd"],
+      "properties": {
+        "brd": {
+          "type": "string",
+          "pattern": "^BRD-SRC-[A-Za-z][A-Za-z0-9_-]*-[A-Za-z][A-Za-z0-9_]*$",
+          "description": "Mã BRD entry tương ứng: BRD-SRC-{SOURCE}-{TABLE}"
+        }
+      }
+    },
+    "attribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "physical_name",
+        "business_meaning",
+        "data_domain",
+        "data_type",
+        "nullable",
+        "is_primary_key",
+        "source_system",
+        "source_table",
+        "source_column",
+        "comment",
+        "classification_context",
+        "etl_derived_value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Tên attribute theo chuẩn BCV (Title Case)"
+        },
+        "physical_name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Tên cột Delta Lake (snake_case)"
+        },
+        "business_meaning": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Mô tả nghiệp vụ của attribute"
+        },
+        "data_domain": {
+          "type": "string",
+          "enum": [
+            "Text",
+            "Date",
+            "Timestamp",
+            "Currency Amount",
+            "Interest Rate",
+            "Exchange Rate",
+            "Percentage",
+            "Surrogate Key",
+            "Classification Value",
+            "Indicator",
+            "Boolean",
+            "Small Counter",
+            "Array<Text>",
+            "Array<Struct>"
+          ],
+          "description": "Data domain theo chuẩn 12 domain + Array extensions"
+        },
+        "data_type": {
+          "type": "string",
+          "enum": [
+            "string",
+            "date",
+            "timestamp",
+            "boolean",
+            "int",
+            "decimal(23,2)",
+            "decimal(5,2)",
+            "decimal(8,5)",
+            "array<string>",
+            "array<struct<...>>"
+          ],
+          "description": "Kiểu dữ liệu Delta Lake / Spark"
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "Cho phép null — false nếu is_primary_key = true"
+        },
+        "is_primary_key": {
+          "type": "boolean",
+          "description": "Là thành phần PK"
+        },
+        "source_system": {
+          "type": "string",
+          "enum": [
+            "DCST",
+            "ECAT",
+            "FIMS",
+            "FMS",
+            "GSGD",
+            "IDS",
+            "MDDS",
+            "NHNCK",
+            "OrderTrade",
+            "QLRR",
+            "SCMS",
+            "ThanhTra"
+          ],
+          "description": "Source system code"
+        },
+        "source_table": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tên bảng nguồn (không có prefix source system)"
+        },
+        "source_column": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_]*\\.[A-Za-z][A-Za-z0-9_]*\\.[A-Za-z][A-Za-z0-9_.]*$",
+              "description": "Format: SYSTEM.TABLE.column — null nếu surrogate key hoặc derived"
+            }
+          ]
+        },
+        "comment": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "minLength": 1 }
+          ],
+          "description": "Ghi chú kỹ thuật — null nếu không có"
+        },
+        "classification_context": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "minLength": 1 }
+          ],
+          "description": "Ngữ cảnh Classification Value, VD: \"Source System Code = 'FIMS_AUTHOANNOUNCE'\""
+        },
+        "etl_derived_value": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "minLength": 1 }
+          ],
+          "description": "Giá trị derived hoặc hardcode trong ETL — null nếu map thẳng từ source"
+        }
+      }
+    }
+  }
+}

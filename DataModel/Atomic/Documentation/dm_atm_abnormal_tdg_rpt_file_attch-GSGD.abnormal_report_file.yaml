@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-abnormal_tdg_rpt_file_attch-GSGD.abnormal_report_file
+  logical_name: "Atomic - Abnormal Trading Report File Attachment – source GSGD.abnormal_report_file"
+  physical_name: abnormal_tdg_rpt_file_attch
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Supporting Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    File đính kèm báo cáo giao dịch bất thường (có chữ ký số). FK Abnormal Trading Report.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-abnormal_report_file
+
+attributes:
+  - name: Abnormal Trading Report File Attachment Id
+    physical_name: abnormal_tdg_rpt_file_attch_id
+    business_meaning: Khóa đại diện cho file đính kèm báo cáo bất thường.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: Abnormal Trading Report File Attachment Code
+    physical_name: abnormal_tdg_rpt_file_attch_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: Abnormal Trading Report Id
+    physical_name: abnormal_tdg_rpt_id
+    business_meaning: FK đến báo cáo giao dịch bất thường.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.report_id
+    comment: "FK target: Abnormal Trading Report.Abnormal Trading Report Id."
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: Abnormal Trading Report Code
+    physical_name: abnormal_tdg_rpt_code
+    business_meaning: Mã báo cáo bất thường. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.report_id
+    comment: "Lookup pair: Abnormal Trading Report.Abnormal Trading Report Code. Pair with Abnormal Trading Report Id."
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: File Name
+    physical_name: file_nm
+    business_meaning: Tên file đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.file_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: File Path
+    physical_name: file_path
+    business_meaning: Đường dẫn file.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.file_path
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: File Size
+    physical_name: file_sz
+    business_meaning: Kích thước file (bytes).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.file_size
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: File Type Code
+    physical_name: file_tp_code
+    business_meaning: "Loại file: CSV, XLSX, PDF."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.file_type
+    comment: "Scheme: GSGD_FILE_TYPE."
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null
+
+  - name: Digital Signature
+    physical_name: digital_sgn
+    business_meaning: Chữ ký số của file.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report_file
+    source_column: GSGD.abnormal_report_file.digital_signature
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report_file'"
+    etl_derived_value: null

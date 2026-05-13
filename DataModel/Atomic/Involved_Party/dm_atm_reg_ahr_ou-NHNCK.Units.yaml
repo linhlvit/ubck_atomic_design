@@ -1,0 +1,161 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-reg_ahr_ou-NHNCK.Units
+  logical_name: "Atomic - Regulatory Authority Organization Unit – source NHNCK.Units"
+  physical_name: reg_ahr_ou
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: Đơn vị/phòng ban thuộc UBCKNN. Cấu trúc phân cấp gộp Units và Departments.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-Units
+
+attributes:
+  - name: Organization Unit Id
+    physical_name: ou_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: Units
+    source_column: null
+    comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Đơn vị thuộc UBCK."
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Organization Unit Code
+    physical_name: ou_code
+    business_meaning: Mã đơn vị. BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: NHNCK.Units.UnitCode
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Organization Unit Type Code
+    physical_name: ou_tp_code
+    business_meaning: Phân loại — Đơn vị (Unit)
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Organization Unit Name
+    physical_name: ou_nm
+    business_meaning: Tên đơn vị
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: NHNCK.Units.UnitName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Organization Unit Description
+    physical_name: ou_dsc
+    business_meaning: Mô tả
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: NHNCK.Units.Description
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Organization Unit Status Code
+    physical_name: ou_st_code
+    business_meaning: Trạng thái
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: NHNCK.Units.Status
+    comment: "Scheme: ORGANIZATION_UNIT_STATUS."
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Parent Organization Unit Id
+    physical_name: prn_ou_id
+    business_meaning: FK đến đơn vị cha (Units)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: null
+    comment: "FK target: Regulatory Authority Organization Unit.Organization Unit Id."
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Parent Organization Unit Code
+    physical_name: prn_ou_code
+    business_meaning: Mã đơn vị cha
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: null
+    comment: "Lookup pair: Regulatory Authority Organization Unit.Organization Unit Code. Pair with Parent Organization Unit Id."
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null
+
+  - name: Sort Order
+    physical_name: sort_ordr
+    business_meaning: Thứ tự sắp xếp
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Units
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Units'"
+    etl_derived_value: null

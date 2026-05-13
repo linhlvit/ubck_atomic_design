@@ -1,0 +1,652 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ap-NHNCK.Applications
+  logical_name: "Atomic - Securities Practitioner License Application – source NHNCK.Applications"
+  physical_name: scr_prac_license_ap
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Government Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-Applications
+
+attributes:
+  - name: License Application Id
+    physical_name: license_ap_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: Applications
+    source_column: null
+    comment: "PK surrogate. BCV: \"Government Registration\" (Arrangement). Hồ sơ đăng ký CCHN."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: License Application Code
+    physical_name: license_ap_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.Id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Practitioner Id
+    physical_name: prac_id
+    business_meaning: FK đến Securities Practitioner
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ProfessionalId
+    comment: "FK target: Securities Practitioner.Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Practitioner Code
+    physical_name: prac_code
+    business_meaning: Mã người hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ProfessionalId
+    comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Certificate Type Code
+    physical_name: ctf_tp_code
+    business_meaning: Mã loại chứng chỉ đăng ký
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CertificateId
+    comment: "Scheme: CERTIFICATE_TYPE."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Application Status Code
+    physical_name: ap_st_code
+    business_meaning: Trạng thái hồ sơ (FK → ApplicationStatuses)
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.StatusId
+    comment: "Scheme: APPLICATION_STATUS."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Id
+    physical_name: license_ctf_doc_id
+    business_meaning: FK đến CCHN đã được cấp (nếu có)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CertificateRecordId
+    comment: "FK target: Securities Practitioner License Certificate Document.License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Code
+    physical_name: license_ctf_doc_code
+    business_meaning: Mã CCHN đã cấp
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CertificateRecordId
+    comment: "Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Previous Certificate Type Code
+    physical_name: prev_ctf_tp_code
+    business_meaning: Mã loại chứng chỉ trước đó
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.PreviousCertificateId
+    comment: "Scheme: CERTIFICATE_TYPE."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Previous License Certificate Document Id
+    physical_name: prev_license_ctf_doc_id
+    business_meaning: FK đến CCHN trước đó
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.PreviousCertificateRecordId
+    comment: "FK target: Securities Practitioner License Certificate Document.License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Previous License Certificate Document Code
+    physical_name: prev_license_ctf_doc_code
+    business_meaning: Mã CCHN trước đó
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.PreviousCertificateRecordId
+    comment: "Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with Previous License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Examination Assessment Id
+    physical_name: exam_ases_id
+    business_meaning: FK đến đợt thi (nếu hồ sơ gắn với kỳ thi)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ExamSessionId
+    comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Examination Assessment Code
+    physical_name: exam_ases_code
+    business_meaning: Mã đợt thi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ExamSessionId
+    comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Id
+    physical_name: assignee_ofcr_id
+    business_meaning: FK đến cán bộ xử lý
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.AssigneeId
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Code
+    physical_name: assignee_ofcr_code
+    business_meaning: Mã cán bộ xử lý
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.AssigneeId
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: License Application Verification Status Id
+    physical_name: license_ap_verf_st_id
+    business_meaning: FK đến yêu cầu phê duyệt lãnh đạo
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.InfoVerifyId
+    comment: "FK target: Securities Practitioner License Application Verification Status.License Application Verification Status Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: License Application Verification Status Code
+    physical_name: license_ap_verf_st_code
+    business_meaning: Mã yêu cầu phê duyệt
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.InfoVerifyId
+    comment: "Lookup pair: Securities Practitioner License Application Verification Status.License Application Verification Status Code. Pair with License Application Verification Status Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Application Code
+    physical_name: ap_code
+    business_meaning: Mã hồ sơ (mã nghiệp vụ)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ApplicationCode
+    comment: "Mã nghiệp vụ, khác BK."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Application Title
+    physical_name: ap_ttl
+    business_meaning: Tiêu đề hồ sơ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.Title
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Registration Type Code
+    physical_name: rgst_tp_code
+    business_meaning: Loại đăng ký
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.RegistrationType
+    comment: "Scheme: REGISTRATION_TYPE."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Application Type Code
+    physical_name: ap_tp_code
+    business_meaning: Loại hồ sơ
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ApplicationType
+    comment: "Scheme: APPLICATION_TYPE."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: subm_dt
+    business_meaning: Ngày nộp hồ sơ
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.SubmissionDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Supplement Date
+    physical_name: supplement_dt
+    business_meaning: Ngày bổ sung hồ sơ
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.SupplementDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Supplement Letter Date
+    physical_name: supplement_ltr_dt
+    business_meaning: Ngày thư yêu cầu bổ sung
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.SupplementLetterDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Reissue Reason
+    physical_name: reissue_rsn
+    business_meaning: Lý do cấp lại
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ReissueReason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Rejection Reason
+    physical_name: rejection_rsn
+    business_meaning: Lý do từ chối
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.RejectionReason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Certificate Number
+    physical_name: ctf_nbr
+    business_meaning: Số chứng chỉ (snapshot tại thời điểm cấp)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CertificateNumber
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày cấp chứng chỉ (snapshot)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.IssueDate
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Previous Certificate Number
+    physical_name: prev_ctf_nbr
+    business_meaning: Số chứng chỉ trước đó (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.PreviousCertificateNumber
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Previous Issue Date
+    physical_name: prev_issu_dt
+    business_meaning: Ngày cấp chứng chỉ trước đó (snapshot)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.PreviousIssueDate
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Reissue HSM Code
+    physical_name: reissue_hsm_code
+    business_meaning: Mã tái cấp HSM
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ReissueHSM
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Certificate Receipt Method Code
+    physical_name: ctf_recpt_mth_code
+    business_meaning: Phương thức nhận chứng chỉ
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CertificateReceiptMethod
+    comment: "Scheme: RECEIPT_METHOD."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Certificate Receipt Address
+    physical_name: ctf_recpt_adr
+    business_meaning: Địa chỉ nhận chứng chỉ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CertificateReceiptAddress
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Certificate Receipt Phone
+    physical_name: ctf_recpt_ph
+    business_meaning: Số điện thoại nhận chứng chỉ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CertificateReceiptPhone
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Receipt Status Code
+    physical_name: recpt_st_code
+    business_meaning: Trạng thái nhận chứng chỉ
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.ReceiptStatus
+    comment: "Scheme: RECEIPT_STATUS."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Is Violated Indicator
+    physical_name: is_violated_ind
+    business_meaning: Cờ vi phạm
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.IsViolated
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Is Date Exploitable Indicator
+    physical_name: is_dt_exploitable_ind
+    business_meaning: Cờ khai thác theo ngày
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.IsDateExploitable
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Application Note
+    physical_name: ap_note
+    business_meaning: Ghi chú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.Note
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CreatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã người tạo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CreatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.UpdatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã người cập nhật
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.UpdatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Applications
+    source_column: NHNCK.Applications.UpdatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Applications'"
+    etl_derived_value: null

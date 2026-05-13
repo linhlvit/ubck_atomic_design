@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-frgn_fnd_mgt_ou_stff-FMS.STFFGBRCH
+  logical_name: "Atomic - Foreign Fund Management Organization Unit Staff – source FMS.STFFGBRCH"
+  physical_name: frgn_fnd_mgt_ou_stff
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Role"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Nhân sự đảm nhận chức vụ tại văn phòng đại diện/chi nhánh công ty quản lý quỹ nước ngoài. Ghi nhận vai trò và tư cách pháp lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-STFFGBRCH
+
+attributes:
+  - name: Foreign Fund Management Organization Unit Staff Id
+    physical_name: frgn_fnd_mgt_ou_stff_id
+    business_meaning: Khóa đại diện cho nhân sự tại VPĐD/CN QLQ nước ngoài.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Staff Code
+    physical_name: frgn_fnd_mgt_ou_stff_code
+    business_meaning: Mã định danh nhân sự VPĐD/CN QLQ NN. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: frgn_fnd_mgt_ou_id
+    business_meaning: FK đến VPĐD/CN QLQ nước ngoài.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.FgBrId
+    comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id."
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: frgn_fnd_mgt_ou_code
+    business_meaning: Mã VPĐD/CN QLQ nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.FgBrId
+    comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Foreign Fund Management Organization Unit Id."
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Id
+    physical_name: fnd_mgt_co_key_psn_id
+    business_meaning: FK đến nhân sự giữ vai trò tại VPĐD/CN QLQ NN.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.TLId
+    comment: "FK target: Fund Management Company Key Person.Fund Management Company Key Person Id."
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Code
+    physical_name: fnd_mgt_co_key_psn_code
+    business_meaning: Mã nhân sự.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.TLId
+    comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company Key Person Code. Pair with Fund Management Company Key Person Id."
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Organization Unit Type Code
+    physical_name: ou_tp_code
+    business_meaning: "Loại đơn vị: VPĐD hoặc CN NN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.FnType
+    comment: "Scheme: FMS_FOREIGN_OU_TYPE."
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Is Legal Representative Indicator
+    physical_name: is_lgl_rprs_ind
+    business_meaning: Cờ đánh dấu người đại diện pháp luật tại VPĐD/CN.
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.Isr
+    comment: null
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Is Disclosure Representative Indicator
+    physical_name: is_dscl_rprs_ind
+    business_meaning: Cờ đánh dấu đại diện công bố thông tin.
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.Isp
+    comment: null
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STFFGBRCH
+    source_column: FMS.STFFGBRCH.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_STFFGBRCH'"
+    etl_derived_value: null

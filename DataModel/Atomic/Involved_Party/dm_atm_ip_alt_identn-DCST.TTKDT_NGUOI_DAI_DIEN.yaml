@@ -1,0 +1,302 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_alt_identn-DCST.TTKDT_NGUOI_DAI_DIEN
+  logical_name: "Atomic - Involved Party Alternative Identification – source DCST.TTKDT_NGUOI_DAI_DIEN"
+  physical_name: ip_alt_identn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: DCST
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-DCST-TTKDT_NGUOI_DAI_DIEN
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Taxpayer Representative
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.ID
+    comment: "FK target: Taxpayer Representative.Taxpayer Representative Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã người đại diện
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.ID
+    comment: "Lookup pair: Taxpayer Representative.Taxpayer Representative Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identn_tp_code
+    business_meaning: Loại giấy tờ — CCCD.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO
+    comment: "ETL map: 2080 → CITIZEN_ID."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số CCCD
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày cấp CCCD
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Issuing Authority Name
+    physical_name: issu_ahr_nm
+    business_meaning: Nơi cấp CCCD/Hộ chiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: null
+    comment: "Chú ý: tên cột nguồn bị đảo — IdNo chứa nơi cấp, IdAdd chứa số CCCD."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Taxpayer Representative
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.ID
+    comment: "FK target: Taxpayer Representative.Taxpayer Representative Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã người đại diện
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.ID
+    comment: "Lookup pair: Taxpayer Representative.Taxpayer Representative Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identn_tp_code
+    business_meaning: Loại giấy tờ — CMND.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO
+    comment: "ETL map: 1010 → NATIONAL_ID."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số CMND
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày cấp CMND
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Issuing Authority Name
+    physical_name: issu_ahr_nm
+    business_meaning: Nơi cấp CMND/CCCD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Taxpayer Representative
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.ID
+    comment: "FK target: Taxpayer Representative.Taxpayer Representative Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'PASSPORT'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã người đại diện
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.ID
+    comment: "Lookup pair: Taxpayer Representative.Taxpayer Representative Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'PASSPORT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'PASSPORT'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identn_tp_code
+    business_meaning: Loại giấy tờ — hộ chiếu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.LOAI_GIAY_TO
+    comment: "ETL map: 1020 → PASSPORT."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'PASSPORT'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số hộ chiếu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.SO_GIAY_TO
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'PASSPORT'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày cấp hộ chiếu
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.NGAY_CAP
+    comment: null
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN' | Identification Type Code = 'PASSPORT'"
+    etl_derived_value: null

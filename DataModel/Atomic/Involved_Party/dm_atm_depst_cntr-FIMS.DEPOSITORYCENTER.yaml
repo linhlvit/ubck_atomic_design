@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-depst_cntr-FIMS.DEPOSITORYCENTER
+  logical_name: "Atomic - Depository Center – source FIMS.DEPOSITORYCENTER"
+  physical_name: depst_cntr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Trung tâm lưu ký chứng khoán quốc gia - thành viên thị trường trong hệ thống FIMS (VSD).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-DEPOSITORYCENTER
+
+attributes:
+  - name: Depository Center Id
+    physical_name: depst_cntr_id
+    business_meaning: Khóa đại diện cho Trung tâm lưu ký chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Depository Center Code
+    physical_name: depst_cntr_code
+    business_meaning: Mã định danh Trung tâm lưu ký. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: cty_of_rgst_id
+    business_meaning: FK đến quốc gia đăng ký của Trung tâm lưu ký.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.NaId
+    comment: "FK target: Geographic Area.Geographic Area Id. ID quốc gia lấy từ bảng NATIONAL."
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: cty_of_rgst_code
+    business_meaning: Mã quốc gia đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.NaId
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên Trung tâm lưu ký.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.Name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: English Name
+    physical_name: en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.EName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Abbreviation
+    physical_name: abr
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.ShortName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.StatusId
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: DEPOSITORYCENTER
+    source_column: FIMS.DEPOSITORYCENTER.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_DEPOSITORYCENTER'"
+    etl_derived_value: null

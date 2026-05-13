@@ -1,0 +1,246 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-abnormal_tdg_rpt-GSGD.abnormal_report
+  logical_name: "Atomic - Abnormal Trading Report – source GSGD.abnormal_report"
+  physical_name: abnormal_tdg_rpt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Báo cáo giao dịch bất thường do tổ chức thành viên nộp lên UBCKNN. Grain: 1 dòng = 1 báo cáo.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-abnormal_report
+
+attributes:
+  - name: Abnormal Trading Report Id
+    physical_name: abnormal_tdg_rpt_id
+    business_meaning: Khóa đại diện cho báo cáo giao dịch bất thường.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Abnormal Trading Report Code
+    physical_name: abnormal_tdg_rpt_code
+    business_meaning: Mã báo cáo. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.report_code
+    comment: BK chính.
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.report_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: Loại báo cáo bất thường.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.report_type
+    comment: "Scheme: GSGD_ABNORMAL_REPORT_TYPE."
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: prd_tp_code
+    business_meaning: Loại kỳ báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.period_type
+    comment: "Scheme: GSGD_PERIOD_TYPE."
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: prd_val
+    business_meaning: "Giá trị kỳ báo cáo (ví dụ: tháng 1 = 1)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.period_value
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Period Year
+    physical_name: prd_yr
+    business_meaning: Năm kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.period_year
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Submitter Type Code
+    physical_name: submitter_tp_code
+    business_meaning: Loại người nộp (Tổ chức / Cá nhân).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.submitter_type
+    comment: "Scheme: GSGD_SUBMITTER_TYPE."
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Submitter Id
+    physical_name: submitter_id
+    business_meaning: Mã người/tổ chức nộp báo cáo. Denormalized — không có FK tường minh đến entity Atomic.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.submitter_id
+    comment: "Pending: cần mapping tường minh đến Securities Company hoặc entity khác."
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Submitter Name
+    physical_name: submitter_nm
+    business_meaning: Tên người/tổ chức nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.submitter_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: subm_dt
+    business_meaning: Ngày nộp báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.submission_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Approval Status Code
+    physical_name: aprv_st_code
+    business_meaning: "Trạng thái: 0=Chờ duyệt, 1=Đã duyệt, 2=Từ chối, 3=Yêu cầu nộp lại."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.approval_status
+    comment: "Scheme: GSGD_APPROVAL_STATUS."
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Approval Date
+    physical_name: aprv_dt
+    business_meaning: Ngày duyệt báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.approval_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Approver
+    physical_name: approver
+    business_meaning: Người duyệt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.approver
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null
+
+  - name: Rejection Reason
+    physical_name: rejection_rsn
+    business_meaning: Lý do từ chối.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: abnormal_report
+    source_column: GSGD.abnormal_report.rejection_reason
+    comment: null
+    classification_context: "Source System Code = 'GSGD_abnormal_report'"
+    etl_derived_value: null

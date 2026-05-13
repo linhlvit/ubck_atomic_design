@@ -1,0 +1,203 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cpln_pcs_conclusion-ThanhTra.DT_KET_LUAN
+  logical_name: "Atomic - Complaint Processing Conclusion – source ThanhTra.DT_KET_LUAN"
+  physical_name: cpln_pcs_conclusion
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: Kết luận giải quyết đơn thư. FK → Complaint Processing Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-DT_KET_LUAN
+
+attributes:
+  - name: Complaint Processing Conclusion Id
+    physical_name: cpln_pcs_conclusion_id
+    business_meaning: Khóa đại diện cho kết luận giải quyết đơn thư.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Complaint Processing Conclusion Code
+    physical_name: cpln_pcs_conclusion_code
+    business_meaning: Mã kết luận. Map từ PK ThanhTra.DT_KET_LUAN.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Complaint Processing Case Id
+    physical_name: cpln_pcs_case_id
+    business_meaning: FK đến Complaint Processing Case.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.HO_SO_ID
+    comment: "FK target: Complaint Processing Case.Complaint Processing Case Id."
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Complaint Processing Case Code
+    physical_name: cpln_pcs_case_code
+    business_meaning: Mã hồ sơ đơn thư.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.HO_SO_ID
+    comment: "Lookup pair: Complaint Processing Case.Complaint Processing Case Code. Pair with Complaint Processing Case Id."
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Number
+    physical_name: conclusion_nbr
+    business_meaning: Số kết luận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.SO_KET_LUAN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Date
+    physical_name: conclusion_dt
+    business_meaning: Ngày kết luận.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.NGAY_KET_LUAN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Resolution Result Code
+    physical_name: rsl_rslt_code
+    business_meaning: "Kết quả giải quyết: DUNG / SAI / DUNG_MOT_PHAN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.KET_QUA
+    comment: "Scheme: TT_RESOLUTION_RESULT."
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Content
+    physical_name: conclusion_cntnt
+    business_meaning: Nội dung kết luận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.KET_LUAN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Official Conclusion Date
+    physical_name: offc_conclusion_dt
+    business_meaning: Ngày ra kết luận chính thức.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.NGAY_RA_KET_LUAN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Referred to Ministry Date
+    physical_name: referred_to_ministry_dt
+    business_meaning: Ngày chuyển cho thanh tra bộ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.NGAY_CHUYEN_THANH_TRA_BO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Status Code
+    physical_name: conclusion_st_code
+    business_meaning: "Trạng thái: DANG_GIAI_QUYET / DA_HOAN_THANH."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.TRANG_THAI
+    comment: "Scheme: TT_CASE_STATUS."
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Remark
+    physical_name: remark
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_KET_LUAN
+    source_column: ThanhTra.DT_KET_LUAN.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_KET_LUAN'"
+    etl_derived_value: null

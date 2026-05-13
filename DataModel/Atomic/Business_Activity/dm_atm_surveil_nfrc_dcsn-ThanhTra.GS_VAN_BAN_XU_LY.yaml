@@ -1,0 +1,189 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-surveil_nfrc_dcsn-ThanhTra.GS_VAN_BAN_XU_LY
+  logical_name: "Atomic - Surveillance Enforcement Decision – source ThanhTra.GS_VAN_BAN_XU_LY"
+  physical_name: surveil_nfrc_dcsn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: Văn bản xử lý vi phạm từ giám sát. FK → Surveillance Enforcement Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-GS_VAN_BAN_XU_LY
+
+attributes:
+  - name: Surveillance Enforcement Decision Id
+    physical_name: surveil_nfrc_dcsn_id
+    business_meaning: Khóa đại diện cho quyết định xử phạt từ giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Decision Code
+    physical_name: surveil_nfrc_dcsn_code
+    business_meaning: Mã quyết định. Map từ PK ThanhTra.GS_VAN_BAN_XU_LY.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Case Id
+    physical_name: surveil_nfrc_case_id
+    business_meaning: FK đến Surveillance Enforcement Case.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.HO_SO_ID
+    comment: "FK target: Surveillance Enforcement Case.Surveillance Enforcement Case Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Case Code
+    physical_name: surveil_nfrc_case_code
+    business_meaning: Mã hồ sơ giám sát.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.HO_SO_ID
+    comment: "Lookup pair: Surveillance Enforcement Case.Surveillance Enforcement Case Code. Pair with Surveillance Enforcement Case Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Penalty Decision Number
+    physical_name: pny_dcsn_nbr
+    business_meaning: Số quyết định xử phạt / số công văn nhắc nhở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.SO_QD_XU_PHAT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Violation Report Number
+    physical_name: vln_rpt_nbr
+    business_meaning: Số biên bản vi phạm hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.SO_BIEN_BAN_VPHC
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Violation Report Date
+    physical_name: vln_rpt_dt
+    business_meaning: Ngày ký biên bản vi phạm hành chính.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Penalty Content
+    physical_name: pny_cntnt
+    business_meaning: Nội dung xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.NOI_DUNG_XU_PHAT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Total Penalty Amount
+    physical_name: tot_pny_amt
+    business_meaning: Tổng số tiền phạt.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Decision Status Code
+    physical_name: dcsn_st_code
+    business_meaning: Trạng thái hồ sơ sau xử lý.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.TRANG_THAI
+    comment: "Scheme: TT_CASE_STATUS."
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null
+
+  - name: Remark
+    physical_name: remark
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY'"
+    etl_derived_value: null

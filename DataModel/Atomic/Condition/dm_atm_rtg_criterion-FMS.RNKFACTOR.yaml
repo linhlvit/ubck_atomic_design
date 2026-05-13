@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rtg_criterion-FMS.RNKFACTOR
+  logical_name: "Atomic - Rating Criterion – source FMS.RNKFACTOR"
+  physical_name: rtg_criterion
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Tiêu chí chấm điểm đánh giá xếp loại thành viên thị trường. Lưu tên tiêu chí và điểm tối đa/trọng số. Có cấu trúc cha/con.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RNKFACTOR
+
+attributes:
+  - name: Rating Criterion Id
+    physical_name: rtg_criterion_id
+    business_meaning: Khóa đại diện cho nhân tố chấm điểm đánh giá.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Rating Criterion Code
+    physical_name: rtg_criterion_code
+    business_meaning: Mã định danh nhân tố. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Rating Criterion Name
+    physical_name: rtg_criterion_nm
+    business_meaning: Tên nhân tố chấm điểm.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.Name
+    comment: null
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Parent Rating Criterion Id
+    physical_name: prn_rtg_criterion_id
+    business_meaning: FK tự thân — nhân tố cha.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.ParentId
+    comment: "FK target: Rating Criterion.Rating Criterion Id. Null = nhân tố gốc."
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Parent Rating Criterion Code
+    physical_name: prn_rtg_criterion_code
+    business_meaning: Mã nhân tố cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.ParentId
+    comment: "Lookup pair: Rating Criterion.Rating Criterion Code. Pair with Parent Rating Criterion Id."
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Max Score
+    physical_name: max_scor
+    business_meaning: Điểm tối đa của nhân tố.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.MaxScore
+    comment: null
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Weight
+    physical_name: wght
+    business_meaning: Trọng số của nhân tố trong tổng điểm.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.Weight
+    comment: null
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Is Active Flag
+    physical_name: is_actv_f
+    business_meaning: Nhân tố đang được áp dụng.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.IsActive
+    comment: null
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RNKFACTOR
+    source_column: FMS.RNKFACTOR.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_RNKFACTOR'"
+    etl_derived_value: null

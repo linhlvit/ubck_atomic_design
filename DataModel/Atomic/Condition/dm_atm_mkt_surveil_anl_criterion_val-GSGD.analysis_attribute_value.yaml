@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_anl_criterion_val-GSGD.analysis_attribute_value
+  logical_name: "Atomic - Market Surveillance Analysis Criterion Value – source GSGD.analysis_attribute_value"
+  physical_name: mkt_surveil_anl_criterion_val
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Append
+  source: GSGD
+  description: |
+    Giá trị cụ thể của tiêu chí phân tích theo từng quy trình. FK Market Surveillance Analysis Criterion.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-analysis_attribute_value
+
+attributes:
+  - name: Market Surveillance Analysis Criterion Value Id
+    physical_name: mkt_surveil_anl_criterion_val_id
+    business_meaning: Khóa đại diện cho giá trị tiêu chí phân tích.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Analysis Criterion Value Code
+    physical_name: mkt_surveil_anl_criterion_val_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Analysis Criterion Id
+    physical_name: mkt_surveil_anl_criterion_id
+    business_meaning: FK đến tiêu chí phân tích.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.attribute_id
+    comment: "FK target: Market Surveillance Analysis Criterion.Market Surveillance Analysis Criterion Id."
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Analysis Criterion Code
+    physical_name: mkt_surveil_anl_criterion_code
+    business_meaning: Mã tiêu chí phân tích. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.attribute_id
+    comment: "Lookup pair: Market Surveillance Analysis Criterion.Market Surveillance Analysis Criterion Code. Pair with Market Surveillance Analysis Criterion Id."
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Workflow Type Code
+    physical_name: workflow_tp_code
+    business_meaning: "Quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.workflow_type
+    comment: "Scheme: GSGD_WORKFLOW_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Value Number
+    physical_name: val_nbr
+    business_meaning: "Giá trị số (nếu data_type = NUMBER)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.value_number
+    comment: Lưu dạng Text — parse theo data_type khi sử dụng.
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Value String
+    physical_name: val_strg
+    business_meaning: "Giá trị chuỗi (nếu data_type = STRING hoặc mô tả mở rộng)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.value_string
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Value Date
+    physical_name: val_dt
+    business_meaning: "Giá trị ngày (nếu data_type = DATE)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.value_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null
+
+  - name: Value Boolean
+    physical_name: val_booln
+    business_meaning: "Giá trị boolean: 0/1 (nếu data_type = BOOLEAN)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_attribute_value
+    source_column: GSGD.analysis_attribute_value.value_boolean
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_attribute_value'"
+    etl_derived_value: null

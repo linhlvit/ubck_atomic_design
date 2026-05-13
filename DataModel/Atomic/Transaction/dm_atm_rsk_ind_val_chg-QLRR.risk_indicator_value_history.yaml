@@ -1,0 +1,218 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_ind_val_chg-QLRR.risk_indicator_value_history
+  logical_name: "Atomic - Risk Indicator Value Change – source QLRR.risk_indicator_value_history"
+  physical_name: rsk_ind_val_chg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Event] Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: QLRR
+  description: |
+    Lịch sử từng lần thay đổi giá trị chỉ tiêu (SYNC tự động / UPDATE thủ công). Grain: 1 lần thay đổi. Append-only. FK → Risk Indicator.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_indicator_value_history
+
+attributes:
+  - name: Risk Indicator Value Change Id
+    physical_name: rsk_ind_val_chg_id
+    business_meaning: Khóa đại diện cho bản ghi thay đổi giá trị chỉ tiêu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Value Change Code
+    physical_name: rsk_ind_val_chg_code
+    business_meaning: Mã định danh bản ghi thay đổi. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Id
+    physical_name: rsk_ind_id
+    business_meaning: FK đến chỉ tiêu rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.indicator_id
+    comment: "FK target: Risk Indicator.Risk Indicator Id."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Code
+    physical_name: rsk_ind_code
+    business_meaning: Mã chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.indicator_id
+    comment: "Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Old Value
+    physical_name: old_val
+    business_meaning: Giá trị cũ trước thay đổi (null nếu là lần tạo mới).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.old_value
+    comment: Lưu dạng Text — giá trị số thập phân.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: New Value
+    physical_name: new_val
+    business_meaning: Giá trị mới sau thay đổi (null nếu là xóa).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.new_value
+    comment: Lưu dạng Text — giá trị số thập phân.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Unit Code
+    physical_name: unit_code
+    business_meaning: "Đơn vị đo lường tại thời điểm thay đổi: 1=%, 2=Điểm, 3=Tỷ VND, …"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.unit_code
+    comment: "Scheme: RISK_UNIT."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning: "Nguồn dữ liệu sau thay đổi: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà nước, 4=Nội bộ, 5=HNX, 6=VSDC."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.source_code
+    comment: "Scheme: RISK_DATA_SOURCE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Data Origin Code
+    physical_name: data_orig_code
+    business_meaning: "Nguồn gốc dữ liệu sau thay đổi: 1=API CSDL tập trung, 2=User chỉnh sửa."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.data_origin
+    comment: "Scheme: RISK_DATA_ORIGIN."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Change Type Code
+    physical_name: chg_tp_code
+    business_meaning: "Loại thay đổi: SYNC=đồng bộ tự động, UPDATE=chỉnh sửa thủ công."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.change_type
+    comment: "Scheme: RISK_INDICATOR_CHANGE_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Change By Id
+    physical_name: chg_by_id
+    business_meaning: User ID người thực hiện thay đổi (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.change_by_id
+    comment: Denormalized — không có User entity trên Atomic.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Change By Name
+    physical_name: chg_by_nm
+    business_meaning: Tên người thực hiện thay đổi (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.change_by_name
+    comment: Denormalized. Pair với Change By Id.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null
+
+  - name: Change At
+    physical_name: chg_at
+    business_meaning: Thời điểm ghi nhận thay đổi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value_history
+    source_column: QLRR.risk_indicator_value_history.change_at
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value_history'"
+    etl_derived_value: null

@@ -1,0 +1,287 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscl_ancm-FIMS.ANNOUNCE
+  logical_name: "Atomic - Disclosure Announcement – source FIMS.ANNOUNCE"
+  physical_name: dscl_ancm
+  version: "1.0"
+  status: approved
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Corporate Action Announcement"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FIMS
+  description: Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-ANNOUNCE
+
+attributes:
+  - name: Disclosure Announcement Id
+    physical_name: dscl_ancm_id
+    business_meaning: Khóa đại diện cho tin công bố thông tin.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Disclosure Announcement Code
+    physical_name: dscl_ancm_code
+    business_meaning: Mã tin công bố. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Disclosure Representative Id
+    physical_name: dscl_rprs_id
+    business_meaning: FK đến người đại diện CBTT gửi tin.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.InRepId
+    comment: "FK target: Disclosure Representative.Disclosure Representative Id."
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Disclosure Representative Code
+    physical_name: dscl_rprs_code
+    business_meaning: Mã người đại diện CBTT gửi tin.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.InRepId
+    comment: "Lookup pair: Disclosure Representative.Disclosure Representative Code. Pair with Disclosure Representative Id."
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Type Code
+    physical_name: ancm_tp_code
+    business_meaning: Loại CBTT. Dữ liệu lấy từ trường ID của bảng ANNOUNCETYPE.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.AnnounceTypeId
+    comment: "Scheme: FIMS_ANNOUNCE_TYPE."
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Title
+    physical_name: ancm_ttl
+    business_meaning: Tiêu đề tin công bố.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.Name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Content Summary
+    physical_name: cntnt_smy
+    business_meaning: Nội dung trích yếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.contentSummary
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Date
+    physical_name: ancm_dt
+    business_meaning: Ngày công bố thông tin.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.DateAnnounce
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Status Code
+    physical_name: ancm_st_code
+    business_meaning: "Trạng thái CBTT: 0: Chưa gửi 1: Đã CBTT."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.Status
+    comment: "Scheme: FIMS_ANNOUNCEMENT_STATUS. modeler_defined — 2 giá trị: 0=PENDING 1=PUBLISHED."
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Year
+    physical_name: ancm_yr
+    business_meaning: Năm báo cáo liên quan.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.YearValue
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Period Type Code
+    physical_name: ancm_prd_tp_code
+    business_meaning: "Kỳ báo cáo liên quan: 1: Ngày 2: Tuần 3: Nửa tháng 4: Tháng 5: Quý 6: Bán niên 7: Năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.PeriodType
+    comment: "Scheme: FIMS_PERIOD_TYPE."
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Period Value
+    physical_name: ancm_prd_val
+    business_meaning: Giá trị kỳ báo cáo liên quan.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.PeriodValue
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Sent By
+    physical_name: snd_by
+    business_meaning: Người gửi tin CBTT (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.SendAnnounceBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Ids
+    physical_name: frgn_ivsr_ids
+    business_meaning: Danh sách nhà đầu tư nước ngoài liên quan đến tin CBTT. InvesId → FK đến INVESTOR.
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCEINVES.InvesId
+    comment: "Pure junction ANNOUNCEINVES → denormalize thành ARRAY. Struct: {investor_id: Surrogate Key; investor_code: Text}. HLD decision: FIMS_HLD_Tier2.md."
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: ANNOUNCE
+    source_column: FIMS.ANNOUNCE.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
+    etl_derived_value: null

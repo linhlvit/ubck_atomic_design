@@ -1,0 +1,316 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_qualf_exam_ases-NHNCK.ExamSessions
+  logical_name: "Atomic - Securities Practitioner Qualification Examination Assessment – source NHNCK.ExamSessions"
+  physical_name: scr_prac_qualf_exam_ases
+  version: "1.0"
+  status: approved
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Assessment"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: NHNCK
+  description: |
+    Đợt thi sát hạch cấp chứng chỉ hành nghề chứng khoán. Ghi nhận thông tin tổ chức đợt thi và quyết định công nhận kết quả.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-ExamSessions
+
+attributes:
+  - name: Examination Assessment Id
+    physical_name: exam_ases_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: null
+    comment: "PK surrogate. BCV: \"Assessment\" (Communication). Đợt thi sát hạch CCHN."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Examination Assessment Code
+    physical_name: exam_ases_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.Id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Session Code
+    physical_name: ssn_code
+    business_meaning: Mã đợt thi (mã nghiệp vụ)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.Code
+    comment: "Mã nghiệp vụ, khác BK."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Session Name
+    physical_name: ssn_nm
+    business_meaning: Tên đợt thi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.Name
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Examination Year
+    physical_name: exam_yr
+    business_meaning: Năm thi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.Year
+    comment: "Text vì là năm dạng \"2025\"."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Session Number
+    physical_name: ssn_nbr
+    business_meaning: Đợt thi (số thứ tự trong năm)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.Session
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Organizer Name
+    physical_name: organizer_nm
+    business_meaning: Đơn vị tổ chức
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.OrganizingUnit
+    comment: Suffix Name — text tự do.
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Registration Start Date
+    physical_name: rgst_strt_dt
+    business_meaning: Ngày bắt đầu nhận hồ sơ
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.ApplicationStartDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Registration End Date
+    physical_name: rgst_end_dt
+    business_meaning: Ngày kết thúc nhận hồ sơ
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.ApplicationEndDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Examination Start Date
+    physical_name: exam_strt_dt
+    business_meaning: Ngày bắt đầu thi
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.ExamStartDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Examination End Date
+    physical_name: exam_end_dt
+    business_meaning: Ngày kết thúc thi
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.ExamEndDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Examination Location
+    physical_name: exam_lo
+    business_meaning: Địa điểm thi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.ExamLocations
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Notification Date
+    physical_name: notf_dt
+    business_meaning: Ngày thông báo kết quả
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.NotiDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Submission Method Description
+    physical_name: subm_mth_dsc
+    business_meaning: Phương thức nộp hồ sơ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.SubmissionMethods
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Attachment File Path
+    physical_name: attch_file_path
+    business_meaning: File thông báo đính kèm
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.FilePath
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: License Decision Document Id
+    physical_name: license_dcsn_doc_id
+    business_meaning: FK đến quyết định công nhận kết quả
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.DecisionId
+    comment: "FK target: Securities Practitioner License Decision Document.License Decision Document Id."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: License Decision Document Code
+    physical_name: license_dcsn_doc_code
+    business_meaning: Mã quyết định
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.DecisionId
+    comment: "Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Examination Status Code
+    physical_name: exam_st_code
+    business_meaning: "Trạng thái (0: Chưa hoàn thành, 1: Đã hoàn thành)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.Status
+    comment: "Scheme: EXAMINATION_STATUS."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.CreatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã người tạo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ExamSessions
+    source_column: NHNCK.ExamSessions.CreatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_ExamSessions'"
+    etl_derived_value: null

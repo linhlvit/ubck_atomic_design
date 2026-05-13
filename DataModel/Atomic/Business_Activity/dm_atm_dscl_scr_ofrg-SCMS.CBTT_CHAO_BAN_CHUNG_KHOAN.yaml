@@ -1,0 +1,344 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscl_scr_ofrg-SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN
+  logical_name: "Atomic - Disclosure Securities Offering – source SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN"
+  physical_name: dscl_scr_ofrg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  description: |
+    Thông tin chào bán chứng khoán được công bố bởi CTCK. Ghi nhận loại chứng khoán và điều kiện chào bán.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CBTT_CHAO_BAN_CHUNG_KHOAN
+
+attributes:
+  - name: Disclosure Securities Offering Id
+    physical_name: dscl_scr_ofrg_id
+    business_meaning: Khóa đại diện cho đợt chào bán chứng khoán được công bố.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Disclosure Securities Offering Code
+    physical_name: dscl_scr_ofrg_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán chào bán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: doc_nbr
+    business_meaning: Số văn bản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.SO_VAN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Document Date
+    physical_name: doc_dt
+    business_meaning: Ngày văn bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_VAN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Effective Date
+    physical_name: eff_dt
+    business_meaning: Ngày hợp lệ hồ sơ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_HOP_LE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Offering Start Date
+    physical_name: ofrg_strt_dt
+    business_meaning: Ngày bắt đầu chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_CHAO_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Offering End Date
+    physical_name: ofrg_end_dt
+    business_meaning: Ngày kết thúc chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_KET_THUC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Offering Form Code
+    physical_name: ofrg_form_code
+    business_meaning: Hình thức chào bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.HINH_THUC_CHAO_BAN
+    comment: "Scheme: SCMS_OFFERING_FORM."
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Target Investor Name
+    physical_name: trgt_ivsr_nm
+    business_meaning: Đối tượng chào bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.DOI_TUONG_CHAO_BAN
+    comment: Text tự do — mô tả đối tượng nhà đầu tư mục tiêu.
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Offering Volume
+    physical_name: ofrg_vol
+    business_meaning: Khối lượng chào bán.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.KHOI_LUONG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Offering Value
+    physical_name: ofrg_val
+    business_meaning: Giá trị chào bán.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.GIA_TRI
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Disclosing Person Name
+    physical_name: disclosing_psn_nm
+    business_meaning: Người công bố thông tin.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGUOI_CBTT
+    comment: Denormalized — tên cá nhân thực hiện công bố.
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Disclosure Date
+    physical_name: dscl_dt
+    business_meaning: Ngày công bố thông tin.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_CBTT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: subm_dt
+    business_meaning: Ngày gửi lên hệ thống.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_GUI
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Attachment File
+    physical_name: attch_file
+    business_meaning: Tệp đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.FILE_DINH_KEM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Error Description
+    physical_name: err_dsc
+    business_meaning: Mô tả lỗi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.MO_TA_LOI
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Disclosure Status Code
+    physical_name: dscl_st_code
+    business_meaning: Trạng thái công bố.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.TRANG_THAI
+    comment: "Scheme: SCMS_DISCLOSURE_STATUS."
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CBTT_CHAO_BAN_CHUNG_KHOAN
+    source_column: SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CBTT_CHAO_BAN_CHUNG_KHOAN'"
+    etl_derived_value: null

@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_ac_grp_mbr_anl_rslt-GSGD.analysis_account_group_member
+  logical_name: "Atomic - Market Surveillance Account Group Member Analysis Result – source GSGD.analysis_account_group_member"
+  physical_name: mkt_surveil_ac_grp_mbr_anl_rslt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: GSGD
+  description: |
+    Thành viên nhóm tài khoản trong kết quả phân tích. FK Market Surveillance Case + Investor Account Relationship.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-analysis_account_group_member
+
+attributes:
+  - name: Market Surveillance Account Group Member Analysis Result Id
+    physical_name: mkt_surveil_ac_grp_mbr_anl_rslt_id
+    business_meaning: Khóa đại diện cho kết quả phân tích thành viên nhóm tài khoản.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Account Group Member Analysis Result Code
+    physical_name: mkt_surveil_ac_grp_mbr_anl_rslt_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: FK đến vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.case_file_id
+    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: Mã vụ việc. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.case_file_id
+    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Id
+    physical_name: ac_ivsr_grp_id
+    business_meaning: FK đến nhóm tài khoản. FK suy luận đã xác nhận.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.account_group_id
+    comment: "FK target: Account Investor Group.Account Investor Group Id. FK suy luận — đã xác nhận HLD Tier3 6f-3."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Account Investor Group Code
+    physical_name: ac_ivsr_grp_code
+    business_meaning: Mã nhóm tài khoản. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.account_group_id
+    comment: "Lookup pair: Account Investor Group.Account Investor Group Code. Pair with Account Investor Group Id."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Investor Account Relationship Id
+    physical_name: ivsr_ac_rltnp_id
+    business_meaning: FK đến mối quan hệ tài khoản.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.relationship_id
+    comment: "FK target: Investor Account Relationship.Investor Account Relationship Id. FK suy luận."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Investor Account Relationship Code
+    physical_name: ivsr_ac_rltnp_code
+    business_meaning: Mã mối quan hệ tài khoản. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.relationship_id
+    comment: "Lookup pair: Investor Account Relationship.Investor Account Relationship Code. Pair with Investor Account Relationship Id."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Workflow Type Code
+    physical_name: workflow_tp_code
+    business_meaning: "Loại quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.workflow_type
+    comment: "Scheme: GSGD_WORKFLOW_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Result Type Code
+    physical_name: rslt_tp_code
+    business_meaning: "Loại kết quả: 1=Kết quả phân tích, 2=Kết quả kiểm tra."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.result_type
+    comment: "Scheme: GSGD_RESULT_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Account Code
+    physical_name: ac_code
+    business_meaning: Mã tài khoản thành viên trong kết quả phân tích.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.account_code
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Account Name
+    physical_name: ac_nm
+    business_meaning: Tên tài khoản thành viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.account_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.description
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null
+
+  - name: Analysis Date
+    physical_name: anl_dt
+    business_meaning: Ngày phân tích.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_account_group_member
+    source_column: GSGD.analysis_account_group_member.analysis_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_account_group_member'"
+    etl_derived_value: null

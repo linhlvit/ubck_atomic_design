@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_cmpln_rpt_clmn_config-GSGD.compliance_report_config
+  logical_name: "Atomic - Market Surveillance Compliance Report Column Config – source GSGD.compliance_report_config"
+  physical_name: mkt_surveil_cmpln_rpt_clmn_config
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Định nghĩa cấu trúc cột của từng loại báo cáo tuân thủ GSGD. FK Market Surveillance Compliance Report Template.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-compliance_report_config
+
+attributes:
+  - name: Market Surveillance Compliance Report Column Config Id
+    physical_name: mkt_surveil_cmpln_rpt_clmn_config_id
+    business_meaning: Khóa đại diện cho cấu hình cột báo cáo tuân thủ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Column Config Code
+    physical_name: mkt_surveil_cmpln_rpt_clmn_config_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: GSGD.compliance_report_config.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Template Id
+    physical_name: mkt_surveil_cmpln_rpt_tpl_id
+    business_meaning: FK đến mẫu báo cáo tuân thủ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: GSGD.compliance_report_config.template_id
+    comment: "FK target: Market Surveillance Compliance Report Template.Market Surveillance Compliance Report Template Id."
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Template Code
+    physical_name: mkt_surveil_cmpln_rpt_tpl_code
+    business_meaning: Mã mẫu báo cáo tuân thủ. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: GSGD.compliance_report_config.template_id
+    comment: "Lookup pair: Market Surveillance Compliance Report Template.Market Surveillance Compliance Report Template Code. Pair with Market Surveillance Compliance Report Template Id."
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Column Label
+    physical_name: clmn_lbl
+    business_meaning: Nhãn cột trong báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: GSGD.compliance_report_config.column_label
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Display Order
+    physical_name: dspl_ordr
+    business_meaning: Thứ tự hiển thị cột.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: GSGD.compliance_report_config.display_order
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Data Type Code
+    physical_name: data_tp_code
+    business_meaning: Kiểu dữ liệu của cột.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: GSGD.compliance_report_config.data_type
+    comment: "Scheme: GSGD_DATA_TYPE."
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null
+
+  - name: Is Visible
+    physical_name: is_visible
+    business_meaning: Cờ hiển thị cột.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_config
+    source_column: GSGD.compliance_report_config.is_visible
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_config'"
+    etl_derived_value: null

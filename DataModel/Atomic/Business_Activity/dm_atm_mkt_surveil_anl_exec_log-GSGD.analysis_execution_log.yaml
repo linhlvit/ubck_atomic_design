@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_anl_exec_log-GSGD.analysis_execution_log
+  logical_name: "Atomic - Market Surveillance Analysis Execution Log – source GSGD.analysis_execution_log"
+  physical_name: mkt_surveil_anl_exec_log
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: GSGD
+  description: |
+    Log thực thi phân tích từng biểu mẫu trong vụ việc giám sát. FK Market Surveillance Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-analysis_execution_log
+
+attributes:
+  - name: Market Surveillance Analysis Execution Log Id
+    physical_name: mkt_surveil_anl_exec_log_id
+    business_meaning: Khóa đại diện cho log thực thi phân tích biểu mẫu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Analysis Execution Log Code
+    physical_name: mkt_surveil_anl_exec_log_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: FK đến vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.case_file_id
+    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: Mã vụ việc. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.case_file_id
+    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Analysis Name
+    physical_name: anl_nm
+    business_meaning: Tên phân tích biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.analysis _name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Workflow Type Code
+    physical_name: workflow_tp_code
+    business_meaning: "Loại quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.workflow_type
+    comment: "Scheme: GSGD_WORKFLOW_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Template Type Code
+    physical_name: tpl_tp_code
+    business_meaning: "Loại biểu mẫu: 1=Báo cáo tổng hợp, 2=Báo cáo phân tích."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.template_type
+    comment: "Scheme: GSGD_TEMPLATE_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Start Time
+    physical_name: strt_tm
+    business_meaning: Thời gian bắt đầu phân tích.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.start_time
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: End Time
+    physical_name: end_tm
+    business_meaning: Thời gian kết thúc phân tích.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.end_time
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Execution Status Code
+    physical_name: exec_st_code
+    business_meaning: "Trạng thái thực thi: 0=Inactive, 1=Active."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.status
+    comment: "Scheme: GSGD_EXECUTION_STATUS."
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Request Param
+    physical_name: rqs_param
+    business_meaning: Thông tin parameters đầu vào.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.request_param
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: Error Message
+    physical_name: err_msg
+    business_meaning: Thông báo lỗi (nếu có).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.error_message
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: File Path
+    physical_name: file_path
+    business_meaning: Đường dẫn file output phân tích.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.path
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null
+
+  - name: File Name
+    physical_name: file_nm
+    business_meaning: Tên file output phân tích.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_execution_log
+    source_column: GSGD.analysis_execution_log.file_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_execution_log'"
+    etl_derived_value: null

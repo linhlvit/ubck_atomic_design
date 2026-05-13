@@ -1,0 +1,144 @@
+schema_type: mapping
+schema_version: "1.0"
+
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+
+mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.INFODISCREPRES
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.INFODISCREPRES"
+  physical_name: ip_alt_identn
+  pattern: unpivot
+  etl_pattern: SCD4A
+  dm_ref: ATM-ip_alt_identn-FIMS.INFODISCREPRES
+  brd_ref: BRD-SRC-FIMS-INFODISCREPRES
+
+target:
+  schema: atomic
+  physical_name: ip_alt_identn
+  etl_handle: SCD4A
+  description: |
+    Lưu trữ các giấy tờ định danh của Disclosure Representative từ FIMS.INFODISCREPRES.
+    2 legs: BUSINESS_LICENSE (CertNo) và CITIZEN_ID (IdAdd/IdNo — CẨN THẬN đảo cột).
+    Lưu ý nghiệp vụ: IdAdd chứa số CCCD, IdNo chứa nơi cấp CCCD (ngược với thông thường).
+
+input:
+  - seq: 1
+    source_type: physical_table
+    schema: bronze
+    table_name: INFODISCREPRES
+    alias: in_di_re
+    select_fields: "id, certno, idadd, idno, iddate"
+    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+
+relationship: []
+
+mapping_legs:
+  - leg: BUSINESS_LICENSE
+    filter: "in_di_re.certno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_INFODISCREPRES', in_di_re.id)"
+        source_column: FIMS.INFODISCREPRES.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: in_di_re.id
+        source_column: FIMS.INFODISCREPRES.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_INFODISCREPRES'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'BUSINESS_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: BUSINESS_LICENSE
+
+      - target_column: identn_nbr
+        transformation: in_di_re.certno
+        source_column: FIMS.INFODISCREPRES.CertNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: null
+        source_column: null
+        data_type: date
+        comment: "Không có cột ngày cấp cho BUSINESS_LICENSE trong INFODISCREPRES."
+
+      - target_column: issu_ahr_nm
+        transformation: null
+        source_column: null
+        data_type: string
+        comment: "Không có cột nơi cấp cho BUSINESS_LICENSE trong INFODISCREPRES."
+
+  - leg: CITIZEN_ID
+    filter: "in_di_re.idadd IS NOT NULL"
+    comment: "CẨN THẬN: IdAdd chứa số CCCD, IdNo chứa nơi cấp — tên cột nguồn bị đảo so với thông thường."
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_INFODISCREPRES', in_di_re.id)"
+        source_column: FIMS.INFODISCREPRES.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: in_di_re.id
+        source_column: FIMS.INFODISCREPRES.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_INFODISCREPRES'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'CITIZEN_ID'"
+        source_column: null
+        data_type: string
+        etl_derived_value: CITIZEN_ID
+
+      - target_column: identn_nbr
+        transformation: in_di_re.idadd
+        source_column: FIMS.INFODISCREPRES.IdAdd
+        data_type: string
+        comment: "Dùng IdAdd (không phải IdNo) — cột đảo trong nguồn."
+
+      - target_column: issu_dt
+        transformation: in_di_re.iddate
+        source_column: FIMS.INFODISCREPRES.IdDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: in_di_re.idno
+        source_column: FIMS.INFODISCREPRES.IdNo
+        data_type: string
+        comment: "Dùng IdNo (không phải IdAdd) — cột đảo trong nguồn."
+
+mapping_columns: null
+
+final_filter:
+  - seq: 1
+    clause_type: UNION ALL
+    expression: |
+      SELECT -- BUSINESS_LICENSE leg
+        hash_id('FIMS_INFODISCREPRES', in_di_re.id) AS ip_id,
+        in_di_re.id AS ip_code,
+        'FIMS_INFODISCREPRES' AS src_stm_code,
+        'BUSINESS_LICENSE' AS identn_tp_code,
+        in_di_re.certno AS identn_nbr,
+        CAST(NULL AS DATE) AS issu_dt,
+        CAST(NULL AS STRING) AS issu_ahr_nm
+      FROM in_di_re WHERE in_di_re.certno IS NOT NULL
+      UNION ALL
+      SELECT -- CITIZEN_ID leg (chú ý: IdAdd = số CCCD, IdNo = nơi cấp)
+        hash_id('FIMS_INFODISCREPRES', in_di_re.id) AS ip_id,
+        in_di_re.id AS ip_code,
+        'FIMS_INFODISCREPRES' AS src_stm_code,
+        'CITIZEN_ID' AS identn_tp_code,
+        in_di_re.idadd AS identn_nbr,
+        in_di_re.iddate AS issu_dt,
+        in_di_re.idno AS issu_ahr_nm
+      FROM in_di_re WHERE in_di_re.idadd IS NOT NULL
+    description: UNION ALL 2 legs từ cùng 1 physical table INFODISCREPRES. Đặc biệt chú ý đảo cột IdAdd/IdNo ở leg CITIZEN_ID.

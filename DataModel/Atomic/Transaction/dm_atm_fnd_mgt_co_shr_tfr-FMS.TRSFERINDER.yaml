@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnd_mgt_co_shr_tfr-FMS.TRSFERINDER
+  logical_name: "Atomic - Fund Management Company Share Transfer – source FMS.TRSFERINDER"
+  physical_name: fnd_mgt_co_shr_tfr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Event] Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Giao dịch chuyển nhượng cổ phần của công ty quản lý quỹ. Ghi nhận bên chuyển nhượng/nhận nhượng và giá trị giao dịch.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-TRSFERINDER
+
+attributes:
+  - name: Fund Management Company Share Transfer Id
+    physical_name: fnd_mgt_co_shr_tfr_id
+    business_meaning: Khóa đại diện cho giao dịch chuyển nhượng cổ phần QLQ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Share Transfer Code
+    physical_name: fnd_mgt_co_shr_tfr_code
+    business_meaning: Mã định danh giao dịch. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ có cổ phần được chuyển nhượng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Transfer Date
+    physical_name: tfr_dt
+    business_meaning: Ngày thực hiện giao dịch chuyển nhượng.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.TransDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Share Quantity
+    physical_name: shr_qty
+    business_meaning: Số lượng cổ phần chuyển nhượng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.Quantity
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Transfer Price
+    physical_name: tfr_prc
+    business_meaning: Giá giao dịch chuyển nhượng (VNĐ/cổ phần).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.Price
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRSFERINDER
+    source_column: FMS.TRSFERINDER.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRSFERINDER'"
+    etl_derived_value: null

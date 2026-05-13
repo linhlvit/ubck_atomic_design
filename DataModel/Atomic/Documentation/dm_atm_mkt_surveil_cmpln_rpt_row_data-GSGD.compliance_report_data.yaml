@@ -1,0 +1,106 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_cmpln_rpt_row_data-GSGD.compliance_report_data
+  logical_name: "Atomic - Market Surveillance Compliance Report Row Data – source GSGD.compliance_report_data"
+  physical_name: mkt_surveil_cmpln_rpt_row_data
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Reported Information"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Append
+  source: GSGD
+  description: |
+    Dữ liệu từng dòng trong báo cáo tuân thủ GSGD (lưu dạng JSON). Grain: 1 dòng = 1 row x 1 kỳ. FK Market Surveillance Compliance Report Instance.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-compliance_report_data
+
+attributes:
+  - name: Market Surveillance Compliance Report Row Data Id
+    physical_name: mkt_surveil_cmpln_rpt_row_data_id
+    business_meaning: Khóa đại diện cho dòng dữ liệu báo cáo tuân thủ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: compliance_report_data
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_data'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Row Data Code
+    physical_name: mkt_surveil_cmpln_rpt_row_data_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_data
+    source_column: GSGD.compliance_report_data.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_compliance_report_data'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_data
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_data'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Instance Id
+    physical_name: mkt_surveil_cmpln_rpt_instn_id
+    business_meaning: FK đến instance báo cáo tuân thủ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_data
+    source_column: GSGD.compliance_report_data.report_master_id
+    comment: "FK target: Market Surveillance Compliance Report Instance.Market Surveillance Compliance Report Instance Id."
+    classification_context: "Source System Code = 'GSGD_compliance_report_data'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Compliance Report Instance Code
+    physical_name: mkt_surveil_cmpln_rpt_instn_code
+    business_meaning: Mã instance báo cáo tuân thủ. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_data
+    source_column: GSGD.compliance_report_data.report_master_id
+    comment: "Lookup pair: Market Surveillance Compliance Report Instance.Market Surveillance Compliance Report Instance Code. Pair with Market Surveillance Compliance Report Instance Id."
+    classification_context: "Source System Code = 'GSGD_compliance_report_data'"
+    etl_derived_value: null
+
+  - name: Row Data
+    physical_name: row_data
+    business_meaning: Dữ liệu một dòng trong báo cáo tuân thủ (JSON/text raw). Schema không ổn định — không parse.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: compliance_report_data
+    source_column: GSGD.compliance_report_data.row_data
+    comment: null
+    classification_context: "Source System Code = 'GSGD_compliance_report_data'"
+    etl_derived_value: null

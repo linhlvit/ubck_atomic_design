@@ -1,0 +1,1016 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co_scr_ofrg-IDS.company_securities_issuance
+  logical_name: "Atomic - Public Company Securities Offering – source IDS.company_securities_issuance"
+  physical_name: pblc_co_scr_ofrg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: |
+    Hoạt động chào bán/phát hành chứng khoán — loại CK/kế hoạch/kết quả thực tế theo từng hình thức. FK to Public Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-company_securities_issuance
+
+attributes:
+  - name: Public Company Securities Offering Id
+    physical_name: pblc_co_scr_ofrg_id
+    business_meaning: Khóa đại diện cho đợt phát hành chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Public Company Securities Offering Code
+    physical_name: pblc_co_scr_ofrg_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: FK đến công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.company_profile_id
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.company_profile_id
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Security Type Code
+    physical_name: scr_tp_code
+    business_meaning: Loại chứng khoán phát hành.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.security_type_cd
+    comment: "Scheme: IDS_ISSUANCE_SECURITY_TYPE."
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Certificate Number
+    physical_name: ctf_nbr
+    business_meaning: Số giấy chứng nhận chào bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.certificate_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Certificate Issue Date
+    physical_name: ctf_issu_dt
+    business_meaning: Ngày cấp giấy chứng nhận.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.certificate_issue_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: SSC Official Document Number
+    physical_name: ssc_offc_doc_nbr
+    business_meaning: Số công văn của UBCKNN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.ssc_official_doc_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: SSC Official Document Date
+    physical_name: ssc_offc_doc_dt
+    business_meaning: Ngày công văn của UBCKNN.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.ssc_official_doc_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Multi Offering Flag
+    physical_name: multi_ofrg_f
+    business_meaning: "Có chào bán nhiều đợt (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.multi_offering_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Security Quantity
+    physical_name: pln_scr_qty
+    business_meaning: Tổng số chứng khoán dự kiến chào bán/phát hành.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.planned_security_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Proceeds Amount
+    physical_name: pln_procd_amt
+    business_meaning: Tổng số tiền dự kiến thu được (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.planned_proceeds_am
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Project Investment Flag
+    physical_name: prj_ivsm_f
+    business_meaning: "Có đầu tư dự án (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.project_investment_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Proceeds Usage Plan
+    physical_name: procd_usg_pln
+    business_meaning: Phương án sử dụng vốn thu được.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.proceeds_usage_plan
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Existing Shareholder Offering Quantity
+    physical_name: pln_exst_shrhlr_ofrg_qty
+    business_meaning: Chào bán cho cổ đông hiện hữu — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_shareholder_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Existing Shareholder Offering Price
+    physical_name: pln_exst_shrhlr_ofrg_prc
+    business_meaning: Chào bán cho cổ đông hiện hữu — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_shareholder_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Existing Shareholder Offering Quantity
+    physical_name: rslt_exst_shrhlr_ofrg_qty
+    business_meaning: Chào bán cho cổ đông hiện hữu — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_shareholder_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Existing Shareholder Offering Price
+    physical_name: rslt_exst_shrhlr_ofrg_prc
+    business_meaning: Chào bán cho cổ đông hiện hữu — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_shareholder_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Auction Offering Quantity
+    physical_name: pln_auctn_ofrg_qty
+    business_meaning: Đấu giá — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_auction_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Auction Offering Price
+    physical_name: pln_auctn_ofrg_prc
+    business_meaning: Đấu giá — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_auction_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Auction Offering Quantity
+    physical_name: rslt_auctn_ofrg_qty
+    business_meaning: Đấu giá — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_auction_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Auction Offering Price
+    physical_name: rslt_auctn_ofrg_prc
+    business_meaning: Đấu giá — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_auction_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Public Other Offering Quantity
+    physical_name: pln_pblc_othr_ofrg_qty
+    business_meaning: Chào bán ra công chúng theo hình thức khác — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_public_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Public Other Offering Price
+    physical_name: pln_pblc_othr_ofrg_prc
+    business_meaning: Chào bán ra công chúng theo hình thức khác — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_public_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Public Other Offering Quantity
+    physical_name: rslt_pblc_othr_ofrg_qty
+    business_meaning: Chào bán ra công chúng theo hình thức khác — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_public_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Public Other Offering Price
+    physical_name: rslt_pblc_othr_ofrg_prc
+    business_meaning: Chào bán ra công chúng theo hình thức khác — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_public_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Public Company Offering Quantity
+    physical_name: pln_pblc_co_ofrg_qty
+    business_meaning: Chào bán của công ty đại chúng ra công chúng — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_public_company_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Public Company Offering Price
+    physical_name: pln_pblc_co_ofrg_prc
+    business_meaning: Chào bán của công ty đại chúng ra công chúng — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_public_company_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Public Company Offering Quantity
+    physical_name: rslt_pblc_co_ofrg_qty
+    business_meaning: Chào bán của công ty đại chúng ra công chúng — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_public_company_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Public Company Offering Price
+    physical_name: rslt_pblc_co_ofrg_prc
+    business_meaning: Chào bán của công ty đại chúng ra công chúng — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_public_company_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Private Placement Offering Quantity
+    physical_name: pln_prvt_plcmt_ofrg_qty
+    business_meaning: Chào bán cổ phiếu riêng lẻ — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_single_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Private Placement Offering Price
+    physical_name: pln_prvt_plcmt_ofrg_prc
+    business_meaning: Chào bán cổ phiếu riêng lẻ — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_single_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Private Placement Offering Target
+    physical_name: pln_prvt_plcmt_ofrg_trgt
+    business_meaning: Chào bán cổ phiếu riêng lẻ — đối tượng dự kiến.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_single_obj
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Private Placement Offering Quantity
+    physical_name: rslt_prvt_plcmt_ofrg_qty
+    business_meaning: Chào bán cổ phiếu riêng lẻ — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_single_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Private Placement Offering Price
+    physical_name: rslt_prvt_plcmt_ofrg_prc
+    business_meaning: Chào bán cổ phiếu riêng lẻ — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_single_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Private Placement Offering Target
+    physical_name: rslt_prvt_plcmt_ofrg_trgt
+    business_meaning: Chào bán cổ phiếu riêng lẻ — đối tượng thực tế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_single_obj
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Conversion Offering Quantity
+    physical_name: pln_cnvr_ofrg_qty
+    business_meaning: Hoán đổi — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_convert_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Conversion Offering Target
+    physical_name: pln_cnvr_ofrg_trgt
+    business_meaning: Hoán đổi — đối tượng dự kiến.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_convert_obj
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Conversion Offering Quantity
+    physical_name: rslt_cnvr_ofrg_qty
+    business_meaning: Hoán đổi — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_convert_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Conversion Offering Target
+    physical_name: rslt_cnvr_ofrg_trgt
+    business_meaning: Hoán đổi — đối tượng thực tế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_convert_obj
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Dividend Issuance Quantity
+    physical_name: pln_dvdn_issn_qty
+    business_meaning: Phát hành trả cổ tức — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_dividend_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Dividend Issuance Quantity
+    physical_name: rslt_dvdn_issn_qty
+    business_meaning: Phát hành trả cổ tức — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_dividend_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Owner Capital Issuance Quantity
+    physical_name: pln_own_cptl_issn_qty
+    business_meaning: Phát hành cổ phiếu từ nguồn vốn chủ sở hữu — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_owner_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Owner Capital Issuance Source
+    physical_name: pln_own_cptl_issn_src
+    business_meaning: Phát hành cổ phiếu từ nguồn vốn chủ sở hữu — nguồn dự kiến.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_owner_source
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Owner Capital Issuance Quantity
+    physical_name: rslt_own_cptl_issn_qty
+    business_meaning: Phát hành cổ phiếu từ nguồn vốn chủ sở hữu — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_owner_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Owner Capital Issuance Source
+    physical_name: rslt_own_cptl_issn_src
+    business_meaning: Phát hành cổ phiếu từ nguồn vốn chủ sở hữu — nguồn thực tế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_owner_source
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned ESOP Issuance Quantity
+    physical_name: pln_esop_issn_qty
+    business_meaning: Phát hành cổ phiếu cho người lao động — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_esop_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned ESOP Issuance Price
+    physical_name: pln_esop_issn_prc
+    business_meaning: Phát hành cổ phiếu cho người lao động — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_esop_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned ESOP Issuance Target
+    physical_name: pln_esop_issn_trgt
+    business_meaning: Phát hành cổ phiếu cho người lao động — đối tượng dự kiến.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_esop_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result ESOP Issuance Quantity
+    physical_name: rslt_esop_issn_qty
+    business_meaning: Phát hành cổ phiếu cho người lao động — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_esop_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result ESOP Issuance Price
+    physical_name: rslt_esop_issn_prc
+    business_meaning: Phát hành cổ phiếu cho người lao động — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_esop_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result ESOP Issuance Target
+    physical_name: rslt_esop_issn_trgt
+    business_meaning: Phát hành cổ phiếu cho người lao động — đối tượng thực tế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_esop_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Bonus Share Issuance Quantity
+    physical_name: pln_bns_shr_issn_qty
+    business_meaning: Phát hành cổ phiếu thưởng cho người lao động — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_bonus_share_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Bonus Share Issuance Target
+    physical_name: pln_bns_shr_issn_trgt
+    business_meaning: Phát hành cổ phiếu thưởng cho người lao động — đối tượng dự kiến.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_bonus_share_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned Bonus Share Issuance Price
+    physical_name: pln_bns_shr_issn_prc
+    business_meaning: Phát hành cổ phiếu thưởng cho người lao động — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_bonus_share_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Bonus Share Issuance Quantity
+    physical_name: rslt_bns_shr_issn_qty
+    business_meaning: Phát hành cổ phiếu thưởng cho người lao động — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_bonus_share_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Bonus Share Issuance Target
+    physical_name: rslt_bns_shr_issn_trgt
+    business_meaning: Phát hành cổ phiếu thưởng cho người lao động — đối tượng thực tế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_bonus_share_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result Bonus Share Issuance Price
+    physical_name: rslt_bns_shr_issn_prc
+    business_meaning: Phát hành cổ phiếu thưởng cho người lao động — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_bonus_share_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned International Bond Offering Quantity
+    physical_name: pln_itnl_bond_ofrg_qty
+    business_meaning: Chào bán trái phiếu giao dịch quốc tế — số lượng dự kiến.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_international_bond_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Planned International Bond Offering Price
+    physical_name: pln_itnl_bond_ofrg_prc
+    business_meaning: Chào bán trái phiếu giao dịch quốc tế — giá dự kiến.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.plan_international_bond_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result International Bond Offering Quantity
+    physical_name: rslt_itnl_bond_ofrg_qty
+    business_meaning: Chào bán trái phiếu giao dịch quốc tế — số lượng thực tế.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_international_bond_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Result International Bond Offering Price
+    physical_name: rslt_itnl_bond_ofrg_prc
+    business_meaning: Chào bán trái phiếu giao dịch quốc tế — giá thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.result_international_bond_price
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Offering End Date
+    physical_name: ofrg_end_dt
+    business_meaning: Ngày kết thúc đợt chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.offering_end_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Successful Security Quantity
+    physical_name: scss_scr_qty
+    business_meaning: Tổng số chứng khoán chào bán/phát hành thành công.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.successful_security_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Actual Proceeds Amount
+    physical_name: act_procd_amt
+    business_meaning: Tổng số tiền thực thu từ đợt chào bán/phát hành (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.actual_proceeds_am
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Capital Usage Plan
+    physical_name: cptl_usg_pln
+    business_meaning: Phương án sử dụng vốn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.capital_usage_plan
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_securities_issuance
+    source_column: IDS.company_securities_issuance.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_securities_issuance'"
+    etl_derived_value: null

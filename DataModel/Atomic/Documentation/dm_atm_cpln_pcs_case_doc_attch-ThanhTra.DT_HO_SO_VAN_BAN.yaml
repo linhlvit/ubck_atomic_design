@@ -1,0 +1,203 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cpln_pcs_case_doc_attch-ThanhTra.DT_HO_SO_VAN_BAN
+  logical_name: "Atomic - Complaint Processing Case Document Attachment – source ThanhTra.DT_HO_SO_VAN_BAN"
+  physical_name: cpln_pcs_case_doc_attch
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Supporting Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: Văn bản đính kèm hồ sơ giải quyết đơn thư. FK → Complaint Processing Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-DT_HO_SO_VAN_BAN
+
+attributes:
+  - name: Complaint Processing Case Document Attachment Id
+    physical_name: cpln_pcs_case_doc_attch_id
+    business_meaning: Khóa đại diện cho văn bản đính kèm hồ sơ đơn thư.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Complaint Processing Case Document Attachment Code
+    physical_name: cpln_pcs_case_doc_attch_code
+    business_meaning: Mã văn bản. Map từ PK ThanhTra.DT_HO_SO_VAN_BAN.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Complaint Processing Case Id
+    physical_name: cpln_pcs_case_id
+    business_meaning: FK đến Complaint Processing Case.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.HO_SO_ID
+    comment: "FK target: Complaint Processing Case.Complaint Processing Case Id."
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Complaint Processing Case Code
+    physical_name: cpln_pcs_case_code
+    business_meaning: Mã hồ sơ đơn thư.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.HO_SO_ID
+    comment: "Lookup pair: Complaint Processing Case.Complaint Processing Case Code. Pair with Complaint Processing Case Id."
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Document Type Code
+    physical_name: doc_tp_code
+    business_meaning: "Loại văn bản: QUYET_DINH_THU_LY / BIEN_BAN_VPHC / CONG_VAN_TB / DON_THU."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.LOAI_VAN_BAN
+    comment: "Scheme: TT_CASE_TYPE."
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: doc_nbr
+    business_meaning: Số hiệu văn bản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.SO_HIEU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Document Name
+    physical_name: doc_nm
+    business_meaning: Tên tài liệu.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.TEN_TAI_LIEU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Page Count
+    physical_name: pg_cnt
+    business_meaning: Số trang.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.SO_TRANG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Document Source
+    physical_name: doc_src
+    business_meaning: Nguồn gốc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.NGUON_GOC
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Attachment File Name
+    physical_name: attch_file_nm
+    business_meaning: Tên file đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.FILE_NAME
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Attachment File URL
+    physical_name: attch_file_url
+    business_meaning: Đường dẫn file.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.FILE_PATH
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null
+
+  - name: Attachment File Size
+    physical_name: attch_file_sz
+    business_meaning: Kích thước file (bytes).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DT_HO_SO_VAN_BAN
+    source_column: ThanhTra.DT_HO_SO_VAN_BAN.FILE_SIZE
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DT_HO_SO_VAN_BAN'"
+    etl_derived_value: null

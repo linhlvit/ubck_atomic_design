@@ -1,0 +1,147 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_rpt_vln-SCMS.BC_VI_PHAM
+  logical_name: "Atomic - Securities Company Report Violation – source SCMS.BC_VI_PHAM"
+  physical_name: scr_co_rpt_vln
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  description: Vi phạm nộp báo cáo định kỳ của CTCK. Ghi nhận loại vi phạm và thông tin xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-BC_VI_PHAM
+
+attributes:
+  - name: Securities Company Report Violation Id
+    physical_name: scr_co_rpt_vln_id
+    business_meaning: Khóa đại diện cho bản ghi vi phạm báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Securities Company Report Violation Code
+    physical_name: scr_co_rpt_vln_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: SCMS.BC_VI_PHAM.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán vi phạm.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: SCMS.BC_VI_PHAM.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: SCMS.BC_VI_PHAM.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Violation Date
+    physical_name: vln_dt
+    business_meaning: Ngày vi phạm.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: SCMS.BC_VI_PHAM.NGAY_VI_PHAM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Reason
+    physical_name: rsn
+    business_meaning: Lý do vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: SCMS.BC_VI_PHAM.LY_DO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Violation Type Codes
+    physical_name: vln_tp_codes
+    business_meaning: Danh sách mã loại vi phạm.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: SCMS.BC_VI_PHAM_LOAI_VP.DM_LOAI_VI_PHAM_ID
+    comment: "Pure junction BC_VI_PHAM_LOAI_VP → denormalize thành ARRAY. Scheme: SCMS_VIOLATION_TYPE. HLD decision: SCMS_HLD_Tier4.md."
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_VI_PHAM
+    source_column: SCMS.BC_VI_PHAM.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_VI_PHAM'"
+    etl_derived_value: null

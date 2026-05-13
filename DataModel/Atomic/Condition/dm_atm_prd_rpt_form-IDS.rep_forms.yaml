@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-prd_rpt_form-IDS.rep_forms
+  logical_name: "Atomic - Periodic Report Form – source IDS.rep_forms"
+  physical_name: prd_rpt_form
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Biểu mẫu báo cáo định kỳ (thường niên/quý/tháng) cho CBTT. Master entity FK từ Periodic Report Form Row/Column Template.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-rep_forms
+
+attributes:
+  - name: Periodic Report Form Id
+    physical_name: prd_rpt_form_id
+    business_meaning: Khóa đại diện cho biểu mẫu báo cáo định kỳ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: rep_forms
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Periodic Report Form Code
+    physical_name: prd_rpt_form_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Periodic Report Form Business Code
+    physical_name: prd_rpt_form_bsn_code
+    business_meaning: Mã form (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.report_cd
+    comment: Mã nghiệp vụ — khác BK kỹ thuật.
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Periodic Report Form Name
+    physical_name: prd_rpt_form_nm
+    business_meaning: Tên form báo cáo (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.report_name_vi
+    comment: null
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Periodic Report Form English Name
+    physical_name: prd_rpt_form_en_nm
+    business_meaning: Tên form báo cáo (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.report_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Report Frequency Type Code
+    physical_name: rpt_frq_tp_code
+    business_meaning: "Loại báo cáo định kỳ (0=BC tháng / 1=BC quý / 2=BC năm / 3=BC thường niên / 4=BC trực tuyến 6 tháng đầu năm / 5=BC trực tuyến 6 tháng cuối năm)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.rf_report_type_cd
+    comment: "Scheme: IDS_PERIODIC_REPORT_FREQUENCY."
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Published Flag
+    physical_name: published_f
+    business_meaning: "Báo cáo được công bố hay không (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.published_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Report Configuration Link
+    physical_name: rpt_cfg_link
+    business_meaning: Đường link cấu hình biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.report_link
+    comment: null
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: rep_forms
+    source_column: IDS.rep_forms.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_rep_forms'"
+    etl_derived_value: null

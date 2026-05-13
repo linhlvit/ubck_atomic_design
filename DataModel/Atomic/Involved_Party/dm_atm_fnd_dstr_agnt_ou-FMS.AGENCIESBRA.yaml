@@ -1,0 +1,147 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnd_dstr_agnt_ou-FMS.AGENCIESBRA
+  logical_name: "Atomic - Fund Distribution Agent Organization Unit – source FMS.AGENCIESBRA"
+  physical_name: fnd_dstr_agnt_ou
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization Unit"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: Chi nhánh hoặc phòng giao dịch của tổ chức đại lý phân phối quỹ đầu tư.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-AGENCIESBRA
+
+attributes:
+  - name: Fund Distribution Agent Organization Unit Id
+    physical_name: fnd_dstr_agnt_ou_id
+    business_meaning: Khóa đại diện cho CN/PGD của đại lý phân phối quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Organization Unit Code
+    physical_name: fnd_dstr_agnt_ou_code
+    business_meaning: Mã định danh CN/PGD đại lý. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: FMS.AGENCIESBRA.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Id
+    physical_name: fnd_dstr_agnt_id
+    business_meaning: FK đến đại lý phân phối quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: FMS.AGENCIESBRA.AgnId
+    comment: "FK target: Fund Distribution Agent.Fund Distribution Agent Id."
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Code
+    physical_name: fnd_dstr_agnt_code
+    business_meaning: Mã đại lý phân phối quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: FMS.AGENCIESBRA.AgnId
+    comment: "Lookup pair: Fund Distribution Agent.Fund Distribution Agent Code. Pair with Fund Distribution Agent Id."
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Organization Unit Name
+    physical_name: fnd_dstr_agnt_ou_nm
+    business_meaning: Tên CN/PGD đại lý phân phối quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: FMS.AGENCIESBRA.Name
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: FMS.AGENCIESBRA.Status
+    comment: "Scheme: FMS_OPERATION_STATUS."
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: FMS.AGENCIESBRA.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIESBRA
+    source_column: FMS.AGENCIESBRA.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIESBRA'"
+    etl_derived_value: null

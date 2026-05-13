@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ap_ed_ctf_doc-NHNCK.ApplicationSpecializations
+  logical_name: "Atomic - Securities Practitioner License Application Education Certificate Document – source NHNCK.ApplicationSpecializations"
+  physical_name: scr_prac_license_ap_ed_ctf_doc
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Education Certificate"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Văn bằng/chứng chỉ học tập đính kèm hồ sơ CCHN. Ghi nhận loại chuyên môn và file đính kèm kèm trạng thái thẩm định.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-ApplicationSpecializations
+
+attributes:
+  - name: License Application Education Certificate Document Id
+    physical_name: license_ap_ed_ctf_doc_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: null
+    comment: "PK surrogate. BCV: \"Documentation\". Chứng chỉ chuyên môn đính kèm hồ sơ."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: License Application Education Certificate Document Code
+    physical_name: license_ap_ed_ctf_doc_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: License Application Id
+    physical_name: license_ap_id
+    business_meaning: FK đến hồ sơ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.ApplicationId
+    comment: "FK target: Securities Practitioner License Application.License Application Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: License Application Code
+    physical_name: license_ap_code
+    business_meaning: Mã hồ sơ
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.ApplicationId
+    comment: "Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: Specialization Type Code
+    physical_name: specialization_tp_code
+    business_meaning: Mã chuyên môn (FK → Specializations)
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.SpecializationId
+    comment: "Scheme: SPECIALIZATION_TYPE."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: File Name
+    physical_name: file_nm
+    business_meaning: Tên file chứng chỉ chuyên môn
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.FileName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: File Path
+    physical_name: file_path
+    business_meaning: Đường dẫn file
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.FilePath
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: File Format
+    physical_name: file_fmt
+    business_meaning: Loại file
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.Format
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: File Size
+    physical_name: file_sz
+    business_meaning: Dung lượng file (bytes)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.FileSize
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: Specialization Note
+    physical_name: specialization_note
+    business_meaning: Nội dung/ghi chú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.Note
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: Appraisal Status Code
+    physical_name: aprs_st_code
+    business_meaning: Trạng thái thẩm định
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.Status
+    comment: "Scheme: APPRAISAL_STATUS."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Id
+    physical_name: assignee_ofcr_id
+    business_meaning: FK đến người thẩm định
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.AssigneeId
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Code
+    physical_name: assignee_ofcr_code
+    business_meaning: Mã người thẩm định
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.AssigneeId
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null
+
+  - name: Appraisaled Timestamp
+    physical_name: appraisaled_tms
+    business_meaning: Ngày thẩm định
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationSpecializations
+    source_column: NHNCK.ApplicationSpecializations.AppraisaledAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationSpecializations'"
+    etl_derived_value: null

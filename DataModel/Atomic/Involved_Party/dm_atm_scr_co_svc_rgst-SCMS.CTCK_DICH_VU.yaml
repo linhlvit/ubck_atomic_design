@@ -1,0 +1,246 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_svc_rgst-SCMS.CTCK_DICH_VU
+  logical_name: "Atomic - Securities Company Service Registration – source SCMS.CTCK_DICH_VU"
+  physical_name: scr_co_svc_rgst
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Broker Dealer"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Đăng ký dịch vụ của CTCK tại UBCKNN. Grain: 1 dòng = 1 dịch vụ x 1 CTCK. Ghi nhận loại dịch vụ — số văn bản và ngày đăng ký/kết thúc — trạng thái hiệu lực.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_DICH_VU
+
+attributes:
+  - name: Securities Company Service Registration Id
+    physical_name: scr_co_svc_rgst_id
+    business_meaning: Khóa đại diện cho đăng ký dịch vụ của CTCK.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Securities Company Service Registration Code
+    physical_name: scr_co_svc_rgst_code
+    business_meaning: Mã định danh (tự động tăng). BK kỹ thuật.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Service Type Code
+    physical_name: svc_tp_code
+    business_meaning: Loại dịch vụ đăng ký.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.DM_DICH_VU_ID
+    comment: "Scheme: SCMS_SERVICE_TYPE. Lookup từ DM_DICH_VU."
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Registration Document Number
+    physical_name: rgst_doc_nbr
+    business_meaning: Số văn bản đăng ký dịch vụ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.SO_VB_DANG_KY
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Registration Date
+    physical_name: rgst_dt
+    business_meaning: Ngày đăng ký dịch vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.NGAY_DANG_KY
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Termination Document Number
+    physical_name: tmt_doc_nbr
+    business_meaning: Số văn bản kết thúc đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.SO_VB_KET_THUC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Termination Date
+    physical_name: tmt_dt
+    business_meaning: Ngày kết thúc đăng ký.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.NGAY_KET_THUC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Valid Document Date
+    physical_name: vld_doc_dt
+    business_meaning: Ngày hồ sơ hợp lệ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.NGAY_HS_HOP_LE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Service Status Code
+    physical_name: svc_st_code
+    business_meaning: Trạng thái đăng ký dịch vụ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.TRANG_THAI
+    comment: "Scheme: SCMS_SERVICE_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Remark
+    physical_name: remark
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Is Draft Indicator
+    physical_name: is_drft_ind
+    business_meaning: "Cờ bảng tạm: 0-Chính thức; 1-Bảng tạm."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.IS_BANG_TAM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Thời điểm cập nhật gần nhất.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_DICH_VU
+    source_column: SCMS.CTCK_DICH_VU.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_DICH_VU'"
+    etl_derived_value: null

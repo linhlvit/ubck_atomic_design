@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-stk_exg-FIMS.STOCKEXCHANGE
+  logical_name: "Atomic - Stock Exchange – source FIMS.STOCKEXCHANGE"
+  physical_name: stk_exg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Sở giao dịch chứng khoán - thành viên thị trường trong hệ thống FIMS (HNX, HOSE).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-STOCKEXCHANGE
+
+attributes:
+  - name: Stock Exchange Id
+    physical_name: stk_exg_id
+    business_meaning: Khóa đại diện cho Sở giao dịch chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Stock Exchange Code
+    physical_name: stk_exg_code
+    business_meaning: Mã định danh Sở giao dịch. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: cty_of_rgst_id
+    business_meaning: FK đến quốc gia đăng ký của Sở giao dịch.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.NaId
+    comment: "FK target: Geographic Area.Geographic Area Id. ID quốc gia lấy từ bảng NATIONAL."
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: cty_of_rgst_code
+    business_meaning: Mã quốc gia đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.NaId
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên Sở giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.Name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: English Name
+    physical_name: en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.EName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Abbreviation
+    physical_name: abr
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.ShortName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.StatusId
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STOCKEXCHANGE
+    source_column: FIMS.STOCKEXCHANGE.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_STOCKEXCHANGE'"
+    etl_derived_value: null

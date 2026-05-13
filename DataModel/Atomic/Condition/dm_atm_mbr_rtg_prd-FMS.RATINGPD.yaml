@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mbr_rtg_prd-FMS.RATINGPD
+  logical_name: "Atomic - Member Rating Period – source FMS.RATINGPD"
+  physical_name: mbr_rtg_prd
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Kỳ đánh giá xếp loại định kỳ cho các thành viên thị trường (công ty quản lý quỹ). Xác định phạm vi thời gian áp dụng tiêu chí chấm điểm.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RATINGPD
+
+attributes:
+  - name: Member Rating Period Id
+    physical_name: mbr_rtg_prd_id
+    business_meaning: Khóa đại diện cho kỳ đánh giá xếp loại.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Member Rating Period Code
+    physical_name: mbr_rtg_prd_code
+    business_meaning: Mã định danh kỳ đánh giá. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: FMS.RATINGPD.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Member Rating Period Name
+    physical_name: mbr_rtg_prd_nm
+    business_meaning: Tên kỳ đánh giá xếp loại.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: FMS.RATINGPD.PeriodName
+    comment: null
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Rating Period Start Date
+    physical_name: rtg_prd_strt_dt
+    business_meaning: Ngày bắt đầu kỳ đánh giá.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: FMS.RATINGPD.StartDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Rating Period End Date
+    physical_name: rtg_prd_end_dt
+    business_meaning: Ngày kết thúc kỳ đánh giá.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: FMS.RATINGPD.EndDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Is Active Flag
+    physical_name: is_actv_f
+    business_meaning: Kỳ đánh giá đang hoạt động.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: FMS.RATINGPD.IsActive
+    comment: null
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: FMS.RATINGPD.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATINGPD
+    source_column: FMS.RATINGPD.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_RATINGPD'"
+    etl_derived_value: null

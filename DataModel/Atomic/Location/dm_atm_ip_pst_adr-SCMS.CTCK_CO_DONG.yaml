@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_pst_adr-SCMS.CTCK_CO_DONG
+  logical_name: "Atomic - Involved Party Postal Address – source SCMS.CTCK_CO_DONG"
+  physical_name: ip_pst_adr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_CO_DONG
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến cổ đông CTCK.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: SCMS.CTCK_CO_DONG.ID
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: SCMS.CTCK_CO_DONG.ID
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — nơi ở hiện tại.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: null
+    comment: "Scheme: IP_ADDR_TYPE. ETL-derived: hardcode CURRENT."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'CURRENT'"
+    etl_derived_value: CURRENT
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ hiện tại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: SCMS.CTCK_CO_DONG.DIA_CHI_HIEN_TAI
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Address Detail
+    physical_name: adr_dtl
+    business_meaning: Địa chỉ văn phòng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: null
+    comment: Text tự do — denormalized.
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến cổ đông CTCK.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: SCMS.CTCK_CO_DONG.ID
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: SCMS.CTCK_CO_DONG.ID
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — hộ khẩu thường trú.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: null
+    comment: "Scheme: IP_ADDR_TYPE. ETL-derived: hardcode PERMANENT."
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: PERMANENT
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Hộ khẩu thường trú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: SCMS.CTCK_CO_DONG.HO_KHAU_THUONG_TRU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Address Detail
+    physical_name: adr_dtl
+    business_meaning: Địa chỉ văn phòng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CO_DONG
+    source_column: null
+    comment: Text tự do — denormalized.
+    classification_context: "Source System Code = 'SCMS_CTCK_CO_DONG' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null

@@ -1,0 +1,274 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-audt_firm_wrn-IDS.af_warning
+  logical_name: "Atomic - Audit Firm Warning – source IDS.af_warning"
+  physical_name: audt_firm_wrn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: |
+    Nhắc nhở từ BTC hoặc UBCKNN đến công ty kiểm toán hoặc kiểm toán viên — số văn bản và nội dung. FK nullable: Audit Firm Approval hoặc Auditor Approval.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-af_warning
+
+attributes:
+  - name: Audit Firm Warning Id
+    physical_name: audt_firm_wrn_id
+    business_meaning: Khóa đại diện cho nhắc nhở công ty kiểm toán/kiểm toán viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: af_warning
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Audit Firm Warning Code
+    physical_name: audt_firm_wrn_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Audit Firm Approval Id
+    physical_name: audt_firm_aprv_id
+    business_meaning: FK đến hồ sơ chấp thuận công ty kiểm toán (nullable khi đối tượng là KTV).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.af_approval_id
+    comment: "FK target: Audit Firm Approval.Audit Firm Approval Id. Nullable — NULL khi warning_target_type_code = kiểm toán viên."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Audit Firm Approval Code
+    physical_name: audt_firm_aprv_code
+    business_meaning: Mã hồ sơ chấp thuận công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.af_approval_id
+    comment: "Lookup pair: Audit Firm Approval.Audit Firm Approval Code. Pair with Audit Firm Approval Id."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Auditor Approval Id
+    physical_name: auditor_aprv_id
+    business_meaning: FK đến hồ sơ chấp thuận kiểm toán viên (nullable khi đối tượng là công ty KT).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.af_auditor_approval_id
+    comment: "FK target: Auditor Approval.Auditor Approval Id. Nullable — NULL khi warning_target_type_code = công ty kiểm toán."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Auditor Approval Code
+    physical_name: auditor_aprv_code
+    business_meaning: Mã hồ sơ chấp thuận kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.af_auditor_approval_id
+    comment: "Lookup pair: Auditor Approval.Auditor Approval Code. Pair with Auditor Approval Id."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Warning Target Type Code
+    physical_name: wrn_trgt_tp_code
+    business_meaning: Đối tượng nhắc nhở (công ty kiểm toán hay kiểm toán viên).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.warning_target_type_cd
+    comment: "Scheme: IDS_WARNING_TARGET_TYPE."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Warning Source Type Code
+    physical_name: wrn_src_tp_code
+    business_meaning: Cơ quan nhắc nhở (BTC hay UBCKNN).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.warning_source_type_cd
+    comment: "Scheme: IDS_WARNING_SOURCE_TYPE."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Warning Document Number
+    physical_name: wrn_doc_nbr
+    business_meaning: Số văn bản quyết định nhắc nhở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.warning_doc_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Warning Issue Date
+    physical_name: wrn_issu_dt
+    business_meaning: Ngày ban hành văn bản nhắc nhở.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.warning_issue_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Warning Start Date
+    physical_name: wrn_strt_dt
+    business_meaning: Ngày bắt đầu hiệu lực nhắc nhở.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.warning_start_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Warning End Date
+    physical_name: wrn_end_dt
+    business_meaning: Ngày kết thúc hiệu lực nhắc nhở.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.warning_end_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Warning Content
+    physical_name: wrn_cntnt
+    business_meaning: Nội dung quyết định nhắc nhở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.warning_content
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_warning
+    source_column: IDS.af_warning.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_warning'"
+    etl_derived_value: null

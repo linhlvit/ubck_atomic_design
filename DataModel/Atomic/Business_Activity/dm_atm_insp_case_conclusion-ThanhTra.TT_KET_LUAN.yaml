@@ -1,0 +1,301 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-insp_case_conclusion-ThanhTra.TT_KET_LUAN
+  logical_name: "Atomic - Inspection Case Conclusion – source ThanhTra.TT_KET_LUAN"
+  physical_name: insp_case_conclusion
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: Kết luận thanh tra kèm thông tin xử lý vi phạm. FK → Inspection Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-TT_KET_LUAN
+
+attributes:
+  - name: Inspection Case Conclusion Id
+    physical_name: insp_case_conclusion_id
+    business_meaning: Khóa đại diện cho kết luận thanh tra.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Inspection Case Conclusion Code
+    physical_name: insp_case_conclusion_code
+    business_meaning: Mã kết luận. Map từ PK ThanhTra.TT_KET_LUAN.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Inspection Case Id
+    physical_name: insp_case_id
+    business_meaning: FK đến Inspection Case.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.HO_SO_ID
+    comment: "FK target: Inspection Case.Inspection Case Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Inspection Case Code
+    physical_name: insp_case_code
+    business_meaning: Mã hồ sơ thanh tra.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.HO_SO_ID
+    comment: "Lookup pair: Inspection Case.Inspection Case Code. Pair with Inspection Case Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Sequence Number
+    physical_name: conclusion_seq_nbr
+    business_meaning: "Số thứ tự kết luận trong 1 hồ sơ (1:N — có thể có nhiều kết luận: sơ bộ, chính thức, bổ sung)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: null
+    comment: "ETL-derived: tính tự động theo thứ tự NGAY_TAO trong cùng HO_SO_ID."
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Document Type Code
+    physical_name: doc_tp_code
+    business_meaning: "Loại văn bản: KET_LUAN / VAN_BAN_XU_LY."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.LOAI_VAN_BAN
+    comment: "Scheme: TT_CASE_TYPE."
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Document Number
+    physical_name: conclusion_doc_nbr
+    business_meaning: Số hiệu văn bản kết luận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.SO_HIEU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Signing Date
+    physical_name: signing_dt
+    business_meaning: Ngày văn bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.NGAY_VAN_BAN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Summary
+    physical_name: conclusion_smy
+    business_meaning: Nội dung văn bản kết luận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.NOI_DUNG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Penalty Amount
+    physical_name: pny_amt
+    business_meaning: Số tiền phạt.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.SO_TIEN_PHAT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Violation Clause
+    physical_name: vln_claus
+    business_meaning: Điều khoản hành vi vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.DIEU_KHOAN_HANH_VI
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Violation Regulation Document
+    physical_name: vln_reg_doc
+    business_meaning: Văn bản quy định hành vi vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.VAN_BAN_HANH_VI
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Penalty Clause
+    physical_name: pny_claus
+    business_meaning: Điều khoản chế tài áp dụng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.DIEU_KHOAN_CHE_TAI
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Penalty Regulation Document
+    physical_name: pny_reg_doc
+    business_meaning: Văn bản quy định chế tài.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.VAN_BAN_CHE_TAI
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Violation Type Code
+    physical_name: vln_tp_code
+    business_meaning: Danh mục hành vi vi phạm.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.HANH_VI_VI_PHAM_ID
+    comment: "Scheme: TT_VIOLATION_TYPE."
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Penalty Type Code
+    physical_name: pny_tp_code
+    business_meaning: Danh mục hình thức phạt.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.HINH_THUC_PHAT_ID
+    comment: "Scheme: TT_PENALTY_TYPE."
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Attachment File Name
+    physical_name: attch_file_nm
+    business_meaning: Tên file đính kèm kết luận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.FILE_NAME
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Attachment File URL
+    physical_name: attch_file_url
+    business_meaning: Đường dẫn file kết luận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.FILE_PATH
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null
+
+  - name: Conclusion Status Code
+    physical_name: conclusion_st_code
+    business_meaning: Trạng thái văn bản kết luận.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KET_LUAN
+    source_column: ThanhTra.TT_KET_LUAN.TRANG_THAI
+    comment: "Scheme: TT_CASE_STATUS."
+    classification_context: "Source System Code = 'ThanhTra_TT_KET_LUAN'"
+    etl_derived_value: null

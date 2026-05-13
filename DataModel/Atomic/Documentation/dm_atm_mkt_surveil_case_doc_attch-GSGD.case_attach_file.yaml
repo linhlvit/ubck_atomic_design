@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_case_doc_attch-GSGD.case_attach_file
+  logical_name: "Atomic - Market Surveillance Case Document Attachment – source GSGD.case_attach_file"
+  physical_name: mkt_surveil_case_doc_attch
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Supporting Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    File đính kèm vụ việc giám sát (tài liệu hồ sơ, danh sách TK nghi vấn). FK Market Surveillance Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-case_attach_file
+
+attributes:
+  - name: Market Surveillance Case Document Attachment Id
+    physical_name: mkt_surveil_case_doc_attch_id
+    business_meaning: Khóa đại diện cho file đính kèm vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Document Attachment Code
+    physical_name: mkt_surveil_case_doc_attch_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: FK đến vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.case_file_id
+    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: Mã vụ việc. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.case_file_id
+    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: File Name
+    physical_name: file_nm
+    business_meaning: Tên file đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.file_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: File Path
+    physical_name: file_path
+    business_meaning: Đường dẫn file.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.file_path
+    comment: null
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: File Size
+    physical_name: file_sz
+    business_meaning: Kích thước file (bytes).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.file_size
+    comment: Lưu dạng Text — không có data domain chuẩn cho byte count.
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: File Type Code
+    physical_name: file_tp_code
+    business_meaning: "Loại file: CSV, XLSX, PDF."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.file_type
+    comment: "Scheme: GSGD_FILE_TYPE."
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null
+
+  - name: File Group Code
+    physical_name: file_grp_code
+    business_meaning: "Nhóm file: 1=Hồ sơ của Sở, 2=Danh sách tài khoản nghi vấn."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: case_attach_file
+    source_column: GSGD.case_attach_file.file_group
+    comment: "Scheme: GSGD_FILE_GROUP."
+    classification_context: "Source System Code = 'GSGD_case_attach_file'"
+    etl_derived_value: null

@@ -1,0 +1,288 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_shrhlr_rel_p-SCMS.CTCK_CD_MOI_QUAN_HE
+  logical_name: "Atomic - Securities Company Shareholder Related Party – source SCMS.CTCK_CD_MOI_QUAN_HE"
+  physical_name: scr_co_shrhlr_rel_p
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Người có quan hệ gia đình hoặc công tác với cổ đông của CTCK. Ghi nhận loại quan hệ và nơi làm việc.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_CD_MOI_QUAN_HE
+
+attributes:
+  - name: Securities Company Shareholder Related Party Id
+    physical_name: scr_co_shrhlr_rel_p_id
+    business_meaning: Khóa đại diện cho người có quan hệ với cổ đông.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Related Party Code
+    physical_name: scr_co_shrhlr_rel_p_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Id
+    physical_name: scr_co_shrhlr_id
+    business_meaning: FK đến cổ đông có người liên quan.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.CTCK_CO_DONG_ID
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Code
+    physical_name: scr_co_shrhlr_code
+    business_meaning: Mã cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.CTCK_CO_DONG_ID
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Related Party Full Name
+    physical_name: rel_p_full_nm
+    business_meaning: Họ và tên người có quan hệ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.HO_TEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Relationship Type Code
+    physical_name: rltnp_tp_code
+    business_meaning: Loại mối quan hệ với cổ đông.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.MOI_QUAN_HE
+    comment: "Scheme: SCMS_RELATED_PARTY_RELATIONSHIP."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Related Party Workplace Name
+    physical_name: rel_p_workplace_nm
+    business_meaning: Nơi làm việc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.NOI_LAM_VIEC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Related Party Job Position Name
+    physical_name: rel_p_job_pos_nm
+    business_meaning: Vị trí công việc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.VI_TRI_CONG_VIEC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Related Securities Company Name
+    physical_name: rel_scr_co_nm
+    business_meaning: Tên CTCK có liên quan (nếu người liên quan cũng là cổ đông CTCK khác).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.TEN_CTCK_CO_CP
+    comment: Denormalized — tên công ty liên quan. Không có FK đến CTCK_THONG_TIN.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Share Quantity
+    physical_name: shr_qty
+    business_meaning: Số lượng cổ phần người liên quan nắm giữ tại CTCK.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.SO_LUONG_CP
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Share Ratio
+    physical_name: shr_rto
+    business_meaning: "Tỷ lệ cổ phần người liên quan nắm giữ (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.TY_LE_NAM_GIU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Attachment File
+    physical_name: attch_file
+    business_meaning: Tệp đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.FILE_DINH_KEM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Related Party Status Code
+    physical_name: rel_p_st_code
+    business_meaning: Trạng thái bản ghi người liên quan.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.TRANG_THAI
+    comment: "Scheme: SCMS_SHAREHOLDER_RELATED_PARTY_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_MOI_QUAN_HE
+    source_column: SCMS.CTCK_CD_MOI_QUAN_HE.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_MOI_QUAN_HE'"
+    etl_derived_value: null

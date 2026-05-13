@@ -1,0 +1,134 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-frgn_ivsr_scr_ac-FIMS.SECURITIESACCOUNT
+  logical_name: "Atomic - Foreign Investor Securities Account – source FIMS.SECURITIESACCOUNT"
+  physical_name: frgn_ivsr_scr_ac
+  version: "1.0"
+  status: approved
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Securities Account"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài tại công ty chứng khoán.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-SECURITIESACCOUNT
+
+attributes:
+  - name: Foreign Investor Securities Account Id
+    physical_name: frgn_ivsr_scr_ac_id
+    business_meaning: Khóa đại diện cho tài khoản giao dịch chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Securities Account Code
+    physical_name: frgn_ivsr_scr_ac_code
+    business_meaning: Mã tài khoản. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán nơi mở tài khoản.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.SecId
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán nơi mở tài khoản.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.SecId
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Id
+    physical_name: frgn_ivsr_id
+    business_meaning: FK đến nhà đầu tư nước ngoài chủ tài khoản.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.InvesId
+    comment: "FK target: Foreign Investor.Foreign Investor Id."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Code
+    physical_name: frgn_ivsr_code
+    business_meaning: Mã nhà đầu tư nước ngoài chủ tài khoản.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.InvesId
+    comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Foreign Investor Id."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Account Number
+    physical_name: ac_nbr
+    business_meaning: Số tài khoản giao dịch chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.Account
+    comment: null
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null

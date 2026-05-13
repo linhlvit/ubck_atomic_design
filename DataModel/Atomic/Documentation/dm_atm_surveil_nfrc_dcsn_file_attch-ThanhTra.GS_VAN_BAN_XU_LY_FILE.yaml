@@ -1,0 +1,175 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-surveil_nfrc_dcsn_file_attch-ThanhTra.GS_VAN_BAN_XU_LY_FILE
+  logical_name: "Atomic - Surveillance Enforcement Decision File Attachment – source ThanhTra.GS_VAN_BAN_XU_LY_FILE"
+  physical_name: surveil_nfrc_dcsn_file_attch
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Supporting Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: File đính kèm văn bản xử lý giám sát. FK → Surveillance Enforcement Decision.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-GS_VAN_BAN_XU_LY_FILE
+
+attributes:
+  - name: Surveillance Enforcement Decision File Attachment Id
+    physical_name: surveil_nfrc_dcsn_file_attch_id
+    business_meaning: Khóa đại diện cho file đính kèm quyết định xử phạt giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Decision File Attachment Code
+    physical_name: surveil_nfrc_dcsn_file_attch_code
+    business_meaning: Mã file. Map từ PK ThanhTra.GS_VAN_BAN_XU_LY_FILE.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Decision Id
+    physical_name: surveil_nfrc_dcsn_id
+    business_meaning: FK đến Surveillance Enforcement Decision.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.VAN_BAN_XU_LY_ID
+    comment: "FK target: Surveillance Enforcement Decision.Surveillance Enforcement Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Decision Code
+    physical_name: surveil_nfrc_dcsn_code
+    business_meaning: Mã quyết định xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.VAN_BAN_XU_LY_ID
+    comment: "Lookup pair: Surveillance Enforcement Decision.Surveillance Enforcement Decision Code. Pair with Surveillance Enforcement Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: doc_nbr
+    business_meaning: Số hiệu văn bản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.SO_HIEU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Document Name
+    physical_name: doc_nm
+    business_meaning: Tên tài liệu.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.TEN_TAI_LIEU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Page Count
+    physical_name: pg_cnt
+    business_meaning: Số trang.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.SO_TRANG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Document Source
+    physical_name: doc_src
+    business_meaning: Nguồn gốc tài liệu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.NGUON_GOC
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Attachment File Name
+    physical_name: attch_file_nm
+    business_meaning: Tên file đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.FILE_NAME
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null
+
+  - name: Attachment File URL
+    physical_name: attch_file_url
+    business_meaning: Đường dẫn file.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_VAN_BAN_XU_LY_FILE
+    source_column: ThanhTra.GS_VAN_BAN_XU_LY_FILE.FILE_PATH
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_VAN_BAN_XU_LY_FILE'"
+    etl_derived_value: null

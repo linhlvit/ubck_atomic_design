@@ -1,0 +1,260 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_anl_sspcs_ac_snpst-GSGD.analysis_suspicious_account_code
+  logical_name: "Atomic - Market Surveillance Analysis Suspicious Account Snapshot – source GSGD.analysis_suspicious_account_code"
+  physical_name: mkt_surveil_anl_sspcs_ac_snpst
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Snapshot thông tin tài khoản nghi vấn tại thời điểm phân tích biểu mẫu. FK Market Surveillance Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-analysis_suspicious_account_code
+
+attributes:
+  - name: Market Surveillance Analysis Suspicious Account Snapshot Id
+    physical_name: mkt_surveil_anl_sspcs_ac_snpst_id
+    business_meaning: Khóa đại diện cho snapshot thông tin tài khoản nghi vấn theo biểu mẫu phân tích.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Analysis Suspicious Account Snapshot Code
+    physical_name: mkt_surveil_anl_sspcs_ac_snpst_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: FK đến vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.case_file_id
+    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: Mã vụ việc. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.case_file_id
+    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Workflow Type Code
+    physical_name: workflow_tp_code
+    business_meaning: "Loại quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.workflow_type
+    comment: "Scheme: GSGD_WORKFLOW_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Account Code
+    physical_name: ac_code
+    business_meaning: Mã tài khoản nghi vấn tại thời điểm phân tích. Snapshot — không FK đến Investor Trading Account.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.account_code
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Account Name
+    physical_name: ac_nm
+    business_meaning: Họ và tên tại thời điểm phân tích. Snapshot.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.account_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Account Type Code
+    physical_name: ac_tp_code
+    business_meaning: Loại tài khoản. Snapshot.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.account_type
+    comment: "Scheme: GSGD_INVESTOR_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Identity Number
+    physical_name: id_nbr
+    business_meaning: Số CCCD/Số đăng ký sở hữu tại thời điểm phân tích. Snapshot.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.identity_number
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Identity Issue Date
+    physical_name: id_issu_dt
+    business_meaning: Ngày cấp giấy tờ. Snapshot.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.identity_issue_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Identity Issue Place
+    physical_name: id_issu_plc
+    business_meaning: Nơi cấp giấy tờ. Snapshot.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.identity_issue_place
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Contact Address
+    physical_name: ctc_adr
+    business_meaning: Địa chỉ liên lạc tại thời điểm phân tích. Snapshot — không tách shared entity.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.contact_address
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Domestic Foreign Flag
+    physical_name: dmst_frgn_f
+    business_meaning: Trong nước/Nước ngoài. Snapshot.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.domestic_foreign_flag
+    comment: "Scheme: GSGD_DOMESTIC_FOREIGN_FLAG."
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Phone Number
+    physical_name: ph_nbr
+    business_meaning: Số điện thoại tại thời điểm phân tích. Snapshot.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.phone_number
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Email
+    physical_name: email
+    business_meaning: Email tại thời điểm phân tích. Snapshot.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.email
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null
+
+  - name: Account Status Code
+    physical_name: ac_st_code
+    business_meaning: "Trạng thái tài khoản: 0=Đóng, 1=Mở. Snapshot."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_suspicious_account_code
+    source_column: GSGD.analysis_suspicious_account_code.account_status
+    comment: "Scheme: GSGD_ACCOUNT_STATUS."
+    classification_context: "Source System Code = 'GSGD_analysis_suspicious_account_code'"
+    etl_derived_value: null

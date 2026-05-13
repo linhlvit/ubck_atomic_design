@@ -1,0 +1,120 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_alt_identn-NHNCK.Organizations
+  logical_name: "Atomic - Involved Party Alternative Identification – source NHNCK.Organizations"
+  physical_name: ip_alt_identn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-Organizations
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Organization Reference
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Organizations
+    source_column: NHNCK.Organizations.Id
+    comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'NHNCK_Organizations' | Identification Type Code = 'LICENSE_NUMBER'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã tổ chức
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Organizations
+    source_column: NHNCK.Organizations.Id
+    comment: "Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'NHNCK_Organizations' | Identification Type Code = 'LICENSE_NUMBER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Organizations
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Organizations' | Identification Type Code = 'LICENSE_NUMBER'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identn_tp_code
+    business_meaning: Loại giấy tờ — Số giấy phép hoạt động
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Organizations
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Organizations' | Identification Type Code = 'LICENSE_NUMBER'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số giấy phép hoạt động
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Organizations
+    source_column: NHNCK.Organizations.LicenseNumber
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Organizations' | Identification Type Code = 'LICENSE_NUMBER'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày cấp giấy phép
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Organizations
+    source_column: NHNCK.Organizations.LicenseDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Organizations' | Identification Type Code = 'LICENSE_NUMBER'"
+    etl_derived_value: null
+
+  - name: Issuing Authority Name
+    physical_name: issu_ahr_nm
+    business_meaning: Cơ quan cấp giấy phép
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Organizations
+    source_column: NHNCK.Organizations.LicenseIssuer
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Organizations' | Identification Type Code = 'LICENSE_NUMBER'"
+    etl_derived_value: null

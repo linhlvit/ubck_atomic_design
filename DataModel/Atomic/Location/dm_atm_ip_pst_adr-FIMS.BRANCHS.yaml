@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_pst_adr-FIMS.BRANCHS
+  logical_name: "Atomic - Involved Party Postal Address – source FIMS.BRANCHS"
+  physical_name: ip_pst_adr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-BRANCHS
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Fund Management Company Organization Unit.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.id
+    comment: "FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã chi nhánh công ty quản lý quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.id
+    comment: "Lookup pair: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — trụ sở chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: HEAD_OFFICE
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ trụ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.Address
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: prov_id
+    business_meaning: FK đến tỉnh/thành phố trụ sở.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "FK target: Geographic Area.Geographic Area Id. Lookup: DM_TINH_THANH."
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: prov_code
+    business_meaning: Mã tỉnh/thành (provinces).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id. // Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS."
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: District Name
+    physical_name: dstc_nm
+    business_meaning: Quận/huyện trụ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: Text denormalized — không có bảng lookup quận/huyện trong scope.
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Name
+    physical_name: ward_nm
+    business_meaning: Phường/xã trụ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: Text denormalized.
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Geographic Area Id
+    physical_name: geo_id
+    business_meaning: FK đến tỉnh/thành phố đặt trụ sở chi nhánh.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "FK target: Geographic Area.Geographic Area Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Geographic Area Code
+    physical_name: geo_code
+    business_meaning: Mã tỉnh/thành phố đặt trụ sở chi nhánh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Geographic Area Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Address Detail
+    physical_name: adr_dtl
+    business_meaning: Địa chỉ văn phòng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: Text tự do — denormalized.
+    classification_context: "Source System Code = 'FIMS_BRANCHS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null

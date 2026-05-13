@@ -1,0 +1,120 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_alt_identn-FMS.FORBRCH
+  logical_name: "Atomic - Involved Party Alternative Identification – source FMS.FORBRCH"
+  physical_name: ip_alt_identn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FORBRCH
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Foreign Fund Management Organization Unit.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.Id
+    comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id."
+    classification_context: "Source System Code = 'FMS_FORBRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã VPĐD/CN QLQ NN.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.Id
+    comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_FORBRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_FORBRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identn_tp_code
+    business_meaning: Loại giấy tờ — giấy phép điều chỉnh.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE."
+    classification_context: "Source System Code = 'FMS_FORBRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số giấy phép điều chỉnh gần nhất.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.ChangeLicense
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày cấp giấy phép điều chỉnh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: FMS.FORBRCH.ChangeLicenseDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Issuing Authority Name
+    physical_name: issu_ahr_nm
+    business_meaning: Cơ quan cấp giấy phép thành lập
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FORBRCH
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_FORBRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null

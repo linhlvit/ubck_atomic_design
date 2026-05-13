@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Schema Registry",
+  "description": "Danh sách tất cả schema types được hỗ trợ. Web app dùng file này để xác định schema nào để parse từng loại YAML file.",
+  "version": "1.0",
+  "schema_types": [
+    {
+      "type": "brd_source",
+      "label": "BRD Source Analysis",
+      "description": "Business Requirements Documentation ở cấp độ source table",
+      "schema_file": "schemas/brd_source.schema.json",
+      "file_pattern": "BRD/Source/brd_*.yaml",
+      "file_location": "BRD/Source/",
+      "file_naming": "brd_{SOURCE}.yaml (viết thường, VD: brd_thanhtra.yaml)",
+      "version": "1.0",
+      "notes": "Mỗi file BRD YAML chứa danh sách các BRD entry tương ứng với bảng nguồn. Dùng để thu thập yêu cầu thiết kế Atomic."
+    },
+    {
+      "type": "data_model",
+      "label": "Data Model Design",
+      "description": "Thiết kế data model (LDM + PDM gộp) cho từng Atomic entity — mỗi file tương ứng 1 bảng Atomic",
+      "schema_file": "schemas/dm.schema.json",
+      "file_pattern": "DataModel/Atomic/dm_atm_*.yaml",
+      "file_location": "DataModel/Atomic/",
+      "file_naming": "dm_atm_{physical_name}-{SOURCE}.{TABLE}.yaml (VD: dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml)",
+      "version": "1.0",
+      "notes": "Mỗi file DM YAML chứa header entity (ldm) và danh sách attributes. Kết hợp cả LDM và PDM trong một file duy nhất. Dùng để thiết kế và validate cấu trúc Atomic entity trước khi sinh DDL/ETL spec."
+    },
+    {
+      "type": "mapping",
+      "label": "Source-to-Atomic Mapping",
+      "description": "Mapping spec từ Bronze source table sang Atomic entity — transformation logic, JOIN pattern, filter",
+      "schema_file": "schemas/mapping.schema.json",
+      "file_pattern": "Mapping/Atomic/mapping_atm_*.yaml",
+      "file_location": "Mapping/Atomic/",
+      "file_naming": "mapping_atm_{physical_name}-{SOURCE}.{TABLE}.yaml (VD: mapping_atm_fnd_mgt_co-FIMS.FUNDCOMPANY.yaml)",
+      "version": "1.0",
+      "notes": "Mỗi file mapping YAML tương ứng 1 DM YAML (cùng physical_name × source combo). Pattern: regular (JOIN), unpivot (UNION ALL legs từ 1 bảng), direct (1 bảng không JOIN). Sub-folder theo BCV Core Object giống DataModel/Atomic/."
+    }
+  ]
+}

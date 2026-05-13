@@ -1,0 +1,498 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_org_emp_rpt-NHNCK.OrganizationReports
+  logical_name: "Atomic - Securities Practitioner Organization Employment Report – source NHNCK.OrganizationReports"
+  physical_name: scr_prac_org_emp_rpt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Employer Registration"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Báo cáo của tổ chức về tình trạng tuyển dụng/chấm dứt hợp đồng người hành nghề chứng khoán.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-OrganizationReports
+
+attributes:
+  - name: Organization Employment Report Id
+    physical_name: org_emp_rpt_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: null
+    comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation)."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Organization Employment Report Code
+    physical_name: org_emp_rpt_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Practitioner Id
+    physical_name: prac_id
+    business_meaning: FK đến Securities Practitioner
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.ProfessionalId
+    comment: "FK target: Securities Practitioner.Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Practitioner Code
+    physical_name: prac_code
+    business_meaning: Mã người hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.ProfessionalId
+    comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Securities Organization Id
+    physical_name: scr_org_id
+    business_meaning: FK đến tổ chức
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.OrganizationId
+    comment: "FK target: Securities Organization Reference.Securities Organization Reference Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Securities Organization Code
+    physical_name: scr_org_code
+    business_meaning: Mã tổ chức
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.OrganizationId
+    comment: "Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Securities Organization Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Certificate Type Code
+    physical_name: ctf_tp_code
+    business_meaning: Mã loại chứng chỉ
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.CertificateId
+    comment: "Scheme: CERTIFICATE_TYPE."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Id
+    physical_name: license_ctf_doc_id
+    business_meaning: FK đến chứng chỉ hành nghề
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.CertificateRecordId
+    comment: "FK target: Securities Practitioner License Certificate Document.License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Code
+    physical_name: license_ctf_doc_code
+    business_meaning: Mã chứng chỉ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.CertificateRecordId
+    comment: "Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Parent Organization Employment Report Id
+    physical_name: prn_org_emp_rpt_id
+    business_meaning: "FK self-ref — báo cáo cha"
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.ParentReportId
+    comment: "FK target: Securities Practitioner Organization Employment Report.Organization Employment Report Id. Self-referencing."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Parent Organization Employment Report Code
+    physical_name: prn_org_emp_rpt_code
+    business_meaning: Mã báo cáo cha
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.ParentReportId
+    comment: "Lookup pair: Securities Practitioner Organization Employment Report.Organization Employment Report Code. Pair with Parent Organization Employment Report Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: Loại báo cáo
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.Type
+    comment: "Scheme: REPORT_TYPE."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày báo cáo
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.ReportDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.FullName
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh (snapshot)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.BirthDate
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số chứng minh thư (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.IdentityNumber
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Position Name
+    physical_name: pos_nm
+    business_meaning: Chức vụ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.Position
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Department Name
+    physical_name: dept_nm
+    business_meaning: Phòng ban
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.Department
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Business Department Name
+    physical_name: bsn_dept_nm
+    business_meaning: Phòng ban nghiệp vụ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.BusinessDepartment
+    comment: Phân biệt với Department Name.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Workplace Name
+    physical_name: workplace_nm
+    business_meaning: Nơi công tác
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.Workplace
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Hire Date
+    physical_name: hire_dt
+    business_meaning: Ngày tiếp nhận
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.HireDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Termination Date
+    physical_name: tmt_dt
+    business_meaning: Ngày thôi việc
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.TerminationDate
+    comment: "NULL = đang làm việc."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Certificate Number
+    physical_name: ctf_nbr
+    business_meaning: Số chứng chỉ (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.CertificateNumber
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Certificate Issue Date
+    physical_name: ctf_issu_dt
+    business_meaning: Ngày cấp chứng chỉ (snapshot)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.IssueDate
+    comment: Denormalized snapshot.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Discipline Description
+    physical_name: discipline_dsc
+    business_meaning: Kỷ luật (vi phạm hoặc xử phạt)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.Disciplines
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Report Description
+    physical_name: rpt_dsc
+    business_meaning: Mô tả báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.Description
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Sync Id
+    physical_name: sync_id
+    business_meaning: Mã đồng bộ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.SyncId
+    comment: Metadata đồng bộ.
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Sync Created Timestamp
+    physical_name: sync_crt_tms
+    business_meaning: Ngày tạo đồng bộ
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.SyncCreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Sync Updated Timestamp
+    physical_name: sync_udt_tms
+    business_meaning: Ngày cập nhật đồng bộ
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.SyncUpdatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến Officer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.CreatedBy
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã người tạo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.CreatedBy
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: OrganizationReports
+    source_column: NHNCK.OrganizationReports.UpdatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_OrganizationReports'"
+    etl_derived_value: null

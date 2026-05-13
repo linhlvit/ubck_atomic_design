@@ -1,0 +1,1072 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_tdg_snpst-MDDS.StockInfor
+  logical_name: "Atomic - Security Trading Snapshot – source MDDS.StockInfor"
+  physical_name: scr_tdg_snpst
+  version: "1.0"
+  status: approved
+  bcv_core_object: Product
+  bcv_concept: "[Product] Financial Market Instrument"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Append
+  source: MDDS
+  description: |
+    Snapshot trạng thái giao dịch đa loại chứng khoán (cổ phiếu/CCQ/chứng quyền/phái sinh) tại thời điểm có thay đổi lệnh/khớp lệnh: giá tham chiếu/trần/sàn
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-MDDS-StockInfor
+
+attributes:
+  - name: Security Trading Snapshot Id
+    physical_name: scr_tdg_snpst_id
+    business_meaning: Khóa đại diện cho bản tin thông tin giao dịch chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Security Trading Snapshot Code
+    physical_name: scr_tdg_snpst_code
+    business_meaning: Định danh duy nhất bản tin (GUID). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Id
+    comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Symbol
+    physical_name: symb
+    business_meaning: Mã chứng khoán (VCB / HPG / VNM...). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.symbol
+    comment: BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning: Ngày giao dịch (dd/mm/yyyy). BK.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.tradingdate
+    comment: BK. Nguồn string (dd/mm/yyyy) — ETL cần parse sang Date. Cần validate format ngày hợp lệ.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Stock Id
+    physical_name: stk_id
+    business_meaning: ID nội bộ duy nhất của chứng khoán trong hệ thống MDDS.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.StockId
+    comment: Nguồn string — denormalized text. Khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên đầy đủ của chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.FullName
+    comment: Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Floor Code
+    physical_name: flr_code
+    business_meaning: "Mã sàn giao dịch: 02=HNX / 04=UPCOM / 10=HOSE / 03=FDS (phái sinh) / 06=Corp Bond."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.FloorCode
+    comment: "Scheme: MDDS_FLOOR_CODE. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Stock Type Code
+    physical_name: stk_tp_code
+    business_meaning: "Loại chứng khoán theo sàn. HNX: BO/ST/MF/FU/OP/EF. HOSE: B=Trái phiếu / S=Cổ phiếu / U/E=CCQ / D=TP chuyển đổi / W=Chứng quyền. Parse kết hợp FloorCode."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.StockType
+    comment: "Scheme: MDDS_STOCK_TYPE. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Trading Session Id
+    physical_name: tdg_ssn_id
+    business_meaning: Mã phiên giao dịch (ATO / Continuous / ATC...).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.tradingSessionID
+    comment: "Scheme: MDDS_TRADING_SESSION. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Ceiling Price
+    physical_name: ceiling_prc
+    business_meaning: Giá trần trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.ceiling
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Floor Price
+    physical_name: flr_prc
+    business_meaning: Giá sàn trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.floor
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Reference Price
+    physical_name: refr_prc
+    business_meaning: Giá tham chiếu trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.reference
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Close Price
+    physical_name: cls_prc
+    business_meaning: Giá khớp lệnh gần nhất (giá thị trường hiện tại).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.closePrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Close Volume
+    physical_name: cls_vol
+    business_meaning: Khối lượng khớp tại lần khớp gần nhất.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.closeVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Price Change Value
+    physical_name: prc_chg_val
+    business_meaning: "Thay đổi của giá khớp gần nhất so với giá tham chiếu (+/-)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.change
+    comment: Nguồn string — ETL cần parse sang decimal. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Prior Price
+    physical_name: prev_prc
+    business_meaning: Giá khớp gần nhất (trước lần cập nhật hiện tại).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.PRIOR_PRICE
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Open Price
+    physical_name: opn_prc
+    business_meaning: Giá mở cửa (giá khớp ATO).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.open
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: High Price
+    physical_name: high_prc
+    business_meaning: Giá cao nhất trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.high
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Low Price
+    physical_name: low_prc
+    business_meaning: Giá thấp nhất trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.low
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Average Price
+    physical_name: av_prc
+    business_meaning: Giá trung bình (VWAP) trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.averagePrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Bid Price 1
+    physical_name: bid_prc_1
+    business_meaning: Giá mua bước 1 (tốt nhất).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.bidPrice1
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Bid Volume 1
+    physical_name: bid_vol_1
+    business_meaning: Khối lượng mua tại bước giá 1.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.bidVol1
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Bid Price 2
+    physical_name: bid_prc_2
+    business_meaning: Giá mua bước 2.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.bidPrice2
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Bid Volume 2
+    physical_name: bid_vol_2
+    business_meaning: Khối lượng mua tại bước giá 2.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.bidVol2
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Bid Price 3
+    physical_name: bid_prc_3
+    business_meaning: Giá mua bước 3 (xa nhất).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.bidPrice3
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Bid Volume 3
+    physical_name: bid_vol_3
+    business_meaning: Khối lượng mua tại bước giá 3.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.bidVol3
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Offer Price 1
+    physical_name: ofr_prc_1
+    business_meaning: Giá bán bước 1 (tốt nhất).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.offerPrice1
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Offer Volume 1
+    physical_name: ofr_vol_1
+    business_meaning: Khối lượng bán tại bước giá 1.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.offerVol1
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Offer Price 2
+    physical_name: ofr_prc_2
+    business_meaning: Giá bán bước 2.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.offerPrice2
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Offer Volume 2
+    physical_name: ofr_vol_2
+    business_meaning: Khối lượng bán tại bước giá 2.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.offerVol2
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Offer Price 3
+    physical_name: ofr_prc_3
+    business_meaning: Giá bán bước 3 (xa nhất).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.offerPrice3
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Offer Volume 3
+    physical_name: ofr_vol_3
+    business_meaning: Khối lượng bán tại bước giá 3.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.offerVol3
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Total Bid Volume
+    physical_name: tot_bid_vol
+    business_meaning: Tổng khối lượng chào mua cộng dồn.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.TOTAL_BID_QTTY
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Total Offer Volume
+    physical_name: tot_ofr_vol
+    business_meaning: Tổng khối lượng chào bán cộng dồn.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.TOTAL_OFFER_QTTY
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Volume
+    physical_name: tot_mtch_vol
+    business_meaning: Tổng khối lượng khớp lệnh tích lũy từ đầu ngày.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.totalTrading
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Value
+    physical_name: tot_mtch_val
+    business_meaning: Tổng giá trị khớp lệnh tích lũy từ đầu ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.totalTradingValue
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: PT Match Volume
+    physical_name: pt_mtch_vol
+    business_meaning: Tổng khối lượng giao dịch thông thường (không tính thỏa thuận).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.PT_MATCH_QTTY
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: PT Match Price
+    physical_name: pt_mtch_prc
+    business_meaning: Giá thực hiện của lệnh thỏa thuận hiện thời.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.PT_MATCH_PRICE
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Match Volume
+    physical_name: pt_tot_mtch_vol
+    business_meaning: Tổng khối lượng giao dịch thỏa thuận tích lũy.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.PT_TOTAL_TRADED_QTTY
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Match Value
+    physical_name: pt_tot_mtch_val
+    business_meaning: Tổng giá trị giao dịch thỏa thuận tích lũy.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.PT_TOTAL_TRADED_VALUE
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Foreign Buy Volume
+    physical_name: frgn_buy_vol
+    business_meaning: Tổng khối lượng mua của nhà đầu tư nước ngoài.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.foreignBuy
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Foreign Sell Volume
+    physical_name: frgn_sell_vol
+    business_meaning: Tổng khối lượng bán của nhà đầu tư nước ngoài.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.foreignSell
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Foreign Remaining Room
+    physical_name: frgn_rman_room
+    business_meaning: Số lượng còn lại nhà đầu tư nước ngoài được phép mua (cập nhật sau mỗi giao dịch NĐTNN).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.foreignRemain
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Foreign Total Room
+    physical_name: frgn_tot_room
+    business_meaning: Tổng room nhà đầu tư nước ngoài được phép mua.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.foreignRoom
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Reference Price 1
+    physical_name: refr_prc_1
+    business_meaning: Giá tham chiếu phụ 1 (dùng nội bộ bảng giá).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.priceOne
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Reference Price 2
+    physical_name: refr_prc_2
+    business_meaning: Giá tham chiếu phụ 2 (dùng nội bộ bảng giá).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.priceTwo
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Total Listing Volume
+    physical_name: tot_listing_vol
+    business_meaning: Tổng khối lượng niêm yết — dùng cho HNX/UPCOM.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.TotalListingQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Fund Type
+    physical_name: fnd_tp
+    business_meaning: Loại chứng khoán theo nguyên văn sở trả về (chưa convert).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.FundType
+    comment: Nguồn string — denormalized text. Khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HNX Listing Status Code
+    physical_name: hnx_listing_st_code
+    business_meaning: "Trạng thái niêm yết HNX/UPCOM: parse từ Status (vị trí 1) — chỉ áp dụng FloorCode=02/04."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Scheme: MDDS_LISTING_STATUS. Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=02/04) vị trí 1."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HNX Adjust Volume
+    physical_name: hnx_adj_vol
+    business_meaning: "Điều chỉnh khối lượng HNX/UPCOM: parse từ Status (vị trí 2) — chỉ áp dụng FloorCode=02/04."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=02/04) vị trí 2: ADJUST_QTTY."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HNX Reference Status Code
+    physical_name: hnx_refr_st_code
+    business_meaning: "Trạng thái tham chiếu HNX/UPCOM: parse từ Status (vị trí 3) — chỉ áp dụng FloorCode=02/04."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=02/04) vị trí 3: REFERENCE_STATUS."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HNX Adjust Rate
+    physical_name: hnx_adj_rate
+    business_meaning: "Tỷ lệ điều chỉnh HNX/UPCOM: parse từ Status (vị trí 4) — chỉ áp dụng FloorCode=02/04."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=02/04) vị trí 4: ADJUST_RATE."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HNX Dividend Rate
+    physical_name: hnx_dvdn_rate
+    business_meaning: "Tỷ lệ cổ tức HNX/UPCOM: parse từ Status (vị trí 5) — chỉ áp dụng FloorCode=02/04."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=02/04) vị trí 5: DIVIDENT_RATE."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HNX Status
+    physical_name: hnx_st
+    business_meaning: "Trạng thái tổng hợp HNX/UPCOM: parse từ Status (vị trí 6) — chỉ áp dụng FloorCode=02/04."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=02/04) vị trí 6: STATUS."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Delist Flag
+    physical_name: hose_delist_f
+    business_meaning: "Cờ hủy niêm yết HOSE: parse từ Status (vị trí 1) — chỉ áp dụng FloorCode=10."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Scheme: MDDS_DELIST_FLAG. Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 1: DELIST_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Suspension Flag
+    physical_name: hose_susp_f
+    business_meaning: "Cờ đình chỉ giao dịch HOSE: parse từ Status (vị trí 2) — chỉ áp dụng FloorCode=10."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Scheme: MDDS_SUSPENSION_FLAG. Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 2: SUSPENSION_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Halt Resume Flag
+    physical_name: hose_halt_resume_f
+    business_meaning: "Cờ tạm ngừng/khôi phục HOSE: parse từ Status (vị trí 3) — chỉ áp dụng FloorCode=10."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Scheme: MDDS_HALT_RESUME_FLAG. Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 3: HALT_RESUME_FLAG_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Split Flag
+    physical_name: hose_split_f
+    business_meaning: "Cờ chia tách HOSE: parse từ Status (vị trí 4) — chỉ áp dụng FloorCode=10."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 4: SPLIT_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Benefit Flag
+    physical_name: hose_bnft_f
+    business_meaning: "Cờ quyền lợi HOSE: parse từ Status (vị trí 5) — chỉ áp dụng FloorCode=10."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 5: BENEFIT_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Meeting Flag
+    physical_name: hose_mtg_f
+    business_meaning: "Cờ đại hội cổ đông HOSE: parse từ Status (vị trí 6) — chỉ áp dụng FloorCode=10."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 6: MEETING_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Notice Flag
+    physical_name: hose_ntc_f
+    business_meaning: "Cờ thông báo HOSE: parse từ Status (vị trí 7) — chỉ áp dụng FloorCode=10."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 7: NOTICE_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: HOSE Odd Lot Halt Resume Flag
+    physical_name: hose_odd_lot_halt_resume_f
+    business_meaning: "Cờ tạm ngừng/khôi phục lô lẻ HOSE: parse từ Status (vị trí 8) — chỉ áp dụng FloorCode=10."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.Status
+    comment: "Nguồn string — ETL parse từ chuỗi pipe-separated Status (FloorCode=10) vị trí 8: ODD_LOT_HALT_RESUME_FLAG_ALPH."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Underlying Instrument Id
+    physical_name: ulyg_imt_id
+    business_meaning: FK đến Security Trading Snapshot của tài sản cơ sở — dùng cho phái sinh và chứng quyền.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.underlyingSymbol
+    comment: "FK target: Security Trading Snapshot.Security Trading Snapshot Id. Self-reference. Null khi không phải phái sinh/chứng quyền."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Underlying Symbol
+    physical_name: ulyg_symb
+    business_meaning: Mã tài sản cơ sở (VN30...) — dùng cho phái sinh và chứng quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.underlyingSymbol
+    comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with Underlying Instrument Id. FK suy luận self-reference đến StockInfor.symbol. Nguồn string — khớp tự nhiên với Text."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Open Interest
+    physical_name: opn_int
+    business_meaning: Khối lượng hợp đồng mở (Open Interest) — chỉ dùng cho phái sinh.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.openInterest
+    comment: "Nguồn string — ETL cần parse sang int. Null khi không phải phái sinh. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Open Interest Change
+    physical_name: opn_int_chg
+    business_meaning: Thay đổi khối lượng hợp đồng mở so với phiên trước.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.openInterestChange
+    comment: Nguồn string — ETL cần parse sang int. Null khi không phải phái sinh. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: First Trading Date
+    physical_name: frst_tdg_dt
+    business_meaning: Ngày giao dịch đầu tiên — dùng cho phái sinh và chứng quyền.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.firstTradingDate
+    comment: Nguồn string — ETL cần parse sang Date. Null khi không phải phái sinh/chứng quyền.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Last Trading Date
+    physical_name: last_tdg_dt
+    business_meaning: Ngày giao dịch cuối cùng — dùng cho phái sinh và chứng quyền.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.lastTradingDate
+    comment: Nguồn string — ETL cần parse sang Date. Null khi không phải phái sinh/chứng quyền.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Maturity Date
+    physical_name: mat_dt
+    business_meaning: Ngày đáo hạn — dùng cho chứng quyền và phái sinh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.MaturityDate
+    comment: Nguồn string — ETL cần parse sang Date. Null khi không phải phái sinh/chứng quyền.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Covered Warrant Type Code
+    physical_name: cvrd_wrnt_tp_code
+    business_meaning: "Loại chứng quyền — chỉ áp dụng khi StockType=W."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.CoveredWarrantType
+    comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Nguồn string — khớp tự nhiên với Classification Value. Null khi không phải chứng quyền."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Exercise Price
+    physical_name: exrc_prc
+    business_meaning: Giá thực hiện — dùng cho chứng quyền.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.ExercisePrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Null khi không phải chứng quyền. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Exercise Ratio
+    physical_name: exrc_rto
+    business_meaning: Tỷ lệ chuyển đổi — dùng cho chứng quyền.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.ExerciseRatio
+    comment: "Nguồn string — ETL cần parse sang decimal. Null khi không phải chứng quyền. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Listed Share
+    physical_name: list_shr
+    business_meaning: Khối lượng chứng quyền niêm yết.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.ListedShare
+    comment: "Nguồn string — ETL cần parse sang int. Null khi không phải chứng quyền. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null
+
+  - name: Issuer Name
+    physical_name: issur_nm
+    business_meaning: Tên tổ chức phát hành chứng quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: StockInfor
+    source_column: MDDS.StockInfor.IssuerName
+    comment: Nguồn string — denormalized text. Khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_StockInfor'"
+    etl_derived_value: null

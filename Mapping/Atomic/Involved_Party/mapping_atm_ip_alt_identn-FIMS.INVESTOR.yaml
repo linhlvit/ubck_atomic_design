@@ -1,0 +1,78 @@
+schema_type: mapping
+schema_version: "1.0"
+
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+
+mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.INVESTOR
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.INVESTOR"
+  physical_name: ip_alt_identn
+  pattern: direct
+  etl_pattern: SCD4A
+  dm_ref: ATM-ip_alt_identn-FIMS.INVESTOR
+  brd_ref: BRD-SRC-FIMS-INVESTOR
+
+target:
+  schema: atomic
+  physical_name: ip_alt_identn
+  etl_handle: SCD4A
+  description: |
+    Lưu trữ giấy tờ định danh của Foreign Investor từ FIMS.INVESTOR.
+    1 leg duy nhất: CITIZEN_ID (IdNo/IdDate/IdAdd).
+    Lưu ý: cần profile thêm để phân biệt CITIZEN_ID vs PASSPORT.
+
+input:
+  - seq: 1
+    source_type: physical_table
+    schema: bronze
+    table_name: INVESTOR
+    alias: "in"
+    select_fields: "id, idno, idadd, iddate"
+    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+
+relationship: []
+
+mapping_legs:
+  - leg: CITIZEN_ID
+    filter: "in.idno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_INVESTOR', in.id)"
+        source_column: FIMS.INVESTOR.id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: in.id
+        source_column: FIMS.INVESTOR.id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_INVESTOR'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'CITIZEN_ID'"
+        source_column: null
+        data_type: string
+        etl_derived_value: CITIZEN_ID
+        comment: "Cần profile thêm để phân biệt CITIZEN_ID vs PASSPORT."
+
+      - target_column: identn_nbr
+        transformation: in.idno
+        source_column: FIMS.INVESTOR.IdNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: in.iddate
+        source_column: FIMS.INVESTOR.IdDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: in.idadd
+        source_column: FIMS.INVESTOR.IdAdd
+        data_type: string
+
+mapping_columns: null
+
+final_filter: []

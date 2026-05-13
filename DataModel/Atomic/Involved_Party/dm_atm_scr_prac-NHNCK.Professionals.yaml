@@ -1,0 +1,414 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac-NHNCK.Professionals
+  logical_name: "Atomic - Securities Practitioner – source NHNCK.Professionals"
+  physical_name: scr_prac
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-Professionals
+
+attributes:
+  - name: Practitioner Id
+    physical_name: prac_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: "PK surrogate. BCV: \"Individual\" (Involved Party). Domain prefix \"Securities Practitioner\" theo HLD."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Practitioner Code
+    physical_name: prac_code
+    business_meaning: Mã định danh người hành nghề (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.Id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.FullName
+    comment: "BCV: \"Full Name\" (Involved Party)."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Birth Year
+    physical_name: brth_yr
+    business_meaning: Năm sinh
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.BirthYear
+    comment: "Text vì là năm dạng \"1990\". Lấy từ Professionals (không có trong ProfessionalHistories)."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh đầy đủ (ngày/tháng/năm)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.ProfessionalHistories.BirthDate
+    comment: Lấy từ bản mới nhất ProfessionalHistories (ORDER BY ChangeDate DESC). Professionals chỉ có BirthYear.
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Individual Gender Code
+    physical_name: idv_gnd_code
+    business_meaning: Giới tính
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.ProfessionalHistories.Gender
+    comment: "Scheme: INDIVIDUAL_GENDER. Lấy từ bản mới nhất ProfessionalHistories."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Quốc tịch
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.ProfessionalHistories.NationalityId
+    comment: "Scheme: NATIONALITY. Lấy từ bản mới nhất ProfessionalHistories. Thay thế Country Code từ Professionals.CountryId (cùng ngữ nghĩa quốc tịch)."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Education Level Code
+    physical_name: ed_lvl_code
+    business_meaning: Trình độ học vấn
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.ProfessionalHistories.EducationLevelId
+    comment: "Scheme: EDUCATION_LEVEL. Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Birth Place
+    physical_name: brth_plc
+    business_meaning: Nơi sinh
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.ProfessionalHistories.PlaceOfBirth
+    comment: Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này.
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Practitioner Registration Type Code
+    physical_name: prac_rgst_tp_code
+    business_meaning: Hình thức đăng ký người hành nghề vào hệ thống
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.ProfessionalHistories.RegistrationType
+    comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE. Lấy từ bản mới nhất ProfessionalHistories. Khác với Applications.RegistrationType (loại đăng ký hồ sơ CCHN)."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hành nghề
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.ProfessionalHistories.StatusWork
+    comment: "Scheme: PRACTICE_STATUS. Lấy từ bản mới nhất ProfessionalHistories. 5 giá trị: 0=Chưa hành nghề; 1=Hành nghề; 2=Thu hồi cho cấp lại; 3=Thu hồi không cấp lại; 4=Hành nghề có thời hạn."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Country of Residence Geographic Area Id
+    physical_name: cty_of_rsdnc_geo_id
+    business_meaning: FK đến quốc gia cư trú.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.CountryId
+    comment: "FK target: Geographic Area.Geographic Area Id."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Country of Residence Geographic Area Code
+    physical_name: cty_of_rsdnc_geo_code
+    business_meaning: Mã quốc gia cư trú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.CountryId
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Residence Geographic Area Id."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Identity Reference Code
+    physical_name: id_refr_code
+    business_meaning: Mã định danh giấy tờ tùy thân (FK bảng identity riêng)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.IdentityId
+    comment: Bảng identity riêng không có trong scope NHNCK — lưu BK dạng Text.
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Relationship Type Code
+    physical_name: rltnp_tp_code
+    business_meaning: Loại quan hệ người hành nghề
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.RelationshipType
+    comment: "Scheme: PRACTITIONER_RELATIONSHIP_TYPE."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Occupation Name
+    physical_name: ocp_nm
+    business_meaning: Nghề nghiệp
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.Occupation
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Workplace Name
+    physical_name: workplace_nm
+    business_meaning: Nơi làm việc
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.Workplace
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Practitioner Note
+    physical_name: prac_note
+    business_meaning: Ghi chú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.Note
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: NHNCK.Professionals.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán nơi hành nghề.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Employee Code
+    physical_name: empe_code
+    business_meaning: Mã nhân viên nội bộ CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: Mã nhân viên do CTCK cấp — bổ sung từ SCMS. Không có trong NHNCK.
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: License Number
+    physical_name: license_nbr
+    business_meaning: Số chứng chỉ hành nghề chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Employment Start Date
+    physical_name: emp_strt_dt
+    business_meaning: Ngày bắt đầu làm việc tại CTCK.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Employment End Date
+    physical_name: emp_end_dt
+    business_meaning: Ngày nghỉ việc.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null
+
+  - name: Practitioner Status Code
+    physical_name: prac_st_code
+    business_meaning: Trạng thái người hành nghề tại CTCK.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: Professionals
+    source_column: null
+    comment: "Scheme: SCMS_COMPANY_STATUS."
+    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    etl_derived_value: null

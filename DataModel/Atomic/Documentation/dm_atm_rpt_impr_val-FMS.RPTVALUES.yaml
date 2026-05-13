@@ -1,0 +1,414 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rpt_impr_val-FMS.RPTVALUES
+  logical_name: "Atomic - Report Import Value – source FMS.RPTVALUES"
+  physical_name: rpt_impr_val
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Resource Item] Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào hệ thống FMS. Grain ở mức cell-level.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RPTVALUES
+
+attributes:
+  - name: Member Report Value Id
+    physical_name: mbr_rpt_val_id
+    business_meaning: Khóa đại diện cho giá trị chỉ tiêu trong báo cáo thành viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Member Report Value Code
+    physical_name: mbr_rpt_val_code
+    business_meaning: Mã định danh giá trị chỉ tiêu. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report Id
+    physical_name: mbr_prd_rpt_id
+    business_meaning: FK đến báo cáo định kỳ thành viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.MebId
+    comment: "FK target: Member Periodic Report.Member Periodic Report Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report Code
+    physical_name: mbr_prd_rpt_code
+    business_meaning: Mã báo cáo định kỳ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.MebId
+    comment: "Lookup pair: Member Periodic Report.Member Periodic Report Code. Pair with Member Periodic Report Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Investment Fund Id
+    physical_name: ivsm_fnd_id
+    business_meaning: FK đến quỹ đầu tư nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.FndId
+    comment: "FK target: Investment Fund.Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: ivsm_fnd_code
+    business_meaning: Mã quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.FndId
+    comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Id
+    physical_name: cstd_bnk_id
+    business_meaning: FK đến ngân hàng LKGS nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.BkMId
+    comment: "FK target: Custodian Bank.Custodian Bank Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: cstd_bnk_code
+    business_meaning: Mã ngân hàng LKGS.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.BkMId
+    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: frgn_fnd_mgt_ou_id
+    business_meaning: FK đến VPĐD/CN QLQ NN nộp báo cáo (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.FrBrId
+    comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: frgn_fnd_mgt_ou_code
+    business_meaning: Mã VPĐD/CN QLQ NN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.FrBrId
+    comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Foreign Fund Management Organization Unit Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Reporting Period Id
+    physical_name: rpt_prd_id
+    business_meaning: FK đến kỳ báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.PrdId
+    comment: "FK target: Reporting Period.Reporting Period Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Reporting Period Code
+    physical_name: rpt_prd_code
+    business_meaning: Mã kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.PrdId
+    comment: "Lookup pair: Reporting Period.Reporting Period Code. Pair with Reporting Period Id."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Report Sheet Id
+    physical_name: rpt_shet_id
+    business_meaning: Mã trang/sheet trong biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.SheetId
+    comment: Định danh trang biểu mẫu — denormalized.
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Report Target Id
+    physical_name: rpt_trgt_id
+    business_meaning: Mã chỉ tiêu trong sheet báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.TgtId
+    comment: Định danh chỉ tiêu — denormalized.
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Report Id
+    physical_name: rpt_id
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.RptId
+    comment: Định danh biểu mẫu — denormalized.
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Value
+    physical_name: val
+    business_meaning: Giá trị chỉ tiêu (text để chứa mọi kiểu dữ liệu).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.Values
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Accumulated Value
+    physical_name: acm_val
+    business_meaning: Giá trị lũy kế của chỉ tiêu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.AccValues
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Format Data Type Code
+    physical_name: fmt_data_tp_code
+    business_meaning: Kiểu dữ liệu định dạng của chỉ tiêu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.FormatDataType
+    comment: "Scheme: FMS_CELL_DATA_TYPE."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Is Dynamic Indicator
+    physical_name: is_dynamic_ind
+    business_meaning: Cờ đánh dấu chỉ tiêu động (người dùng tự thêm).
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.IsDynamic
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Reporting Period Type Code
+    physical_name: rpt_prd_tp_code
+    business_meaning: Kiểu kỳ báo cáo (tháng/quý/năm).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.PeriodType
+    comment: "Scheme: FMS_REPORTING_PERIOD_TYPE."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Value Type Code
+    physical_name: val_tp_code
+    business_meaning: Loại giá trị trong báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.Type
+    comment: "Scheme: FMS_REPORT_VALUE_TYPE."
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Modified By
+    physical_name: mod_by
+    business_meaning: Người cập nhật bản ghi lần cuối.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.ModifyBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTVALUES
+    source_column: FMS.RPTVALUES.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTVALUES'"
+    etl_derived_value: null

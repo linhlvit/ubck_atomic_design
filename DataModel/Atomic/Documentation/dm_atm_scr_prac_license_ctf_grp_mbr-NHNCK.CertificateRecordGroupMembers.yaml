@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ctf_grp_mbr-NHNCK.CertificateRecordGroupMembers
+  logical_name: "Atomic - Securities Practitioner License Certificate Group Member – source NHNCK.CertificateRecordGroupMembers"
+  physical_name: scr_prac_license_ctf_grp_mbr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: Junction
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Quan hệ thành viên giữa chứng chỉ hành nghề và nhóm cấp/thu hồi. Liên kết Certificate ↔ Group ↔ Application.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-CertificateRecordGroupMembers
+
+attributes:
+  - name: License Certificate Group Member Id
+    physical_name: license_ctf_grp_mbr_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: null
+    comment: "PK surrogate. Junction: Certificate ↔ Group."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: License Certificate Group Member Code
+    physical_name: license_ctf_grp_mbr_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: License Certificate Group Document Id
+    physical_name: license_ctf_grp_doc_id
+    business_meaning: FK đến nhóm chứng chỉ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.CertificateRecordGroupId
+    comment: "FK target: Securities Practitioner License Certificate Group Document.License Certificate Group Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: License Certificate Group Document Code
+    physical_name: license_ctf_grp_doc_code
+    business_meaning: Mã nhóm
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.CertificateRecordGroupId
+    comment: "Lookup pair: Securities Practitioner License Certificate Group Document.License Certificate Group Document Code. Pair with License Certificate Group Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Id
+    physical_name: license_ctf_doc_id
+    business_meaning: FK đến chứng chỉ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.CertificateRecordId
+    comment: "FK target: Securities Practitioner License Certificate Document.License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Code
+    physical_name: license_ctf_doc_code
+    business_meaning: Mã chứng chỉ
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.CertificateRecordId
+    comment: "Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: Order Index
+    physical_name: ordr_indx
+    business_meaning: Thứ tự sắp xếp trong nhóm
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.OrderIndex
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: Is Reissue Indicator
+    physical_name: is_reissue_ind
+    business_meaning: Cờ cho phép cấp lại
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.IsReissue
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: Revocation Reason
+    physical_name: revocation_rsn
+    business_meaning: Lý do thu hồi/hủy
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.RevocationReason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null
+
+  - name: Member Status Code
+    physical_name: mbr_st_code
+    business_meaning: Trạng thái thành viên nhóm
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordGroupMembers
+    source_column: NHNCK.CertificateRecordGroupMembers.Status
+    comment: "Scheme: GROUP_MEMBER_STATUS."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordGroupMembers'"
+    etl_derived_value: null

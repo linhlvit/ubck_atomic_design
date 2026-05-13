@@ -1,0 +1,218 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnd_mgt_conduct_vln-FMS.VIOLT
+  logical_name: "Atomic - Fund Management Conduct Violation – source FMS.VIOLT"
+  physical_name: fnd_mgt_conduct_vln
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Vi phạm pháp luật hoặc hành chính của công ty quản lý quỹ hoặc quỹ đầu tư. Ghi nhận loại vi phạm và trạng thái xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-VIOLT
+
+attributes:
+  - name: Fund Management Conduct Violation Id
+    physical_name: fnd_mgt_conduct_vln_id
+    business_meaning: Khóa đại diện cho hành vi vi phạm quản lý quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: VIOLT
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Fund Management Conduct Violation Code
+    physical_name: fnd_mgt_conduct_vln_code
+    business_meaning: Mã định danh vi phạm. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ vi phạm (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Investment Fund Id
+    physical_name: ivsm_fnd_id
+    business_meaning: FK đến quỹ đầu tư liên quan vi phạm (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.FndId
+    comment: "FK target: Investment Fund.Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: ivsm_fnd_code
+    business_meaning: Mã quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.FndId
+    comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Violation Type Code
+    physical_name: vln_tp_code
+    business_meaning: Loại vi phạm.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.ViolType
+    comment: "Scheme: FMS_VIOLATION_TYPE."
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Violation Content
+    physical_name: vln_cntnt
+    business_meaning: Nội dung mô tả vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.ViolContent
+    comment: null
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Violation Date
+    physical_name: vln_dt
+    business_meaning: Ngày xác định vi phạm.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.ViolDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Violation Status Code
+    physical_name: vln_st_code
+    business_meaning: Trạng thái xử lý vi phạm.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.ViolStatus
+    comment: "Scheme: FMS_VIOLATION_STATUS."
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung về vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.Note
+    comment: null
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: VIOLT
+    source_column: FMS.VIOLT.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_VIOLT'"
+    etl_derived_value: null

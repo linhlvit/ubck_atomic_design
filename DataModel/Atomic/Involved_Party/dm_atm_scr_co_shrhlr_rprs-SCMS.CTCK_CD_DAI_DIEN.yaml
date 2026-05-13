@@ -1,0 +1,246 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_shrhlr_rprs-SCMS.CTCK_CD_DAI_DIEN
+  logical_name: "Atomic - Securities Company Shareholder Representative – source SCMS.CTCK_CD_DAI_DIEN"
+  physical_name: scr_co_shrhlr_rprs
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Role"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Người đại diện được ủy quyền bởi cổ đông của CTCK. Ghi nhận chức vụ và số lượng cổ phần đại diện.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_CD_DAI_DIEN
+
+attributes:
+  - name: Securities Company Shareholder Representative Id
+    physical_name: scr_co_shrhlr_rprs_id
+    business_meaning: Khóa đại diện cho người đại diện cổ đông.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Representative Code
+    physical_name: scr_co_shrhlr_rprs_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Id
+    physical_name: scr_co_shrhlr_id
+    business_meaning: FK đến cổ đông được đại diện.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.CTCK_CO_DONG_ID
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Code
+    physical_name: scr_co_shrhlr_code
+    business_meaning: Mã cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.CTCK_CO_DONG_ID
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Representative Name
+    physical_name: rprs_nm
+    business_meaning: Họ và tên người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.NGUOI_DAI_DIEN
+    comment: Denormalized — tên cá nhân đại diện.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Position Name
+    physical_name: pos_nm
+    business_meaning: Chức vụ người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.CHUC_VU
+    comment: Text tự do.
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Share Quantity
+    physical_name: shr_qty
+    business_meaning: Số lượng cổ phần được đại diện.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.SO_LUONG_CP
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Share Ratio
+    physical_name: shr_rto
+    business_meaning: "Tỷ lệ cổ phần được đại diện (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.TY_LE_NAM_GIU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Attachment File
+    physical_name: attch_file
+    business_meaning: Tệp đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.FILE_DINH_KEM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Representative Status Code
+    physical_name: rprs_st_code
+    business_meaning: Trạng thái người đại diện.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.TRANG_THAI
+    comment: "Scheme: SCMS_SHAREHOLDER_REPRESENTATIVE_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_CD_DAI_DIEN
+    source_column: SCMS.CTCK_CD_DAI_DIEN.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_CD_DAI_DIEN'"
+    etl_derived_value: null

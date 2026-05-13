@@ -1,0 +1,134 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_watchlist_grp-GSGD.securities_group
+  logical_name: "Atomic - Securities Watchlist Group – source GSGD.securities_group"
+  physical_name: scr_watchlist_grp
+  version: "1.0"
+  status: approved
+  bcv_core_object: Group
+  bcv_concept: "[Group] Portfolio"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Nhóm chứng khoán do nghiệp vụ giám sát tạo ra (thường hoặc theo ngành). Danh sách mã CK denormalize thành ARRAY.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-securities_group
+
+attributes:
+  - name: Securities Watchlist Group Id
+    physical_name: scr_watchlist_grp_id
+    business_meaning: Khóa đại diện cho nhóm chứng khoán giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: securities_group
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null
+
+  - name: Securities Watchlist Group Code
+    physical_name: scr_watchlist_grp_code
+    business_meaning: Mã nhóm (hệ thống tự sinh). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: securities_group
+    source_column: GSGD.securities_group.group_code
+    comment: BK chính.
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: securities_group
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null
+
+  - name: Group Name
+    physical_name: grp_nm
+    business_meaning: Tên nhóm chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: securities_group
+    source_column: GSGD.securities_group.group_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null
+
+  - name: Group Type Code
+    physical_name: grp_tp_code
+    business_meaning: "Loại nhóm: 1=Thường, 2=Theo ngành."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: securities_group
+    source_column: GSGD.securities_group.group_type
+    comment: "Scheme: GSGD_SECURITIES_GROUP_TYPE."
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả nhóm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: securities_group
+    source_column: GSGD.securities_group.description
+    comment: null
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null
+
+  - name: Group Status Code
+    physical_name: grp_st_code
+    business_meaning: "Trạng thái: 1=Chờ duyệt, 2=Phê duyệt, 3=Từ chối."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: securities_group
+    source_column: GSGD.securities_group.status
+    comment: "Scheme: GSGD_GROUP_STATUS. Cần profile giá trị thực tế."
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null
+
+  - name: Securities Codes
+    physical_name: scr_codes
+    business_meaning: Danh sách mã chứng khoán trong nhóm. Denormalized từ bảng junction securities_group_member.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: securities_group
+    source_column: GSGD.securities_group_member.securities_code_id
+    comment: "Pure junction securities_group_member → denormalize thành ARRAY. securities_code ngoài scope GSGD. HLD decision: GSGD_HLD_Tier2.md 6f-2."
+    classification_context: "Source System Code = 'GSGD_securities_group'"
+    etl_derived_value: null

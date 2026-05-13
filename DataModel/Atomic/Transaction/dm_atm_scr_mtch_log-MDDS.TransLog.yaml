@@ -1,0 +1,260 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_mtch_log-MDDS.TransLog
+  logical_name: "Atomic - Security Match Log – source MDDS.TransLog"
+  physical_name: scr_mtch_log
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Sell Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: MDDS
+  description: |
+    Log tick-by-tick từng lần khớp lệnh chứng khoán theo thứ tự sequenceMsg. Grain: 1 dòng = 1 lần khớp (symbol × ngày × sequenceMsg). Insert-only. Chứa chiều giao dịch chủ động (lastColor) và tích lũy KL/GT từ đầu ngày.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-MDDS-TransLog
+
+attributes:
+  - name: Security Match Log Id
+    physical_name: scr_mtch_log_id
+    business_meaning: Khóa đại diện cho bản ghi khớp lệnh chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: MDDS
+    source_table: TransLog
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Security Match Log Code
+    physical_name: scr_mtch_log_code
+    business_meaning: Định danh duy nhất bản tin (GUID). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.Id
+    comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Security Trading Snapshot Id
+    physical_name: scr_tdg_snpst_id
+    business_meaning: FK đến bản tin thông tin giao dịch chứng khoán tương ứng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.symbol
+    comment: "FK target: Security Trading Snapshot.Security Trading Snapshot Id. Join qua (symbol / trading_date)."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Symbol
+    physical_name: symb
+    business_meaning: Mã chứng khoán. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.symbol
+    comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with Security Trading Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning: Ngày giao dịch. BK.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.tradingdate
+    comment: "BK — grain = (symbol / trading_date / sequence_msg). Nguồn string (dd/mm/yyyy) — ETL cần parse sang Date."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Sequence Message
+    physical_name: seq_msg
+    business_meaning: Số thứ tự tăng dần trong ngày — đảm bảo thứ tự xử lý và phát hiện mất gói. BK.
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.sequenceMsg
+    comment: "BK. Nguồn int — khớp tự nhiên với Small Counter. Xem T2-01: cần xác nhận uniqueness scope trong (symbol / trading_date)."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Match Time
+    physical_name: mtch_tm
+    business_meaning: "Giờ khớp lệnh (HH:mm:ss) theo giờ máy chủ sở giao dịch. Nhiều tick có thể cùng timestamp trong ATO/ATC (batch matching)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.formattedTime
+    comment: "Nguồn string (HH:mm:ss) — khớp tự nhiên với Text."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Match Direction Code
+    physical_name: mtch_drc_code
+    business_meaning: "Chiều giao dịch chủ động: B=Mua chủ động / S=Bán chủ động / O=Khớp phiên ATO / C=Khớp phiên ATC. B/S trong MDDS là chiều của bên đặt lệnh đối ứng — ngược với hiển thị bảng giá thông thường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.lastColor
+    comment: "Scheme: MDDS_MATCH_DIRECTION. Nguồn string — khớp tự nhiên với Classification Value. Xem T2-04: semantics B/S ngược thông thường — document rõ ràng."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Match Price
+    physical_name: mtch_prc
+    business_meaning: Giá khớp lệnh (VND — số nguyên không có dấu phẩy).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.formattedMatchPrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Match Volume
+    physical_name: mtch_vol
+    business_meaning: Khối lượng khớp của lần khớp này.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.formattedVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Price Change Value
+    physical_name: prc_chg_val
+    business_meaning: "Thay đổi của giá khớp so với giá tham chiếu tại thời điểm khớp (+/-)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.formattedChangeValue
+    comment: Nguồn string — ETL cần parse sang decimal. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Change Color
+    physical_name: chg_color
+    business_meaning: Style hiển thị của giá thay đổi (tăng/giảm/đứng).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.changeColor
+    comment: Nguồn string — khớp tự nhiên với Text. Indicator hiển thị UI — denormalized text.
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Accumulated Volume
+    physical_name: acm_vol
+    business_meaning: Tổng khối lượng khớp tích lũy từ đầu ngày đến thời điểm này (cho mã đó).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.formattedAccVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Accumulated Value
+    physical_name: acm_val
+    business_meaning: "Tổng giá trị khớp tích lũy từ đầu ngày đến thời điểm này (VND). formattedAccVal / formattedAccVol = VWAP tại thời điểm."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.formattedAccVal
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Total Buy Volume
+    physical_name: tot_buy_vol
+    business_meaning: "Tổng khối lượng mua chủ động (lastColor=B) tích lũy trong ngày cho mã đó."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.totalBuyVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null
+
+  - name: Total Sell Volume
+    physical_name: tot_sell_vol
+    business_meaning: "Tổng khối lượng bán chủ động (lastColor=S) tích lũy trong ngày cho mã đó."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: TransLog
+    source_column: MDDS.TransLog.totalSellVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_TransLog'"
+    etl_derived_value: null

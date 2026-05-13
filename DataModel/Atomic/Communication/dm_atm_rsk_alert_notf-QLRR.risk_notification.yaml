@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_alert_notf-QLRR.risk_notification
+  logical_name: "Atomic - Risk Alert Notification – source QLRR.risk_notification"
+  physical_name: rsk_alert_notf
+  version: "1.0"
+  status: approved
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Notification"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: QLRR
+  description: |
+    Thông báo cảnh báo gửi từng kênh (Toast/Bell/Email) đến từng người nhận. Grain: 1 thông báo / 1 người. Append-only. FK → Risk Alert.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_notification
+
+attributes:
+  - name: Risk Alert Notification Id
+    physical_name: rsk_alert_notf_id
+    business_meaning: Khóa đại diện cho bản ghi thông báo cảnh báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Risk Alert Notification Code
+    physical_name: rsk_alert_notf_code
+    business_meaning: Mã định danh thông báo. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Risk Alert Id
+    physical_name: rsk_alert_id
+    business_meaning: FK đến cảnh báo liên quan.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.alert_id
+    comment: "FK target: Risk Alert.Risk Alert Id."
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Risk Alert Code
+    physical_name: rsk_alert_code
+    business_meaning: Mã cảnh báo liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.alert_id
+    comment: "Lookup pair: Risk Alert.Risk Alert Code. Pair with Risk Alert Id."
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Notification Type Code
+    physical_name: notf_tp_code
+    business_meaning: "Kênh thông báo: 1=Toast, 2=Bell, 3=Email."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.notification_type
+    comment: "Scheme: RISK_NOTIFICATION_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Recipient User Id
+    physical_name: rcpnt_usr_id
+    business_meaning: "User ID người nhận thông báo (cho type=Toast/Bell, denormalized)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.recipient_user_id
+    comment: "Denormalized — không có User entity trên Atomic. Nullable khi type=Email."
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Recipient Email
+    physical_name: rcpnt_email
+    business_meaning: "Địa chỉ email người nhận (cho type=Email)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.recipient_email
+    comment: "Nullable khi type=Toast/Bell."
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Sent At
+    physical_name: snd_at
+    business_meaning: Thời điểm gửi thông báo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.sent_at
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Send Status Code
+    physical_name: snd_st_code
+    business_meaning: "Trạng thái gửi: 1=SENT, 2=FAILED."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.send_status
+    comment: "Scheme: RISK_NOTIFICATION_SEND_STATUS."
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Send Error
+    physical_name: snd_err
+    business_meaning: Thông tin lỗi khi gửi thông báo thất bại (nếu có).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.send_error
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null
+
+  - name: Read Status Code
+    physical_name: rd_st_code
+    business_meaning: "Trạng thái đọc: 0=Chưa đọc, 1=Đã đọc."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_notification
+    source_column: QLRR.risk_notification.read_status
+    comment: "Scheme: RISK_NOTIFICATION_READ_STATUS."
+    classification_context: "Source System Code = 'QLRR_risk_notification'"
+    etl_derived_value: null

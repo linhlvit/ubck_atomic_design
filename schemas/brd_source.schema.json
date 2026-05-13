@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/brd_source.schema.json",
+  "title": "BRD Source Analysis Schema",
+  "description": "Schema định nghĩa định dạng YAML cho BRD (Business Requirements Documentation) ở cấp độ source table. Dùng để validate và parse các file brd_*.yaml trong thư mục BRD/Source/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source",
+    "description",
+    "brd_entries"
+  ],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "brd_source",
+      "description": "Khai báo loại schema — dùng để web app xác định file type"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema (semantic versioning)"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "description": "Mã/tên source system (VD: ThanhTra, SCMS, FIMS)"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Mô tả tổng quát về source system"
+    },
+    "brd_entries": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Danh sách các BRD entry, mỗi entry tương ứng với một bảng nguồn",
+      "items": {
+        "$ref": "#/definitions/brd_entry"
+      }
+    }
+  },
+  "definitions": {
+    "brd_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brd_id",
+        "brd_name",
+        "type",
+        "ba_email",
+        "steward_email",
+        "content"
+      ],
+      "properties": {
+        "brd_id": {
+          "type": "string",
+          "pattern": "^BRD-SRC-[A-Za-z][A-Za-z0-9_-]*-[A-Za-z][A-Za-z0-9_]*$",
+          "description": "Mã định danh duy nhất BRD entry: BRD-SRC-{SOURCE}-{TABLE_NAME}"
+        },
+        "brd_name": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Tên BRD entry — thường là 'Design Atomic từ nguồn {SOURCE} bảng {TABLE_NAME}'"
+        },
+        "type": {
+          "type": "string",
+          "const": "Theo Source",
+          "description": "Loại BRD — hiện tại chỉ support 'Theo Source'"
+        },
+        "ba_email": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+          "description": "Email của Business Analyst chịu trách nhiệm"
+        },
+        "steward_email": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+          "description": "Email của Data Steward chịu trách nhiệm"
+        },
+        "content": {
+          "$ref": "#/definitions/brd_content"
+        }
+      }
+    },
+    "brd_content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "table_meaning",
+        "functional_group",
+        "scope_status",
+        "scope_reason",
+        "related_tables",
+        "notes",
+        "data_volume_hint",
+        "refresh_frequency"
+      ],
+      "properties": {
+        "table_meaning": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Ý nghĩa/mô tả ngắn của bảng nguồn (từ Tables.csv)"
+        },
+        "functional_group": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Nhóm chức năng mà bảng này thuộc về (VD: 'B.1 Hoạt động thanh tra')"
+        },
+        "scope_status": {
+          "type": "string",
+          "enum": [
+            "in_scope",
+            "out_of_scope"
+          ],
+          "description": "Trạng thái scope — in_scope (thiết kế Atomic) hay out_of_scope (không thiết kế)"
+        },
+        "scope_reason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 5,
+              "description": "Lý do nếu out_of_scope (VD: 'Operational/system data', 'SCD2 kỹ thuật', 'Gold layer only')"
+            }
+          ],
+          "description": "null nếu in_scope; lý do cụ thể nếu out_of_scope"
+        },
+        "related_tables": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "description": "Danh sách bảng liên quan (FK, 1-N, N-N, tham chiếu)",
+              "items": {
+                "$ref": "#/definitions/related_table"
+              }
+            }
+          ]
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 3,
+              "description": "Ghi chú bổ sung về bảng (VD: 'Shared entity', 'Classification Value')"
+            }
+          ],
+          "description": "null hoặc ghi chú tự do"
+        },
+        "data_volume_hint": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "static",
+                "small",
+                "medium",
+                "large",
+                "very_large"
+              ]
+            }
+          ],
+          "description": "Ước lượng khối lượng dữ liệu — dùng để quyết định ETL pattern (null = chưa xác định)"
+        },
+        "refresh_frequency": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "real_time",
+                "hourly",
+                "daily",
+                "weekly",
+                "monthly",
+                "ad_hoc",
+                "static"
+              ]
+            }
+          ],
+          "description": "Tần suất cập nhật từ nguồn — dùng để quyết định SCD type (null = chưa xác định)"
+        }
+      }
+    },
+    "related_table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "table",
+        "relation"
+      ],
+      "properties": {
+        "table": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tên bảng liên quan"
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Mô tả quan hệ (VD: '1-N — bảng con', 'FK tham chiếu', 'Gộp chung entity')"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_pst_adr-IDS.stock_holders
+  logical_name: "Atomic - Involved Party Postal Address – source IDS.stock_holders"
+  physical_name: ip_pst_adr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-stock_holders
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Stock Holder.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: stock_holders
+    source_column: IDS.stock_holders.id
+    comment: "FK target: Stock Holder.Stock Holder Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'IDS_stock_holders' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: stock_holders
+    source_column: IDS.stock_holders.id
+    comment: "Lookup pair: Stock Holder.Stock Holder Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'IDS_stock_holders' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: stock_holders
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_stock_holders' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — địa chỉ chung (không phân biệt loại).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: stock_holders
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_stock_holders' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: ADDRESS
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: stock_holders
+    source_column: IDS.stock_holders.address
+    comment: null
+    classification_context: "Source System Code = 'IDS_stock_holders' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Address Detail
+    physical_name: adr_dtl
+    business_meaning: Địa chỉ văn phòng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: stock_holders
+    source_column: null
+    comment: Text tự do — denormalized.
+    classification_context: "Source System Code = 'IDS_stock_holders' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null

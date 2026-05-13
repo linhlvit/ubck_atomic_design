@@ -1,0 +1,246 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnc_rpt_ctlg-IDS.report_catalog
+  logical_name: "Atomic - Financial Report Catalog – source IDS.report_catalog"
+  physical_name: fnc_rpt_ctlg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Danh mục báo cáo tài chính — loại báo cáo/năm/scope hợp nhất/loại hình doanh nghiệp. Master entity FK từ Financial Report Row/Column Template.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-report_catalog
+
+attributes:
+  - name: Financial Report Catalog Id
+    physical_name: fnc_rpt_ctlg_id
+    business_meaning: Khóa đại diện cho biểu mẫu BCTC.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: report_catalog
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Financial Report Catalog Code
+    physical_name: fnc_rpt_ctlg_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Financial Report Catalog Business Code
+    physical_name: fnc_rpt_ctlg_bsn_code
+    business_meaning: Mã báo cáo (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.report_cd
+    comment: Mã nghiệp vụ — khác BK kỹ thuật.
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Financial Report Catalog Name
+    physical_name: fnc_rpt_ctlg_nm
+    business_meaning: Tên báo cáo (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.report_name_vi
+    comment: null
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Financial Report Catalog English Name
+    physical_name: fnc_rpt_ctlg_en_nm
+    business_meaning: Tên báo cáo (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.report_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Report Direction Type Code
+    physical_name: rpt_drc_tp_code
+    business_meaning: "Loại báo cáo: i=báo cáo đầu vào, o=báo cáo đầu ra."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.rc_type_cd
+    comment: "Scheme: IDS_REPORT_CATALOG_TYPE."
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_yr
+    business_meaning: Năm của báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.report_year
+    comment: null
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Report Scope Code
+    physical_name: rpt_scop_code
+    business_meaning: "Loại hình báo cáo (hợp nhất, mẹ)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.report_scope_cd
+    comment: "Scheme: IDS_REPORT_SCOPE."
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Enterprise Type Code
+    physical_name: entp_tp_code
+    business_meaning: "Loại hình doanh nghiệp (dn-doanh nghiệp, bh-bảo hiểm, td-tín dụng, ck-chứng khoán)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.enterprise_type_cd
+    comment: "Scheme: IDS_ENTERPRISE_TYPE."
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Consolidated Flag
+    physical_name: cnsld_f
+    business_meaning: "Là báo cáo hợp nhất (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.consolidated_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Active Flag
+    physical_name: actv_f
+    business_meaning: "Trạng thái sử dụng (1=đang sử dụng / 0=không sử dụng)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.active_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: report_catalog
+    source_column: IDS.report_catalog.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_report_catalog'"
+    etl_derived_value: null

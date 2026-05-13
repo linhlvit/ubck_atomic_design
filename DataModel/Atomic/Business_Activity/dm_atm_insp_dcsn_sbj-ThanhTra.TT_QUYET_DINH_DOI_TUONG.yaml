@@ -1,0 +1,147 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-insp_dcsn_sbj-ThanhTra.TT_QUYET_DINH_DOI_TUONG
+  logical_name: "Atomic - Inspection Decision Subject – source ThanhTra.TT_QUYET_DINH_DOI_TUONG"
+  physical_name: insp_dcsn_sbj
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: Đối tượng cụ thể được thanh tra theo một quyết định. FK → Inspection Decision.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-TT_QUYET_DINH_DOI_TUONG
+
+attributes:
+  - name: Inspection Decision Subject Id
+    physical_name: insp_dcsn_sbj_id
+    business_meaning: Khóa đại diện cho đối tượng trong quyết định thanh tra.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Inspection Decision Subject Code
+    physical_name: insp_dcsn_sbj_code
+    business_meaning: Mã đối tượng quyết định. Map từ PK ThanhTra.TT_QUYET_DINH_DOI_TUONG.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: ThanhTra.TT_QUYET_DINH_DOI_TUONG.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Inspection Decision Id
+    physical_name: insp_dcsn_id
+    business_meaning: FK đến Inspection Decision.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: ThanhTra.TT_QUYET_DINH_DOI_TUONG.QUYET_DINH_ID
+    comment: "FK target: Inspection Decision.Inspection Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Inspection Decision Code
+    physical_name: insp_dcsn_code
+    business_meaning: Mã quyết định.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: ThanhTra.TT_QUYET_DINH_DOI_TUONG.QUYET_DINH_ID
+    comment: "Lookup pair: Inspection Decision.Inspection Decision Code. Pair with Inspection Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Sequence Number
+    physical_name: seq_nbr
+    business_meaning: Số thứ tự đối tượng trong quyết định.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: ThanhTra.TT_QUYET_DINH_DOI_TUONG.STT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Subject Type Code
+    physical_name: sbj_tp_code
+    business_meaning: "Loại đối tượng: CA_NHAN / TO_CHUC."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: ThanhTra.TT_QUYET_DINH_DOI_TUONG.LOAI_DOI_TUONG
+    comment: "Scheme: TT_PARTY_TYPE."
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Subject Name
+    physical_name: sbj_nm
+    business_meaning: "Tên đối tượng (denormalized — DOI_TUONG_REF_ID là polymorphic FK, không resolve được thành entity duy nhất)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: ThanhTra.TT_QUYET_DINH_DOI_TUONG.TEN_DOI_TUONG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Subject Reference Id
+    physical_name: sbj_refr_id
+    business_meaning: Tham chiếu đến bảng DM_ tương ứng (polymorphic — giá trị có thể trỏ đến DM_CONG_TY_CK/QLQ/DC/DM_DOI_TUONG_KHAC).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_QUYET_DINH_DOI_TUONG
+    source_column: ThanhTra.TT_QUYET_DINH_DOI_TUONG.DOI_TUONG_REF_ID
+    comment: Denormalized — không map FK do polymorphic. Giữ raw value.
+    classification_context: "Source System Code = 'ThanhTra_TT_QUYET_DINH_DOI_TUONG'"
+    etl_derived_value: null

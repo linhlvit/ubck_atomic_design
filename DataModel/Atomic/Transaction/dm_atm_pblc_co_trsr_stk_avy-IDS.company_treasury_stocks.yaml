@@ -1,0 +1,218 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co_trsr_stk_avy-IDS.company_treasury_stocks
+  logical_name: "Atomic - Public Company Treasury Stock Activity – source IDS.company_treasury_stocks"
+  physical_name: pblc_co_trsr_stk_avy
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Event] Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: |
+    Giao dịch cổ phiếu quỹ theo năm — số lượng mua/bán và số đợt. FK to Public Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-company_treasury_stocks
+
+attributes:
+  - name: Public Company Treasury Stock Activity Id
+    physical_name: pblc_co_trsr_stk_avy_id
+    business_meaning: Khóa đại diện cho hoạt động cổ phiếu quỹ theo năm.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Public Company Treasury Stock Activity Code
+    physical_name: pblc_co_trsr_stk_avy_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: FK đến công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.company_profile_id
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.company_profile_id
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Transaction Year
+    physical_name: txn_yr
+    business_meaning: Năm giao dịch cổ phiếu quỹ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.transaction_year
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Treasury Buy Quantity
+    physical_name: trsr_buy_qty
+    business_meaning: Số lượng cổ phiếu quỹ mua trong năm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.treasury_buy_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Treasury Buy Round Count
+    physical_name: trsr_buy_rnd_cnt
+    business_meaning: Số đợt mua cổ phiếu quỹ trong năm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.treasury_buy_rc
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Treasury Sell Quantity
+    physical_name: trsr_sell_qty
+    business_meaning: Số lượng cổ phiếu quỹ bán trong năm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.treasury_sell_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Treasury Sell Round Count
+    physical_name: trsr_sell_rnd_cnt
+    business_meaning: Số đợt bán cổ phiếu quỹ trong năm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.treasury_sell_rc
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_treasury_stocks
+    source_column: IDS.company_treasury_stocks.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_treasury_stocks'"
+    etl_derived_value: null

@@ -1,0 +1,301 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ap_doc_attch-NHNCK.ApplicationDocuments
+  logical_name: "Atomic - Securities Practitioner License Application Document Attachment – source NHNCK.ApplicationDocuments"
+  physical_name: scr_prac_license_ap_doc_attch
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Supporting Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: Tài liệu đính kèm hồ sơ CCHN. Ghi nhận loại tài liệu và trạng thái thẩm định.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-ApplicationDocuments
+
+attributes:
+  - name: License Application Document Attachment Id
+    physical_name: license_ap_doc_attch_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: null
+    comment: "PK surrogate. BCV: \"Documentation\" (Documentation). Tài liệu đính kèm hồ sơ."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: License Application Document Attachment Code
+    physical_name: license_ap_doc_attch_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: License Application Id
+    physical_name: license_ap_id
+    business_meaning: FK đến hồ sơ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.ApplicationId
+    comment: "FK target: Securities Practitioner License Application.License Application Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: License Application Code
+    physical_name: license_ap_code
+    business_meaning: Mã hồ sơ
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.ApplicationId
+    comment: "Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Document Type Code
+    physical_name: doc_tp_code
+    business_meaning: Mã loại tài liệu (FK → Documents)
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.DocumentId
+    comment: "Scheme: DOCUMENT_TYPE. FK đến bảng Documents."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Document Name
+    physical_name: doc_nm
+    business_meaning: Tên tài liệu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.DocumentName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: File Name
+    physical_name: file_nm
+    business_meaning: Tên file
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.FileName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: File Path
+    physical_name: file_path
+    business_meaning: Đường dẫn file
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.FilePath
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: File Format
+    physical_name: file_fmt
+    business_meaning: "Loại file (pdf, docx...)"
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.Format
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: File Size
+    physical_name: file_sz
+    business_meaning: Dung lượng file (bytes)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.FileSize
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Attachment Description
+    physical_name: attch_dsc
+    business_meaning: Mô tả tài liệu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.Description
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Attachment Note
+    physical_name: attch_note
+    business_meaning: Ghi chú thẩm định
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.Note
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Appraisal Status Code
+    physical_name: aprs_st_code
+    business_meaning: Trạng thái thẩm định
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.Status
+    comment: "Scheme: APPRAISAL_STATUS."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Is Invalid Indicator
+    physical_name: is_inval_ind
+    business_meaning: Cờ không hợp lệ
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.IsInvalid
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Is Incomplete Indicator
+    physical_name: is_incom_ind
+    business_meaning: Cờ chưa hoàn thành
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.IsIncomplete
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Id
+    physical_name: assignee_ofcr_id
+    business_meaning: FK đến người thẩm định
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.AssigneeId
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Code
+    physical_name: assignee_ofcr_code
+    business_meaning: Mã người thẩm định
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.AssigneeId
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Assignee Officer Id."
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Appraisaled Timestamp
+    physical_name: appraisaled_tms
+    business_meaning: Ngày thẩm định
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.AppraisaledAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ApplicationDocuments
+    source_column: NHNCK.ApplicationDocuments.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ApplicationDocuments'"
+    etl_derived_value: null

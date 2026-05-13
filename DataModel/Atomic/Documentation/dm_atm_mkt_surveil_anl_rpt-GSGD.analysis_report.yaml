@@ -1,0 +1,161 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_anl_rpt-GSGD.analysis_report
+  logical_name: "Atomic - Market Surveillance Analysis Report – source GSGD.analysis_report"
+  physical_name: mkt_surveil_anl_rpt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Reported Information"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: Báo cáo output của quá trình phân tích vụ việc giám sát (report_type
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-analysis_report
+
+attributes:
+  - name: Market Surveillance Analysis Report Id
+    physical_name: mkt_surveil_anl_rpt_id
+    business_meaning: Khóa đại diện cho báo cáo kết quả phân tích vụ việc.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Analysis Report Code
+    physical_name: mkt_surveil_anl_rpt_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: FK đến vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.case_file_id
+    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: Mã vụ việc. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.case_file_id
+    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: Loại báo cáo phân tích vụ việc.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.report_type
+    comment: "Scheme: GSGD_ANALYSIS_REPORT_TYPE."
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày lập báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.report_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Report Data
+    physical_name: rpt_data
+    business_meaning: Dữ liệu báo cáo (JSON hoặc XML). Lưu raw — không parse.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.report_data
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Report File Path
+    physical_name: rpt_file_path
+    business_meaning: Đường dẫn file báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.report_file_path
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null
+
+  - name: Analysis Execution Log Id
+    physical_name: anl_exec_log_id
+    business_meaning: "ID phân tích biểu mẫu. Denormalized — không tạo FK tường minh để tránh cross-tier dependency."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: analysis_report
+    source_column: GSGD.analysis_report.analysis_execution_log
+    comment: null
+    classification_context: "Source System Code = 'GSGD_analysis_report'"
+    etl_derived_value: null

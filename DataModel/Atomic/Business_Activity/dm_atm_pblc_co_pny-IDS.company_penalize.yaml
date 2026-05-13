@@ -1,0 +1,302 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co_pny-IDS.company_penalize
+  logical_name: "Atomic - Public Company Penalty – source IDS.company_penalize"
+  physical_name: pblc_co_pny
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: |
+    Xử phạt hành chính công ty đại chúng hoặc nhà đầu tư liên quan — hành vi vi phạm và quyết định xử phạt. FK to Public Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-company_penalize
+
+attributes:
+  - name: Public Company Penalty Id
+    physical_name: pblc_co_pny_id
+    business_meaning: Khóa đại diện cho quyết định xử phạt hành chính.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: company_penalize
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Public Company Penalty Code
+    physical_name: pblc_co_pny_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: FK đến công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.company_profile_id
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.company_profile_id
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Penalized Subject Type Code
+    physical_name: penalized_sbj_tp_code
+    business_meaning: Đối tượng bị xử phạt (công ty đại chúng / nhà đầu tư liên quan).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.penalized_subjet_type_cd
+    comment: "Scheme: IDS_PENALIZED_SUBJECT_TYPE."
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Investor Name
+    physical_name: ivsr_nm
+    business_meaning: Tên nhà đầu tư bị xử phạt (null khi đối tượng là công ty).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.investor_name
+    comment: Text denormalized — nhà đầu tư bị phạt không có entity Involved Party riêng trong scope IDS.
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Investor Identification Number
+    physical_name: ivsr_identn_nbr
+    business_meaning: Số CCCD/Hộ chiếu của nhà đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.investor_id_no
+    comment: Text denormalized.
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Investor Position Title
+    physical_name: ivsr_pos_ttl
+    business_meaning: Chức vụ của nhà đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.investor_position_title
+    comment: Text denormalized — chức vụ tại công ty đại chúng.
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Penalty Decision Number
+    physical_name: pny_dcsn_nbr
+    business_meaning: Số quyết định xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.penalty_decision_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Penalty Decision Date
+    physical_name: pny_dcsn_dt
+    business_meaning: Ngày quyết định xử phạt.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.penalty_decision_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Violation Description
+    physical_name: vln_dsc
+    business_meaning: Mô tả hành vi vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.violation_desc
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Penalty Form
+    physical_name: pny_form
+    business_meaning: Hình thức phạt chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.penalty_form
+    comment: Text tự do từ nguồn — không có scheme tài liệu hóa.
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Penalty Amount
+    physical_name: pny_amt
+    business_meaning: Số tiền phạt.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.penalty_amount
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Additional Penalty
+    physical_name: adl_pny
+    business_meaning: Hình thức phạt bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.additional_penalty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Remedial Minutes
+    physical_name: remedial_mins
+    business_meaning: Biên bản khắc phục hậu quả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.remedial_minutes
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_penalize
+    source_column: IDS.company_penalize.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_penalize'"
+    etl_derived_value: null

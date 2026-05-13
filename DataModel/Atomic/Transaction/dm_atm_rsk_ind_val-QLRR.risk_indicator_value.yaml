@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_ind_val-QLRR.risk_indicator_value
+  logical_name: "Atomic - Risk Indicator Value – source QLRR.risk_indicator_value"
+  physical_name: rsk_ind_val
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Event] Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: QLRR
+  description: |
+    Giá trị thực tế của chỉ tiêu rủi ro theo từng kỳ (ngày/tháng/quý/năm). Grain: chỉ tiêu × kỳ. Append-only. FK → Risk Indicator.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_indicator_value
+
+attributes:
+  - name: Risk Indicator Value Id
+    physical_name: rsk_ind_val_id
+    business_meaning: Khóa đại diện cho giá trị chỉ tiêu rủi ro theo kỳ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Value Code
+    physical_name: rsk_ind_val_code
+    business_meaning: Mã định danh giá trị chỉ tiêu. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Id
+    physical_name: rsk_ind_id
+    business_meaning: "FK đến chỉ tiêu rủi ro (hệ thống lẫn tự tạo — QLRR-P01 confirmed)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.indicator_id
+    comment: "FK target: Risk Indicator.Risk Indicator Id. QLRR-P01 confirmed: indicator_id lưu FK cho cả chỉ tiêu hệ thống lẫn tự tạo trên 1 trường."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Code
+    physical_name: rsk_ind_code
+    business_meaning: Mã chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.indicator_id
+    comment: "Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: prd_tp_code
+    business_meaning: "Kỳ dữ liệu: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.period_type
+    comment: "Scheme: RISK_PERIOD_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: prd_val
+    business_meaning: "Số thứ tự kỳ trong năm. VD: period_type=Tháng, period_date=12/03/2026 → period_value=3; period_type=Quý, period_date=12/03/2026 → period_value=1."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.period_value
+    comment: "Nullable khi period_type=Ngày (không có số thứ tự kỳ)."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Period Year
+    physical_name: prd_yr
+    business_meaning: Năm của kỳ dữ liệu.
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.period_year
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Period Date
+    physical_name: prd_dt
+    business_meaning: Ngày đại diện cho kỳ dữ liệu.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.period_date
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Period Label
+    physical_name: prd_lbl
+    business_meaning: "Chuỗi hiển thị kỳ (VD: 2024-01, 2024-Q1, 2024)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.period_label
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Value
+    physical_name: val
+    business_meaning: Giá trị chỉ tiêu tại kỳ này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.value
+    comment: Lưu dạng Text — giá trị số thập phân; parse theo Unit Code khi sử dụng.
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Unit Code
+    physical_name: unit_code
+    business_meaning: "Đơn vị đo lường: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.unit_code
+    comment: "Scheme: RISK_UNIT."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning: "Nguồn dữ liệu: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà nước, 4=Nội bộ, 5=HNX, 6=VSDC."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.source_code
+    comment: "Scheme: RISK_DATA_SOURCE."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Data Origin Code
+    physical_name: data_orig_code
+    business_meaning: "Nguồn gốc giá trị: 1=API CSDL tập trung, 2=User chỉnh sửa."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.data_origin
+    comment: "Scheme: RISK_DATA_ORIGIN."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null
+
+  - name: Cumulative Value
+    physical_name: cmlv_val
+    business_meaning: "Giá trị luỹ kế. [QLRR-P02 Open]: cơ sở luỹ kế chưa xác định (từ đầu năm hay từ đầu kỳ)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_indicator_value
+    source_column: QLRR.risk_indicator_value.cumulative_value
+    comment: "QLRR-P02: chưa rõ cơ sở luỹ kế — giữ dạng Text, ghi note pending. Cần data profiling để xác định ngữ nghĩa chính xác."
+    classification_context: "Source System Code = 'QLRR_risk_indicator_value'"
+    etl_derived_value: null

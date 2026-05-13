@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-insp_sbj_othr_p-ThanhTra.DM_DOI_TUONG_KHAC
+  logical_name: "Atomic - Inspection Subject Other Party – source ThanhTra.DM_DOI_TUONG_KHAC"
+  physical_name: insp_sbj_othr_p
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual/Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Đối tượng thanh tra khác (cá nhân hoặc tổ chức) không thuộc danh mục CK/QLQ/ĐC. Phân biệt qua party_type_code.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-DM_DOI_TUONG_KHAC
+
+attributes:
+  - name: Inspection Subject Other Party Id
+    physical_name: insp_sbj_othr_p_id
+    business_meaning: Khóa đại diện cho đối tượng thanh tra khác.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Inspection Subject Other Party Code
+    physical_name: insp_sbj_othr_p_code
+    business_meaning: Mã đối tượng. Map từ PK ThanhTra.DM_DOI_TUONG_KHAC.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Party Type Code
+    physical_name: p_tp_code
+    business_meaning: "Loại đối tượng: CA_NHAN / TO_CHUC."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG
+    comment: "Scheme: TT_PARTY_TYPE."
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Name
+    physical_name: nm
+    business_meaning: Tên đối tượng thanh tra.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.TEN_DOI_TUONG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Short Name
+    physical_name: shrt_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.TEN_VIET_TAT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Representative Name
+    physical_name: rprs_nm
+    business_meaning: Người đại diện (cho tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.NGUOI_DAI_DIEN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Business License Number
+    physical_name: bsn_license_nbr
+    business_meaning: Số giấy phép kinh doanh (cho tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.SO_GPKD
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: cty_of_rgst_id
+    business_meaning: FK đến Geographic Area — quốc gia đăng ký.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.QUOC_GIA_ID
+    comment: "FK target: Geographic Area.Geographic Area Id. Source has lookup via ThanhTra.DM_QUOC_GIA → shared Atomic entity Geographic Area (COUNTRY)."
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: cty_of_rgst_code
+    business_meaning: Mã quốc gia đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.QUOC_GIA_ID
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null
+
+  - name: Website
+    physical_name: webst
+    business_meaning: Website.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_DOI_TUONG_KHAC
+    source_column: ThanhTra.DM_DOI_TUONG_KHAC.WEBSITE
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_DOI_TUONG_KHAC'"
+    etl_derived_value: null

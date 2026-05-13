@@ -1,0 +1,120 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ivsr_tdg_ac_ahr-GSGD.account_authorization
+  logical_name: "Atomic - Investor Trading Account Authorization – source GSGD.account_authorization"
+  physical_name: ivsr_tdg_ac_ahr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Authorization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Ủy quyền giao dịch chứng khoán trên tài khoản nhà đầu tư. FK Investor Trading Account.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-account_authorization
+
+attributes:
+  - name: Investor Trading Account Authorization Id
+    physical_name: ivsr_tdg_ac_ahr_id
+    business_meaning: Khóa đại diện cho ủy quyền tài khoản giao dịch.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: account_authorization
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_authorization'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Authorization Code
+    physical_name: ivsr_tdg_ac_ahr_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_authorization
+    source_column: GSGD.account_authorization.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_account_authorization'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_authorization
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_authorization'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Id
+    physical_name: ivsr_tdg_ac_id
+    business_meaning: FK đến tài khoản giao dịch chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_authorization
+    source_column: GSGD.account_authorization.account_id
+    comment: "FK target: Investor Trading Account.Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_authorization'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Code
+    physical_name: ivsr_tdg_ac_code
+    business_meaning: Mã tài khoản giao dịch. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_authorization
+    source_column: GSGD.account_authorization.account_id
+    comment: "Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_account_authorization'"
+    etl_derived_value: null
+
+  - name: Authorized Person Name
+    physical_name: authorized_psn_nm
+    business_meaning: Người nhận ủy quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_authorization
+    source_column: GSGD.account_authorization.authorized_person_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_authorization'"
+    etl_derived_value: null
+
+  - name: Authorization Date
+    physical_name: ahr_dt
+    business_meaning: Ngày nhận ủy quyền.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: account_authorization
+    source_column: GSGD.account_authorization.authorization_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_account_authorization'"
+    etl_derived_value: null

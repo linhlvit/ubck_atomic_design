@@ -1,0 +1,120 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-taxpayer_rprs-DCST.TTKDT_NGUOI_DAI_DIEN
+  logical_name: "Atomic - Taxpayer Representative – source DCST.TTKDT_NGUOI_DAI_DIEN"
+  physical_name: taxpayer_rprs
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: DCST
+  description: |
+    Người đại diện hoặc chủ hộ kinh doanh của người nộp thuế. Ghi nhận tên và chức vụ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-DCST-TTKDT_NGUOI_DAI_DIEN
+
+attributes:
+  - name: Taxpayer Representative Id
+    physical_name: taxpayer_rprs_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: null
+    comment: "PK surrogate. BCV: \"Involved Party\" — người đại diện của NNT."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Taxpayer Representative Code
+    physical_name: taxpayer_rprs_code
+    business_meaning: ID bản ghi người đại diện. BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.TTKDT_NGUOI_DAI_DIEN"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Registered Taxpayer Id
+    physical_name: rgst_taxpayer_id
+    business_meaning: FK đến Registered Taxpayer
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.THONG_TIN_DK_THUE_ID
+    comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Pattern Id + Code."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Registered Taxpayer Code
+    physical_name: rgst_taxpayer_code
+    business_meaning: Mã NNT
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.THONG_TIN_DK_THUE_ID
+    comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Representative Name
+    physical_name: rprs_nm
+    business_meaning: Tên người đại diện/chủ hộ KD
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.TEN_NNT
+    comment: "BCV: \"Individual Name\". Dùng prefix \"Representative\" để phân biệt với NNT."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN'"
+    etl_derived_value: null
+
+  - name: Position Title
+    physical_name: pos_ttl
+    business_meaning: Chức vụ người đại diện/chủ hộ KD
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: DCST
+    source_table: TTKDT_NGUOI_DAI_DIEN
+    source_column: DCST.TTKDT_NGUOI_DAI_DIEN.CHUC_VU
+    comment: "BCV: \"Employment Position Title\"."
+    classification_context: "Source System Code = 'DCST_TTKDT_NGUOI_DAI_DIEN'"
+    etl_derived_value: null

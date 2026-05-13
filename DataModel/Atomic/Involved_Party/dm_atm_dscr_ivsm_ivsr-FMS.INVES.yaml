@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscr_ivsm_ivsr-FMS.INVES
+  logical_name: "Atomic - Discretionary Investment Investor – source FMS.INVES"
+  physical_name: dscr_ivsm_ivsr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Nhà đầu tư ủy thác — cá nhân hoặc tổ chức giao tài sản cho công ty quản lý quỹ quản lý theo hợp đồng ủy thác đầu tư.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-INVES
+
+attributes:
+  - name: Discretionary Investment Investor Id
+    physical_name: dscr_ivsm_ivsr_id
+    business_meaning: Khóa đại diện cho nhà đầu tư ủy thác.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: INVES
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Discretionary Investment Investor Code
+    physical_name: dscr_ivsm_ivsr_code
+    business_meaning: Mã định danh nhà đầu tư ủy thác. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Investor Name
+    physical_name: ivsr_nm
+    business_meaning: Tên nhà đầu tư ủy thác (cá nhân hoặc tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.Name
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Dorf Indicator
+    physical_name: dorf_ind
+    business_meaning: "Loại hình trong/ngoài nước. 1=Trong nước; 0=Nước ngoài."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.Dorf
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Quốc tịch nhà đầu tư.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.NatId
+    comment: "Scheme: FMS_NATIONAL."
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Stockholder Type Code
+    physical_name: stockholder_tp_code
+    business_meaning: Loại hình nhà đầu tư/cổ đông.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.StoId
+    comment: "Scheme: FMS_STOCKHOLDER_TYPE."
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Relationship Type Code
+    physical_name: rltnp_tp_code
+    business_meaning: Mối quan hệ cổ đông với tổ chức liên quan.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.RelationShip
+    comment: "Scheme: FMS_RELATION_TYPE."
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ đang nhận ủy thác.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ đang nhận ủy thác.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_INVES'"
+    etl_derived_value: null

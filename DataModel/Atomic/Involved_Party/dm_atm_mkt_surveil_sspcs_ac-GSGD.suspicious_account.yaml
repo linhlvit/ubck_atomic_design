@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_sspcs_ac-GSGD.suspicious_account
+  logical_name: "Atomic - Market Surveillance Suspicious Account – source GSGD.suspicious_account"
+  physical_name: mkt_surveil_sspcs_ac
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Group Membership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Tài khoản nghi vấn được xác định trong vụ việc giám sát. FK Market Surveillance Case + Investor Trading Account.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-suspicious_account
+
+attributes:
+  - name: Market Surveillance Suspicious Account Id
+    physical_name: mkt_surveil_sspcs_ac_id
+    business_meaning: Khóa đại diện cho tài khoản nghi vấn trong vụ việc.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Suspicious Account Code
+    physical_name: mkt_surveil_sspcs_ac_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: GSGD.suspicious_account.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: FK đến vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: GSGD.suspicious_account.case_file_id
+    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: Mã vụ việc. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: GSGD.suspicious_account.case_file_id
+    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Id
+    physical_name: ivsr_tdg_ac_id
+    business_meaning: FK đến tài khoản giao dịch nghi vấn.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: GSGD.suspicious_account.account_id
+    comment: "FK target: Investor Trading Account.Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Code
+    physical_name: ivsr_tdg_ac_code
+    business_meaning: Mã tài khoản nghi vấn. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: GSGD.suspicious_account.account_id
+    comment: "Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id."
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Criteria Flags
+    physical_name: crit_flags
+    business_meaning: "Các tiêu chí đánh giá (JSON hoặc comma-separated)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: GSGD.suspicious_account.criteria_flags
+    comment: null
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null
+
+  - name: Suspicious Source Code
+    physical_name: sspcs_src_code
+    business_meaning: "Nguồn xác định TK nghi vấn: 1=Hệ thống tự động, 2=User thêm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account
+    source_column: GSGD.suspicious_account.source
+    comment: "Scheme: GSGD_SUSPICIOUS_SOURCE."
+    classification_context: "Source System Code = 'GSGD_suspicious_account'"
+    etl_derived_value: null

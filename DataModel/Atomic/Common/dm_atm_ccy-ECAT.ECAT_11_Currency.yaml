@@ -1,0 +1,64 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ccy-ECAT.ECAT_11_Currency
+  logical_name: "Atomic - Currency – source ECAT.ECAT_11_Currency"
+  physical_name: ccy
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Currency"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: ECAT
+  description: |
+    Đơn vị tiền tệ theo chuẩn ISO 4217. ECAT là source chuẩn (authoritative). Currency là data domain riêng theo quy tắc #4 — không có surrogate key, BK = currency_code 3 ký tự.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ECAT-ECAT_11_Currency
+
+attributes:
+  - name: Currency Code
+    physical_name: ccy_code
+    business_meaning: "Mã tiền tệ theo chuẩn ISO 4217 (3 ký tự: VND, USD, EUR...). Map từ PK bảng nguồn."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ECAT
+    source_table: ECAT_11_Currency
+    source_column: ECAT.ECAT_11_Currency.code
+    comment: "BK của entity. ECAT đảm bảo tuân thủ ISO 4217 — không cần mapping nội bộ (D-06 HLD Overview). BCV Term: Currency. Currency là data domain riêng theo quy tắc #4 — không có surrogate key."
+    classification_context: "Source System Code = 'ECAT_ECAT_11_Currency'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_11_Currency
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_11_Currency'"
+    etl_derived_value: null
+
+  - name: Currency Name
+    physical_name: ccy_nm
+    business_meaning: Tên tiền tệ đầy đủ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_11_Currency
+    source_column: ECAT.ECAT_11_Currency.name
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_11_Currency'"
+    etl_derived_value: null

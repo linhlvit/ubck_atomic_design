@@ -1,0 +1,138 @@
+schema_type: mapping
+schema_version: "1.0"
+
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+
+mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.FUNDCOMPANY
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.FUNDCOMPANY"
+  physical_name: ip_alt_identn
+  pattern: unpivot
+  etl_pattern: SCD4A
+  dm_ref: ATM-ip_alt_identn-FIMS.FUNDCOMPANY
+  brd_ref: BRD-SRC-FIMS-FUNDCOMPANY
+
+target:
+  schema: atomic
+  physical_name: ip_alt_identn
+  etl_handle: SCD4A
+  description: |
+    Lưu trữ các giấy tờ định danh của Fund Management Company từ FIMS.FUNDCOMPANY.
+    2 legs: BUSINESS_LICENSE (IdNo/IdDate/IdAdd) và OPERATING_LICENSE (RegNo/RegDate/RegAdd).
+
+input:
+  - seq: 1
+    source_type: physical_table
+    schema: bronze
+    table_name: FUNDCOMPANY
+    alias: fu_co
+    select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
+    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+
+relationship: []
+
+mapping_legs:
+  - leg: BUSINESS_LICENSE
+    filter: "fu_co.idno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_FUNDCOMPANY', fu_co.id)"
+        source_column: FIMS.FUNDCOMPANY.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: fu_co.id
+        source_column: FIMS.FUNDCOMPANY.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_FUNDCOMPANY'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'BUSINESS_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: BUSINESS_LICENSE
+
+      - target_column: identn_nbr
+        transformation: fu_co.idno
+        source_column: FIMS.FUNDCOMPANY.IdNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: fu_co.iddate
+        source_column: FIMS.FUNDCOMPANY.IdDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: fu_co.idadd
+        source_column: FIMS.FUNDCOMPANY.IdAdd
+        data_type: string
+
+  - leg: OPERATING_LICENSE
+    filter: "fu_co.regno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_FUNDCOMPANY', fu_co.id)"
+        source_column: FIMS.FUNDCOMPANY.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: fu_co.id
+        source_column: FIMS.FUNDCOMPANY.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_FUNDCOMPANY'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'OPERATING_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: OPERATING_LICENSE
+
+      - target_column: identn_nbr
+        transformation: fu_co.regno
+        source_column: FIMS.FUNDCOMPANY.RegNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: fu_co.regdate
+        source_column: FIMS.FUNDCOMPANY.RegDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: fu_co.regadd
+        source_column: FIMS.FUNDCOMPANY.RegAdd
+        data_type: string
+
+mapping_columns: null
+
+final_filter:
+  - seq: 1
+    clause_type: UNION ALL
+    expression: |
+      SELECT -- BUSINESS_LICENSE leg
+        hash_id('FIMS_FUNDCOMPANY', fu_co.id) AS ip_id,
+        fu_co.id AS ip_code,
+        'FIMS_FUNDCOMPANY' AS src_stm_code,
+        'BUSINESS_LICENSE' AS identn_tp_code,
+        fu_co.idno AS identn_nbr,
+        fu_co.iddate AS issu_dt,
+        fu_co.idadd AS issu_ahr_nm
+      FROM fu_co WHERE fu_co.idno IS NOT NULL
+      UNION ALL
+      SELECT -- OPERATING_LICENSE leg
+        hash_id('FIMS_FUNDCOMPANY', fu_co.id) AS ip_id,
+        fu_co.id AS ip_code,
+        'FIMS_FUNDCOMPANY' AS src_stm_code,
+        'OPERATING_LICENSE' AS identn_tp_code,
+        fu_co.regno AS identn_nbr,
+        fu_co.regdate AS issu_dt,
+        fu_co.regadd AS issu_ahr_nm
+      FROM fu_co WHERE fu_co.regno IS NOT NULL
+    description: UNION ALL 2 legs từ cùng 1 physical table FUNDCOMPANY.

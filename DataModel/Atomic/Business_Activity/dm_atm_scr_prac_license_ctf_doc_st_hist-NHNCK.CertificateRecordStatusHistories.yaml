@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ctf_doc_st_hist-NHNCK.CertificateRecordStatusHistories
+  logical_name: "Atomic - Securities Practitioner License Certificate Document Status History – source NHNCK.CertificateRecordStatusHistories"
+  physical_name: scr_prac_license_ctf_doc_st_hist
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: ETL Pattern — Activity Log
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: NHNCK
+  description: |
+    Lịch sử thay đổi trạng thái của chứng chỉ hành nghề. Ghi nhận trạng thái trước/sau và lý do thay đổi.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-CertificateRecordStatusHistories
+
+attributes:
+  - name: License Certificate Document Status History Id
+    physical_name: license_ctf_doc_st_hist_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: null
+    comment: PK surrogate. ETL Pattern — status history.
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Status History Code
+    physical_name: license_ctf_doc_st_hist_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Id
+    physical_name: license_ctf_doc_id
+    business_meaning: FK đến chứng chỉ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.CertificateRecordId
+    comment: "FK target: Securities Practitioner License Certificate Document.License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: License Certificate Document Code
+    physical_name: license_ctf_doc_code
+    business_meaning: Mã chứng chỉ
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.CertificateRecordId
+    comment: "Lookup pair: Securities Practitioner License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: License Decision Document Id
+    physical_name: license_dcsn_doc_id
+    business_meaning: FK đến quyết định
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.DecisionId
+    comment: "FK target: Securities Practitioner License Decision Document.License Decision Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: License Decision Document Code
+    physical_name: license_dcsn_doc_code
+    business_meaning: Mã quyết định
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.DecisionId
+    comment: "Lookup pair: Securities Practitioner License Decision Document.License Decision Document Code. Pair with License Decision Document Id."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: Update Type Code
+    physical_name: udt_tp_code
+    business_meaning: "Loại cập nhật (Manual, System, Decision)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.UpdateType
+    comment: "Scheme: STATUS_UPDATE_TYPE."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: Old Status Code
+    physical_name: old_st_code
+    business_meaning: Trạng thái trước
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.OldStatus
+    comment: "Scheme: CERTIFICATE_STATUS."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: New Status Code
+    physical_name: new_st_code
+    business_meaning: Trạng thái sau
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.NewStatus
+    comment: "Scheme: CERTIFICATE_STATUS."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: Status Change Reason Description
+    physical_name: st_chg_rsn_dsc
+    business_meaning: Lý do thay đổi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.Reason
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: Status Change Timestamp
+    physical_name: st_chg_tms
+    business_meaning: Thời điểm thay đổi
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.CreatedAt
+    comment: "CreatedAt = thời điểm ghi lịch sử."
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CertificateRecordStatusHistories
+    source_column: NHNCK.CertificateRecordStatusHistories.UpdatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CertificateRecordStatusHistories'"
+    etl_derived_value: null

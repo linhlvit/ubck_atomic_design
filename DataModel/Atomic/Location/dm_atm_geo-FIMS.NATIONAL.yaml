@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-geo-FIMS.NATIONAL
+  logical_name: "Atomic - Geographic Area – source FIMS.NATIONAL"
+  physical_name: geo
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: "[Location] Geographic Area"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code. Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-NATIONAL
+
+attributes:
+  - name: Geographic Area Id
+    physical_name: geo_id
+    business_meaning: Khóa đại diện cho khu vực địa lý.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Geographic Area Code
+    physical_name: geo_code
+    business_meaning: Mã quốc tịch/quốc gia. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Geographic Area Short Code
+    physical_name: geo_shrt_code
+    business_meaning: Mã viết tắt quốc tịch/quốc gia.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.SName
+    comment: Mã ISO hoặc mã nghiệp vụ do FIMS định nghĩa.
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Geographic Area Name
+    physical_name: geo_nm
+    business_meaning: Tên quốc tịch/quốc gia.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.Name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: "Trạng thái: 0: Không sử dụng 1: Sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.Status
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: FIMS.NATIONAL.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Geographic Area Type Code
+    physical_name: geo_tp_code
+    business_meaning: "Loại khu vực địa lý — phân biệt cấp hành chính: COUNTRY/REGION/PROVINCE/PROVINCE_OLD/DISTRICT_OLD/WARD/WARD_OLD."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: null
+    comment: "Scheme: GEOGRAPHIC_AREA_TYPE. ETL-derived: hardcode PROVINCE cho bảng này. // Scheme: GEOGRAPHIC_AREA_TYPE. ETL-derived: hardcode COUNTRY cho bảng này."
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Geographic Area Business Code
+    physical_name: geo_bsn_code
+    business_meaning: Mã quốc tịch/quốc gia (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Id
+    physical_name: prn_geo_id
+    business_meaning: FK tự tham chiếu đến khu vực cha trong phân cấp hành chính.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: null
+    comment: "FK target: Geographic Area.Geographic Area Id. Self-join phân cấp: COUNTRY (cha=null) → REGION → PROVINCE_OLD/PROVINCE → DISTRICT_OLD → WARD_OLD/WARD. ETL resolve parent_code sang surrogate Id."
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Code
+    physical_name: prn_geo_code
+    business_meaning: Mã khu vực cha — denormalized để tiện tra cứu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: NATIONAL
+    source_column: null
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic Area Id. ECAT_01_Country không có parent_code (NULL)."
+    classification_context: "Source System Code = 'FIMS_NATIONAL'"
+    etl_derived_value: null

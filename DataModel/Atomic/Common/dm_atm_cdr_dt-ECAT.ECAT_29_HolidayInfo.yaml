@@ -1,0 +1,92 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cdr_dt-ECAT.ECAT_29_HolidayInfo
+  logical_name: "Atomic - Calendar Date – source ECAT.ECAT_29_HolidayInfo"
+  physical_name: cdr_dt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Time Period (Calendar Day)"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ECAT
+  description: |
+    Ngày dương lịch dense (ETL tự sinh mọi ngày trong phạm vi hệ thống). ECAT_29_HolidayInfo bổ sung cờ ngày nghỉ lễ công cộng (holiday_flag) và tên ngày lễ. PK dạng yyyymmdd.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ECAT-ECAT_29_HolidayInfo
+
+attributes:
+  - name: Calendar Date Id
+    physical_name: cdr_dt_id
+    business_meaning: "Khóa ngày dương lịch dạng số nguyên yyyymmdd (ví dụ: 20250429). ETL sinh dense cho toàn bộ khoảng thời gian hệ thống theo dõi."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: true
+    source_system: ECAT
+    source_table: ECAT_29_HolidayInfo
+    source_column: null
+    comment: PK dạng yyyymmdd — tiện join và partition trực tiếp mà không cần surrogate số tuần tự.
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    etl_derived_value: null
+
+  - name: Calendar Date
+    physical_name: cdr_dt
+    business_meaning: Ngày dương lịch (duy nhất). BK của entity.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_29_HolidayInfo
+    source_column: null
+    comment: "BK nghiệp vụ — unique. ETL tự sinh mọi ngày. Không phụ thuộc ECAT_29 về danh sách ngày. BCV Term: Day Of Calendar Year (Time Period)."
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    etl_derived_value: ETL generated (dense)
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_29_HolidayInfo
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    etl_derived_value: null
+
+  - name: Holiday Flag
+    physical_name: hol_f
+    business_meaning: "Cờ ngày nghỉ lễ công cộng. Mặc định = false; set = true nếu ngày có trong ECAT_29_HolidayInfo."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_29_HolidayInfo
+    source_column: ECAT.ECAT_29_HolidayInfo.calendar_date
+    comment: "BCV Term: Public Holiday Flag. ETL merge: nếu calendar_date match ngày trong ECAT_29 → true, ngược lại → false."
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    etl_derived_value: false
+
+  - name: Holiday Name
+    physical_name: hol_nm
+    business_meaning: "Tên ngày lễ (ví dụ: Tết Dương lịch, Quốc khánh). NULL nếu không phải ngày nghỉ công cộng."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_29_HolidayInfo
+    source_column: ECAT.ECAT_29_HolidayInfo.holiday_name
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    etl_derived_value: null

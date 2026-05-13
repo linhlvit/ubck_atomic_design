@@ -1,0 +1,414 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnd_mgt_co-FMS.SECURITIES
+  logical_name: "Atomic - Fund Management Company – source FMS.SECURITIES"
+  physical_name: fnd_mgt_co
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Portfolio Fund Management Company"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-SECURITIES
+
+attributes:
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: Khóa đại diện cho công ty quản lý quỹ trong nước.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã định danh công ty QLQ. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Name
+    physical_name: fnd_mgt_co_nm
+    business_meaning: Tên đầy đủ công ty QLQ trong nước.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.Name
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Short Name
+    physical_name: fnd_mgt_co_shrt_nm
+    business_meaning: Tên viết tắt công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ShortName
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company English Name
+    physical_name: fnd_mgt_co_en_nm
+    business_meaning: Tên tiếng Anh công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.EnName
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hoạt động của công ty QLQ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.Status
+    comment: "Scheme: FMS_OPERATION_STATUS."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_cptl_amt
+    business_meaning: Vốn điều lệ công ty QLQ (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.SecCapital
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Dorf Indicator
+    physical_name: dorf_ind
+    business_meaning: "Loại hình trong/ngoài nước. 1=Trong nước; 0=Nước ngoài."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.Dorf
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: License Decision Number
+    physical_name: license_dcsn_nbr
+    business_meaning: Số quyết định/giấy phép thành lập.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.Decision
+    comment: Denormalized — map vào IP Alt Identification.
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: License Decision Date
+    physical_name: license_dcsn_dt
+    business_meaning: Ngày cấp phép.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.DecisionDate
+    comment: Denormalized — map vào IP Alt Identification.
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Active Date
+    physical_name: actv_dt
+    business_meaning: Ngày bắt đầu hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ActiveDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Stop Date
+    physical_name: stop_dt
+    business_meaning: Ngày ngừng hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.StopDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Business Type Codes
+    physical_name: bsn_tp_codes
+    business_meaning: Danh sách mã ngành nghề kinh doanh.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECBUSINES.BuId
+    comment: "Pure junction SECBUSINES → denormalize thành ARRAY. HLD decision: FMS_HLD_Tier2.md."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: cty_of_rgst_id
+    business_meaning: FK đến quốc gia đăng ký của công ty QLQ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "FK target: Geographic Area.Geographic Area Id. ID quốc gia lấy từ bảng NATIONAL."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: cty_of_rgst_code
+    business_meaning: Mã quốc gia đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Director Name
+    physical_name: director_nm
+    business_meaning: Tên Tổng giám đốc (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: Denormalized snapshot — không dùng để join.
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Depository Certificate Number
+    physical_name: depst_ctf_nbr
+    business_meaning: Chứng nhận lưu ký — thông tin bổ sung của FIMS không có trong FMS.SECURITIES.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "Denormalized — FIMS-specific field."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Company Type Codes
+    physical_name: co_tp_codes
+    business_meaning: Danh sách mã loại hình doanh nghiệp. Từ bảng junction FUNDCOMTYPE.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "Pure junction FUNDCOMTYPE → denormalize thành ARRAY. Scheme: FIMS_COMPANY_TYPE. HLD decision: FIMS_HLD_Tier1.md."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Company Type Code
+    physical_name: co_tp_code
+    business_meaning: Loại hình công ty.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "Scheme: TT_COMPANY_TYPE."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Fund Type Code
+    physical_name: fnd_tp_code
+    business_meaning: Loại quỹ (áp dụng cho quỹ đầu tư).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: "Scheme: TT_FUND_TYPE."
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Business License Number
+    physical_name: bsn_license_nbr
+    business_meaning: Số giấy phép kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null
+
+  - name: Website
+    physical_name: webst
+    business_meaning: Website chính thức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    etl_derived_value: null

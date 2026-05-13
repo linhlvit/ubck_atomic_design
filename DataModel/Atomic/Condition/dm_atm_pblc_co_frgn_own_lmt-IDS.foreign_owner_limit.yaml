@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co_frgn_own_lmt-IDS.foreign_owner_limit
+  logical_name: "Atomic - Public Company Foreign Ownership Limit – source IDS.foreign_owner_limit"
+  physical_name: pblc_co_frgn_own_lmt
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Giới hạn tỷ lệ sở hữu nước ngoài của công ty đại chúng — max_owner_rate và khoảng thời gian áp dụng. FK to Public Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-foreign_owner_limit
+
+attributes:
+  - name: Public Company Foreign Ownership Limit Id
+    physical_name: pblc_co_frgn_own_lmt_id
+    business_meaning: Khóa đại diện cho giới hạn sở hữu nước ngoài.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Public Company Foreign Ownership Limit Code
+    physical_name: pblc_co_frgn_own_lmt_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: FK đến công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.company_profile_id
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.company_profile_id
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Max Ownership Rate
+    physical_name: max_own_rate
+    business_meaning: Tỷ lệ sở hữu nước ngoài tối đa.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.max_owner_rate
+    comment: null
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Effective From Date
+    physical_name: eff_fm_dt
+    business_meaning: Ngày bắt đầu áp dụng.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.from_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Effective To Date
+    physical_name: eff_to_dt
+    business_meaning: Ngày kết thúc áp dụng.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.to_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: foreign_owner_limit
+    source_column: IDS.foreign_owner_limit.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_foreign_owner_limit'"
+    etl_derived_value: null

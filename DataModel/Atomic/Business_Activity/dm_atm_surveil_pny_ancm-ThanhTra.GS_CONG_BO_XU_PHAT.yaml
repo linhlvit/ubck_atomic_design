@@ -1,0 +1,175 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-surveil_pny_ancm-ThanhTra.GS_CONG_BO_XU_PHAT
+  logical_name: "Atomic - Surveillance Penalty Announcement – source ThanhTra.GS_CONG_BO_XU_PHAT"
+  physical_name: surveil_pny_ancm
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: Công bố quyết định xử phạt từ giám sát. FK → Surveillance Enforcement Decision.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-GS_CONG_BO_XU_PHAT
+
+attributes:
+  - name: Surveillance Penalty Announcement Id
+    physical_name: surveil_pny_ancm_id
+    business_meaning: Khóa đại diện cho thông báo công bố xử phạt từ giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Surveillance Penalty Announcement Code
+    physical_name: surveil_pny_ancm_code
+    business_meaning: Mã công bố. Map từ PK ThanhTra.GS_CONG_BO_XU_PHAT.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Case Id
+    physical_name: surveil_nfrc_case_id
+    business_meaning: FK đến Surveillance Enforcement Case (via HO_SO_ID — redundant navigation FK).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.HO_SO_ID
+    comment: "FK target: Surveillance Enforcement Case.Surveillance Enforcement Case Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Case Code
+    physical_name: surveil_nfrc_case_code
+    business_meaning: Mã hồ sơ giám sát.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.HO_SO_ID
+    comment: "Lookup pair: Surveillance Enforcement Case.Surveillance Enforcement Case Code. Pair with Surveillance Enforcement Case Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Decision Id
+    physical_name: surveil_nfrc_dcsn_id
+    business_meaning: FK đến Surveillance Enforcement Decision (via QUYET_DINH_XU_PHAT_ID).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.QUYET_DINH_XU_PHAT_ID
+    comment: "FK target: Surveillance Enforcement Decision.Surveillance Enforcement Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Surveillance Enforcement Decision Code
+    physical_name: surveil_nfrc_dcsn_code
+    business_meaning: Mã quyết định xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.QUYET_DINH_XU_PHAT_ID
+    comment: "Lookup pair: Surveillance Enforcement Decision.Surveillance Enforcement Decision Code. Pair with Surveillance Enforcement Decision Id."
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Announcement Channel
+    physical_name: ancm_cnl
+    business_meaning: Chuyên mục / kênh công bố.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.CHUYEN_MUC
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Announcement Content
+    physical_name: ancm_cntnt
+    business_meaning: Nội dung công bố.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.NOI_DUNG_CONG_BO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Announcement Date
+    physical_name: ancm_dt
+    business_meaning: Ngày công bố.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.NGAY_CONG_BO
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null
+
+  - name: Announcement Status Code
+    physical_name: ancm_st_code
+    business_meaning: "Trạng thái: CHO_DUYET / DA_DUYET."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: GS_CONG_BO_XU_PHAT
+    source_column: ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI
+    comment: "Scheme: TT_ANNOUNCEMENT_STATUS."
+    classification_context: "Source System Code = 'ThanhTra_GS_CONG_BO_XU_PHAT'"
+    etl_derived_value: null

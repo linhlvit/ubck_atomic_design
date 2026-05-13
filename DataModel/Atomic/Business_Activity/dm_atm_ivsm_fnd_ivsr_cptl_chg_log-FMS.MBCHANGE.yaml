@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ivsm_fnd_ivsr_cptl_chg_log-FMS.MBCHANGE
+  logical_name: "Atomic - Investment Fund Investor Capital Change Log – source FMS.MBCHANGE"
+  physical_name: ivsm_fnd_ivsr_cptl_chg_log
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Event] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Lịch sử thay đổi phần vốn góp của nhà đầu tư trong quỹ đầu tư. Ghi nhận vốn trước/sau và lý do thay đổi.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-MBCHANGE
+
+attributes:
+  - name: Investment Fund Investor Capital Change Log Id
+    physical_name: ivsm_fnd_ivsr_cptl_chg_log_id
+    business_meaning: Khóa đại diện cho bản ghi thay đổi vốn góp NĐT.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Capital Change Log Code
+    physical_name: ivsm_fnd_ivsr_cptl_chg_log_code
+    business_meaning: Mã định danh bản ghi thay đổi. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Membership Id
+    physical_name: ivsm_fnd_ivsr_mbr_id
+    business_meaning: FK đến quan hệ góp vốn của NĐT trong quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.MBFId
+    comment: "FK target: Investment Fund Investor Membership.Investment Fund Investor Membership Id."
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Membership Code
+    physical_name: ivsm_fnd_ivsr_mbr_code
+    business_meaning: Mã quan hệ góp vốn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.MBFId
+    comment: "Lookup pair: Investment Fund Investor Membership.Investment Fund Investor Membership Code. Pair with Investment Fund Investor Membership Id."
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Old Capital Amount
+    physical_name: old_cptl_amt
+    business_meaning: Số vốn góp trước khi thay đổi (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.OldCapital
+    comment: null
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: New Capital Amount
+    physical_name: new_cptl_amt
+    business_meaning: Số vốn góp sau khi thay đổi (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.NewCapital
+    comment: null
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Change Date
+    physical_name: chg_dt
+    business_meaning: Ngày thực hiện thay đổi vốn góp.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.ChangeDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Change Reason
+    physical_name: chg_rsn
+    business_meaning: Lý do thay đổi vốn góp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.Reason
+    comment: null
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MBCHANGE
+    source_column: FMS.MBCHANGE.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_MBCHANGE'"
+    etl_derived_value: null

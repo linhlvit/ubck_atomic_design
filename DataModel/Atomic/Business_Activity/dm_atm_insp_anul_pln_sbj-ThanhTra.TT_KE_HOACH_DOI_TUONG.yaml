@@ -1,0 +1,189 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-insp_anul_pln_sbj-ThanhTra.TT_KE_HOACH_DOI_TUONG
+  logical_name: "Atomic - Inspection Annual Plan Subject – source ThanhTra.TT_KE_HOACH_DOI_TUONG"
+  physical_name: insp_anul_pln_sbj
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: "Đối tượng thanh tra được đưa vào kế hoạch năm. Grain: 1 đối tượng × 1 kế hoạch."
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-TT_KE_HOACH_DOI_TUONG
+
+attributes:
+  - name: Inspection Annual Plan Subject Id
+    physical_name: insp_anul_pln_sbj_id
+    business_meaning: Khóa đại diện cho đối tượng trong kế hoạch thanh tra.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Inspection Annual Plan Subject Code
+    physical_name: insp_anul_pln_sbj_code
+    business_meaning: Mã đối tượng kế hoạch. Map từ PK ThanhTra.TT_KE_HOACH_DOI_TUONG.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Inspection Annual Plan Id
+    physical_name: insp_anul_pln_id
+    business_meaning: FK đến Inspection Annual Plan.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.KE_HOACH_ID
+    comment: "FK target: Inspection Annual Plan.Inspection Annual Plan Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Inspection Annual Plan Code
+    physical_name: insp_anul_pln_code
+    business_meaning: Mã kế hoạch.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.KE_HOACH_ID
+    comment: "Lookup pair: Inspection Annual Plan.Inspection Annual Plan Code. Pair with Inspection Annual Plan Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Sequence Number
+    physical_name: seq_nbr
+    business_meaning: Số thứ tự đối tượng trong kế hoạch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.STT
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Subject Name
+    physical_name: sbj_nm
+    business_meaning: Tên đối tượng thanh tra (denormalized — không có DOI_TUONG_ID FK).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.TEN_DOI_TUONG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Subject Address
+    physical_name: sbj_adr
+    business_meaning: Địa chỉ đối tượng (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.DIA_CHI
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Planned Duration
+    physical_name: pln_drtn
+    business_meaning: Thời gian dự kiến thanh tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.THOI_GIAN_DU_KIEN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Lead Unit Name
+    physical_name: lead_unit_nm
+    business_meaning: Đơn vị chủ trì (denormalized theo tên).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.DON_VI_CHU_TRI
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Notification Dispatch Number
+    physical_name: notf_dispatch_nbr
+    business_meaning: Số công văn thông báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.SO_CVTB
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null
+
+  - name: Notification Dispatch Date
+    physical_name: notf_dispatch_dt
+    business_meaning: Ngày ký công văn thông báo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_KE_HOACH_DOI_TUONG
+    source_column: ThanhTra.TT_KE_HOACH_DOI_TUONG.NGAY_KY
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_KE_HOACH_DOI_TUONG'"
+    etl_derived_value: null

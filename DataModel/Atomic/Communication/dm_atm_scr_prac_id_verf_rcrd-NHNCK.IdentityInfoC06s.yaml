@@ -1,0 +1,526 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_id_verf_rcrd-NHNCK.IdentityInfoC06s
+  logical_name: "Atomic - Securities Practitioner Identity Verification Record – source NHNCK.IdentityInfoC06s"
+  physical_name: scr_prac_id_verf_rcrd
+  version: "1.0"
+  status: approved
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Verification"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: NHNCK
+  description: |
+    Kết quả xác thực danh tính người hành nghề qua hệ thống C06 của Bộ Công An. Lưu trạng thái và phản hồi xác thực.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-IdentityInfoC06s
+
+attributes:
+  - name: Identity Verification Record Id
+    physical_name: id_verf_rcrd_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: null
+    comment: "PK surrogate. BCV: \"Verification\" (Communication). Dữ liệu xác thực định danh từ C06 (Bộ Công An)."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Identity Verification Record Code
+    physical_name: id_verf_rcrd_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Identity Number
+    physical_name: id_nbr
+    business_meaning: Số định danh cá nhân (CCCD/CMND)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.IdentityNumber
+    comment: Số định danh được xác thực qua C06.
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.FullName
+    comment: Dữ liệu phản hồi từ C06.
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: First Name
+    physical_name: frst_nm
+    business_meaning: Tên
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.FirstName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.BirthDate
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Birth Year
+    physical_name: brth_yr
+    business_meaning: Năm sinh
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.BirthYear
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Individual Gender Code
+    physical_name: idv_gnd_code
+    business_meaning: "Giới tính (0: Nữ, 1: Nam)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.Gender
+    comment: "Scheme: INDIVIDUAL_GENDER."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Quốc tịch
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.National
+    comment: "Scheme: NATIONALITY."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Religion Name
+    physical_name: rlg_nm
+    business_meaning: Tôn giáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.Religion
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Country Code
+    physical_name: cty_code
+    business_meaning: Mã quốc gia
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CountryCode
+    comment: "Scheme: COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Place Of Birth
+    physical_name: plc_of_brth
+    business_meaning: Nơi sinh
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.PlaceOfBirth
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Hometown
+    physical_name: hometown
+    business_meaning: Địa chỉ quê quán
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.Hometown
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Permanent Country Code
+    physical_name: perm_cty_code
+    business_meaning: Quốc gia nguyên quán
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.PermanentCountryCode
+    comment: "Scheme: COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Permanent Province Code
+    physical_name: perm_prov_code
+    business_meaning: Tỉnh thành nguyên quán
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.PermanentProvinceCode
+    comment: "Scheme: PROVINCE."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Permanent District Code
+    physical_name: perm_dstc_code
+    business_meaning: Quận huyện nguyên quán
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.PermanentDistrictCode
+    comment: "Scheme: DISTRICT."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Permanent Address Detail
+    physical_name: perm_adr_dtl
+    business_meaning: Địa chỉ nguyên quán chi tiết
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.PermanentDetail
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Current Country Code
+    physical_name: crn_cty_code
+    business_meaning: Quốc gia hiện tại
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CurrentCountryCode
+    comment: "Scheme: COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Current Province Code
+    physical_name: crn_prov_code
+    business_meaning: Tỉnh thành hiện tại
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CurrentProvinceCode
+    comment: "Scheme: PROVINCE."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Current District Code
+    physical_name: crn_dstc_code
+    business_meaning: Quận huyện hiện tại
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CurrentDistrictCode
+    comment: "Scheme: DISTRICT."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Current Address Detail
+    physical_name: crn_adr_dtl
+    business_meaning: Địa chỉ hiện tại chi tiết
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CurrentDetail
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Father Full Name
+    physical_name: fthr_full_nm
+    business_meaning: Họ và tên bố
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.FatherFullName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Father Country Code
+    physical_name: fthr_cty_code
+    business_meaning: Quốc gia của bố
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.FatherCountryCode
+    comment: "Scheme: COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Father Identity Number
+    physical_name: fthr_id_nbr
+    business_meaning: Số định danh của bố
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.FatherIdentityNumber
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Father Identity Number Old
+    physical_name: fthr_id_nbr_old
+    business_meaning: Số định danh cũ của bố
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.FatherIdentityNumberOld
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Mother Full Name
+    physical_name: mthr_full_nm
+    business_meaning: Họ và tên mẹ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.MotherFullName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Mother Country Code
+    physical_name: mthr_cty_code
+    business_meaning: Quốc gia của mẹ
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.MotherCountryCode
+    comment: "Scheme: COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Mother Identity Number
+    physical_name: mthr_id_nbr
+    business_meaning: Số định danh của mẹ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.MotherIdentityNumber
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Mother Identity Number Old
+    physical_name: mthr_id_nbr_old
+    business_meaning: Số định danh cũ của mẹ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.MotherIdentityNumberOld
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Couple Full Name
+    physical_name: couple_full_nm
+    business_meaning: Họ và tên vợ/chồng
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CoupleFullName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Couple Country Code
+    physical_name: couple_cty_code
+    business_meaning: Quốc gia của vợ/chồng
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CoupleCountryCode
+    comment: "Scheme: COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Couple Identity Number
+    physical_name: couple_id_nbr
+    business_meaning: Số định danh của vợ/chồng
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CoupleIdentityNumber
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Couple Identity Number Old
+    physical_name: couple_id_nbr_old
+    business_meaning: Số định danh cũ của vợ/chồng
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.CoupleIdentityNumberOld
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: FK đến người cập nhật
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.UserUpdateId
+    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã người cập nhật
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IdentityInfoC06s
+    source_column: NHNCK.IdentityInfoC06s.UserUpdateId
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_IdentityInfoC06s'"
+    etl_derived_value: null

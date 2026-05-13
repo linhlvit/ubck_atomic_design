@@ -1,0 +1,218 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnd_mgt_co_key_psn-FMS.TLProfiles
+  logical_name: "Atomic - Fund Management Company Key Person – source FMS.TLProfiles"
+  physical_name: fnd_mgt_co_key_psn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Nhân sự chủ chốt của công ty quản lý quỹ (giám đốc/chuyên gia đầu tư/người được ủy quyền). Lưu thông tin cá nhân và chứng chỉ hành nghề.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-TLProfiles
+
+attributes:
+  - name: Fund Management Company Key Person Id
+    physical_name: fnd_mgt_co_key_psn_id
+    business_meaning: Khóa đại diện cho nhân sự chủ chốt công ty QLQ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Code
+    physical_name: fnd_mgt_co_key_psn_code
+    business_meaning: Mã định danh nhân sự. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên đầy đủ nhân sự.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.FullName
+    comment: null
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Birth Date
+    physical_name: brth_dt
+    business_meaning: Ngày sinh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.BirthDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Quốc tịch.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.NatId
+    comment: "Scheme: FMS_NATIONAL."
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Job Type Code
+    physical_name: job_tp_code
+    business_meaning: Loại chức vụ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.JobTypeId
+    comment: "Scheme: FMS_JOB_TYPE."
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Is Legal Representative Indicator
+    physical_name: is_lgl_rprs_ind
+    business_meaning: Cờ đánh dấu người đại diện pháp luật.
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.IsLegal
+    comment: null
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Is Disclosure Representative Indicator
+    physical_name: is_dscl_rprs_ind
+    business_meaning: Cờ đánh dấu đại diện công bố thông tin (CBTT).
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.IsCBTT
+    comment: null
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TLProfiles
+    source_column: FMS.TLProfiles.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_TLProfiles'"
+    etl_derived_value: null

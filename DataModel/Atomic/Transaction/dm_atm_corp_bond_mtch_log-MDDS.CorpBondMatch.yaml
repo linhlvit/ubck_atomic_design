@@ -1,0 +1,274 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-corp_bond_mtch_log-MDDS.CorpBondMatch
+  logical_name: "Atomic - Corporate Bond Match Log – source MDDS.CorpBondMatch"
+  physical_name: corp_bond_mtch_log
+  version: "1.0"
+  status: draft
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Sell Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: MDDS
+  description: |
+    Log tick-by-tick từng lần khớp lệnh trái phiếu doanh nghiệp theo thứ tự ConfirmNoCorpBond. Grain: 1 dòng = 1 lần khớp (symbol × ngày × confirm_no). Insert-only.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-MDDS-CorpBondMatch
+
+attributes:
+  - name: Corporate Bond Match Log Id
+    physical_name: corp_bond_mtch_log_id
+    business_meaning: Khóa đại diện cho bản ghi khớp lệnh trái phiếu doanh nghiệp.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Corporate Bond Match Log Code
+    physical_name: corp_bond_mtch_log_code
+    business_meaning: Định danh duy nhất bản tin (GUID). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.Id
+    comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Corporate Bond Trading Snapshot Id
+    physical_name: corp_bond_tdg_snpst_id
+    business_meaning: FK đến bản tin thông tin giao dịch trái phiếu doanh nghiệp tương ứng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.symbol
+    comment: "FK target: Corporate Bond Trading Snapshot.Corporate Bond Trading Snapshot Id. Join qua (symbol / trading_date)."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Symbol
+    physical_name: symb
+    business_meaning: Mã trái phiếu doanh nghiệp. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.symbol
+    comment: "Lookup pair: Corporate Bond Trading Snapshot.Symbol. Pair with Corporate Bond Trading Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning: Ngày giao dịch. BK.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.tradingdate
+    comment: "BK — grain = (symbol / trading_date / confirm_no). Nguồn string (dd/mm/yyyy) — ETL cần parse sang Date."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Confirm No
+    physical_name: cfrm_no
+    business_meaning: Số xác nhận/số thứ tự giao dịch TPDN (thay cho sequenceMsg trong TransLog). BK.
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.ConfirmNoCorpBond
+    comment: BK. Nguồn int — khớp tự nhiên với Small Counter. TPDN dùng ConfirmNoCorpBond thay vì sequenceMsg.
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Match Time
+    physical_name: mtch_tm
+    business_meaning: "Giờ khớp lệnh (HH:mm:ss)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.formattedTime
+    comment: "Nguồn string (HH:mm:ss) — khớp tự nhiên với Text."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Match Direction Code
+    physical_name: mtch_drc_code
+    business_meaning: "Chiều giao dịch chủ động: B=Mua chủ động / S=Bán chủ động / O=ATO / C=ATC."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.lastColor
+    comment: "Scheme: MDDS_MATCH_DIRECTION. Nguồn string — khớp tự nhiên với Classification Value. Dùng chung scheme với TransLog.lastColor."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Match Price
+    physical_name: mtch_prc
+    business_meaning: "Giá khớp (thường theo % mệnh giá nhân mệnh giá cho TPDN)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.formattedMatchPrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Match Volume
+    physical_name: mtch_vol
+    business_meaning: Khối lượng khớp của lần khớp này.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.formattedVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Price Change Value
+    physical_name: prc_chg_val
+    business_meaning: Thay đổi so với giá tham chiếu tại thời điểm khớp.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.formattedChangeValue
+    comment: Nguồn string — ETL cần parse sang decimal. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Change Color
+    physical_name: chg_color
+    business_meaning: Style hiển thị của giá thay đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.changeColor
+    comment: Nguồn string — khớp tự nhiên với Text. Indicator hiển thị UI — denormalized text.
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Accumulated Volume
+    physical_name: acm_vol
+    business_meaning: Tổng khối lượng khớp tích lũy từ đầu ngày.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.formattedAccVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Accumulated Value
+    physical_name: acm_val
+    business_meaning: Tổng giá trị khớp tích lũy từ đầu ngày (VND).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.formattedAccVal
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Total Buy Volume
+    physical_name: tot_buy_vol
+    business_meaning: "Tổng khối lượng mua chủ động (lastColor=B) tích lũy trong ngày."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.totalBuyVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Total Sell Volume
+    physical_name: tot_sell_vol
+    business_meaning: "Tổng khối lượng bán chủ động (lastColor=S) tích lũy trong ngày."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.totalSellVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: null
+
+  - name: Market Id
+    physical_name: mkt_id
+    business_meaning: "ID thị trường — luôn = 06 (trái phiếu doanh nghiệp HNX)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondMatch
+    source_column: MDDS.CorpBondMatch.marketId
+    comment: "Scheme: MDDS_MARKET_ID. Nguồn string — khớp tự nhiên với Classification Value. Hardcode = 06."
+    classification_context: "Source System Code = 'MDDS_CorpBondMatch'"
+    etl_derived_value: 06

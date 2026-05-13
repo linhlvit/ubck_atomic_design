@@ -1,0 +1,260 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dscl_notf_config-IDS.noti_config
+  logical_name: "Atomic - Disclosure Notification Config – source IDS.noti_config"
+  physical_name: dscl_notf_config
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Cấu hình thông báo CBTT — kênh gửi/hệ thống nhận/người quản lý. FK to Disclosure Notification.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-noti_config
+
+attributes:
+  - name: Disclosure Notification Config Id
+    physical_name: dscl_notf_config_id
+    business_meaning: Khóa đại diện cho cấu hình thông báo CBTT.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: noti_config
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Disclosure Notification Config Code
+    physical_name: dscl_notf_config_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Disclosure Notification Id
+    physical_name: dscl_notf_id
+    business_meaning: FK đến instance thông báo CBTT.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.notification_id
+    comment: "FK target: Disclosure Notification.Disclosure Notification Id."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Disclosure Notification Code
+    physical_name: dscl_notf_code
+    business_meaning: Mã thông báo CBTT.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.notification_id
+    comment: "Lookup pair: Disclosure Notification.Disclosure Notification Code. Pair with Disclosure Notification Id."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Notification Business Code
+    physical_name: notf_bsn_code
+    business_meaning: Mã thông báo (denormalized từ notifications).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.noti_cd
+    comment: Denormalized — đã có Disclosure Notification Id.
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Notification Title
+    physical_name: notf_ttl
+    business_meaning: Tiêu đề thông báo (tiếng Việt — denormalized từ notifications).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.noti_title_vi
+    comment: Denormalized — đã có Disclosure Notification Id.
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Notification English Title
+    physical_name: notf_en_ttl
+    business_meaning: Tiêu đề thông báo (tiếng Anh — denormalized từ notifications).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.noti_title_en
+    comment: Denormalized — đã có Disclosure Notification Id.
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Send Channel Code
+    physical_name: snd_cnl_code
+    business_meaning: Hình thức gửi tin (email/sms/push).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.send_channel_cd
+    comment: "Scheme: IDS_NOTIFICATION_SEND_CHANNEL."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Active Flag
+    physical_name: actv_f
+    business_meaning: "Trạng thái kích hoạt (1=kích hoạt / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.active_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Target System Code
+    physical_name: trgt_stm_code
+    business_meaning: Hệ thống nhận thông báo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.target_system_cd
+    comment: "Scheme: IDS_NOTIFICATION_TARGET_SYSTEM."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Manager Login Id
+    physical_name: mgr_login_id
+    business_meaning: Id người quản lý (logins).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.login_id
+    comment: "FK target: logins entity — out-of-scope (bảng hệ thống). Giữ Id để truy lại logins khi cần."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Manager Login Name
+    physical_name: mgr_login_nm
+    business_meaning: Tên đăng nhập người quản lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.login_name
+    comment: "Denormalized text — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: noti_config
+    source_column: IDS.noti_config.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_noti_config'"
+    etl_derived_value: null

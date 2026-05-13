@@ -1,0 +1,777 @@
+source: NHNCK
+description: "Quản lý giám sát người hành nghề chứng khoán"
+brd_entries:
+  # UID01 — Quản trị phân hệ
+  - brd_id: BRD-SRC-NHNCK-ActionLogs
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ActionLogs"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký hoạt động của người dùng trên hệ thống"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "System audit log"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-SystemParameters
+    brd_name: "Design Atomic từ nguồn NHNCK bảng SystemParameters"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tham số hệ thống"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Config data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-DigitalCertificates
+    brd_name: "Design Atomic từ nguồn NHNCK bảng DigitalCertificates"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chứng thư số"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/PKI data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-DigitalCertificateUsers
+    brd_name: "Design Atomic từ nguồn NHNCK bảng DigitalCertificateUsers"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tài khoản được sử dụng chứng thư số"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/PKI data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-PermissionRoles
+    brd_name: "Design Atomic từ nguồn NHNCK bảng PermissionRoles"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền theo nhóm vai trò"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-DepartmentAccess
+    brd_name: "Design Atomic từ nguồn NHNCK bảng DepartmentAccess"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quản lý quyền khai thác giữa các phòng ban"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID01 — Người dùng (in scope)
+  - brd_id: BRD-SRC-NHNCK-Users
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Users"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin người dùng hệ thống (cán bộ UBCKNN)"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Units
+          relation: "FK — đơn vị UBCKNN"
+        - table: Departments
+          relation: "FK — phòng ban UBCKNN"
+        - table: Positions
+          relation: "FK — chức vụ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Units
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Units"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục đơn vị"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Departments
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Departments"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phòng ban UBCKNN"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Positions
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Positions"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chức vụ trong tổ chức"
+      functional_group: "UID01 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID02 — Quản lý danh mục dùng riêng
+  - brd_id: BRD-SRC-NHNCK-Certificates
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Certificates"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục các loại chứng chỉ hành nghề"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CertificateDocuments
+          relation: "1-N — cấu hình tài liệu theo loại CC (out of scope)"
+        - table: CertificateSpecializations
+          relation: "1-N — cấu hình chuyên môn theo loại CC (out of scope)"
+        - table: CertificateDepartments
+          relation: "1-N — phân quyền phòng ban theo loại CC (out of scope)"
+        - table: CertificateNumberTemplates
+          relation: "1-N — mẫu sinh số chứng chỉ (out of scope)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateDocuments
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateDocuments"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tài liệu liên quan của loại chứng chỉ"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: out_of_scope
+      scope_reason: "Application config"
+      related_tables:
+        - table: Certificates
+          relation: "FK cha — loại chứng chỉ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateSpecializations
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateSpecializations"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chuyên môn liên quan loại chứng chỉ"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: out_of_scope
+      scope_reason: "Application config"
+      related_tables:
+        - table: Certificates
+          relation: "FK cha — loại chứng chỉ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateDepartments
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateDepartments"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết phòng ban với loại chứng chỉ"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: out_of_scope
+      scope_reason: "Application config"
+      related_tables:
+        - table: Certificates
+          relation: "FK cha — loại chứng chỉ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateNumberTemplates
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateNumberTemplates"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Mã tài liệu kết hợp chứng chỉ từ một cửa điện tử"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: out_of_scope
+      scope_reason: "Config/template data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Specializations
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Specializations"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chuyên môn/chứng chỉ chuyên môn"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Documents
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Documents"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-EducationLevels
+    brd_name: "Design Atomic từ nguồn NHNCK bảng EducationLevels"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục trình độ học vấn"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Organizations
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Organizations"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Organizations
+          relation: "Self-ref (ParentId) — cấu trúc cây tổ chức"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Decisions
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Decisions"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục các quyết định hành chính"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ApplicationSources
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ApplicationSources"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hình thức nộp hồ sơ"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ApplicationStatuses
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ApplicationStatuses"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Định nghĩa các trạng thái của hồ sơ"
+      functional_group: "UID02 Quản lý danh mục dùng riêng"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID03 — Quản lý hồ sơ
+  - brd_id: BRD-SRC-NHNCK-Applications
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Applications"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ đăng ký chứng chỉ hành nghề"
+      functional_group: "UID03 Quản lý hồ sơ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: ApplicationSpecializations
+          relation: "1-N — chứng chỉ chuyên môn đính kèm"
+        - table: ApplicationDocuments
+          relation: "1-N — tài liệu đính kèm hồ sơ"
+        - table: ApplicationFees
+          relation: "1-N — nghĩa vụ tài chính"
+        - table: VerifyApplicationStatuses
+          relation: "1-N — phê duyệt lãnh đạo"
+        - table: IdentityInfoC06s
+          relation: "1-N — xác thực danh tính C06"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ApplicationDocuments
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ApplicationDocuments"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tài liệu đính kèm trong hồ sơ"
+      functional_group: "UID03 Quản lý hồ sơ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Applications
+          relation: "FK cha — hồ sơ đăng ký"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ApplicationFees
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ApplicationFees"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phí thanh toán liên quan đến hồ sơ"
+      functional_group: "UID03 Quản lý hồ sơ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Applications
+          relation: "FK cha — hồ sơ đăng ký"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ApplicationSpecializations
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ApplicationSpecializations"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chuyên môn liên quan đến hồ sơ"
+      functional_group: "UID03 Quản lý hồ sơ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Applications
+          relation: "FK cha — hồ sơ đăng ký"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-VerifyApplicationStatuses
+    brd_name: "Design Atomic từ nguồn NHNCK bảng VerifyApplicationStatuses"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Yêu cầu phê duyệt lãnh đạo cho hồ sơ"
+      functional_group: "UID03 Quản lý hồ sơ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Applications
+          relation: "FK cha — hồ sơ đăng ký"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-IdentityInfoC06s
+    brd_name: "Design Atomic từ nguồn NHNCK bảng IdentityInfoC06s"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử kiểm tra xác thực với C06"
+      functional_group: "UID03 Quản lý hồ sơ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Applications
+          relation: "FK cha (nullable) — hồ sơ đăng ký"
+        - table: Professionals
+          relation: "FK — người hành nghề được xác thực"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID04 — Quản lý thi sát hạch
+  - brd_id: BRD-SRC-NHNCK-ExamSessions
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ExamSessions"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục các đợt thi sát hạch"
+      functional_group: "UID04 Quản lý thi sát hạch"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: ExamDetails
+          relation: "1-N — kết quả từng thí sinh"
+        - table: ExamSessionFees
+          relation: "1-N — biểu phí thi theo loại chứng chỉ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ExamDetails
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ExamDetails"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Kết quả các kỳ thi sát hạch"
+      functional_group: "UID04 Quản lý thi sát hạch"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: ExamSessions
+          relation: "FK cha — đợt thi sát hạch"
+        - table: Professionals
+          relation: "FK — thí sinh/người hành nghề"
+        - table: Applications
+          relation: "FK (nullable) — hồ sơ liên kết"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ExamSessionFees
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ExamSessionFees"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phí thi sát hạch"
+      functional_group: "UID04 Quản lý thi sát hạch"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: ExamSessions
+          relation: "FK cha — đợt thi sát hạch"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-SpecializationCourses
+    brd_name: "Design Atomic từ nguồn NHNCK bảng SpecializationCourses"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục khóa học chuyên môn"
+      functional_group: "UID04/UID10 Quản lý thi sát hạch và đào tạo tập huấn"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: SpecializationCourseDetails
+          relation: "1-N — kết quả từng học viên"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-SpecializationCourseDetails
+    brd_name: "Design Atomic từ nguồn NHNCK bảng SpecializationCourseDetails"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chi tiết người tham gia khóa học chuyên môn"
+      functional_group: "UID04/UID10 Quản lý thi sát hạch và đào tạo tập huấn"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: SpecializationCourses
+          relation: "FK cha — khóa học chuyên môn"
+        - table: Professionals
+          relation: "FK — học viên/người hành nghề"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID05 — Quản lý chứng chỉ hành nghề
+  - brd_id: BRD-SRC-NHNCK-CertificateRecordGroups
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateRecordGroups"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhóm chứng chỉ hành nghề"
+      functional_group: "UID05 Quản lý chứng chỉ hành nghề"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CertificateRecordGroupMembers
+          relation: "1-N — thành viên trong nhóm"
+        - table: Decisions
+          relation: "FK — quyết định cấp/thu hồi/hủy"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateRecordGroupMembers
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateRecordGroupMembers"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thành viên trong nhóm chứng chỉ hành nghề"
+      functional_group: "UID05 Quản lý chứng chỉ hành nghề"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CertificateRecordGroups
+          relation: "FK cha — nhóm chứng chỉ"
+        - table: CertificateRecords
+          relation: "FK — chứng chỉ hành nghề"
+        - table: Applications
+          relation: "FK (nullable) — hồ sơ liên kết"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateRecords
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateRecords"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chứng chỉ hành nghề được cấp"
+      functional_group: "UID05 Quản lý chứng chỉ hành nghề"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Professionals
+          relation: "FK — người hành nghề"
+        - table: Decisions
+          relation: "FK — quyết định cấp (IssueDecisionId)"
+        - table: CertificateRecordStatusHistories
+          relation: "1-N — lịch sử trạng thái"
+        - table: CertificateRecordLogs
+          relation: "1-N — nhật ký hoạt động"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateRecordStatusHistories
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateRecordStatusHistories"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử trạng thái chứng chỉ hành nghề"
+      functional_group: "UID05 Quản lý chứng chỉ hành nghề"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CertificateRecords
+          relation: "FK cha — chứng chỉ hành nghề"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-CertificateRecordLogs
+    brd_name: "Design Atomic từ nguồn NHNCK bảng CertificateRecordLogs"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký chứng chỉ hành nghề"
+      functional_group: "UID05 Quản lý chứng chỉ hành nghề"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CertificateRecords
+          relation: "FK cha — chứng chỉ hành nghề"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID06 — Quản lý người hành nghề chứng khoán
+  - brd_id: BRD-SRC-NHNCK-Professionals
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Professionals"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin người hành nghề chứng khoán"
+      functional_group: "UID06 Quản lý người hành nghề chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: ProfessionalHistories
+          relation: "1-N — lịch sử thay đổi định danh"
+        - table: ProfessionalRelationships
+          relation: "1-N — quan hệ gia đình/xã hội"
+        - table: ProfessionalWorkHistories
+          relation: "1-N — lịch sử làm việc"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ProfessionalHistories
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ProfessionalHistories"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thay đổi định danh cá nhân của người hành nghề"
+      functional_group: "UID06 Quản lý người hành nghề chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Professionals
+          relation: "FK cha — người hành nghề"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ProfessionalRelationships
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ProfessionalRelationships"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin quan hệ gia đình/xã hội của người hành nghề"
+      functional_group: "UID06 Quản lý người hành nghề chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Professionals
+          relation: "FK cha — người hành nghề"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-ProfessionalWorkHistories
+    brd_name: "Design Atomic từ nguồn NHNCK bảng ProfessionalWorkHistories"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử làm việc của người hành nghề"
+      functional_group: "UID06 Quản lý người hành nghề chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Professionals
+          relation: "FK cha — người hành nghề"
+        - table: Organizations
+          relation: "FK — tổ chức sử dụng người hành nghề"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-Violations
+    brd_name: "Design Atomic từ nguồn NHNCK bảng Violations"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin vi phạm của người hành nghề"
+      functional_group: "UID06 Quản lý người hành nghề chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Professionals
+          relation: "FK — người vi phạm"
+        - table: Decisions
+          relation: "FK — quyết định xử lý vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-NHNCK-OrganizationReports
+    brd_name: "Design Atomic từ nguồn NHNCK bảng OrganizationReports"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Báo cáo về người hành nghề từ tổ chức"
+      functional_group: "UID06 Quản lý người hành nghề chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: Professionals
+          relation: "FK — người hành nghề được báo cáo"
+        - table: Organizations
+          relation: "FK — tổ chức báo cáo"
+        - table: OrganizationReports
+          relation: "Self-ref (ParentReportId) — báo cáo cha"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null

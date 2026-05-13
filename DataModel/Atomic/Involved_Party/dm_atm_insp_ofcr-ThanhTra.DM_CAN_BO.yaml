@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-insp_ofcr-ThanhTra.DM_CAN_BO
+  logical_name: "Atomic - Inspection Officer – source ThanhTra.DM_CAN_BO"
+  physical_name: insp_ofcr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Cán bộ thanh tra viên thuộc UBCKNN. Ghi nhận thông tin cá nhân và trạng thái công tác.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-DM_CAN_BO
+
+attributes:
+  - name: Inspection Officer Id
+    physical_name: insp_ofcr_id
+    business_meaning: Khóa đại diện cho cán bộ thanh tra.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Inspection Officer Code
+    physical_name: insp_ofcr_code
+    business_meaning: Mã cán bộ thanh tra. Map từ PK bảng nguồn ThanhTra.DM_CAN_BO.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: ThanhTra.DM_CAN_BO.ID
+    comment: "BK của entity. BCV Term: Individual Identifier."
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Login Name
+    physical_name: login_nm
+    business_meaning: "Tên đăng nhập, liên kết tài khoản hệ thống nội bộ."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: ThanhTra.DM_CAN_BO.TEN_DANG_NHAP
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên cán bộ thanh tra.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: ThanhTra.DM_CAN_BO.HO_VA_TEN
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Date of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh cán bộ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: ThanhTra.DM_CAN_BO.NGAY_SINH
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Gender Code
+    physical_name: gnd_code
+    business_meaning: "Giới tính: NAM / NU."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: ThanhTra.DM_CAN_BO.GIOI_TINH
+    comment: "Scheme: INDIVIDUAL_GENDER."
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Supervised Company Name
+    physical_name: supervised_co_nm
+    business_meaning: "Công ty phụ trách (tên công ty — denormalized, không có FK)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: ThanhTra.DM_CAN_BO.CONG_TY_PHU_TRACH
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Officer Status Code
+    physical_name: ofcr_st_code
+    business_meaning: "Trạng thái cán bộ: SU_DUNG / KHONG_SU_DUNG."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CAN_BO
+    source_column: ThanhTra.DM_CAN_BO.TRANG_THAI
+    comment: "Scheme: TT_OFFICER_STATUS."
+    classification_context: "Source System Code = 'ThanhTra_DM_CAN_BO'"
+    etl_derived_value: null

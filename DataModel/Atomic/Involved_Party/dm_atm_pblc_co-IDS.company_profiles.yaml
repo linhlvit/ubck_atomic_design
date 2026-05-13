@@ -1,0 +1,890 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pblc_co-IDS.company_profiles
+  logical_name: "Atomic - Public Company – source IDS.company_profiles"
+  physical_name: pblc_co
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-company_profiles
+
+attributes:
+  - name: Public Company Id
+    physical_name: pblc_co_id
+    business_meaning: Khóa đại diện cho công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: PK surrogate. Shared entity với ThanhTra.DM_CONG_TY_DC.
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pblc_co_code
+    business_meaning: Mã định danh công ty đại chúng (PK nguồn). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.id
+    comment: "BK chính. PK của company_profiles; cũng = company_detail.company_profile_id (quan hệ 1-1). company_detail.id là PK kỹ thuật riêng — bỏ qua."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Public Company Name
+    physical_name: pblc_co_nm
+    business_meaning: Tên công ty đại chúng (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.company_name_vn
+    comment: "company_detail.company_name_vn cùng giá trị (1-1) — map primary từ company_profiles."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Public Company English Name
+    physical_name: pblc_co_en_nm
+    business_meaning: Tên công ty đại chúng (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.company_name_en
+    comment: "company_detail.company_name_en cùng giá trị (1-1) — map primary từ company_profiles."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Public Company Short Name
+    physical_name: pblc_co_shrt_nm
+    business_meaning: Tên viết tắt công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Company Type Code
+    physical_name: co_tp_code
+    business_meaning: Loại hình công ty.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: "Scheme: TT_COMPANY_TYPE."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_cptl_amt
+    business_meaning: Vốn điều lệ.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Business License Number
+    physical_name: bsn_license_nbr
+    business_meaning: Số giấy phép kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Website
+    physical_name: webst
+    business_meaning: Website chính thức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Business Registration Number
+    physical_name: bsn_rgst_nbr
+    business_meaning: Mã số doanh nghiệp / số ĐKKD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.business_reg_no
+    comment: "company_detail.business_reg_no cùng giá trị (1-1) — map primary từ company_profiles."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: First Registration Date
+    physical_name: frst_rgst_dt
+    business_meaning: Ngày đăng ký lần đầu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.first_reg_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Latest Registration Date
+    physical_name: latest_rgst_dt
+    business_meaning: Ngày cấp gần nhất.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.latest_reg_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Latest Registration Province Code
+    physical_name: latest_rgst_prov_code
+    business_meaning: Tỉnh/thành nơi cấp gần nhất (mã tỉnh từ provinces).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.latest_reg_prov
+    comment: Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS.
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Industry Category Id
+    physical_name: idy_cgy_id
+    business_meaning: Id ngành nghề (categories).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.category_id
+    comment: "FK target: categories — Classification Value scheme IDS_INDUSTRY_CATEGORY (theo HLD). Giữ Id để truy lại categories khi cần. Cặp Id+Code theo pattern."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Industry Category Code
+    physical_name: idy_cgy_code
+    business_meaning: Mã ngành nghề (categories).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.category_id
+    comment: "Scheme: IDS_INDUSTRY_CATEGORY. Pair with Industry Category Id. Theo HLD T1-04: categories là Classification Value không phải Atomic entity."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Industry Category Level1 Code
+    physical_name: idy_cgy_level1_code
+    business_meaning: Ngành nghề cấp 1 (mã categories cấp 1).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.category_l1_id
+    comment: "Scheme: IDS_INDUSTRY_CATEGORY. Cùng scheme với Industry Category Code — denormalize cấp 1."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Industry Category Level2 Code
+    physical_name: idy_cgy_level2_code
+    business_meaning: Ngành nghề cấp 2 (mã categories cấp 2).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.category_l2_id
+    comment: "Scheme: IDS_INDUSTRY_CATEGORY. Cùng scheme với Industry Category Code — denormalize cấp 2."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: IDS Status Code
+    physical_name: ids_st_code
+    business_meaning: Trạng thái niêm yết IDS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.status_ids_cd
+    comment: "Scheme: IDS_COMPANY_STATUS."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Auto Approval Flag
+    physical_name: auto_aprv_f
+    business_meaning: "Tự động duyệt (1=tự động / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.auto_approval_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Company Login
+    physical_name: co_login
+    business_meaning: User của công ty niêm yết (login_name).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.company_login
+    comment: "Denormalized text — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Approver Comment
+    physical_name: approver_cmnt
+    business_meaning: Ý kiến người duyệt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.approver_comment
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Parent Company Flag
+    physical_name: prn_co_f
+    business_meaning: "Là công ty mẹ (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.parent_company_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Equity Listing Exchange Code
+    physical_name: eqty_listing_exg_code
+    business_meaning: Sàn niêm yết cổ phiếu (HNX/HOSE/UPCoM).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.equity_listing_exch_cd
+    comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Trùng nội dung với company_detail.equity_listing_exch (Text denormalized) — chọn cd làm primary."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Equity Listing Exchange Name
+    physical_name: eqty_listing_exg_nm
+    business_meaning: Sàn niêm yết cổ phiếu (text từ company_detail).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.equity_listing_exch
+    comment: Denormalized text từ company_detail — không có scheme.
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Bond Listing Exchange Name
+    physical_name: bond_listing_exg_nm
+    business_meaning: Sàn niêm yết trái phiếu (text từ company_detail).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.bond_listing_exch
+    comment: Denormalized text từ company_detail — không có scheme.
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Equity Security Flag
+    physical_name: eqty_scr_f
+    business_meaning: "Loại chứng khoán niêm yết là cổ phiếu (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.equity_security_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Bond Security Flag
+    physical_name: bond_scr_f
+    business_meaning: "Loại chứng khoán niêm yết là trái phiếu (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.bond_security_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Equity Ticker
+    physical_name: eqty_ticker
+    business_meaning: Mã chứng khoán cổ phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.equity_ticker
+    comment: "company_detail.equity_ticker cùng giá trị (1-1) — map primary từ company_profiles."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Bond Ticker
+    physical_name: bond_ticker
+    business_meaning: Mã chứng khoán trái phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.bond_ticker
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Equity Listed Quantity
+    physical_name: eqty_list_qty
+    business_meaning: Số lượng cổ phiếu đang niêm yết.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.equity_listed_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Bond Listed Quantity
+    physical_name: bond_list_qty
+    business_meaning: Số lượng trái phiếu đang niêm yết.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.bond_listed_qty
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: International Exchange Name
+    physical_name: itnl_exg_nm
+    business_meaning: Sàn niêm yết quốc tế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.intl_exch
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: International Ticker
+    physical_name: itnl_ticker
+    business_meaning: Mã chứng quốc tế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.intl_ticker
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: ISIN Code
+    physical_name: isin_code
+    business_meaning: Mã ISIN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.isin_cd
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Securities Type Code
+    physical_name: scr_tp_code
+    business_meaning: Loại chứng khoán phát hành.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.securities_type_cd
+    comment: "Scheme: IDS_SECURITIES_TYPE."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Public Company Form Code
+    physical_name: pblc_co_form_code
+    business_meaning: Hình thức trở thành công ty đại chúng (IPO / nộp hồ sơ trực tiếp).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.public_company_form_cd
+    comment: "Scheme: IDS_PUBLIC_COMPANY_FORM."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Capital Paid Reported Amount
+    physical_name: cptl_paid_rpt_amt
+    business_meaning: Vốn điều lệ thực góp (cập nhật theo BCTC năm).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.capital_paid_reported
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Treasury Shares Quantity
+    physical_name: trsr_shr_qty
+    business_meaning: Cổ phiếu quỹ hiện có.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.treasury_shares
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Fiscal Year Start Date
+    physical_name: fyr_strt_dt
+    business_meaning: Ngày bắt đầu năm tài chính.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.fy_start_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Fiscal Year End Date
+    physical_name: fyr_end_dt
+    business_meaning: Ngày kết thúc năm tài chính.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.fy_end_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Financial Statement Type Code
+    physical_name: fnc_stmt_tp_code
+    business_meaning: Loại báo cáo tài chính (IFRS/VAS...).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.financial_stmt_type_cd
+    comment: "Scheme: IDS_FINANCIAL_STMT_TYPE."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: IDS Registration Flag
+    physical_name: ids_rgst_f
+    business_meaning: "Trạng thái đăng ký trên IDS (1=đã đăng ký / 0=chưa)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.ids_reg_status_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: IDS Registration Date
+    physical_name: ids_rgst_dt
+    business_meaning: Ngày đăng ký trên IDS.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.ids_reg_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Public Company Flag
+    physical_name: pblc_co_f
+    business_meaning: "Là công ty đại chúng (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.public_com_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Public Bond Issuer Flag
+    physical_name: pblc_bond_issur_f
+    business_meaning: "Là tổ chức niêm yết trái phiếu (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.public_bond_issuer_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Large Public Company Flag
+    physical_name: lrg_pblc_co_f
+    business_meaning: "Là công ty đại chúng quy mô lớn (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.large_public_com_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Former State Owned Flag
+    physical_name: formr_ste_own_f
+    business_meaning: "Tiền thân là doanh nghiệp nhà nước (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.former_state_owned_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Equitisation License Date
+    physical_name: equitisation_license_dt
+    business_meaning: Ngày được cấp GPKD sau cổ phần hóa.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.equit_license_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Capital At Equitisation Amount
+    physical_name: cptl_at_equitisation_amt
+    business_meaning: Vốn điều lệ thực góp tại thời điểm cổ phần hóa.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.capital_at_equit
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Has State Own Flag
+    physical_name: has_ste_own_f
+    business_meaning: "Có vốn nhà nước (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.has_state_own_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: FDI Company Flag
+    physical_name: fdi_co_f
+    business_meaning: "Là doanh nghiệp FDI (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.fdi_com_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Has Parent Company Flag
+    physical_name: has_prn_co_f
+    business_meaning: "Có công ty mẹ (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.has_parent_com_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Has Subsidiaries Flag
+    physical_name: has_subs_f
+    business_meaning: "Có công ty con (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.has_subsidiaries_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Has Joint Ventures Flag
+    physical_name: has_jnt_ventures_f
+    business_meaning: "Có công ty liên doanh, liên kết (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.has_joint_ventures_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Enterprise Type Code
+    physical_name: entp_tp_code
+    business_meaning: Loại hình doanh nghiệp (bh/td/ck/dn).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.report_type_cd
+    comment: "Scheme: IDS_ENTERPRISE_TYPE. company_detail.report_type_cd cùng giá trị (1-1) — map primary từ company_profiles."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Specialist Notes
+    physical_name: spcl_notes
+    business_meaning: Ghi chú của chuyên viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_detail.specialist_notes
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope. Audit từ company_detail là 1-1 với company_profiles."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.created_date
+    comment: "Audit từ company_detail là 1-1 với company_profiles."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày sửa.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: company_profiles
+    source_column: IDS.company_profiles.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_company_profiles'"
+    etl_derived_value: null

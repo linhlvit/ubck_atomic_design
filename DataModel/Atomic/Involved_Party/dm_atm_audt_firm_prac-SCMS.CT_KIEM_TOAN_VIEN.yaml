@@ -1,0 +1,190 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-audt_firm_prac-SCMS.CT_KIEM_TOAN_VIEN
+  logical_name: "Atomic - Audit Firm Practitioner – source SCMS.CT_KIEM_TOAN_VIEN"
+  physical_name: audt_firm_prac
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Kiểm toán viên thuộc công ty kiểm toán. Ghi nhận chứng chỉ kiểm toán và trạng thái hành nghề.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CT_KIEM_TOAN_VIEN
+
+attributes:
+  - name: Audit Firm Practitioner Id
+    physical_name: audt_firm_prac_id
+    business_meaning: Khóa đại diện cho kiểm toán viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Audit Firm Practitioner Code
+    physical_name: audt_firm_prac_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Audit Firm Id
+    physical_name: audt_firm_id
+    business_meaning: FK đến công ty kiểm toán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.CT_KIEM_TOAN_ID
+    comment: "FK target: Audit Firm.Audit Firm Id."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: audt_firm_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.CT_KIEM_TOAN_ID
+    comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.HO_TEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Approval Date
+    physical_name: aprv_dt
+    business_meaning: Ngày UBCKNN chấp thuận.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.NGAY_CHAP_THUAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Revocation Date
+    physical_name: revocation_dt
+    business_meaning: Ngày hủy chấp thuận.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.NGAY_HUY_CHAP_THUAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Audit Firm Practitioner Status Code
+    physical_name: audt_firm_prac_st_code
+    business_meaning: Trạng thái kiểm toán viên.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.TRANG_THAI
+    comment: "Scheme: SCMS_AUDIT_FIRM_PRACTITIONER_STATUS."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN_VIEN
+    source_column: SCMS.CT_KIEM_TOAN_VIEN.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN_VIEN'"
+    etl_derived_value: null

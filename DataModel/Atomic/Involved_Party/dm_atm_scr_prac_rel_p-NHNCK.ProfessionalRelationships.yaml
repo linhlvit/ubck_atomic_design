@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_rel_p-NHNCK.ProfessionalRelationships
+  logical_name: "Atomic - Securities Practitioner Related Party – source NHNCK.ProfessionalRelationships"
+  physical_name: scr_prac_rel_p
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ và thông tin người liên quan.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-ProfessionalRelationships
+
+attributes:
+  - name: Securities Practitioner Related Party Id
+    physical_name: scr_prac_rel_p_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: null
+    comment: "PK surrogate. BCV: \"Related Involved Party\" (Involved Party). Quan hệ gia đình/xã hội."
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Related Party Code
+    physical_name: scr_prac_rel_p_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Practitioner Id
+    physical_name: prac_id
+    business_meaning: FK đến Securities Practitioner
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.ProfessionalId
+    comment: "FK target: Securities Practitioner.Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Practitioner Code
+    physical_name: prac_code
+    business_meaning: Mã người hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.ProfessionalId
+    comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with Practitioner Id."
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Related Party Full Name
+    physical_name: rel_p_full_nm
+    business_meaning: Họ và tên người liên quan
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.FullName
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Relationship Type Code
+    physical_name: rltnp_tp_code
+    business_meaning: "Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.RelationshipType
+    comment: "Scheme: RELATIONSHIP_TYPE."
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Birth Year
+    physical_name: brth_yr
+    business_meaning: Năm sinh
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.BirthYear
+    comment: "Text vì là năm dạng \"1990\"."
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Country Code
+    physical_name: cty_code
+    business_meaning: Quốc gia
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.CountryId
+    comment: "Scheme: COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Identity Reference Code
+    physical_name: id_refr_code
+    business_meaning: Mã định danh giấy tờ tùy thân
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.IdentityId
+    comment: FK bảng identity riêng — lưu BK dạng Text.
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Address
+    physical_name: adr
+    business_meaning: Địa chỉ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.Address
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Occupation Name
+    physical_name: ocp_nm
+    business_meaning: Nghề nghiệp
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.Occupation
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Workplace Name
+    physical_name: workplace_nm
+    business_meaning: Nơi làm việc
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.Workplace
+    comment: Text tự do.
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Related Party Note
+    physical_name: rel_p_note
+    business_meaning: Ghi chú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.Note
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ProfessionalRelationships
+    source_column: NHNCK.ProfessionalRelationships.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ProfessionalRelationships'"
+    etl_derived_value: null

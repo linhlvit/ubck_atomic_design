@@ -1,0 +1,316 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-audt_firm-IDS.af_profiles
+  logical_name: "Atomic - Audit Firm – source IDS.af_profiles"
+  physical_name: audt_firm
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Công ty kiểm toán được UBCKNN chấp thuận. Ghi nhận thông tin pháp lý và trạng thái hoạt động.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-af_profiles
+
+attributes:
+  - name: Audit Firm Id
+    physical_name: audt_firm_id
+    business_meaning: Khóa đại diện cho công ty kiểm toán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: af_profiles
+    source_column: null
+    comment: PK surrogate. Shared entity với SCMS.CT_KIEM_TOAN.
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: audt_firm_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.id
+    comment: BK chính. PK nguồn. Shared entity với SCMS.CT_KIEM_TOAN.ID.
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Audit Firm Business Code
+    physical_name: audt_firm_bsn_code
+    business_meaning: Mã công ty kiểm toán (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.audit_firm_cd
+    comment: Mã nghiệp vụ — khác BK kỹ thuật. Tương đồng SCMS.CT_KIEM_TOAN.MA_SO.
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Audit Firm Name
+    physical_name: audt_firm_nm
+    business_meaning: Tên tiếng Việt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.full_name_vi
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Audit Firm English Name
+    physical_name: audt_firm_en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.full_name_en
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Audit Firm Short Name
+    physical_name: audt_firm_shrt_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.short_name
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_cptl_amt
+    business_meaning: Vốn điều lệ thực góp.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.paid_in_capital
+    comment: Tương đồng SCMS.CT_KIEM_TOAN.VON_DIEU_LE.
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Approval Decision Number
+    physical_name: aprv_dcsn_nbr
+    business_meaning: Số quyết định chấp thuận của UBCKNN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.approval_decision_no
+    comment: Tương đồng SCMS.CT_KIEM_TOAN.SO_QUYET_DINH.
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Audit Firm Status Code
+    physical_name: audt_firm_st_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: null
+    comment: "Scheme: SCMS_COMPANY_STATUS."
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.created_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Business Registration Number
+    physical_name: bsn_rgst_nbr
+    business_meaning: Giấy chứng nhận đăng ký kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.business_reg_no
+    comment: Mã số ĐKKD của công ty kiểm toán — nguồn IDS có thông tin chi tiết hơn SCMS.
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Eligibility Certificate Number
+    physical_name: elig_ctf_nbr
+    business_meaning: Giấy chứng nhận đủ điều kiện kinh doanh dịch vụ kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.eligibility_cert_no
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Approval Date
+    physical_name: aprv_dt
+    business_meaning: Ngày chấp thuận.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.approval_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Foreign Audit Member Flag
+    physical_name: frgn_audt_mbr_f
+    business_meaning: "Là thành viên hãng kiểm toán quốc tế (1=có / 0=không)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.foreign_audit_member_flg
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Membership Start Date
+    physical_name: mbr_strt_dt
+    business_meaning: Ngày trở thành thành viên hãng kiểm toán quốc tế.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.membership_start_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Created By Login Name
+    physical_name: crt_by_login_nm
+    business_meaning: Người tạo (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.created_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Last Updated By Login Name
+    physical_name: last_udt_by_login_nm
+    business_meaning: Người sửa (login_name của logins).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.last_updated_by
+    comment: "Denormalized — logins là bảng hệ thống out-of-scope."
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null
+
+  - name: Last Updated Timestamp
+    physical_name: last_udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: af_profiles
+    source_column: IDS.af_profiles.last_updated_date
+    comment: null
+    classification_context: "Source System Code = 'IDS_af_profiles'"
+    etl_derived_value: null

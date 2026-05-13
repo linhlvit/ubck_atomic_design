@@ -1,0 +1,778 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-corp_bond_tdg_snpst-MDDS.CorpBondInfor
+  logical_name: "Atomic - Corporate Bond Trading Snapshot – source MDDS.CorpBondInfor"
+  physical_name: corp_bond_tdg_snpst
+  version: "1.0"
+  status: approved
+  bcv_core_object: Product
+  bcv_concept: "[Product] Debt Instrument"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Append
+  source: MDDS
+  description: |
+    Snapshot trạng thái giao dịch trái phiếu doanh nghiệp niêm yết HNX tại thời điểm phát sinh thay đổi: giá tham chiếu/trần/sàn/khớp
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-MDDS-CorpBondInfor
+
+attributes:
+  - name: Corporate Bond Trading Snapshot Id
+    physical_name: corp_bond_tdg_snpst_id
+    business_meaning: Khóa đại diện cho bản tin thông tin giao dịch trái phiếu doanh nghiệp.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Corporate Bond Trading Snapshot Code
+    physical_name: corp_bond_tdg_snpst_code
+    business_meaning: Định danh duy nhất bản tin (GUID). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.Id
+    comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Symbol
+    physical_name: symb
+    business_meaning: "Mã trái phiếu doanh nghiệp (ví dụ: BHB12104). BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.symbol
+    comment: BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning: Ngày giao dịch (dd/mm/yyyy). BK.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.tradingdate
+    comment: BK. Nguồn string (dd/mm/yyyy) — ETL cần parse sang Date. Cần validate format ngày hợp lệ.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên đầy đủ của trái phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.FullName
+    comment: Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Floor Code
+    physical_name: flr_code
+    business_meaning: "Mã sàn giao dịch — luôn = 06 (thị trường trái phiếu doanh nghiệp HNX)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.FloorCode
+    comment: "Scheme: MDDS_FLOOR_CODE. Hardcode = 06. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: 06
+
+  - name: Stock Type Code
+    physical_name: stk_tp_code
+    business_meaning: "Loại chứng khoán — luôn = 12 cho TPDN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.StockType
+    comment: "Scheme: MDDS_STOCK_TYPE. Hardcode = 12 cho TPDN. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: 12
+
+  - name: Trading Session Id
+    physical_name: tdg_ssn_id
+    business_meaning: Mã trạng thái giao dịch theo quy định kết cấu phiên HNX.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.tradingSessionID
+    comment: "Scheme: MDDS_TRADING_SESSION. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Security Trading Status Code
+    physical_name: scr_tdg_st_code
+    business_meaning: "Trạng thái trái phiếu: 0=Bình thường / 1=Tạm ngừng nghỉ lễ / 2=Ngừng GD / 10=Tạm ngừng GD / 11=Hạn chế GD / 25=GD đặc biệt."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.securityTradingStatus
+    comment: "Scheme: MDDS_SECURITY_TRADING_STATUS. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số (0 / 1 / 2 / 10 / 11 / 25) làm code."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Trading Session Status Code
+    physical_name: tdg_ssn_st_code
+    business_meaning: "Trạng thái phiên giao dịch: 1=Đang nhận lệnh / 2=Tạm dừng / 13=Kết thúc nhận lệnh / 90=Chờ nhận lệnh / 97=Đóng cửa."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.tradSesStatus
+    comment: "Scheme: MDDS_TRAD_SES_STATUS. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số làm code."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Ceiling Price
+    physical_name: ceiling_prc
+    business_meaning: Giá trần giao dịch khớp lệnh.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.ceiling
+    comment: "Nguồn string — ETL cần parse sang decimal. Giá TPDN theo % mệnh giá — cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Floor Price
+    physical_name: flr_prc
+    business_meaning: Giá sàn giao dịch khớp lệnh.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.floor
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Reference Price
+    physical_name: refr_prc
+    business_meaning: Giá tham chiếu.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.reference
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Close Price
+    physical_name: cls_prc
+    business_meaning: Giá đóng cửa (giá khớp gần nhất).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.closePrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Close Volume
+    physical_name: cls_vol
+    business_meaning: Khối lượng khớp tại lần khớp gần nhất.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.closeVol
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Price Change Value
+    physical_name: prc_chg_val
+    business_meaning: Thay đổi của giá khớp gần nhất so với giá tham chiếu.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.change
+    comment: Nguồn string — ETL cần parse sang decimal. Có thể mang giá trị âm.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Open Price
+    physical_name: opn_prc
+    business_meaning: Giá mở cửa.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.open
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: High Price
+    physical_name: high_prc
+    business_meaning: Giá thực hiện cao nhất của giao dịch khớp lệnh trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.high
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Low Price
+    physical_name: low_prc
+    business_meaning: Giá thực hiện thấp nhất của giao dịch khớp lệnh trong ngày.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.low
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Average Price
+    physical_name: av_prc
+    business_meaning: Giá trung bình trong ngày (totalTradingValue / totalTrading).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.averagePrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Volume
+    physical_name: tot_mtch_vol
+    business_meaning: Tổng khối lượng giao dịch tích lũy.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.totalTrading
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Total Match Value
+    physical_name: tot_mtch_val
+    business_meaning: Tổng giá trị giao dịch tích lũy.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.totalTradingValue
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Match Volume
+    physical_name: pt_mtch_vol
+    business_meaning: Khối lượng thực hiện gần nhất của giao dịch thỏa thuận Outright.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_MATCH_QTTY
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Match Price
+    physical_name: pt_mtch_prc
+    business_meaning: Giá thực hiện gần nhất của giao dịch thỏa thuận Outright.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_MATCH_PRICE
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Match Volume
+    physical_name: pt_tot_mtch_vol
+    business_meaning: Tổng khối lượng giao dịch thỏa thuận Outright tích lũy.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_TOTAL_TRADED_QTTY
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Match Value
+    physical_name: pt_tot_mtch_val
+    business_meaning: Tổng giá trị giao dịch thỏa thuận Outright tích lũy.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_TOTAL_TRADED_VALUE
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Best Bid Volume
+    physical_name: pt_best_bid_vol
+    business_meaning: Tổng khối lượng chào mua cao nhất trên order book thỏa thuận Outright.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_BestBidQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Best Bid Price
+    physical_name: pt_best_bid_prc
+    business_meaning: Giá chào mua cao nhất trên order book thỏa thuận Outright.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_BestBidPrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Best Offer Volume
+    physical_name: pt_best_ofr_vol
+    business_meaning: Tổng khối lượng chào bán thấp nhất trên order book thỏa thuận Outright.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_BestOfferQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Best Offer Price
+    physical_name: pt_best_ofr_prc
+    business_meaning: Giá chào bán thấp nhất trên order book thỏa thuận Outright.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_BestOfferPrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Bid Volume
+    physical_name: pt_tot_bid_vol
+    business_meaning: Tổng khối lượng chào mua toàn bộ order book thỏa thuận Outright.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_TotalBidQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Total Offer Volume
+    physical_name: pt_tot_ofr_vol
+    business_meaning: Tổng khối lượng chào bán toàn bộ order book thỏa thuận Outright.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_TotalOfferQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Max Volume
+    physical_name: pt_max_vol
+    business_meaning: Tổng khối lượng thực hiện tương ứng với giá cao nhất — giao dịch thỏa thuận Outright.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_MaxQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Max Price
+    physical_name: pt_max_prc
+    business_meaning: Giá thực hiện cao nhất — giao dịch thỏa thuận Outright.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_MaxPrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Min Volume
+    physical_name: pt_min_vol
+    business_meaning: Tổng khối lượng thực hiện tương ứng với giá thấp nhất — giao dịch thỏa thuận Outright.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_MinQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: PT Min Price
+    physical_name: pt_min_prc
+    business_meaning: Giá thực hiện thấp nhất — giao dịch thỏa thuận Outright.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PT_MinPrice
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Foreign Remaining Room
+    physical_name: frgn_rman_room
+    business_meaning: Số lượng còn lại nhà đầu tư nước ngoài được phép mua.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.foreignRemain
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Issuer Name
+    physical_name: issur_nm
+    business_meaning: Mã tổ chức phát hành trái phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.IssuerName
+    comment: "Nguồn string — tên cột là IssuerName nhưng thực chất chứa mã tổ chức. Khớp tự nhiên với Text. FK cross-source đến Public Company/IDS sẽ thiết kế sau khi xác nhận mapping."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Maturity Date
+    physical_name: mat_dt
+    business_meaning: Ngày đáo hạn trái phiếu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.MaturityDate
+    comment: Nguồn string — ETL cần parse sang Date. Cần validate format ngày hợp lệ.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày phát hành trái phiếu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.IssueDate
+    comment: Nguồn string — ETL cần parse sang Date. Cần validate format ngày hợp lệ.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Total Listing Volume
+    physical_name: tot_listing_vol
+    business_meaning: Tổng khối lượng trái phiếu niêm yết.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.TotalListingQtty
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Par Value
+    physical_name: par_val
+    business_meaning: Mệnh giá trái phiếu (thường 100.000 VND/trái phiếu).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.parValue
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Bond Period
+    physical_name: bond_prd
+    business_meaning: Kỳ hạn gốc của trái phiếu.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.BOND_PERIOD
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Period Unit Code
+    physical_name: prd_unit_code
+    business_meaning: "Đơn vị kỳ hạn: 1=Ngày / 2=Tuần / 3=Tháng / 4=Năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PERIOD_UNIT
+    comment: "Scheme: MDDS_PERIOD_UNIT. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số (1 / 2 / 3 / 4) làm code."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Period Remaining
+    physical_name: prd_rman
+    business_meaning: Kỳ hạn còn lại tính bằng ngày (tính toán lại hàng ngày).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.PERIOD_REMAIN
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Bond Interest Type Code
+    physical_name: bond_int_tp_code
+    business_meaning: "Loại hình lãi suất: 1=Coupon / 2=Zero Coupon."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.INTEREST_TYPE
+    comment: "Scheme: MDDS_BOND_INTEREST_TYPE. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số làm code."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Interest Rate
+    physical_name: int_rate
+    business_meaning: Lãi suất danh nghĩa (coupon rate).
+    data_domain: Interest Rate
+    data_type: decimal(8,5)
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.INTEREST_RATE
+    comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Debt Interest Type Code
+    physical_name: dbt_int_tp_code
+    business_meaning: "Loại lãi suất: 1=Cố định / 2=Thả nổi."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.INTERESTRATE_TYPE
+    comment: "BCV Term: Debt Interest Type (id=12002) — distinguishes Debt Instrument by how interest rate is applied (fixed/floating). Scheme: MDDS_INTEREST_RATE_TYPE. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số làm code."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Interest Period
+    physical_name: int_prd
+    business_meaning: Kỳ hạn trả lãi.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.INTEREST_PERIOD
+    comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric. (Nguồn lưu dạng string dù mang ý nghĩa số nguyên — domain Small Counter là đúng theo ngữ nghĩa.)"
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Interest Period Unit Code
+    physical_name: int_prd_unit_code
+    business_meaning: "Đơn vị kỳ hạn trả lãi: 1=Ngày / 2=Tuần / 3=Tháng / 4=Năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.INTEREST_PERIOD_UNIT
+    comment: "Scheme: MDDS_PERIOD_UNIT. Dùng chung scheme với Period Unit Code. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Interest Coupon Type Code
+    physical_name: int_cpn_tp_code
+    business_meaning: "Kiểu coupon: 1=Standard / 2=Long Coupon / 3=Short Coupon / 4=Khác."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.INTEREST_COUPON_TYPE
+    comment: "Scheme: MDDS_COUPON_TYPE. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Interest Payment Type Code
+    physical_name: int_pymt_tp_code
+    business_meaning: "Phương thức trả lãi: 1=Định kỳ cuối kỳ / 2=Định kỳ đầu kỳ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.INTEREST_PAYMENT_TYPE
+    comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Nguồn string — khớp tự nhiên với Classification Value."
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null
+
+  - name: Characteristics
+    physical_name: char
+    business_meaning: Đặc điểm của trái phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: CorpBondInfor
+    source_column: MDDS.CorpBondInfor.characteristics
+    comment: Nguồn string — khớp tự nhiên với Text.
+    classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+    etl_derived_value: null

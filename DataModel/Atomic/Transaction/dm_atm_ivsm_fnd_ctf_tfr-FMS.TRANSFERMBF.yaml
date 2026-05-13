@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ivsm_fnd_ctf_tfr-FMS.TRANSFERMBF
+  logical_name: "Atomic - Investment Fund Certificate Transfer – source FMS.TRANSFERMBF"
+  physical_name: ivsm_fnd_ctf_tfr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Event] Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Giao dịch mua/bán chứng chỉ quỹ của nhà đầu tư thành viên. Ghi nhận số lượng và giá giao dịch theo từng quỹ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-TRANSFERMBF
+
+attributes:
+  - name: Investment Fund Investor Capital Transfer Id
+    physical_name: ivsm_fnd_ivsr_cptl_tfr_id
+    business_meaning: Khóa đại diện cho giao dịch chuyển nhượng phần vốn góp quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Capital Transfer Code
+    physical_name: ivsm_fnd_ivsr_cptl_tfr_code
+    business_meaning: Mã định danh giao dịch. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Investment Fund Id
+    physical_name: ivsm_fnd_id
+    business_meaning: FK đến quỹ đầu tư có phần vốn chuyển nhượng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.FndId
+    comment: "FK target: Investment Fund.Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: ivsm_fnd_code
+    business_meaning: Mã quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.FndId
+    comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment Fund Id."
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Membership Id
+    physical_name: ivsm_fnd_ivsr_mbr_id
+    business_meaning: FK đến quan hệ góp vốn của NĐT trong quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.MBFId
+    comment: "FK target: Investment Fund Investor Membership.Investment Fund Investor Membership Id."
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Membership Code
+    physical_name: ivsm_fnd_ivsr_mbr_code
+    business_meaning: Mã quan hệ góp vốn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.MBFId
+    comment: "Lookup pair: Investment Fund Investor Membership.Investment Fund Investor Membership Code. Pair with Investment Fund Investor Membership Id."
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Transfer Date
+    physical_name: tfr_dt
+    business_meaning: Ngày thực hiện chuyển nhượng phần vốn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.TransDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Transfer Quantity
+    physical_name: tfr_qty
+    business_meaning: Số lượng phần vốn chuyển nhượng.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.Quantity
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Transfer Price
+    physical_name: tfr_prc
+    business_meaning: Giá chuyển nhượng (VNĐ/phần vốn).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.Price
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Transfer Type Code
+    physical_name: tfr_tp_code
+    business_meaning: Loại giao dịch chuyển nhượng.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.TransType
+    comment: "Scheme: FMS_TRANSFER_TYPE."
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFERMBF
+    source_column: FMS.TRANSFERMBF.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFERMBF'"
+    etl_derived_value: null

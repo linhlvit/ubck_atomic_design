@@ -1,0 +1,134 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mkt_surveil_sspcs_ac_grp-GSGD.suspicious_account_group
+  logical_name: "Atomic - Market Surveillance Suspicious Account Group – source GSGD.suspicious_account_group"
+  physical_name: mkt_surveil_sspcs_ac_grp
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Group Membership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Nhóm tài khoản nghi vấn trong phạm vi 1 vụ việc giám sát cụ thể. FK Market Surveillance Case.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-suspicious_account_group
+
+attributes:
+  - name: Market Surveillance Suspicious Account Group Id
+    physical_name: mkt_surveil_sspcs_ac_grp_id
+    business_meaning: Khóa đại diện cho nhóm tài khoản nghi vấn trong vụ việc.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Suspicious Account Group Code
+    physical_name: mkt_surveil_sspcs_ac_grp_code
+    business_meaning: Mã nhóm tài khoản nghi vấn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: GSGD.suspicious_account_group.group_code
+    comment: BK chính.
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Id
+    physical_name: mkt_surveil_case_id
+    business_meaning: FK đến vụ việc giám sát.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: GSGD.suspicious_account_group.case_file_id
+    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null
+
+  - name: Market Surveillance Case Code
+    physical_name: mkt_surveil_case_code
+    business_meaning: Mã vụ việc. Denormalized.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: GSGD.suspicious_account_group.case_file_id
+    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null
+
+  - name: Group Name
+    physical_name: grp_nm
+    business_meaning: Tên nhóm tài khoản nghi vấn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: GSGD.suspicious_account_group.group_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả nhóm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: GSGD.suspicious_account_group.description
+    comment: null
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null
+
+  - name: Relationship Criteria Code
+    physical_name: rltnp_crit_code
+    business_meaning: "Tiêu chí phân nhóm: Danh tính, IP, MAC, Tiền."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: suspicious_account_group
+    source_column: GSGD.suspicious_account_group.relationship_criteria
+    comment: "Scheme: GSGD_RELATIONSHIP_CRITERIA."
+    classification_context: "Source System Code = 'GSGD_suspicious_account_group'"
+    etl_derived_value: null

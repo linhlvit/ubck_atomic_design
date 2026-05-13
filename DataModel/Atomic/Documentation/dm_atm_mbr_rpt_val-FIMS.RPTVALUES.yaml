@@ -1,0 +1,582 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mbr_rpt_val-FIMS.RPTVALUES
+  logical_name: "Atomic - Member Report Value – source FIMS.RPTVALUES"
+  physical_name: mbr_rpt_val
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Reported Information"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FIMS
+  description: |
+    Giá trị từng chỉ tiêu trong báo cáo định kỳ của thành viên. Mỗi dòng = 1 chỉ tiêu trong 1 báo cáo.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-RPTVALUES
+
+attributes:
+  - name: Member Report Value Id
+    physical_name: mbr_rpt_val_id
+    business_meaning: Khóa đại diện cho giá trị chỉ tiêu báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Member Report Value Code
+    physical_name: mbr_rpt_val_code
+    business_meaning: Mã giá trị chỉ tiêu. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Member Regulatory Report Id
+    physical_name: mbr_reg_rpt_id
+    business_meaning: FK đến lần nộp báo cáo của thành viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.MebId
+    comment: "FK target: Member Regulatory Report.Member Regulatory Report Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Member Regulatory Report Code
+    physical_name: mbr_reg_rpt_code
+    business_meaning: Mã lần nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.MebId
+    comment: "Lookup pair: Member Regulatory Report.Member Regulatory Report Code. Pair with Member Regulatory Report Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Reporting Period Id
+    physical_name: rpt_prd_id
+    business_meaning: FK đến kỳ báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.PrdId
+    comment: "FK target: Reporting Period.Reporting Period Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Reporting Period Code
+    physical_name: rpt_prd_code
+    business_meaning: Mã kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.PrdId
+    comment: "Lookup pair: Reporting Period.Reporting Period Code. Pair with Reporting Period Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Report Template Id
+    physical_name: rpt_tpl_id
+    business_meaning: FK đến biểu mẫu báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.RptId
+    comment: "FK target: Report Template.Report Template Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Report Template Code
+    physical_name: rpt_tpl_code
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.RptId
+    comment: "Lookup pair: Report Template.Report Template Code. Pair with Report Template Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Report Sheet Code
+    physical_name: rpt_shet_code
+    business_meaning: Mã sheet báo cáo. Dữ liệu lấy từ trường ID của bảng SHEET.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.SheetId
+    comment: "Scheme: FIMS_REPORT_SHEET."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Cell Identifier
+    physical_name: cell_id
+    business_meaning: UID ô dữ liệu trong sheet ẩn — định vị chỉ tiêu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.TgtId
+    comment: UID sheet ẩn — dùng để định vị chỉ tiêu trong biểu mẫu.
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Cell Code
+    physical_name: cell_code
+    business_meaning: Mã chỉ tiêu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.Code
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ gửi báo cáo (nullable — chỉ 1 trong 7 FK thành viên có giá trị).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.FundId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.FundId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.SecId
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.SecId
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Id
+    physical_name: cstd_bnk_id
+    business_meaning: FK đến ngân hàng lưu ký gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.BankId
+    comment: "FK target: Custodian Bank.Custodian Bank Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: cstd_bnk_code
+    business_meaning: Mã ngân hàng lưu ký gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.BankId
+    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Depository Center Id
+    physical_name: depst_cntr_id
+    business_meaning: FK đến trung tâm lưu ký gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.DepId
+    comment: "FK target: Depository Center.Depository Center Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Depository Center Code
+    physical_name: depst_cntr_code
+    business_meaning: Mã trung tâm lưu ký gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.DepId
+    comment: "Lookup pair: Depository Center.Depository Center Code. Pair with Depository Center Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Stock Exchange Id
+    physical_name: stk_exg_id
+    business_meaning: FK đến sở giao dịch chứng khoán gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.StockId
+    comment: "FK target: Stock Exchange.Stock Exchange Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Stock Exchange Code
+    physical_name: stk_exg_code
+    business_meaning: Mã sở giao dịch chứng khoán gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.StockId
+    comment: "Lookup pair: Stock Exchange.Stock Exchange Code. Pair with Stock Exchange Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Disclosure Representative Id
+    physical_name: dscl_rprs_id
+    business_meaning: FK đến người đại diện CBTT gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.InId
+    comment: "FK target: Disclosure Representative.Disclosure Representative Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Disclosure Representative Code
+    physical_name: dscl_rprs_code
+    business_meaning: Mã người đại diện CBTT gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.InId
+    comment: "Lookup pair: Disclosure Representative.Disclosure Representative Code. Pair with Disclosure Representative Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Organization Unit Id
+    physical_name: fnd_mgt_co_ou_id
+    business_meaning: FK đến chi nhánh công ty QLQ NN tại VN gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.BranId
+    comment: "FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Organization Unit Code
+    physical_name: fnd_mgt_co_ou_code
+    business_meaning: Mã chi nhánh công ty QLQ NN tại VN gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.BranId
+    comment: "Lookup pair: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Fund Management Company Organization Unit Id."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Member Object Type Code
+    physical_name: mbr_obj_tp_code
+    business_meaning: "Loại đối tượng gửi báo cáo: 1: Công ty QLQ 2: CTCK 3: NHLK 4: TTLK 5: SGDCK 6: Người đại diện CBTT 7: CN CTQLQ NN tại VN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.Type
+    comment: "Scheme: FIMS_MEMBER_TYPE. Lưu lại tại thời điểm ghi giá trị — denormalized từ RPTMEMBER."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Reporting Period Type Code
+    physical_name: rpt_prd_tp_code
+    business_meaning: "Kỳ báo cáo: 1: Ngày 2: Tuần 3: Nửa tháng 4: Tháng 5: Quý 6: Bán niên 7: Năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.PeriodType
+    comment: "Scheme: FIMS_PERIOD_TYPE. Denormalized từ RPTMEMBER."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: prd_val
+    business_meaning: Giá trị kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.PeriodValue
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_yr
+    business_meaning: Năm báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.YearValue
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Cell Value
+    physical_name: cell_val
+    business_meaning: Giá trị ô chỉ tiêu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.Values
+    comment: Lưu dạng text — kiểu thực tế xác định qua Cell Data Type Code.
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Cell Data Type Code
+    physical_name: cell_data_tp_code
+    business_meaning: "Định dạng dữ liệu ô: kiểu số hoặc kiểu ký tự."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.FormatDataType
+    comment: "Scheme: FIMS_CELL_DATA_TYPE."
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Is Dynamic Row Indicator
+    physical_name: is_dynamic_row_ind
+    business_meaning: "Là dòng động: 0: Không 1: Có."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.IsDynamic
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Dynamic Row Index
+    physical_name: dynamic_row_indx
+    business_meaning: Chỉ số dòng động.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.RowDynamic
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Source Table Name
+    physical_name: src_tbl_nm
+    business_meaning: Tên bảng RPTVALUES nguồn (mỗi năm sinh 1 bảng riêng).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.TableName
+    comment: Bảng được sinh tự động theo năm — lưu lại để truy vết nguồn.
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Field Name
+    physical_name: fld_nm
+    business_meaning: Tên file đính kèm (nếu có).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.FieldName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Selection Data
+    physical_name: sel_data
+    business_meaning: Dữ liệu dạng ô cho phép chọn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.Identification
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: RPTVALUES
+    source_column: FIMS.RPTVALUES.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_RPTVALUES'"
+    etl_derived_value: null

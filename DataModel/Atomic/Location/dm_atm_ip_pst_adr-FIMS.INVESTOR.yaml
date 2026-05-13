@@ -1,0 +1,106 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_pst_adr-FIMS.INVESTOR
+  logical_name: "Atomic - Involved Party Postal Address – source FIMS.INVESTOR"
+  physical_name: ip_pst_adr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-INVESTOR
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Foreign Investor.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.id
+    comment: "FK target: Foreign Investor.Foreign Investor Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã nhà đầu tư nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.id
+    comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — địa chỉ chung.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: ADDRESS
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ nhà đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.Address
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Address Detail
+    physical_name: adr_dtl
+    business_meaning: Địa chỉ văn phòng đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: Text tự do — denormalized.
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null

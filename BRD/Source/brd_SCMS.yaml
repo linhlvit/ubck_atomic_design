@@ -1,0 +1,1229 @@
+source: SCMS
+description: "Quản lý giám sát Công ty chứng khoán"
+brd_entries:
+  # SCMS_UID01 — Quản lý CTCK (hồ sơ và đơn vị trực thuộc)
+  - brd_id: BRD-SRC-SCMS-CTCK_THONG_TIN
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_THONG_TIN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin CTCK"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_CHI_NHANH
+          relation: "1-N — chi nhánh CTCK trong nước"
+        - table: CTCK_VP_DAI_DIEN
+          relation: "1-N — văn phòng đại diện trong nước"
+        - table: CTCK_PHONG_GIAO_DICH
+          relation: "1-N — phòng giao dịch"
+        - table: CTCK_DICH_VU
+          relation: "1-N — dịch vụ đăng ký của CTCK"
+        - table: CTCK_NGUOI_HANH_NGHE_CK
+          relation: "1-N — người hành nghề CK tại CTCK"
+        - table: CTCK_NHAN_SU_CAO_CAP
+          relation: "1-N — nhân sự cao cấp"
+        - table: CTCK_CO_DONG
+          relation: "1-N — cổ đông lớn/chủ sở hữu"
+        - table: CTCK_XU_LY_HANH_CHINH
+          relation: "1-N — quyết định xử phạt vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_CHI_NHANH
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_CHI_NHANH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách chi nhánh"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK sở hữu chi nhánh"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_VP_DAI_DIEN
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_VP_DAI_DIEN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách văn phòng đại diện"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK sở hữu VPĐD"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_PHONG_GIAO_DICH
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_PHONG_GIAO_DICH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách phòng giao dịch"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK sở hữu PGD"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_DICH_VU
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_DICH_VU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách dịch vụ của CTCK"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK đăng ký dịch vụ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-LK_CTCK_NGANH_NGHE_KD
+    brd_name: "Design Atomic từ nguồn SCMS bảng LK_CTCK_NGANH_NGHE_KD"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết ngành nghề kinh doanh với CTCK"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK"
+        - table: DM_NGANH_NGHE_KD
+          relation: "FK — ngành nghề kinh doanh"
+      notes: "Junction table — denormalize vào Securities Company"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_HS_LICH_SU
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_HS_LICH_SU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách hồ sơ lịch sử thay đổi"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Audit Log nguồn"
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_LICH_SU_XOA
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_LICH_SU_XOA"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin lịch sử xóa của CTCK"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Audit Log nguồn"
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_XU_LY_HANH_CHINH
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_XU_LY_HANH_CHINH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin xử lý hành chính"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK bị xử phạt"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_NGUOI_HANH_NGHE_CK
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_NGUOI_HANH_NGHE_CK"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách người hành nghề chứng khoán"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK nơi người hành nghề đăng ký"
+      notes: "Shared entity với NHNCK — bổ sung source"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_NHAN_SU_CAO_CAP
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_NHAN_SU_CAO_CAP"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách nhân sự cao cấp"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_CO_DONG
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_CO_DONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách cổ đông"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK cha — CTCK"
+        - table: CTCK_CD_CHUYEN_NHUONG
+          relation: "1-N — giao dịch chuyển nhượng cổ đông"
+        - table: CTCK_CD_DAI_DIEN
+          relation: "1-N — người đại diện cổ đông"
+        - table: CTCK_CD_MOI_QUAN_HE
+          relation: "1-N — mối quan hệ cổ đông"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_CD_CHUYEN_NHUONG
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_CD_CHUYEN_NHUONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin chuyển nhượng cổ đông"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_CO_DONG
+          relation: "FK cha — cổ đông"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_CD_DAI_DIEN
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_CD_DAI_DIEN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách cổ đông đại diện"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_CO_DONG
+          relation: "FK cha — cổ đông"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CTCK_CD_MOI_QUAN_HE
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_CD_MOI_QUAN_HE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách mối quan hệ cổ đông"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_CO_DONG
+          relation: "FK cha — cổ đông"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # UID03 — VPDD CTCK nước ngoài
+  - brd_id: BRD-SRC-SCMS-CTCK_VP_DAI_DIEN_NN
+    brd_name: "Design Atomic từ nguồn SCMS bảng CTCK_VP_DAI_DIEN_NN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách văn phòng đại diện nước ngoài"
+      functional_group: "SCMS_UID03 Quản lý VPDD CTCK nước ngoài tại VN"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_NHAN_SU_CAO_CAP
+          relation: "1-N — nhân sự VPDD CTCK NN"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # Báo cáo thành viên (dùng chung UID01-04)
+  - brd_id: BRD-SRC-SCMS-BC_THANH_VIEN
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_THANH_VIEN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách báo cáo mà đơn vị đã gửi theo định kỳ"
+      functional_group: "SCMS_UID01/02/03/04 Khai thác báo cáo đầu vào"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BC_BAO_CAO_GT
+          relation: "1-N — giá trị từng chỉ tiêu báo cáo"
+        - table: BC_THANH_VIEN_LS
+          relation: "1-N — lịch sử trạng thái báo cáo (out of scope)"
+        - table: BC_THANH_VIEN_XU_LY
+          relation: "1-N — tiếp nhận/xử lý báo cáo (out of scope)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BC_BAO_CAO_GT
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_BAO_CAO_GT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu giá trị của chỉ tiêu báo cáo"
+      functional_group: "SCMS_UID01/02/03/04 Khai thác báo cáo đầu vào"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BC_THANH_VIEN
+          relation: "FK cha — bản ghi báo cáo đơn vị"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BC_THANH_VIEN_LS
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_THANH_VIEN_LS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách báo cáo mà đơn vị đã gửi theo định kỳ (lịch sử)"
+      functional_group: "SCMS_UID01 Khai thác báo cáo đầu vào CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Audit Log nguồn"
+      related_tables:
+        - table: BC_THANH_VIEN
+          relation: "FK cha — bản ghi báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BC_THANH_VIEN_XU_LY
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_THANH_VIEN_XU_LY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin tiếp nhận/xử lý báo cáo"
+      functional_group: "SCMS_UID01 Khai thác báo cáo đầu vào CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables:
+        - table: BC_THANH_VIEN
+          relation: "FK cha — bản ghi báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BC_VI_PHAM
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_VI_PHAM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin tình hình gửi báo cáo của đơn vị"
+      functional_group: "SCMS_UID01/04 Khai thác báo cáo đầu vào"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BC_VI_PHAM_LOAI_VP
+          relation: "1-N — chi tiết loại vi phạm báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BC_VI_PHAM_LOAI_VP
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_VI_PHAM_LOAI_VP"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin tình hình gửi báo cáo của đơn vị"
+      functional_group: "SCMS_UID01 Khai thác báo cáo đầu vào CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BC_VI_PHAM
+          relation: "FK cha — vi phạm báo cáo"
+      notes: "Junction — denormalize vào Securities Company Report Violation"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # CBTT
+  - brd_id: BRD-SRC-SCMS-CBTT_BAO_CAO
+    brd_name: "Design Atomic từ nguồn SCMS bảng CBTT_BAO_CAO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách các báo cáo khi công bố thông tin"
+      functional_group: "SCMS_UID01/02 Khai thác thông tin công bố"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK — CTCK công bố thông tin"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CBTT_CHAO_BAN_CHUNG_KHOAN
+    brd_name: "Design Atomic từ nguồn SCMS bảng CBTT_CHAO_BAN_CHUNG_KHOAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin chào bán chứng khoán được công bố"
+      functional_group: "SCMS_UID01 Khai thác thông tin công bố CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK — CTCK công bố"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CBTT_CO_DONG
+    brd_name: "Design Atomic từ nguồn SCMS bảng CBTT_CO_DONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin cổ đông được công bố"
+      functional_group: "SCMS_UID01 Khai thác thông tin công bố CTCK"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CTCK_THONG_TIN
+          relation: "FK — CTCK công bố"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # Khai thác tổng hợp (out of scope)
+  - brd_id: BRD-SRC-SCMS-BC_KHAI_THAC
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_KHAI_THAC"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Dữ liệu khai thác phục vụ báo cáo tổng hợp"
+      functional_group: "SCMS_UID01 Khai thác báo cáo đầu ra CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Gold/intermediate — kết quả tổng hợp"
+      related_tables:
+        - table: BC_KHAI_THAC_GT
+          relation: "1-N — giá trị dữ liệu khai thác tổng hợp"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BC_KHAI_THAC_GT
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_KHAI_THAC_GT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Dữ liệu khai thác phục vụ báo cáo tổng hợp"
+      functional_group: "SCMS_UID01 Khai thác báo cáo đầu ra CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Gold/intermediate — kết quả tổng hợp"
+      related_tables:
+        - table: BC_KHAI_THAC
+          relation: "FK cha — phiên khai thác"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # Nháp (out of scope)
+  - brd_id: BRD-SRC-SCMS-BC_GT_HDR
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_GT_HDR"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách dữ liệu báo nháp"
+      functional_group: "SCMS_UID01 Khai thác báo cáo đầu vào CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Draft data"
+      related_tables:
+        - table: BC_GT_DTL
+          relation: "1-N — detail báo cáo nháp"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BC_GT_DTL
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_GT_DTL"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách dữ liệu báo nháp"
+      functional_group: "SCMS_UID01 Khai thác báo cáo đầu vào CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Draft data"
+      related_tables:
+        - table: BC_GT_HDR
+          relation: "FK cha — báo cáo nháp header"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # SCMS_UID05 — Công ty kiểm toán
+  - brd_id: BRD-SRC-SCMS-CT_KIEM_TOAN
+    brd_name: "Design Atomic từ nguồn SCMS bảng CT_KIEM_TOAN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách công ty kiểm toán"
+      functional_group: "SCMS_UID05 Khai thác công ty kiểm toán và kiểm toán viên"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CT_KIEM_TOAN_VIEN
+          relation: "1-N — kiểm toán viên thuộc công ty KT"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CT_KIEM_TOAN_VIEN
+    brd_name: "Design Atomic từ nguồn SCMS bảng CT_KIEM_TOAN_VIEN"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách kiểm toán viên"
+      functional_group: "SCMS_UID05 Khai thác công ty kiểm toán và kiểm toán viên"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: CT_KIEM_TOAN
+          relation: "FK cha — công ty kiểm toán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # SCMS_UID06 — Cảnh báo vi phạm
+  - brd_id: BRD-SRC-SCMS-BC_CANH_BAO
+    brd_name: "Design Atomic từ nguồn SCMS bảng BC_CANH_BAO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin cảnh báo"
+      functional_group: "SCMS_UID06 Cảnh báo vi phạm"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế — kết quả thực tế cần lên Atomic (xem HLD 7e #1)"
+      related_tables:
+        - table: BC_THANH_VIEN
+          relation: "Nguồn dữ liệu tính toán — báo cáo thành viên"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # SCMS_UID08 — Biểu mẫu báo cáo
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_SHEET
+          relation: "1-N — sheet trong biểu mẫu"
+        - table: BM_BAO_CAO_HANG
+          relation: "1-N — hàng trong biểu mẫu"
+        - table: BM_BAO_CAO_COT
+          relation: "1-N — cột trong biểu mẫu"
+        - table: BM_BAO_CAO_CT
+          relation: "1-N — chỉ tiêu trong biểu mẫu"
+        - table: BM_BAO_CAO_DINH_KY
+          relation: "1-N — định kỳ gửi báo cáo"
+        - table: BM_BAO_CAO_DINH_KY_DON_VI
+          relation: "1-N — đơn vị có nghĩa vụ gửi theo định kỳ"
+        - table: BM_BAO_CAO_TV
+          relation: "1-N — đơn vị có nghĩa vụ gửi theo biểu mẫu"
+        - table: BM_BAO_CAO_LS
+          relation: "1-N — lịch sử thay đổi biểu mẫu (out of scope)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_SHEET
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_SHEET"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách sheet của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO_HANG
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO_HANG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách hàng của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO_COT
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO_COT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách cột của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO_CT
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO_CT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách chỉ tiêu của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO_DINH_KY
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO_DINH_KY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách định kỳ gửi của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+        - table: BM_BAO_CAO_DINH_KY_DON_VI
+          relation: "1-N — đơn vị có nghĩa vụ gửi theo định kỳ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO_DINH_KY_DON_VI
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO_DINH_KY_DON_VI"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách đơn vị có nghĩa vụ gửi báo cáo theo biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_BAO_CAO_DINH_KY
+          relation: "FK cha — định kỳ gửi"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO_TV
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO_TV"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách đơn vị có nghĩa vụ gửi báo cáo theo biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: "Junction — denormalize vào Report Template"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_BAO_CAO_LS
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_BAO_CAO_LS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin lịch sử của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Audit Log nguồn"
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_TIEUDE_HANG
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_TIEUDE_HANG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách tiêu đề hàng thiết kế động của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "UI metadata"
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-BM_TIEUDE_HANG_COT
+    brd_name: "Design Atomic từ nguồn SCMS bảng BM_TIEUDE_HANG_COT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách tiêu đề thiết kế động của biểu mẫu báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "UI metadata"
+      related_tables:
+        - table: BM_BAO_CAO
+          relation: "FK cha — biểu mẫu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # Danh mục dùng chung (DM_*)
+  - brd_id: BRD-SRC-SCMS-DM_TINH_THANH
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_TINH_THANH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục tỉnh thành"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "Shared Geographic Area (PROVINCE)"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_QUOC_TICH
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_QUOC_TICH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục quốc tịch"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "Shared Geographic Area (COUNTRY)"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_LOAI_CONG_TY
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_LOAI_CONG_TY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại công ty"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_COMPANY_TYPE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_TRANG_THAI_CTCK
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_TRANG_THAI_CTCK"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục trạng thái của CTCK"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_COMPANY_STATUS"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_CHUC_VU
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_CHUC_VU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chức vụ"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_POSITION_TYPE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_DICH_VU
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_DICH_VU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục dịch vụ"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_SERVICE_TYPE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_NGANH_NGHE_KD
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_NGANH_NGHE_KD"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục ngành nghề kinh doanh"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_BUSINESS_SECTOR"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_MOI_QUAN_HE
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_MOI_QUAN_HE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục mối quan hệ"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_SHAREHOLDER_RELATION_TYPE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_LOAI_GIAO_DICH_CD
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_LOAI_GIAO_DICH_CD"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại giao dịch cổ đông"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_SHAREHOLDER_TXN_TYPE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_LOAI_VI_PHAM
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_LOAI_VI_PHAM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại vi phạm"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_VIOLATION_TYPE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_SU_VU
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_SU_VU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục sự vụ"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_INCIDENT_TYPE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_CHI_TIEU
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_CHI_TIEU"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chỉ tiêu"
+      functional_group: "SCMS_UID06 Cảnh báo vi phạm"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DM_CHI_TIEU_DM
+          relation: "1-N — ánh xạ chỉ tiêu — nhóm danh mục"
+      notes: "Report Indicator"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_CHI_TIEU_DM
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_CHI_TIEU_DM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chỉ tiêu"
+      functional_group: "SCMS_UID06 Cảnh báo vi phạm"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables:
+        - table: DM_CHI_TIEU
+          relation: "FK cha — danh mục chỉ tiêu"
+      notes: "CV: SCMS_INDICATOR_GROUP"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_CHI_TIEU_THONG_KE
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_CHI_TIEU_THONG_KE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chỉ tiêu – thống kê"
+      functional_group: "Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Metadata ETL"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_THONG_KE
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_THONG_KE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục mã thống kê"
+      functional_group: "Danh mục dùng chung"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_STATISTICAL_CODE"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-DM_CANH_BAO
+    brd_name: "Design Atomic từ nguồn SCMS bảng DM_CANH_BAO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục cảnh báo"
+      functional_group: "SCMS_UID06 Cảnh báo vi phạm"
+      scope_status: in_scope
+      scope_reason: null
+      related_tables: null
+      notes: "CV: SCMS_REPORT_WARNING_RULE — cần xác nhận"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-CHUNG_THU_SO
+    brd_name: "Design Atomic từ nguồn SCMS bảng CHUNG_THU_SO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách chứng thư số được quản lý"
+      functional_group: "SCMS_UID01 Quản lý CTCK"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # SCMS_UID08 — Quản trị phân hệ (out of scope)
+  - brd_id: BRD-SRC-SCMS-QT_NGUOI_DUNG
+    brd_name: "Design Atomic từ nguồn SCMS bảng QT_NGUOI_DUNG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách người dùng"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables:
+        - table: QT_NGUOI_DUNG_IP
+          relation: "1-N — quản lý IP đăng ký"
+        - table: LK_NGUOI_DUNG_NHOM
+          relation: "1-N — liên kết người dùng nhóm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-QT_NGUOI_DUNG_IP
+    brd_name: "Design Atomic từ nguồn SCMS bảng QT_NGUOI_DUNG_IP"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin quản lý IP đăng ký"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-QT_NHOM_NGUOI_DUNG
+    brd_name: "Design Atomic từ nguồn SCMS bảng QT_NHOM_NGUOI_DUNG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách nhóm người dùng"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-QT_CHUC_NANG
+    brd_name: "Design Atomic từ nguồn SCMS bảng QT_CHUC_NANG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chức năng"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-QT_LICH_HE_THONG
+    brd_name: "Design Atomic từ nguồn SCMS bảng QT_LICH_HE_THONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin lịch hệ thống"
+      functional_group: "SCMS_UID07 Tiện ích và trợ giúp"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-QT_LOG_HE_THONG
+    brd_name: "Design Atomic từ nguồn SCMS bảng QT_LOG_HE_THONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách log hệ thống"
+      functional_group: "SCMS_UID07 Tiện ích và trợ giúp"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-QT_THAM_SO_HE_THONG
+    brd_name: "Design Atomic từ nguồn SCMS bảng QT_THAM_SO_HE_THONG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quản trị cấu hình tham số hệ thống"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-LK_CHUC_NANG_NGUOI
+    brd_name: "Design Atomic từ nguồn SCMS bảng LK_CHUC_NANG_NGUOI"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết người dùng chức năng"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-LK_CHUC_NANG_NHOM_NGUOI
+    brd_name: "Design Atomic từ nguồn SCMS bảng LK_CHUC_NANG_NHOM_NGUOI"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết nhóm người dùng chức năng"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-LK_NGUOI_DUNG_BAO_CAO
+    brd_name: "Design Atomic từ nguồn SCMS bảng LK_NGUOI_DUNG_BAO_CAO"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết phân quyền khai thác báo cáo"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-LK_NGUOI_DUNG_CTCK
+    brd_name: "Design Atomic từ nguồn SCMS bảng LK_NGUOI_DUNG_CTCK"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết phân quyền cán bộ quản trị CTCK"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-LK_NGUOI_DUNG_NHOM
+    brd_name: "Design Atomic từ nguồn SCMS bảng LK_NGUOI_DUNG_NHOM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết người dùng nhóm người dùng"
+      functional_group: "SCMS_UID08 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data"
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null

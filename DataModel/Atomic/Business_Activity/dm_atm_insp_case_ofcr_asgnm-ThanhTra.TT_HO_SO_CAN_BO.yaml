@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-insp_case_ofcr_asgnm-ThanhTra.TT_HO_SO_CAN_BO
+  logical_name: "Atomic - Inspection Case Officer Assignment – source ThanhTra.TT_HO_SO_CAN_BO"
+  physical_name: insp_case_ofcr_asgnm
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ThanhTra
+  description: |
+    Phân công cán bộ phụ trách hồ sơ thanh tra. FK → Inspection Case + FK → Inspection Officer.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-TT_HO_SO_CAN_BO
+
+attributes:
+  - name: Inspection Case Officer Assignment Id
+    physical_name: insp_case_ofcr_asgnm_id
+    business_meaning: Khóa đại diện cho phân công cán bộ xử lý hồ sơ thanh tra.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Inspection Case Officer Assignment Code
+    physical_name: insp_case_ofcr_asgnm_code
+    business_meaning: Mã phân công. Map từ PK ThanhTra.TT_HO_SO_CAN_BO.ID.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.ID
+    comment: BK của entity.
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Inspection Case Id
+    physical_name: insp_case_id
+    business_meaning: FK đến Inspection Case.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.HO_SO_ID
+    comment: "FK target: Inspection Case.Inspection Case Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Inspection Case Code
+    physical_name: insp_case_code
+    business_meaning: Mã hồ sơ thanh tra.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.HO_SO_ID
+    comment: "Lookup pair: Inspection Case.Inspection Case Code. Pair with Inspection Case Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Inspection Officer Id
+    physical_name: insp_ofcr_id
+    business_meaning: FK đến Inspection Officer — cán bộ được phân công.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.CAN_BO_ID
+    comment: "FK target: Inspection Officer.Inspection Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Inspection Officer Code
+    physical_name: insp_ofcr_code
+    business_meaning: Mã cán bộ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.CAN_BO_ID
+    comment: "Lookup pair: Inspection Officer.Inspection Officer Code. Pair with Inspection Officer Id."
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Officer Role Code
+    physical_name: ofcr_rl_code
+    business_meaning: "Loại phân công: LANH_DAO / CHUYEN_VIEN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.LOAI_PHAN_CONG
+    comment: "Scheme: TT_OFFICER_ROLE."
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Assignment Date
+    physical_name: asgnm_dt
+    business_meaning: Ngày phân công.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.NGAY_PHAN_CONG
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null
+
+  - name: Remark
+    physical_name: remark
+    business_meaning: Ghi chú phân công.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: TT_HO_SO_CAN_BO
+    source_column: ThanhTra.TT_HO_SO_CAN_BO.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_TT_HO_SO_CAN_BO'"
+    etl_derived_value: null

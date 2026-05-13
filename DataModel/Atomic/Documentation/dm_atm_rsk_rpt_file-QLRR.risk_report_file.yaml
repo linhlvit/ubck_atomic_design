@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_rpt_file-QLRR.risk_report_file
+  logical_name: "Atomic - Risk Report File – source QLRR.risk_report_file"
+  physical_name: rsk_rpt_file
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Supporting Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: QLRR
+  description: |
+    Metadata file đính kèm báo cáo rủi ro trong đợt upload. Grain: 1 file. FK → Risk Report Upload Batch.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_report_file
+
+attributes:
+  - name: Risk Report File Id
+    physical_name: rsk_rpt_file_id
+    business_meaning: Khóa đại diện cho file báo cáo đính kèm.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: Risk Report File Code
+    physical_name: rsk_rpt_file_code
+    business_meaning: Mã định danh file báo cáo. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: Risk Report Upload Batch Id
+    physical_name: rsk_rpt_upload_btch_id
+    business_meaning: FK đến đợt upload báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.batch_id
+    comment: "FK target: Risk Report Upload Batch.Risk Report Upload Batch Id."
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: Risk Report Upload Batch Code
+    physical_name: rsk_rpt_upload_btch_code
+    business_meaning: Mã đợt upload báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.batch_id
+    comment: "Lookup pair: Risk Report Upload Batch.Risk Report Upload Batch Code. Pair with Risk Report Upload Batch Id."
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: File Name
+    physical_name: file_nm
+    business_meaning: "Tên file hiển thị (VD: Báo cáo TTCK Q4-2025.docx)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.file_name
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: File Path
+    physical_name: file_path
+    business_meaning: Đường dẫn lưu file trên hệ thống (filesystem hoặc object storage).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.file_path
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: File Size Bytes
+    physical_name: file_sz_bytes
+    business_meaning: Dung lượng file tính bằng bytes.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.file_size
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: File Type Code
+    physical_name: file_tp_code
+    business_meaning: "Loại file: DOCX, XLSX, PDF, …"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.file_type
+    comment: "Scheme: RISK_FILE_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: Uploaded At
+    physical_name: uploaded_at
+    business_meaning: Thời điểm upload file.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.uploaded_at
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null
+
+  - name: Uploaded By Id
+    physical_name: uploaded_by_id
+    business_meaning: User ID người nộp file (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_report_file
+    source_column: QLRR.risk_report_file.uploaded_by_id
+    comment: Denormalized — không có User entity trên Atomic.
+    classification_context: "Source System Code = 'QLRR_risk_report_file'"
+    etl_derived_value: null

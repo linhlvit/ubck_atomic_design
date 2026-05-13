@@ -1,0 +1,134 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ap_pcs_avy_log-NHNCK.ActionLogs
+  logical_name: "Atomic - Securities Practitioner License Application Processing Activity Log – source NHNCK.ActionLogs"
+  physical_name: scr_prac_license_ap_pcs_avy_log
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: ETL Pattern — Business Activity Log
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: NHNCK
+  description: |
+    Nhật ký hoạt động xử lý hồ sơ CCHN. Ghi nhận từng bước xử lý và trạng thái hồ sơ theo thời gian.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-ActionLogs
+
+attributes:
+  - name: License Application Processing Activity Log Id
+    physical_name: license_ap_pcs_avy_log_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: null
+    comment: "PK surrogate. BCV: \"Business Activity\" — nhật ký hoạt động hệ thống."
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null
+
+  - name: License Application Processing Activity Log Code
+    physical_name: license_ap_pcs_avy_log_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: NHNCK.ActionLogs.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null
+
+  - name: Officer Id
+    physical_name: ofcr_id
+    business_meaning: FK đến tài khoản thực hiện
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: NHNCK.ActionLogs.UserId
+    comment: "FK target: Regulatory Authority Officer.Officer Id. UserId = tài khoản thao tác."
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null
+
+  - name: Officer Code
+    physical_name: ofcr_code
+    business_meaning: Mã tài khoản thực hiện
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: NHNCK.ActionLogs.UserId
+    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Officer Id."
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null
+
+  - name: Client Machine Address
+    physical_name: clnt_mchn_adr
+    business_meaning: Địa chỉ IP máy thực hiện
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: NHNCK.ActionLogs.ClientMachine
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null
+
+  - name: Activity Detail
+    physical_name: avy_dtl
+    business_meaning: Mô tả nội dung thao tác
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: NHNCK.ActionLogs.Detail
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ActionLogs
+    source_column: NHNCK.ActionLogs.CreatedAt
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ActionLogs'"
+    etl_derived_value: null

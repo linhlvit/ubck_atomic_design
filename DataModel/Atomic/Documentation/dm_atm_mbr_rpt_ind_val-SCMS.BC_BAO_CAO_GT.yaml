@@ -1,0 +1,484 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mbr_rpt_ind_val-SCMS.BC_BAO_CAO_GT
+  logical_name: "Atomic - Member Report Indicator Value – source SCMS.BC_BAO_CAO_GT"
+  physical_name: mbr_rpt_ind_val
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Reported Information"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  description: |
+    Giá trị từng chỉ tiêu trong một lần nộp báo cáo định kỳ. Grain = 1 giá trị cell-level (submission x template_indicator x row). FK đến Member Periodic Report.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-BC_BAO_CAO_GT
+
+attributes:
+  - name: Member Report Indicator Value Id
+    physical_name: mbr_rpt_ind_val_id
+    business_meaning: Khóa đại diện cho giá trị chỉ tiêu báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: null
+    comment: PK surrogate. Fact Append — không SCD.
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Member Report Indicator Value Code
+    physical_name: mbr_rpt_ind_val_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Id
+    physical_name: rpt_tpl_id
+    business_meaning: FK đến biểu mẫu báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_ID
+    comment: "FK target: Report Template.Report Template Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Code
+    physical_name: rpt_tpl_code
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_ID
+    comment: "Lookup pair: Report Template.Report Template Code. Pair with Report Template Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán nộp báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Sheet Id
+    physical_name: rpt_tpl_shet_id
+    business_meaning: FK đến sheet báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_SHEET_ID
+    comment: "FK target: Report Template Sheet.Report Template Sheet Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Sheet Code
+    physical_name: rpt_tpl_shet_code
+    business_meaning: Mã sheet báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_SHEET_ID
+    comment: "Lookup pair: Report Template Sheet.Report Template Sheet Code. Pair with Report Template Sheet Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Row Id
+    physical_name: rpt_tpl_row_id
+    business_meaning: FK đến hàng báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_HANG_ID
+    comment: "FK target: Report Template Row.Report Template Row Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Row Code
+    physical_name: rpt_tpl_row_code
+    business_meaning: Mã hàng báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_HANG_ID
+    comment: "Lookup pair: Report Template Row.Report Template Row Code. Pair with Report Template Row Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Column Id
+    physical_name: rpt_tpl_clmn_id
+    business_meaning: FK đến cột báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_COT_ID
+    comment: "FK target: Report Template Column.Report Template Column Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Column Code
+    physical_name: rpt_tpl_clmn_code
+    business_meaning: Mã cột báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_COT_ID
+    comment: "Lookup pair: Report Template Column.Report Template Column Code. Pair with Report Template Column Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report Id
+    physical_name: mbr_prd_rpt_id
+    business_meaning: FK đến lần nộp báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BC_THANH_VIEN_ID
+    comment: "FK target: Member Periodic Report.Member Periodic Report Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report Code
+    physical_name: mbr_prd_rpt_code
+    business_meaning: Mã lần nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BC_THANH_VIEN_ID
+    comment: "Lookup pair: Member Periodic Report.Member Periodic Report Code. Pair with Member Periodic Report Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Indicator Id
+    physical_name: rpt_tpl_ind_id
+    business_meaning: FK đến chỉ tiêu trong biểu mẫu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_CT_ID
+    comment: "FK target: Report Template Indicator.Report Template Indicator Id. Nullable — một số giá trị không map với chỉ tiêu cụ thể."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Template Indicator Code
+    physical_name: rpt_tpl_ind_code
+    business_meaning: Mã chỉ tiêu trong biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.BM_BAO_CAO_CT_ID
+    comment: "Lookup pair: Report Template Indicator.Report Template Indicator Code. Pair with Report Template Indicator Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Indicator Id
+    physical_name: rpt_ind_id
+    business_meaning: FK đến chỉ tiêu danh mục.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.DM_CHI_TIEU_ID
+    comment: "FK target: Report Indicator.Report Indicator Id. Lookup: DM_CHI_TIEU."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Indicator Code
+    physical_name: rpt_ind_code
+    business_meaning: Mã chỉ tiêu danh mục.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.DM_CHI_TIEU_ID
+    comment: "Lookup pair: Report Indicator.Report Indicator Code. Pair with Report Indicator Id."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Sheet Name
+    physical_name: shet_nm
+    business_meaning: Tên sheet báo cáo (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.TEN_SHEET
+    comment: Denormalized từ BM_SHEET — lưu lại tại thời điểm nhập liệu.
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Row Name
+    physical_name: row_nm
+    business_meaning: Tên hàng báo cáo (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.TEN_HANG
+    comment: Denormalized từ BM_BAO_CAO_HANG — lưu lại tại thời điểm nhập liệu.
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Column Name
+    physical_name: clmn_nm
+    business_meaning: Tên cột báo cáo (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.TEN_COT
+    comment: Denormalized từ BM_BAO_CAO_COT — lưu lại tại thời điểm nhập liệu.
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Row Sequence
+    physical_name: row_seq
+    business_meaning: Số thứ tự dòng dữ liệu (cho chỉ tiêu lặp).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.ROW_ID
+    comment: "ROW_ID = số thứ tự dòng trong tập lặp — không phải FK đến bảng hàng."
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Catalog Name
+    physical_name: ctlg_nm
+    business_meaning: Tên danh mục tương ứng (nếu chỉ tiêu kiểu danh mục).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.TEN_DANH_MUC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Catalog Id Reference
+    physical_name: ctlg_id_refr
+    business_meaning: Khóa danh mục tương ứng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.ID_DANH_MUC
+    comment: Lưu dạng Text — danh mục FK đến nhiều bảng khác nhau tùy chỉ tiêu.
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Catalog Display Value
+    physical_name: ctlg_dspl_val
+    business_meaning: Giá trị hiển thị của danh mục.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.TEXT_DANH_MUC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Value
+    physical_name: val
+    business_meaning: Giá trị chỉ tiêu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.GIA_TRI
+    comment: Lưu dạng Text — kiểu thực tế phụ thuộc KIEU_DU_LIEU của chỉ tiêu (số/văn bản/ngày/danh mục/công thức).
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Formula
+    physical_name: frml
+    business_meaning: Công thức tính (nếu có).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.CONG_THUC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Aggregate Formula
+    physical_name: agrt_frml
+    business_meaning: Công thức tổng hợp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.CONG_THUC_TONG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày số liệu báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.NGAY_SO_LIEU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Version
+    physical_name: vrsn
+    business_meaning: Phiên bản báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.PHIEN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BC_BAO_CAO_GT
+    source_column: SCMS.BC_BAO_CAO_GT.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BC_BAO_CAO_GT'"
+    etl_derived_value: null

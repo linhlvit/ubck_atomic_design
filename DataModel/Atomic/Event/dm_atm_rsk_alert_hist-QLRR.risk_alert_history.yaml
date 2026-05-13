@@ -1,0 +1,204 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_alert_hist-QLRR.risk_alert_history
+  logical_name: "Atomic - Risk Alert History – source QLRR.risk_alert_history"
+  physical_name: rsk_alert_hist
+  version: "1.0"
+  status: approved
+  bcv_core_object: Event
+  bcv_concept: "[Event]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: QLRR
+  description: |
+    Dòng thời gian sự kiện trong vòng đời cảnh báo (phát sinh / xử lý). Grain: 1 sự kiện nghiệp vụ. Append-only. FK → Risk Alert.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_alert_history
+
+attributes:
+  - name: Risk Alert History Id
+    physical_name: rsk_alert_hist_id
+    business_meaning: Khóa đại diện cho bản ghi lịch sử sự kiện cảnh báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Risk Alert History Code
+    physical_name: rsk_alert_hist_code
+    business_meaning: Mã định danh bản ghi lịch sử. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Risk Alert Id
+    physical_name: rsk_alert_id
+    business_meaning: FK đến cảnh báo liên quan.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.alert_id
+    comment: "FK target: Risk Alert.Risk Alert Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Risk Alert Code
+    physical_name: rsk_alert_code
+    business_meaning: Mã cảnh báo liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.alert_id
+    comment: "Lookup pair: Risk Alert.Risk Alert Code. Pair with Risk Alert Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Risk Alert Resolution Id
+    physical_name: rsk_alert_rsl_id
+    business_meaning: "FK đến bản ghi xử lý liên quan. Nullable — event_type=1 (phát sinh cảnh báo) chưa có resolution."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.resolution_id
+    comment: "FK target: Risk Alert Resolution.Risk Alert Resolution Id. Nullable — HLD T4-01: event_type=1 chưa có resolution_id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Risk Alert Resolution Code
+    physical_name: rsk_alert_rsl_code
+    business_meaning: Mã bản ghi xử lý liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.resolution_id
+    comment: "Lookup pair: Risk Alert Resolution.Risk Alert Resolution Code. Pair with Risk Alert Resolution Id. Nullable."
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Event Type Code
+    physical_name: ev_tp_code
+    business_meaning: "Loại sự kiện: 1=Xảy ra cảnh báo, 2=Xử lý không giải trình, 3=Xử lý có giải trình."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.event_type
+    comment: "Scheme: RISK_ALERT_EVENT_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Event Time
+    physical_name: ev_tm
+    business_meaning: Thời gian xảy ra sự kiện trong vòng đời cảnh báo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.event_time
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Event Title
+    physical_name: ev_ttl
+    business_meaning: Tiêu đề sự kiện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.event_title
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Event Description
+    physical_name: ev_dsc
+    business_meaning: Mô tả chi tiết sự kiện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.event_description
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Event User Id
+    physical_name: ev_usr_id
+    business_meaning: User ID người thực hiện sự kiện (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.event_user_id
+    comment: Denormalized — không có User entity trên Atomic.
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null
+
+  - name: Event User Name
+    physical_name: ev_usr_nm
+    business_meaning: Tên người thực hiện sự kiện (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_history
+    source_column: QLRR.risk_alert_history.event_user_name
+    comment: Denormalized. Pair với Event User Id.
+    classification_context: "Source System Code = 'QLRR_risk_alert_history'"
+    etl_derived_value: null

@@ -1,0 +1,526 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fnd_mgt_co_ou-FIMS.BRANCHS
+  logical_name: "Atomic - Fund Management Company Organization Unit – source FIMS.BRANCHS"
+  physical_name: fnd_mgt_co_ou
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization Unit"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ trong nước. Có địa chỉ và giấy phép hoạt động riêng.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-BRANCHS
+
+attributes:
+  - name: Fund Management Company Organization Unit Id
+    physical_name: fnd_mgt_co_ou_id
+    business_meaning: Khóa đại diện cho chi nhánh công ty QLQ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Organization Unit Code
+    physical_name: fnd_mgt_co_ou_code
+    business_meaning: Mã định danh chi nhánh. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ chủ quản. ETL resolve từ CompanyNameParent.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.CompanyNameParent
+    comment: "FK target: Fund Management Company.Fund Management Company Id. ETL resolve CompanyNameParent → surrogate key. Nullable cho đến khi ETL resolve thành công."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ chủ quản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.CompanyNameParent
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Organization Unit Name
+    physical_name: fnd_mgt_co_ou_nm
+    business_meaning: Tên chi nhánh công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Organization Unit Type Code
+    physical_name: ou_tp_code
+    business_meaning: "Loại đơn vị: CN hoặc VPĐD."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Scheme: FMS_ORGANIZATION_UNIT_TYPE."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Parent Organization Unit Id
+    physical_name: prn_ou_id
+    business_meaning: FK tự thân — CN/VPĐD cha.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id. BrIdowner là Id nguồn — ETL cần resolve sang surrogate."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Parent Organization Unit Code
+    physical_name: prn_ou_code
+    business_meaning: Mã CN/VPĐD cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Lookup pair: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Parent Organization Unit Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Legal Representative Id
+    physical_name: lgl_rprs_id
+    business_meaning: FK đến người đại diện pháp luật của CN/VPĐD.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "FK target: Fund Management Company Key Person.Fund Management Company Key Person Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Legal Representative Code
+    physical_name: lgl_rprs_code
+    business_meaning: Mã người đại diện pháp luật.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company Key Person Code. Pair with Legal Representative Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Legal Representative Name
+    physical_name: lgl_rprs_nm
+    business_meaning: Tên người đại diện pháp luật (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: Denormalized snapshot — không dùng để join.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: License Decision Number
+    physical_name: license_dcsn_nbr
+    business_meaning: Số quyết định thành lập CN/VPĐD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: Denormalized — map vào IP Alt Identification.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: License Decision Date
+    physical_name: license_dcsn_dt
+    business_meaning: Ngày cấp quyết định thành lập CN/VPĐD.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: Denormalized — map vào IP Alt Identification.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Voucher Number
+    physical_name: vchr_nbr
+    business_meaning: Số chứng từ liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Voucher Date
+    physical_name: vchr_dt
+    business_meaning: Ngày chứng từ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Scheme: FMS_OPERATION_STATUS."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Stop Date
+    physical_name: stop_dt
+    business_meaning: Ngày ngừng hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Change Description
+    physical_name: chg_dsc
+    business_meaning: Mô tả nội dung thay đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: cty_of_rgst_id
+    business_meaning: FK đến quốc gia đăng ký của công ty mẹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.NaId
+    comment: "FK target: Geographic Area.Geographic Area Id. Quốc gia công ty mẹ lấy từ bảng NATIONAL."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: cty_of_rgst_code
+    business_meaning: Mã quốc gia đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.NaId
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: English Name
+    physical_name: en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.ename
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Abbreviation
+    physical_name: abr
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.ShortName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Tax Code
+    physical_name: tax_code
+    business_meaning: Mã số thuế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.CodeTax
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_cptl_amt
+    business_meaning: Vốn được cấp (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.Capital
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Start Date
+    physical_name: strt_dt
+    business_meaning: Hoạt động từ ngày.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.StartDate
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Hoạt động đến ngày.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.EndDate
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Parent Company Name
+    physical_name: prn_co_nm
+    business_meaning: Tên công ty mẹ (denormalized — nguồn ETL resolve FK).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.CompanyNameParent
+    comment: Denormalized. Giữ lại để trace ETL resolve.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Parent Company Registration Number
+    physical_name: prn_co_rgst_nbr
+    business_meaning: Số ĐKKD công ty mẹ (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.CertNoParent
+    comment: Denormalized.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Parent Company Address
+    physical_name: prn_co_adr
+    business_meaning: Địa chỉ công ty mẹ (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.AddParent
+    comment: Denormalized.
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHS.StatusId
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Business Type Codes
+    physical_name: bsn_tp_codes
+    business_meaning: Danh sách mã nghiệp vụ kinh doanh. Từ bảng junction BRANCHSBUSINES.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BRANCHS
+    source_column: FIMS.BRANCHSBUSINES.BuId
+    comment: "Pure junction BRANCHSBUSINES → denormalize thành ARRAY. Scheme: FIMS_BUSINESS_TYPE. HLD decision: FIMS_HLD_Tier1.md."
+    classification_context: "Source System Code = 'FIMS_BRANCHS'"
+    etl_derived_value: null

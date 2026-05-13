@@ -1,0 +1,176 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-mbr_prd_rpt_st_log-FMS.RPTMBHS
+  logical_name: "Atomic - Member Periodic Report Status Log – source FMS.RPTMBHS"
+  physical_name: mbr_prd_rpt_st_log
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Event] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RPTMBHS
+
+attributes:
+  - name: Member Periodic Report History Id
+    physical_name: mbr_prd_rpt_hist_id
+    business_meaning: Khóa đại diện cho lịch sử nộp báo cáo định kỳ thành viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report History Code
+    physical_name: mbr_prd_rpt_hist_code
+    business_meaning: Mã định danh bản ghi lịch sử. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report Id
+    physical_name: mbr_prd_rpt_id
+    business_meaning: FK đến báo cáo định kỳ thành viên.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.RptMbId
+    comment: "FK target: Member Periodic Report.Member Periodic Report Id."
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Member Periodic Report Code
+    physical_name: mbr_prd_rpt_code
+    business_meaning: Mã báo cáo định kỳ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.RptMbId
+    comment: "Lookup pair: Member Periodic Report.Member Periodic Report Code. Pair with Member Periodic Report Id."
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Report Submission Status Code
+    physical_name: rpt_subm_st_code
+    business_meaning: Trạng thái nộp báo cáo tại thời điểm lịch sử.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.Status
+    comment: "Scheme: FMS_REPORT_SUBMISSION_STATUS."
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Changed By Officer Id
+    physical_name: changed_by_ofcr_id
+    business_meaning: FK đến nhân sự thực hiện thay đổi trạng thái.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.ChgById
+    comment: "FK target: Fund Management Company Key Person.Fund Management Company Key Person Id."
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Changed By Officer Code
+    physical_name: changed_by_ofcr_code
+    business_meaning: Mã nhân sự thực hiện thay đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.ChgById
+    comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company Key Person Code. Pair with Changed By Officer Id."
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Content Summary
+    physical_name: cntnt_smy
+    business_meaning: Tóm tắt nội dung báo cáo tại thời điểm lịch sử.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.ContentSummary
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.Note
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo tại thời điểm lịch sử.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPTMBHS
+    source_column: FMS.RPTMBHS.RptName
+    comment: null
+    classification_context: "Source System Code = 'FMS_RPTMBHS'"
+    etl_derived_value: null

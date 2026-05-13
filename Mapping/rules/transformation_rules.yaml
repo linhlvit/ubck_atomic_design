@@ -1,0 +1,35 @@
+schema_type: transformation_rules
+schema_version: "1.0"
+
+description: |
+  Danh sách transformation rules dùng chung cho toàn bộ Mapping YAML trong dự án.
+  ETL generator nhận diện rule qua cú pháp {rule_id}(...) trong trường transformation.
+  Ví dụ: {hash_id}('FIMS_FUNDCOMPANY', fu_co.id) → hash_id function được tra cứu tại đây.
+
+rules:
+  # ---------------------------------------------------------------------------
+  # hash_id — Sinh surrogate key (PK hoặc FK)
+  # ---------------------------------------------------------------------------
+  - id: hash_id
+    function: hash_id
+    category: surrogate_key
+    description: |
+      Sinh surrogate key bằng MD5/SHA hash từ Source System Code + business key.
+      Dùng cho cả PK (chính entity) và FK (tham chiếu entity khác).
+    params:
+      - name: ssc
+        type: string_literal
+        description: "Source System Code — literal string, VD: 'FIMS_FUNDCOMPANY'"
+        example: "'FIMS_FUNDCOMPANY'"
+      - name: source_key
+        type: column_ref
+        description: "Cột chứa business key của bảng nguồn, VD: fu_co.id"
+        example: fu_co.id
+    syntax: "{hash_id}({ssc}, {source_key})"
+    render_template: "hash_id({ssc}, {source_key})"
+    output_type: string
+    nullable: false
+    notes: |
+      Cú pháp trong mapping YAML: {hash_id}('FIMS_FUNDCOMPANY', fu_co.id)
+      ETL generator nhận diện prefix {hash_id} để biết đây là transformation rule,
+      không phải SQL function thuần túy. ssc phải khớp với classification_context của DM YAML.

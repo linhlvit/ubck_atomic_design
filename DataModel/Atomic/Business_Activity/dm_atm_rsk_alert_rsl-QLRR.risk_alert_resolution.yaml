@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rsk_alert_rsl-QLRR.risk_alert_resolution
+  logical_name: "Atomic - Risk Alert Resolution – source QLRR.risk_alert_resolution"
+  physical_name: rsk_alert_rsl
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: QLRR
+  description: |
+    Bản ghi xử lý chi tiết cho cảnh báo rủi ro (giải trình hoặc không). Grain: 1 lần xử lý. Append-only. FK → Risk Alert.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-risk_alert_resolution
+
+attributes:
+  - name: Risk Alert Resolution Id
+    physical_name: rsk_alert_rsl_id
+    business_meaning: Khóa đại diện cho bản ghi xử lý cảnh báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Risk Alert Resolution Code
+    physical_name: rsk_alert_rsl_code
+    business_meaning: Mã định danh bản ghi xử lý. BK. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.id
+    comment: BK của entity.
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Risk Alert Id
+    physical_name: rsk_alert_id
+    business_meaning: FK đến cảnh báo liên quan.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.alert_id
+    comment: "FK target: Risk Alert.Risk Alert Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Risk Alert Code
+    physical_name: rsk_alert_code
+    business_meaning: Mã cảnh báo liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.alert_id
+    comment: "Lookup pair: Risk Alert.Risk Alert Code. Pair with Risk Alert Id."
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Resolution Type Code
+    physical_name: rsl_tp_code
+    business_meaning: "Loại xử lý cảnh báo: 1=Quick (không giải trình), 2=Detailed (có giải trình)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.resolution_type
+    comment: "Scheme: RISK_ALERT_RESOLUTION_TYPE."
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Explanation Content
+    physical_name: explanation_cntnt
+    business_meaning: "Nội dung giải trình chi tiết (chỉ khi resolution_type=2)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.explanation_content
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Resolved At
+    physical_name: rslv_at
+    business_meaning: Thời điểm xử lý cảnh báo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.resolved_at
+    comment: null
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Resolved By Id
+    physical_name: rslv_by_id
+    business_meaning: User ID người xử lý cảnh báo (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.resolved_by_id
+    comment: Denormalized — không có User entity trên Atomic.
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null
+
+  - name: Resolved By Name
+    physical_name: rslv_by_nm
+    business_meaning: Tên người xử lý cảnh báo (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: risk_alert_resolution
+    source_column: QLRR.risk_alert_resolution.resolved_by_name
+    comment: Denormalized. Pair với Resolved By Id.
+    classification_context: "Source System Code = 'QLRR_risk_alert_resolution'"
+    etl_derived_value: null

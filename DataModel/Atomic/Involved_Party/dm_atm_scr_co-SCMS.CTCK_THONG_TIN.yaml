@@ -1,0 +1,582 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co-SCMS.CTCK_THONG_TIN
+  logical_name: "Atomic - Securities Company – source SCMS.CTCK_THONG_TIN"
+  physical_name: scr_co
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_THONG_TIN
+
+attributes:
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: Khóa đại diện cho công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: PK surrogate. Shared entity với FIMS.SECURITIESCOMPANY.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã định danh CTCK (tự động tăng). BK kỹ thuật.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: cty_of_rgst_id
+    business_meaning: FK đến quốc gia đăng ký.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.QUOC_GIA_ID
+    comment: "FK target: Geographic Area.Geographic Area Id. Lookup: DM_QUOC_TICH."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: cty_of_rgst_code
+    business_meaning: Mã quốc gia đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.QUOC_GIA_ID
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: English Name
+    physical_name: en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Abbreviation
+    physical_name: abr
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_cptl_amt
+    business_meaning: Vốn điều lệ.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.VON_DIEU_LE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Director Name
+    physical_name: director_nm
+    business_meaning: Tên Tổng giám đốc (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: Denormalized snapshot — không dùng để join.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Depository Certificate Number
+    physical_name: depst_ctf_nbr
+    business_meaning: Chứng nhận lưu ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Business Type Codes
+    physical_name: bsn_tp_codes
+    business_meaning: Danh sách mã nghiệp vụ kinh doanh. Từ bảng junction SECCOMBUSINES.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: "Pure junction SECCOMBUSINES → denormalize thành ARRAY. Scheme: FIMS_BUSINESS_TYPE. HLD decision: FIMS_HLD_Tier1.md."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Company Type Codes
+    physical_name: co_tp_codes
+    business_meaning: Danh sách mã loại hình doanh nghiệp. Từ bảng junction SECCOMTYPE.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: "Pure junction SECCOMTYPE → denormalize thành ARRAY. Scheme: FIMS_COMPANY_TYPE. HLD decision: FIMS_HLD_Tier1.md."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Securities Company Business Key
+    physical_name: scr_co_bsn_key
+    business_meaning: ID duy nhất của CTCK dùng liên thông hệ thống (BK nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.CTCK_THONG_TIN_ID
+    comment: Trường BK nghiệp vụ — khác với PK kỹ thuật. Dùng liên thông giữa hệ thống.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Securities Company Business Code
+    physical_name: scr_co_bsn_code
+    business_meaning: Mã số CTCK (mã nghiệp vụ ngắn).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.MA_SO
+    comment: Mã nghiệp vụ — khác BK kỹ thuật.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Securities Company Name
+    physical_name: scr_co_nm
+    business_meaning: Tên tiếng Việt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.TEN_TIENG_VIET
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Securities Company English Name
+    physical_name: scr_co_en_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.TEN_TIENG_ANH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Securities Company Short Name
+    physical_name: scr_co_shrt_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.TEN_VIET_TAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Tax Code
+    physical_name: tax_code
+    business_meaning: Mã số thuế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.MA_SO_THUE
+    comment: Mã số thuế — trường nghiệp vụ riêng.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Company Type Code
+    physical_name: co_tp_code
+    business_meaning: Loại hình công ty.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.LOAI_CONG_TY_ID
+    comment: "Scheme: SCMS_COMPANY_TYPE."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Share Quantity
+    physical_name: shr_qty
+    business_meaning: Số lượng cổ phần.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.SO_LUONG_CO_PHAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Business Sector Codes
+    physical_name: bsn_sctr_codes
+    business_meaning: Danh sách mã ngành nghề kinh doanh.
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.LK_CTCK_NGANH_NGHE_KD.NGANH_NGHE_KD_ID
+    comment: "Pure junction LK_CTCK_NGANH_NGHE_KD → denormalize thành ARRAY. Scheme: SCMS_BUSINESS_SECTOR. HLD decision: SCMS_HLD_Tier1.md."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Is Listed Indicator
+    physical_name: is_list_ind
+    business_meaning: "Cờ niêm yết: 1-Có niêm yết; 0-Không."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.NIEM_YET
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Stock Exchange Name
+    physical_name: stk_exg_nm
+    business_meaning: Sàn niêm yết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.SAN_NIEM_YET
+    comment: Text denormalized — tên sàn.
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Securities Code
+    physical_name: scr_code
+    business_meaning: Mã chứng khoán niêm yết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.MA_CHUNG_KHOAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Registration Date
+    physical_name: rgst_dt
+    business_meaning: Ngày đăng ký CTDC.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.NGAY_DANG_KY_CTDC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Registration Decision Number
+    physical_name: rgst_dcsn_nbr
+    business_meaning: Số quyết định đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.SO_QUYET_DINH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Termination Date
+    physical_name: tmt_dt
+    business_meaning: Ngày kết thúc CTDC.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.NGAY_KET_THUC_CTDC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Termination Decision Number
+    physical_name: tmt_dcsn_nbr
+    business_meaning: Số quyết định kết thúc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.SO_QUYET_DINH_KET_THUC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Company Status Code
+    physical_name: co_st_code
+    business_meaning: Trạng thái hoạt động của CTCK.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.TRANG_THAI
+    comment: "Scheme: SCMS_COMPANY_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Is Draft Indicator
+    physical_name: is_drft_ind
+    business_meaning: "Cờ bảng tạm: 1-Bảng tạm; 0-Chính thức."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.IS_BANG_TAM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Business Activity Category Id
+    physical_name: bsn_avy_cgy_id
+    business_meaning: FK đến ngành nghề kinh doanh (DM_NGANH_NGHE_KD). Nullable.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.NGANH_NGHE_KINH_DOANH
+    comment: "FK target: DM_NGANH_NGHE_KD entity — chưa được thiết kế lên Atomic."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Business Activity Category Code
+    physical_name: bsn_avy_cgy_code
+    business_meaning: Mã ngành nghề kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: SCMS.CTCK_THONG_TIN.NGANH_NGHE_KINH_DOANH
+    comment: "Lookup pair: DM_NGANH_NGHE_KD entity — chưa được thiết kế lên Atomic. Pair with Business Activity Category Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Business License Number
+    physical_name: bsn_license_nbr
+    business_meaning: Số giấy phép kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null
+
+  - name: Website
+    physical_name: webst
+    business_meaning: Website chính thức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_THONG_TIN
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_THONG_TIN'"
+    etl_derived_value: null

@@ -1,0 +1,330 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_co_snr_psn-SCMS.CTCK_NHAN_SU_CAO_CAP
+  logical_name: "Atomic - Securities Company Senior Personnel – source SCMS.CTCK_NHAN_SU_CAO_CAP"
+  physical_name: scr_co_snr_psn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Nhân sự cao cấp của CTCK (Chủ tịch HĐQT, Tổng Giám đốc, Kế toán trưởng...). Ghi nhận chức vụ và thời gian đảm nhận.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CTCK_NHAN_SU_CAO_CAP
+
+attributes:
+  - name: Securities Company Senior Personnel Id
+    physical_name: scr_co_snr_psn_id
+    business_meaning: Khóa đại diện cho nhân sự cao cấp CTCK.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Securities Company Senior Personnel Code
+    physical_name: scr_co_snr_psn_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Organization Unit Id
+    physical_name: ou_id
+    business_meaning: FK đến chi nhánh trực thuộc (nếu có).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.CTCK_CHI_NHANH_ID
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Nullable — nhân sự trụ sở không có chi nhánh."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Organization Unit Code
+    physical_name: ou_code
+    business_meaning: Mã chi nhánh trực thuộc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.CTCK_CHI_NHANH_ID
+    comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Organization Unit Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên nhân sự cao cấp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.HO_TEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Individual Gender Code
+    physical_name: idv_gnd_code
+    business_meaning: Giới tính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.GIOI_TINH
+    comment: "Scheme: INDIVIDUAL_GENDER."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.NGAY_SINH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Birth Place
+    physical_name: brth_plc
+    business_meaning: Nơi sinh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.NOI_SINH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nat_id
+    business_meaning: FK đến quốc tịch nhân sự.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.DM_QUOC_TICH_ID
+    comment: "FK target: Geographic Area.Geographic Area Id. Lookup: DM_QUOC_TICH."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Mã quốc tịch nhân sự.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.DM_QUOC_TICH_ID
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Position Type Code
+    physical_name: pos_tp_code
+    business_meaning: Chức vụ đảm nhận.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.CHUC_VU_ID
+    comment: "Scheme: SCMS_POSITION_TYPE. FK đến bảng danh mục DM_CHUC_VU — lưu dạng Classification Value."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Shareholder Type Code
+    physical_name: shrhlr_tp_code
+    business_meaning: Loại cổ đông nếu đồng thời là cổ đông.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.LOAI_CO_DONG
+    comment: "Scheme: SCMS_SHAREHOLDER_RELATION_TYPE. Ghi nhận khi nhân sự cao cấp đồng thời là cổ đông."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Resignation Date
+    physical_name: resignation_dt
+    business_meaning: Ngày thôi việc.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.NGAY_THOI_VIEC
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.GHI_CHU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Personnel Status Code
+    physical_name: psn_st_code
+    business_meaning: Trạng thái nhân sự.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.TRANG_THAI_NHAN_SU
+    comment: "Scheme: SCMS_PERSONNEL_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Is Draft Indicator
+    physical_name: is_drft_ind
+    business_meaning: "Cờ bảng tạm: 0-Bảng tạm; 1-Chính thức."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.IS_BANG_TAM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: Trạng thái bản ghi chung.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NHAN_SU_CAO_CAP
+    source_column: SCMS.CTCK_NHAN_SU_CAO_CAP.TRANG_THAI
+    comment: "Scheme: LIFE_CYCLE_STATUS. Cần profile data để xác định giá trị."
+    classification_context: "Source System Code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'"
+    etl_derived_value: null

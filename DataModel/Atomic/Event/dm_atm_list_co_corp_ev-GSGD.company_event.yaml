@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-list_co_corp_ev-GSGD.company_event
+  logical_name: "Atomic - Listed Company Corporate Event – source GSGD.company_event"
+  physical_name: list_co_corp_ev
+  version: "1.0"
+  status: approved
+  bcv_core_object: Event
+  bcv_concept: "[Event]"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: GSGD
+  description: |
+    Sự kiện liên quan đến tổ chức niêm yết trong phạm vi giám sát GSGD. Grain: 1 dòng = 1 sự kiện.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-company_event
+
+attributes:
+  - name: Listed Company Corporate Event Id
+    physical_name: list_co_corp_ev_id
+    business_meaning: Khóa đại diện cho sự kiện tổ chức niêm yết.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: company_event
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Listed Company Corporate Event Code
+    physical_name: list_co_corp_ev_code
+    business_meaning: PK kỹ thuật từ bảng nguồn. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: GSGD.company_event.id
+    comment: BK chính. Map từ PK nguồn.
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Company Name
+    physical_name: co_nm
+    business_meaning: Tên tổ chức niêm yết. Denormalized — không có FK tường minh đến entity niêm yết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: GSGD.company_event.company_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Stock Code
+    physical_name: stk_code
+    business_meaning: Mã chứng khoán. Denormalized — không có FK tường minh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: GSGD.company_event.stock_code
+    comment: null
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Event Type Code
+    physical_name: ev_tp_code
+    business_meaning: Loại sự kiện tổ chức niêm yết.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: GSGD.company_event.event_type_id
+    comment: "Scheme: GSGD_COMPANY_EVENT_TYPE. FK suy luận → category_item."
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Event Id
+    physical_name: ev_id
+    business_meaning: Định danh sự kiện. Denormalized — không rõ FK đến đâu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: GSGD.company_event.event_id
+    comment: null
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Event Date
+    physical_name: ev_dt
+    business_meaning: Ngày sự kiện.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: GSGD.company_event.event_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null
+
+  - name: Approval Status Code
+    physical_name: aprv_st_code
+    business_meaning: Trạng thái phê duyệt.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: company_event
+    source_column: GSGD.company_event.approval_status
+    comment: "Scheme: GSGD_APPROVAL_STATUS."
+    classification_context: "Source System Code = 'GSGD_company_event'"
+    etl_derived_value: null

@@ -1,0 +1,288 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ivsm_fnd-FMS.FUNDS
+  logical_name: "Atomic - Investment Fund – source FMS.FUNDS"
+  physical_name: ivsm_fnd
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Quỹ đầu tư chứng khoán — pháp nhân độc lập do công ty quản lý quỹ thành lập và quản lý. Lưu thông tin pháp lý và vốn của quỹ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FUNDS
+
+attributes:
+  - name: Investment Fund Id
+    physical_name: ivsm_fnd_id
+    business_meaning: Khóa đại diện cho quỹ đầu tư chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: FUNDS
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: ivsm_fnd_code
+    business_meaning: Mã định danh quỹ đầu tư. Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.Id
+    comment: BK chính.
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Investment Fund Name
+    physical_name: ivsm_fnd_nm
+    business_meaning: Tên đầy đủ quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.FundName
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Investment Fund Short Name
+    physical_name: ivsm_fnd_shrt_nm
+    business_meaning: Tên viết tắt quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.FundShortName
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Investment Fund English Name
+    physical_name: ivsm_fnd_en_nm
+    business_meaning: Tên tiếng Anh quỹ đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.FundEnName
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fnd_mgt_co_id
+    business_meaning: FK đến công ty QLQ quản lý quỹ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.SecId
+    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fnd_mgt_co_code
+    business_meaning: Mã công ty QLQ quản lý quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.SecId
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Fund Capital Amount
+    physical_name: fnd_cptl_amt
+    business_meaning: Vốn điều lệ quỹ đầu tư (VNĐ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.FundCapital
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Fund Type Code
+    physical_name: fnd_tp_code
+    business_meaning: Loại hình quỹ đầu tư.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.FundType
+    comment: "Scheme: FMS_FUND_TYPE."
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hoạt động quỹ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.Status
+    comment: "Scheme: FMS_OPERATION_STATUS."
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: License Decision Date
+    physical_name: license_dcsn_dt
+    business_meaning: Ngày cấp phép thành lập quỹ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.DecisionDate
+    comment: Denormalized — map vào IP Alt Identification.
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Active Date
+    physical_name: actv_dt
+    business_meaning: Ngày bắt đầu hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.ActiveDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Stop Date
+    physical_name: stop_dt
+    business_meaning: Ngày ngừng hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.StopDate
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Distribution Agent Ids
+    physical_name: dstr_agnt_ids
+    business_meaning: Danh sách đại lý phân phối quỹ (SK + mã nghiệp vụ).
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.AGENFUNDS.AgnId
+    comment: "Pure junction AGENFUNDS → denormalize thành ARRAY. Struct: {agent_id: Surrogate Key; agent_code: Text}. HLD decision: FMS_HLD_Tier3.md."
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Ids
+    physical_name: cstd_bnk_ids
+    business_meaning: Danh sách ngân hàng lưu ký giám sát (SK + mã nghiệp vụ).
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FNDSBMN.BmnId
+    comment: "Pure junction FNDSBMN → denormalize thành ARRAY. Struct: {bank_id: Surrogate Key; bank_code: Text}. HLD decision: FMS_HLD_Tier3.md."
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.CreatedBy
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.DateCreated
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUNDS
+    source_column: FMS.FUNDS.DateModified
+    comment: null
+    classification_context: "Source System Code = 'FMS_FUNDS'"
+    etl_derived_value: null

@@ -1,0 +1,138 @@
+schema_type: mapping
+schema_version: "1.0"
+
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+
+mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.BANKMONI
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.BANKMONI"
+  physical_name: ip_alt_identn
+  pattern: unpivot
+  etl_pattern: SCD4A
+  dm_ref: ATM-ip_alt_identn-FIMS.BANKMONI
+  brd_ref: BRD-SRC-FIMS-BANKMONI
+
+target:
+  schema: atomic
+  physical_name: ip_alt_identn
+  etl_handle: SCD4A
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Custodian Bank từ FIMS.BANKMONI.
+    Mỗi dòng = 1 loại giấy tờ. 2 legs: BUSINESS_LICENSE (IdNo/IdAdd) và OPERATING_LICENSE (RegNo/RegAdd).
+
+input:
+  - seq: 1
+    source_type: physical_table
+    schema: bronze
+    table_name: BANKMONI
+    alias: ba_mo
+    select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
+    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+
+relationship: []
+
+mapping_legs:
+  - leg: BUSINESS_LICENSE
+    filter: "ba_mo.idno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_BANKMONI', ba_mo.id)"
+        source_column: FIMS.BANKMONI.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: ba_mo.id
+        source_column: FIMS.BANKMONI.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_BANKMONI'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'BUSINESS_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: BUSINESS_LICENSE
+
+      - target_column: identn_nbr
+        transformation: ba_mo.idno
+        source_column: FIMS.BANKMONI.IdNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: ba_mo.iddate
+        source_column: FIMS.BANKMONI.IdDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: ba_mo.idadd
+        source_column: FIMS.BANKMONI.IdAdd
+        data_type: string
+
+  - leg: OPERATING_LICENSE
+    filter: "ba_mo.regno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_BANKMONI', ba_mo.id)"
+        source_column: FIMS.BANKMONI.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: ba_mo.id
+        source_column: FIMS.BANKMONI.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_BANKMONI'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'OPERATING_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: OPERATING_LICENSE
+
+      - target_column: identn_nbr
+        transformation: ba_mo.regno
+        source_column: FIMS.BANKMONI.RegNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: ba_mo.regdate
+        source_column: FIMS.BANKMONI.RegDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: ba_mo.regadd
+        source_column: FIMS.BANKMONI.RegAdd
+        data_type: string
+
+mapping_columns: null
+
+final_filter:
+  - seq: 1
+    clause_type: UNION ALL
+    expression: |
+      SELECT -- BUSINESS_LICENSE leg
+        hash_id('FIMS_BANKMONI', ba_mo.id) AS ip_id,
+        ba_mo.id AS ip_code,
+        'FIMS_BANKMONI' AS src_stm_code,
+        'BUSINESS_LICENSE' AS identn_tp_code,
+        ba_mo.idno AS identn_nbr,
+        ba_mo.iddate AS issu_dt,
+        ba_mo.idadd AS issu_ahr_nm
+      FROM ba_mo WHERE ba_mo.idno IS NOT NULL
+      UNION ALL
+      SELECT -- OPERATING_LICENSE leg
+        hash_id('FIMS_BANKMONI', ba_mo.id) AS ip_id,
+        ba_mo.id AS ip_code,
+        'FIMS_BANKMONI' AS src_stm_code,
+        'OPERATING_LICENSE' AS identn_tp_code,
+        ba_mo.regno AS identn_nbr,
+        ba_mo.regdate AS issu_dt,
+        ba_mo.regadd AS issu_ahr_nm
+      FROM ba_mo WHERE ba_mo.regno IS NOT NULL
+    description: UNION ALL 2 legs từ cùng 1 physical table BANKMONI.

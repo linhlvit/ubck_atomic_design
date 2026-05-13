@@ -1,0 +1,456 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ivsr_tdg_ac-GSGD.investor_account
+  logical_name: "Atomic - Investor Trading Account – source GSGD.investor_account"
+  physical_name: ivsr_tdg_ac
+  version: "1.0"
+  status: approved
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Trading Account Arrangement"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: GSGD
+  description: |
+    Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD. Grain: 1 dòng = 1 tài khoản (phân biệt theo account_code từ VSDC). Bao gồm cá nhân và tổ chức, trong nước và nước ngoài.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-GSGD-investor_account
+
+attributes:
+  - name: Investor Trading Account Id
+    physical_name: ivsr_tdg_ac_id
+    business_meaning: Khóa đại diện cho tài khoản giao dịch chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: GSGD
+    source_table: investor_account
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Investor Trading Account Code
+    physical_name: ivsr_tdg_ac_code
+    business_meaning: Số tài khoản (từ VSDC). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.account_code
+    comment: BK chính.
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Account Name
+    physical_name: ac_nm
+    business_meaning: Họ và tên nhà đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.account_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Investor Type Code
+    physical_name: ivsr_tp_code
+    business_meaning: "Loại hình NĐT: 1=Cá nhân, 2=Tổ chức."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.investor_type
+    comment: "Scheme: GSGD_INVESTOR_TYPE."
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Open Date
+    physical_name: opn_dt
+    business_meaning: Ngày mở tài khoản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.open_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Close Date
+    physical_name: cls_dt
+    business_meaning: Ngày đóng tài khoản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.close_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Account Status Code
+    physical_name: ac_st_code
+    business_meaning: "Trạng thái: 0=Đóng, 1=Mở."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.account_status
+    comment: "Scheme: GSGD_ACCOUNT_STATUS."
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Domestic Foreign Flag
+    physical_name: dmst_frgn_f
+    business_meaning: "Trong nước/Nước ngoài: 0=Trong nước, 1=Nước ngoài."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.domestic_foreign_flag
+    comment: "Scheme: GSGD_DOMESTIC_FOREIGN_FLAG."
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Nationality
+    physical_name: nat
+    business_meaning: Quốc tịch. Lưu dạng text denormalized — không có bảng lookup địa lý trong scope GSGD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.nationality
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Date of Birth
+    physical_name: dob
+    business_meaning: "Ngày tháng năm sinh/ngày thành lập DN (từ CTCK, có thể sửa)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.date_of_birth
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Legal Representative
+    physical_name: lgl_rprs
+    business_meaning: "Người đại diện theo pháp luật (từ CTCK, có thể sửa)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.legal_representative
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Identity Number
+    physical_name: id_nbr
+    business_meaning: "Số CCCD/Số đăng ký sở hữu. Denormalized — grain = 1 tài khoản."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.identity_number
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Identity Issue Date
+    physical_name: id_issu_dt
+    business_meaning: Ngày cấp giấy tờ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.identity_issue_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Identity Issue Place
+    physical_name: id_issu_plc
+    business_meaning: Nơi cấp giấy tờ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.identity_issue_place
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Contact Address
+    physical_name: ctc_adr
+    business_meaning: "Địa chỉ liên lạc (từ CTCK, có thể sửa). Denormalized — grain = 1 tài khoản."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.contact_address
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Permanent Address
+    physical_name: perm_adr
+    business_meaning: "Địa chỉ thường trú (từ CTCK, có thể sửa). Denormalized — grain = 1 tài khoản."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.permanent_address
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Phone Number
+    physical_name: ph_nbr
+    business_meaning: "Số điện thoại (từ CTCK, có thể sửa). Denormalized — grain = 1 tài khoản."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.phone_number
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Email
+    physical_name: email
+    business_meaning: "Email (từ CTCK, có thể sửa). Denormalized — grain = 1 tài khoản."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.email
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Bank Account Holder Name
+    physical_name: bnk_ac_hldr_nm
+    business_meaning: "Tên chủ tài khoản ngân hàng (từ CTCK, có thể sửa)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.bank_account_holder_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Bank Account Number
+    physical_name: bnk_ac_nbr
+    business_meaning: "Số tài khoản ngân hàng (từ CTCK, có thể sửa)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.bank_account_number
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Bank Account Name
+    physical_name: bnk_ac_nm
+    business_meaning: "Tên ngân hàng (từ CTCK, có thể sửa)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.bank_account_name
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Margin Account Open Date
+    physical_name: mrgn_ac_opn_dt
+    business_meaning: Ngày mở tài khoản ký quỹ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.margin_account_open_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Margin Service Enabled
+    physical_name: mrgn_svc_enabled
+    business_meaning: Dịch vụ tài chính sử dụng — Ký quỹ.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.margin_service_enabled
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Advance Payment Service Enabled
+    physical_name: advnc_pymt_svc_enabled
+    business_meaning: Dịch vụ tài chính sử dụng — Ứng trước tiền bán.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.advance_payment_service_enabled
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Account Authorization Enabled
+    physical_name: ac_ahr_enabled
+    business_meaning: Dịch vụ tài chính sử dụng — Hợp đồng tài chính khác.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.account_authorization_enabled
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Authorized Person Name
+    physical_name: authorized_psn_nm
+    business_meaning: Người nhận ủy quyền (denormalized từ account_authorization).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.authorized_person_name
+    comment: "Lưu ý: tách sang entity Investor Trading Account Authorization ở Tier 2. Trường này là snapshot denormalized trên account."
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Authorization Date
+    physical_name: ahr_dt
+    business_meaning: Ngày nhận ủy quyền (denormalized từ account_authorization).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.authorization_date
+    comment: "Lưu ý: tách sang entity Investor Trading Account Authorization ở Tier 2. Trường này là snapshot denormalized trên account."
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Approval Status Code
+    physical_name: aprv_st_code
+    business_meaning: Trạng thái phê duyệt tài khoản.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.approval_status
+    comment: "Scheme: GSGD_APPROVAL_STATUS."
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning: "Nguồn dữ liệu chính: VSDC, CTCK."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.data_source
+    comment: "Scheme: GSGD_DATA_SOURCE. Cần profile giá trị thực tế."
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null
+
+  - name: Last Modified Date
+    physical_name: last_mod_dt
+    business_meaning: Ngày thay đổi thông tin lần cuối.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: GSGD
+    source_table: investor_account
+    source_column: GSGD.investor_account.last_modified_date
+    comment: null
+    classification_context: "Source System Code = 'GSGD_investor_account'"
+    etl_derived_value: null

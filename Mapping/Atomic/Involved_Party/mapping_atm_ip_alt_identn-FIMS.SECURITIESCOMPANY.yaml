@@ -1,0 +1,138 @@
+schema_type: mapping
+schema_version: "1.0"
+
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+
+mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.SECURITIESCOMPANY
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.SECURITIESCOMPANY"
+  physical_name: ip_alt_identn
+  pattern: unpivot
+  etl_pattern: SCD4A
+  dm_ref: ATM-ip_alt_identn-FIMS.SECURITIESCOMPANY
+  brd_ref: BRD-SRC-FIMS-SECURITIESCOMPANY
+
+target:
+  schema: atomic
+  physical_name: ip_alt_identn
+  etl_handle: SCD4A
+  description: |
+    Lưu trữ các giấy tờ định danh của Securities Company từ FIMS.SECURITIESCOMPANY.
+    2 legs: BUSINESS_LICENSE (IdNo/IdDate/IdAdd) và OPERATING_LICENSE (RegNo/RegDate/RegAdd).
+
+input:
+  - seq: 1
+    source_type: physical_table
+    schema: bronze
+    table_name: SECURITIESCOMPANY
+    alias: se_co
+    select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
+    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+
+relationship: []
+
+mapping_legs:
+  - leg: BUSINESS_LICENSE
+    filter: "se_co.idno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_SECURITIESCOMPANY', se_co.id)"
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: se_co.id
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_SECURITIESCOMPANY'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'BUSINESS_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: BUSINESS_LICENSE
+
+      - target_column: identn_nbr
+        transformation: se_co.idno
+        source_column: FIMS.SECURITIESCOMPANY.IdNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: se_co.iddate
+        source_column: FIMS.SECURITIESCOMPANY.IdDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: se_co.idadd
+        source_column: FIMS.SECURITIESCOMPANY.IdAdd
+        data_type: string
+
+  - leg: OPERATING_LICENSE
+    filter: "se_co.regno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_SECURITIESCOMPANY', se_co.id)"
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: se_co.id
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_SECURITIESCOMPANY'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'OPERATING_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: OPERATING_LICENSE
+
+      - target_column: identn_nbr
+        transformation: se_co.regno
+        source_column: FIMS.SECURITIESCOMPANY.RegNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: se_co.regdate
+        source_column: FIMS.SECURITIESCOMPANY.RegDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: se_co.regadd
+        source_column: FIMS.SECURITIESCOMPANY.RegAdd
+        data_type: string
+
+mapping_columns: null
+
+final_filter:
+  - seq: 1
+    clause_type: UNION ALL
+    expression: |
+      SELECT -- BUSINESS_LICENSE leg
+        hash_id('FIMS_SECURITIESCOMPANY', se_co.id) AS ip_id,
+        se_co.id AS ip_code,
+        'FIMS_SECURITIESCOMPANY' AS src_stm_code,
+        'BUSINESS_LICENSE' AS identn_tp_code,
+        se_co.idno AS identn_nbr,
+        se_co.iddate AS issu_dt,
+        se_co.idadd AS issu_ahr_nm
+      FROM se_co WHERE se_co.idno IS NOT NULL
+      UNION ALL
+      SELECT -- OPERATING_LICENSE leg
+        hash_id('FIMS_SECURITIESCOMPANY', se_co.id) AS ip_id,
+        se_co.id AS ip_code,
+        'FIMS_SECURITIESCOMPANY' AS src_stm_code,
+        'OPERATING_LICENSE' AS identn_tp_code,
+        se_co.regno AS identn_nbr,
+        se_co.regdate AS issu_dt,
+        se_co.regadd AS issu_ahr_nm
+      FROM se_co WHERE se_co.regno IS NOT NULL
+    description: UNION ALL 2 legs từ cùng 1 physical table SECURITIESCOMPANY.

@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rpt_subm_oblg-SCMS.BM_BAO_CAO_DINH_KY_DON_VI
+  logical_name: "Atomic - Report Submission Obligation – source SCMS.BM_BAO_CAO_DINH_KY_DON_VI"
+  physical_name: rpt_subm_oblg
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition]"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Nghĩa vụ gửi báo cáo của từng CTCK theo định kỳ cụ thể. Xác định đơn vị nào phải nộp biểu mẫu nào theo lịch nào.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-BM_BAO_CAO_DINH_KY_DON_VI
+
+attributes:
+  - name: Report Submission Obligation Id
+    physical_name: rpt_subm_oblg_id
+    business_meaning: Khóa đại diện cho nghĩa vụ gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Report Submission Obligation Code
+    physical_name: rpt_subm_oblg_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: SCMS.BM_BAO_CAO_DINH_KY_DON_VI.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Report Submission Schedule Id
+    physical_name: rpt_subm_shd_id
+    business_meaning: FK đến định kỳ gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: SCMS.BM_BAO_CAO_DINH_KY_DON_VI.BM_BAO_CAO_DINH_KY_ID
+    comment: "FK target: Report Submission Schedule.Report Submission Schedule Id."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Report Submission Schedule Code
+    physical_name: rpt_subm_shd_code
+    business_meaning: Mã định kỳ gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: SCMS.BM_BAO_CAO_DINH_KY_DON_VI.BM_BAO_CAO_DINH_KY_ID
+    comment: "Lookup pair: Report Submission Schedule.Report Submission Schedule Code. Pair with Report Submission Schedule Id."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: scr_co_id
+    business_meaning: FK đến công ty chứng khoán có nghĩa vụ gửi.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: SCMS.BM_BAO_CAO_DINH_KY_DON_VI.CTCK_THONG_TIN_ID
+    comment: "FK target: Securities Company.Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: scr_co_code
+    business_meaning: Mã công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: SCMS.BM_BAO_CAO_DINH_KY_DON_VI.CTCK_THONG_TIN_ID
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Obligated Companies Reference Code
+    physical_name: obligated_companies_refr_code
+    business_meaning: BK tham chiếu đến bản ghi danh sách thành viên gửi (BM_BAO_CAO_TV).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: SCMS.BM_BAO_CAO_DINH_KY_DON_VI.BM_BAO_CAO_TV_ID
+    comment: FK không resolve được — BM_BAO_CAO_TV là junction đã denormalize vào Report Template. Lưu BK nguồn dạng Text để traceability.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null
+
+  - name: Version
+    physical_name: vrsn
+    business_meaning: Phiên bản nghĩa vụ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO_DINH_KY_DON_VI
+    source_column: SCMS.BM_BAO_CAO_DINH_KY_DON_VI.PHIEN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO_DINH_KY_DON_VI'"
+    etl_derived_value: null

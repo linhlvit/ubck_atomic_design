@@ -1,0 +1,386 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-rpt_tpl-SCMS.BM_BAO_CAO
+  logical_name: "Atomic - Report Template – source SCMS.BM_BAO_CAO"
+  physical_name: rpt_tpl
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Biểu mẫu báo cáo đầu vào - khuôn mẫu tờ khai định kỳ mà thành viên thị trường phải nộp theo quy định.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-BM_BAO_CAO
+
+attributes:
+  - name: Report Template Id
+    physical_name: rpt_tpl_id
+    business_meaning: Khóa đại diện cho biểu mẫu báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: PK surrogate. Shared entity với FIMS.RPTTEMP.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Template Code
+    physical_name: rpt_tpl_code
+    business_meaning: Mã định danh (tự động tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: Loại báo cáo. Dữ liệu lấy từ trường ID của bảng REPORTTYPE.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: "Scheme: FIMS_REPORT_TYPE."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Template Name
+    physical_name: rpt_tpl_nm
+    business_meaning: Tên báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.TEN_BAO_CAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Template Business Code
+    physical_name: rpt_tpl_bsn_code
+    business_meaning: Mã báo cáo (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.MA_BAO_CAO
+    comment: Mã nghiệp vụ — khác BK kỹ thuật.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Legal Basis
+    physical_name: lgl_bss
+    business_meaning: Căn cứ pháp lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.CAN_CU_PHAP_LY
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Group Code
+    physical_name: rpt_grp_code
+    business_meaning: "Nhóm báo cáo: 1: Báo cáo CTQLQ 2: CTCK 3: NHLK 4: TTLK 5: SGDCK 6: Người đại diện CBTT 7: CN CTQLQ NN tại VN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: "Scheme: FIMS_REPORT_GROUP. modeler_defined — 7 giá trị enum."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Reporting Subject Code
+    physical_name: rpt_sbj_code
+    business_meaning: "Đối tượng gửi báo cáo: 1: CTQLQ 2: CTCK 3: NHLK 4: TTLK 5: SGDCK 6: Người đại diện CBTT 7: CN CTQLQ NN tại VN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: "Scheme: FIMS_MEMBER_TYPE. 7 giá trị enum — cùng tập với TLPROFILES.SystemObject."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Version
+    physical_name: vrsn
+    business_meaning: Phiên bản biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.PHIEN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Effective Date
+    physical_name: eff_dt
+    business_meaning: Ngày bắt đầu sử dụng biểu mẫu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Template Status Code
+    physical_name: tpl_st_code
+    business_meaning: "Trạng thái: 0: Bản nháp 1: Đang sử dụng 2: Không sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: "Scheme: FIMS_TEMPLATE_STATUS. modeler_defined — 3 giá trị: 0=DRAFT 1=ACTIVE 2=INACTIVE."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Is Import Required Indicator
+    physical_name: is_impr_rqd_ind
+    business_meaning: "Báo cáo có import: 1: Có import 0: Không import."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Is Self Period Setting Indicator
+    physical_name: is_self_prd_setting_ind
+    business_meaning: "Báo cáo do cán bộ UB tự thiết lập kỳ: 1: Có 0: Không."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Is Public Disclosure Indicator
+    physical_name: is_pblc_dscl_ind
+    business_meaning: "Cho phép CBTT: 0: Không CBTT 1: Có CBTT."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.MO_TA
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: null
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.NGAY_CAP_NHAT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Function Category Id
+    physical_name: fcn_cgy_id
+    business_meaning: FK đến danh mục chức năng (QT_CHUC_NANG). Nullable.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.QT_CHUC_NANG_ID
+    comment: "FK target: QT_CHUC_NANG entity — chưa được thiết kế lên Atomic."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Function Category Code
+    physical_name: fcn_cgy_code
+    business_meaning: Mã danh mục chức năng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.QT_CHUC_NANG_ID
+    comment: "Lookup pair: QT_CHUC_NANG entity — chưa được thiết kế lên Atomic. Pair with Function Category Id."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Report Direction Type Code
+    physical_name: rpt_drc_tp_code
+    business_meaning: "Chiều báo cáo: 0-Đầu vào; 1-Đầu ra."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.LOAI_BAO_CAO
+    comment: "Scheme: SCMS_REPORT_DIRECTION_TYPE."
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Version Date
+    physical_name: vrsn_dt
+    business_meaning: Ngày thay đổi phiên bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.NGAY_PHIEN_BAN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Is Active Flag
+    physical_name: is_actv_f
+    business_meaning: "Trạng thái sử dụng: 1-Sử dụng; 0-Không sử dụng."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.SU_DUNG
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Is Summary Required Indicator
+    physical_name: is_smy_rqd_ind
+    business_meaning: "Yêu cầu nhập trích yếu: 0-Không bắt buộc; 1-Bắt buộc."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.TRICH_YEU
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null
+
+  - name: Attachment File
+    physical_name: attch_file
+    business_meaning: Tệp đính kèm mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: BM_BAO_CAO
+    source_column: SCMS.BM_BAO_CAO.TEP_DINH_KEM
+    comment: null
+    classification_context: "Source System Code = 'SCMS_BM_BAO_CAO'"
+    etl_derived_value: null

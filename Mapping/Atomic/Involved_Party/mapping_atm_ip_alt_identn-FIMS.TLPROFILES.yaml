@@ -1,0 +1,139 @@
+schema_type: mapping
+schema_version: "1.0"
+
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+
+mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.TLPROFILES
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.TLPROFILES"
+  physical_name: ip_alt_identn
+  pattern: unpivot
+  etl_pattern: SCD4A
+  dm_ref: ATM-ip_alt_identn-FIMS.TLPROFILES
+  brd_ref: BRD-SRC-FIMS-TLPROFILES
+
+target:
+  schema: atomic
+  physical_name: ip_alt_identn
+  etl_handle: SCD4A
+  description: |
+    Lưu trữ các giấy tờ định danh của Disclosure Representative Key Person từ FIMS.TLPROFILES.
+    2 legs: CITIZEN_ID (IdNo/IdDate/IdAdd) và PRACTITIONER_LICENSE (CertNo/CertDate/CertAdd).
+
+input:
+  - seq: 1
+    source_type: physical_table
+    schema: bronze
+    table_name: TLPROFILES
+    alias: tl
+    select_fields: "id, idno, idadd, iddate, certno, certadd, certdate"
+    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+
+relationship: []
+
+mapping_legs:
+  - leg: CITIZEN_ID
+    filter: "tl.idno IS NOT NULL"
+    comment: "Cần profile thêm để phân biệt CITIZEN_ID vs PASSPORT."
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_TLPROFILES', tl.id)"
+        source_column: FIMS.TLPROFILES.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: tl.id
+        source_column: FIMS.TLPROFILES.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_TLPROFILES'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'CITIZEN_ID'"
+        source_column: null
+        data_type: string
+        etl_derived_value: CITIZEN_ID
+
+      - target_column: identn_nbr
+        transformation: tl.idno
+        source_column: FIMS.TLPROFILES.IdNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: tl.iddate
+        source_column: FIMS.TLPROFILES.IdDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: tl.idadd
+        source_column: FIMS.TLPROFILES.IdAdd
+        data_type: string
+
+  - leg: PRACTITIONER_LICENSE
+    filter: "tl.certno IS NOT NULL"
+    mapping_columns:
+      - target_column: ip_id
+        transformation: "{hash_id}('FIMS_TLPROFILES', tl.id)"
+        source_column: FIMS.TLPROFILES.Id
+        data_type: string
+
+      - target_column: ip_code
+        transformation: tl.id
+        source_column: FIMS.TLPROFILES.Id
+        data_type: string
+
+      - target_column: src_stm_code
+        transformation: "'FIMS_TLPROFILES'"
+        source_column: null
+        data_type: string
+
+      - target_column: identn_tp_code
+        transformation: "'PRACTITIONER_LICENSE'"
+        source_column: null
+        data_type: string
+        etl_derived_value: PRACTITIONER_LICENSE
+
+      - target_column: identn_nbr
+        transformation: tl.certno
+        source_column: FIMS.TLPROFILES.CertNo
+        data_type: string
+
+      - target_column: issu_dt
+        transformation: tl.certdate
+        source_column: FIMS.TLPROFILES.CertDate
+        data_type: date
+
+      - target_column: issu_ahr_nm
+        transformation: tl.certadd
+        source_column: FIMS.TLPROFILES.CertAdd
+        data_type: string
+
+mapping_columns: null
+
+final_filter:
+  - seq: 1
+    clause_type: UNION ALL
+    expression: |
+      SELECT -- CITIZEN_ID leg
+        hash_id('FIMS_TLPROFILES', tl.id) AS ip_id,
+        tl.id AS ip_code,
+        'FIMS_TLPROFILES' AS src_stm_code,
+        'CITIZEN_ID' AS identn_tp_code,
+        tl.idno AS identn_nbr,
+        tl.iddate AS issu_dt,
+        tl.idadd AS issu_ahr_nm
+      FROM tl WHERE tl.idno IS NOT NULL
+      UNION ALL
+      SELECT -- PRACTITIONER_LICENSE leg
+        hash_id('FIMS_TLPROFILES', tl.id) AS ip_id,
+        tl.id AS ip_code,
+        'FIMS_TLPROFILES' AS src_stm_code,
+        'PRACTITIONER_LICENSE' AS identn_tp_code,
+        tl.certno AS identn_nbr,
+        tl.certdate AS issu_dt,
+        tl.certadd AS issu_ahr_nm
+      FROM tl WHERE tl.certno IS NOT NULL
+    description: UNION ALL 2 legs từ cùng 1 physical table TLPROFILES.

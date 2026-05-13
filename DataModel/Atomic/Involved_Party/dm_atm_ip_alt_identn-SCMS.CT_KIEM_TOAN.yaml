@@ -1,0 +1,120 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_alt_identn-SCMS.CT_KIEM_TOAN
+  logical_name: "Atomic - Involved Party Alternative Identification – source SCMS.CT_KIEM_TOAN"
+  physical_name: ip_alt_identn
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CT_KIEM_TOAN
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến công ty kiểm toán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN
+    source_column: SCMS.CT_KIEM_TOAN.ID
+    comment: "FK target: Audit Firm.Audit Firm Id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN
+    source_column: SCMS.CT_KIEM_TOAN.ID
+    comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identn_tp_code
+    business_meaning: "Loại giấy tờ định danh: giấy phép kinh doanh."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL-derived."
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: BUSINESS_LICENSE
+
+  - name: Identification Number
+    physical_name: identn_nbr
+    business_meaning: Số giấy phép kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN
+    source_column: SCMS.CT_KIEM_TOAN.GIAY_PHEP_KINH_DOANH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning: Ngày cấp giấy phép kinh doanh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN
+    source_column: SCMS.CT_KIEM_TOAN.NGAY_CAP_GPKD
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Issuing Authority Name
+    physical_name: issu_ahr_nm
+    business_meaning: Nơi cấp giấy phép kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CT_KIEM_TOAN
+    source_column: SCMS.CT_KIEM_TOAN.NOI_CAP_GPKD
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CT_KIEM_TOAN' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null

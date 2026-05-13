@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_elc_adr-ThanhTra.DM_CONG_TY_DC
+  logical_name: "Atomic - Involved Party Electronic Address – source ThanhTra.DM_CONG_TY_DC"
+  physical_name: ip_elc_adr
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-DM_CONG_TY_DC
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Public Company.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: ThanhTra.DM_CONG_TY_DC.ID
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: ThanhTra.DM_CONG_TY_DC.ID
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    business_meaning: Loại kênh liên lạc — email.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Electronic Address Value
+    physical_name: elc_adr_val
+    business_meaning: Email.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: ThanhTra.DM_CONG_TY_DC.EMAIL
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Public Company.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: ThanhTra.DM_CONG_TY_DC.ID
+    comment: "FK target: Public Company.Public Company Id."
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: ThanhTra.DM_CONG_TY_DC.ID
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    business_meaning: Loại kênh liên lạc — điện thoại.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Electronic Address Value
+    physical_name: elc_adr_val
+    business_meaning: Số điện thoại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: DM_CONG_TY_DC
+    source_column: ThanhTra.DM_CONG_TY_DC.DIEN_THOAI
+    comment: null
+    classification_context: "Source System Code = 'ThanhTra_DM_CONG_TY_DC' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
