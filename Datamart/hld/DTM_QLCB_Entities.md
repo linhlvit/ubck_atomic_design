@@ -25,39 +25,11 @@ erDiagram
 
 ## Nhóm 4 + Nhóm 8–11: Tra cứu chi tiết đợt chào bán (Tác nghiệp — Pivot)
 
-```mermaid
-erDiagram
-    Securities_Offering_360_Profile {
-        varchar Securities_Offering_Code PK
-        varchar Offering_Type_Category_Code PK
-        string Public_Company_Code
-        string Public_Company_Name
-        string Equity_Ticker
-        varchar Security_Type_Code
-        int Planned_Offering_Quantity
-        float Planned_Offering_Amount
-        string Planned_Offering_Target
-        int Planned_Offering_Employee_Quantity
-        int Actual_Offering_Quantity
-        float Actual_Offering_Amount
-        string Actual_Offering_Target
-        int Actual_Offering_Employee_Quantity
-        string Certificate_Number
-        date Certificate_Issue_Date
-        string SSC_Official_Document_Number
-        date SSC_Official_Document_Date
-        date Offering_Start_Date
-        date Offering_End_Date
-        boolean Multi_Offering_Flag
-        string Created_By_Login_Name
-        string Capital_Usage_Plan
-        datetime Population_Date
-    }
-```
+> Bảng Tác nghiệp — lấy dữ liệu trực tiếp từ Atomic, không join qua Dimension. Không có relationship line → không vẽ erDiagram.
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Securities Offering 360 Profile | Hồ sơ 360° đợt chào bán — pivot theo loại hình. Composite PK: (Securities Offering Code, Offering Type Category Code) | 1 row = 1 đợt × 1 loại hình có qty > 0 (PUBLIC/PRIVATE/ESOP/DIVIDEND/OWNER_CAPITAL/OTHER) | K_QLCB_17–27, 28–49 |
+| Securities Offering 360 Profile | Hồ sơ 360° đợt chào bán — pivot theo loại hình. Nguồn trực tiếp từ Atomic `Public Company Securities Offering` và `Public Company`. Surrogate PK: `Securities Offering Id`; BK: `Securities Offering Code`. Grain component 2: `Offering Type Category Code` (6 giá trị: PUBLIC / PRIVATE / ESOP / DIVIDEND / OWNER_CAPITAL / OTHER) | 1 row = 1 đợt × 1 loại hình có qty > 0 | K_QLCB_17–27, 28–49 |
 
 ---
 

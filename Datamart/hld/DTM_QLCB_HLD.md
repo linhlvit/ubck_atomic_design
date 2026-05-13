@@ -157,39 +157,34 @@ flowchart LR
 ```mermaid
 erDiagram
     Calendar_Date_Dimension {
-        int Date_Dimension_Id PK
+        string Date_Dimension_Id PK
         date Full_Date
         int Year
         int Quarter
         int Month
     }
     Public_Company_Dimension {
-        int Public_Company_Dimension_Id PK
-        int Public_Company_Id
+        string Public_Company_Dimension_Id PK
         string Public_Company_Code
         string Public_Company_Name
         string Public_Company_English_Name
         string Equity_Ticker
-        varchar Industry_Category_Level1_Code
-        varchar Industry_Category_Level2_Code
-        varchar Equity_Listing_Exchange_Code
-        date Effective_Date
-        date Expiry_Date
+        string Industry_Category_Level1_Code
+        string Industry_Category_Level2_Code
+        string Equity_Listing_Exchange_Code
     }
     Industry_Category_Dimension {
-        int Industry_Category_Dimension_Id PK
-        varchar Industry_Category_Level1_Code
+        string Industry_Category_Dimension_Id PK
+        string Industry_Category_Level1_Code
         string Industry_Category_Level1_Name
-        varchar Industry_Category_Level2_Code
+        string Industry_Category_Level2_Code
         string Industry_Category_Level2_Name
-        date Effective_Date
-        date Expiry_Date
     }
     Fact_Securities_Offering {
-        varchar Securities_Offering_Code
-        int SSC_Official_Document_Date_Dimension_Id FK
-        int Public_Company_Dimension_Id FK
-        int Industry_Category_Dimension_Id FK
+        string Securities_Offering_Code
+        string SSC_Official_Document_Date_Dimension_Id FK
+        string Public_Company_Dimension_Id FK
+        string Industry_Category_Dimension_Id FK
         float Planned_Proceeds_Amount
         float Planned_Public_Offering_Amount
         float Planned_Private_Placement_Amount
@@ -206,10 +201,10 @@ erDiagram
         float Actual_Other_Amount
         int Planned_Security_Quantity
         int Successful_Security_Quantity
-        varchar Security_Type_Code
-        date Offering_Start_Date
+        string Security_Type_Code
+        date Certificate_Issue_Date
         date Offering_End_Date
-        datetime Population_Date
+        date SSC_Official_Document_Date
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering : "SSC Official Document Date Dimension Id"
@@ -405,13 +400,14 @@ flowchart LR
 ```mermaid
 erDiagram
     Securities_Offering_360_Profile {
-        varchar Securities_Offering_Code PK
-        varchar Offering_Type_Category_Code PK
+        string Securities_Offering_Id PK
+        string Securities_Offering_Code BK
+        string Offering_Type_Category_Code
         string Public_Company_Code
         string Public_Company_Name
         string Public_Company_English_Name
         string Equity_Ticker
-        varchar Security_Type_Code
+        string Security_Type_Code
         int Planned_Offering_Quantity
         float Planned_Offering_Amount
         string Planned_Offering_Target
@@ -424,15 +420,13 @@ erDiagram
         date Certificate_Issue_Date
         string SSC_Official_Document_Number
         date SSC_Official_Document_Date
-        date Offering_Start_Date
         date Offering_End_Date
         boolean Multi_Offering_Flag
         string Created_By_Login_Name
         string Capital_Usage_Plan
-        varchar Industry_Category_Level1_Code
-        varchar Industry_Category_Level2_Code
-        varchar Equity_Listing_Exchange_Code
-        datetime Population_Date
+        string Industry_Category_Level1_Code
+        string Industry_Category_Level2_Code
+        string Equity_Listing_Exchange_Code
     }
 ```
 
