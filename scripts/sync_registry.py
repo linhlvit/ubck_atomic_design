@@ -140,7 +140,7 @@ def load_existing_registry():
     existing = {}
     if not REGISTRY_PATH.exists():
         return existing
-    with open(REGISTRY_PATH, encoding="utf-8", newline="") as f:
+    with open(REGISTRY_PATH, encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             existing[row["brd_id"]] = row
@@ -182,7 +182,7 @@ def merge_rows(brd_entries, dm_index, map_index, existing):
 
 def write_registry(rows):
     REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(REGISTRY_PATH, "w", encoding="utf-8", newline="") as f:
+    with open(REGISTRY_PATH, "w", encoding="utf-8-sig", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=COLUMNS)
         writer.writeheader()
         writer.writerows(rows)
