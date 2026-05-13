@@ -1,245 +1,205 @@
 schema_type: mapping
 schema_version: "1.0"
-
 mapping:
   id: MAP-ATM-fnd_mgt_co-FIMS.FUNDCOMPANY
-  logical_name: "Mapping Atomic - Fund Management Company – source FIMS.FUNDCOMPANY"
+  logical_name: Mapping Atomic - Fund Management Company – source FIMS.FUNDCOMPANY
   physical_name: fnd_mgt_co
   pattern: regular
   etl_pattern: SCD4A
   dm_ref: ATM-fnd_mgt_co-FIMS.FUNDCOMPANY
   brd_ref: BRD-SRC-FIMS-FUNDCOMPANY
-
 transformation_rules_ref: Mapping/rules/transformation_rules.yaml
-
 target:
   schema: atomic
   physical_name: fnd_mgt_co
   etl_handle: SCD4A
-  description: |
-    Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty.
-
+  description: Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty.
 input:
   - seq: 1
     source_type: physical_table
     schema: bronze
     table_name: FUNDCOMPANY
     alias: fu_co
-    select_fields: "id, name, shortname, ename, capital, createdby, datecreated, datemodified, naid, statusid, director, depcert, description"
-    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
-
+    select_fields: id, name, shortname, ename, capital, createdby, datecreated, datemodified, naid, statusid, director, depcert, description
+    filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
   - seq: 2
     source_type: physical_table
     schema: bronze
     table_name: FUNDCOMBUSINES
     alias: fu_bu_raw
-    select_fields: "fundid, buid"
-    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
-
+    select_fields: fundid, buid
+    filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
   - seq: 3
     source_type: derived_cte
     schema: null
     table_name: fu_bu_raw
     alias: fu_bu
-    select_fields: "fundid, array_agg(buid) AS business_type_codes"
-    filter: "GROUP BY fundid"
-
+    select_fields: fundid, array_agg(buid) AS business_type_codes
+    filter: GROUP BY fundid
   - seq: 4
     source_type: physical_table
     schema: bronze
     table_name: FUNDCOMTYPE
     alias: fu_ty_raw
-    select_fields: "fundid, comtypeid"
-    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
-
+    select_fields: fundid, comtypeid
+    filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
   - seq: 5
     source_type: derived_cte
     schema: null
     table_name: fu_ty_raw
     alias: fu_ty
-    select_fields: "fundid, array_agg(comtypeid) AS company_type_codes"
-    filter: "GROUP BY fundid"
-
+    select_fields: fundid, array_agg(comtypeid) AS company_type_codes
+    filter: GROUP BY fundid
 relationship:
   - seq: 1
     main_alias: fu_co
     join_type: LEFT JOIN
     join_alias: fu_bu
-    join_on: "fu_co.id = fu_bu.fundid"
-
+    join_on: fu_co.id = fu_bu.fundid
   - seq: 2
     main_alias: fu_co
     join_type: LEFT JOIN
     join_alias: fu_ty
-    join_on: "fu_co.id = fu_ty.fundid"
-
+    join_on: fu_co.id = fu_ty.fundid
 mapping_columns:
   - seq: 1
     target_column: fund_management_company_id
     transformation: "{hash_id}('FIMS_FUNDCOMPANY', fu_co.id)"
     data_type: string
     description: Khóa đại diện cho công ty quản lý quỹ.
-
   - seq: 2
     target_column: fund_management_company_code
     transformation: fu_co.id
     data_type: string
     description: Mã định danh công ty QLQ. Map từ PK bảng nguồn.
-
   - seq: 3
     target_column: source_system_code
     transformation: "'FIMS_FUNDCOMPANY'"
     data_type: string
     description: Mã nguồn dữ liệu.
-
   - seq: 4
     target_column: fund_management_company_name
     transformation: fu_co.name
     data_type: string
     description: Tên công ty QLQ.
-
   - seq: 5
     target_column: fund_management_company_short_name
     transformation: fu_co.shortname
     data_type: string
-    description: "Tên viết tắt (ghi là Tên tiếng Việt trong nguồn)."
-
+    description: Tên viết tắt (ghi là Tên tiếng Việt trong nguồn).
   - seq: 6
     target_column: fund_management_company_english_name
     transformation: fu_co.ename
     data_type: string
     description: Tên tiếng Anh.
-
   - seq: 7
     target_column: practice_status_code
     transformation: null
     data_type: string
     description: Trạng thái hoạt động của công ty QLQ.
-
   - seq: 8
     target_column: charter_capital_amount
     transformation: fu_co.capital
-    data_type: "decimal(23,2)"
-    description: "Vốn điều lệ (VNĐ)."
-
+    data_type: decimal(23,2)
+    description: Vốn điều lệ (VNĐ).
   - seq: 9
     target_column: dorf_indicator
     transformation: null
     data_type: string
-    description: "Loại hình trong/ngoài nước. 1=Trong nước; 0=Nước ngoài."
-
+    description: Loại hình trong/ngoài nước. 1=Trong nước; 0=Nước ngoài.
   - seq: 10
     target_column: license_decision_number
-    transformation: null
+    transformation: (null)
     data_type: string
     description: Số quyết định/giấy phép thành lập.
-
   - seq: 11
     target_column: license_decision_date
     transformation: null
     data_type: date
     description: Ngày cấp phép.
-
   - seq: 12
     target_column: active_date
     transformation: null
     data_type: date
     description: Ngày bắt đầu hoạt động.
-
   - seq: 13
     target_column: stop_date
     transformation: null
     data_type: date
     description: Ngày ngừng hoạt động.
-
   - seq: 14
     target_column: business_type_codes
     transformation: fu_bu.business_type_codes
-    data_type: "array<string>"
+    data_type: array<string>
     description: Danh sách mã nghiệp vụ kinh doanh. Từ bảng junction FUNDCOMBUSINES.
-
   - seq: 15
     target_column: created_by
     transformation: fu_co.createdby
     data_type: string
     description: Người tạo bản ghi.
-
   - seq: 16
     target_column: created_timestamp
     transformation: fu_co.datecreated
     data_type: timestamp
     description: Ngày tạo bản ghi.
-
   - seq: 17
     target_column: updated_timestamp
     transformation: fu_co.datemodified
     data_type: timestamp
     description: Ngày cập nhật bản ghi.
-
   - seq: 18
     target_column: country_of_registration_id
     transformation: "{hash_id}('FIMS_NATIONAL', fu_co.naid)"
     data_type: string
     description: FK đến quốc gia đăng ký của công ty QLQ.
-
   - seq: 19
     target_column: country_of_registration_code
     transformation: fu_co.naid
     data_type: string
     description: Mã quốc gia đăng ký.
-
   - seq: 20
     target_column: life_cycle_status_code
     transformation: fu_co.statusid
     data_type: string
     description: Trạng thái hoạt động. ID lấy từ bảng STATUS.
-
   - seq: 21
     target_column: director_name
     transformation: fu_co.director
     data_type: string
     description: Tên Tổng giám đốc (denormalized).
-
   - seq: 22
     target_column: depository_certificate_number
     transformation: fu_co.depcert
     data_type: string
-    description: "Chứng nhận lưu ký — thông tin bổ sung của FIMS không có trong FMS.SECURITIES."
-
+    description: Chứng nhận lưu ký — thông tin bổ sung của FIMS không có trong FMS.SECURITIES.
   - seq: 23
     target_column: company_type_codes
     transformation: fu_ty.company_type_codes
-    data_type: "array<string>"
+    data_type: array<string>
     description: Danh sách mã loại hình doanh nghiệp. Từ bảng junction FUNDCOMTYPE.
-
   - seq: 24
     target_column: description
     transformation: fu_co.description
     data_type: string
     description: Ghi chú.
-
   - seq: 25
     target_column: company_type_code
     transformation: null
     data_type: string
     description: Loại hình công ty.
-
   - seq: 26
     target_column: fund_type_code
     transformation: null
     data_type: string
-    description: "Loại quỹ (áp dụng cho quỹ đầu tư)."
-
+    description: Loại quỹ (áp dụng cho quỹ đầu tư).
   - seq: 27
     target_column: business_license_number
     transformation: null
     data_type: string
     description: Số giấy phép kinh doanh.
-
   - seq: 28
     target_column: website
     transformation: null
     data_type: string
     description: Website chính thức.
-
 final_filter: []
