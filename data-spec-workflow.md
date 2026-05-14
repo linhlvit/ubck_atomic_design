@@ -151,7 +151,65 @@ python scripts/generate_brd_summary.py --check
 
 > Chạy lại sau mỗi khi thêm hoặc sửa brd_entry.
 
-### 1.5 Từ BRD → Jira Task
+### 1.5 BRD Source Column Details — Column-level Metadata
+
+Để traceability chi tiết ở cấp độ cột nguồn, tạo file YAML riêng per source table với danh sách cột, kiểu dữ liệu, mô tả, và FK references.
+
+**File location:** `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml`  
+**Schema:** `schemas/brd_source_columns.schema.json`
+
+**Format:**
+
+```yaml
+schema_type: brd_source_columns
+schema_version: "1.0"
+source: FMS
+table: FUNDS
+brd_ref: BRD-SRC-FMS-FUNDS
+
+columns:
+  - name: Id
+    data_type: RAW(16)
+    description: "Mã ID quỹ đầu tư (PK)"
+    key: PK
+    fk_note: null
+
+  - name: SecId
+    data_type: RAW(16)
+    description: "Mã ID công ty QLQ quản lý"
+    key: FK
+    fk_note: "FK → SECURITIES.Id"
+
+  - name: FundType
+    data_type: "NUMBER(22)"
+    description: "Loại hình quỹ"
+    key: null
+    fk_note: null
+```
+
+**Generation script** — Sinh từ `Source/{SOURCE}_Columns.csv`:
+
+```bash
+# FMS: sinh 59 files từ Source/FMS_Columns.csv
+python scripts/generate_fms_table_columns.py
+
+# Preview (dry-run)
+python scripts/generate_fms_table_columns.py --dry-run
+```
+
+**Validation:**
+
+```bash
+# Validate một file
+ajv validate -s schemas/brd_source_columns.schema.json -d "BRD/Source/FMS/brd_FMS_FUNDS.yaml"
+
+# Validate tất cả FMS column files
+for file in BRD/Source/FMS/brd_FMS_*.yaml; do
+  ajv validate -s schemas/brd_source_columns.schema.json -d "$file"
+done
+```
+
+### 1.6 Từ BRD → Jira Task
 
 **Cách 1: Jira API** — Tạo 1 task per BRD ID
 
@@ -1045,6 +1103,15 @@ df.groupby("source")[["dm_status", "mapping_status"]].value_counts()
       "version": "1.0"
     },
     {
+      "type": "brd_source_columns",
+      "label": "BRD Source Column Details",
+      "schema_file": "schemas/brd_source_columns.schema.json",
+      "file_pattern": "BRD/Source/{SOURCE}/brd_{SOURCE}_*.yaml",
+      "file_location": "BRD/Source/",
+      "file_naming": "brd_{SOURCE}_{TABLE}.yaml",
+      "version": "1.0"
+    },
+    {
       "type": "data_model",
       "label": "Data Model Design",
       "schema_file": "schemas/dm.schema.json",
@@ -1077,6 +1144,7 @@ df.groupby("source")[["dm_status", "mapping_status"]].value_counts()
 {
   "yaml.schemas": {
     "schemas/brd_source.schema.json": ["BRD/Source/brd_*.yaml"],
+    "schemas/brd_source_columns.schema.json": ["BRD/Source/*/brd_*.yaml"],
     "schemas/dm.schema.json": ["DataModel/Atomic/dm_atm_*.yaml"],
     "schemas/mapping.schema.json": ["Mapping/Atomic/mapping_atm_*.yaml"]
   },
@@ -1148,3 +1216,4 @@ Khi mở rộng (ETL spec, mapping, ...):
 - **`scripts/sync_registry.py`** — Script sync YAML → registry.csv
 - **`scripts/generate_dm_summary.py`** — Sinh DataModel/Atomic/_summary.csv từ tất cả DM YAML
 - **`scripts/generate_brd_summary.py`** — Sinh BRD/Source/_summary.csv từ tất cả BRD YAML
+- **`scripts/generate_fms_table_columns.py`** — Sinh 59 file YAML cột nguồn từ Source/FMS_Columns.csv → BRD/Source/FMS/brd_FMS_*.yaml
