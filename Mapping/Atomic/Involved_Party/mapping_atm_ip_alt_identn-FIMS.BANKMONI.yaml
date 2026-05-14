@@ -21,7 +21,7 @@ target:
     Mỗi dòng = 1 loại giấy tờ. 2 legs: BUSINESS_LICENSE (IdNo/IdAdd) và OPERATING_LICENSE (RegNo/RegAdd).
 
 input:
-  - seq: 1
+  -
     source_type: physical_table
     schema: bronze
     table_name: BANKMONI
@@ -113,7 +113,7 @@ mapping_legs:
 mapping_columns: null
 
 final_filter:
-  - seq: 1
+  -
     clause_type: UNION ALL
     expression: |
       SELECT -- BUSINESS_LICENSE leg

@@ -602,15 +602,13 @@ target:
   description: "Công ty quản lý quỹ..."
 
 input:
-  - seq: 1
-    source_type: physical_table   # physical_table | derived_cte | unpivot_cte
+  - source_type: physical_table   # physical_table | derived_cte | unpivot_cte
     schema: bronze
     table_name: FUNDCOMPANY
     alias: fu_co
     select_fields: "id, name, capital, ..."
     filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
-  - seq: 2
-    source_type: derived_cte
+  - source_type: derived_cte
     schema: null
     table_name: fu_bu_raw
     alias: fu_bu
@@ -618,25 +616,21 @@ input:
     filter: "GROUP BY fundid"
 
 relationship:
-  - seq: 1
-    main_alias: fu_co
+  - main_alias: fu_co
     join_type: LEFT JOIN        # INNER JOIN | LEFT JOIN | RIGHT JOIN | FULL OUTER JOIN
     join_alias: fu_bu
     join_on: "fu_co.id = fu_bu.fundid"
 
 mapping_columns:
-  - seq: 1
-    target_column: fund_management_company_id
+  - target_column: fund_management_company_id
     transformation: "{hash_id}('FIMS_FUNDCOMPANY', fu_co.id)"  # {rule_id}(...) = transformation rule
     data_type: string
     description: Khóa đại diện cho công ty quản lý quỹ.
-  - seq: 2
-    target_column: source_system_code
+  - target_column: source_system_code
     transformation: "'FIMS_FUNDCOMPANY'"                        # SQL expression thuần
     data_type: string
     description: Mã nguồn dữ liệu.
-  - seq: 3
-    target_column: fund_management_company_name
+  - target_column: fund_management_company_name
     transformation: fu_co.name
     data_type: string
     description: Tên công ty QLQ.
@@ -658,8 +652,7 @@ target:
   physical_name: ip_alt_identn  # snake_case physical name
 
 input:
-  - seq: 1
-    source_type: physical_table
+  - source_type: physical_table
     schema: bronze
     table_name: BANKMONI
     alias: ba_mo
@@ -705,8 +698,7 @@ mapping_legs:                   # thay mapping_columns khi dùng pattern unpivot
 mapping_columns: null           # null khi dùng mapping_legs
 
 final_filter:
-  - seq: 1
-    clause_type: UNION ALL
+  - clause_type: UNION ALL
     expression: |
       SELECT ... FROM ba_mo WHERE ba_mo.idno IS NOT NULL
       UNION ALL

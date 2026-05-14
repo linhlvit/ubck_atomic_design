@@ -5,12 +5,31 @@
   "description": "Schema định nghĩa định dạng YAML cho Mapping spec — ánh xạ từ Bronze source table sang Atomic entity. Dùng để validate và parse các file mapping_atm_*.yaml trong thư mục Mapping/Atomic/.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_type", "schema_version", "mapping", "target", "input", "relationship", "mapping_columns", "final_filter"],
+  "required": [
+    "schema_type",
+    "schema_version",
+    "mapping",
+    "target",
+    "input",
+    "relationship",
+    "mapping_columns",
+    "final_filter"
+  ],
   "if": {
-    "properties": { "mapping": { "properties": { "pattern": { "const": "unpivot" } } } }
+    "properties": {
+      "mapping": {
+        "properties": {
+          "pattern": {
+            "const": "unpivot"
+          }
+        }
+      }
+    }
   },
   "then": {
-    "required": ["mapping_legs"]
+    "required": [
+      "mapping_legs"
+    ]
   },
   "properties": {
     "schema_type": {
@@ -50,16 +69,22 @@
           "type": "array",
           "minItems": 1,
           "description": "Danh sách mapping cột cho pattern regular",
-          "items": { "$ref": "#/definitions/mapping_column" }
+          "items": {
+            "$ref": "#/definitions/mapping_column"
+          }
         },
-        { "type": "null" }
+        {
+          "type": "null"
+        }
       ]
     },
     "mapping_legs": {
       "type": "array",
       "minItems": 1,
       "description": "Danh sách legs cho pattern unpivot — mỗi leg là 1 loại giấy tờ/nhóm cột",
-      "items": { "$ref": "#/definitions/mapping_leg" }
+      "items": {
+        "$ref": "#/definitions/mapping_leg"
+      }
     },
     "transformation_rules_ref": {
       "type": "string",
@@ -68,14 +93,24 @@
     "final_filter": {
       "type": "array",
       "description": "Danh sách mệnh đề WHERE / UNION ALL cuối transform. Để trống [] nếu không có.",
-      "items": { "$ref": "#/definitions/final_filter_item" }
+      "items": {
+        "$ref": "#/definitions/final_filter_item"
+      }
     }
   },
   "definitions": {
     "mapping_header": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "logical_name", "physical_name", "pattern", "etl_pattern", "dm_ref", "brd_ref"],
+      "required": [
+        "id",
+        "logical_name",
+        "physical_name",
+        "pattern",
+        "etl_pattern",
+        "dm_ref",
+        "brd_ref"
+      ],
       "properties": {
         "id": {
           "type": "string",
@@ -94,12 +129,22 @@
         },
         "pattern": {
           "type": "string",
-          "enum": ["regular", "unpivot", "direct", "shared_entity"],
+          "enum": [
+            "regular",
+            "unpivot",
+            "direct",
+            "shared_entity"
+          ],
           "description": "Loại mapping pattern. regular=1 source+JOIN, unpivot=LATERAL VIEW/UNION ALL legs, direct=1 source không JOIN, shared_entity=multi-source UNION ALL"
         },
         "etl_pattern": {
           "type": "string",
-          "enum": ["SCD4A", "SCD2", "Fact Append", "Upsert"],
+          "enum": [
+            "SCD4A",
+            "SCD2",
+            "Fact Append",
+            "Upsert"
+          ],
           "description": "ETL pattern — phải khớp với dm_ref"
         },
         "dm_ref": {
@@ -130,7 +175,12 @@
     "target": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema", "physical_name", "etl_handle", "description"],
+      "required": [
+        "schema",
+        "physical_name",
+        "etl_handle",
+        "description"
+      ],
       "properties": {
         "schema": {
           "type": "string",
@@ -144,7 +194,12 @@
         },
         "etl_handle": {
           "type": "string",
-          "enum": ["SCD4A", "SCD2", "Fact Append", "Upsert"],
+          "enum": [
+            "SCD4A",
+            "SCD2",
+            "Fact Append",
+            "Upsert"
+          ],
           "description": "ETL handle — phải khớp với mapping.etl_pattern"
         },
         "description": {
@@ -157,22 +212,33 @@
     "input_source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["seq", "source_type", "table_name", "alias", "select_fields"],
+      "required": [
+        "source_type",
+        "table_name",
+        "alias",
+        "select_fields"
+      ],
       "properties": {
-        "seq": {
-          "type": "integer",
-          "minimum": 1,
-          "description": "Số thứ tự"
-        },
         "source_type": {
           "type": "string",
-          "enum": ["physical_table", "derived_cte", "unpivot_cte"],
+          "enum": [
+            "physical_table",
+            "derived_cte",
+            "unpivot_cte"
+          ],
           "description": "Loại nguồn: physical_table (bảng Bronze thực tế), derived_cte (CTE tính toán), unpivot_cte (LATERAL VIEW stack)"
         },
         "schema": {
           "oneOf": [
-            { "type": "string", "enum": ["bronze"] },
-            { "type": "null" }
+            {
+              "type": "string",
+              "enum": [
+                "bronze"
+              ]
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Schema Bronze — null nếu là CTE"
         },
@@ -193,15 +259,25 @@
         },
         "filter": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Điều kiện filter (WHERE) hoặc GROUP BY. Null nếu không có."
         },
         "note": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Ghi chú bổ sung về input source"
         }
@@ -210,19 +286,25 @@
     "relationship_item": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["seq", "main_alias", "join_type", "join_alias", "join_on"],
+      "required": [
+        "main_alias",
+        "join_type",
+        "join_alias",
+        "join_on"
+      ],
       "properties": {
-        "seq": {
-          "type": "integer",
-          "minimum": 1
-        },
         "main_alias": {
           "type": "string",
           "description": "Alias của bảng/CTE chính (left side)"
         },
         "join_type": {
           "type": "string",
-          "enum": ["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN"],
+          "enum": [
+            "INNER JOIN",
+            "LEFT JOIN",
+            "RIGHT JOIN",
+            "FULL OUTER JOIN"
+          ],
           "description": "Loại JOIN"
         },
         "join_alias": {
@@ -239,12 +321,13 @@
     "mapping_column": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["seq", "target_column", "transformation", "data_type", "description"],
+      "required": [
+        "target_column",
+        "transformation",
+        "data_type",
+        "description"
+      ],
       "properties": {
-        "seq": {
-          "type": "integer",
-          "minimum": 1
-        },
         "target_column": {
           "type": "string",
           "pattern": "^[a-z][a-z0-9_]*$",
@@ -252,17 +335,29 @@
         },
         "transformation": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Biểu thức transformation. Null nếu chưa xác định."
         },
         "data_type": {
           "type": "string",
           "enum": [
-            "string", "date", "timestamp", "boolean", "int",
-            "decimal(23,2)", "decimal(5,2)", "decimal(8,5)",
-            "array<string>", "array<struct<...>>"
+            "string",
+            "date",
+            "timestamp",
+            "boolean",
+            "int",
+            "decimal(23,2)",
+            "decimal(5,2)",
+            "decimal(8,5)",
+            "array<string>",
+            "array<struct<...>>"
           ],
           "description": "Kiểu dữ liệu đích (Delta Lake / Spark)"
         },
@@ -276,7 +371,10 @@
     "mapping_leg": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["leg", "mapping_columns"],
+      "required": [
+        "leg",
+        "mapping_columns"
+      ],
       "properties": {
         "leg": {
           "type": "string",
@@ -285,29 +383,46 @@
         },
         "filter": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Điều kiện filter riêng cho leg này"
         },
         "comment": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Ghi chú kỹ thuật cho leg"
         },
         "mapping_columns": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/definitions/leg_column" }
+          "items": {
+            "$ref": "#/definitions/leg_column"
+          }
         }
       }
     },
     "leg_column": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["target_column", "transformation", "source_column", "data_type"],
+      "required": [
+        "target_column",
+        "transformation",
+        "source_column",
+        "data_type"
+      ],
       "properties": {
         "target_column": {
           "type": "string",
@@ -316,14 +431,21 @@
         },
         "transformation": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Biểu thức transformation. Null nếu chưa xác định."
         },
         "source_column": {
           "oneOf": [
-            { "type": "null" },
+            {
+              "type": "null"
+            },
             {
               "type": "string",
               "pattern": "^[A-Za-z][A-Za-z0-9_]*\\.[A-Za-z][A-Za-z0-9_]*\\.[A-Za-z][A-Za-z0-9_.]*$",
@@ -334,22 +456,39 @@
         "data_type": {
           "type": "string",
           "enum": [
-            "string", "date", "timestamp", "boolean", "int",
-            "decimal(23,2)", "decimal(5,2)", "decimal(8,5)",
-            "array<string>", "array<struct<...>>"
+            "string",
+            "date",
+            "timestamp",
+            "boolean",
+            "int",
+            "decimal(23,2)",
+            "decimal(5,2)",
+            "decimal(8,5)",
+            "array<string>",
+            "array<struct<...>>"
           ]
         },
         "etl_derived_value": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Giá trị hardcode ETL-derived — null nếu map thẳng từ source"
         },
         "comment": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Ghi chú kỹ thuật"
         }
@@ -358,15 +497,20 @@
     "final_filter_item": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["seq", "clause_type", "expression"],
+      "required": [
+        "clause_type",
+        "expression"
+      ],
       "properties": {
-        "seq": {
-          "type": "integer",
-          "minimum": 1
-        },
         "clause_type": {
           "type": "string",
-          "enum": ["WHERE", "UNION ALL", "GROUP BY", "HAVING", "ORDER BY"],
+          "enum": [
+            "WHERE",
+            "UNION ALL",
+            "GROUP BY",
+            "HAVING",
+            "ORDER BY"
+          ],
           "description": "Loại mệnh đề"
         },
         "expression": {
@@ -376,8 +520,13 @@
         },
         "description": {
           "oneOf": [
-            { "type": "string", "minLength": 1 },
-            { "type": "null" }
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Mô tả mục đích"
         }
