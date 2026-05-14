@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: INVES
+brd_ref: BRD-SRC-FMS-INVES
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: ID nhà đầu tư ủy thác. Mã hệ thống tự sinh (PK)
+  key: PK
+  fk_note: null
+- name: Name
+  data_type: NVARCHAR2(1500)
+  description: Tên nhà đầu tư ủy thác
+  key: null
+  fk_note: null
+- name: Dorf
+  data_type: NUMBER(22)
+  description: 'Trong nước/Nước ngoài: 1 = Trong nước; 0 = Ngoài'
+  key: null
+  fk_note: null
+- name: IdNo
+  data_type: NVARCHAR2(150)
+  description: CMND/CCCD/Hộ chiếu/ĐKKD
+  key: null
+  fk_note: null
+- name: IdDate
+  data_type: DATE
+  description: Ngày cấp
+  key: null
+  fk_note: null
+- name: IdType
+  data_type: NUMBER(22)
+  description: 'Loại giấy tờ: 1 = CMND/Hộ chiếu; 0 = ĐKKD'
+  key: null
+  fk_note: null
+- name: NatId
+  data_type: RAW(16)
+  description: Mã ID quốc tịch. FK → NATIONAL.Id
+  key: FK
+  fk_note: FK → NATIONAL.Id
+- name: StoId
+  data_type: RAW(16)
+  description: Mã ID loại hình NĐT. FK → STOCKHOLDERTYPE.Id
+  key: FK
+  fk_note: FK → STOCKHOLDERTYPE.Id
+- name: SecId
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. FK → SECURITIES.Id
+  key: FK
+  fk_note: FK → SECURITIES.Id
+- name: RelationShip
+  data_type: NVARCHAR2(900)
+  description: Quan hệ với người có liên quan
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: IsDataMigration
+  data_type: NUMBER(1)
+  description: 1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

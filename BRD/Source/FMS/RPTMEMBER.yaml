@@ -1,0 +1,133 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RPTMEMBER
+brd_ref: BRD-SRC-FMS-RPTMEMBER
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: ID bản ghi báo cáo định kỳ. Mã hệ thống tự sinh (PK)
+  key: PK
+  fk_note: null
+- name: SecId
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. FK → SECURITIES.Id
+  key: FK
+  fk_note: FK → SECURITIES.Id
+- name: FndId
+  data_type: RAW(16)
+  description: Mã ID quỹ đầu tư. FK → FUNDS.Id
+  key: FK
+  fk_note: FK → FUNDS.Id
+- name: BkMId
+  data_type: RAW(16)
+  description: Mã ID ngân hàng LKGS. FK → BANKMONI.Id
+  key: FK
+  fk_note: FK → BANKMONI.Id
+- name: FrBrId
+  data_type: RAW(16)
+  description: Mã ID CN/VPĐD QLQ NN. FK → FORBRCH.Id
+  key: FK
+  fk_note: FK → FORBRCH.Id
+- name: PrdId
+  data_type: RAW(16)
+  description: Mã ID kỳ báo cáo. FK → RPTPERIOD.Id
+  key: FK
+  fk_note: FK → RPTPERIOD.Id
+- name: RptId
+  data_type: RAW(16)
+  description: Mã ID biểu mẫu báo cáo
+  key: null
+  fk_note: null
+- name: RptName
+  data_type: NVARCHAR2(4000)
+  description: Tên báo cáo
+  key: null
+  fk_note: null
+- name: ContentSummary
+  data_type: NVARCHAR2(4000)
+  description: Nội dung trích yếu
+  key: null
+  fk_note: null
+- name: ReportType
+  data_type: NUMBER(22)
+  description: 'Loại báo cáo: 1 = Định kỳ; 2 = Bất thường'
+  key: null
+  fk_note: null
+- name: Type
+  data_type: NUMBER(22)
+  description: 'Nhóm báo cáo: 2 = Công ty QLQ; 3 = NH LKGS; 4 = CN QLQ NN; 5 = VPĐD
+    QLQ NN; 7 = QĐT'
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: NUMBER(38)
+  description: 'Loại kỳ: 1 = Ngày; 2 = Tuần; 3 = Tháng; 4 = Quý; 5 = Bán niên; 6 =
+    Năm'
+  key: null
+  fk_note: null
+- name: YearValue
+  data_type: NUMBER(22)
+  description: Năm báo cáo
+  key: null
+  fk_note: null
+- name: DayReport
+  data_type: DATE
+  description: Ngày báo cáo
+  key: null
+  fk_note: null
+- name: DeadlineSend
+  data_type: DATE
+  description: Thời hạn gửi báo cáo
+  key: null
+  fk_note: null
+- name: DateSubmitted
+  data_type: DATE
+  description: Ngày gửi thực tế
+  key: null
+  fk_note: null
+- name: Status
+  data_type: NUMBER(22)
+  description: 'Trạng thái: 1 = Chưa gửi; 2 = Đã gửi; 3 = Gửi muộn; 4 = Bị hủy'
+  key: null
+  fk_note: null
+- name: IsImport
+  data_type: NUMBER(22)
+  description: 'Là báo cáo có import: 1 = Có; 2 = Không'
+  key: null
+  fk_note: null
+- name: IsDelete
+  data_type: NUMBER(22)
+  description: 'Trạng thái bản ghi: 0 = Không bị xóa; 1 = Bị xóa'
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: NCLOB
+  description: File đính kèm
+  key: null
+  fk_note: null
+- name: FileImport
+  data_type: NCLOB
+  description: File import
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

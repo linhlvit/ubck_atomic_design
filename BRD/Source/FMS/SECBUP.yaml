@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: SECBUP
+brd_ref: BRD-SRC-FMS-SECBUP
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID bản ghi chi tiết lịch sử QLQ (PK)
+  key: PK
+  fk_note: null
+- name: SecHsId
+  data_type: RAW(16)
+  description: Mã ID lịch sử công ty QLQ. FK → SECHISTORY.Id
+  key: FK
+  fk_note: FK → SECHISTORY.Id
+- name: IsBefore
+  data_type: NUMBER(22)
+  description: 1 = Bản ghi trước thay đổi; 0 = Bản ghi sau
+  key: null
+  fk_note: null
+- name: SecData
+  data_type: NCLOB
+  description: Dữ liệu snapshot công ty QLQ
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null

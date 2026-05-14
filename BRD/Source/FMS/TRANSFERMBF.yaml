@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TRANSFERMBF
+brd_ref: BRD-SRC-FMS-TRANSFERMBF
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID giao dịch CCQ (PK)
+  key: PK
+  fk_note: null
+- name: FndId
+  data_type: RAW(16)
+  description: Mã ID quỹ đầu tư. FK → FUNDS.Id
+  key: FK
+  fk_note: FK → FUNDS.Id
+- name: MBFId
+  data_type: RAW(16)
+  description: Mã ID nhà đầu tư quỹ. FK → MBFUND.Id
+  key: FK
+  fk_note: FK → MBFUND.Id
+- name: TransDate
+  data_type: DATE
+  description: Ngày giao dịch
+  key: null
+  fk_note: null
+- name: Quantity
+  data_type: NUMBER(22)
+  description: Số lượng CCQ giao dịch
+  key: null
+  fk_note: null
+- name: Price
+  data_type: NUMBER(22)
+  description: Giá giao dịch
+  key: null
+  fk_note: null
+- name: TransType
+  data_type: NUMBER(22)
+  description: Loại giao dịch
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

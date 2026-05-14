@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: DTSCOPE
+brd_ref: BRD-SRC-FMS-DTSCOPE
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID phân quyền dữ liệu (PK)
+  key: PK
+  fk_note: null
+- name: UserId
+  data_type: RAW(16)
+  description: Mã ID người dùng. FK → USERS.Id
+  key: FK
+  fk_note: FK → USERS.Id
+- name: IsAll
+  data_type: NUMBER(22)
+  description: 'Có quyền xem tất cả: 1 = Có; 0 = Không'
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

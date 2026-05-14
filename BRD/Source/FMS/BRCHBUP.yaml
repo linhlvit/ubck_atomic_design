@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: BRCHBUP
+brd_ref: BRD-SRC-FMS-BRCHBUP
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID lịch sử CN/VPĐD QLQ trong nước (PK)
+  key: PK
+  fk_note: null
+- name: SecHsId
+  data_type: RAW(16)
+  description: Mã ID lịch sử công ty QLQ. FK → SECHISTORY.Id
+  key: FK
+  fk_note: FK → SECHISTORY.Id
+- name: ActiveDate
+  data_type: DATE
+  description: Ngày chính thức hoạt động
+  key: null
+  fk_note: null
+- name: StopDate
+  data_type: DATE
+  description: Ngày đóng cửa CN/VPĐD
+  key: null
+  fk_note: null
+- name: SecRealActiveDate
+  data_type: DATE
+  description: Ngày chính thức hoạt động thực tế
+  key: null
+  fk_note: null
+- name: Name
+  data_type: NVARCHAR2(3000)
+  description: Tên chi nhánh/VPĐD
+  key: null
+  fk_note: null
+- name: SecCapital
+  data_type: NUMBER(22)
+  description: Vốn điều lệ
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null

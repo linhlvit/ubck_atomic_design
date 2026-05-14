@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TRSFERINDER
+brd_ref: BRD-SRC-FMS-TRSFERINDER
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID giao dịch chuyển nhượng (PK)
+  key: PK
+  fk_note: null
+- name: SecId
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. FK → SECURITIES.Id
+  key: FK
+  fk_note: FK → SECURITIES.Id
+- name: TransDate
+  data_type: DATE
+  description: Ngày giao dịch
+  key: null
+  fk_note: null
+- name: Quantity
+  data_type: NUMBER(22)
+  description: Số lượng cổ phần chuyển nhượng
+  key: null
+  fk_note: null
+- name: Price
+  data_type: NUMBER(22)
+  description: Giá giao dịch
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

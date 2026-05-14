@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/brd_source_columns.schema.json",
+  "title": "BRD Source Columns Schema",
+  "description": "Schema định nghĩa định dạng YAML cho chi tiết cột nguồn — mô tả danh sách cột của mỗi bảng nguồn. Dùng để validate các file *.yaml trong thư mục BRD/Source/{SOURCE}/",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_type",
+    "schema_version",
+    "source",
+    "table",
+    "brd_ref",
+    "columns"
+  ],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "brd_source_columns",
+      "description": "Khai báo loại schema — dùng để xác định file type"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema (semantic versioning)"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Mã source system (VD: FMS, FIMS, GSGD)"
+    },
+    "table": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Tên bảng nguồn tương ứng (VD: FUNDS, SECURITIES)"
+    },
+    "brd_ref": {
+      "type": "string",
+      "pattern": "^BRD-SRC-[A-Za-z][A-Za-z0-9_-]*-[A-Za-z][A-Za-z0-9_]*$",
+      "description": "Mã BRD entry tương ứng: BRD-SRC-{SOURCE}-{TABLE}"
+    },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Danh sách cột chi tiết của bảng",
+      "items": {
+        "$ref": "#/definitions/column"
+      }
+    }
+  },
+  "definitions": {
+    "column": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "data_type",
+        "description",
+        "key",
+        "fk_note"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tên cột nguồn (VD: Id, SecId, FundType)"
+        },
+        "data_type": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Kiểu dữ liệu nguồn (VD: RAW(16), NVARCHAR2(150), NUMBER(22), DATE)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Mô tả ý nghĩa cột (tiếng Việt)"
+        },
+        "key": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "PK",
+                "FK",
+                "PK/FK"
+              ],
+              "description": "Loại khóa: PK (Primary Key), FK (Foreign Key), PK/FK (vừa PK vừa FK), null (không là khóa)"
+            }
+          ]
+        },
+        "fk_note": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1,
+              "description": "Ghi chú FK — mối quan hệ nếu là FK (VD: 'FK → SECURITIES.Id')"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

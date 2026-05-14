@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RANK
+brd_ref: BRD-SRC-FMS-RANK
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID bảng xếp hạng (PK)
+  key: PK
+  fk_note: null
+- name: SecId
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. FK → SECURITIES.Id
+  key: FK
+  fk_note: FK → SECURITIES.Id
+- name: RatingPdId
+  data_type: RAW(16)
+  description: Mã ID kỳ đánh giá. FK → RATINGPD.Id
+  key: FK
+  fk_note: FK → RATINGPD.Id
+- name: TotalScore
+  data_type: NUMBER(22)
+  description: Tổng điểm đánh giá
+  key: null
+  fk_note: null
+- name: RankValue
+  data_type: NUMBER(22)
+  description: Xếp hạng
+  key: null
+  fk_note: null
+- name: RankClass
+  data_type: NVARCHAR2(300)
+  description: Xếp loại
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RPTPDSHT
+brd_ref: BRD-SRC-FMS-RPTPDSHT
+columns:
+- name: RptPdId
+  data_type: RAW(16)
+  description: Mã ID kỳ báo cáo. FK → RPTPERIOD.Id
+  key: null
+  fk_note: FK suy luận → RPTPERIOD.Id
+- name: ShtId
+  data_type: RAW(16)
+  description: Mã ID sheet báo cáo. FK → SHEET.Id
+  key: null
+  fk_note: FK suy luận → SHEET.Id
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

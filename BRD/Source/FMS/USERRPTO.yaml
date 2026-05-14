@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: USERRPTO
+brd_ref: BRD-SRC-FMS-USERRPTO
+columns:
+- name: UserId
+  data_type: RAW(16)
+  description: Mã ID người dùng. FK → USERS.Id
+  key: null
+  fk_note: FK suy luận → USERS.Id
+- name: TpOutId
+  data_type: RAW(16)
+  description: Mã ID biểu mẫu báo cáo đầu ra. FK → RPTTPOUT.Id
+  key: null
+  fk_note: FK suy luận → RPTTPOUT.Id

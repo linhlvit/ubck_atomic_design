@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: USERS
+brd_ref: BRD-SRC-FMS-USERS
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID người dùng hệ thống. Mã hệ thống tự sinh (PK)
+  key: PK
+  fk_note: null
+- name: UserName
+  data_type: NVARCHAR2(300)
+  description: Tên đăng nhập
+  key: null
+  fk_note: null
+- name: FullName
+  data_type: NVARCHAR2(1500)
+  description: Họ và tên đầy đủ
+  key: null
+  fk_note: null
+- name: Email
+  data_type: NVARCHAR2(300)
+  description: Email
+  key: null
+  fk_note: null
+- name: BkMId
+  data_type: RAW(16)
+  description: Mã ID ngân hàng LKGS. FK → BANKMONI.Id
+  key: FK
+  fk_note: FK → BANKMONI.Id
+- name: Status
+  data_type: NUMBER(22)
+  description: 'Trạng thái tài khoản: 1 = Hoạt động; 0 = Khóa'
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: 'Trạng thái bản ghi: 0 = Không bị xóa; 1 = Bị xóa'
+  key: null
+  fk_note: null
+- name: DateLogined
+  data_type: DATE
+  description: Ngày đăng nhập hệ thống
+  key: null
+  fk_note: null
+- name: DateChangePassword
+  data_type: DATE
+  description: Ngày thay đổi mật khẩu
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

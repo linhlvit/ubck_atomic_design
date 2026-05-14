@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TLProfiles
+brd_ref: BRD-SRC-FMS-TLProfiles
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID nhân sự. Mã hệ thống tự sinh (PK)
+  key: PK
+  fk_note: null
+- name: SecId
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. FK → SECURITIES.Id
+  key: FK
+  fk_note: FK → SECURITIES.Id
+- name: FullName
+  data_type: NVARCHAR2(1500)
+  description: Họ tên đầy đủ
+  key: null
+  fk_note: null
+- name: BirthDate
+  data_type: DATE
+  description: Ngày sinh
+  key: null
+  fk_note: null
+- name: NatId
+  data_type: RAW(16)
+  description: Mã ID quốc tịch. FK → NATIONAL.Id
+  key: FK
+  fk_note: FK → NATIONAL.Id
+- name: IdNo
+  data_type: NVARCHAR2(150)
+  description: CMND/CCCD/Hộ chiếu
+  key: null
+  fk_note: null
+- name: JobTypeId
+  data_type: RAW(16)
+  description: Mã ID loại chức vụ. FK → JOBTYPE.Id
+  key: FK
+  fk_note: FK → JOBTYPE.Id
+- name: IsLegal
+  data_type: NUMBER(22)
+  description: 'Là người đại diện pháp luật: 1 = Có; 0 = Không'
+  key: null
+  fk_note: null
+- name: IsCBTT
+  data_type: NUMBER(22)
+  description: 'Là đại diện CBTT: 1 = Có; 0 = Không'
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

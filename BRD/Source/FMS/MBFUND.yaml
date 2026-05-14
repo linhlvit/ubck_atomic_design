@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: MBFUND
+brd_ref: BRD-SRC-FMS-MBFUND
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID nhà đầu tư quỹ (PK)
+  key: PK
+  fk_note: null
+- name: FndId
+  data_type: RAW(16)
+  description: Mã ID quỹ đầu tư. FK → FUNDS.Id
+  key: FK
+  fk_note: FK → FUNDS.Id
+- name: InvesId
+  data_type: RAW(16)
+  description: Mã ID nhà đầu tư ủy thác. FK → INVES.Id
+  key: FK
+  fk_note: FK → INVES.Id
+- name: Capital
+  data_type: NUMBER(22)
+  description: Số lượng vốn góp
+  key: null
+  fk_note: null
+- name: Ratio
+  data_type: NUMBER(22)
+  description: Tỷ lệ sở hữu (%)
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: REPRESENT
+brd_ref: BRD-SRC-FMS-REPRESENT
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID ban đại diện quỹ (PK)
+  key: PK
+  fk_note: null
+- name: FndId
+  data_type: RAW(16)
+  description: Mã ID quỹ đầu tư. FK → FUNDS.Id
+  key: FK
+  fk_note: FK → FUNDS.Id
+- name: TLId
+  data_type: RAW(16)
+  description: Mã ID nhân sự. FK → TLProfiles.Id
+  key: FK
+  fk_note: FK → TLProfiles.Id
+- name: IsChair
+  data_type: NUMBER(22)
+  description: 'Là trưởng ban đại diện: 1 = Có; 0 = Không'
+  key: null
+  fk_note: null
+- name: Status
+  data_type: NUMBER(22)
+  description: 'Trạng thái: 1 = Hoạt động; 0 = Khóa'
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

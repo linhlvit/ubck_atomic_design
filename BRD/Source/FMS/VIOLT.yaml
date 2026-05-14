@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: VIOLT
+brd_ref: BRD-SRC-FMS-VIOLT
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID vi phạm (PK)
+  key: PK
+  fk_note: null
+- name: SecId
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. FK → SECURITIES.Id
+  key: FK
+  fk_note: FK → SECURITIES.Id
+- name: FndId
+  data_type: RAW(16)
+  description: Mã ID quỹ đầu tư. FK → FUNDS.Id
+  key: FK
+  fk_note: FK → FUNDS.Id
+- name: ViolType
+  data_type: NVARCHAR2(300)
+  description: Loại vi phạm
+  key: null
+  fk_note: null
+- name: ViolContent
+  data_type: NVARCHAR2(4000)
+  description: Nội dung vi phạm
+  key: null
+  fk_note: null
+- name: ViolDate
+  data_type: DATE
+  description: Ngày vi phạm
+  key: null
+  fk_note: null
+- name: ViolStatus
+  data_type: NUMBER(22)
+  description: Trạng thái xử lý vi phạm
+  key: null
+  fk_note: null
+- name: Note
+  data_type: NVARCHAR2(4000)
+  description: Ghi chú
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

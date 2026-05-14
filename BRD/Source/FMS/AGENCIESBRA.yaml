@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: AGENCIESBRA
+brd_ref: BRD-SRC-FMS-AGENCIESBRA
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID CN/PGD đại lý quỹ đầu tư (PK)
+  key: PK
+  fk_note: null
+- name: AgnId
+  data_type: RAW(16)
+  description: Mã ID đại lý. FK → AGENCIES.Id
+  key: FK
+  fk_note: FK → AGENCIES.Id
+- name: Name
+  data_type: NVARCHAR2(3000)
+  description: Tên CN/PGD đại lý
+  key: null
+  fk_note: null
+- name: Address
+  data_type: NVARCHAR2(3000)
+  description: Địa chỉ CN/PGD
+  key: null
+  fk_note: null
+- name: Status
+  data_type: NUMBER(22)
+  description: Trạng thái
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

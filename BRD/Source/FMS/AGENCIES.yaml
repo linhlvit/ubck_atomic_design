@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: AGENCIES
+brd_ref: BRD-SRC-FMS-AGENCIES
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID đại lý quỹ đầu tư (PK)
+  key: PK
+  fk_note: null
+- name: Name
+  data_type: NVARCHAR2(3000)
+  description: Tên đại lý
+  key: null
+  fk_note: null
+- name: ShortName
+  data_type: NVARCHAR2(300)
+  description: Tên viết tắt
+  key: null
+  fk_note: null
+- name: AgencyTypeId
+  data_type: RAW(16)
+  description: Mã ID loại đại lý. FK → AGENCYTYPE.Id
+  key: FK
+  fk_note: FK → AGENCYTYPE.Id
+- name: Address
+  data_type: NVARCHAR2(3000)
+  description: Địa chỉ
+  key: null
+  fk_note: null
+- name: Status
+  data_type: RAW(16)
+  description: Mã ID trạng thái. FK → STATUS.Id
+  key: FK
+  fk_note: FK → STATUS.Id
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

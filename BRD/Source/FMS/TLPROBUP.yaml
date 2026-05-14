@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TLPROBUP
+brd_ref: BRD-SRC-FMS-TLPROBUP
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: ID chi tiết lịch sử nhân sự (PK)
+  key: PK
+  fk_note: null
+- name: TLPrHsId
+  data_type: RAW(16)
+  description: Mã ID lịch sử nhân sự. FK → TLPRHISTORY.Id
+  key: FK
+  fk_note: FK → TLPRHISTORY.Id
+- name: IsBefore
+  data_type: NUMBER(22)
+  description: 1 = Bản ghi trước thay đổi; 0 = Bản ghi sau
+  key: null
+  fk_note: null
+- name: TLData
+  data_type: NCLOB
+  description: Dữ liệu snapshot nhân sự
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null

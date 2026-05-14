@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: REFRESHTOKEN
+brd_ref: BRD-SRC-FMS-REFRESHTOKEN
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: ID phiên đăng nhập. Mã hệ thống tự sinh (PK)
+  key: PK
+  fk_note: null
+- name: Token
+  data_type: NVARCHAR2(4000)
+  description: Mã phiên đăng nhập
+  key: null
+  fk_note: null
+- name: ExpiresUtc
+  data_type: TIMESTAMP(7)
+  description: Thời gian hiệu lực phiên đăng nhập
+  key: null
+  fk_note: null
+- name: UsersId
+  data_type: RAW(16)
+  description: Mã ID user hệ thống. FK → USERS.Id
+  key: FK
+  fk_note: FK → USERS.Id

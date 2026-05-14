@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RPTMBHS
+brd_ref: BRD-SRC-FMS-RPTMBHS
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: ID lịch sử gửi báo cáo (PK)
+  key: PK
+  fk_note: null
+- name: RptMbId
+  data_type: RAW(16)
+  description: Mã ID báo cáo thành viên. FK → RPTMEMBER.Id
+  key: FK
+  fk_note: FK → RPTMEMBER.Id
+- name: Status
+  data_type: NUMBER(22)
+  description: Trạng thái báo cáo
+  key: null
+  fk_note: null
+- name: ChgById
+  data_type: RAW(16)
+  description: Mã ID người thực hiện. FK → USERS.Id
+  key: FK
+  fk_note: FK → USERS.Id
+- name: ContentSummary
+  data_type: NVARCHAR2(4000)
+  description: Nội dung trích yếu
+  key: null
+  fk_note: null
+- name: Note
+  data_type: NVARCHAR2(4000)
+  description: Ghi chú
+  key: null
+  fk_note: null
+- name: RptName
+  data_type: NVARCHAR2(4000)
+  description: Tên báo cáo
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: NCLOB
+  description: File dữ liệu
+  key: null
+  fk_note: null

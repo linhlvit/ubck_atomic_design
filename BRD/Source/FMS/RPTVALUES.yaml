@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RPTVALUES
+brd_ref: BRD-SRC-FMS-RPTVALUES
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: ID bản ghi giá trị báo cáo (PK)
+  key: PK
+  fk_note: null
+- name: MebId
+  data_type: RAW(16)
+  description: Mã ID thành viên thị trường
+  key: null
+  fk_note: null
+- name: RptId
+  data_type: RAW(16)
+  description: Mã báo cáo đầu vào. FK → RPTTEMP.Id
+  key: FK
+  fk_note: FK → RPTTEMP.Id
+- name: SheetId
+  data_type: RAW(16)
+  description: Mã sheet báo cáo đầu vào. FK → SHEET.Id
+  key: FK
+  fk_note: FK → SHEET.Id
+- name: TgtId
+  data_type: RAW(16)
+  description: ID ô chỉ tiêu
+  key: null
+  fk_note: null
+- name: PrdId
+  data_type: RAW(16)
+  description: Mã ID kỳ báo cáo. FK → RPTPERIOD.Id
+  key: FK
+  fk_note: FK → RPTPERIOD.Id
+- name: SecId
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. FK → SECURITIES.Id
+  key: FK
+  fk_note: FK → SECURITIES.Id
+- name: FndId
+  data_type: RAW(16)
+  description: Mã ID quỹ đầu tư. FK → FUNDS.Id
+  key: FK
+  fk_note: FK → FUNDS.Id
+- name: BkMId
+  data_type: RAW(16)
+  description: Mã ID ngân hàng LKGS. FK → BANKMONI.Id
+  key: null
+  fk_note: null
+- name: FrBrId
+  data_type: RAW(16)
+  description: Mã ID VPĐD/CN QLQ NN. FK → FORBRCH.Id
+  key: null
+  fk_note: null
+- name: Values
+  data_type: NVARCHAR2(4000)
+  description: Giá trị file import
+  key: null
+  fk_note: null
+- name: AccValues
+  data_type: NVARCHAR2(4000)
+  description: Tài khoản lưu ký
+  key: null
+  fk_note: null
+- name: FormatDataType
+  data_type: NUMBER(22)
+  description: 'Loại dữ liệu: Numberic = số; String = ký tự'
+  key: null
+  fk_note: null
+- name: IsDynamic
+  data_type: NUMBER(22)
+  description: 1 = Dữ liệu động; 0 = Không là dữ liệu động
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: NUMBER(22)
+  description: Loại kỳ
+  key: null
+  fk_note: null
+- name: Type
+  data_type: NUMBER(38)
+  description: 'Đối tượng gửi báo: 2 = Công ty QLQ; 7 = QĐT'
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: MBCHANGE
+brd_ref: BRD-SRC-FMS-MBCHANGE
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID lịch sử thay đổi vốn góp (PK)
+  key: PK
+  fk_note: null
+- name: MBFId
+  data_type: RAW(16)
+  description: Mã ID nhà đầu tư quỹ. FK → MBFUND.Id
+  key: FK
+  fk_note: FK → MBFUND.Id
+- name: OldCapital
+  data_type: NUMBER(22)
+  description: Vốn góp trước thay đổi
+  key: null
+  fk_note: null
+- name: NewCapital
+  data_type: NUMBER(22)
+  description: Vốn góp sau thay đổi
+  key: null
+  fk_note: null
+- name: ChangeDate
+  data_type: DATE
+  description: Ngày thay đổi
+  key: null
+  fk_note: null
+- name: Reason
+  data_type: NVARCHAR2(4000)
+  description: Lý do thay đổi
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

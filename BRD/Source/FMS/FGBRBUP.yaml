@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: FGBRBUP
+brd_ref: BRD-SRC-FMS-FGBRBUP
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID lịch sử thay đổi. Mã hệ thống tự sinh (PK)
+  key: PK
+  fk_note: null
+- name: FgBrId
+  data_type: RAW(16)
+  description: Mã ID VPĐD/CN công ty QLQ NN tại VN. FK → FORBRCH.Id
+  key: FK
+  fk_note: FK → FORBRCH.Id
+- name: Action
+  data_type: NCLOB
+  description: Sự kiện thay đổi
+  key: null
+  fk_note: null
+- name: AdjustmentLicense
+  data_type: NVARCHAR2(4000)
+  description: Số GP/QĐ/CV sửa đổi
+  key: null
+  fk_note: null
+- name: DateChange
+  data_type: DATE
+  description: Ngày thực hiện thay đổi
+  key: null
+  fk_note: null
+- name: LicenseDate
+  data_type: DATE
+  description: Ngày chấp thuận
+  key: null
+  fk_note: null
+- name: PrevValue
+  data_type: NCLOB
+  description: Thông tin trước thay đổi
+  key: null
+  fk_note: null
+- name: ValueChange
+  data_type: NCLOB
+  description: Thông tin sau thay đổi
+  key: null
+  fk_note: null
+- name: Reason
+  data_type: NVARCHAR2(4000)
+  description: Lý do sửa đổi
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: NCLOB
+  description: File đính kèm
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: FORBRCH
+brd_ref: BRD-SRC-FMS-FORBRCH
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID VPĐD/CN công ty QLQ NN tại VN (PK)
+  key: PK
+  fk_note: null
+- name: Name
+  data_type: NVARCHAR2(3000)
+  description: Tên VPĐD/CN
+  key: null
+  fk_note: null
+- name: EnName
+  data_type: NVARCHAR2(1500)
+  description: Tên tiếng Anh
+  key: null
+  fk_note: null
+- name: Address
+  data_type: NVARCHAR2(3000)
+  description: Địa chỉ
+  key: null
+  fk_note: null
+- name: Email
+  data_type: NVARCHAR2(300)
+  description: Email
+  key: null
+  fk_note: null
+- name: Fax
+  data_type: NVARCHAR2(60)
+  description: Fax
+  key: null
+  fk_note: null
+- name: ChangeLicense
+  data_type: NVARCHAR2(1500)
+  description: Số GPĐC gần nhất
+  key: null
+  fk_note: null
+- name: ChangeLicenseDate
+  data_type: DATE
+  description: Ngày chấp thuận GPĐC
+  key: null
+  fk_note: null
+- name: ChangeNote
+  data_type: NVARCHAR2(3000)
+  description: Lý do sửa đổi
+  key: null
+  fk_note: null
+- name: EndDate
+  data_type: DATE
+  description: Hoạt động đến ngày
+  key: null
+  fk_note: null
+- name: Status
+  data_type: NUMBER(22)
+  description: Mã trạng thái. FK → STATUS.Id
+  key: FK
+  fk_note: FK → STATUS.Id
+- name: FileData
+  data_type: NCLOB
+  description: File đính kèm
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null

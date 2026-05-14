@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: DTSCFR
+brd_ref: BRD-SRC-FMS-DTSCFR
+columns:
+- name: DtSId
+  data_type: RAW(16)
+  description: Mã ID phân quyền dữ liệu. FK → DTSCOPE.Id
+  key: null
+  fk_note: FK suy luận → DTSCOPE.Id
+- name: FrId
+  data_type: RAW(16)
+  description: Mã ID VPĐD/CN QLQ NN tại VN. FK → FORBRCH.Id
+  key: null
+  fk_note: FK suy luận → FORBRCH.Id

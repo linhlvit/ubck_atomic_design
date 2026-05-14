@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: STFFGBRCH
+brd_ref: BRD-SRC-FMS-STFFGBRCH
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: ID nhân sự VPĐD/CN QLQ NN (PK)
+  key: PK
+  fk_note: null
+- name: FgBrId
+  data_type: RAW(16)
+  description: Mã ID VPĐD/CN QLQ NN. FK → FORBRCH.Id
+  key: FK
+  fk_note: FK → FORBRCH.Id
+- name: TLId
+  data_type: RAW(16)
+  description: Mã ID nhân sự. FK → TLProfiles.Id
+  key: FK
+  fk_note: FK → TLProfiles.Id
+- name: FnType
+  data_type: NVARCHAR2(3)
+  description: 'Là nhân viên VPĐD/CN NN: O = VPĐD NN; B = CN NN'
+  key: null
+  fk_note: null
+- name: Isr
+  data_type: NUMBER(22)
+  description: 'Người đại diện pháp luật: 1 = Có; 0 = Không'
+  key: null
+  fk_note: null
+- name: Isp
+  data_type: NUMBER(22)
+  description: 'Đại diện CBTT: 1 = Có; 0 = Không'
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: 'Trạng thái bản ghi: 0 = Không bị xóa; 1 = Bị xóa'
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

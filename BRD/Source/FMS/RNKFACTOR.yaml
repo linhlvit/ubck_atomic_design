@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RNKFACTOR
+brd_ref: BRD-SRC-FMS-RNKFACTOR
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID nhân tố đánh giá (PK)
+  key: PK
+  fk_note: null
+- name: Name
+  data_type: NVARCHAR2(3000)
+  description: Tên nhân tố
+  key: null
+  fk_note: null
+- name: ParentId
+  data_type: RAW(16)
+  description: Mã ID nhân tố cha. FK → RNKFACTOR.Id
+  key: FK
+  fk_note: FK → RNKFACTOR.Id
+- name: MaxScore
+  data_type: NUMBER(22)
+  description: Điểm tối đa
+  key: null
+  fk_note: null
+- name: Weight
+  data_type: NUMBER(22)
+  description: Trọng số
+  key: null
+  fk_note: null
+- name: IsActive
+  data_type: NUMBER(22)
+  description: Trạng thái
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null

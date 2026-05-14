@@ -1,0 +1,116 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: SECURITIES
+brd_ref: BRD-SRC-FMS-SECURITIES
+columns:
+- name: Id
+  data_type: RAW(16)
+  description: Mã ID công ty QLQ. Mã hệ thống tự sinh (PK)
+  key: PK
+  fk_note: null
+- name: Name
+  data_type: NVARCHAR2(3000)
+  description: Tên công ty QLQ
+  key: null
+  fk_note: null
+- name: ShortName
+  data_type: NVARCHAR2(300)
+  description: Tên viết tắt
+  key: null
+  fk_note: null
+- name: EnName
+  data_type: NVARCHAR2(3000)
+  description: Tên tiếng Anh
+  key: null
+  fk_note: null
+- name: Address
+  data_type: NVARCHAR2(3000)
+  description: Địa chỉ trụ sở chính
+  key: null
+  fk_note: null
+- name: Telephone
+  data_type: NVARCHAR2(300)
+  description: Điện thoại
+  key: null
+  fk_note: null
+- name: Fax
+  data_type: NVARCHAR2(300)
+  description: Số Fax
+  key: null
+  fk_note: null
+- name: Email
+  data_type: NVARCHAR2(300)
+  description: Email
+  key: null
+  fk_note: null
+- name: Website
+  data_type: NVARCHAR2(300)
+  description: Website
+  key: null
+  fk_note: null
+- name: Decision
+  data_type: NVARCHAR2(300)
+  description: Giấy phép thành lập/GPKD
+  key: null
+  fk_note: null
+- name: DecisionDate
+  data_type: DATE
+  description: Ngày cấp giấy phép
+  key: null
+  fk_note: null
+- name: ActiveDate
+  data_type: DATE
+  description: Ngày chính thức hoạt động
+  key: null
+  fk_note: null
+- name: StopDate
+  data_type: DATE
+  description: Ngày đóng cửa/thu hồi giấy phép
+  key: null
+  fk_note: null
+- name: Status
+  data_type: RAW/NUMBER(16)
+  description: Mã ID trạng thái. FK → STATUS.Id
+  key: FK
+  fk_note: FK → STATUS.Id
+- name: SecCapital
+  data_type: NUMBER(22)
+  description: Vốn điều lệ
+  key: null
+  fk_note: null
+- name: Dorf
+  data_type: NUMBER(22)
+  description: 'Trong nước/Nước ngoài: 1 = Trong nước; 0 = Nước ngoài'
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: NUMBER(22)
+  description: Trạng thái bản ghi
+  key: null
+  fk_note: null
+- name: IsDataMigration
+  data_type: NUMBER(22)
+  description: 1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: NVARCHAR2(300)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: NVARCHAR2(300)
+  description: Người sửa
+  key: null
+  fk_note: null
