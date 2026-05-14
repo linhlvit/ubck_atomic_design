@@ -40,6 +40,7 @@
         "id",
         "logical_name",
         "physical_name",
+        "layer",
         "version",
         "status",
         "bcv_core_object",
@@ -59,13 +60,20 @@
         },
         "logical_name": {
           "type": "string",
-          "minLength": 10,
-          "description": "Tên đầy đủ — thường là 'Atomic - {Entity} – source {SOURCE}.{TABLE}'"
+          "minLength": 3,
+          "description": "Tên thực thể — VD: 'Disclosure Authorization', 'Foreign Investor'"
         },
         "physical_name": {
           "type": "string",
           "pattern": "^[a-z][a-z0-9_]*$",
           "description": "Tên bảng Delta Lake (snake_case, không dấu)"
+        },
+        "layer": {
+          "type": "string",
+          "enum": [
+            "Atomic"
+          ],
+          "description": "Layer kiến trúc Medallion — luôn là 'Atomic' cho các file trong DataModel/Atomic/"
         },
         "version": {
           "type": "string",
