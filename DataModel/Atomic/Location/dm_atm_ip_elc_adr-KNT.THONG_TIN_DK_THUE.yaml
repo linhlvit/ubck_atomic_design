@@ -2,8 +2,8 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-ip_elc_adr-DCST.THONG_TIN_DK_THUE
-  logical_name: "Atomic - Involved Party Electronic Address – source DCST.THONG_TIN_DK_THUE"
+  id: ATM-ip_elc_adr-KNT.THONG_TIN_DK_THUE
+  logical_name: "Atomic - Involved Party Electronic Address – source KNT.THONG_TIN_DK_THUE"
   physical_name: ip_elc_adr
   version: "1.0"
   status: approved
@@ -11,14 +11,14 @@ ldm:
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: DCST
+  source: KNT
   description: |
     Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-THONG_TIN_DK_THUE
+    brd: BRD-SRC-KNT-THONG_TIN_DK_THUE
 
 attributes:
   - name: Involved Party Id
@@ -28,11 +28,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -42,11 +42,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -56,11 +56,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -70,11 +70,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
     etl_derived_value: null
 
   - name: Electronic Address Value
@@ -84,11 +84,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.EMAIL_KD
+    source_column: KNT.THONG_TIN_DK_THUE.EMAIL_KD
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
     etl_derived_value: null
 
   - name: Involved Party Id
@@ -98,11 +98,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -112,11 +112,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -126,11 +126,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -140,11 +140,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
     etl_derived_value: null
 
   - name: Electronic Address Value
@@ -154,11 +154,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.FAX_KD
+    source_column: KNT.THONG_TIN_DK_THUE.FAX_KD
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_BUSINESS'"
     etl_derived_value: null
 
   - name: Involved Party Id
@@ -168,11 +168,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -182,11 +182,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -196,11 +196,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -210,11 +210,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Electronic Address Value
@@ -224,11 +224,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.FAX
+    source_column: KNT.THONG_TIN_DK_THUE.FAX
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'FAX_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Involved Party Id
@@ -238,11 +238,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -252,11 +252,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -266,11 +266,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -280,11 +280,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
     etl_derived_value: null
 
   - name: Electronic Address Value
@@ -294,11 +294,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.DIEN_THOAI_KD
+    source_column: KNT.THONG_TIN_DK_THUE.DIEN_THOAI_KD
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_BUSINESS'"
     etl_derived_value: null
 
   - name: Involved Party Id
@@ -308,11 +308,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -322,11 +322,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -336,11 +336,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -350,11 +350,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Electronic Address Value
@@ -364,9 +364,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.DIEN_THOAI
+    source_column: KNT.THONG_TIN_DK_THUE.DIEN_THOAI
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Electronic Address Type Code = 'PHONE_HEAD_OFFICE'"
     etl_derived_value: null

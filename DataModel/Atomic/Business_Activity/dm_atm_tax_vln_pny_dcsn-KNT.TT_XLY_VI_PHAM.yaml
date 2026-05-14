@@ -2,8 +2,8 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-tax_vln_pny_dcsn-DCST.TT_XLY_VI_PHAM
-  logical_name: "Atomic - Tax Violation Penalty Decision – source DCST.TT_XLY_VI_PHAM"
+  id: ATM-tax_vln_pny_dcsn-KNT.TT_XLY_VI_PHAM
+  logical_name: "Atomic - Tax Violation Penalty Decision – source KNT.TT_XLY_VI_PHAM"
   physical_name: tax_vln_pny_dcsn
   version: "1.0"
   status: approved
@@ -11,14 +11,14 @@ ldm:
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: Fact Append
   etl_pattern: Fact Append
-  source: DCST
+  source: KNT
   description: |
     Quyết định xử lý vi phạm hành chính về thuế. Ghi nhận hành vi vi phạm và mức phạt/truy thu.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-TT_XLY_VI_PHAM
+    brd: BRD-SRC-KNT-TT_XLY_VI_PHAM
 
 attributes:
   - name: Tax Violation Penalty Decision Id
@@ -28,39 +28,39 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
     source_column: null
     comment: "PK surrogate. BCV: \"Conduct Violation\" (Business Activity) — Activity Fact Append."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Tax Violation Penalty Decision Code
     physical_name: tax_vln_pny_dcsn_code
-    business_meaning: Mã định danh bản ghi trong DCST. BK
+    business_meaning: Mã định danh bản ghi trong KNT. BK
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.ID
+    source_column: KNT.TT_XLY_VI_PHAM.ID
     comment: BK chính. PK nguồn map vào Code.
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.TT_XLY_VI_PHAM"
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: KNT.TT_XLY_VI_PHAM"
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Id
@@ -70,11 +70,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.MST
+    source_column: KNT.TT_XLY_VI_PHAM.MST
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MST → Registered Taxpayer. Nullable vì link ngầm. BCV: \"Organization Tax Identification Number\" (Involved Party)."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Code
@@ -84,11 +84,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.MST
+    source_column: KNT.TT_XLY_VI_PHAM.MST
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Taxpayer Name
@@ -98,11 +98,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.TEN_DOI_TUONG
+    source_column: KNT.TT_XLY_VI_PHAM.TEN_DOI_TUONG
     comment: "BCV: \"Organization Name\" (Involved Party). Snapshot tại thời điểm quyết định xử lý."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Order Number
@@ -112,11 +112,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.SO_QDXL
+    source_column: KNT.TT_XLY_VI_PHAM.SO_QDXL
     comment: "BCV: gần nhất \"Submission Number\" (Documentation). QĐ xử lý vi phạm là văn bản hành chính. Business reference number của quyết định."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Issuing Authority Name
@@ -126,11 +126,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.CO_QUAN_BAN_HANH
+    source_column: KNT.TT_XLY_VI_PHAM.CO_QUAN_BAN_HANH
     comment: "BCV: \"Business Activity Organizer\" (Business Activity). Nhất quán với ExamSessions LLD (attr_NHNCK_ExamSessions). Prefix Issuing Authority."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Inspection Period
@@ -140,11 +140,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.KY_TTKT
+    source_column: KNT.TT_XLY_VI_PHAM.KY_TTKT
     comment: "BCV: không có term riêng. Kỳ được thanh tra/kiểm tra phát hiện vi phạm."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Violation Penalty Description
@@ -154,11 +154,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VP
+    source_column: KNT.TT_XLY_VI_PHAM.PHAT_HANH_VI_VP
     comment: "BCV: gần nhất \"Conduct Violation\" (Business Activity). Mô tả hành vi vi phạm và mức phạt."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Administrative Violation Penalty Description
@@ -168,11 +168,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.PHAT_HANH_VI_VPHC
+    source_column: KNT.TT_XLY_VI_PHAM.PHAT_HANH_VI_VPHC
     comment: "BCV: gần nhất \"Conduct Violation\" (Business Activity). Phân biệt loại vi phạm hành chính. Mô tả và mức phạt bổ sung."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null
 
   - name: Tax Arrears Recovery Amount
@@ -182,9 +182,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TT_XLY_VI_PHAM
-    source_column: DCST.TT_XLY_VI_PHAM.TRUY_THU_TIEN_THUE
+    source_column: KNT.TT_XLY_VI_PHAM.TRUY_THU_TIEN_THUE
     comment: "BCV: không có term riêng cho truy thu thuế. Nguồn VARCHAR(100) — giữ Text. Cần xác nhận đơn vị tiền tệ."
-    classification_context: "Source System Code = 'DCST_TT_XLY_VI_PHAM'"
+    classification_context: "Source System Code = 'KNT_TT_XLY_VI_PHAM'"
     etl_derived_value: null

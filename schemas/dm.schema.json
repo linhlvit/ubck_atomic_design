@@ -5,7 +5,10 @@
   "description": "Schema định nghĩa định dạng YAML cho Data Model (DM) — kết hợp LDM + PDM ở cấp độ Atomic entity. Dùng để validate và parse các file dm_*.yaml trong thư mục DataModel/Atomic/.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["ldm", "attributes"],
+  "required": [
+    "ldm",
+    "attributes"
+  ],
   "properties": {
     "schema_type": {
       "type": "string",
@@ -71,7 +74,10 @@
         },
         "status": {
           "type": "string",
-          "enum": ["draft", "approved"],
+          "enum": [
+            "draft",
+            "approved"
+          ],
           "description": "Trạng thái thiết kế"
         },
         "bcv_core_object": {
@@ -99,18 +105,29 @@
         },
         "table_type": {
           "type": "string",
-          "enum": ["Fundamental", "Fact Append", "Fact Snapshot", "Relative", "Classification"],
+          "enum": [
+            "Fundamental",
+            "Fact Append",
+            "Fact Snapshot",
+            "Relative",
+            "Classification"
+          ],
           "description": "Loại bảng Atomic theo mô hình dữ liệu"
         },
         "etl_pattern": {
           "type": "string",
-          "enum": ["SCD4A", "SCD2", "Fact Append", "Upsert"],
+          "enum": [
+            "SCD4A",
+            "SCD2",
+            "Fact Append",
+            "Upsert"
+          ],
           "description": "Technical table type / ETL pattern. Mapping: Fundamental→SCD4A, Relative→SCD2, Fact Append→Fact Append, Fact Snapshot→Fact Append, Classification→Upsert"
         },
         "source": {
           "type": "string",
           "enum": [
-            "DCST",
+            "KNT",
             "ECAT",
             "FIMS",
             "FMS",
@@ -141,7 +158,10 @@
     "owner": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["steward", "data_modeler"],
+      "required": [
+        "steward",
+        "data_modeler"
+      ],
       "properties": {
         "steward": {
           "type": "string",
@@ -158,7 +178,9 @@
     "references": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["brd"],
+      "required": [
+        "brd"
+      ],
       "properties": {
         "brd": {
           "type": "string",
@@ -248,7 +270,7 @@
         "source_system": {
           "type": "string",
           "enum": [
-            "DCST",
+            "KNT",
             "ECAT",
             "FIMS",
             "FMS",
@@ -270,7 +292,9 @@
         },
         "source_column": {
           "oneOf": [
-            { "type": "null" },
+            {
+              "type": "null"
+            },
             {
               "type": "string",
               "pattern": "^[A-Za-z][A-Za-z0-9_]*\\.[A-Za-z][A-Za-z0-9_]*\\.[A-Za-z][A-Za-z0-9_.]*$",
@@ -280,22 +304,37 @@
         },
         "comment": {
           "oneOf": [
-            { "type": "null" },
-            { "type": "string", "minLength": 1 }
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
           ],
           "description": "Ghi chú kỹ thuật — null nếu không có"
         },
         "classification_context": {
           "oneOf": [
-            { "type": "null" },
-            { "type": "string", "minLength": 1 }
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
           ],
           "description": "Ngữ cảnh Classification Value, VD: \"Source System Code = 'FIMS_AUTHOANNOUNCE'\""
         },
         "etl_derived_value": {
           "oneOf": [
-            { "type": "null" },
-            { "type": "string", "minLength": 1 }
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
           ],
           "description": "Giá trị derived hoặc hardcode trong ETL — null nếu map thẳng từ source"
         }

@@ -2,8 +2,8 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-tax_inv_nfrc_ordr_itm-DCST.HOA_DON_CHI_TIET
-  logical_name: "Atomic - Tax Invoice Enforcement Order Item – source DCST.HOA_DON_CHI_TIET"
+  id: ATM-tax_inv_nfrc_ordr_itm-KNT.HOA_DON_CHI_TIET
+  logical_name: "Atomic - Tax Invoice Enforcement Order Item – source KNT.HOA_DON_CHI_TIET"
   physical_name: tax_inv_nfrc_ordr_itm
   version: "1.0"
   status: approved
@@ -11,14 +11,14 @@ ldm:
   bcv_concept: "[Documentation] Invoice"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: DCST
+  source: KNT
   description: |
     Chi tiết hóa đơn thuộc quyết định cưỡng chế ngừng sử dụng hóa đơn. Ghi nhận số hiệu và loại hóa đơn.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-HOA_DON_CHI_TIET
+    brd: BRD-SRC-KNT-HOA_DON_CHI_TIET
 
 attributes:
   - name: Tax Invoice Enforcement Order Item Id
@@ -28,39 +28,39 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
     source_column: null
     comment: "PK surrogate. BCV: \"Invoice\" (Documentation) — entity con của Tax Invoice Enforcement Order."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Tax Invoice Enforcement Order Item Code
     physical_name: tax_inv_nfrc_ordr_itm_code
-    business_meaning: Mã định danh bản ghi trong DCST. BK
+    business_meaning: Mã định danh bản ghi trong KNT. BK
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
-    source_column: DCST.HOA_DON_CHI_TIET.ID
+    source_column: KNT.HOA_DON_CHI_TIET.ID
     comment: BK chính. PK nguồn map vào Code.
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.HOA_DON_CHI_TIET"
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: KNT.HOA_DON_CHI_TIET"
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Tax Invoice Enforcement Order Id
@@ -70,11 +70,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
-    source_column: DCST.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID
+    source_column: KNT.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID
     comment: "FK target: Tax Invoice Enforcement Order.Tax Invoice Enforcement Order Id."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Tax Invoice Enforcement Order Code
@@ -84,11 +84,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
-    source_column: DCST.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID
+    source_column: KNT.HOA_DON_CHI_TIET.TCT_TTCCN_HOA_DON_ID
     comment: "Lookup pair: Tax Invoice Enforcement Order.Tax Invoice Enforcement Order Code. Pair with Tax Invoice Enforcement Order Id."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Invoice Template Symbol
@@ -98,11 +98,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
-    source_column: DCST.HOA_DON_CHI_TIET.KH_MAU
+    source_column: KNT.HOA_DON_CHI_TIET.KH_MAU
     comment: "BCV: không có term riêng (đặc thù hệ thống hóa đơn VN). Ký hiệu mẫu theo quy định BTC (VD: 01GTKT). Ba trường KH_MAU + KH_HOA_DON + SO_HOA_DON cùng định danh duy nhất 1 hóa đơn."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Invoice Series Symbol
@@ -112,11 +112,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
-    source_column: DCST.HOA_DON_CHI_TIET.KH_HOA_DON
+    source_column: KNT.HOA_DON_CHI_TIET.KH_HOA_DON
     comment: "BCV: không có term riêng. Ký hiệu series hóa đơn (VD: AA/19E). Nhất quán với Invoice Template Symbol."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Invoice Number
@@ -126,11 +126,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
-    source_column: DCST.HOA_DON_CHI_TIET.SO_HOA_DON
+    source_column: KNT.HOA_DON_CHI_TIET.SO_HOA_DON
     comment: "BCV: gần nhất \"Submission Number\" (Documentation). Số thứ tự hóa đơn trong series."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null
 
   - name: Invoice Type Code
@@ -140,9 +140,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: HOA_DON_CHI_TIET
-    source_column: DCST.HOA_DON_CHI_TIET.LOAI_HOA_DON
+    source_column: KNT.HOA_DON_CHI_TIET.LOAI_HOA_DON
     comment: "Scheme: INVOICE_TYPE. BCV: gần nhất \"Document Type\" (Documentation). Giá trị mới — xem append ref_shared_entity_classifications."
-    classification_context: "Source System Code = 'DCST_HOA_DON_CHI_TIET'"
+    classification_context: "Source System Code = 'KNT_HOA_DON_CHI_TIET'"
     etl_derived_value: null

@@ -435,12 +435,12 @@ mapping_atm_{physical_name}-{SOURCE}.{SRC_TABLE}.yaml
 - `mapping_atm_fnd_mgt_co-FIMS.FUNDCOMPANY.yaml` — regular pattern
 - `mapping_atm_ip_alt_identn-FIMS.BANKMONI.yaml` — unpivot pattern (1 file per source table)
 
-### 3.4 Cấu trúc CSV — 5 Section
+### 3.4 Cấu trúc YAML — 5 Section
 
-Mỗi file mapping CSV có cấu trúc 5 section cố định, phân cách bằng dòng banner:
+Mỗi file mapping YAML có cấu trúc 5 section cố định:
 
 ```
-Target     → Thông tin bảng đích (schema, table, ETL handle, description)
+Target     → Thông tin bảng đích (schema, table, etl_handle, description)
 Input      → Danh sách bảng/CTE nguồn (physical_table, derived_cte, unpivot_cte)
 Relationship → JOIN giữa các bảng/CTE nguồn
 Mapping    → Map từng cột nguồn → cột đích (transformation, data type)
@@ -591,14 +591,13 @@ mapping:
   logical_name: "Mapping Atomic - Fund Management Company – source FIMS.FUNDCOMPANY"
   physical_name: fnd_mgt_co
   pattern: regular            # regular | unpivot | direct
-  etl_pattern: SCD4A
   dm_ref: ATM-fnd_mgt_co-FIMS.FUNDCOMPANY
   brd_ref: BRD-SRC-FIMS-FUNDCOMPANY
 
 target:
   schema: atomic              # luôn là 'atomic'
   physical_name: fnd_mgt_co  # tên bảng đích (snake_case) — dùng cho ETL job generation
-  etl_handle: SCD4A
+  etl_handle: SCD4A           # ETL pattern (SCD4A | SCD2 | Fact Append | Upsert)
   description: "Công ty quản lý quỹ..."
 
 input:
@@ -641,15 +640,24 @@ final_filter: []                # để [] nếu không có WHERE/UNION ALL
 **Pattern `unpivot`** (1 source, nhiều legs UNION ALL từ cùng bảng):
 
 ```yaml
+schema_type: mapping
+schema_version: "1.0"
+
 transformation_rules_ref: Mapping/rules/transformation_rules.yaml
 
 mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.BANKMONI
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.BANKMONI"
+  physical_name: ip_alt_identn
   pattern: unpivot
   dm_ref: ATM-ip_alt_identn-FIMS.BANKMONI
+  brd_ref: BRD-SRC-FIMS-BANKMONI
 
 target:
   schema: atomic
   physical_name: ip_alt_identn  # snake_case physical name
+  etl_handle: SCD4A             # ETL pattern
+  description: "Giấy tờ định danh thay thế cho các đối tượng tham gia"
 
 input:
   - source_type: physical_table
@@ -710,11 +718,25 @@ final_filter:
 
 | Pattern | Dùng khi | `mapping_columns` hay `mapping_legs` | `final_filter` |
 |---|---|---|---|
-| `regular` | 1 bảng chính + JOIN bảng phụ | `mapping_columns` | `[]` |
+| `regular` | 1 bảng chính + JOIN bảng phụ | `mapping_columns` | `[]` hoặc WHERE/GROUP BY |
 | `unpivot` | 1 bảng, nhiều legs (loại giấy tờ) | `mapping_legs` | UNION ALL các legs |
-| `direct` | 1 bảng, không JOIN, không legs | `mapping_columns` | `[]` |
+| `direct` | 1 bảng, không JOIN, không legs | `mapping_columns` | `[]` hoặc WHERE |
+| `shared_entity` | Multi-source UNION ALL (IP addresses, identifications) | `mapping_columns` | UNION ALL các nguồn |
 
-### 3.11 Schema Validation
+### 3.11 ETL Handle
+
+**`etl_handle`** trong section `target` định nghĩa cách xử lý dữ liệu trên Atomic layer:
+
+| Value | Ý nghĩa | Dùng cho |
+|---|---|---|
+| `SCD4A` | Slowly Changing Dimension Type 4A (effective date tracking) | Dimension entities (Fundamental) |
+| `SCD2` | Slowly Changing Dimension Type 2 (historical snapshots) | Relative entities |
+| `Fact Append` | Chỉ insert mới, không update/delete (append-only pattern) | Fact tables, Transaction events |
+| `Upsert` | Insert + Update (match by key, replace if exists) | Classification Values, Configuration |
+
+> **Lưu ý:** ETL pattern được định nghĩa **duy nhất** tại `target.etl_handle`. Không còn trường `mapping.etl_pattern`.
+
+### 3.13 Schema Validation
 
 **VS Code** (realtime, `.vscode/settings.json`):
 
@@ -742,15 +764,18 @@ done
 
 **Các trường bắt buộc validate:**
 - `mapping.id` pattern: `^MAP-ATM-{physical_name}-{SOURCE}.{TABLE}$`
-- `mapping.pattern` enum: `regular | unpivot | direct`
+- `mapping.pattern` enum: `regular | unpivot | direct | shared_entity`
+- `mapping.dm_ref` string (not removed from required)
+- `mapping.brd_ref` string (not removed from required)
 - `target.schema` const: `atomic`
 - `target.physical_name` pattern: snake_case
+- `target.etl_handle` enum: `SCD4A | SCD2 | Fact Append | Upsert`
 - `input[].source_type` enum: `physical_table | derived_cte | unpivot_cte`
 - `mapping_columns[].target_column` pattern: snake_case
 - `mapping_columns[].data_type` enum: 10 Delta Lake types
 - `final_filter[].clause_type` enum: `WHERE | UNION ALL | GROUP BY | HAVING | ORDER BY`
 
-### 3.12 Transformation Rules — Shared Rule Library
+### 3.14 Transformation Rules — Shared Rule Library
 
 **File:** `Mapping/rules/transformation_rules.yaml`  
 **Scope:** Shared toàn dự án — tất cả mapping YAML đều tham chiếu file này qua `transformation_rules_ref`

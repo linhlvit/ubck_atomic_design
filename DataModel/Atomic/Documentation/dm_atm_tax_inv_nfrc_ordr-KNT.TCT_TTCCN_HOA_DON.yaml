@@ -2,8 +2,8 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-tax_inv_nfrc_ordr-DCST.TCT_TTCCN_HOA_DON
-  logical_name: "Atomic - Tax Invoice Enforcement Order – source DCST.TCT_TTCCN_HOA_DON"
+  id: ATM-tax_inv_nfrc_ordr-KNT.TCT_TTCCN_HOA_DON
+  logical_name: "Atomic - Tax Invoice Enforcement Order – source KNT.TCT_TTCCN_HOA_DON"
   physical_name: tax_inv_nfrc_ordr
   version: "1.0"
   status: approved
@@ -11,14 +11,14 @@ ldm:
   bcv_concept: "[Documentation] Invoice"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: DCST
+  source: KNT
   description: |
     Quyết định cưỡng chế nợ thuế theo hình thức ngừng sử dụng hóa đơn. Ghi nhận thông tin quyết định và thông báo.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-TCT_TTCCN_HOA_DON
+    brd: BRD-SRC-KNT-TCT_TTCCN_HOA_DON
 
 attributes:
   - name: Tax Invoice Enforcement Order Id
@@ -28,39 +28,39 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
     source_column: null
     comment: "PK surrogate. BCV: \"Invoice\" (Documentation) — entity-level concept."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Tax Invoice Enforcement Order Code
     physical_name: tax_inv_nfrc_ordr_code
-    business_meaning: Mã định danh bản ghi trong DCST. BK
+    business_meaning: Mã định danh bản ghi trong KNT. BK
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.ID
+    source_column: KNT.TCT_TTCCN_HOA_DON.ID
     comment: BK chính. PK nguồn map vào Code.
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.TCT_TTCCN_HOA_DON"
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: KNT.TCT_TTCCN_HOA_DON"
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Id
@@ -70,11 +70,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.MA_NNHAN
+    source_column: KNT.TCT_TTCCN_HOA_DON.MA_NNHAN
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MA_NNHAN (= MST) → Registered Taxpayer. Nullable vì link ngầm. BCV: \"Organization Tax Identification Number\" (Involved Party)."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Code
@@ -84,11 +84,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.MA_NNHAN
+    source_column: KNT.TCT_TTCCN_HOA_DON.MA_NNHAN
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Taxpayer Name
@@ -98,11 +98,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TEN_NNHAN
+    source_column: KNT.TCT_TTCCN_HOA_DON.TEN_NNHAN
     comment: "BCV: \"Organization Name\" (Involved Party). Snapshot tại thời điểm quyết định."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Supervisory Tax Authority Code
@@ -112,11 +112,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.MA_CQT_QL
+    source_column: KNT.TCT_TTCCN_HOA_DON.MA_CQT_QL
     comment: "BCV: không có term riêng. Nhất quán prefix Supervisory Tax Authority với THONG_TIN_DK_THUE LLD và TCT_TT_CUONG_CHE_NO LLD."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Supervisory Tax Authority Name
@@ -126,11 +126,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TEN_CQT_QL
+    source_column: KNT.TCT_TTCCN_HOA_DON.TEN_CQT_QL
     comment: "BCV: không có term riêng. Denormalized name. Nhất quán prefix."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Taxpayer Business Industry
@@ -140,11 +140,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.NGANH_KD_DTBCC
+    source_column: KNT.TCT_TTCCN_HOA_DON.NGANH_KD_DTBCC
     comment: "BCV: \"Organization Industry Classification\" (Involved Party). Snapshot tại thời điểm quyết định."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Enforcement Type Code
@@ -154,11 +154,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.MA_HTCC
+    source_column: KNT.TCT_TTCCN_HOA_DON.MA_HTCC
     comment: "Scheme: TAX_ENFORCEMENT_TYPE. BCV: không có term riêng. Với bảng này luôn là hình thức ngừng sử dụng hóa đơn. Dùng chung với TCT_TT_CUONG_CHE_NO."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Enforcement Type Name
@@ -168,11 +168,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TEN_HTCC
+    source_column: KNT.TCT_TTCCN_HOA_DON.TEN_HTCC
     comment: "BCV: không có term riêng. Denormalized name tương ứng Enforcement Type Code."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Electronic Transaction Code
@@ -182,11 +182,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.MA_GDDT
+    source_column: KNT.TCT_TTCCN_HOA_DON.MA_GDDT
     comment: "BCV: không có term riêng. Nhất quán với TCT_TT_CUONG_CHE_NO LLD."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Invoice Enforcement Order Number
@@ -196,11 +196,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.SO_QD
+    source_column: KNT.TCT_TTCCN_HOA_DON.SO_QD
     comment: "BCV: gần nhất \"Submission Number\" (Documentation). Prefix Invoice Enforcement thể hiện đây là QĐ cưỡng chế theo hình thức ngừng HĐ — phân biệt với Enforcement Order Number trong TCT_TT_CUONG_CHE_NO."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Invoice Enforcement Order Date
@@ -210,11 +210,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.NGAY_QD
+    source_column: KNT.TCT_TTCCN_HOA_DON.NGAY_QD
     comment: "BCV: gần nhất \"Documentation Preparation Date\" (Documentation). Nhất quán prefix Invoice Enforcement Order."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Enforcement Effective Start Date
@@ -224,11 +224,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.NGAY_HIEU_LUC_QD_TU
+    source_column: KNT.TCT_TTCCN_HOA_DON.NGAY_HIEU_LUC_QD_TU
     comment: "BCV: gần nhất \"Condition Effective Date\" (Condition). Nhất quán prefix Enforcement Effective với TCT_TT_CUONG_CHE_NO LLD."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Enforcement Effective End Date
@@ -238,11 +238,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.NGAY_HIEU_LUC_QD_DEN
+    source_column: KNT.TCT_TTCCN_HOA_DON.NGAY_HIEU_LUC_QD_DEN
     comment: "BCV: gần nhất \"Condition Expiry Date\" (Condition). Nhất quán prefix Enforcement Effective."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Enforcement Status
@@ -252,11 +252,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.HIEU_LUC
+    source_column: KNT.TCT_TTCCN_HOA_DON.HIEU_LUC
     comment: "BCV: không có term riêng. Nguồn VARCHAR(100) — giữ Text. Cần xác nhận giá trị (còn hiệu lực / hết hiệu lực...). Nếu binary → chuyển Boolean sau khi profile."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Prior Enforcement Order Number
@@ -266,11 +266,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.CAN_CU_QDSO
+    source_column: KNT.TCT_TTCCN_HOA_DON.CAN_CU_QDSO
     comment: "BCV: gần nhất \"Submission Number\" (Documentation) — QĐ viện dẫn. Viện dẫn Enforcement Order Number trong Tax Debt Enforcement Order (biện pháp nhẹ hơn đã áp dụng trước, không hiệu quả). Liên kết logic — không có FK vật lý."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Prior Enforcement Order Date
@@ -280,11 +280,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.CAN_CU_QDNGAY
+    source_column: KNT.TCT_TTCCN_HOA_DON.CAN_CU_QDNGAY
     comment: "BCV: gần nhất \"Documentation Preparation Date\" (Documentation). Nhất quán prefix Prior Enforcement Order."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Notice Taxpayer Code
@@ -294,11 +294,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TB_MA_NNHAN
+    source_column: KNT.TCT_TTCCN_HOA_DON.TB_MA_NNHAN
     comment: "BCV: \"Organization Tax Identification Number\" (Involved Party). Prefix Notice Taxpayer — thường trùng nhóm đối tượng bị CC nhưng có thể khác (VD: thông báo gửi công ty mẹ thay công ty con bị CC). ETL cần xử lý riêng khi resolve FK."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Notice Taxpayer Name
@@ -308,11 +308,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TB_TEN_NNHAN
+    source_column: KNT.TCT_TTCCN_HOA_DON.TB_TEN_NNHAN
     comment: "BCV: \"Organization Name\" (Involved Party). Cùng lưu ý như Notice Taxpayer Code."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Notice Code
@@ -322,11 +322,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.MA_THONG_BAO
+    source_column: KNT.TCT_TTCCN_HOA_DON.MA_THONG_BAO
     comment: "BCV: gần nhất \"Submission Number\" (Documentation). Prefix Notice nhất quán nhóm ⑤."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Notice Name
@@ -336,11 +336,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TEN_THONG_BAO
+    source_column: KNT.TCT_TTCCN_HOA_DON.TEN_THONG_BAO
     comment: "BCV: không có term riêng. Denormalized name. Nhất quán prefix Notice."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Notified Tax Debt Amount
@@ -350,11 +350,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TB_NO_SO
-    comment: "BCV: không có term riêng. Nguồn VARCHAR(100) — giữ Text vì không có currency code đi kèm. Cần xác nhận đơn vị với team DCST."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    source_column: KNT.TCT_TTCCN_HOA_DON.TB_NO_SO
+    comment: "BCV: không có term riêng. Nguồn VARCHAR(100) — giữ Text vì không có currency code đi kèm. Cần xác nhận đơn vị với team KNT."
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null
 
   - name: Debt Notice Date
@@ -364,9 +364,9 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TTCCN_HOA_DON
-    source_column: DCST.TCT_TTCCN_HOA_DON.TB_NO_NGAY
+    source_column: KNT.TCT_TTCCN_HOA_DON.TB_NO_NGAY
     comment: "BCV: gần nhất \"Submission Date\" (Documentation) — ngày của thông báo. Nhất quán prefix Debt Notice."
-    classification_context: "Source System Code = 'DCST_TCT_TTCCN_HOA_DON'"
+    classification_context: "Source System Code = 'KNT_TCT_TTCCN_HOA_DON'"
     etl_derived_value: null

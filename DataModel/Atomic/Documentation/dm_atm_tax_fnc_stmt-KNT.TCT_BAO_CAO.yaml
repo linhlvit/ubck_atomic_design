@@ -2,8 +2,8 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-tax_fnc_stmt-DCST.TCT_BAO_CAO
-  logical_name: "Atomic - Tax Financial Statement – source DCST.TCT_BAO_CAO"
+  id: ATM-tax_fnc_stmt-KNT.TCT_BAO_CAO
+  logical_name: "Atomic - Tax Financial Statement – source KNT.TCT_BAO_CAO"
   physical_name: tax_fnc_stmt
   version: "1.0"
   status: approved
@@ -11,14 +11,14 @@ ldm:
   bcv_concept: "[Documentation] Regulatory Report"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: DCST
+  source: KNT
   description: |
     Tờ khai tài chính điện tử nộp lên cơ quan thuế. Ghi nhận kỳ kê khai và thông tin kiểm toán.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-TCT_BAO_CAO
+    brd: BRD-SRC-KNT-TCT_BAO_CAO
 
 attributes:
   - name: Tax Financial Statement Id
@@ -28,39 +28,39 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
     source_column: null
     comment: "PK surrogate. BCV: \"Financial Statement\" (Documentation) — entity-level concept."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Financial Statement Code
     physical_name: tax_fnc_stmt_code
-    business_meaning: Mã định danh bản ghi trong DCST. BK
+    business_meaning: Mã định danh bản ghi trong KNT. BK
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ID
+    source_column: KNT.TCT_BAO_CAO.ID
     comment: BK chính. PK nguồn map vào Code — không đưa vào technical field.
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.TCT_BAO_CAO"
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: KNT.TCT_BAO_CAO"
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Id
@@ -70,11 +70,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MST
+    source_column: KNT.TCT_BAO_CAO.MST
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MST → Registered Taxpayer. Nullable vì link ngầm có thể không resolve được. BCV: \"Organization Tax Identification Number\" (Involved Party) — MST là mã định danh NNT."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Code
@@ -84,11 +84,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MST
+    source_column: KNT.TCT_BAO_CAO.MST
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Name
@@ -98,11 +98,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TEN_NNT
+    source_column: KNT.TCT_BAO_CAO.TEN_NNT
     comment: "BCV: \"Organization Name\" (Involved Party). Denormalized snapshot — grain tờ khai, không tách IP."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Address
@@ -112,11 +112,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.DIA_CHI_NNT
+    source_column: KNT.TCT_BAO_CAO.DIA_CHI_NNT
     comment: "BCV: \"Postal Address\" (Location). Denormalized — grain tờ khai, không tách IP Postal Address."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Ward
@@ -126,11 +126,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.PHUONG_XA
+    source_column: KNT.TCT_BAO_CAO.PHUONG_XA
     comment: "BCV: \"Postal Address\" (Location). Denormalized. Prefix Taxpayer nhất quán nhóm địa chỉ."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer District Code
@@ -140,11 +140,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_HUYEN_NNT
+    source_column: KNT.TCT_BAO_CAO.MA_HUYEN_NNT
     comment: "BCV: \"Postal Address\" (Location). Denormalized."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer District Name
@@ -154,11 +154,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TEN_HUYEN_NNT
+    source_column: KNT.TCT_BAO_CAO.TEN_HUYEN_NNT
     comment: "BCV: \"Postal Address\" (Location). Denormalized name."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Province Code
@@ -168,11 +168,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_TINH_NNT
+    source_column: KNT.TCT_BAO_CAO.MA_TINH_NNT
     comment: "BCV: \"Postal Address\" (Location). Denormalized."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Province Name
@@ -182,11 +182,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TEN_TINH_NNT
+    source_column: KNT.TCT_BAO_CAO.TEN_TINH_NNT
     comment: "BCV: \"Postal Address\" (Location). Denormalized name."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Phone Number
@@ -196,11 +196,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.DIEN_THOAI_NNT
+    source_column: KNT.TCT_BAO_CAO.DIEN_THOAI_NNT
     comment: "BCV: \"Electronic Address\" (Location). Denormalized snapshot. Prefix Taxpayer nhất quán."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Fax Number
@@ -210,11 +210,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.FAX_NNT
+    source_column: KNT.TCT_BAO_CAO.FAX_NNT
     comment: "BCV: \"Electronic Address\" (Location). Denormalized snapshot."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Taxpayer Email
@@ -224,11 +224,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.EMAIL_NNT
+    source_column: KNT.TCT_BAO_CAO.EMAIL_NNT
     comment: "BCV: \"Electronic Address\" (Location). Denormalized snapshot."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Business Industry
@@ -238,11 +238,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.NGANH_NGHE_KD
+    source_column: KNT.TCT_BAO_CAO.NGANH_NGHE_KD
     comment: "BCV: \"Organization Industry Classification\" (Involved Party). Rút gọn prefix. Snapshot tại thời điểm lập báo cáo. Lưu ý: mô tả nguồn có thể là typo của \"Ngành nghề kinh doanh\"."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Service Code
@@ -252,11 +252,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_DVU
+    source_column: KNT.TCT_BAO_CAO.MA_DVU
     comment: "BCV: không có term riêng. Đặc thù hệ thống eTax."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Service Name
@@ -266,11 +266,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TEN_DVU
+    source_column: KNT.TCT_BAO_CAO.TEN_DVU
     comment: "BCV: không có term riêng. Denormalized name tương ứng Service Code."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Service Version
@@ -280,11 +280,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.PHIEN_BAN_DVU
+    source_column: KNT.TCT_BAO_CAO.PHIEN_BAN_DVU
     comment: "BCV: không có term riêng. Version của service eTax."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Service Provider Information
@@ -294,11 +294,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TT_NHACC_DVU
+    source_column: KNT.TCT_BAO_CAO.TT_NHACC_DVU
     comment: "BCV: \"Organization Name\" (Involved Party) — gần nhất. Text tổng hợp từ nguồn, không có FK."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Return Code
@@ -308,11 +308,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_TKHAI
+    source_column: KNT.TCT_BAO_CAO.MA_TKHAI
     comment: "BCV: gần nhất \"Submission Number\" (Documentation). Đặt \"Tax Return Code\" để phản ánh ngữ cảnh mã biểu mẫu tờ khai thuế (VD: 03/TNDN)."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Return Name
@@ -322,11 +322,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TEN_TKHAI
+    source_column: KNT.TCT_BAO_CAO.TEN_TKHAI
     comment: "BCV: không có term riêng. Denormalized name tương ứng Tax Return Code."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Return Form Description
@@ -336,11 +336,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MO_TA_BMAU
+    source_column: KNT.TCT_BAO_CAO.MO_TA_BMAU
     comment: "BCV: không có term riêng. Mô tả chi tiết biểu mẫu tờ khai."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Return XML Version
@@ -350,11 +350,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.PBAN_TKHAI_XML
+    source_column: KNT.TCT_BAO_CAO.PBAN_TKHAI_XML
     comment: "BCV: không có term riêng. Version schema XML — kỹ thuật."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Return Type Code
@@ -364,11 +364,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.LOAI_TKHAI
+    source_column: KNT.TCT_BAO_CAO.LOAI_TKHAI
     comment: "Scheme: TAX_RETURN_TYPE. BCV: gần nhất \"Document Type\" (Documentation). Giá trị mới — xem append ref_shared_entity_classifications."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Amendment Count
@@ -378,11 +378,11 @@ attributes:
     data_type: int
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.SO_LAN
+    source_column: KNT.TCT_BAO_CAO.SO_LAN
     comment: "BCV: không có term riêng. Đếm số lần nộp tờ khai (lần đầu + bổ sung)."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Reporting Period Type Code
@@ -392,11 +392,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.KIEU_KY
+    source_column: KNT.TCT_BAO_CAO.KIEU_KY
     comment: "Scheme: REPORTING_PERIOD_TYPE. BCV: không có term riêng cho kiểu kỳ báo cáo thuế. Giá trị mới — xem append."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Reporting Period
@@ -406,11 +406,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.KY_KKHAI
+    source_column: KNT.TCT_BAO_CAO.KY_KKHAI
     comment: "BCV: không có term riêng. Nhất quán prefix Reporting Period toàn nhóm."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Reporting Period Start Date
@@ -420,11 +420,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.KY_KKHAI_TU_NGAY
+    source_column: KNT.TCT_BAO_CAO.KY_KKHAI_TU_NGAY
     comment: "BCV: không có term riêng. Nguồn VARCHAR — giữ Text, không ép Date."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Reporting Period End Date
@@ -434,11 +434,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.KY_KKHAI_DEN_NGAY
+    source_column: KNT.TCT_BAO_CAO.KY_KKHAI_DEN_NGAY
     comment: "BCV: không có term riêng. Nguồn VARCHAR — giữ Text."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Reporting Period Start Month
@@ -448,11 +448,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.KY_KKHAI_TU_THANG
+    source_column: KNT.TCT_BAO_CAO.KY_KKHAI_TU_THANG
     comment: "BCV: không có term riêng. Nhất quán prefix Reporting Period."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Reporting Period End Month
@@ -462,11 +462,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.KY_KKHAI_DEN_THANG
+    source_column: KNT.TCT_BAO_CAO.KY_KKHAI_DEN_THANG
     comment: "BCV: không có term riêng. Nhất quán prefix Reporting Period."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Authority Code
@@ -476,11 +476,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_CQTHUE_NOI_NOP
+    source_column: KNT.TCT_BAO_CAO.MA_CQTHUE_NOI_NOP
     comment: "BCV: không có term riêng cho cơ quan thuế nơi nộp. CQ thuế tiếp nhận tờ khai."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Tax Authority Name
@@ -490,11 +490,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TEN_CQTHUE_NOI_NOP
+    source_column: KNT.TCT_BAO_CAO.TEN_CQTHUE_NOI_NOP
     comment: "BCV: không có term riêng. Denormalized name. Prefix Tax Authority nhất quán."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Filing Date
@@ -504,11 +504,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.NGAY_LAP_TKHAI
+    source_column: KNT.TCT_BAO_CAO.NGAY_LAP_TKHAI
     comment: "BCV: gần nhất \"Documentation Preparation Date\" (Documentation). Nguồn VARCHAR — giữ Text, không ép Date."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Extension Reason Code
@@ -518,11 +518,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_LY_DO_GIA_HAN
+    source_column: KNT.TCT_BAO_CAO.MA_LY_DO_GIA_HAN
     comment: "BCV: không có term riêng. Mã nghiệp vụ — prefix Extension Reason."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Extension Reason
@@ -532,11 +532,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.LY_DO_GIA_HAN
+    source_column: KNT.TCT_BAO_CAO.LY_DO_GIA_HAN
     comment: "BCV: không có term riêng. Nhất quán prefix Extension Reason."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Signatory Name
@@ -546,11 +546,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.NGUOI_KY
+    source_column: KNT.TCT_BAO_CAO.NGUOI_KY
     comment: "BCV: \"Documentation Signatory\" (Documentation). Nhất quán với Decisions LLD. Tên người ký không có FK đến Involved Party — giữ denormalized."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Signing Date
@@ -560,11 +560,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.NGAY_KY
+    source_column: KNT.TCT_BAO_CAO.NGAY_KY
     comment: "BCV: gần nhất \"Documentation Signatory\" + date pattern. Nhất quán với Decisions LLD."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Audit Status Code
@@ -574,11 +574,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TRANG_THAI_KT
+    source_column: KNT.TCT_BAO_CAO.TRANG_THAI_KT
     comment: "Scheme: AUDIT_STATUS. BCV: không có term riêng cho trạng thái kiểm toán BCTC. Giá trị mới — xem append."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Audit Firm Tax Identification Number
@@ -588,11 +588,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MST_TC_KTOAN
-    comment: "BCV: \"Organization Tax Identification Number\" (Involved Party). Prefix Audit Firm chỉ rõ chủ thể — phân biệt với MST của NNT. Không FK vì không có bảng KTV trong scope DCST Group A."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    source_column: KNT.TCT_BAO_CAO.MST_TC_KTOAN
+    comment: "BCV: \"Organization Tax Identification Number\" (Involved Party). Prefix Audit Firm chỉ rõ chủ thể — phân biệt với MST của NNT. Không FK vì không có bảng KTV trong scope KNT Group A."
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Audit Firm Name
@@ -602,11 +602,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.TC_KIEM_TOAN
+    source_column: KNT.TCT_BAO_CAO.TC_KIEM_TOAN
     comment: "BCV: \"Organization Name\" (Involved Party). Prefix Audit Firm chỉ rõ chủ thể. Denormalized."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Auditor Code
@@ -616,11 +616,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_KIEM_TOAN_VIEN
+    source_column: KNT.TCT_BAO_CAO.MA_KIEM_TOAN_VIEN
     comment: "BCV: không có term riêng cho mã kiểm toán viên. Prefix Auditor — chủ thể khác với NNT."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Auditor Name
@@ -630,11 +630,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.KIEM_TOAN_VIEN
+    source_column: KNT.TCT_BAO_CAO.KIEM_TOAN_VIEN
     comment: "BCV: không có term riêng. Giữ nguyên mô tả nguồn (có typo). Prefix Auditor. Denormalized."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Audited Financial Statement Indicator
@@ -644,11 +644,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.BCTC_DA_KIEM_TOAN
+    source_column: KNT.TCT_BAO_CAO.BCTC_DA_KIEM_TOAN
     comment: "BCV: không có term riêng. Nguồn VARCHAR(20) — giữ Text. Cần xác nhận giá trị (Y/N hay 0/1)."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Audit Opinion Code
@@ -658,11 +658,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.MA_YKKT
+    source_column: KNT.TCT_BAO_CAO.MA_YKKT
     comment: "BCV: không có term riêng. Không đủ thông tin danh mục → giữ dạng Text."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Audit Opinion
@@ -672,11 +672,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.YKKT
+    source_column: KNT.TCT_BAO_CAO.YKKT
     comment: "BCV: không có term riêng. Nội dung ý kiến kiểm toán."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Audit Date
@@ -686,11 +686,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.NGAY_KIEM_TOAN
+    source_column: KNT.TCT_BAO_CAO.NGAY_KIEM_TOAN
     comment: "BCV: không có term riêng."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Created Date
@@ -700,11 +700,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.NGAY_TAO
+    source_column: KNT.TCT_BAO_CAO.NGAY_TAO
     comment: "BCV: không có term riêng. Nguồn NUMBER — không rõ định dạng (số ngày?). Giữ Text để tránh mất dữ liệu."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Submission Date
@@ -714,11 +714,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_NGAY_NOP_TK
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_NGAY_NOP_TK
     comment: "BCV: \"Submission Date\" (Documentation). Giữ nguyên BCV term. ADD_INFO = metadata truyền nhận → thiết kế như trường nghiệp vụ bình thường."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Receipt Date
@@ -728,11 +728,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_NGAY_TIEP_NHAN
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_NGAY_TIEP_NHAN
     comment: "BCV: gần nhất \"Submission Date\" (Documentation) — phía tiếp nhận."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Report Set Period
@@ -742,11 +742,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_KY_LAP_BO
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_KY_LAP_BO
     comment: "BCV: không có term riêng."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Filing Origin
@@ -756,11 +756,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_NGUON_GOC_TK
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_NGUON_GOC_TK
     comment: "BCV: không có term riêng."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Filing Entry Person
@@ -770,11 +770,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_NGUOI_NHAP_TK
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_NGUOI_NHAP_TK
     comment: "BCV: không có term riêng. Giữ nguyên mô tả nguồn (có typo). Prefix Filing nhất quán nhóm ADD_INFO."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Filing Acknowledged Date
@@ -784,11 +784,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_NGAY_NHAN_TK
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_NGAY_NHAN_TK
     comment: "BCV: gần nhất \"Submission Date\" (Documentation). Nhất quán prefix Filing."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Filing Reference Id
@@ -798,11 +798,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_ID_TK
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_ID_TK
     comment: "BCV: gần nhất \"Submission Number\" (Documentation). Metadata truyền nhận — thiết kế thành trường nghiệp vụ (không đưa vào ds_source_record_id)."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Sending Location
@@ -812,11 +812,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_NOI_GUI
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_NOI_GUI
     comment: "BCV: \"Location\" (Location) — gần nhất. Không đủ cấu trúc để tách Location entity."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null
 
   - name: Receiving Location
@@ -826,9 +826,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_BAO_CAO
-    source_column: DCST.TCT_BAO_CAO.ADD_INFO_NOI_NHAN
+    source_column: KNT.TCT_BAO_CAO.ADD_INFO_NOI_NHAN
     comment: "BCV: \"Location\" (Location) — gần nhất. Nhất quán với Sending Location."
-    classification_context: "Source System Code = 'DCST_TCT_BAO_CAO'"
+    classification_context: "Source System Code = 'KNT_TCT_BAO_CAO'"
     etl_derived_value: null

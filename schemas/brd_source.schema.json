@@ -93,9 +93,7 @@
         "scope_status",
         "scope_reason",
         "related_tables",
-        "notes",
-        "data_volume_hint",
-        "refresh_frequency"
+        "notes"
       ],
       "properties": {
         "table_meaning": {
@@ -163,16 +161,10 @@
             },
             {
               "type": "string",
-              "enum": [
-                "static",
-                "small",
-                "medium",
-                "large",
-                "very_large"
-              ]
+              "minLength": 1
             }
           ],
-          "description": "Ước lượng khối lượng dữ liệu — dùng để quyết định ETL pattern (null = chưa xác định)"
+          "description": "Ước lượng khối lượng dữ liệu theo số dòng và tần suất thay đổi (VD: '~50K rows/day', '3M rows tăng thêm mỗi tháng'). Chỉ áp dụng cho BRD theo source. null = chưa xác định"
         },
         "refresh_frequency": {
           "oneOf": [
@@ -187,12 +179,28 @@
                 "daily",
                 "weekly",
                 "monthly",
+                "yearly",
                 "ad_hoc",
                 "static"
               ]
             }
           ],
-          "description": "Tần suất cập nhật từ nguồn — dùng để quyết định SCD type (null = chưa xác định)"
+          "description": "Tần suất cập nhật từ nguồn — dùng để quyết định SCD type. Chỉ áp dụng cho BRD theo source. null = chưa xác định"
+        },
+        "data_change_mode": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "update",
+                "append_only"
+              ]
+            }
+          ],
+          "description": "Cơ chế thay đổi dữ liệu nguồn: update (bản ghi có thể bị sửa/xóa) hoặc append_only (chỉ insert mới). Chỉ áp dụng cho BRD theo source. null = chưa xác định"
         }
       }
     },
