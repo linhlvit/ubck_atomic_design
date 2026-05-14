@@ -15,7 +15,7 @@ Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
 2,aclk,INNER JOIN,aa_arr,aa_arr_linked.RECID = aa_arr.RECID,,,,,,
 3,aa_arr_linked,LEFT JOIN,aa_arr_ac_blk_reason,aa_arr_linked.RECID = aa_arr_ac_blk_reason.RECID,,,,,,
 Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
-#,Target Column,Transformation,Data Type,,,,Description,Last update,Update by,Update reason
+#,Physical Target Column,Transformation,Data Type,Logical Target Column,,,Description,Last update,Update by,Update reason
 1,dpst_arrgmnt_id,"{{ generate_surrogate_key_bigint('T24_ARRANGEMENT', 'aa_arr_linked.RECID') }}",String,,,,Id hợp đồng tiền gửi (surrogate key),,,
 2,dpst_arrgmnt_cd,aa_arr_linked.RECID,String,,,,Mã số hợp đồng tiền gửi,,,
 3,hld_evt_itm_cd,aclk.RECID,String,,,,Mã lần phong tỏa,,,
