@@ -14,6 +14,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: in_scope
       scope_reason: null
+      table: investor_account
       related_tables:
         - table: investor_account_history
           relation: "Bảng con — lịch sử thay đổi thông tin TK (out of scope)"
@@ -37,6 +38,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử thay đổi thông tin tài khoản NĐT"
+      table: investor_account_history
       related_tables:
         - table: investor_account
           relation: "FK — tài khoản nhà đầu tư"
@@ -54,6 +56,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: in_scope
       scope_reason: null
+      table: account_financial_service
       related_tables:
         - table: investor_account
           relation: "FK — tài khoản nhà đầu tư"
@@ -71,6 +74,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: in_scope
       scope_reason: null
+      table: account_authorization
       related_tables:
         - table: investor_account
           relation: "FK — tài khoản nhà đầu tư"
@@ -88,6 +92,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: in_scope
       scope_reason: null
+      table: account_relationship
       related_tables:
         - table: investor_account
           relation: "FK — tài khoản nhà đầu tư (nhiều phía quan hệ)"
@@ -105,6 +110,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: in_scope
       scope_reason: null
+      table: account_group
       related_tables:
         - table: account_group_member
           relation: "Bảng con — thành viên nhóm tài khoản"
@@ -126,6 +132,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: in_scope
       scope_reason: null
+      table: account_group_member
       related_tables:
         - table: account_group
           relation: "FK — nhóm tài khoản"
@@ -145,6 +152,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử thay đổi nhóm tài khoản"
+      table: account_group_history
       related_tables:
         - table: account_group
           relation: "FK — nhóm tài khoản"
@@ -162,6 +170,7 @@ brd_entries:
       functional_group: "UID1.2 Khai thác thông tin doanh nghiệp"
       scope_status: in_scope
       scope_reason: null
+      table: company_event
       related_tables:
         - table: company_event_history
           relation: "Bảng con — lịch sử thay đổi sự kiện (out of scope)"
@@ -179,6 +188,7 @@ brd_entries:
       functional_group: "UID1.2 Khai thác thông tin doanh nghiệp"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử thay đổi sự kiện TCNY"
+      table: company_event_history
       related_tables:
         - table: company_event
           relation: "FK — sự kiện tổ chức niêm yết"
@@ -196,6 +206,7 @@ brd_entries:
       functional_group: "UID1.3 Quản lý mã chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: securities_group
       related_tables:
         - table: securities_group_member
           relation: "Bảng con — thành viên nhóm CK (denormalize)"
@@ -215,6 +226,7 @@ brd_entries:
       functional_group: "UID1.3 Quản lý mã chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: securities_group_member
       related_tables:
         - table: securities_group
           relation: "FK — nhóm chứng khoán"
@@ -232,6 +244,7 @@ brd_entries:
       functional_group: "UID1.3 Quản lý mã chứng khoán"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử thay đổi nhóm CK"
+      table: securities_group_history
       related_tables:
         - table: securities_group
           relation: "FK — nhóm chứng khoán"
@@ -249,6 +262,7 @@ brd_entries:
       functional_group: "UID1.4 Quản lý báo cáo (tuân thủ & bất thường)"
       scope_status: in_scope
       scope_reason: null
+      table: abnormal_report
       related_tables:
         - table: abnormal_report_file
           relation: "Bảng con — file đính kèm (PDF, chữ ký số)"
@@ -268,6 +282,7 @@ brd_entries:
       functional_group: "UID1.4 Quản lý báo cáo (tuân thủ & bất thường)"
       scope_status: in_scope
       scope_reason: null
+      table: abnormal_report_file
       related_tables:
         - table: abnormal_report
           relation: "FK — báo cáo bất thường"
@@ -285,6 +300,7 @@ brd_entries:
       functional_group: "UID1.4 Quản lý báo cáo (tuân thủ & bất thường)"
       scope_status: in_scope
       scope_reason: null
+      table: compliance_report_template
       related_tables:
         - table: compliance_report_config
           relation: "Bảng con — cấu hình cấu trúc cột cho loại BC"
@@ -304,6 +320,7 @@ brd_entries:
       functional_group: "UID1.4 Quản lý báo cáo (tuân thủ & bất thường)"
       scope_status: in_scope
       scope_reason: null
+      table: compliance_report_config
       related_tables:
         - table: compliance_report_template
           relation: "FK — loại báo cáo tuân thủ"
@@ -321,6 +338,7 @@ brd_entries:
       functional_group: "UID1.4 Quản lý báo cáo (tuân thủ & bất thường)"
       scope_status: in_scope
       scope_reason: null
+      table: compliance_report_master
       related_tables:
         - table: compliance_report_template
           relation: "FK — loại báo cáo tuân thủ"
@@ -340,6 +358,7 @@ brd_entries:
       functional_group: "UID1.4 Quản lý báo cáo (tuân thủ & bất thường)"
       scope_status: in_scope
       scope_reason: null
+      table: compliance_report_data
       related_tables:
         - table: compliance_report_master
           relation: "FK — instance báo cáo tuân thủ"
@@ -359,6 +378,7 @@ brd_entries:
       functional_group: "UID2.1 Khởi tạo và phê duyệt vụ việc"
       scope_status: in_scope
       scope_reason: null
+      table: case_file
       related_tables:
         - table: case_attach_file
           relation: "Bảng con — file đính kèm vụ việc"
@@ -386,6 +406,7 @@ brd_entries:
       functional_group: "UID2.1 Khởi tạo và phê duyệt vụ việc"
       scope_status: in_scope
       scope_reason: null
+      table: case_attach_file
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -403,6 +424,7 @@ brd_entries:
       functional_group: "UID2.1 Khởi tạo và phê duyệt vụ việc"
       scope_status: in_scope
       scope_reason: null
+      table: case_file_workflow
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -420,6 +442,7 @@ brd_entries:
       functional_group: "UID2.1 Khởi tạo và phê duyệt vụ việc"
       scope_status: in_scope
       scope_reason: null
+      table: case_approval_step
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -437,6 +460,7 @@ brd_entries:
       functional_group: "UID2.2 Tiêu chí và tham số phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_attribute_define
       related_tables:
         - table: analysis_attribute_value
           relation: "Bảng con — giá trị tiêu chí theo từng lần chạy"
@@ -454,6 +478,7 @@ brd_entries:
       functional_group: "UID2.2 Tiêu chí và tham số phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_attribute_value
       related_tables:
         - table: analysis_attribute_define
           relation: "FK — định nghĩa tiêu chí"
@@ -473,6 +498,7 @@ brd_entries:
       functional_group: "UID2.3 Thực thi và kết quả phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_execution_log
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -490,6 +516,7 @@ brd_entries:
       functional_group: "UID2.3 Thực thi và kết quả phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_suspicious_account_code
       related_tables:
         - table: analysis_execution_log
           relation: "FK — lần chạy phân tích"
@@ -509,6 +536,7 @@ brd_entries:
       functional_group: "UID2.3 Thực thi và kết quả phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_suspicious_account
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -528,6 +556,7 @@ brd_entries:
       functional_group: "UID2.3 Thực thi và kết quả phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_account_relationship
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -547,6 +576,7 @@ brd_entries:
       functional_group: "UID2.3 Thực thi và kết quả phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_account_group
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -566,6 +596,7 @@ brd_entries:
       functional_group: "UID2.3 Thực thi và kết quả phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_account_group_member
       related_tables:
         - table: analysis_account_group
           relation: "FK — nhóm TK trong kết quả phân tích"
@@ -583,6 +614,7 @@ brd_entries:
       functional_group: "UID2.3 Thực thi và kết quả phân tích"
       scope_status: in_scope
       scope_reason: null
+      table: analysis_report
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -602,6 +634,7 @@ brd_entries:
       functional_group: "UID2.4 Tài khoản nghi vấn (kết luận vụ việc)"
       scope_status: in_scope
       scope_reason: null
+      table: suspicious_account
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -619,6 +652,7 @@ brd_entries:
       functional_group: "UID2.4 Tài khoản nghi vấn (kết luận vụ việc)"
       scope_status: in_scope
       scope_reason: null
+      table: suspicious_account_group
       related_tables:
         - table: case_file
           relation: "FK — vụ việc giám sát"
@@ -636,6 +670,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Pure junction — không có giá trị nghiệp vụ, cấu hình biểu mẫu phân tích"
+      table: analysis_define_report_template
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -653,6 +688,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — quản lý người dùng ứng dụng GSGD"
+      table: system_user
       related_tables:
         - table: user_group_member
           relation: "Bảng con — thành viên nhóm người dùng"
@@ -670,6 +706,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — nhóm người dùng ứng dụng"
+      table: user_group
       related_tables:
         - table: user_group_member
           relation: "Bảng con — thành viên nhóm"
@@ -687,6 +724,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — junction nhóm-người dùng"
+      table: user_group_member
       related_tables:
         - table: user_group
           relation: "FK — nhóm người dùng"
@@ -706,6 +744,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — danh sách quyền hệ thống"
+      table: system_permission
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -721,6 +760,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — UI metadata cấu hình biểu mẫu BM001–BM121"
+      table: report_template
       related_tables:
         - table: report_template_workflow
           relation: "Bảng con — cấu hình biểu mẫu cho quy trình phân tích"
@@ -738,6 +778,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — cấu hình biểu mẫu theo quy trình"
+      table: report_template_workflow
       related_tables:
         - table: report_template
           relation: "FK — mẫu báo cáo"
@@ -755,6 +796,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — tham số cấu hình hệ thống"
+      table: system_config
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -770,6 +812,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — tham số vận hành hệ thống"
+      table: system_parameter
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -785,6 +828,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — audit trail thao tác người dùng"
+      table: audit_log
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -800,6 +844,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — UI metadata cấu hình hiển thị"
+      table: user_table_config
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -817,6 +862,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Reference Data — xử lý thành Classification Value scheme, không tạo Atomic entity"
+      table: category_config
       related_tables:
         - table: category_item
           relation: "Bảng con — item trong danh mục"
@@ -834,6 +880,7 @@ brd_entries:
       functional_group: "UID3 Quản trị phân hệ & tiện ích"
       scope_status: out_of_scope
       scope_reason: "Reference Data — xử lý thành Classification Value, không tạo Atomic entity"
+      table: category_item
       related_tables:
         - table: category_config
           relation: "FK — cấu hình danh mục (scheme)"

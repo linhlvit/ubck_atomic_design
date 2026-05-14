@@ -12,6 +12,7 @@ brd_entries:
       functional_group: "UID-01 Quản lý hồ sơ công ty đại chúng"
       scope_status: in_scope
       scope_reason: null
+      table: company_profiles
       related_tables:
         - table: company_detail
           relation: "1-1 — bổ sung thông tin chi tiết"
@@ -37,6 +38,7 @@ brd_entries:
       functional_group: "UID-01 Quản lý hồ sơ công ty đại chúng"
       scope_status: in_scope
       scope_reason: null
+      table: company_detail
       related_tables:
         - table: company_profiles
           relation: "1-1 (FK cha) — thông tin cơ bản công ty"
@@ -60,6 +62,7 @@ brd_entries:
       functional_group: "UID-01 Quản lý hồ sơ công ty đại chúng"
       scope_status: in_scope
       scope_reason: null
+      table: legal_representative
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -77,6 +80,7 @@ brd_entries:
       functional_group: "UID-01 Quản lý hồ sơ công ty đại chúng"
       scope_status: in_scope
       scope_reason: null
+      table: state_capital
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -94,6 +98,7 @@ brd_entries:
       functional_group: "UID-01 Quản lý hồ sơ công ty đại chúng"
       scope_status: in_scope
       scope_reason: null
+      table: foreign_owner_limit
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -111,6 +116,7 @@ brd_entries:
       functional_group: "UID-01 Quản lý hồ sơ công ty đại chúng"
       scope_status: in_scope
       scope_reason: null
+      table: company_relationship
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng chủ thể"
@@ -129,6 +135,7 @@ brd_entries:
       functional_group: "UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC"
       scope_status: in_scope
       scope_reason: null
+      table: capital_mobilization
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -146,6 +153,7 @@ brd_entries:
       functional_group: "UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC"
       scope_status: in_scope
       scope_reason: null
+      table: company_add_capital
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -163,6 +171,7 @@ brd_entries:
       functional_group: "UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC"
       scope_status: in_scope
       scope_reason: null
+      table: company_securities_issuance
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -180,6 +189,7 @@ brd_entries:
       functional_group: "UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC"
       scope_status: in_scope
       scope_reason: null
+      table: company_tender_offer
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -197,6 +207,7 @@ brd_entries:
       functional_group: "UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC"
       scope_status: in_scope
       scope_reason: null
+      table: company_treasury_stocks
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -215,6 +226,7 @@ brd_entries:
       functional_group: "UID-03 Giám sát và xử phạt CTĐC"
       scope_status: in_scope
       scope_reason: null
+      table: company_inspection
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -232,6 +244,7 @@ brd_entries:
       functional_group: "UID-03 Giám sát và xử phạt CTĐC"
       scope_status: in_scope
       scope_reason: null
+      table: company_penalize
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -250,6 +263,7 @@ brd_entries:
       functional_group: "UID-04 Quản lý cổ đông giao dịch"
       scope_status: in_scope
       scope_reason: null
+      table: stock_holders
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng gắn cổ đông"
@@ -275,6 +289,7 @@ brd_entries:
       functional_group: "UID-04 Quản lý cổ đông giao dịch"
       scope_status: in_scope
       scope_reason: null
+      table: account_numbers
       related_tables:
         - table: stock_holders
           relation: "FK cha — cổ đông giao dịch"
@@ -292,6 +307,7 @@ brd_entries:
       functional_group: "UID-04 Quản lý cổ đông giao dịch"
       scope_status: in_scope
       scope_reason: null
+      table: identity
       related_tables:
         - table: stock_holders
           relation: "FK cha — cổ đông giao dịch"
@@ -309,6 +325,7 @@ brd_entries:
       functional_group: "UID-04 Quản lý cổ đông giao dịch"
       scope_status: in_scope
       scope_reason: null
+      table: holder_relationship
       related_tables:
         - table: stock_holders
           relation: "FK cha — cổ đông giao dịch chính"
@@ -326,6 +343,7 @@ brd_entries:
       functional_group: "UID-04 Quản lý cổ đông giao dịch"
       scope_status: in_scope
       scope_reason: null
+      table: stock_controls
       related_tables:
         - table: stock_holders
           relation: "FK cha — cổ đông giao dịch"
@@ -343,6 +361,7 @@ brd_entries:
       functional_group: "UID-04 Quản lý cổ đông giao dịch"
       scope_status: out_of_scope
       scope_reason: "Chờ thiết kế — bảng chức vụ cổ đông không có trong HLD hiện tại"
+      table: positions
       related_tables:
         - table: stock_holders
           relation: "FK cha — cổ đông giao dịch"
@@ -361,6 +380,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: in_scope
       scope_reason: null
+      table: forms
       related_tables:
         - table: forms
           relation: "Self-ref (parent_form_id) — cấu trúc form cha-con"
@@ -382,6 +402,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: out_of_scope
       scope_reason: "Field definition metadata — denormalized vào data_values khi anchor khôi phục"
+      table: fields
       related_tables:
         - table: forms
           relation: "FK cha — form chứa field"
@@ -399,6 +420,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: out_of_scope
       scope_reason: "Field definition metadata — denormalized vào data_values"
+      table: form_fields
       related_tables:
         - table: forms
           relation: "FK cha — form"
@@ -418,6 +440,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: in_scope
       scope_reason: null
+      table: company_data
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -445,6 +468,7 @@ brd_entries:
       functional_group: "UID-05/06 Công bố thông tin và báo cáo tài chính"
       scope_status: in_scope
       scope_reason: null
+      table: data
       related_tables:
         - table: company_data
           relation: "FK cha — lần nộp báo cáo"
@@ -466,6 +490,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: out_of_scope
       scope_reason: "Field-level data động — cần map cả field_id + form_field_id, chưa có Gold requirement"
+      table: data_values
       related_tables:
         - table: company_data
           relation: "FK cha — lần nộp báo cáo"
@@ -483,6 +508,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: out_of_scope
       scope_reason: "Quy trình nội bộ hệ thống"
+      table: report_approval
       related_tables:
         - table: company_data
           relation: "FK cha — lần nộp báo cáo"
@@ -500,6 +526,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: out_of_scope
       scope_reason: "Quy trình nội bộ hệ thống"
+      table: report_extensions
       related_tables:
         - table: company_data
           relation: "FK cha — lần nộp báo cáo"
@@ -517,6 +544,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: in_scope
       scope_reason: null
+      table: notifications
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -532,6 +560,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: in_scope
       scope_reason: null
+      table: noti_config
       related_tables:
         - table: noti_config_apply
           relation: "1-N — áp dụng cấu hình cho công ty (out of scope)"
@@ -550,6 +579,7 @@ brd_entries:
       functional_group: "UID-06 Báo cáo tài chính và báo cáo định kỳ"
       scope_status: in_scope
       scope_reason: null
+      table: report_catalog
       related_tables:
         - table: rrow
           relation: "1-N — hàng báo cáo tài chính"
@@ -569,6 +599,7 @@ brd_entries:
       functional_group: "UID-06 Báo cáo tài chính và báo cáo định kỳ"
       scope_status: in_scope
       scope_reason: null
+      table: rrow
       related_tables:
         - table: report_catalog
           relation: "FK cha — danh mục báo cáo tài chính"
@@ -586,6 +617,7 @@ brd_entries:
       functional_group: "UID-06 Báo cáo tài chính và báo cáo định kỳ"
       scope_status: in_scope
       scope_reason: null
+      table: rcol
       related_tables:
         - table: report_catalog
           relation: "FK cha — danh mục báo cáo tài chính"
@@ -603,6 +635,7 @@ brd_entries:
       functional_group: "UID-06 Báo cáo tài chính và báo cáo định kỳ"
       scope_status: in_scope
       scope_reason: null
+      table: rep_forms
       related_tables:
         - table: rep_row
           relation: "1-N — hàng báo cáo định kỳ"
@@ -622,6 +655,7 @@ brd_entries:
       functional_group: "UID-06 Báo cáo tài chính và báo cáo định kỳ"
       scope_status: in_scope
       scope_reason: null
+      table: rep_row
       related_tables:
         - table: rep_forms
           relation: "FK cha — template báo cáo định kỳ"
@@ -639,6 +673,7 @@ brd_entries:
       functional_group: "UID-06 Báo cáo tài chính và báo cáo định kỳ"
       scope_status: in_scope
       scope_reason: null
+      table: rep_column
       related_tables:
         - table: rep_forms
           relation: "FK cha — template báo cáo định kỳ"
@@ -657,6 +692,7 @@ brd_entries:
       functional_group: "UID-07 Quản lý công ty kiểm toán"
       scope_status: in_scope
       scope_reason: null
+      table: af_profiles
       related_tables:
         - table: af_legal_representative
           relation: "1-N — người đại diện pháp luật công ty KT"
@@ -676,6 +712,7 @@ brd_entries:
       functional_group: "UID-07 Quản lý công ty kiểm toán"
       scope_status: in_scope
       scope_reason: null
+      table: af_legal_representative
       related_tables:
         - table: af_profiles
           relation: "FK cha — công ty kiểm toán"
@@ -693,6 +730,7 @@ brd_entries:
       functional_group: "UID-07 Quản lý công ty kiểm toán"
       scope_status: in_scope
       scope_reason: null
+      table: af_approval
       related_tables:
         - table: af_profiles
           relation: "FK cha — công ty kiểm toán"
@@ -716,6 +754,7 @@ brd_entries:
       functional_group: "UID-07 Quản lý công ty kiểm toán"
       scope_status: in_scope
       scope_reason: null
+      table: af_auditor_approval
       related_tables:
         - table: af_profiles
           relation: "FK cha — công ty kiểm toán"
@@ -737,6 +776,7 @@ brd_entries:
       functional_group: "UID-07 Quản lý công ty kiểm toán"
       scope_status: in_scope
       scope_reason: null
+      table: af_warning
       related_tables:
         - table: af_approval
           relation: "FK cha (nullable) — chấp thuận công ty KT (khi target = công ty)"
@@ -756,6 +796,7 @@ brd_entries:
       functional_group: "UID-07 Quản lý công ty kiểm toán"
       scope_status: in_scope
       scope_reason: null
+      table: af_sanctions
       related_tables:
         - table: af_approval
           relation: "FK cha (nullable) — chấp thuận công ty KT (khi target = công ty)"
@@ -776,6 +817,7 @@ brd_entries:
       functional_group: "UID-08 Lịch sử thay đổi (SCD2 kỹ thuật)"
       scope_status: out_of_scope
       scope_reason: "Bảng lịch sử kỹ thuật — SCD2 Atomic tự track"
+      table: company_profiles_his
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -793,6 +835,7 @@ brd_entries:
       functional_group: "UID-08 Lịch sử thay đổi (SCD2 kỹ thuật)"
       scope_status: out_of_scope
       scope_reason: "Bảng lịch sử kỹ thuật — SCD2 Atomic tự track"
+      table: company_detail_his
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -810,6 +853,7 @@ brd_entries:
       functional_group: "UID-08 Lịch sử thay đổi (SCD2 kỹ thuật)"
       scope_status: out_of_scope
       scope_reason: "Bảng lịch sử kỹ thuật — SCD2 Atomic tự track"
+      table: company_change_role_his
       related_tables:
         - table: company_profiles
           relation: "FK cha — công ty đại chúng"
@@ -827,6 +871,7 @@ brd_entries:
       functional_group: "UID-08 Lịch sử thay đổi (SCD2 kỹ thuật)"
       scope_status: out_of_scope
       scope_reason: "Bảng lịch sử kỹ thuật — SCD2 Atomic tự track"
+      table: stockholder_history
       related_tables:
         - table: stock_holders
           relation: "FK cha — cổ đông giao dịch"
@@ -845,6 +890,7 @@ brd_entries:
       functional_group: "UID-09 Quản trị hệ thống và danh mục dùng chung"
       scope_status: out_of_scope
       scope_reason: "Bảng hệ thống — không có giá trị nghiệp vụ Atomic"
+      table: logins
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -860,6 +906,7 @@ brd_entries:
       functional_group: "UID-09 Quản trị hệ thống và danh mục dùng chung"
       scope_status: out_of_scope
       scope_reason: "Operational log — out-of-scope"
+      table: user_audit_log
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -875,6 +922,7 @@ brd_entries:
       functional_group: "UID-09 Quản trị hệ thống và danh mục dùng chung"
       scope_status: out_of_scope
       scope_reason: "Reference data — map vào shared Geographic Area (COUNTRY)"
+      table: countries
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -890,6 +938,7 @@ brd_entries:
       functional_group: "UID-09 Quản trị hệ thống và danh mục dùng chung"
       scope_status: out_of_scope
       scope_reason: "Reference data — map vào shared Geographic Area (PROVINCE)"
+      table: provinces
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -905,6 +954,7 @@ brd_entries:
       functional_group: "UID-09 Quản trị hệ thống và danh mục dùng chung"
       scope_status: in_scope
       scope_reason: null
+      table: lookup_values
       related_tables: null
       notes: "LOV trung tâm — 30 Classification Value schemes"
       data_volume_hint: null
@@ -920,6 +970,7 @@ brd_entries:
       functional_group: "UID-09 Quản trị hệ thống và danh mục dùng chung"
       scope_status: in_scope
       scope_reason: null
+      table: categories
       related_tables:
         - table: categories
           relation: "Self-ref (parent_id) — phân cấp ngành nghề 2 cấp"
@@ -937,6 +988,7 @@ brd_entries:
       functional_group: "UID-05 Công bố thông tin và thông báo"
       scope_status: out_of_scope
       scope_reason: "Pure junction table — không có business attribute"
+      table: report_catalog_extra
       related_tables:
         - table: noti_config
           relation: "FK cha — cấu hình thông báo"

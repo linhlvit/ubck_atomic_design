@@ -12,6 +12,7 @@ brd_entries:
       functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
       scope_status: in_scope
       scope_reason: null
+      table: risk_indicator_category
       related_tables:
         - table: risk_indicator
           relation: "1-N — master chỉ tiêu thuộc nhóm"
@@ -29,6 +30,7 @@ brd_entries:
       functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
       scope_status: in_scope
       scope_reason: null
+      table: risk_indicator
       related_tables:
         - table: risk_indicator_category
           relation: "FK cha — nhóm chỉ tiêu"
@@ -54,6 +56,7 @@ brd_entries:
       functional_group: "QLRR003/004 Khai thác Chỉ tiêu tài chính"
       scope_status: in_scope
       scope_reason: null
+      table: risk_indicator_custom
       related_tables:
         - table: risk_indicator
           relation: "Gộp chung entity với risk_indicator — phân biệt qua CV RISK_INDICATOR_TYPE=2"
@@ -71,6 +74,7 @@ brd_entries:
       functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
       scope_status: in_scope
       scope_reason: null
+      table: risk_indicator_value
       related_tables:
         - table: risk_indicator
           relation: "FK cha — master chỉ tiêu"
@@ -88,6 +92,7 @@ brd_entries:
       functional_group: "QLRR001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính"
       scope_status: in_scope
       scope_reason: null
+      table: risk_indicator_value_history
       related_tables:
         - table: risk_indicator
           relation: "FK cha — master chỉ tiêu"
@@ -105,6 +110,7 @@ brd_entries:
       functional_group: "QLRR007 Quản lý tích hợp"
       scope_status: in_scope
       scope_reason: null
+      table: risk_indicator_schedule
       related_tables:
         - table: risk_indicator
           relation: "1-1 FK cha — chỉ tiêu cần đồng bộ"
@@ -123,6 +129,7 @@ brd_entries:
       functional_group: "QLRR002 Khai thác Báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_report_type
       related_tables:
         - table: risk_report_placeholder_config
           relation: "1-N — cấu hình placeholder (out of scope)"
@@ -142,6 +149,7 @@ brd_entries:
       functional_group: "QLRR002 Khai thác Báo cáo"
       scope_status: out_of_scope
       scope_reason: "Config kỹ thuật — operational/system data"
+      table: risk_report_placeholder_config
       related_tables:
         - table: risk_report_type
           relation: "FK cha — loại báo cáo"
@@ -159,6 +167,7 @@ brd_entries:
       functional_group: "QLRR002 Khai thác Báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_report_upload_batch
       related_tables:
         - table: risk_report_type
           relation: "FK cha — loại báo cáo"
@@ -178,6 +187,7 @@ brd_entries:
       functional_group: "QLRR002 Khai thác Báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_report_file
       related_tables:
         - table: risk_report_upload_batch
           relation: "FK cha — lượt upload"
@@ -196,6 +206,7 @@ brd_entries:
       functional_group: "QLRR005 Quản lý Cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_alert_config
       related_tables:
         - table: risk_indicator
           relation: "FK — chỉ tiêu hệ thống được giám sát"
@@ -215,6 +226,7 @@ brd_entries:
       functional_group: "QLRR005 Quản lý Cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_alert
       related_tables:
         - table: risk_alert_config
           relation: "FK cha — cấu hình cảnh báo gốc"
@@ -240,6 +252,7 @@ brd_entries:
       functional_group: "QLRR005 Quản lý Cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_alert_resolution
       related_tables:
         - table: risk_alert
           relation: "FK cha — cảnh báo được xử lý"
@@ -259,6 +272,7 @@ brd_entries:
       functional_group: "QLRR005 Quản lý Cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_alert_resolution_file
       related_tables:
         - table: risk_alert_resolution
           relation: "FK cha — bản ghi xử lý cảnh báo"
@@ -276,6 +290,7 @@ brd_entries:
       functional_group: "QLRR005 Quản lý Cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_alert_history
       related_tables:
         - table: risk_alert
           relation: "FK cha — cảnh báo"
@@ -295,6 +310,7 @@ brd_entries:
       functional_group: "QLRR005 Quản lý Cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: risk_notification
       related_tables:
         - table: risk_alert
           relation: "FK cha — cảnh báo nguồn phát thông báo"
@@ -313,6 +329,7 @@ brd_entries:
       functional_group: "QLRR006 Khai thác Phân quyền dữ liệu"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — phân quyền tầng ứng dụng"
+      table: permission_group
       related_tables:
         - table: permission_group_user
           relation: "1-N — gán user vào nhóm"
@@ -332,6 +349,7 @@ brd_entries:
       functional_group: "QLRR006 Khai thác Phân quyền dữ liệu"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — phân quyền tầng ứng dụng"
+      table: permission_group_user
       related_tables:
         - table: permission_group
           relation: "FK cha — nhóm quyền"
@@ -349,6 +367,7 @@ brd_entries:
       functional_group: "QLRR006 Khai thác Phân quyền dữ liệu"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — phân quyền tầng ứng dụng"
+      table: permission_group_indicator
       related_tables:
         - table: permission_group
           relation: "FK cha — nhóm quyền"

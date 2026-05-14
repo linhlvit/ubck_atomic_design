@@ -12,6 +12,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "System audit log"
+      table: ActionLogs
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -27,6 +28,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Config data"
+      table: SystemParameters
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -42,6 +44,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/PKI data"
+      table: DigitalCertificates
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -57,6 +60,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/PKI data"
+      table: DigitalCertificateUsers
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -72,6 +76,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data"
+      table: PermissionRoles
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -87,6 +92,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data"
+      table: DepartmentAccess
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -103,6 +109,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: in_scope
       scope_reason: null
+      table: Users
       related_tables:
         - table: Units
           relation: "FK — đơn vị UBCKNN"
@@ -124,6 +131,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: in_scope
       scope_reason: null
+      table: Units
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -139,6 +147,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: in_scope
       scope_reason: null
+      table: Departments
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -154,6 +163,7 @@ brd_entries:
       functional_group: "UID01 Quản trị phân hệ"
       scope_status: in_scope
       scope_reason: null
+      table: Positions
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -170,6 +180,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: Certificates
       related_tables:
         - table: CertificateDocuments
           relation: "1-N — cấu hình tài liệu theo loại CC (out of scope)"
@@ -193,6 +204,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Application config"
+      table: CertificateDocuments
       related_tables:
         - table: Certificates
           relation: "FK cha — loại chứng chỉ"
@@ -210,6 +222,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Application config"
+      table: CertificateSpecializations
       related_tables:
         - table: Certificates
           relation: "FK cha — loại chứng chỉ"
@@ -227,6 +240,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Application config"
+      table: CertificateDepartments
       related_tables:
         - table: Certificates
           relation: "FK cha — loại chứng chỉ"
@@ -244,6 +258,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Config/template data"
+      table: CertificateNumberTemplates
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -259,6 +274,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: Specializations
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -274,6 +290,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: Documents
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -289,6 +306,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: EducationLevels
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -304,6 +322,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: Organizations
       related_tables:
         - table: Organizations
           relation: "Self-ref (ParentId) — cấu trúc cây tổ chức"
@@ -321,6 +340,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: Decisions
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -336,6 +356,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: ApplicationSources
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -351,6 +372,7 @@ brd_entries:
       functional_group: "UID02 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: ApplicationStatuses
       related_tables: null
       notes: null
       data_volume_hint: null
@@ -367,6 +389,7 @@ brd_entries:
       functional_group: "UID03 Quản lý hồ sơ"
       scope_status: in_scope
       scope_reason: null
+      table: Applications
       related_tables:
         - table: ApplicationSpecializations
           relation: "1-N — chứng chỉ chuyên môn đính kèm"
@@ -392,6 +415,7 @@ brd_entries:
       functional_group: "UID03 Quản lý hồ sơ"
       scope_status: in_scope
       scope_reason: null
+      table: ApplicationDocuments
       related_tables:
         - table: Applications
           relation: "FK cha — hồ sơ đăng ký"
@@ -409,6 +433,7 @@ brd_entries:
       functional_group: "UID03 Quản lý hồ sơ"
       scope_status: in_scope
       scope_reason: null
+      table: ApplicationFees
       related_tables:
         - table: Applications
           relation: "FK cha — hồ sơ đăng ký"
@@ -426,6 +451,7 @@ brd_entries:
       functional_group: "UID03 Quản lý hồ sơ"
       scope_status: in_scope
       scope_reason: null
+      table: ApplicationSpecializations
       related_tables:
         - table: Applications
           relation: "FK cha — hồ sơ đăng ký"
@@ -443,6 +469,7 @@ brd_entries:
       functional_group: "UID03 Quản lý hồ sơ"
       scope_status: in_scope
       scope_reason: null
+      table: VerifyApplicationStatuses
       related_tables:
         - table: Applications
           relation: "FK cha — hồ sơ đăng ký"
@@ -460,6 +487,7 @@ brd_entries:
       functional_group: "UID03 Quản lý hồ sơ"
       scope_status: in_scope
       scope_reason: null
+      table: IdentityInfoC06s
       related_tables:
         - table: Applications
           relation: "FK cha (nullable) — hồ sơ đăng ký"
@@ -480,6 +508,7 @@ brd_entries:
       functional_group: "UID04 Quản lý thi sát hạch"
       scope_status: in_scope
       scope_reason: null
+      table: ExamSessions
       related_tables:
         - table: ExamDetails
           relation: "1-N — kết quả từng thí sinh"
@@ -499,6 +528,7 @@ brd_entries:
       functional_group: "UID04 Quản lý thi sát hạch"
       scope_status: in_scope
       scope_reason: null
+      table: ExamDetails
       related_tables:
         - table: ExamSessions
           relation: "FK cha — đợt thi sát hạch"
@@ -520,6 +550,7 @@ brd_entries:
       functional_group: "UID04 Quản lý thi sát hạch"
       scope_status: in_scope
       scope_reason: null
+      table: ExamSessionFees
       related_tables:
         - table: ExamSessions
           relation: "FK cha — đợt thi sát hạch"
@@ -537,6 +568,7 @@ brd_entries:
       functional_group: "UID04/UID10 Quản lý thi sát hạch và đào tạo tập huấn"
       scope_status: in_scope
       scope_reason: null
+      table: SpecializationCourses
       related_tables:
         - table: SpecializationCourseDetails
           relation: "1-N — kết quả từng học viên"
@@ -554,6 +586,7 @@ brd_entries:
       functional_group: "UID04/UID10 Quản lý thi sát hạch và đào tạo tập huấn"
       scope_status: in_scope
       scope_reason: null
+      table: SpecializationCourseDetails
       related_tables:
         - table: SpecializationCourses
           relation: "FK cha — khóa học chuyên môn"
@@ -574,6 +607,7 @@ brd_entries:
       functional_group: "UID05 Quản lý chứng chỉ hành nghề"
       scope_status: in_scope
       scope_reason: null
+      table: CertificateRecordGroups
       related_tables:
         - table: CertificateRecordGroupMembers
           relation: "1-N — thành viên trong nhóm"
@@ -593,6 +627,7 @@ brd_entries:
       functional_group: "UID05 Quản lý chứng chỉ hành nghề"
       scope_status: in_scope
       scope_reason: null
+      table: CertificateRecordGroupMembers
       related_tables:
         - table: CertificateRecordGroups
           relation: "FK cha — nhóm chứng chỉ"
@@ -614,6 +649,7 @@ brd_entries:
       functional_group: "UID05 Quản lý chứng chỉ hành nghề"
       scope_status: in_scope
       scope_reason: null
+      table: CertificateRecords
       related_tables:
         - table: Professionals
           relation: "FK — người hành nghề"
@@ -637,6 +673,7 @@ brd_entries:
       functional_group: "UID05 Quản lý chứng chỉ hành nghề"
       scope_status: in_scope
       scope_reason: null
+      table: CertificateRecordStatusHistories
       related_tables:
         - table: CertificateRecords
           relation: "FK cha — chứng chỉ hành nghề"
@@ -654,6 +691,7 @@ brd_entries:
       functional_group: "UID05 Quản lý chứng chỉ hành nghề"
       scope_status: in_scope
       scope_reason: null
+      table: CertificateRecordLogs
       related_tables:
         - table: CertificateRecords
           relation: "FK cha — chứng chỉ hành nghề"
@@ -672,6 +710,7 @@ brd_entries:
       functional_group: "UID06 Quản lý người hành nghề chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: Professionals
       related_tables:
         - table: ProfessionalHistories
           relation: "1-N — lịch sử thay đổi định danh"
@@ -693,6 +732,7 @@ brd_entries:
       functional_group: "UID06 Quản lý người hành nghề chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: ProfessionalHistories
       related_tables:
         - table: Professionals
           relation: "FK cha — người hành nghề"
@@ -710,6 +750,7 @@ brd_entries:
       functional_group: "UID06 Quản lý người hành nghề chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: ProfessionalRelationships
       related_tables:
         - table: Professionals
           relation: "FK cha — người hành nghề"
@@ -727,6 +768,7 @@ brd_entries:
       functional_group: "UID06 Quản lý người hành nghề chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: ProfessionalWorkHistories
       related_tables:
         - table: Professionals
           relation: "FK cha — người hành nghề"
@@ -746,6 +788,7 @@ brd_entries:
       functional_group: "UID06 Quản lý người hành nghề chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: Violations
       related_tables:
         - table: Professionals
           relation: "FK — người vi phạm"
@@ -765,6 +808,7 @@ brd_entries:
       functional_group: "UID06 Quản lý người hành nghề chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: OrganizationReports
       related_tables:
         - table: Professionals
           relation: "FK — người hành nghề được báo cáo"

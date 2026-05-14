@@ -12,6 +12,7 @@ brd_entries:
       functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
       scope_status: in_scope
       scope_reason: null
+      table: MarketInfor
       related_tables:
         - table: IDXInfor
           relation: "Tham chiếu — chi tiết chỉ số thị trường"
@@ -29,6 +30,7 @@ brd_entries:
       functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
       scope_status: in_scope
       scope_reason: null
+      table: IDXInfor
       related_tables:
         - table: CSIDXInfor
           relation: "1-N — thành phần rổ chỉ số"
@@ -46,6 +48,7 @@ brd_entries:
       functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
       scope_status: in_scope
       scope_reason: null
+      table: CSIDXInfor
       related_tables:
         - table: IDXInfor
           relation: "FK — chỉ số cha của constituent"
@@ -66,6 +69,7 @@ brd_entries:
       functional_group: "UID-02 Bảng giá chứng khoán và khớp lệnh"
       scope_status: in_scope
       scope_reason: null
+      table: StockInfor
       related_tables:
         - table: TransLog
           relation: "1-N — log khớp lệnh tick-by-tick"
@@ -85,6 +89,7 @@ brd_entries:
       functional_group: "UID-02 Bảng giá chứng khoán và khớp lệnh"
       scope_status: in_scope
       scope_reason: null
+      table: TransLog
       related_tables:
         - table: StockInfor
           relation: "FK cha — mã chứng khoán được khớp lệnh"
@@ -103,6 +108,7 @@ brd_entries:
       functional_group: "UID-03 Trái phiếu doanh nghiệp"
       scope_status: in_scope
       scope_reason: null
+      table: CorpBondInfor
       related_tables:
         - table: CorpBondMatch
           relation: "1-N — log khớp lệnh tick-by-tick TPDN"
@@ -120,6 +126,7 @@ brd_entries:
       functional_group: "UID-03 Trái phiếu doanh nghiệp"
       scope_status: in_scope
       scope_reason: null
+      table: CorpBondMatch
       related_tables:
         - table: CorpBondInfor
           relation: "FK cha — mã trái phiếu doanh nghiệp"

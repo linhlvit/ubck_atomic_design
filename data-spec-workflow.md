@@ -95,14 +95,15 @@ brd_entries:
       functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
       scope_status: in_scope
       scope_reason: null   # null nếu in_scope; ghi lý do nếu out_of_scope
+      table: TT_KE_HOACH   # tên bảng nguồn — extract từ brd_id
       related_tables:
         - table: TT_KE_HOACH_DOI_TUONG
           relation: "1-N — đối tượng thanh tra trong kế hoạch"
         - table: TT_QUYET_DINH
           relation: "1-N — quyết định phát sinh từ kế hoạch"
       notes: null
-      data_volume_hint: null   # static | small | medium | large | very_large
-      refresh_frequency: null  # real_time | hourly | daily | weekly | monthly | ad_hoc | static
+      data_volume_hint: null   # freetext — VD: "~50K rows, tăng daily"
+      refresh_frequency: null  # real_time | hourly | daily | weekly | monthly | yearly | ad_hoc | static
 ```
 
 **Quy tắc:**
@@ -110,6 +111,7 @@ brd_entries:
 - `scope_status: in_scope` → bảng sẽ thiết kế trên Atomic layer
 - `scope_status: out_of_scope` → ghi rõ lý do (VD: audit log, SCD2 kỹ thuật, config, Gold only)
 - `related_tables` = danh sách bảng có FK, 1-N, hay shared entities
+- `content.table` = tên bảng nguồn; phải khớp với segment cuối của `brd_id`
 
 ### 1.4 Validation & Tooling
 
@@ -134,6 +136,20 @@ for file in BRD/Source/brd_*.yaml; do
   ajv validate -s schemas/brd_source.schema.json -d "$file" && echo "OK $file" || echo "FAIL $file"
 done
 ```
+
+**Summary CSV** — tổng hợp tất cả BRD entries thành 1 file CSV:
+
+```bash
+# Sinh BRD/Source/_summary.csv (541 rows, 1 row = 1 brd_entry)
+python scripts/generate_brd_summary.py
+
+# Xem counts per source mà không ghi file
+python scripts/generate_brd_summary.py --check
+```
+
+**Output:** `BRD/Source/_summary.csv` — columns: `source`, `brd_id`, `table`, `functional_group`, `scope_status`, `scope_reason`, `table_meaning`, `notes`, `ba_email`, `steward_email`
+
+> Chạy lại sau mỗi khi thêm hoặc sửa brd_entry.
 
 ### 1.5 Từ BRD → Jira Task
 
@@ -226,11 +242,14 @@ ldm:
   # Định danh: ATM-{physical_name}-{SOURCE}.{SRC_TABLE}
   id: ATM-dscl_ahr-FIMS.AUTHOANNOUNCE
 
-  # Tên đầy đủ
-  logical_name: "Atomic - Disclosure Authorization – source FIMS.AUTHOANNOUNCE"
+  # Tên thực thể (không bao gồm layer hay source)
+  logical_name: "Disclosure Authorization"
 
   # Tên bảng Delta Lake (snake_case)
   physical_name: dscl_ahr
+
+  # Layer kiến trúc Medallion — luôn là Atomic
+  layer: Atomic
 
   version: "1.0"
 
@@ -333,6 +352,20 @@ python DataModel/generate_dm_yaml.py
 **Output:** `DataModel/Atomic/{BCV_Folder}/dm_atm_*.yaml` (1 file per table × source combo)
 
 > Sau khi chỉnh sửa attribute trong CSV, chạy lại script để sync YAML. File đã chỉnh tay sẽ bị **overwrite** — lưu ý chỉ sửa CSV làm nguồn gốc.
+
+**Summary CSV** — tổng hợp tất cả DM YAML đã thiết kế thành 1 file CSV:
+
+```bash
+# Sinh DataModel/Atomic/_summary.csv (329 rows, 1 row = 1 DM YAML)
+python scripts/generate_dm_summary.py
+
+# Xem counts per subfolder mà không ghi file
+python scripts/generate_dm_summary.py --check
+```
+
+**Output:** `DataModel/Atomic/_summary.csv` — columns: `subfolder`, `file_name`, `id`, `physical_name`, `logical_name`, `bcv_core_object`, `bcv_concept`, `table_type`, `etl_pattern`, `source`, `status`, `attribute_count`, `brd_ref`
+
+> Chạy lại sau mỗi task thiết kế để summary phản ánh trạng thái mới nhất.
 
 ### 2.7 Schema Validation
 
@@ -1113,3 +1146,5 @@ Khi mở rộng (ETL spec, mapping, ...):
 - **PDF:** `data-spec-workflow DETAIL.pdf` — Full workflow specification
 - **`spec-registry/registry.csv`** — Spec Registry: trạng thái tiến độ toàn dự án
 - **`scripts/sync_registry.py`** — Script sync YAML → registry.csv
+- **`scripts/generate_dm_summary.py`** — Sinh DataModel/Atomic/_summary.csv từ tất cả DM YAML
+- **`scripts/generate_brd_summary.py`** — Sinh BRD/Source/_summary.csv từ tất cả BRD YAML
