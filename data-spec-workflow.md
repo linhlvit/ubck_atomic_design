@@ -95,14 +95,15 @@ brd_entries:
       functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
       scope_status: in_scope
       scope_reason: null   # null nếu in_scope; ghi lý do nếu out_of_scope
+      table: TT_KE_HOACH   # tên bảng nguồn — extract từ brd_id
       related_tables:
         - table: TT_KE_HOACH_DOI_TUONG
           relation: "1-N — đối tượng thanh tra trong kế hoạch"
         - table: TT_QUYET_DINH
           relation: "1-N — quyết định phát sinh từ kế hoạch"
       notes: null
-      data_volume_hint: null   # static | small | medium | large | very_large
-      refresh_frequency: null  # real_time | hourly | daily | weekly | monthly | ad_hoc | static
+      data_volume_hint: null   # freetext — VD: "~50K rows, tăng daily"
+      refresh_frequency: null  # real_time | hourly | daily | weekly | monthly | yearly | ad_hoc | static
 ```
 
 **Quy tắc:**
@@ -110,6 +111,7 @@ brd_entries:
 - `scope_status: in_scope` → bảng sẽ thiết kế trên Atomic layer
 - `scope_status: out_of_scope` → ghi rõ lý do (VD: audit log, SCD2 kỹ thuật, config, Gold only)
 - `related_tables` = danh sách bảng có FK, 1-N, hay shared entities
+- `content.table` = tên bảng nguồn; phải khớp với segment cuối của `brd_id`
 
 ### 1.4 Validation & Tooling
 
@@ -134,6 +136,20 @@ for file in BRD/Source/brd_*.yaml; do
   ajv validate -s schemas/brd_source.schema.json -d "$file" && echo "OK $file" || echo "FAIL $file"
 done
 ```
+
+**Summary CSV** — tổng hợp tất cả BRD entries thành 1 file CSV:
+
+```bash
+# Sinh BRD/Source/_summary.csv (541 rows, 1 row = 1 brd_entry)
+python scripts/generate_brd_summary.py
+
+# Xem counts per source mà không ghi file
+python scripts/generate_brd_summary.py --check
+```
+
+**Output:** `BRD/Source/_summary.csv` — columns: `source`, `brd_id`, `table`, `functional_group`, `scope_status`, `scope_reason`, `table_meaning`, `notes`, `ba_email`, `steward_email`
+
+> Chạy lại sau mỗi khi thêm hoặc sửa brd_entry.
 
 ### 1.5 Từ BRD → Jira Task
 
@@ -226,11 +242,14 @@ ldm:
   # Định danh: ATM-{physical_name}-{SOURCE}.{SRC_TABLE}
   id: ATM-dscl_ahr-FIMS.AUTHOANNOUNCE
 
-  # Tên đầy đủ
-  logical_name: "Atomic - Disclosure Authorization – source FIMS.AUTHOANNOUNCE"
+  # Tên thực thể (không bao gồm layer hay source)
+  logical_name: "Disclosure Authorization"
 
   # Tên bảng Delta Lake (snake_case)
   physical_name: dscl_ahr
+
+  # Layer kiến trúc Medallion — luôn là Atomic
+  layer: Atomic
 
   version: "1.0"
 
@@ -334,6 +353,20 @@ python DataModel/generate_dm_yaml.py
 
 > Sau khi chỉnh sửa attribute trong CSV, chạy lại script để sync YAML. File đã chỉnh tay sẽ bị **overwrite** — lưu ý chỉ sửa CSV làm nguồn gốc.
 
+**Summary CSV** — tổng hợp tất cả DM YAML đã thiết kế thành 1 file CSV:
+
+```bash
+# Sinh DataModel/Atomic/_summary.csv (329 rows, 1 row = 1 DM YAML)
+python scripts/generate_dm_summary.py
+
+# Xem counts per subfolder mà không ghi file
+python scripts/generate_dm_summary.py --check
+```
+
+**Output:** `DataModel/Atomic/_summary.csv` — columns: `subfolder`, `file_name`, `id`, `physical_name`, `logical_name`, `bcv_core_object`, `bcv_concept`, `table_type`, `etl_pattern`, `source`, `status`, `attribute_count`, `brd_ref`
+
+> Chạy lại sau mỗi task thiết kế để summary phản ánh trạng thái mới nhất.
+
 ### 2.7 Schema Validation
 
 **VS Code** (realtime, `.vscode/settings.json`):
@@ -435,12 +468,12 @@ mapping_atm_{physical_name}-{SOURCE}.{SRC_TABLE}.yaml
 - `mapping_atm_fnd_mgt_co-FIMS.FUNDCOMPANY.yaml` — regular pattern
 - `mapping_atm_ip_alt_identn-FIMS.BANKMONI.yaml` — unpivot pattern (1 file per source table)
 
-### 3.4 Cấu trúc CSV — 5 Section
+### 3.4 Cấu trúc YAML — 5 Section
 
-Mỗi file mapping CSV có cấu trúc 5 section cố định, phân cách bằng dòng banner:
+Mỗi file mapping YAML có cấu trúc 5 section cố định:
 
 ```
-Target     → Thông tin bảng đích (schema, table, ETL handle, description)
+Target     → Thông tin bảng đích (schema, table, etl_handle, description)
 Input      → Danh sách bảng/CTE nguồn (physical_table, derived_cte, unpivot_cte)
 Relationship → JOIN giữa các bảng/CTE nguồn
 Mapping    → Map từng cột nguồn → cột đích (transformation, data type)
@@ -591,14 +624,13 @@ mapping:
   logical_name: "Mapping Atomic - Fund Management Company – source FIMS.FUNDCOMPANY"
   physical_name: fnd_mgt_co
   pattern: regular            # regular | unpivot | direct
-  etl_pattern: SCD4A
   dm_ref: ATM-fnd_mgt_co-FIMS.FUNDCOMPANY
   brd_ref: BRD-SRC-FIMS-FUNDCOMPANY
 
 target:
   schema: atomic              # luôn là 'atomic'
   physical_name: fnd_mgt_co  # tên bảng đích (snake_case) — dùng cho ETL job generation
-  etl_handle: SCD4A
+  etl_handle: SCD4A           # ETL pattern (SCD4A | SCD2 | Fact Append | Upsert)
   description: "Công ty quản lý quỹ..."
 
 input:
@@ -641,15 +673,24 @@ final_filter: []                # để [] nếu không có WHERE/UNION ALL
 **Pattern `unpivot`** (1 source, nhiều legs UNION ALL từ cùng bảng):
 
 ```yaml
+schema_type: mapping
+schema_version: "1.0"
+
 transformation_rules_ref: Mapping/rules/transformation_rules.yaml
 
 mapping:
+  id: MAP-ATM-ip_alt_identn-FIMS.BANKMONI
+  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.BANKMONI"
+  physical_name: ip_alt_identn
   pattern: unpivot
   dm_ref: ATM-ip_alt_identn-FIMS.BANKMONI
+  brd_ref: BRD-SRC-FIMS-BANKMONI
 
 target:
   schema: atomic
   physical_name: ip_alt_identn  # snake_case physical name
+  etl_handle: SCD4A             # ETL pattern
+  description: "Giấy tờ định danh thay thế cho các đối tượng tham gia"
 
 input:
   - source_type: physical_table
@@ -710,11 +751,25 @@ final_filter:
 
 | Pattern | Dùng khi | `mapping_columns` hay `mapping_legs` | `final_filter` |
 |---|---|---|---|
-| `regular` | 1 bảng chính + JOIN bảng phụ | `mapping_columns` | `[]` |
+| `regular` | 1 bảng chính + JOIN bảng phụ | `mapping_columns` | `[]` hoặc WHERE/GROUP BY |
 | `unpivot` | 1 bảng, nhiều legs (loại giấy tờ) | `mapping_legs` | UNION ALL các legs |
-| `direct` | 1 bảng, không JOIN, không legs | `mapping_columns` | `[]` |
+| `direct` | 1 bảng, không JOIN, không legs | `mapping_columns` | `[]` hoặc WHERE |
+| `shared_entity` | Multi-source UNION ALL (IP addresses, identifications) | `mapping_columns` | UNION ALL các nguồn |
 
-### 3.11 Schema Validation
+### 3.11 ETL Handle
+
+**`etl_handle`** trong section `target` định nghĩa cách xử lý dữ liệu trên Atomic layer:
+
+| Value | Ý nghĩa | Dùng cho |
+|---|---|---|
+| `SCD4A` | Slowly Changing Dimension Type 4A (effective date tracking) | Dimension entities (Fundamental) |
+| `SCD2` | Slowly Changing Dimension Type 2 (historical snapshots) | Relative entities |
+| `Fact Append` | Chỉ insert mới, không update/delete (append-only pattern) | Fact tables, Transaction events |
+| `Upsert` | Insert + Update (match by key, replace if exists) | Classification Values, Configuration |
+
+> **Lưu ý:** ETL pattern được định nghĩa **duy nhất** tại `target.etl_handle`. Không còn trường `mapping.etl_pattern`.
+
+### 3.13 Schema Validation
 
 **VS Code** (realtime, `.vscode/settings.json`):
 
@@ -742,15 +797,18 @@ done
 
 **Các trường bắt buộc validate:**
 - `mapping.id` pattern: `^MAP-ATM-{physical_name}-{SOURCE}.{TABLE}$`
-- `mapping.pattern` enum: `regular | unpivot | direct`
+- `mapping.pattern` enum: `regular | unpivot | direct | shared_entity`
+- `mapping.dm_ref` string (not removed from required)
+- `mapping.brd_ref` string (not removed from required)
 - `target.schema` const: `atomic`
 - `target.physical_name` pattern: snake_case
+- `target.etl_handle` enum: `SCD4A | SCD2 | Fact Append | Upsert`
 - `input[].source_type` enum: `physical_table | derived_cte | unpivot_cte`
 - `mapping_columns[].target_column` pattern: snake_case
 - `mapping_columns[].data_type` enum: 10 Delta Lake types
 - `final_filter[].clause_type` enum: `WHERE | UNION ALL | GROUP BY | HAVING | ORDER BY`
 
-### 3.12 Transformation Rules — Shared Rule Library
+### 3.14 Transformation Rules — Shared Rule Library
 
 **File:** `Mapping/rules/transformation_rules.yaml`  
 **Scope:** Shared toàn dự án — tất cả mapping YAML đều tham chiếu file này qua `transformation_rules_ref`
@@ -1088,3 +1146,5 @@ Khi mở rộng (ETL spec, mapping, ...):
 - **PDF:** `data-spec-workflow DETAIL.pdf` — Full workflow specification
 - **`spec-registry/registry.csv`** — Spec Registry: trạng thái tiến độ toàn dự án
 - **`scripts/sync_registry.py`** — Script sync YAML → registry.csv
+- **`scripts/generate_dm_summary.py`** — Sinh DataModel/Atomic/_summary.csv từ tất cả DM YAML
+- **`scripts/generate_brd_summary.py`** — Sinh BRD/Source/_summary.csv từ tất cả BRD YAML

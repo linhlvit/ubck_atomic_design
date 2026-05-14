@@ -107,7 +107,6 @@
         "logical_name",
         "physical_name",
         "pattern",
-        "etl_pattern",
         "dm_ref",
         "brd_ref"
       ],
@@ -136,16 +135,6 @@
             "shared_entity"
           ],
           "description": "Loại mapping pattern. regular=1 source+JOIN, unpivot=LATERAL VIEW/UNION ALL legs, direct=1 source không JOIN, shared_entity=multi-source UNION ALL"
-        },
-        "etl_pattern": {
-          "type": "string",
-          "enum": [
-            "SCD4A",
-            "SCD2",
-            "Fact Append",
-            "Upsert"
-          ],
-          "description": "ETL pattern — phải khớp với dm_ref"
         },
         "dm_ref": {
           "oneOf": [
@@ -200,7 +189,7 @@
             "Fact Append",
             "Upsert"
           ],
-          "description": "ETL handle — phải khớp với mapping.etl_pattern"
+          "description": "ETL handle — định nghĩa cách xử lý dữ liệu trên Atomic (SCD4A/SCD2 cho dimension, Fact Append cho fact, Upsert cho classification value)"
         },
         "description": {
           "type": "string",

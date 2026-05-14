@@ -2,23 +2,25 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-ip_alt_identn-DCST.THONG_TIN_DK_THUE
-  logical_name: "Atomic - Involved Party Alternative Identification – source DCST.THONG_TIN_DK_THUE"
+  id: ATM-ip_alt_identn-KNT.THONG_TIN_DK_THUE
+  logical_name: "Involved Party Alternative Identification"
+
   physical_name: ip_alt_identn
+  layer: Atomic
   version: "1.0"
   status: approved
   bcv_core_object: Involved Party
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: DCST
+  source: KNT
   description: |
     Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-THONG_TIN_DK_THUE
+    brd: BRD-SRC-KNT-THONG_TIN_DK_THUE
 
 attributes:
   - name: Involved Party Id
@@ -28,11 +30,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -42,11 +44,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -56,11 +58,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Type Code
@@ -70,11 +72,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Number
@@ -84,11 +86,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.SO_GIAY_PHEP
+    source_column: KNT.THONG_TIN_DK_THUE.SO_GIAY_PHEP
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Issue Date
@@ -98,11 +100,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGAY_CAP
+    source_column: KNT.THONG_TIN_DK_THUE.NGAY_CAP
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Issuing Authority Name
@@ -112,11 +114,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.CO_QUAN_CAP
+    source_column: KNT.THONG_TIN_DK_THUE.CO_QUAN_CAP
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Involved Party Id
@@ -126,11 +128,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -140,11 +142,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -154,11 +156,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
     etl_derived_value: null
 
   - name: Identification Type Code
@@ -168,11 +170,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
     etl_derived_value: null
 
   - name: Identification Number
@@ -182,11 +184,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.SO_QUYET_DINH
+    source_column: KNT.THONG_TIN_DK_THUE.SO_QUYET_DINH
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
     etl_derived_value: null
 
   - name: Issue Date
@@ -196,11 +198,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGAY_BAN_HANH
+    source_column: KNT.THONG_TIN_DK_THUE.NGAY_BAN_HANH
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
     etl_derived_value: null
 
   - name: Issuing Authority Name
@@ -210,9 +212,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.CO_QUAN_BAN_HANH
+    source_column: KNT.THONG_TIN_DK_THUE.CO_QUAN_BAN_HANH
     comment: null
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE' | Identification Type Code = 'ESTABLISHMENT_DECISION'"
     etl_derived_value: null

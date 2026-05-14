@@ -2,23 +2,25 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-hrsk_taxpayer_ases_snpst-DCST.DN_RUI_RO_CAO
-  logical_name: "Atomic - High Risk Taxpayer Assessment Snapshot – source DCST.DN_RUI_RO_CAO"
+  id: ATM-hrsk_taxpayer_ases_snpst-KNT.DN_RUI_RO_CAO
+  logical_name: "High Risk Taxpayer Assessment Snapshot"
+
   physical_name: hrsk_taxpayer_ases_snpst
+  layer: Atomic
   version: "1.0"
   status: approved
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Organization"
   table_type: Fact Snapshot
   etl_pattern: Fact Append
-  source: DCST
+  source: KNT
   description: |
     Đánh giá xếp loại doanh nghiệp rủi ro cao về thuế theo năm. Ghi nhận thông tin tổ chức bị đánh giá rủi ro.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-DN_RUI_RO_CAO
+    brd: BRD-SRC-KNT-DN_RUI_RO_CAO
 
 attributes:
   - name: High Risk Taxpayer Assessment Snapshot Id
@@ -28,11 +30,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
     source_column: null
     comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Đánh giá rủi ro DN."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: High Risk Taxpayer Assessment Snapshot Code
@@ -42,25 +44,25 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.ID
+    source_column: KNT.DN_RUI_RO_CAO.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.DN_RUI_RO_CAO"
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: KNT.DN_RUI_RO_CAO"
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Id
@@ -70,11 +72,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
+    source_column: KNT.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. ETL resolve: JOIN DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP = THONG_TIN_DK_THUE.MA_SO_THUE. Pattern Id + Code."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Code
@@ -84,11 +86,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
+    source_column: KNT.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Organization Tax Identification Number
@@ -98,11 +100,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
+    source_column: KNT.DN_RUI_RO_CAO.MA_SO_DOANH_NGHIEP
     comment: Giữ nguyên giá trị MST gốc từ nguồn. Dùng để liên kết ngầm với Registered Taxpayer.
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Organization Full Name
@@ -112,11 +114,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.TEN_DOANH_NGHIEP
+    source_column: KNT.DN_RUI_RO_CAO.TEN_DOANH_NGHIEP
     comment: "Denormalized từ nguồn. Prefix \"Organization\"."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Organization Head Office Address
@@ -126,11 +128,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.DIA_CHI_TSC
+    source_column: KNT.DN_RUI_RO_CAO.DIA_CHI_TSC
     comment: "Denormalized từ nguồn — không tách shared entity (entity này không phải IP chính). Nhất quán prefix \"Organization\"."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Supervisory Tax Authority Name
@@ -140,11 +142,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.CQ_THUE_QUAN_LY
+    source_column: KNT.DN_RUI_RO_CAO.CQ_THUE_QUAN_LY
     comment: "Denormalized. Nhất quán prefix \"Supervisory Tax Authority\"."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null
 
   - name: Risk Assessment Year
@@ -154,9 +156,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: DN_RUI_RO_CAO
-    source_column: DCST.DN_RUI_RO_CAO.NAM_DANH_GIA_RUI_RO
+    source_column: KNT.DN_RUI_RO_CAO.NAM_DANH_GIA_RUI_RO
     comment: "BCV: không có term riêng. Đặt tên theo ngữ cảnh nghiệp vụ."
-    classification_context: "Source System Code = 'DCST_DN_RUI_RO_CAO'"
+    classification_context: "Source System Code = 'KNT_DN_RUI_RO_CAO'"
     etl_derived_value: null

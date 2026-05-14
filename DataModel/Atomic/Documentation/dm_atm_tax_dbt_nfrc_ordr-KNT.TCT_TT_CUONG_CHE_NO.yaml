@@ -2,23 +2,25 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-tax_dbt_nfrc_ordr-DCST.TCT_TT_CUONG_CHE_NO
-  logical_name: "Atomic - Tax Debt Enforcement Order – source DCST.TCT_TT_CUONG_CHE_NO"
+  id: ATM-tax_dbt_nfrc_ordr-KNT.TCT_TT_CUONG_CHE_NO
+  logical_name: "Tax Debt Enforcement Order"
+
   physical_name: tax_dbt_nfrc_ordr
+  layer: Atomic
   version: "1.0"
   status: approved
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Regulatory Report"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: DCST
+  source: KNT
   description: |
     Quyết định cưỡng chế nợ thuế. Ghi nhận hình thức cưỡng chế và thông tin tài sản/tài khoản liên quan.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-TCT_TT_CUONG_CHE_NO
+    brd: BRD-SRC-KNT-TCT_TT_CUONG_CHE_NO
 
 attributes:
   - name: Tax Debt Enforcement Order Id
@@ -28,39 +30,39 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
     source_column: null
     comment: "PK surrogate. BCV: \"Regulatory Report\" (Documentation) — entity-level concept."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Tax Debt Enforcement Order Code
     physical_name: tax_dbt_nfrc_ordr_code
-    business_meaning: Mã định danh bản ghi trong DCST. BK
+    business_meaning: Mã định danh bản ghi trong KNT. BK
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.ID
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.ID
     comment: BK chính. PK nguồn map vào Code.
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.TCT_TT_CUONG_CHE_NO"
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: KNT.TCT_TT_CUONG_CHE_NO"
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Id
@@ -70,11 +72,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.MA_NNHAN
     comment: "FK target: Registered Taxpayer.Registered Taxpayer Id. ETL JOIN MA_NNHAN (= MST) → Registered Taxpayer. Nullable vì link ngầm. BCV: \"Organization Tax Identification Number\" (Involved Party) — MA_NNHAN là MST của NNT."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Code
@@ -84,11 +86,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.MA_NNHAN
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.MA_NNHAN
     comment: "Lookup pair: Registered Taxpayer.Registered Taxpayer Code. Pair with Registered Taxpayer Id."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Taxpayer Name
@@ -98,11 +100,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.TEN_NNHAN
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.TEN_NNHAN
     comment: "BCV: \"Organization Name\" (Involved Party). Snapshot tại thời điểm quyết định."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Taxpayer Business Industry
@@ -112,11 +114,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.NGANH_KD_DTBCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.NGANH_KD_DTBCC
     comment: "BCV: \"Organization Industry Classification\" (Involved Party). Snapshot tại thời điểm quyết định."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Tax Authority Code
@@ -126,11 +128,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.MA_CQT
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.MA_CQT
     comment: "BCV: không có term riêng. Cơ quan thuế ban hành QĐ. Phân biệt với Supervisory Tax Authority (cơ quan quản lý NNT)."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Tax Authority Name
@@ -140,11 +142,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.TEN_CQT
     comment: "BCV: không có term riêng. Denormalized name tương ứng Tax Authority Code."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Supervisory Tax Authority Code
@@ -154,11 +156,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.MA_CQT_QL
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.MA_CQT_QL
     comment: "BCV: không có term riêng. Nhất quán prefix Supervisory Tax Authority với THONG_TIN_DK_THUE LLD và TCT_TTCCN_HOA_DON LLD."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Supervisory Tax Authority Name
@@ -168,11 +170,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.TEN_CQT_QL
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.TEN_CQT_QL
     comment: "BCV: không có term riêng. Denormalized name. Nhất quán prefix."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Type Code
@@ -182,11 +184,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.MA_HTCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.MA_HTCC
     comment: "Scheme: TAX_ENFORCEMENT_TYPE. BCV: không có term riêng. Dùng chung với TCT_TTCCN_HOA_DON."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Type Name
@@ -196,11 +198,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.TEN_HTCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.TEN_HTCC
     comment: "BCV: không có term riêng. Denormalized name tương ứng Enforcement Type Code."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Electronic Transaction Code
@@ -210,11 +212,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.MA_GDDT
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.MA_GDDT
     comment: "BCV: không có term riêng. Nhất quán với TCT_TTCCN_HOA_DON LLD."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Order Number
@@ -224,11 +226,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.SO_QD
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.SO_QD
     comment: "BCV: gần nhất \"Submission Number\" (Documentation) — QĐ cưỡng chế là văn bản hành chính. Là giá trị được TCT_TTCCN_HOA_DON.CAN_CU_QDSO viện dẫn khi leo thang sang biện pháp ngừng hóa đơn. Không có FK vật lý — liên kết logic."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Order Date
@@ -238,11 +240,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.NGAY_QD
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.NGAY_QD
     comment: "BCV: gần nhất \"Documentation Preparation Date\" (Documentation). Nhất quán prefix Enforcement Order."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforced Amount
@@ -252,11 +254,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.SO_TIEN_BI_CC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.SO_TIEN_BI_CC
     comment: "BCV: không có term riêng cho số tiền cưỡng chế. Nguồn VARCHAR(20) — giữ Text. Không đủ thông tin xác định đơn vị tiền tệ. Cần xác nhận với team."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Effective Start Date
@@ -266,11 +268,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_TU
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_TU
     comment: "BCV: gần nhất \"Condition Effective Date\" (Condition). Nhất quán prefix Enforcement Effective với TCT_TTCCN_HOA_DON LLD."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Effective End Date
@@ -280,11 +282,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_DEN
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.NGAY_HIEU_LUC_QD_DEN
     comment: "BCV: gần nhất \"Condition Expiry Date\" (Condition). Nhất quán prefix Enforcement Effective."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Time
@@ -294,11 +296,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.THOI_GIAN_CC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.THOI_GIAN_CC
     comment: "BCV: không có term riêng. Thời điểm áp dụng biện pháp trên thực tế."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Enforcement Location
@@ -308,11 +310,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.DIA_DIEM_CC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.DIA_DIEM_CC
     comment: "BCV: \"Location\" (Location) — gần nhất. Nhất quán prefix Enforcement."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Taxpayer Account Number
@@ -322,11 +324,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.STK_DT_BCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.STK_DT_BCC
     comment: "BCV: \"Account Number\" (Arrangement) — gần nhất. Áp dụng cho hình thức trích tiền tài khoản."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Taxpayer Account Bank
@@ -336,11 +338,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.NO_MO_TK_BCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.NO_MO_TK_BCC
     comment: "BCV: không có term riêng. Nhất quán prefix Taxpayer Account."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Income Manager Name
@@ -350,11 +352,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.TEN_DTQLTN
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.TEN_DTQLTN
     comment: "BCV: không có term riêng. Áp dụng cho hình thức khấu trừ thu nhập. Prefix Income Manager — đơn vị trả thu nhập cho NNT bị yêu cầu khấu trừ thay."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Income Manager Address
@@ -364,11 +366,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.DI_CHI_DTQLTN
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.DI_CHI_DTQLTN
     comment: "BCV: \"Postal Address\" (Location) — gần nhất. Nhất quán prefix Income Manager."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Seized Asset Description
@@ -378,11 +380,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.TS_KE_BIEN
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.TS_KE_BIEN
     comment: "BCV: gần nhất \"Property Description\" (Resource Item). Áp dụng cho hình thức kê biên tài sản."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Seized Asset Value
@@ -392,11 +394,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.GIA_TRI_TS
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.GIA_TRI_TS
     comment: "BCV: gần nhất \"Property Value\" (Resource Item). Nguồn VARCHAR(20) — giữ Text. Cần xác nhận đơn vị."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Asset Custodian Code
@@ -406,11 +408,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.MA_DTGTSCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.MA_DTGTSCC
     comment: "BCV: không có term riêng. Bên thứ ba giữ tài sản kê biên. Không có FK (không có bảng riêng) → denormalized."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Asset Custodian Name
@@ -420,11 +422,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.TEN_DTGTSCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.TEN_DTGTSCC
     comment: "BCV: \"Organization Name\" (Involved Party) — gần nhất. Denormalized. Nhất quán prefix Asset Custodian."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null
 
   - name: Asset Custodian Address
@@ -434,9 +436,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: TCT_TT_CUONG_CHE_NO
-    source_column: DCST.TCT_TT_CUONG_CHE_NO.DIA_CHI_DTGTSCC
+    source_column: KNT.TCT_TT_CUONG_CHE_NO.DIA_CHI_DTGTSCC
     comment: "BCV: \"Postal Address\" (Location) — gần nhất. Denormalized. Nhất quán prefix Asset Custodian."
-    classification_context: "Source System Code = 'DCST_TCT_TT_CUONG_CHE_NO'"
+    classification_context: "Source System Code = 'KNT_TCT_TT_CUONG_CHE_NO'"
     etl_derived_value: null

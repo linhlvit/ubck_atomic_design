@@ -2,23 +2,25 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-rgst_taxpayer-DCST.THONG_TIN_DK_THUE
-  logical_name: "Atomic - Registered Taxpayer – source DCST.THONG_TIN_DK_THUE"
+  id: ATM-rgst_taxpayer-KNT.THONG_TIN_DK_THUE
+  logical_name: "Registered Taxpayer"
+
   physical_name: rgst_taxpayer
+  layer: Atomic
   version: "1.0"
   status: approved
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Organization"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: DCST
+  source: KNT
   description: |
     Doanh nghiệp/hộ kinh doanh đã đăng ký thuế với cơ quan thuế. Lưu thông tin pháp lý và trạng thái hoạt động.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-DCST-THONG_TIN_DK_THUE
+    brd: BRD-SRC-KNT-THONG_TIN_DK_THUE
 
 attributes:
   - name: Registered Taxpayer Id
@@ -28,11 +30,11 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: "PK surrogate. BCV: \"Organization\" (Involved Party)."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Registered Taxpayer Code
@@ -42,25 +44,25 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.ID
+    source_column: KNT.THONG_TIN_DK_THUE.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning: "Mã nguồn dữ liệu. Giá trị: DCST.THONG_TIN_DK_THUE"
+    business_meaning: "Mã nguồn dữ liệu. Giá trị: KNT.THONG_TIN_DK_THUE"
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Full Name
@@ -70,11 +72,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TEN_NGUOI_NOP
+    source_column: KNT.THONG_TIN_DK_THUE.TEN_NGUOI_NOP
     comment: "BCV: \"Organization Name\". Scope: NNT gồm tổ chức/DN/hộ KD — không gắn prefix Organization."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Organization Tax Identification Number
@@ -84,11 +86,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.MA_SO_THUE
+    source_column: KNT.THONG_TIN_DK_THUE.MA_SO_THUE
     comment: "BCV: \"Organization Tax Identification Number\". Trường liên kết ngầm với DN_RUI_RO_CAO, TCT_BAO_CAO, TCT_TT_CUONG_CHE_NO, TT_XLY_VI_PHAM, TCT_TTCCN_HOA_DON."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -98,11 +100,11 @@ attributes:
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.VON_DIEU_LE
+    source_column: KNT.THONG_TIN_DK_THUE.VON_DIEU_LE
     comment: "BCV: \"Charter Capital Amount\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Charter Capital Currency Code
@@ -112,11 +114,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_VN
+    source_column: KNT.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_VN
     comment: "FK target: Currency.Currency Code."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Foreign Charter Capital Amount
@@ -126,11 +128,11 @@ attributes:
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.SOTIEN_VON_DL_NN
+    source_column: KNT.THONG_TIN_DK_THUE.SOTIEN_VON_DL_NN
     comment: "Nhất quán prefix \"Foreign Charter Capital\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Foreign Charter Capital Currency Code
@@ -140,11 +142,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_NN
+    source_column: KNT.THONG_TIN_DK_THUE.LOAITIEN_VON_DL_NN
     comment: "FK target: Currency.Currency Code."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Business Line Code
@@ -154,11 +156,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.MA_NGANH
+    source_column: KNT.THONG_TIN_DK_THUE.MA_NGANH
     comment: "Nhất quán prefix \"Business Line\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Business Line Description
@@ -168,11 +170,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGANH_NGHE_KD
+    source_column: KNT.THONG_TIN_DK_THUE.NGANH_NGHE_KD
     comment: "Nhất quán prefix \"Business Line\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Business Commencement Date
@@ -182,11 +184,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGAY_BD_HDKD
+    source_column: KNT.THONG_TIN_DK_THUE.NGAY_BD_HDKD
     comment: "BCV: \"Organization Commence Operation Date\". Rút gọn prefix."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Parent Organization Name
@@ -196,11 +198,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.DON_VI_CHU_QUAN
+    source_column: KNT.THONG_TIN_DK_THUE.DON_VI_CHU_QUAN
     comment: "Denormalized text — không có FK. Nhất quán prefix \"Parent Organization\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Parent Organization Address
@@ -210,11 +212,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.DVCQ_VN_DIACHI
+    source_column: KNT.THONG_TIN_DK_THUE.DVCQ_VN_DIACHI
     comment: "Nhất quán prefix \"Parent Organization\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Supervisory Authority Name
@@ -224,11 +226,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.CO_QUAN_QUAN_LY_TRUC_TIEP
+    source_column: KNT.THONG_TIN_DK_THUE.CO_QUAN_QUAN_LY_TRUC_TIEP
     comment: "Nhất quán prefix \"Supervisory\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Supervisory Tax Authority Code
@@ -238,11 +240,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.MA_CQQL_QLT
+    source_column: KNT.THONG_TIN_DK_THUE.MA_CQQL_QLT
     comment: "Nhất quán prefix \"Supervisory Tax Authority\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Legal Representative Name
@@ -252,11 +254,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TEN_NGUOI_DAI_DIEN_KD
+    source_column: KNT.THONG_TIN_DK_THUE.TEN_NGUOI_DAI_DIEN_KD
     comment: "Prefix chủ thể \"Legal Representative\" — người khác với NNT."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Legal Representative Identification Number
@@ -266,11 +268,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.SO_CMT
+    source_column: KNT.THONG_TIN_DK_THUE.SO_CMT
     comment: "Prefix \"Legal Representative\". Denormalized — không tách ra IP Alt Identification vì thuộc chủ thể khác (người đại diện, không phải NNT)."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Legal Representative Phone Number
@@ -280,11 +282,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI
+    source_column: KNT.THONG_TIN_DK_THUE.SO_DIEN_THOAI
     comment: "Prefix \"Legal Representative\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Director Name
@@ -294,11 +296,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TEN_GIAM_DOC
+    source_column: KNT.THONG_TIN_DK_THUE.TEN_GIAM_DOC
     comment: "Prefix chủ thể \"Director\" — người khác với NNT."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Director Phone Number
@@ -308,11 +310,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.SO_DIEN_THOAI_GD
+    source_column: KNT.THONG_TIN_DK_THUE.SO_DIEN_THOAI_GD
     comment: "Prefix \"Director\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Life Cycle Status Code
@@ -322,11 +324,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG
+    source_column: KNT.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG
     comment: "Scheme: LIFE_CYCLE_STATUS."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Life Cycle Status Name
@@ -336,11 +338,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TEN_TRANG_THAI
+    source_column: KNT.THONG_TIN_DK_THUE.TEN_TRANG_THAI
     comment: Denormalized name tương ứng Life Cycle Status Code. Giữ nguyên từ nguồn.
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Cessation Reason Description
@@ -350,11 +352,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.LY_DO_NGUNG_HOAT_DONG
+    source_column: KNT.THONG_TIN_DK_THUE.LY_DO_NGUNG_HOAT_DONG
     comment: "Nhất quán prefix \"Cessation\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Cessation Type Code
@@ -364,11 +366,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG
+    source_column: KNT.THONG_TIN_DK_THUE.LOAI_NGUNG_HOAT_DONG
     comment: "Scheme: TAXPAYER_CESSATION_TYPE."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Cessation Date
@@ -378,11 +380,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGUNG_HD_NGAY
+    source_column: KNT.THONG_TIN_DK_THUE.NGUNG_HD_NGAY
     comment: "Nhất quán prefix \"Cessation\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Cessation Reason
@@ -392,11 +394,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGUNG_HD_LY_DO
+    source_column: KNT.THONG_TIN_DK_THUE.NGUNG_HD_LY_DO
     comment: "Nhóm trường NGUNG_HD_*. Khác với Cessation Reason Description (trường LY_DO_NGUNG_HOAT_DONG riêng)."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Cessation Note
@@ -406,11 +408,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGUNG_HD_GHI_CHU
+    source_column: KNT.THONG_TIN_DK_THUE.NGUNG_HD_GHI_CHU
     comment: "Nhóm trường NGUNG_HD_*."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Cessation Notice Number
@@ -420,11 +422,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.NGUNG_HD_SO_TBAO
+    source_column: KNT.THONG_TIN_DK_THUE.NGUNG_HD_SO_TBAO
     comment: "Nhóm trường NGUNG_HD_*."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Temporary Suspension Start Date
@@ -434,11 +436,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TAM_NGHI_TU_NGAY
+    source_column: KNT.THONG_TIN_DK_THUE.TAM_NGHI_TU_NGAY
     comment: "Nhất quán prefix \"Temporary Suspension\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Temporary Suspension End Date
@@ -448,11 +450,11 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TAM_NGHI_DEN_NGAY
+    source_column: KNT.THONG_TIN_DK_THUE.TAM_NGHI_DEN_NGAY
     comment: "Nhất quán prefix \"Temporary Suspension\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Temporary Suspension Reason
@@ -462,11 +464,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TAM_NGHI_LY_DO
+    source_column: KNT.THONG_TIN_DK_THUE.TAM_NGHI_LY_DO
     comment: "Nhất quán prefix \"Temporary Suspension\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Temporary Suspension Notice Number
@@ -476,11 +478,11 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TAM_NGHI_SO_TBAO
+    source_column: KNT.THONG_TIN_DK_THUE.TAM_NGHI_SO_TBAO
     comment: "Nhất quán prefix \"Temporary Suspension\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null
 
   - name: Temporary Suspension Notice Date
@@ -490,9 +492,9 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: DCST
+    source_system: KNT
     source_table: THONG_TIN_DK_THUE
-    source_column: DCST.THONG_TIN_DK_THUE.TAM_NGHI_NGAY_TB_NNT
+    source_column: KNT.THONG_TIN_DK_THUE.TAM_NGHI_NGAY_TB_NNT
     comment: "Nhất quán prefix \"Temporary Suspension\"."
-    classification_context: "Source System Code = 'DCST_THONG_TIN_DK_THUE'"
+    classification_context: "Source System Code = 'KNT_THONG_TIN_DK_THUE'"
     etl_derived_value: null

@@ -14,6 +14,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — quản lý người dùng ứng dụng FIMS"
+      table: USERS
       related_tables:
         - table: USERSMENUS
           relation: "Bảng con — quyền phân cho người dùng"
@@ -33,6 +34,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — phân quyền người dùng"
+      table: USERSMENUS
       related_tables:
         - table: USERS
           relation: "FK — người dùng"
@@ -50,6 +52,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — phân quyền xem báo cáo đầu ra"
+      table: USERRPTO
       related_tables:
         - table: USERS
           relation: "FK — người dùng"
@@ -67,6 +70,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — session management"
+      table: REFRESHTOKEN
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -82,6 +86,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — nhóm người dùng ứng dụng"
+      table: GROUPS
       related_tables:
         - table: GROUPUSERS
           relation: "Bảng con — người dùng trong nhóm"
@@ -101,6 +106,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — junction nhóm-người dùng"
+      table: GROUPUSERS
       related_tables:
         - table: GROUPS
           relation: "FK — nhóm người dùng"
@@ -120,6 +126,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — phân quyền nhóm"
+      table: GROUPROLES
       related_tables:
         - table: GROUPS
           relation: "FK — nhóm người dùng"
@@ -139,6 +146,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — nhóm quyền chức năng ứng dụng"
+      table: ROLES
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -154,6 +162,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — danh sách menu/quyền giao diện"
+      table: MENUS
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -169,6 +178,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — chứng thư số ứng dụng"
+      table: CERTFCATE
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -184,6 +194,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — error log ứng dụng"
+      table: ERRORLOG
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -199,6 +210,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — session tracking"
+      table: USERSESSIONS
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -214,6 +226,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
       scope_status: in_scope
       scope_reason: null
+      table: RPTTEMP
       related_tables:
         - table: SHEET
           relation: "Bảng con — danh sách sheet trong biểu mẫu"
@@ -235,6 +248,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
       scope_status: in_scope
       scope_reason: null
+      table: SHEET
       related_tables:
         - table: RPTTEMP
           relation: "Bảng cha — biểu mẫu báo cáo"
@@ -252,6 +266,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
       scope_status: in_scope
       scope_reason: null
+      table: RPTPERIOD
       related_tables:
         - table: RPTTEMP
           relation: "FK — biểu mẫu áp dụng cho kỳ này"
@@ -271,6 +286,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — junction nội bộ biểu mẫu"
+      table: RPTPDSHT
       related_tables:
         - table: SHEET
           relation: "FK — sheet"
@@ -290,6 +306,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — lịch sử thay đổi biểu mẫu, xử lý tại ETL"
+      table: RPTHTORY
       related_tables:
         - table: RPTTEMP
           relation: "FK — biểu mẫu báo cáo"
@@ -307,6 +324,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra"
       scope_status: out_of_scope
       scope_reason: "Báo cáo đầu ra hệ thống — cấu hình nội bộ UBCKNN"
+      table: RPTTPOUT
       related_tables:
         - table: SHEETOUT
           relation: "Bảng con — sheet báo cáo đầu ra"
@@ -324,6 +342,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra"
       scope_status: out_of_scope
       scope_reason: "Báo cáo đầu ra hệ thống — cấu hình nội bộ UBCKNN"
+      table: SHEETOUT
       related_tables:
         - table: RPTTPOUT
           relation: "FK — biểu mẫu đầu ra"
@@ -341,6 +360,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — lịch sử thay đổi biểu mẫu đầu ra"
+      table: TPOUTHTORY
       related_tables:
         - table: RPTTPOUT
           relation: "FK — biểu mẫu đầu ra"
@@ -358,6 +378,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — cấu hình kỳ báo cáo bổ sung"
+      table: SELFSETPD
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -373,6 +394,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — lịch hệ thống FIMS"
+      table: CALENDAR
       related_tables:
         - table: CALENDARMANAGERMENT
           relation: "Bảng con — thay đổi lịch hệ thống"
@@ -390,6 +412,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — log thay đổi lịch hệ thống"
+      table: CALENDARMANAGERMENT
       related_tables:
         - table: CALENDAR
           relation: "FK — lịch hệ thống"
@@ -407,6 +430,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — tham số cấu hình ứng dụng"
+      table: SYSVAR
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -424,6 +448,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: STATUS
       related_tables: []
       notes: "CV scheme: LIFE_CYCLE_STATUS"
       data_volume_hint: null
@@ -439,6 +464,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: INVESTORTYPE
       related_tables: []
       notes: "CV scheme: FIMS_INVESTOR_TYPE"
       data_volume_hint: null
@@ -454,6 +480,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: REPORTTYPE
       related_tables: []
       notes: "CV scheme: FIMS_REPORT_TYPE"
       data_volume_hint: null
@@ -469,6 +496,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: SECURITIESTYPE
       related_tables: []
       notes: "CV scheme: FIMS_SECURITIES_TYPE"
       data_volume_hint: null
@@ -484,6 +512,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: SECURITIES
       related_tables: []
       notes: "CV scheme: FIMS_SECURITIES_CODE"
       data_volume_hint: null
@@ -499,6 +528,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: COMPANYTYPE
       related_tables: []
       notes: "CV scheme: FIMS_COMPANY_TYPE"
       data_volume_hint: null
@@ -514,6 +544,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: BUSINESS
       related_tables: []
       notes: "CV scheme: FIMS_BUSINESS_TYPE"
       data_volume_hint: null
@@ -529,6 +560,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: STOCKHOLDERTYPE
       related_tables: []
       notes: "CV scheme: FIMS_STOCKHOLDER_TYPE"
       data_volume_hint: null
@@ -544,6 +576,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: JOBTYPE
       related_tables: []
       notes: "CV scheme: FIMS_JOB_TYPE"
       data_volume_hint: null
@@ -559,6 +592,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: DEGREE
       related_tables: []
       notes: "CV scheme: FIMS_DEGREE"
       data_volume_hint: null
@@ -574,6 +608,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: ANNOUNCETYPE
       related_tables: []
       notes: "CV scheme: FIMS_ANNOUNCE_TYPE"
       data_volume_hint: null
@@ -589,6 +624,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: RELATEDPROPERTIES
       related_tables: []
       notes: "CV scheme: FIMS_RELATED_PROPERTIES — hình thức liên quan ủy quyền CBTT"
       data_volume_hint: null
@@ -604,6 +640,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Chờ thiết kế — chưa có cấu trúc cột rõ ràng"
+      table: RELATIONSHIP
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -619,6 +656,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: NATIONAL
       related_tables: []
       notes: "Shared entity Geographic Area — bổ sung source; dùng trong tất cả đối tượng UID03 và NĐT NN UID04"
       data_volume_hint: null
@@ -634,6 +672,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Chờ thiết kế — reference data địa giới hành chính, sẽ thu thập từ ECAT"
+      table: LOCATION
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -649,6 +688,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Chờ thiết kế — danh mục tiền tệ thu thập từ ECAT (source authoritative)"
+      table: CURRENCY
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -664,6 +704,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Chờ thiết kế — danh mục loại vi phạm chưa xác định scope"
+      table: VIOLATIONTYPE
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -679,6 +720,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — đơn vị đo lường nội bộ ứng dụng"
+      table: UNIT
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -694,6 +736,7 @@ brd_entries:
       functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — danh mục phòng ban nội bộ FIMS"
+      table: DEPARTMENT
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -711,6 +754,7 @@ brd_entries:
       functional_group: "FIMS_UID02 Quản lý tích hợp"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — cấu hình kết nối API"
+      table: SYSTEMINTEGRATIONCONFIG
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -726,6 +770,7 @@ brd_entries:
       functional_group: "FIMS_UID02 Quản lý tích hợp"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — dữ liệu tích hợp MSS nội bộ"
+      table: SYSTEMINTEGRATIONDATA
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -743,6 +788,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: STOCKEXCHANGE
       related_tables:
         - table: NATIONAL
           relation: "FK — quốc gia của Sở GDCK"
@@ -760,6 +806,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: DEPOSITORYCENTER
       related_tables:
         - table: NATIONAL
           relation: "FK — quốc gia của VSDC"
@@ -777,6 +824,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: FUNDCOMPANY
       related_tables:
         - table: FUNDCOMBUSINES
           relation: "Bảng con — NVKD của CTQLQ (denormalize)"
@@ -798,6 +846,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: FUNDCOMBUSINES
       related_tables:
         - table: FUNDCOMPANY
           relation: "FK — công ty QLQ"
@@ -815,6 +864,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: FUNDCOMTYPE
       related_tables:
         - table: FUNDCOMPANY
           relation: "FK — công ty QLQ"
@@ -832,6 +882,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: SECURITIESCOMPANY
       related_tables:
         - table: SECCOMBUSINES
           relation: "Bảng con — NVKD của CTCK (denormalize)"
@@ -853,6 +904,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: SECCOMBUSINES
       related_tables:
         - table: SECURITIESCOMPANY
           relation: "FK — công ty chứng khoán"
@@ -870,6 +922,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: SECCOMTYPE
       related_tables:
         - table: SECURITIESCOMPANY
           relation: "FK — công ty chứng khoán"
@@ -887,6 +940,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: BANKMONI
       related_tables:
         - table: NATIONAL
           relation: "FK — quốc tịch/quốc gia"
@@ -904,6 +958,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: BRANCHS
       related_tables:
         - table: BRANCHSBUSINES
           relation: "Bảng con — NVKD của CN (denormalize)"
@@ -925,6 +980,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: BRANCHSBUSINES
       related_tables:
         - table: BRANCHS
           relation: "FK — chi nhánh CTQLQ NN"
@@ -942,6 +998,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: INFODISCREPRES
       related_tables:
         - table: INDIREBUSINESS
           relation: "Bảng con — NVKD của đại diện CBTT (denormalize)"
@@ -963,6 +1020,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: INDIREBUSINESS
       related_tables:
         - table: INFODISCREPRES
           relation: "FK — người đại diện CBTT"
@@ -980,6 +1038,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: TLPROFILES
       related_tables:
         - table: INFODISCREPRES
           relation: "FK — người đại diện CBTT"
@@ -1001,6 +1060,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: TLPROJOB
       related_tables:
         - table: TLPROFILES
           relation: "FK — nhân sự đại diện CBTT"
@@ -1018,6 +1078,7 @@ brd_entries:
       functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: TLPROSTOCKH
       related_tables:
         - table: TLPROFILES
           relation: "FK — nhân sự đại diện CBTT"
@@ -1037,6 +1098,7 @@ brd_entries:
       functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
       scope_status: in_scope
       scope_reason: null
+      table: INVESTOR
       related_tables:
         - table: INVESTORHIS
           relation: "Bảng con — lịch sử thay đổi NĐT (out of scope)"
@@ -1060,6 +1122,7 @@ brd_entries:
       functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — SCD2 lịch sử NĐT, xử lý tại ETL"
+      table: INVESTORHIS
       related_tables:
         - table: INVESTOR
           relation: "FK — nhà đầu tư"
@@ -1077,6 +1140,7 @@ brd_entries:
       functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
       scope_status: in_scope
       scope_reason: null
+      table: SECURITIESACCOUNT
       related_tables:
         - table: INVESTOR
           relation: "FK — nhà đầu tư nước ngoài"
@@ -1096,6 +1160,7 @@ brd_entries:
       functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — lịch sử tài khoản CK, xử lý tại ETL"
+      table: SECURITIESACCOUNTHIS
       related_tables:
         - table: SECURITIESACCOUNT
           relation: "FK — tài khoản giao dịch CK"
@@ -1113,6 +1178,7 @@ brd_entries:
       functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
       scope_status: in_scope
       scope_reason: null
+      table: CATEGORIESSTOCK
       related_tables:
         - table: INVESTOR
           relation: "FK — nhà đầu tư nước ngoài"
@@ -1132,6 +1198,7 @@ brd_entries:
       functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — lịch sử sở hữu CK, xử lý tại ETL"
+      table: CATEGORIESSTOCKHIS
       related_tables:
         - table: CATEGORIESSTOCK
           relation: "FK — danh mục CK hiện tại"
@@ -1151,6 +1218,7 @@ brd_entries:
       functional_group: "FIMS_UID05 Báo cáo thành viên"
       scope_status: in_scope
       scope_reason: null
+      table: RPTMEMBER
       related_tables:
         - table: RPTVALUES
           relation: "Bảng con — giá trị báo cáo nhập từ biểu mẫu"
@@ -1174,6 +1242,7 @@ brd_entries:
       functional_group: "FIMS_UID05 Báo cáo thành viên"
       scope_status: in_scope
       scope_reason: null
+      table: RPTVALUES
       related_tables:
         - table: RPTMEMBER
           relation: "FK — báo cáo thành viên"
@@ -1193,6 +1262,7 @@ brd_entries:
       functional_group: "FIMS_UID05 Báo cáo thành viên"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — quản lý metadata bảng giá trị báo cáo"
+      table: RPTVALUESMANAGERMENT
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1208,6 +1278,7 @@ brd_entries:
       functional_group: "FIMS_UID05 Báo cáo thành viên"
       scope_status: out_of_scope
       scope_reason: "Activity log nguồn — lịch sử trạng thái xử lý báo cáo"
+      table: RPTPROCESS
       related_tables:
         - table: RPTMEMBER
           relation: "FK — báo cáo thành viên"
@@ -1227,6 +1298,7 @@ brd_entries:
       functional_group: "FIMS_UID06 Tổng hợp báo cáo"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — cấu hình gen file thống kê tự động"
+      table: RPTOUTMANAGEMENT
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1242,6 +1314,7 @@ brd_entries:
       functional_group: "FIMS_UID06 Tổng hợp báo cáo"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — file output đã gen"
+      table: RPTOUTFILESAVE
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1259,6 +1332,7 @@ brd_entries:
       functional_group: "FIMS_UID07 Ủy quyền"
       scope_status: in_scope
       scope_reason: null
+      table: AUTHOANNOUNCE
       related_tables:
         - table: AUTHOANNOUNCEHIS
           relation: "Bảng con — lịch sử ủy quyền (out of scope)"
@@ -1280,6 +1354,7 @@ brd_entries:
       functional_group: "FIMS_UID07 Ủy quyền"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — lịch sử ủy quyền, xử lý tại ETL"
+      table: AUTHOANNOUNCEHIS
       related_tables:
         - table: AUTHOANNOUNCE
           relation: "FK — ủy quyền CBTT"
@@ -1297,6 +1372,7 @@ brd_entries:
       functional_group: "FIMS_UID07 Ủy quyền"
       scope_status: in_scope
       scope_reason: null
+      table: ANNOUNCEINVES
       related_tables:
         - table: AUTHOANNOUNCE
           relation: "FK — hồ sơ ủy quyền CBTT"
@@ -1318,6 +1394,7 @@ brd_entries:
       functional_group: "FIMS_UID07 Ủy quyền"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — lịch sử NĐT NN ủy quyền, xử lý tại ETL"
+      table: ANNOUNCEINVESHIS
       related_tables:
         - table: ANNOUNCEINVES
           relation: "FK — bản ghi NĐT NN ủy quyền"
@@ -1337,6 +1414,7 @@ brd_entries:
       functional_group: "FIMS_UID08 Công bố thông tin"
       scope_status: in_scope
       scope_reason: null
+      table: ANNOUNCE
       related_tables:
         - table: INFODISCREPRES
           relation: "FK — người đại diện CBTT đã gửi BC"
@@ -1356,6 +1434,7 @@ brd_entries:
       functional_group: "FIMS_UID09 Cảnh báo"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — tham số cấu hình cảnh báo hệ thống"
+      table: PARAWARN
       related_tables:
         - table: CDTWARN
           relation: "Bảng con — điều kiện cảnh báo"
@@ -1373,6 +1452,7 @@ brd_entries:
       functional_group: "FIMS_UID09 Cảnh báo"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — điều kiện ngưỡng cảnh báo cấu hình"
+      table: CDTWARN
       related_tables:
         - table: PARAWARN
           relation: "FK — tham số cảnh báo"
@@ -1390,6 +1470,7 @@ brd_entries:
       functional_group: "FIMS_UID09 Cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: VIOLT
       related_tables: []
       notes: "Atomic entity: Member Conduct Violation — FK nullable đến các đối tượng gửi BC (FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, BRANCHS, INFODISCREPRES)"
       data_volume_hint: null
@@ -1407,6 +1488,7 @@ brd_entries:
       functional_group: "FIMS_UID10 Tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — thông báo nội bộ ứng dụng FIMS"
+      table: NOTIFICATION
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1422,6 +1504,7 @@ brd_entries:
       functional_group: "FIMS_UID10 Tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — trao đổi thông tin nội bộ hệ thống"
+      table: EMAILSENTSYSTEM
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1437,6 +1520,7 @@ brd_entries:
       functional_group: "FIMS_UID10 Tiện ích"
       scope_status: out_of_scope
       scope_reason: "Operational/system data — email log hệ thống"
+      table: SYSEMAIL
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1452,6 +1536,7 @@ brd_entries:
       functional_group: "FIMS_UID10 Tiện ích"
       scope_status: out_of_scope
       scope_reason: "Không có FK inbound từ bảng nghiệp vụ — tài liệu độc lập"
+      table: DOCUMENT
       related_tables: []
       notes: null
       data_volume_hint: null

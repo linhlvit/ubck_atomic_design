@@ -14,6 +14,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — quản lý người dùng ứng dụng FMS"
+      table: USERS
       related_tables:
         - table: REFRESHTOKEN
           relation: "Bảng con — phiên làm việc"
@@ -33,6 +34,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — session token xác thực"
+      table: REFRESHTOKEN
       related_tables:
         - table: USERS
           relation: "FK — người dùng"
@@ -50,6 +52,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — session tracking"
+      table: USERSESSIONS
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -65,6 +68,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — nhóm quyền RBAC ứng dụng"
+      table: ROLES
       related_tables:
         - table: ROLESMENUS
           relation: "Bảng con — phân quyền menu theo nhóm"
@@ -82,6 +86,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — mapping menu-nhóm quyền"
+      table: ROLESMENUS
       related_tables:
         - table: ROLES
           relation: "FK — nhóm quyền"
@@ -101,6 +106,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — menu/chức năng giao diện ứng dụng"
+      table: MENUS
       related_tables:
         - table: USERSMENUS
           relation: "Bảng con — phân quyền chức năng cho người dùng"
@@ -118,6 +124,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — phân quyền cá nhân"
+      table: USERSMENUS
       related_tables:
         - table: USERS
           relation: "FK — người dùng"
@@ -137,6 +144,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — phân quyền xem báo cáo đầu ra (chưa có cột)"
+      table: USERRPTO
       related_tables:
         - table: USERS
           relation: "FK — người dùng"
@@ -154,6 +162,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Isolated — không có FK inbound từ bảng nghiệp vụ"
+      table: CALENDAR
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -169,6 +178,7 @@ brd_entries:
       functional_group: "FMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
       scope_reason: "Isolated — không có FK inbound từ bảng nghiệp vụ"
+      table: CERTFCATE
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -186,6 +196,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: BUSINESS
       related_tables: []
       notes: "CV scheme: FMS_BUSINESS_TYPE"
       data_volume_hint: null
@@ -201,6 +212,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: JOBTYPE
       related_tables: []
       notes: "CV scheme: FMS_JOB_TYPE"
       data_volume_hint: null
@@ -216,6 +228,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Chưa phân loại — không có trong HLD và ref CSV; reference data địa giới thu thập từ ECAT"
+      table: LOCATION
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -231,6 +244,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: NATIONAL
       related_tables: []
       notes: "Shared entity Geographic Area — bổ sung source"
       data_volume_hint: null
@@ -246,6 +260,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: out_of_scope
       scope_reason: "Orphan — không có bảng nghiệp vụ nào FK đến"
+      table: PARVALUE
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -261,6 +276,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: RELATION
       related_tables: []
       notes: "CV scheme: FMS_RELATION_TYPE"
       data_volume_hint: null
@@ -276,6 +292,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: STATUS
       related_tables: []
       notes: "CV scheme: FMS_OPERATION_STATUS"
       data_volume_hint: null
@@ -291,6 +308,7 @@ brd_entries:
       functional_group: "FMS.2 Danh mục dùng riêng"
       scope_status: in_scope
       scope_reason: null
+      table: STOCKHOLDERTYPE
       related_tables: []
       notes: "CV scheme: FMS_STOCKHOLDER_TYPE"
       data_volume_hint: null
@@ -308,6 +326,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: in_scope
       scope_reason: null
+      table: SECURITIES
       related_tables:
         - table: SECBUSINES
           relation: "Bảng con — ngành nghề kinh doanh (denormalize)"
@@ -333,6 +352,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử thay đổi công ty QLQ"
+      table: SECHISTORY
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ"
@@ -352,6 +372,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — chi tiết before/after, xử lý tại ETL"
+      table: SECBUP
       related_tables:
         - table: SECHISTORY
           relation: "FK — lịch sử công ty QLQ"
@@ -369,6 +390,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: in_scope
       scope_reason: null
+      table: SECBUSINES
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ"
@@ -386,6 +408,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: STAKE
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ"
@@ -403,6 +426,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: in_scope
       scope_reason: null
+      table: BRANCHES
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ trong nước"
@@ -422,6 +446,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — lịch sử chi tiết CN/VPĐD"
+      table: BRCHBUP
       related_tables:
         - table: BRANCHES
           relation: "FK — CN/VPĐD"
@@ -439,6 +464,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: in_scope
       scope_reason: null
+      table: FORBRCH
       related_tables:
         - table: FGBRBUP
           relation: "Bảng con — lịch sử chi tiết (out of scope)"
@@ -460,6 +486,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử VPĐD/CN QLQ NN"
+      table: FGBRBUP
       related_tables:
         - table: FORBRCH
           relation: "FK — VPĐD/CN QLQ NN"
@@ -477,6 +504,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: in_scope
       scope_reason: null
+      table: FGBUSINESS
       related_tables:
         - table: FORBRCH
           relation: "FK — VPĐD/CN QLQ NN"
@@ -494,6 +522,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: in_scope
       scope_reason: null
+      table: STFFGBRCH
       related_tables:
         - table: FORBRCH
           relation: "FK — VPĐD/CN QLQ NN"
@@ -513,6 +542,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: in_scope
       scope_reason: null
+      table: TLProfiles
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ"
@@ -532,6 +562,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử nhân sự QLQ"
+      table: TLPRHISTORY
       related_tables:
         - table: TLProfiles
           relation: "FK — nhân sự"
@@ -551,6 +582,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — chi tiết before/after nhân sự"
+      table: TLPROBUP
       related_tables:
         - table: TLPRHISTORY
           relation: "FK — lịch sử nhân sự"
@@ -568,6 +600,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — phân quyền dữ liệu theo đối tượng"
+      table: DTSCOPE
       related_tables:
         - table: DTSCBMN
           relation: "Bảng con — phân quyền NH LKGS"
@@ -589,6 +622,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — phân quyền dữ liệu NH LKGS"
+      table: DTSCBMN
       related_tables:
         - table: DTSCOPE
           relation: "FK — phạm vi phân quyền"
@@ -606,6 +640,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — phân quyền dữ liệu quỹ đầu tư"
+      table: DTSCFND
       related_tables:
         - table: DTSCOPE
           relation: "FK — phạm vi phân quyền"
@@ -623,6 +658,7 @@ brd_entries:
       functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — phân quyền dữ liệu VPĐD/CN QLQ NN"
+      table: DTSCFR
       related_tables:
         - table: DTSCOPE
           relation: "FK — phạm vi phân quyền"
@@ -642,6 +678,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: FUNDS
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ quản lý quỹ"
@@ -667,6 +704,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: out_of_scope
       scope_reason: "Audit Log nguồn — lịch sử thay đổi quỹ đầu tư"
+      table: FUNDHISTORY
       related_tables:
         - table: FUNDS
           relation: "FK — quỹ đầu tư"
@@ -686,6 +724,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: out_of_scope
       scope_reason: "Snapshot nguồn — chi tiết lịch sử quỹ (chưa có cột)"
+      table: FNDBUP
       related_tables:
         - table: FUNDHISTORY
           relation: "FK — lịch sử quỹ"
@@ -703,6 +742,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: REPRESENT
       related_tables:
         - table: FUNDS
           relation: "FK — quỹ đầu tư"
@@ -722,6 +762,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: BANKMONI
       related_tables:
         - table: FNDSBMN
           relation: "Junction — quỹ đầu tư sử dụng NH LKGS này"
@@ -739,6 +780,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: FNDSBMN
       related_tables:
         - table: FUNDS
           relation: "FK — quỹ đầu tư"
@@ -758,6 +800,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: AGENCIES
       related_tables:
         - table: AGENCIESBRA
           relation: "Bảng con — CN/PGD của đại lý"
@@ -779,6 +822,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: AGENCIESBRA
       related_tables:
         - table: AGENCIES
           relation: "FK — đại lý quỹ"
@@ -796,6 +840,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: AGENFUNDS
       related_tables:
         - table: AGENCIES
           relation: "FK — đại lý quỹ"
@@ -815,6 +860,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: AGENCYTYPE
       related_tables: []
       notes: "CV scheme: FMS_AGENCY_TYPE"
       data_volume_hint: null
@@ -830,6 +876,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: MBFUND
       related_tables:
         - table: FUNDS
           relation: "FK — quỹ đầu tư"
@@ -849,6 +896,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: MBCHANGE
       related_tables:
         - table: MBFUND
           relation: "FK — nhà đầu tư quỹ"
@@ -866,6 +914,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: INVES
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ nhận ủy thác"
@@ -885,6 +934,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: INVESACC
       related_tables:
         - table: INVES
           relation: "FK — nhà đầu tư ủy thác"
@@ -902,6 +952,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: TRANSFERMBF
       related_tables:
         - table: FUNDS
           relation: "FK — quỹ đầu tư"
@@ -921,6 +972,7 @@ brd_entries:
       functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
       scope_status: in_scope
       scope_reason: null
+      table: TRSFERINDER
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ"
@@ -940,6 +992,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: RPTMEMBER
       related_tables:
         - table: RPTVALUES
           relation: "Bảng con — dữ liệu import báo cáo"
@@ -963,6 +1016,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: RPTVALUES
       related_tables:
         - table: RPTMEMBER
           relation: "FK — báo cáo thành viên"
@@ -980,6 +1034,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: RPTMBHS
       related_tables:
         - table: RPTMEMBER
           relation: "FK — báo cáo thành viên"
@@ -997,6 +1052,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: RPTPROCESS
       related_tables:
         - table: RPTMEMBER
           relation: "FK — báo cáo thành viên"
@@ -1014,6 +1070,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: in_scope
       scope_reason: null
+      table: RPTPERIOD
       related_tables:
         - table: RPTPDSHT
           relation: "Junction — SHEET–RPTPERIOD (out of scope)"
@@ -1031,6 +1088,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: RPTPDSHT
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1046,6 +1104,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: RPTTEMP
       related_tables:
         - table: SHEET
           relation: "Bảng con — sheet báo cáo đầu vào"
@@ -1063,6 +1122,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: SHEET
       related_tables:
         - table: RPTTEMP
           relation: "FK — biểu mẫu báo cáo đầu vào"
@@ -1080,6 +1140,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: RPTHTORY
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1095,6 +1156,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: RPTTPOUT
       related_tables:
         - table: SHEETOUT
           relation: "Bảng con — sheet báo cáo đầu ra"
@@ -1112,6 +1174,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: SHEETOUT
       related_tables:
         - table: RPTTPOUT
           relation: "FK — biểu mẫu báo cáo đầu ra"
@@ -1129,6 +1192,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: STTRGTOUT
       related_tables:
         - table: TOTSTTG
           relation: "Bảng con — map cấu hình ↔ ô dữ liệu"
@@ -1146,6 +1210,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: TOTSTTG
       related_tables:
         - table: STTRGTOUT
           relation: "FK — cấu hình lấy dữ liệu"
@@ -1163,6 +1228,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: TPOUTHTORY
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1178,6 +1244,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Chưa có cột — chờ thiết kế"
+      table: SELFSETPD
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1193,6 +1260,7 @@ brd_entries:
       functional_group: "FMS.5 Quản lý báo cáo"
       scope_status: out_of_scope
       scope_reason: "Cấu hình UI — thiết lập hiển thị báo cáo"
+      table: SECURITIESREPORT
       related_tables:
         - table: SECURITIES
           relation: "FK — công ty QLQ"
@@ -1212,6 +1280,7 @@ brd_entries:
       functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: RATINGPD
       related_tables:
         - table: RANK
           relation: "Bảng con — xếp hạng theo kỳ"
@@ -1229,6 +1298,7 @@ brd_entries:
       functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: RANK
       related_tables:
         - table: RATINGPD
           relation: "FK — kỳ đánh giá"
@@ -1250,6 +1320,7 @@ brd_entries:
       functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
       scope_status: in_scope
       scope_reason: null
+      table: RNKFACTOR
       related_tables:
         - table: RNKFACTOR
           relation: "Self-reference — nhân tố cha (ParentId)"
@@ -1267,6 +1338,7 @@ brd_entries:
       functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
       scope_status: out_of_scope
       scope_reason: "Chờ thiết kế — chưa có cột"
+      table: RNKGRFTOR
       related_tables:
         - table: RANK
           relation: "FK — xếp hạng"
@@ -1286,6 +1358,7 @@ brd_entries:
       functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
       scope_status: out_of_scope
       scope_reason: "Chờ thiết kế — chưa có cột"
+      table: RNKFACTHISTORY
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1301,6 +1374,7 @@ brd_entries:
       functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
       scope_status: out_of_scope
       scope_reason: "Isolated — không có FK inbound từ bảng nghiệp vụ"
+      table: PARAWARN
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1318,6 +1392,7 @@ brd_entries:
       functional_group: "FMS.7 Tiện ích và hệ thống"
       scope_status: out_of_scope
       scope_reason: "Isolated — không có FK inbound; tham số cấu hình ứng dụng"
+      table: SYSVAR
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1333,6 +1408,7 @@ brd_entries:
       functional_group: "FMS.7 Tiện ích và hệ thống"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — email log hệ thống"
+      table: SYSEMAIL
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1348,6 +1424,7 @@ brd_entries:
       functional_group: "FMS.7 Tiện ích và hệ thống"
       scope_status: out_of_scope
       scope_reason: "Hạ tầng IT — thông báo nội bộ ứng dụng"
+      table: NOTIFICATION
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1363,6 +1440,7 @@ brd_entries:
       functional_group: "FMS.7 Tiện ích và hệ thống"
       scope_status: out_of_scope
       scope_reason: "Cấu hình UI — thiết lập hiển thị giao diện"
+      table: TABSINFO
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -1378,6 +1456,7 @@ brd_entries:
       functional_group: "FMS.7 Tiện ích và hệ thống"
       scope_status: in_scope
       scope_reason: null
+      table: VIOLT
       related_tables:
         - table: SECURITIES
           relation: "FK nullable — công ty QLQ vi phạm"
