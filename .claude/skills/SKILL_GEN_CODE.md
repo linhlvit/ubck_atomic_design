@@ -1,60 +1,66 @@
 ---
 name: gen-code
 description: |
-  Generate formatted SQL code từ mapping CSV của tầng Silver.
-  Sử dụng khi: gen SQL từ file mapping, build ETL SQL cho silver entity,
+  Generate formatted SQL code từ mapping CSV theo kiến trúc Medallion 4 tầng: Source → Staging → ODS → Atomic.
+  Sử dụng khi: gen SQL từ file mapping staging/ods/atomic, build ETL SQL,
   chạy pipeline sinh code, convert mapping → SQL có CTE + CAST chuẩn.
   Script files nằm tại: Code/scripts/
 ---
 
 # Gen Code Skill
 
-Sinh file SQL đã format từ mapping CSV (output của `gen_mapping_silver`).
+Sinh file SQL đã format từ mapping CSV của từng tầng trong kiến trúc Medallion.
+
+Mỗi tầng có 1 script riêng — input là mapping CSV của tầng đó, output là file SQL tương ứng.
+
+---
 
 ## Cấu trúc repo
 
 ```
 ubck_atomic_design/
 ├── Mapping/
-│   └── silver/<SS>/<entity>.csv        ← input
+│   ├── staging/<SS>/stg_<ss>_<table>.csv   ← input staging
+│   ├── ods/<SS>/ods_<ss>_<table>.csv        ← input ODS
+│   └── atomic/<SS>/<entity>.csv            ← input atomic
+├── system/
+│   └── rules/rule_map_schema.csv           ← lookup Tên Schema Var DBT SRC/STG/ODS
 └── Code/
     ├── scripts/
-    │   └── gen_code_silver.py           ← script này
-    └── silver/
-        ├── FMS/
-        │   └── <entity>.sql             ← output
-        ├── FIMS/
-        ├── NHNCK/
-        └── ...
+    │   ├── gen_code_staging.py              ← Bước 1
+    │   ├── gen_code_ods.py                  ← Bước 2 (🚧 chưa implement)
+    │   └── gen_code_atomic.py               ← Bước 3
+    ├── staging/<SS>/stg_<ss>_<table>.sql   ← output staging
+    ├── ods/<SS>/ods_<ss>_<table>.sql        ← output ODS
+    └── atomic/<SS>/<entity>.sql            ← output atomic
 ```
 
 ---
 
-## Chạy script
+## Pipeline tổng thể
 
-```bash
-# 1 file cụ thể
-python Code/scripts/gen_code_silver.py Mapping/silver/FIMS/fund_management_company_FIMS_FUNDCOMPANY.csv
-
-# theo entity (tất cả SSC)
-python Code/scripts/gen_code_silver.py --entity "Fund Management Company"
-
-# theo source system
-python Code/scripts/gen_code_silver.py --source-system FIMS
-
-# tất cả
-python Code/scripts/gen_code_silver.py --all
-
-# in ra stdout thay vì ghi file
-python Code/scripts/gen_code_silver.py --stdout <file>
 ```
-
-**Input:** `Mapping/silver/<SS>/<entity>.csv`
-**Output:** `Code/silver/<SS>/<entity>.sql` (encoding `utf-8`, tên file = tên mapping CSV, chỉ đổi extension)
+Source DDL  (Source/<SS>_Tables.csv + _Columns.csv)
+│
+├─ Bước 1: Staging
+│   Mapping/staging/<SS>/stg_*.csv
+│   ↓ gen_code_staging.py
+│   Code/staging/<SS>/stg_*.sql
+│
+├─ Bước 2: ODS  (🚧 gen_code_ods.py chưa implement)
+│   Mapping/ods/<SS>/ods_*.csv
+│   ↓ gen_code_ods.py
+│   Code/ods/<SS>/ods_*.sql
+│
+└─ Bước 3: Atomic
+    Mapping/atomic/<SS>/<entity>.csv
+    ↓ gen_code_atomic.py
+    Code/atomic/<SS>/<entity>.sql
+```
 
 ---
 
-## Cấu trúc SQL output
+## Cấu trúc SQL output (chung mọi tầng)
 
 ```
 ┌─ Program Header (block comment)
@@ -65,7 +71,7 @@ python Code/scripts/gen_code_silver.py --stdout <file>
 │   ...
 │
 └─ SELECT
-     <column list with CAST>
+     <column list>
    FROM <primary_alias>
      LEFT JOIN ...
    WHERE ...
@@ -74,186 +80,7 @@ python Code/scripts/gen_code_silver.py --stdout <file>
 
 ---
 
-## Quy tắc build CTE
-
-Pair detection: nếu `input_rows[i+1].Table Name == input_rows[i].Alias` → 2 dòng là 1 cặp, gộp lại thành 1 CTE.
-
-| Pattern | Kết quả SQL |
-|---|---|
-| `physical_table` đứng riêng | 1 CTE đơn giản: `SELECT <cols> FROM <schema>.<table> WHERE <filter>` |
-| `physical_table` + `derived_cte` (cặp, `Array<Text>`) | **Gộp thành 1 CTE**: `SELECT <agg_cols> FROM <schema>.<table> WHERE <filter> GROUP BY <fk>` — pre-aggregate tại nguồn, bỏ CTE trung gian `<alias>_raw` |
-| `physical_table` + `unpivot_cte` (cặp, shared_entity) | 1 CTE dùng `LATERAL VIEW stack(...)`: select_fields cell có 2 dòng — dòng 1 là SELECT projection, dòng 2 là lateral view; script reformat sang multi-line (1 leg per line, indent 8 spaces) |
-| Không có cặp, chỉ có physical | Fallback: mỗi dòng 1 CTE |
-
-### Ví dụ merged derived_cte
-
-Mapping:
-```
-1,physical_table,bronze,FUNDCOMBUSINES,fu_bu_raw,"fundid, buid",data_date = ...
-2,derived_cte,,fu_bu_raw,fu_bu,"fundid, array_agg(buid) AS business_type_codes",GROUP BY fundid
-```
-
-SQL:
-```sql
-fu_bu AS (
-    SELECT fundid, array_agg(buid) AS business_type_codes
-    FROM bronze.FUNDCOMBUSINES
-    WHERE data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
-    GROUP BY fundid
-)
-```
-
-### Ví dụ unpivot_cte (shared_entity, LATERAL VIEW stack)
-
-Mapping:
-```
-1,physical_table,bronze,FUNDCOMPANY,fu_co,"id, email, fax, telephone, website",data_date = ...
-2,unpivot_cte,,fu_co,leg_fu_co,"id AS ip_code, type_code, address_value
-LATERAL VIEW stack(4, 'EMAIL', email, 'FAX', fax, 'PHONE', telephone, 'WEBSITE', website) AS (type_code, address_value)",address_value IS NOT NULL
-```
-
-SQL (LATERAL VIEW reformat multi-line, 1 leg per line):
-```sql
-leg_fu_co AS (
-    SELECT id AS ip_code, type_code, address_value
-    FROM bronze.FUNDCOMPANY
-    LATERAL VIEW stack(4,
-        'EMAIL', email,
-        'FAX', fax,
-        'PHONE', telephone,
-        'WEBSITE', website
-    ) AS (type_code, address_value)
-    WHERE data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
-        AND address_value IS NOT NULL
-)
-```
-
-- physical_table SELECT chỉ chứa cột thực tế (`id` + value cols), KHÔNG có `source_system_code` (đã hardcode tại Mapping)
-- Dòng 1 trong cell unpivot_cte `Select Fields` = SELECT projection (3 cột: `ip_code`, `type_code`, `address_value`)
-- Dòng 2 = LATERAL VIEW expression — script tự reformat sang multi-line (1 leg per line, indent 8 spaces). Logic: parse `stack(N, args...)`, args chia đều thành N legs (`vals_per_leg = len(args) / N`), mỗi leg in 1 dòng
-- Filter từ physical_table và unpivot_cte gộp bằng `AND` đặt trong WHERE
-
----
-
-## Quy tắc Main SELECT
-
-| Transformation | Kết quả |
-|---|---|
-| `hash_id(...)` | **Giữ nguyên** — không cast (vì hash_id đã return string) |
-| Biểu thức khác | `<transformation> :: <data_type>` (có khoảng trắng trước/sau `::` cho dễ đọc) |
-| Trống (không có source_column) | `NULL :: <data_type>` |
-
-**Alignment:** Tất cả `AS <target_column>` căn thẳng hàng (dựa vào expression dài nhất, cap 72 ký tự).
-
-**Data type** lấy từ cột `Data Type` trong mapping (thường: `string`, `decimal(23,2)`, `date`, `timestamp`, `int`, ...).
-
-**Comma placement:** Dấu phẩy đứng **cuối** mỗi dòng (trừ dòng cuối), KHÔNG dùng leading comma.
-
-### Ví dụ Main SELECT
-
-```sql
-SELECT
-    hash_id('FIMS_FUNDCOMPANY', fu_co.id)  AS fund_management_company_id,
-    fu_co.id :: string                     AS fund_management_company_code,
-    'FIMS_FUNDCOMPANY' :: string           AS source_system_code,
-    fu_co.capital :: decimal(23,2)         AS charter_capital_amount,
-    fu_co.datecreated :: timestamp         AS created_timestamp,
-    NULL :: date                           AS license_decision_date,
-    hash_id('FIMS_NATIONAL', fu_co.naid)   AS country_of_registration_id,
-    fu_bu.business_type_codes :: string    AS business_type_codes
-FROM fu_co
-    LEFT JOIN fu_bu ON fu_co.id = fu_bu.fundid
-    LEFT JOIN fu_ty ON fu_co.id = fu_ty.fundid
-;
-```
-
----
-
-## FROM + JOIN
-
-Lấy từ section `Relationship` của mapping:
-
-- `Main Alias` cột đầu tiên có giá trị → primary alias (dùng trong `FROM <primary>`)
-- Mỗi dòng còn lại: `<Join Type> <Join Alias> ON <Join On>` (indent 4 spaces)
-- Không có row nào → chỉ `FROM <primary>`, không có join
-
----
-
-## Final Filter
-
-Từ section `Final Filter`, chỉ render clause có giá trị:
-
-| Clause Type | Render |
-|---|---|
-| `WHERE` | `WHERE <expr>` (nhiều row WHERE → join với ` AND `, xuống dòng tại mỗi AND/OR) |
-| `GROUP BY` | `GROUP BY <expr>` |
-| `HAVING` | `HAVING <expr>` |
-| `ORDER BY` | `ORDER BY <expr>` |
-| `UNION ALL` | **Trigger shared_entity mode** (xem bên dưới) |
-
-### Format WHERE có AND/OR
-
-Biểu thức WHERE có nhiều điều kiện nối bằng `AND`/`OR` sẽ được xuống dòng, AND/OR đứng đầu dòng mới, indent sâu hơn 4 spaces so với WHERE. Áp dụng ở MỌI chỗ có WHERE (CTE physical, CTE merged, CTE unpivot leg, main query).
-
-Ví dụ:
-```sql
-    WHERE data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
-        AND email IS NOT NULL
-        AND status = 'LIVE'
-```
-
----
-
-## Shared Entity mode (UNION ALL)
-
-**Detection:** Shared entity được phát hiện khi có **bất kỳ dòng `unpivot_cte`** nào trong section Input — không phụ thuộc vào UNION ALL clause (vì khi source system chỉ có 1 leg, Final Filter sẽ bỏ trống UNION ALL).
-
-Logic build SELECT:
-
-1. Liệt kê leg aliases:
-   - Nếu có UNION ALL clause trong Final Filter → parse các alias từ `SELECT * FROM <leg>`
-   - Nếu không có UNION ALL (chỉ 1 leg) → dùng alias của các dòng `unpivot_cte`
-2. Mỗi cell `Transformation` trong Mapping section là **`;`-separated** — phần thứ `i` là expression cho leg thứ `i`. Vd: `leg_se.ip_code; leg_fo_ch.ip_code; leg_ba_mo.ip_code; leg_br.ip_code`
-3. Với leg index `i`, build SELECT block:
-   - Mỗi target column lấy phần thứ `i` của transformation (tách bằng `;`), fallback về phần cuối nếu thiếu
-   - Apply rule cast / hash_id như Case 1
-   - `FROM <leg_i>` (không JOIN, không WHERE)
-4. Nếu có > 1 leg → nối các SELECT block bằng `UNION ALL`. Nếu chỉ 1 leg → 1 SELECT.
-
-### Ví dụ shared_entity output
-
-Mapping cells (ngăn cách `;` giữa các legs):
-- `involved_party_id` = `hash_id('FMS_SECURITIES', leg_se.ip_code); hash_id('FMS_FORBRCH', leg_fo_ch.ip_code); ...`
-- `involved_party_code` = `leg_se.ip_code; leg_fo_ch.ip_code; ...`
-- `source_system_code` = `'FMS_SECURITIES'; 'FMS_FORBRCH'; ...` (literal fix per leg)
-
-Generated SQL (mỗi leg lấy phần tương ứng theo index trong `;`-separated list):
-
-```sql
-SELECT
-    hash_id('FMS_SECURITIES', leg_se.ip_code) AS involved_party_id,
-    leg_se.ip_code :: string                  AS involved_party_code,
-    'FMS_SECURITIES' :: string                AS source_system_code,
-    leg_se.type_code :: string                AS electronic_address_type_code,
-    leg_se.address_value :: string            AS electronic_address_value
-FROM leg_se
-UNION ALL
-SELECT
-    hash_id('FMS_FORBRCH', leg_fo_ch.ip_code) AS involved_party_id,
-    leg_fo_ch.ip_code :: string               AS involved_party_code,
-    'FMS_FORBRCH' :: string                   AS source_system_code,
-    ...
-FROM leg_fo_ch
-UNION ALL
-...
-;
-```
-
----
-
-## Program Header format
-
-Mỗi file SQL bắt đầu bằng block comment chuẩn:
+## Program Header format (chung mọi tầng)
 
 ```sql
 /*
@@ -272,33 +99,313 @@ Mỗi file SQL bắt đầu bằng block comment chuẩn:
 
 ### Quy tắc đặt Program name
 
-- Split tên file bằng `_`
-- Với mỗi từ: viết hoa **chỉ chữ cái đầu**, phần còn lại giữ nguyên (không lowercase rest)
-- Join bằng space
+**Staging** (`stg_<ss>_<table>`):
+- Format cố định: `Staging <SS_UPPER> <TABLE_UPPER>`
+- VD: `stg_fms_securities` → `Staging FMS SECURITIES`
 
-**Lý do giữ nguyên phần còn lại:** Các acronym như `FMS`, `FIMS`, `NHNCK`, `FUNDCOMPANY` phải giữ nguyên uppercase, không chuyển thành `Fms`, `Fundcompany`.
+**ODS** (`ods_<ss>_<table>`):
+- Format cố định: `ODS <SS_UPPER> <TABLE_UPPER>`
+- VD: `ods_fms_securities` → `ODS FMS SECURITIES`
+
+**Atomic** (`gen_code_atomic.py`):
+- Split tên file bằng `_`, viết hoa chỉ chữ cái đầu mỗi từ, phần còn lại giữ nguyên
+- VD: `fund_management_company_fims_fundcompany` → `Fund Management Company Fims Fundcompany`
 
 **Ví dụ:**
 
 | File | Program name |
 |---|---|
-| `fund_management_company_FIMS_FUNDCOMPANY` | `Fund Management Company FIMS FUNDCOMPANY` |
-| `involved_party_electronic_address` | `Involved Party Electronic Address` |
-| `securities_company_organization_unit_SCMS_CTCK_CHI_NHANH` | `Securities Company Organization Unit SCMS CTCK CHI NHANH` |
-
-### Field trống
-
-- `Created by:` / `Created date:` → để trống, user nhập tay khi merge
-- Dòng modified entry → để trống (chỉ có dấu `* `), mỗi lần modify user thêm 1 dòng mới
+| `stg_fms_securities` | `Staging FMS SECURITIES` |
+| `stg_scms_ctck` | `Staging SCMS CTCK` |
+| `ods_fms_securities` | `ODS FMS SECURITIES` |
+| `fund_management_company_fims_fundcompany` | `Fund Management Company Fims Fundcompany` |
+| `involved_party_alternative_identification_fms` | `Involved Party Alternative Identification Fms` |
 
 ---
 
-## Encoding & format
+## Encoding & format (chung mọi tầng)
 
-- **Input CSV:** `utf-8-sig` (có BOM, để Excel/VSCode extension parse tiếng Việt đúng)
+- **Input CSV:** `utf-8-sig` (có BOM)
 - **Output SQL:** `utf-8` (không BOM)
-- **Indent:** 4 spaces (không tab, trừ bảng Modified management dùng `\t` để căn 3 cột)
+- **Indent:** 4 spaces (không tab, trừ bảng Modified management dùng `\t`)
 - **Line ending:** `\n` (LF)
+- **Comma placement:** Dấu phẩy đứng **cuối** mỗi dòng (trừ dòng cuối)
+
+---
+
+## Bước 1 — Staging (Source → Staging)
+
+### Chạy script
+
+```bash
+# 1 file cụ thể
+python Code/scripts/gen_code_staging.py Mapping/staging/FMS/stg_fms_securities.csv
+
+# theo source system
+python Code/scripts/gen_code_staging.py --source-system FMS
+
+# theo tên bảng (prefix match)
+python Code/scripts/gen_code_staging.py --table stg_fms_securities
+
+# tất cả
+python Code/scripts/gen_code_staging.py --all
+
+# in ra stdout
+python Code/scripts/gen_code_staging.py --stdout Mapping/staging/FMS/stg_fms_securities.csv
+```
+
+**Input:** `Mapping/staging/<SS>/stg_<ss>_<table>.csv`
+**Output:** `Code/staging/<SS>/stg_<ss>_<table>.sql`
+
+### Quy tắc build CTE (Staging)
+
+- Mỗi dòng `physical_table` → 1 CTE đơn giản
+- FROM dùng **dbt source syntax** thay vì `schema.table`:
+
+```sql
+{{ source('source_<ss_lower>', 'raw_<table_lower>') }}
+```
+
+`source_<ss_lower>` derive trực tiếp từ tên thư mục cha của mapping file (VD: `FMS` → `source_fms`).
+
+`raw_<table_lower>` = prefix `raw_` + tên bảng nguồn viết thường (VD: `SECURITIES` → `raw_securities`).
+
+**Ví dụ CTE staging:**
+
+```sql
+se AS (
+    SELECT *
+    FROM {{ source('source_fms', 'raw_securities') }}
+)
+```
+
+### Quy tắc Main SELECT (Staging)
+
+| Điều | Giá trị |
+|---|---|
+| Physical Target Column | **Lowercase** của tên cột gốc (`ShortName` → `shortname`) |
+| `to_date("etl_date", 'yyyy-MM-dd')` | `to_date('{{ var("etl_date") }}','yyyy-MM-dd')` — **không CAST** |
+| `current_timestamp()` | Giữ nguyên `current_timestamp()` — **không CAST** (áp dụng mọi tầng) |
+| CAST | Chỉ render nếu Data Type **không trống** (và không phải etl_date / current_timestamp()): `CAST(expr AS dtype)` |
+| Không có Data Type | Giữ nguyên transformation, không wrap CAST |
+| Transformation trống | `NULL` (kèm CAST nếu Data Type có giá trị) |
+| WHERE | **Chỉ render** nếu filter không trống (lấy từ cột `filter` trong `gm_staging_entities`) |
+
+**Alignment:** `AS <target>` căn thẳng hàng (expression dài nhất, cap 72 ký tự).
+
+**Ví dụ Main SELECT staging (không có Data Type):**
+
+```sql
+SELECT
+    se.Id               AS id,
+    se.Name             AS name,
+    se.ShortName        AS shortname,
+    se.EnName           AS enname,
+    se.Address          AS address,
+    se.IsDataMigration  AS isdatamigration
+FROM se
+;
+```
+
+**Ví dụ khi có Data Type:**
+
+```sql
+SELECT
+    se.Id                            AS id,
+    CAST(se.Amount AS decimal(23,2)) AS amount,
+    CAST(se.ActiveDate AS date)      AS activedate
+FROM se
+;
+```
+
+---
+
+## Bước 2 — ODS (Staging → ODS)
+
+### Chạy script
+
+```bash
+# 1 file cụ thể
+python Code/scripts/gen_code_ods.py Mapping/ods/FMS/ods_fms_securities.csv
+
+# theo source system
+python Code/scripts/gen_code_ods.py --source-system FMS
+
+# theo tên bảng (prefix match)
+python Code/scripts/gen_code_ods.py --table ods_fms_securities
+
+# tất cả
+python Code/scripts/gen_code_ods.py --all
+
+# in ra stdout
+python Code/scripts/gen_code_ods.py --stdout Mapping/ods/FMS/ods_fms_securities.csv
+```
+
+**Input:** `Mapping/ods/<SS>/ods_<ss>_<table>.csv`
+**Output:** `Code/ods/<SS>/ods_<ss>_<table>.sql`
+
+### Quy tắc build CTE (ODS)
+
+Mỗi dòng `physical_table` → 1 CTE. FROM dùng **dbt ref()** trỏ tới staging model:
+
+```sql
+{{ ref('<staging_table>') }}
+```
+
+`staging_table` lấy từ cột `Table Name` trong Input section của mapping (VD: `stg_fms_securities`).
+
+**Ví dụ CTE ODS:**
+
+```sql
+se AS (
+    SELECT *
+    FROM {{ ref('stg_fms_securities') }}
+)
+```
+
+### Quy tắc Main SELECT (ODS)
+
+| Điều | Giá trị |
+|---|---|
+| Physical Target Column | As-is từ mapping (đã lowercase) |
+| Transformation | `alias.column` (1:1 pass-through từ staging) |
+| CAST | Chỉ render nếu Data Type **không trống**: `CAST(expr AS dtype)` |
+| WHERE | Chỉ render nếu filter không trống |
+
+**Ví dụ Main SELECT ODS:**
+
+```sql
+SELECT
+    se.id              AS id,
+    se.name            AS name,
+    se.ds_snpst_dt     AS ds_snpst_dt
+FROM se
+;
+```
+
+### Program name (ODS)
+
+Format: `ODS <SS_UPPER> <TABLE_UPPER>`
+
+VD: `ods_fms_securities` → `ODS FMS SECURITIES`
+
+---
+
+## Bước 3 — Atomic (ODS → Atomic)
+
+Script: `gen_code_atomic.py`
+
+### Chạy script
+
+```bash
+# 1 file cụ thể
+python Code/scripts/gen_code_atomic.py Mapping/atomic/FIMS/fund_management_company_fims_fundcompany.csv
+
+# theo entity (prefix match)
+python Code/scripts/gen_code_atomic.py --entity "Fund Management Company"
+
+# theo source system
+python Code/scripts/gen_code_atomic.py --source-system FIMS
+
+# tất cả
+python Code/scripts/gen_code_atomic.py --all
+
+# in ra stdout
+python Code/scripts/gen_code_atomic.py --stdout <file>
+```
+
+**Input:** `Mapping/atomic/<SS>/<entity>.csv`
+**Output:** `Code/atomic/<SS>/<entity>.sql`
+
+### Quy tắc build CTE (Atomic)
+
+- FROM dùng **dbt ref()** trỏ tới ODS model: `{{ ref('<ods_table>') }}`
+- Pair detection: nếu `input_rows[i+1].Table Name == input_rows[i].Alias` → 2 dòng là 1 cặp.
+
+| Pattern | Kết quả SQL |
+|---|---|
+| `physical_table` đứng riêng | 1 CTE: `SELECT <cols> FROM {{ ref(...) }} WHERE <filter>` |
+| `physical_table` + `derived_cte` (cặp) | **Gộp thành 1 CTE**: `SELECT <agg_cols> FROM {{ ref(...) }} WHERE <filter> GROUP BY <fk>` |
+| `physical_table` + `unpivot_cte` (cặp) | 1 CTE dùng `LATERAL VIEW stack(...)` multi-line |
+
+#### Ví dụ merged derived_cte
+
+```sql
+fu_bu AS (
+    SELECT fundid, array_agg(buid) AS bsn_tp_codes
+    FROM {{ ref('ods_fims_fundcombusines') }}
+    WHERE ds_snpst_dt = to_date('{{ var("etl_date") }}','yyyy-MM-dd')
+    GROUP BY fundid
+)
+```
+
+#### Ví dụ unpivot_cte (LATERAL VIEW stack, 1 leg per line)
+
+```sql
+leg_fu_co AS (
+    SELECT id AS ip_code, type_code, address_value
+    FROM {{ ref('ods_fims_fundcompany') }}
+    LATERAL VIEW stack(4,
+        'EMAIL', email,
+        'FAX', fax,
+        'PHONE', telephone,
+        'WEBSITE', website
+    ) AS (type_code, address_value)
+    WHERE ds_snpst_dt = to_date('{{ var("etl_date") }}','yyyy-MM-dd')
+        AND address_value IS NOT NULL
+)
+```
+
+### Quy tắc Main SELECT (Atomic)
+
+| Transformation | Kết quả |
+|---|---|
+| `hash_id(...)` | **Đổi thành dbt macro** — `{{ generate_surrogate_key_bigint(...) }}`, không CAST |
+| Biểu thức khác + Data Type | `CAST(<transformation> AS <data_type>)` |
+| Trống + Data Type | `CAST(NULL AS <data_type>)` |
+
+**Data Type** luôn bắt buộc trong mapping atomic (khác Staging).
+
+**Ví dụ Main SELECT atomic:**
+
+```sql
+SELECT
+    {{ generate_surrogate_key_bigint('FIMS_FUNDCOMPANY', fu_co.id) }} AS fnd_mgt_co_id,
+    CAST(fu_co.id AS string)                                          AS fnd_mgt_co_code,
+    CAST('FIMS_FUNDCOMPANY' AS string)                                AS src_stm_code,
+    CAST(fu_co.capital AS decimal(23,2))                              AS charter_cptl_amt,
+    CAST(NULL AS date)                                                AS license_dcsn_dt
+FROM fu_co
+    LEFT JOIN fu_bu ON fu_co.id = fu_bu.fundid
+;
+```
+
+### Shared Entity mode (UNION ALL) — Atomic only
+
+**Detection:** Có `UNION ALL` trong section Final Filter (hoặc có dòng `unpivot_cte` trong Input).
+
+Logic build SELECT:
+1. Trích leg aliases từ UNION ALL clause (`SELECT * FROM <alias>`)
+2. Transformation cell dùng `;`-separated — phần thứ `i` cho leg thứ `i`; phần trống → `CAST(NULL AS dtype)`
+3. Mỗi leg = 1 SELECT block, nối bằng `UNION ALL`
+
+### Final Filter (Atomic)
+
+| Clause Type | Render |
+|---|---|
+| `WHERE` | `WHERE <expr>` (nhiều row → join `AND`, xuống dòng tại AND/OR) |
+| `GROUP BY` | `GROUP BY <expr>` |
+| `HAVING` | `HAVING <expr>` |
+| `ORDER BY` | `ORDER BY <expr>` |
+| `UNION ALL` | Trigger shared_entity mode |
+
+### Format WHERE có AND/OR (áp dụng mọi tầng)
+
+```sql
+    WHERE data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
+        AND email IS NOT NULL
+        AND status = 'LIVE'
+```
 
 ---
 
@@ -306,25 +413,7 @@ Mỗi file SQL bắt đầu bằng block comment chuẩn:
 
 | Nguồn thay đổi | Action |
 |---|---|
-| File mapping CSV thay đổi | Chạy lại `gen_code_silver.py <mapping_file>` để regen SQL |
-| Script `gen_mapping_silver.py` đổi output pattern | Chạy lại cả `gen_mapping_silver` → rồi `gen_code_silver --all` |
-| Chỉ đổi format SQL (CAST rule, header, ...) | Chạy `gen_code_silver.py --all` để regen toàn bộ |
+| File mapping CSV thay đổi | Chạy lại script tương ứng cho file đó |
+| Đổi output format/rule | Chạy `--all` để regen toàn bộ tầng đó |
 
-Script **không tracking dependency** — không auto-detect file mapping mới/đổi, user phải tự gọi.
-
----
-
-## Pipeline tổng thể
-
-```
-1. Source DDL                         (Source/<SS>_Tables.csv + _Columns.csv)
-   ↓ gen_reg_bronze.py
-2. Bronze registry                    (Mapping/registries/gm_bronze_*.csv)
-   ↓ (+ Silver HLD/LLD)
-   ↓ gen_reg_silver.py
-3. Silver registry                    (Mapping/registries/gm_silver_*.csv)
-   ↓ gen_mapping_silver.py
-4. Mapping CSV                        (Mapping/silver/<SS>/<entity>.csv)
-   ↓ gen_code_silver.py               ← BƯỚC NÀY
-5. SQL code                           (Code/silver/<SS>/<entity>.sql)
-```
+Script **không tracking dependency** — user phải tự gọi khi mapping thay đổi.

@@ -1,0 +1,503 @@
+source_system,table_name,staging_table,table_type,etl_handle,filter,description
+DCST,CAU_HINH_GOI_TIN,stg_dcst_cau_hinh_goi_tin,,Incremental - Delete then Insert,,Lưu các thông tin về cấu hình gói tin trao đổi giữa UBCKNN và Cục Thuế
+DCST,CHUCNANG,stg_dcst_chucnang,,Incremental - Delete then Insert,,Lưu các thông tin danh sách các menu hệ thống
+DCST,DM_CHUCVU,stg_dcst_dm_chucvu,,Incremental - Delete then Insert,,Lưu các thông tin về danh mục chức vụ
+DCST,DM_DON_VI,stg_dcst_dm_don_vi,,Incremental - Delete then Insert,,Lưu các thông tin về danh mục đơn vị
+DCST,HT_THAM_SO,stg_dcst_ht_tham_so,,Incremental - Delete then Insert,,Lưu các thông tin về tham số hệ thống
+DCST,NGUOIDUNG,stg_dcst_nguoidung,,Incremental - Delete then Insert,,Lưu các thông tin về người dùng hệ thống
+DCST,NGUOIDUNG_NHOMNGUOIDUNG,stg_dcst_nguoidung_nhomnguoidung,,Incremental - Delete then Insert,,Bảng mapping giữa người dùng và nhóm người dùng
+DCST,NHAT_KY_HE_THONG,stg_dcst_nhat_ky_he_thong,,Incremental - Delete then Insert,,"Lưu các thông tin về nhật ký hệ thống, các thao tác của người dùng trên hệ thống"
+DCST,NHOMNGUOIDUNG,stg_dcst_nhomnguoidung,,Incremental - Delete then Insert,,Lưu các thông tin về nhóm người dùng trên hệ thống
+DCST,NHOMNGUOIDUNG_CHUCNANG,stg_dcst_nhomnguoidung_chucnang,,Incremental - Delete then Insert,,Bảng mapping giữa nhóm người dùng và chức năng hệ thống
+DCST,THIET_LAP_LICH,stg_dcst_thiet_lap_lich,,Incremental - Delete then Insert,,Bảng lưu cấu hình lịch truyền/ nhận dữ liệu giữa UBCKNN và Cục Thuế
+DCST,DB_LOG,stg_dcst_db_log,,Incremental - Delete then Insert,,Bảng lưu log truy vẫn trên database
+DCST,CONG_TY_KIEM_TOAN,stg_dcst_cong_ty_kiem_toan,,Incremental - Delete then Insert,,Lưu các thông tin về công ty kiểm toán
+DCST,DN_RUI_RO_CAO,stg_dcst_dn_rui_ro_cao,,Incremental - Delete then Insert,,Lưu các thông tin về Doanh nghiệp rủi ro cao được lấy về từ Cục Thuế
+DCST,GOI_TIN,stg_dcst_goi_tin,,Incremental - Delete then Insert,,Lưu các thông tin về dữ liệu gói tin truyền nhận giữa UBCKNN và Cục Thuế
+DCST,KIEM_TOAN_VIEN,stg_dcst_kiem_toan_vien,,Incremental - Delete then Insert,,Lưu các thông tin về Kiểm toán viên
+DCST,THONG_TIN_CONG_TY,stg_dcst_thong_tin_cong_ty,,Incremental - Delete then Insert,,"Bảng lưu thông tin công ty bao gồm thông tin công ty đại chúng, công ty chứng khoán, công ty quản lý quỹ"
+DCST,THONG_TIN_DK_THUE,stg_dcst_thong_tin_dk_thue,,Incremental - Delete then Insert,,Bảng lưu thông tin đăng ký thuế được lấy từ Cục Thuế
+DCST,UBCK_XU_PHAT,stg_dcst_ubck_xu_phat,,Incremental - Delete then Insert,,Bảng lưu các thông tin về xử phạt tại UBCKNN
+DCST,TCT_BAO_CAO,stg_dcst_tct_bao_cao,,Incremental - Delete then Insert,,Bảng lưu các báo cáo tài chỉnh lấy từ Cục Thuế
+DCST,TCT_BAO_CAO_CHI_TIET,stg_dcst_tct_bao_cao_chi_tiet,,Incremental - Delete then Insert,,Bảng lưu các thông tin chi tiết của báo cáo tài chỉnh lấy từ Cục Thuế
+DCST,TCT_TT_CUONG_CHE_NO,stg_dcst_tct_tt_cuong_che_no,,Incremental - Delete then Insert,,Bảng lưu các thông tin cưỡng chế nợ lấy từ Cục Thuế
+DCST,TT_XLY_VI_PHAM,stg_dcst_tt_xly_vi_pham,,Incremental - Delete then Insert,,Bảng lưu các thông tin xử lý vi phạm pháp luật về thuế
+DCST,UBCK_BAO_CAO,stg_dcst_ubck_bao_cao,,Incremental - Delete then Insert,,Bảng lưu các báo cáo tài chính lấy từ các hệ thống của UBCKNN
+DCST,UBCK_BAO_CAO_CHI_TIET,stg_dcst_ubck_bao_cao_chi_tiet,,Incremental - Delete then Insert,,Bảng lưu các thông tin chi tiết của báo cáo tài chỉnh lấy từ các hệ thống tại UBCKNN
+DCST,DANH_MUC,stg_dcst_danh_muc,,Incremental - Delete then Insert,,Bảng lưu các thông tin cấu hình danh mục
+DCST,NHOM_DANH_MUC,stg_dcst_nhom_danh_muc,,Incremental - Delete then Insert,,Bảng lưu các thông tin cấu hình nhóm danh mục
+DCST,TCT_TTCCN_HOA_DON,stg_dcst_tct_ttccn_hoa_don,,Incremental - Delete then Insert,,Bảng lưu các thông tin cưỡng chế nợ thông qua hóa đơn
+DCST,HOA_DON_CHI_TIET,stg_dcst_hoa_don_chi_tiet,,Incremental - Delete then Insert,,Bảng lưu các thông tin cấu hình hóa đơn
+DCST,TTKDT_NGUOI_DAI_DIEN,stg_dcst_ttkdt_nguoi_dai_dien,,Incremental - Delete then Insert,,Bảng lưu các thông tin người đại diện của tổ chức/ doanh nghiệp nộp thuế
+FIMS,USERS,stg_fims_users,,Incremental - Delete then Insert,,lưu danh sách người dùng trên hệ thống
+FIMS,USERSMENUS,stg_fims_usersmenus,,Incremental - Delete then Insert,,lưu danh sách quyền được phân cho người dùng
+FIMS,USERRPTO,stg_fims_userrpto,,Incremental - Delete then Insert,,lưu danh sách phân quyền sử dụng báo cáo đầu ra
+FIMS,REFRESHTOKEN,stg_fims_refreshtoken,,Incremental - Delete then Insert,,lưu danh sách các phiên làm việc của người dùng
+FIMS,GROUPS,stg_fims_groups,,Incremental - Delete then Insert,,Lưu danh sách nhóm người dùng
+FIMS,GROUPUSERS,stg_fims_groupusers,,Incremental - Delete then Insert,,lưu danh sách người dùng được phân vào nhóm người
+FIMS,GROUPROLES,stg_fims_grouproles,,Incremental - Delete then Insert,,lưu danh sách các quyền được phân cho nhóm người
+FIMS,ROLES,stg_fims_roles,,Incremental - Delete then Insert,,lưu danh sách nhóm quyền
+FIMS,MENUS,stg_fims_menus,,Incremental - Delete then Insert,,Lưu danh sách các quyền của hệ thống
+FIMS,CERTFCATE,stg_fims_certfcate,,Incremental - Delete then Insert,,lưu danh sách chứng thư số
+FIMS,ERRORLOG,stg_fims_errorlog,,Incremental - Delete then Insert,,Lưu lịch sử lỗi hệ thống
+FIMS,USERSESSIONS,stg_fims_usersessions,,Incremental - Delete then Insert,,Lưu danh sách theo dõi tài khoản đang truy cập
+FIMS,RPTTEMP,stg_fims_rpttemp,,Incremental - Delete then Insert,,lưu danh sách biểu mẫu báo cáo đầu vào.
+FIMS,SHEET,stg_fims_sheet,,Incremental - Delete then Insert,,lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào
+FIMS,RPTPERIOD,stg_fims_rptperiod,,Incremental - Delete then Insert,,lưu danh sách kỳ của báo cáo đầu vào.
+FIMS,RPTPDSHT,stg_fims_rptpdsht,,Incremental - Delete then Insert,,bảng trung gian giữa bảng SHEET và bảng RPTPERIOD
+FIMS,RPTHTORY,stg_fims_rpthtory,,Incremental - Delete then Insert,,lưu lịch sử thay đổi biểu mẫu báo cáo đầu vào.
+FIMS,RPTTPOUT,stg_fims_rpttpout,,Incremental - Delete then Insert,,lưu danh sách biểu mẫu báo cáo đầu ra
+FIMS,SHEETOUT,stg_fims_sheetout,,Incremental - Delete then Insert,,lưu danh sách sheet của báo cáo đầu ra.
+FIMS,TPOUTHTORY,stg_fims_tpouthtory,,Incremental - Delete then Insert,,lưu danh sách lịch sử thay đổi biểu mẫu báo cáo đầu
+FIMS,RPTOUTMANAGEMENT,stg_fims_rptoutmanagement,,Incremental - Delete then Insert,,Lưu danh sách cấu hình gen file thống kê tự
+FIMS,RPTOUTFILESAVE,stg_fims_rptoutfilesave,,Incremental - Delete then Insert,,Lưu danh sách file thống kê đã được gen tự động
+FIMS,LOCATION,stg_fims_location,,Incremental - Delete then Insert,,lưu danh sách tỉnh/ thành phố
+FIMS,NATIONAL,stg_fims_national,,Incremental - Delete then Insert,,lưu danh sách quốc tịch/ quốc gia
+FIMS,STATUS,stg_fims_status,,Incremental - Delete then Insert,,lưu danh sách danh mục tình trạng hoạt động
+FIMS,JOBTYPE,stg_fims_jobtype,,Incremental - Delete then Insert,,Lưu danh sách chức vụ của người dùng trên hệ thống
+FIMS,SECURITIESTYPE,stg_fims_securitiestype,,Incremental - Delete then Insert,,Lưu danh sách loại chứng khoán
+FIMS,SECURITIES,stg_fims_securities,,Incremental - Delete then Insert,,Lưu danh sách danh mục chứng khoán.
+FIMS,STOCKHOLDERTYPE,stg_fims_stockholdertype,,Incremental - Delete then Insert,,Lưu danh sách danh mục loại cổ đông.
+FIMS,COMPANYTYPE,stg_fims_companytype,,Incremental - Delete then Insert,,Lưu danh sách danh mục loại hình doanh nghiệp
+FIMS,BUSINESS,stg_fims_business,,Incremental - Delete then Insert,,lưu danh sách danh mục nghiệp vụ kinh doanh.
+FIMS,CURRENCY,stg_fims_currency,,Incremental - Delete then Insert,,lưu danh sách danh mục tiền tệ.
+FIMS,DEGREE,stg_fims_degree,,Incremental - Delete then Insert,,lưu danh sách danh mục trình độ
+FIMS,UNIT,stg_fims_unit,,Incremental - Delete then Insert,,lưu danh sách danh mục đơn vị
+FIMS,DEPARTMENT,stg_fims_department,,Incremental - Delete then Insert,,lưu danh sách danh mục phòng ban
+FIMS,VIOLATIONTYPE,stg_fims_violationtype,,Incremental - Delete then Insert,,lưu danh sách danh mục loại vi phạm
+FIMS,REPORTTYPE,stg_fims_reporttype,,Incremental - Delete then Insert,,Lưu danh sách danh mục loại báo cáo.
+FIMS,INVESTORTYPE,stg_fims_investortype,,Incremental - Delete then Insert,,lưu danh sách danh mục loại nhà đầu tư
+FIMS,INVESTOR,stg_fims_investor,,Incremental - Delete then Insert,,lưu danh sách danh mục nhà đầu tư
+FIMS,INVESTORHIS,stg_fims_investorhis,,Incremental - Delete then Insert,,Lưu danh sách lịch sử của nhà đầu tư
+FIMS,SECURITIESACCOUNT,stg_fims_securitiesaccount,,Incremental - Delete then Insert,,Lưu danh sách tài khoản giao dịch chứng
+FIMS,SECURITIESACCOUNTHIS,stg_fims_securitiesaccounthis,,Incremental - Delete then Insert,,Lưu danh sách lịch sử tài khoản khoản
+FIMS,CATEGORIESSTOCK,stg_fims_categoriesstock,,Incremental - Delete then Insert,,Lưu danh sách danh mục chứng khoán của NĐT NN.
+FIMS,CATEGORIESSTOCKHIS,stg_fims_categoriesstockhis,,Incremental - Delete then Insert,,Lưu danh sách danh mục lịch sử sở hữu chứng
+FIMS,RELATEDPROPERTIES,stg_fims_relatedproperties,,Incremental - Delete then Insert,,Lưu danh sách các danh muc hình thức liên
+FIMS,RELATIONSHIP,stg_fims_relationship,,Incremental - Delete then Insert,,
+FIMS,ANNOUNCETYPE,stg_fims_announcetype,,Incremental - Delete then Insert,,Lưu danh sách loại CBTT
+FIMS,CALENDAR,stg_fims_calendar,,Incremental - Delete then Insert,,Lưu danh sách lịch hệ thống
+FIMS,CALENDARMANAGERMENT,stg_fims_calendarmanagerment,,Incremental - Delete then Insert,,Lưu các thay đổi lịch hệ thống để phục vụ
+FIMS,SYSVAR,stg_fims_sysvar,,Incremental - Delete then Insert,,Bảng lưu danh sách các tham số hệ thống
+FIMS,SELFSETPD,stg_fims_selfsetpd,,Incremental - Delete then Insert,,Lưu danh sách cấu hình kỳ báo cáo do cán bộ UB tự
+FIMS,TLPROFILES,stg_fims_tlprofiles,,Incremental - Delete then Insert,,lưu danh sách nhân sự của người đại diện CBTT.
+FIMS,TLPROJOB,stg_fims_tlprojob,,Incremental - Delete then Insert,,Lưu danh sách chức vụ của nhân sự
+FIMS,TLPROSTOCKH,stg_fims_tlprostockh,,Incremental - Delete then Insert,,lưu danh sách loại cổ đông của nhân sự
+FIMS,NOTIFICATION,stg_fims_notification,,Incremental - Delete then Insert,,lưu danh sách thông báo
+FIMS,RPTMEMBER,stg_fims_rptmember,,Incremental - Delete then Insert,,lưu danh sách báo cáo của các thành viên thị trường
+FIMS,RPTVALUESMANAGERMENT,stg_fims_rptvaluesmanagerment,,Incremental - Delete then Insert,,Lưu quản lý các bảng lưu giá trị của báo
+FIMS,RPTVALUES,stg_fims_rptvalues,,Incremental - Delete then Insert,,"bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh"
+FIMS,RPTPROCESS,stg_fims_rptprocess,,Incremental - Delete then Insert,,lưu danh sách lịch sử xử lý báo cáo
+FIMS,STOCKEXCHANGE,stg_fims_stockexchange,,Incremental - Delete then Insert,,Lưu danh sách đối tượng gửi báo cáo là Sở giao
+FIMS,DEPOSITORYCENTER,stg_fims_depositorycenter,,Incremental - Delete then Insert,,Lưu danh sách đối tượng gửi báo cáo là Trung
+FIMS,FUNDCOMPANY,stg_fims_fundcompany,,Incremental - Delete then Insert,,Lưu danh sách đối tượng gửi báo cáo là Công ty
+FIMS,FUNDCOMBUSINES,stg_fims_fundcombusines,,Incremental - Delete then Insert,,Lưu danh sách nghiệp vụ kinh doanh của công ty
+FIMS,FUNDCOMTYPE,stg_fims_fundcomtype,,Incremental - Delete then Insert,,Lưu danh sách loại hình công ty của công ty QLQ
+FIMS,SECURITIESCOMPANY,stg_fims_securitiescompany,,Incremental - Delete then Insert,,Lưu danh sách đối tượng gửi báo cáo là Công
+FIMS,SECCOMBUSINES,stg_fims_seccombusines,,Incremental - Delete then Insert,,Lưu danh sách nghiệp vụ kinh doanh của công ty
+FIMS,SECCOMTYPE,stg_fims_seccomtype,,Incremental - Delete then Insert,,lưu danh sách loại hình doanh nghiệp của công ty
+FIMS,BANKMONI,stg_fims_bankmoni,,Incremental - Delete then Insert,,Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu
+FIMS,BRANCHS,stg_fims_branchs,,Incremental - Delete then Insert,,Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ
+FIMS,BRANCHSBUSINES,stg_fims_branchsbusines,,Incremental - Delete then Insert,,Lưu danh sách nghiệp vụ kinh doanh của CN công
+FIMS,INFODISCREPRES,stg_fims_infodiscrepres,,Incremental - Delete then Insert,,Lưu danh sách đối tượng gửi báo cáo là người
+FIMS,INDIREBUSINESS,stg_fims_indirebusiness,,Incremental - Delete then Insert,,Lưu danh sách nghiệp vụ kinh doanh của người
+FIMS,PARAWARN,stg_fims_parawarn,,Incremental - Delete then Insert,,Lưu danh sách tham số cảnh báo
+FIMS,CDTWARN,stg_fims_cdtwarn,,Incremental - Delete then Insert,,Lưu danh sách điều kiện cảnh báo
+FIMS,VIOLT,stg_fims_violt,,Incremental - Delete then Insert,,Lưu danh sách vi phạm
+FIMS,AUTHOANNOUNCE,stg_fims_authoannounce,,Incremental - Delete then Insert,,Lưu danh sách ủy quyền CBTT.
+FIMS,AUTHOANNOUNCEHIS,stg_fims_authoannouncehis,,Incremental - Delete then Insert,,Lưu danh sách lịch sử ủy quyền CBTT.
+FIMS,ANNOUNCEINVES,stg_fims_announceinves,,Incremental - Delete then Insert,,lưu danh sách NĐT NN ủy quyền CBTT
+FIMS,ANNOUNCEINVESHIS,stg_fims_announceinveshis,,Incremental - Delete then Insert,,Lưu lịch sử danh sách NĐT NN ủy quyền CBTT
+FIMS,ANNOUNCE,stg_fims_announce,,Incremental - Delete then Insert,,Lưu danh sách các tin CB của thành viên thị trường
+FIMS,DOCUMENT,stg_fims_document,,Incremental - Delete then Insert,,Lưu danh sách tài liệu hệ thống.
+FIMS,EMAILSENTSYSTEM,stg_fims_emailsentsystem,,Incremental - Delete then Insert,,Lưu danh sách trao đổi thông tin
+FIMS,SYSEMAIL,stg_fims_sysemail,,Incremental - Delete then Insert,,lưu danh sách trao đổi thông tin gửi qua mail
+FIMS,SYSTEMINTEGRATIONCONFIG,stg_fims_systemintegrationconfig,,Incremental - Delete then Insert,,Lưu danh sách cấu hình kết nối hệ
+FIMS,SYSTEMINTEGRATIONDATA,stg_fims_systemintegrationdata,,Incremental - Delete then Insert,,Lưu dữ liệu kết nối MSS
+FMS,AGENCIES,stg_fms_agencies,,Incremental - Delete then Insert,,Danh sách đại lý Quỹ đầu tư
+FMS,AGENCIESBRA,stg_fms_agenciesbra,,Incremental - Delete then Insert,,Danh sách CN/PGD của đại lý Quỹ đầu tư
+FMS,AGENCYTYPE,stg_fms_agencytype,,Incremental - Delete then Insert,,Danh sách loại đại lý
+FMS,AGENFUNDS,stg_fms_agenfunds,,Incremental - Delete then Insert,,Bảng trung gian Map đại lý và quỹ đầu tư
+FMS,BANKMONI,stg_fms_bankmoni,,Incremental - Delete then Insert,,Danh sách ngân hàng lưu ký giám sát (LKGS)
+FMS,BRANCHES,stg_fms_branches,,Incremental - Delete then Insert,,Danh sách CN/VPĐD công ty QLQ trong nước
+FMS,BRCHBUP,stg_fms_brchbup,,Incremental - Delete then Insert,,Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước
+FMS,BUSINESS,stg_fms_business,,Incremental - Delete then Insert,,Danh mục ngành nghề kinh doanh
+FMS,CALENDAR,stg_fms_calendar,,Incremental - Delete then Insert,,Danh sách lịch làm việc và lịch nghỉ
+FMS,CERTFCATE,stg_fms_certfcate,,Incremental - Delete then Insert,,Danh sách chứng thư số của thành viên thị trường
+FMS,DTSCBMN,stg_fms_dtscbmn,,Incremental - Delete then Insert,,Phân quyền dữ liệu ngân hàng LKGS cho chuyên viên QLQ
+FMS,DTSCFND,stg_fms_dtscfnd,,Incremental - Delete then Insert,,Phân quyền dữ liệu QĐT cho chuyên viên vụ QLQ
+FMS,DTSCFR,stg_fms_dtscfr,,Incremental - Delete then Insert,,Phân quyền dữ liệu VPĐD/CN công ty QLQ NN cho chuyên viên
+FMS,DTSCOPE,stg_fms_dtscope,,Incremental - Delete then Insert,,Phân quyền dữ liệu – phạm vi
+FMS,FGBRBUP,stg_fms_fgbrbup,,Incremental - Delete then Insert,,Lịch sử chi tiết VPĐD/CN công ty QLQ NN tại VN
+FMS,FGBUSINESS,stg_fms_fgbusiness,,Incremental - Delete then Insert,,Ngành nghề kinh doanh VPĐD/CN công ty QLQ NN tại VN
+FMS,FNDBUP,stg_fms_fndbup,,Incremental - Delete then Insert,,Bản ghi chi tiết lịch sử quỹ đầu tư
+FMS,FNDSBMN,stg_fms_fndsbmn,,Incremental - Delete then Insert,,Bảng trung gian FUNDS & BANKMONI
+FMS,FORBRCH,stg_fms_forbrch,,Incremental - Delete then Insert,,Danh sách VPĐD/CN công ty QLQ NN tại VN
+FMS,FUNDHISTORY,stg_fms_fundhistory,,Incremental - Delete then Insert,,Lịch sử quỹ đầu tư
+FMS,FUNDS,stg_fms_funds,,Incremental - Delete then Insert,,Danh sách quỹ đầu tư chứng khoán
+FMS,INVES,stg_fms_inves,,Incremental - Delete then Insert,,Danh sách nhà đầu tư ủy thác
+FMS,INVESACC,stg_fms_invesacc,,Incremental - Delete then Insert,,Danh sách tài khoản nhà đầu tư ủy thác
+FMS,JOBTYPE,stg_fms_jobtype,,Incremental - Delete then Insert,,Danh sách loại chức vụ
+FMS,LOCATION,stg_fms_location,,Incremental - Delete then Insert,,Danh sách tỉnh/thành phố
+FMS,MBCHANGE,stg_fms_mbchange,,Incremental - Delete then Insert,,Lịch sử thay đổi vốn góp nhà đầu tư quỹ
+FMS,MBFUND,stg_fms_mbfund,,Incremental - Delete then Insert,,Danh sách nhà đầu tư quỹ
+FMS,MENUS,stg_fms_menus,,Incremental - Delete then Insert,,Danh mục quyền chức năng
+FMS,NATIONAL,stg_fms_national,,Incremental - Delete then Insert,,Danh sách quốc gia/quốc tịch
+FMS,NOTIFICATION,stg_fms_notification,,Incremental - Delete then Insert,,Thông báo hệ thống
+FMS,PARAWARN,stg_fms_parawarn,,Incremental - Delete then Insert,,Danh sách tham số cảnh báo
+FMS,PARVALUE,stg_fms_parvalue,,Incremental - Delete then Insert,,Danh sách mệnh giá cổ phần
+FMS,RANK,stg_fms_rank,,Incremental - Delete then Insert,,Bảng xếp hạng theo kỳ đánh giá
+FMS,RATINGPD,stg_fms_ratingpd,,Incremental - Delete then Insert,,Danh sách kỳ đánh giá xếp loại
+FMS,REFRESHTOKEN,stg_fms_refreshtoken,,Incremental - Delete then Insert,,Phiên làm việc (Token đăng nhập)
+FMS,RELATION,stg_fms_relation,,Incremental - Delete then Insert,,Mối quan hệ cổ đông
+FMS,REPRESENT,stg_fms_represent,,Incremental - Delete then Insert,,Danh sách ban đại diện/HĐQT Quỹ đầu tư
+FMS,RNKFACTHISTORY,stg_fms_rnkfacthistory,,Incremental - Delete then Insert,,Lưu kết quả các lần lưu bảng tổng hợp đánh giá
+FMS,RNKFACTOR,stg_fms_rnkfactor,,Incremental - Delete then Insert,,Bảng chấm điểm đánh giá xếp loại (nhân tố cha/con)
+FMS,RNKGRFTOR,stg_fms_rnkgrftor,,Incremental - Delete then Insert,,Bảng trung gian Ranks và RNKFACTOR
+FMS,ROLES,stg_fms_roles,,Incremental - Delete then Insert,,Nhóm quyền chức năng
+FMS,ROLESMENUS,stg_fms_rolesmenus,,Incremental - Delete then Insert,,Phân quyền menu theo nhóm quyền
+FMS,RPTHTORY,stg_fms_rpthtory,,Incremental - Delete then Insert,,Lịch sử thay đổi báo cáo đầu vào
+FMS,RPTMBHS,stg_fms_rptmbhs,,Incremental - Delete then Insert,,Lịch sử báo cáo thành viên
+FMS,RPTMEMBER,stg_fms_rptmember,,Incremental - Delete then Insert,,Báo cáo định kỳ của thành viên thị trường
+FMS,RPTPDSHT,stg_fms_rptpdsht,,Incremental - Delete then Insert,,Bảng trung gian SHEETS và RPTPERIOD
+FMS,RPTPERIOD,stg_fms_rptperiod,,Incremental - Delete then Insert,,Kỳ báo cáo
+FMS,RPTPROCESS,stg_fms_rptprocess,,Incremental - Delete then Insert,,Lịch sử xử lý báo cáo thành viên
+FMS,RPTTEMP,stg_fms_rpttemp,,Incremental - Delete then Insert,,Danh sách biểu mẫu báo cáo đầu vào
+FMS,RPTTPOUT,stg_fms_rpttpout,,Incremental - Delete then Insert,,Danh sách biểu mẫu báo cáo đầu ra
+FMS,RPTVALUES,stg_fms_rptvalues,,Incremental - Delete then Insert,,Báo cáo giá trị – lưu dữ liệu import
+FMS,SECBUP,stg_fms_secbup,,Incremental - Delete then Insert,,Lịch sử chi tiết công ty QLQ (2 bản ghi trước/sau)
+FMS,SECBUSINES,stg_fms_secbusines,,Incremental - Delete then Insert,,Ngành nghề kinh doanh của công ty QLQ
+FMS,SECHISTORY,stg_fms_sechistory,,Incremental - Delete then Insert,,Lịch sử thông tin công ty QLQ
+FMS,SECURITIES,stg_fms_securities,,Incremental - Delete then Insert,,Danh sách công ty QLQ trong nước
+FMS,SECURITIESREPORT,stg_fms_securitiesreport,,Incremental - Delete then Insert,,Thiết lập hiển thị báo cáo công ty QLQ
+FMS,SELFSETPD,stg_fms_selfsetpd,,Incremental - Delete then Insert,,Thành viên tự thiết lập gửi báo cáo
+FMS,SHEET,stg_fms_sheet,,Incremental - Delete then Insert,,Danh sách sheet báo cáo đầu vào
+FMS,SHEETOUT,stg_fms_sheetout,,Incremental - Delete then Insert,,Danh sách sheet báo cáo đầu ra
+FMS,STAKE,stg_fms_stake,,Incremental - Delete then Insert,,Danh sách các bên liên quan
+FMS,STATUS,stg_fms_status,,Incremental - Delete then Insert,,Danh sách trạng thái hoạt động
+FMS,STFFGBRCH,stg_fms_stffgbrch,,Incremental - Delete then Insert,,Danh sách nhân sự VPĐD/CN công ty QLQ NN
+FMS,STOCKHOLDERTYPE,stg_fms_stockholdertype,,Incremental - Delete then Insert,,Danh sách loại hình NĐT/cổ đông
+FMS,STTRGTOUT,stg_fms_sttrgtout,,Incremental - Delete then Insert,,Cấu hình lấy dữ liệu báo cáo đầu ra
+FMS,SYSEMAIL,stg_fms_sysemail,,Incremental - Delete then Insert,,Nội dung trao đổi thông tin
+FMS,SYSVAR,stg_fms_sysvar,,Incremental - Delete then Insert,,Danh sách tham số hệ thống
+FMS,TABSINFO,stg_fms_tabsinfo,,Incremental - Delete then Insert,,Thiết lập hiển thị dữ liệu
+FMS,TLPRHISTORY,stg_fms_tlprhistory,,Incremental - Delete then Insert,,Lịch sử nhân sự
+FMS,TLPROBUP,stg_fms_tlprobup,,Incremental - Delete then Insert,,Chi tiết lịch sử nhân sự (2 bản ghi trước/sau)
+FMS,TLProfiles,stg_fms_tlprofiles,,Incremental - Delete then Insert,,Danh sách nhân sự công ty QLQ
+FMS,TOTSTTG,stg_fms_totsttg,,Incremental - Delete then Insert,,Bảng trung gian Cấu hình dữ liệu đầu ra với ô dữ liệu
+FMS,TPOUTHTORY,stg_fms_tpouthtory,,Incremental - Delete then Insert,,Lịch sử thay đổi báo cáo đầu ra
+FMS,TRANSFERMBF,stg_fms_transfermbf,,Incremental - Delete then Insert,,Danh sách giao dịch chứng chỉ quỹ
+FMS,TRSFERINDER,stg_fms_trsferinder,,Incremental - Delete then Insert,,Danh sách giao dịch chuyển nhượng cổ phần
+FMS,USERRPTO,stg_fms_userrpto,,Incremental - Delete then Insert,,Phân quyền người dùng UBCK với báo cáo đầu ra
+FMS,USERS,stg_fms_users,,Incremental - Delete then Insert,,Quản lý người dùng hệ thống
+FMS,USERSESSIONS,stg_fms_usersessions,,Incremental - Delete then Insert,,Quản lý tài khoản đang truy cập
+FMS,USERSMENUS,stg_fms_usersmenus,,Incremental - Delete then Insert,,Phân quyền chức năng cho người dùng
+FMS,VIOLT,stg_fms_violt,,Incremental - Delete then Insert,,Danh sách vi phạm
+GSGD,investor_account,stg_gsgd_investor_account,,Incremental - Delete then Insert,,Thông tin tài khoản nhà đầu tư
+GSGD,investor_account_history,stg_gsgd_investor_account_history,,Incremental - Delete then Insert,,Lịch sử thay đổi tài khoản
+GSGD,account_financial_service,stg_gsgd_account_financial_service,,Incremental - Delete then Insert,,Dịch vụ tài chính của tài khoản
+GSGD,account_authorization,stg_gsgd_account_authorization,,Incremental - Delete then Insert,,Thông tin ủy quyền tài khoản
+GSGD,account_group,stg_gsgd_account_group,,Incremental - Delete then Insert,,Nhóm tài khoản
+GSGD,account_group_member,stg_gsgd_account_group_member,,Incremental - Delete then Insert,,Thành viên nhóm tài khoản
+GSGD,account_group_history,stg_gsgd_account_group_history,,Incremental - Delete then Insert,,Lịch sử thay đổi nhóm tài khoản
+GSGD,account_relationship,stg_gsgd_account_relationship,,Incremental - Delete then Insert,,Mối quan hệ giữa các tài khoản
+GSGD,company_event,stg_gsgd_company_event,,Incremental - Delete then Insert,,Sự kiện tổ chức niêm yết
+GSGD,company_event_history,stg_gsgd_company_event_history,,Incremental - Delete then Insert,,Lịch sử thay đổi sự kiện tổ chức niêm yết
+GSGD,securities_group,stg_gsgd_securities_group,,Incremental - Delete then Insert,,Nhóm chứng khoán
+GSGD,securities_group_member,stg_gsgd_securities_group_member,,Incremental - Delete then Insert,,Thành viên nhóm chứng khoán
+GSGD,securities_group_history,stg_gsgd_securities_group_history,,Incremental - Delete then Insert,,Lịch sử thay đổi nhóm chứng khoán
+GSGD,case_file,stg_gsgd_case_file,,Incremental - Delete then Insert,,Vụ việc
+GSGD,case_attach_file,stg_gsgd_case_attach_file,,Incremental - Delete then Insert,,File đính kèm vụ việc
+GSGD,case_file_workflow,stg_gsgd_case_file_workflow,,Incremental - Delete then Insert,,Quy trình xử lý vụ việc
+GSGD,case_approval_step,stg_gsgd_case_approval_step,,Incremental - Delete then Insert,,Tiến trình gửi duyệt vụ việc
+GSGD,suspicious_account,stg_gsgd_suspicious_account,,Incremental - Delete then Insert,,Tài khoản nghi vấn
+GSGD,suspicious_account_group,stg_gsgd_suspicious_account_group,,Incremental - Delete then Insert,,Nhóm tài khoản nghi vấn
+GSGD,analysis_report,stg_gsgd_analysis_report,,Incremental - Delete then Insert,,Báo cáo phân tích
+GSGD,analysis_attribute_define,stg_gsgd_analysis_attribute_define,,Incremental - Delete then Insert,,Định nghĩa tiêu chí/công thức phân tích vụ việc
+GSGD,analysis_attribute_value,stg_gsgd_analysis_attribute_value,,Incremental - Delete then Insert,,Giá trị tiêu chí phân tích theo từng vụ việc/quy trình
+GSGD,analysis_define_report_template,stg_gsgd_analysis_define_report_template,,Incremental - Delete then Insert,,Tham số cấu hình các biểu mẫu báo cáo
+GSGD,analysis_execution_log,stg_gsgd_analysis_execution_log,,Incremental - Delete then Insert,,Thông tin trạng thái phân tích quy trình của từng biểu mẫu
+GSGD,analysis_suspicious_account_code,stg_gsgd_analysis_suspicious_account_code,,Incremental - Delete then Insert,,Thông tin tài khoản nghi vấn của từng biểu mẫu
+GSGD,analysis_suspicious_account,stg_gsgd_analysis_suspicious_account,,Incremental - Delete then Insert,,Phân tích tài khoản nghi vấn
+GSGD,analysis_account_relationship,stg_gsgd_analysis_account_relationship,,Incremental - Delete then Insert,,Phân tích mối quan hệ giữa các tài khoản nghi vấn
+GSGD,analysis_account_group,stg_gsgd_analysis_account_group,,Incremental - Delete then Insert,,Phân tích nhóm tài khoản
+GSGD,analysis_account_group_member,stg_gsgd_analysis_account_group_member,,Incremental - Delete then Insert,,Lịch sử thay đổi nhóm tài khoản
+GSGD,abnormal_report,stg_gsgd_abnormal_report,,Incremental - Delete then Insert,,Báo cáo bất thường
+GSGD,abnormal_report_file,stg_gsgd_abnormal_report_file,,Incremental - Delete then Insert,,File đính kèm báo cáo bất thường
+GSGD,compliance_report_template,stg_gsgd_compliance_report_template,,Incremental - Delete then Insert,,Danh sách các loại báo cáo tuân thủ
+GSGD,compliance_report_config,stg_gsgd_compliance_report_config,,Incremental - Delete then Insert,,Định nghĩa cấu trúc bảng cho từng loại báo cáo tuân thủ
+GSGD,compliance_report_master,stg_gsgd_compliance_report_master,,Incremental - Delete then Insert,,Thông tin tổng hợp báo cáo tuân thủ theo kỳ khác nhau
+GSGD,compliance_report_data,stg_gsgd_compliance_report_data,,Incremental - Delete then Insert,,Dữ liệu chi tiết báo cáo tổng hợp
+GSGD,system_user,stg_gsgd_system_user,,Incremental - Delete then Insert,,Người dùng hệ thống
+GSGD,user_group,stg_gsgd_user_group,,Incremental - Delete then Insert,,Nhóm người dùng
+GSGD,user_group_member,stg_gsgd_user_group_member,,Incremental - Delete then Insert,,Thành viên nhóm người dùng
+GSGD,system_permission,stg_gsgd_system_permission,,Incremental - Delete then Insert,,Quyền hệ thống
+GSGD,report_template,stg_gsgd_report_template,,Incremental - Delete then Insert,,Mẫu báo cáo
+GSGD,report_template_workflow,stg_gsgd_report_template_workflow,,Incremental - Delete then Insert,,Cấu hình biểu mẫu cho quy trình phân tích vụ việc
+GSGD,system_config,stg_gsgd_system_config,,Incremental - Delete then Insert,,Cấu hình hệ thống
+GSGD,system_parameter,stg_gsgd_system_parameter,,Incremental - Delete then Insert,,Tham số hệ thống
+GSGD,audit_log,stg_gsgd_audit_log,,Incremental - Delete then Insert,,Nhật ký hệ thống
+GSGD,user_table_config,stg_gsgd_user_table_config,,Incremental - Delete then Insert,,Cấu hình hiển thị bảng theo user
+GSGD,category_config,stg_gsgd_category_config,,Incremental - Delete then Insert,,Cấu hình các danh mục dùng chung
+GSGD,category_item,stg_gsgd_category_item,,Incremental - Delete then Insert,,"Cấu hình ITEM trong danh mục dùng chung(phục vụ cấu hình động các dropdown, listbox, …)"
+IDS,company_profiles,stg_ids_company_profiles,,Incremental - Delete then Insert,,Thông tin cơ bản của doanh nghiệp
+IDS,company_profiles_his,stg_ids_company_profiles_his,,Incremental - Delete then Insert,,Thông tin lịch sử của hồ sơ doanh nghiệp
+IDS,company_detail,stg_ids_company_detail,,Incremental - Delete then Insert,,Thông tin chi tiết của doanh nghiệp
+IDS,categories,stg_ids_categories,,Incremental - Delete then Insert,,Danh sách lĩnh vực hoạt động của doanh nghiệp
+IDS,foreign_owner_limit,stg_ids_foreign_owner_limit,,Incremental - Delete then Insert,,Lưu thông tin về giới hạn tỷ lệ sở hữu nước ngoài
+IDS,legal_representative,stg_ids_legal_representative,,Incremental - Delete then Insert,,Lưu thông tin về người đại diện pháp luật và người công bố thông tin
+IDS,state_capital,stg_ids_state_capital,,Incremental - Delete then Insert,,Lưu thông tin về sở hữu nhà nước
+IDS,company_relationship,stg_ids_company_relationship,,Incremental - Delete then Insert,,Lưu thông tin về công ty mẹ/ công ty con/ công ty liên kết
+IDS,capital_mobilization,stg_ids_capital_mobilization,,Incremental - Delete then Insert,,Lưu thông tin về quá trình tăng vốn trước khi thành đại chúng
+IDS,company_securities_issuance,stg_ids_company_securities_issuance,,Incremental - Delete then Insert,,"Lưu thông tin về hoạt động chào bán, phát hành chứng khoán"
+IDS,company_add_capital,stg_ids_company_add_capital,,Incremental - Delete then Insert,,Lưu thông tin về quá trình tăng vốn
+IDS,company_tender_offer,stg_ids_company_tender_offer,,Incremental - Delete then Insert,,Lưu thông tin về quá trình chào mua công khai
+IDS,company_treasury_stocks,stg_ids_company_treasury_stocks,,Incremental - Delete then Insert,,Lưu thông tin về cổ phiếu quỹ
+IDS,company_inspection,stg_ids_company_inspection,,Incremental - Delete then Insert,,"Lưu thông tin về thanh tra, kiểm tra"
+IDS,company_penalize,stg_ids_company_penalize,,Incremental - Delete then Insert,,Lưu thông tin về xử phạt hành chính
+IDS,company_detail_his,stg_ids_company_detail_his,,Incremental - Delete then Insert,,Lưu thông tin lịch sử thay đổi của công ty đại chúng
+IDS,company_change_role_his,stg_ids_company_change_role_his,,Incremental - Delete then Insert,,Lưu thông tin thay đổi vai trò của người dùng
+IDS,logins,stg_ids_logins,,Incremental - Delete then Insert,,Lưu thông tin đăng nhập
+IDS,countries,stg_ids_countries,,Incremental - Delete then Insert,,Lưu thông tin quốc gia
+IDS,provinces,stg_ids_provinces,,Incremental - Delete then Insert,,Lưu thông tin tỉnh thành
+IDS,lookup_values,stg_ids_lookup_values,,Incremental - Delete then Insert,,Danh sách các dữ liệu các giá trị dùng trong các form
+IDS,user_audit_log,stg_ids_user_audit_log,,Incremental - Delete then Insert,,Lưu thông tin log khi người dùng thao tác hệ thống
+IDS,report_catalog,stg_ids_report_catalog,,Incremental - Delete then Insert,,Bảng chứa thông tin danh mục báo cáo.
+IDS,rrow,stg_ids_rrow,,Incremental - Delete then Insert,,Bảng chứa thông tin hàng của báo cáo tài chính
+IDS,rcol,stg_ids_rcol,,Incremental - Delete then Insert,,Lưu thông tin của cột trong báo cáo tài chính
+IDS,rep_forms,stg_ids_rep_forms,,Incremental - Delete then Insert,,Lưu thông tin báo cáo
+IDS,rep_row,stg_ids_rep_row,,Incremental - Delete then Insert,,Lưu thông tin hàng của báo cáo
+IDS,rep_column,stg_ids_rep_column,,Incremental - Delete then Insert,,Lưu thông tin cột trong báo cáo
+IDS,notifications,stg_ids_notifications,,Incremental - Delete then Insert,,Lưu thông tin về notifications
+IDS,noti_config,stg_ids_noti_config,,Incremental - Delete then Insert,,Lưu thông tin về notification configuration
+IDS,noti_config_apply,stg_ids_noti_config_apply,,Incremental - Delete then Insert,,Danh sách các dữ liệu từ điển dùng trong các forms nhập liệu
+IDS,forms,stg_ids_forms,,Incremental - Delete then Insert,,Lưu thông tin type: loại hồ sơ hay thông tin công bố
+IDS,fields,stg_ids_fields,,Incremental - Delete then Insert,,Lưu thông tin về fields của form
+IDS,fields_history,stg_ids_fields_history,,Incremental - Delete then Insert,,Lưu thông tin thay đổi của fields
+IDS,form_fields,stg_ids_form_fields,,Incremental - Delete then Insert,,Bảng nối để lưu danh sách fields trong một form
+IDS,form_fields_history,stg_ids_form_fields_history,,Incremental - Delete then Insert,,Lịch sử thay đổi fields của một form
+IDS,departments,stg_ids_departments,,Incremental - Delete then Insert,,Danh sách phòng ban của ssc
+IDS,data_types,stg_ids_data_types,,Incremental - Delete then Insert,,Định nghĩa các kiểm dữ liệu trong cho các fields
+IDS,stock_holders,stg_ids_stock_holders,,Incremental - Delete then Insert,,Bảng chứa thông tin cổ đông giao dịch
+IDS,account_numbers,stg_ids_account_numbers,,Incremental - Delete then Insert,,Lưu thông tin tài khoản giao dịch của cổ đông
+IDS,positions,stg_ids_positions,,Incremental - Delete then Insert,,Lưu thông tin về chức vụ
+IDS,identity,stg_ids_identity,,Incremental - Delete then Insert,,"Lưu căn cước công dân ( chứng minh thư nhân dân), giấy đăng ký kinh doanh của cổ đông"
+IDS,stock_controls,stg_ids_stock_controls,,Incremental - Delete then Insert,,Danh sách chứng khoán vào kiểm soát
+IDS,stockholder_history,stg_ids_stockholder_history,,Incremental - Delete then Insert,,Bảng chứa thông tin mối quan hệ của cổ đông giao dịch
+IDS,holder_relationship,stg_ids_holder_relationship,,Incremental - Delete then Insert,,Bảng chứa thông tin mối quan hệ của cổ đông giao dịch
+IDS,sms_log,stg_ids_sms_log,,Incremental - Delete then Insert,,Lưu thông tin log khi gửi sms
+IDS,report_approval,stg_ids_report_approval,,Incremental - Delete then Insert,,Lưu thông tin các tin công bố cần cho quá trình phê duyệt
+IDS,report_extensions,stg_ids_report_extensions,,Incremental - Delete then Insert,,Lưu thông tin báo cáo cần gia hạn nộp
+IDS,company_data,stg_ids_company_data,,Incremental - Delete then Insert,,"Lưu forms dữ liệu thuộc company_profiles (bảng trung gian), thông tin về tin"
+IDS,data,stg_ids_data,,Incremental - Delete then Insert,,Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính
+IDS,data_values,stg_ids_data_values,,Incremental - Delete then Insert,,"Lưu dữ liệu khi nhập vào tương ứng với các form, fields"
+IDS,sys_parameters,stg_ids_sys_parameters,,Incremental - Delete then Insert,,Lưu thông tin khai báo tham số hệ thống
+IDS,data_access_rules,stg_ids_data_access_rules,,Incremental - Delete then Insert,,Lưu thông tin phân quyền dữ liệu cho tài khoản người sử dụng hệ thống
+IDS,af_profiles,stg_ids_af_profiles,,Incremental - Delete then Insert,,Lưu thông tin Hồ sơ công ty kiểm toán
+IDS,af_legal_representative,stg_ids_af_legal_representative,,Incremental - Delete then Insert,,Lưu thông tin người đại diện pháp luật cho công ty kiểm toán
+IDS,af_approval,stg_ids_af_approval,,Incremental - Delete then Insert,,Lưu thông tin các công ty kiểm toán được chấp thuận
+IDS,af_auditor_approval,stg_ids_af_auditor_approval,,Incremental - Delete then Insert,,Lưu thông tin các kiểm toán viên được chấp thuận
+IDS,af_warning,stg_ids_af_warning,,Incremental - Delete then Insert,,Lưu thông tin nhắc nhở từ BTC và UB đến các công ty kiểm toán và kiểm toán viên
+IDS,af_sanctions,stg_ids_af_sanctions,,Incremental - Delete then Insert,,Lưu thông tin thông tin về xử phạt hành chính đối với các công ty kiểm toán và kiểm toán viên
+IDS,users,stg_ids_users,,Incremental - Delete then Insert,,Lưu thông tin Tài khoản sử dụng hệ thống: tham khảo mục 2.3.2
+MDDS,MarketInfor,stg_mdds_marketinfor,,Incremental - Delete then Insert,,"Snapshot trạng thái thị trường theo từng sàn hoặc chỉ số tổng hợp tại mỗi thời điểm phát sinh thay đổi. Mỗi bản tin là một trạng thái tổng hợp của một sàn (HOSE/HNX/UPCOM) hoặc chỉ số (VN30, HNX30...), bao gồm điểm chỉ số, tổng khối lượng/giá trị, số mã tăng/giảm/đứng/trần/sàn, trạng thái phiên, khối lượng/giá trị giao dịch thỏa thuận. Phát sinh nhiều lần trong ngày theo broadcast từ MDDS."
+MDDS,StockInfor,stg_mdds_stockinfor,,Incremental - Delete then Insert,,"Snapshot trạng thái giao dịch của một mã chứng khoán tại thời điểm có thay đổi lệnh hoặc khớp lệnh. Mỗi bản tin chứa đầy đủ: giá tham chiếu/trần/sàn, sổ lệnh 3 bước giá mua/bán, giá khớp gần nhất, tổng khối lượng/giá trị tích lũy, trạng thái giao dịch, thông tin nhà đầu tư nước ngoài (room, mua, bán), thông tin đặc thù phái sinh (OI, ngày đáo hạn, tài sản cơ sở) và chứng quyền (tỷ lệ chuyển đổi, giá thực hiện). Áp dụng cho cổ phiếu, CCQ, chứng quyền, phái sinh trên HOSE/HNX/UPCOM."
+MDDS,TransLog,stg_mdds_translog,,Incremental - Delete then Insert,,"Log từng lần khớp lệnh (tick-by-tick) của một mã chứng khoán theo thứ tự thời gian trong ngày giao dịch. Mỗi bản tin là một occurrence khớp lệnh độc lập: giá khớp, khối lượng khớp, chiều chủ động (mua/bán/ATO/ATC), thay đổi so với tham chiếu, khối lượng và giá trị khớp tích lũy từ đầu ngày, tổng khối lượng mua/bán chủ động. Không bị sửa hoặc xóa sau khi phát sinh. sequenceMsg tăng đơn điệu trong ngày, reset mỗi đầu ngày."
+MDDS,IDXInfor,stg_mdds_idxinfor,,Incremental - Delete then Insert,,"Snapshot thông tin đầy đủ của một chỉ số thị trường tại thời điểm phát sinh. Mỗi bản tin chứa: giá trị chỉ số hiện tại, OHLC trong ngày (cao nhất/thấp nhất/đóng cửa), tham chiếu (giá trị ngày trước), tổng khối lượng/giá trị khớp lệnh thường và thỏa thuận, phân loại loại chỉ số (thị trường/bảng/phức hợp/ngành/top), tổng số mã trong rổ, thống kê tăng/giảm/đứng/trần/sàn của các mã trong rổ."
+MDDS,CSIDXInfor,stg_mdds_csidxinfor,,Incremental - Delete then Insert,,"Thông tin thành phần (constituent) của từng chỉ số thị trường: mã chứng khoán nào thuộc rổ nào, tỷ trọng (weight) trong rổ, ngày thêm vào rổ, tổng khối lượng khớp trong ngày. Mỗi bản tin là một cặp (chỉ số, mã chứng khoán). Cập nhật khi thành phần rổ thay đổi hoặc theo phiên giao dịch."
+MDDS,CorpBondInfor,stg_mdds_corpbondinfor,,Incremental - Delete then Insert,,"Snapshot trạng thái giao dịch của một mã trái phiếu doanh nghiệp niêm yết trên HNX (FloorCode=06) tại thời điểm có thay đổi. Tương tự StockInfor nhưng bổ sung đặc thù TPDN: kỳ hạn gốc và kỳ hạn còn lại, lãi suất danh nghĩa, loại lãi suất (cố định/thả nổi), phương thức trả lãi, kiểu coupon, mệnh giá, ngày phát hành, ngày đáo hạn, đặc điểm trái phiếu. Order book giao dịch thỏa thuận Outright riêng biệt (PT_Best*, PT_Total*, PT_Max/Min). Giao dịch thỏa thuận chiếm phần lớn thanh khoản TPDN."
+MDDS,CorpBondMatch,stg_mdds_corpbondmatch,,Incremental - Delete then Insert,,Log từng lần khớp lệnh (tick-by-tick) của một mã trái phiếu doanh nghiệp theo thứ tự thời gian. Tương tự TransLog nhưng áp dụng cho thị trường TPDN. Sử dụng ConfirmNoCorpBond thay cho sequenceMsg làm số thứ tự xác nhận giao dịch. Giao dịch TPDN thường tần suất thấp hơn nhưng giá trị lớn hơn mỗi lần so với cổ phiếu. marketId luôn = 06.
+NHNCK,ActionLogs,stg_nhnck_actionlogs,,Incremental - Delete then Insert,,Nhật ký hoạt động của người dùng trên hệ thống
+NHNCK,ApplicationDocuments,stg_nhnck_applicationdocuments,,Incremental - Delete then Insert,,Tài liệu đính kèm trong hồ sơ
+NHNCK,ApplicationFees,stg_nhnck_applicationfees,,Incremental - Delete then Insert,,Phí thanh toán liên quan đến hồ sơ
+NHNCK,Applications,stg_nhnck_applications,,Incremental - Delete then Insert,,Hồ sơ đăng ký chứng chỉ hành nghề
+NHNCK,ApplicationSources,stg_nhnck_applicationsources,,Incremental - Delete then Insert,,Hình thức nộp hồ sơ
+NHNCK,ApplicationSpecializations,stg_nhnck_applicationspecializations,,Incremental - Delete then Insert,,Chuyên môn liên quan đến hồ sơ
+NHNCK,ApplicationStatuses,stg_nhnck_applicationstatuses,,Incremental - Delete then Insert,,Định nghĩa các trạng thái của hồ sơ
+NHNCK,CertificateDepartments,stg_nhnck_certificatedepartments,,Incremental - Delete then Insert,,Liên kết phòng ban với loại chứng chỉ
+NHNCK,CertificateDocuments,stg_nhnck_certificatedocuments,,Incremental - Delete then Insert,,Tài liệu liên quan của loại chứng chỉ
+NHNCK,CertificateNumberTemplates,stg_nhnck_certificatenumbertemplates,,Incremental - Delete then Insert,,Mã tài liệu kết hợp chứng chỉ từ một cửa điện tử
+NHNCK,CertificateRecordGroupMembers,stg_nhnck_certificaterecordgroupmembers,,Incremental - Delete then Insert,,Thành viên trong nhóm chứng chỉ hành nghề
+NHNCK,CertificateRecordGroups,stg_nhnck_certificaterecordgroups,,Incremental - Delete then Insert,,Nhóm chứng chỉ hành nghề
+NHNCK,CertificateRecordLogs,stg_nhnck_certificaterecordlogs,,Incremental - Delete then Insert,,Nhật ký chứng chỉ hành nghề
+NHNCK,CertificateRecords,stg_nhnck_certificaterecords,,Incremental - Delete then Insert,,Chứng chỉ hành nghề được cấp
+NHNCK,CertificateRecordStatusHistories,stg_nhnck_certificaterecordstatushistories,,Incremental - Delete then Insert,,Lịch sử trạng thái chứng chỉ hành nghề
+NHNCK,Certificates,stg_nhnck_certificates,,Incremental - Delete then Insert,,Danh mục các loại chứng chỉ hành nghề
+NHNCK,CertificateSpecializations,stg_nhnck_certificatespecializations,,Incremental - Delete then Insert,,Chuyên môn liên quan loại chứng chỉ
+NHNCK,Decisions,stg_nhnck_decisions,,Incremental - Delete then Insert,,Danh mục các quyết định hành chính
+NHNCK,DepartmentAccess,stg_nhnck_departmentaccess,,Incremental - Delete then Insert,,Quản lý quyền khai thác giữa các phòng ban
+NHNCK,DigitalCertificates,stg_nhnck_digitalcertificates,,Incremental - Delete then Insert,,Chứng thư số
+NHNCK,DigitalCertificateUsers,stg_nhnck_digitalcertificateusers,,Incremental - Delete then Insert,,Tài khoản được sử dụng chứng thư số
+NHNCK,Documents,stg_nhnck_documents,,Incremental - Delete then Insert,,Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
+NHNCK,EducationLevels,stg_nhnck_educationlevels,,Incremental - Delete then Insert,,Danh mục trình độ học vấn
+NHNCK,ExamDetails,stg_nhnck_examdetails,,Incremental - Delete then Insert,,Kết quả các kỳ thi sát hạch
+NHNCK,ExamSessionFees,stg_nhnck_examsessionfees,,Incremental - Delete then Insert,,Phí thi sát hạch
+NHNCK,ExamSessions,stg_nhnck_examsessions,,Incremental - Delete then Insert,,Danh mục các đợt thi sát hạch
+NHNCK,IdentityInfoC06s,stg_nhnck_identityinfoc06s,,Incremental - Delete then Insert,,Lịch sử kiểm tra xác thực với C06
+NHNCK,OrganizationReports,stg_nhnck_organizationreports,,Incremental - Delete then Insert,,Báo cáo về người hành nghề từ tổ chức
+NHNCK,Organizations,stg_nhnck_organizations,,Incremental - Delete then Insert,,"Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)"
+NHNCK,ProfessionalHistories,stg_nhnck_professionalhistories,,Incremental - Delete then Insert,,Lịch sử thay đổi định danh cá nhân của người hành nghề
+NHNCK,ProfessionalRelationships,stg_nhnck_professionalrelationships,,Incremental - Delete then Insert,,Thông tin quan hệ gia đình/xã hội của người hành nghề
+NHNCK,Professionals,stg_nhnck_professionals,,Incremental - Delete then Insert,,Thông tin người hành nghề chứng khoán
+NHNCK,ProfessionalWorkHistories,stg_nhnck_professionalworkhistories,,Incremental - Delete then Insert,,Lịch sử làm việc của người hành nghề
+NHNCK,SpecializationCourseDetails,stg_nhnck_specializationcoursedetails,,Incremental - Delete then Insert,,Chi tiết người tham gia khóa học chuyên môn
+NHNCK,SpecializationCourses,stg_nhnck_specializationcourses,,Incremental - Delete then Insert,,Danh mục khóa học chuyên môn
+NHNCK,Specializations,stg_nhnck_specializations,,Incremental - Delete then Insert,,Danh mục chuyên môn/chứng chỉ chuyên môn
+NHNCK,SystemParameters,stg_nhnck_systemparameters,,Incremental - Delete then Insert,,Tham số hệ thống
+NHNCK,Units,stg_nhnck_units,,Incremental - Delete then Insert,,Danh mục đơn vị
+NHNCK,VerifyApplicationStatuses,stg_nhnck_verifyapplicationstatuses,,Incremental - Delete then Insert,,Yêu cầu phê duyệt lãnh đạo cho hồ sơ
+NHNCK,Violations,stg_nhnck_violations,,Incremental - Delete then Insert,,Thông tin vi phạm của người hành nghề
+NHNCK,Departments,stg_nhnck_departments,,Incremental - Delete then Insert,,
+NHNCK,PermissionRoles,stg_nhnck_permissionroles,,Incremental - Delete then Insert,,
+NHNCK,Positions,stg_nhnck_positions,,Incremental - Delete then Insert,,
+ORDERTRADE,Order_HOSE,stg_ordertrade_order_hose,,Incremental - Delete then Insert,,Sổ lệnh HOSE — ghi nhận toàn bộ lifecycle của từng lệnh giao dịch trên sàn HOSE (cổ phiếu / trái phiếu / repo). Mỗi bản ghi là một event: lệnh mới / sửa / hủy. Đối tượng trung tâm của phân hệ OrderTrade.
+ORDERTRADE,Trade_HOSE,stg_ordertrade_trade_hose,,Incremental - Delete then Insert,,Sổ khớp HOSE — ghi nhận từng giao dịch khớp thành công trên HOSE. Mỗi bản ghi chứa đồng thời thông tin bên mua và bên bán. 1 Order có thể tạo ra nhiều Trade (khớp dần).
+ORDERTRADE,Order_HNX,stg_ordertrade_order_hnx,,Incremental - Delete then Insert,,Sổ lệnh HNX — tương đương Order_HOSE nhưng cho sàn HNX (cổ phiếu niêm yết / UPCOM / TPCP / TP DN / phái sinh). Có thêm tính năng Iceberg order và Stop order theo chuẩn KRX.
+ORDERTRADE,Trade_HNX,stg_ordertrade_trade_hnx,,Incremental - Delete then Insert,,Sổ khớp HNX — tương đương Trade_HOSE nhưng cho sàn HNX. Bổ sung trường Spread trade legs (Execution Price of Spread First/Second) cho giao dịch phái sinh/repo có 2 vế.
+QLRR,risk_indicator_category,stg_qlrr_risk_indicator_category,,Incremental - Delete then Insert,,"Nhóm chỉ tiêu trong 1 bộ (Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ phiếu, …)"
+QLRR,risk_indicator,stg_qlrr_risk_indicator,,Incremental - Delete then Insert,,Danh mục chỉ tiêu tài chính (trong nước & quốc tế)
+QLRR,risk_indicator_custom,stg_qlrr_risk_indicator_custom,,Incremental - Delete then Insert,,Chỉ tiêu tự tạo
+QLRR,risk_indicator_value,stg_qlrr_risk_indicator_value,,Incremental - Delete then Insert,,Số liệu hiện tại của chỉ tiêu theo từng kỳ (ngày/tháng/quý/năm)
+QLRR,risk_indicator_value_history,stg_qlrr_risk_indicator_value_history,,Incremental - Delete then Insert,,Lịch sử thay đổi số liệu chỉ tiêu (tự động và thủ công)
+QLRR,risk_indicator_schedule,stg_qlrr_risk_indicator_schedule,,Incremental - Delete then Insert,,Cấu hình job đồng bộ chỉ tiêu
+QLRR,risk_report_type,stg_qlrr_risk_report_type,,Incremental - Delete then Insert,,Danh mục loại báo cáo
+QLRR,risk_report_placeholder_config,stg_qlrr_risk_report_placeholder_config,,Incremental - Delete then Insert,,"Cấu hình ""đục lỗ"""
+QLRR,risk_report_upload_batch,stg_qlrr_risk_report_upload_batch,,Incremental - Delete then Insert,,Lượt upload file
+QLRR,risk_report_file,stg_qlrr_risk_report_file,,Incremental - Delete then Insert,,File đính kèm báo cáo
+QLRR,risk_alert_config,stg_qlrr_risk_alert_config,,Incremental - Delete then Insert,,Cấu hình ngưỡng cảnh báo và người xử lý theo từng chỉ tiêu
+QLRR,risk_alert,stg_qlrr_risk_alert,,Incremental - Delete then Insert,,Bản ghi cảnh báo thực tế được kích hoạt khi chỉ tiêu vượt ngưỡng
+QLRR,risk_alert_resolution,stg_qlrr_risk_alert_resolution,,Incremental - Delete then Insert,,Bản ghi xử lý chi tiết cho cảnh báo
+QLRR,risk_alert_resolution_file,stg_qlrr_risk_alert_resolution_file,,Incremental - Delete then Insert,,File đính kèm theo giải trình cảnh báo
+QLRR,risk_alert_history,stg_qlrr_risk_alert_history,,Incremental - Delete then Insert,,Lịch sử xử lý cảnh báo theo dòng thời gian
+QLRR,risk_notification,stg_qlrr_risk_notification,,Incremental - Delete then Insert,,Lưu trữ thông báo
+QLRR,permission_group,stg_qlrr_permission_group,,Incremental - Delete then Insert,,Nhóm quyền
+QLRR,permission_group_user,stg_qlrr_permission_group_user,,Incremental - Delete then Insert,,Phân quyền người dùng theo nhóm quyền
+QLRR,permission_group_indicator,stg_qlrr_permission_group_indicator,,Incremental - Delete then Insert,,Phân quyền chỉ tiêu theo nhóm quyền
+SCMS,BC_BAO_CAO_GT,stg_scms_bc_bao_cao_gt,,Incremental - Delete then Insert,,Lưu giá trị của chỉ tiêu báo cáo
+SCMS,BC_CANH_BAO,stg_scms_bc_canh_bao,,Incremental - Delete then Insert,,Thông tin cảnh báo
+SCMS,BC_GT_DTL,stg_scms_bc_gt_dtl,,Incremental - Delete then Insert,,Danh sách dữ liệu báo nháp
+SCMS,BC_GT_HDR,stg_scms_bc_gt_hdr,,Incremental - Delete then Insert,,Danh sách dữ liệu báo nháp
+SCMS,BC_KHAI_THAC,stg_scms_bc_khai_thac,,Incremental - Delete then Insert,,Dữ liệu khai thác phục vụ báo cáo tổng hợp
+SCMS,BC_KHAI_THAC_GT,stg_scms_bc_khai_thac_gt,,Incremental - Delete then Insert,,Dữ liệu khai thác phục vụ báo cáo tổng hợp
+SCMS,BC_THANH_VIEN,stg_scms_bc_thanh_vien,,Incremental - Delete then Insert,,Danh sách báo cáo mà đơn vị đã gửi theo định kỳ
+SCMS,BC_THANH_VIEN_LS,stg_scms_bc_thanh_vien_ls,,Incremental - Delete then Insert,,Danh sách báo cáo mà đơn vị đã gửi theo định kỳ
+SCMS,BC_THANH_VIEN_XU_LY,stg_scms_bc_thanh_vien_xu_ly,,Incremental - Delete then Insert,,Thông tin tiếp nhận/xử lý báo cáo
+SCMS,BC_VI_PHAM,stg_scms_bc_vi_pham,,Incremental - Delete then Insert,,Thông tin tình hình gửi báo cáo của đơn vị
+SCMS,BC_VI_PHAM_LOAI_VP,stg_scms_bc_vi_pham_loai_vp,,Incremental - Delete then Insert,,Thông tin tình hình gửi báo cáo của đơn vị
+SCMS,BM_BAO_CAO,stg_scms_bm_bao_cao,,Incremental - Delete then Insert,,Danh sách biểu mẫu báo cáo
+SCMS,BM_BAO_CAO_COT,stg_scms_bm_bao_cao_cot,,Incremental - Delete then Insert,,Danh sách cột của biểu mẫu báo cáo
+SCMS,BM_BAO_CAO_CT,stg_scms_bm_bao_cao_ct,,Incremental - Delete then Insert,,Danh sách chỉ tiêu của biểu mẫu báo cáo
+SCMS,BM_BAO_CAO_DINH_KY,stg_scms_bm_bao_cao_dinh_ky,,Incremental - Delete then Insert,,Danh sách định kỳ gửi của biểu mẫu báo cáo
+SCMS,BM_BAO_CAO_DINH_KY_DON_VI,stg_scms_bm_bao_cao_dinh_ky_don_vi,,Incremental - Delete then Insert,,Danh sách đơn vị có nghĩa vụ gửi báo cáo theo biểu mẫu báo cáo
+SCMS,BM_BAO_CAO_HANG,stg_scms_bm_bao_cao_hang,,Incremental - Delete then Insert,,Danh sách hàng của biểu mẫu báo cáo
+SCMS,BM_BAO_CAO_LS,stg_scms_bm_bao_cao_ls,,Incremental - Delete then Insert,,Thông tin lịch sử của biểu mẫu báo cáo
+SCMS,BM_BAO_CAO_TV,stg_scms_bm_bao_cao_tv,,Incremental - Delete then Insert,,Danh sách đơn vị có nghĩa vụ gửi báo cáo theo biểu mẫu báo cáo
+SCMS,BM_SHEET,stg_scms_bm_sheet,,Incremental - Delete then Insert,,Danh sách sheet của biểu mẫu báo cáo
+SCMS,BM_TIEUDE_HANG,stg_scms_bm_tieude_hang,,Incremental - Delete then Insert,,Danh sách tiêu đề hàng thiết kế động của biểu mẫu báo cáo
+SCMS,BM_TIEUDE_HANG_COT,stg_scms_bm_tieude_hang_cot,,Incremental - Delete then Insert,,Danh sách tiêu đề thiết kế động của biểu mẫu báo cáo
+SCMS,CBTT_BAO_CAO,stg_scms_cbtt_bao_cao,,Incremental - Delete then Insert,,Danh sách các báo cáo khi công bố thông tin
+SCMS,CBTT_CHAO_BAN_CHUNG_KHOAN,stg_scms_cbtt_chao_ban_chung_khoan,,Incremental - Delete then Insert,,Thông tin chào bán chứng khoán được công bố
+SCMS,CBTT_CO_DONG,stg_scms_cbtt_co_dong,,Incremental - Delete then Insert,,Thông tin cổ đông được công bố
+SCMS,CHUNG_THU_SO,stg_scms_chung_thu_so,,Incremental - Delete then Insert,,Danh sách chứng thư số được quản lý
+SCMS,CTCK_CD_CHUYEN_NHUONG,stg_scms_ctck_cd_chuyen_nhuong,,Incremental - Delete then Insert,,Thông tin chuyển nhượng cổ đông
+SCMS,CTCK_CD_DAI_DIEN,stg_scms_ctck_cd_dai_dien,,Incremental - Delete then Insert,,Danh sách cổ đông đại diện
+SCMS,CTCK_CD_MOI_QUAN_HE,stg_scms_ctck_cd_moi_quan_he,,Incremental - Delete then Insert,,Danh sách mối quan hệ cổ đông
+SCMS,CTCK_CHI_NHANH,stg_scms_ctck_chi_nhanh,,Incremental - Delete then Insert,,Danh sách chi nhánh
+SCMS,CTCK_CO_DONG,stg_scms_ctck_co_dong,,Incremental - Delete then Insert,,Danh sách cổ đông
+SCMS,CTCK_DICH_VU,stg_scms_ctck_dich_vu,,Incremental - Delete then Insert,,Danh sách dịch vụ của CTCK
+SCMS,CTCK_HS_LICH_SU,stg_scms_ctck_hs_lich_su,,Incremental - Delete then Insert,,Danh sách hồ sơ lịch sử thay đổi
+SCMS,CTCK_LICH_SU_XOA,stg_scms_ctck_lich_su_xoa,,Incremental - Delete then Insert,,Thông tin lịch sử xóa của CTCK
+SCMS,CTCK_NGUOI_HANH_NGHE_CK,stg_scms_ctck_nguoi_hanh_nghe_ck,,Incremental - Delete then Insert,,Danh sách người hành nghề chứng khoán
+SCMS,CTCK_NHAN_SU_CAO_CAP,stg_scms_ctck_nhan_su_cao_cap,,Incremental - Delete then Insert,,Danh sách nhân sự cao cấp
+SCMS,CTCK_PHONG_GIAO_DICH,stg_scms_ctck_phong_giao_dich,,Incremental - Delete then Insert,,Danh sách phòng giao dịch
+SCMS,CTCK_THONG_TIN,stg_scms_ctck_thong_tin,,Incremental - Delete then Insert,,Thông tin CTCK
+SCMS,CTCK_VP_DAI_DIEN,stg_scms_ctck_vp_dai_dien,,Incremental - Delete then Insert,,Danh sách văn phòng đại diện
+SCMS,CTCK_VP_DAI_DIEN_NN,stg_scms_ctck_vp_dai_dien_nn,,Incremental - Delete then Insert,,Danh sách văn phòng đại diện nước ngoài
+SCMS,CTCK_XU_LY_HANH_CHINH,stg_scms_ctck_xu_ly_hanh_chinh,,Incremental - Delete then Insert,,Thông tin xử lý hành chính
+SCMS,CT_KIEM_TOAN,stg_scms_ct_kiem_toan,,Incremental - Delete then Insert,,Danh sách công ty kiểm toán
+SCMS,CT_KIEM_TOAN_VIEN,stg_scms_ct_kiem_toan_vien,,Incremental - Delete then Insert,,Danh sách kiểm toán viên
+SCMS,DM_CANH_BAO,stg_scms_dm_canh_bao,,Incremental - Delete then Insert,,Danh mục cảnh báo
+SCMS,DM_CHI_TIEU,stg_scms_dm_chi_tieu,,Incremental - Delete then Insert,,Danh mục chỉ tiêu
+SCMS,DM_CHI_TIEU_DM,stg_scms_dm_chi_tieu_dm,,Incremental - Delete then Insert,,Danh mục chỉ tiêu
+SCMS,DM_CHI_TIEU_THONG_KE,stg_scms_dm_chi_tieu_thong_ke,,Incremental - Delete then Insert,,Danh mục chỉ tiêu – thống kê
+SCMS,DM_CHUC_VU,stg_scms_dm_chuc_vu,,Incremental - Delete then Insert,,Danh mục chức vụ
+SCMS,DM_DICH_VU,stg_scms_dm_dich_vu,,Incremental - Delete then Insert,,Danh mục dịch vụ
+SCMS,DM_LOAI_CONG_TY,stg_scms_dm_loai_cong_ty,,Incremental - Delete then Insert,,Danh mục loại công ty
+SCMS,DM_LOAI_GIAO_DICH_CD,stg_scms_dm_loai_giao_dich_cd,,Incremental - Delete then Insert,,Danh mục loại giao dịch cổ đông
+SCMS,DM_LOAI_VI_PHAM,stg_scms_dm_loai_vi_pham,,Incremental - Delete then Insert,,Danh mục loại vi phạm
+SCMS,DM_MOI_QUAN_HE,stg_scms_dm_moi_quan_he,,Incremental - Delete then Insert,,Danh mục mối quan hệ
+SCMS,DM_NGANH_NGHE_KD,stg_scms_dm_nganh_nghe_kd,,Incremental - Delete then Insert,,Danh mục ngành nghề kinh doanh
+SCMS,DM_QUOC_TICH,stg_scms_dm_quoc_tich,,Incremental - Delete then Insert,,Danh mục quốc tịch
+SCMS,DM_SU_VU,stg_scms_dm_su_vu,,Incremental - Delete then Insert,,Danh mục sự vụ
+SCMS,DM_THONG_KE,stg_scms_dm_thong_ke,,Incremental - Delete then Insert,,Danh mục mã thống kê
+SCMS,DM_TINH_THANH,stg_scms_dm_tinh_thanh,,Incremental - Delete then Insert,,Danh mục tỉnh thành
+SCMS,DM_TRANG_THAI_CTCK,stg_scms_dm_trang_thai_ctck,,Incremental - Delete then Insert,,Danh mục trạng thái của CTCK
+SCMS,LK_CHUC_NANG_NGUOI,stg_scms_lk_chuc_nang_nguoi,,Incremental - Delete then Insert,,Liên kết người dùng chức năng
+SCMS,LK_CHUC_NANG_NHOM_NGUOI,stg_scms_lk_chuc_nang_nhom_nguoi,,Incremental - Delete then Insert,,Liên kết nhóm người dùng chức năng
+SCMS,LK_CTCK_NGANH_NGHE_KD,stg_scms_lk_ctck_nganh_nghe_kd,,Incremental - Delete then Insert,,Liên kết ngành nghề kinh doanh với CTCK
+SCMS,LK_NGUOI_DUNG_BAO_CAO,stg_scms_lk_nguoi_dung_bao_cao,,Incremental - Delete then Insert,,Liên kết phân quyền khai thác báo cáo
+SCMS,LK_NGUOI_DUNG_CTCK,stg_scms_lk_nguoi_dung_ctck,,Incremental - Delete then Insert,,Liên kết phân quyền cán bộ quản trị CTCK
+SCMS,LK_NGUOI_DUNG_NHOM,stg_scms_lk_nguoi_dung_nhom,,Incremental - Delete then Insert,,Liên kết người dùng nhóm người dùng
+SCMS,QT_CHUC_NANG,stg_scms_qt_chuc_nang,,Incremental - Delete then Insert,,Danh mục chức năng
+SCMS,QT_LICH_HE_THONG,stg_scms_qt_lich_he_thong,,Incremental - Delete then Insert,,Thông tin lịch hệ thống
+SCMS,QT_LOG_HE_THONG,stg_scms_qt_log_he_thong,,Incremental - Delete then Insert,,Danh sách log hệ thống
+SCMS,QT_NGUOI_DUNG,stg_scms_qt_nguoi_dung,,Incremental - Delete then Insert,,Danh sách người dùng
+SCMS,QT_NGUOI_DUNG_IP,stg_scms_qt_nguoi_dung_ip,,Incremental - Delete then Insert,,Thông tin quản lý IP đăng ký
+SCMS,QT_NHOM_NGUOI_DUNG,stg_scms_qt_nhom_nguoi_dung,,Incremental - Delete then Insert,,Danh sách nhóm người dùng
+SCMS,QT_THAM_SO_HE_THONG,stg_scms_qt_tham_so_he_thong,,Incremental - Delete then Insert,,Quản trị cấu hình tham số hệ thống
+THANHTRA,TT_KE_HOACH,stg_thanhtra_tt_ke_hoach,,Incremental - Delete then Insert,,"Kế hoạch thanh tra, kiểm tra hàng năm"
+THANHTRA,TT_KE_HOACH_DOI_TUONG,stg_thanhtra_tt_ke_hoach_doi_tuong,,Incremental - Delete then Insert,,Đối tượng thanh tra trong kế hoạch
+THANHTRA,TT_KE_HOACH_VAN_BAN,stg_thanhtra_tt_ke_hoach_van_ban,,Incremental - Delete then Insert,,Văn bản kèm theo kế hoạch thanh tra
+THANHTRA,TT_QUYET_DINH,stg_thanhtra_tt_quyet_dinh,,Incremental - Delete then Insert,,"Quyết định thanh tra, kiểm tra"
+THANHTRA,TT_QUYET_DINH_DOI_TUONG,stg_thanhtra_tt_quyet_dinh_doi_tuong,,Incremental - Delete then Insert,,Đối tượng trong quyết định thanh tra
+THANHTRA,TT_QUYET_DINH_THANH_PHAN,stg_thanhtra_tt_quyet_dinh_thanh_phan,,Incremental - Delete then Insert,,Thành phần đoàn thanh tra
+THANHTRA,TT_QUYET_DINH_VAN_BAN,stg_thanhtra_tt_quyet_dinh_van_ban,,Incremental - Delete then Insert,,Văn bản kèm theo quyết định
+THANHTRA,TT_HO_SO,stg_thanhtra_tt_ho_so,,Incremental - Delete then Insert,,"Hồ sơ thanh tra, kiểm tra"
+THANHTRA,TT_HO_SO_CAN_BO,stg_thanhtra_tt_ho_so_can_bo,,Incremental - Delete then Insert,,Phân công cán bộ xử lý hồ sơ thanh tra
+THANHTRA,TT_HO_SO_VAN_BAN,stg_thanhtra_tt_ho_so_van_ban,,Incremental - Delete then Insert,,Văn bản đính kèm hồ sơ thanh tra
+THANHTRA,TT_KET_LUAN,stg_thanhtra_tt_ket_luan,,Incremental - Delete then Insert,,Kết luận thanh tra và văn bản xử lý
+THANHTRA,TT_CONG_BO_XU_PHAT,stg_thanhtra_tt_cong_bo_xu_phat,,Incremental - Delete then Insert,,Công bố quyết định xử phạt (Thanh tra)
+THANHTRA,GS_HO_SO,stg_thanhtra_gs_ho_so,,Incremental - Delete then Insert,,Hồ sơ xử lý vi phạm từ kết quả giám sát
+THANHTRA,GS_HO_SO_VAN_BAN,stg_thanhtra_gs_ho_so_van_ban,,Incremental - Delete then Insert,,Văn bản đính kèm hồ sơ giám sát
+THANHTRA,GS_VAN_BAN_XU_LY,stg_thanhtra_gs_van_ban_xu_ly,,Incremental - Delete then Insert,,Văn bản về việc xử lý vi phạm giám sát
+THANHTRA,GS_VAN_BAN_XU_LY_FILE,stg_thanhtra_gs_van_ban_xu_ly_file,,Incremental - Delete then Insert,,File đính kèm văn bản xử lý giám sát
+THANHTRA,GS_CONG_BO_XU_PHAT,stg_thanhtra_gs_cong_bo_xu_phat,,Incremental - Delete then Insert,,Công bố quyết định xử phạt (Giám sát)
+THANHTRA,DT_DON_THU,stg_thanhtra_dt_don_thu,,Incremental - Delete then Insert,,"Đơn thư KNTC, phản ánh kiến nghị"
+THANHTRA,DT_HO_SO,stg_thanhtra_dt_ho_so,,Incremental - Delete then Insert,,Hồ sơ giải quyết đơn thư
+THANHTRA,DT_HO_SO_VAN_BAN,stg_thanhtra_dt_ho_so_van_ban,,Incremental - Delete then Insert,,Văn bản đính kèm hồ sơ đơn thư
+THANHTRA,DT_KET_LUAN,stg_thanhtra_dt_ket_luan,,Incremental - Delete then Insert,,Kết luận giải quyết đơn thư
+THANHTRA,DT_VAN_BAN_XU_LY,stg_thanhtra_dt_van_ban_xu_ly,,Incremental - Delete then Insert,,Văn bản xử lý / quyết định xử phạt đơn thư
+THANHTRA,DT_CONG_BO_XU_PHAT,stg_thanhtra_dt_cong_bo_xu_phat,,Incremental - Delete then Insert,,Công bố quyết định xử phạt (Đơn thư)
+THANHTRA,PCTN_BAO_CAO,stg_thanhtra_pctn_bao_cao,,Incremental - Delete then Insert,,Báo cáo phòng chống tham nhũng
+THANHTRA,PCRT_HO_SO,stg_thanhtra_pcrt_ho_so,,Incremental - Delete then Insert,,Hồ sơ phòng chống rửa tiền
+THANHTRA,PCRT_HO_SO_VAN_BAN,stg_thanhtra_pcrt_ho_so_van_ban,,Incremental - Delete then Insert,,Văn bản đính kèm hồ sơ rửa tiền
+THANHTRA,PCRT_VAN_BAN_XU_LY,stg_thanhtra_pcrt_van_ban_xu_ly,,Incremental - Delete then Insert,,Văn bản xử lý vi phạm rửa tiền
+THANHTRA,PCRT_BAO_CAO,stg_thanhtra_pcrt_bao_cao,,Incremental - Delete then Insert,,Báo cáo phòng chống rửa tiền
+THANHTRA,DM_CAN_BO,stg_thanhtra_dm_can_bo,,Incremental - Delete then Insert,,Danh mục cán bộ thanh tra
+THANHTRA,DM_CONG_TY_QLQ,stg_thanhtra_dm_cong_ty_qlq,,Incremental - Delete then Insert,,Danh mục công ty quản lý quỹ và quỹ đầu tư chứng khoán
+THANHTRA,DM_CONG_TY_CK,stg_thanhtra_dm_cong_ty_ck,,Incremental - Delete then Insert,,Danh mục công ty chứng khoán
+THANHTRA,DM_CONG_TY_DC,stg_thanhtra_dm_cong_ty_dc,,Incremental - Delete then Insert,,Danh mục công ty đại chúng
+THANHTRA,DM_DOI_TUONG_KHAC,stg_thanhtra_dm_doi_tuong_khac,,Incremental - Delete then Insert,,Danh mục đối tượng thanh tra khác
+THANHTRA,DM_BIEU_MAU,stg_thanhtra_dm_bieu_mau,,Incremental - Delete then Insert,,Danh mục biểu mẫu
+THANHTRA,DM_CHUC_VU,stg_thanhtra_dm_chuc_vu,,Incremental - Delete then Insert,,Danh mục chức vụ
+THANHTRA,DM_DON_VI,stg_thanhtra_dm_don_vi,,Incremental - Delete then Insert,,Danh mục đơn vị
+THANHTRA,DM_HO_SO,stg_thanhtra_dm_ho_so,,Incremental - Delete then Insert,,Danh mục hồ sơ
+THANHTRA,DM_TRANG_THAI_HO_SO,stg_thanhtra_dm_trang_thai_ho_so,,Incremental - Delete then Insert,,Danh mục trạng thái hồ sơ
+THANHTRA,DM_LINH_VUC,stg_thanhtra_dm_linh_vuc,,Incremental - Delete then Insert,,Danh mục lĩnh vực
+THANHTRA,DM_QUOC_GIA,stg_thanhtra_dm_quoc_gia,,Incremental - Delete then Insert,,Danh mục quốc gia
+THANHTRA,DM_TINH_THANH,stg_thanhtra_dm_tinh_thanh,,Incremental - Delete then Insert,,Danh mục tỉnh thành
+THANHTRA,DM_HANH_VI_VI_PHAM,stg_thanhtra_dm_hanh_vi_vi_pham,,Incremental - Delete then Insert,,Danh mục hành vi vi phạm
+THANHTRA,DM_HINH_THUC_PHAT,stg_thanhtra_dm_hinh_thuc_phat,,Incremental - Delete then Insert,,Danh mục hình thức phạt
+THANHTRA,DM_HINH_THUC_VAN_BAN,stg_thanhtra_dm_hinh_thuc_van_ban,,Incremental - Delete then Insert,,Danh mục hình thức văn bản
+THANHTRA,DM_MANG_NGHIEP_VU,stg_thanhtra_dm_mang_nghiep_vu,,Incremental - Delete then Insert,,Danh mục mảng nghiệp vụ
+THANHTRA,DM_MUC_DO_BAO_MAT,stg_thanhtra_dm_muc_do_bao_mat,,Incremental - Delete then Insert,,Danh mục mức độ bảo mật
+THANHTRA,DM_CAN_CU_THANH_TRA,stg_thanhtra_dm_can_cu_thanh_tra,,Incremental - Delete then Insert,,Danh mục căn cứ thanh tra
+THANHTRA,DM_DANH_MUC_KHAC,stg_thanhtra_dm_danh_muc_khac,,Incremental - Delete then Insert,,Danh mục khác (dùng chung)
+THANHTRA,SYS_NGUOI_DUNG,stg_thanhtra_sys_nguoi_dung,,Incremental - Delete then Insert,,Người dùng hệ thống
+THANHTRA,SYS_NHOM_NGUOI_DUNG,stg_thanhtra_sys_nhom_nguoi_dung,,Incremental - Delete then Insert,,Nhóm người dùng
+THANHTRA,SYS_NGUOI_DUNG_NHOM,stg_thanhtra_sys_nguoi_dung_nhom,,Incremental - Delete then Insert,,Quan hệ người dùng – nhóm quyền
+THANHTRA,SYS_NHAT_KY,stg_thanhtra_sys_nhat_ky,,Incremental - Delete then Insert,,Nhật ký hoạt động hệ thống
+THANHTRA,SYS_THAM_SO,stg_thanhtra_sys_tham_so,,Incremental - Delete then Insert,,Tham số cấu hình hệ thống
+THANHTRA,SYS_SAO_LUU,stg_thanhtra_sys_sao_luu,,Incremental - Delete then Insert,,Lịch sao lưu tự động
+THANHTRA,SYS_NHAT_KY_SAO_LUU,stg_thanhtra_sys_nhat_ky_sao_luu,,Incremental - Delete then Insert,,Nhật ký sao lưu dữ liệu
+THANHTRA,SYS_VAN_BAN_PHAP_QUY,stg_thanhtra_sys_van_ban_phap_quy,,Incremental - Delete then Insert,,Văn bản pháp quy hệ thống
