@@ -1,5 +1,5 @@
 schema_type: mapping
-schema_version: "1.0"
+schema_version: '1.0'
 mapping:
   id: MAP-ATM-fnd_mgt_co-FIMS.FUNDCOMPANY
   logical_name: Mapping Atomic - Fund Management Company – source FIMS.FUNDCOMPANY
@@ -13,193 +13,160 @@ target:
   schema: atomic
   physical_name: fnd_mgt_co
   etl_handle: SCD4A
-  description: Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty.
+  description: Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép
+    hoạt động. Lưu thông tin pháp lý và hoạt động của công ty.
 input:
-  -
-    source_type: physical_table
-    schema: bronze
-    table_name: FUNDCOMPANY
-    alias: fu_co
-    select_fields: id, name, shortname, ename, capital, createdby, datecreated, datemodified, naid, statusid, director, depcert, description
-    filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
-  -
-    source_type: physical_table
-    schema: bronze
-    table_name: FUNDCOMBUSINES
-    alias: fu_bu_raw
-    select_fields: fundid, buid
-    filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
-  -
-    source_type: derived_cte
-    schema: null
-    table_name: fu_bu_raw
-    alias: fu_bu
-    select_fields: fundid, array_agg(buid) AS business_type_codes
-    filter: GROUP BY fundid
-  -
-    source_type: physical_table
-    schema: bronze
-    table_name: FUNDCOMTYPE
-    alias: fu_ty_raw
-    select_fields: fundid, comtypeid
-    filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
-  -
-    source_type: derived_cte
-    schema: null
-    table_name: fu_ty_raw
-    alias: fu_ty
-    select_fields: fundid, array_agg(comtypeid) AS company_type_codes
-    filter: GROUP BY fundid
+- source_type: physical_table
+  schema: bronze
+  table_name: FUNDCOMPANY
+  alias: fu_co
+  select_fields: id, name, shortname, ename, capital, createdby, datecreated, datemodified,
+    naid, statusid, director, depcert, description
+  filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
+- source_type: physical_table
+  schema: bronze
+  table_name: FUNDCOMBUSINES
+  alias: fu_bu_raw
+  select_fields: fundid, buid
+  filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
+- source_type: derived_cte
+  schema: null
+  table_name: fu_bu_raw
+  alias: fu_bu
+  select_fields: fundid, array_agg(buid) AS business_type_codes
+  filter: GROUP BY fundid
+- source_type: physical_table
+  schema: bronze
+  table_name: FUNDCOMTYPE
+  alias: fu_ty_raw
+  select_fields: fundid, comtypeid
+  filter: data_date = to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')
+- source_type: derived_cte
+  schema: null
+  table_name: fu_ty_raw
+  alias: fu_ty
+  select_fields: fundid, array_agg(comtypeid) AS company_type_codes
+  filter: GROUP BY fundid
 relationship:
-  -
-    main_alias: fu_co
-    join_type: LEFT JOIN
-    join_alias: fu_bu
-    join_on: fu_co.id = fu_bu.fundid
-  -
-    main_alias: fu_co
-    join_type: LEFT JOIN
-    join_alias: fu_ty
-    join_on: fu_co.id = fu_ty.fundid
+- main_alias: fu_co
+  join_type: LEFT JOIN
+  join_alias: fu_bu
+  join_on: fu_co.id = fu_bu.fundid
+- main_alias: fu_co
+  join_type: LEFT JOIN
+  join_alias: fu_ty
+  join_on: fu_co.id = fu_ty.fundid
 mapping_columns:
-  -
-    target_column: fund_management_company_id
-    transformation: "{hash_id}('FIMS_FUNDCOMPANY', fu_co.id)"
-    data_type: string
-    description: Khóa đại diện cho công ty quản lý quỹ.
-  -
-    target_column: fund_management_company_code
-    transformation: fu_co.id
-    data_type: string
-    description: Mã định danh công ty QLQ. Map từ PK bảng nguồn.
-  -
-    target_column: source_system_code
-    transformation: "'FIMS_FUNDCOMPANY'"
-    data_type: string
-    description: Mã nguồn dữ liệu.
-  -
-    target_column: fund_management_company_name
-    transformation: fu_co.name
-    data_type: string
-    description: Tên công ty QLQ.
-  -
-    target_column: fund_management_company_short_name
-    transformation: fu_co.shortname
-    data_type: string
-    description: Tên viết tắt (ghi là Tên tiếng Việt trong nguồn).
-  -
-    target_column: fund_management_company_english_name
-    transformation: fu_co.ename
-    data_type: string
-    description: Tên tiếng Anh.
-  -
-    target_column: practice_status_code
-    transformation: null
-    data_type: string
-    description: Trạng thái hoạt động của công ty QLQ.
-  -
-    target_column: charter_capital_amount
-    transformation: fu_co.capital
-    data_type: decimal(23,2)
-    description: Vốn điều lệ (VNĐ).
-  -
-    target_column: dorf_indicator
-    transformation: null
-    data_type: string
-    description: Loại hình trong/ngoài nước. 1=Trong nước; 0=Nước ngoài.
-  -
-    target_column: license_decision_number
-    transformation: (null)
-    data_type: string
-    description: Số quyết định/giấy phép thành lập.
-  -
-    target_column: license_decision_date
-    transformation: null
-    data_type: date
-    description: Ngày cấp phép.
-  -
-    target_column: active_date
-    transformation: null
-    data_type: date
-    description: Ngày bắt đầu hoạt động.
-  -
-    target_column: stop_date
-    transformation: null
-    data_type: date
-    description: Ngày ngừng hoạt động.
-  -
-    target_column: business_type_codes
-    transformation: fu_bu.business_type_codes
-    data_type: array<string>
-    description: Danh sách mã nghiệp vụ kinh doanh. Từ bảng junction FUNDCOMBUSINES.
-  -
-    target_column: created_by
-    transformation: fu_co.createdby
-    data_type: string
-    description: Người tạo bản ghi.
-  -
-    target_column: created_timestamp
-    transformation: fu_co.datecreated
-    data_type: timestamp
-    description: Ngày tạo bản ghi.
-  -
-    target_column: updated_timestamp
-    transformation: fu_co.datemodified
-    data_type: timestamp
-    description: Ngày cập nhật bản ghi.
-  -
-    target_column: country_of_registration_id
-    transformation: "{hash_id}('FIMS_NATIONAL', fu_co.naid)"
-    data_type: string
-    description: FK đến quốc gia đăng ký của công ty QLQ.
-  -
-    target_column: country_of_registration_code
-    transformation: fu_co.naid
-    data_type: string
-    description: Mã quốc gia đăng ký.
-  -
-    target_column: life_cycle_status_code
-    transformation: fu_co.statusid
-    data_type: string
-    description: Trạng thái hoạt động. ID lấy từ bảng STATUS.
-  -
-    target_column: director_name
-    transformation: fu_co.director
-    data_type: string
-    description: Tên Tổng giám đốc (denormalized).
-  -
-    target_column: depository_certificate_number
-    transformation: fu_co.depcert
-    data_type: string
-    description: Chứng nhận lưu ký — thông tin bổ sung của FIMS không có trong FMS.SECURITIES.
-  -
-    target_column: company_type_codes
-    transformation: fu_ty.company_type_codes
-    data_type: array<string>
-    description: Danh sách mã loại hình doanh nghiệp. Từ bảng junction FUNDCOMTYPE.
-  -
-    target_column: description
-    transformation: fu_co.description
-    data_type: string
-    description: Ghi chú.
-  -
-    target_column: company_type_code
-    transformation: null
-    data_type: string
-    description: Loại hình công ty.
-  -
-    target_column: fund_type_code
-    transformation: null
-    data_type: string
-    description: Loại quỹ (áp dụng cho quỹ đầu tư).
-  -
-    target_column: business_license_number
-    transformation: null
-    data_type: string
-    description: Số giấy phép kinh doanh.
-  -
-    target_column: website
-    transformation: null
-    data_type: string
-    description: Website chính thức.
+- target_column: fnd_mgt_co_id
+  transformation: '{hash_id}(''FIMS_FUNDCOMPANY'', fu_co.id)'
+  data_type: string
+  description: Khóa đại diện cho công ty quản lý quỹ.
+- target_column: fnd_mgt_co_code
+  transformation: fu_co.id
+  data_type: string
+  description: Mã định danh công ty QLQ. Map từ PK bảng nguồn.
+- target_column: src_stm_code
+  transformation: '''FIMS_FUNDCOMPANY'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+- target_column: fnd_mgt_co_nm
+  transformation: fu_co.name
+  data_type: string
+  description: Tên công ty QLQ.
+- target_column: fnd_mgt_co_shrt_nm
+  transformation: fu_co.shortname
+  data_type: string
+  description: Tên viết tắt (ghi là Tên tiếng Việt trong nguồn).
+- target_column: fnd_mgt_co_en_nm
+  transformation: fu_co.ename
+  data_type: string
+  description: Tên tiếng Anh.
+- target_column: practice_st_code
+  transformation: null
+  data_type: string
+  description: Trạng thái hoạt động của công ty QLQ.
+- target_column: charter_cptl_amt
+  transformation: fu_co.capital
+  data_type: decimal(23,2)
+  description: Vốn điều lệ (VNĐ).
+- target_column: dorf_ind
+  transformation: null
+  data_type: string
+  description: Loại hình trong/ngoài nước. 1=Trong nước; 0=Nước ngoài.
+- target_column: license_dcsn_nbr
+  transformation: (null)
+  data_type: string
+  description: Số quyết định/giấy phép thành lập.
+- target_column: license_dcsn_dt
+  transformation: null
+  data_type: date
+  description: Ngày cấp phép.
+- target_column: actv_dt
+  transformation: null
+  data_type: date
+  description: Ngày bắt đầu hoạt động.
+- target_column: stop_dt
+  transformation: null
+  data_type: date
+  description: Ngày ngừng hoạt động.
+- target_column: bsn_tp_codes
+  transformation: fu_bu.business_type_codes
+  data_type: array<string>
+  description: Danh sách mã nghiệp vụ kinh doanh. Từ bảng junction FUNDCOMBUSINES.
+- target_column: crt_by
+  transformation: fu_co.createdby
+  data_type: string
+  description: Người tạo bản ghi.
+- target_column: crt_tms
+  transformation: fu_co.datecreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+- target_column: udt_tms
+  transformation: fu_co.datemodified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+- target_column: cty_of_rgst_id
+  transformation: '{hash_id}(''FIMS_NATIONAL'', fu_co.naid)'
+  data_type: string
+  description: FK đến quốc gia đăng ký của công ty QLQ.
+- target_column: cty_of_rgst_code
+  transformation: fu_co.naid
+  data_type: string
+  description: Mã quốc gia đăng ký.
+- target_column: lcs_code
+  transformation: fu_co.statusid
+  data_type: string
+  description: Trạng thái hoạt động. ID lấy từ bảng STATUS.
+- target_column: director_nm
+  transformation: fu_co.director
+  data_type: string
+  description: Tên Tổng giám đốc (denormalized).
+- target_column: depst_ctf_nbr
+  transformation: fu_co.depcert
+  data_type: string
+  description: Chứng nhận lưu ký — thông tin bổ sung của FIMS không có trong FMS.SECURITIES.
+- target_column: co_tp_codes
+  transformation: fu_ty.company_type_codes
+  data_type: array<string>
+  description: Danh sách mã loại hình doanh nghiệp. Từ bảng junction FUNDCOMTYPE.
+- target_column: dsc
+  transformation: fu_co.description
+  data_type: string
+  description: Ghi chú.
+- target_column: co_tp_code
+  transformation: null
+  data_type: string
+  description: Loại hình công ty.
+- target_column: fnd_tp_code
+  transformation: null
+  data_type: string
+  description: Loại quỹ (áp dụng cho quỹ đầu tư).
+- target_column: bsn_license_nbr
+  transformation: null
+  data_type: string
+  description: Số giấy phép kinh doanh.
+- target_column: webst
+  transformation: null
+  data_type: string
+  description: Website chính thức.
 final_filter: []
