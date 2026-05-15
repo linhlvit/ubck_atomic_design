@@ -1,0 +1,9 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Application Review Workflow Id,Khóa đại diện cho workflow instance xét duyệt hồ sơ.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Application Review Workflow Code,Mã workflow instance (WorkflowId). BK.,Text,false,false,draft,TTHC.WorkflowIndex.WorkflowId,BK chính. Mã UUID do Orchard Core sinh.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=TTHC.WorkflowIndex,
+Securities Offering Application Id,"FK đến hồ sơ chào bán gắn với workflow. ETL derived từ CorrelationId (chờ xác nhận T2-01 — cột chưa có trong Columns.csv).",Surrogate Key,true,false,draft,,"FK target: Securities Offering Application.Securities Offering Application Id. [PENDING T2-01] Cột CorrelationId chưa được xác nhận trong WorkflowIndex — cần profile DB. Mapping tạm để giữ ý định thiết kế.",,
+Securities Offering Application Code,"Mã ContentItemId hồ sơ. ETL derived từ CorrelationId (chờ xác nhận T2-01).",Text,true,false,draft,,"Lookup pair: Securities Offering Application.Securities Offering Application Code. Pair with Securities Offering Application Id. [PENDING T2-01]",,
+Workflow Type Code,Mã loại workflow (WorkflowTypeId). FK đến Classification Value scheme TTHC_WORKFLOW_TYPE.,Classification Value,false,false,draft,TTHC.WorkflowIndex.WorkflowTypeId,Scheme: TTHC_WORKFLOW_TYPE. WorkflowTypeIndex đẩy vào Classification Value — không có surrogate key riêng.,TTHC_WORKFLOW_TYPE,
+Workflow Status Code,Trạng thái workflow instance (Idle/Executing/Faulted/Finished/Aborted).,Classification Value,false,false,draft,TTHC.WorkflowIndex.WorkflowStatus,Scheme: TTHC_WORKFLOW_STATUS. 5 giá trị cố định của Orchard Core.,TTHC_WORKFLOW_STATUS,
+Created Timestamp,Ngày giờ tạo workflow instance (CreatedUtc).,Timestamp,false,false,draft,TTHC.WorkflowIndex.CreatedUtc,,,

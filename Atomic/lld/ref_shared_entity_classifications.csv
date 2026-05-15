@@ -65,7 +65,7 @@ ORGANIZATION_UNIT_TYPE,UNIT,Đơn vị,etl_derived,,Regulatory Authority Organiz
 ORGANIZATION_UNIT_TYPE,DEPARTMENT,Phòng ban,etl_derived,,Regulatory Authority Organization Unit
 ORGANIZATION_UNIT_STATUS,(to_define),Trạng thái đơn vị/phòng ban,modeler_defined,NHNCK.qlnhn.Units.Status,Regulatory Authority Organization Unit
 OFFICER_STATUS,(to_define),Trạng thái người dùng,modeler_defined,NHNCK.qlnhn.Users.Status,Regulatory Authority Officer
-LIFE_CYCLE_STATUS,(source),Trạng thái vòng đời thành viên — values from FIMS.STATUS,source_table,FIMS.STATUS,"Custodian Bank | Depository Center | Fund Management Company | Fund Management Company Organization Unit | Investment Fund | National Securities Exchange | Securities Practitioner License Profile | Stock Broker"
+LIFE_CYCLE_STATUS,(source),Trạng thái vòng đời thành viên — values from FIMS.STATUS,source_table,FIMS.STATUS,Custodian Bank | Depository Center | Fund Management Company | Fund Management Company Organization Unit | Investment Fund | National Securities Exchange | Securities Practitioner License Profile | Stock Broker
 LIFE_CYCLE_STATUS,ACTIVE,Còn hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
 LIFE_CYCLE_STATUS,INACTIVE,Hết hiệu lực,etl_derived,FMS.INVESACC.Status,Discretionary Investment Account
 LIFE_CYCLE_STATUS,00,Đang hoạt động,etl_derived,DCST.THONG_TIN_DK_THUE.TRANG_THAI_HOAT_DONG,Registered Taxpayer
@@ -88,17 +88,17 @@ REPORTING_PERIOD_TYPE,(to_define),"Kiểu kỳ kê khai (tháng, quý, năm...) 
 AUDIT_STATUS,(to_define),Trạng thái kiểm toán BCTC — cần profile data TRANG_THAI_KT,modeler_defined,DCST.TCT_BAO_CAO.TRANG_THAI_KT,Tax Financial Statement
 TAX_ENFORCEMENT_TYPE,(to_define),"Hình thức cưỡng chế (trích tiền TK, kê biên TS, ngừng sử dụng HĐ...) — cần profile data MA_HTCC",modeler_defined,DCST.TCT_TT_CUONG_CHE_NO|DCST.TCT_TTCCN_HOA_DON,Tax Debt Enforcement Order | Tax Invoice Enforcement Order
 INVOICE_TYPE,(to_define),Loại hóa đơn — cần profile data LOAI_HOA_DON,modeler_defined,DCST.HOA_DON_CHI_TIET,Tax Invoice Enforcement Order Item
-FMS_OPERATION_STATUS,(source),Trạng thái hoạt động của tổ chức/cá nhân trong hệ thống FMS,source_table,FMS.STATUS,"Fund Management Company | Foreign Fund Management Organization Unit | Custodian Bank | Fund Distribution Agent"
+FMS_OPERATION_STATUS,(source),Trạng thái hoạt động của tổ chức/cá nhân trong hệ thống FMS,source_table,FMS.STATUS,Fund Management Company | Foreign Fund Management Organization Unit | Custodian Bank | Fund Distribution Agent
 FMS_AGENCY_TYPE,(source),Loại đại lý phân phối quỹ đầu tư,source_table,FMS.AGENCYTYPE,Fund Distribution Agent
 GEOGRAPHIC_AREA_TYPE,COUNTRY,Quốc gia / quốc tịch — từ FIMS.NATIONAL + FMS.NATIONAL + SCMS.DM_QUOC_TICH,etl_derived,"FIMS.NATIONAL, FMS.NATIONAL, SCMS.DM_QUOC_TICH",Geographic Area
 GEOGRAPHIC_AREA_TYPE,PROVINCE,Tỉnh / thành phố trong nước — từ SCMS.DM_TINH_THANH,etl_derived,SCMS.DM_TINH_THANH,Geographic Area
 FMS_STOCKHOLDER_TYPE,(source),Danh mục loại hình nhà đầu tư/cổ đông trong hệ thống FMS,source_table,FMS.STOCKHOLDERTYPE,Discretionary Investment Investor
-FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
-FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
-FMS_REPORTING_PERIOD_TYPE,MONTHLY,Tháng,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
-FMS_REPORTING_PERIOD_TYPE,QUARTERLY,Quý,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
-FMS_REPORTING_PERIOD_TYPE,SEMI_ANNUAL,Bán niên,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
-FMS_REPORTING_PERIOD_TYPE,ANNUAL,Năm,etl_derived,FMS.RPTPERIOD.PeriodType,"Reporting Period | Member Periodic Report | Report Import Value"
+FMS_REPORTING_PERIOD_TYPE,DAILY,Ngày,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period | Member Periodic Report | Report Import Value
+FMS_REPORTING_PERIOD_TYPE,WEEKLY,Tuần,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period | Member Periodic Report | Report Import Value
+FMS_REPORTING_PERIOD_TYPE,MONTHLY,Tháng,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period | Member Periodic Report | Report Import Value
+FMS_REPORTING_PERIOD_TYPE,QUARTERLY,Quý,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period | Member Periodic Report | Report Import Value
+FMS_REPORTING_PERIOD_TYPE,SEMI_ANNUAL,Bán niên,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period | Member Periodic Report | Report Import Value
+FMS_REPORTING_PERIOD_TYPE,ANNUAL,Năm,etl_derived,FMS.RPTPERIOD.PeriodType,Reporting Period | Member Periodic Report | Report Import Value
 FMS_FUND_TYPE,(source),Loại hình quỹ đầu tư,source_table,FMS.FUNDS.FundType,Investment Fund
 FMS_JOB_TYPE,(source),Loại chức vụ nhân sự công ty QLQ,source_table,FMS.JOBTYPE,Fund Management Company Key Person
 FMS_ORGANIZATION_UNIT_TYPE,BRANCH,Chi nhánh,etl_derived,FMS.BRANCHES.BrType,Fund Management Company Organization Unit
@@ -110,19 +110,19 @@ FMS_FOREIGN_OU_TYPE,REPRESENTATIVE_OFFICE,Văn phòng đại diện NN,etl_deriv
 FMS_FOREIGN_OU_TYPE,BRANCH,Chi nhánh NN,etl_derived,FMS.STFFGBRCH.FnType,Foreign Fund Management Organization Unit Staff
 FMS_REPORT_TYPE,PERIODIC,Báo cáo định kỳ,etl_derived,FMS.RPTMEMBER.ReportType,Member Periodic Report
 FMS_REPORT_TYPE,AD_HOC,Báo cáo bất thường,etl_derived,FMS.RPTMEMBER.ReportType,Member Periodic Report
-FMS_REPORTING_MEMBER_TYPE,FMC,Công ty quản lý quỹ,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
-FMS_REPORTING_MEMBER_TYPE,CUSTODIAN_BANK,Ngân hàng lưu ký giám sát,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
+FMS_REPORTING_MEMBER_TYPE,FMC,Công ty quản lý quỹ,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report | Report Import Value
+FMS_REPORTING_MEMBER_TYPE,CUSTODIAN_BANK,Ngân hàng lưu ký giám sát,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report | Report Import Value
 FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_BRANCH,Chi nhánh QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report
 FMS_REPORTING_MEMBER_TYPE,FOREIGN_FMC_REP,Văn phòng đại diện QLQ nước ngoài,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report
-FMS_REPORTING_MEMBER_TYPE,INVESTMENT_FUND,Quỹ đầu tư chứng khoán,etl_derived,FMS.RPTMEMBER.Type,"Member Periodic Report | Report Import Value"
-FMS_REPORT_SUBMISSION_STATUS,PENDING,Chưa gửi,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
-FMS_REPORT_SUBMISSION_STATUS,SUBMITTED,Đã gửi,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
-FMS_REPORT_SUBMISSION_STATUS,LATE,Gửi muộn,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
-FMS_REPORT_SUBMISSION_STATUS,CANCELLED,Bị hủy,etl_derived,FMS.RPTMEMBER.Status,"Member Periodic Report | Member Periodic Report Status Log"
+FMS_REPORTING_MEMBER_TYPE,INVESTMENT_FUND,Quỹ đầu tư chứng khoán,etl_derived,FMS.RPTMEMBER.Type,Member Periodic Report | Report Import Value
+FMS_REPORT_SUBMISSION_STATUS,PENDING,Chưa gửi,etl_derived,FMS.RPTMEMBER.Status,Member Periodic Report | Member Periodic Report Status Log
+FMS_REPORT_SUBMISSION_STATUS,SUBMITTED,Đã gửi,etl_derived,FMS.RPTMEMBER.Status,Member Periodic Report | Member Periodic Report Status Log
+FMS_REPORT_SUBMISSION_STATUS,LATE,Gửi muộn,etl_derived,FMS.RPTMEMBER.Status,Member Periodic Report | Member Periodic Report Status Log
+FMS_REPORT_SUBMISSION_STATUS,CANCELLED,Bị hủy,etl_derived,FMS.RPTMEMBER.Status,Member Periodic Report | Member Periodic Report Status Log
 FMS_TRANSFER_TYPE,(to_define),Loại giao dịch CCQ — cần profile data TransType,modeler_defined,FMS.TRANSFERMBF.TransType,Investment Fund Certificate Transfer
 FMS_CELL_DATA_TYPE,NUMERIC,Số,etl_derived,FMS.RPTVALUES.FormatDataType,Report Import Value
 FMS_CELL_DATA_TYPE,STRING,Ký tự,etl_derived,FMS.RPTVALUES.FormatDataType,Report Import Value
-FMS_BUSINESS_TYPE,(source),Ngành nghề kinh doanh của tổ chức trong hệ thống FMS,source_table,FMS.BUSINESS,"Fund Management Company | Foreign Fund Management Organization Unit"
+FMS_BUSINESS_TYPE,(source),Ngành nghề kinh doanh của tổ chức trong hệ thống FMS,source_table,FMS.BUSINESS,Fund Management Company | Foreign Fund Management Organization Unit
 FMS_RELATION_TYPE,(source),Quan hệ giữa NĐT và người liên quan,source_table,FMS.RELATION,Discretionary Investment Investor
 FMS_VIOLATION_TYPE,(to_define),Loại vi phạm trong hoạt động quản lý quỹ — cần profile data ViolType,modeler_defined,FMS.VIOLT.ViolType,Fund Management Conduct Violation
 FMS_VIOLATION_STATUS,(to_define),Trạng thái xử lý vi phạm — cần profile data ViolStatus,modeler_defined,FMS.VIOLT.ViolStatus,Fund Management Conduct Violation
@@ -176,28 +176,28 @@ SCMS_OBLIGATION_STATUS,(to_define),Trạng thái nghĩa vụ gửi báo cáo —
 IP_ADDR_TYPE,ADDRESS,Địa chỉ chung (không phân biệt loại),etl_derived,,IP Postal Address
 IP_ELEC_ADDR_TYPE,HOTLINE,Số điện thoại hotline,etl_derived,,IP Electronic Address
 TT_FORM_TYPE,(source),Loại biểu mẫu thanh tra,source_table,ThanhTra.DM_BIEU_MAU,Inspection Annual Plan
-TT_POSITION_TYPE,(source),Chức vụ trong đoàn thanh tra,source_table,ThanhTra.DM_CHUC_VU,"Inspection Annual Plan | Inspection Case"
+TT_POSITION_TYPE,(source),Chức vụ trong đoàn thanh tra,source_table,ThanhTra.DM_CHUC_VU,Inspection Annual Plan | Inspection Case
 TT_UNIT_TYPE,(source),Đơn vị UBCKNN chủ trì,source_table,ThanhTra.DM_DON_VI,Inspection Annual Plan
-TT_CASE_TYPE,(source),Loại hồ sơ thanh tra/giám sát,source_table,ThanhTra.DM_HO_SO,"Inspection Case | Surveillance Enforcement Case | AML Enforcement Case"
-TT_CASE_STATUS,(source),Trạng thái hồ sơ xử lý,source_table,ThanhTra.DM_TRANG_THAI_HO_SO,"Inspection Case | Surveillance Enforcement Case | AML Enforcement Case"
-TT_INSPECTION_SECTOR,(source),Lĩnh vực thanh tra kiểm tra,source_table,ThanhTra.DM_LINH_VUC,"Inspection Annual Plan | Inspection Case"
-TT_VIOLATION_TYPE,(source),Hành vi vi phạm,source_table,ThanhTra.DM_HANH_VI_VI_PHAM,"Inspection Conclusion | Surveillance Enforcement Decision | AML Enforcement Decision"
-TT_PENALTY_TYPE,(source),Hình thức phạt,source_table,ThanhTra.DM_HINH_THUC_PHAT,"Inspection Conclusion | Surveillance Enforcement Decision | AML Enforcement Decision"
+TT_CASE_TYPE,(source),Loại hồ sơ thanh tra/giám sát,source_table,ThanhTra.DM_HO_SO,Inspection Case | Surveillance Enforcement Case | AML Enforcement Case
+TT_CASE_STATUS,(source),Trạng thái hồ sơ xử lý,source_table,ThanhTra.DM_TRANG_THAI_HO_SO,Inspection Case | Surveillance Enforcement Case | AML Enforcement Case
+TT_INSPECTION_SECTOR,(source),Lĩnh vực thanh tra kiểm tra,source_table,ThanhTra.DM_LINH_VUC,Inspection Annual Plan | Inspection Case
+TT_VIOLATION_TYPE,(source),Hành vi vi phạm,source_table,ThanhTra.DM_HANH_VI_VI_PHAM,Inspection Conclusion | Surveillance Enforcement Decision | AML Enforcement Decision
+TT_PENALTY_TYPE,(source),Hình thức phạt,source_table,ThanhTra.DM_HINH_THUC_PHAT,Inspection Conclusion | Surveillance Enforcement Decision | AML Enforcement Decision
 TT_DOCUMENT_FORM_TYPE,(source),Hình thức văn bản (quyết định/công văn/thông báo),source_table,ThanhTra.DM_HINH_THUC_VAN_BAN,Inspection Decision
-TT_BUSINESS_SECTOR,(source),Mảng nghiệp vụ được thanh tra/giám sát,source_table,ThanhTra.DM_MANG_NGHIEP_VU,"Inspection Decision | Surveillance Enforcement Case | AML Enforcement Case"
+TT_BUSINESS_SECTOR,(source),Mảng nghiệp vụ được thanh tra/giám sát,source_table,ThanhTra.DM_MANG_NGHIEP_VU,Inspection Decision | Surveillance Enforcement Case | AML Enforcement Case
 TT_SECURITY_LEVEL,(source),Mức độ bảo mật hồ sơ,source_table,ThanhTra.DM_MUC_DO_BAO_MAT,Surveillance Enforcement Case
 TT_LEGAL_BASIS_TYPE,(source),Căn cứ pháp lý của quyết định thanh tra,source_table,ThanhTra.DM_CAN_CU_THANH_TRA,Inspection Decision
 TT_MISC_CATEGORY,(source),Danh mục phân loại dùng chung nội bộ,source_table,ThanhTra.DM_DANH_MUC_KHAC,(reserved)
 TT_OFFICER_STATUS,SU_DUNG,Đang sử dụng,etl_derived,ThanhTra.DM_CAN_BO.TRANG_THAI,Inspection Officer
 TT_OFFICER_STATUS,KHONG_SU_DUNG,Không sử dụng,etl_derived,ThanhTra.DM_CAN_BO.TRANG_THAI,Inspection Officer
-TT_COMPANY_TYPE,(to_define),Loại hình công ty — cần profile data LOAI_HINH_CONG_TY,modeler_defined,"ThanhTra.DM_CONG_TY_CK.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_QLQ.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_DC.LOAI_HINH_CONG_TY","Securities Company | Fund Management Company | Public Company"
+TT_COMPANY_TYPE,(to_define),Loại hình công ty — cần profile data LOAI_HINH_CONG_TY,modeler_defined,"ThanhTra.DM_CONG_TY_CK.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_QLQ.LOAI_HINH_CONG_TY, ThanhTra.DM_CONG_TY_DC.LOAI_HINH_CONG_TY",Securities Company | Fund Management Company | Public Company
 TT_FUND_TYPE,(to_define),Loại quỹ đầu tư — cần profile data LOAI_QUY,modeler_defined,ThanhTra.DM_CONG_TY_QLQ.LOAI_QUY,Fund Management Company
-TT_PARTY_TYPE,CA_NHAN,Cá nhân,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG","Inspection Subject Other Party | Complaint Petition | Inspection Case"
-TT_PARTY_TYPE,TO_CHUC,Tổ chức,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG","Inspection Subject Other Party | Complaint Petition | Inspection Case"
-TT_PLAN_TYPE,THANH_TRA,Thanh tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH","Inspection Annual Plan | Inspection Decision | Inspection Case"
-TT_PLAN_TYPE,KIEM_TRA,Kiểm tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH","Inspection Annual Plan | Inspection Decision | Inspection Case"
-TT_RECORD_STATUS,1,Hoạt động,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI","Inspection Annual Plan | Inspection Decision"
-TT_RECORD_STATUS,0,Đã xóa,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI","Inspection Annual Plan | Inspection Decision"
+TT_PARTY_TYPE,CA_NHAN,Cá nhân,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG",Inspection Subject Other Party | Complaint Petition | Inspection Case
+TT_PARTY_TYPE,TO_CHUC,Tổ chức,etl_derived,"ThanhTra.DM_DOI_TUONG_KHAC.LOAI_DOI_TUONG, ThanhTra.DT_DON_THU.LOAI_DOI_TUONG, ThanhTra.TT_HO_SO.LOAI_DOI_TUONG",Inspection Subject Other Party | Complaint Petition | Inspection Case
+TT_PLAN_TYPE,THANH_TRA,Thanh tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH",Inspection Annual Plan | Inspection Decision | Inspection Case
+TT_PLAN_TYPE,KIEM_TRA,Kiểm tra,etl_derived,"ThanhTra.TT_KE_HOACH.LOAI_KE_HOACH, ThanhTra.TT_QUYET_DINH.LOAI_HINH",Inspection Annual Plan | Inspection Decision | Inspection Case
+TT_RECORD_STATUS,1,Hoạt động,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI",Inspection Annual Plan | Inspection Decision
+TT_RECORD_STATUS,0,Đã xóa,etl_derived,"ThanhTra.TT_KE_HOACH.TRANG_THAI, ThanhTra.TT_QUYET_DINH.TRANG_THAI",Inspection Annual Plan | Inspection Decision
 TT_PETITION_TYPE,KHIEU_NAI,Khiếu nại,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
 TT_PETITION_TYPE,TO_CAO,Tố cáo,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
 TT_PETITION_TYPE,PHAN_ANH,Phản ánh,etl_derived,ThanhTra.DT_DON_THU.LOAI_DON,Complaint Petition
@@ -209,8 +209,8 @@ TT_PETITION_STATUS,DONG,Đóng,etl_derived,ThanhTra.DT_DON_THU.TRANG_THAI,Compla
 TT_PENALTY_STATUS,CHUA_NOP_PHAT,Chưa nộp phạt,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
 TT_PENALTY_STATUS,DA_NOP_PHAT,Đã nộp phạt,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
 TT_PENALTY_STATUS,NOP_PHAT_NHIEU_LAN,Nộp phạt nhiều lần,etl_derived,ThanhTra.DT_VAN_BAN_XU_LY.TRANG_THAI,Complaint Enforcement Decision
-TT_ANNOUNCEMENT_STATUS,CHO_DUYET,Chờ duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI","Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement"
-TT_ANNOUNCEMENT_STATUS,DA_DUYET,Đã duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI","Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement"
+TT_ANNOUNCEMENT_STATUS,CHO_DUYET,Chờ duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI",Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement
+TT_ANNOUNCEMENT_STATUS,DA_DUYET,Đã duyệt,etl_derived,"ThanhTra.GS_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.DT_CONG_BO_XU_PHAT.TRANG_THAI, ThanhTra.TT_CONG_BO_XU_PHAT.TRANG_THAI",Surveillance Penalty Announcement | Complaint Penalty Announcement | Inspection Penalty Announcement
 TT_OFFICER_ROLE,LANH_DAO,Lãnh đạo phụ trách,etl_derived,ThanhTra.TT_HO_SO_CAN_BO.LOAI_PHAN_CONG,Inspection Case Officer Assignment
 TT_OFFICER_ROLE,CHUYEN_VIEN,Chuyên viên xử lý,etl_derived,ThanhTra.TT_HO_SO_CAN_BO.LOAI_PHAN_CONG,Inspection Case Officer Assignment
 TT_RESOLUTION_RESULT,DUNG,Đúng,etl_derived,ThanhTra.DT_KET_LUAN.KET_QUA,Complaint Processing Conclusion
@@ -279,12 +279,12 @@ RISK_INDICATOR_SET,1,Trong nước,etl_derived,QLRR.risk_indicator.set_code,Risk
 RISK_INDICATOR_SET,2,Quốc tế,etl_derived,QLRR.risk_indicator.set_code,Risk Indicator | Risk Indicator Category
 RISK_INDICATOR_TYPE,1,Chỉ tiêu hệ thống,etl_derived,QLRR.risk_indicator (derived),Risk Indicator
 RISK_INDICATOR_TYPE,2,Chỉ tiêu tự tạo,etl_derived,QLRR.risk_indicator_custom (derived),Risk Indicator
-RISK_UNIT,(source),Đơn vị đo lường chỉ tiêu (1=%/2=Điểm/3=Tỷ VND/4=Triệu USD/5=Hợp đồng/6=Cổ phiếu/7=Công ty/8=VND/9=Số TK/10=Đơn vị tính),source_table,QLRR.risk_indicator.unit_code,"Risk Indicator | Risk Indicator Value | Risk Alert Config | Risk Alert"
-RISK_DATA_SOURCE,(source),Nguồn dữ liệu chỉ tiêu (1=Investing/2=Tổng cục TK/3=NHNN/4=Nội bộ/5=HNX/6=VSDC),source_table,QLRR.risk_indicator.source_code,"Risk Indicator | Risk Indicator Value | Risk Indicator Value Change"
-RISK_PERIOD_TYPE,1,Ngày,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
-RISK_PERIOD_TYPE,2,Tháng,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
-RISK_PERIOD_TYPE,3,Quý,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
-RISK_PERIOD_TYPE,4,Năm,etl_derived,QLRR.risk_indicator.period_type,"Risk Indicator | Risk Indicator Value | Risk Indicator Schedule"
+RISK_UNIT,(source),Đơn vị đo lường chỉ tiêu (1=%/2=Điểm/3=Tỷ VND/4=Triệu USD/5=Hợp đồng/6=Cổ phiếu/7=Công ty/8=VND/9=Số TK/10=Đơn vị tính),source_table,QLRR.risk_indicator.unit_code,Risk Indicator | Risk Indicator Value | Risk Alert Config | Risk Alert
+RISK_DATA_SOURCE,(source),Nguồn dữ liệu chỉ tiêu (1=Investing/2=Tổng cục TK/3=NHNN/4=Nội bộ/5=HNX/6=VSDC),source_table,QLRR.risk_indicator.source_code,Risk Indicator | Risk Indicator Value | Risk Indicator Value Change
+RISK_PERIOD_TYPE,1,Ngày,etl_derived,QLRR.risk_indicator.period_type,Risk Indicator | Risk Indicator Value | Risk Indicator Schedule
+RISK_PERIOD_TYPE,2,Tháng,etl_derived,QLRR.risk_indicator.period_type,Risk Indicator | Risk Indicator Value | Risk Indicator Schedule
+RISK_PERIOD_TYPE,3,Quý,etl_derived,QLRR.risk_indicator.period_type,Risk Indicator | Risk Indicator Value | Risk Indicator Schedule
+RISK_PERIOD_TYPE,4,Năm,etl_derived,QLRR.risk_indicator.period_type,Risk Indicator | Risk Indicator Value | Risk Indicator Schedule
 RISK_DATA_ORIGIN,1,API CSDL tập trung,etl_derived,QLRR.risk_indicator_value.data_origin,Risk Indicator Value | Risk Indicator Value Change
 RISK_DATA_ORIGIN,2,User chỉnh sửa,etl_derived,QLRR.risk_indicator_value.data_origin,Risk Indicator Value | Risk Indicator Value Change
 RISK_JOB_FREQUENCY_TYPE,1,Giờ,etl_derived,QLRR.risk_indicator_schedule.frequency_type,Risk Indicator Schedule
@@ -428,9 +428,9 @@ MDDS_HALT_RESUME_FLAG,(source),Cờ tạm ngừng/khôi phục HOSE: parse từ 
 ORDERTRADE_MARKET_ID,(source),Mã thị trường KRX: STO/BDO/RPO (HOSE) — STX/UPX/BDX/DVX/HCX (HNX),source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX, OrderTrade.Trade_HOSE, OrderTrade.Trade_HNX","Securities Order, Securities Trade"
 ORDERTRADE_BOARD_TYPE,(source),Loại bảng giao dịch: G1=Main/G2=ATO/G3=ATC/G4=Odd lot/G7=Buy-in/G8=Sell-out/T1-T6=Thỏa thuận/R1=Repo,source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX, OrderTrade.Trade_HOSE, OrderTrade.Trade_HNX","Securities Order, Securities Trade"
 ORDERTRADE_SESSION,(source),Phiên giao dịch KRX: 00=Pre-market/10=ATO/20=Continuous1/30=ATC/40=Continuous2/80=Odd lot/90=Halt/99=Close,source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX, OrderTrade.Trade_HOSE, OrderTrade.Trade_HNX","Securities Order, Securities Trade"
-ORDERTRADE_ORDER_ACTION_TYPE,(source),Loại action lệnh: HOSE N=New/M=Modify/C=Cancel — HNX 1=New/2=Replace/3=Cancel,source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX","Securities Order"
-ORDERTRADE_ORDER_TYPE,(source),Loại lệnh theo giá: 1=Market/2=Limit/3=Stop Market/4=Stop Limit (+ HNX: X=Same side limit/Y=Contrary side limit),source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX","Securities Order"
-ORDERTRADE_ORDER_CONDITION,(source),Điều kiện khớp lệnh: 0=FAS/1=GTC/2=ATO/3=FAK/4=FOK/6=GTD/7=ATC/9=MTL,source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX","Securities Order"
+ORDERTRADE_ORDER_ACTION_TYPE,(source),Loại action lệnh: HOSE N=New/M=Modify/C=Cancel — HNX 1=New/2=Replace/3=Cancel,source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX",Securities Order
+ORDERTRADE_ORDER_TYPE,(source),Loại lệnh theo giá: 1=Market/2=Limit/3=Stop Market/4=Stop Limit (+ HNX: X=Same side limit/Y=Contrary side limit),source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX",Securities Order
+ORDERTRADE_ORDER_CONDITION,(source),Điều kiện khớp lệnh: 0=FAS/1=GTC/2=ATO/3=FAK/4=FOK/6=GTD/7=ATC/9=MTL,source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX",Securities Order
 ORDERTRADE_ORDER_STATUS,(source),Trạng thái lệnh HOSE: 0=New/1=Partial Fill/2=Filled/3=Cancelled/4=Rejected/5=Expired/6=Pending Cancel/7=Pending Replace/8=Replaced,source_table,OrderTrade.Order_HOSE,Securities Order
 ORDERTRADE_CLIENT_HOUSE_TYPE,(source),Phân loại giao dịch: 10=Client trade/30=House trade,source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX, OrderTrade.Trade_HOSE, OrderTrade.Trade_HNX","Securities Order, Securities Trade"
 ORDERTRADE_INVESTOR_TYPE,(source),Loại hình nhà đầu tư: 8000=Cá nhân/7000=NĐT NN/3000=Quỹ/4000=Ngân hàng/5000=CTCK (HOSE) hoặc 1000/2000/3000 (HNX — cần profile mapping),source_table,"OrderTrade.Order_HOSE, OrderTrade.Order_HNX, OrderTrade.Trade_HOSE, OrderTrade.Trade_HNX","Securities Order, Securities Trade"
@@ -438,3 +438,32 @@ ORDERTRADE_FOREIGN_INVESTOR_TYPE,(source),Phân loại NĐT nước ngoài: 00=T
 ORDERTRADE_SHORT_SELL_TYPE,(source),Phân loại bán khống HOSE: 00=Giao dịch bình thường/10=Lệnh bán khống,source_table,OrderTrade.Order_HOSE,Securities Order
 ORDERTRADE_AUTO_CANCEL_REASON,(source),Lý do tự động hủy lệnh HNX: 0=n/a/1=Condition/2=Batch/3=Kill Switch/4=Disconnect/5=Price limit,source_table,OrderTrade.Order_HNX,Securities Order
 ORDERTRADE_QUOTE_REQUEST_TYPE,(source),Loại yêu cầu báo giá RFQ: 1=Request/2=Cancel/3=Confirm/4=Reject,source_table,"OrderTrade.Order_HNX, OrderTrade.Trade_HNX","Securities Order, Securities Trade"
+TTHC_CONTENT_TYPE,,,source_table,TTHC.ContentItemIndex,Securities Offering Application
+TTHC_APPLICATION_STATUS,PENDING,Chờ xử lý,etl_derived,,Securities Offering Application
+TTHC_APPLICATION_STATUS,IN_PROGRESS,Đang xử lý,etl_derived,,Securities Offering Application
+TTHC_APPLICATION_STATUS,APPROVED,Đã cấp phép,etl_derived,,Securities Offering Application
+TTHC_APPLICATION_STATUS,REJECTED,Bị từ chối,etl_derived,,Securities Offering Application
+TTHC_WORKFLOW_STATUS,Idle,Chờ xử lý (Idle),source_table,TTHC.WorkflowIndex,Application Review Workflow
+TTHC_WORKFLOW_STATUS,Executing,Đang chạy (Executing),source_table,TTHC.WorkflowIndex,Application Review Workflow
+TTHC_WORKFLOW_STATUS,Faulted,Lỗi (Faulted),source_table,TTHC.WorkflowIndex,Application Review Workflow
+TTHC_WORKFLOW_STATUS,Finished,Hoàn thành (Finished),source_table,TTHC.WorkflowIndex,Application Review Workflow
+TTHC_WORKFLOW_STATUS,Aborted,Đã hủy (Aborted),source_table,TTHC.WorkflowIndex,Application Review Workflow
+TTHC_EFORM_FIELD_DATA_TYPE,TEXT,Trường văn bản,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,HTML,Trường HTML,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,MULTI_TEXT,Trường đa giá trị văn bản,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,LINK,Trường liên kết,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,NUMERIC,Trường số,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,DATE,Trường ngày,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,DATETIME,Trường ngày giờ,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,TIME,Trường giờ,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,BOOLEAN,Trường đúng/sai,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,CONTENT_PICKER,Trường chọn nội dung,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_DATA_TYPE,USER_PICKER,Trường chọn người dùng,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_TYPE,ISSUER_NAME,Tên tổ chức phát hành,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_TYPE,ADVISOR_NAME,Tên tổ chức tư vấn,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_TYPE,AUDITOR_NAME,Tên tổ chức kiểm toán,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_TYPE,UNDERWRITER_NAME,Tên tổ chức bảo lãnh phát hành,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_TYPE,RATING_AGENCY_NAME,Tên tổ chức xếp hạng tín nhiệm,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_TYPE,QUANTITY,Số lượng chứng khoán,etl_derived,,Application Eform Field Value
+TTHC_EFORM_FIELD_TYPE,PAR_VALUE,Mệnh giá chứng khoán,etl_derived,,Application Eform Field Value
+TTHC_WORKFLOW_TYPE,,,source_table,TTHC.WorkflowTypeIndex,Application Review Workflow

@@ -38,23 +38,6 @@ Table "scr_tdg_snpst" [note: "Snapshot trạng thái giao dịch đa loại ch�
   "ulyg_imt_id" varchar
 }
 
-TableGroup "UID01 — Thị trường và chỉ số tổng hợp" {
-  "indx_constituent_snpst"
-  "mkt_indx_snpst"
-  "mkt_snpst"
-  "scr_tdg_snpst"
-}
-
-TableGroup "UID02 — Bảng giá chứng khoán và khớp lệnh" {
-  "scr_mtch_log"
-  "scr_tdg_snpst"
-}
-
-TableGroup "UID03 — Trái phiếu doanh nghiệp" {
-  "corp_bond_mtch_log"
-  "corp_bond_tdg_snpst"
-}
-
 Ref: "corp_bond_mtch_log"."corp_bond_tdg_snpst_id" > "corp_bond_tdg_snpst"."corp_bond_tdg_snpst_id"
 Ref: "scr_mtch_log"."scr_tdg_snpst_id" > "scr_tdg_snpst"."scr_tdg_snpst_id"
 Ref: "indx_constituent_snpst"."mkt_indx_snpst_id" > "mkt_indx_snpst"."mkt_indx_snpst_id"

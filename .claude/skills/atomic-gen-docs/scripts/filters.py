@@ -3,7 +3,7 @@
 Quy ước UBCK template:
 - Nullable / Unique: 'X' nếu Yes, '' (rỗng) nếu No
 - P/F Key: 'P' (primary), 'F' (foreign), '' (rỗng) nếu không phải key
-- Mặc định: lấy từ etl_derived_value, hoặc hardcode '<SOURCE>' cho source_system_code
+- Mặc định: lấy từ etl_derived_value (trừ khi bắt đầu bằng 'ETL derive'/'ETL generate'), hoặc hardcode '<SOURCE>' cho source_system_code
 """
 
 from __future__ import annotations
@@ -109,7 +109,8 @@ def default_value(attr: dict, source: str) -> str:
     Quy tắc:
     - attribute_name = 'Source System Code' → lấy value từ classification_context
       (dạng "Source System Code = 'DCST_THONG_TIN_DK_THUE'"), fallback về '<SOURCE>'
-    - etl_derived_value non-empty → trích value sau dấu '='. Vd: 'POSTAL_TYPE=HEAD_OFFICE' → 'HEAD_OFFICE'
+    - etl_derived_value non-empty và không bắt đầu bằng 'ETL derive'/'ETL generate' → trích value sau dấu '='. Vd: 'POSTAL_TYPE=HEAD_OFFICE' → 'HEAD_OFFICE'
+    - etl_derived_value bắt đầu bằng 'ETL derive' hoặc 'ETL generate' → để trắng
     - default rỗng
     """
     name = attr.get("attribute_name", "").strip().lower()
@@ -124,7 +125,7 @@ def default_value(attr: dict, source: str) -> str:
         return f"'{source}'"
 
     etl = (attr.get("etl_derived_value") or "").strip()
-    if etl:
+    if etl and not etl.startswith(("ETL derive", "ETL generate")):
         if "=" in etl:
             return f"'{etl.split('=', 1)[1].strip()}'"
         return f"'{etl}'"

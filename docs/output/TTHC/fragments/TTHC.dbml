@@ -1,0 +1,23 @@
+// Atomic Lakehouse — TTHC
+
+Project TTHC {
+  database_type: "Delta Lake"
+  Note: "Atomic Lakehouse — TTHC"
+}
+
+Table "ap_rvw_workflow" [note: "Workflow instance xét duyệt hồ sơ đăng ký chào bán — ghi nhận từng lần chạy quy trình (WorkflowId, WorkflowStatus, CreatedUtc) gắn với hồ sơ qua CorrelationId."] {
+  "ap_rvw_workflow_id" varchar [pk]
+  "scr_ofrg_ap_id" varchar
+}
+
+Table "ap_eform_fld_val" [note: "Toàn bộ giá trị field của tờ khai Eform đã index — UNION ALL 11 bảng *FieldIndex. Grain: 1 dòng = 1 giá trị field của 1 ContentItem. field_data_type_code phân biệt loại dữ liệu; string_value lưu unive"] {
+  "ap_eform_fld_val_id" varchar [pk]
+  "scr_ofrg_ap_id" varchar
+}
+
+Table "scr_ofrg_ap" [note: "Hồ sơ đăng ký chào bán / phát hành chứng khoán do tổ chức nộp qua portal TTHC — tờ khai Eform (Latest=1, Published=1) phân biệt 11 loại hình chào bán."] {
+  "scr_ofrg_ap_id" varchar [pk]
+}
+
+Ref: "ap_rvw_workflow"."scr_ofrg_ap_id" > "scr_ofrg_ap"."scr_ofrg_ap_id"
+Ref: "ap_eform_fld_val"."scr_ofrg_ap_id" > "scr_ofrg_ap"."scr_ofrg_ap_id"

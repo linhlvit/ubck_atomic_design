@@ -1,0 +1,305 @@
+﻿Tên bảng,Tên trường,Kiểu dữ liệu,Mô tả,Khóa,Ghi chú (FK suy luận)
+ContentItemIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+ContentItemIndex,DocumentId,BIGINT,"ID của bảng Document, chứa nội dung JSON gốc của item.",,FK → Document.Id
+ContentItemIndex,ContentItemId,TEXT,ID duy nhất của content item. Được dùng để liên kết các thành phần khác.,,
+ContentItemIndex,ContentItemVersionId,TEXT,ID duy nhất cho phiên bản của content item. Mỗi lần sửa sẽ tạo version mới.,,
+ContentItemIndex,Latest,BOOL,"Là phiên bản mới nhất: 1=phiên bản mới, 0=không phải.",,
+ContentItemIndex,Published,BOOL,"Là phiên bản đang được xuất bản: 1=xuất bản, 0=không.",,
+ContentItemIndex,ContentType,TEXT,Loại nội dung. Xác định loại hồ sơ/kết quả (ví dụ: ChaobanCophieuIPO). Tham chiếu → JSON schema theo ContentType tương ứng.,,
+ContentItemIndex,ModifiedUtc,DATETIME,Thời gian chỉnh sửa gần nhất.,,
+ContentItemIndex,PublishedUtc,DATETIME,Thời gian được xuất bản. Có thể null nếu chưa publish.,,
+ContentItemIndex,CreatedUtc,DATETIME,Thời gian tạo bản ghi.,,
+ContentItemIndex,Owner,TEXT,ID của người dùng sở hữu nội dung.,,FK suy luận → UserIndex.UserId
+ContentItemIndex,Author,TEXT,Người tạo.,,FK suy luận → UserIndex.UserId
+ContentItemIndex,DisplayText,TEXT,Tiêu đề hiển thị của nội dung.,,
+Document,Id,BIGINT,PK khóa chính của bảng. ID tự động tăng.,PK,
+Document,Type,TEXT,"Loại tài liệu: ContentItem, User, Workflow, DeploymentPlan, OpenIdApplication.",,
+Document,Content,TEXT,Dữ liệu serialize thành JSON. Toàn bộ nội dung chi tiết của đối tượng. Khi Type=ContentItem: cấu trúc JSON phụ thuộc vào ContentType — xem TTHC_JSON_Schemas.csv lọc theo eform_id tương ứng.,,
+Document,Version,BIGINT,Phiên bản. Dùng để đồng bộ hóa và hỗ trợ cơ chế cache.,,
+AliasPartIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+AliasPartIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+AliasPartIndex,Alias,TEXT,Đường dẫn được gán cho nội dung. Dùng để ánh xạ URL với nội dung.,,
+AliasPartIndex,ContentItemId,TEXT,ID duy nhất của ContentItem mà alias này thuộc về.,,FK suy luận → ContentItemIndex.ContentItemId
+AliasPartIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+AliasPartIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+AutoroutePartIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+AutoroutePartIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+AutoroutePartIndex,ContentItemId,TEXT,ID của ContentItem mà route này thuộc về.,,FK suy luận → ContentItemIndex.ContentItemId
+AutoroutePartIndex,Path,TEXT,Đường dẫn URL (slug) được định nghĩa qua AutoroutePart.,,
+AutoroutePartIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+AutoroutePartIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+ContainedPartIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+ContainedPartIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+ContainedPartIndex,ContentItemId,TEXT,ID của Content Item cha.,,FK suy luận → ContentItemIndex.ContentItemId
+ContainedPartIndex,ContainedContentItemId,TEXT,ID của Content Item con.,,FK suy luận → ContentItemIndex.ContentItemId
+ContainedPartIndex,JsonPath,TEXT,Đường dẫn JSON bên trong content xác định vị trí phần tử con.,,
+ContainedPartIndex,Path,TEXT,Đường dẫn phân cấp nội dung (dùng cho cấu trúc như taxonomy).,,
+ContainedPartIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+ContainedPartIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+IndexingTask,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+IndexingTask,ContentItemId,TEXT,ID của ContentItem cần được lập chỉ mục.,,FK suy luận → ContentItemIndex.ContentItemId
+IndexingTask,CreatedUtc,DATETIME,Thời gian tạo ra task lập chỉ mục.,,
+IndexingTask,Type,INT,Loại thao tác liên quan đến lập chỉ mục: Update / Delete.,,
+LayerMetadataIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+LayerMetadataIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+LayerMetadataIndex,Zone,TEXT,Tên vùng (zone) mà Widget được hiển thị.,,
+DeploymentPlanIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+DeploymentPlanIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+DeploymentPlanIndex,Name,TEXT,Tên định danh của deployment plan.,,
+TaxonomyIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+TaxonomyIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+TaxonomyIndex,TaxonomyContentItemId,TEXT,ID của taxonomy.,,FK suy luận → ContentItemIndex.ContentItemId
+TaxonomyIndex,ContentItemId,TEXT,ID của content item được phân loại.,,FK suy luận → ContentItemIndex.ContentItemId
+TaxonomyIndex,ContentType,TEXT,Loại nội dung của content item.,,
+TaxonomyIndex,ContentPart,TEXT,Tên của phần chứa trường taxonomy field.,,
+TaxonomyIndex,ContentField,TEXT,Tên của trường taxonomy field.,,
+TaxonomyIndex,TermContentItemId,TEXT,ID của thuật ngữ được chọn.,,FK suy luận → ContentItemIndex.ContentItemId
+TaxonomyIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+TaxonomyIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+BooleanFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+BooleanFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+BooleanFieldIndex,ContentItemId,TEXT,ID của content item chứa trường boolean.,,FK suy luận → ContentItemIndex.ContentItemId
+BooleanFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản cụ thể của content item.,,
+BooleanFieldIndex,ContentType,TEXT,Loại nội dung của content item.,,
+BooleanFieldIndex,ContentPart,TEXT,Tên của phần chứa trường boolean.,,
+BooleanFieldIndex,ContentField,TEXT,Tên của trường boolean. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv cột content_field_pattern.,,
+BooleanFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+BooleanFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+BooleanFieldIndex,Boolean,BOOL,Giá trị của trường boolean. Trong Eform: dùng cho các trường radios (Có/Không).,,
+TextFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+TextFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+TextFieldIndex,ContentItemId,TEXT,ID của content item.,,FK suy luận → ContentItemIndex.ContentItemId
+TextFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản cụ thể của content item.,,
+TextFieldIndex,ContentType,TEXT,Loại nội dung của content item.,,
+TextFieldIndex,ContentPart,TEXT,Tên của phần chứa nội dung trong content item.,,
+TextFieldIndex,ContentField,TEXT,Tên của trường nội dung. Quy tắc đặt tên: EformzzContentItemsww0wwzz{EformID}zz{FieldName}zzText — xem chi tiết tại TTHC_JSON_Schemas.csv.,,
+TextFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+TextFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+TextFieldIndex,Text,TEXT,"Giá trị văn bản ngắn. Dùng cho input-text, input-url, select trong Eform.",,
+TextFieldIndex,BigText,TEXT,Giá trị văn bản dài. Dùng cho textarea trong Eform.,,
+MultiTextFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+MultiTextFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+MultiTextFieldIndex,ContentItemId,TEXT,ID của content item.,,FK suy luận → ContentItemIndex.ContentItemId
+MultiTextFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+MultiTextFieldIndex,ContentType,TEXT,Loại nội dung của content item.,,
+MultiTextFieldIndex,ContentPart,TEXT,Tên của phần chứa trường dữ liệu.,,
+MultiTextFieldIndex,ContentField,TEXT,Tên của trường dữ liệu trong phần nội dung. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv.,,
+MultiTextFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+MultiTextFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+MultiTextFieldIndex,Value,TEXT,Giá trị văn bản ngắn của trường nội dung.,,
+MultiTextFieldIndex,BigValue,TEXT,Giá trị văn bản dài của trường nội dung.,,
+HtmlFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+HtmlFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+HtmlFieldIndex,ContentItemId,TEXT,ID của content item.,,FK suy luận → ContentItemIndex.ContentItemId
+HtmlFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+HtmlFieldIndex,ContentType,TEXT,Loại nội dung.,,
+HtmlFieldIndex,ContentPart,TEXT,Tên của phần chứa trường HTML.,,
+HtmlFieldIndex,ContentField,TEXT,Tên của trường HTML trong phần nội dung. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv.,,
+HtmlFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+HtmlFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+HtmlFieldIndex,Html,TEXT,Nội dung HTML được lưu trong trường HtmlField.,,
+DateFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+DateFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+DateFieldIndex,ContentItemId,TEXT,ID của content item chứa trường ngày.,,FK suy luận → ContentItemIndex.ContentItemId
+DateFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+DateFieldIndex,ContentType,TEXT,Loại nội dung.,,
+DateFieldIndex,ContentPart,TEXT,Tên phần chứa trường ngày.,,
+DateFieldIndex,ContentField,TEXT,Tên trường kiểu DateField. Quy tắc đặt tên: EformzzContentItemsww0wwzz{EformID}zz{FieldName}zzValue — xem TTHC_JSON_Schemas.csv.,,
+DateFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+DateFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+DateFieldIndex,Date,DATETIME,"Giá trị ngày được lưu trong trường DateField. Chỉ lưu ngày, không lưu giờ.",,
+DateTimeFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+DateTimeFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+DateTimeFieldIndex,ContentItemId,TEXT,ID của content item chứa trường ngày.,,FK suy luận → ContentItemIndex.ContentItemId
+DateTimeFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+DateTimeFieldIndex,ContentType,TEXT,Loại nội dung.,,
+DateTimeFieldIndex,ContentPart,TEXT,Tên phần chứa trường ngày-giờ.,,
+DateTimeFieldIndex,ContentField,TEXT,Tên của trường ngày-giờ trong phần nội dung. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv.,,
+DateTimeFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+DateTimeFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+DateTimeFieldIndex,DateTime,DATETIME,Giá trị ngày-giờ được lưu trong trường DateTimeField.,,
+TimeFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+TimeFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+TimeFieldIndex,ContentItemId,TEXT,ID của content item chứa trường TimeField.,,FK suy luận → ContentItemIndex.ContentItemId
+TimeFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+TimeFieldIndex,ContentType,TEXT,Loại nội dung.,,
+TimeFieldIndex,ContentPart,TEXT,Tên phần chứa trường thời gian.,,
+TimeFieldIndex,ContentField,TEXT,Tên trường kiểu TimeField trong phần nội dung. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv.,,
+TimeFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+TimeFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+TimeFieldIndex,Time,TIME,Giá trị thời gian (giờ:phút:giây) được lưu trong TimeField.,,
+NumericFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+NumericFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+NumericFieldIndex,ContentItemId,TEXT,ID của content item chứa trường số.,,FK suy luận → ContentItemIndex.ContentItemId
+NumericFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+NumericFieldIndex,ContentType,TEXT,Loại nội dung.,,
+NumericFieldIndex,ContentPart,TEXT,Tên phần chứa trường số.,,
+NumericFieldIndex,ContentField,TEXT,Tên của trường kiểu NumericField. Quy tắc đặt tên: EformzzContentItemsww0wwzz{EformID}zz{FieldName}zzValue — xem TTHC_JSON_Schemas.csv.,,
+NumericFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+NumericFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+NumericFieldIndex,Numeric,NUMERIC,"Giá trị số được lưu trong NumericField. Dùng cho input-number trong Eform (số lượng CK, giá trị vốn, mệnh giá...).",,
+LinkFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+LinkFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+LinkFieldIndex,ContentItemId,TEXT,ID của content item chứa các trường văn bản hoặc liên kết.,,FK suy luận → ContentItemIndex.ContentItemId
+LinkFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+LinkFieldIndex,ContentType,TEXT,Loại nội dung.,,
+LinkFieldIndex,ContentPart,TEXT,Tên phần chứa trường văn bản hoặc liên kết.,,
+LinkFieldIndex,ContentField,TEXT,Tên của trường trong phần nội dung. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv.,,
+LinkFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+LinkFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+LinkFieldIndex,Url,TEXT,Giá trị URL trong các trường kiểu LinkField.,,
+LinkFieldIndex,BigUrl,TEXT,"Giá trị URL đầy đủ (dài hơn), dùng nếu URL quá dài.",,
+LinkFieldIndex,Text,TEXT,Giá trị văn bản cho các trường kiểu TextField.,,
+LinkFieldIndex,BigText,TEXT,"Toàn bộ giá trị văn bản, không giới hạn độ dài.",,
+ContentPickerFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+ContentPickerFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+ContentPickerFieldIndex,ContentItemId,TEXT,ID của content item (ví dụ: ContentItem GCN kết quả).,,FK suy luận → ContentItemIndex.ContentItemId
+ContentPickerFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+ContentPickerFieldIndex,ContentType,TEXT,Loại nội dung.,,
+ContentPickerFieldIndex,ContentPart,TEXT,Tên phần chứa trường ContentPickerField.,,
+ContentPickerFieldIndex,ContentField,TEXT,Tên của trường kiểu ContentPickerField. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv.,,
+ContentPickerFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+ContentPickerFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+ContentPickerFieldIndex,SelectedContentItemId,TEXT,ID của content item được chọn (ví dụ: ContentItemId của hồ sơ gốc khi GCN trỏ về hồ sơ).,,FK suy luận → ContentItemIndex.ContentItemId
+UserPickerFieldIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+UserPickerFieldIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+UserPickerFieldIndex,ContentItemId,TEXT,ID của content item chứa trường UserPickerField.,,FK suy luận → ContentItemIndex.ContentItemId
+UserPickerFieldIndex,ContentItemVersionId,TEXT,ID của phiên bản của content item.,,
+UserPickerFieldIndex,ContentType,TEXT,Loại nội dung.,,
+UserPickerFieldIndex,ContentPart,TEXT,Tên phần chứa trường UserPickerField.,,
+UserPickerFieldIndex,ContentField,TEXT,Tên của trường UserPickerField trong phần nội dung. Quy tắc đặt tên: xem TTHC_JSON_Schemas.csv.,,
+UserPickerFieldIndex,Published,BOOL,Là phiên bản đang được xuất bản.,,
+UserPickerFieldIndex,Latest,BOOL,Là phiên bản mới nhất.,,
+UserPickerFieldIndex,SelectedUserId,TEXT,ID của người dùng (user) được chọn.,,FK suy luận → UserIndex.UserId
+UserIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+UserIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+UserIndex,NormalizedUserName,TEXT,Tên đăng nhập (normalized).,,
+UserIndex,NormalizedEmail,TEXT,Email (normalized).,,
+UserIndex,IsEnabled,BOOL,"Trạng thái kích hoạt: 1=đã kích hoạt, 0=chưa.",,
+UserIndex,IsLockoutEnabled,BOOL,Bật tính năng khóa tài khoản khi đăng nhập sai nhiều lần.,,
+UserIndex,LockoutEndUtc,DATETIME,Thời điểm kết thúc khóa tài khoản (UTC). Null nếu chưa bị khóa.,,
+UserIndex,AccessFailedCount,INT,Số lần đăng nhập thất bại.,,
+UserIndex,UserId,TEXT,ID duy nhất của người dùng (GUID).,,
+UserByLoginInfoIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+UserByLoginInfoIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+UserByLoginInfoIndex,LoginProvider,TEXT,Tên nhà cung cấp đăng nhập.,,
+UserByLoginInfoIndex,ProviderKey,TEXT,ID duy nhất của người dùng tại nhà cung cấp.,,
+UserByClaimIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+UserByClaimIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → Document.Id
+UserByClaimIndex,ClaimType,TEXT,Loại claim.,,
+UserByClaimIndex,ClaimValue,TEXT,Giá trị của claim.,,
+UserByRoleNameIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+UserByRoleNameIndex,RoleName,TEXT,Tên vai trò.,,
+UserByRoleNameIndex,Count,INT,Số lượng người dùng trong vai trò.,,
+UserByRoleNameIndex_Document,UserByRoleNameIndexId,BIGINT,PK khóa chính của bảng. ID tự động tăng.,PK,
+UserByRoleNameIndex_Document,DocumentId,BIGINT,ID của bảng Document. Lưu JSON gốc của người dùng.,,FK → Document.Id
+OpenId_Document,Id,BIGINT,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_Document,Type,TEXT,Loại tài liệu OpenID.,,
+OpenId_Document,Content,TEXT,Lưu nội dung đầy đủ dưới dạng JSON.,,
+OpenId_Document,Version,BIGINT,Phiên bản của tài liệu.,,
+OpenId_OpenIdApplicationIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdApplicationIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → OpenId_Document.Id
+OpenId_OpenIdApplicationIndex,ApplicationId,TEXT,ID của ứng dụng client được cấp quyền.,,
+OpenId_OpenIdApplicationIndex,ClientId,TEXT,Client ID của ứng dụng OAuth2.,,
+OpenId_OpenIdAuthorizationIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdAuthorizationIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → OpenId_Document.Id
+OpenId_OpenIdAuthorizationIndex,AuthorizationId,TEXT,ID quyền truy cập.,,
+OpenId_OpenIdAuthorizationIndex,ApplicationId,TEXT,ID của ứng dụng đã yêu cầu quyền truy cập.,,
+OpenId_OpenIdAuthorizationIndex,Status,TEXT,Trạng thái của quyền truy cập.,,
+OpenId_OpenIdAuthorizationIndex,Subject,TEXT,Đối tượng nhận quyền.,,
+OpenId_OpenIdAuthorizationIndex,Type,TEXT,Loại quyền truy cập.,,
+OpenId_OpenIdAuthorizationIndex,CreationDate,DATETIME,Ngày giờ tạo authorization grant.,,
+OpenId_OpenIdTokenIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdTokenIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → OpenId_Document.Id
+OpenId_OpenIdTokenIndex,TokenId,TEXT,ID của token.,,
+OpenId_OpenIdTokenIndex,ApplicationId,TEXT,ID của ứng dụng client đã yêu cầu cấp token.,,
+OpenId_OpenIdTokenIndex,AuthorizationId,TEXT,ID của authorization grant mà token này liên quan.,,FK suy luận → OpenId_OpenIdAuthorizationIndex.AuthorizationId
+OpenId_OpenIdTokenIndex,ExpirationDate,DATETIME,Ngày hết hạn của token.,,
+OpenId_OpenIdTokenIndex,ReferenceId,TEXT,ID tham chiếu liên quan đến token.,,
+OpenId_OpenIdTokenIndex,Status,TEXT,Trạng thái token.,,
+OpenId_OpenIdTokenIndex,Subject,TEXT,Đối tượng nhận token.,,
+OpenId_OpenIdTokenIndex,Type,TEXT,Loại token.,,
+OpenId_OpenIdTokenIndex,CreationDate,DATETIME,Ngày giờ tạo token.,,
+OpenId_OpenIdScopeIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdScopeIndex,DocumentId,BIGINT,ID của bảng Document.,,FK → OpenId_Document.Id
+OpenId_OpenIdScopeIndex,Name,TEXT,Tên của phạm vi quyền truy cập.,,
+OpenId_OpenIdScopeIndex,ScopeId,TEXT,ID của phạm vi quyền truy cập OAuth2.,,
+OpenId_OpenIdScopeByResourceIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdScopeByResourceIndex,Resource,TEXT,Tên tài nguyên được theo dõi.,,
+OpenId_OpenIdScopeByResourceIndex,Count,INT,Số lần tài nguyên đó được truy cập/sử dụng.,,
+OpenId_OpenIdScopeByResourceIndex_OpenId_Document,OpenIdScopeByResourceIndexId,BIGINT,PK khóa chính của bảng.,PK,
+OpenId_OpenIdScopeByResourceIndex_OpenId_Document,DocumentId,BIGINT,ID của bảng Document.,,FK → OpenId_Document.Id
+OpenId_OpenIdAppByRedirectUriIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdAppByRedirectUriIndex,RedirectUri,TEXT,URL người dùng được chuyển hướng sau xác thực.,,
+OpenId_OpenIdAppByRedirectUriIndex,Count,INT,Số lần RedirectUri này được sử dụng.,,
+OpenId_OpenIdAppByLogoutUriIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdAppByLogoutUriIndex,LogoutRedirectUri,TEXT,URL chuyển hướng sau khi đăng xuất.,,
+OpenId_OpenIdAppByLogoutUriIndex,Count,INT,Số lần LogoutRedirectUri này được sử dụng.,,
+OpenId_OpenIdAppByRoleNameIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+OpenId_OpenIdAppByRoleNameIndex,RoleName,TEXT,Tên vai trò gắn với ứng dụng OpenID.,,
+OpenId_OpenIdAppByRoleNameIndex,Count,INT,Số người dùng hoặc số lần vai trò được sử dụng.,,
+OpenId_OpenIdAppByRedirectUriIndex_OpenId_Document,OpenIdAppByRedirectUriIndexId,BIGINT,PK khóa chính của bảng.,PK,
+OpenId_OpenIdAppByRedirectUriIndex_OpenId_Document,DocumentId,BIGINT,ID bảng Document.,,FK → OpenId_Document.Id
+OpenId_OpenIdAppByLogoutUriIndex_OpenId_Document,OpenIdAppByLogoutUriIndexId,BIGINT,PK khóa chính của bảng.,PK,
+OpenId_OpenIdAppByLogoutUriIndex_OpenId_Document,DocumentId,BIGINT,ID bảng Document.,,FK → OpenId_Document.Id
+OpenId_OpenIdAppByRoleNameIndex_OpenId_Document,OpenIdAppByRoleNameIndexId,BIGINT,PK khóa chính của bảng.,PK,
+OpenId_OpenIdAppByRoleNameIndex_OpenId_Document,DocumentId,BIGINT,ID bảng Document.,,FK → OpenId_Document.Id
+Audit_AuditTrailEventIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+Audit_AuditTrailEventIndex,DocumentId,BIGINT,ID bảng Document. Lưu nội dung gốc của sự kiện (JSON).,,FK → Audit_Document.Id
+Audit_AuditTrailEventIndex,EventId,TEXT,Định danh duy nhất của sự kiện audit.,,
+Audit_AuditTrailEventIndex,Category,TEXT,"Nhóm hoặc loại sự kiện (ví dụ: Content, Workflow, User).",,
+Audit_AuditTrailEventIndex,Name,TEXT,"Tên của sự kiện (ví dụ: ContentPublished, WorkflowExecuted).",,
+Audit_AuditTrailEventIndex,CorrelationId,TEXT,Mã dùng để nhóm các sự kiện liên quan trong cùng một luồng hoạt động. Thường = ContentItemId của hồ sơ.,,FK suy luận → ContentItemIndex.ContentItemId
+Audit_AuditTrailEventIndex,UserId,TEXT,ID người dùng thực hiện thao tác.,,FK suy luận → UserIndex.UserId
+Audit_AuditTrailEventIndex,NormalizedUserName,TEXT,Tên người dùng (normalized).,,
+Audit_AuditTrailEventIndex,CreatedUtc,DATETIME,Thời gian sự kiện được ghi lại.,,
+Audit_Document,Id,BIGINT,PK khóa chính của bảng. ID tự động tăng.,PK,
+Audit_Document,Type,TEXT,Kiểu của document audit.,,
+Audit_Document,Content,TEXT,"Dữ liệu nội dung dạng chuỗi JSON, chứa thông tin chi tiết sự kiện.",,
+Audit_Document,Version,BIGINT,Phiên bản document.,,
+Notification_NotificationIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+Notification_NotificationIndex,DocumentId,BIGINT,ID bảng Document. Lưu nội dung chi tiết thông báo (JSON).,,FK → Notification_Document.Id
+Notification_NotificationIndex,NotificationId,TEXT,ID thông báo.,,
+Notification_NotificationIndex,UserId,TEXT,ID người dùng nhận thông báo.,,FK suy luận → UserIndex.UserId
+Notification_NotificationIndex,IsRead,BOOL,"Trạng thái đọc: 1=đã đọc, 0=chưa đọc.",,
+Notification_NotificationIndex,ReadAtUtc,DATETIME,Thời điểm người dùng đã đọc thông báo.,,
+Notification_NotificationIndex,CreatedAtUtc,DATETIME,Thời điểm thông báo được tạo ra.,,
+Notification_NotificationIndex,Content,TEXT,Nội dung tóm tắt thông báo.,,
+Notification_Document,Id,BIGINT,PK khóa chính của bảng. ID tự động tăng.,PK,
+Notification_Document,Type,TEXT,Kiểu document.,,
+Notification_Document,Content,TEXT,"Nội dung của document thông báo, lưu dưới dạng JSON.",,
+Notification_Document,Version,BIGINT,Số phiên bản.,,
+WorkflowIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+WorkflowIndex,DocumentId,BIGINT,ID bảng Document. Lưu nội dung chi tiết (JSON) của workflow instance.,,FK → Document.Id
+WorkflowIndex,WorkflowTypeId,TEXT,ID của kiểu workflow được định nghĩa.,,FK suy luận → WorkflowTypeIndex.WorkflowTypeId
+WorkflowIndex,WorkflowId,TEXT,ID của một instance cụ thể của workflow.,,
+WorkflowIndex,WorkflowStatus,TEXT,"Trạng thái hiện tại của workflow instance (Idle, Executing, Faulted, Finished, Aborted).",,
+WorkflowIndex,CreatedUtc,DATETIME,Thời điểm khởi tạo workflow instance.,,
+WorkflowTypeIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+WorkflowTypeIndex,DocumentId,BIGINT,ID bảng Document. Lưu nội dung JSON của workflow type.,,FK → Document.Id
+WorkflowTypeIndex,WorkflowTypeId,TEXT,ID loại workflow.,,
+WorkflowTypeIndex,Name,TEXT,Tên loại workflow.,,
+WorkflowTypeIndex,IsEnabled,BOOL,"Trạng thái kích hoạt: 1=kích hoạt, 0=không.",,
+WorkflowTypeIndex,HasStart,BOOL,Workflow có được khởi động tự động bởi trigger hay không.,,
+WorkflowBlockingActivitiesIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+WorkflowBlockingActivitiesIndex,DocumentId,BIGINT,ID bảng Document. Lưu thông tin JSON của blocking activity.,,FK → Document.Id
+WorkflowBlockingActivitiesIndex,ActivityId,TEXT,ID hoạt động đang chờ.,,
+WorkflowBlockingActivitiesIndex,ActivityName,TEXT,Tên hoạt động đang blocking (xác định bước xử lý hiện tại của hồ sơ).,,
+WorkflowBlockingActivitiesIndex,ActivityIsStart,BOOL,"Là điểm khởi đầu của workflow: 1=có, 0=không.",,
+WorkflowBlockingActivitiesIndex,WorkflowTypeId,TEXT,ID loại quy trình.,,FK suy luận → WorkflowTypeIndex.WorkflowTypeId
+WorkflowBlockingActivitiesIndex,WorkflowId,TEXT,ID instance cụ thể của workflow.,,FK suy luận → WorkflowIndex.WorkflowId
+WorkflowBlockingActivitiesIndex,WorkflowCorrelationId,TEXT,ID tương quan để nhóm/liên kết workflow instance. Thường = ContentItemId của hồ sơ.,,FK suy luận → ContentItemIndex.ContentItemId
+WorkflowTypeStartActivitiesIndex,Id,integer,PK khóa chính của bảng. ID tự động tăng.,PK,
+WorkflowTypeStartActivitiesIndex,DocumentId,BIGINT,ID bảng Document. Lưu thông tin gốc dưới dạng JSON.,,FK → Document.Id
+WorkflowTypeStartActivitiesIndex,WorkflowTypeId,TEXT,ID loại workflow.,,FK suy luận → WorkflowTypeIndex.WorkflowTypeId
+WorkflowTypeStartActivitiesIndex,Name,TEXT,Tên loại workflow.,,
+WorkflowTypeStartActivitiesIndex,IsEnabled,BOOL,Trạng thái kích hoạt.,,
+WorkflowTypeStartActivitiesIndex,StartActivityId,TEXT,ID activity khởi đầu trong workflow type.,,
+WorkflowTypeStartActivitiesIndex,StartActivityName,TEXT,Tên activity khởi đầu.,,
+sqlite_master,type,TEXT,"Loại đối tượng trong CSDL (table, index, trigger, view).",,
+sqlite_master,name,TEXT,Tên đối tượng.,,
+sqlite_master,tbl_name,TEXT,Tên bảng có đối tượng liên quan (nếu có).,,
+sqlite_master,rootpage,INT,Số trang gốc trong file SQLite.,,
+sqlite_master,sql,TEXT,Lệnh SQL dùng để tạo đối tượng.,,
+sqlite_sequence,name,TEXT,Tên bảng có cột INTEGER PRIMARY KEY AUTOINCREMENT.,,
+sqlite_sequence,seq,TEXT,Giá trị tự tăng gần nhất đã được gán trong bảng đó.,,

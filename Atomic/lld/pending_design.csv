@@ -1,4 +1,4 @@
-source_system,source_table,source_column,description,reason,action
+﻿source_system,source_table,source_column,description,reason,action
 FIMS,ANNOUNCE,InvestorData,Dữ liệu nhà đầu tư (payload),Payload field — cần profile nguồn để xác định kiểu dữ liệu và cấu trúc thiết kế,Người thiết kế kiểm tra nguồn và cập nhật thiết kế sau
 FIMS,ANNOUNCE,InvestorDataName,Tên dữ liệu nhà đầu tư (payload),Payload field — cần profile nguồn để xác định kiểu dữ liệu và cấu trúc thiết kế,Người thiết kế kiểm tra nguồn và cập nhật thiết kế sau
 FMS,BRANCHES,Content,Nghiệp vụ kinh doanh (mô tả hoạt động),Cần xác định có map vào Atomic entity riêng hay thêm vào FMS Branches attr,Người thiết kế xem xét và quyết định sau
@@ -21,7 +21,7 @@ QLRR,risk_indicator_category,id,PK kỹ thuật bảng nguồn,BK dùng category
 QLRR,risk_alert_config,indicator_type,Phân biệt loại chỉ tiêu (1=hệ thống/2=tự tạo) trước khi gộp,"Sau gộp Risk Indicator, thông tin này capture qua Risk Indicator.Indicator Type Code. Không map lại trên Alert Config.",Đã capture qua entity gộp
 QLRR,risk_alert_config,custom_indicator_id,FK đến risk_indicator_custom trước khi gộp,"Sau gộp, đã map vào Risk Alert Config.Risk Indicator Id (ds_indicator_id covers cả 2 loại). HLD T2-02 confirmed.",Đã capture qua Risk Indicator Id sau gộp
 QLRR,risk_alert_config,custom_old_value,Giá trị kỳ trước cho chỉ tiêu tự tạo,"Không có trong HLD Tier 2 Atomic diagram — out-of-scope. Cột này có thể là ephemeral state tính toán, không có giá trị lưu trữ độc lập.",Out-of-scope
-QLRR,risk_alert_config,custom_new_value,Giá trị kỳ này cho chỉ tiêu tự tạo,"Không có trong HLD Tier 2 Atomic diagram — out-of-scope. Tương tự custom_old_value.",Out-of-scope
+QLRR,risk_alert_config,custom_new_value,Giá trị kỳ này cho chỉ tiêu tự tạo,Không có trong HLD Tier 2 Atomic diagram — out-of-scope. Tương tự custom_old_value.,Out-of-scope
 QLRR,risk_alert,indicator_type,Phân biệt loại chỉ tiêu (1=hệ thống/2=tự tạo) trước khi gộp,"Sau gộp Risk Indicator, thông tin này capture qua Risk Indicator.Indicator Type Code. Không map lại trên Alert.",Đã capture qua entity gộp
 QLRR,risk_alert,custom_indicator_id,FK đến risk_indicator_custom trước khi gộp,"Sau gộp, đã map vào Risk Alert.Risk Indicator Id. HLD T2-02 confirmed.",Đã capture qua Risk Indicator Id sau gộp
 QLRR,permission_group,(all),Nhóm quyền hệ thống QLRR,Out-of-scope — bảng permission hệ thống không thuộc phạm vi Atomic nghiệp vụ. Đã chốt trong HLD.,Không thiết kế
@@ -29,7 +29,7 @@ QLRR,permission_group_user,(all),Quan hệ người dùng – nhóm quyền,Out-
 QLRR,permission_group_indicator,(all),Quan hệ nhóm quyền – chỉ tiêu,Out-of-scope — bảng permission hệ thống không thuộc phạm vi Atomic nghiệp vụ. Đã chốt trong HLD.,Không thiết kế
 QLRR,risk_report_placeholder_config,(all),Cấu hình placeholder kỹ thuật trong template báo cáo,Out-of-scope — operational/system data không có giá trị nghiệp vụ. Đã chốt trong HLD Tier 2.,Không thiết kế
 QLRR,risk_indicator,id,PK kỹ thuật bảng nguồn,BK Atomic (Risk Indicator Code) = 'CUS_' + id cho chỉ tiêu tự tạo. id đơn lẻ không map riêng.,Đã capture qua Risk Indicator Code (BK)
-QLRR,risk_indicator,indicator_name,"Tên chỉ tiêu hệ thống","Đã map vào Risk Indicator.Indicator Name qua source_columns comma-separated (merge entity). Script không nhận format multi-source.",Đã thiết kế — entity merge risk_indicator + risk_indicator_custom
+QLRR,risk_indicator,indicator_name,Tên chỉ tiêu hệ thống,Đã map vào Risk Indicator.Indicator Name qua source_columns comma-separated (merge entity). Script không nhận format multi-source.,Đã thiết kế — entity merge risk_indicator + risk_indicator_custom
 QLRR,risk_indicator,unit_code,Đơn vị mặc định chỉ tiêu hệ thống,Đã map vào Risk Indicator.Unit Code qua source_columns comma-separated.,Đã thiết kế — entity merge
 QLRR,risk_indicator,source_code,Nguồn dữ liệu chỉ tiêu hệ thống,Đã map vào Risk Indicator.Data Source Code qua source_columns comma-separated.,Đã thiết kế — entity merge
 QLRR,risk_indicator,period_type,Tần suất chỉ tiêu hệ thống,Đã map vào Risk Indicator.Period Type Code qua source_columns comma-separated.,Đã thiết kế — entity merge
@@ -43,25 +43,155 @@ QLRR,risk_indicator_custom,status,Trạng thái chỉ tiêu tự tạo,Đã map 
 QLRR,risk_report_type,id,PK kỹ thuật bảng nguồn,BK dùng risk_report_type.code thay id — id không map vào Atomic.,Out-of-scope
 QLRR,risk_report_type,template_content,Nội dung template HTML/text của loại báo cáo,Out-of-scope — config kỹ thuật không lưu trên Atomic. Chốt T1-01.,Không thiết kế
 IDS,company_detail,id,PK kỹ thuật của bảng company_detail,"BK Public Company dùng company_profiles.id (= company_detail.company_profile_id). company_detail.id là PK kỹ thuật riêng của bảng detail, không phải BK của entity.",Out-of-scope
-IDS,company_detail,company_name_vn,Tên công ty (tiếng Việt) - duplicate,"Giá trị 1-1 với company_profiles.company_name_vn. Map primary từ company_profiles.",Đã capture qua company_profiles (1-1)
-IDS,company_detail,company_name_en,Tên công ty (tiếng Anh) - duplicate,"Giá trị 1-1 với company_profiles.company_name_en. Map primary từ company_profiles.",Đã capture qua company_profiles (1-1)
-IDS,company_detail,business_reg_no,Mã số doanh nghiệp - duplicate,"Giá trị 1-1 với company_profiles.business_reg_no. Map primary từ company_profiles.",Đã capture qua company_profiles (1-1)
-IDS,company_detail,equity_ticker,Mã cổ phiếu - duplicate,"Giá trị 1-1 với company_profiles.equity_ticker. Map primary từ company_profiles.",Đã capture qua company_profiles (1-1)
-IDS,company_detail,report_type_cd,Loại hình doanh nghiệp - duplicate,"Giá trị 1-1 với company_profiles.report_type_cd. Map primary từ company_profiles.",Đã capture qua company_profiles (1-1)
-IDS,company_detail,last_updated_by,Người sửa - audit duplicate,"Audit field 1-1 với company_profiles. Map primary từ company_profiles.",Đã capture qua company_profiles (1-1)
-IDS,company_detail,last_updated_date,Ngày sửa - audit duplicate,"Audit field 1-1 với company_profiles. Map primary từ company_profiles.",Đã capture qua company_profiles (1-1)
-IDS,af_auditor_approval,rec_changed_flg,Cờ đánh dấu bản ghi bị thay đổi,"Cờ kỹ thuật ETL — SCD2 Atomic tự track lịch sử. Chốt HLD T2-04.",Không thiết kế
-IDS,af_legal_representative,identity_no,Số CMND/CCCD/Hộ chiếu của người đại diện pháp luật kiểm toán,"Nguồn không phân biệt loại giấy tờ. LLD tạm dùng scheme IP_ALT_ID_TYPE=NATIONAL_ID làm default. HLD T2-05 pending: cần profile data nguồn hoặc hỏi thêm để xác định loại giấy tờ thực tế.","Đã thiết kế tạm — cần profile data nguồn và cập nhật loại giấy tờ nếu khác NATIONAL_ID"
-IDS,legal_representative,identity_no,Số CMND/CCCD/Hộ chiếu của người đại diện pháp luật/CBTT công ty đại chúng,"Nguồn mô tả ""Số cmnd/cccd/hộ chiếu"" trong 1 cột duy nhất — không có cột type phân biệt. LLD tạm dùng IP_ALT_ID_TYPE=NATIONAL_ID làm default. Cần profile data để xác định loại giấy tờ thực tế.","Đã thiết kế tạm — cần profile data"
-IDS,identity,id,PK kỹ thuật bảng identity,"Shared entity IP Alt Identification không có PK surrogate riêng — chỉ FK về Stock Holder. identity.id là PK kỹ thuật nguồn không có ý nghĩa nghiệp vụ trên Atomic.",Out-of-scope Atomic theo shared entity schema
-IDS,identity,primary_flg,Cờ đánh dấu giấy tờ chính,"Shared entity IP Alt Identification không có trường Primary Flag chuẩn. Thông tin này nếu cần có thể tính tại Gold (1 cổ đông có thể có nhiều giấy tờ, chỉ 1 là chính).","Out-of-scope Atomic — xem xét tại Gold nếu cần"
-IDS,identity,created_by,Người tạo giấy tờ,"Shared entity IP Alt Identification không có audit fields. Nếu cần thì bổ sung vào schema shared entity (ảnh hưởng các nguồn khác).","Out-of-scope Atomic theo shared entity schema hiện tại"
-IDS,identity,created_date,Ngày tạo giấy tờ,"Shared entity IP Alt Identification không có audit fields.","Out-of-scope Atomic theo shared entity schema hiện tại"
-IDS,identity,last_updated_by,Người sửa giấy tờ,"Shared entity IP Alt Identification không có audit fields.","Out-of-scope Atomic theo shared entity schema hiện tại"
-IDS,identity,last_updated_date,Ngày sửa giấy tờ,"Shared entity IP Alt Identification không có audit fields.","Out-of-scope Atomic theo shared entity schema hiện tại"
-ECAT,(cross-source),geographic_area_fk_mapping,Các source IDS/FMS/SCMS/FIMS... FK về code tỉnh/quận/phường cũ hay mới,"User chốt: data instance mặc định FK về danh mục hành chính MỚI (post-sáp nhập 2025). Cần khảo sát từng source trong giai đoạn mapping tiếp theo để: (a) xác định data hiện đang dùng code cũ hay mới, (b) nếu dùng code cũ → cần bảng mapping old→new và rule migration lúc load Atomic. Không thuộc scope HLD ECAT nhưng ảnh hưởng downstream toàn bộ source có trường địa chỉ hành chính.","Khảo sát mapping + migration trong giai đoạn thiết kế LLD từng source"
-OrderTrade,Order_HOSE,Immed. Matched VOL,"Khối lượng khớp ngay tại thời điểm ghi nhận lệnh","Đã map vào Securities Order.Immediate Matched Volume. Script post_check báo ""unmapped"" do tên cột nguồn chứa dấu chấm giữa (Immed.) gây parse lỗi — false positive.",Đã thiết kế — xem attr_OrderTrade_Order_HOSE.csv
-OrderTrade,Order_HOSE,Reference Sequence No.,"Số tham chiếu thứ tự giao dịch trong luồng dữ liệu","Đã map vào Securities Order.Reference Sequence Number. Script post_check báo ""unmapped"" do tên cột nguồn kết thúc bằng dấu chấm (No.) gây parse lỗi — false positive.",Đã thiết kế — xem attr_OrderTrade_Order_HOSE.csv
-OrderTrade,Trade_HOSE,Buy - Reference Sequence No.,"Số tham chiếu thứ tự đặt mua trong luồng dữ liệu","Đã map vào Securities Trade.Buy Reference Sequence Number. False positive do tên cột kết thúc bằng dấu chấm.",Đã thiết kế — xem attr_OrderTrade_Trade_HOSE.csv
-OrderTrade,Trade_HOSE,Sell - Reference Sequence No.,"Số tham chiếu thứ tự đặt bán trong luồng dữ liệu","Đã map vào Securities Trade.Sell Reference Sequence Number. False positive do tên cột kết thúc bằng dấu chấm.",Đã thiết kế — xem attr_OrderTrade_Trade_HOSE.csv
-OrderTrade,Trade_HOSE,(T2-03 HOSE),Trade_HOSE không có trường Replace/cancel classification code tương đương Trade_HNX,"Trade_HOSE không truyền action code của lệnh tại thời điểm khớp — không có cột nguồn tương ứng. Buy/Sell Order Action Type Code chỉ có trên Trade_HNX. Không thể bổ sung cho HOSE.",Không thiết kế HOSE — chỉ HNX có trường này
+IDS,company_detail,company_name_vn,Tên công ty (tiếng Việt) - duplicate,Giá trị 1-1 với company_profiles.company_name_vn. Map primary từ company_profiles.,Đã capture qua company_profiles (1-1)
+IDS,company_detail,company_name_en,Tên công ty (tiếng Anh) - duplicate,Giá trị 1-1 với company_profiles.company_name_en. Map primary từ company_profiles.,Đã capture qua company_profiles (1-1)
+IDS,company_detail,business_reg_no,Mã số doanh nghiệp - duplicate,Giá trị 1-1 với company_profiles.business_reg_no. Map primary từ company_profiles.,Đã capture qua company_profiles (1-1)
+IDS,company_detail,equity_ticker,Mã cổ phiếu - duplicate,Giá trị 1-1 với company_profiles.equity_ticker. Map primary từ company_profiles.,Đã capture qua company_profiles (1-1)
+IDS,company_detail,report_type_cd,Loại hình doanh nghiệp - duplicate,Giá trị 1-1 với company_profiles.report_type_cd. Map primary từ company_profiles.,Đã capture qua company_profiles (1-1)
+IDS,company_detail,last_updated_by,Người sửa - audit duplicate,Audit field 1-1 với company_profiles. Map primary từ company_profiles.,Đã capture qua company_profiles (1-1)
+IDS,company_detail,last_updated_date,Ngày sửa - audit duplicate,Audit field 1-1 với company_profiles. Map primary từ company_profiles.,Đã capture qua company_profiles (1-1)
+IDS,af_auditor_approval,rec_changed_flg,Cờ đánh dấu bản ghi bị thay đổi,Cờ kỹ thuật ETL — SCD2 Atomic tự track lịch sử. Chốt HLD T2-04.,Không thiết kế
+IDS,af_legal_representative,identity_no,Số CMND/CCCD/Hộ chiếu của người đại diện pháp luật kiểm toán,Nguồn không phân biệt loại giấy tờ. LLD tạm dùng scheme IP_ALT_ID_TYPE=NATIONAL_ID làm default. HLD T2-05 pending: cần profile data nguồn hoặc hỏi thêm để xác định loại giấy tờ thực tế.,Đã thiết kế tạm — cần profile data nguồn và cập nhật loại giấy tờ nếu khác NATIONAL_ID
+IDS,legal_representative,identity_no,Số CMND/CCCD/Hộ chiếu của người đại diện pháp luật/CBTT công ty đại chúng,"Nguồn mô tả ""Số cmnd/cccd/hộ chiếu"" trong 1 cột duy nhất — không có cột type phân biệt. LLD tạm dùng IP_ALT_ID_TYPE=NATIONAL_ID làm default. Cần profile data để xác định loại giấy tờ thực tế.",Đã thiết kế tạm — cần profile data
+IDS,identity,id,PK kỹ thuật bảng identity,Shared entity IP Alt Identification không có PK surrogate riêng — chỉ FK về Stock Holder. identity.id là PK kỹ thuật nguồn không có ý nghĩa nghiệp vụ trên Atomic.,Out-of-scope Atomic theo shared entity schema
+IDS,identity,primary_flg,Cờ đánh dấu giấy tờ chính,"Shared entity IP Alt Identification không có trường Primary Flag chuẩn. Thông tin này nếu cần có thể tính tại Gold (1 cổ đông có thể có nhiều giấy tờ, chỉ 1 là chính).",Out-of-scope Atomic — xem xét tại Gold nếu cần
+IDS,identity,created_by,Người tạo giấy tờ,Shared entity IP Alt Identification không có audit fields. Nếu cần thì bổ sung vào schema shared entity (ảnh hưởng các nguồn khác).,Out-of-scope Atomic theo shared entity schema hiện tại
+IDS,identity,created_date,Ngày tạo giấy tờ,Shared entity IP Alt Identification không có audit fields.,Out-of-scope Atomic theo shared entity schema hiện tại
+IDS,identity,last_updated_by,Người sửa giấy tờ,Shared entity IP Alt Identification không có audit fields.,Out-of-scope Atomic theo shared entity schema hiện tại
+IDS,identity,last_updated_date,Ngày sửa giấy tờ,Shared entity IP Alt Identification không có audit fields.,Out-of-scope Atomic theo shared entity schema hiện tại
+ECAT,(cross-source),geographic_area_fk_mapping,Các source IDS/FMS/SCMS/FIMS... FK về code tỉnh/quận/phường cũ hay mới,"User chốt: data instance mặc định FK về danh mục hành chính MỚI (post-sáp nhập 2025). Cần khảo sát từng source trong giai đoạn mapping tiếp theo để: (a) xác định data hiện đang dùng code cũ hay mới, (b) nếu dùng code cũ → cần bảng mapping old→new và rule migration lúc load Atomic. Không thuộc scope HLD ECAT nhưng ảnh hưởng downstream toàn bộ source có trường địa chỉ hành chính.",Khảo sát mapping + migration trong giai đoạn thiết kế LLD từng source
+OrderTrade,Order_HOSE,Immed. Matched VOL,Khối lượng khớp ngay tại thời điểm ghi nhận lệnh,"Đã map vào Securities Order.Immediate Matched Volume. Script post_check báo ""unmapped"" do tên cột nguồn chứa dấu chấm giữa (Immed.) gây parse lỗi — false positive.",Đã thiết kế — xem attr_OrderTrade_Order_HOSE.csv
+OrderTrade,Order_HOSE,Reference Sequence No.,Số tham chiếu thứ tự giao dịch trong luồng dữ liệu,"Đã map vào Securities Order.Reference Sequence Number. Script post_check báo ""unmapped"" do tên cột nguồn kết thúc bằng dấu chấm (No.) gây parse lỗi — false positive.",Đã thiết kế — xem attr_OrderTrade_Order_HOSE.csv
+OrderTrade,Trade_HOSE,Buy - Reference Sequence No.,Số tham chiếu thứ tự đặt mua trong luồng dữ liệu,Đã map vào Securities Trade.Buy Reference Sequence Number. False positive do tên cột kết thúc bằng dấu chấm.,Đã thiết kế — xem attr_OrderTrade_Trade_HOSE.csv
+OrderTrade,Trade_HOSE,Sell - Reference Sequence No.,Số tham chiếu thứ tự đặt bán trong luồng dữ liệu,Đã map vào Securities Trade.Sell Reference Sequence Number. False positive do tên cột kết thúc bằng dấu chấm.,Đã thiết kế — xem attr_OrderTrade_Trade_HOSE.csv
+OrderTrade,Trade_HOSE,(T2-03 HOSE),Trade_HOSE không có trường Replace/cancel classification code tương đương Trade_HNX,Trade_HOSE không truyền action code của lệnh tại thời điểm khớp — không có cột nguồn tương ứng. Buy/Sell Order Action Type Code chỉ có trên Trade_HNX. Không thể bổ sung cho HOSE.,Không thiết kế HOSE — chỉ HNX có trường này
+TTHC,WorkflowTypeIndex,DocumentId,FK nội bộ Orchard Core đến Document table,Document table ngoài scope — không có giá trị nghiệp vụ,Không map
+TTHC,ContentItemIndex,DocumentId,FK nội bộ Orchard Core đến Document table,Document table ngoài scope — không có giá trị nghiệp vụ,Không map
+TTHC,WorkflowIndex,DocumentId,FK nội bộ Orchard Core đến Document table,Document table ngoài scope — không có giá trị nghiệp vụ,Không map
+TTHC,WorkflowTypeIndex,Id,PK kỹ thuật nội bộ (auto-increment),PK kỹ thuật nội bộ Orchard Core — BK đã map từ cột UUID (WorkflowTypeId / ContentItemId / WorkflowId),Không map — BK đã capture qua UUID column
+TTHC,ContentItemIndex,Id,PK kỹ thuật nội bộ (auto-increment),PK kỹ thuật nội bộ Orchard Core — BK đã map từ cột UUID (WorkflowTypeId / ContentItemId / WorkflowId),Không map — BK đã capture qua UUID column
+TTHC,WorkflowIndex,Id,PK kỹ thuật nội bộ (auto-increment),PK kỹ thuật nội bộ Orchard Core — BK đã map từ cột UUID (WorkflowTypeId / ContentItemId / WorkflowId),Không map — BK đã capture qua UUID column
+TTHC,ContentItemIndex,Published,Cờ Published — ETL filter condition,ETL dùng làm điều kiện lọc (Published=1 AND Latest=1) — không lưu trên Atomic vì mọi row trên Atomic đều đã pass điều kiện này,"Không map — ETL filter, không lưu trên Atomic"
+TTHC,ContentItemIndex,Latest,Cờ Latest — ETL filter condition,ETL dùng làm điều kiện lọc (Published=1 AND Latest=1) — không lưu trên Atomic vì mọi row trên Atomic đều đã pass điều kiện này,"Không map — ETL filter, không lưu trên Atomic"
+TTHC,WorkflowIndex,CorrelationId,Cột liên kết workflow với hồ sơ (= ContentItemId). Tên cột theo tài liệu Orchard Core nhưng chưa có trong TTHC_Columns.csv.,[PENDING T2-01] Cột CorrelationId chưa được xác nhận tồn tại trong WorkflowIndex trên DB thực tế. Nếu có → map vào Securities Offering Application Id/Code. Nếu không có → cần tìm cơ chế liên kết khác.,Chờ xác nhận T2-01 — profile DB trước LLD finalize
+TTHC,BooleanFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,BooleanFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,BooleanFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,BooleanFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,BooleanFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,BooleanFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,BooleanFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,BooleanFieldIndex,Boolean,Gia tri dung/sai,ETL value cho Boolean Fields JSON.,Embedded lam value trong JSON Boolean Fields
+TTHC,ContentPickerFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,ContentPickerFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,ContentPickerFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,ContentPickerFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,ContentPickerFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,ContentPickerFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,ContentPickerFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,ContentPickerFieldIndex,SelectedContentItemId,Ma ContentItem duoc chon,ETL value cho Content Picker Fields JSON.,Embedded lam value trong JSON Content Picker Fields
+TTHC,DateFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,DateFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,DateFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,DateFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,DateFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,DateFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,DateFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,DateFieldIndex,Date,Gia tri ngay,ETL value cho Date Fields JSON. Format: YYYY-MM-DD.,Embedded lam value trong JSON Date Fields
+TTHC,DateTimeFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,DateTimeFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,DateTimeFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,DateTimeFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,DateTimeFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,DateTimeFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,DateTimeFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,DateTimeFieldIndex,DateTime,Gia tri ngay gio,ETL value cho Datetime Fields JSON. Format: ISO-8601.,Embedded lam value trong JSON Datetime Fields
+TTHC,HtmlFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,HtmlFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,HtmlFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,HtmlFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,HtmlFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,HtmlFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,HtmlFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,HtmlFieldIndex,Html,Gia tri HTML,ETL value cho Text Fields JSON.,Embedded lam value trong JSON Text Fields
+TTHC,LinkFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,LinkFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,LinkFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,LinkFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,LinkFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,LinkFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,LinkFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,LinkFieldIndex,Url,URL ngan,ETL merge Url+Text thanh JSON object trong Text Fields.,Embedded lam value trong JSON Text Fields
+TTHC,LinkFieldIndex,BigUrl,URL dai,ETL fallback khi Url null.,Embedded lam fallback value trong JSON Text Fields
+TTHC,LinkFieldIndex,Text,Nhan link ngan,ETL merge vao Text Fields JSON.,Embedded lam value trong JSON Text Fields
+TTHC,LinkFieldIndex,BigText,Nhan link dai,ETL fallback khi Text null.,Embedded lam fallback value trong JSON Text Fields
+TTHC,MultiTextFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,MultiTextFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,MultiTextFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,MultiTextFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,MultiTextFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,MultiTextFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,MultiTextFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,MultiTextFieldIndex,Value,Multi-text ngan,ETL value cho Text Fields JSON.,Embedded lam value trong JSON Text Fields
+TTHC,MultiTextFieldIndex,BigValue,Multi-text dai,ETL fallback khi Value null.,Embedded lam fallback value trong JSON Text Fields
+TTHC,NumericFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,NumericFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,NumericFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,NumericFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,NumericFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,NumericFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,NumericFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,NumericFieldIndex,Numeric,Gia tri so decimal,ETL value cho Numeric Fields JSON. Giu nguyen precision.,Embedded lam value trong JSON Numeric Fields
+TTHC,TextFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,TextFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,TextFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,TextFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,TextFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,TextFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,TextFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,TextFieldIndex,Text,Van ban ngan,ETL value cho Text Fields JSON.,Embedded lam value trong JSON Text Fields
+TTHC,TextFieldIndex,BigText,Van ban dai,ETL fallback khi Text null - merge vao Text Fields JSON.,Embedded lam fallback value trong JSON Text Fields
+TTHC,TimeFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,TimeFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,TimeFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,TimeFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,TimeFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,TimeFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,TimeFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,TimeFieldIndex,Time,Gia tri gio,ETL value cho Datetime Fields JSON (key rieng). Format: HH:MM:SS.,Embedded lam value trong JSON Datetime Fields
+TTHC,UserPickerFieldIndex,Id,PK ky thuat noi bo,"ETL chi dung de join, khong luu tren Atomic. Grain Atomic = ContentItem.",Khong map - ETL join key
+TTHC,UserPickerFieldIndex,DocumentId,FK noi bo den Document table,Document table ngoai scope.,Khong map
+TTHC,UserPickerFieldIndex,ContentItemVersionId,Phien ban ContentItem,Da capture tai ContentItemIndex (entity cha).,Khong map - da capture tai ContentItemIndex
+TTHC,UserPickerFieldIndex,ContentPart,Ten part Eform,ETL dung lam mot phan key khi build JSON object. Embedded trong JSON key.,Embedded trong JSON key
+TTHC,UserPickerFieldIndex,ContentField,Ten field ky thuat,ETL dung lam key cua JSON object. Embedded la key trong JSON.,Embedded lam key trong JSON object
+TTHC,UserPickerFieldIndex,Published,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,UserPickerFieldIndex,Latest,ETL filter condition,ETL filter: Published=1 AND Latest=1. Khong luu.,Khong map - ETL filter
+TTHC,UserPickerFieldIndex,SelectedUserId,Ma nguoi dung duoc chon,ETL value cho User Picker Fields JSON. Denormalized - UserIndex ngoai scope.,Embedded lam value trong JSON User Picker Fields
+TTHC,TextFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,TextFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,HtmlFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,HtmlFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,MultiTextFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,MultiTextFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,LinkFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,LinkFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,NumericFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,NumericFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,DateFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,DateFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,DateTimeFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,DateTimeFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,TimeFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,TimeFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,BooleanFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,BooleanFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,ContentPickerFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,ContentPickerFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,UserPickerFieldIndex,ContentItemId,Khoa lien ket FieldIndex voi ContentItem,ETL dung lam join key de xac dinh ContentItem cha. Tren Atomic da capture qua FK Securities Offering Application Id (join tu ContentItemIndex.ContentItemId).,Khong map rieng - da capture qua FK Securities Offering Application Id
+TTHC,UserPickerFieldIndex,ContentType,Loai Eform (denormalized tu ContentItemIndex),ETL dung lam filter (IN danh sach Eform chao ban + Latest=1 + Published=1). Gia tri da capture qua Content Type Code cua entity cha Securities Offering Application.,Khong map rieng - da capture qua Securities Offering Application.Content Type Code
+TTHC,WorkflowTypeIndex,Id,PK ky thuat noi bo,"PK ky thuat, khong luu tren Atomic. WorkflowTypeIndex map vao Classification Value — Scheme TTHC_WORKFLOW_TYPE.","Khong map — bảng đẩy vào Classification Value, không có entity riêng"
+TTHC,WorkflowTypeIndex,DocumentId,FK noi bo den Document,Document table ngoai scope.,Khong map
+TTHC,WorkflowTypeIndex,WorkflowTypeId,Ma UUID loai workflow,La Classification Code trong scheme TTHC_WORKFLOW_TYPE. Map vao Classification Value.cv_code.,Map vao Classification Value — Classification Code
+TTHC,WorkflowTypeIndex,Name,Ten loai workflow,Map vao Classification Value.cl_nm.,Map vao Classification Value — Classification Name
+TTHC,WorkflowTypeIndex,IsEnabled,Co kich hoat,Khong co truong tuong ung tren Classification Value chuan. ETL chi load row co IsEnabled=1.,Khong map — ETL filter IsEnabled=1
+TTHC,WorkflowTypeIndex,HasStart,Co activity Start,"Thong tin ky thuat Orchard Core, khong co gia tri nghiep vu tren Classification Value.",Khong map — thong tin ky thuat

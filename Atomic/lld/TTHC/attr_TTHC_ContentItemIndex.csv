@@ -1,0 +1,13 @@
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Securities Offering Application Id,Khóa đại diện cho hồ sơ chào bán / kết quả xét duyệt.,Surrogate Key,false,true,draft,,PK surrogate.,,
+Securities Offering Application Code,Mã định danh nội dung (ContentItemId). BK.,Text,false,false,draft,TTHC.ContentItemIndex.ContentItemId,BK chính. Mã UUID do Orchard Core sinh.,,
+Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=TTHC.ContentItemIndex,
+Content Item Version Id,Phiên bản nội dung (ContentItemVersionId). Dùng phân biệt các draft/phiên bản lịch sử.,Text,true,false,draft,TTHC.ContentItemIndex.ContentItemVersionId,,,
+Content Type Code,Loại nội dung — phân biệt 11 loại hồ sơ Eform chào bán và các loại kết quả (GCN / từ chối).,Classification Value,false,false,draft,TTHC.ContentItemIndex.ContentType,Scheme: TTHC_CONTENT_TYPE. ETL filter: Published=1 AND Latest=1.,TTHC_CONTENT_TYPE,
+Display Text,Tiêu đề hiển thị của hồ sơ (DisplayText).,Text,true,false,draft,TTHC.ContentItemIndex.DisplayText,,,
+Application Status Code,Trạng thái nghiệp vụ tổng hợp: Chờ xử lý / Đang xử lý / Đã cấp phép / Bị từ chối.,Classification Value,false,false,draft,,Scheme: TTHC_APPLICATION_STATUS. ETL derived từ ContentType kết quả và WorkflowIndex.WorkflowStatus.,TTHC_APPLICATION_STATUS,ETL derived
+Owner User Name,Tên người dùng sở hữu hồ sơ (Owner). Denormalized — UserIndex out-of-scope.,Text,true,false,draft,TTHC.ContentItemIndex.Owner,Denormalized — UserIndex là bảng hệ thống ngoài scope.,,
+Author User Name,Tên tác giả tạo hồ sơ (Author). Denormalized — UserIndex out-of-scope.,Text,true,false,draft,TTHC.ContentItemIndex.Author,Denormalized — UserIndex là bảng hệ thống ngoài scope.,,
+Created Timestamp,Ngày giờ tạo hồ sơ (CreatedUtc).,Timestamp,true,false,draft,TTHC.ContentItemIndex.CreatedUtc,,,
+Published Timestamp,Ngày giờ xuất bản hồ sơ (PublishedUtc).,Timestamp,true,false,draft,TTHC.ContentItemIndex.PublishedUtc,,,
+Modified Timestamp,Ngày giờ cập nhật gần nhất (ModifiedUtc).,Timestamp,true,false,draft,TTHC.ContentItemIndex.ModifiedUtc,,,

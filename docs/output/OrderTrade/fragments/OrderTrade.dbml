@@ -1,0 +1,23 @@
+// Atomic Lakehouse — OrderTrade
+
+Project OrderTrade {
+  database_type: "Delta Lake"
+  Note: "Atomic Lakehouse — OrderTrade"
+}
+
+Table "scr_ordr" [note: "Sự kiện trong vòng đời lệnh giao dịch chứng khoán trên sàn HOSE và HNX — lệnh mới/sửa/hủy từ hệ thống KRX. Mỗi dòng = 1 event. Gộp 2 sàn phân biệt bằng market_id."] {
+  "scr_ordr_id" varchar [pk]
+  "ccy_code" varchar
+}
+
+Table "scr_trd" [note: "Giao dịch khớp lệnh chứng khoán thực tế trên sàn HOSE và HNX — ghi nhận giá khớp/khối lượng/giá trị và thông tin bên mua/bán. Mỗi dòng = 1 lần khớp. FK đến Securities Order (x2)."] {
+  "scr_trd_id" varchar [pk]
+  "ccy_code" varchar
+  "buy_scr_ordr_id" varchar
+  "sell_scr_ordr_id" varchar
+}
+
+// Ref: "scr_ordr"."ccy_code" > ""."" // out-of-source
+// Ref: "scr_trd"."ccy_code" > ""."" // out-of-source
+Ref: "scr_trd"."buy_scr_ordr_id" > "scr_ordr"."scr_ordr_id"
+Ref: "scr_trd"."sell_scr_ordr_id" > "scr_ordr"."scr_ordr_id"
