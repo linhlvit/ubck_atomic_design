@@ -165,16 +165,16 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "schema",
+        "namespace",
         "physical_name",
         "etl_handle",
         "description"
       ],
       "properties": {
-        "schema": {
+        "namespace": {
           "type": "string",
           "const": "atomic",
-          "description": "Schema đích — luôn là 'atomic'"
+          "description": "Namespace đích — luôn là 'atomic'"
         },
         "physical_name": {
           "type": "string",
@@ -215,21 +215,21 @@
             "derived_cte",
             "unpivot_cte"
           ],
-          "description": "Loại nguồn: physical_table (bảng Bronze thực tế), derived_cte (CTE tính toán), unpivot_cte (LATERAL VIEW stack)"
+          "description": "Loại nguồn: physical_table (bảng ODS thực tế), derived_cte (CTE tính toán), unpivot_cte (LATERAL VIEW stack)"
         },
-        "schema": {
+        "namespace": {
           "oneOf": [
             {
               "type": "string",
               "enum": [
-                "bronze"
+                "ods"
               ]
             },
             {
               "type": "null"
             }
           ],
-          "description": "Schema Bronze — null nếu là CTE"
+          "description": "Namespace ODS — null nếu là CTE"
         },
         "table_name": {
           "type": "string",
@@ -354,6 +354,18 @@
           "type": "string",
           "minLength": 1,
           "description": "Mô tả nghiệp vụ của cột"
+        },
+        "target_attr_name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Tên thuộc tính Atomic đích (title case) — lấy từ trường name trong Model YAML tương ứng"
         }
       }
     },
@@ -468,6 +480,18 @@
             }
           ],
           "description": "Giá trị hardcode ETL-derived — null nếu map thẳng từ source"
+        },
+        "target_attr_name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Tên thuộc tính Atomic đích (title case) — lấy từ trường name trong Model YAML tương ứng"
         },
         "comment": {
           "oneOf": [

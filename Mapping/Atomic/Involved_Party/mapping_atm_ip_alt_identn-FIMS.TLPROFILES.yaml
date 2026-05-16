@@ -12,7 +12,7 @@ mapping:
   brd_ref: BRD-SRC-FIMS-TLPROFILES
 
 target:
-  schema: atomic
+  namespace: atomic
   physical_name: ip_alt_identn
   etl_handle: SCD4A
   description: |
@@ -22,7 +22,7 @@ target:
 input:
   -
     source_type: physical_table
-    schema: bronze
+    namespace: ods
     table_name: TLPROFILES
     alias: tl
     select_fields: "id, idno, idadd, iddate, certno, certadd, certdate"
@@ -39,37 +39,44 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_TLPROFILES', tl.id)"
         source_column: FIMS.TLPROFILES.Id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: tl.id
         source_column: FIMS.TLPROFILES.Id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_TLPROFILES'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'CITIZEN_ID'"
         source_column: null
         data_type: string
         etl_derived_value: CITIZEN_ID
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: tl.idno
         source_column: FIMS.TLPROFILES.IdNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: tl.iddate
         source_column: FIMS.TLPROFILES.IdDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: tl.idadd
         source_column: FIMS.TLPROFILES.IdAdd
         data_type: string
+        target_attr_name: Issuing Authority Name
 
   - leg: PRACTITIONER_LICENSE
     filter: "tl.certno IS NOT NULL"
@@ -78,37 +85,44 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_TLPROFILES', tl.id)"
         source_column: FIMS.TLPROFILES.Id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: tl.id
         source_column: FIMS.TLPROFILES.Id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_TLPROFILES'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'PRACTITIONER_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: PRACTITIONER_LICENSE
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: tl.certno
         source_column: FIMS.TLPROFILES.CertNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: tl.certdate
         source_column: FIMS.TLPROFILES.CertDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: tl.certadd
         source_column: FIMS.TLPROFILES.CertAdd
         data_type: string
+        target_attr_name: Issuing Authority Name
 
 mapping_columns: null
 

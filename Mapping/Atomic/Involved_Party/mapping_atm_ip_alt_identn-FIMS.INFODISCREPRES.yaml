@@ -12,7 +12,7 @@ mapping:
   brd_ref: BRD-SRC-FIMS-INFODISCREPRES
 
 target:
-  schema: atomic
+  namespace: atomic
   physical_name: ip_alt_identn
   etl_handle: SCD4A
   description: |
@@ -23,7 +23,7 @@ target:
 input:
   -
     source_type: physical_table
-    schema: bronze
+    namespace: ods
     table_name: INFODISCREPRES
     alias: in_di_re
     select_fields: "id, certno, idadd, idno, iddate"
@@ -39,38 +39,45 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_INFODISCREPRES', in_di_re.id)"
         source_column: FIMS.INFODISCREPRES.Id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: in_di_re.id
         source_column: FIMS.INFODISCREPRES.Id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_INFODISCREPRES'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'BUSINESS_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: BUSINESS_LICENSE
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: in_di_re.certno
         source_column: FIMS.INFODISCREPRES.CertNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: null
         source_column: null
         data_type: date
+        target_attr_name: Issue Date
         comment: "Không có cột ngày cấp cho BUSINESS_LICENSE trong INFODISCREPRES."
 
       - target_column: issu_ahr_nm
         transformation: null
         source_column: null
         data_type: string
+        target_attr_name: Issuing Authority Name
         comment: "Không có cột nơi cấp cho BUSINESS_LICENSE trong INFODISCREPRES."
 
   - leg: CITIZEN_ID
@@ -81,38 +88,45 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_INFODISCREPRES', in_di_re.id)"
         source_column: FIMS.INFODISCREPRES.Id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: in_di_re.id
         source_column: FIMS.INFODISCREPRES.Id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_INFODISCREPRES'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'CITIZEN_ID'"
         source_column: null
         data_type: string
         etl_derived_value: CITIZEN_ID
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: in_di_re.idadd
         source_column: FIMS.INFODISCREPRES.IdAdd
         data_type: string
+        target_attr_name: Identification Number
         comment: "Dùng IdAdd (không phải IdNo) — cột đảo trong nguồn."
 
       - target_column: issu_dt
         transformation: in_di_re.iddate
         source_column: FIMS.INFODISCREPRES.IdDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: in_di_re.idno
         source_column: FIMS.INFODISCREPRES.IdNo
         data_type: string
+        target_attr_name: Issuing Authority Name
         comment: "Dùng IdNo (không phải IdAdd) — cột đảo trong nguồn."
 
 mapping_columns: null

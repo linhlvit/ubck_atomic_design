@@ -12,7 +12,7 @@ mapping:
   brd_ref: BRD-SRC-FIMS-INVESTOR
 
 target:
-  schema: atomic
+  namespace: atomic
   physical_name: ip_alt_identn
   etl_handle: SCD4A
   description: |
@@ -23,7 +23,7 @@ target:
 input:
   -
     source_type: physical_table
-    schema: bronze
+    namespace: ods
     table_name: INVESTOR
     alias: "in"
     select_fields: "id, idno, idadd, iddate"
@@ -39,38 +39,45 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_INVESTOR', in.id)"
         source_column: FIMS.INVESTOR.id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: in.id
         source_column: FIMS.INVESTOR.id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_INVESTOR'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'CITIZEN_ID'"
         source_column: null
         data_type: string
         etl_derived_value: CITIZEN_ID
+        target_attr_name: Identification Type Code
         comment: "Cần profile thêm để phân biệt CITIZEN_ID vs PASSPORT."
 
       - target_column: identn_nbr
         transformation: in.idno
         source_column: FIMS.INVESTOR.IdNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: in.iddate
         source_column: FIMS.INVESTOR.IdDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: in.idadd
         source_column: FIMS.INVESTOR.IdAdd
         data_type: string
+        target_attr_name: Issuing Authority Name
 
 mapping_columns: null
 

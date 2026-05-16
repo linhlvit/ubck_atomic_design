@@ -542,10 +542,10 @@ Final Filter → WHERE / GROUP BY / UNION ALL ở cuối transform
 
 | Section | Cột key |
 |---|---|
-| Target | Database, Schema, Table Name, ETL Handle, Description |
-| Input | #, Source Type, Schema, Table Name, Alias, Select Fields, Filter |
+| Target | Database, Namespace, Table Name, ETL Handle, Description |
+| Input | #, Source Type, Namespace, Table Name, Alias, Select Fields, Filter |
 | Relationship | #, Main Alias, Join Type, Join Alias, Join On |
-| Mapping | #, Target Column, Transformation, Data Type, Description |
+| Mapping | #, Target Column, Transformation, Data Type, Description, Target Attribute Name |
 | Final Filter | #, Clause Type, Expression, Description |
 
 ### 3.5 Hai loại Mapping Pattern
@@ -556,13 +556,13 @@ Dùng khi entity map từ **1 bảng chính + các bảng phụ JOIN vào**. Inp
 
 ```csv
 Target,Bảng đích,,,,,,,,,
-Database,Schema,Table Name,ETL Handle,,,,Description,...
+Database,Namespace,Table Name,ETL Handle,,,,Description,...
 ,atomic,Fund Management Company,SCD4A,,,,Công ty quản lý quỹ...
 
 Input,Bảng / CTE nguồn,,,,,,,,,
-#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,...
-1,physical_table,bronze,FUNDCOMPANY,fu_co,"id, name, capital, ...",data_date = ...
-2,physical_table,bronze,FUNDCOMBUSINES,fu_bu_raw,"fundid, buid",data_date = ...
+#,Source Type,Namespace,Table Name,Alias,Select Fields,Filter,...
+1,physical_table,ods,FUNDCOMPANY,fu_co,"id, name, capital, ...",data_date = ...
+2,physical_table,ods,FUNDCOMBUSINES,fu_bu_raw,"fundid, buid",data_date = ...
 3,derived_cte,,fu_bu_raw,fu_bu,"fundid, array_agg(buid) AS business_type_codes",GROUP BY fundid
 
 Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
@@ -570,10 +570,10 @@ Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
 1,fu_co,LEFT JOIN,fu_bu,fu_co.id = fu_bu.fundid
 
 Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
-#,Target Column,Transformation,Data Type,,,,Description,...
-1,fund_management_company_id,"hash_id('FIMS_FUNDCOMPANY', fu_co.id)",string,,,,Surrogate key
-2,fund_management_company_code,fu_co.id,string,,,,BK từ PK bảng nguồn
-3,source_system_code,'FIMS_FUNDCOMPANY',string,,,,Hardcode SSC
+#,Target Column,Transformation,Data Type,,,,Description,Target Attribute Name
+1,fund_management_company_id,"hash_id('FIMS_FUNDCOMPANY', fu_co.id)",string,,,,Surrogate key,Fund Management Company Id
+2,fund_management_company_code,fu_co.id,string,,,,BK từ PK bảng nguồn,Fund Management Company Code
+3,source_system_code,'FIMS_FUNDCOMPANY',string,,,,Hardcode SSC,Source System Code
 
 Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
 #,Clause Type,Expression,...
@@ -593,11 +593,11 @@ Dùng cho các entity gộp nhiều nguồn (IP Alt Identification, IP Postal Ad
 
 ```csv
 Input,Bảng / CTE nguồn,,,,,,,,,
-#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,...
-1,physical_table,bronze,BANKMONI,ba_mo,"id, idno, idadd, regno, regadd",data_date = ...
+#,Source Type,Namespace,Table Name,Alias,Select Fields,Filter,...
+1,physical_table,ods,BANKMONI,ba_mo,"id, idno, idadd, regno, regadd",data_date = ...
 2,unpivot_cte,,ba_mo,leg_ba_mo,"id AS ip_code, type_code, address_value
 LATERAL VIEW stack(4, 'IDNO', idno, 'IDADD', idadd, 'REGNO', regno, 'REGADD', regadd) AS (type_code, address_value)",address_value IS NOT NULL
-3,physical_table,bronze,BRANCHS,br,"id, idno, idadd, regno, regadd",data_date = ...
+3,physical_table,ods,BRANCHS,br,"id, idno, idadd, regno, regadd",data_date = ...
 4,unpivot_cte,,br,leg_br,"id AS ip_code, type_code, address_value
 LATERAL VIEW stack(4, 'IDNO', ...) AS (type_code, address_value)",address_value IS NOT NULL
 ...
@@ -686,20 +686,20 @@ mapping:
   brd_ref: BRD-SRC-FIMS-FUNDCOMPANY
 
 target:
-  schema: atomic              # luôn là 'atomic'
+  namespace: atomic           # luôn là 'atomic'
   physical_name: fnd_mgt_co  # tên bảng đích (snake_case) — dùng cho ETL job generation
   etl_handle: SCD4A           # ETL pattern (SCD4A | SCD2 | Fact Append | Upsert)
   description: "Công ty quản lý quỹ..."
 
 input:
   - source_type: physical_table   # physical_table | derived_cte | unpivot_cte
-    schema: bronze
+    namespace: ods
     table_name: FUNDCOMPANY
     alias: fu_co
     select_fields: "id, name, capital, ..."
     filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
   - source_type: derived_cte
-    schema: null
+    namespace: null
     table_name: fu_bu_raw
     alias: fu_bu
     select_fields: "fundid, array_agg(buid) AS business_type_codes"
@@ -712,18 +712,21 @@ relationship:
     join_on: "fu_co.id = fu_bu.fundid"
 
 mapping_columns:
-  - target_column: fund_management_company_id
+  - target_column: fnd_mgt_co_id
     transformation: "{hash_id}('FIMS_FUNDCOMPANY', fu_co.id)"  # {rule_id}(...) = transformation rule
     data_type: string
     description: Khóa đại diện cho công ty quản lý quỹ.
-  - target_column: source_system_code
+    target_attr_name: Fund Management Company Id               # lấy từ name trong DM YAML
+  - target_column: src_stm_code
     transformation: "'FIMS_FUNDCOMPANY'"                        # SQL expression thuần
     data_type: string
     description: Mã nguồn dữ liệu.
-  - target_column: fund_management_company_name
+    target_attr_name: Source System Code
+  - target_column: fnd_mgt_co_nm
     transformation: fu_co.name
     data_type: string
     description: Tên công ty QLQ.
+    target_attr_name: Fund Management Company Name
 
 final_filter: []                # để [] nếu không có WHERE/UNION ALL
 ```
@@ -745,14 +748,14 @@ mapping:
   brd_ref: BRD-SRC-FIMS-BANKMONI
 
 target:
-  schema: atomic
+  namespace: atomic
   physical_name: ip_alt_identn  # snake_case physical name
   etl_handle: SCD4A             # ETL pattern
   description: "Giấy tờ định danh thay thế cho các đối tượng tham gia"
 
 input:
   - source_type: physical_table
-    schema: bronze
+    namespace: ods
     table_name: BANKMONI
     alias: ba_mo
     select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
@@ -768,15 +771,18 @@ mapping_legs:                   # thay mapping_columns khi dùng pattern unpivot
         transformation: "{hash_id}('FIMS_BANKMONI', ba_mo.id)"
         source_column: FIMS.BANKMONI.Id
         data_type: string
+        target_attr_name: Involved Party Id    # lấy từ name trong DM YAML
       - target_column: identn_tp_code
         transformation: "'BUSINESS_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: BUSINESS_LICENSE
+        target_attr_name: Identification Type Code
       - target_column: identn_nbr
         transformation: ba_mo.idno
         source_column: FIMS.BANKMONI.IdNo
         data_type: string
+        target_attr_name: Identification Number
   - leg: OPERATING_LICENSE
     filter: "ba_mo.regno IS NOT NULL"
     mapping_columns:
@@ -784,15 +790,18 @@ mapping_legs:                   # thay mapping_columns khi dùng pattern unpivot
         transformation: "{hash_id}('FIMS_BANKMONI', ba_mo.id)"
         source_column: FIMS.BANKMONI.Id
         data_type: string
+        target_attr_name: Involved Party Id
       - target_column: identn_tp_code
         transformation: "'OPERATING_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: OPERATING_LICENSE
+        target_attr_name: Identification Type Code
       - target_column: identn_nbr
         transformation: ba_mo.regno
         source_column: FIMS.BANKMONI.RegNo
         data_type: string
+        target_attr_name: Identification Number
 
 mapping_columns: null           # null khi dùng mapping_legs
 
@@ -858,12 +867,14 @@ done
 - `mapping.pattern` enum: `regular | unpivot | direct | shared_entity`
 - `mapping.dm_ref` string (not removed from required)
 - `mapping.brd_ref` string (not removed from required)
-- `target.schema` const: `atomic`
+- `target.namespace` const: `atomic`
 - `target.physical_name` pattern: snake_case
 - `target.etl_handle` enum: `SCD4A | SCD2 | Fact Append | Upsert`
 - `input[].source_type` enum: `physical_table | derived_cte | unpivot_cte`
+- `input[].namespace` enum: `ods` (null nếu là CTE)
 - `mapping_columns[].target_column` pattern: snake_case
 - `mapping_columns[].data_type` enum: 10 Delta Lake types
+- `mapping_columns[].target_attr_name` (optional): tên attribute Title Case từ DM YAML
 - `final_filter[].clause_type` enum: `WHERE | UNION ALL | GROUP BY | HAVING | ORDER BY`
 
 ### 3.14 Transformation Rules — Shared Rule Library

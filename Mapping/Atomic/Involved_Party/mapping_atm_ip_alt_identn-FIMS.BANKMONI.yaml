@@ -12,7 +12,7 @@ mapping:
   brd_ref: BRD-SRC-FIMS-BANKMONI
 
 target:
-  schema: atomic
+  namespace: atomic
   physical_name: ip_alt_identn
   etl_handle: SCD4A
   description: |
@@ -22,7 +22,7 @@ target:
 input:
   -
     source_type: physical_table
-    schema: bronze
+    namespace: ods
     table_name: BANKMONI
     alias: ba_mo
     select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
@@ -38,37 +38,44 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_BANKMONI', ba_mo.id)"
         source_column: FIMS.BANKMONI.Id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: ba_mo.id
         source_column: FIMS.BANKMONI.Id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_BANKMONI'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'BUSINESS_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: BUSINESS_LICENSE
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: ba_mo.idno
         source_column: FIMS.BANKMONI.IdNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: ba_mo.iddate
         source_column: FIMS.BANKMONI.IdDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: ba_mo.idadd
         source_column: FIMS.BANKMONI.IdAdd
         data_type: string
+        target_attr_name: Issuing Authority Name
 
   - leg: OPERATING_LICENSE
     filter: "ba_mo.regno IS NOT NULL"
@@ -77,37 +84,44 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_BANKMONI', ba_mo.id)"
         source_column: FIMS.BANKMONI.Id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: ba_mo.id
         source_column: FIMS.BANKMONI.Id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_BANKMONI'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'OPERATING_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: OPERATING_LICENSE
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: ba_mo.regno
         source_column: FIMS.BANKMONI.RegNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: ba_mo.regdate
         source_column: FIMS.BANKMONI.RegDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: ba_mo.regadd
         source_column: FIMS.BANKMONI.RegAdd
         data_type: string
+        target_attr_name: Issuing Authority Name
 
 mapping_columns: null
 

@@ -12,7 +12,7 @@ mapping:
   brd_ref: BRD-SRC-FIMS-BRANCHS
 
 target:
-  schema: atomic
+  namespace: atomic
   physical_name: ip_alt_identn
   etl_handle: SCD4A
   description: |
@@ -22,7 +22,7 @@ target:
 input:
   -
     source_type: physical_table
-    schema: bronze
+    namespace: ods
     table_name: BRANCHS
     alias: br
     select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
@@ -38,37 +38,44 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_BRANCHS', br.id)"
         source_column: FIMS.BRANCHS.id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: br.id
         source_column: FIMS.BRANCHS.id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_BRANCHS'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'BUSINESS_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: BUSINESS_LICENSE
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: br.idno
         source_column: FIMS.BRANCHS.IdNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: br.iddate
         source_column: FIMS.BRANCHS.IdDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: br.idadd
         source_column: FIMS.BRANCHS.IdAdd
         data_type: string
+        target_attr_name: Issuing Authority Name
 
   - leg: OPERATING_LICENSE
     filter: "br.regno IS NOT NULL"
@@ -77,37 +84,44 @@ mapping_legs:
         transformation: "{hash_id}('FIMS_BRANCHS', br.id)"
         source_column: FIMS.BRANCHS.id
         data_type: string
+        target_attr_name: Involved Party Id
 
       - target_column: ip_code
         transformation: br.id
         source_column: FIMS.BRANCHS.id
         data_type: string
+        target_attr_name: Involved Party Code
 
       - target_column: src_stm_code
         transformation: "'FIMS_BRANCHS'"
         source_column: null
         data_type: string
+        target_attr_name: Source System Code
 
       - target_column: identn_tp_code
         transformation: "'OPERATING_LICENSE'"
         source_column: null
         data_type: string
         etl_derived_value: OPERATING_LICENSE
+        target_attr_name: Identification Type Code
 
       - target_column: identn_nbr
         transformation: br.regno
         source_column: FIMS.BRANCHS.RegNo
         data_type: string
+        target_attr_name: Identification Number
 
       - target_column: issu_dt
         transformation: br.regdate
         source_column: FIMS.BRANCHS.RegDate
         data_type: date
+        target_attr_name: Issue Date
 
       - target_column: issu_ahr_nm
         transformation: br.regadd
         source_column: FIMS.BRANCHS.RegAdd
         data_type: string
+        target_attr_name: Issuing Authority Name
 
 mapping_columns: null
 
