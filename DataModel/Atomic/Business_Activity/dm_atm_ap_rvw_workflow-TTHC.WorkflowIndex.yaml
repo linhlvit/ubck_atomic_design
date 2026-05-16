@@ -1,0 +1,137 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ap_rvw_workflow-TTHC.WorkflowIndex
+  logical_name: "Atomic - Application Review Workflow – source TTHC.WorkflowIndex"
+
+  physical_name: ap_rvw_workflow
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Status Review"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: TTHC
+  description: |
+    Workflow instance xét duyệt hồ sơ chào bán chứng khoán từ TTHC.WorkflowIndex (Orchard Core).
+    FK đến Securities Offering Application qua CorrelationId — pending xác nhận T2-01.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-WorkflowIndex
+
+attributes:
+  - name: Application Review Workflow Id
+    physical_name: ap_rvw_workflow_id
+    business_meaning: Khóa đại diện cho workflow instance xét duyệt hồ sơ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: null
+    comment: "PK surrogate."
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null
+
+  - name: Application Review Workflow Code
+    physical_name: ap_rvw_workflow_code
+    business_meaning: Mã workflow instance (WorkflowId). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: TTHC.WorkflowIndex.WorkflowId
+    comment: "BK chính. Mã UUID do Orchard Core sinh."
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null
+
+  - name: Securities Offering Application Id
+    physical_name: scr_ofrg_ap_id
+    business_meaning: FK đến hồ sơ chào bán gắn với workflow. ETL derived từ CorrelationId (chờ xác nhận T2-01 — cột chưa có trong Columns.csv).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: null
+    comment: "FK target: Securities Offering Application.Securities Offering Application Id. [PENDING T2-01] Cột CorrelationId chưa được xác nhận trong WorkflowIndex — cần profile DB. Mapping tạm để giữ ý định thiết kế."
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null
+
+  - name: Securities Offering Application Code
+    physical_name: scr_ofrg_ap_code
+    business_meaning: Mã ContentItemId hồ sơ. ETL derived từ CorrelationId (chờ xác nhận T2-01).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: null
+    comment: "Lookup pair: Securities Offering Application.Securities Offering Application Code. Pair with Securities Offering Application Id. [PENDING T2-01]"
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null
+
+  - name: Workflow Type Code
+    physical_name: workflow_tp_code
+    business_meaning: Mã loại workflow (WorkflowTypeId). FK đến Classification Value scheme TTHC_WORKFLOW_TYPE.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: TTHC.WorkflowIndex.WorkflowTypeId
+    comment: "Scheme: TTHC_WORKFLOW_TYPE. WorkflowTypeIndex đẩy vào Classification Value — không có surrogate key riêng."
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null
+
+  - name: Workflow Status Code
+    physical_name: workflow_st_code
+    business_meaning: Trạng thái workflow instance (Idle/Executing/Faulted/Finished/Aborted).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: TTHC.WorkflowIndex.WorkflowStatus
+    comment: "Scheme: TTHC_WORKFLOW_STATUS. 5 giá trị cố định của Orchard Core."
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày giờ tạo workflow instance (CreatedUtc).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: WorkflowIndex
+    source_column: TTHC.WorkflowIndex.CreatedUtc
+    comment: null
+    classification_context: "Source System Code = 'TTHC_WorkflowIndex'"
+    etl_derived_value: null

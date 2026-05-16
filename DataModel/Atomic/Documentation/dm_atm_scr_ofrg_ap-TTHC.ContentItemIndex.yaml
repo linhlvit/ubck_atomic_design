@@ -1,0 +1,193 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_ofrg_ap-TTHC.ContentItemIndex
+  logical_name: "Atomic - Securities Offering Application – source TTHC.ContentItemIndex"
+
+  physical_name: scr_ofrg_ap
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  description: |
+    Hồ sơ chào bán chứng khoán từ TTHC.ContentItemIndex (Orchard Core). ETL filter: Published=1 AND Latest=1.
+    Application Status Code là ETL derived từ ContentType kết quả và WorkflowIndex.WorkflowStatus.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-ContentItemIndex
+
+attributes:
+  - name: Securities Offering Application Id
+    physical_name: scr_ofrg_ap_id
+    business_meaning: Khóa đại diện cho hồ sơ chào bán / kết quả xét duyệt.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: null
+    comment: "PK surrogate."
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Securities Offering Application Code
+    physical_name: scr_ofrg_ap_code
+    business_meaning: Mã định danh nội dung (ContentItemId). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.ContentItemId
+    comment: "BK chính. Mã UUID do Orchard Core sinh."
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Content Item Version Id
+    physical_name: cntnt_itm_vrsn_id
+    business_meaning: Phiên bản nội dung (ContentItemVersionId). Dùng phân biệt các draft/phiên bản lịch sử.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.ContentItemVersionId
+    comment: null
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Content Type Code
+    physical_name: cntnt_tp_code
+    business_meaning: Loại nội dung — phân biệt 11 loại hồ sơ Eform chào bán và các loại kết quả (GCN / từ chối).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.ContentType
+    comment: "Scheme: TTHC_CONTENT_TYPE. ETL filter: Published=1 AND Latest=1."
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Display Text
+    physical_name: dspl_tx
+    business_meaning: Tiêu đề hiển thị của hồ sơ (DisplayText).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.DisplayText
+    comment: null
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Application Status Code
+    physical_name: ap_st_code
+    business_meaning: Trạng thái nghiệp vụ tổng hợp — Chờ xử lý / Đang xử lý / Đã cấp phép / Bị từ chối.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: null
+    comment: "Scheme: TTHC_APPLICATION_STATUS. ETL derived từ ContentType kết quả và WorkflowIndex.WorkflowStatus."
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Owner User Name
+    physical_name: own_usr_nm
+    business_meaning: Tên người dùng sở hữu hồ sơ (Owner). Denormalized — UserIndex out-of-scope.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.Owner
+    comment: "Denormalized — UserIndex là bảng hệ thống ngoài scope."
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Author User Name
+    physical_name: ahr_usr_nm
+    business_meaning: Tên tác giả tạo hồ sơ (Author). Denormalized — UserIndex out-of-scope.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.Author
+    comment: "Denormalized — UserIndex là bảng hệ thống ngoài scope."
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày giờ tạo hồ sơ (CreatedUtc).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.CreatedUtc
+    comment: null
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Published Timestamp
+    physical_name: published_tms
+    business_meaning: Ngày giờ xuất bản hồ sơ (PublishedUtc).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.PublishedUtc
+    comment: null
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null
+
+  - name: Modified Timestamp
+    physical_name: mod_tms
+    business_meaning: Ngày giờ cập nhật gần nhất (ModifiedUtc).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: ContentItemIndex
+    source_column: TTHC.ContentItemIndex.ModifiedUtc
+    comment: null
+    classification_context: "Source System Code = 'TTHC_ContentItemIndex'"
+    etl_derived_value: null

@@ -1,0 +1,829 @@
+source: TTHC
+description: "Quản lý thủ tục hành chính — Hệ thống tiếp nhận và xử lý hồ sơ đăng ký chào bán / phát hành chứng khoán theo mô hình EAV (Orchard Core / SQLite)"
+brd_entries:
+
+  # ─── UID-01 Hồ sơ chào bán chứng khoán ───────────────────────────────────
+
+  - brd_id: BRD-SRC-TTHC-ContentItemIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng ContentItemIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ đăng ký chào bán / phát hành chứng khoán và kết quả xét duyệt (GCN / văn bản từ chối) — toàn bộ lưu trong cùng bảng ContentItemIndex, phân biệt bởi ContentType (Latest=1, Published=1)"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: ContentItemIndex
+      related_tables:
+        - table: TextFieldIndex
+          relation: "1-N — field dạng text của hồ sơ Eform (qua ContentItemId)"
+        - table: HtmlFieldIndex
+          relation: "1-N — field dạng HTML của hồ sơ Eform"
+        - table: MultiTextFieldIndex
+          relation: "1-N — field dạng đa văn bản của hồ sơ Eform"
+        - table: LinkFieldIndex
+          relation: "1-N — field dạng liên kết của hồ sơ Eform"
+        - table: NumericFieldIndex
+          relation: "1-N — field dạng số của hồ sơ Eform"
+        - table: DateFieldIndex
+          relation: "1-N — field dạng ngày của hồ sơ Eform"
+        - table: DateTimeFieldIndex
+          relation: "1-N — field dạng ngày giờ của hồ sơ Eform"
+        - table: TimeFieldIndex
+          relation: "1-N — field dạng giờ của hồ sơ Eform"
+        - table: BooleanFieldIndex
+          relation: "1-N — field dạng boolean của hồ sơ Eform"
+        - table: ContentPickerFieldIndex
+          relation: "1-N — field dạng content picker của hồ sơ Eform"
+        - table: UserPickerFieldIndex
+          relation: "1-N — field dạng user picker của hồ sơ Eform"
+        - table: WorkflowIndex
+          relation: "1-N — workflow instance xét duyệt gắn với hồ sơ (qua CorrelationId)"
+      notes: "Map vào Securities Offering Application (Documentation/Regulatory Report). ETL filter: Published=1 AND Latest=1. content_type_code (TTHC_CONTENT_TYPE) phân biệt 11 loại hồ sơ chào bán và các loại kết quả (GCN / từ chối). Pending T1-01: ContentType GCN và từ chối chưa xác nhận trên DB thực tế."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  # ─── UID-01 Giá trị field Eform ───────────────────────────────────────────
+
+  - brd_id: BRD-SRC-TTHC-TextFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng TextFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường văn bản đơn (text, input-url, radios) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: TextFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). ETL UNION ALL 11 bảng, aggregate GROUP BY ContentItemId. field_data_type_code = TEXT (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-HtmlFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng HtmlFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường HTML (rich-text editor) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: HtmlFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = HTML (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-MultiTextFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng MultiTextFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường văn bản nhiều giá trị (textarea, multi-value) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: MultiTextFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = MULTI_TEXT (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-LinkFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng LinkFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường liên kết URL (input-url) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: LinkFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = LINK (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-NumericFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng NumericFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường số (input-number) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: NumericFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = NUMERIC (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-DateFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng DateFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường ngày (input-date) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: DateFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = DATE (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-DateTimeFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng DateTimeFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường ngày giờ (datetime fields) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: DateTimeFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = DATETIME (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-TimeFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng TimeFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường giờ (time fields) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: TimeFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = TIME (ETL derived). Iceberg không có TIME type — lưu string HH:MM:SS. Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-BooleanFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng BooleanFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường boolean của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: BooleanFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = BOOLEAN (ETL derived). Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-ContentPickerFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng ContentPickerFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường chọn ContentItem khác (content picker) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: ContentPickerFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = CONTENT_PICKER (ETL derived). Pending T2-05: xác nhận bảng này có dữ liệu trong Eform chào bán. Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  - brd_id: BRD-SRC-TTHC-UserPickerFieldIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng UserPickerFieldIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Trường chọn người dùng (user picker) của tờ khai Eform đã index — gộp vào Application Eform Field Value"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: in_scope
+      scope_reason: null
+      table: UserPickerFieldIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ Eform chứa field này (qua ContentItemId)"
+      notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = USER_PICKER (ETL derived). Denormalized — UserIndex ngoài scope. Pending T2-05: xác nhận bảng này có dữ liệu trong Eform chào bán. Xem D-04."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  # ─── UID-02 Quy trình xét duyệt ──────────────────────────────────────────
+
+  - brd_id: BRD-SRC-TTHC-WorkflowIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng WorkflowIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Workflow instance xét duyệt hồ sơ chào bán — ghi nhận từng lần chạy quy trình (WorkflowId, WorkflowStatus, CreatedUtc) gắn với hồ sơ qua CorrelationId"
+      functional_group: "UID-02 Quy trình xét duyệt hồ sơ"
+      scope_status: in_scope
+      scope_reason: null
+      table: WorkflowIndex
+      related_tables:
+        - table: ContentItemIndex
+          relation: "N-1 — hồ sơ chào bán gắn với workflow (qua CorrelationId = ContentItemId, chờ xác nhận T2-01)"
+        - table: WorkflowTypeIndex
+          relation: "N-1 — loại workflow (Classification Value scheme TTHC_WORKFLOW_TYPE)"
+      notes: "Map vào Application Review Workflow (Business Activity/Status Review). ETL filter theo WorkflowTypeId tương ứng luồng xét duyệt chào bán — pending T2-02. Pending T2-01: xác nhận CorrelationId = ContentItemId hồ sơ. WorkflowTypeIndex đẩy vào Classification Value (D-07)."
+      data_volume_hint: null
+      refresh_frequency: daily
+
+  # ─── Ngoài scope ──────────────────────────────────────────────────────────
+
+  - brd_id: BRD-SRC-TTHC-Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Raw JSON gốc của toàn bộ ContentItem — cột Content chứa JSON serialize toàn bộ nội dung chi tiết"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "ETL không đọc Document.Content — dùng *FieldIndex thay thế. Raw JSON là Operational/system data."
+      table: Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-AliasPartIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng AliasPartIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Map alias URL đến Content Item"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: AliasPartIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-AutoroutePartIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng AutoroutePartIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Index đường dẫn URL (slug) của ContentItem"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: AutoroutePartIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-ContainedPartIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng ContainedPartIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quan hệ cha-con giữa ContentItem (container-contained)"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: ContainedPartIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-IndexingTask
+    brd_name: "Design Atomic từ nguồn TTHC bảng IndexingTask"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Task đánh chỉ mục nội dung cho search engine"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: IndexingTask
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-LayerMetadataIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng LayerMetadataIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình layout và zone hiển thị giao diện portal"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: LayerMetadataIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-DeploymentPlanIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng DeploymentPlanIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Kế hoạch triển khai nội dung và cấu hình hệ thống"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: DeploymentPlanIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-TaxonomyIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng TaxonomyIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân loại tag/category của nội dung CMS"
+      functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
+      scope_status: out_of_scope
+      scope_reason: "Không có quan hệ FK đến bảng nghiệp vụ Eform chào bán"
+      table: TaxonomyIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-WorkflowTypeIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng WorkflowTypeIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách các loại workflow được cấu hình trong hệ thống"
+      functional_group: "UID-02 Quy trình xét duyệt hồ sơ"
+      scope_status: out_of_scope
+      scope_reason: "Đẩy vào Classification Value scheme TTHC_WORKFLOW_TYPE — không tạo Atomic entity riêng (D-07). Bảng chỉ có Code + Name + IsEnabled."
+      table: WorkflowTypeIndex
+      related_tables: []
+      notes: "Classification Value — không có entity riêng trên Atomic"
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-WorkflowBlockingActivitiesIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng WorkflowBlockingActivitiesIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Workflow instance đang bị chặn — đang chờ tác vụ thủ công hoặc điều kiện"
+      functional_group: "UID-02 Quy trình xét duyệt hồ sơ"
+      scope_status: out_of_scope
+      scope_reason: "Trạng thái xét duyệt xác định đủ từ WorkflowIndex.WorkflowStatus — blocking step là chi tiết vận hành, không cần trên Atomic (D-05)"
+      table: WorkflowBlockingActivitiesIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-WorkflowTypeStartActivitiesIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng WorkflowTypeStartActivitiesIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Các hoạt động có thể kích hoạt khởi động workflow"
+      functional_group: "UID-02 Quy trình xét duyệt hồ sơ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: WorkflowTypeStartActivitiesIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-UserIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng UserIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Người dùng hệ thống TTHC — thông tin cơ bản tài khoản"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Thông tin tác nghiệp — không có yêu cầu báo cáo dùng thông tin người dùng (D-06)"
+      table: UserIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-UserByLoginInfoIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng UserByLoginInfoIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tra cứu người dùng theo username/email"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: UserByLoginInfoIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-UserByClaimIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng UserByClaimIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tra cứu người dùng theo Claim (tùy chỉnh)"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: UserByClaimIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-UserByRoleNameIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng UserByRoleNameIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết người dùng với vai trò"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: UserByRoleNameIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-UserByRoleNameIndex_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng UserByRoleNameIndex_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Document JSON gốc cho index bảng UserByRoleNameIndex"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Cascade drop từ UserByRoleNameIndex — không có giá trị nghiệp vụ"
+      table: UserByRoleNameIndex_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "JSON document của các đối tượng OpenID Connect (OAuth2)"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdApplicationIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdApplicationIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ứng dụng client OAuth2 đã đăng ký"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdApplicationIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdAuthorizationIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdAuthorizationIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Authorization grant OAuth2"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdAuthorizationIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdTokenIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdTokenIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Token OAuth2 đã cấp cho client"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdTokenIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdScopeIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdScopeIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phạm vi quyền truy cập (scopes) của hệ thống OAuth2"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdScopeIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdScopeByResourceIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdScopeByResourceIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Mapping scope theo resource OAuth2"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdScopeByResourceIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdScopeByResourceIndex_OpenId_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdScopeByResourceIndex_OpenId_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Document gốc của scope-resource index"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Cascade drop từ OpenId_OpenIdScopeByResourceIndex — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdScopeByResourceIndex_OpenId_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdAppByRedirectUriIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdAppByRedirectUriIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Index ứng dụng OpenID theo RedirectUri"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdAppByRedirectUriIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdAppByLogoutUriIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdAppByLogoutUriIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Index ứng dụng OpenID theo LogoutUri"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdAppByLogoutUriIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdAppByRoleNameIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdAppByRoleNameIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Index ứng dụng OpenID theo RoleName"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdAppByRoleNameIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdAppByRedirectUriIndex_OpenId_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdAppByRedirectUriIndex_OpenId_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Document gốc của RedirectUri index"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Cascade drop từ OpenId_OpenIdAppByRedirectUriIndex — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdAppByRedirectUriIndex_OpenId_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdAppByLogoutUriIndex_OpenId_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdAppByLogoutUriIndex_OpenId_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Document gốc của LogoutUri index"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Cascade drop từ OpenId_OpenIdAppByLogoutUriIndex — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdAppByLogoutUriIndex_OpenId_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-OpenId_OpenIdAppByRoleNameIndex_OpenId_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng OpenId_OpenIdAppByRoleNameIndex_OpenId_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Document gốc của RoleName index"
+      functional_group: "UID-03 Phân quyền người dùng"
+      scope_status: out_of_scope
+      scope_reason: "Cascade drop từ OpenId_OpenIdAppByRoleNameIndex — không có giá trị nghiệp vụ"
+      table: OpenId_OpenIdAppByRoleNameIndex_OpenId_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-Audit_AuditTrailEventIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng Audit_AuditTrailEventIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Log sự kiện audit — thao tác người dùng trên hồ sơ"
+      functional_group: "UID-04 Audit và thông báo"
+      scope_status: out_of_scope
+      scope_reason: "Không xuất hiện trong 2 yêu cầu báo cáo hiện tại"
+      table: Audit_AuditTrailEventIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-Audit_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng Audit_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Document JSON chi tiết sự kiện audit"
+      functional_group: "UID-04 Audit và thông báo"
+      scope_status: out_of_scope
+      scope_reason: "ETL không đọc Document.Content — cascade drop từ Audit_AuditTrailEventIndex"
+      table: Audit_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-Notification_NotificationIndex
+    brd_name: "Design Atomic từ nguồn TTHC bảng Notification_NotificationIndex"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông báo hệ thống gửi đến người dùng"
+      functional_group: "UID-04 Audit và thông báo"
+      scope_status: out_of_scope
+      scope_reason: "Không xuất hiện trong 2 yêu cầu báo cáo hiện tại"
+      table: Notification_NotificationIndex
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-Notification_Document
+    brd_name: "Design Atomic từ nguồn TTHC bảng Notification_Document"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Dữ liệu JSON của thông báo"
+      functional_group: "UID-04 Audit và thông báo"
+      scope_status: out_of_scope
+      scope_reason: "ETL không đọc Document.Content — cascade drop từ Notification_NotificationIndex"
+      table: Notification_Document
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-sqlite_master
+    brd_name: "Design Atomic từ nguồn TTHC bảng sqlite_master"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng hệ thống SQLite định nghĩa cấu trúc schema"
+      functional_group: "UID-05 Bảng hệ thống SQLite"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: sqlite_master
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-TTHC-sqlite_sequence
+    brd_name: "Design Atomic từ nguồn TTHC bảng sqlite_sequence"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quản lý giá trị tự tăng (AUTOINCREMENT) cho các bảng"
+      functional_group: "UID-05 Bảng hệ thống SQLite"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không có giá trị nghiệp vụ"
+      table: sqlite_sequence
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null

@@ -1,0 +1,249 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ap_eform_fld_val-TTHC.LinkFieldIndex
+  logical_name: "Atomic - Application Eform Field Value – source TTHC.LinkFieldIndex"
+
+  physical_name: ap_eform_fld_val
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Reported Information"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: TTHC
+  description: |
+    Bộ giá trị Eform của một ContentItem — primary source là LinkFieldIndex, aggregate từ tất cả 11 *FieldIndex tables.
+    Grain = 1 ContentItem (Published=1 AND Latest=1). ETL join qua ContentItemId.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-LinkFieldIndex
+
+attributes:
+  - name: Application Eform Field Value Id
+    physical_name: ap_eform_fld_val_id
+    business_meaning: Khóa đại diện cho bộ giá trị Eform của một ContentItem.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: null
+    comment: "PK surrogate. Grain = 1 ContentItem."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: null
+
+  - name: Securities Offering Application Code
+    physical_name: scr_ofrg_ap_code
+    business_meaning: Mã ContentItemId của hồ sơ Eform. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.ContentItemIndex.ContentItemId
+    comment: "BK chính. ETL join: *FieldIndex.ContentItemId = ContentItemIndex.ContentItemId. Filter: Published=1 AND Latest=1."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: null
+
+  - name: Securities Offering Application Id
+    physical_name: scr_ofrg_ap_id
+    business_meaning: FK đến hồ sơ chào bán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.ContentItemIndex.ContentItemId
+    comment: "FK target: Securities Offering Application.Securities Offering Application Id."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: null
+
+  - name: Content Type Code
+    physical_name: cntnt_tp_code
+    business_meaning: Loại Eform (ContentType) — phân biệt 11 loại hồ sơ chào bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.ContentItemIndex.ContentType
+    comment: "Scheme: TTHC_CONTENT_TYPE."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: null
+
+  - name: Text Fields
+    physical_name: tx_fields
+    business_meaning: Tập hợp các field dạng văn bản (TextFieldIndex) của ContentItem. Mỗi phần tử = 1 field.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.TextFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ TextFieldIndex. Struct: {content_part: Text; content_field: Text; text_value: Text; big_text_value: Text}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Html Fields
+    physical_name: html_fields
+    business_meaning: Tập hợp các field dạng HTML (HtmlFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.HtmlFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ HtmlFieldIndex. Struct: {content_part: Text; content_field: Text; html_value: Text}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Multi Text Fields
+    physical_name: multi_tx_fields
+    business_meaning: Tập hợp các field dạng đa văn bản (MultiTextFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.MultiTextFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ MultiTextFieldIndex. Struct: {content_part: Text; content_field: Text; value: Text; big_value: Text}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Link Fields
+    physical_name: link_fields
+    business_meaning: Tập hợp các field dạng liên kết (LinkFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.LinkFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ LinkFieldIndex. Struct: {content_part: Text; content_field: Text; url: Text; big_url: Text; link_text: Text; big_link_text: Text}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Numeric Fields
+    physical_name: num_fields
+    business_meaning: Tập hợp các field dạng số (NumericFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.NumericFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ NumericFieldIndex. Struct: {content_part: Text; content_field: Text; numeric_value: Currency Amount}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Date Fields
+    physical_name: dt_fields
+    business_meaning: Tập hợp các field dạng ngày (DateFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.DateFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ DateFieldIndex. Struct: {content_part: Text; content_field: Text; date_value: Date}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Datetime Fields
+    physical_name: dttm_fields
+    business_meaning: Tập hợp các field dạng ngày giờ (DateTimeFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.DateTimeFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ DateTimeFieldIndex. Struct: {content_part: Text; content_field: Text; datetime_value: Timestamp}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Time Fields
+    physical_name: tm_fields
+    business_meaning: Tập hợp các field dạng giờ (TimeFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.TimeFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ TimeFieldIndex. Struct: {content_part: Text; content_field: Text; time_value: Text}. Iceberg không có native TIME type — lưu dạng string HH:MM:SS."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Boolean Fields
+    physical_name: booln_fields
+    business_meaning: Tập hợp các field dạng đúng/sai (BooleanFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.BooleanFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ BooleanFieldIndex. Struct: {content_part: Text; content_field: Text; boolean_value: Boolean}."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: Content Picker Fields
+    physical_name: cntnt_picker_fields
+    business_meaning: Tập hợp các field dạng content picker (ContentPickerFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.ContentPickerFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ ContentPickerFieldIndex. Struct: {content_part: Text; content_field: Text; selected_content_item_id: Text}. Xem điểm xác nhận T2-05."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
+
+  - name: User Picker Fields
+    physical_name: usr_picker_fields
+    business_meaning: Tập hợp các field dạng user picker (UserPickerFieldIndex) của ContentItem.
+    data_domain: Array<Struct>
+    data_type: "array<struct<...>>"
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: LinkFieldIndex
+    source_column: TTHC.UserPickerFieldIndex.ContentField
+    comment: "ETL aggregate: GROUP BY ContentItemId từ UserPickerFieldIndex. Struct: {content_part: Text; content_field: Text; selected_user_id: Text}. Denormalized — UserIndex ngoài scope. Xem điểm xác nhận T2-05."
+    classification_context: "Source System Code = 'TTHC_LinkFieldIndex'"
+    etl_derived_value: ETL derived
