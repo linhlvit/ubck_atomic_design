@@ -19,6 +19,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-QLRR-risk_indicator
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator"
@@ -45,6 +49,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-QLRR-risk_indicator_custom
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_custom"
@@ -63,6 +71,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-QLRR-risk_indicator_value
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_value"
@@ -81,6 +93,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "period_date = {data_date}"
+        filter_note: "Số liệu chỉ tiêu theo kỳ — append khi có kỳ mới hoặc cập nhật thủ công"
 
   - brd_id: BRD-SRC-QLRR-risk_indicator_value_history
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_value_history"
@@ -99,6 +115,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "changed_at >= {data_date}"
+        filter_note: "Lịch sử thay đổi số liệu — append mỗi lần cập nhật"
 
   - brd_id: BRD-SRC-QLRR-risk_indicator_schedule
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_schedule"
@@ -117,6 +137,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # QLRR002 — Khai thác Báo cáo
   - brd_id: BRD-SRC-QLRR-risk_report_type
@@ -138,6 +162,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-QLRR-risk_report_placeholder_config
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_report_placeholder_config"
@@ -145,7 +173,7 @@ brd_entries:
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Cấu hình \"đục lỗ\""
+      table_meaning: 'Cấu hình "đục lỗ"'
       functional_group: "QLRR002 Khai thác Báo cáo"
       scope_status: out_of_scope
       scope_reason: "Config kỹ thuật — operational/system data"
@@ -176,6 +204,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "uploaded_at >= {data_date}"
+        filter_note: "Lượt upload file báo cáo — append theo ngày upload"
 
   - brd_id: BRD-SRC-QLRR-risk_report_file
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_report_file"
@@ -194,6 +226,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "File đính kèm báo cáo — append theo lượt upload cha"
 
   # QLRR005 — Quản lý Cảnh báo
   - brd_id: BRD-SRC-QLRR-risk_alert_config
@@ -215,6 +251,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-QLRR-risk_alert
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert"
@@ -241,6 +281,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "triggered_at >= {data_date}"
+        filter_note: "Cảnh báo thực tế — append khi chỉ tiêu vượt ngưỡng"
 
   - brd_id: BRD-SRC-QLRR-risk_alert_resolution
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert_resolution"
@@ -261,6 +305,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Bản ghi xử lý cảnh báo — append theo cảnh báo cha"
 
   - brd_id: BRD-SRC-QLRR-risk_alert_resolution_file
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert_resolution_file"
@@ -279,6 +327,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "File giải trình — append theo bản ghi xử lý cha"
 
   - brd_id: BRD-SRC-QLRR-risk_alert_history
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_alert_history"
@@ -299,6 +351,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Lịch sử xử lý cảnh báo — append mỗi sự kiện trên dòng thời gian"
 
   - brd_id: BRD-SRC-QLRR-risk_notification
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_notification"
@@ -317,6 +373,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "sent_at >= {data_date}"
+        filter_note: "Thông báo cảnh báo — append theo ngày gửi"
 
   # QLRR006 — Phân quyền dữ liệu (out of scope)
   - brd_id: BRD-SRC-QLRR-permission_group

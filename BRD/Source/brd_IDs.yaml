@@ -27,6 +27,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-company_detail
     brd_name: "Design Atomic từ nguồn IDS bảng company_detail"
@@ -51,6 +55,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-legal_representative
     brd_name: "Design Atomic từ nguồn IDS bảng legal_representative"
@@ -69,6 +77,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-state_capital
     brd_name: "Design Atomic từ nguồn IDS bảng state_capital"
@@ -87,6 +99,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-foreign_owner_limit
     brd_name: "Design Atomic từ nguồn IDS bảng foreign_owner_limit"
@@ -105,6 +121,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-company_relationship
     brd_name: "Design Atomic từ nguồn IDS bảng company_relationship"
@@ -123,6 +143,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # UID-02 — Hoạt động kinh doanh / Corporate Actions
   - brd_id: BRD-SRC-IDS-capital_mobilization
@@ -142,6 +166,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Lịch sử tăng vốn trước khi thành đại chúng — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-company_add_capital
     brd_name: "Design Atomic từ nguồn IDS bảng company_add_capital"
@@ -160,6 +188,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Quá trình tăng vốn — append theo ngày phát sinh sự kiện"
 
   - brd_id: BRD-SRC-IDS-company_securities_issuance
     brd_name: "Design Atomic từ nguồn IDS bảng company_securities_issuance"
@@ -178,6 +210,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Phát hành chứng khoán — append theo ngày phát hành"
 
   - brd_id: BRD-SRC-IDS-company_tender_offer
     brd_name: "Design Atomic từ nguồn IDS bảng company_tender_offer"
@@ -196,6 +232,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Chào mua công khai — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-company_treasury_stocks
     brd_name: "Design Atomic từ nguồn IDS bảng company_treasury_stocks"
@@ -214,6 +254,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Cổ phiếu quỹ — append theo ngày phát sinh thay đổi"
 
   # UID-03 — Giám sát và xử phạt CTĐC
   - brd_id: BRD-SRC-IDS-company_inspection
@@ -233,6 +277,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Thanh tra kiểm tra — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-company_penalize
     brd_name: "Design Atomic từ nguồn IDS bảng company_penalize"
@@ -251,6 +299,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Xử phạt hành chính — append theo ngày phát sinh"
 
   # UID-04 — Quản lý cổ đông giao dịch
   - brd_id: BRD-SRC-IDS-stock_holders
@@ -278,6 +330,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-account_numbers
     brd_name: "Design Atomic từ nguồn IDS bảng account_numbers"
@@ -296,6 +352,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-identity
     brd_name: "Design Atomic từ nguồn IDS bảng identity"
@@ -314,6 +374,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-holder_relationship
     brd_name: "Design Atomic từ nguồn IDS bảng holder_relationship"
@@ -332,6 +396,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-stock_controls
     brd_name: "Design Atomic từ nguồn IDS bảng stock_controls"
@@ -350,6 +418,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Chứng khoán vào diện kiểm soát — append theo ngày áp dụng"
 
   - brd_id: BRD-SRC-IDS-positions
     brd_name: "Design Atomic từ nguồn IDS bảng positions"
@@ -391,6 +463,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-fields
     brd_name: "Design Atomic từ nguồn IDS bảng fields"
@@ -457,6 +533,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Lần nộp báo cáo/tin CBTT — append mỗi lần nộp mới"
 
   - brd_id: BRD-SRC-IDS-data
     brd_name: "Design Atomic từ nguồn IDS bảng data"
@@ -479,6 +559,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Dữ liệu BCTC theo lần nộp — append theo company_data cha"
 
   - brd_id: BRD-SRC-IDS-data_values
     brd_name: "Design Atomic từ nguồn IDS bảng data_values"
@@ -549,6 +633,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Thông báo — append theo ngày tạo thông báo mới"
 
   - brd_id: BRD-SRC-IDS-noti_config
     brd_name: "Design Atomic từ nguồn IDS bảng noti_config"
@@ -567,6 +655,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # UID-06 — Báo cáo tài chính và báo cáo định kỳ
   - brd_id: BRD-SRC-IDS-report_catalog
@@ -588,6 +680,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-rrow
     brd_name: "Design Atomic từ nguồn IDS bảng rrow"
@@ -606,6 +702,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-rcol
     brd_name: "Design Atomic từ nguồn IDS bảng rcol"
@@ -624,6 +724,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-rep_forms
     brd_name: "Design Atomic từ nguồn IDS bảng rep_forms"
@@ -644,6 +748,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-rep_row
     brd_name: "Design Atomic từ nguồn IDS bảng rep_row"
@@ -662,6 +770,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-rep_column
     brd_name: "Design Atomic từ nguồn IDS bảng rep_column"
@@ -680,6 +792,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # UID-07 — Quản lý công ty kiểm toán
   - brd_id: BRD-SRC-IDS-af_profiles
@@ -701,6 +817,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-af_legal_representative
     brd_name: "Design Atomic từ nguồn IDS bảng af_legal_representative"
@@ -719,6 +839,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-af_approval
     brd_name: "Design Atomic từ nguồn IDS bảng af_approval"
@@ -743,6 +867,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-af_auditor_approval
     brd_name: "Design Atomic từ nguồn IDS bảng af_auditor_approval"
@@ -765,6 +893,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-af_warning
     brd_name: "Design Atomic từ nguồn IDS bảng af_warning"
@@ -785,6 +917,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Nhắc nhở công ty KT/KTV — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-af_sanctions
     brd_name: "Design Atomic từ nguồn IDS bảng af_sanctions"
@@ -805,6 +941,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Xử phạt công ty KT/KTV — append theo ngày phát sinh"
 
   # UID-08 — Lịch sử thay đổi (SCD2 kỹ thuật) — out of scope
   - brd_id: BRD-SRC-IDS-company_profiles_his
@@ -959,6 +1099,10 @@ brd_entries:
       notes: "LOV trung tâm — 30 Classification Value schemes"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-categories
     brd_name: "Design Atomic từ nguồn IDS bảng categories"
@@ -977,6 +1121,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-IDS-report_catalog_extra
     brd_name: "Design Atomic từ nguồn IDS bảng noti_config_apply"

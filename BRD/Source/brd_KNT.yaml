@@ -22,6 +22,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-KNT-TTKDT_NGUOI_DAI_DIEN
     brd_name: "Design Atomic từ nguồn KNT bảng TTKDT_NGUOI_DAI_DIEN"
@@ -40,6 +44,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── KNT-02 Báo cáo tài chính từ Tổng cục Thuế ──────────────────────────
 
@@ -62,6 +70,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Báo cáo tài chính từ Cục Thuế — append khi nhận gói tin mới"
 
   - brd_id: BRD-SRC-KNT-TCT_BAO_CAO_CHI_TIET
     brd_name: "Design Atomic từ nguồn KNT bảng TCT_BAO_CAO_CHI_TIET"
@@ -80,6 +92,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Chi tiết báo cáo tài chính — append theo báo cáo cha"
 
   # ─── KNT-03 Cưỡng chế nợ thuế ───────────────────────────────────────────
 
@@ -104,6 +120,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Cưỡng chế nợ thuế — append khi nhận quyết định mới"
 
   - brd_id: BRD-SRC-KNT-TCT_TTCCN_HOA_DON
     brd_name: "Design Atomic từ nguồn KNT bảng TCT_TTCCN_HOA_DON"
@@ -126,6 +146,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Cưỡng chế qua hóa đơn — append theo quyết định cưỡng chế"
 
   - brd_id: BRD-SRC-KNT-HOA_DON_CHI_TIET
     brd_name: "Design Atomic từ nguồn KNT bảng HOA_DON_CHI_TIET"
@@ -144,6 +168,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Chi tiết hóa đơn bị ngừng — append theo cưỡng chế cha"
 
   # ─── KNT-04 Xử lý vi phạm pháp luật về thuế ────────────────────────────
 
@@ -166,6 +194,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {data_date}"
+        filter_note: "Xử lý vi phạm thuế — append khi nhận thông tin vi phạm mới"
 
   # ─── KNT-05 Giám sát doanh nghiệp rủi ro cao ────────────────────────────
 
@@ -188,6 +220,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── Phụ lục: Danh mục dùng chung ────────────────────────────────────────
 
@@ -208,6 +244,10 @@ brd_entries:
       notes: "Là nguồn cho Classification Value — load theo NHOM_DANH_MUC.MA = Scheme Code"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-KNT-NHOM_DANH_MUC
     brd_name: "Design Atomic từ nguồn KNT bảng NHOM_DANH_MUC"
@@ -226,6 +266,10 @@ brd_entries:
       notes: "Scheme header của Classification Value KNT"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── KNT-SYS Quản trị hệ thống & truyền nhận (out of scope) ─────────────
 

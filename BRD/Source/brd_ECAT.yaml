@@ -1,7 +1,6 @@
 source: ECAT
 description: "Danh mục điện tử dùng chung"
 brd_entries:
-
   # ─── UID-01 Danh mục địa lý hành chính ───────────────────────────────────
 
   - brd_id: BRD-SRC-ECAT-ECAT_01_Country
@@ -19,6 +18,10 @@ brd_entries:
       notes: "Map vào Geographic Area với geographic_area_type_code = COUNTRY"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_02_Region
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_02_Region"
@@ -35,6 +38,10 @@ brd_entries:
       notes: "Map vào Geographic Area với geographic_area_type_code = REGION"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_03_ProvinceOld
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_03_ProvinceOld"
@@ -51,6 +58,10 @@ brd_entries:
       notes: "Map vào Geographic Area với geographic_area_type_code = PROVINCE_OLD — giữ để tra cứu lịch sử trước sáp nhập 2025"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_04_Province
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_04_Province"
@@ -67,6 +78,10 @@ brd_entries:
       notes: "Map vào Geographic Area với geographic_area_type_code = PROVINCE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_05_DistrictOld
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_05_DistrictOld"
@@ -85,6 +100,10 @@ brd_entries:
       notes: "Map vào Geographic Area với geographic_area_type_code = DISTRICT_OLD; parent_code → province_old"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_06_WardOld
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_06_WardOld"
@@ -103,6 +122,10 @@ brd_entries:
       notes: "Map vào Geographic Area với geographic_area_type_code = WARD_OLD"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_07_Ward
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_07_Ward"
@@ -121,6 +144,10 @@ brd_entries:
       notes: "Map vào Geographic Area với geographic_area_type_code = WARD (cấp quận/huyện bị bỏ trong sáp nhập 2025)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-02 Danh mục tổ chức & nhân sự ───────────────────────────────────
 
@@ -139,6 +166,10 @@ brd_entries:
       notes: "CV scheme: ECAT_ORGANIZATION_UNIT"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_09_PositionType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_09_PositionType"
@@ -157,6 +188,10 @@ brd_entries:
       notes: "CV scheme: ECAT_POSITION_TYPE (chức vụ nội bộ UBCKNN)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_10_Position
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_10_Position"
@@ -175,6 +210,10 @@ brd_entries:
       notes: "CV scheme: ECAT_POSITION — parent → ECAT_POSITION_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-03 Danh mục tiền tệ ──────────────────────────────────────────────
 
@@ -193,6 +232,10 @@ brd_entries:
       notes: "ECAT là source authoritative cho Currency entity — chuẩn ISO 4217"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-04 Danh mục chứng khoán & thị trường ────────────────────────────
 
@@ -213,6 +256,10 @@ brd_entries:
       notes: "CV scheme: ECAT_SECURITY_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_13_Market
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_13_Market"
@@ -231,6 +278,10 @@ brd_entries:
       notes: "CV scheme: ECAT_MARKET"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_14_Security
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_14_Security"
@@ -251,6 +302,10 @@ brd_entries:
       notes: "ECAT là source authoritative cho Security entity — security_code unique toàn thị trường"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_15_SharePar
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_15_SharePar"
@@ -267,6 +322,10 @@ brd_entries:
       notes: "CV scheme: ECAT_SHARE_PAR_VALUE — dùng chung, không gắn trực tiếp vào entity cụ thể"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-05 Danh mục nghiệp vụ & dịch vụ ────────────────────────────────
 
@@ -285,6 +344,10 @@ brd_entries:
       notes: "CV scheme: ECAT_BUSINESS_INDICATOR — chỉ tiêu nghiệp vụ chung (không phải risk indicator)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_17_FinancialReportType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_17_FinancialReportType"
@@ -301,6 +364,10 @@ brd_entries:
       notes: "CV scheme: ECAT_FINANCIAL_REPORT_TYPE (bảng CĐKT, KQHĐKD, LCTT...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_18_BusinessOperation
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_18_BusinessOperation"
@@ -317,6 +384,10 @@ brd_entries:
       notes: "CV scheme: ECAT_BUSINESS_OPERATION (môi giới, tự doanh, bảo lãnh phát hành...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_19_CorporatePositionType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_19_CorporatePositionType"
@@ -335,6 +406,10 @@ brd_entries:
       notes: "CV scheme: ECAT_CORPORATE_POSITION_TYPE (khác với chức vụ nội bộ UBCKNN UID-02)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_20_CorporatePosition
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_20_CorporatePosition"
@@ -353,6 +428,10 @@ brd_entries:
       notes: "CV scheme: ECAT_CORPORATE_POSITION — parent → ECAT_CORPORATE_POSITION_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_21_CompanyType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_21_CompanyType"
@@ -369,6 +448,10 @@ brd_entries:
       notes: "CV scheme: ECAT_COMPANY_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_22_Service
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_22_Service"
@@ -385,6 +468,10 @@ brd_entries:
       notes: "CV scheme: ECAT_SERVICE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_35_FrequencyType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_35_FrequencyType"
@@ -403,6 +490,10 @@ brd_entries:
       notes: "CV scheme: ECAT_FREQUENCY_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_36_Frequency
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_36_Frequency"
@@ -421,6 +512,10 @@ brd_entries:
       notes: "CV scheme: ECAT_FREQUENCY — parent → ECAT_FREQUENCY_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_43_EnterpriseType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_43_EnterpriseType"
@@ -437,6 +532,10 @@ brd_entries:
       notes: "CV scheme: ECAT_ENTERPRISE_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_44_FundType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_44_FundType"
@@ -453,6 +552,10 @@ brd_entries:
       notes: "CV scheme: ECAT_FUND_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-06 Danh mục đối tượng tham gia thị trường ───────────────────────
 
@@ -471,6 +574,10 @@ brd_entries:
       notes: "CV scheme: ECAT_CASE_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_24_InvestorType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_24_InvestorType"
@@ -487,6 +594,10 @@ brd_entries:
       notes: "CV scheme: ECAT_INVESTOR_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_25_AgentType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_25_AgentType"
@@ -503,6 +614,10 @@ brd_entries:
       notes: "CV scheme: ECAT_AGENT_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_26_Relationship
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_26_Relationship"
@@ -519,6 +634,10 @@ brd_entries:
       notes: "CV scheme: ECAT_RELATIONSHIP_TYPE (người liên quan, bên liên quan...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_46_ShareholderType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_46_ShareholderType"
@@ -535,6 +654,10 @@ brd_entries:
       notes: "CV scheme: ECAT_SHAREHOLDER_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-07 Danh mục hành nghề & trình độ ────────────────────────────────
 
@@ -553,6 +676,10 @@ brd_entries:
       notes: "CV scheme: ECAT_EDUCATION_LEVEL"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_28_ProfessionalCertType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_28_ProfessionalCertType"
@@ -569,6 +696,10 @@ brd_entries:
       notes: "CV scheme: ECAT_PROFESSIONAL_CERTIFICATE_TYPE (MGCK, PTTC, TVTC...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-08 Danh mục lịch & ngày nghỉ ────────────────────────────────────
 
@@ -587,6 +718,10 @@ brd_entries:
       notes: "Nguồn cho Calendar Date entity — ECAT cung cấp holiday_flag + holiday_name; ETL tự generate dense calendar"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-09 Danh mục thủ tục hành chính ──────────────────────────────────
 
@@ -607,6 +742,10 @@ brd_entries:
       notes: "CV scheme: ECAT_ADMINISTRATIVE_PROCEDURE (cấp phép thành lập CTCK, đăng ký phát hành...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_31_AdminProcedureComponent
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_31_AdminProcedureComponent"
@@ -625,6 +764,10 @@ brd_entries:
       notes: "CV scheme: ECAT_ADMINISTRATIVE_PROCEDURE_COMPONENT — parent → ECAT_ADMINISTRATIVE_PROCEDURE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-10 Danh mục ngành nghề ──────────────────────────────────────────
 
@@ -645,6 +788,10 @@ brd_entries:
       notes: "CV scheme: ECAT_INDUSTRY_LV1"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_33_IndustryLv2
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_33_IndustryLv2"
@@ -663,6 +810,10 @@ brd_entries:
       notes: "CV scheme: ECAT_INDUSTRY_LV2 — parent → ECAT_INDUSTRY_LV1"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-11 Danh mục trạng thái & quy trình xử lý ────────────────────────
 
@@ -681,6 +832,10 @@ brd_entries:
       notes: "CV scheme: ECAT_APPROVAL_STATUS (chờ duyệt, đã duyệt, từ chối...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_39_ReportProcessingStatusType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_39_ReportProcessingStatusType"
@@ -697,6 +852,10 @@ brd_entries:
       notes: "CV scheme: ECAT_REPORT_PROCESSING_STATUS_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_41_NotificationStatusType
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_41_NotificationStatusType"
@@ -715,6 +874,10 @@ brd_entries:
       notes: "CV scheme: ECAT_NOTIFICATION_STATUS_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_42_NotificationStatus
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_42_NotificationStatus"
@@ -733,6 +896,10 @@ brd_entries:
       notes: "CV scheme: ECAT_NOTIFICATION_STATUS — parent → ECAT_NOTIFICATION_STATUS_TYPE"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_45_OperatingStatus
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_45_OperatingStatus"
@@ -749,6 +916,10 @@ brd_entries:
       notes: "CV scheme: ECAT_OPERATING_STATUS (hoạt động, tạm dừng, giải thể...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # ─── UID-12 Danh mục cảnh báo ────────────────────────────────────────────
 
@@ -767,6 +938,10 @@ brd_entries:
       notes: "CV scheme: ECAT_ALERT_TYPE (giao dịch bất thường, vi phạm công bố thông tin...)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_38_AlertSeverity
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_38_AlertSeverity"
@@ -783,6 +958,10 @@ brd_entries:
       notes: "CV scheme: ECAT_ALERT_SEVERITY (thấp, trung bình, cao, nghiêm trọng)"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-ECAT-ECAT_40_AlertProcessingStatus
     brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_40_AlertProcessingStatus"
@@ -799,3 +978,7 @@ brd_entries:
       notes: "CV scheme: ECAT_ALERT_PROCESSING_STATUS"
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null

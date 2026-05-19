@@ -193,20 +193,59 @@
           ],
           "description": "Tần suất cập nhật từ nguồn — dùng để quyết định SCD type. Chỉ áp dụng cho BRD theo source. null = chưa xác định"
         },
+        "ingestion": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/ingestion_config"
+            }
+          ],
+          "description": "Cấu hình ingest từ nguồn. null nếu out_of_scope hoặc chưa xác định"
+        }
+      }
+    },
+    "ingestion_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_change_mode",
+        "filter_logic",
+        "filter_note"
+      ],
+      "properties": {
         "data_change_mode": {
+          "type": "string",
+          "enum": [
+            "Full",
+            "Append"
+          ],
+          "description": "Chế độ ingest: Full (replace toàn bộ) hoặc Append (incremental theo filter)"
+        },
+        "filter_logic": {
           "oneOf": [
             {
               "type": "null"
             },
             {
               "type": "string",
-              "enum": [
-                "update",
-                "append_only"
-              ]
+              "minLength": 3
             }
           ],
-          "description": "Cơ chế thay đổi dữ liệu nguồn: update (bản ghi có thể bị sửa/xóa) hoặc append_only (chỉ insert mới). Chỉ áp dụng cho BRD theo source. null = chưa xác định"
+          "description": "Điều kiện filter incremental (VD: 'created_at >= {data_date}'). null nếu data_change_mode = Full"
+        },
+        "filter_note": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 3
+            }
+          ],
+          "description": "Giải thích ngắn về filter logic, ngữ nghĩa của cột lọc. null nếu data_change_mode = Full"
         }
       }
     },

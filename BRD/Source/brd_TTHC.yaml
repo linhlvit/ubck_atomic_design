@@ -43,6 +43,10 @@ brd_entries:
       notes: "Map vào Securities Offering Application (Documentation/Regulatory Report). ETL filter: Published=1 AND Latest=1. content_type_code (TTHC_CONTENT_TYPE) phân biệt 11 loại hồ sơ chào bán và các loại kết quả (GCN / từ chối). Pending T1-01: ContentType GCN và từ chối chưa xác nhận trên DB thực tế."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "CreatedUtc >= {data_date}"
+        filter_note: "Hồ sơ chào bán/kết quả xét duyệt — append theo ngày tạo mới (filter Published=1 AND Latest=1 trong ETL)"
 
   # ─── UID-01 Giá trị field Eform ───────────────────────────────────────────
 
@@ -63,6 +67,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). ETL UNION ALL 11 bảng, aggregate GROUP BY ContentItemId. field_data_type_code = TEXT (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field text Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-HtmlFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng HtmlFieldIndex"
@@ -81,6 +89,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = HTML (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field HTML Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-MultiTextFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng MultiTextFieldIndex"
@@ -99,6 +111,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = MULTI_TEXT (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field đa văn bản Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-LinkFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng LinkFieldIndex"
@@ -117,6 +133,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = LINK (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field link Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-NumericFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng NumericFieldIndex"
@@ -135,6 +155,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = NUMERIC (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field số Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-DateFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng DateFieldIndex"
@@ -153,6 +177,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = DATE (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field ngày Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-DateTimeFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng DateTimeFieldIndex"
@@ -171,6 +199,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = DATETIME (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field ngày giờ Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-TimeFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng TimeFieldIndex"
@@ -189,6 +221,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = TIME (ETL derived). Iceberg không có TIME type — lưu string HH:MM:SS. Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field giờ Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-BooleanFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng BooleanFieldIndex"
@@ -207,6 +243,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = BOOLEAN (ETL derived). Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field boolean Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-ContentPickerFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng ContentPickerFieldIndex"
@@ -225,6 +265,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = CONTENT_PICKER (ETL derived). Pending T2-05: xác nhận bảng này có dữ liệu trong Eform chào bán. Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field content picker Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-UserPickerFieldIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng UserPickerFieldIndex"
@@ -243,6 +287,10 @@ brd_entries:
       notes: "Gộp cùng 10 bảng *FieldIndex khác thành entity Application Eform Field Value (Fact Append). field_data_type_code = USER_PICKER (ETL derived). Denormalized — UserIndex ngoài scope. Pending T2-05: xác nhận bảng này có dữ liệu trong Eform chào bán. Xem D-04."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_note: "Field user picker Eform — append theo ContentItemIndex cha cùng ngày"
 
   # ─── UID-02 Quy trình xét duyệt ──────────────────────────────────────────
 
@@ -265,6 +313,10 @@ brd_entries:
       notes: "Map vào Application Review Workflow (Business Activity/Status Review). ETL filter theo WorkflowTypeId tương ứng luồng xét duyệt chào bán — pending T2-02. Pending T2-01: xác nhận CorrelationId = ContentItemId hồ sơ. WorkflowTypeIndex đẩy vào Classification Value (D-07)."
       data_volume_hint: null
       refresh_frequency: daily
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "CreatedUtc >= {data_date}"
+        filter_note: "Workflow instance xét duyệt — append theo ngày khởi tạo workflow"
 
   # ─── Ngoài scope ──────────────────────────────────────────────────────────
 

@@ -19,6 +19,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-MDDS-IDXInfor
     brd_name: "Design Atomic từ nguồn MDDS bảng IDXInfor"
@@ -37,6 +41,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-MDDS-CSIDXInfor
     brd_name: "Design Atomic từ nguồn MDDS bảng CSIDXInfor"
@@ -57,6 +65,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   # UID-02 — Bảng giá chứng khoán và khớp lệnh
   - brd_id: BRD-SRC-MDDS-StockInfor
@@ -78,6 +90,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-MDDS-TransLog
     brd_name: "Design Atomic từ nguồn MDDS bảng TransLog"
@@ -96,6 +112,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "trade_date = {data_date}"
+        filter_note: "Log tick-by-tick khớp lệnh — append theo ngày giao dịch"
 
   # UID-03 — Trái phiếu doanh nghiệp
   - brd_id: BRD-SRC-MDDS-CorpBondInfor
@@ -115,6 +135,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-MDDS-CorpBondMatch
     brd_name: "Design Atomic từ nguồn MDDS bảng CorpBondMatch"
@@ -133,3 +157,7 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "trade_date = {data_date}"
+        filter_note: "Log tick-by-tick khớp lệnh TPDN — append theo ngày giao dịch"

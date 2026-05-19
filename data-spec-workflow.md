@@ -104,6 +104,10 @@ brd_entries:
       notes: null
       data_volume_hint: null   # freetext — VD: "~50K rows, tăng daily"
       refresh_frequency: null  # real_time | hourly | daily | weekly | monthly | yearly | ad_hoc | static
+      ingestion:
+        data_change_mode: Append   # Full | Append
+        filter_logic: "created_at >= {data_date}"   # null nếu Full
+        filter_note: "Append theo ngày tạo bản ghi"  # null nếu Full
 ```
 
 **Quy tắc:**
@@ -1010,6 +1014,8 @@ File `spec-registry/registry.csv` là **nguồn sự thật duy nhất** về tr
 | `scope_reason` | BRD YAML | Lý do nếu out_of_scope |
 | `data_volume_hint` | BRD YAML | static / small / medium / large / very_large |
 | `refresh_frequency` | BRD YAML | real_time / daily / ... |
+| `data_change_mode` | BRD YAML | `Full` / `Append` |
+| `filter_logic` | BRD YAML | Điều kiện filter incremental; null nếu Full |
 | `dm_status` | DM YAML (auto) | `none` / `draft` / `approved` |
 | `mapping_status` | Mapping YAML (auto) | `none` / `done` |
 | `etl_status` | **Manual** | `none` / `dev` / `done` |

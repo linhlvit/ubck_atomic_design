@@ -21,6 +21,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "order_date = {data_date}"
+        filter_note: "Sổ lệnh HOSE — append theo ngày giao dịch, mỗi event lệnh mới/sửa/hủy"
 
   - brd_id: BRD-SRC-OrderTrade-Order_HNX
     brd_name: "Design Atomic từ nguồn OrderTrade bảng Order_HNX"
@@ -41,6 +45,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "order_date = {data_date}"
+        filter_note: "Sổ lệnh HNX — append theo ngày giao dịch"
 
   # UID-02 — Khớp lệnh (Trade Execution)
   - brd_id: BRD-SRC-OrderTrade-Trade_HOSE
@@ -64,6 +72,10 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "trade_date = {data_date}"
+        filter_note: "Sổ khớp HOSE — append theo ngày khớp lệnh"
 
   - brd_id: BRD-SRC-OrderTrade-Trade_HNX
     brd_name: "Design Atomic từ nguồn OrderTrade bảng Trade_HNX"
@@ -86,3 +98,7 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "trade_date = {data_date}"
+        filter_note: "Sổ khớp HNX — append theo ngày khớp lệnh"
