@@ -345,32 +345,9 @@ flowchart LR
 
 ---
 
-### Cụm 8: Hồ sơ tổng quan 360 CTCK (Tác nghiệp)
+### Cụm 8: Banner tổng quan CTCK (K_QLKD_74–78)
 
-Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Tổng quan: bảng Tác nghiệp `Securities Company 360 Profile` (1 row per CTCK) chứa 5 chỉ tiêu snapshot nhanh (Vốn CSH, VĐL, Dư nợ margin, TLATTC, Số nhân viên). Tất cả 5 chỉ tiêu từ `Member Report Indicator Value` (BC_BAO_CAO_GT) — K_QLKD_78 chờ xác định indicator_code (xem O_QLKD_11). Thông tin định danh CTCK (tên, mã, ngày thành lập, trạng thái) từ `Securities Company`.
-
-```mermaid
-flowchart LR
-    subgraph SRC["Staging (SCMS)"]
-        S1["SCMS.BC_BAO_CAO_GT"]
-        S3["SCMS.CTCK_THONG_TIN"]
-    end
-
-    subgraph SIL["Atomic"]
-        SV1["Member Report Indicator Value"]
-        SV3["Securities Company"]
-    end
-
-    subgraph Datamart["Datamart"]
-        G2["Securities Company 360 Profile"]
-    end
-
-    S1 --> SV1
-    S3 --> SV3
-
-    SV1 --> G2
-    SV3 --> G2
-```
+> K_QLKD_74–78 tái sử dụng `Fact Securities Company Financial Structure Snapshot` (Cụm 4/5) — không có bảng Datamart riêng. Lineage đã vẽ trong Cụm 4.
 
 ---
 
@@ -2127,10 +2104,9 @@ flowchart LR
 
 #### Nhóm 360-1 — Banner tổng quan CTCK (STT 19)
 
-> Phân loại: **Tác nghiệp**
-> Atomic: `Securities Company` ← SCMS.CTCK_THONG_TIN — **READY**
+> Phân loại: **Phân tích** (tái sử dụng Fact)
 > Atomic: `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY**
-> Ghi chú: `Securities Company 360 Profile` là bảng Tác nghiệp, 1 row per CTCK (latest state). Tra cứu theo `Securities Company Id` = selected ra ngay 5 chỉ tiêu banner. ETL populate từ `Member Report Indicator Value` (kỳ gần nhất per CTCK) + thông tin định danh từ `Securities Company`.
+> Ghi chú: K_QLKD_74–78 tái sử dụng `Fact Securities Company Financial Structure Snapshot`. Banner có slicer tháng báo cáo — người dùng chọn tháng, query filter per CTCK + per indicator_code. Không có bảng Tác nghiệp riêng.
 
 **Mockup:**
 ```
@@ -2144,23 +2120,45 @@ Slicer: THỜI ĐIỂM BÁO CÁO (month picker — VD: 09/2025)
 └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘
 ```
 
-**Source:** `Securities Company 360 Profile` (tác nghiệp)
+**Source:** `Fact Securities Company Financial Structure Snapshot` → `Securities Company Dimension`, `Report Indicator Dimension`, `Calendar Date Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| K_QLKD_74 | Vốn chủ sở hữu — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = VCSH tại tháng báo cáo — xem O_QLKD_4 |
-| K_QLKD_75 | Vốn điều lệ — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = VON_DIEU_LE |
-| K_QLKD_76 | Dư nợ margin — per CTCK | Tỷ VND | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = DU_NO_MARGIN |
-| K_QLKD_77 | Tỷ lệ ATTC — per CTCK | % | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = TLATTC — xem O_QLKD_4 |
-| K_QLKD_78 | Số nhân viên — per CTCK | Người | Cơ sở | Indicator Value Amount WHERE Report Indicator Code = [mã chỉ tiêu số lao động — xem O_QLKD_11] |
+| K_QLKD_74 | Vốn chủ sở hữu — per CTCK | Tỷ VND | Cơ sở | `SUM(ind_val_amt) WHERE rpt_ind_code = 'VCSH' AND scr_co_dim_id = selected AND rpt_dt_dim_id = selected_month` |
+| K_QLKD_75 | Vốn điều lệ — per CTCK | Tỷ VND | Cơ sở | `SUM(ind_val_amt) WHERE rpt_ind_code = 'VON_DIEU_LE' AND scr_co_dim_id = selected AND rpt_dt_dim_id = selected_month` |
+| K_QLKD_76 | Dư nợ margin — per CTCK | Tỷ VND | Cơ sở | `SUM(ind_val_amt) WHERE rpt_ind_code = 'DU_NO_MARGIN' AND scr_co_dim_id = selected AND rpt_dt_dim_id = selected_month` |
+| K_QLKD_77 | Tỷ lệ ATTC — per CTCK | % | Cơ sở | `SUM(ind_val_amt) WHERE rpt_ind_code = 'TLATTC' AND scr_co_dim_id = selected AND rpt_dt_dim_id = selected_month` |
+| K_QLKD_78 | Số nhân viên — per CTCK | Người | Cơ sở | `SUM(ind_val_amt) WHERE rpt_ind_code = [O_QLKD_11] AND scr_co_dim_id = selected AND rpt_dt_dim_id = selected_month` |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    F[Fact Securities Company Financial Structure Snapshot] --> B[Banner 5 thẻ KPI K_QLKD_74-78]
+    D1[Securities Company Dimension] --> F
+    D2[Report Indicator Dimension] --> F
+    D3[Calendar Date Dimension] --> F
+```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company 360 Profile | 1 CTCK (latest state) |
+| Fact Securities Company Financial Structure Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ (tháng/quý) |
+| Securities Company Dimension | 1 CTCK (SCD2) |
+| Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
+| Calendar Date Dimension | 1 ngày |
 
 ---
 
@@ -2898,7 +2896,6 @@ graph TB
     FACT_FNC["Fact Securities Company Financial Structure Snapshot"]:::fact
     FACT_CPL["Fact Securities Company Report Compliance Snapshot"]:::fact
 
-    OPR_360["Securities Company 360 Profile"]:::oper
     OPR_FRH["Securities Company Financial Report History"]:::oper
     OPR_PRS["Securities Company Personnel Profile"]:::oper
     OPR_SHR["Securities Company Shareholder Profile"]:::oper
@@ -2938,14 +2935,13 @@ graph TB
 | Fact Securities Company Status Snapshot | Periodic Snapshot | 1 CTCK × 1 ngày | K_QLKD_1–11 | READY |
 | Fact Securities Company Business Type Snapshot | Periodic Snapshot | 1 CTCK × 1 mã nghiệp vụ vụ × 1 ngày | K_QLKD_12–21 | READY |
 | Fact Securities Company License Condition Snapshot | Periodic Snapshot | 1 CTCK × 1 loại giấy phép × 1 ngày | K_QLKD_22–30 | **PENDING** |
-| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_31–40, K_QLKD_41–69, K_QLKD_79–86 | READY |
+| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_31–40, K_QLKD_41–69, K_QLKD_74–78, K_QLKD_79–86 | READY |
 | Fact Securities Company Report Compliance Snapshot | Periodic Snapshot | 1 CTCK × 1 biểu mẫu × 1 kỳ nghĩa vụ | K_QLKD_70–73 | READY |
 
 **Bảng Tác nghiệp (Denormalized):**
 
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| Securities Company 360 Profile | 1 CTCK (latest state) | K_QLKD_74–77 READY; K_QLKD_78 PENDING (O_QLKD_11) | READY (partial) |
 | Securities Company Financial Report History | 1 CTCK × 1 kỳ BC BCTC | K_QLKD_87–90 | READY |
 | Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK | K_QLKD_96–98 | READY |
 | Securities Company Shareholder Profile | 1 cổ đông × 1 CTCK | K_QLKD_97 | READY |
@@ -2986,5 +2982,3 @@ graph TB
 | O_QLKD_14 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_123–127 (Lịch sử vi phạm cá nhân):** BA ghi `src=SCMS` nhưng dữ liệu vi phạm, xử phạt cá nhân nằm trong ThanhTra — đã xác định đúng entity: `Inspection Case` (TT_HO_SO) + `Inspection Case Conclusion` (TT_KET_LUAN). Filter cá nhân qua `Subject Id Number` (SO_CMND) = CCCD cá nhân khi có; fallback `Subject Full Name` khi không có. Rủi ro fallback text match — cần data profiling xác nhận mức độ nhất quán `HO_TEN` trong TT_HO_SO | Filter ưu tiên `Subject Id Number` = CMND/CCCD; fallback `Subject Full Name` text match | K_QLKD_123–127 | Confirmed |
 | O_QLKD_15 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_117 (Tỷ lệ sở hữu cổ phần người liên quan):** BA ghi `src=VSDC`. Atomic LLD không có entity từ VSDC trong SCMS_Source_Analysis. `Securities Company Shareholder Related Party.Share Ratio` (SCMS.CTCK_CD_MOI_QUAN_HE.TY_LE_NAM_GIU) là giá trị CTCK tự khai báo — có thể không khớp với dữ liệu sở hữu chính thức từ VSDC. Cần xác nhận BA muốn dùng nguồn nào | Tạm dùng `Share Ratio` từ SCMS (khai báo tự nguyện) — chờ xác nhận với BA về nguồn VSDC | K_QLKD_117 | Confirmed |
 | O_QLKD_16 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_121 (Thời gian làm việc):** `Securities Company Senior Personnel` không có field `Employment Start Date` riêng. Tạm dùng `Created Timestamp` (ngày tạo bản ghi) làm ngày bắt đầu công tác — có thể không chính xác nếu bản ghi được tạo muộn hơn ngày thực tế bổ nhiệm. Cần data profiling xác nhận mức độ sai lệch | Tạm dùng `Created Timestamp` làm start date — chờ data profiling | K_QLKD_121 | Confirmed | **Tab HỒ SƠ 360 — Nhóm 360-7 (NHNCK) — Phân loại NHN theo nghiệp vụ:** K_QLKD_91–93 (tổng LĐ, có/chưa CCHN) READY — source `Securities Practitioner` (SCMS) + `License Certificate Document` (NHNCK), `Certificate_Status_Code = ACTIVE`. K_QLKD_94–95 (NHN theo 4 nghiệp vụ + phái sinh) **PENDING** — lý do: (1) `Organization Employment Report` không có field nghiệp vụ mã hóa — `Position_Name`, `Department_Name`, `Business_Department_Name` đều là **Text tự do**, không GROUP BY được; (2) `Certificate_Type_Code` (scheme `CERTIFICATE_TYPE`) là ứng viên gần nhất nhưng Atomic LLD không có data dictionary cho scheme này — chưa xác nhận được mapping `CERTIFICATE_TYPE` values → môi giới / bảo lãnh / tư vấn / tự doanh. Cần BA cung cấp danh sách giá trị scheme `CERTIFICATE_TYPE` và mapping tương ứng | PENDING K_QLKD_94–95 — chờ BA cung cấp data dictionary scheme `CERTIFICATE_TYPE` | K_QLKD_91–95 | Open |
-
-

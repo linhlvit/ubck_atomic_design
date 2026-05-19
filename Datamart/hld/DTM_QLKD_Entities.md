@@ -106,11 +106,21 @@ erDiagram
 | Report Indicator Dimension | Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu | 1 chỉ tiêu báo cáo | — |
 | Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
 
-### Nhóm 360-1 Banner (K_QLKD_74–78) (Tác nghiệp)
+### Nhóm 360-1 Banner (K_QLKD_74–78) (Phân tích — tái sử dụng Fact)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Date Dimension Id"
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+```
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Securities Company 360 Profile | Hồ sơ tổng quan CTCK — latest state / banner 5 thẻ KPI | 1 CTCK (latest state) | K_QLKD_74–78 |
+| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot chỉ tiêu BCTC — 1 CTCK × 1 chỉ tiêu × 1 kỳ | 1 CTCK × 1 chỉ tiêu × 1 kỳ | K_QLKD_31–86 |
+| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
+| Report Indicator Dimension | Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu | 1 chỉ tiêu báo cáo | — |
+| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
 
 ### Nhóm 360-6 Lịch sử BCTC (K_QLKD_87–90) (Tác nghiệp)
 
