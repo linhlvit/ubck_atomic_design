@@ -36,6 +36,17 @@
       "file_naming": "mapping_atm_{physical_name}-{SOURCE}.{TABLE}.yaml (VD: mapping_atm_fnd_mgt_co-FIMS.FUNDCOMPANY.yaml)",
       "version": "1.0",
       "notes": "Mỗi file mapping YAML tương ứng 1 DM YAML (cùng physical_name × source combo). Pattern: regular (JOIN), unpivot (UNION ALL legs từ 1 bảng), direct (1 bảng không JOIN). Sub-folder theo BCV Core Object giống DataModel/Atomic/."
+    },
+    {
+      "type": "transformation_rules",
+      "label": "Transformation Rules",
+      "description": "Danh sách transformation rules dùng chung toàn dự án — ETL generator nhận diện qua cú pháp {rule_id}(...) trong mapping YAML",
+      "schema_file": "schemas/transformation_rules.schema.json",
+      "file_pattern": "Mapping/rules/transformation_rules.yaml",
+      "file_location": "Mapping/rules/",
+      "file_naming": "transformation_rules.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "File singleton — không tạo thêm file. Khi thêm rule mới, append vào mảng rules. ETL generator tham chiếu qua trường transformation_rules_ref trong mapping YAML."
     }
   ]
 }

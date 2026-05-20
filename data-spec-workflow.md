@@ -1104,6 +1104,7 @@ df.groupby("source")[["dm_status", "mapping_status"]].value_counts()
 | `brd_source` | `schemas/brd_source.schema.json` | `BRD/Source/brd_*.yaml` |
 | `data_model` | `schemas/dm.schema.json` | `DataModel/Atomic/dm_atm_*.yaml` |
 | `mapping` | `schemas/mapping.schema.json` | `Mapping/Atomic/mapping_atm_*.yaml` |
+| `transformation_rules` | `schemas/transformation_rules.schema.json` | `Mapping/rules/transformation_rules.yaml` |
 
 ### 6.3 Structure
 
