@@ -589,7 +589,7 @@ Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
 |---|---|
 | `physical_table` | Bảng Bronze thực tế |
 | `derived_cte` | CTE tính toán từ bảng khác (VD: `array_agg`, `GROUP BY`) |
-| `unpivot_cte` | CTE LATERAL VIEW stack — dùng cho shared entity |
+| `unpivot_cte` | CTE UNPIVOT/LATERAL VIEW — kèm `unpivot_spec` (structured) và/hoặc `note` (free-text) |
 
 #### Pattern 2 — Shared Entity (multi-source, UNION ALL)
 
@@ -702,12 +702,16 @@ input:
     alias: fu_co
     select_fields: "id, name, capital, ..."
     filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+    note: null                    # ghi chú tự do, null nếu không cần
+    unpivot_spec: null            # null cho physical_table và derived_cte
   - source_type: derived_cte
     namespace: null
     table_name: fu_bu_raw
     alias: fu_bu
     select_fields: "fundid, array_agg(buid) AS business_type_codes"
     filter: "GROUP BY fundid"
+    note: null
+    unpivot_spec: null
 
 relationship:
   - main_alias: fu_co
@@ -764,6 +768,23 @@ input:
     alias: ba_mo
     select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
     filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
+    note: null
+    unpivot_spec: null          # null cho physical_table
+  - source_type: unpivot_cte
+    namespace: null
+    table_name: ba_mo
+    alias: unpvt
+    select_fields: "id, identn_tp_code, identn_nbr, issu_dt, issu_ahr_nm"
+    filter: null
+    note: null                  # hoặc ghi chú tự do nếu cần
+    unpivot_spec:
+      value_columns: [identn_nbr, issu_dt, issu_ahr_nm]
+      type_column: identn_tp_code
+      legs:
+        - type_value: BUSINESS_LICENSE
+          source_columns: [IdNo, IdDate, IdAdd]
+        - type_value: OPERATING_LICENSE
+          source_columns: [RegNo, RegDate, RegAdd]
 
 relationship: []
 

@@ -24,7 +24,14 @@ input:
   alias: unpvt
   select_fields: Id, identn_tp_code, identn_nbr, issu_dt, issu_ahr_nm
   filter: null
-  note: "UNPIVOT ((identn_nbr, issu_dt, issu_ahr_nm) FOR identn_tp_code IN ((IdNo, IdDate, IdAdd) AS 'BUSINESS_LICENSE', (RegNo, RegDate, RegAdd) AS 'OPERATING_LICENSE')) unpvt"
+  unpivot_spec:
+    value_columns: [identn_nbr, issu_dt, issu_ahr_nm]
+    type_column: identn_tp_code
+    legs:
+      - type_value: BUSINESS_LICENSE
+        source_columns: [IdNo, IdDate, IdAdd]
+      - type_value: OPERATING_LICENSE
+        source_columns: [RegNo, RegDate, RegAdd]
 relationship: []
 mapping_columns:
 - target_column: ip_id
