@@ -88,8 +88,8 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^MAP-ATM-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
-          "description": "Định danh duy nhất: MAP-ATM-{physical_name}-{SOURCE}.{TABLE}"
+          "pattern": "^MAP-(?:ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
+          "description": "Định danh duy nhất: MAP-(ATM|DTM)-{physical_name}-{SOURCE}.{TABLE}"
         },
         "logical_name": {
           "type": "string",
@@ -105,7 +105,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^ATM-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
+              "pattern": "^(?:ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
               "description": "Tham chiếu đến DM YAML id — single source"
             },
             {
@@ -113,7 +113,7 @@
               "minItems": 2,
               "items": {
                 "type": "string",
-                "pattern": "^ATM-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$"
+                "pattern": "^(?:ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$"
               },
               "description": "Tham chiếu đến nhiều DM YAML id — multi-source shared entity"
             }
@@ -138,8 +138,11 @@
       "properties": {
         "namespace": {
           "type": "string",
-          "const": "atomic",
-          "description": "Namespace đích — luôn là 'atomic'"
+          "const": [
+            "atm",
+            "dtm"
+          ],
+          "description": "Namespace đích — là 'atm' / 'dtm"
         },
         "physical_name": {
           "type": "string",
