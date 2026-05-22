@@ -25,7 +25,7 @@ erDiagram
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Discretionary Investment Contract Snapshot | Số lượng + GTTT UTDM per CTQLQ per kỳ BC | 1 CTQLQ × 1 Report Template × 1 Report Date | K_FMS_10–16 |
-| Fund Management Company Dimension | CTQLQ (SCD2) | 1 CTQLQ | — |
+| Fund Management Company Dimension | CTQLQ (SCD4A) | 1 CTQLQ | — |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
 
 ---
@@ -54,8 +54,8 @@ erDiagram
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Investment Fund NAV Snapshot | NAV + phân bổ TS + QLRR cross-module | 1 quỹ × 1 BC Template × 1 Report Date | K_FMS_32–37, 38–44, 47–49, 56, 61 |
-| Investment Fund Dimension | Quỹ (SCD2) | 1 quỹ | — |
-| Fund Management Company Dimension | CTQLQ (SCD2) | 1 CTQLQ | — |
+| Investment Fund Dimension | Quỹ (SCD4A) | 1 quỹ | — |
+| Fund Management Company Dimension | CTQLQ (SCD4A) | 1 CTQLQ | — |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
 
 ---
@@ -85,7 +85,7 @@ erDiagram
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
 | Fact Investment Fund CCQ Snapshot | CCQ lưu hành tích lũy per quỹ per tháng ← TRANSFERMBF | 1 quỹ × 1 snapshot tháng | K_FMS_53 |
-| Investment Fund Dimension | Quỹ (SCD2) | 1 quỹ | — |
+| Investment Fund Dimension | Quỹ (SCD4A) | 1 quỹ | — |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
 
 ---

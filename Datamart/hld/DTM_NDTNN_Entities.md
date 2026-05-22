@@ -146,7 +146,7 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fact Foreign Ownership Snapshot | Periodic snapshot ROOM — join FIMS.CATEGORIESSTOCK + IDS.foreign_owner_limit | 1 row = 1 mã CK × 1 ngày snapshot | K_NDTNN_45–49 |
+| Fact Foreign Ownership Snapshot | Periodic snapshot ROOM — ETL pre-aggregate SUM(Ownership Rate) từ FIMS.CATEGORIESSTOCK, join IDS.foreign_owner_limit | 1 row = 1 mã CK × 1 ngày snapshot (ETL pre-agg từ nhiều NĐT) | K_NDTNN_45–49 |
 | Public Company Dimension | Công ty đại chúng — Stock Code + Industry Category (SCD2) | 1 row = 1 công ty đại chúng (SCD2) | — |
 | Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
 
@@ -238,7 +238,7 @@ erDiagram
 
 ### Nhóm 12 — Data Explorer Pass-through TT51
 
-> **Ghi chú:** `NDTNN Regulatory Report Store` là bảng tác nghiệp dạng Generic Store — lấy trực tiếp từ Atomic `Member Regulatory Report` + `Member Report Value` + `Report Template`. Thiết kế 1 bảng cho 23 loại biểu mẫu TT51/2021 thay vì 23 bảng riêng, vì tất cả đều có cùng cấu trúc 6 trường hiển thị.
+> **Ghi chú:** `NDTNN Regulatory Report Store` là bảng tác nghiệp dạng Generic Store — lấy trực tiếp từ Atomic `Member Regulatory Report` + `Member Report Value` + `Report Template`. Thiết kế 1 bảng cho 26 mẫu biểu TT51/2021 thay vì 26 bảng riêng, vì tất cả đều có cùng cấu trúc 6 trường hiển thị.
 
 #### Star schema
 
@@ -248,4 +248,4 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| NDTNN Regulatory Report Store | Generic store 23 loại biểu mẫu TT51/2021. Atomic: Member Regulatory Report + Member Report Value + Report Template | 1 row = 1 lần nộp báo cáo × 1 chỉ tiêu (Cell Code) | K_NDTNN_DE3–DE8 |
+| NDTNN Regulatory Report Store | Generic store 26 mẫu biểu TT51/2021. Atomic: Member Regulatory Report + Member Report Value + Report Template | 1 row = 1 lần nộp báo cáo × 1 chỉ tiêu (Cell Code) | K_NDTNN_DE3–DE8 |

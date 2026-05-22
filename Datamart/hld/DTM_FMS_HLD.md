@@ -1,31 +1,5 @@
 # DTM_FMS_HLD — Data Mart: Phân hệ FMS (Công ty Quản lý Quỹ)
 
-**Phiên bản:** 1.7
-**Ngày:** 02/05/2026
-**Phạm vi phiên bản này:** Tab TỔNG QUAN CTQLQ + Tab QUỸ ĐẦU TƯ
-**Thay đổi v1.4 (review toàn diện + thảo luận):**
-- [A] Nhóm 1: Giữ nguyên thiết kế — bổ sung ghi chú ETL dependency (db measures populate sớm hơn BC measures)
-- [B] Nhóm 2: Bổ sung ETL note về re-submission — xử lý ở tầng Atomic, Datamart nhận dữ liệu đã lọc
-- [C] Profile: Bổ sung ghi chú grain — làm rõ 2 kỳ thời gian (Report Period ≠ Rating Period) trong cùng 1 bảng
-- [D] Fund List: Bổ sung `Fund_Capital_Amount` ← `FMS.FUNDS.FundCapital`
-- [E] Contract List: Bổ sung `Investor_Name` ← `FMS.INVES.Name`
-- [F] Cụm 3 flowchart: Bỏ SV3 (Member Periodic Report) + S3 — không có link đến bảng Datamart nào
-- [G] Profile: Bổ sung ghi chú ETL policy — attributes lấy từ Atomic trực tiếp, không qua Dimension
-**Thay đổi v1.5 (rà soát toàn bộ bảng grain):**
-- [H] Fact UTDM: Sửa grain → `1 CTQLQ × 1 Report Template × 1 Reporting Period`; bổ sung `Reporting_Period_Id FK` vào schema; `Report_Template_Code` chuyển thành Degenerate Dimension
-- [I] Profile: Làm rõ grain → `1 CTQLQ × 1 tháng slicer`
-- [J] Fund List: Làm rõ grain → `1 quỹ × 1 tháng slicer`
-- [K] Contract List: Làm rõ grain → `1 Discretionary Investment Account active tại tháng slicer`
-- [L] Section 3 bảng Phân tích: Cập nhật grain Fact UTDM nhất quán
-**Thay đổi v1.6 (phương án C — bỏ Reporting Period Dimension):**
-- [M] Bỏ `Reporting Period Dimension` — Atomic RPTPERIOD không có Start/End Date, không đủ căn cứ tạo Dimension độc lập. Dùng `Calendar Date Dimension` (qua `Report_Date_Dimension_Id`) + `Reporting_Period_Code` làm Degenerate Dimension thứ 2 trên Fact. Grain Fact UTDM: `1 CTQLQ × 1 Report Template × 1 Report Date`
-
----
-**Thay đổi v1.7:** Tích hợp nội dung Tab QUỸ ĐẦU TƯ vào đúng 4 section — bỏ cấu trúc "Section N (tiếp)" sai format
-
-
----
-
 ---
 
 ## Section 1 — Data Lineage: Staging → Atomic → Datamart
@@ -38,12 +12,13 @@ Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 1. Fact này là **Market-Level Aggr
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.SECURITIES"]
         S2["FMS.FUNDS"]
         S3["FMS.FORBRCH"]
         S4["FMS.AGENCIES"]
         S6["FMS.RPTVALUES"]
+        SE1["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
@@ -52,6 +27,7 @@ flowchart LR
         SV3["Foreign Fund Management Organization Unit"]
         SV4["Fund Distribution Agent"]
         SV6["Report Import Value"]
+        SV7["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
@@ -64,12 +40,14 @@ flowchart LR
     S3 --> SV3
     S4 --> SV4
     S6 --> SV6
+    SE1 --> SV7
 
     SV1 --> G1
     SV2 --> G1
     SV3 --> G1
     SV4 --> G1
     SV6 --> G1
+    SV7 --> G2
 
     G2 --> G1
 ```
@@ -80,16 +58,18 @@ Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 2. Tất cả KPI từ "Tổng từ 
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.RPTMEMBER"]
         S2["FMS.RPTVALUES"]
         S3["FMS.SECURITIES"]
+        SE1["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Member Periodic Report"]
         SV2["Report Import Value"]
         SV3["Fund Management Company"]
+        SV4["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
@@ -101,10 +81,12 @@ flowchart LR
     S1 --> SV1
     S2 --> SV2
     S3 --> SV3
+    SE1 --> SV4
 
     SV1 --> G1
     SV2 --> G1
     SV3 --> G2
+    SV4 --> G3
 
     G2 --> G1
     G3 --> G1
@@ -116,7 +98,7 @@ Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 3. **1 bảng flat chính** (`Fund M
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.SECURITIES"]
         S2["FMS.FUNDS"]
         S4["FMS.RPTVALUES"]
@@ -172,16 +154,14 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 4 (Biểu đồ Tổng NAV & Tỷ l�
 
 ```mermaid
 flowchart LR
-    subgraph SRC_FMS["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.RPTMEMBER"]
         S2["FMS.RPTVALUES"]
         S3["FMS.FUNDS"]
         S4["FMS.SECURITIES"]
-    end
-
-    subgraph SRC_QLRR["Staging (QLRR)"]
         S5["QLRR.risk_indicator"]
         S6["QLRR.risk_indicator_value"]
+        SE1["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
@@ -191,6 +171,7 @@ flowchart LR
         SV4["Fund Management Company"]
         SV5["Risk Indicator"]
         SV6["Risk Indicator Value"]
+        SV7["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
@@ -206,6 +187,7 @@ flowchart LR
     S4 --> SV4
     S5 --> SV5
     S6 --> SV6
+    SE1 --> SV7
 
     SV1 --> G1
     SV2 --> G1
@@ -213,6 +195,7 @@ flowchart LR
     SV6 --> G1
     SV3 --> G2
     SV4 --> G3
+    SV7 --> G4
 
     G2 --> G1
     G3 --> G1
@@ -225,12 +208,14 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 7 (Số lượng quỹ ĐTCK). Market
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.FUNDS"]
+        SE1["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Investment Fund"]
+        SV2["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
@@ -239,7 +224,11 @@ flowchart LR
     end
 
     S1 --> SV1
+    SE1 --> SV2
+
     SV1 --> G1
+    SV2 --> G2
+
     G2 --> G1
 ```
 
@@ -249,14 +238,16 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 8 (Tăng trưởng CCQ lưu hành). S
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.FUNDS"]
         S2["FMS.TRANSFERMBF"]
+        SE1["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Investment Fund"]
         SV2["Investment Fund Certificate Transfer"]
+        SV3["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
@@ -267,10 +258,12 @@ flowchart LR
 
     S1 --> SV1
     S2 --> SV2
+    SE1 --> SV3
 
     SV1 --> G1
     SV2 --> G1
     SV1 --> G2
+    SV3 --> G3
 
     G2 --> G1
     G3 --> G1
@@ -282,7 +275,7 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 10 (Danh sách các quỹ đầu tư)
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.FUNDS"]
         S2["FMS.SECURITIES"]
         S3["FMS.RPTMEMBER"]
@@ -323,7 +316,7 @@ Phục vụ Tab DATA EXPLORER — Nhóm 12–16. Toàn bộ 63 pass-through tabs
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.RPTVALUES"]
         S2["FMS.RPTMEMBER"]
         S3["FMS.SECURITIES"]
@@ -358,12 +351,9 @@ Phục vụ Tab BÁO CÁO / CÔNG TY QLQ — Nhóm 11. Cross-module FMS × GSGD:
 
 ```mermaid
 flowchart LR
-    subgraph SRC_FMS["Staging (FMS)"]
+    subgraph SRC["Staging"]
         S1["FMS.TLProfiles"]
         S2["FMS.SECURITIES"]
-    end
-
-    subgraph SRC_GSGD["Staging (GSGD)"]
         S3["GSGD.investor_account"]
     end
 
@@ -458,10 +448,14 @@ erDiagram
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
-        date Full_Date
+        date Calendar_Date
         int Year
         int Month
         int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Fund_Management_Company_Snapshot : "Snapshot Date Dimension Id"
@@ -552,10 +546,14 @@ erDiagram
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
-        date Date
+        date Calendar_Date
         int Year
         int Month
         int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Discretionary_Investment_Contract_Snapshot : "Report Date Dimension Id"
@@ -584,7 +582,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Discretionary Investment Contract Snapshot | 1 CTQLQ × 1 Report Template × 1 Report Date |
-| Fund Management Company Dimension | 1 CTQLQ (SCD2 — 1 version per khoảng thời gian) |
+| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record (ds_rcrd_st = 1)) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -816,10 +814,14 @@ erDiagram
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
-        date Date
+        date Calendar_Date
         int Year
         int Month
         int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_NAV_Snapshot : "Report Date Dimension Id"
@@ -827,10 +829,10 @@ erDiagram
     Fund_Management_Company_Dimension ||--o{ Fact_Investment_Fund_NAV_Snapshot : "Fund Management Company Dimension Id"
 ```
 
-> Ghi chú cross-module QLRR (T-1 rule): Dữ liệu QLRR chạy T-1 — ETL join theo kỳ tương ứng Report_Date:
-> - **GDP_Value**: `Period_Type_Code = Quý` AND `Period_Year = YEAR(Report_Date)` AND `Period_Value = QUARTER(Report_Date)` — lấy kỳ gần nhất có dữ liệu
-> - **VN_Index_Value**: `Period_Type_Code = Ngày` AND `Period_Date = ngày làm việc trước Report_Date`
-> - **Overnight_Rate_Value**: `Period_Type_Code = Ngày` AND `Period_Date = ngày làm việc trước Report_Date`
+> Ghi chú cross-module QLRR (T-1 rule): Dữ liệu QLRR chạy T-1 — ETL join theo kỳ tương ứng `mbr_prd_rpt.day_rpt` (int yyyymmdd, cast sang date khi cần):
+> - **GDP_Value**: `Period_Type_Code = Quý` AND `Period_Year = YEAR(TO_DATE(day_rpt))` AND `Period_Value = QUARTER(TO_DATE(day_rpt))` — lấy kỳ gần nhất có dữ liệu
+> - **VN_Index_Value**: `Period_Type_Code = Ngày` AND `Period_Date = ngày làm việc trước TO_DATE(day_rpt)`
+> - **Overnight_Rate_Value**: `Period_Type_Code = Ngày` AND `Period_Date = ngày làm việc trước TO_DATE(day_rpt)`
 > Các DD `_Indicator_Code` lưu mã chỉ tiêu QLRR để tra cứu khi cần.
 
 **Lineage Mart → Báo cáo:**
@@ -861,8 +863,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD2 — 1 version per khoảng thời gian) |
-| Fund Management Company Dimension | 1 CTQLQ (SCD2 — 1 version per khoảng thời gian) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record (ds_rcrd_st = 1)) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -932,8 +934,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD2 — 1 version per khoảng thời gian) |
-| Fund Management Company Dimension | 1 CTQLQ (SCD2 — 1 version per khoảng thời gian) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record (ds_rcrd_st = 1)) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -986,7 +988,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD2 — 1 version per khoảng thời gian) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -1037,10 +1039,14 @@ erDiagram
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
-        date Date
+        date Calendar_Date
         int Year
         int Month
         int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_Count_Snapshot : "Snapshot Date Dimension Id"
@@ -1128,10 +1134,14 @@ erDiagram
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
-        date Date
+        date Calendar_Date
         int Year
         int Month
         int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : "Report Date Dimension Id"
@@ -1160,7 +1170,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund CCQ Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD2 — 1 version per khoảng thời gian) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -1215,7 +1225,7 @@ flowchart LR
 
 **Star Schema:** *(Reuse `Fact Investment Fund NAV Snapshot` — xem Nhóm 4 để biết schema đầy đủ. Nhóm 9 dùng `Fund_NAV_Amount` (K_FMS_32 cho ETF), `VN_Index_Value` (K_FMS_56), `Overnight_Rate_Value` (K_FMS_61). `K_FMS_60` (NAV/CCQ quỹ ETF) = join Fact NAV + Fact CCQ Snapshot tại presentation layer)*
 
-> Ghi chú cross-module (T-1 rule): `VN_Index_Value` và `Overnight_Rate_Value` ETL join theo `Period_Date = ngày làm việc trước Report_Date`. Xem Nhóm 4 để biết đầy đủ join rule cho cả 3 QLRR measures (GDP/VN-Index/Lãi suất LNH).
+> Ghi chú cross-module (T-1 rule): `VN_Index_Value` và `Overnight_Rate_Value` ETL join theo `Period_Date = ngày làm việc trước TO_DATE(mbr_prd_rpt.day_rpt)`. Xem Nhóm 4 để biết đầy đủ join rule cho cả 3 QLRR measures (GDP/VN-Index/Lãi suất LNH).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1239,7 +1249,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD2 — 1 version per khoảng thời gian) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -1708,7 +1718,7 @@ graph TB
 
 | Dimension | Loại | Mô tả | Trạng thái |
 |---|---|---|---|
-| Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng phục vụ slicer | READY |
+| Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng/ngày lễ phục vụ slicer. Map từ Atomic `Calendar Date` (`cdr_dt`) | READY |
 | Fund Management Company Dimension | Reference per module (SCD2) | CTQLQ — Mã/Tên/Trạng thái | READY |
 | Investment Fund Dimension | Reference per module (SCD2) | Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái ← FMS.FUNDS | READY |
 
@@ -1738,5 +1748,8 @@ graph TB
 | O_FMS_9 | Nhóm 9 — BA ghi nguồn Lãi suất LNH là "GSRR" — cần xác nhận đây có phải là QLRR không | **Đóng (v1.7):** Xác nhận "GSRR" = QLRR. Lãi suất LNH qua đêm ← `Risk Indicator Value` WHERE `category_code = MONETARY` ← QLRR.risk_indicator_value | K_FMS_61 | Closed |
 | O_FMS_10 | Nhóm 9 — Phân loại chi tiết quỹ mở (CP/TP/cân bằng): Atomic `Investment Fund` chỉ có `Fund_Type_Code` cấp 1 (Quỹ mở/ETF...) — không phân biệt quỹ mở CP/TP/cân bằng | Cần khảo sát dữ liệu thực tế trong `FMS.FUNDS.FundType` hoặc biểu mẫu BC để xác nhận có sub-type CP/TP/cân bằng không. K_FMS_57–59 PENDING đến khi có kết quả khảo sát | K_FMS_57–59 | Open |
 | O_FMS_11 | Nhóm 11 — Báo cáo GD nhân viên CTQLQ: Cross-module FMS × GSGD. K_FMS_68–72 READY qua join `FMS.TLProfiles.IdAdd` = `GSGD.investor_account.identity_number`. K_FMS_73–77 (sổ lệnh: ngày GD, phương thức, mua/bán, mã CK, số lượng) PENDING — GSGD không lưu sổ lệnh trong Atomic (đọc từ VSDC API) | Chờ xác nhận Atomic entity sổ lệnh từ VSDC hoặc nguồn khác. K_FMS_70 (mã CTCK): ETL parse từ 4-5 ký tự đầu mã TK — cần xác nhận với ETL team | K_FMS_70, K_FMS_73–77 | Open |
+| O_FMS_12 | Calendar Date Dimension trước đây thiết kế ETL-generated độc lập — đã điều chỉnh map từ Atomic `Calendar Date` (`cdr_dt`). Đổi tên NK `Full Date` → `Calendar Date`, đồng bộ với Atomic. Bỏ `Month Name` (không có trong Atomic, không phục vụ KPI). Bổ sung `Holiday Flag` và `Holiday Name` từ `cdr_dt`. Các thuộc tính phái sinh (Year/Quarter/Month/Day Of Week/Is Weekend) computed từ `cdr_dt.cdr_dt`. | Map PK: `cdr_dt.cdr_dt_id` (int yyyymmdd, direct). NK: `cdr_dt.cdr_dt` (date, direct). Phái sinh: computed từ `cdr_dt.cdr_dt` | Tất cả KPI dùng chiều thời gian | Confirmed |
+| O_FMS_13 | Chiều thời gian trên Fact lấy từ RPT đã điều chỉnh: bỏ reference `rpt_impr_val.rpt_dt` không tồn tại trong Atomic. Path chuẩn: `rpt_impr_val` → `INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id` → lấy `day_rpt` (FMS.RPTMEMBER.DayReport, int yyyymmdd). Filter `rpt_subm_st_code IN ('SUBMITTED','LATE')` loại bản PENDING/CANCELLED. Khi gửi lại: FMS tạo `mbr_prd_rpt` mới, bản cũ CANCELLED — filter đảm bảo không duplicate per kỳ. | Join key `rpt_impr_val.mbr_prd_rpt_id` → `mbr_prd_rpt.mbr_prd_rpt_id` là NOT NULL — INNER JOIN an toàn. | K_FMS_1–3, 10–15, 32–49 | Confirmed |
+| O_FMS_14 | Dimension dùng cơ chế SCD4A — lưu trạng thái current với `ds_rcrd_st = 1` (active) / `0` (inactive). Toàn bộ `lookup_dim` trước đây dùng `BETWEEN eff_dt AND expiry_dt` không áp dụng. `ds_rcrd_st` là trường kỹ thuật ETL framework — không thiết kế trong Datamart schema, không xuất hiện trong erDiagram. Chỉ xuất hiện trong `etl_logic` của Attributes.csv như một filter condition. | Filter `AND <dim>.ds_rcrd_st = 1` thay thế toàn bộ date range trên 4 dòng lookup_dim: dòng 32, 42, 43, 71 trong Attributes.csv | Tất cả FK → Dimension trên Fact tables | Confirmed |
 
 ---
