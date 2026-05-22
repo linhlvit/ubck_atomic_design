@@ -1,150 +1,85 @@
 schema_type: mapping
-schema_version: "1.0"
-
-transformation_rules_ref: Mapping/rules/transformation_rules.yaml
-
+schema_version: '1.0'
 mapping:
   id: MAP-ATM-ip_alt_identn-FIMS.BRANCHS
-  logical_name: "Mapping Atomic - IP Alternative Identification – source FIMS.BRANCHS"
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    FIMS.BRANCHS
   physical_name: ip_alt_identn
   dm_ref: ATM-ip_alt_identn-FIMS.BRANCHS
   brd_ref: BRD-SRC-FIMS-BRANCHS
-
 target:
   namespace: atomic
   physical_name: ip_alt_identn
   etl_handle: SCD4A
-  description: |
-    Lưu trữ các giấy tờ định danh của Fund Management Company Organization Unit từ FIMS.BRANCHS.
-    2 legs: BUSINESS_LICENSE (IdNo/IdDate/IdAdd) và OPERATING_LICENSE (RegNo/RegDate/RegAdd).
-
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
 input:
-  -
-    source_type: physical_table
-    namespace: ods
-    table_name: BRANCHS
-    alias: br
-    select_fields: "id, idno, idadd, iddate, regno, regadd, regdate"
-    filter: "data_date = to_date('{{ var(\"etl_date\") }}', 'yyyy-MM-dd')"
-
+- source_type: physical_table
+  namespace: ods
+  table_name: BRANCHS
+  alias: br
+  select_fields: id, IdNo, IdDate, IdAdd, RegNo, RegDate, RegAdd
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: br
+  alias: unpvt
+  select_fields: id, identn_tp_code, identn_nbr, issu_dt, issu_ahr_nm
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - identn_nbr
+    - issu_dt
+    - issu_ahr_nm
+    type_column: identn_tp_code
+    legs:
+    - type_value: BUSINESS_LICENSE
+      source_columns:
+      - IdNo
+      - IdDate
+      - IdAdd
+    - type_value: OPERATING_LICENSE
+      source_columns:
+      - RegNo
+      - RegDate
+      - RegAdd
 relationship: []
-
-mapping_legs:
-  - leg: BUSINESS_LICENSE
-    filter: "br.idno IS NOT NULL"
-    mapping_columns:
-      - target_column: ip_id
-        transformation: "{hash_id}('FIMS_BRANCHS', br.id)"
-        source_column: FIMS.BRANCHS.id
-        data_type: string
-        target_attr_name: Involved Party Id
-
-      - target_column: ip_code
-        transformation: br.id
-        source_column: FIMS.BRANCHS.id
-        data_type: string
-        target_attr_name: Involved Party Code
-
-      - target_column: src_stm_code
-        transformation: "'FIMS_BRANCHS'"
-        source_column: null
-        data_type: string
-        target_attr_name: Source System Code
-
-      - target_column: identn_tp_code
-        transformation: "'BUSINESS_LICENSE'"
-        source_column: null
-        data_type: string
-        etl_derived_value: BUSINESS_LICENSE
-        target_attr_name: Identification Type Code
-
-      - target_column: identn_nbr
-        transformation: br.idno
-        source_column: FIMS.BRANCHS.IdNo
-        data_type: string
-        target_attr_name: Identification Number
-
-      - target_column: issu_dt
-        transformation: br.iddate
-        source_column: FIMS.BRANCHS.IdDate
-        data_type: date
-        target_attr_name: Issue Date
-
-      - target_column: issu_ahr_nm
-        transformation: br.idadd
-        source_column: FIMS.BRANCHS.IdAdd
-        data_type: string
-        target_attr_name: Issuing Authority Name
-
-  - leg: OPERATING_LICENSE
-    filter: "br.regno IS NOT NULL"
-    mapping_columns:
-      - target_column: ip_id
-        transformation: "{hash_id}('FIMS_BRANCHS', br.id)"
-        source_column: FIMS.BRANCHS.id
-        data_type: string
-        target_attr_name: Involved Party Id
-
-      - target_column: ip_code
-        transformation: br.id
-        source_column: FIMS.BRANCHS.id
-        data_type: string
-        target_attr_name: Involved Party Code
-
-      - target_column: src_stm_code
-        transformation: "'FIMS_BRANCHS'"
-        source_column: null
-        data_type: string
-        target_attr_name: Source System Code
-
-      - target_column: identn_tp_code
-        transformation: "'OPERATING_LICENSE'"
-        source_column: null
-        data_type: string
-        etl_derived_value: OPERATING_LICENSE
-        target_attr_name: Identification Type Code
-
-      - target_column: identn_nbr
-        transformation: br.regno
-        source_column: FIMS.BRANCHS.RegNo
-        data_type: string
-        target_attr_name: Identification Number
-
-      - target_column: issu_dt
-        transformation: br.regdate
-        source_column: FIMS.BRANCHS.RegDate
-        data_type: date
-        target_attr_name: Issue Date
-
-      - target_column: issu_ahr_nm
-        transformation: br.regadd
-        source_column: FIMS.BRANCHS.RegAdd
-        data_type: string
-        target_attr_name: Issuing Authority Name
-
-mapping_columns: null
-
-final_filter:
-  -
-    clause_type: UNION ALL
-    expression: |
-      SELECT -- BUSINESS_LICENSE leg
-        hash_id('FIMS_BRANCHS', br.id) AS ip_id,
-        br.id AS ip_code,
-        'FIMS_BRANCHS' AS src_stm_code,
-        'BUSINESS_LICENSE' AS identn_tp_code,
-        br.idno AS identn_nbr,
-        br.iddate AS issu_dt,
-        br.idadd AS issu_ahr_nm
-      FROM br WHERE br.idno IS NOT NULL
-      UNION ALL
-      SELECT -- OPERATING_LICENSE leg
-        hash_id('FIMS_BRANCHS', br.id) AS ip_id,
-        br.id AS ip_code,
-        'FIMS_BRANCHS' AS src_stm_code,
-        'OPERATING_LICENSE' AS identn_tp_code,
-        br.regno AS identn_nbr,
-        br.regdate AS issu_dt,
-        br.regadd AS issu_ahr_nm
-      FROM br WHERE br.regno IS NOT NULL
-    description: UNION ALL 2 legs từ cùng 1 physical table BRANCHS.
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FIMS_BRANCHS'', unpvt.id)'
+  data_type: string
+  description: FK đến Fund Management Company Organization Unit.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.id
+  data_type: string
+  description: Mã chi nhánh công ty quản lý quỹ.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FIMS_BRANCHS'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: identn_tp_code
+  transformation: unpvt.identn_tp_code
+  data_type: string
+  description: 'Loại giấy tờ: giấy phép kinh doanh.'
+  target_attr_name: Identification Type Code
+- target_column: identn_nbr
+  transformation: unpvt.identn_nbr
+  data_type: string
+  description: Số giấy phép kinh doanh.
+  target_attr_name: Identification Number
+- target_column: issu_dt
+  transformation: unpvt.issu_dt
+  data_type: date
+  description: Ngày cấp giấy phép kinh doanh.
+  target_attr_name: Issue Date
+- target_column: issu_ahr_nm
+  transformation: unpvt.issu_ahr_nm
+  data_type: string
+  description: Nơi cấp giấy phép kinh doanh.
+  target_attr_name: Issuing Authority Name
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+final_filter: []

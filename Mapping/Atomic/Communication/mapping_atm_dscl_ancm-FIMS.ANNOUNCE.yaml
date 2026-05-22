@@ -1,0 +1,136 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-dscl_ancm-FIMS.ANNOUNCE
+  logical_name: Mapping Atomic - Disclosure Announcement – source FIMS.ANNOUNCE
+  physical_name: dscl_ancm
+  dm_ref: ATM-dscl_ancm-FIMS.ANNOUNCE
+  brd_ref: BRD-SRC-FIMS-ANNOUNCE
+target:
+  namespace: atomic
+  physical_name: dscl_ancm
+  etl_handle: Fact Append
+  description: Tin công bố thông tin của thành viên thị trường qua người đại diện CBTT.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: ANNOUNCE
+  alias: an
+  select_fields: Id, InRepId, AnnounceTypeId, Name, contentSummary, DateAnnounce, Status, YearValue, PeriodType, PeriodValue, SendAnnounceBy, Description, CreatedBy, DateCreated, DateModified
+  filter: created_at >= {data_date}
+- source_type: physical_table
+  namespace: ods
+  table_name: ANNOUNCEINVES
+  alias: an_in_raw
+  select_fields: AnnounceId, InvesId
+  filter: null
+  note: "Pure junction ANNOUNCEINVES — denormalize thành ARRAY<Struct>"
+- source_type: derived_cte
+  namespace: null
+  table_name: an_in_raw
+  alias: an_in
+  select_fields: AnnounceId, COLLECT_LIST(NAMED_STRUCT('investor_id', sha2(an_in_raw.InvesId, 256), 'investor_code', an_in_raw.InvesId)) AS frgn_ivsr_ids
+  filter: GROUP BY AnnounceId
+relationship:
+- main_alias: an
+  join_type: LEFT JOIN
+  join_alias: an_in
+  join_on: an.Id = an_in.AnnounceId
+mapping_columns:
+- target_column: dscl_ancm_id
+  transformation: '{hash_id}(''FIMS_ANNOUNCE'', an.Id)'
+  data_type: string
+  description: Khóa đại diện cho tin công bố thông tin.
+  target_attr_name: Disclosure Announcement Id
+- target_column: dscl_ancm_code
+  transformation: an.Id
+  data_type: string
+  description: Mã tin công bố. Map từ PK bảng nguồn.
+  target_attr_name: Disclosure Announcement Code
+- target_column: src_stm_code
+  transformation: '''FIMS_ANNOUNCE'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: dscl_rprs_id
+  transformation: '{hash_id}(''FIMS_ANNOUNCE'', an.InRepId)'
+  data_type: string
+  description: FK đến người đại diện CBTT gửi tin.
+  target_attr_name: Disclosure Representative Id
+- target_column: dscl_rprs_code
+  transformation: an.InRepId
+  data_type: string
+  description: Mã người đại diện CBTT gửi tin.
+  target_attr_name: Disclosure Representative Code
+- target_column: ancm_tp_code
+  transformation: an.AnnounceTypeId
+  data_type: string
+  description: Loại CBTT. Dữ liệu lấy từ trường ID của bảng ANNOUNCETYPE.
+  target_attr_name: Announcement Type Code
+- target_column: ancm_ttl
+  transformation: an.Name
+  data_type: string
+  description: Tiêu đề tin công bố.
+  target_attr_name: Announcement Title
+- target_column: cntnt_smy
+  transformation: an.contentSummary
+  data_type: string
+  description: Nội dung trích yếu.
+  target_attr_name: Content Summary
+- target_column: ancm_dt
+  transformation: an.DateAnnounce
+  data_type: date
+  description: Ngày công bố thông tin.
+  target_attr_name: Announcement Date
+- target_column: ancm_st_code
+  transformation: an.Status
+  data_type: string
+  description: 'Trạng thái CBTT: 0: Chưa gửi 1: Đã CBTT.'
+  target_attr_name: Announcement Status Code
+- target_column: ancm_yr
+  transformation: an.YearValue
+  data_type: int
+  description: Năm báo cáo liên quan.
+  target_attr_name: Announcement Year
+- target_column: ancm_prd_tp_code
+  transformation: an.PeriodType
+  data_type: string
+  description: 'Kỳ báo cáo liên quan: 1: Ngày 2: Tuần 3: Nửa tháng 4: Tháng 5: Quý 6: Bán niên 7: Năm.'
+  target_attr_name: Announcement Period Type Code
+- target_column: ancm_prd_val
+  transformation: an.PeriodValue
+  data_type: int
+  description: Giá trị kỳ báo cáo liên quan.
+  target_attr_name: Announcement Period Value
+- target_column: snd_by
+  transformation: an.SendAnnounceBy
+  data_type: string
+  description: Người gửi tin CBTT (denormalized).
+  target_attr_name: Sent By
+- target_column: dsc
+  transformation: an.Description
+  data_type: string
+  description: Ghi chú.
+  target_attr_name: Description
+- target_column: frgn_ivsr_ids
+  transformation: an_in.frgn_ivsr_ids
+  data_type: array<struct<...>>
+  description: Danh sách nhà đầu tư nước ngoài liên quan đến tin CBTT. InvesId → FK đến INVESTOR.
+  target_attr_name: Foreign Investor Ids
+- target_column: crt_by
+  transformation: an.CreatedBy
+  data_type: string
+  description: Người tạo bản ghi.
+  target_attr_name: Created By
+- target_column: crt_tms
+  transformation: an.DateCreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: an.DateModified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+  target_attr_name: Updated Timestamp
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+final_filter: []

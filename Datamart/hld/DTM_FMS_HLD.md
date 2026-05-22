@@ -34,6 +34,8 @@
 
 Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 1. Fact này là **Market-Level Aggregate Snapshot** — grain = 1 row per tháng, tổng hợp toàn bộ thị trường. Không có FK sang Company Dimension vì không GROUP BY từng CTQLQ. Dimension duy nhất là Calendar Date.
 
+> **ETL pattern — No Driving Table (CROSS JOIN scalar subquery):** Fact này không có driving table duy nhất. Mỗi measure aggregate từ 1 Atomic table độc lập, không có join key chung. ETL viết mỗi measure là 1 scalar subquery `CROSS JOIN (SELECT <aggregate> FROM <atomic_table> WHERE ...) AS <alias>` — tất cả CROSS JOIN vào nhau cho ra 1 row per tháng. Xem `etl_logic` từng cột trong Attributes CSV.
+
 ```mermaid
 flowchart LR
     subgraph SRC["Staging (FMS)"]
@@ -41,7 +43,6 @@ flowchart LR
         S2["FMS.FUNDS"]
         S3["FMS.FORBRCH"]
         S4["FMS.AGENCIES"]
-        S5["FMS.RPTMEMBER"]
         S6["FMS.RPTVALUES"]
     end
 
@@ -50,7 +51,6 @@ flowchart LR
         SV2["Investment Fund"]
         SV3["Foreign Fund Management Organization Unit"]
         SV4["Fund Distribution Agent"]
-        SV5["Member Periodic Report"]
         SV6["Report Import Value"]
     end
 
@@ -63,14 +63,12 @@ flowchart LR
     S2 --> SV2
     S3 --> SV3
     S4 --> SV4
-    S5 --> SV5
     S6 --> SV6
 
     SV1 --> G1
     SV2 --> G1
     SV3 --> G1
     SV4 --> G1
-    SV5 --> G1
     SV6 --> G1
 
     G2 --> G1
@@ -403,13 +401,13 @@ flowchart LR
 #### Nhóm 1 — Thống kê chung
 
 > Phân loại: **Phân tích**
-> Atomic: `Fund Management Company` ← FMS.SECURITIES — **READY** *(Count db)*
-> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(Count db)*
-> Atomic: `Foreign Fund Management Organization Unit` ← FMS.FORBRCH — **READY** *(Count db)*
-> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — **READY** *(Count db)*
-> Atomic: `Member Periodic Report` ← FMS.RPTMEMBER — **READY** *(Tổng từ chỉ tiêu BC)*
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(Tổng từ chỉ tiêu BC)*
+> Atomic: `Fund Management Company` ← FMS.SECURITIES — **READY** *(K_FMS_4: COUNT db)*
+> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(K_FMS_1, 8: COUNT db)*
+> Atomic: `Foreign Fund Management Organization Unit` ← FMS.FORBRCH — **READY** *(K_FMS_5, 7: COUNT db)*
+> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — **READY** *(K_FMS_6: COUNT db)*
+> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(K_FMS_2–3: SUM từ chỉ tiêu BC)*
 > Ghi chú: Fact này là **Market-Level Aggregate Snapshot** — grain = 1 row per tháng, không FK sang Fund Management Company Dimension. Mỗi measure trong Fact là tổng hợp toàn thị trường: K_FMS_1, 4–8 đếm từ Atomic db; K_FMS_2–3 tổng hợp từ RPTVALUES. Không có chiều phân tích theo từng CTQLQ — đây là thiết kế có chủ ý, không phải thiếu Dimension.
+> **ETL pattern — No Driving Table [A]:** Fact không có driving table duy nhất — 5 Atomic tables độc lập, không có join key chung. ETL dùng `CROSS JOIN (SELECT <aggregate> FROM <atomic_table> WHERE ...) AS <alias>` cho từng measure, ghép thành 1 row per tháng. Chi tiết xem `etl_logic` từng cột trong Attributes CSV.
 > **ETL dependency [A]:** Fact có 2 nhóm measures với availability khác nhau. Nhóm db (K_FMS_1, 4–8) sẵn sàng ngay khi tháng kết thúc. Nhóm BC (K_FMS_2–3) phụ thuộc CTQLQ nộp BC qua RPTVALUES — có thể trễ vài tuần. ETL populate db measures trước, BC measures sau khi đủ dữ liệu.
 
 **Mockup:**
@@ -443,10 +441,12 @@ flowchart LR
 
 **Star Schema:**
 
+> **ETL note:** Không có driving table — mỗi measure là CROSS JOIN scalar subquery độc lập. Xem Attributes CSV cột `etl_logic` cho từng measure.
+
 ```mermaid
 erDiagram
     Fact_Fund_Management_Company_Snapshot {
-        int Snapshot_Date_Dimension_Id FK
+        string Snapshot_Date_Dimension_Id FK
         int Active_Company_Count
         int Investment_Fund_Count
         int Retirement_Fund_Count
@@ -455,11 +455,10 @@ erDiagram
         int Distribution_Agent_Count
         float Total_AUM_Amount
         int Total_Discretionary_Contract_Count
-        datetime Population_Date
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
-        date Date
+        date Full_Date
         int Year
         int Month
         int Quarter
@@ -1690,7 +1689,7 @@ graph TB
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Fund Management Company Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 tháng | K_FMS_1–9 | READY |
+| Fact Fund Management Company Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 tháng | K_FMS_1–9 | READY — ETL pattern: No Driving Table, CROSS JOIN scalar subquery |
 | Fact Discretionary Investment Contract Snapshot | Periodic Snapshot | 1 CTQLQ × 1 Report Template × 1 Report Date | K_FMS_10–15 (Base), K_FMS_16a–d (Derived) | READY |
 | Fact Investment Fund NAV Snapshot | Periodic Snapshot | 1 quỹ × 1 Report Template × 1 Report Date | K_FMS_32–35, 38–44, 47–49, 56, 61 | READY (pending O_FMS_1) |
 | Fact Investment Fund Count Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 năm | K_FMS_50–52e | READY |
