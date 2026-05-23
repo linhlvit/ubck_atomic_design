@@ -75,7 +75,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: FMS.BRANCHES.SecId
-    comment: "FK target: Fund Management Company.Fund Management Company Id. Classification: Source System Code = 'FMS_SECURITIES'."
+    comment: "FK target: fnd_mgt_co.fnd_mgt_co_id. Classification: Source System Code = 'FMS_SECURITIES'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 
@@ -89,7 +89,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: FMS.BRANCHES.SecId
-    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id. Classification: Source System Code = 'FMS_SECURITIES'."
+    comment: "Lookup pair: fnd_mgt_co.fnd_mgt_co_code. Pair with fnd_mgt_co_id. Classification: Source System Code = 'FMS_SECURITIES'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 
@@ -131,7 +131,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: FMS.BRANCHES.BrIdowner
-    comment: "FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id. BrIdowner là Id nguồn — ETL cần resolve sang surrogate. Classification: Source System Code = 'FMS_BRANCHES'."
+    comment: "FK target: fnd_mgt_co_ou.fnd_mgt_co_ou_id. BrIdowner là Id nguồn — ETL cần resolve sang surrogate. Classification: Source System Code = 'FMS_BRANCHES'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 
@@ -145,7 +145,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: FMS.BRANCHES.BrIdowner
-    comment: "Lookup pair: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Parent Organization Unit Id. Classification: Source System Code = 'FMS_BRANCHES'."
+    comment: "Lookup pair: fnd_mgt_co_ou.fnd_mgt_co_ou_code. Pair with prn_ou_id. Classification: Source System Code = 'FMS_BRANCHES'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 
@@ -159,7 +159,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: FMS.BRANCHES.TLId
-    comment: "FK target: Fund Management Company Key Person.Fund Management Company Key Person Id. Classification: Source System Code = 'FMS_TLProfiles'."
+    comment: "FK target: fnd_mgt_co_key_psn.fnd_mgt_co_key_psn_id. Classification: Source System Code = 'FMS_TLProfiles'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 
@@ -173,7 +173,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: FMS.BRANCHES.TLId
-    comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company Key Person Code. Pair with Legal Representative Id. Classification: Source System Code = 'FMS_TLProfiles'."
+    comment: "Lookup pair: fnd_mgt_co_key_psn.fnd_mgt_co_key_psn_code. Pair with lgl_rprs_id. Classification: Source System Code = 'FMS_TLProfiles'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 
@@ -355,7 +355,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: null
-    comment: "FK target: Geographic Area.Geographic Area Id. Quốc gia công ty mẹ lấy từ bảng NATIONAL. Classification: Source System Code = 'FIMS_NATIONAL'."
+    comment: "FK target: geo.geo_id. Quốc gia công ty mẹ lấy từ bảng NATIONAL. Classification: Source System Code = 'FIMS_NATIONAL'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 
@@ -369,7 +369,7 @@ attributes:
     source_system: FMS
     source_table: BRANCHES
     source_column: null
-    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Registration Id. Classification: Source System Code = 'FIMS_NATIONAL'."
+    comment: "Lookup pair: geo.geo_code. Pair with cty_of_rgst_id. Classification: Source System Code = 'FIMS_NATIONAL'."
     classification_context: "Source System Code = 'FMS_BRANCHES'"
     etl_derived_value: null
 

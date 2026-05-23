@@ -33,7 +33,7 @@ attributes:
     source_system: FMS
     source_table: FORBRCH
     source_column: FMS.FORBRCH.Id
-    comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Id. Classification: Source System Code = 'FMS_FORBRCH'."
+    comment: "FK target: frgn_fnd_mgt_ou.frgn_fnd_mgt_ou_id. Classification: Source System Code = 'FMS_FORBRCH'."
     classification_context: "Source System Code = 'FMS_FORBRCH' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -47,7 +47,7 @@ attributes:
     source_system: FMS
     source_table: FORBRCH
     source_column: FMS.FORBRCH.Id
-    comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management Organization Unit Code. Pair with Involved Party Id. Classification: Source System Code = 'FMS_FORBRCH'."
+    comment: "Lookup pair: frgn_fnd_mgt_ou.frgn_fnd_mgt_ou_code. Pair with ip_id. Classification: Source System Code = 'FMS_FORBRCH'."
     classification_context: "Source System Code = 'FMS_FORBRCH' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -103,7 +103,7 @@ attributes:
     source_system: FMS
     source_table: FORBRCH
     source_column: null
-    comment: "FK target: Geographic Area.Geographic Area Id. Lookup: DM_TINH_THANH. Classification: Source System Code = 'FIMS_NATIONAL'."
+    comment: "FK target: geo.geo_id. Lookup: DM_TINH_THANH. Classification: Source System Code = 'FIMS_NATIONAL'."
     classification_context: "Source System Code = 'FMS_FORBRCH' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -117,7 +117,7 @@ attributes:
     source_system: FMS
     source_table: FORBRCH
     source_column: null
-    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id. // Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS. Classification: Source System Code = 'FIMS_NATIONAL'."
+    comment: "Lookup pair: geo.geo_code. Pair with prov_id. // Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS. Classification: Source System Code = 'FIMS_NATIONAL'."
     classification_context: "Source System Code = 'FMS_FORBRCH' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -159,7 +159,7 @@ attributes:
     source_system: FMS
     source_table: FORBRCH
     source_column: null
-    comment: "FK target: Geographic Area.Geographic Area Id. Classification: Source System Code = 'FIMS_NATIONAL'."
+    comment: "FK target: geo.geo_id. Classification: Source System Code = 'FIMS_NATIONAL'."
     classification_context: "Source System Code = 'FMS_FORBRCH' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -173,7 +173,7 @@ attributes:
     source_system: FMS
     source_table: FORBRCH
     source_column: null
-    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Geographic Area Id. Classification: Source System Code = 'FIMS_NATIONAL'."
+    comment: "Lookup pair: geo.geo_code. Pair with geo_id. Classification: Source System Code = 'FIMS_NATIONAL'."
     classification_context: "Source System Code = 'FMS_FORBRCH' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
