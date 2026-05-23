@@ -1,0 +1,44 @@
+﻿pattern,source,entity,attr,comment,file
+null,FIMS,Disclosure Authorization,Effective Start Date,null,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+null,FMS,Discretionary Investment Account,Account Number,null,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+null,GSGD,Investor Account Relationship,Investor Account Relationship Id,null,dm_atm_ivsr_ac_rltnp-GSGD.account_relationship.yaml
+Scheme only,FIMS,Disclosure Authorization,Relationship Type Code,Scheme: FIMS_RELATIONSHIP_TYPE. Bảng RELATIONSHIP chỉ có cột Id — cần bổ sung cấu trúc.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+Scheme only,FMS,Discretionary Investment Account,Life Cycle Status Code,Scheme: LIFE_CYCLE_STATUS.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+Scheme only,GSGD,Investor Account Relationship,Relation Type Code,Scheme: GSGD_ACCOUNT_RELATION_TYPE. FK suy luận → category_item.,dm_atm_ivsr_ac_rltnp-GSGD.account_relationship.yaml
+FK target,FIMS,Disclosure Authorization,Disclosure Representative Id,FK target: Disclosure Representative.Disclosure Representative Id.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+FK target,FMS,Discretionary Investment Account,Discretionary Investment Investor Id,FK target: Discretionary Investment Investor.Discretionary Investment Investor Id.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+FK target,GSGD,Investor Account Relationship,First Investor Trading Account Id,FK target: Investor Trading Account.Investor Trading Account Id.,dm_atm_ivsr_ac_rltnp-GSGD.account_relationship.yaml
+Lookup pair,FIMS,Disclosure Authorization,Disclosure Representative Code,Lookup pair: Disclosure Representative.Disclosure Representative Code. Pair with Disclosure Representative Id.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+Lookup pair,FMS,Discretionary Investment Account,Discretionary Investment Investor Code,Lookup pair: Discretionary Investment Investor.Discretionary Investment Investor Code. Pair with Discretionary Investment Investor Id.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+Lookup pair,GSGD,Investor Account Relationship,First Investor Trading Account Code,Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with First Investor Trading Account Id.,dm_atm_ivsr_ac_rltnp-GSGD.account_relationship.yaml
+Denormalized,FIMS,Disclosure Authorization,Created By,Mã người dùng hệ thống — denormalized.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+Denormalized,FMS,Discretionary Investment Account,Created By,Mã người dùng hệ thống — denormalized.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+Denormalized,GSGD,Investor Trading Account,Authorized Person Name,Lưu ý: tách sang entity Investor Trading Account Authorization ở Tier 2. Trường này là snapshot denormalized trên account.,dm_atm_ivsr_tdg_ac-GSGD.investor_account.yaml
+BK\. ,FIMS,Disclosure Authorization,Source System Code,Scheme: SOURCE_SYSTEM. BK. Hardcode.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+BK\. ,FMS,Discretionary Investment Account,Source System Code,Scheme: SOURCE_SYSTEM. BK. Hardcode.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+BK\. ,IDS,Public Company State Capital,Source System Code,Scheme: SOURCE_SYSTEM. BK. Hardcode.,dm_atm_pblc_co_ste_cptl-IDS.state_capital.yaml
+ETL derived,ThanhTra,Inspection Case Conclusion,Conclusion Sequence Number,ETL-derived: tính tự động theo thứ tự NGAY_TAO trong cùng HO_SO_ID.,dm_atm_insp_case_conclusion-ThanhTra.TT_KET_LUAN.yaml
+ETL derived,QLRR,Risk Indicator,Indicator Type Code,ETL-derived. Scheme: RISK_INDICATOR_TYPE.,dm_atm_rsk_ind-QLRR.risk_indicator.yaml
+ETL derived,OrderTrade,Securities Order,Trade Date,Nguồn Character(8) — ETL parse sang date.,dm_atm_scr_ordr-OrderTrade.Order_HNX.yaml
+Other,FMS,Discretionary Investment Account,Account Place,Cần xác nhận: có phải FK đến Custodian Bank không? Tạm giữ dạng Text.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+Other,ThanhTra,AML Periodic Report,Source Record Id,Internal source PK — dùng để cross-reference khi MA_BAO_CAO chưa có.,dm_atm_aml_prd_rpt-ThanhTra.PCRT_BAO_CAO.yaml
+Other,SCMS,Disclosure Report Submission,Reporting Period Code,Text tự do — kỳ báo cáo (VD: Q1/2024).,dm_atm_dscl_rpt_subm-SCMS.CBTT_BAO_CAO.yaml
+BK chính,FIMS,Disclosure Authorization,Disclosure Authorization Code,BK chính.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+BK chính,FMS,Discretionary Investment Account,Discretionary Investment Account Code,BK chính.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+BK chính,GSGD,Investor Account Relationship,Investor Account Relationship Code,BK chính. Map từ PK nguồn.,dm_atm_ivsr_ac_rltnp-GSGD.account_relationship.yaml
+PK surrogate,FIMS,Disclosure Authorization,Disclosure Authorization Id,PK surrogate.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
+PK surrogate,FMS,Discretionary Investment Account,Discretionary Investment Account Id,PK surrogate.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
+PK surrogate,IDS,Public Company State Capital,Public Company State Capital Id,PK surrogate.,dm_atm_pblc_co_ste_cptl-IDS.state_capital.yaml
+BCV (other),KNT,Tax Violation Penalty Decision,Inspection Period,BCV: không có term riêng. Kỳ được thanh tra/kiểm tra phát hiện vi phạm.,dm_atm_tax_vln_pny_dcsn-KNT.TT_XLY_VI_PHAM.yaml
+BCV (exact),KNT,Tax Violation Penalty Decision,Taxpayer Name,"BCV: ""Organization Name"" (Involved Party). Snapshot tại thời điểm quyết định xử lý.",dm_atm_tax_vln_pny_dcsn-KNT.TT_XLY_VI_PHAM.yaml
+BCV (exact),OrderTrade,Securities Order,Side Code,"BCV: ""Side"" — giá trị tường minh B/S, không qua Classification Value scheme.",dm_atm_scr_ordr-OrderTrade.Order_HOSE.yaml
+BCV (exact),NHNCK,Securities Organization Reference,Representative Name,"BCV: ""Designated Representative"" (Involved Party). Suffix Name. Chủ thể khác — không thuộc shared entity.",dm_atm_scr_org_refr-NHNCK.Organizations.yaml
+BCV (gan nhat),KNT,Tax Violation Penalty Decision,Order Number,"BCV: gần nhất ""Submission Number"" (Documentation). QĐ xử lý vi phạm là văn bản hành chính. Business reference number của quyết định.",dm_atm_tax_vln_pny_dcsn-KNT.TT_XLY_VI_PHAM.yaml
+Snapshot,NHNCK,Securities Practitioner License Certificate Document Activity Log,Certificate Number,Snapshot — số chứng chỉ tại thời điểm hoạt động.,dm_atm_scr_prac_license_ctf_doc_avy_log-NHNCK.CertificateRecordLogs.yaml
+Snapshot,OrderTrade,Securities Order,Execution Price,Snapshot giá khớp tại event lệnh — khác với Exec Price trên Trade (confirmed per-match). Nullable vì lệnh chưa khớp. Giữ theo T1-04 confirm.,dm_atm_scr_ordr-OrderTrade.Order_HNX.yaml
+Snapshot,QLRR,Risk Alert,Threshold Value,Lưu dạng Text. Snapshot ngưỡng.,dm_atm_rsk_alert-QLRR.risk_alert.yaml
+Audit note,OrderTrade,Securities Order,Reference Sequence Number,Metadata luồng dữ liệu — dùng để audit/trace event order.,dm_atm_scr_ordr-OrderTrade.Order_HNX.yaml
+Audit note,IDS,Public Company,Created Timestamp,Audit từ company_detail là 1-1 với company_profiles.,dm_atm_pblc_co-IDS.company_detail.yaml
+Audit note,ThanhTra,Public Company,Created Timestamp,Audit từ company_detail là 1-1 với company_profiles.,dm_atm_pblc_co-ThanhTra.DM_CONG_TY_DC.yaml
+BCV Term (exact),ECAT,Calendar Date,Holiday Flag,"BCV Term: Public Holiday Flag. ETL merge: nếu calendar_date match ngày trong ECAT_29 → true, ngược lại → false.",dm_atm_cdr_dt-ECAT.ECAT_29_HolidayInfo.yaml
+BCV Term (exact),MDDS,Corporate Bond Trading Snapshot,Debt Interest Type Code,BCV Term: Debt Interest Type (id=12002) — distinguishes Debt Instrument by how interest rate is applied (fixed/floating). Scheme: MDDS_INTEREST_RATE_TYPE. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số làm code.,dm_atm_corp_bond_tdg_snpst-MDDS.CorpBondInfor.yaml
