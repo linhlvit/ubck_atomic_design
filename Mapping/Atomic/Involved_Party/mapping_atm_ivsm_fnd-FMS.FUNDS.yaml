@@ -1,0 +1,157 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ivsm_fnd-FMS.FUNDS
+  logical_name: Mapping Atomic - Investment Fund – source FMS.FUNDS
+  physical_name: ivsm_fnd
+  dm_ref: ATM-ivsm_fnd-FMS.FUNDS
+  brd_ref: BRD-SRC-FMS-FUNDS
+target:
+  namespace: atm
+  physical_name: ivsm_fnd
+  etl_handle: SCD4A
+  description: Quỹ đầu tư chứng khoán — pháp nhân độc lập do công ty quản lý quỹ thành
+    lập và quản lý. Lưu thông tin pháp lý và vốn của quỹ.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: FUNDS
+  alias: fund
+  select_fields: Id, FundName, FundShortName, FundEnName, SecId, FundCapital, FundType,
+    Status, DecisionDate, ActiveDate, StopDate, CreatedBy, DateCreated, DateModified
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: AGENFUNDS
+  alias: ag_fu_raw
+  select_fields: FundId, AgnId
+  filter: null
+  note: Pure junction — denormalize thành ARRAY
+- source_type: derived_cte
+  namespace: null
+  table_name: ag_fu_raw
+  alias: ag_fu
+  select_fields: FundId, COLLECT_LIST(NAMED_STRUCT('agent_id', {hash_id}('FMS_AGENFUNDS',
+    ag_fu_raw.AgnId), 'agent_code', ag_fu_raw.AgnId)) AS dstr_agnt_ids
+  filter: GROUP BY FundId
+- source_type: physical_table
+  namespace: ods
+  table_name: FNDSBMN
+  alias: fn_raw
+  select_fields: FundId, BmnId
+  filter: null
+  note: Pure junction — denormalize thành ARRAY
+- source_type: derived_cte
+  namespace: null
+  table_name: fn_raw
+  alias: fn
+  select_fields: FundId, COLLECT_LIST(NAMED_STRUCT('bank_id', {hash_id}('FMS_FNDSBMN',
+    fn_raw.BmnId), 'bank_code', fn_raw.BmnId)) AS cstd_bnk_ids
+  filter: GROUP BY FundId
+relationship:
+- main_alias: fund
+  join_type: LEFT JOIN
+  join_alias: ag_fu
+  join_on: fund.Id = ag_fu.FundId
+- main_alias: fund
+  join_type: LEFT JOIN
+  join_alias: fn
+  join_on: fund.Id = fn.FundId
+mapping_columns:
+- target_column: ivsm_fnd_id
+  transformation: '{hash_id}(''FMS_FUNDS'', fund.Id)'
+  data_type: string
+  description: Khóa đại diện cho quỹ đầu tư chứng khoán.
+  target_attr_name: Investment Fund Id
+- target_column: ivsm_fnd_code
+  transformation: fund.Id
+  data_type: string
+  description: Mã định danh quỹ đầu tư. Map từ PK bảng nguồn.
+  target_attr_name: Investment Fund Code
+- target_column: src_stm_code
+  transformation: '''FMS_FUNDS'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: ivsm_fnd_nm
+  transformation: fund.FundName
+  data_type: string
+  description: Tên đầy đủ quỹ đầu tư.
+  target_attr_name: Investment Fund Name
+- target_column: ivsm_fnd_shrt_nm
+  transformation: fund.FundShortName
+  data_type: string
+  description: Tên viết tắt quỹ đầu tư.
+  target_attr_name: Investment Fund Short Name
+- target_column: ivsm_fnd_en_nm
+  transformation: fund.FundEnName
+  data_type: string
+  description: Tên tiếng Anh quỹ đầu tư.
+  target_attr_name: Investment Fund English Name
+- target_column: fnd_mgt_co_id
+  transformation: '{hash_id}(''FIMS_FUNDCOMPANY'', fund.SecId)'
+  data_type: string
+  description: FK đến công ty QLQ quản lý quỹ.
+  target_attr_name: Fund Management Company Id
+- target_column: fnd_mgt_co_code
+  transformation: fund.SecId
+  data_type: string
+  description: Mã công ty QLQ quản lý quỹ.
+  target_attr_name: Fund Management Company Code
+- target_column: fnd_cptl_amt
+  transformation: fund.FundCapital
+  data_type: decimal(23,2)
+  description: Vốn điều lệ quỹ đầu tư (VNĐ).
+  target_attr_name: Fund Capital Amount
+- target_column: fnd_tp_code
+  transformation: fund.FundType
+  data_type: string
+  description: Loại hình quỹ đầu tư.
+  target_attr_name: Fund Type Code
+- target_column: practice_st_code
+  transformation: fund.Status
+  data_type: string
+  description: Trạng thái hoạt động quỹ.
+  target_attr_name: Practice Status Code
+- target_column: license_dcsn_dt
+  transformation: fund.DecisionDate
+  data_type: date
+  description: Ngày cấp phép thành lập quỹ.
+  target_attr_name: License Decision Date
+- target_column: actv_dt
+  transformation: fund.ActiveDate
+  data_type: date
+  description: Ngày bắt đầu hoạt động.
+  target_attr_name: Active Date
+- target_column: stop_dt
+  transformation: fund.StopDate
+  data_type: date
+  description: Ngày ngừng hoạt động.
+  target_attr_name: Stop Date
+- target_column: dstr_agnt_ids
+  transformation: ag_fu.dstr_agnt_ids
+  data_type: array<struct<...>>
+  description: Danh sách đại lý phân phối quỹ (SK + mã nghiệp vụ).
+  target_attr_name: Distribution Agent Ids
+- target_column: cstd_bnk_ids
+  transformation: fn.cstd_bnk_ids
+  data_type: array<struct<...>>
+  description: Danh sách ngân hàng lưu ký giám sát (SK + mã nghiệp vụ).
+  target_attr_name: Custodian Bank Ids
+- target_column: crt_by
+  transformation: fund.CreatedBy
+  data_type: string
+  description: Người tạo bản ghi.
+  target_attr_name: Created By
+- target_column: crt_tms
+  transformation: fund.DateCreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: fund.DateModified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+  target_attr_name: Updated Timestamp
+transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+final_filter: []
