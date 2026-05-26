@@ -1,0 +1,1179 @@
+﻿;;;;;;;;;;;;;;;Khai thác nguồn;;Review design;;;;;
+TT;Mã;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện;Câu lệnh tham khảo;Note;Kết quả Test;Model;DMT
+;;;Tên chiều/chỉ tiêu/thuộc tính;;Dashboard/báo cáo/DataExplorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: lấy 1: 1 từ nguồn
+TB: có tính toán tổng hợp
+Khó: Có logic phức tạp và lấy nhiều mốc thời gian
+Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;;;;;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;Loại chứng khoán / Thị trường;Loại CK / Thị trường: Cổ phiếu;Dashboard;Chiều;TB;Loại CK / Thị trường;MSS;X;X;;Done;;Tham số nghiệp vụ - Không map bảng nguồn;N/A;"Giá trị = 'Cổ phiếu'
+- Chỉ số: marketId IN ('10','02','04')
+-- '10' -> VN-Index (HOSE)
+-- '02' -> HNX-Index
+-- '04' -> UPCOM-Index
+- GTGD: ""Market ID"" IN ('STO','STX','UPX')
+-- STO -> Cổ phiếu HOSE
+-- STX -> Cổ phiếu HNX
+-- UPX -> Cổ phiếu UPCoM";;;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;Sàn;Sàn giao dịch: HOSE, HNX, UPCOM;Dashboard;Chiều;TB;Sàn;MDDS, MSS;X;X;;Done;;Tham số lọc - Không map bảng nguồn;N/A;;;;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;Chỉ số;Danh mục chỉ số thị trường của các sàn: VN-Index, HNX-Index, UPCOM-Index;Dashboard;Chiều;TB;Sàn, Chỉ số;MDDS;X;X;;Done;Thông tin thị trường;MarketInfor;"""marketId""
+""marketCode""";"""marketId"" IN ('10','02','04')
+-- '10' -> VN-Index (HOSE)
+-- '02' -> HNX-Index
+-- '04' -> UPCOM-Index";"SELECT DISTINCT
+""marketId"",
+""marketCode""
+FROM MarketInfor
+WHERE ""marketId"" IN ('10','02','04')";;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;Giá trị chỉ số;Giá trị chỉ số (Điểm) tại ngày cuối kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Dễ;Sàn, Chỉ số, Ngày;MDDS;X;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('10','02','04')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('10','02','04')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";Dữ liệu JDataFeed là realtime -> Cần tính số cuối ngày;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;GT mua/bán ròng NĐTNN;"GT mua/bán ròng NĐTNN = Σ (GT NĐTNN mua − GT NĐTNN bán) trong kỳ báo cáo.
+Cách tính giao dịch NĐTNN:
++) Cách 1: Phân loại giao dịch ở sổ lệnh như sau:
+- Board ID: T1, T2, T3, T4, TR là thỏa thuận
+- Sell Foreign Investor Type Code <> 00 là NĐTNN bán
+- Buy Foreign Investor Type Code <> 00 là NĐTNN bán
+- Sell client/house classification = 30 là tự doanh bán
+- Buy client/house classification = 30 là tự doanh mua
++) Cách 2: Phân loại tài khoản thuộc loại NĐT nào dựa trên ký tự thứ 4 trong số tài khoản:
+- C: Cá nhân trong nước
+- F: Cá nhân nước ngoài
+- B: Tổ chức trong nước
+- E: Tổ chức nước ngoài
+- P: Tự doanh";Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;X;X;;Done;Sổ lệnh (Trade Book);Trade_HOSE, Trade_HNX;"Trade_HOSE.""Execution - Value""
+Trade_HNX.""Trade price""
+Trade_HNX.""Trade quantity""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch NĐTNN - HOSE:
+Trade_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
+Trade_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
+-- Giao dịch NĐTNN - HNX/UPCOM:
+Trade_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
+Trade_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán";"WITH hose AS (
+SELECT ""Market ID"" AS marketid,
+""Trade Date"" AS tradedate,
+SUM(DECODE(""Buy - Foreigner Investor type"", '00', 0, ""Execution - Value"")) AS gtnn_mua,
+SUM(DECODE(""Sell - Foreigner Investor type"", '00', 0, ""Execution - Value"")) AS gtnn_ban
+FROM Trade_HOSE
+WHERE ""Market ID"" = 'STO'
+AND ""Trade Date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade Date""
+),
+hnx_upcom AS (
+SELECT ""Market ID"" AS marketid,
+""Trade date"" AS tradedate,
+SUM(DECODE(""Buy Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_mua,
+SUM(DECODE(""Sell Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_ban
+FROM Trade_HNX
+WHERE ""Market ID"" IN ('STX','UPX')
+AND ""Trade date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade date""
+)
+--Tính từng sàn
+SELECT 
+marketid,
+tradedate,
+gtnn_mua,
+gtnn_ban,
+(gtnn_mua - gtnn_ban) AS gtnn_rong
+FROM (SELECT * FROM hose UNION ALL SELECT * FROM hnx_upcom)
+UNION ALL
+--Tính toàn thị trường
+SELECT 
+'TOTAL' marketid,
+tradedate,
+SUM(gtnn_mua) AS gtnn_mua,
+SUM(gtnn_ban) AS gtnn_ban,
+SUM(gtnn_mua) - SUM(gtnn_ban) AS gtnn_rong
+FROM (SELECT * FROM hose UNION ALL SELECT * FROM hnx_upcom)
+GROUP BY tradedate";;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;Giá trị chỉ số VN-Index;Giá trị chỉ số VN-Index tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('10')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('10')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;Giá trị chỉ số HNX-Index;Giá trị chỉ số HNX-Index tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('02')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('02')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;Giá trị chỉ số UPCOM-Index;Giá trị chỉ số UPCOM-Index tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('04')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('04')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;GT mua/bán ròng NĐTNN trên HOSE;Σ (GT NĐTNN mua − GT NĐTNN bán) trong kỳ báo cáo của sàn HOSE;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;;X;;Done;Sổ lệnh (Trade Book);Trade_HOSE;"""Execution - Value""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch NĐTNN - HOSE:
+Trade_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
+Trade_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
+-- Giao dịch NĐTNN - HNX/UPCOM:
+Trade_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
+Trade_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán";"SELECT ""Trade Date"" AS tradedate,
+SUM(DECODE(""Buy - Foreigner Investor type"", '00', 0, ""Execution - Value"")) AS gtnn_mua,
+SUM(DECODE(""Sell - Foreigner Investor type"", '00', 0, ""Execution - Value"")) AS gtnn_ban,
+SUM(DECODE(""Buy - Foreigner Investor type"", '00', 0, ""Execution - Value""))
+- SUM(DECODE(""Sell - Foreigner Investor type"", '00', 0, ""Execution - Value"")) AS gtnn_rong
+FROM Trade_HOSE
+WHERE ""Market ID"" = 'STO'
+AND ""Trade Date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade Date""";;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;GT mua/bán ròng NĐTNN trên HNX;Σ (GT NĐTNN mua − GT NĐTNN bán) trong kỳ báo cáo của sàn HNX;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;;X;;Done;Sổ lệnh (Trade Book);Trade_HNX;"""Trade price""
+""Trade quantity""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch NĐTNN - HOSE:
+Trade_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
+Trade_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
+-- Giao dịch NĐTNN - HNX/UPCOM:
+Trade_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
+Trade_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán";"SELECT ""Trade date"" AS tradedate,
+SUM(DECODE(""Buy Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_mua,
+SUM(DECODE(""Sell Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_ban,
+SUM(DECODE(""Buy Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity""))
+- SUM(DECODE(""Sell Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_rong
+FROM Trade_HNX
+WHERE ""Market ID"" = 'STX'
+AND ""Trade date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade date""";;;;
+1;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index;GT mua/bán ròng NĐTNN trên UPCOM;Σ (GT NĐTNN mua − GT NĐTNN bán) trong kỳ báo cáo của sàn UPCOM;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;;X;;Done;Sổ lệnh (Trade Book);Trade_HNX;"""Trade price""
+""Trade quantity""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch NĐTNN - HOSE:
+Trade_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
+Trade_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
+-- Giao dịch NĐTNN - HNX/UPCOM:
+Trade_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
+Trade_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán";"SELECT ""Trade date"" AS tradedate,
+SUM(DECODE(""Buy Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_mua,
+SUM(DECODE(""Sell Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_ban,
+SUM(DECODE(""Buy Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity""))
+- SUM(DECODE(""Sell Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS gtnn_rong
+FROM Trade_HNX
+WHERE ""Market ID"" = 'UPX'
+AND ""Trade date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade date""";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;Loại chứng khoán / Thị trường;Loại CK / Thị trường: Cổ phiếu;Dashboard;Chiều;Trùng;Loại CK / Thị trường;MDDS, MSS;;X;;Done;;Tham số nghiệp vụ - Không map bảng nguồn;N/A;"Giá trị = 'Cổ phiếu'
+- Chỉ số: marketId IN ('10','02','04')
+-- '10' -> VN-Index (HOSE)
+-- '02' -> HNX-Index
+-- '04' -> UPCOM-Index
+- GTGD: ""Market ID"" IN ('STO','STX','UPX')
+-- STO -> Cổ phiếu HOSE
+-- STX -> Cổ phiếu HNX
+-- UPX -> Cổ phiếu UPCoM";;;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;Sàn;Sàn giao dịch: HOSE, HNX, UPCOM;Dashboard;Chiều;Trùng;Sàn;MDDS, MSS;;X;;Done;;Tham số lọc - Không map bảng nguồn;N/A;;;;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;Chỉ số;Danh mục chỉ số thị trường của các sàn: VN-Index, HNX-Index, UPCOM-Index;Dashboard;Chiều;Trùng;Sàn, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketId""
+""marketCode""";"""marketId"" IN ('10','02','04')
+-- '10' -> VN-Index (HOSE)
+-- '02' -> HNX-Index
+-- '04' -> UPCOM-Index";"SELECT DISTINCT
+""marketId"",
+""marketCode""
+FROM MarketInfor
+WHERE ""marketId"" IN ('10','02','04')";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;Giá trị chỉ số;Giá trị chỉ số (Điểm) tại ngày cuối kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('10','02','04')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('10','02','04')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";Dữ liệu JDataFeed là realtime -> Cần tính số cuối ngày;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;GT mua/bán ròng tự doanh;"Σ (GTGD tự doanh mua − GTGD tự doanh bán) trong kỳ báo cáo.
+Cách tính giao dịch Tự doanh:
++) Cách 1: Phân loại tài khoản thuộc loại NĐT nào dựa trên ký tự thứ 4 trong số tài khoản:
+- C: Cá nhân trong nước
+- F: Cá nhân nước ngoài
+- B: Tổ chức trong nước
+- E: Tổ chức nước ngoài
+- P: Tự doanh
++) Cách 2: Phân loại giao dịch ở sổ lệnh như sau:
+- Board ID: T1, T2, T3, T4, TR là thỏa thuận
+- Sell Foreign Investor Type Code <> 00 là NĐTNN bán
+- Buy Foreign Investor Type Code <> 00 là NĐTNN bán
+- Sell client/house classification = 30 là tự doanh bán
+- Buy client/house classification = 30 là tự doanh mua";Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;X;X;;Done;Sổ lệnh (Trade Book);Trade_HOSE, Trade_HNX;"Trade_HOSE.""Execution - Value""
+Trade_HNX.""Trade price""
+Trade_HNX.""Trade quantity""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch Tự doanh - HOSE:
+Trade_HOSE.""Buy - Client/House Classification Code"" = '30' --Tự doanh Mua
+Trade_HOSE.""Sell - Client/House Classification Code"" = '30' --Tự doanh Bán
+-- Giao dịch Tự doanh - HNX/UPCOM:
+Trade_HNX.""Buy client/house classification"" = '30' --Tự doanh Mua
+Trade_HNX.""Sell client/house classification"" = '30' --Tự doanh Bán";"WITH hose AS (
+SELECT ""Market ID"" AS marketid,
+""Trade Date"" AS tradedate,
+SUM(DECODE(""Buy - Client/House Classification Code"", '30', ""Execution - Value"", 0)) AS gt_tudoanh_mua,
+SUM(DECODE(""Sell - Client/House Classification Code"", '30', ""Execution - Value"", 0)) AS gt_tudoanh_ban
+FROM Trade_HOSE
+WHERE ""Market ID"" = 'STO'
+AND ""Trade Date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade Date""
+),
+hnx_upcom AS (
+SELECT ""Market ID"" AS marketid,
+""Trade date"" AS tradedate,
+SUM(DECODE(""Buy client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_mua,
+SUM(DECODE(""Sell client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_ban
+FROM Trade_HNX
+WHERE ""Market ID"" IN ('STX','UPX')
+AND ""Trade date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade date""
+)
+--Tính từng sàn
+SELECT 
+marketid,
+tradedate,
+gt_tudoanh_mua,
+gt_tudoanh_ban,
+(gt_tudoanh_mua - gt_tudoanh_ban) AS gt_tudoanh_rong
+FROM (SELECT * FROM hose UNION ALL SELECT * FROM hnx_upcom)
+UNION ALL
+--Tính toàn thị trường
+SELECT 
+'TOTAL' marketid,
+tradedate,
+SUM(gt_tudoanh_mua) AS gt_tudoanh_mua,
+SUM(gt_tudoanh_ban) AS gt_tudoanh_ban,
+SUM(gt_tudoanh_mua) - SUM(gt_tudoanh_ban) AS gt_tudoanh_rong
+FROM (SELECT * FROM hose UNION ALL SELECT * FROM hnx_upcom)
+GROUP BY tradedate";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;Giá trị chỉ số VN-Index;Giá trị chỉ số VN-Index tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('10')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('10')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;Giá trị chỉ số HNX-Index;Giá trị chỉ số HNX-Index tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('02')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('02')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;Giá trị chỉ số UPCOM-Index;Giá trị chỉ số UPCOM-Index tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Ngày;MDDS;;X;;Done;Thông tin thị trường;MarketInfor;"""marketIndex""";"""marketId"" IN ('04')
+AND tradingdate = :to_date
+-> Lấy bản ghi indexTime = MAX(indexTime) theo từng marketId";"SELECT ""marketId"", ""marketCode"", ""marketIndex""
+FROM (
+SELECT ""marketId"", ""marketCode"", ""marketIndex"",
+ROW_NUMBER() OVER (
+PARTITION BY ""marketId"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) rn
+FROM public_MarketInfor
+WHERE ""marketId"" IN ('04')
+AND ""tradingdate"" = :to_date
+) t
+WHERE rn = 1";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;GT mua/bán ròng tự doanh trên HOSE;Σ (GTGD tự doanh mua − GTGD tự doanh bán) trong kỳ báo cáo của sàn HOSE;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;;X;;Done;Sổ lệnh (Trade Book);Trade_HOSE;"""Execution - Value""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch Tự doanh - HOSE:
+Trade_HOSE.""Buy - Client/House Classification Code"" = '30' --Tự doanh Mua
+Trade_HOSE.""Sell - Client/House Classification Code"" = '30' --Tự doanh Bán
+-- Giao dịch Tự doanh - HNX/UPCOM:
+Trade_HNX.""Buy client/house classification"" = '30' --Tự doanh Mua
+Trade_HNX.""Sell client/house classification"" = '30' --Tự doanh Bán";"SELECT ""Trade Date"" AS tradedate,
+SUM(DECODE(""Buy - Client/House Classification Code"", '30', ""Execution - Value"", 0)) AS gt_tudoanh_mua,
+SUM(DECODE(""Sell - Client/House Classification Code"", '30', ""Execution - Value"", 0)) AS gt_tudoanh_ban,
+SUM(DECODE(""Buy - Client/House Classification Code"", '30', ""Execution - Value"", 0))
+- SUM(DECODE(""Sell - Client/House Classification Code"", '30', ""Execution - Value"", 0)) AS gt_tudoanh_rong
+FROM Trade_HOSE
+WHERE ""Market ID"" = 'STO'
+AND ""Trade Date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade Date""";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;GT mua/bán ròng tự doanh trên HNX;Σ (GTGD tự doanh mua − GTGD tự doanh bán) trong kỳ báo cáo của sàn HNX;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;;X;;Done;Sổ lệnh (Trade Book);Trade_HNX;"""Trade price""
+""Trade quantity""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch Tự doanh - HOSE:
+Trade_HOSE.""Buy - Client/House Classification Code"" = '30' --Tự doanh Mua
+Trade_HOSE.""Sell - Client/House Classification Code"" = '30' --Tự doanh Bán
+-- Giao dịch Tự doanh - HNX/UPCOM:
+Trade_HNX.""Buy client/house classification"" = '30' --Tự doanh Mua
+Trade_HNX.""Sell client/house classification"" = '30' --Tự doanh Bán";"SELECT ""Trade date"" AS tradedate,
+SUM(DECODE(""Buy client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_mua,
+SUM(DECODE(""Sell client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_ban,
+SUM(DECODE(""Buy client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0))
+- SUM(DECODE(""Sell client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_rong
+FROM Trade_HNX
+WHERE ""Market ID"" = 'STX'
+AND ""Trade date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade date""";;;;
+2;;Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index;GT mua/bán ròng tự doanh trên UPCOM;Σ (GTGD tự doanh mua − GTGD tự doanh bán) trong kỳ báo cáo của sàn UPCOM;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày/Tháng/Quý/Năm;MDDS, MSS;;X;;Done;Sổ lệnh (Trade Book);Trade_HNX;"""Trade price""
+""Trade quantity""";"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch Tự doanh - HOSE:
+Trade_HOSE.""Buy - Client/House Classification Code"" = '30' --Tự doanh Mua
+Trade_HOSE.""Sell - Client/House Classification Code"" = '30' --Tự doanh Bán
+-- Giao dịch Tự doanh - HNX/UPCOM:
+Trade_HNX.""Buy client/house classification"" = '30' --Tự doanh Mua
+Trade_HNX.""Sell client/house classification"" = '30' --Tự doanh Bán";"SELECT ""Trade date"" AS tradedate,
+SUM(DECODE(""Buy client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_mua,
+SUM(DECODE(""Sell client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_ban,
+SUM(DECODE(""Buy client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0))
+- SUM(DECODE(""Sell client/house classification"", '30', ""Trade price"" * ""Trade quantity"", 0)) AS gt_tudoanh_rong
+FROM Trade_HNX
+WHERE ""Market ID"" = 'UPX'
+AND ""Trade date"" BETWEEN :from_date AND :to_date
+GROUP BY ""Trade date""";;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Loại chứng khoán / Thị trường;Loại CK / Thị trường: Phái sinh;Dashboard;Chiều;TB;Loại CK / Thị trường;MSS;X;X;;;;Tham số nghiệp vụ - Không map bảng nguồn;N/A;"Giá trị = 'Phái sinh'
+- Giao dịch: 
+Trade_HOSE.""Market ID"" IN ('DVX')
+Trade_HNX.""Market ID"" IN ('DVX')
+- Thông tin thị trường (Danh mục CK): StockInfor.""FloorCode"" = '03'";;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Sản phẩm phái sinh;HĐTL VN30 / HĐTL VN100 / HĐTL TPCP;Dashboard;Chiều;TB;Sản phẩm phái sinh;MSS;X;X;;;;Tham số lọc - Không map bảng nguồn;N/A;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Kỳ hạn HĐTL;"4 kỳ hạn HĐTL:
+Tháng gần nhất
+Tháng tiếp theo
+Cuối quý gần nhất
+Cuối quý tiếp theo";Dashboard;Chiều;TB;Kỳ hạn HĐTL;MSS;X;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Tổng KLGD;Σ KL hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL;Giá HĐTL của tất cả các kỳ hạn trái phiếu: Lấy giá đóng cửa tại ngày cuối kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;X;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Khối lượng mở (OI);Σ Khối lượng mở của tất cả hợp đồng tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MDDS;X;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua NĐTNN;"Σ KL mua NĐTNN trong kỳ báo cáo.
+Cách tính giao dịch NĐTNN:
++) Cách 1: Phân loại tài khoản thuộc loại NĐT nào dựa trên ký tự thứ 4 trong số tài khoản:
+- C: Cá nhân trong nước
+- F: Cá nhân nước ngoài
+- B: Tổ chức trong nước
+- E: Tổ chức nước ngoài
+- P: Tự doanh
++) Cách 2: Phân loại giao dịch ở sổ lệnh như sau:
+- Board ID: T1, T2, T3, T4, TR là thỏa thuận
+- Sell Foreign Investor Type Code <> 00 là NĐTNN bán
+- Buy Foreign Investor Type Code <> 00 là NĐTNN bán
+- Sell client/house classification = 30 là tự doanh bán
+- Buy client/house classification = 30 là tự doanh mua";Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL bán NĐTNN;Σ KL bán NĐTNN trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua/bán ròng NĐTNN;Σ (KL mua NĐTNN − KL bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;% thay đổi so với kỳ trước;Tính % thay đổi so với kỳ trước của từng các chỉ tiêu;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;;;X;X;;;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Tổng KLGD - HĐTL VN30;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN30 - Tháng gần nhất;Giá của HĐTL có kỳ hạn là tháng gần nhất tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN30 - Tháng tiếp theo;Giá của HĐTL có kỳ hạn là tháng tiếp theo tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN30 - Cuối quý gần nhất;Giá của HĐTL có kỳ hạn là tháng cuối quý gần nhất tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN30 - Cuối quý tiếp theo;Giá của HĐTL có kỳ hạn là tháng cuối quý tiếp theo tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Khối lượng mở (OI) - HĐTL VN30;Σ Khối lượng mở của tất cả hợp đồng tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua NĐTNN - HĐTL VN30;Σ KL mua NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL bán NĐTNN - HĐTL VN30;Σ KL bán NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua/bán ròng NĐTNN - HĐTL VN30;Σ (KL mua − KL bán) của NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Tổng KLGD - HĐTL VN100;Σ KLGD của tất cả hợp đồng phái sinh trong ngày;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN100 - Tháng gần nhất;Giá của HĐTL có kỳ hạn là tháng gần nhất;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN100 - Tháng tiếp theo;Giá của HĐTL có kỳ hạn là tháng tiếp theo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN100 - Cuối quý gần nhất;Giá của HĐTL có kỳ hạn là tháng cuối quý gần nhất;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL VN100 - Cuối quý tiếp theo;Giá của HĐTL có kỳ hạn là tháng cuối quý tiếp theo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Khối lượng mở (OI) - HĐTL VN100;Σ Khối lượng mở của tất cả hợp đồng tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua NĐTNN - HĐTL VN100;Σ KL mua NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL bán NĐTNN - HĐTL VN100;Σ KL bán NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua/bán ròng NĐTNN - HĐTL VN100;Σ (KL mua − KL bán) của NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Tổng KLGD - HĐTL TPCP;Σ KLGD của tất cả hợp đồng phái sinh trong ngày;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL TPCP - Tháng gần nhất;Giá của HĐTL có kỳ hạn là tháng gần nhất;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL TPCP - Tháng tiếp theo;Giá của HĐTL có kỳ hạn là tháng tiếp theo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL TPCP - Cuối quý gần nhất;Giá của HĐTL có kỳ hạn là tháng cuối quý gần nhất;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL TPCP - Cuối quý tiếp theo;Giá của HĐTL có kỳ hạn là tháng cuối quý tiếp theo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Khối lượng mở (OI) - HĐTL TPCP;Σ Khối lượng mở của tất cả hợp đồng tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua NĐTNN - HĐTL TPCP;Σ KL mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL bán NĐTNN - HĐTL TPCP;Σ KL bán NĐTNN trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua/bán ròng NĐTNN - HĐTL TPCP;Σ (KL mua NĐTNN − KL bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Tổng KLGD - HĐTL TPCP;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - HĐTL TPCP;Giá của hợp đồng có kỳ hạn gần nhất tại ngày cuối kỳ báo cáo (điểm);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Khối lượng mở (OI) - HĐTL TPCP;Σ Khối lượng mở của tất cả hợp đồng;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua NĐTNN - HĐTL TPCP;Σ KL mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL bán NĐTNN - HĐTL TPCP;Σ KL bán NĐTNN trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua/bán ròng NĐTNN - HĐTL TPCP;Σ (KL mua NĐTNN − KL bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Tổng KLGD - Toàn thị trường;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - Tháng gần nhất;Giá của HĐTL có kỳ hạn là tháng gần nhất tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - Tháng tiếp theo;Giá của HĐTL có kỳ hạn là tháng tiếp theo tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - Cuối quý gần nhất;Giá của HĐTL có kỳ hạn là tháng cuối quý gần nhất tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - Cuối quý tiếp theo;Giá của HĐTL có kỳ hạn là tháng cuối quý tiếp theo tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Kỳ hạn HĐTL, Ngày;MDDS;;X;;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Khối lượng mở (OI) - Toàn thị trường;Σ Khối lượng mở của tất cả hợp đồng tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua NĐTNN - Toàn thị trường;Σ KL mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL bán NĐTNN - Toàn thị trường;Σ KL bán NĐTNN trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua/bán ròng NĐTNN - Toàn thị trường;Σ (KL mua NĐTNN − KL bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Tổng KLGD - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Giá HĐTL - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MDDS;;X;X;;Thông tin thị trường;;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;Khối lượng mở (OI) - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua NĐTNN - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL bán NĐTNN - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+3;;Dashboard Thống kê thị trường >> Phái sinh >> Chỉ tiêu tổng hợp;KL mua/bán ròng NĐTNN - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;Loại chứng khoán / Thị trường;Loại CK / Thị trường: Phái sinh;Dashboard;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;X;;;;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;Sản phẩm phái sinh;HĐTL VN30 / HĐTL VN100 / HĐTL TPCP;Dashboard;Chiều;Trùng;Sản phẩm phái sinh;MSS;;X;X;;;;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;KLGD;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;Khối lượng mở (OI);Σ khối lượng mở trên thị trường phái sinh tại ngày cuối mỗi kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;KLGD - HĐTL VN30;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;Khối lượng mở (OI) - HĐTL VN30;Σ khối lượng mở trên thị trường phái sinh tại ngày cuối mỗi kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;KLGD - HĐTL VN100;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;Khối lượng mở (OI) - HĐTL VN100;Σ khối lượng mở trên thị trường phái sinh tại ngày cuối mỗi kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;KLGD - HĐTL TPCP;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;Khối lượng mở (OI) - HĐTL TPCP;Σ khối lượng mở trên thị trường phái sinh tại ngày cuối mỗi kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;KLGD - Toàn thị trường;Σ KLGD của tất cả hợp đồng phái sinh trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+4;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh;Khối lượng mở (OI) - Toàn thị trường;Σ khối lượng mở trên thị trường phái sinh tại ngày cuối mỗi kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI";;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;Loại chứng khoán / Thị trường;Loại CK / Thị trường: Phái sinh;Dashboard;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;;;;;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;Sản phẩm phái sinh;HĐTL VN30 / HĐTL VN100 / TPCP / Toàn thị trường;Dashboard;Chiều;Trùng;Sản phẩm phái sinh;MSS;;X;;;;;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD mua NĐTNN;Σ KLGD mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD bán NĐTNN;Σ KLGD bán NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KL mua/bán ròng NĐTNN;Σ (KLGD mua NĐTNN − KLGD bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD mua NĐTNN - HĐTL VN30;Σ KLGD mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD bán NĐTNN - HĐTL VN30;Σ KLGD bán NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KL mua/bán ròng NĐTNN - HĐTL VN30;Σ (KLGD mua NĐTNN − KLGD bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD mua NĐTNN - HĐTL VN100;Σ KLGD mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD bán NĐTNN - HĐTL VN100;Σ KLGD bán NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KL mua/bán ròng NĐTNN - HĐTL VN100;Σ (KLGD mua NĐTNN − KLGD bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD mua NĐTNN - HĐTL TPCP;Σ KLGD mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD bán NĐTNN - HĐTL TPCP;Σ KLGD bán NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KL mua/bán ròng NĐTNN - HĐTL TPCP;Σ (KLGD mua NĐTNN − KLGD bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD mua NĐTNN - Toàn thị trường;Σ KLGD mua NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KLGD bán NĐTNN - Toàn thị trường;Σ KLGD bán NĐTNN trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+5;;Dashboard Thống kê thị trường >> Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN;KL mua/bán ròng NĐTNN - Toàn thị trường;Σ (KLGD mua NĐTNN − KLGD bán NĐTNN) trong kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPDN niêm yết;Dashboard;Chiều;TB;Loại CK / Thị trường;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;Tổng KLGD;Σ KLGD TPDN niêm yết trong kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;Tổng GTGD;Σ (KLGD * Giá khớp) giao dịch TPDN niêm yết trong kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;GTGD bình quân phiên (YTD);Σ GTGD / Số phiên tính từ đầu năm đến ngày cuối kỳ;Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;Giá trị mua NĐTNN;Σ (KLGD mua NĐTNN * Giá khớp) giao dịch TPDN niêm yết trong kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;Giá trị bán NĐTNN;Σ (KLGD bán NĐTNN * Giá khớp) giao dịch TPDN niêm yết trong kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;Giá trị mua/bán ròng NĐTNN;Σ (GTGD mua NĐTNN − GTGD bán NĐTNN) giao dịch TPDN niêm yết trong kỳ;Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;Số mã TP niêm yết;Σ Số lượng mã TPDN niêm yết tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Thông tin thị trường;;;;;;;;
+6;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Chỉ tiêu tổng hợp;So sánh với kỳ trước (% thay đổi);(Giá trị kỳ báo cáo − Giá trị kỳ trước) / Giá trị kỳ trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+7;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPDN niêm yết;Dashboard;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;;;;;;;;;;;
+7;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành;Ngành;Ngành nghề kinh tế cấp 1 của công ty đại chúng (Tổ chức phát hành) lấy theo mã chứng khoán;Dashboard;Chiều;TB;Mã chứng khoán;IDS - GSĐC;X;X;;;Hồ sơ công ty đại chúng - Ngành nghề kinh tế cấp 1;;;;;;;;
+7;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành;Kỳ hạn phát hành;Kỳ hạn phát hành TPDN niêm yết;Dashboard;Chiều;TB;Mã chứng khoán;MDDS;X;X;;;Thông tin thị trường;;;;;;;;
+7;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành;Tổng GTGD TPDN niêm yết;Σ (KLGD * Giá khớp) giao dịch TPDN niêm yết trong kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngành, Kỳ hạn phát hành, Ngày;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+7;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành;Kỳ hạn còn lại bình quân;"Kỳ hạn còn lại bình quân của TP trong nhóm (Ngành + Kỳ hạn phát hành) được tính theo dư nợ TP và tại ngày cuối kỳ báo cáo
+Công thức:
+- Kỳ hạn còn lại bình quân = Σ (Kỳ hạn i * Dư nợ i) / Σ Dư nợ i 
+- Dư nợ của từng mã TP i = KL TP đang lưu hành * Mệnh giá TP";Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Ngành, Kỳ hạn phát hành, Ngày;MSS, MDDS;X;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành";;;;;;;;
+7;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành;Số mã TP niêm yết;Σ Số lượng mã TP đang niêm yết (đang lưu hành) tại ngày cuối kỳ theo ngành và kỳ hạn;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngành, Kỳ hạn phát hành, Ngày;MSS, MDDS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành";;;;;;;;
+7;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành;KL TP đang lưu hành;Σ khối lượng TP lưu hành tại ngày cuối kỳ theo ngành và kỳ hạn;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngành, Kỳ hạn phát hành, Ngày;MSS, MDDS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành";;;;;;;;
+8;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Biểu đồ Thống kê GTGD TPDN niêm yết và TPDN riêng lẻ;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPDN niêm yết / TPDN riêng lẻ;Dashboard;Chiều;TB;Loại CK / Thị trường;MSS;X;X;;;;;;;;;;;
+8;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Biểu đồ Thống kê GTGD TPDN niêm yết và TPDN riêng lẻ;GTGD TPDN niêm yết;Σ (KLGD * Giá khớp) của TPDN niêm yết trong kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+8;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Biểu đồ Thống kê GTGD TPDN niêm yết và TPDN riêng lẻ;GTGD TPDN riêng lẻ;"Σ (KLGD * Giá khớp) Hoặc Σ GTGD (nếu có tính sẵn) của TPDN riêng lẻ trong kỳ
+(Lưu ý: Dữ liệu TPDN riêng lẻ không nằm trong sổ lệnh, chỉ có dữ liệu thống kê từ HNX)";Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;X;X;;;Dữ liệu;;;;;;;;
+9;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Biểu đồ Giá trị giao dịch TPDN theo ngành;Ngành;Ngành nghề kinh tế cấp 1 của công ty đại chúng (Tổ chức phát hành) lấy theo mã chứng khoán;Dashboard;Chiều;Trùng;Mã chứng khoán;IDS - GSĐC;;X;;;Hồ sơ công ty đại chúng - Ngành nghề kinh tế cấp 1;;;;;;;;
+9;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Biểu đồ Giá trị giao dịch TPDN theo ngành;GTGD trái phiếu từng ngành;Σ (KLGD * Giá khớp) giao dịch TPDN niêm yết theo ngành trong kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngành, Ngày/Tháng/Quý/Năm;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+9;;Dashboard Thống kê thị trường >> TPDN niêm yết >> Biểu đồ Giá trị giao dịch TPDN theo ngành;Tỷ trọng GTGD theo ngành;GTGD ngành / Tổng GTGD toàn thị trường * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngành, Ngày/Tháng/Quý/Năm;MSS;;X;;;Sổ lệnh (Trade Book);;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPDN riêng lẻ;Dashboard;Chiều;Trùng;Loại CK / Thị trường;TKNB;;X;;;Dữ liệu;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;KLGD TPDN riêng lẻ;Σ KLGD TPDN riêng lẻ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;X;X;;;Dữ liệu;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;GTGD TPDN riêng lẻ;"Σ (KLGD * Giá khớp) Hoặc Σ GTGD (nếu có sẵn số liệu) của TPDN riêng lẻ
+(Dữ liệu TPDN riêng lẻ không nằm trong sổ lệnh, chỉ có dữ liệu thống kê từ HNX)";Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;;X;;;Dữ liệu;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;GTGD bình quân phiên (YTD);Σ GTGD / Số phiên tính từ đầu năm đến ngày báo cáo;Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;X;X;;;Dữ liệu;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;Giá trị mua NĐTNN;Σ (KL mua NĐTNN * Giá) TPDN riêng lẻ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;X;X;;;Dữ liệu;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;Giá trị bán NĐTNN;Σ (KL bán NĐTNN * Giá) TPDN riêng lẻ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;X;X;;;Dữ liệu;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;Giá trị mua/bán ròng NĐTNN;Σ (GTGD NĐTNN mua − GTGD NĐTNN bán) TPDN riêng lẻ;Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;X;X;;;Dữ liệu;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;Số mã TP ĐKGD;Số lượng mã TPDN riêng lẻ ĐKGD tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Thông tin thị trường;;;;;;;;
+10;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Chỉ tiêu tổng hợp;So sánh với kỳ trước (% thay đổi);(Giá trị kỳ báo cáo − Giá trị kỳ trước) / Giá trị kỳ trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;TKNB;;X;X;;Dữ liệu;;;;;;;;
+11;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Biểu đồ Diễn biến giao dịch thị trường TPDN riêng lẻ;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPDN riêng lẻ;Dashboard;Chiều;Trùng;Loại CK / Thị trường;TKNB;;X;X;;Dữ liệu;;;;;;;;
+11;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Biểu đồ Diễn biến giao dịch thị trường TPDN riêng lẻ;GTGD TPDN riêng lẻ;Σ GTGD TPDN riêng lẻ trong kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;;X;X;;Dữ liệu;;;;;;;;
+12;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPDN riêng lẻ;Dashboard;Chiều;Trùng;Loại CK / Thị trường;TKNB;;X;;;Dữ liệu;;;;;;;;
+12;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ;GTGD mua NĐTNN;Σ (KL mua NĐTNN * Giá khớp) giao dịch TPDN riêng lẻ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;;X;X;;Dữ liệu;;;;;;;;
+12;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ;GTGD bán NĐTNN;Σ (KL bán NĐTNN * Giá) giao dịch TPDN riêng lẻ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;;X;X;;Dữ liệu;;;;;;;;
+12;;Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ;GTGD mua/bán ròng NĐTNN;Σ (GTGD NĐTNN mua − GTGD NĐTNN bán) giao dịch TPDN riêng lẻ;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày/Tháng/Quý/Năm;TKNB;;X;X;;Dữ liệu;;;;;;;;
+13;;Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPCP;Dashboard;Chiều;TB;Loại CK / Thị trường;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+13;;Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp;KLGD TPCP;Σ KLGD TPCP trong kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+13;;Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp;GTGD TPCP;Σ (KLGD * Giá khớp) giao dịch TPCP;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+13;;Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp;Giá trị mua NĐTNN;Σ (KL mua NĐTNN * Giá khớp) giao dịch TPCP;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+13;;Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp;Giá trị bán NĐTNN;Σ (KL bán NĐTNN * Giá khớp) giao dịch TPCP;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+13;;Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp;Giá trị mua/bán ròng NĐTNN;Σ (GTGD mua NĐTNN − GTGD bán NĐTNN) giao dịch TPCP;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;X;X;;;Sổ lệnh (Trade Book);;;;;;;;
+13;;Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp;So sánh với kỳ trước;(Giá trị kỳ báo cáo − Giá trị kỳ trước) / Giá trị kỳ trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;;;;;;;;;
+14;;Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Diễn biến giao dịch thị trường;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPCP;Dashboard;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+14;;Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Diễn biến giao dịch thị trường;KLGD TPCP;Σ KLGD TPCP trong kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+14;;Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Diễn biến giao dịch thị trường;GTGD TPCP;Σ (KLGD * Giá khớp) TPCP;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+15;;Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN;Loại chứng khoán / Thị trường;Loại CK / Thị trường: TPCP;Dashboard;Chiều;TB;Loại CK / Thị trường;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+15;;Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN;GTGD mua NĐTNN;Σ (KLGD mua NĐTNN * Giá khớp) giao dịch TPCP;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+15;;Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN;GTGD bán NĐTNN;Σ (KLGD bán NĐTNN * Giá khớp) giao dịch TPCP;Dashboard;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+15;;Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN;GTGD mua/bán ròng NĐTNN;Σ (GTGD mua NĐTNN − GTGD bán NĐTNN) giao dịch TPCP;Dashboard;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Ngày;MSS;;X;X;;Sổ lệnh (Trade Book);;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Loại chứng khoán;Cổ phiếu / TPCP / TPDN niêm yết / TPDN riêng lẻ / Chứng chỉ quỹ / ETF / Chứng quyền;Dashboard;Chiều;TB;Mã chứng khoán;MSS;X;X;;;;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại;Σ số mã CK đang niêm yết;Dashboard;Chỉ tiêu cơ sở;TB;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MDDS;X;X;;;"- Thông tin thị trường
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;TB;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;X;X;;;"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;TB;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;X;X;;;"- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại;Σ KL CK đang niêm yết;Dashboard;Chỉ tiêu cơ sở;TB;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MSS;X;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;TB;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;X;X;;;"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;TB;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;X;X;;;"- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;TB;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MDDS, SCMS, MSS;X;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ
+- Thông tin thị trường";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;% thay đổi so kỳ trước;"Tính cho từng chỉ tiêu.
+% thay đổi = (Kỳ này − kỳ trước) / kỳ trước * 100";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;;;X;X;;;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại - Cổ phiếu;Σ số mã CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS;;X;;;- Thông tin thị trường;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới - Cổ phiếu;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD - Cổ phiếu;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại - Cổ phiếu;Σ KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MSS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung - Cổ phiếu;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD - Cổ phiếu;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết - Cổ phiếu;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại - TPCP;Σ số mã CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MDDS;;X;;;"- Thông tin thị trường
+- Dữ liệu TPCP";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới - TPCP;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB;;X;;;- Dữ liệu TPCP;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD - TPCP;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB;;X;;;- Dữ liệu TPCP;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại - TPCP;Σ KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Dữ liệu TPCP";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung - TPCP;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB;;X;;;- Dữ liệu TPCP;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD - TPCP;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB;;X;;;- Dữ liệu TPCP;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết - TPCP;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MDDS, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Dữ liệu TPCP
+- Thông tin thị trường";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại - TPDN niêm yết;Σ số mã CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS;;X;;;- Thông tin thị trường;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới - TPDN niêm yết;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD - TPDN niêm yết;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại - TPDN niêm yết;Σ KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MSS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung - TPDN niêm yết;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD - TPDN niêm yết;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết - TPDN niêm yết;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại - TPDN riêng lẻ;Σ số mã CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MDDS;;X;;;"- Thông tin thị trường
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới - TPDN riêng lẻ;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;;X;;;"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD - TPDN riêng lẻ;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;;X;;;"- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại - TPDN riêng lẻ;Σ KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung - TPDN riêng lẻ;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;;X;;;"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD - TPDN riêng lẻ;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, SCMS;;X;;;"- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết - TPDN riêng lẻ;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;TKNB, MDDS, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Dữ liệu TPDN riêng lẻ
+- Thông tin thị trường";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại - Chứng chỉ quỹ;Σ số mã CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS;;X;;;- Thông tin thị trường;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới - Chứng chỉ quỹ;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD - Chứng chỉ quỹ;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại - Chứng chỉ quỹ;Σ KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MSS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung - Chứng chỉ quỹ;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD - Chứng chỉ quỹ;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết - Chứng chỉ quỹ;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại - ETF;Σ số mã CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS;;X;;;- Thông tin thị trường;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới - ETF;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD - ETF;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại - ETF;Σ KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MSS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung - ETF;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD - ETF;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết - ETF;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết hiện tại - Chứng quyền;Σ số mã CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS;;X;;;- Thông tin thị trường;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã niêm yết/ĐKGD mới - Chứng quyền;Count số mã niêm yết/ĐKGD mới;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Số mã hủy niêm yết/ĐKGD - Chứng quyền;Count số mã hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD hiện tại - Chứng quyền;Σ KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MSS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL niêm yết/ĐKGD mới/bổ sung - Chứng quyền;Σ Khối lượng CK niêm yết/ĐKGD mới và bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;KL hủy niêm yết/ĐKGD - Chứng quyền;Σ Khối lượng CK hủy niêm yết/ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;SCMS;;X;;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+16;;Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp;Giá trị niêm yết - Chứng quyền;Σ (Mệnh giá * KL CK lưu hành);Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Ngày;MDDS, MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Loại chứng khoán;"Cổ phiếu / Trái phiếu / Chứng chỉ quỹ / ETF / Chứng quyền
+- Với Trái phiếu tách ra: TPCP / TPDN niêm yết / TPDN riêng lẻ";Dashboard;Chiều;Trùng;Mã chứng khoán;MSS;;X;;;;;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Sàn;Danh sách sàn niêm yết/giao dịch: HOSE / HNX / UPCOM đối với cổ phiếu;Dashboard;Chiều;TB;Mã chứng khoán;MSS;X;X;;;;;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS, TKNB;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - Cổ phiếu - HOSE;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - Cổ phiếu - HNX;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - Cổ phiếu - UPCOM;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - TPCP;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MDDS, TKNB;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Dữ liệu TPCP";;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - TPDN niêm yết;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - TPDN riêng lẻ;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;TKNB;;X;;;- Dữ liệu TPDN riêng lẻ;;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - Chứng chỉ quỹ;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - ETF;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+17;;Dashboard Thống kê thị trường >> Niêm yết >> Biểu đồ Khối lượng chứng khoán niêm yết;Khối lượng CK niêm yết - Chứng quyền;Σ KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Loại chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành;;;;;;;;
+18;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp;Sàn;Danh sách sàn niêm yết/giao dịch: HOSE / HNX / UPCOM;Dashboard;Chiều;TB;Sàn;MSS;X;X;;;;;;;;;;;
+18;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp;Vốn hóa thị trường cổ phiếu;"Σ (Giá đóng cửa * KL lưu hành) tại ngày cuối kỳ báo cáo:
+- Tổng (toàn thị trường cổ phiếu)
+- Theo sàn: HOSE / HNX / UPCOM";Dashboard;Chỉ tiêu cơ sở;TB;Sàn, Ngày;MSS, MDDS;X;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Tỷ lệ Vốn hóa/GDP;Tổng vốn hóa / GDP * 100;Dashboard;Chỉ tiêu phái sinh;TB;Sàn, Ngày;MSS, MDDS, QLRR;X;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu chỉ tiêu tài chính vĩ mô trong nước";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa thị trường cổ phiếu - So với kỳ trước (%);(Vốn hóa tại ngày cuối kỳ này − Vốn hóa tại ngày cuối kỳ trước) / Vốn hóa tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Sàn, Ngày;MSS, MDDS, QLRR;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa thị trường cổ phiếu - So với cuối năm trước (%);(Vốn hóa tại ngày cuối năm này − Vốn hóa tại ngày cuối năm trước) / Vốn hóa tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Sàn, Ngày;MSS, MDDS, QLRR;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa HOSE;Σ (Giá * KL lưu hành) của các mã HOSE tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa HNX;Σ (Giá * KL lưu hành) của các mã HNX tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa UPCOM;Σ (Giá * KL lưu hành) của các mã UPCOM tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Tổng vốn hóa thị trường;Σ (Giá đóng cửa * KL lưu hành) toàn thị trường tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa HOSE - So với kỳ trước (%);"(Vốn hóa kỳ này − kỳ trước) / kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa HNX - So với kỳ trước (%);"(Vốn hóa kỳ này − kỳ trước) / kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa UPCOM - So với kỳ trước (%);"(Vốn hóa kỳ này − kỳ trước) / kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Tổng vốn hóa thị trường - So với kỳ trước (%);"(Vốn hóa kỳ này − kỳ trước) / kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa HOSE - So với cuối năm trước (%);"(Vốn hóa kỳ này − Vốn hóa kỳ trước) / Vốn hóa kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa HNX - So với cuối năm trước (%);"(Vốn hóa kỳ này − Vốn hóa kỳ trước) / Vốn hóa kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Vốn hóa UPCOM - So với cuối năm trước (%);"(Vốn hóa kỳ này − Vốn hóa kỳ trước) / Vốn hóa kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Tổng vốn hóa thị trường - So với cuối năm trước (%);"(Vốn hóa kỳ này − Vốn hóa kỳ trước) / Vốn hóa kỳ trước * 100
+Vốn hóa tính tại ngày cuối kỳ";Dashboard;Chỉ tiêu phái sinh;Trùng;Mã chứng khoán, Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Loại chứng khoán;TPCP / TPDN niêm yết / TPDN riêng lẻ / Tổng;Dashboard;Chiều;Trùng;Loại chứng khoán;MSS;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết;Σ (Mệnh giá * KL TP niêm yết/ĐKGD) tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Quy mô thị trường TP/GDP;Giá trị niêm yết TP / GDP danh nghĩa năm gần nhất * 100;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;MSS, MDDS, TKNB, QLRR;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ
+- Dữ liệu chỉ tiêu tài chính vĩ mô trong nước";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - So sánh với kỳ trước (%);(Giá trị niêm yết tại ngày cuối kỳ này − Giá trị niêm yết tại ngày cuối kỳ trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;TB;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - So sánh với năm trước (%);(Giá trị niêm yết tại ngày cuối năm này − Giá trị niêm yết tại ngày cuối năm trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;TB;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPCP;Σ (Mệnh giá * KL TP niêm yết/ĐKGD) tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPDN niêm yết;Σ (Mệnh giá * KL TP niêm yết/ĐKGD) tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPDN riêng lẻ;Σ (Mệnh giá * KL TP niêm yết/ĐKGD) tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPCP - So sánh với kỳ trước (%);(Giá trị niêm yết tại ngày cuối kỳ này − Giá trị niêm yết tại ngày cuối kỳ trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPDN niêm yết - So sánh với kỳ trước (%);(Giá trị niêm yết tại ngày cuối kỳ này − Giá trị niêm yết tại ngày cuối kỳ trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPDN riêng lẻ - So sánh với kỳ trước (%);(Giá trị niêm yết tại ngày cuối kỳ này − Giá trị niêm yết tại ngày cuối kỳ trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPCP - So sánh với năm trước (%);(Giá trị niêm yết tại ngày cuối năm này − Giá trị niêm yết tại ngày cuối năm trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPCP";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPDN niêm yết - So sánh với năm trước (%);(Giá trị niêm yết tại ngày cuối năm này − Giá trị niêm yết tại ngày cuối năm trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Giá trị niêm yết - TPDN riêng lẻ - So sánh với năm trước (%);(Giá trị niêm yết tại ngày cuối năm này − Giá trị niêm yết tại ngày cuối năm trước) / Giá trị niêm yết tại ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Sàn;Danh sách sàn niêm yết/giao dịch: HOSE / HNX / UPCOM;Dashboard;Chiều;Trùng;Sàn;MSS, MDDS;;X;;;;;;;;;;;
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Vốn hóa thị trường;Σ (Giá đóng cửa * KL lưu hành) tại ngày cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Tỷ lệ vốn hóa/GDP;Vốn hóa / GDP * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Vốn hóa thị trường - HOSE;Σ (Giá đóng cửa * KL lưu hành) HOSE tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Vốn hóa thị trường - HNX;Σ (Giá đóng cửa * KL lưu hành) HNX tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Vốn hóa thị trường - UPCOM;Σ (Giá đóng cửa * KL lưu hành) UPCOM tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Vốn hóa thị trường - Tổng;Σ (Giá đóng cửa * KL lưu hành) tại ngày cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Ngày;MSS, MDDS;;X;X;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+22;;Dashboard Vốn hóa thị trường >> Biểu đồ Cơ cấu vốn hóa cổ phiếu theo ngành;Ngành;Ngành nghề kinh tế cấp 1 của CTĐC;Dashboard;Chiều;Trùng;Ngành;IDS - GSĐC;;X;;;;;;;;;;;
+22;;Dashboard Vốn hóa thị trường >> Biểu đồ Cơ cấu vốn hóa cổ phiếu theo ngành;Vốn hóa theo ngành;Σ (Giá * KL lưu hành) theo ngành;Dashboard;Chỉ tiêu cơ sở;TB;Ngành, Ngày;MSS, MDDS;X;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+22;;Dashboard Vốn hóa thị trường >> Biểu đồ Cơ cấu vốn hóa cổ phiếu theo ngành;Tỷ trọng vốn hóa ngành;Vốn hóa ngành / Tổng vốn hóa * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngành, Ngày;MSS, MDDS;X;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường";;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;Loại chứng khoán;Loại chứng khoán: Cổ phiếu;Dashboard;Chiều;TB;Loại chứng khoán;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;Hình thức phát hành;"Gom thành các nhóm hình thức phát hành cổ phiếu:
+* Công chúng:
+Gồm các hình thức: Chào bán cổ phiếu lần đầu ra công chúng (IPO); Chào bán thêm cổ phiếu ra công chúng; Chào bán cổ phiếu của cổ đông CTĐC ra công chúng
+* Riêng lẻ:
+Gồm các hình thức: Chào bán cổ phiếu riêng lẻ
+* Chào bán để tăng vốn của Công ty TNHH
+Gồm các hình thức: IPO để chuyển đổi công ty TNHH thành CTCP";Dashboard;Chiều;TB;Hình thức phát hành;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;Ngày BCKQ gần nhất;Ngày báo cáo kết quả gần nhất của các đợt chào bán được cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;Số đợt phát hành - Đăng ký;Đếm số đợt phát hành có ngày cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;Số đợt phát hành - Có kết quả chào bán;Đếm số đợt phát hành có ngày cấp phép trong kỳ báo cáo và đã có kết quả chào bán.;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;KL phát hành - Đăng ký;Σ khối lượng CP của các đợt chào bán có ngày cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;KL phát hành - Thành công;Σ khối lượng CP phát hành thành công của các đợt chào bán có ngày cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Đăng ký;Σ giá trị CP của các đợt chào bán có ngày cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Thành công;Σ Giá trị phát hành CP thành công của các đợt chào bán có ngày cấp phép trong kỳ báo cáo và đã có kết quả chào bán.;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Đăng ký - Công chúng;Σ giá trị CP của các đợt chào bán ra công chúng có ngày cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Thành công - Công chúng;Σ Giá trị phát hành CP thành công của các đợt chào bán ra công chúng có ngày cấp phép trong kỳ báo cáo và đã có kết quả chào bán.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Đăng ký - Riêng lẻ;Σ giá trị CP của các đợt chào bán riêng lẻ có ngày cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Thành công - Riêng lẻ;Σ Giá trị phát hành CP thành công của các đợt chào bán riêng lẻ có ngày cấp phép trong kỳ báo cáo và đã có kết quả chào bán.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Đăng ký - Chào bán để tăng vốn của Công ty TNHH;Σ giá trị CP của các đợt chào bán để tăng vốn của công ty TNHH có ngày cấp phép trong kỳ báo cáo.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;GT phát hành - Thành công - Chào bán để tăng vốn của Công ty TNHH;Σ Giá trị phát hành CP thành công của các đợt chào bán để tăng vốn của công ty TNHH có ngày cấp phép trong kỳ báo cáo và đã có kết quả chào bán.;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+23;;Dashboard Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp;% thay đổi so với kỳ trước;(Giá trị kỳ này – kỳ trước) / kỳ trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS;;X;X;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+24;;Dashboard Huy động vốn >> Cổ phiếu >> Cơ cấu theo đối tượng phát hành;Loại chứng khoán;Loại chứng khoán: Cổ phiếu;Dashboard;Chiều;Trùng;Loại chứng khoán;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+24;;Dashboard Huy động vốn >> Cổ phiếu >> Cơ cấu theo đối tượng phát hành;Đối tượng phát hành;Phân loại đối tượng doanh nghiệp: Công ty đại chúng, Công ty chứng khoán, Công ty Quản lý quỹ;Dashboard;Chiều;Dễ;Đối tượng phát hành;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+24;;Dashboard Huy động vốn >> Cổ phiếu >> Cơ cấu theo đối tượng phát hành;GT phát hành theo đối tượng;Σ GT phát hành theo nhóm đối tượng doanh nghiệp;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Đối tượng phát hành, Ngày;IDS - QLCB, SCMS, FMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+24;;Dashboard Huy động vốn >> Cổ phiếu >> Cơ cấu theo đối tượng phát hành;Tỷ trọng;GT phát hành của nhóm / Tổng GT * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Đối tượng phát hành, Ngày;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+25;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian;Loại chứng khoán;Loại chứng khoán: Cổ phiếu;Dashboard;Chiều;Trùng;Loại chứng khoán;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+25;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian;Hình thức phát hành;"Gom thành các nhóm hình thức phát hành cổ phiếu:
+* Công chúng:
+Gồm các hình thức: Chào bán cổ phiếu lần đầu ra công chúng (IPO); Chào bán thêm cổ phiếu ra công chúng; Chào bán cổ phiếu của cổ đông CTĐC ra công chúng
+* Riêng lẻ:
+Gồm các hình thức: Chào bán cổ phiếu riêng lẻ
+* Chào bán để tăng vốn của Công ty TNHH
+Gồm các hình thức: IPO để chuyển đổi công ty TNHH thành CTCP";Dashboard;Chiều;Trùng;Hình thức phát hành;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+25;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian;GT phát hành theo hình thức;Σ GT phát hành thành công (thực tế) theo từng hình thức phát hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, SCMS, FMS;;X;X;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+25;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian;Tổng GT phát hành;Σ GT phát hành thành công (thực tế) của tất cả các hình thức;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;IDS - QLCB, SCMS, FMS;;X;X;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+25;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian;GT phát hành - Công chúng;Σ GT phát hành thành công (thực tế) của các hình thức phát hành ra công chúng;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, SCMS, FMS;;X;X;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+25;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian;GT phát hành - Riêng lẻ;Σ GT phát hành thành công (thực tế) của các hình thức phát hành riêng lẻ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, SCMS, FMS;;X;X;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+25;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian;GT phát hành - Chào bán để tăng vốn của Công ty TNHH;Σ GT phát hành theo hình thức: Chào bán để tăng vốn của Công ty TNHH;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, SCMS, FMS;;X;X;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+26;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Giá trị huy động vốn qua phát hành Cổ phiếu, TPDN, TPCP;Loại chứng khoán;"Loại chứng khoán: Cổ phiếu / TPCP / TPDN 
+Trong đó: TPDN bao gồm TPDN niêm yết và TPDN riêng lẻ";Dashboard;Chiều;TB;Loại chứng khoán;IDS - QLCB, SCMS, FMS, TKNB;X;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ
+- Dữ liệu TPCP";;;;;;;;
+26;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Giá trị huy động vốn qua phát hành Cổ phiếu, TPDN, TPCP;GT phát hành;"TPCP: Σ GT trúng thầu
+Cổ phiếu, TPDN: Σ GT phát hành theo loại chứng khoán";Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;X;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ
+- Dữ liệu TPCP";;;;;;;;
+26;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Giá trị huy động vốn qua phát hành Cổ phiếu, TPDN, TPCP;Giá trị phát hành cổ phiếu;Σ GT phát hành theo loại chứng khoán;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+26;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Giá trị huy động vốn qua phát hành Cổ phiếu, TPDN, TPCP;Giá trị phát hành TPDN;Σ GT phát hành theo loại chứng khoán;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+26;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Giá trị huy động vốn qua phát hành Cổ phiếu, TPDN, TPCP;Giá trị phát hành TPCP;Σ GT trúng thầu;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;X;X;X;;- Dữ liệu TPCP;;;;;;;;
+26;;Dashboard Huy động vốn >> Cổ phiếu >> Biểu đồ Giá trị huy động vốn qua phát hành Cổ phiếu, TPDN, TPCP;Tổng GT phát hành;Σ GT phát hành của 3 loại chứng khoán: Cổ phiếu / TPCP / TPDN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ
+- Dữ liệu TPCP";;;;;;;;
+27;;Dashboard Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp;Loại chứng khoán;Loại chứng khoán: TPDN (Bao gồm TPDN niêm yết, TPDN riêng lẻ);Dashboard;Chiều;Trùng;Mã chứng khoán;;;X;;;;;;;;;;;
+27;;Dashboard Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp;Tổng dư nợ TP;Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu cơ sở;Khó;Loại chứng khoán, Ngày;MSS, MDDS, TKNB;;X;;;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+- Thông tin thị trường
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+27;;Dashboard Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp;GT phát hành;Σ phát hành thực tế;Dashboard;Chỉ tiêu cơ sở;Khó;Loại chứng khoán, Ngày;IDS - QLCB, SCMS, FMS, TKNB;X;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+27;;Dashboard Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp;Kỳ hạn bình quân (năm);"Bình quân gia quyền theo giá trị phát hành:
+Kỳ hạn bình quân = Σ (Kỳ hạn mã CK i * Giá trị phát hành mã CK i) / Σ (Giá trị phát hành mã CK i)";Dashboard;Chỉ tiêu cơ sở;Khó;Loại chứng khoán, Ngày;IDS - QLCB, SCMS, FMS, TKNB;X;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+27;;Dashboard Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp;% thay đổi so với kỳ trước;Σ GT phát hành riêng lẻ;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ
+- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành";;;;;;;;
+28;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Giá trị phát hành TPDN theo hình thức;Loại chứng khoán;Loại chứng khoán: TPDN (Bao gồm TPDN niêm yết, TPDN riêng lẻ);Dashboard;Chiều;Trùng;Loại chứng khoán;IDS - QLCB, SCMS, FMS, TKNB;;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+28;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Giá trị phát hành TPDN theo hình thức;Hình thức phát hành;"Gom thành các nhóm hình thức phát hành trái phiếu:
+* Công chúng:
+Gồm các hình thức: Chào bán trái phiếu lần đầu ra công chúng (IPO); Chào bán thêm trái phiếu ra công chúng; Chào bán trái phiếu của cổ đông CTĐC ra công chúng
+* Riêng lẻ:
+Gồm các hình thức: Chào bán trái phiếu riêng lẻ";Dashboard;Chiều;Trùng;Hình thức phát hành;IDS - QLCB, SCMS, FMS, TKNB;;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+28;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Giá trị phát hành TPDN theo hình thức;Giá trị phát hành;Giá trị phát hành theo hình thức;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+28;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Giá trị phát hành TPDN theo hình thức;Giá trị phát hành - Công chúng;Giá trị phát hành ra công chúng;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+28;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Giá trị phát hành TPDN theo hình thức;Giá trị phát hành - Riêng lẻ;Giá trị phát hành riêng lẻ;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+28;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Giá trị phát hành TPDN theo hình thức;Tỷ trọng;Giá trị phát hành theo hình thức / Tổng GT phát hành 2 loại * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Hình thức phát hành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+29;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Dư nợ TPDN theo ngành;Loại chứng khoán;Loại chứng khoán: TPDN (Bao gồm TPDN niêm yết, TPDN riêng lẻ);Dashboard;Chiều;TB;Loại chứng khoán;IDS - QLCB, SCMS, FMS, TKNB;;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+29;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Dư nợ TPDN theo ngành;Ngành;Ngành nghề kinh tế của doanh nghiệp;Dashboard;Chiều;TB;Ngành;IDS - QLCB, SCMS, FMS, TKNB;;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+29;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Dư nợ TPDN theo ngành;Tổng dư nợ TP theo nhóm ngành;Dư nợ TP các công ty trong ngành = Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu cơ sở;Khó;Loại chứng khoán, Ngành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+29;;Dashboard Huy động vốn >> TPDN >> Biểu đồ Dư nợ TPDN theo ngành;Tỷ trọng dư nợ theo nhóm ngành;Σ Dư nợ TP từng ngành / Σ Dư nợ TP toàn thị trường (%);Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngành, Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;;;"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;Loại chứng khoán;Loại chứng khoán: TPCP;Dashboard;Chiều;Trùng;Loại chứng khoán;TKNB;;X;;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;Tổng dư nợ TP;Σ (Mệnh giá * KL TP niêm yết);Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;TKNB;X;X;;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;GT phát hành;Σ GT trúng thầu;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;;X;;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;Kỳ hạn bình quân (năm);"Bình quân gia quyền theo giá trị phát hành:
+Kỳ hạn bình quân = Σ (Kỳ hạn mã TP i * Giá trị phát hành mã TP i) / Σ (Giá trị phát hành mã TP i)";Dashboard;Chỉ tiêu phái sinh;TB;Loại chứng khoán, Tháng/Quý/Năm;TKNB;X;X;;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;Lãi suất bình quân (%/năm);"Bình quân gia quyền theo giá trị phát hành:
+Lãi suất bình quân = Σ (Lãi suất mã TP i * Giá trị phát hành mã TP i) / Σ (Giá trị phát hành mã TP i)
+Trong đó, lãi suất mã tp i lấy lãi suất trúng thầu của trái phiếu.";Dashboard;Chỉ tiêu phái sinh;TB;Loại chứng khoán, Tháng/Quý/Năm;TKNB;X;X;;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;% thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;X;X;X;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;Tổng dư nợ TP - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;GT phát hành - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;Kỳ hạn bình quân (năm) - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+30;;Dashboard Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp;Lãi suất bình quân (%/năm) - % thay đổi so với kỳ trước;% thay đổi so với kỳ trước;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+31;;Dashboard Huy động vốn >> TPCP >> Biểu đồ Giá trị trúng thầu TPCP;Loại chứng khoán;Loại chứng khoán: TPCP;Dashboard;Chiều;Trùng;Loại chứng khoán;TKNB;;X;;;- Dữ liệu TPCP;;;;;;;;
+31;;Dashboard Huy động vốn >> TPCP >> Biểu đồ Giá trị trúng thầu TPCP;Giá trị gọi thầu;Σ GT gọi thầu;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Tháng/Quý/Năm;TKNB;X;X;X;;- Dữ liệu TPCP;;;;;;;;
+31;;Dashboard Huy động vốn >> TPCP >> Biểu đồ Giá trị trúng thầu TPCP;Giá trị trúng thầu;Σ GT trúng thầu;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+31;;Dashboard Huy động vốn >> TPCP >> Biểu đồ Giá trị trúng thầu TPCP;Tỷ lệ trúng thầu (%);Σ GT trúng thầu / Σ GT gọi thầu * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Tháng/Quý/Năm;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+32;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp;GT mua NĐTNN;"Σ (KL mua NĐTNN * Giá khớp)
+Bao gồm tất cả các loại chứng khoán: Cổ phiếu, Chứng quyền, Chứng chỉ quỹ, Phái sinh, TPCP, TPDN niêm yết, TPDN riêng lẻ";Dashboard;Chỉ tiêu cơ sở;TB;Toàn thị trường, Ngày/Tháng/Quý/Năm;MSS, TKNB;X;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+32;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp;GT bán NĐTNN;"Σ (KL bán NĐTNN * Giá khớp)
+Bao gồm tất cả các loại chứng khoán: Cổ phiếu, Chứng quyền, Chứng chỉ quỹ, Phái sinh, TPCP, TPDN niêm yết, TPDN riêng lẻ";Dashboard;Chỉ tiêu cơ sở;TB;Toàn thị trường, Ngày/Tháng/Quý/Năm;MSS, TKNB;X;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+32;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp;GT mua/bán ròng NĐTNN;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Toàn thị trường, Ngày/Tháng/Quý/Năm;MSS, TKNB;;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+32;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp;% thay đổi so với kỳ trước;(GT kỳ này − kỳ trước) / kỳ trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Toàn thị trường, Ngày/Tháng/Quý/Năm;MSS, TKNB;;X;X;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;Loại chứng khoán;Loại chứng khoán: Cổ phiếu, Chứng quyền, Chứng chỉ quỹ, Phái sinh, TPCP, TPDN niêm yết, TPDN riêng lẻ;Dashboard;Chiều;Trùng;Loại chứng khoán;MSS, TKNB;;X;;;;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN;"Σ (KL mua NĐTNN * Giá khớp)
+Bao gồm tất cả các loại chứng khoán: Cổ phiếu, Chứng quyền, Chứng chỉ quỹ, Phái sinh, TPCP, TPDN niêm yết, TPDN riêng lẻ";Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS, TKNB;X;X;;;;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN;"Σ (KL bán NĐTNN * Giá khớp)
+Bao gồm tất cả các loại chứng khoán: Cổ phiếu, Chứng quyền, Chứng chỉ quỹ, Phái sinh, TPCP, TPDN niêm yết, TPDN riêng lẻ";Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS, TKNB;X;X;;;;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS, TKNB;;X;;;;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;% thay đổi so với kỳ trước;(GT kỳ này − kỳ trước) / kỳ trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS, TKNB;;X;X;;;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN - Cổ phiếu;Σ (KL mua NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN - Cổ phiếu;Σ (KL bán NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN - Cổ phiếu;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN - Chứng chỉ quỹ;Σ (KL mua NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN - Chứng chỉ quỹ;Σ (KL bán NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN - Chứng chỉ quỹ;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN - Chứng quyền;Σ (KL mua NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN - Chứng quyền;Σ (KL bán NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN - Chứng quyền;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN - Phái sinh;Σ (KL mua NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN - Phái sinh;Σ (KL bán NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN - Phái sinh;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN - TPDN niêm yết;Σ (KL mua NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN - TPDN niêm yết;Σ (KL bán NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN - TPDN niêm yết;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN - TPDN riêng lẻ;Σ (KL mua NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;TKNB;;X;;;- Dữ liệu TPDN riêng lẻ;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN - TPDN riêng lẻ;Σ (KL bán NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;TKNB;;X;;;- Dữ liệu TPDN riêng lẻ;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN - TPDN riêng lẻ;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;TKNB;;X;;;- Dữ liệu TPDN riêng lẻ;;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua NĐTNN - TPCP;Σ (KL mua NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT bán NĐTNN - TPCP;Σ (KL bán NĐTNN * Giá khớp);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+33;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch;GT mua/bán ròng NĐTNN - TPCP;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+34;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị mua/bán ròng NĐTNN theo nhóm ngành;Ngành;Ngành nghề kinh tế cấp 1 của công ty đại chúng (theo mã CK / Tổ chức phát hành);Dashboard;Chiều;Trùng;Mã chứng khoán, Tổ chức phát hành, Ngành;IDS - GSĐC, MSS, TKNB;;X;;;"- Hồ sơ công ty đại chúng
+- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+34;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị mua/bán ròng NĐTNN theo nhóm ngành;GT mua/bán ròng;Σ GT mua NĐTNN - Σ GT bán NĐTNN;Dashboard;Chỉ tiêu cơ sở;TB;Ngành, Ngày;MSS, TKNB;X;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+35;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Cổ phiếu của NĐTNN;Loại chứng khoán;Loại chứng khoán: Cổ phiếu;Dashboard;Chiều;Trùng;Loại chứng khoán;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+35;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Cổ phiếu của NĐTNN;GT mua NĐTNN;Σ (KL mua * Giá);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+35;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Cổ phiếu của NĐTNN;GT bán NĐTNN;Σ (KL bán * Giá);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+35;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Cổ phiếu của NĐTNN;GT ròng;GT mua NĐTNN - GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS;;X;;;- Sổ lệnh giao dịch (trade book);;;;;;;;
+36;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN;Loại chứng khoán;Loại chứng khoán: TPCP, TPDN niêm yết, TPDN riêng lẻ;Dashboard;Chiều;Trùng;Loại chứng khoán;MSS, TKNB;;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+36;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN;GT mua NĐTNN;Σ (KL mua * Giá);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;MSS, TKNB;;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+36;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN;GT bán NĐTNN;Σ (KL bán * Giá);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;MSS, TKNB;;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+36;;Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN;GT ròng;GT mua NĐTNN - GT bán NĐTNN;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Ngày;MSS, TKNB;;X;;;"- Sổ lệnh giao dịch (trade book)
+- Dữ liệu TPDN riêng lẻ";;;;;;;;
+37;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ Dòng tiền NĐTNN;GT vào/rút ròng;Σ Dòng tiền thuần của NĐTNN;Dashboard;Chỉ tiêu cơ sở;TB;Ngân hàng lưu ký, Ngày;FIMS;X;X;;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+37;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ Dòng tiền NĐTNN;GT vào/rút ròng (YTD);Σ Dòng tiền thuần của NĐTNN từ đầu năm đến cuối kỳ báo cáo;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngân hàng lưu ký, Ngày;FIMS;;X;;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+37;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ Dòng tiền NĐTNN;Tổng dòng vào;Σ dòng tiền vào;Dashboard;Chỉ tiêu cơ sở;TB;Ngân hàng lưu ký, Ngày;FIMS;X;X;;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+37;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ Dòng tiền NĐTNN;Tổng dòng ra;Σ dòng tiền ra;Dashboard;Chỉ tiêu cơ sở;TB;Ngân hàng lưu ký, Ngày;FIMS;X;X;;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+37;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ Dòng tiền NĐTNN;% thay đổi so với kỳ trước;(Giá trị kỳ này – kỳ trước) / kỳ trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngân hàng lưu ký, Ngày;FIMS;X;X;X;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+38;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ thống kê dòng tiền vào/ra của NĐTNN theo thời gian;Tổng dòng vào;Σ dòng tiền vào;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngân hàng lưu ký, Ngày;FIMS;;X;X;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+38;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ thống kê dòng tiền vào/ra của NĐTNN theo thời gian;Tổng dòng ra;Σ dòng tiền ra;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngân hàng lưu ký, Ngày;FIMS;;X;X;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+38;;Dashboard Hoạt động của NĐTNN >> Dòng tiền NĐTNN >> Biểu đồ thống kê dòng tiền vào/ra của NĐTNN theo thời gian;GT vào/rút ròng;Σ Dòng tiền thuần của NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngân hàng lưu ký, Ngày;FIMS;;X;X;;- Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài (BC của ngân hàng lưu ký trên Phân hệ FIMS);;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;Loại nhà đầu tư;"Loại NĐT: Cá nhân trong nước, Cá nhân nước ngoài, Tổ chức trong nước, Tổ chức nước ngoài
+Phân loại tài khoản thuộc loại NĐT nào dựa trên ký tự thứ 4 trong số tài khoản:
+- C: Cá nhân trong nước
+- F: Cá nhân nước ngoài
+- B: Tổ chức trong nước
+- E: Tổ chức nước ngoài
+- P: Tự doanh
+=> Nếu dữ liệu Thông tin tài khoản nhà đầu tư có lưu loại hình NĐT thì lấy thông tin này của phân hệ.";Dashboard;Chiều;TB;Loại nhà đầu tư;MSS;X;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;Tổng số tài khoản;Count số tài khoản chưa đóng tính đến ngày báo cáo;Dashboard;Chỉ tiêu cơ sở;TB;Loại nhà đầu tư, Ngày;MSS, VSDC;X;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;Tổng số tài khoản phái sinh;Count số tài khoản phái sinh chưa đóng tính đến ngày báo cáo;Dashboard;Chỉ tiêu cơ sở;TB;Thị trường, Ngày;MSS, VSDC;X;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;SL TK mới (YTD);Count TK mở mới từ đầu năm đến ngày báo cáo;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MSS, VSDC;X;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;So sánh cuối tháng trước (%);(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối tháng trước) / SL tài khoản ngày cuối tháng trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại nhà đầu tư, Ngày;MSS, VSDC;;X;X;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;So sánh cuối năm trước (%);(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối năm trước) / SL tài khoản ngày cuối năm trước * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại nhà đầu tư, Ngày;MSS, VSDC;;X;X;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;Tổng số tài khoản cá nhân trong nước;Count số TK chưa đóng tính đến ngày báo cáo (Cá nhân trong nước);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại nhà đầu tư, Ngày;MSS, VSDC;;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;Tổng số tài khoản cá nhân nước ngoài;Count số TK chưa đóng tính đến ngày báo cáo (Cá nhân nước ngoài);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại nhà đầu tư, Ngày;MSS, VSDC;;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;Tổng số tài khoản tổ chức trong nước;Count số TK chưa đóng tính đến ngày báo cáo (tổ chức trong nước);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại nhà đầu tư, Ngày;MSS, VSDC;;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+39;;Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp;Tổng số tài khoản tổ chức nước ngoài;Count số TK chưa đóng tính đến ngày báo cáo (tổ chức nước ngoài);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại nhà đầu tư, Ngày;MSS, VSDC;;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+40;;Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản theo thời gian;Tổng số tài khoản;Count số tài khoản chưa đóng tại ngày cuối từng kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MSS, VSDC;;X;X;;- Thông tin tài khoản NĐT;;;;;;;;
+41;;Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản phái sinh theo thời gian;Tổng số tài khoản phái sinh;Count số tài khoản phái sinh chưa đóng tại ngày cuối từng kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Thị trường, Ngày;MSS, VSDC;;X;X;;- Thông tin tài khoản NĐT;;;;;;;;
+42;;Dashboard Tài khoản giao dịch >> Biểu đồ Số lượng tài khoản mới theo thời gian;Số lượng TK mới;Đếm số lượng tài khoản mới: có ngày mở trong kỳ;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MSS, VSDC;;X;X;;- Thông tin tài khoản NĐT;;;;;;;;
+43;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá;Loại hình đấu giá;Phân loại IPO / Thoái vốn / Đấu giá khác;Dashboard;Chiều;TB;Loại hình đấu giá;TKNB;X;X;;;- Báo cáo đầu vào của TKNB (HSX03, HNX05);;;;;;;;
+43;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá;Giá trị trúng giá;Σ Giá trị trúng giá đấu giá cổ phần từng loại hình đấu giá;Dashboard;Chỉ tiêu cơ sở;TB;Loại hình đấu giá, Ngày;TKNB;X;X;;;- Báo cáo đầu vào của TKNB (HSX03, HNX05);;;;;;;;
+43;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá;Số phiên đấu giá;Σ số phiên đấu giá;Dashboard;Chỉ tiêu cơ sở;TB;Loại hình đấu giá, Ngày;TKNB;X;X;;;- Báo cáo đầu vào của TKNB (HSX03, HNX05);;;;;;;;
+43;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá;Giá trị IPO;Σ Giá trị trúng giá IPO;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại hình đấu giá, Ngày;TKNB;;X;;;- Báo cáo đầu vào của TKNB (HSX03, HNX05);;;;;;;;
+43;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá;Giá trị thoái vốn;Σ Giá trị trúng giá thoái vốn;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại hình đấu giá, Ngày;TKNB;;;;;- Báo cáo đầu vào của TKNB (HSX03, HNX05);;;;;;;;
+43;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá;Giá trị Phát hành ra công chúng / quyền mua;Σ Giá trị trúng giá Phát hành ra công chúng / quyền mua;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại hình đấu giá, Ngày;TKNB;;X;;;- Báo cáo đầu vào của TKNB (HSX03, HNX05);;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Loại chứng khoán;Loại chứng khoán: Cổ phiếu;Dashboard;Chiều;Trùng;Loại chứng khoán;IDS - QLCB, SCMS, FMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Hình thức phát hành;"Lấy các hình thức phát hành:
+Phát hành ra công chúng
+Phát hành riêng lẻ
+ESOP
+Phát hành để trả cổ tức, tăng vốn từ vốn CSH
+Phát hành để hoán đổi/sáp nhập";Dashboard;Chiều;TB;Hình thức phát hành;IDS - QLCB, FMS, SCMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành;Σ GT phát hành theo hình thức phát hành;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;X;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Tỷ trọng;GT từng loại / Tổng GT * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - Phát hành ra công chúng;Σ GT phát hành theo hình thức phát hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - Phát hành riêng lẻ;Σ GT phát hành theo hình thức phát hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - ESOP;Σ GT phát hành theo hình thức phát hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - Phát hành để trả cổ tức, tăng vốn từ vốn CSH;Σ GT phát hành theo hình thức phát hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - Phát hành để hoán đổi/sáp nhập;Σ GT phát hành theo hình thức phát hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Tỷ trọng - Phát hành ra công chúng;GT từng loại / Tổng GT * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - Phát hành ra công chúng - Phát hành riêng lẻ;GT từng loại / Tổng GT * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - Phát hành riêng lẻ - ESOP;GT từng loại / Tổng GT * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - ESOP - Phát hành để trả cổ tức, tăng vốn từ vốn CSH;GT từng loại / Tổng GT * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+44;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm;Giá trị phát hành - Phát hành để trả cổ tức, tăng vốn từ vốn CSH - Phát hành để hoán đổi/sáp nhập;GT từng loại / Tổng GT * 100;Dashboard;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán, Hình thức phát hành, Ngày;IDS - QLCB, FMS, SCMS;;X;;;- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ;;;;;;;;
+45;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Kỳ hạn phát hành bình quân TPCP;Loại chứng khoán;Loại chứng khoán: TPCP;Dashboard;Chiều;Trùng;Loại chứng khoán;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+45;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Kỳ hạn phát hành bình quân TPCP;Kỳ hạn phát hành bình quân;Σ (Kỳ hạn mã i * GT phát hành mã i) / Σ GT phát hành;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;TKNB;X;X;X;;- Dữ liệu TPCP;;;;;;;;
+46;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Lãi suất phát hành bình quân TPCP;Loại chứng khoán;Loại chứng khoán: TPCP;Dashboard;Chiều;Trùng;Loại chứng khoán, Ngày;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+46;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Lãi suất phát hành bình quân TPCP;Lãi suất bình quân;Σ (Lãi suất mã i * GT phát hành mã i) / Σ GT phát hành;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;TKNB;X;X;X;;- Dữ liệu TPCP;;;;;;;;
+47;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP;Loại chứng khoán;Loại chứng khoán: TPCP;Dashboard;Chiều;Trùng;Loại chứng khoán;TKNB;X;X;X;;- Dữ liệu TPCP;;;;;;;;
+47;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP;Giá trị niêm yết TPCP;Σ (Mệnh giá * KL TP niêm yết);Dashboard;Chỉ tiêu cơ sở;Trùng;Loại chứng khoán, Ngày;TKNB;;X;X;;- Dữ liệu TPCP;;;;;;;;
+47;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP;GTGD Outright;Σ (KLGD * Giá khớp) giao dịch Outright;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;TKNB;X;X;X;;- Báo cáo HNX02;;;;;;;;
+47;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP;GTGD Repos;Σ (KLGD * Giá khớp) giao dịch Repos;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;TKNB;X;X;X;;- Báo cáo HNX02;;;;;;;;
+48;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới;Loại chứng khoán;Loại chứng khoán: Cổ phiếu;Dashboard;Chiều;Trùng;Loại chứng khoán;SCMS;;X;X;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+48;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới;Sàn;Sàn: HOSE, HNX, UPCOM;Dashboard;Chiều;Trùng;Sàn;SCMS;;X;X;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+48;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới;Số lượng cổ phiếu niêm yết mới;Đếm số mã cổ phiếu niêm yết mới.;Dashboard;Chỉ tiêu cơ sở;Trùng;Toàn thị trường, Loại chứng khoán, Ngày;SCMS;;X;X;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+48;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới;KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung;Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;SCMS;;X;X;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+48;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới;KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung - HOSE;Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung theo sàn;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;SCMS;;X;X;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+48;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới;KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung - HNX;Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung theo sàn;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;SCMS;;X;X;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+48;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới;KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung - UPCOM;Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung theo sàn;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;SCMS;;X;X;;- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết;;;;;;;;
+49;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết;Loại chứng khoán;Loại chứng khoán: Cổ phiếu;Dashboard;Chiều;Trùng;Loại chứng khoán;SCMS;;X;X;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+49;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết;Sàn;Sàn: HOSE, HNX, UPCOM;Dashboard;Chiều;Trùng;Sàn;SCMS;;X;X;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+49;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết;SL mã cổ phiếu hủy niêm yết/hủy ĐKGD;Số mã cổ phiếu bị hủy niêm yết/hủy ĐKGD.;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Năm;SCMS;;X;X;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+49;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết;KL cổ phiếu hủy niêm yết/ĐKGD;Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Năm;SCMS;;X;X;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+49;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết;KL cổ phiếu hủy niêm yết/ĐKGD - HOSE;Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD từng sàn theo kỳ.;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Năm;SCMS;;X;X;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+49;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết;KL cổ phiếu hủy niêm yết/ĐKGD - HNX;Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD từng sàn theo kỳ.;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Năm;SCMS;;X;X;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+49;;Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết;KL cổ phiếu hủy niêm yết/ĐKGD - UPCOM;Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD từng sàn theo kỳ.;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Năm;SCMS;;X;X;;- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Sàn;Danh sách sàn giao dịch/niêm yết: HOSE / HNX / UPCOM;Data Explorer;Chiều;Trùng;Sàn;MDDS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Chỉ số;Chỉ số Index gồm: VNIndex, HNX Index, UPCOM Index, VN30, HNX30, VN100;Data Explorer;Chiều;Trùng;Chỉ số;MDDS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Loại CK;Gồm các loại CK: Cổ phiếu, Chứng chỉ quỹ, Chứng quyền, TPDN niêm yết, TPDN riêng lẻ, TPCP, Phái sinh;Data Explorer;Chiều;Trùng;Loại CK;MDDS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Sản phẩm phái sinh;Gồm các sản phẩm: HĐTL VN30, VN100, HĐTL TPCP;Data Explorer;Chiều;Trùng;Sản phẩm phái sinh;MDDS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Kỳ hạn phái sinh;"Gồm các kỳ hạn:
+▪ Tháng gần nhất
+▪ Tháng tiếp theo
+▪ Cuối quý gần nhất
+▪ Cuối quý tiếp theo";Data Explorer;Chiều;Trùng;Kỳ hạn phái sinh;MDDS;;X;;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Ngành;Danh mục ngành nghề kinh tế cấp 1;Data Explorer;Chiều;Trùng;Ngành;IDS - GSĐC;;X;;;"- Danh mục ngành nghề kinh tế cấp 1 của IDS
+- Hồ sơ công ty đại chúng - Thông tin ngành nghề kinh tế cấp 1";;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Giá trị chỉ số;Giá trị chỉ số tại ngày cuối từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Chỉ số, Ngày;MDDS;;X;X;;- Thông tin thị trường;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KLGD;Σ KLGD từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GTGD;Σ (Giá * KLGD) từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KLNN mua;Σ KL mua NĐTNN từng kỳ;Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KLNN bán;Σ KL bán NĐTNN từng kỳ;Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KLNN ròng;Σ (KL mua NĐTNN - KL bán NĐTNN) từng kỳ;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GTNN mua;Σ (KL mua * Giá khớp) từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GTNN bán;Σ (KL bán * Giá khớp) từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GTNN ròng;Σ GTGD mua − Σ GTGD bán từng kỳ;Data Explorer;Chỉ tiêu phái sinh;Trùng;Sàn, Chỉ số, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL tự doanh mua;Σ KL mua tự doanh từng kỳ;Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL tự doanh bán;Σ KL bán tự doanh từng kỳ;Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL ròng tự doanh;(Σ KL mua tự doanh - Σ KL bán tự doanh) từng kỳ;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT tự doanh mua;Σ GT mua tự doanh từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT tự doanh bán;Σ GT bán tự doanh từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT ròng tự doanh;Σ (GT mua tự doanh - GT bán tự doanh) từng kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL thỏa thuận;Σ KL thỏa thuận từng kỳ;Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT thỏa thuận;Σ GT thỏa thuận từng kỳ;Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GTGD bình quân/phiên MTD;Σ GTGD / số phiên MTD;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GTGD bình quân/phiên YTD;Σ GTGD / số phiên YTD;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;MSS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Kỳ hạn còn lại bình quân (TP);Tính cho trái phiếu, bình quân gia quyền theo khối lượng TP lưu hành;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;TKNB, MDDS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;YTM bình quân (TPCP);Tính cho trái phiếu chính phủ, bình quân gia quyền theo khối lượng TP niêm yết;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số, Loại chứng khoán, Ngày/Tháng/Quý/Năm;TKNB;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Giá của CK Phái sinh;Giá của HĐTL chứng khoán phái sinh;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngày;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Khối lượng mở (OI);Σ khối lượng mở;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại CK (Phái sinh), Sản phẩm phái sinh, Ngày;MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Kỳ hạn còn lại bình quân;Tính cho trái phiếu, bình quân gia quyền theo khối lượng TP lưu hành;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số Index, Ngành;MSS, MDDS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Vốn hóa;Σ (Giá đóng cửa * KL CP lưu hành);Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại CK (Cổ phiếu), Ngày/Tháng/Quý/Năm;MSS, MDDS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Vốn hóa/GDP;Vốn hóa / GDP;Data Explorer;Chỉ tiêu phái sinh;Trùng;Sàn, Loại CK (Cổ phiếu), Ngày/Tháng/Quý/Năm;MSS, MDDS, QLRR;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL niêm yết;Σ KL CK lưu hành / niêm yết;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;MSS, TKNB;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT niêm yết;Σ (Mệnh giá * KL CK lưu hành/niêm yết);Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, MDDS, SCMS, MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Số mã niêm yết;Count số mã niêm yết/ĐKGD còn lưu hành;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, MDDS, SCMS, MSS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL niêm yết mới/bổ sung;Σ KL niêm yết mới/bổ sung;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, SCMS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT niêm yết mới/bổ sung;Σ GT niêm yết mới/bổ sung = Σ (Mệnh giá * KL CK niêm yết mới/bổ sung);Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Loại chứng khoán, Ngày;TKNB, SCMS, MDDS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Số mã niêm yết/ĐKGD mới;Count mã niêm yết/ĐKGD mới;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, SCMS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL hủy niêm yết/đáo hạn;Σ KL hủy niêm yết/ĐKGD, đáo hạn;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, SCMS;;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT hủy niêm yết/đáo hạn;Σ GT hủy niêm yết/ĐKGD, đáo hạn = Σ (Mệnh giá * KL CK hủy niêm yết, đáo hạn);Data Explorer;Chỉ tiêu cơ sở;TB;Sàn, Loại chứng khoán, Ngày;TKNB, SCMS, MDDS;X;X;X;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Số mã hủy niêm yết/đáo hạn;Count mã hủy niêm yết/ĐKGD, đáo hạn;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, SCMS;;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Đối tượng phát hành;Gồm các loại đối tượng: CTCK, CTĐC, CTQLQ;Data Explorer;Chiều;TB;Đối tượng phát hành;IDS - GSĐC, IDS - QLCB, SCMS, FMS;;X;;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Ngành;Ngành nghề kinh tế cấp 1 của công ty đại chúng / tổ chức phát hành;Data Explorer;Chiều;Trùng;Ngành;IDS - GSĐC;;X;;;Hồ sơ công ty đại chúng - Ngành nghề kinh tế cấp 1;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Loại chứng khoán;"Gồm các loại chứng khoán:
+- Cổ phiếu
+- Chứng quyền
+- Trái phiếu doanh nghiệp niêm yết
+- Trái phiếu doanh nghiệp riêng lẻ: gồm TP thường, TP chuyển đổi, TP kèm chứng quyền
+- TPCP";Data Explorer;Chiều;TB;Loại chứng khoán;IDS - QLCB, SCMS, FMS, TKNB;;X;;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Hình thức phát hành;"Gồm các hình thức phát hành: 
+- Công chúng
+- Riêng lẻ
+- ESOP
+- Trả cổ tức
+- Hợp nhất sáp nhập & Hoán đổi
+- Tăng vốn từ nguồn VCSH
+- Chào bán để tăng vốn của Công ty TNHH
+- Cổ phần hóa
+- IPO của DN thông thường
+- IPO của DN Nhà nước
+- Chào mua công khai
+- Chào bán TP ra công chúng tại VN của Tổ chức tài chính quốc tế
+- Chào bán ra quốc tế";Data Explorer;Chiều;TB;Hình thức phát hành;IDS - QLCB, SCMS, FMS, SGDCK;;X;;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Phân loại có huy động vốn không;"Xác định theo hình thức phát hành:
+- Có thu tiền là ""Huy động vốn""
+- Không thu tiền là ""Không phải huy động vốn""";Data Explorer;Chiều;TB;Phân loại;IDS - QLCB, SCMS, FMS;;X;;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Kỳ hạn TP;Kỳ hạn phát hành TP (TPDN, TPCP);Data Explorer;Chỉ tiêu cơ sở;TB;Kỳ hạn TP;IDS - QLCB, SCMS, FMS, TKNB;X;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;KL phát hành - Đăng ký;Σ KL chào bán/phát hành được cấp phép;Data Explorer;Chỉ tiêu cơ sở;TB;Đối tượng phát hành, Ngành, Loại chứng khoán, Hình thức phát hành, Phân loại, Kỳ hạn TP, Ngày/Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;X;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;KL phát hành - Thành công;Σ KL chào bán/phát hành thành công thực tế;Data Explorer;Chỉ tiêu cơ sở;Trùng;Đối tượng phát hành, Ngành, Loại chứng khoán, Hình thức phát hành, Phân loại, Kỳ hạn TP, Ngày/Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;GT phát hành - Đăng ký;"Σ GT chào bán/phát hành được cấp phép
+Với TPCP: GT gọi thầu";Data Explorer;Chỉ tiêu cơ sở;TB;Đối tượng phát hành, Ngành, Loại chứng khoán, Hình thức phát hành, Phân loại, Kỳ hạn TP, Ngày/Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;X;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;GT phát hành - Thành công;"Σ GT chào bán/phát hành thành công thực tế
+Với TPCP: GT trúng thầu";Data Explorer;Chỉ tiêu cơ sở;Trùng;Đối tượng phát hành, Ngành, Loại chứng khoán, Hình thức phát hành, Phân loại, Kỳ hạn TP, Ngày/Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Tỷ lệ thực hiện thành công (%);Tính theo tỷ lệ GT phát hành thành công / đăng ký cấp phép;Data Explorer;Chỉ tiêu cơ sở;Trùng;Đối tượng phát hành, Ngành, Loại chứng khoán, Hình thức phát hành, Phân loại, Kỳ hạn TP, Ngày/Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;GT phát hành NĐTNN;Σ GT phát hành thực tế cho NĐTNN;Data Explorer;Chỉ tiêu cơ sở;TB;Đối tượng phát hành, Ngành, Loại chứng khoán, Hình thức phát hành, Phân loại, Kỳ hạn TP, Ngày/Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;X;X;X;;;;;;;;;;
+51;;Data Explorer - Thống kê hoạt động huy động vốn;Lãi suất TP;"TPCP: Lãi suất trúng thầu
+TPDN: Lãi suất phát hành";Data Explorer;Chỉ tiêu cơ sở;TB;Đối tượng phát hành, Ngành, Loại chứng khoán, Hình thức phát hành, Phân loại, Kỳ hạn TP, Ngày/Tháng/Quý/Năm;IDS - QLCB, SCMS, FMS, TKNB;X;X;X;;;;;;;;;;
+52;;Data Explorer - Tài khoản giao dịch;Thị trường;"Gồm có:
+▪ Cơ sở
+▪ Phái sinh";Data Explorer;Chiều;TB;Thị trường;MSS;;X;X;;;;;;;;;;
+52;;Data Explorer - Tài khoản giao dịch;Loại NĐT;"Gồm có:
+▪ Cá nhân
+▪ Tổ chức";Data Explorer;Chiều;TB;Loại NĐT;MSS;;X;X;;;;;;;;;;
+52;;Data Explorer - Tài khoản giao dịch;Trong nước/Nước ngoài;"Gồm có:
+▪ Trong nước
+▪ Nước ngoài";Data Explorer;Chiều;TB;Trong nước/Nước ngoài;MSS;;X;X;;;;;;;;;;
+52;;Data Explorer - Tài khoản giao dịch;Số lượng tài khoản;Count TK còn hoạt động (chưa đóng) tính đến ngày cuối kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày;MSS;;X;X;;;;;;;;;;
+52;;Data Explorer - Tài khoản giao dịch;Số lượng tài khoản mới;Count TK mới: Theo ngày mở TK trong kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+52;;Data Explorer - Tài khoản giao dịch;Số lượng tài khoản đóng;Count TK đóng: Theo ngày đóng TK trong kỳ;Data Explorer;Chỉ tiêu cơ sở;Trùng;Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày/Tháng/Quý/Năm;MSS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Loại CK / Thị trường;Cổ phiếu, Chứng chỉ quỹ, TPDN niêm yết;Báo cáo;Chiều;Trùng;Loại CK / Thị trường;MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Sàn;Gồm: HNX, HOSE, UPCoM;Báo cáo;Chiều;Trùng;Loại CK / Thị trường;MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Chỉ số;VNIndex, HNX-Index;Báo cáo;Chiều;Trùng;Chỉ số;MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Giá trị chỉ số;Giá trị chỉ số cuối phiên;Báo cáo;Chỉ tiêu cơ sở;Trùng;Chỉ số, Ngày;MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;% thay đổi so với cuối tháng trước;(Index_t − Index tại ngày cuối tháng trước) / Index tại ngày cuối tháng trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Chỉ số, Ngày;MDDS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;% thay đổi so với cuối năm trước;(Index_t − Index 31/12 năm trước) / Index 31/12 năm trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Chỉ số, Ngày;MDDS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Chỉ số - VNIndex;Giá trị chỉ số VNIndex cuối ngày báo cáo;Báo cáo;Chỉ tiêu cơ sở;Trùng;Chỉ số, Ngày;MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Chỉ số - HNX-Index;Giá trị chỉ số HNX-Index cuối ngày báo cáo;Báo cáo;Chỉ tiêu cơ sở;Trùng;Chỉ số, Ngày;MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Mức vốn hóa thị trường cổ phiếu 3 sàn HOSE, HNX và UPCOM (nghìn tỷ đồng);Σ (Giá * KL cổ phiếu lưu hành);Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày;MSS, MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;% thay đổi vốn hóa so với cuối năm trước;(Vốn hóa_t − Vốn hóa 31/12 năm trước) / Vốn hóa 31/12 năm trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS, MDDS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Tỷ lệ vốn hóa/GDP (%);Vốn hóa cổ phiếu / GDP;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS, MDDS, QLRR;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Giá trị giao dịch bình quân trong tháng (tỷ đồng) của cổ phiếu;Σ GTGD MTD / số phiên;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Tháng;MSS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;% thay đổi so với GTGD bình quân tháng trước;(GTGD TB tháng báo cáo − GTGD TB tháng trước) / GTGD TB tháng trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Giá trị bình quân (tỷ đồng) tính từ đầu năm đến ngày báo cáo của cổ phiếu;Σ GTGD MTD / số phiên;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;% thay đổi so với GTGD bình quân năm trước;(GTGD TB năm báo cáo − GTGD TB năm trước) / GTGD TB năm trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Số mã cổ phiếu, CCQ niêm yết trên 2 Sở GDCK tính đến cuối tháng;Tổng số mã Cổ phiếu, CCQ đang niêm yết trên HOSE, HNX tại ngày cuối tháng báo cáo;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày;MDDS;;X;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Số mã cổ phiếu ĐKGD trên UPCOM tính đến cuối tháng;Số mã cổ phiếu ĐKGD trên UPCOM tính tại ngày cuối tháng báo cáo;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sàn, Ngày;MDDS;;X;;;- Thông tin thị trường;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Tổng giá trị niêm yết, ĐKGD (nghìn tỷ đồng);GT niêm yết/ĐKGD cổ phiếu = Mệnh giá * KL cổ phiếu niêm yết;Báo cáo;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sàn, Ngày;MDDS, MSS;X;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Tổng Khối lượng chứng khoán phát hành";;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;% thay đổi giá trị niêm yết, ĐKGD so với cuối năm trước;(GT niêm yết/ĐKGD cổ phiếu tại ngày báo cáo - GT niêm yết/ĐKGD cổ phiếu tại 31/12 năm trước) / GT niêm yết/ĐKGD cổ phiếu tại 31/12 năm trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sàn, Ngày;MDDS, MSS;;X;X;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường >> Thị trường cổ phiếu;Tỷ lệ giá trị niêm yết/GDP năm;GT niêm yết/ĐKGD cổ phiếu / GDP * 100;Báo cáo;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Sàn, Ngày;MDDS, MSS, QLRR;;X;;;;;;;;;;;
+54;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thị trường trái phiếu;Loại chứng khoán / Thị trường;TPDN niêm yết;Báo cáo;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;;;;;;;;;;;
+54;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thị trường trái phiếu;Giá trị giao dịch bình quân (tỷ đồng) trong tháng;Σ GTGD TPDN niêm yết / số phiên trong tháng báo cáo;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;;;- Sổ lệnh giao dịch (trade_book);;;;;;;;
+54;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thị trường trái phiếu;% thay đổi so với GTGD bình quân với tháng trước;(GTGD TB tháng báo cáo − GTGD TB tháng trước) / GTGD TB tháng trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;- Sổ lệnh giao dịch (trade_book);;;;;;;;
+54;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thị trường trái phiếu;Giá trị giao dịch bình quân (tỷ đồng) tính từ đầu năm đến ngày báo cáo;Σ GTGD / số phiên YTD;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;- Sổ lệnh giao dịch (trade_book);;;;;;;;
+54;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thị trường trái phiếu;Giá trị niêm yết (tỷ đồng) đến cuối tháng;GT niêm yết trái phiếu doanh nghiệp = Mệnh giá * KL TP niêm yết;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày;MDDS, MSS;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán lưu hành";;;;;;;;
+54;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thị trường trái phiếu;% thay đổi giá trị niêm yết so với cuối năm trước;(GT niêm yết tại ngày báo cáo - GT niêm yết tại ngày 31/12 năm trước) / GT niêm yết tại ngày 31/12 năm trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MDDS, MSS;;X;X;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán lưu hành";;;;;;;;
+54;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thị trường trái phiếu;Tỷ lệ giá trị niêm yết/GDP năm;GT niêm yết tại ngày báo cáo / GDP năm báo cáo * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MDDS, MSS, QLRR;;X;;;"- Thông tin thị trường
+- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán lưu hành
+- Thông tin chỉ tiêu tài chính trong nước (QLRR)";;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;Loại CK / Thị trường;Phái sinh;Báo cáo;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;;;- Sổ lệnh (trade_book);;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;Sản phẩm phái sinh;HTĐL VN30;Báo cáo;Chiều;Trùng;Sản phẩm phái sinh;MSS;;X;;;- Sổ lệnh (trade_book);;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;Khối lượng giao dịch bình quân trong tháng (hợp đồng/phiên);Σ KLGD / số phiên trong tháng;Báo cáo;Chỉ tiêu cơ sở;TB;Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Tháng;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;% thay đổi so với KLGD bình quân tháng trước;(KLGD bình quân tháng báo cáo - KLGD bình quân tháng trước) / KLGD bình quân tháng trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Tháng;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;Khối lượng giao dịch bình quân (hợp đồng/phiên) tính từ đầu năm đến ngày báo cáo;Σ KLGD / số phiên YTD;Báo cáo;Chỉ tiêu cơ sở;TB;Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Năm;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;% thay đổi so với KLGD bình quân năm trước;(KLGD bình quân năm báo cáo - KLGD bình quân năm trước) / KLGD bình quân năm trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Năm;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;Khối lượng mở (OI);Σ OI tính tại ngày báo cáo;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;;;VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI;;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;% thay đổi OI so với cuối tháng trước;(OI tại ngày báo cáo - OI tại ngày cuối tháng trước) / OI tại ngày cuối tháng trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI;;;;;;;;
+55;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Thông tin thị trường chứng khoán phái sinh;% thay đổi OI so với cuối năm trước;(OI tại ngày báo cáo - OI tại ngày cuối năm trước) / OI tại ngày cuối năm trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sản phẩm phái sinh, Ngày;MSS;;X;X;;VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng hợp đồng mở OI;;;;;;;;
+56;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Chứng quyền có bảo đảm;Loại CK / Thị trường;Chứng quyền;Báo cáo;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;;;- Sổ lệnh (trade_book);;;;;;;;
+56;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Chứng quyền có bảo đảm;Khối lượng giao dịch bình quân trong tháng (chứng quyền/phiên);Σ KLGD / số phiên trong tháng;Báo cáo;Chỉ tiêu cơ sở;TB;Loại chứng khoán / Thị trường, Tháng;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+56;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Chứng quyền có bảo đảm;% thay đổi so với KLGD bình quân tháng trước;(KLGD bình quân tháng báo cáo - KLGD bình quân tháng trước) / KLGD bình quân tháng trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán / Thị trường, Tháng;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+56;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Chứng quyền có bảo đảm;Khối lượng giao dịch bình quân tính từ đầu năm đến ngày báo cáo (chứng quyền/phiên);Σ KLGD / số phiên YTD;Báo cáo;Chỉ tiêu cơ sở;TB;Loại chứng khoán / Thị trường, Năm;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+56;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Chứng quyền có bảo đảm;% thay đổi so với KLGD bình quân năm trước;(KLGD bình quân năm báo cáo - KLGD bình quân năm trước) / KLGD bình quân năm trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán / Thị trường, Năm;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+56;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Chứng quyền có bảo đảm;Giá trị giao dịch bình quân trong tháng (tỷ đồng/phiên);Σ GTGD / số phiên trong tháng;Báo cáo;Chỉ tiêu cơ sở;TB;Loại chứng khoán / Thị trường, Tháng;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+56;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Chứng quyền có bảo đảm;% thay đổi so với GTGD bình quân tháng trước;(GTGD bình quân tháng báo cáo - KLGD bình quân tháng trước) / KLGD bình quân tháng trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại chứng khoán / Thị trường, Tháng;MSS;;X;X;;- Sổ lệnh (trade_book);;;;;;;;
+57;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Hoạt động đầu tư;Tổng TK NĐT;Count số lượng tài khoản;Báo cáo;Chỉ tiêu cơ sở;Trùng;Ngày;MSS;;X;;;- Thông tin tài khoản NĐT;;;;;;;;
+57;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Hoạt động đầu tư;% tăng trưởng SL TK NĐT;(SL TK ngày báo cáo − SL TK tại ngày cuối năm trước) / SL TK tại ngày cuối năm trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày;MSS;;X;X;;- Thông tin tài khoản NĐT;;;;;;;;
+57;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Hoạt động đầu tư;GTNN ròng cổ phiếu;GT mua NĐTNN − GT bán NĐTNN cổ phiếu;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại NĐT, Loại CK, Ngày;MSS;;X;;;- Sổ lệnh (trade_book);;;;;;;;
+57;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Hoạt động đầu tư;GTNN ròng trái phiếu;GT mua NĐTNN − GT bán NĐTNN trái phiếu;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại NĐT, Loại CK, Ngày;MSS;;X;;;- Sổ lệnh (trade_book);;;;;;;;
+57;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Hoạt động đầu tư;GTNN ròng cổ phiếu YTD;GT mua NĐTNN − GT bán NĐTNN cổ phiếu YTD;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại NĐT, Loại CK, Ngày;MSS;;X;;;- Sổ lệnh (trade_book);;;;;;;;
+57;;VP_TK02 – Báo cáo tình hình TTCK bất thường >> Hoạt động đầu tư;GTNN ròng trái phiếu YTD;GT mua NĐTNN − GT bán NĐTNN trái phiếu YTD;Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại NĐT, Loại CK, Ngày;MSS;;X;;;- Sổ lệnh (trade_book);;;;;;;;

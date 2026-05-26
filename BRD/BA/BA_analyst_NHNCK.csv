@@ -1,0 +1,223 @@
+﻿STT;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Trạng thái phân tích;Thông tin cần Test;Trạng thái phân tích;Test script verify mapping;BA Mapping;Cần dữ liệu lịch sử;Test script tại nguồn;Test script tại đích;Kết quả Test;Model;DMT
+;;Tên chiều/chỉ tiêu/thuộc tính;;Dashboard/báo cáo/DataExplorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: lấy 1: 1 từ nguồn
+TB: có tính toán tổng hợp
+Khó: Có logic phức tạp và lấy nhiều mốc thời gian
+Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;Trạng thái phân tích;Test script verify mapping;Mapping;Cần dữ liệu lịch sử;Test script tại nguồn;Test script tại đích;Kết quả Test;Model;DMT
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Tổng người hành nghề;Tổng số cá nhân có ít nhất 1 CCHN lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;Count distinct ProfessionalsID from Professionals;;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Chứng chỉ cấp mới (YTD);Số CCHN được cấp mới trong năm hiện tại;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;Count distinct CertificateNumber from Applications where IssueDate (ngày cấp chứng chỉ) trong năm;;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Cấp mới;Số chứng chỉ cấp lần đầu;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;"Count distinct CertificateNumber from Applications where Applications .ApplicationType (loại hồ sơ) = 'Hồ sơ cấp mới'
+and IssueDate (ngày cấp chứng chỉ) trong năm";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Cấp lại;Số chứng chỉ cấp lại;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;"Count distinct CertificateNumber from Applications a where a.ApplicationType (loại hồ sơ) in (Hồ sơ cấp lại do thu hồi | Hồ sơ cấp lại do hỏng mất | Hồ sơ cấp lại do thay đổi thông tin)
+and a.IssueDate (ngày cấp chứng chỉ) trong năm";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Bị thu hồi;Tổng số CCHN bị thu hồi lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;"Count distinct CertificateNumber from  CertificateRecords  t where t.Status = "" 2 -Thu hồi"" 
+and t.RevocationDate (ngày thu hồi) lũy kế thời gian đã chọn";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;CCHN đang hoạt động;Số CCHN trạng thái hoạt động lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;"Count distinct CertificateNumber from  CertificateRecords  t where t.Status = "" 1: Đang sử dụng"" 
+and t.RevocationDate (ngày thu hồi) lũy kế đến thời gian đã chọn";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Thu hồi trong 3 năm;Số CCHN bị thu hồi có thời hạn 3 năm lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;"Count distinct CertificateNumber from  CertificateRecords  t where t.Status = "" 2 -Thu hồi"" 
+and t.AllowReissue = ""1: Cho phép cấp lại""
+and t.RevocationDate (ngày thu hồi) thuộc 3 năm so với thời gian đã chọn";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Thu hồi vĩnh viễn;Số CCHN thu hồi không thời hạn lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;"Count distinct CertificateNumber from  CertificateRecords  t where t.Status = "" 2 -Thu hồi"" 
+and t.AllowReissue = ""0: Không cho phép cấp lại""
+and t.RevocationDate (ngày thu hồi) = thời gian lũy kế đến thời gian chọn";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Đã bị hủy;Số CCHN bị hủy lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Số CCHN;NHNCK;x;x;;;"Count distinct CertificateNumber from  CertificateRecords  t where t.Status = "" 2 -Thu hồi"" 
+and t.AllowReissue = ""0: Không cho phép cấp lại""
+and t.RevocationDate (ngày thu hồi) = thời gian lũy kế đến thời gian chọn";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Cảnh báo NHNCK;Số NHN có vi phạm lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"select count distinct a.IdentityId (mã định danh NHN)
+from  Professionals a
+join Violations v on a.ProfessionalId = v.ProfessionalId";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Số lượng Tiến sĩ;Số lượng NHN trình độ Tiến sĩ;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"select count distinct a.IdentityId (mã định danh NHN)
+from   Professionals a
+join ProfessionalHistories  b on a.ProfessionalId = b.ProfessionalId
+join EducationLevels e on b.EducationLevelId = e.EducationLevelId
+where  e.LevelName = 'Tiến sĩ'";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Số lượng Thạc sĩ;Số lượng NHN trình độ Thạc sĩ;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"select count distinct a.IdentityId (mã định danh NHN)
+from   Professionals a
+join ProfessionalHistories  b on a.ProfessionalId = b.ProfessionalId
+join EducationLevels e on b.EducationLevelId = e.EducationLevelId
+where  e.LevelName = 'Thạc sĩ'";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Số lượng Đại học;Số lượng NHN trình độ Đại học;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"select count distinct a.IdentityId (mã định danh NHN)
+from   Professionals a
+join ProfessionalHistories  b on a.ProfessionalId = b.ProfessionalId
+join EducationLevels e on b.EducationLevelId = e.EducationLevelId
+where  e.LevelName = 'Đại học'";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Tỷ lệ Tiến sĩ (%);Tỷ lệ NHN trình độ Tiến sĩ/ Tổng số NHN;Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;;Tỷ lệ NHN trình độ Tiến sĩ/ Tổng số NHN;;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Tỷ lệ Thạc sĩ (%);Tỷ lệ NHN trình độ Thạc sĩ/ Tổng số NHN;Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;;Tỷ lệ NHN trình độ Thạc sĩ/ Tổng số NHN;;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Tỷ lệ Đại học (%);Tỷ lệ NHN trình độ Đại học/ Tổng số NHN;Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;;Tỷ lệ NHN trình độ Đại học/ Tổng số NHN;;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Biểu đồ Cơ cấu theo loại hình CCHN;Số lượng CCHN là Môi giới;Số lượng CCHN là Môi giới;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"select count distinct a.CertificateNumber, b.CertificateCode
+from   CertificateRecords a
+join Certificates  b on a.CertificateId = b.CertificateId
+---where CertificateCode = Môi giới CK
+group by CertificateCode";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Biểu đồ Cơ cấu theo loại hình CCHN;Số lượng CCHN là Phân tích;Số lượng CCHN là Phân tích;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"select count distinct a.CertificateNumber, b.CertificateCode
+from   CertificateRecords a
+join Certificates  b on a.CertificateId = b.CertificateId
+---where CertificateCode = phân tích CK
+group by CertificateCode";;;;;;
+;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Biểu đồ Cơ cấu theo loại hình CCHN;Số lượng CCHN là QLQ;Số lượng CCHN là QLQ;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"select count distinct a.CertificateNumber, b.CertificateCode
+from   CertificateRecords a
+join Certificates  b on a.CertificateId = b.CertificateId
+---where CertificateCode = QLQ
+group by CertificateCode";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 18–21 quốc tịch VN;Số lượng NHN có độ tuổi 18–21 quốc tịch VN;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId = 'VN""
+and Tuổi >=18 and Tuổi <=21";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 22–30 quốc tịch VN;So luong NHN;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId = 'VN""
+and Tuổi >=22 and Tuổi <=30";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 31–40 quốc tịch VN;Chieu do tuoi NHN;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId = 'VN""
+and Tuổi >=31 and Tuổi <=40";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 41–50 quốc tịch VN;Số lượng NHN có độ tuổi 22–30 quốc tịch VN;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId = 'VN""
+and Tuổi >=41 and Tuổi <=50";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 50+ quốc tịch VN;Số lượng NHN có độ tuổi 31–40 quốc tịch VN;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId = 'VN""
+and Tuổi >50";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 18–21 quốc tịch nước ngoài;Số lượng NHN có độ tuổi 41–50 quốc tịch VN;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId = 'VN""
+and Tuổi >=18 and Tuổi <=21";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 22–30 quốc tịch nước ngoài;Số lượng NHN có độ tuổi 50+ quốc tịch VN;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId <> 'VN""
+and Tuổi >=22 and Tuổi <=30";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 31–40 quốc tịch nước ngoài;Số lượng NHN có độ tuổi 18–21 quốc tịch nước ngoài;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId <>'VN""
+and Tuổi >=31 and Tuổi <=40";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 41–50 quốc tịch nước ngoài;Số lượng NHN có độ tuổi 22–30 quốc tịch nước ngoài;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId <> 'VN""
+and Tuổi >=41 and Tuổi <=50";;;;;;
+;"Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Phân bổ độ tuổi
+";Số lượng NHN có độ tuổi 50+ quốc tịch nước ngoài;Số lượng NHN có độ tuổi 31–40 quốc tịch nước ngoài;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;"Select count distinct Professionals.IdentityId
+From Professionals
+Where Professionals.CountryId <> 'VN""
+and Tuổi >50";;;;;;
+;Dashboard Tra cứu hồ sơ 360;Họ tên;Họ tên của NHNCK;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Professionals.FullName
+/ OrganizationReports.FullName";;;;;;
+;Dashboard Tra cứu hồ sơ 360;Ngày sinh;Ngày sinh của NHNCK;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;OrganizationReports.BirthDate;;;;;;
+;Dashboard Tra cứu hồ sơ 360;Tuổi;Tuổi của NHNCK;Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;;Hệ thống tự tính;;;;;;
+;Dashboard Tra cứu hồ sơ 360;Quốc tịch;Quốc tịch của NHNCK;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;Professionals.CountryId;;;;;;
+;Dashboard Tra cứu hồ sơ 360;Số định danh cá nhân/ Số hộ chiếu;Số định danh cá nhân hoặc số hộ chiếu;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;Professionals.IdentityId;;;;;;
+;Dashboard Tra cứu hồ sơ 360;Nơi công tác hiện tại;Nơi công tác hiện tại;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Professionals.Workplace
+hoặc
+Organizations.OrganizationCode
+Organizations.OrganizationName";;;;;;
+;Dashboard Tra cứu hồ sơ 360;Loại CCHN;Loại CCHN;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Certificates.CertificateCode
+Certificates.CertificateName";;;;;;
+;Dashboard Tra cứu hồ sơ 360;Trạng thái NHNCK;"Trạng thái NHNCK:
+- Đang hành nghề
+- Chưa hành nghề";Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalHistories.StatusWork;;;;;;
+;Dashboard Mạng lưới của NHNCK;Đơn vị công tác;Tên DN niêm yết/ đăng ký giao dịch (UPCOM) mà NHN tham gia trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"ProfessionalHistories.Workplace
+/ OrganizationReports.Workplace";;;;;;
+;Dashboard Mạng lưới của NHNCK;Chức vụ, vai trò;Chức vụ, vai trò trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn của DN niêm yết/ đăng ký giao dịch (UPCOM);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC, NHNCK;x;x;;;OrganizationReports.Position;;;;;;
+;Dashboard Mạng lưới của NHNCK;Họ tên người có liên quan;Họ tên người có liên quan: anh chị em, bố mẹ, …;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalRelationships.FullName;;;;;;
+;Dashboard Mạng lưới của NHNCK;Mối quan hệ;"Mối quan hệ của người có liên quan với NHN
+Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà)";Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalRelationships.RelationshipType;;;;;;
+;Dashboard Mạng lưới của NHNCK;Đơn vị công tác của người có liên quan;DN niêm yết/ đăng ký giao dịch (UPCOM) mà người có liên quan tham gia trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalRelationships.Workplace;;;;;;
+;Dashboard Mạng lưới của NHNCK;Chức vụ, vai trò của người có liên quan;Chức vụ, vai trò của người có liên quan trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn của DN niêm yết/ đăng ký giao dịch (UPCOM);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC, NHNCK;x;x;;;"Hỏi lại HTTT
+ProfessionalRelationships.Occupation";;;;;;
+;;Nghề nghiệp của người có liên quan;;;;;Mã người hành nghề;NHNCK;;;;;ProfessionalRelationships.Occupation;;;;;;
+;;Mã định danh của người có liên quan;;;;;Mã người hành nghề;NHNCK;;;;;ProfessionalRelationships.IdentityId;;;;;;
+;;Quốc tịch của người có liên quan;;;;;Mã người hành nghề;NHNCK;;;;;ProfessionalRelationships.CountryId;;;;;;
+;;Địa chỉ người có liên quan;;;;;Mã người hành nghề;NHNCK;;;;;ProfessionalRelationships.Address;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Danh sách Vai trò của NHNCK tại DN niêm yết/ đăng ký giao dịch (UPCOM);;;;;Mã người hành nghề;;;;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Tên DN niêm yết/ đăng ký giao dịch (UPCOM);Tên DN niêm yết/ đăng ký giao dịch (UPCOM) mà NHN tham gia trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;OrganizationReports.OrganizationId/ Workplace;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Vai trò;Chức vụ, vai trò trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn của DN niêm yết/ đăng ký giao dịch (UPCOM);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC, NHNCK;x;x;;;NHNCK.OrganizationReports.Position;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Trạng thái;Trạng thái hiện tại;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Số lượng cổ phiếu sở hữu;"Số lượng cổ phiếu sở hữu của NHN tại DN niêm yết/ đăng ký giao dịch (UPCOM)
+Nối thông tin qua CCCD và mã CK";Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;VSDC;x;x;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Mạng lưới người có liên quan NHNCK;;;;;Mã người hành nghề;;;;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Họ và tên;Họ và tên của người có liên quan;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalRelationships.FullName;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Mối quan hệ;Mối quan hệ của người có liên quan với NHNCK;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalRelationships.RelationshipType;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Nghề nghiệp;Nghề nghiệp của người có liên quan;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalRelationships.Occupation;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;CCCD/CMND/HC;CCCD/CMND/HC của người có liên quan;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalRelationships.IdentityId;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Tài khoản & số dư;;;;;;;;;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Mã CTCK;Tên viết tắt của CTCK mà NHN mở tài khoản;Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;Where Organizations.OrganizationTypeId =1;Organizations.OrganizationCode;;;;;;
+;;Phân loại tổ chức;Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác);;;;Mã người hành nghề;NHNCK;;;;;Organizations.OrganizationTypeId;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Số tài khoản;Số tài khoản của NHN đã mở;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC;x;x;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Tên chủ tài khoản;Tên chủ tài khoản;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC;x;x;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Mã CK nắm giữ chính;Tối đa 2 mã CK nắm giữ có giá trị lớn nhất;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC;x;x;;;;;;;;;
+3.2.2.3;Dashboard Hồ sơ & Danh mục của NHNCK;Số dư tài khoản (tỷ VNĐ);Tổng giá trị tài sản tại thời điểm hiện tại, đơn vị tỷ đồng;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;;;;;;;
+3.2.2.4;Dashboard Quá trình hành nghề của NHNCK;Tổ chức;Tên tổ chức (CTCK, CTQLQ, Chi nhánh CTCK nước ngoài, chi nhánh Cty QLQ nước ngoài) mà NHN đã/ đang công tác;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Organizations.OrganizationCode
+Organizations.OrganizationName
+";;;;;;
+;Dashboard Quá trình hành nghề của NHNCK;Phân loại tổ chức;"Phân loại tổ chức mà NHNCK làm việc:
+Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác)";;;;Mã người hành nghề;NHNCK;;;;;Organizations.OrganizationTypeId;;;;;;
+;Dashboard Quá trình hành nghề của NHNCK;Nơi công tác;;;;;Mã người hành nghề;NHNCK;;;;;OrganizationReports.Workplace;;;;;;
+3.2.2.4;Dashboard Quá trình hành nghề của NHNCK;Vị trí;Vị trí công tác;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;OrganizationReports.Position;;;;;;
+;Dashboard Quá trình hành nghề của NHNCK;Phòng ban;;;;;Mã người hành nghề;NHNCK;;;;;OrganizationReports.Department;;;;;;
+3.2.2.4;Dashboard Quá trình hành nghề của NHNCK;Từ tháng;Thời gian bắt đầu làm việc/ Ngày tiếp nhận;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;OrganizationReports.HireDate;;;;;;
+3.2.2.4;Dashboard Quá trình hành nghề của NHNCK;Đến tháng;Thời gian kết thúc làm việc, nếu còn đang làm việc thì hiển thị “Hiện nay”;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;"If OrganizationReports.TerminationDate is null then ""Hiện nay""";OrganizationReports.TerminationDate;;;;;;
+3.2.2.4;Dashboard Quá trình hành nghề của NHNCK;Trạng thái;"Trạng thái làm việc tại từng nơi công tác:
+- Quá khứ: Không còn làm việc
+- Hiện tại: Đang làm việc";Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Hệ thống tự tính: Nếu 'Đến tháng"" null thì ""Đang làm việc"", nếu đến tháng có giá trị thì cập nhật ""đã nghỉ/ Không còn làm việc""";ProfessionalHistories.StatusWork;;;;;
+3.2.2.5;Dashboard Lịch sử cấp chứng chỉ của NHNCK;Số CCHN;Thông tin số CCHN đã cấp;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;OrganizationReports.CertificateNumber;;;;;;
+3.2.2.5;Dashboard Lịch sử cấp chứng chỉ của NHNCK;Loại hình;Loại hình hành nghề được cấp;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Certificates.CertificateCode
+Certificates.CertificateName";;;;;;
+3.2.2.5;Dashboard Lịch sử cấp chứng chỉ của NHNCK;Ngày cấp;Ngày cấp CCHN;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;OrganizationReports.IssueDate;;;;;;
+3.2.2.5;Dashboard Lịch sử cấp chứng chỉ của NHNCK;Ngày thu hồi;Ngày thu hồi CCHN (nếu có);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;CertificateRecords.RevocationDate;;;;;;
+3.2.2.5;Dashboard Lịch sử cấp chứng chỉ của NHNCK;Quyết định;Số quyết định cấp CCHN;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;CertificateRecords.IssueDecisionId;;;;;;
+3.2.2.5;Dashboard Lịch sử cấp chứng chỉ của NHNCK;Trạng thái;"Trạng thái gồm:
+Chưa hành nghề | Đang hành nghề | Cấm hành nghề có thời hạn | Thu hồi có cấp lại | Thu hồi không cấp lại";Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;CertificateRecords.Status;;;;;;
+3.2.2.6;Dashboard Đợt thi sát hạch của NHNCK;Đợt thi;Đợt thi NHN đã tham gia;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"ExamSessions.Code
+ExamSessions.Name
+ExamSessions.Session";;;;;;
+;Dashboard Đợt thi sát hạch của NHNCK;Loại chứng chỉ mỗi đợt thi;;;;;Mã người hành nghề;NHNCK;;;;;ExamSessionFees.CertificateId;;;;;;
+3.2.2.6;Dashboard Đợt thi sát hạch của NHNCK;Ngày thi;Ngày thi NHN đã tham gia;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"ExamSessions.ExamStartDate
+ExamSessions.ExamEndDate";;;;;;
+3.2.2.6;Dashboard Đợt thi sát hạch của NHNCK;Điểm thi;Điểm thi chuyên môn NHN đã tham gia;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ExamDetails.SpecializationScore;;;;;;
+;Dashboard Đợt thi sát hạch của NHNCK;Điểm thi luật;Điểm thi luật;;;;Mã người hành nghề;NHNCK;;;;;ExamDetails.LawScore;;;;;;
+;Dashboard Đợt thi sát hạch của NHNCK;Kết quả thi luật;Kết quả luật (1: Đạt, 0: Không đạt);;;;Mã người hành nghề;NHNCK;;;;;ExamDetails.LawResult;;;;;;
+;Dashboard Đợt thi sát hạch của NHNCK;Kết quả thi chuyên môn;Kết quả chuyên môn (1: Đạt, 0: Không đạt);;;;Mã người hành nghề;NHNCK;;;;;ExamDetails.SpecializationResult;;;;;;
+3.2.2.6;Dashboard Đợt thi sát hạch của NHNCK;Số quyết định công bố;Số quyết định công bố xác nhận danh sách thí sinh đạt / không đạt, điểm thi chính thức, làm căn cứ để cấp chứng chỉ chuyên môn chứng khoán;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;where Decisions.TypeId ...;"ExamSessions.DecisionId
+/ 
+Decisions.DecisionNumber";;;;;;
+3.2.2.6;Dashboard Đợt thi sát hạch của NHNCK;Trạng thái;Trạng thái Đạt/Không đạt;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ExamSessions.Status;;;;;;
+;Dashboard Đợt thi sát hạch của NHNCK;Kết quả tổng;Kết quả để xét duyệt việc thi có đạt, không đạt dựa trên kết quả thi luật và thi chuyên môn;;;;Mã người hành nghề;NHNCK;;;;;ExamDetails.Result;;;;;;
+3.2.2.7;Dashboard Cập nhật kiến thức của NHNCK;Kết quả kiểm tra, phân loại (nếu có);Xác định theo kết quả bài kiểm tra cuối khóa;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;SpecializationCourseDetails.Result;;;;;;
+3.2.2.7;Dashboard Cập nhật kiến thức của NHNCK;Trạng thái đã đủ 8h hay chưa;"Đã đủ 8h: Số giờ cập nhật 1 năm >= 8h
+ Chưa đủ 8h: Số giờ cập nhật 1 năm < 8h";Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;;Chưa biết tính như nào ra số giờ;;;;;;
+;;Mã khóa học chuyên môn;;;;;Mã người hành nghề;NHNCK;;;;;SpecializationCourses.CourseCode;;;;;;
+;;Tên khóa học chuyên môn;;;;;Mã người hành nghề;NHNCK;;;;;SpecializationCourses.CourseName;;;;;;
+;;Ngày thi;;;;;Mã người hành nghề;NHNCK;;;;;SpecializationCourses.ExamDate;;;;;;
+;;Điểm thi;;;;;Mã người hành nghề;NHNCK;;;;;SpecializationCourseDetails.ExamScore;;;;;;
+;;Kết quả thi;Kết quả thi (1: Đạt, 0: Không đạt);;;;Mã người hành nghề;NHNCK;;;;;SpecializationCourseDetails.Result;;;;;;
+3.2.2.8;Dashboard Lịch sử vi phạm của NHNCK;Số quyết định;Số quyết định xử phạt;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;Violations.DecisionId;;;;;;
+3.2.2.8;Dashboard Lịch sử vi phạm của NHNCK;Ngày quyết định;Ngày quyết định xử phạt;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Không tìm thấy => Hỏi HTTT
+Chỉ thấy giá trị CreatedAt: ngày tạo";;;;;;
+3.2.2.8;Dashboard Lịch sử vi phạm của NHNCK;Nội dung vi phạm;Nội dung vi phạm;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;Violations.Note => Hỏi lại HTTT;;;;;;
+3.2.2.8;Dashboard Lịch sử vi phạm của NHNCK;Hình thức xử phạt;Loại vi phạm (1: Hành chính, 2: Pháp luật);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;Violations.Type;;;;;;
+3.2.2.8;Dashboard Lịch sử vi phạm của NHNCK;Trạng thái;Trạng thái thực thi quyết định: Chưa thực thi, Đã thực thi, Cưỡng chế thi hành, Đang thực thi, Đã hoàn thành (đối với đình chỉ), Đã ban hành (đối với Cảnh báo);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;Violations.Status;;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Tên NHN;Tên NHNCK;DataExplorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;CertificateRecords.ProfessionalFullName;;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Số CCHN;Số CCHN của NHNCK;DataExplorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;CertificateRecords.CertificateNumber;;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Loại hình;Loại hình nghiệp vụ được cấp phép/ Loại chứng chỉ hành nghề;DataExplorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Certificates.CertificateCode
+Certificates.CertificateName";;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Tổ chức;Tổ chức đang làm việc;DataExplorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;Professionals.Workplace;;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Ngày cấp;Ngày cấp CCHN;DataExplorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;CertificateRecords.IssueDate;;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Trạng thái;"Trạng thái NHNCK:
+- Đang hành nghề
+- Chưa hành nghề";DataExplorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalHistories.StatusWork;;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Điều kiện lọc: Loại hình;Chiều/ Loại chứng chỉ hành nghề;DataExplorer;Chiều;Dễ;Mã người hành nghề;NHNCK;x;x;;;"Certificates.CertificateCode
+Certificates.CertificateName";;;;;;
+3,3;Yêu cầu khai thác dữ liệu (Data Explorer);Điều kiện lọc:Trạng thái;Chiều/ Trạng thái NHNCK;DataExplorer;Chiều;Dễ;Mã người hành nghề;NHNCK;x;x;;;ProfessionalHistories.StatusWork;;;;;;
+;;Mã định danh ;Mã định danh NHNCK;;;;Mã người hành nghề;NHNCK;;;;;Professionals.IdentityId;;;;;;
+;;Mã người hành nghề;Mã người hành nghề;;;;Mã người hành nghề;NHNCK;;;;;"Applications.ProfessionalId
+CertificateRecords. ProfessionalId";;;;;;
+;;Mã CCHN;Mã CCHN;;;;Mã người hành nghề;NHNCK;;;;;Applications..CertificateRecordId;;;;;;
+;;Trạng thái CCHN;Trạng thái CCHN: Trạng thái (0: Chưa sử dụng, 1: Đang sử dụng, 2: Thu hồi, 3: Đã hủy);;;;Mã người hành nghề;NHNCK;;;;;CertificateRecords.Status;;;;;;
