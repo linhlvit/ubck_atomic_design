@@ -1,0 +1,64 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-FMS.AGENCIESBRA
+  logical_name: Mapping Staging – source FMS.AGENCIESBRA
+  physical_name: stg_fms_agenciesbra
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-AGENCIESBRA
+target:
+  namespace: stg
+  physical_name: stg_fms_agenciesbra
+  etl_handle: Fact Snapshot
+  description: Danh sách CN/PGD của đại lý Quỹ đầu tư
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: AGENCIESBRA
+  alias: ag
+  select_fields: Id, AgnId, Name, Address, Status, Deleted, DateCreated, DateModified
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: HEX(ag.Id)
+  data_type: string
+  description: Mã ID CN/PGD đại lý quỹ đầu tư (PK)
+  target_attr_name: null
+- target_column: agnid
+  transformation: HEX(ag.AgnId)
+  data_type: string
+  description: Mã ID đại lý. FK → AGENCIES.Id
+  target_attr_name: null
+- target_column: name
+  transformation: ag.Name
+  data_type: string
+  description: Tên CN/PGD đại lý
+  target_attr_name: null
+- target_column: address
+  transformation: ag.Address
+  data_type: string
+  description: Địa chỉ CN/PGD
+  target_attr_name: null
+- target_column: status
+  transformation: ag.Status
+  data_type: decimal(22,0)
+  description: Trạng thái
+  target_attr_name: null
+- target_column: deleted
+  transformation: ag.Deleted
+  data_type: boolean
+  description: Trạng thái bản ghi
+  target_attr_name: null
+- target_column: datecreated
+  transformation: ag.DateCreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: ag.DateModified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

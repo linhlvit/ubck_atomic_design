@@ -15,66 +15,66 @@ input:
 - source_type: physical_table
   namespace: src
   table_name: AGENCIES
-  alias: agy
+  alias: agen
   select_fields: Id, Name, ShortName, AgencyTypeId, Address, Status, Deleted, CreatedBy,
     DateCreated, DateModified, ModifyBy
   filter: null
 relationship: []
 mapping_columns:
 - target_column: id
-  transformation: HEX(agy.Id)
+  transformation: HEX(agen.Id)
   data_type: string
   description: Mã ID đại lý quỹ đầu tư (PK)
   target_attr_name: null
 - target_column: name
-  transformation: agy.Name
+  transformation: agen.Name
   data_type: string
   description: Tên đại lý
   target_attr_name: null
 - target_column: shortname
-  transformation: agy.ShortName
+  transformation: agen.ShortName
   data_type: string
   description: Tên viết tắt
   target_attr_name: null
 - target_column: agencytypeid
-  transformation: HEX(agy.AgencyTypeId)
+  transformation: HEX(agen.AgencyTypeId)
   data_type: string
   description: Mã ID loại đại lý. FK → AGENCYTYPE.Id
   target_attr_name: null
 - target_column: address
-  transformation: agy.Address
+  transformation: agen.Address
   data_type: string
   description: Địa chỉ
   target_attr_name: null
 - target_column: status
-  transformation: agy.Status
+  transformation: agen.Status
   data_type: string
   description: Mã ID trạng thái. FK → STATUS.Id
   target_attr_name: null
 - target_column: deleted
-  transformation: agy.Deleted
-  data_type: integer
+  transformation: agen.Deleted
+  data_type: boolean
   description: Trạng thái bản ghi
   target_attr_name: null
 - target_column: createdby
-  transformation: agy.CreatedBy
+  transformation: agen.CreatedBy
   data_type: string
   description: Người tạo
   target_attr_name: null
 - target_column: datecreated
-  transformation: agy.DateCreated
+  transformation: agen.DateCreated
   data_type: date
   description: Ngày tạo
   target_attr_name: null
 - target_column: datemodified
-  transformation: agy.DateModified
+  transformation: agen.DateModified
   data_type: date
   description: Ngày sửa
   target_attr_name: null
 - target_column: modifyby
-  transformation: agy.ModifyBy
+  transformation: agen.ModifyBy
   data_type: string
   description: Người sửa
   target_attr_name: null
-transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
 final_filter: []
