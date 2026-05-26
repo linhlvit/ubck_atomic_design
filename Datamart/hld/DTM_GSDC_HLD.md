@@ -131,15 +131,15 @@ Toàn bộ KPI điểm thành phần và tổng hợp đều **PENDING** — IDS
 
 **KPI liên quan:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất |
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSDC_1 | Tuân thủ | Điểm | Cơ sở |
-| K_GSDC_2 | Phát hành | Điểm | Cơ sở |
-| K_GSDC_3 | Tài chính | Điểm | Cơ sở |
-| K_GSDC_4 | Phi tài chính & M-Score | Điểm | Cơ sở |
-| K_GSDC_5 | Xếp hạng tín nhiệm DN | Text | Cơ sở |
-| K_GSDC_6 | Điểm tổng hợp | Điểm (0–100) | Cơ sở |
-| K_GSDC_7 | Xếp loại | Text (A/B/C…) | Cơ sở |
+| K_GSDC_1 | Tuân thủ | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_2 | Phát hành | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_3 | Tài chính | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_4 | Phi tài chính & M-Score | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_5 | Xếp hạng tín nhiệm DN | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_6 | Điểm tổng hợp | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_7 | Xếp loại | Base | Pending - chưa thiết kế nguồn |
 
 **Lý do PENDING:** BA ghi nhận `failed` — bảng lưu kết quả chấm điểm tổng hợp CTDC chưa được thiết kế trong CSDL IDS.
 
@@ -212,22 +212,22 @@ flowchart LR
 
 **KPI liên quan:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất |
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSDC_10 | Công bố BCTC | Điểm | Cơ sở |
-| K_GSDC_11 | Công bố BCTN | Điểm | Cơ sở |
-| K_GSDC_12 | Công bố báo cáo tình hình quản trị | Điểm | Cơ sở |
-| K_GSDC_13 | Công bố thông tin Thay đổi TGĐ/CTHĐQT | Điểm | Cơ sở |
-| K_GSDC_14 | Công bố thông tin vi phạm, quyết định xử phạt | Điểm | Cơ sở |
-| K_GSDC_15 | Điều lệ Công ty và Các Quy chế hoạt động | Điểm | Cơ sở |
-| K_GSDC_16 | Số lượng ĐHĐCĐ thường niên trong 6 tháng đầu năm | Điểm | Cơ sở |
-| K_GSDC_17 | Số lượng thành viên HĐQT độc lập | Điểm | Cơ sở |
-| K_GSDC_18 | Số lượng thành viên HĐQT không điều hành | Điểm | Cơ sở |
-| K_GSDC_19 | Tư cách thành viên HĐQT/BKS/Kế toán trưởng | Điểm | Cơ sở |
-| K_GSDC_20 | Số lượng thành viên BKS hoặc Ủy ban kiểm toán | Điểm | Cơ sở |
-| K_GSDC_21 | Báo cáo tiến độ sử dụng vốn | Điểm | Cơ sở |
-| K_GSDC_22 | Thay đổi phương án sử dụng vốn | Điểm | Cơ sở |
-| K_GSDC_23 | Tổng điểm Tuân thủ | Điểm | Cơ sở |
+| K_GSDC_10 | Công bố BCTC | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_11 | Công bố BCTN | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_12 | Công bố báo cáo tình hình quản trị | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_13 | Công bố thông tin Thay đổi TGĐ/CTHĐQT | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_14 | Công bố thông tin vi phạm, quyết định xử phạt | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_15 | Điều lệ Công ty và Các Quy chế hoạt động | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_16 | Số lượng ĐHĐCĐ thường niên trong 6 tháng đầu năm | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_17 | Số lượng thành viên HĐQT độc lập | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_18 | Số lượng thành viên HĐQT không điều hành | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_19 | Tư cách thành viên HĐQT/BKS/Kế toán trưởng | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_20 | Số lượng thành viên BKS hoặc Ủy ban kiểm toán | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_21 | Báo cáo tiến độ sử dụng vốn | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_22 | Thay đổi phương án sử dụng vốn | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_23 | Tổng điểm Tuân thủ | Base | Pending - chưa thiết kế nguồn |
 
 **Lý do PENDING:** BA ghi nhận `failed` — bảng lưu kết quả điểm từng tiêu chí tuân thủ chưa được thiết kế trong CSDL IDS.
 
@@ -243,16 +243,16 @@ flowchart LR
 
 **KPI liên quan:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất |
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSDC_24 | Phát hành tăng vốn nhanh | Điểm | Cơ sở |
-| K_GSDC_25 | Số lần chào bán cổ phiếu riêng lẻ | Điểm | Cơ sở |
-| K_GSDC_26 | Số lần chào bán ra công chúng | Điểm | Cơ sở |
-| K_GSDC_27 | Số lần phát hành ESOP | Điểm | Cơ sở |
-| K_GSDC_28 | Tỷ lệ phát hành trái phiếu không có TSBĐ | Điểm | Cơ sở |
-| K_GSDC_29 | Tỷ lệ trái phiếu vi phạm nghĩa vụ thanh toán lãi và gốc | Điểm | Cơ sở |
-| K_GSDC_30 | Dư nợ trái phiếu / Tổng VCSH | Điểm | Cơ sở |
-| K_GSDC_31 | Tổng điểm Phát hành | Điểm | Cơ sở |
+| K_GSDC_24 | Phát hành tăng vốn nhanh | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_25 | Số lần chào bán cổ phiếu riêng lẻ | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_26 | Số lần chào bán ra công chúng | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_27 | Số lần phát hành ESOP | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_28 | Tỷ lệ phát hành trái phiếu không có TSBĐ | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_29 | Tỷ lệ trái phiếu vi phạm nghĩa vụ thanh toán lãi và gốc | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_30 | Dư nợ trái phiếu / Tổng VCSH | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_31 | Tổng điểm Phát hành | Base | Pending - chưa thiết kế nguồn |
 
 **Lý do PENDING:** BA ghi nhận `failed` — bảng lưu kết quả điểm từng tiêu chí phát hành chưa được thiết kế trong CSDL IDS.
 
@@ -268,20 +268,20 @@ flowchart LR
 
 **KPI liên quan:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất |
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSDC_32 | Kiểm toán — Ý kiến kiểm toán | Điểm | Cơ sở |
-| K_GSDC_33 | Khả năng hoạt động liên tục | Điểm | Cơ sở |
-| K_GSDC_34 | Dòng tiền từ hoạt động kinh doanh | Điểm | Cơ sở |
-| K_GSDC_35 | Khả năng thanh toán hiện thời | Điểm | Cơ sở |
-| K_GSDC_36 | EBIT / Lãi vay | Điểm | Cơ sở |
-| K_GSDC_37 | Nợ / VCSH | Điểm | Cơ sở |
-| K_GSDC_38 | Nợ / Vốn điều lệ | Điểm | Cơ sở |
-| K_GSDC_39 | VCSH | Điểm | Cơ sở |
-| K_GSDC_40 | ROE | Điểm | Cơ sở |
-| K_GSDC_41 | Doanh thu từ HĐ tài chính / Lợi nhuận sau thuế | Điểm | Cơ sở |
-| K_GSDC_42 | Doanh thu từ hoạt động khác / Lợi nhuận sau thuế | Điểm | Cơ sở |
-| K_GSDC_43 | Tổng điểm Tài chính | Điểm | Cơ sở |
+| K_GSDC_32 | Kiểm toán — Ý kiến kiểm toán | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_33 | Khả năng hoạt động liên tục | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_34 | Dòng tiền từ hoạt động kinh doanh | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_35 | Khả năng thanh toán hiện thời | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_36 | EBIT / Lãi vay | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_37 | Nợ / VCSH | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_38 | Nợ / Vốn điều lệ | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_39 | VCSH | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_40 | ROE | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_41 | Doanh thu từ HĐ tài chính / Lợi nhuận sau thuế | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_42 | Doanh thu từ hoạt động khác / Lợi nhuận sau thuế | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_43 | Tổng điểm Tài chính | Base | Pending - chưa thiết kế nguồn |
 
 **Lý do PENDING:** BA ghi nhận `failed` — bảng lưu kết quả điểm từng tiêu chí tài chính chưa được thiết kế trong CSDL IDS.
 
@@ -297,12 +297,12 @@ flowchart LR
 
 **KPI liên quan:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất |
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSDC_44 | Tình trạng DN từ Cục Đăng ký kinh doanh | Điểm | Cơ sở |
-| K_GSDC_45 | Sở hữu giữa các bên liên quan | Điểm | Cơ sở |
-| K_GSDC_46 | M-Score | Điểm | Cơ sở |
-| K_GSDC_47 | Tổng điểm Phi tài chính & M-Score | Điểm | Cơ sở |
+| K_GSDC_44 | Tình trạng DN từ Cục Đăng ký kinh doanh | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_45 | Sở hữu giữa các bên liên quan | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_46 | M-Score | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_47 | Tổng điểm Phi tài chính & M-Score | Base | Pending - chưa thiết kế nguồn |
 
 **Lý do PENDING:** BA ghi nhận `failed` — bảng lưu kết quả điểm phi tài chính và M-Score chưa được thiết kế trong CSDL IDS.
 
@@ -1265,7 +1265,20 @@ flowchart LR
 
 ##### PENDING
 
-**KPI liên quan:** 10 chỉ tiêu. KPI ID reserve: K_GSDC_837 – K_GSDC_846.
+**KPI liên quan:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_GSDC_837 | Khối lượng cổ phiếu đang lưu hành | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_838 | Khối lượng cổ phiếu niêm yết | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_839 | Khối lượng cổ phiếu quỹ | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_840 | Khối lượng cổ phiếu tự do chuyển nhượng (Free Float) | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_841 | Khối lượng cổ phiếu khối ngoại sở hữu | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_842 | Tỷ lệ sở hữu nước ngoài hiện tại | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_843 | Tỷ lệ sở hữu nước ngoài tối đa (Foreign Ownership Limit – FOL) | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_844 | Room ngoại còn lại | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_845 | Khối lượng cổ phiếu sở hữu nhà nước | Base | Pending - chưa thiết kế nguồn |
+| K_GSDC_846 | Tỷ lệ sở hữu nhà nước | Base | Pending - chưa thiết kế nguồn |
 
 **Lý do PENDING:** BA ghi nhận *"MSS chưa có thiết kế bảng"* — nguồn dữ liệu từ MSS, không phải IDS.
 

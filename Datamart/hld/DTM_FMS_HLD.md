@@ -1657,6 +1657,1240 @@ flowchart LR
 
 **Bảng grain:** *(Reuse `Report Pass-through View` — xem Nhóm 12. Grain = 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu)*
 
+### Tab: TỔNG QUAN ĐẠI LÝ PHÂN PHỐI
+
+#### Nhóm — Danh sách Đại lý phân phối
+
+##### PENDING
+
+**KPI liên quan:** K_FMS_107 – K_FMS_128
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+
+**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
+
+**Mart dự kiến:**
+- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
+- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_107 | Tên Đại lý phân phối | Cơ sở | PENDING |
+| K_FMS_108 | Số GP thành lập | Cơ sở | PENDING |
+| K_FMS_109 | Ngày cấp GP thành lập | Cơ sở | PENDING |
+| K_FMS_110 | Địa chỉ | Cơ sở | PENDING |
+| K_FMS_111 | Tình trạng hoạt động | Cơ sở | PENDING |
+| K_FMS_112 | Quỹ đang phân phối | Cơ sở | PENDING |
+| K_FMS_113 | Danh sách các Quỹ đang phân phối | Cơ sở | PENDING |
+| K_FMS_114 | Tài khoản giao dịch | Cơ sở | PENDING |
+| K_FMS_115 | Tài khoản giao dịch (YTD) | Cơ sở | PENDING |
+| K_FMS_116 | Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ - Tổ chức | Cơ sở | PENDING |
+| K_FMS_117 | Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ - Cá nhân | Cơ sở | PENDING |
+| K_FMS_118 | Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ - Nước ngoài | Cơ sở | PENDING |
+| K_FMS_119 | Số tài khoản nắm giữ chứng chỉ chỉ quỹ - Tổ chức | Cơ sở | PENDING |
+| K_FMS_120 | Số tài khoản nắm giữ chứng chỉ chỉ quỹ - Cá nhân | Cơ sở | PENDING |
+| K_FMS_121 | Số tài khoản nắm giữ chứng chỉ chỉ quỹ - Nước ngoài | Cơ sở | PENDING |
+| K_FMS_122 | Giá trị chứng chỉ quỹ - Tổ chức | Cơ sở | PENDING |
+| K_FMS_123 | Giá trị chứng chỉ quỹ - Cá nhân | Cơ sở | PENDING |
+| K_FMS_124 | Giá trị chứng chỉ quỹ - Nước ngoài | Cơ sở | PENDING |
+| K_FMS_125 | Giá trị phát hành (PH) | Cơ sở | PENDING |
+| K_FMS_126 | Giá trị phát hành (PH) (YTD) | Cơ sở | PENDING |
+| K_FMS_127 | Giá trị mua lại (ML) | Cơ sở | PENDING |
+| K_FMS_128 | Thị phần (TP) | Phái sinh | PENDING |
+
+
+#### Nhóm — Giao dịch thông qua Đại lý phân phối
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_105 – K_FMS_106
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+
+
+**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
+
+
+**Mart dự kiến:**
+- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
+- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_105 | Giá trị phát hành (PH) | Cơ sở | PENDING |
+| K_FMS_106 | Giá trị mua lại (ML) | Cơ sở | PENDING |
+
+
+#### Nhóm — Giá trị chứng chỉ quỹ
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_102 – K_FMS_104
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+
+
+**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
+
+
+**Mart dự kiến:**
+- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
+- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_102 | Tổ chức | Cơ sở | PENDING |
+| K_FMS_103 | Cá nhân | Cơ sở | PENDING |
+| K_FMS_104 | Nước ngoài | Cơ sở | PENDING |
+
+
+#### Nhóm — Số tài khoản nắm giữ chứng chỉ chỉ quỹ
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_99 – K_FMS_101
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+
+
+**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
+
+
+**Mart dự kiến:**
+- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
+- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_99 | Tổ chức | Cơ sở | PENDING |
+| K_FMS_100 | Cá nhân | Cơ sở | PENDING |
+| K_FMS_101 | Nước ngoài | Cơ sở | PENDING |
+
+
+#### Nhóm — Thống kê chung
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_92 – K_FMS_95
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+
+
+**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
+
+
+**Mart dự kiến:**
+- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
+- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_92 | Số lượng Đại lý phân phối | Cơ sở | PENDING |
+| K_FMS_93 | Số tài khoản | Cơ sở | PENDING |
+| K_FMS_94 | Giá trị phát hành | Cơ sở | PENDING |
+| K_FMS_95 | Giá trị mua lại | Cơ sở | PENDING |
+
+
+#### Nhóm — Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_96 – K_FMS_98
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+
+
+**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
+
+
+**Mart dự kiến:**
+- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
+- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_96 | Tổ chức | Cơ sở | PENDING |
+| K_FMS_97 | Cá nhân | Cơ sở | PENDING |
+| K_FMS_98 | Nước ngoài | Cơ sở | PENDING |
+
+
+### Tab: TỔNG QUAN CN CTQLQ NN TẠI VN
+
+
+#### Nhóm — Danh sách các Chi nhánh CTQLQ nước ngoài tại Việt Nam
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_138 – K_FMS_147
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Foreign Fund Management Organization Unit chi tiết (hợp đồng UTQLDM, nhân viên, tài chính)
+
+
+**Atomic cần bổ sung:** `Foreign Fund Management Organization Unit` (FMS.FORBRCH) — cần bổ sung attributes hợp đồng, lợi nhuận, vốn CSH
+
+
+**Mart dự kiến:**
+- `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng
+- `Foreign Fund Management Organization Unit Profile` — grain: 1 CN (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_138 | Tên Chi nhánh CTQLQ nước ngoài tại Việt Nam | Cơ sở | PENDING |
+| K_FMS_139 | CAR (ATTC) | Cơ sở | PENDING |
+| K_FMS_140 | Lợi nhuận (Tỷ đồng) | Cơ sở | PENDING |
+| K_FMS_141 | Vốn CSH | Cơ sở | PENDING |
+| K_FMS_142 | Số lượng hợp đồng UTQLDM | Cơ sở | PENDING |
+| K_FMS_143 | Giám đốc chi nhánh | Cơ sở | PENDING |
+| K_FMS_144 | Số lượng nhân viên có CCHN | Cơ sở | PENDING |
+| K_FMS_145 | Mã hợp đồng UTQLDM | Cơ sở | PENDING |
+| K_FMS_146 | Số tài khoản lưu ký | Cơ sở | PENDING |
+| K_FMS_147 | Giá trị thị trường của từng hợp đồng UTQLDM | Cơ sở | PENDING |
+
+
+#### Nhóm — Số liệu hợp đồng uỷ thác danh mục
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_132 – K_FMS_137
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Foreign Fund Management Organization Unit chi tiết (hợp đồng UTQLDM, nhân viên, tài chính)
+
+
+**Atomic cần bổ sung:** `Foreign Fund Management Organization Unit` (FMS.FORBRCH) — cần bổ sung attributes hợp đồng, lợi nhuận, vốn CSH
+
+
+**Mart dự kiến:**
+- `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng
+- `Foreign Fund Management Organization Unit Profile` — grain: 1 CN (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_132 | Số lượng hợp đồng UTQLDM cá nhân | Cơ sở | PENDING |
+| K_FMS_133 | Giá trị thị trường hợp đồng UTQLDM cá nhân | Cơ sở | PENDING |
+| K_FMS_134 | Số lượng hợp đồng UTQLDM tổ chức | Cơ sở | PENDING |
+| K_FMS_135 | Giá trị thị trường hợp đồng UTQLDM tổ chức | Cơ sở | PENDING |
+| K_FMS_136 | Tổng số lượng hợp đồng UTQLDM | Cơ sở | PENDING |
+| K_FMS_137 | Tổng giá trị ủy thác | Cơ sở | PENDING |
+
+
+#### Nhóm — Thống kê chung
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_129 – K_FMS_131
+
+
+**Lý do pending:** Chưa thiết kế Atomic source cho Foreign Fund Management Organization Unit chi tiết (hợp đồng UTQLDM, nhân viên, tài chính)
+
+
+**Atomic cần bổ sung:** `Foreign Fund Management Organization Unit` (FMS.FORBRCH) — cần bổ sung attributes hợp đồng, lợi nhuận, vốn CSH
+
+
+**Mart dự kiến:**
+- `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng
+- `Foreign Fund Management Organization Unit Profile` — grain: 1 CN (tác nghiệp)
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_129 | Chi nhánh CTQLQ nước ngoài tại Việt Nam | Cơ sở | PENDING |
+| K_FMS_130 | Hợp đồng quản lý danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_131 | Giá trị hợp đồng quản lý danh mục đầu tư | Cơ sở | PENDING |
+
+
+### Tab: DATA EXPLORER
+
+
+#### Nhóm — BCTC-BCLCTT_GianTiep
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_305 – K_FMS_344
+
+
+**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
+
+
+**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
+
+
+**Mart dự kiến:**
+- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_305 | I. Lưu chuyển tiền từ hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_306 | 1. Lợi nhuận trước thuế | Cơ sở | PENDING |
+| K_FMS_307 | 2. Điều chỉnh cho các khoản | Cơ sở | PENDING |
+| K_FMS_308 | - Khấu hao TSCĐ | Cơ sở | PENDING |
+| K_FMS_309 | - Các khoản dự phòng | Cơ sở | PENDING |
+| K_FMS_310 | - Lãi, lỗ chênh lệch tỷ giá hối đoái chưa thực hiện | Cơ sở | PENDING |
+| K_FMS_311 | - Lãi, lỗ từ hoạt động đầu tư | Cơ sở | PENDING |
+| K_FMS_312 | - Chi phí lãi vay | Cơ sở | PENDING |
+| K_FMS_313 | 3. Lợi nhuận từ hoạt động kinh doanh trước thay đổi vốn lưu động | Cơ sở | PENDING |
+| K_FMS_314 | - Tăng, giảm các khoản phải thu | Cơ sở | PENDING |
+| K_FMS_315 | - Tăng, giảm hàng tồn kho | Cơ sở | PENDING |
+| K_FMS_316 | - Tăng, giảm các khoản phải trả (Không kể lãi vay phải trả, thuế thu nhập doanh nghiệp phải nộp) | Cơ sở | PENDING |
+| K_FMS_317 | - Tăng, giảm chi phí trả trước. | Cơ sở | PENDING |
+| K_FMS_318 | - Tiền lãi vay đã trả | Cơ sở | PENDING |
+| K_FMS_319 | - Thuế thu nhập doanh nghiệp đã nộp | Cơ sở | PENDING |
+| K_FMS_320 | - Tiền khu khác từ hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_321 | - Tiền chi khác cho hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_322 | Lưu chuyển tiền thuần từ hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_323 | II. Lưu chuyển tiền từ hoạt động đầu tư | Cơ sở | PENDING |
+| K_FMS_324 | 1. Tiền chi để mua sắm, xây dựng TSCĐ và các tài sản dài hạn khác | Cơ sở | PENDING |
+| K_FMS_325 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ và các tài sản dài hạn khác | Cơ sở | PENDING |
+| K_FMS_326 | 3. Tiền chi mua các công cụ nợ của đơn vị khác | Cơ sở | PENDING |
+| K_FMS_327 | 4. Tiền thu từ thanh lý các công cụ nợ của đơn vị khác | Cơ sở | PENDING |
+| K_FMS_328 | 5. Tiền chi đầu tư góp vốn vào đơn vị khác | Cơ sở | PENDING |
+| K_FMS_329 | 6. Tiền thu hồi đầu tư góp vốn vào đơn vị khác | Cơ sở | PENDING |
+| K_FMS_330 | 7. Tiền thu cổ tức và lợi nhuận được chia | Cơ sở | PENDING |
+| K_FMS_331 | Lưu chuyển tiền thuần từ hoạt động đầu tư | Cơ sở | PENDING |
+| K_FMS_332 | III. Lưu chuyển tiền từ hoạt động tài chính | Cơ sở | PENDING |
+| K_FMS_333 | 1. Tiền thu từ phát hành cổ phiếu, trái phiếu, nhận vốn góp của chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_334 | 2. Tiền chi trả vốn góp cho các chủ sở hữu, mua lại cổ phiếu của công ty đã phát hành | Cơ sở | PENDING |
+| K_FMS_335 | 3. Tiền vay ngắn hạn, dài hạn nhận được | Cơ sở | PENDING |
+| K_FMS_336 | 4. Tiền chi trả nợ gốc vay | Cơ sở | PENDING |
+| K_FMS_337 | 5. Tiền chi trả nợ thuê tài chính | Cơ sở | PENDING |
+| K_FMS_338 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_339 | Khác | Cơ sở | PENDING |
+| K_FMS_340 | Lưu chuyển tiền thuần từ hoạt động tài chính | Cơ sở | PENDING |
+| K_FMS_341 | Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40) | Cơ sở | PENDING |
+| K_FMS_342 | Tiền và tương đương tiền đầu kỳ | Cơ sở | PENDING |
+| K_FMS_343 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Cơ sở | PENDING |
+| K_FMS_344 | Tiền và tương đương tiền cuối kỳ (70 = 50+60+61) | Cơ sở | PENDING |
+
+
+#### Nhóm — BCTC-BCLCTT_TrucTiep
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_275 – K_FMS_304
+
+
+**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
+
+
+**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
+
+
+**Mart dự kiến:**
+- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_275 | I. Lưu chuyển tiền từ hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_276 | 1. Tiền thu từ hoạt động nghiệp vụ, cung cấp dịch vụ và doanh thu khác | Cơ sở | PENDING |
+| K_FMS_277 | 2. Tiền chi trả cho hoạt động nghiệp vụ và người cung cấp hàng hóa, dịch vụ | Cơ sở | PENDING |
+| K_FMS_278 | 3. Tiền chi trả cho người lao động | Cơ sở | PENDING |
+| K_FMS_279 | 4. Tiền chi trả lãi vay | Cơ sở | PENDING |
+| K_FMS_280 | 5. Tiền chi nộp thuế thu nhập doanh nghiệp | Cơ sở | PENDING |
+| K_FMS_281 | 6. Tiền thu khác từ hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_282 | 7. Tiền chi khác từ hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_283 | Lưu chuyển tiền thuần từ hoạt động kinh doanh | Cơ sở | PENDING |
+| K_FMS_284 | II. Lưu chuyển tiền từ hoạt động đầu tư | Cơ sở | PENDING |
+| K_FMS_285 | 1.Tiền chi để mua sắm, xây dựng TSCĐ và các tài sản dài hạn khác | Cơ sở | PENDING |
+| K_FMS_286 | 2.Tiền thu từ thanh lý, nhượng bán TSCĐ và các tài sản dài hạn khác | Cơ sở | PENDING |
+| K_FMS_287 | 3. Tiền chi mua các công cụ nợ của đơn vị khác | Cơ sở | PENDING |
+| K_FMS_288 | 4. Tiền thu từ thanh lý các khoản đầu tư công cụ nợ của đơn vị khác | Cơ sở | PENDING |
+| K_FMS_289 | 5.Tiền chi đầu tư góp vốn vào đơn vị khác | Cơ sở | PENDING |
+| K_FMS_290 | 6.Tiền thu hồi đầu tư góp vốn vào đơn vị khác | Cơ sở | PENDING |
+| K_FMS_291 | 7. Tiền thu cổ tức và lợi nhuận được chia | Cơ sở | PENDING |
+| K_FMS_292 | Lưu chuyển tiền thuần từ hoạt động đầu tư | Cơ sở | PENDING |
+| K_FMS_293 | III. Lưu chuyển tiền từ hoạt động tài chính | Cơ sở | PENDING |
+| K_FMS_294 | 1. Tiền thu từ phát hành cổ phiếu, trái phiếu, nhận vốn góp của chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_295 | 2. Tiền chi trả vốn cho các chủ sở hữu, mua lại cổ phiếu của công ty đã phát hành | Cơ sở | PENDING |
+| K_FMS_296 | 3. Tiền vay ngắn hạn, dài hạn nhận được | Cơ sở | PENDING |
+| K_FMS_297 | 4.Tiền chi trả nợ gốc vay | Cơ sở | PENDING |
+| K_FMS_298 | 5.Tiền chi trả nợ thuê tài chính | Cơ sở | PENDING |
+| K_FMS_299 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_300 | Lưu chuyển tiền thuần từ hoạt động tài chính | Cơ sở | PENDING |
+| K_FMS_301 | Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40) | Cơ sở | PENDING |
+| K_FMS_302 | Tiền và tương đương tiền đầu kỳ | Cơ sở | PENDING |
+| K_FMS_303 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Cơ sở | PENDING |
+| K_FMS_304 | Tiền và tương đương tiền cuối kỳ (70 = 50+60+61) | Cơ sở | PENDING |
+
+
+#### Nhóm — BCTC-BCTinhHinhBienDongVCSH
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_345 – K_FMS_355
+
+
+**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
+
+
+**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
+
+
+**Mart dự kiến:**
+- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_345 | 1. Vốn đầu tư của chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_346 | 2. Thặng dư vốn cổ phần | Cơ sở | PENDING |
+| K_FMS_347 | 3. Vốn khác của chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_348 | 4. Cổ phiếu quỹ (*) | Cơ sở | PENDING |
+| K_FMS_349 | 5. Chênh lệch đánh giá lại tài sản | Cơ sở | PENDING |
+| K_FMS_350 | 6. Chênh lệch tỷ giá hối đoái | Cơ sở | PENDING |
+| K_FMS_351 | 7. Quỹ đầu tư phát triển | Cơ sở | PENDING |
+| K_FMS_352 | 8. Quỹ dự phòng tài chính | Cơ sở | PENDING |
+| K_FMS_353 | 9. Các Quỹ khác thuộc vốn chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_354 | 10. Lợi nhuận chưa phân phối | Cơ sở | PENDING |
+| K_FMS_355 | Cộng | Cơ sở | PENDING |
+
+
+#### Nhóm — BCTC-Báo cáo kết quả hoạt động kinh doanh
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_258 – K_FMS_274
+
+
+**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
+
+
+**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
+
+
+**Mart dự kiến:**
+- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_258 | 1. Doanh thu | Cơ sở | PENDING |
+| K_FMS_259 | 2. Các khoản giảm trừ doanh thu | Cơ sở | PENDING |
+| K_FMS_260 | 3. Doanh thu thuần về hoạt động kinh doanh (10=01-02) | Cơ sở | PENDING |
+| K_FMS_261 | 4. Chi phí hoạt động kinh doanh, giá vốn hàng bán | Cơ sở | PENDING |
+| K_FMS_262 | 5. Lợi nhuận gộp của hoạt động kinh doanh(20=10-11) | Cơ sở | PENDING |
+| K_FMS_263 | 6. Doanh thu hoạt động tài chính | Cơ sở | PENDING |
+| K_FMS_264 | 7. Chi phí tài chính | Cơ sở | PENDING |
+| K_FMS_265 | 8. Chi phí quản lý doanh nghiệp | Cơ sở | PENDING |
+| K_FMS_266 | 9. Lợi nhuận thuần từ hoạt động kinh doanh (30=20 +(21-22)- 25) | Cơ sở | PENDING |
+| K_FMS_267 | 10. Thu nhập khác | Cơ sở | PENDING |
+| K_FMS_268 | 11. Chi phí khác | Cơ sở | PENDING |
+| K_FMS_269 | 12. Lợi nhuận khác (40=31-32) | Cơ sở | PENDING |
+| K_FMS_270 | 13. Tổng lợi nhuận kế toán trước thuế (50=30+40) | Cơ sở | PENDING |
+| K_FMS_271 | 14. Chi phí thuế TNDN hiện hành | Cơ sở | PENDING |
+| K_FMS_272 | 15. Chi phí thuế TNDN hoãn lại | Cơ sở | PENDING |
+| K_FMS_273 | 16. Lợi nhuận sau thuế TNDN (60=50-51-52) | Cơ sở | PENDING |
+| K_FMS_274 | 17. Lãi trên cổ phiếu (*) | Cơ sở | PENDING |
+
+
+#### Nhóm — BCTC-Bảng cân đối kế toán
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_148 – K_FMS_257
+
+
+**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
+
+
+**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
+
+
+**Mart dự kiến:**
+- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_148 | A- TÀI SẢN NGẮN HẠN(100 = 110 + 120 + 130 + 140 + 150) | Cơ sở | PENDING |
+| K_FMS_149 | I.Tiền và các khoản tương đương tiền | Cơ sở | PENDING |
+| K_FMS_150 | 1. Tiền | Cơ sở | PENDING |
+| K_FMS_151 | 2. Các khoản tương đương tiền | Cơ sở | PENDING |
+| K_FMS_152 | II. Các khoản đầu tư tài chính ngắn hạn | Cơ sở | PENDING |
+| K_FMS_153 | 1. Đầu tư ngắn hạn | Cơ sở | PENDING |
+| K_FMS_154 | 2. Dự phòng giảm giá đầu tư tài chính ngắn hạn(*) | Cơ sở | PENDING |
+| K_FMS_155 | III. Các khoản phải thu ngắn hạn | Cơ sở | PENDING |
+| K_FMS_156 | 1. Phải thu của khách hàng | Cơ sở | PENDING |
+| K_FMS_157 | 2. Trả trước cho người bán | Cơ sở | PENDING |
+| K_FMS_158 | 3. Phải thu nội bộ ngắn hạn | Cơ sở | PENDING |
+| K_FMS_159 | 5. Các khoản phải thu khác | Cơ sở | PENDING |
+| K_FMS_160 | 6. Dự phòng phải thu ngắn hạn khó đòi(*) | Cơ sở | PENDING |
+| K_FMS_161 | IV. Hàng tồn kho | Cơ sở | PENDING |
+| K_FMS_162 | V. Tài sản ngắn hạn khác | Cơ sở | PENDING |
+| K_FMS_163 | 1. Chi phí trả trước ngắn hạn | Cơ sở | PENDING |
+| K_FMS_164 | 2. Thuế GTGT được khấu trừ | Cơ sở | PENDING |
+| K_FMS_165 | 3. Thuế và các khoản phải thu nhà nước | Cơ sở | PENDING |
+| K_FMS_166 | 4. Giao dịch mua bán lại trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_167 | 5. Tài sản ngắn hạn khác | Cơ sở | PENDING |
+| K_FMS_168 | B. TÀI SẢN DÀI HẠN (200 = 210 + 220 + 250 + 260) | Cơ sở | PENDING |
+| K_FMS_169 | I. Các khoản phải thu dài hạn | Cơ sở | PENDING |
+| K_FMS_170 | 1. Phải thu dài hạn của khách hàng | Cơ sở | PENDING |
+| K_FMS_171 | 2.Vốn kinh doanh ở đơn vị trực thuộc | Cơ sở | PENDING |
+| K_FMS_172 | 3. Phải thu dài hạn nội bộ | Cơ sở | PENDING |
+| K_FMS_173 | 4. Phải thu dài hạn khác | Cơ sở | PENDING |
+| K_FMS_174 | 5. Dự phòng phải thu dài hạn khó đòi(*) | Cơ sở | PENDING |
+| K_FMS_175 | II. Tài sản cố định | Cơ sở | PENDING |
+| K_FMS_176 | 1. Tài sản cố định hữu hình | Cơ sở | PENDING |
+| K_FMS_177 | - Nguyên giá | Cơ sở | PENDING |
+| K_FMS_178 | - Giá trị hao mòn luỹ kế(*) | Cơ sở | PENDING |
+| K_FMS_179 | 2. Tài sản cố định thuê tài chính | Cơ sở | PENDING |
+| K_FMS_180 | - Nguyên giá | Cơ sở | PENDING |
+| K_FMS_181 | - Giá trị hao mòn luỹ kế (*) | Cơ sở | PENDING |
+| K_FMS_182 | 3. Tài sản cố định vô hình | Cơ sở | PENDING |
+| K_FMS_183 | - Nguyên giá | Cơ sở | PENDING |
+| K_FMS_184 | - Giá trị hao mòn luỹ kế (*) | Cơ sở | PENDING |
+| K_FMS_185 | 4. Chi phí đầu tư xây dựng cơ bản dở dang | Cơ sở | PENDING |
+| K_FMS_186 | III. Các khoản đầu tư tài chính dài hạn | Cơ sở | PENDING |
+| K_FMS_187 | 1. Đầu tư vào công ty con | Cơ sở | PENDING |
+| K_FMS_188 | 2. Đầu tư vào công ty liên kết, liên doanh | Cơ sở | PENDING |
+| K_FMS_189 | 3. Đầu tư dài hạn khác | Cơ sở | PENDING |
+| K_FMS_190 | 4. Dự phòng giảm giá đầu tư tài chính dài hạn (*) | Cơ sở | PENDING |
+| K_FMS_191 | IV. Tài sản dài hạn khác | Cơ sở | PENDING |
+| K_FMS_192 | 1. Chi phí trả trước dài hạn | Cơ sở | PENDING |
+| K_FMS_193 | 2. Tài sản thuế thu nhập hoãn lại | Cơ sở | PENDING |
+| K_FMS_194 | 3. Tài sản dài hạn khác | Cơ sở | PENDING |
+| K_FMS_195 | TỔNG CỘNG TÀI SẢN (270 = 100 + 200) | Cơ sở | PENDING |
+| K_FMS_196 | A – NỢ PHẢI TRẢ (300 = 310 + 330) | Cơ sở | PENDING |
+| K_FMS_197 | I. Nợ ngắn hạn | Cơ sở | PENDING |
+| K_FMS_198 | 1.Vay ngắn hạn | Cơ sở | PENDING |
+| K_FMS_199 | 2. Phải trả người bán | Cơ sở | PENDING |
+| K_FMS_200 | 3. Người mua trả tiền trước | Cơ sở | PENDING |
+| K_FMS_201 | 4. Thuế và các khoản phải nộp Nhà nước | Cơ sở | PENDING |
+| K_FMS_202 | 5. Phải trả người lao động | Cơ sở | PENDING |
+| K_FMS_203 | 6. Chi phí phải trả | Cơ sở | PENDING |
+| K_FMS_204 | 7. Phải trả nội bộ | Cơ sở | PENDING |
+| K_FMS_205 | 8. Các khoản phải trả, phải nộp ngắn hạn khác | Cơ sở | PENDING |
+| K_FMS_206 | 9. Dự phòng phải trả ngắn hạn | Cơ sở | PENDING |
+| K_FMS_207 | 10. Quỹ khen thưởng, phúc lợi | Cơ sở | PENDING |
+| K_FMS_208 | 11. Giao dịch mua bán lại trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_209 | 12. Doanh thu chưa thực hiện ngắn hạn | Cơ sở | PENDING |
+| K_FMS_210 | II. Nợ dài hạn | Cơ sở | PENDING |
+| K_FMS_211 | 1. Phải trả dài hạn người bán | Cơ sở | PENDING |
+| K_FMS_212 | 2. Phải trả dài hạn nội bộ | Cơ sở | PENDING |
+| K_FMS_213 | 3. Phải trả dài hạn khác | Cơ sở | PENDING |
+| K_FMS_214 | 4. Vay và nợ dài hạn | Cơ sở | PENDING |
+| K_FMS_215 | 5. Thuế thu nhập hoãn lại phải trả | Cơ sở | PENDING |
+| K_FMS_216 | 6. Dự phòng trợ cấp mất việc làm | Cơ sở | PENDING |
+| K_FMS_217 | 7. Dự phòng phải trả dài hạn | Cơ sở | PENDING |
+| K_FMS_218 | 8. Doanh thu chưa thực hiện dài hạn | Cơ sở | PENDING |
+| K_FMS_219 | 9. Quỹ phát triển khoa học và công nghệ | Cơ sở | PENDING |
+| K_FMS_220 | 10. Quỹ dự phòng bồi thường thiệt hại cho nhà đầu tư | Cơ sở | PENDING |
+| K_FMS_221 | B - VỐN CHỦ SỞ HỮU | Cơ sở | PENDING |
+| K_FMS_222 | 1. Vốn đầu tư của chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_223 | 2. Thặng dư vốn cổ phần | Cơ sở | PENDING |
+| K_FMS_224 | 3. Vốn khác của chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_225 | 4. Cổ phiếu quỹ (*) | Cơ sở | PENDING |
+| K_FMS_226 | 5. Chênh lệch đánh giá lại tài sản | Cơ sở | PENDING |
+| K_FMS_227 | 6. Chênh lệch tỷ giá hối đoái | Cơ sở | PENDING |
+| K_FMS_228 | 7. Quỹ đầu tư phát triển | Cơ sở | PENDING |
+| K_FMS_229 | 8. Quỹ dự phòng tài chính | Cơ sở | PENDING |
+| K_FMS_230 | 9. Quỹ khác thuộc vốn chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_231 | 10. Lợi nhuận sau thuế chưa phân phối | Cơ sở | PENDING |
+| K_FMS_232 | TỔNG CỘNG NGUỒN VỐN (440 = 300 + 400) | Cơ sở | PENDING |
+| K_FMS_233 | 1. Tài sản cố định thuê ngoài | Cơ sở | PENDING |
+| K_FMS_234 | 2. Vật tư, chứng chỉ có giá nhận giữ hộ | Cơ sở | PENDING |
+| K_FMS_235 | 3. Tài sản nhận ký cược | Cơ sở | PENDING |
+| K_FMS_236 | 4. Nợ khó đòi đã xử lý | Cơ sở | PENDING |
+| K_FMS_237 | 5. Ngoại tệ các loại | Cơ sở | PENDING |
+| K_FMS_238 | 6. Chứng khoán lưu ký của công ty quản lý quỹ | Cơ sở | PENDING |
+| K_FMS_239 | Trong đó: | Cơ sở | PENDING |
+| K_FMS_240 | 6.1. Chứng khoán giao dịch | Cơ sở | PENDING |
+| K_FMS_241 | 6.2. Chứng khoán tạm ngừng giao dịch | Cơ sở | PENDING |
+| K_FMS_242 | 6.3. Chứng khoán cầm cố | Cơ sở | PENDING |
+| K_FMS_243 | 6.4. Chứng khoán tạm giữ | Cơ sở | PENDING |
+| K_FMS_244 | 6.5. Chứng khoán chờ thanh toán | Cơ sở | PENDING |
+| K_FMS_245 | 6.6. Chứng khoán phong toả chờ rút | Cơ sở | PENDING |
+| K_FMS_246 | 6.7. Chứng khoán chờ giao dịch | Cơ sở | PENDING |
+| K_FMS_247 | 6.8. Chứng khoán ký quỹ đảm bảo khoản vay | Cơ sở | PENDING |
+| K_FMS_248 | 6.9 Chứng khoán sửa lỗi giao dịch | Cơ sở | PENDING |
+| K_FMS_249 | 7. Chứng khoán chưa lưu ký của Công ty quản lý quỹ | Cơ sở | PENDING |
+| K_FMS_250 | 8. Tiền gửi của nhà đầu tư ủy thác | Cơ sở | PENDING |
+| K_FMS_251 | - Tiền gửi của nhà đầu tư ủy thác trong nước | Cơ sở | PENDING |
+| K_FMS_252 | - Tiền gửi của nhà đầu tư ủy thác nước ngoài | Cơ sở | PENDING |
+| K_FMS_253 | 9. Danh mục đầu tư của nhà đầu tư ủy thác | Cơ sở | PENDING |
+| K_FMS_254 | 9.1. Nhà đầu tư ủy thác trong nước | Cơ sở | PENDING |
+| K_FMS_255 | 9.2. Nhà đầu tư ủy thác nước ngoài | Cơ sở | PENDING |
+| K_FMS_256 | 10. Các khoản phải thu của nhà đầu tư ủy thác | Cơ sở | PENDING |
+| K_FMS_257 | 11. Các khoản phải trả của nhà đầu tư ủy thác | Cơ sở | PENDING |
+
+
+#### Nhóm — Báo cáo tỷ lệ an toàn tài chính
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_792 – K_FMS_947
+
+
+**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
+
+
+**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
+
+
+**Mart dự kiến:**
+- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_792 | Nguồn vốn chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_793 | Vốn chủ sở hữu không bao gồm cổ phần ưu đãi hoàn lại (nếu có) | Cơ sở | PENDING |
+| K_FMS_794 | Thặng dư vốn cổ phần không bao gồm cổ phần ưu đãi hoàn lại (nếu có) | Cơ sở | PENDING |
+| K_FMS_795 | Cổ phiếu quỹ | Cơ sở | PENDING |
+| K_FMS_796 | Quỹ dự trữ bổ sung vốn điều lệ (nếu có) | Cơ sở | PENDING |
+| K_FMS_797 | Quỹ đầu tư phát triển (nếu có) | Cơ sở | PENDING |
+| K_FMS_798 | Quỹ dự phòng tài chính và rủi ro nghiệp vụ | Cơ sở | PENDING |
+| K_FMS_799 | Quỹ khác thuộc vốn chủ sở hữu | Cơ sở | PENDING |
+| K_FMS_800 | Lợi nhuận sau thuế chưa phân phối | Cơ sở | PENDING |
+| K_FMS_801 | Số dư dự phòng suy giảm giá trị tài sản | Cơ sở | PENDING |
+| K_FMS_802 | Chênh lệch đánh giá lại tài sản cố định | Cơ sở | PENDING |
+| K_FMS_803 | Chênh lệch tỷ giá hối đoái | Cơ sở | PENDING |
+| K_FMS_804 | Các khoản nợ có thể chuyển đổi | Cơ sở | PENDING |
+| K_FMS_805 | Toàn bộ phần giảm đi hoặc tăng thêm của các chứng khoán tại chỉ tiêu đầu tư tài chính | Cơ sở | PENDING |
+| K_FMS_806 | Vốn khác (nếu có) | Cơ sở | PENDING |
+| K_FMS_807 | Tổng | Cơ sở | PENDING |
+| K_FMS_808 | Tài sản ngắn hạn | Cơ sở | PENDING |
+| K_FMS_809 | Tiền và các khoản tương đương tiền | Cơ sở | PENDING |
+| K_FMS_810 | Các khoản đầu tư tài chính ngắn hạn | Cơ sở | PENDING |
+| K_FMS_811 | Đầu tư ngắn hạn | Cơ sở | PENDING |
+| K_FMS_812 | Chứng khoán tiềm ẩn rủi ro thị trường theo quy định tại khoản 2 Điều 9 | Cơ sở | PENDING |
+| K_FMS_813 | Chứng khoán bị giảm trừ khỏi vốn khả dụng theo quy định khoản 5 Điều 6 | Cơ sở | PENDING |
+| K_FMS_814 | Dự phòng giảm giá đầu tư ngắn hạn | Cơ sở | PENDING |
+| K_FMS_815 | Các khoản phải thu ngắn hạn, kể cả phải thu từ hoạt động ủy thác | Cơ sở | PENDING |
+| K_FMS_816 | Phải thu của khách hàng | Cơ sở | PENDING |
+| K_FMS_817 | Phải thu của khách hàng có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_818 | Phải thu của khách hàng có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_819 | Trả trước cho người bán | Cơ sở | PENDING |
+| K_FMS_820 | Phải thu hoạt động nghiệp vụ | Cơ sở | PENDING |
+| K_FMS_821 | Phải thu hoạt động nghiệp vụ có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_822 | Phải thu hoạt động nghiệp vụ có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_823 | Phải thu nội bộ ngắn hạn | Cơ sở | PENDING |
+| K_FMS_824 | Phải thu nội bộ có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_825 | Phải thu nội bộ có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_826 | Phải thu hoạt động giao dịch chứng khoán | Cơ sở | PENDING |
+| K_FMS_827 | Phải thu hoạt động giao dịch chứng khoán có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_828 | Phải thu hoạt động giao dịch chứng khoán có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_829 | Các khoản phải thu khác | Cơ sở | PENDING |
+| K_FMS_830 | Phải thu khác có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_831 | Phải thu khác có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_832 | Dự phòng phải thu ngắn hạn khó đòi | Cơ sở | PENDING |
+| K_FMS_833 | Hàng tồn kho | Cơ sở | PENDING |
+| K_FMS_834 | Tài sản ngắn hạn khác | Cơ sở | PENDING |
+| K_FMS_835 | Chi phí trả trước ngắn hạn | Cơ sở | PENDING |
+| K_FMS_836 | Thuế GTGT được khấu trừ | Cơ sở | PENDING |
+| K_FMS_837 | Thuế và các khoản phải thu nhà nước | Cơ sở | PENDING |
+| K_FMS_838 | Tài sản ngắn hạn khác | Cơ sở | PENDING |
+| K_FMS_839 | Tạm ứng | Cơ sở | PENDING |
+| K_FMS_840 | Tạm ứng có thời hạn hoàn ứng còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_841 | Tạm ứng có thời hạn hoàn ứng còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_842 | Tài sản ngắn hạn khác | Cơ sở | PENDING |
+| K_FMS_843 | Tổng | Cơ sở | PENDING |
+| K_FMS_844 | Tài sản dài hạn | Cơ sở | PENDING |
+| K_FMS_845 | Các khoản phải thu dài hạn, kể cả phải thu từ hoạt động ủy thác | Cơ sở | PENDING |
+| K_FMS_846 | Phải thu dài hạn của khách hàng | Cơ sở | PENDING |
+| K_FMS_847 | Phải thu dài hạn của khách hàng có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_848 | Phải thu dài hạn của khách hàng có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_849 | Vốn kinh doanh ở đơn vị trực thuộc | Cơ sở | PENDING |
+| K_FMS_850 | Phải thu dài hạn nội bộ | Cơ sở | PENDING |
+| K_FMS_851 | Phải thu dài hạn nội bộ có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_852 | Phải thu dài hạn nội bộ có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_853 | Phải thu dài hạn khác | Cơ sở | PENDING |
+| K_FMS_854 | Phải thu dài hạn khác có thời hạn thanh toán còn lại từ 90 ngày trở xuống | Cơ sở | PENDING |
+| K_FMS_855 | Phải thu dài hạn khác có thời hạn thanh toán còn lại trên 90 ngày | Cơ sở | PENDING |
+| K_FMS_856 | Dự phòng phải thu dài hạn khó đòi | Cơ sở | PENDING |
+| K_FMS_857 | Tài sản cố định | Cơ sở | PENDING |
+| K_FMS_858 | Bất động sản đầu tư | Cơ sở | PENDING |
+| K_FMS_859 | Các khoản đầu tư tài chính dài hạn | Cơ sở | PENDING |
+| K_FMS_860 | Đầu tư vào công ty con | Cơ sở | PENDING |
+| K_FMS_861 | Đầu tư chứng khoán dài hạn | Cơ sở | PENDING |
+| K_FMS_862 | Chứng khoán tiềm ẩn rủi ro thị trường theo quy định tại khoản 2 Điều 9 | Cơ sở | PENDING |
+| K_FMS_863 | Chứng khoán bị giảm trừ khỏi vốn khả dụng theo quy định tại khoản 5 Điều 6 | Cơ sở | PENDING |
+| K_FMS_864 | Các khoản đầu tư dài hạn ra nước ngoài | Cơ sở | PENDING |
+| K_FMS_865 | Đầu tư dài hạn khác | Cơ sở | PENDING |
+| K_FMS_866 | Dự phòng giảm giá đầu tư tài chính dài hạn | Cơ sở | PENDING |
+| K_FMS_867 | Tài sản dài hạn khác | Cơ sở | PENDING |
+| K_FMS_868 | Chi phí trả trước dài hạn | Cơ sở | PENDING |
+| K_FMS_869 | Tài sản thuế thu nhập hoãn lại | Cơ sở | PENDING |
+| K_FMS_870 | Ký cược, ký quỹ dài hạn | Cơ sở | PENDING |
+| K_FMS_871 | Các chỉ tiêu tài sản bị coi là khoản ngoại trừ, có ý kiến trái ngược hoặc từ chối đưa ra ý kiến tại báo cáo tài chính đã được kiểm toán, soát xét mà không bị tính giảm trừ theo quy định tại Điều 6 | Cơ sở | PENDING |
+| K_FMS_872 | Tổng | Cơ sở | PENDING |
+| K_FMS_873 | VỐN KHẢ DỤNG = 1A-1B-1C | Cơ sở | PENDING |
+| K_FMS_874 | RỦI RO THỊ TRƯỜNG | Cơ sở | PENDING |
+| K_FMS_875 | Tiền và các khoản tương đương tiền, công cụ thị trường tiền tệ | Cơ sở | PENDING |
+| K_FMS_876 | Tiền mặt (VND) | Cơ sở | PENDING |
+| K_FMS_877 | Các khoản tương đương tiền | Cơ sở | PENDING |
+| K_FMS_878 | Giấy tờ có giá, công cụ chuyển nhượng trên thị trường tiền tệ, chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_879 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_880 | Trái phiếu Chính phủ không trả lại | Cơ sở | PENDING |
+| K_FMS_881 | Trái phiếu Chính phủ trả lãi suất cuống phiếu: Trái phiếu Chính phủ (bao gồm công trái và trái phiếu công trình đã phát hành trước đây), trái phiếu Chính phủ các nước thuộc khối OECD hoặc được bảo lãnh bởi Chính phủ hoặc Ngân hàng Trung ương của các nước thuộc khối này, trái phiếu được phát hành bởi các tổ chức quốc tế IBRD, ADB, IADB, AFDB, EIB và EBRD, Trái phiếu chính quyền địa phương. | Cơ sở | PENDING |
+| K_FMS_882 | Trái phiếu tổ chức tín dụng | Cơ sở | PENDING |
+| K_FMS_883 | Trái phiếu tổ chức tín dụng có thời gian đáo hạn còn lại dưới 1 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_884 | Trái phiếu tổ chức tín dụng có thời gian đáo hạn còn từ 1 năm đến dưới 3 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_885 | Trái phiếu tổ chức tín dụng có thời gian đáo hạn còn lại từ 3 năm đến dưới 5 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_886 | Trái phiếu tổ chức tín dụng có thời gian đáo hạn còn lại từ 5 năm trở lên, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_887 | Trái phiếu doanh nghiệp | Cơ sở | PENDING |
+| K_FMS_888 | Trái phiếu doanh nghiệp niêm yết | Cơ sở | PENDING |
+| K_FMS_889 | Trái phiếu niêm yết có thời gian đáo hạn còn lại dưới 1 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_890 | Trái phiếu niêm yết có thời gian đáo hạn còn lại từ 1 năm đến dưới 3 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_891 | Trái phiếu niêm yết có thời gian đáo hạn còn lại từ 3 năm đến dưới 5 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_892 | Trái phiếu niêm yết có thời gian đáo hạn còn lại từ 5 năm trở lên, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_893 | Trái phiếu doanh nghiệp không niêm yết | Cơ sở | PENDING |
+| K_FMS_894 | Trái phiếu không niêm yết do doanh nghiệp niêm yết phát hành có thời gian đáo hạn còn lại dưới 1 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_895 | Trái phiếu không niêm yết do doanh nghiệp niêm yết phát hành có thời gian đáo hạn còn lại từ 1 năm đến dưới 3 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_896 | Trái phiếu không niêm yết do doanh nghiệp niêm yết phát hành có thời gian đáo hạn còn lại từ 3 năm đến dưới 5 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_897 | Trái phiếu không niêm yết do doanh nghiệp niêm yết phát hành có thời gian đáo hạn còn lại từ 5 năm trở lên, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_898 | Trái phiếu không niêm yết do doanh nghiệp khác phát hành có thời gian đáo hạn còn lại dưới 1 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_899 | Trái phiếu không niêm yết do doanh nghiệp khác phát hành có thời gian đáo hạn còn lại từ 1 năm đến dưới 3 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_900 | Trái phiếu không niêm yết do doanh nghiệp khác phát hành có thời gian đáo hạn còn lại từ 3 năm đến dưới 5 năm, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_901 | Trái phiếu không niêm yết do doanh nghiệp khác phát hành có thời gian đáo hạn còn lại từ 5 năm trở lên, kể cả trái phiếu chuyển đổi | Cơ sở | PENDING |
+| K_FMS_902 | Cổ phiếu phổ thông, cổ phiếu ưu đãi của các tổ chức niêm yết tại Sở giao dịch Chứng khoán Thành phố Hồ Chí Minh; chứng chỉ quỹ mở | Cơ sở | PENDING |
+| K_FMS_903 | Cổ phiếu phổ thông, cổ phiếu ưu đãi của các tổ chức niêm yết tại Sở Giao dịch Chứng khoán Hà Nội | Cơ sở | PENDING |
+| K_FMS_904 | Cổ phiếu phổ thông, cổ phiếu ưu đãi các công ty đại chúng chưa niêm yết, đăng ký giao dịch qua hệ thống UpCom | Cơ sở | PENDING |
+| K_FMS_905 | Cổ phiếu phổ thông, cổ phiếu ưu đãi của các công ty đại chúng đã đăng ký lưu ký, nhưng chưa niêm yết hoặc đăng ký giao dịch; cổ phiếu đang trong đợt phát hành lần đầu (IPO) | Cơ sở | PENDING |
+| K_FMS_906 | Cổ phiếu của các công ty đại chúng khác | Cơ sở | PENDING |
+| K_FMS_907 | Quỹ đại chúng, bao gồm cả công ty đầu tư chứng khoán đại chúng | Cơ sở | PENDING |
+| K_FMS_908 | Quỹ thành viên, công ty đầu tư chứng khoán riêng lẻ | Cơ sở | PENDING |
+| K_FMS_909 | Chứng khoán công ty đại chúng chưa niêm yết bị nhắc nhở do chậm công bố thông tin báo cáo tài chính kiểm toán/soát xét theo quy định | Cơ sở | PENDING |
+| K_FMS_910 | Chứng khoán niêm yết bị cảnh báo | Cơ sở | PENDING |
+| K_FMS_911 | Chứng khoán niêm yết bị kiểm soát | Cơ sở | PENDING |
+| K_FMS_912 | Chứng khoán bị tạm ngừng, hạn chế giao dịch | Cơ sở | PENDING |
+| K_FMS_913 | Chứng khoán bị hủy niêm yết, hủy giao dịch | Cơ sở | PENDING |
+| K_FMS_914 | Cổ phiếu, trái phiếu của công ty chưa đại chúng phát hành không có báo cáo tài chính kiểm toán gần nhất đến thời điểm lập báo cáo hoặc có báo cáo tài chính kiểm toán nhưng có ý kiến kiểm toán là trái ngược, từ chối đưa ra ý kiến hoặc ý kiến không chấp thuận toàn phần. | Cơ sở | PENDING |
+| K_FMS_915 | Cổ phần, phần vốn góp và các loại chứng khoán khác | Cơ sở | PENDING |
+| K_FMS_916 | Các tài sản đầu tư khác | Cơ sở | PENDING |
+| K_FMS_917 | RỦI RO THANH TOÁN | Cơ sở | PENDING |
+| K_FMS_918 | Rủi ro trước thời hạn thanh toán | Cơ sở | PENDING |
+| K_FMS_919 | Tiền gửi có kỳ hạn, chứng chỉ tiền gửi, các khoản tiền cho vay không có tài sản bảo đảm, các khoản phải thu từ hoạt động kinh doanh chứng khoán và các khoản mục tiềm ẩn rủi ro thanh toán khác | Cơ sở | PENDING |
+| K_FMS_920 | Cho vay chứng khoán/Các thỏa thuận kinh tế có cùng bản chất | Cơ sở | PENDING |
+| K_FMS_921 | Vay chứng khoán/Các thỏa thuận kinh tế có cùng bản chất | Cơ sở | PENDING |
+| K_FMS_922 | Hợp đồng mua chứng khoán có cam kết bán lại/Các thỏa thuận kinh tế có cùng bản chất | Cơ sở | PENDING |
+| K_FMS_923 | Hợp đồng bán chứng khoán có cam kết mua lại/Các thỏa thuận kinh tế có cùng bản chất | Cơ sở | PENDING |
+| K_FMS_924 | Hợp đồng cho vay mua ký quỹ (cho khách hàng vay mua chứng khoán)/Các thỏa thuận kinh tế có cùng bản chất | Cơ sở | PENDING |
+| K_FMS_925 | Rủi ro quá thời hạn thanh toán | Cơ sở | PENDING |
+| K_FMS_926 | Từ 0 đến 15 ngày sau thời hạn thanh toán, chuyển giao chứng khoán | Cơ sở | PENDING |
+| K_FMS_927 | Từ 16 đến 30 ngày sau thời hạn thanh toán, chuyển giao chứng khoán | Cơ sở | PENDING |
+| K_FMS_928 | Từ 31 đến 60 ngày sau thời hạn thanh toán, chuyển giao chứng khoán | Cơ sở | PENDING |
+| K_FMS_929 | Trên 60 ngày sau thời hạn thanh toán, chuyển giao chứng khoán | Cơ sở | PENDING |
+| K_FMS_930 | Rủi ro tăng thêm (nếu có) | Cơ sở | PENDING |
+| K_FMS_931 | Chi tiết tới từng khoản vay, tới từng đối tác | Cơ sở | PENDING |
+| K_FMS_932 | RỦI RO HOẠT ĐỘNG (TÍNH TRONG VÒNG 12 THÁNG) | Cơ sở | PENDING |
+| K_FMS_933 | Tổng chi phí hoạt động phát sinh trong vòng 12 tháng tính tới tháng xx năm 20xx | Cơ sở | PENDING |
+| K_FMS_934 | Các khoản giảm trừ khỏi tổng chi phí | Cơ sở | PENDING |
+| K_FMS_935 | Chi phí khấu hao | Cơ sở | PENDING |
+| K_FMS_936 | Chi phí/Hoàn nhập dự phòng giảm giá đầu tư chứng khoán ngắn hạn | Cơ sở | PENDING |
+| K_FMS_937 | Chi phí/Hoàn nhập dự phòng giảm giá đầu tư chứng khoán dài hạn | Cơ sở | PENDING |
+| K_FMS_938 | Chi phí/Hoàn nhập dự phòng phải thu khó đòi | Cơ sở | PENDING |
+| K_FMS_939 | Tổng chi phí sau khi giảm trừ (III = I – II) | Cơ sở | PENDING |
+| K_FMS_940 | 25% Tổng chi phí sau khi giảm trừ (IV = 25% III) | Cơ sở | PENDING |
+| K_FMS_941 | 20% Vốn pháp định của tổ chức kinh doanh chứng khoán | Cơ sở | PENDING |
+| K_FMS_942 | Tổng giá trị rủi ro thị trường | Cơ sở | PENDING |
+| K_FMS_943 | Tổng giá trị rủi ro thanh toán | Cơ sở | PENDING |
+| K_FMS_944 | Tổng giá trị rủi ro hoạt động | Cơ sở | PENDING |
+| K_FMS_945 | Tổng giá trị rủi ro (4=1+2+3) | Cơ sở | PENDING |
+| K_FMS_946 | Vốn khả dụng | Cơ sở | PENDING |
+| K_FMS_947 | Tỷ lệ vốn khả dụng tháng (6=5/4) | Cơ sở | PENDING |
+
+
+#### Nhóm — Báo cáo về tình hình quản lý danh mục đầu tư
+
+
+##### PENDING
+
+
+**KPI liên quan:** K_FMS_356 – K_FMS_791
+
+
+**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
+
+
+**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
+
+
+**Mart dự kiến:**
+- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_FMS_356 | Tổng số Hợp đồng ủy thác đầu tư đang thực hiện | Cơ sở | PENDING |
+| K_FMS_357 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_358 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_359 | Tổng giá trị các Hợp đồng ủy thác đầu tư (Hợp đồng khung) (VND) | Cơ sở | PENDING |
+| K_FMS_360 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_361 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_362 | Tổng giá trị các Hợp đồng ủy thác đầu tư (Giá trị giải ngân thực tế) (VND) | Cơ sở | PENDING |
+| K_FMS_363 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_364 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_365 | Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND) | Cơ sở | PENDING |
+| K_FMS_366 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_367 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_368 | Tổng giá trị giá dịch vụ quản lý danh mục đầu tư thu được trong kỳ (VND) | Cơ sở | PENDING |
+| K_FMS_369 | Tỷ lệ giá dịch vụ quản lý danh mục đầu tư bình quân (5/4) | Cơ sở | PENDING |
+| K_FMS_370 | Khối lượng (Mua) | Cơ sở | PENDING |
+| K_FMS_371 | Giá trị giao dịch (VND) (Mua) | Cơ sở | PENDING |
+| K_FMS_372 | Khối lượng (Bán) | Cơ sở | PENDING |
+| K_FMS_373 | Giá trị giao dịch (VND) (Bán) | Cơ sở | PENDING |
+| K_FMS_374 | Tổng giá trị mua bán/tổng giá trị tài sản quản lý ủy thác bình quân-Kỳ này | Cơ sở | PENDING |
+| K_FMS_375 | Tổng giá trị mua bán/tổng giá trị tài sản quản lý ủy thác bình quân-Kỳ trước | Cơ sở | PENDING |
+| K_FMS_376 | Giá trị HĐUT | Cơ sở | PENDING |
+| K_FMS_377 | Giá trị giải ngân thực tế | Cơ sở | PENDING |
+| K_FMS_378 | Phí QL | Cơ sở | PENDING |
+| K_FMS_379 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_380 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_381 | Tổng | Cơ sở | PENDING |
+| K_FMS_382 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_383 | Tổng | Cơ sở | PENDING |
+| K_FMS_384 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_385 | Tổng | Cơ sở | PENDING |
+| K_FMS_386 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_387 | Tổng | Cơ sở | PENDING |
+| K_FMS_388 | Các loại chứng khoán niêm yết | Cơ sở | PENDING |
+| K_FMS_389 | Tổng | Cơ sở | PENDING |
+| K_FMS_390 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_391 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_392 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_393 | Tổng | Cơ sở | PENDING |
+| K_FMS_394 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_395 | Tổng | Cơ sở | PENDING |
+| K_FMS_396 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_397 | Tổng | Cơ sở | PENDING |
+| K_FMS_398 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_399 | Tổng | Cơ sở | PENDING |
+| K_FMS_400 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_401 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_402 | Tổng | Cơ sở | PENDING |
+| K_FMS_403 | Tiền | Cơ sở | PENDING |
+| K_FMS_404 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_405 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_406 | Tổng | Cơ sở | PENDING |
+| K_FMS_407 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_408 | Giá trị HĐUT | Cơ sở | PENDING |
+| K_FMS_409 | Giá trị giải ngân thực tế | Cơ sở | PENDING |
+| K_FMS_410 | Phí QL | Cơ sở | PENDING |
+| K_FMS_411 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_412 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_413 | Tổng | Cơ sở | PENDING |
+| K_FMS_414 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_415 | Tổng | Cơ sở | PENDING |
+| K_FMS_416 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_417 | Tổng | Cơ sở | PENDING |
+| K_FMS_418 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_419 | Tổng | Cơ sở | PENDING |
+| K_FMS_420 | Các loại chứng khoán niêm yết | Cơ sở | PENDING |
+| K_FMS_421 | Tổng | Cơ sở | PENDING |
+| K_FMS_422 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_423 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_424 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_425 | Tổng | Cơ sở | PENDING |
+| K_FMS_426 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_427 | Tổng | Cơ sở | PENDING |
+| K_FMS_428 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_429 | Tổng | Cơ sở | PENDING |
+| K_FMS_430 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_431 | Tổng | Cơ sở | PENDING |
+| K_FMS_432 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_433 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_434 | Tổng | Cơ sở | PENDING |
+| K_FMS_435 | Tiền | Cơ sở | PENDING |
+| K_FMS_436 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_437 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_438 | Tổng | Cơ sở | PENDING |
+| K_FMS_439 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_440 | Giá trị HĐUT | Cơ sở | PENDING |
+| K_FMS_441 | Giá trị giải ngân thực tế | Cơ sở | PENDING |
+| K_FMS_442 | Phí QL | Cơ sở | PENDING |
+| K_FMS_443 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_444 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_445 | Tổng | Cơ sở | PENDING |
+| K_FMS_446 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_447 | Tổng | Cơ sở | PENDING |
+| K_FMS_448 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_449 | Tổng | Cơ sở | PENDING |
+| K_FMS_450 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_451 | Tổng | Cơ sở | PENDING |
+| K_FMS_452 | Các loại chứng khoán niêm yết | Cơ sở | PENDING |
+| K_FMS_453 | Tổng | Cơ sở | PENDING |
+| K_FMS_454 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_455 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_456 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_457 | Tổng | Cơ sở | PENDING |
+| K_FMS_458 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_459 | Tổng | Cơ sở | PENDING |
+| K_FMS_460 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_461 | Tổng | Cơ sở | PENDING |
+| K_FMS_462 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_463 | Tổng | Cơ sở | PENDING |
+| K_FMS_464 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_465 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_466 | Tổng | Cơ sở | PENDING |
+| K_FMS_467 | Tiền | Cơ sở | PENDING |
+| K_FMS_468 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_469 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_470 | Tổng | Cơ sở | PENDING |
+| K_FMS_471 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_472 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_473 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_474 | Tổng | Cơ sở | PENDING |
+| K_FMS_475 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_476 | Tổng | Cơ sở | PENDING |
+| K_FMS_477 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_478 | Tổng | Cơ sở | PENDING |
+| K_FMS_479 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_480 | Tổng | Cơ sở | PENDING |
+| K_FMS_481 | Các loại chứng khoán niêm yết | Cơ sở | PENDING |
+| K_FMS_482 | Tổng | Cơ sở | PENDING |
+| K_FMS_483 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_484 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_485 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_486 | Tổng | Cơ sở | PENDING |
+| K_FMS_487 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_488 | Tổng | Cơ sở | PENDING |
+| K_FMS_489 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_490 | Tổng | Cơ sở | PENDING |
+| K_FMS_491 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_492 | Tổng | Cơ sở | PENDING |
+| K_FMS_493 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_494 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_495 | Tổng | Cơ sở | PENDING |
+| K_FMS_496 | Tiền | Cơ sở | PENDING |
+| K_FMS_497 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_498 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_499 | Tổng | Cơ sở | PENDING |
+| K_FMS_500 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_501 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_502 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_503 | Tổng | Cơ sở | PENDING |
+| K_FMS_504 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_505 | Tổng | Cơ sở | PENDING |
+| K_FMS_506 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_507 | Tổng | Cơ sở | PENDING |
+| K_FMS_508 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_509 | Tổng | Cơ sở | PENDING |
+| K_FMS_510 | Các loại chứng khoán niêm yết | Cơ sở | PENDING |
+| K_FMS_511 | Tổng | Cơ sở | PENDING |
+| K_FMS_512 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_513 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_514 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_515 | Tổng | Cơ sở | PENDING |
+| K_FMS_516 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_517 | Tổng | Cơ sở | PENDING |
+| K_FMS_518 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_519 | Tổng | Cơ sở | PENDING |
+| K_FMS_520 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_521 | Tổng | Cơ sở | PENDING |
+| K_FMS_522 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_523 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_524 | Tổng | Cơ sở | PENDING |
+| K_FMS_525 | Tiền | Cơ sở | PENDING |
+| K_FMS_526 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_527 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_528 | Tổng | Cơ sở | PENDING |
+| K_FMS_529 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_530 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_531 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_532 | Tổng | Cơ sở | PENDING |
+| K_FMS_533 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_534 | Tổng | Cơ sở | PENDING |
+| K_FMS_535 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_536 | Tổng | Cơ sở | PENDING |
+| K_FMS_537 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_538 | Tổng | Cơ sở | PENDING |
+| K_FMS_539 | Các loại chứng khoán niêm yết | Cơ sở | PENDING |
+| K_FMS_540 | Tổng | Cơ sở | PENDING |
+| K_FMS_541 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_542 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_543 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_544 | Tổng | Cơ sở | PENDING |
+| K_FMS_545 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_546 | Tổng | Cơ sở | PENDING |
+| K_FMS_547 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_548 | Tổng | Cơ sở | PENDING |
+| K_FMS_549 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_550 | Tổng | Cơ sở | PENDING |
+| K_FMS_551 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_552 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_553 | Tổng | Cơ sở | PENDING |
+| K_FMS_554 | Tiền | Cơ sở | PENDING |
+| K_FMS_555 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_556 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_557 | Tổng | Cơ sở | PENDING |
+| K_FMS_558 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_559 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_560 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_561 | Tổng | Cơ sở | PENDING |
+| K_FMS_562 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_563 | Tổng | Cơ sở | PENDING |
+| K_FMS_564 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_565 | Tổng | Cơ sở | PENDING |
+| K_FMS_566 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_567 | Tổng | Cơ sở | PENDING |
+| K_FMS_568 | Các loại chứng khoán niêm yết | Cơ sở | PENDING |
+| K_FMS_569 | Tổng | Cơ sở | PENDING |
+| K_FMS_570 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_571 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_572 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_573 | Tổng | Cơ sở | PENDING |
+| K_FMS_574 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_575 | Tổng | Cơ sở | PENDING |
+| K_FMS_576 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_577 | Tổng | Cơ sở | PENDING |
+| K_FMS_578 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_579 | Tổng | Cơ sở | PENDING |
+| K_FMS_580 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_581 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_582 | Tổng | Cơ sở | PENDING |
+| K_FMS_583 | Tiền | Cơ sở | PENDING |
+| K_FMS_584 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_585 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_586 | Tổng | Cơ sở | PENDING |
+| K_FMS_587 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_588 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_589 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_590 | Tổng | Cơ sở | PENDING |
+| K_FMS_591 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_592 | Tổng | Cơ sở | PENDING |
+| K_FMS_593 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_594 | Tổng | Cơ sở | PENDING |
+| K_FMS_595 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_596 | Tổng | Cơ sở | PENDING |
+| K_FMS_597 | Các loại chứng khoán niêm yết khác | Cơ sở | PENDING |
+| K_FMS_598 | Tổng | Cơ sở | PENDING |
+| K_FMS_599 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_600 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_601 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_602 | Tổng | Cơ sở | PENDING |
+| K_FMS_603 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_604 | Tổng | Cơ sở | PENDING |
+| K_FMS_605 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_606 | Tổng | Cơ sở | PENDING |
+| K_FMS_607 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_608 | Tổng | Cơ sở | PENDING |
+| K_FMS_609 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_610 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_611 | Tổng | Cơ sở | PENDING |
+| K_FMS_612 | Tiền | Cơ sở | PENDING |
+| K_FMS_613 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_614 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_615 | Tổng | Cơ sở | PENDING |
+| K_FMS_616 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_617 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_618 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_619 | Tổng | Cơ sở | PENDING |
+| K_FMS_620 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_621 | Tổng | Cơ sở | PENDING |
+| K_FMS_622 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_623 | Tổng | Cơ sở | PENDING |
+| K_FMS_624 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_625 | Tổng | Cơ sở | PENDING |
+| K_FMS_626 | Các loại chứng khoán niêm yết khác | Cơ sở | PENDING |
+| K_FMS_627 | Tổng | Cơ sở | PENDING |
+| K_FMS_628 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_629 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_630 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_631 | Tổng | Cơ sở | PENDING |
+| K_FMS_632 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_633 | Tổng | Cơ sở | PENDING |
+| K_FMS_634 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_635 | Tổng | Cơ sở | PENDING |
+| K_FMS_636 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_637 | Tổng | Cơ sở | PENDING |
+| K_FMS_638 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_639 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_640 | Tổng | Cơ sở | PENDING |
+| K_FMS_641 | Tiền | Cơ sở | PENDING |
+| K_FMS_642 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_643 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_644 | Tổng | Cơ sở | PENDING |
+| K_FMS_645 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_646 | Chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_647 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_648 | Tổng | Cơ sở | PENDING |
+| K_FMS_649 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_650 | Tổng | Cơ sở | PENDING |
+| K_FMS_651 | Cổ phiếu đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_652 | Tổng | Cơ sở | PENDING |
+| K_FMS_653 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_654 | Tổng | Cơ sở | PENDING |
+| K_FMS_655 | Các loại chứng khoán niêm yết khác | Cơ sở | PENDING |
+| K_FMS_656 | Tổng | Cơ sở | PENDING |
+| K_FMS_657 | Tổng chứng khoán niêm yết, đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_658 | Chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_659 | Cổ phiếu | Cơ sở | PENDING |
+| K_FMS_660 | Tổng | Cơ sở | PENDING |
+| K_FMS_661 | Chứng chỉ quỹ | Cơ sở | PENDING |
+| K_FMS_662 | Tổng | Cơ sở | PENDING |
+| K_FMS_663 | Trái phiếu | Cơ sở | PENDING |
+| K_FMS_664 | Tổng | Cơ sở | PENDING |
+| K_FMS_665 | Các loại chứng khoán chưa niêm yết, chưa đăng ký giao dịch khác | Cơ sở | PENDING |
+| K_FMS_666 | Tổng | Cơ sở | PENDING |
+| K_FMS_667 | Tổng chứng khoán chưa niêm yết, chưa đăng ký giao dịch | Cơ sở | PENDING |
+| K_FMS_668 | Các tài sản khác | Cơ sở | PENDING |
+| K_FMS_669 | Tổng | Cơ sở | PENDING |
+| K_FMS_670 | Tiền | Cơ sở | PENDING |
+| K_FMS_671 | Tiền, tương đương tiền | Cơ sở | PENDING |
+| K_FMS_672 | Tiền gửi ngân hàng | Cơ sở | PENDING |
+| K_FMS_673 | Tổng | Cơ sở | PENDING |
+| K_FMS_674 | Tổng các danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_675 | Hạn mức nhận ủy thác được Ngân hàng Nhà nước xác nhận | Cơ sở | PENDING |
+| K_FMS_676 | Giá trị đã nhận ủy thác tính đến thời điểm cuối tháng | Cơ sở | PENDING |
+| K_FMS_677 | Giá trị đã nhận ủy thác trong tháng | Cơ sở | PENDING |
+| K_FMS_678 | Giá trị còn được nhận ủy thác (4)=(1)-(2) | Cơ sở | PENDING |
+| K_FMS_679 | Tổng số Hợp đồng ủy thác đầu tư đang thực hiện | Cơ sở | PENDING |
+| K_FMS_680 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_681 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_682 | Tổng giá trị các Hợp đồng ủy thác đầu tư (Hợp đồng khung) | Cơ sở | PENDING |
+| K_FMS_683 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_684 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_685 | Tổng giá trị các Hợp đồng ủy thác đầu tư (Giá trị giải ngân thực tế) | Cơ sở | PENDING |
+| K_FMS_686 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_687 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_688 | Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư | Cơ sở | PENDING |
+| K_FMS_689 | - Tổ chức (%) | Cơ sở | PENDING |
+| K_FMS_690 | - Cá nhân (%) | Cơ sở | PENDING |
+| K_FMS_691 | Tổng giá trị giá dịch vụ quản lý danh mục đầu tư thu được trong kỳ | Cơ sở | PENDING |
+| K_FMS_692 | Tỷ lệ giá dịch vụ quản lý danh mục đầu tư bình quân (5/4) | Cơ sở | PENDING |
+| K_FMS_693 | Khối lượng mua | Cơ sở | PENDING |
+| K_FMS_694 | Giá trị mua (USD) | Cơ sở | PENDING |
+| K_FMS_695 | Giá trị mua (VND) | Cơ sở | PENDING |
+| K_FMS_696 | Khối lượng bán | Cơ sở | PENDING |
+| K_FMS_697 | Giá trị bán (USD) | Cơ sở | PENDING |
+| K_FMS_698 | Giá trị bán (VND) | Cơ sở | PENDING |
+| K_FMS_699 | Tổng giá trị mua bán/tổng giá trị tài sản quản lý ủy thác bình quân - Kỳ trước | Cơ sở | PENDING |
+| K_FMS_700 | Tổng giá trị mua bán/tổng giá trị tài sản quản lý ủy thác bình quân - Kỳ này | Cơ sở | PENDING |
+| K_FMS_701 | Chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_702 | Tổng | Cơ sở | PENDING |
+| K_FMS_703 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_704 | Tổng | Cơ sở | PENDING |
+| K_FMS_705 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_706 | Tổng | Cơ sở | PENDING |
+| K_FMS_707 | Trái phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_708 | Tổng | Cơ sở | PENDING |
+| K_FMS_709 | Chứng chỉ quỹ niêm yết | Cơ sở | PENDING |
+| K_FMS_710 | Tổng | Cơ sở | PENDING |
+| K_FMS_711 | Các loại tài sản khác | Cơ sở | PENDING |
+| K_FMS_712 | Tổng | Cơ sở | PENDING |
+| K_FMS_713 | Tổng danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_714 | Chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_715 | Tổng | Cơ sở | PENDING |
+| K_FMS_716 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_717 | Tổng | Cơ sở | PENDING |
+| K_FMS_718 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_719 | Tổng | Cơ sở | PENDING |
+| K_FMS_720 | Trái phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_721 | Tổng | Cơ sở | PENDING |
+| K_FMS_722 | Chứng chỉ quỹ niêm yết | Cơ sở | PENDING |
+| K_FMS_723 | Tổng | Cơ sở | PENDING |
+| K_FMS_724 | Các loại tài sản khác | Cơ sở | PENDING |
+| K_FMS_725 | Tổng | Cơ sở | PENDING |
+| K_FMS_726 | Tổng danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_727 | Chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_728 | Tổng | Cơ sở | PENDING |
+| K_FMS_729 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_730 | Tổng | Cơ sở | PENDING |
+| K_FMS_731 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_732 | Tổng | Cơ sở | PENDING |
+| K_FMS_733 | Trái phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_734 | Tổng | Cơ sở | PENDING |
+| K_FMS_735 | Chứng chỉ quỹ niêm yết | Cơ sở | PENDING |
+| K_FMS_736 | Tổng | Cơ sở | PENDING |
+| K_FMS_737 | Các loại tài sản khác | Cơ sở | PENDING |
+| K_FMS_738 | Tổng | Cơ sở | PENDING |
+| K_FMS_739 | Tổng danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_740 | Chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_741 | Tổng | Cơ sở | PENDING |
+| K_FMS_742 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_743 | Tổng | Cơ sở | PENDING |
+| K_FMS_744 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_745 | Tổng | Cơ sở | PENDING |
+| K_FMS_746 | Trái phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_747 | Tổng | Cơ sở | PENDING |
+| K_FMS_748 | Chứng chỉ quỹ niêm yết | Cơ sở | PENDING |
+| K_FMS_749 | Tổng | Cơ sở | PENDING |
+| K_FMS_750 | Các loại tài sản khác | Cơ sở | PENDING |
+| K_FMS_751 | Tổng | Cơ sở | PENDING |
+| K_FMS_752 | Tổng danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_753 | Chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_754 | Tổng | Cơ sở | PENDING |
+| K_FMS_755 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_756 | Tổng | Cơ sở | PENDING |
+| K_FMS_757 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_758 | Tổng | Cơ sở | PENDING |
+| K_FMS_759 | Trái phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_760 | Tổng | Cơ sở | PENDING |
+| K_FMS_761 | Chứng chỉ quỹ niêm yết | Cơ sở | PENDING |
+| K_FMS_762 | Tổng | Cơ sở | PENDING |
+| K_FMS_763 | Các loại tài sản khác | Cơ sở | PENDING |
+| K_FMS_764 | Tổng | Cơ sở | PENDING |
+| K_FMS_765 | Tổng danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_766 | Chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_767 | Tổng | Cơ sở | PENDING |
+| K_FMS_768 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_769 | Tổng | Cơ sở | PENDING |
+| K_FMS_770 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_771 | Tổng | Cơ sở | PENDING |
+| K_FMS_772 | Trái phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_773 | Tổng | Cơ sở | PENDING |
+| K_FMS_774 | Chứng chỉ quỹ niêm yết | Cơ sở | PENDING |
+| K_FMS_775 | Tổng | Cơ sở | PENDING |
+| K_FMS_776 | Các loại tài sản khác | Cơ sở | PENDING |
+| K_FMS_777 | Tổng | Cơ sở | PENDING |
+| K_FMS_778 | Tổng danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_779 | Chứng chỉ tiền gửi | Cơ sở | PENDING |
+| K_FMS_780 | Tổng | Cơ sở | PENDING |
+| K_FMS_781 | Trái phiếu Chính phủ | Cơ sở | PENDING |
+| K_FMS_782 | Tổng | Cơ sở | PENDING |
+| K_FMS_783 | Cổ phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_784 | Tổng | Cơ sở | PENDING |
+| K_FMS_785 | Trái phiếu niêm yết | Cơ sở | PENDING |
+| K_FMS_786 | Tổng | Cơ sở | PENDING |
+| K_FMS_787 | Chứng chỉ quỹ niêm yết | Cơ sở | PENDING |
+| K_FMS_788 | Tổng | Cơ sở | PENDING |
+| K_FMS_789 | Các loại tài sản khác | Cơ sở | PENDING |
+| K_FMS_790 | Tổng | Cơ sở | PENDING |
+| K_FMS_791 | Tổng danh mục đầu tư | Cơ sở | PENDING |
 
 ## Section 3 — Mô hình tổng thể (READY only)
 

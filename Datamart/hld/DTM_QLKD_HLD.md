@@ -1053,6 +1053,12 @@ erDiagram
 
 **Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Company License Condition Snapshot` — grain = 1 CTCK × 1 loại giấy phép × 1 ngày snapshot
 
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_QLKD_22 | Số CTCK duy trì tốt — Giấy phép hoạt động | Cơ sở | PENDING |
+| K_QLKD_23 | Số CTCK gần giới hạn duy trì — Giấy phép hoạt động | Cơ sở | PENDING |
+| K_QLKD_24 | Số CTCK không duy trì điều kiện — Giấy phép hoạt động | Cơ sở | PENDING |
+
 ---
 
 ##### PENDING — Duy trì điều kiện cấp phép — Phái sinh: Kinh doanh CKPS (STT 37–40)
@@ -1065,6 +1071,12 @@ erDiagram
 
 **Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Company License Condition Snapshot` — grain = 1 CTCK × 1 loại giấy phép × 1 ngày snapshot
 
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_QLKD_25 | Số CTCK duy trì tốt — Phái sinh KDCKPS | Cơ sở | PENDING |
+| K_QLKD_26 | Số CTCK gần giới hạn duy trì — Phái sinh KDCKPS | Cơ sở | PENDING |
+| K_QLKD_27 | Số CTCK không duy trì điều kiện — Phái sinh KDCKPS | Cơ sở | PENDING |
+
 ---
 
 ##### PENDING — Duy trì điều kiện cấp phép — Phái sinh: Bù trừ thanh toán (STT 41–44)
@@ -1076,6 +1088,12 @@ erDiagram
 **Atomic cần bổ sung:** Như Nhóm 5.
 
 **Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Company License Condition Snapshot` — grain = 1 CTCK × 1 loại giấy phép × 1 ngày snapshot
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_QLKD_28 | Số CTCK duy trì tốt — Phái sinh bù trừ thanh toán | Cơ sở | PENDING |
+| K_QLKD_29 | Số CTCK gần giới hạn duy trì — Phái sinh bù trừ thanh toán | Cơ sở | PENDING |
+| K_QLKD_30 | Số CTCK không duy trì điều kiện — Phái sinh bù trừ thanh toán | Cơ sở | PENDING |
 
 ---
 
@@ -1268,6 +1286,31 @@ erDiagram
 | Securities Company Dimension | 1 CTCK (SCD2) |
 | Report Indicator Dimension | 1 chỉ tiêu báo cáo (SCD2) |
 | Calendar Date Dimension | 1 ngày |
+
+#### KPI ID bổ sung từ BA — Tab TỔNG QUAN
+
+> Các KPI ID dưới đây được khai sinh từ BA file (chỉ tiêu/chiều chưa có trong thiết kế READY ban đầu). Toàn bộ trạng thái **PENDING — chưa thiết kế nguồn**.
+
+| KPI ID | Tên KPI | Tính chất | Nhóm | Trạng thái |
+|---|---|---|---|---|
+| K_QLKD_2723 | Chiều thời gian theo ngày | Chiều | Nhóm 1 — Chỉ tiêu thống kê chung | PENDING |
+| K_QLKD_2724 | So sánh cùng kỳ tổng số lượng CTCK đã được cấp phép | Phái sinh | Nhóm 1 — Chỉ tiêu thống kê chung | PENDING |
+| K_QLKD_2725 | Chiều thời gian theo ngày | Chiều | Nhóm 2 — Biểu đồ Nghiệp vụ | PENDING |
+| K_QLKD_2726 | Chiều nghiệp vụ kinh doanh chứng khoán | Chiều | Nhóm 2 — Biểu đồ Nghiệp vụ | PENDING |
+| K_QLKD_2727 | Chiều thời gian theo ngày | Chiều | Nhóm 3 — Biểu đồ Dịch vụ CK | PENDING |
+| K_QLKD_2728 | Chiều dịch vụ kinh doanh chứng khoán | Chiều | Nhóm 3 — Biểu đồ Dịch vụ CK | PENDING |
+| K_QLKD_2729 | Chiều thời gian theo ngày | Chiều | Nhóm 4 — Biểu đồ Dịch vụ Phái sinh | PENDING |
+| K_QLKD_2730 | Chiều dịch vụ phái sinh | Chiều | Nhóm 4 — Biểu đồ Dịch vụ Phái sinh | PENDING |
+| K_QLKD_2731 | Số lượng CTCK liên quan CK phái sinh theo dịch vụ môi giới | Cơ sở | Nhóm 4 — Biểu đồ Dịch vụ Phái sinh | PENDING |
+| K_QLKD_2732 | Số lượng CTCK liên quan CK phái sinh theo dịch vụ tư vấn | Cơ sở | Nhóm 4 — Biểu đồ Dịch vụ Phái sinh | PENDING |
+| K_QLKD_2733 | Số lượng CTCK liên quan CK phái sinh theo dịch vụ tự doanh | Cơ sở | Nhóm 4 — Biểu đồ Dịch vụ Phái sinh | PENDING |
+| K_QLKD_2734 | Chiều thời gian theo ngày | Chiều | Nhóm 5/6/7 — Duy trì điều kiện cấp phép | PENDING |
+| K_QLKD_2735 | Các loại duy trì điều kiện cấp phép | Chiều | Nhóm 5/6/7 — Duy trì điều kiện cấp phép | PENDING |
+| K_QLKD_2736 | Phân loại CTCK | Chiều | Nhóm 5/6/7 — Duy trì điều kiện cấp phép | PENDING |
+| K_QLKD_2739 | Chiều thời gian theo quý | Chiều | Nhóm 8 — Cơ cấu tài sản | PENDING |
+| K_QLKD_2740 | Khác — cơ cấu tài sản | Cơ sở | Nhóm 8 — Cơ cấu tài sản | PENDING |
+| K_QLKD_2741 | Chiều thời gian theo quý | Chiều | Nhóm 9 — Cơ cấu nguồn vốn | PENDING |
+| K_QLKD_2742 | Khác — cơ cấu nguồn vốn | Cơ sở | Nhóm 9 — Cơ cấu nguồn vốn | PENDING |
 
 ---
 
@@ -2090,6 +2133,37 @@ flowchart LR
 | Securities Company Dimension | 1 CTCK (SCD2) |
 | Calendar Date Dimension | 1 ngày |
 
+#### KPI ID bổ sung từ BA — Tab GIÁM SÁT
+
+> Trạng thái toàn bộ: **PENDING — chưa thiết kế nguồn**.
+
+| KPI ID | Tên KPI | Tính chất | Nhóm | Trạng thái |
+|---|---|---|---|---|
+| K_QLKD_62 | Chỉ số VN-Index | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_63 | Chỉ số HNX Index | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_64 | Chỉ số UPCOM Index | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_65 | Chỉ số VN30 | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_2743 | Trạng thái nộp báo cáo | Chiều | Nhóm GS-9 — Giám sát tuân thủ | PENDING |
+| K_QLKD_2744 | Số lượng báo cáo của CTCK đúng hạn | Cơ sở | Nhóm GS-9 — Giám sát tuân thủ | PENDING |
+| K_QLKD_2745 | Số lượng báo cáo của CTCK chậm | Cơ sở | Nhóm GS-9 — Giám sát tuân thủ | PENDING |
+| K_QLKD_2746 | Số lượng báo cáo của CTCK chưa báo cáo | Cơ sở | Nhóm GS-9 — Giám sát tuân thủ | PENDING |
+| K_QLKD_2747 | Vốn khác — cơ cấu vốn CSH | Cơ sở | Nhóm GS-1 — Cơ cấu vốn CSH | PENDING |
+| K_QLKD_2748 | Chỉ tiêu vốn góp của CSH trên BCTC | Cơ sở | Nhóm GS-2 — Biến động vốn CSH | PENDING |
+| K_QLKD_2749 | Phân loại hình thức tăng vốn | Chiều | Nhóm GS-3 — Nguồn vốn tăng thêm | PENDING |
+| K_QLKD_2750 | Phân loại tỷ lệ vốn khả dụng | Chiều | Nhóm GS-4 — Tỷ lệ vốn khả dụng | PENDING |
+| K_QLKD_2751 | Số lượng CTCK tỷ lệ vốn khả dụng ở mức cao | Cơ sở | Nhóm GS-4 — Tỷ lệ vốn khả dụng | PENDING |
+| K_QLKD_2752 | Số lượng CTCK tỷ lệ vốn khả dụng ở mức trung bình | Cơ sở | Nhóm GS-4 — Tỷ lệ vốn khả dụng | PENDING |
+| K_QLKD_2753 | Số lượng CTCK tỷ lệ vốn khả dụng ở mức thấp | Cơ sở | Nhóm GS-4 — Tỷ lệ vốn khả dụng | PENDING |
+| K_QLKD_2754 | Dư nợ margin | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_2755 | Chỉ số Vn-index | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_2756 | Chỉ số HNX index | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_2757 | Chỉ số Upcom-index | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_2758 | Chỉ số Vn 30 | Cơ sở | Nhóm GS-6 — Tương quan Margin & Diễn biến thị trường | PENDING |
+| K_QLKD_2759 | Chiều top CTCK có thị phần cao nhất | Chiều | Nhóm GS-7 — Thị phần môi giới | PENDING |
+| K_QLKD_2760 | Chiều mã CTCK | Chiều | Nhóm GS-8 — CFO | PENDING |
+| K_QLKD_2761 | LNST — per CTCK | Cơ sở | Nhóm GS-8 — CFO | PENDING |
+| K_QLKD_2762 | CFO (dòng tiền hoạt động kinh doanh) | Cơ sở | Nhóm GS-8 — CFO | PENDING |
+
 ---
 
 ### Tab: HỒ SƠ CTCK 360
@@ -2529,6 +2603,58 @@ Tên | Địa chỉ | Nghiệp vụ | Ngày thành lập | Giám đốc CN/Trư�
 | Individual Violation History | 1 QĐ xử phạt × 1 cá nhân | K_QLKD_123–127 | READY (xem O_QLKD_14) |
 | Securities Company Report Data | 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu | K_QLKD_128 | READY |
 
+#### KPI ID bổ sung từ BA — Tab HỒ SƠ CTCK 360
+
+> Trạng thái toàn bộ: **PENDING — chưa thiết kế nguồn**.
+
+| KPI ID | Tên KPI | Tính chất | Nhóm | Trạng thái |
+|---|---|---|---|---|
+| K_QLKD_94 | NHN theo 4 nghiệp vụ — per CTCK | Cơ sở | Nhóm 360-7 — NHNCK | PENDING |
+| K_QLKD_95 | NHN theo dịch vụ CK phái sinh — per CTCK | Cơ sở | Nhóm 360-7 — NHNCK | PENDING |
+| K_QLKD_104 | SL CN, PGD, VPĐD theo nghiệp vụ — per CTCK | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_105 | SL CN, PGD, VPĐD theo dịch vụ — per CTCK | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_106 | SL CN, PGD, VPĐD theo dịch vụ phái sinh — per CTCK | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_107 | Duy trì điều kiện cấp phép — CN, PGD, VPĐD | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2763 | Tỷ lệ ATTC — per CTCK | Cơ sở | Nhóm 360-1 — Banner tổng quan | PENDING |
+| K_QLKD_2764 | Số nhân viên — per CTCK | Cơ sở | Nhóm 360-1 — Banner tổng quan | PENDING |
+| K_QLKD_2765 | Khác — cơ cấu tổng tài sản CTCK | Cơ sở | Nhóm 360-2→5 — Biểu đồ tài chính | PENDING |
+| K_QLKD_2766 | Khác — cơ cấu nguồn vốn CTCK | Cơ sở | Nhóm 360-2→5 — Biểu đồ tài chính | PENDING |
+| K_QLKD_2767 | Margin/VCSH % | Phái sinh | Nhóm 360-2→5 — Biểu đồ tài chính | PENDING |
+| K_QLKD_2768 | Tỷ lệ an toàn tài chính — per CTCK | Cơ sở | Nhóm 360-2→5 — Biểu đồ tài chính | PENDING |
+| K_QLKD_2769 | ROA (%) — per CTCK | Phái sinh | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2770 | ROE (%) — per CTCK | Phái sinh | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2771 | Kỳ báo cáo — lịch sử BCTC | Cơ sở | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2772 | Doanh thu (tỷ VNĐ) — lịch sử BCTC | Cơ sở | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2773 | Lợi nhuận (tỷ VNĐ) — lịch sử BCTC | Cơ sở | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2774 | ROA (%) — lịch sử BCTC | Phái sinh | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2775 | ROE (%) — lịch sử BCTC | Phái sinh | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2776 | Trạng thái — lịch sử BCTC | Cơ sở | Nhóm 360-6 — Lịch sử BCTC | PENDING |
+| K_QLKD_2777 | Tổng số lượng lao động — per CTCK | Cơ sở | Nhóm 360-7 — NHNCK | PENDING |
+| K_QLKD_2778 | Số lượng CN, PGD, VPĐD theo nghiệp vụ môi giới | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2779 | Số lượng CN, PGD, VPĐD theo nghiệp vụ bảo lãnh | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2780 | Số lượng CN, PGD, VPĐD theo nghiệp vụ tư vấn | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2781 | Số lượng CN, PGD, VPĐD theo nghiệp vụ tự doanh | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2782 | Số lượng CN, PGD, VPĐD theo dịch vụ giao dịch kí quỹ | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2783 | Số lượng CN, PGD, VPĐD theo dịch vụ lưu ký | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2784 | Số lượng CN, PGD, VPDD đang duy trì tốt | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2785 | Số lượng CN, PGD, VPDD gần đến giới hạn duy trì | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2786 | Số lượng CN, PGD, VPDD không duy trì điều kiện cấp phép | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2787 | Tên CN, PGD, VPĐD | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2788 | Địa chỉ CN, PGD, VPĐD | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2789 | Nghiệp vụ — CN, PGD, VPĐD | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2790 | Ngày thành lập — CN, PGD, VPĐD | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2791 | Giám đốc chi nhánh/Trưởng VPĐD | Cơ sở | Nhóm 360-10 — CN, PGD, VPĐD | PENDING |
+| K_QLKD_2792 | Báo cáo (YTD) — tuân thủ per CTCK | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2793 | Loại báo cáo — lịch sử nộp | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2794 | Kỳ kê khai — lịch sử nộp | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2795 | Hạn nộp — lịch sử nộp báo cáo | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2796 | Trạng thái — lịch sử nộp báo cáo | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2797 | Loại thanh tra, kiểm tra | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2798 | Ngày ban hành quyết định thanh tra kiểm tra | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2799 | Hành vi vi phạm | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2800 | Hình thức xử phạt bổ sung (nếu có) | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+| K_QLKD_2801 | Biện pháp khắc phục (nếu có) | Cơ sở | Nhóm 360-9 — Tuân thủ & Vi phạm | PENDING |
+
 ---
 
 ---
@@ -2802,6 +2928,25 @@ NGÀY QĐ      SỐ QĐ             NỘI DUNG VI PHẠM             HÌNH THỨ
 |---|---|
 | Individual Violation History | 1 quyết định xử phạt × 1 cá nhân |
 
+#### KPI ID bổ sung từ BA — Tab TRA CỨU CÁ NHÂN
+
+> Trạng thái toàn bộ: **PENDING — chưa thiết kế nguồn**.
+
+| KPI ID | Tên KPI | Tính chất | Nhóm | Trạng thái |
+|---|---|---|---|---|
+| K_QLKD_2802 | Tên cá nhân | Cơ sở | Nhóm TCA-2 — Mạng lưới 360° | PENDING |
+| K_QLKD_2803 | Vai trò, chức vụ | Cơ sở | Nhóm TCA-2 — Mạng lưới 360° | PENDING |
+| K_QLKD_2804 | Người có liên quan >> Tên người có liên quan | Cơ sở | Nhóm TCA-2 — Mạng lưới 360° | PENDING |
+| K_QLKD_2805 | Người có liên quan >> Mối quan hệ của người có liên quan | Cơ sở | Nhóm TCA-2 — Mạng lưới 360° | PENDING |
+| K_QLKD_2806 | Người có liên quan >> Vai trò, chức vụ của người có liên quan | Cơ sở | Nhóm TCA-2 — Mạng lưới 360° | PENDING |
+| K_QLKD_2807 | Tỷ lệ sở hữu cổ phần | Cơ sở | Nhóm TCA-2 — Mạng lưới 360° | PENDING |
+| K_QLKD_2808 | Vai trò tại DN niêm yết | Cơ sở | Nhóm TCA-3 — Vai trò tại DN niêm yết | PENDING |
+| K_QLKD_2809 | Mạng lưới người liên quan | Cơ sở | Nhóm TCA-4 — Người liên quan chi tiết | PENDING |
+| K_QLKD_2810 | Trạng thái — lịch sử công tác | Cơ sở | Nhóm TCA-5 — Quá trình hành nghề | PENDING |
+| K_QLKD_2811 | Ngày quyết định — vi phạm cá nhân | Cơ sở | Nhóm TCA-6 — Lịch sử vi phạm & xử phạt | PENDING |
+| K_QLKD_2812 | Số hiệu quyết định — vi phạm cá nhân | Cơ sở | Nhóm TCA-6 — Lịch sử vi phạm & xử phạt | PENDING |
+| K_QLKD_2813 | Trạng thái — vi phạm cá nhân | Cơ sở | Nhóm TCA-6 — Lịch sử vi phạm & xử phạt | PENDING |
+
 ---
 
 ### Tab: DATA EXPLORER
@@ -2862,9 +3007,31 @@ DATA EXPLORER — Tra cứu báo cáo biểu mẫu định kỳ
 
 **Bảng KPI:**
 
+> **Ghi chú:** K_QLKD_128 là KPI đại diện EAV cho toàn DE-1. Từ K_QLKD_129 trở đi là các chỉ tiêu cụ thể per biểu mẫu, được khai sinh theo từng nhóm loại báo cáo dưới đây. Toàn bộ đều dùng chung bảng `Securities Company Report Data` — không thiết kế mart riêng per biểu mẫu.
+
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
 | K_QLKD_128 | Giá trị chỉ tiêu báo cáo biểu mẫu định kỳ | Text/Number | Cơ sở | `SELECT Indicator_Value FROM Securities_Company_Report_Data WHERE Report_Type_Code = {LOAI_BAO_CAO} AND Report_Period = {KY_BAO_CAO} AND Report_Template_Code = {MA_BAO_CAO} AND Securities_Company_Code = {CTCK} AND Report_Indicator_Code = {MA_CHI_TIEU}`. Áp dụng cho toàn bộ 3263 chỉ tiêu thuộc 102 biểu mẫu (STT 42–143). Attributes hiển thị kèm context: Securities Company Name, Report Template Name, Report Indicator Name, Submission Date, Submission Deadline Date. |
+
+**Bảng KPI theo nhóm loại báo cáo (dải ID):**
+
+| Nhóm loại báo cáo | STT BA | Dải KPI ID | Số chỉ tiêu | Tính chất |
+|---|---|---|---|---|
+| Chào bán phát hành | 42–43 | K_QLKD_129 – K_QLKD_2819 | 342 | Cơ sở / Chiều |
+| Báo cáo giám sát | 44–48 | K_QLKD_297 – K_QLKD_2834 | 565 | Cơ sở / Chiều |
+| Báo cáo chứng quyền có đảm bảo | 49–56 | K_QLKD_572 – K_QLKD_2858 | 231 | Cơ sở / Chiều |
+| Hoạt động phái sinh | 57–61 | K_QLKD_686 – K_QLKD_2873 | 185 | Cơ sở / Chiều |
+| Báo cáo theo Thông tư 121/2020/TT-BTC | 62–110 | K_QLKD_771 – K_QLKD_3020 | 2.096 | Cơ sở / Chiều |
+| Báo cáo giám sát quản trị công ty | 111–116 | K_QLKD_1823 – K_QLKD_3038 | 300 | Cơ sở / Chiều |
+| Báo cáo NPF | 117 | K_QLKD_1964 – K_QLKD_3041 | 57 | Cơ sở / Chiều |
+| Báo cáo thường niên | 118 | K_QLKD_1991 – K_QLKD_3045 | 124 | Cơ sở / Chiều |
+| Báo cáo TPDN riêng lẻ | 119 | K_QLKD_2051 – K_QLKD_3048 | 35 | Cơ sở / Chiều |
+| Báo cáo hoạt động CN CTCK nước ngoài tại VN | 120–130 | K_QLKD_2067 – K_QLKD_3081 | 859 | Cơ sở / Chiều |
+| Báo cáo TLATTC CN CTCK nước ngoài tại VN | 131–139 | K_QLKD_2636 – K_QLKD_3108 | 86 | Cơ sở / Chiều |
+| Báo cáo hoạt động VPĐD CTCK nước ngoài tại VN | 140 | K_QLKD_2671 – K_QLKD_3111 | 107 | Cơ sở / Chiều |
+| Ngân hàng lưu ký — Đăng ký hoạt động lưu ký CK | 141 | K_QLKD_3112 – K_QLKD_3120 | 9 | Cơ sở / Chiều |
+| Ngân hàng thanh toán — Đáp ứng điều kiện | 142 | K_QLKD_3121 – K_QLKD_3137 | 17 | Cơ sở / Chiều |
+| Ngân hàng thanh toán — Hoạt động thanh toán | 143 | K_QLKD_3138 – K_QLKD_3176 | 39 | Cơ sở / Chiều |
 
 **Bảng grain:**
 

@@ -1468,6 +1468,319 @@ flowchart LR
 
 ---
 
+
+### Bổ sung Loại 1 — KPI đã có trong HLD, đổi tên sang K_NDTNN_x
+
+#### Tab: GIAO DỊCH — Nhóm 3 — Tỷ trọng GD NĐTNN
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_17 – K_NDTNN_21
+
+**Lý do pending:** Chờ Atomic SGDCK — Securities Foreign Trading Record
+
+**Atomic cần bổ sung:** Atomic `Securities Foreign Trading Record` (SGDCK) — Foreign Investor Buy/Sell Value per ngày GD
+
+**Mart dự kiến:**
+- `Fact Securities Foreign Trading Snapshot` — grain: 1 mã CK × 1 ngày GD
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_17 | Tỷ trọng TB phiên | Phái sinh | PENDING |
+| K_NDTNN_18 | Tỷ trọng GD NĐTNN theo ngày | Phái sinh | PENDING |
+| K_NDTNN_19 | Tỷ trọng theo ngành | Phái sinh | PENDING |
+| K_NDTNN_20 | Top mã tỷ trọng cao — Tỷ lệ sở hữu | Phái sinh | PENDING |
+| K_NDTNN_21 | Tổng GT GD NĐTNN theo ngày | Cơ sở | PENDING |
+
+#### Tab: GIÁM SÁT DÒNG VỐN — Nhóm 4 — Tương quan Net Flow (bổ sung)
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_22 – K_NDTNN_24b
+
+**Lý do pending:** Chờ Atomic SGDCK — chuỗi thời gian mua/bán ròng tháng và VN-Index
+
+**Atomic cần bổ sung:** Atomic `Securities Foreign Trading Record` (SGDCK) + `Market Index` (SGDCK)
+
+**Mart dự kiến:**
+- `Fact Securities Foreign Trading Snapshot` — grain: 1 tháng
+- `Fact Market Index Snapshot` — grain: 1 ngày
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_22 | Giá trị mua/bán ròng (tháng) | Phái sinh | PENDING |
+| K_NDTNN_24b | Điểm đóng cửa VN-Index | Cơ sở | PENDING |
+
+#### Tab: DANH MỤC — Nhóm 9 — ROOM sở hữu NĐTNN (bổ sung)
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_50 – K_NDTNN_50
+
+**Lý do pending:** Cần nguồn tổng cổ phiếu lưu hành theo ngành
+
+**Atomic cần bổ sung:** Atomic `Public Company` (IDS) — cần bổ sung attribute tổng CP lưu hành per ngành
+
+**Mart dự kiến:**
+- Reuse `Fact Foreign Ownership Snapshot` — grain: 1 mã CK × 1 ngày
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_50 | Room theo ngành (%) | Phái sinh | PENDING |
+
+#### Tab: DATA EXPLORER — Nhóm 12 — Pass-through TT51 | Metadata điều hướng
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_52 – K_NDTNN_58
+
+**Lý do pending:** Thiếu trong DM — đổi tên từ K_NDTNN_DE3–8 sang K_NDTNN_52–58
+
+**Atomic cần bổ sung:** Atomic `Member Regulatory Report` + `Member Report Value` + `Report Template` (FIMS) — READY
+
+**Mart dự kiến:**
+- `NDTNN Regulatory Report Store` — grain: 1 NĐTNN × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_52 | Loại báo cáo | Chiều | PENDING |
+| K_NDTNN_53 | Kỳ báo cáo | Chiều | PENDING |
+| K_NDTNN_54 | Mã báo cáo | Chiều | PENDING |
+| K_NDTNN_55 | Tên báo cáo | Chiều | PENDING |
+| K_NDTNN_56 | Mã chỉ tiêu | Chiều | PENDING |
+| K_NDTNN_57 | Tên chỉ tiêu | Chiều | PENDING |
+| K_NDTNN_58 | Giá trị | Cơ sở | PENDING |
+
+---
+### Bổ sung Loại 2 — BA NDTNN (99 dòng, trạng thái mapping trống)
+
+#### Tab: BÁO CÁO — Nhóm — Báo cáo thống kê biểu chi tiết
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_143 – K_NDTNN_148
+
+**Lý do pending:** Chưa thiết kế Atomic source cho tab Báo cáo NĐTNN
+
+**Atomic cần bổ sung:** Atomic `Securities Foreign Trading Record` (SGDCK)
+
+**Mart dự kiến:**
+- `Fact Securities Foreign Trading Snapshot` — grain: 1 mã CK × 1 ngày GD
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_143 | Tài khoản giao dịch NĐTNN | Chiều | PENDING |
+| K_NDTNN_144 | Mã CK | Chiều | PENDING |
+| K_NDTNN_145 | KL mua chứng khoán | Phái sinh | PENDING |
+| K_NDTNN_146 | KL bán CK | Phái sinh | PENDING |
+| K_NDTNN_147 | GT mua chứng khoán | Phái sinh | PENDING |
+| K_NDTNN_148 | GT bán chứng khoán | Phái sinh | PENDING |
+
+#### Tab: BÁO CÁO — Nhóm — Báo cáo thống kê tình hình giao dịch
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_131 – K_NDTNN_142
+
+**Lý do pending:** Chưa thiết kế Atomic source cho tab Báo cáo NĐTNN
+
+**Atomic cần bổ sung:** Atomic `Securities Foreign Trading Record` (SGDCK)
+
+**Mart dự kiến:**
+- `Fact Securities Foreign Trading Snapshot` — grain: 1 mã CK × 1 ngày GD
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_131 | Cổ phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_132 | Cổ phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_133 | Cổ phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_134 | Trái phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_135 | Trái phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_136 | Trái phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_137 | CCQ - GT NĐTNN mua chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_138 | CCQ - GT NĐTNN bán chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_139 | CCQ - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_140 | Tổng - GT NĐTNN mua chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_141 | Tổng - GT NĐTNN bán chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+| K_NDTNN_142 | Tổng - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ) | Phái sinh | PENDING |
+
+#### Tab: DANH MỤC — Nhóm — Danh mục
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_98 – K_NDTNN_119
+
+**Lý do pending:** Chưa thiết kế đầy đủ cho tab Danh mục
+
+**Atomic cần bổ sung:** Atomic `Foreign Investor Stock Portfolio Snapshot` (FIMS) + `Public Company Foreign Ownership Limit` (IDS)
+
+**Mart dự kiến:**
+- `Fact Foreign Investor Portfolio Snapshot` + `Fact Foreign Ownership Snapshot`
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_98 | Tổng giá trị danh mục | Phái sinh | PENDING |
+| K_NDTNN_99 | Loại hình nhà đầu tư | Chiều | PENDING |
+| K_NDTNN_100 | Tổng giá trị danh mục của cá nhân | Phái sinh | PENDING |
+| K_NDTNN_101 | Tổng giá trị danh mục của quỹ | Phái sinh | PENDING |
+| K_NDTNN_102 | Tổng giá trị danh mục của tổ chức khác quỹ | Phái sinh | PENDING |
+| K_NDTNN_103 | Top 5 quốc gia | Phái sinh | PENDING |
+| K_NDTNN_104 | Top 5 NĐT | Phái sinh | PENDING |
+| K_NDTNN_105 | Giá trị tài sản | Phái sinh | PENDING |
+| K_NDTNN_106 | Loại tài sản | Chiều | PENDING |
+| K_NDTNN_107 | Cổ phiếu, CCQ niêm yết | Phái sinh | PENDING |
+| K_NDTNN_108 | Trái phiếu | Phái sinh | PENDING |
+| K_NDTNN_109 | Upcom | Phái sinh | PENDING |
+| K_NDTNN_110 | Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác | Phái sinh | PENDING |
+| K_NDTNN_111 | Tiền và tương đương với tiền | Phái sinh | PENDING |
+| K_NDTNN_112 | Nhóm ngành | Chiều | PENDING |
+| K_NDTNN_113 | Tỷ trọng theo ngành | Phái sinh | PENDING |
+| K_NDTNN_114 | Tỷ lệ sở hữu (theo mã CK) | Cơ sở | PENDING |
+| K_NDTNN_115 | Room còn lại (theo mã CK) | Phái sinh | PENDING |
+| K_NDTNN_116 | Room tối đa | Cơ sở | PENDING |
+| K_NDTNN_117 | Danh sách cạn kiệt room | Phái sinh | PENDING |
+| K_NDTNN_118 | Room theo ngành (%) | Phái sinh | PENDING |
+| K_NDTNN_119 | Room còn lại (cổ phiếu) | Phái sinh | PENDING |
+
+#### Tab: DATA EXPLORER — Nhóm — Dòng vốn ròng của NĐTNN
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_149 – K_NDTNN_153
+
+**Lý do pending:** Chưa thiết kế từng chỉ tiêu chi tiết cho Data Explorer
+
+**Atomic cần bổ sung:** Atomic `Member Report Value` (FIMS) + `Foreign Investor Capital Flow` (FIMS)
+
+**Mart dự kiến:**
+- `NDTNN Regulatory Report Store` + `Fact Foreign Investor Capital Flow`
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_149 | Tháng | Chiều | PENDING |
+| K_NDTNN_150 | Quốc gia | Phái sinh | PENDING |
+| K_NDTNN_151 | Nhà đầu tư | Phái sinh | PENDING |
+| K_NDTNN_152 | Vốn đầu tư vào ròng | Phái sinh | PENDING |
+| K_NDTNN_153 | Vốn đầu tư rút ròng | Phái sinh | PENDING |
+
+#### Tab: DATA EXPLORER — Nhóm — Tổng giá trị danh mục của NĐTNN
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_154 – K_NDTNN_157
+
+**Lý do pending:** Chưa thiết kế từng chỉ tiêu chi tiết cho Data Explorer
+
+**Atomic cần bổ sung:** Atomic `Member Report Value` (FIMS) + `Foreign Investor Capital Flow` (FIMS)
+
+**Mart dự kiến:**
+- `NDTNN Regulatory Report Store` + `Fact Foreign Investor Capital Flow`
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_154 | Tháng | Chiều | PENDING |
+| K_NDTNN_155 | Quốc gia | Phái sinh | PENDING |
+| K_NDTNN_156 | Tên NĐT | Phái sinh | PENDING |
+| K_NDTNN_157 | Tổng giá trị danh mục | Phái sinh | PENDING |
+
+#### Tab: GIAO DỊCH — Nhóm — Giao dịch
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_59 – K_NDTNN_81
+
+**Lý do pending:** Chưa thiết kế Atomic source chi tiết cho giao dịch NĐTNN (SGDCK)
+
+**Atomic cần bổ sung:** Atomic `Securities Foreign Trading Record` (SGDCK)
+
+**Mart dự kiến:**
+- `Fact Securities Foreign Trading Snapshot` — grain: 1 mã CK × 1 ngày GD
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_59 | Tỷ lệ tham gia | Phái sinh | PENDING |
+| K_NDTNN_60 | Tổng giá trị mua của NĐTNN | Phái sinh | PENDING |
+| K_NDTNN_61 | Tổng giá trị bán của NĐTNN | Phái sinh | PENDING |
+| K_NDTNN_62 | Tổng giá trị giao dịch toàn thị trường | Phái sinh | PENDING |
+| K_NDTNN_63 | Tăng trưởng NĐT mới | Phái sinh | PENDING |
+| K_NDTNN_64 | Tăng trưởng NĐT mới là cá nhân | Phái sinh | PENDING |
+| K_NDTNN_65 | Tăng trưởng NĐT mới là tổ chức | Phái sinh | PENDING |
+| K_NDTNN_66 | Giá trị mua/bán ròng | Phái sinh | PENDING |
+| K_NDTNN_67 | Ngành | Chiều | PENDING |
+| K_NDTNN_68 | Mã CK | Chiều | PENDING |
+| K_NDTNN_69 | Lũy kế mua/bán ròng | Phái sinh | PENDING |
+| K_NDTNN_70 | Top ngành bán ròng | Phái sinh | PENDING |
+| K_NDTNN_71 | Top ngành mua ròng | Phái sinh | PENDING |
+| K_NDTNN_72 | Top mã bán ròng | Phái sinh | PENDING |
+| K_NDTNN_73 | Top mã mua ròng | Phái sinh | PENDING |
+| K_NDTNN_74 | Tỷ trọng giao dịch theo ngày | Phái sinh | PENDING |
+| K_NDTNN_75 | Tổng giá trị giao dịch NĐTNN | Phái sinh | PENDING |
+| K_NDTNN_76 | Tổng giá trị mua của NĐTNN | Phái sinh | PENDING |
+| K_NDTNN_77 | Tổng giá trị bán của NĐTNN | Phái sinh | PENDING |
+| K_NDTNN_78 | Tổng giá trị giao dịch toàn thị trường | Phái sinh | PENDING |
+| K_NDTNN_79 | Tỷ trọng TB phiên | Phái sinh | PENDING |
+| K_NDTNN_80 | Tỷ trọng theo ngành | Phái sinh | PENDING |
+| K_NDTNN_81 | Top mã tỷ trọng cao | Phái sinh | PENDING |
+
+#### Tab: GIÁM SÁT DÒNG VỐN — Nhóm — Giám sát dòng vốn
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_82 – K_NDTNN_97
+
+**Lý do pending:** Chưa thiết kế đầy đủ cho tab Giám sát dòng vốn
+
+**Atomic cần bổ sung:** Atomic `Foreign Investor Capital Flow` (FIMS) + `Securities Foreign Trading Record` (SGDCK)
+
+**Mart dự kiến:**
+- `Fact Foreign Investor Capital Flow` + `Fact Securities Foreign Trading Snapshot`
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_82 | Dòng tiền ròng | Phái sinh | PENDING |
+| K_NDTNN_83 | Dòng tiền vào | Phái sinh | PENDING |
+| K_NDTNN_84 | Dòng tiền ra | Phái sinh | PENDING |
+| K_NDTNN_85 | Dòng vốn ròng | Phái sinh | PENDING |
+| K_NDTNN_86 | Loại hình NĐTNN | Chiều | PENDING |
+| K_NDTNN_87 | Quốc gia | Chiều | PENDING |
+| K_NDTNN_88 | Quỹ | Phái sinh | PENDING |
+| K_NDTNN_89 | Cá nhân | Phái sinh | PENDING |
+| K_NDTNN_90 | Tổ chức khác quỹ | Phái sinh | PENDING |
+| K_NDTNN_91 | Top 5 quốc gia vào ròng | Phái sinh | PENDING |
+| K_NDTNN_92 | Top 5 quốc gia rút ròng | Phái sinh | PENDING |
+| K_NDTNN_93 | Top 5 NĐT vào ròng | Phái sinh | PENDING |
+| K_NDTNN_94 | Top 5 NĐT  rút ròng | Phái sinh | PENDING |
+| K_NDTNN_95 | Dòng tiền ròng | Phái sinh | PENDING |
+| K_NDTNN_96 | Giá trị mua/bán ròng | Phái sinh | PENDING |
+| K_NDTNN_97 | Điểm đóng cửa chỉ số | Cơ sở | PENDING |
+
+#### Tab: NĐTNN 360 — Nhóm — NĐT 360
+
+##### PENDING
+
+**KPI liên quan:** K_NDTNN_120 – K_NDTNN_130
+
+**Lý do pending:** Chưa thiết kế đầy đủ cho tab NĐTNN 360
+
+**Atomic cần bổ sung:** Atomic `Foreign Investor` (FIMS) + `Member Regulatory Report` (FIMS)
+
+**Mart dự kiến:**
+- `Foreign Investor 360 Profile` (tác nghiệp)
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NDTNN_120 | Quốc tịch | Cơ sở | PENDING |
+| K_NDTNN_121 | Mã số giao dịch | Cơ sở | PENDING |
+| K_NDTNN_122 | Ngân hàng lưu ký | Cơ sở | PENDING |
+| K_NDTNN_123 | Loại hình nhà đầu tư | Cơ sở | PENDING |
+| K_NDTNN_124 | Đại diện giao dịch | Cơ sở | PENDING |
+| K_NDTNN_125 | Tổng giá trị danh mục | Cơ sở | PENDING |
+| K_NDTNN_126 | Ngày quyết định | Chiều | PENDING |
+| K_NDTNN_127 | Phân loại | Chiều | PENDING |
+| K_NDTNN_128 | Nội dung/ Trích yếu | Cơ sở | PENDING |
+| K_NDTNN_129 | Mức độ | Cơ sở | PENDING |
+| K_NDTNN_130 | Trạng thái | Cơ sở | PENDING |
+
 ## Section 3 — Mô hình tổng thể (READY only)
 
 ```mermaid
