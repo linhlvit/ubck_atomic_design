@@ -1,0 +1,90 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-FMS.BANKMONI
+  logical_name: Mapping Staging – source FMS.BANKMONI
+  physical_name: stg_fms_bankmoni
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-BANKMONI
+target:
+  namespace: stg
+  physical_name: stg_fms_bankmoni
+  etl_handle: Fact Snapshot
+  description: Danh sách ngân hàng lưu ký giám sát (LKGS)
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: BANKMONI
+  alias: ba_mo
+  select_fields: Id, Name, ShortName, Address, Telephone, Email, Status, Deleted,
+    IsDataMigration, CreatedBy, DateCreated, DateModified, ModifyBy
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: HEX(ba_mo.Id)
+  data_type: string
+  description: Mã ID ngân hàng LKGS. Mã hệ thống tự sinh (PK)
+  target_attr_name: null
+- target_column: name
+  transformation: ba_mo.Name
+  data_type: string
+  description: Tên ngân hàng LKGS
+  target_attr_name: null
+- target_column: shortname
+  transformation: ba_mo.ShortName
+  data_type: string
+  description: Tên viết tắt
+  target_attr_name: null
+- target_column: address
+  transformation: ba_mo.Address
+  data_type: string
+  description: Địa chỉ
+  target_attr_name: null
+- target_column: telephone
+  transformation: ba_mo.Telephone
+  data_type: string
+  description: Điện thoại
+  target_attr_name: null
+- target_column: email
+  transformation: ba_mo.Email
+  data_type: string
+  description: Email
+  target_attr_name: null
+- target_column: status
+  transformation: ba_mo.Status
+  data_type: string
+  description: Mã ID trạng thái. FK → STATUS.Id
+  target_attr_name: null
+- target_column: deleted
+  transformation: ba_mo.Deleted
+  data_type: integer
+  description: Trạng thái bản ghi
+  target_attr_name: null
+- target_column: isdatamigration
+  transformation: ba_mo.IsDataMigration
+  data_type: integer
+  description: 1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới
+  target_attr_name: null
+- target_column: createdby
+  transformation: ba_mo.CreatedBy
+  data_type: string
+  description: Người tạo
+  target_attr_name: null
+- target_column: datecreated
+  transformation: ba_mo.DateCreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: ba_mo.DateModified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+- target_column: modifyby
+  transformation: ba_mo.ModifyBy
+  data_type: string
+  description: Người sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
