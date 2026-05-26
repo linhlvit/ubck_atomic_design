@@ -1,0 +1,80 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-FMS.AGENCIES
+  logical_name: Mapping ODS – source FMS.AGENCIES
+  physical_name: ods_fms_agencies
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-AGENCIES
+target:
+  namespace: ods
+  physical_name: ods_fms_agencies
+  etl_handle: Fact Snapshot
+  description: Danh sách đại lý Quỹ đầu tư
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: stg_fms_agencies
+  alias: agen
+  select_fields: id, name, shortname, agencytypeid, address, status, deleted, createdby,
+    datecreated, datemodified, modifyby
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: agen.id
+  data_type: string
+  description: Mã ID đại lý quỹ đầu tư (PK)
+  target_attr_name: null
+- target_column: name
+  transformation: agen.name
+  data_type: string
+  description: Tên đại lý
+  target_attr_name: null
+- target_column: shortname
+  transformation: agen.shortname
+  data_type: string
+  description: Tên viết tắt
+  target_attr_name: null
+- target_column: agencytypeid
+  transformation: agen.agencytypeid
+  data_type: string
+  description: Mã ID loại đại lý. FK → AGENCYTYPE.Id
+  target_attr_name: null
+- target_column: address
+  transformation: agen.address
+  data_type: string
+  description: Địa chỉ
+  target_attr_name: null
+- target_column: status
+  transformation: agen.status
+  data_type: string
+  description: Mã ID trạng thái. FK → STATUS.Id
+  target_attr_name: null
+- target_column: deleted
+  transformation: agen.deleted
+  data_type: boolean
+  description: Trạng thái bản ghi
+  target_attr_name: null
+- target_column: createdby
+  transformation: agen.createdby
+  data_type: string
+  description: Người tạo
+  target_attr_name: null
+- target_column: datecreated
+  transformation: agen.datecreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: agen.datemodified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+- target_column: modifyby
+  transformation: agen.modifyby
+  data_type: string
+  description: Người sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
