@@ -1,0 +1,64 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-FMS.AGENCIESBRA
+  logical_name: Mapping ODS – source FMS.AGENCIESBRA
+  physical_name: ods_fms_agenciesbra
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-AGENCIESBRA
+target:
+  namespace: ods
+  physical_name: ods_fms_agenciesbra
+  etl_handle: Fact Snapshot
+  description: Danh sách CN/PGD của đại lý Quỹ đầu tư
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: AGENCIESBRA
+  alias: ag
+  select_fields: id, agnid, name, address, status, deleted, datecreated, datemodified
+  filter: ds_snpst_dt = to_date("etl_date", 'yyyy-MM-dd')
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ag.id
+  data_type: string
+  description: Mã ID CN/PGD đại lý quỹ đầu tư (PK)
+  target_attr_name: null
+- target_column: agnid
+  transformation: ag.agnid
+  data_type: string
+  description: Mã ID đại lý. FK → AGENCIES.Id
+  target_attr_name: null
+- target_column: name
+  transformation: ag.name
+  data_type: string
+  description: Tên CN/PGD đại lý
+  target_attr_name: null
+- target_column: address
+  transformation: ag.address
+  data_type: string
+  description: Địa chỉ CN/PGD
+  target_attr_name: null
+- target_column: status
+  transformation: ag.status
+  data_type: decimal(23,2)
+  description: Trạng thái
+  target_attr_name: null
+- target_column: deleted
+  transformation: ag.deleted
+  data_type: boolean
+  description: Trạng thái bản ghi
+  target_attr_name: null
+- target_column: datecreated
+  transformation: ag.datecreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: ag.datemodified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

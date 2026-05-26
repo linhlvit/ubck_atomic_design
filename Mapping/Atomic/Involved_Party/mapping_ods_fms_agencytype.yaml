@@ -1,0 +1,54 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-FMS.AGENCYTYPE
+  logical_name: Mapping ODS – source FMS.AGENCYTYPE
+  physical_name: ods_fms_agencytype
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-AGENCYTYPE
+target:
+  namespace: ods
+  physical_name: ods_fms_agencytype
+  etl_handle: Fact Snapshot
+  description: Danh sách loại đại lý
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: AGENCYTYPE
+  alias: ag_ty
+  select_fields: id, name, isactive, isdeleted, datecreated, datemodified
+  filter: ds_snpst_dt = to_date("etl_date", 'yyyy-MM-dd')
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ag_ty.id
+  data_type: string
+  description: Mã ID loại đại lý (PK)
+  target_attr_name: null
+- target_column: name
+  transformation: ag_ty.name
+  data_type: string
+  description: Tên loại đại lý
+  target_attr_name: null
+- target_column: isactive
+  transformation: ag_ty.isactive
+  data_type: boolean
+  description: 'Trạng thái: 1 = Sử dụng; 0 = Không sử dụng'
+  target_attr_name: null
+- target_column: isdeleted
+  transformation: ag_ty.isdeleted
+  data_type: boolean
+  description: Trạng thái bản ghi
+  target_attr_name: null
+- target_column: datecreated
+  transformation: ag_ty.datecreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: ag_ty.datemodified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

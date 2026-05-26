@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-FMS.BUSINESS
+  logical_name: Mapping ODS – source FMS.BUSINESS
+  physical_name: ods_fms_business
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-BUSINESS
+target:
+  namespace: ods
+  physical_name: ods_fms_business
+  etl_handle: Fact Snapshot
+  description: Danh mục ngành nghề kinh doanh
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: BUSINESS
+  alias: busi
+  select_fields: id, name, description, isactive, isdeleted, createdby, datecreated,
+    datemodified, modifyby
+  filter: ds_snpst_dt = to_date("etl_date", 'yyyy-MM-dd')
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: busi.id
+  data_type: string
+  description: Mã ID ngành nghề kinh doanh (PK)
+  target_attr_name: null
+- target_column: name
+  transformation: busi.name
+  data_type: string
+  description: Tên ngành nghề kinh doanh
+  target_attr_name: null
+- target_column: description
+  transformation: busi.description
+  data_type: string
+  description: Mô tả
+  target_attr_name: null
+- target_column: isactive
+  transformation: busi.isactive
+  data_type: boolean
+  description: 'Trạng thái: 1 = Sử dụng; 0 = Không sử dụng'
+  target_attr_name: null
+- target_column: isdeleted
+  transformation: busi.isdeleted
+  data_type: boolean
+  description: 'Trạng thái bản ghi: 0 = Không bị xóa; 1 = Bị xóa'
+  target_attr_name: null
+- target_column: createdby
+  transformation: busi.createdby
+  data_type: string
+  description: Người tạo
+  target_attr_name: null
+- target_column: datecreated
+  transformation: busi.datecreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: busi.datemodified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+- target_column: modifyby
+  transformation: busi.modifyby
+  data_type: string
+  description: Người sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
