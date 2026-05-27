@@ -13,7 +13,7 @@ etl_pattern mapping from system/rules/rule_map_technical_table_type.csv:
   Fundamental  -> SCD4A
   Relative     -> SCD2       (rule file key: "Relation")
   Fact Append  -> Fact Append
-  Fact Snapshot-> Fact Append
+  Fact Snapshot-> Fact Snapshot
   Classification -> Upsert
 
 Usage:
@@ -51,7 +51,7 @@ def load_etl_map(path):
         "fundamental":   "SCD4A",
         "relative":      "SCD2",
         "fact append":   "Fact Append",
-        "fact snapshot": "Fact Append",
+        "fact snapshot": "Fact Snapshot",
         "classification":"Upsert",
     }
     for k, v in defaults.items():
