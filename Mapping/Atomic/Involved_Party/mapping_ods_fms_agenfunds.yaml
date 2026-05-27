@@ -1,0 +1,34 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-FMS.AGENFUNDS
+  logical_name: Mapping ODS – source FMS.AGENFUNDS
+  physical_name: ods_fms_agenfunds
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-AGENFUNDS
+target:
+  namespace: ods
+  physical_name: ods_fms_agenfunds
+  etl_handle: Fact Snapshot
+  description: Bảng trung gian Map đại lý và quỹ đầu tư
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: AGENFUNDS
+  alias: ag_fu
+  select_fields: agnid, fndid
+  filter: ds_snpst_dt = to_date("etl_date", 'yyyy-MM-dd')
+relationship: []
+mapping_columns:
+- target_column: agnid
+  transformation: ag_fu.agnid
+  data_type: string
+  description: Mã ID đại lý. FK → AGENCIES.Id
+  target_attr_name: null
+- target_column: fndid
+  transformation: ag_fu.fndid
+  data_type: string
+  description: Mã ID quỹ đầu tư. FK → FUNDS.Id
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

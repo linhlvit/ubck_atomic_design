@@ -1,160 +1,160 @@
 schema_type: mapping
 schema_version: '1.0'
 mapping:
-  id: MAP-STG-FMS.BRANCHES
-  logical_name: Mapping Staging – source FMS.BRANCHES
-  physical_name: stg_fms_branches
+  id: MAP-ODS-FMS.BRANCHES
+  logical_name: Mapping ODS – source FMS.BRANCHES
+  physical_name: ods_fms_branches
   dm_ref: null
   brd_ref: BRD-SRC-FMS-BRANCHES
 target:
-  namespace: stg
-  physical_name: stg_fms_branches
+  namespace: ods
+  physical_name: ods_fms_branches
   etl_handle: Fact Snapshot
   description: Danh sách CN/VPĐD công ty QLQ trong nước
 input:
 - source_type: physical_table
-  namespace: src
+  namespace: stg
   table_name: BRANCHES
   alias: bran
-  select_fields: Id, SecId, Name, Address, Telephone, Fax, BrType, BrIdowner, Decision,
-    DecisionDate, Status, StopDate, TLId, TLName, VoucherNo, VoucherDate, Deleted,
-    IsDataMigration, FileData, FileName, Content, DesChange, Description, CreatedBy,
-    DateCreated, DateModified, ModifyBy
-  filter: null
+  select_fields: id, secid, name, address, telephone, fax, brtype, bridowner, decision,
+    decisiondate, status, stopdate, tlid, tlname, voucherno, voucherdate, deleted,
+    isdatamigration, filedata, filename, content, deschange, description, createdby,
+    datecreated, datemodified, modifyby
+  filter: ds_snpst_dt = to_date("etl_date", 'yyyy-MM-dd')
 relationship: []
 mapping_columns:
 - target_column: id
-  transformation: HEX(bran.Id)
+  transformation: bran.id
   data_type: string
   description: Mã ID CN/VPĐD công ty QLQ trong nước (PK)
   target_attr_name: null
 - target_column: secid
-  transformation: HEX(bran.SecId)
+  transformation: bran.secid
   data_type: string
   description: Mã ID công ty QLQ. FK → SECURITIES.Id
   target_attr_name: null
 - target_column: name
-  transformation: bran.Name
+  transformation: bran.name
   data_type: string
   description: Tên chi nhánh/VPĐD
   target_attr_name: null
 - target_column: address
-  transformation: bran.Address
+  transformation: bran.address
   data_type: string
   description: Địa chỉ
   target_attr_name: null
 - target_column: telephone
-  transformation: bran.Telephone
+  transformation: bran.telephone
   data_type: string
   description: Điện thoại
   target_attr_name: null
 - target_column: fax
-  transformation: bran.Fax
+  transformation: bran.fax
   data_type: string
   description: Số Fax
   target_attr_name: null
 - target_column: brtype
-  transformation: bran.BrType
-  data_type: decimal(22,0)
+  transformation: bran.brtype
+  data_type: decimal(23,2)
   description: 1 = CN công ty QLQ trong nước; 4 = VPĐD QLQ trong nước
   target_attr_name: null
 - target_column: bridowner
-  transformation: bran.BrIdowner
+  transformation: bran.bridowner
   data_type: string
   description: Chi nhánh/VPĐD cha/con
   target_attr_name: null
 - target_column: decision
-  transformation: bran.Decision
+  transformation: bran.decision
   data_type: string
   description: Giấy phép thành lập
   target_attr_name: null
 - target_column: decisiondate
-  transformation: bran.DecisionDate
+  transformation: bran.decisiondate
   data_type: date
   description: Ngày cấp giấy phép
   target_attr_name: null
 - target_column: status
-  transformation: bran.Status
-  data_type: decimal(22,0)
+  transformation: bran.status
+  data_type: decimal(23,2)
   description: Mã ID trạng thái. FK → STATUS.Id
   target_attr_name: null
 - target_column: stopdate
-  transformation: bran.StopDate
+  transformation: bran.stopdate
   data_type: date
   description: Ngày đóng cửa
   target_attr_name: null
 - target_column: tlid
-  transformation: HEX(bran.TLId)
+  transformation: bran.tlid
   data_type: string
   description: Mã ID người đại diện. FK → TLProfiles.Id
   target_attr_name: null
 - target_column: tlname
-  transformation: bran.TLName
+  transformation: bran.tlname
   data_type: string
   description: Tên người đại diện
   target_attr_name: null
 - target_column: voucherno
-  transformation: bran.VoucherNo
+  transformation: bran.voucherno
   data_type: string
   description: Số GP/QĐ/CV sửa đổi
   target_attr_name: null
 - target_column: voucherdate
-  transformation: bran.VoucherDate
+  transformation: bran.voucherdate
   data_type: date
   description: Ngày chấp thuận
   target_attr_name: null
 - target_column: deleted
-  transformation: bran.Deleted
+  transformation: bran.deleted
   data_type: boolean
   description: Trạng thái bản ghi
   target_attr_name: null
 - target_column: isdatamigration
-  transformation: bran.IsDataMigration
+  transformation: bran.isdatamigration
   data_type: boolean
   description: 1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới
   target_attr_name: null
 - target_column: filedata
-  transformation: bran.FileData
+  transformation: bran.filedata
   data_type: string
   description: File đính kèm
   target_attr_name: null
 - target_column: filename
-  transformation: bran.FileName
+  transformation: bran.filename
   data_type: string
   description: Tên file đính kèm
   target_attr_name: null
 - target_column: content
-  transformation: bran.Content
+  transformation: bran.content
   data_type: string
   description: Nghiệp vụ kinh doanh
   target_attr_name: null
 - target_column: deschange
-  transformation: bran.DesChange
+  transformation: bran.deschange
   data_type: string
   description: Lý do sửa đổi
   target_attr_name: null
 - target_column: description
-  transformation: bran.Description
+  transformation: bran.description
   data_type: string
   description: Ghi chú
   target_attr_name: null
 - target_column: createdby
-  transformation: bran.CreatedBy
+  transformation: bran.createdby
   data_type: string
   description: Người tạo
   target_attr_name: null
 - target_column: datecreated
-  transformation: bran.DateCreated
+  transformation: bran.datecreated
   data_type: date
   description: Ngày tạo
   target_attr_name: null
 - target_column: datemodified
-  transformation: bran.DateModified
+  transformation: bran.datemodified
   data_type: date
   description: Ngày sửa
   target_attr_name: null
 - target_column: modifyby
-  transformation: bran.ModifyBy
+  transformation: bran.modifyby
   data_type: string
   description: Người sửa
   target_attr_name: null

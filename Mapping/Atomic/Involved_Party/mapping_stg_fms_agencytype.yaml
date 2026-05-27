@@ -1,0 +1,54 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-FMS.AGENCYTYPE
+  logical_name: Mapping Staging – source FMS.AGENCYTYPE
+  physical_name: stg_fms_agencytype
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-AGENCYTYPE
+target:
+  namespace: stg
+  physical_name: stg_fms_agencytype
+  etl_handle: Fact Snapshot
+  description: Danh sách loại đại lý
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: AGENCYTYPE
+  alias: ag_ty
+  select_fields: Id, Name, IsActive, IsDeleted, DateCreated, DateModified
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: HEX(ag_ty.Id)
+  data_type: string
+  description: Mã ID loại đại lý (PK)
+  target_attr_name: null
+- target_column: name
+  transformation: ag_ty.Name
+  data_type: string
+  description: Tên loại đại lý
+  target_attr_name: null
+- target_column: isactive
+  transformation: ag_ty.IsActive
+  data_type: boolean
+  description: 'Trạng thái: 1 = Sử dụng; 0 = Không sử dụng'
+  target_attr_name: null
+- target_column: isdeleted
+  transformation: ag_ty.IsDeleted
+  data_type: boolean
+  description: Trạng thái bản ghi
+  target_attr_name: null
+- target_column: datecreated
+  transformation: ag_ty.DateCreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: ag_ty.DateModified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
