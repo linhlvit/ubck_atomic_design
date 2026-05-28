@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Starter Pack — Tín Dụng (Loan)</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222538;
+    --border: #2e3250;
+    --accent: #6c63ff;
+    --accent2: #00d4ff;
+    --text: #e2e8f0;
+    --text-muted: #8892b0;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --teal: #14b8a6;
+    --orange: #f97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+
+  /* Layout */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 240px; min-width: 240px; background: var(--surface);
+    border-right: 1px solid var(--border); padding: 24px 0;
+    position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
+  }
+  .main { margin-left: 240px; padding: 40px 48px; max-width: 1100px; }
+
+  /* Sidebar */
+  .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .sidebar-logo .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-logo h2 { font-size: 15px; color: var(--text); margin-top: 4px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; cursor: pointer; font-size: 13px; color: var(--text-muted);
+    border-left: 3px solid transparent; transition: all 0.15s;
+    text-decoration: none;
+  }
+  .nav-item:hover, .nav-item.active { color: var(--text); background: var(--surface2); border-left-color: var(--accent); }
+  .nav-item .num { font-size: 11px; background: var(--surface2); color: var(--accent); border-radius: 4px; padding: 1px 6px; }
+
+  /* Section */
+  .section { margin-bottom: 64px; scroll-margin-top: 32px; }
+  .section-header { margin-bottom: 28px; }
+  .section-header .step { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .section-header h1 { font-size: 26px; font-weight: 700; color: var(--text); }
+  .section-header p { font-size: 14px; color: var(--text-muted); margin-top: 8px; max-width: 600px; }
+
+  /* Scoping questions */
+  .question-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .q-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px;
+    cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .q-card:hover { border-color: var(--accent); }
+  .q-card.checked { border-color: var(--green); background: rgba(16,185,129,0.05); }
+  .q-card.unchecked { border-color: var(--border); opacity: 0.6; }
+  .q-card label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+  .q-card input[type=checkbox] { display: none; }
+  .check-icon {
+    width: 20px; height: 20px; min-width: 20px; border-radius: 5px; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; margin-top: 2px; transition: all 0.15s;
+  }
+  .q-card.checked .check-icon { background: var(--green); border-color: var(--green); }
+  .q-text { font-size: 13px; }
+  .q-text strong { display: block; color: var(--text); margin-bottom: 3px; }
+  .q-text span { color: var(--text-muted); font-size: 12px; }
+  .scope-summary {
+    margin-top: 16px; padding: 12px 16px; background: var(--surface);
+    border-radius: 8px; border: 1px solid var(--border); font-size: 13px; color: var(--text-muted);
+  }
+  .scope-summary span { color: var(--accent); font-weight: 600; }
+
+  /* Entity cards */
+  .entity-section-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);
+    margin: 28px 0 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .entity-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .entity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .entity-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; transition: border-color 0.15s, box-shadow 0.15s; cursor: pointer;
+  }
+  .entity-card:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .entity-card.open { border-color: var(--accent); grid-column: 1 / -1; }
+  .entity-card-header { padding: 16px; display: flex; align-items: flex-start; justify-content: space-between; }
+  .entity-card-meta { flex: 1; }
+  .entity-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .entity-grain { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .entity-grain span { color: var(--accent2); font-weight: 500; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .badge-arrangement { background: rgba(108,99,255,0.15); color: #9d97ff; border: 1px solid rgba(108,99,255,0.3); }
+  .badge-condition { background: rgba(20,184,166,0.15); color: #5eead4; border: 1px solid rgba(20,184,166,0.3); }
+  .badge-transaction { background: rgba(59,130,246,0.15); color: #7dd3fc; border: 1px solid rgba(59,130,246,0.3); }
+  .badge-property { background: rgba(249,115,22,0.15); color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+  .badge-party { background: rgba(168,85,247,0.15); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3); }
+  .badge-extended { background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-ibm { background: rgba(0,212,255,0.08); color: var(--accent2); border: 1px solid rgba(0,212,255,0.2); font-style: italic; text-transform: none; letter-spacing: 0; }
+  .toggle-icon { font-size: 18px; color: var(--text-muted); margin-left: 12px; transition: transform 0.2s; }
+  .entity-card.open .toggle-icon { transform: rotate(180deg); }
+
+  .extended-note {
+    margin: 0 16px 14px; padding: 10px 14px; background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25); border-radius: 8px; font-size: 12px; color: #fcd34d;
+  }
+  .extended-note strong { display: block; margin-bottom: 3px; }
+
+  /* Attribute table */
+  .attr-body { border-top: 1px solid var(--border); }
+  .attr-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .attr-table th {
+    background: var(--surface2); color: var(--text-muted); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px;
+    padding: 8px 14px; text-align: left;
+  }
+  .attr-table td { padding: 8px 14px; border-top: 1px solid var(--border); vertical-align: top; }
+  .attr-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .dt { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+  .dt-monetary { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+  .dt-date { background: rgba(59,130,246,0.15); color: #93c5fd; }
+  .dt-text { background: rgba(148,163,184,0.15); color: #cbd5e1; }
+  .dt-cv { background: rgba(168,85,247,0.15); color: #d8b4fe; }
+  .dt-rate { background: rgba(245,158,11,0.15); color: #fde68a; }
+  .dt-bool { background: rgba(239,68,68,0.15); color: #fca5a5; }
+  .dt-number { background: rgba(0,212,255,0.15); color: #67e8f9; }
+  .dt-sk { background: rgba(108,99,255,0.15); color: #a5b4fc; }
+  .dt-pct { background: rgba(251,191,36,0.15); color: #fde68a; }
+  .mandatory { font-weight: 700; color: var(--green); }
+  .optional-attr { color: var(--text-muted); }
+  .ibm-ref { font-size: 10px; color: var(--text-muted); font-style: italic; }
+
+  /* Classification value section */
+  .cv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .cv-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px;
+  }
+  .cv-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .cv-scheme { font-size: 11px; background: var(--surface2); color: var(--accent2); font-family: monospace; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(0,212,255,0.2); }
+  .cv-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .cv-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .cv-examples { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cv-tag { font-size: 11px; background: var(--surface2); color: var(--text-muted); padding: 3px 8px; border-radius: 4px; }
+
+  /* ERD section */
+  .erd-container {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* Info box */
+  .info-box {
+    background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.25);
+    border-radius: 10px; padding: 14px 18px; font-size: 13px; color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .info-box strong { color: var(--accent); }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  /* Scroll indicator */
+  .progress-bar { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); z-index: 999; transition: width 0.1s; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px 20px; }
+    .question-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="label">Design Starter Pack</div>
+      <h2>Tín Dụng (Loan)</h2>
+    </div>
+    <a class="nav-item active" href="#scoping" onclick="setActive(this)">
+      <span class="num">1</span> Khám phá nghiệp vụ
+    </a>
+    <a class="nav-item" href="#entities" onclick="setActive(this)">
+      <span class="num">2</span> Entity gợi ý
+    </a>
+    <a class="nav-item" href="#classvalue" onclick="setActive(this)">
+      <span class="num">3</span> Classification Value
+    </a>
+    <a class="nav-item" href="#erd" onclick="setActive(this)">
+      <span class="num">4</span> Sơ đồ quan hệ (ERD)
+    </a>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ==================== SECTION 1: SCOPING ==================== -->
+    <section class="section" id="scoping">
+      <div class="section-header">
+        <div class="step">Bước 1</div>
+        <h1>Khám phá phạm vi nghiệp vụ</h1>
+        <p>Trả lời các câu hỏi dưới đây để xác định scope trước khi xem gợi ý thiết kế. Tick vào những gì hệ thống của bạn có hoặc cần quản lý.</p>
+      </div>
+
+      <div class="question-grid">
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Hợp đồng vay vốn</strong><span>Hệ thống lưu thông tin chi tiết từng hợp đồng cho vay (số tiền, kỳ hạn, lãi suất)?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Hạn mức tín dụng</strong><span>Có quản lý hạn mức tín dụng (credit limit) riêng với từng khách hàng hoặc từng hợp đồng?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Lịch trả nợ</strong><span>Có lưu lịch trả nợ (repayment schedule) từng kỳ, bao gồm gốc và lãi theo kế hoạch?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Giải ngân / Thu nợ</strong><span>Có theo dõi từng giao dịch giải ngân, thu nợ gốc, thu lãi theo thực tế phát sinh?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Tài sản đảm bảo</strong><span>Có quản lý tài sản đảm bảo (collateral) gắn với hợp đồng vay?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Vai trò các bên</strong><span>Cần phân biệt vai trò: người vay chính, người bảo lãnh, đồng vay?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Phân loại nhóm nợ</strong><span>Có theo dõi phân loại nhóm nợ (CIC/NHNN: Nhóm 1–5) theo thời gian?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Định giá tài sản đảm bảo</strong><span>Có lưu lịch sử định giá TSĐB (valuation) theo từng thời điểm?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Cơ cấu lại nợ</strong><span>Có quản lý thông tin cơ cấu lại nợ (restructuring) hoặc gia hạn hợp đồng?</span></div></label>
+        </div>
+        <div class="q-card" onclick="toggleCheck(this)">
+          <label><input type="checkbox"><div class="check-icon">✓</div>
+          <div class="q-text"><strong>Lãi suất thay đổi</strong><span>Lãi suất có thể điều chỉnh theo kỳ (adjustable rate) hay chỉ cố định suốt hợp đồng?</span></div></label>
+        </div>
+      </div>
+
+      <div class="scope-summary" id="scopeSummary">
+        Đã tick <span id="checkCount">0</span> / 10 mục. Tick xong rồi kéo xuống xem entity gợi ý phù hợp.
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ==================== SECTION 2: ENTITIES ==================== -->
+    <section class="section" id="entities">
+      <div class="section-header">
+        <div class="step">Bước 2</div>
+        <h1>Entity gợi ý</h1>
+        <p>Danh sách entity chuẩn cho nghiệp vụ Tín dụng, dựa trên IBM Financial Services Vocabulary. Click vào entity để xem danh sách attribute gợi ý.</p>
+      </div>
+
+      <div class="info-box">
+        <strong>Cách đọc:</strong> Mỗi entity là 1 bảng dữ liệu. <strong>Grain</strong> = "1 dòng trong bảng đại diện cho 1 ___". Badge màu = BCV Category. Badge <em>IBM</em> = tên term chuẩn trong IBM KAFS vocabulary.
+      </div>
+
+      <div class="entity-section-label">Core Entities — thường có ở mọi hệ thống</div>
+      <div class="entity-grid">
+
+        <!-- Loan Arrangement -->
+        <div class="entity-card" id="card-loan">
+          <div class="entity-card-header" onclick="toggleCard('card-loan')">
+            <div class="entity-card-meta">
+              <div class="entity-name">Loan Arrangement</div>
+              <div class="entity-grain">1 dòng = <span>1 hợp đồng cho vay</span></div>
+              <div class="badges">
+                <span class="badge badge-arrangement">Arrangement</span>
+                <span class="badge badge-ibm">Lending Arrangement</span>
+              </div>
+            </div>
+            <div class="toggle-icon">▼</div>
+          </div>
+          <div class="attr-body" style="display:none">
+            <table class="attr-table">
+              <thead><tr><th>Attribute</th><th>Data Type</th><th>M</th><th>IBM Term / Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td class="mandatory">Loan Arrangement Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">Surrogate key — không dùng mã T24</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Code</td><td><span class="dt dt-text">Text</span></td><td class="mandatory">Y</td><td class="ibm-ref">Mã hợp đồng nghiệp vụ (T24 @ID)</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Name</td><td><span class="dt dt-text">Text</span></td><td class="optional-attr">N</td><td class="ibm-ref">Arrangement Name</td></tr>
+                <tr><td class="mandatory">Principal Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="mandatory">Y</td><td class="ibm-ref">Số tiền gốc ban đầu</td></tr>
+                <tr><td class="mandatory">Currency Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="mandatory">Y</td><td class="ibm-ref">Currency — không tạo cặp Id+Code</td></tr>
+                <tr><td class="mandatory">Effective Date</td><td><span class="dt dt-date">Date</span></td><td class="mandatory">Y</td><td class="ibm-ref">Ngày hiệu lực hợp đồng</td></tr>
+                <tr><td class="mandatory">Maturity Date</td><td><span class="dt dt-date">Date</span></td><td class="mandatory">Y</td><td class="ibm-ref">Ngày đáo hạn — Arrangement Residual Maturity</td></tr>
+                <tr><td>Fund Availability Date</td><td><span class="dt dt-date">Date</span></td><td class="optional-attr">N</td><td class="ibm-ref">Ngày có thể giải ngân — Fund Availability Date</td></tr>
+                <tr><td class="mandatory">Arrangement Purpose Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="optional-attr">N</td><td class="ibm-ref">Mục đích vay — Arrangement Purpose</td></tr>
+                <tr><td class="mandatory">Loan Status Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="mandatory">Y</td><td class="ibm-ref">Scheme: LOAN_STATUS</td></tr>
+                <tr><td>Repayment Total Count</td><td><span class="dt dt-number">Small Counter</span></td><td class="optional-attr">N</td><td class="ibm-ref">Repayment Total Number</td></tr>
+                <tr><td>Loan Repayment Frequency Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="optional-attr">N</td><td class="ibm-ref">Loan Repayment Frequency</td></tr>
+                <tr><td>Prepayment Penalty Indicator</td><td><span class="dt dt-bool">Boolean</span></td><td class="optional-attr">N</td><td class="ibm-ref">Prepayment Penalty Flag</td></tr>
+                <tr><td>Arrangement Balance Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Arrangement Balance Amount</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Credit Limit -->
+        <div class="entity-card" id="card-credit">
+          <div class="entity-card-header" onclick="toggleCard('card-credit')">
+            <div class="entity-card-meta">
+              <div class="entity-name">Credit Limit</div>
+              <div class="entity-grain">1 dòng = <span>1 hạn mức tín dụng được cấp</span></div>
+              <div class="badges">
+                <span class="badge badge-condition">Condition</span>
+                <span class="badge badge-ibm">Credit Limit</span>
+              </div>
+            </div>
+            <div class="toggle-icon">▼</div>
+          </div>
+          <div class="attr-body" style="display:none">
+            <table class="attr-table">
+              <thead><tr><th>Attribute</th><th>Data Type</th><th>M</th><th>IBM Term / Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td class="mandatory">Credit Limit Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">Surrogate key</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">FK → Loan Arrangement</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Code</td><td><span class="dt dt-text">Text</span></td><td class="mandatory">Y</td><td class="ibm-ref">Dư thừa để dễ tra cứu</td></tr>
+                <tr><td class="mandatory">Credit Limit Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="mandatory">Y</td><td class="ibm-ref">Credit Limit Amount</td></tr>
+                <tr><td>Current Utilization Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Current Utilization Amount</td></tr>
+                <tr><td>Undrawn Commitment Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Undrawn Commitment Amount</td></tr>
+                <tr><td class="mandatory">Effective Date</td><td><span class="dt dt-date">Date</span></td><td class="mandatory">Y</td><td class="ibm-ref">Ngày hiệu lực của hạn mức</td></tr>
+                <tr><td>Expiry Date</td><td><span class="dt dt-date">Date</span></td><td class="optional-attr">N</td><td class="ibm-ref">Ngày hết hạn hạn mức</td></tr>
+                <tr><td>Immediately Revocable Indicator</td><td><span class="dt dt-bool">Boolean</span></td><td class="optional-attr">N</td><td class="ibm-ref">Immediately Revocable Flag</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Repayment Schedule -->
+        <div class="entity-card" id="card-repay">
+          <div class="entity-card-header" onclick="toggleCard('card-repay')">
+            <div class="entity-card-meta">
+              <div class="entity-name">Repayment Schedule</div>
+              <div class="entity-grain">1 dòng = <span>1 kỳ trả nợ (gốc + lãi theo kế hoạch)</span></div>
+              <div class="badges">
+                <span class="badge badge-condition">Condition</span>
+                <span class="badge badge-ibm">Repayment Plan</span>
+              </div>
+            </div>
+            <div class="toggle-icon">▼</div>
+          </div>
+          <div class="attr-body" style="display:none">
+            <table class="attr-table">
+              <thead><tr><th>Attribute</th><th>Data Type</th><th>M</th><th>IBM Term / Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td class="mandatory">Repayment Schedule Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">Surrogate key</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">FK → Loan Arrangement</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Code</td><td><span class="dt dt-text">Text</span></td><td class="mandatory">Y</td><td class="ibm-ref">Dư thừa</td></tr>
+                <tr><td class="mandatory">Instalment Number</td><td><span class="dt dt-number">Small Counter</span></td><td class="mandatory">Y</td><td class="ibm-ref">Số thứ tự kỳ trả</td></tr>
+                <tr><td class="mandatory">Due Date</td><td><span class="dt dt-date">Date</span></td><td class="mandatory">Y</td><td class="ibm-ref">Ngày đến hạn kỳ này</td></tr>
+                <tr><td class="mandatory">Principal Due Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="mandatory">Y</td><td class="ibm-ref">Gốc phải trả kỳ này</td></tr>
+                <tr><td class="mandatory">Interest Due Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="mandatory">Y</td><td class="ibm-ref">Lãi phải trả kỳ này</td></tr>
+                <tr><td>Total Due Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Tổng phải trả = gốc + lãi</td></tr>
+                <tr><td class="mandatory">Repayment Plan Status Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="mandatory">Y</td><td class="ibm-ref">Repayment Plan Status — Paid/Pending/Overdue</td></tr>
+                <tr><td>Monthly Repayment Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Current Monthly Repayment Amount</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Loan Transaction -->
+        <div class="entity-card" id="card-txn">
+          <div class="entity-card-header" onclick="toggleCard('card-txn')">
+            <div class="entity-card-meta">
+              <div class="entity-name">Loan Transaction</div>
+              <div class="entity-grain">1 dòng = <span>1 phát sinh giải ngân / thu nợ / điều chỉnh</span></div>
+              <div class="badges">
+                <span class="badge badge-transaction">Transaction</span>
+                <span class="badge badge-ibm">Loan Disbursement / Loan Repayment</span>
+              </div>
+            </div>
+            <div class="toggle-icon">▼</div>
+          </div>
+          <div class="attr-body" style="display:none">
+            <table class="attr-table">
+              <thead><tr><th>Attribute</th><th>Data Type</th><th>M</th><th>IBM Term / Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td class="mandatory">Loan Transaction Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">Surrogate key</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">FK → Loan Arrangement</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Code</td><td><span class="dt dt-text">Text</span></td><td class="mandatory">Y</td><td class="ibm-ref">Dư thừa</td></tr>
+                <tr><td class="mandatory">Transaction Code</td><td><span class="dt dt-text">Text</span></td><td class="mandatory">Y</td><td class="ibm-ref">Mã giao dịch nghiệp vụ</td></tr>
+                <tr><td class="mandatory">Transaction Type Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="mandatory">Y</td><td class="ibm-ref">Scheme: LOAN_TXN_TYPE (Disbursement/Repayment/Adjustment)</td></tr>
+                <tr><td class="mandatory">Transaction Date</td><td><span class="dt dt-date">Date</span></td><td class="mandatory">Y</td><td class="ibm-ref">Ngày giao dịch thực tế</td></tr>
+                <tr><td class="mandatory">Transaction Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="mandatory">Y</td><td class="ibm-ref">Transaction Principal Amount</td></tr>
+                <tr><td>Principal Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Phần gốc trong giao dịch</td></tr>
+                <tr><td>Interest Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Phần lãi trong giao dịch</td></tr>
+                <tr><td>Value Date</td><td><span class="dt dt-date">Date</span></td><td class="optional-attr">N</td><td class="ibm-ref">Ngày hiệu lực (có thể khác ngày GD)</td></tr>
+                <tr><td>Recovery Of Principal Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="optional-attr">N</td><td class="ibm-ref">Recovery Of Principal Amount — thu hồi nợ xấu</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Collateral -->
+        <div class="entity-card" id="card-collateral">
+          <div class="entity-card-header" onclick="toggleCard('card-collateral')">
+            <div class="entity-card-meta">
+              <div class="entity-name">Collateral</div>
+              <div class="entity-grain">1 dòng = <span>1 tài sản đảm bảo</span></div>
+              <div class="badges">
+                <span class="badge badge-property">Property</span>
+                <span class="badge badge-ibm">Collateral Arrangement</span>
+              </div>
+            </div>
+            <div class="toggle-icon">▼</div>
+          </div>
+          <div class="attr-body" style="display:none">
+            <table class="attr-table">
+              <thead><tr><th>Attribute</th><th>Data Type</th><th>M</th><th>IBM Term / Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td class="mandatory">Collateral Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">Surrogate key</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">FK → Loan Arrangement</td></tr>
+                <tr><td class="mandatory">Collateral Code</td><td><span class="dt dt-text">Text</span></td><td class="mandatory">Y</td><td class="ibm-ref">Mã TSĐB nghiệp vụ</td></tr>
+                <tr><td class="mandatory">Collateral Type Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="mandatory">Y</td><td class="ibm-ref">Scheme: COLLATERAL_TYPE — Arrangement Collateral Type</td></tr>
+                <tr><td class="mandatory">Pledged Collateral Value</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="mandatory">Y</td><td class="ibm-ref">Pledged Collateral Value — giá trị thế chấp</td></tr>
+                <tr><td>Pledged Collateral Valuation Date</td><td><span class="dt dt-date">Date</span></td><td class="optional-attr">N</td><td class="ibm-ref">Pledged Collateral Valuation Date</td></tr>
+                <tr><td>Pledged Percentage</td><td><span class="dt dt-pct">Percentage</span></td><td class="optional-attr">N</td><td class="ibm-ref">Pledged Collateral Property Percentage</td></tr>
+                <tr><td>Eligible IRB Collateral Indicator</td><td><span class="dt dt-bool">Boolean</span></td><td class="optional-attr">N</td><td class="ibm-ref">Eligible IRB Collateral Flag — Basel</td></tr>
+                <tr><td>Collateral Life Cycle Status Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="mandatory">Y</td><td class="ibm-ref">Collateral Arrangement Life Cycle Status</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Loan Party Role -->
+        <div class="entity-card" id="card-party">
+          <div class="entity-card-header" onclick="toggleCard('card-party')">
+            <div class="entity-card-meta">
+              <div class="entity-name">Loan Party Role</div>
+              <div class="entity-grain">1 dòng = <span>1 bên tham gia hợp đồng (1 vai trò)</span></div>
+              <div class="badges">
+                <span class="badge badge-party">Involved Party</span>
+                <span class="badge badge-ibm">Borrower / Guarantor</span>
+              </div>
+            </div>
+            <div class="toggle-icon">▼</div>
+          </div>
+          <div class="attr-body" style="display:none">
+            <table class="attr-table">
+              <thead><tr><th>Attribute</th><th>Data Type</th><th>M</th><th>IBM Term / Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td class="mandatory">Loan Party Role Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">Surrogate key</td></tr>
+                <tr><td class="mandatory">Loan Arrangement Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">FK → Loan Arrangement</td></tr>
+                <tr><td class="mandatory">Involved Party Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">FK → Involved Party (khách hàng/tổ chức)</td></tr>
+                <tr><td class="mandatory">Involved Party Code</td><td><span class="dt dt-text">Text</span></td><td class="mandatory">Y</td><td class="ibm-ref">Dư thừa</td></tr>
+                <tr><td class="mandatory">Party Role Type Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="mandatory">Y</td><td class="ibm-ref">Scheme: LOAN_PARTY_ROLE — Borrower / Guarantor / Co-borrower</td></tr>
+                <tr><td>Effective Date</td><td><span class="dt dt-date">Date</span></td><td class="optional-attr">N</td><td class="ibm-ref">Ngày bắt đầu vai trò</td></tr>
+                <tr><td>End Date</td><td><span class="dt dt-date">Date</span></td><td class="optional-attr">N</td><td class="ibm-ref">Ngày kết thúc vai trò</td></tr>
+                <tr><td>Guarantor Type Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="optional-attr">N</td><td class="ibm-ref">Guarantor Type — chỉ có giá trị khi role = Guarantor</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- end entity-grid core -->
+
+      <!-- Extended entities -->
+      <div class="entity-section-label">Extended Entities — cân nhắc tùy phạm vi nguồn dữ liệu</div>
+      <div class="entity-grid">
+
+        <div class="entity-card" id="card-valuation">
+          <div class="entity-card-header" onclick="toggleCard('card-valuation')">
+            <div class="entity-card-meta">
+              <div class="entity-name">Collateral Valuation</div>
+              <div class="entity-grain">1 dòng = <span>1 lần định giá tài sản đảm bảo</span></div>
+              <div class="badges">
+                <span class="badge badge-extended">Extended</span>
+                <span class="badge badge-property">Property</span>
+                <span class="badge badge-ibm">Collateral Appraisal Value</span>
+              </div>
+            </div>
+            <div class="toggle-icon">▼</div>
+          </div>
+          <div class="extended-note">
+            <strong>⚠ Lưu ý — Extended Entity</strong>
+            Thông tin này <strong>có thể không có ở nguồn</strong> nếu không có module định giá tài sản riêng. Nên lưu ở <strong>Silver hoặc Atomic</strong> chỉ khi hệ thống nguồn thực sự có dữ liệu định giá theo thời gian. Nếu chỉ có 1 giá trị tại thời điểm ký HĐ → đưa vào bảng Collateral là đủ.
+          </div>
+          <div class="attr-body" style="display:none">
+            <table class="attr-table">
+              <thead><tr><th>Attribute</th><th>Data Type</th><th>M</th><th>IBM Term / Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td class="mandatory">Collateral Valuation Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">Surrogate key</td></tr>
+                <tr><td class="mandatory">Collateral Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="mandatory">Y</td><td class="ibm-ref">FK → Collateral</td></tr>
+                <tr><td class="mandatory">Valuation Date</td><td><span class="dt dt-date">Date</span></td><td class="mandatory">Y</td><td class="ibm-ref">Pledged Collateral Valuation Date</td></tr>
+                <tr><td class="mandatory">Appraisal Value Amount</td><td><span class="dt dt-monetary">Monetary Amount</span></td><td class="mandatory">Y</td><td class="ibm-ref">Collateral Appraisal Value</td></tr>
+                <tr><td>Valuation Method Code</td><td><span class="dt dt-cv">Classification Value</span></td><td class="optional-attr">N</td><td class="ibm-ref">Phương pháp định giá</td></tr>
+                <tr><td>Appraiser Party Id</td><td><span class="dt dt-sk">Surrogate Key</span></td><td class="optional-attr">N</td><td class="ibm-ref">FK → Involved Party (đơn vị định giá)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- end entity-grid extended -->
+    </section>
+
+    <hr>
+
+    <!-- ==================== SECTION 3: CLASSIFICATION VALUE ==================== -->
+    <section class="section" id="classvalue">
+      <div class="section-header">
+        <div class="step">Bước 3</div>
+        <h1>Classification Value</h1>
+        <p>Các thông tin phân loại <strong>không tạo entity riêng</strong> — dùng chung 1 bảng Classification Value toàn hệ thống, phân biệt bằng <code>Scheme Code</code>.</p>
+      </div>
+
+      <div class="info-box">
+        <strong>Nguyên tắc:</strong> Nếu một thông tin chỉ có Code + Name (không có instance data riêng, không có FK đến entity khác) → đó là <strong>Classification Value</strong>, không phải entity. Ví dụ: Nhóm nợ, Loại TSĐB, Trạng thái hợp đồng.
+      </div>
+
+      <div class="cv-grid">
+        <div class="cv-card">
+          <div class="cv-card-header">
+            <div class="cv-scheme">DEBT_CLASSIFICATION</div>
+          </div>
+          <div class="cv-name">Nhóm nợ</div>
+          <div class="cv-desc">Phân loại nợ theo quy định CIC/NHNN (Thông tư 11/2021/TT-NHNN)</div>
+          <div class="cv-examples">
+            <span class="cv-tag">01 — Nợ đủ tiêu chuẩn</span>
+            <span class="cv-tag">02 — Nợ cần chú ý</span>
+            <span class="cv-tag">03 — Nợ dưới tiêu chuẩn</span>
+            <span class="cv-tag">04 — Nợ nghi ngờ</span>
+            <span class="cv-tag">05 — Nợ có khả năng mất vốn</span>
+          </div>
+        </div>
+
+        <div class="cv-card">
+          <div class="cv-card-header">
+            <div class="cv-scheme">COLLATERAL_TYPE</div>
+          </div>
+          <div class="cv-name">Loại tài sản đảm bảo</div>
+          <div class="cv-desc">Phân loại TSĐB theo tính chất — Arrangement Collateral Type (IBM)</div>
+          <div class="cv-examples">
+            <span class="cv-tag">REAL_ESTATE — Bất động sản</span>
+            <span class="cv-tag">VEHICLE — Phương tiện</span>
+            <span class="cv-tag">FINANCIAL — Tài sản tài chính</span>
+            <span class="cv-tag">COMMODITY — Hàng hóa</span>
+            <span class="cv-tag">GUARANTEE — Bảo lãnh</span>
+          </div>
+        </div>
+
+        <div class="cv-card">
+          <div class="cv-card-header">
+            <div class="cv-scheme">LOAN_STATUS</div>
+          </div>
+          <div class="cv-name">Trạng thái hợp đồng vay</div>
+          <div class="cv-desc">Vòng đời hợp đồng cho vay — Arrangement Life Cycle Status (IBM)</div>
+          <div class="cv-examples">
+            <span class="cv-tag">ACTIVE — Đang hiệu lực</span>
+            <span class="cv-tag">CLOSED — Đã tất toán</span>
+            <span class="cv-tag">DEFAULT — Nợ xấu</span>
+            <span class="cv-tag">RESTRUCTURED — Đã cơ cấu</span>
+            <span class="cv-tag">PENDING — Chờ duyệt</span>
+          </div>
+        </div>
+
+        <div class="cv-card">
+          <div class="cv-card-header">
+            <div class="cv-scheme">LOAN_TXN_TYPE</div>
+          </div>
+          <div class="cv-name">Loại giao dịch cho vay</div>
+          <div class="cv-desc">Phân loại phát sinh tín dụng — Loan Disbursement / Loan Repayment (IBM)</div>
+          <div class="cv-examples">
+            <span class="cv-tag">DISBURSEMENT — Giải ngân</span>
+            <span class="cv-tag">PRINCIPAL_REPAY — Thu gốc</span>
+            <span class="cv-tag">INTEREST_REPAY — Thu lãi</span>
+            <span class="cv-tag">PENALTY — Phạt</span>
+            <span class="cv-tag">ADJUSTMENT — Điều chỉnh</span>
+          </div>
+        </div>
+
+        <div class="cv-card">
+          <div class="cv-card-header">
+            <div class="cv-scheme">LOAN_PARTY_ROLE</div>
+          </div>
+          <div class="cv-name">Vai trò bên vay</div>
+          <div class="cv-desc">Phân loại vai trò tham gia hợp đồng — Borrower / Guarantor (IBM)</div>
+          <div class="cv-examples">
+            <span class="cv-tag">BORROWER — Người vay</span>
+            <span class="cv-tag">CO_BORROWER — Đồng vay</span>
+            <span class="cv-tag">GUARANTOR — Bảo lãnh</span>
+            <span class="cv-tag">AUTHORIZED_SIGNATORY — Người ký</span>
+          </div>
+        </div>
+
+        <div class="cv-card">
+          <div class="cv-card-header">
+            <div class="cv-scheme">LOAN_PURPOSE</div>
+          </div>
+          <div class="cv-name">Mục đích vay</div>
+          <div class="cv-desc">Mục đích sử dụng vốn vay — Arrangement Purpose (IBM)</div>
+          <div class="cv-examples">
+            <span class="cv-tag">HOME_PURCHASE — Mua nhà</span>
+            <span class="cv-tag">BUSINESS — Kinh doanh</span>
+            <span class="cv-tag">CONSUMPTION — Tiêu dùng</span>
+            <span class="cv-tag">PRODUCTION — Sản xuất</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ==================== SECTION 4: ERD ==================== -->
+    <section class="section" id="erd">
+      <div class="section-header">
+        <div class="step">Bước 4</div>
+        <h1>Sơ đồ quan hệ (ERD)</h1>
+        <p>Quan hệ giữa các entity trong Domain Tín dụng. Entity màu vàng là Extended (tùy chọn).</p>
+      </div>
+
+      <div class="erd-container">
+        <div class="mermaid">
+erDiagram
+    LOAN_ARRANGEMENT {
+        sk Loan_Arrangement_Id PK
+        text Loan_Arrangement_Code
+        monetary Principal_Amount
+        cv Currency_Code
+        date Effective_Date
+        date Maturity_Date
+        cv Loan_Status_Code
+    }
+    CREDIT_LIMIT {
+        sk Credit_Limit_Id PK
+        sk Loan_Arrangement_Id FK
+        monetary Credit_Limit_Amount
+        date Effective_Date
+    }
+    REPAYMENT_SCHEDULE {
+        sk Repayment_Schedule_Id PK
+        sk Loan_Arrangement_Id FK
+        number Instalment_Number
+        date Due_Date
+        monetary Principal_Due_Amount
+        monetary Interest_Due_Amount
+        cv Repayment_Plan_Status_Code
+    }
+    LOAN_TRANSACTION {
+        sk Loan_Transaction_Id PK
+        sk Loan_Arrangement_Id FK
+        cv Transaction_Type_Code
+        date Transaction_Date
+        monetary Transaction_Amount
+    }
+    COLLATERAL {
+        sk Collateral_Id PK
+        sk Loan_Arrangement_Id FK
+        cv Collateral_Type_Code
+        monetary Pledged_Collateral_Value
+    }
+    LOAN_PARTY_ROLE {
+        sk Loan_Party_Role_Id PK
+        sk Loan_Arrangement_Id FK
+        sk Involved_Party_Id FK
+        cv Party_Role_Type_Code
+    }
+    COLLATERAL_VALUATION {
+        sk Collateral_Valuation_Id PK
+        sk Collateral_Id FK
+        date Valuation_Date
+        monetary Appraisal_Value_Amount
+    }
+
+    LOAN_ARRANGEMENT ||--o| CREDIT_LIMIT : "governed by"
+    LOAN_ARRANGEMENT ||--o{ REPAYMENT_SCHEDULE : "has schedule"
+    LOAN_ARRANGEMENT ||--o{ LOAN_TRANSACTION : "generates"
+    LOAN_ARRANGEMENT ||--o{ COLLATERAL : "secured by"
+    LOAN_ARRANGEMENT ||--|{ LOAN_PARTY_ROLE : "involves"
+    COLLATERAL ||--o{ COLLATERAL_VALUATION : "valued by (extended)"
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Init Mermaid
+  mermaid.initialize({ startOnLoad: true, theme: 'dark', er: { useMaxWidth: true } });
+
+  // Checkbox toggle
+  function toggleCheck(card) {
+    const cb = card.querySelector('input[type=checkbox]');
+    cb.checked = !cb.checked;
+    if (cb.checked) {
+      card.classList.remove('unchecked'); card.classList.add('checked');
+    } else {
+      card.classList.remove('checked'); card.classList.add('unchecked');
+    }
+    updateCount();
+  }
+  function updateCount() {
+    const count = document.querySelectorAll('.q-card.checked').length;
+    document.getElementById('checkCount').textContent = count;
+    const msg = count === 0
+      ? 'Tick vào những gì hệ thống của bạn có hoặc cần quản lý.'
+      : count <= 3
+      ? `Đã tick ${count}/10 mục — scope nhỏ, tập trung vào core entities trước.`
+      : count <= 7
+      ? `Đã tick ${count}/10 mục — scope trung bình, xem kỹ tất cả core entities.`
+      : `Đã tick ${count}/10 mục — scope đầy đủ, cân nhắc thêm extended entities.`;
+    document.getElementById('scopeSummary').innerHTML = `Đã tick <span>${count}</span>/10 mục — ${msg.split('—')[1] || ''}`;
+  }
+
+  // Accordion entity card
+  function toggleCard(id) {
+    const card = document.getElementById(id);
+    const body = card.querySelector('.attr-body');
+    const isOpen = card.classList.contains('open');
+    if (isOpen) {
+      body.style.display = 'none'; card.classList.remove('open');
+    } else {
+      body.style.display = 'block'; card.classList.add('open');
+    }
+  }
+
+  // Sidebar active
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const total = document.body.scrollHeight - window.innerHeight;
+    const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+  });
+
+  // Auto-highlight nav on scroll
+  const sections = ['scoping','entities','classvalue','erd'];
+  window.addEventListener('scroll', () => {
+    let cur = sections[0];
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < 120) cur = id;
+    });
+    document.querySelectorAll('.nav-item').forEach(n => {
+      n.classList.toggle('active', n.getAttribute('href') === '#' + cur);
+    });
+  });
+</script>
+</body>
+</html>
