@@ -33,8 +33,8 @@ flowchart LR
     Calendar_Date
   end
   subgraph Datamart
-    fct_fnd_mgt_co_snpst
-    cdr_dt_dim
+    fct_fnd_mgt_co_snpst["Fact Fund Management Company Snapshot"]
+    cdr_dt_dim["Calendar Date Dimension"]
   end
   FMS_SECURITIES --> Fund_Management_Company
   FMS_FUNDS --> Investment_Fund
@@ -64,8 +64,8 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **fct_fnd_mgt_co_snpst:** Bảng sự kiện tổng hợp thống kê toàn thị trường quản lý quỹ theo tháng — đếm số công ty, quỹ, văn phòng đại diện, chi nhánh, đại lý và tổng hợp AUM từ báo cáo
-- **cdr_dt_dim:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
+- **Fact Fund Management Company Snapshot:** Bảng sự kiện tổng hợp thống kê toàn thị trường quản lý quỹ theo tháng — đếm số công ty, quỹ, văn phòng đại diện, chi nhánh, đại lý và tổng hợp AUM từ báo cáo
+- **Calendar Date Dimension:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
 
 ---
 
@@ -86,9 +86,9 @@ flowchart LR
     Calendar_Date
   end
   subgraph Datamart
-    fct_dscr_ivsm_ctr_snpst
-    fnd_mgt_co_dim
-    cdr_dt_dim
+    fct_dscr_ivsm_ctr_snpst["Fact Discretionary Investment Contract Snapshot"]
+    fnd_mgt_co_dim["Fund Management Company Dimension"]
+    cdr_dt_dim["Calendar Date Dimension"]
   end
   FMS_RPTMEMBER --> Member_Periodic_Report
   FMS_RPTVALUES --> Report_Import_Value
@@ -113,9 +113,9 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **fct_dscr_ivsm_ctr_snpst:** Bảng sự kiện tổng hợp thông tin số lượng và giá trị thị trường hợp đồng ủy thác danh mục đầu tư theo từng công ty quản lý quỹ và kỳ báo cáo
-- **fnd_mgt_co_dim:** Bảng lưu thông tin công ty quản lý quỹ phục vụ tra cứu và lọc theo chiều CTQLQ
-- **cdr_dt_dim:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
+- **Fact Discretionary Investment Contract Snapshot:** Bảng sự kiện tổng hợp thông tin số lượng và giá trị thị trường hợp đồng ủy thác danh mục đầu tư theo từng công ty quản lý quỹ và kỳ báo cáo
+- **Fund Management Company Dimension:** Bảng lưu thông tin công ty quản lý quỹ phục vụ tra cứu và lọc theo chiều CTQLQ
+- **Calendar Date Dimension:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
 
 ---
 
@@ -142,9 +142,9 @@ flowchart LR
     Discretionary_Investment_Investor
   end
   subgraph Datamart
-    fnd_mgt_co_prfl
-    fnd_mgt_co_fnd_lst
-    fnd_mgt_co_ctr_lst
+    fnd_mgt_co_prfl["Fund Management Company Profile"]
+    fnd_mgt_co_fnd_lst["Fund Management Company Fund List"]
+    fnd_mgt_co_ctr_lst["Fund Management Company Contract List"]
   end
   FMS_SECURITIES --> Fund_Management_Company
   FMS_FUNDS --> Investment_Fund
@@ -179,9 +179,9 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **fnd_mgt_co_prfl:** Bảng tác nghiệp lưu danh sách công ty quản lý quỹ ở trạng thái mới nhất với đầy đủ thông tin hồ sơ, AUM, xếp loại CAMEL và số liệu tổng hợp
-- **fnd_mgt_co_fnd_lst:** Bảng tác nghiệp lưu danh sách quỹ đầu tư theo từng công ty quản lý quỹ phục vụ popup drill-down
-- **fnd_mgt_co_ctr_lst:** Bảng tác nghiệp lưu danh sách hợp đồng ủy thác danh mục đầu tư theo từng công ty quản lý quỹ phục vụ popup drill-down
+- **Fund Management Company Profile:** Bảng tác nghiệp lưu danh sách công ty quản lý quỹ ở trạng thái mới nhất với đầy đủ thông tin hồ sơ, AUM, xếp loại CAMEL và số liệu tổng hợp
+- **Fund Management Company Fund List:** Bảng tác nghiệp lưu danh sách quỹ đầu tư theo từng công ty quản lý quỹ phục vụ popup drill-down
+- **Fund Management Company Contract List:** Bảng tác nghiệp lưu danh sách hợp đồng ủy thác danh mục đầu tư theo từng công ty quản lý quỹ phục vụ popup drill-down
 
 ---
 
@@ -212,10 +212,10 @@ flowchart LR
     Calendar_Date
   end
   subgraph Datamart
-    fct_ivsm_fnd_nav_snpst
-    ivsm_fnd_dim
-    fnd_mgt_co_dim
-    cdr_dt_dim
+    fct_ivsm_fnd_nav_snpst["Fact Investment Fund NAV Snapshot"]
+    ivsm_fnd_dim["Investment Fund Dimension"]
+    fnd_mgt_co_dim["Fund Management Company Dimension"]
+    cdr_dt_dim["Calendar Date Dimension"]
   end
   FMS_RPTMEMBER --> Member_Periodic_Report
   FMS_RPTVALUES --> Report_Import_Value
@@ -249,10 +249,10 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **fct_ivsm_fnd_nav_snpst:** Bảng sự kiện tổng hợp thông tin NAV, phân bổ tài sản của từng quỹ đầu tư theo kỳ báo cáo, kết hợp chỉ tiêu GDP, VN-Index và lãi suất liên ngân hàng qua đêm từ cross-module QLRR
-- **ivsm_fnd_dim:** Bảng lưu thông tin quỹ đầu tư phục vụ tra cứu và lọc theo chiều quỹ
-- **fnd_mgt_co_dim:** Bảng lưu thông tin công ty quản lý quỹ phục vụ tra cứu và lọc theo chiều CTQLQ
-- **cdr_dt_dim:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
+- **Fact Investment Fund NAV Snapshot:** Bảng sự kiện tổng hợp thông tin NAV, phân bổ tài sản của từng quỹ đầu tư theo kỳ báo cáo, kết hợp chỉ tiêu GDP, VN-Index và lãi suất liên ngân hàng qua đêm từ cross-module QLRR
+- **Investment Fund Dimension:** Bảng lưu thông tin quỹ đầu tư phục vụ tra cứu và lọc theo chiều quỹ
+- **Fund Management Company Dimension:** Bảng lưu thông tin công ty quản lý quỹ phục vụ tra cứu và lọc theo chiều CTQLQ
+- **Calendar Date Dimension:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
 
 ---
 
@@ -269,8 +269,8 @@ flowchart LR
     Calendar_Date
   end
   subgraph Datamart
-    fct_ivsm_fnd_cnt_snpst
-    cdr_dt_dim
+    fct_ivsm_fnd_cnt_snpst["Fact Investment Fund Count Snapshot"]
+    cdr_dt_dim["Calendar Date Dimension"]
   end
   FMS_FUNDS --> Investment_Fund
   ECAT_ECAT_29_HolidayInfo --> Calendar_Date
@@ -288,8 +288,8 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **fct_ivsm_fnd_cnt_snpst:** Bảng sự kiện tổng hợp số lượng quỹ đầu tư theo từng loại hình (quỹ mở, ETF, đóng, thành viên, bất động sản, TTTTT, trái phiếu hạ tầng, hưu trí) theo năm
-- **cdr_dt_dim:** Bảng lưu thông tin thời gian phục vụ slicer năm trên dashboard
+- **Fact Investment Fund Count Snapshot:** Bảng sự kiện tổng hợp số lượng quỹ đầu tư theo từng loại hình (quỹ mở, ETF, đóng, thành viên, bất động sản, TTTTT, trái phiếu hạ tầng, hưu trí) theo năm
+- **Calendar Date Dimension:** Bảng lưu thông tin thời gian phục vụ slicer năm trên dashboard
 
 ---
 
@@ -308,9 +308,9 @@ flowchart LR
     Calendar_Date
   end
   subgraph Datamart
-    fct_ivsm_fnd_ccq_snpst
-    ivsm_fnd_dim
-    cdr_dt_dim
+    fct_ivsm_fnd_ccq_snpst["Fact Investment Fund CCQ Snapshot"]
+    ivsm_fnd_dim["Investment Fund Dimension"]
+    cdr_dt_dim["Calendar Date Dimension"]
   end
   FMS_FUNDS --> Investment_Fund
   FMS_TRANSFERMBF --> Investment_Fund_Certificate_Transfer
@@ -333,9 +333,9 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **fct_ivsm_fnd_ccq_snpst:** Bảng sự kiện tổng hợp số lượng chứng chỉ quỹ lưu hành per quỹ theo tháng snapshot, tính bằng tổng mua trừ tổng bán từ lịch sử giao dịch chuyển nhượng
-- **ivsm_fnd_dim:** Bảng lưu thông tin quỹ đầu tư phục vụ tra cứu và lọc theo chiều quỹ
-- **cdr_dt_dim:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
+- **Fact Investment Fund CCQ Snapshot:** Bảng sự kiện tổng hợp số lượng chứng chỉ quỹ lưu hành per quỹ theo tháng snapshot, tính bằng tổng mua trừ tổng bán từ lịch sử giao dịch chuyển nhượng
+- **Investment Fund Dimension:** Bảng lưu thông tin quỹ đầu tư phục vụ tra cứu và lọc theo chiều quỹ
+- **Calendar Date Dimension:** Bảng lưu thông tin thời gian phục vụ slicer tháng/năm trên dashboard
 
 ---
 
@@ -356,7 +356,7 @@ flowchart LR
     Report_Import_Value
   end
   subgraph Datamart
-    ivsm_fnd_prfl
+    ivsm_fnd_prfl["Investment Fund Profile"]
   end
   FMS_FUNDS --> Investment_Fund
   FMS_SECURITIES --> Fund_Management_Company
@@ -379,7 +379,7 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **ivsm_fnd_prfl:** Bảng tác nghiệp lưu danh sách quỹ đầu tư ở trạng thái mới nhất với thông tin NAV, lợi nhuận YTD và số lượng CCQ lưu hành tại tháng slicer
+- **Investment Fund Profile:** Bảng tác nghiệp lưu danh sách quỹ đầu tư ở trạng thái mới nhất với thông tin NAV, lợi nhuận YTD và số lượng CCQ lưu hành tại tháng slicer
 
 ---
 
@@ -400,7 +400,7 @@ flowchart LR
     Investment_Fund
   end
   subgraph Datamart
-    rpt_pass_thru_view
+    rpt_pass_thru_view["Report Pass-through View"]
   end
   FMS_RPTVALUES --> Report_Import_Value
   FMS_RPTMEMBER --> Member_Periodic_Report
@@ -423,7 +423,7 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **rpt_pass_thru_view:** Bảng tác nghiệp lưu toàn bộ dữ liệu báo cáo dạng flat theo từng công ty quản lý quỹ hoặc quỹ, biểu mẫu báo cáo, kỳ báo cáo và dòng chỉ tiêu — phục vụ 63 tab pass-through và 19 tab phức tạp trên DataExplorer
+- **Report Pass-through View:** Bảng tác nghiệp lưu toàn bộ dữ liệu báo cáo dạng flat theo từng công ty quản lý quỹ hoặc quỹ, biểu mẫu báo cáo, kỳ báo cáo và dòng chỉ tiêu — phục vụ 63 tab pass-through và 19 tab phức tạp trên DataExplorer
 
 ---
 
@@ -445,7 +445,7 @@ flowchart LR
     Investor_Trading_Account
   end
   subgraph Datamart
-    fnd_mgt_co_stf_trd_rpt
+    fnd_mgt_co_stf_trd_rpt["Fund Management Company Staff Trade Report"]
   end
   FMS_TLProfiles --> Fund_Management_Company_Key_Person
   FMS_TLProfiles --> Involved_Party_Alternative_Identification
@@ -468,4 +468,4 @@ flowchart LR
 
 **Mô tả luồng Atomic → Datamart:**
 
-- **fnd_mgt_co_stf_trd_rpt:** Bảng tác nghiệp lưu danh sách nhân viên công ty quản lý quỹ ở trạng thái mới nhất kèm thông tin tài khoản giao dịch chứng khoán, phục vụ giám sát giao dịch chứng khoán của nhân viên CTQLQ
+- **Fund Management Company Staff Trade Report:** Bảng tác nghiệp lưu danh sách nhân viên công ty quản lý quỹ ở trạng thái mới nhất kèm thông tin tài khoản giao dịch chứng khoán, phục vụ giám sát giao dịch chứng khoán của nhân viên CTQLQ
