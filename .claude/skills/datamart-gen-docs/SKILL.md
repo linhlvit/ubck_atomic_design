@@ -91,7 +91,7 @@ Tuân thủ **PHẦN B** của instruction bên dưới. Thứ tự output:
 ## 3.2.X Luồng đồng bộ dữ liệu cho nhóm báo cáo [Tên module tiếng Việt]
 
 ### 3.2.X.1 Thông tin chung luồng đồng bộ
-(danh sách gạch đầu dòng, không in đậm, chữ thường)
+(danh sách gạch đầu dòng, không in đậm, chữ thường, viết hoa chữ cái đầu)
 
 ### 3.2.X.2 Luồng nghiệp vụ
 
@@ -159,7 +159,7 @@ Sau khi gen xong Phase 1:
 
 **CHECKPOINT bắt buộc trước Phase 3:**
 - [ ] Tên module tiếng Việt đúng
-- [ ] Diagram PTTK: Staging/Atomic/Datamart subgraph đúng; tên Staging dùng `ID["label"]` syntax (node ID không dấu chấm)
+- [ ] Diagram PTTK: Staging/Atomic/Datamart subgraph đúng; **tất cả node** (Staging/Atomic/Datamart) dùng `ID["label"]` syntax — Staging: node ID không dấu chấm; Atomic: ID có `_`, label bỏ `_`; Datamart: ID = tên physical, label = tên logical từ Entities.csv
 - [ ] TKCSLD: 3 ERD đúng tầng (Conceptual/Logic/Physical)
 - [ ] Bảng thuộc tính: 8 cột (Logic), 12 cột (Physical)
 - [ ] Cột Mô tả: thuần tiếng Việt, không còn tham chiếu nguồn
@@ -311,13 +311,13 @@ npm install -g @mermaid-js/mermaid-cli
 Dùng **danh sách gạch đầu dòng**, KHÔNG dùng bảng. Toàn bộ text **chữ thường, KHÔNG in đậm**:
 
 ```
-- tên job:
-- nguồn dữ liệu (hệ thống nguồn): [tên hệ thống]
-- cách thức truy xuất đồng bộ dữ liệu:
-- tần suất đồng bộ dữ liệu:
-- dung lượng dữ liệu sẽ thực hiện đồng bộ:
-- thời gian lưu trữ dữ liệu:
-- thư mục lưu trữ dữ liệu trên kho dữ liệu:
+- Tên job:
+- Nguồn dữ liệu (hệ thống nguồn): [tên hệ thống]
+- Cách thức truy xuất đồng bộ dữ liệu:
+- Tần suất đồng bộ dữ liệu:
+- Dung lượng dữ liệu sẽ thực hiện đồng bộ:
+- Thời gian lưu trữ dữ liệu:
+- Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 ```
 
 - **Nguồn dữ liệu:** Liệt kê tên hệ thống nguồn (chỉ tên hệ thống, không tới mức bảng), lấy từ prefix tên bảng Bronze trong toàn bộ diagram của module. VD: `ThanhTra`, `IDS`, `FIMS`
@@ -343,26 +343,41 @@ Ví dụ:
   - Đúng: `ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]`
   - Sai: `ThanhTra.TT_HO_SO` (dấu chấm trong node ID gây lỗi mermaid — parsed như CSS class)
   - Edge dùng node ID: `ThanhTra_TT_HO_SO --> inspection_case`
-- Nhiều hệ thống nguồn → nhiều subgraph Staging riêng, dùng alias: `Staging_FMS["Staging (FMS)"]`
+- Tên bảng **Atomic**: **dùng `ID["label"]` syntax** — node ID dùng `_` thay space, label bỏ dấu `_`
+  - Đúng: `Fund_Management_Company["Fund Management Company"]`
+  - Sai: `Fund_Management_Company` (mermaid render có dấu `_`, xấu)
+  - Edge dùng node ID: `Fund_Management_Company --> fct_fnd_mgt_co_snpst`
+- Tên bảng **Datamart**: **dùng `ID["label"]` syntax** — node ID là tên physical, label là tên logical đầy đủ
+  - Đúng: `fct_fnd_mgt_co_snpst["Fact Fund Management Company Snapshot"]`
+  - Sai: `fct_fnd_mgt_co_snpst` (tên physical viết tắt, không có nghĩa với người đọc)
+  - Tên logical lấy từ `Entities.csv` cột `datamart_entity`
+- **Tên subgraph luôn là**: `Staging`, `Atomic`, `Datamart` — KHÔNG thêm tên hệ thống kể cả khi có nhiều nguồn (VD sai: `Staging_FMS["Staging (FMS)"]`, VD đúng: `Staging`)
 - Mũi tên nét liền `-->`, không label, không layer Báo cáo
+- **Copy nguyên diagram từ HLD** — lấy nguyên mermaid flowchart từ HLD Section 1, chỉ đổi alias subgraph nếu HLD dùng tên khác (VD: `SRC` → `Staging`, `SIL` → `Atomic`, `GOLD` → `Datamart`). Không tự vẽ lại.
+- **1 diagram / 1 bảng Gold (Fact hoặc Operational)**: Dimension KHÔNG tách diagram riêng — luôn gộp vào subgraph Datamart của diagram Fact/Operational mà nó phục vụ.
+  - Nếu 1 Cụm HLD có N Fact và M Operational → tạo N+M diagram riêng
+  - Mỗi diagram: copy nguyên phần Staging→Atomic từ HLD + chỉ giữ lại 1 bảng Gold trong subgraph Datamart (kèm Dimension liên quan)
+  - Đúng: nhóm có 1 Fact + 1 Operational → 2 diagram riêng; nhóm có 3 Operational → 3 diagram riêng
+  - Sai: tách Dimension thành diagram riêng; gộp nhiều Fact/Operational vào 1 diagram
 
 ```
 ```mermaid
 flowchart LR
-  subgraph Staging_ThanhTra["Staging (ThanhTra)"]
+  subgraph Staging
     ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]
     ...
   end
   subgraph Atomic
-    inspection_case
+    inspection_case["Inspection Case"]
     ...
   end
   subgraph Datamart
-    fct_inspection_case_avy
-    ...
+    fct_inspection_case_avy["Fact Inspection Case Activity"]
+    cdr_dt_dim["Calendar Date Dimension"]
   end
   ThanhTra_TT_HO_SO --> inspection_case
   inspection_case --> fct_inspection_case_avy
+  cdr_dt_dim --> fct_inspection_case_avy
 ```
 ```
 
@@ -561,8 +576,11 @@ Theo sau heading là metadata bảng:
 - [ ] Mục 3.2.X.1: danh sách gạch đầu dòng, chữ thường, không in đậm, để trống các mục chưa có dữ liệu
 - [ ] Nguồn dữ liệu trong 3.2.X.1 chỉ ghi tên hệ thống
 - [ ] Diagram flowchart: subgraph `Staging`/`Atomic`/`Datamart`; tên bảng Staging dùng `ID["label"]` syntax (node ID không dấu chấm, VD: `FMS_SECURITIES["FMS.SECURITIES"]`)
+- [ ] Diagram flowchart: node Atomic dùng `ID["label"]` syntax (ID dùng `_`, label bỏ `_`, VD: `Fund_Management_Company["Fund Management Company"]`)
+- [ ] Diagram flowchart: node Datamart dùng `ID["label"]` syntax (ID = tên physical, label = tên logical từ Entities.csv, VD: `fct_fnd_mgt_co_snpst["Fact Fund Management Company Snapshot"]`)
 - [ ] Mũi tên nét liền, không label, không layer Báo cáo
 - [ ] Nhiều hệ thống nguồn → nhiều subgraph Staging riêng (VD: `Staging_FMS["Staging (FMS)"]`)
+- [ ] Mỗi diagram chỉ có **1 bảng Gold** (Fact hoặc Operational) — nhóm N bảng Gold → N diagram riêng
 - [ ] Đã bỏ nhóm chỉ reuse Datamart không có Staging/Atomic riêng
 - [ ] Mô tả Staging→Atomic: tên Atomic in đậm đứng đầu, source ở cuối câu
 - [ ] Bảng CV ghi đầy đủ `Classification Value (tên_scheme)`
