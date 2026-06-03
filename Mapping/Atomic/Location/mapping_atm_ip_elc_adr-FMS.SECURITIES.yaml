@@ -1,0 +1,73 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_elc_adr-FMS.SECURITIES
+  logical_name: Mapping Atomic - Involved Party Electronic Address – source FMS.SECURITIES
+  physical_name: ip_elc_adr
+  dm_ref: ATM-ip_elc_adr-FMS.SECURITIES
+  brd_ref: BRD-SRC-FMS-SECURITIES
+target:
+  namespace: atm
+  physical_name: ip_elc_adr
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email).
+    Mỗi dòng = 1 kênh liên lạc từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SECURITIES
+  alias: secu
+  select_fields: Id, Email, Fax, Telephone, Website
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: secu
+  alias: unpvt
+  select_fields: Id, elc_adr_tp_code, elc_adr_val
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - elc_adr_val
+    type_column: elc_adr_tp_code
+    legs:
+    - type_value: EMAIL
+      source_columns:
+      - Email
+    - type_value: FAX
+      source_columns:
+      - Fax
+    - type_value: PHONE
+      source_columns:
+      - Telephone
+    - type_value: WEBSITE
+      source_columns:
+      - Website
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', unpvt.Id)'
+  data_type: string
+  description: FK đến Fund Management Company.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.Id
+  data_type: string
+  description: Mã công ty QLQ.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FMS_SECURITIES'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: elc_adr_tp_code
+  transformation: unpvt.elc_adr_tp_code
+  data_type: string
+  description: Loại liên lạc — email.
+  target_attr_name: Electronic Address Type Code
+- target_column: elc_adr_val
+  transformation: unpvt.elc_adr_val
+  data_type: string
+  description: Địa chỉ email.
+  target_attr_name: Electronic Address Value
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

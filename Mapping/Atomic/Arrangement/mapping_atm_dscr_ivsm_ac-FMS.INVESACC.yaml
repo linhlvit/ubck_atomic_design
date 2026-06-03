@@ -7,7 +7,7 @@ mapping:
   dm_ref: ATM-dscr_ivsm_ac-FMS.INVESACC
   brd_ref: BRD-SRC-FMS-INVESACC
 target:
-  namespace: atomic
+  namespace: atm
   physical_name: dscr_ivsm_ac
   etl_handle: SCD4A
   description: Tài khoản đầu tư ủy thác — hợp đồng dịch vụ quản lý danh mục tài chính
@@ -17,7 +17,8 @@ input:
   namespace: ods
   table_name: INVESACC
   alias: in
-  select_fields: '*'
+  select_fields: Id, InvesId, Account, AccPlace, ContractNo, ActScale, AdScale, ManagerFee,
+    Status, DateReport, CreatedBy, DateCreated, DateModified
   filter: null
 relationship: []
 mapping_columns:
@@ -37,7 +38,7 @@ mapping_columns:
   description: Mã nguồn dữ liệu.
   target_attr_name: Source System Code
 - target_column: dscr_ivsm_ivsr_id
-  transformation: '{hash_id}(''FMS_INVESACC'', in.InvesId)'
+  transformation: '{hash_id}(''FMS_INVES'', in.InvesId)'
   data_type: string
   description: FK đến nhà đầu tư ủy thác.
   target_attr_name: Discretionary Investment Investor Id
@@ -101,5 +102,5 @@ mapping_columns:
   data_type: timestamp
   description: Ngày cập nhật bản ghi.
   target_attr_name: Updated Timestamp
-transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
 final_filter: []

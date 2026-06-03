@@ -1,0 +1,80 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-mbr_prd_rpt_st_log-FMS.RPTMBHS
+  logical_name: Mapping Atomic - Member Periodic Report Status Log – source FMS.RPTMBHS
+  physical_name: mbr_prd_rpt_st_log
+  dm_ref: ATM-mbr_prd_rpt_st_log-FMS.RPTMBHS
+  brd_ref: BRD-SRC-FMS-RPTMBHS
+target:
+  namespace: atm
+  physical_name: mbr_prd_rpt_st_log
+  etl_handle: Fact Append
+  description: Nhật ký thay đổi trạng thái của báo cáo định kỳ thành viên. Mỗi dòng
+    ghi nhận một lần thay đổi trạng thái kèm nội dung tóm tắt.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: RPTMBHS
+  alias: rp
+  select_fields: Id, RptMbId, Status, ChgById, ContentSummary, Note, RptName
+  filter: created_at >= {data_date}
+relationship: []
+mapping_columns:
+- target_column: mbr_prd_rpt_hist_id
+  transformation: '{hash_id}(''FMS_RPTMBHS'', rp.Id)'
+  data_type: string
+  description: Khóa đại diện cho lịch sử nộp báo cáo định kỳ thành viên.
+  target_attr_name: Member Periodic Report History Id
+- target_column: mbr_prd_rpt_hist_code
+  transformation: rp.Id
+  data_type: string
+  description: Mã định danh bản ghi lịch sử. Map từ PK bảng nguồn.
+  target_attr_name: Member Periodic Report History Code
+- target_column: src_stm_code
+  transformation: '''FMS_RPTMBHS'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: mbr_prd_rpt_id
+  transformation: '{hash_id}(''FMS_RPTMEMBER'', rp.RptMbId)'
+  data_type: string
+  description: FK đến báo cáo định kỳ thành viên.
+  target_attr_name: Member Periodic Report Id
+- target_column: mbr_prd_rpt_code
+  transformation: rp.RptMbId
+  data_type: string
+  description: Mã báo cáo định kỳ.
+  target_attr_name: Member Periodic Report Code
+- target_column: rpt_subm_st_code
+  transformation: rp.Status
+  data_type: string
+  description: Trạng thái nộp báo cáo tại thời điểm lịch sử.
+  target_attr_name: Report Submission Status Code
+- target_column: changed_by_ofcr_id
+  transformation: '{hash_id}(''FMS_TLProfiles'', rp.ChgById)'
+  data_type: string
+  description: FK đến nhân sự thực hiện thay đổi trạng thái.
+  target_attr_name: Changed By Officer Id
+- target_column: changed_by_ofcr_code
+  transformation: rp.ChgById
+  data_type: string
+  description: Mã nhân sự thực hiện thay đổi.
+  target_attr_name: Changed By Officer Code
+- target_column: cntnt_smy
+  transformation: rp.ContentSummary
+  data_type: string
+  description: Tóm tắt nội dung báo cáo tại thời điểm lịch sử.
+  target_attr_name: Content Summary
+- target_column: note
+  transformation: rp.Note
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+- target_column: rpt_nm
+  transformation: rp.RptName
+  data_type: string
+  description: Tên báo cáo tại thời điểm lịch sử.
+  target_attr_name: Report Name
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

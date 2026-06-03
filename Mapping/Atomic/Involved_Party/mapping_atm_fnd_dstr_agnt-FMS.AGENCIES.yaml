@@ -1,0 +1,76 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-fnd_dstr_agnt-FMS.AGENCIES
+  logical_name: Mapping Atomic - Fund Distribution Agent – source FMS.AGENCIES
+  physical_name: fnd_dstr_agnt
+  dm_ref: ATM-fnd_dstr_agnt-FMS.AGENCIES
+  brd_ref: BRD-SRC-FMS-AGENCIES
+target:
+  namespace: atm
+  physical_name: fnd_dstr_agnt
+  etl_handle: SCD4A
+  description: Tổ chức đại lý được ủy quyền phân phối chứng chỉ quỹ đầu tư cho nhà
+    đầu tư.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: AGENCIES
+  alias: agen
+  select_fields: Id, Name, ShortName, AgencyTypeId, Status, CreatedBy, DateCreated,
+    DateModified
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: fnd_dstr_agnt_id
+  transformation: '{hash_id}(''FMS_AGENCIES'', agen.Id)'
+  data_type: string
+  description: Khóa đại diện cho tổ chức đại lý phân phối quỹ.
+  target_attr_name: Fund Distribution Agent Id
+- target_column: fnd_dstr_agnt_code
+  transformation: agen.Id
+  data_type: string
+  description: Mã định danh đại lý phân phối quỹ. Map từ PK bảng nguồn.
+  target_attr_name: Fund Distribution Agent Code
+- target_column: src_stm_code
+  transformation: '''FMS_AGENCIES'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fnd_dstr_agnt_nm
+  transformation: agen.Name
+  data_type: string
+  description: Tên đầy đủ đại lý phân phối quỹ.
+  target_attr_name: Fund Distribution Agent Name
+- target_column: fnd_dstr_agnt_shrt_nm
+  transformation: agen.ShortName
+  data_type: string
+  description: Tên viết tắt đại lý.
+  target_attr_name: Fund Distribution Agent Short Name
+- target_column: agnc_tp_code
+  transformation: agen.AgencyTypeId
+  data_type: string
+  description: Loại đại lý phân phối quỹ.
+  target_attr_name: Agency Type Code
+- target_column: practice_st_code
+  transformation: agen.Status
+  data_type: string
+  description: Trạng thái hoạt động.
+  target_attr_name: Practice Status Code
+- target_column: crt_by
+  transformation: agen.CreatedBy
+  data_type: string
+  description: Người tạo bản ghi.
+  target_attr_name: Created By
+- target_column: crt_tms
+  transformation: agen.DateCreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: agen.DateModified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+  target_attr_name: Updated Timestamp
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

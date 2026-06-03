@@ -31,8 +31,8 @@ input:
   namespace: null
   table_name: ag_fu_raw
   alias: ag_fu
-  select_fields: FundId, COLLECT_LIST(NAMED_STRUCT('agent_id', {hash_id}('FMS_AGENFUNDS',
-    ag_fu_raw.AgnId), 'agent_code', ag_fu_raw.AgnId)) AS dstr_agnt_ids
+  select_fields: FundId, COLLECT_LIST(NAMED_STRUCT('fnd_dstr_agnt_id', {hash_id}('FMS_AGENFUNDS',
+    ag_fu_raw.AgnId), 'fnd_dstr_agnt_code', ag_fu_raw.AgnId)) AS dstr_agnt_ids
   filter: GROUP BY FundId
 - source_type: physical_table
   namespace: ods
@@ -45,8 +45,8 @@ input:
   namespace: null
   table_name: fn_raw
   alias: fn
-  select_fields: FundId, COLLECT_LIST(NAMED_STRUCT('bank_id', {hash_id}('FMS_FNDSBMN',
-    fn_raw.BmnId), 'bank_code', fn_raw.BmnId)) AS cstd_bnk_ids
+  select_fields: FundId, COLLECT_LIST(NAMED_STRUCT('cstd_bnk_id', {hash_id}('FMS_FNDSBMN',
+    fn_raw.BmnId), 'cstd_bnk_code', fn_raw.BmnId)) AS cstd_bnk_ids
   filter: GROUP BY FundId
 relationship:
 - main_alias: fund
@@ -89,7 +89,7 @@ mapping_columns:
   description: Tên tiếng Anh quỹ đầu tư.
   target_attr_name: Investment Fund English Name
 - target_column: fnd_mgt_co_id
-  transformation: '{hash_id}(''FIMS_FUNDCOMPANY'', fund.SecId)'
+  transformation: '{hash_id}(''FMS_SECURITIES'', fund.SecId)'
   data_type: string
   description: FK đến công ty QLQ quản lý quỹ.
   target_attr_name: Fund Management Company Id
@@ -153,5 +153,5 @@ mapping_columns:
   data_type: timestamp
   description: Ngày cập nhật bản ghi.
   target_attr_name: Updated Timestamp
-transformation_rules_ref: Mapping/rules/transformation_rules.yaml
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
 final_filter: []

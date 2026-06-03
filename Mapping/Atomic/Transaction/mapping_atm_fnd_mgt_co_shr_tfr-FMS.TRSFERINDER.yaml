@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-fnd_mgt_co_shr_tfr-FMS.TRSFERINDER
+  logical_name: Mapping Atomic - Fund Management Company Share Transfer – source FMS.TRSFERINDER
+  physical_name: fnd_mgt_co_shr_tfr
+  dm_ref: ATM-fnd_mgt_co_shr_tfr-FMS.TRSFERINDER
+  brd_ref: BRD-SRC-FMS-TRSFERINDER
+target:
+  namespace: atm
+  physical_name: fnd_mgt_co_shr_tfr
+  etl_handle: Fact Append
+  description: Giao dịch chuyển nhượng cổ phần của công ty quản lý quỹ. Ghi nhận bên
+    chuyển nhượng/nhận nhượng và giá trị giao dịch.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TRSFERINDER
+  alias: tr_in
+  select_fields: Id, SecId, TransDate, Quantity, Price, DateCreated, DateModified
+  filter: created_at >= {data_date}
+relationship: []
+mapping_columns:
+- target_column: fnd_mgt_co_shr_tfr_id
+  transformation: '{hash_id}(''FMS_TRSFERINDER'', tr_in.Id)'
+  data_type: string
+  description: Khóa đại diện cho giao dịch chuyển nhượng cổ phần QLQ.
+  target_attr_name: Fund Management Company Share Transfer Id
+- target_column: fnd_mgt_co_shr_tfr_code
+  transformation: tr_in.Id
+  data_type: string
+  description: Mã định danh giao dịch. Map từ PK bảng nguồn.
+  target_attr_name: Fund Management Company Share Transfer Code
+- target_column: src_stm_code
+  transformation: '''FMS_TRSFERINDER'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fnd_mgt_co_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', tr_in.SecId)'
+  data_type: string
+  description: FK đến công ty QLQ có cổ phần được chuyển nhượng.
+  target_attr_name: Fund Management Company Id
+- target_column: fnd_mgt_co_code
+  transformation: tr_in.SecId
+  data_type: string
+  description: Mã công ty QLQ.
+  target_attr_name: Fund Management Company Code
+- target_column: tfr_dt
+  transformation: tr_in.TransDate
+  data_type: date
+  description: Ngày thực hiện giao dịch chuyển nhượng.
+  target_attr_name: Transfer Date
+- target_column: shr_qty
+  transformation: tr_in.Quantity
+  data_type: int
+  description: Số lượng cổ phần chuyển nhượng.
+  target_attr_name: Share Quantity
+- target_column: tfr_prc
+  transformation: tr_in.Price
+  data_type: decimal(23,2)
+  description: Giá giao dịch chuyển nhượng (VNĐ/cổ phần).
+  target_attr_name: Transfer Price
+- target_column: crt_tms
+  transformation: tr_in.DateCreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: tr_in.DateModified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+  target_attr_name: Updated Timestamp
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

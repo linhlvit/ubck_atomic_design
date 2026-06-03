@@ -1,0 +1,87 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ivsm_fnd_ivsr_cptl_chg_log-FMS.MBCHANGE
+  logical_name: Mapping Atomic - Investment Fund Investor Capital Change Log – source
+    FMS.MBCHANGE
+  physical_name: ivsm_fnd_ivsr_cptl_chg_log
+  dm_ref: ATM-ivsm_fnd_ivsr_cptl_chg_log-FMS.MBCHANGE
+  brd_ref: BRD-SRC-FMS-MBCHANGE
+target:
+  namespace: atm
+  physical_name: ivsm_fnd_ivsr_cptl_chg_log
+  etl_handle: Fact Append
+  description: Lịch sử thay đổi phần vốn góp của nhà đầu tư trong quỹ đầu tư. Ghi
+    nhận vốn trước/sau và lý do thay đổi.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: MBCHANGE
+  alias: mb
+  select_fields: Id, MBFId, OldCapital, NewCapital, ChangeDate, Reason, CreatedBy,
+    DateCreated, DateModified
+  filter: created_at >= {data_date}
+relationship: []
+mapping_columns:
+- target_column: ivsm_fnd_ivsr_cptl_chg_log_id
+  transformation: '{hash_id}(''FMS_MBCHANGE'', mb.Id)'
+  data_type: string
+  description: Khóa đại diện cho bản ghi thay đổi vốn góp NĐT.
+  target_attr_name: Investment Fund Investor Capital Change Log Id
+- target_column: ivsm_fnd_ivsr_cptl_chg_log_code
+  transformation: mb.Id
+  data_type: string
+  description: Mã định danh bản ghi thay đổi. Map từ PK bảng nguồn.
+  target_attr_name: Investment Fund Investor Capital Change Log Code
+- target_column: src_stm_code
+  transformation: '''FMS_MBCHANGE'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: ivsm_fnd_ivsr_mbr_id
+  transformation: '{hash_id}(''FMS_MBFUND'', mb.MBFId)'
+  data_type: string
+  description: FK đến quan hệ góp vốn của NĐT trong quỹ.
+  target_attr_name: Investment Fund Investor Membership Id
+- target_column: ivsm_fnd_ivsr_mbr_code
+  transformation: mb.MBFId
+  data_type: string
+  description: Mã quan hệ góp vốn.
+  target_attr_name: Investment Fund Investor Membership Code
+- target_column: old_cptl_amt
+  transformation: mb.OldCapital
+  data_type: decimal(23,2)
+  description: Số vốn góp trước khi thay đổi (VNĐ).
+  target_attr_name: Old Capital Amount
+- target_column: new_cptl_amt
+  transformation: mb.NewCapital
+  data_type: decimal(23,2)
+  description: Số vốn góp sau khi thay đổi (VNĐ).
+  target_attr_name: New Capital Amount
+- target_column: chg_dt
+  transformation: mb.ChangeDate
+  data_type: date
+  description: Ngày thực hiện thay đổi vốn góp.
+  target_attr_name: Change Date
+- target_column: chg_rsn
+  transformation: mb.Reason
+  data_type: string
+  description: Lý do thay đổi vốn góp.
+  target_attr_name: Change Reason
+- target_column: crt_by
+  transformation: mb.CreatedBy
+  data_type: string
+  description: Người tạo bản ghi.
+  target_attr_name: Created By
+- target_column: crt_tms
+  transformation: mb.DateCreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: mb.DateModified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+  target_attr_name: Updated Timestamp
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

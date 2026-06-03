@@ -1,0 +1,167 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-rpt_impr_val-FMS.RPTVALUES
+  logical_name: Mapping Atomic - Report Import Value – source FMS.RPTVALUES
+  physical_name: rpt_impr_val
+  dm_ref: ATM-rpt_impr_val-FMS.RPTVALUES
+  brd_ref: BRD-SRC-FMS-RPTVALUES
+target:
+  namespace: atm
+  physical_name: rpt_impr_val
+  etl_handle: SCD4A
+  description: Dữ liệu giá trị từng ô chỉ tiêu trong sheet báo cáo được import vào
+    hệ thống FMS. Grain ở mức cell-level.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: RPTVALUES
+  alias: rp
+  select_fields: Id, MebId, SecId, FndId, BkMId, FrBrId, PrdId, SheetId, TgtId, RptId,
+    Values, AccValues, FormatDataType, IsDynamic, PeriodType, Type, CreatedBy, ModifyBy,
+    DateCreated, DateModified
+  filter: created_at >= {data_date}
+relationship: []
+mapping_columns:
+- target_column: mbr_rpt_val_id
+  transformation: '{hash_id}(''FMS_RPTVALUES'', rp.Id)'
+  data_type: string
+  description: Khóa đại diện cho giá trị chỉ tiêu trong báo cáo thành viên.
+  target_attr_name: Member Report Value Id
+- target_column: mbr_rpt_val_code
+  transformation: rp.Id
+  data_type: string
+  description: Mã định danh giá trị chỉ tiêu. Map từ PK bảng nguồn.
+  target_attr_name: Member Report Value Code
+- target_column: src_stm_code
+  transformation: '''FMS_RPTVALUES'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: mbr_prd_rpt_id
+  transformation: '{hash_id}(''FMS_RPTMEMBER'', rp.MebId)'
+  data_type: string
+  description: FK đến báo cáo định kỳ thành viên.
+  target_attr_name: Member Periodic Report Id
+- target_column: mbr_prd_rpt_code
+  transformation: rp.MebId
+  data_type: string
+  description: Mã báo cáo định kỳ.
+  target_attr_name: Member Periodic Report Code
+- target_column: fnd_mgt_co_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', rp.SecId)'
+  data_type: string
+  description: FK đến công ty QLQ nộp báo cáo (nullable).
+  target_attr_name: Fund Management Company Id
+- target_column: fnd_mgt_co_code
+  transformation: rp.SecId
+  data_type: string
+  description: Mã công ty QLQ.
+  target_attr_name: Fund Management Company Code
+- target_column: ivsm_fnd_id
+  transformation: '{hash_id}(''FMS_FUNDS'', rp.FndId)'
+  data_type: string
+  description: FK đến quỹ đầu tư nộp báo cáo (nullable).
+  target_attr_name: Investment Fund Id
+- target_column: ivsm_fnd_code
+  transformation: rp.FndId
+  data_type: string
+  description: Mã quỹ đầu tư.
+  target_attr_name: Investment Fund Code
+- target_column: cstd_bnk_id
+  transformation: '{hash_id}(''FMS_BANKMONI'', rp.BkMId)'
+  data_type: string
+  description: FK đến ngân hàng LKGS nộp báo cáo (nullable).
+  target_attr_name: Custodian Bank Id
+- target_column: cstd_bnk_code
+  transformation: rp.BkMId
+  data_type: string
+  description: Mã ngân hàng LKGS.
+  target_attr_name: Custodian Bank Code
+- target_column: frgn_fnd_mgt_ou_id
+  transformation: '{hash_id}(''FMS_FORBRCH'', rp.FrBrId)'
+  data_type: string
+  description: FK đến VPĐD/CN QLQ NN nộp báo cáo (nullable).
+  target_attr_name: Foreign Fund Management Organization Unit Id
+- target_column: frgn_fnd_mgt_ou_code
+  transformation: rp.FrBrId
+  data_type: string
+  description: Mã VPĐD/CN QLQ NN.
+  target_attr_name: Foreign Fund Management Organization Unit Code
+- target_column: rpt_prd_id
+  transformation: '{hash_id}(''FMS_RPTPERIOD'', rp.PrdId)'
+  data_type: string
+  description: FK đến kỳ báo cáo.
+  target_attr_name: Reporting Period Id
+- target_column: rpt_prd_code
+  transformation: rp.PrdId
+  data_type: string
+  description: Mã kỳ báo cáo.
+  target_attr_name: Reporting Period Code
+- target_column: rpt_shet_id
+  transformation: rp.SheetId
+  data_type: string
+  description: Mã trang/sheet trong biểu mẫu báo cáo.
+  target_attr_name: Report Sheet Id
+- target_column: rpt_trgt_id
+  transformation: rp.TgtId
+  data_type: string
+  description: Mã chỉ tiêu trong sheet báo cáo.
+  target_attr_name: Report Target Id
+- target_column: rpt_id
+  transformation: rp.RptId
+  data_type: string
+  description: Mã biểu mẫu báo cáo.
+  target_attr_name: Report Id
+- target_column: val
+  transformation: rp.Values
+  data_type: string
+  description: Giá trị chỉ tiêu (text để chứa mọi kiểu dữ liệu).
+  target_attr_name: Value
+- target_column: acm_val
+  transformation: rp.AccValues
+  data_type: string
+  description: Giá trị lũy kế của chỉ tiêu.
+  target_attr_name: Accumulated Value
+- target_column: fmt_data_tp_code
+  transformation: rp.FormatDataType
+  data_type: string
+  description: Kiểu dữ liệu định dạng của chỉ tiêu.
+  target_attr_name: Format Data Type Code
+- target_column: is_dynamic_ind
+  transformation: rp.IsDynamic
+  data_type: string
+  description: Cờ đánh dấu chỉ tiêu động (người dùng tự thêm).
+  target_attr_name: Is Dynamic Indicator
+- target_column: rpt_prd_tp_code
+  transformation: rp.PeriodType
+  data_type: string
+  description: Kiểu kỳ báo cáo (tháng/quý/năm).
+  target_attr_name: Reporting Period Type Code
+- target_column: val_tp_code
+  transformation: rp.Type
+  data_type: string
+  description: Loại giá trị trong báo cáo.
+  target_attr_name: Value Type Code
+- target_column: crt_by
+  transformation: rp.CreatedBy
+  data_type: string
+  description: Người tạo bản ghi.
+  target_attr_name: Created By
+- target_column: mod_by
+  transformation: rp.ModifyBy
+  data_type: string
+  description: Người cập nhật bản ghi lần cuối.
+  target_attr_name: Modified By
+- target_column: crt_tms
+  transformation: rp.DateCreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: rp.DateModified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+  target_attr_name: Updated Timestamp
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

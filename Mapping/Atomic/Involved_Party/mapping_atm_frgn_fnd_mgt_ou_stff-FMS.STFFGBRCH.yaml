@@ -1,0 +1,86 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-frgn_fnd_mgt_ou_stff-FMS.STFFGBRCH
+  logical_name: Mapping Atomic - Foreign Fund Management Organization Unit Staff –
+    source FMS.STFFGBRCH
+  physical_name: frgn_fnd_mgt_ou_stff
+  dm_ref: ATM-frgn_fnd_mgt_ou_stff-FMS.STFFGBRCH
+  brd_ref: BRD-SRC-FMS-STFFGBRCH
+target:
+  namespace: atm
+  physical_name: frgn_fnd_mgt_ou_stff
+  etl_handle: SCD4A
+  description: Nhân sự đảm nhận chức vụ tại văn phòng đại diện/chi nhánh công ty quản
+    lý quỹ nước ngoài. Ghi nhận vai trò và tư cách pháp lý.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: STFFGBRCH
+  alias: st_br
+  select_fields: Id, FgBrId, TLId, FnType, Isr, Isp, DateCreated, DateModified
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: frgn_fnd_mgt_ou_stff_id
+  transformation: '{hash_id}(''FMS_STFFGBRCH'', st_br.Id)'
+  data_type: string
+  description: Khóa đại diện cho nhân sự tại VPĐD/CN QLQ nước ngoài.
+  target_attr_name: Foreign Fund Management Organization Unit Staff Id
+- target_column: frgn_fnd_mgt_ou_stff_code
+  transformation: st_br.Id
+  data_type: string
+  description: Mã định danh nhân sự VPĐD/CN QLQ NN. Map từ PK bảng nguồn.
+  target_attr_name: Foreign Fund Management Organization Unit Staff Code
+- target_column: src_stm_code
+  transformation: '''FMS_STFFGBRCH'''
+  data_type: string
+  description: Mã nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: frgn_fnd_mgt_ou_id
+  transformation: '{hash_id}(''FMS_FORBRCH'', st_br.FgBrId)'
+  data_type: string
+  description: FK đến VPĐD/CN QLQ nước ngoài.
+  target_attr_name: Foreign Fund Management Organization Unit Id
+- target_column: frgn_fnd_mgt_ou_code
+  transformation: st_br.FgBrId
+  data_type: string
+  description: Mã VPĐD/CN QLQ nước ngoài.
+  target_attr_name: Foreign Fund Management Organization Unit Code
+- target_column: fnd_mgt_co_key_psn_id
+  transformation: '{hash_id}(''FMS_TLProfiles'', st_br.TLId)'
+  data_type: string
+  description: FK đến nhân sự giữ vai trò tại VPĐD/CN QLQ NN.
+  target_attr_name: Fund Management Company Key Person Id
+- target_column: fnd_mgt_co_key_psn_code
+  transformation: st_br.TLId
+  data_type: string
+  description: Mã nhân sự.
+  target_attr_name: Fund Management Company Key Person Code
+- target_column: ou_tp_code
+  transformation: st_br.FnType
+  data_type: string
+  description: 'Loại đơn vị: VPĐD hoặc CN NN.'
+  target_attr_name: Organization Unit Type Code
+- target_column: is_lgl_rprs_ind
+  transformation: st_br.Isr
+  data_type: string
+  description: Cờ đánh dấu người đại diện pháp luật tại VPĐD/CN.
+  target_attr_name: Is Legal Representative Indicator
+- target_column: is_dscl_rprs_ind
+  transformation: st_br.Isp
+  data_type: string
+  description: Cờ đánh dấu đại diện công bố thông tin.
+  target_attr_name: Is Disclosure Representative Indicator
+- target_column: crt_tms
+  transformation: st_br.DateCreated
+  data_type: timestamp
+  description: Ngày tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: st_br.DateModified
+  data_type: timestamp
+  description: Ngày cập nhật bản ghi.
+  target_attr_name: Updated Timestamp
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
