@@ -14,19 +14,22 @@ Phục vụ **Tab THỐNG KÊ CHUNG** — Nhóm 1 (KPI thẻ đếm CCHN theo tr
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source NHNCK (MySQL)"]
+    subgraph SRC["Staging"]
         S1["NHNCK.CertificateRecords"]
         S2["NHNCK.Professionals"]
         S3["NHNCK.Applications"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Securities Practitioner License Certificate Document"]
         SV2["Securities Practitioner"]
         SV3["Securities Practitioner License Application"]
+        Calendar_Date["Calendar Date"]
+        Classification_Value["Classification Value"]
     end
 
-    subgraph Datamart["Datamart"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner License Certificate Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -36,10 +39,13 @@ flowchart LR
     S1 --> SV1
     S2 --> SV2
     S3 --> SV3
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
     SV1 --> G1
     SV3 --> G1
     SV2 --> G2
+    Calendar_Date --> G3
+    Classification_Value --> G4
 
     G2 --> G1
     G3 --> G1
@@ -54,18 +60,20 @@ Phục vụ **Tab THỐNG KÊ CHUNG** — Nhóm 2 (Tổng NHN, Cảnh báo NHNCK
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Source NHNCK (MySQL)"]
+    subgraph SRC["Staging"]
         S1["NHNCK.Professionals"]
         S2["NHNCK.ProfessionalHistories"]
         S3["NHNCK.Violations"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Securities Practitioner"]
         SV2["Securities Practitioner Conduct Violation"]
+        Calendar_Date["Calendar Date"]
     end
 
-    subgraph Datamart["Datamart"]
+    subgraph GOLD["Datamart"]
         G1["Fact Practitioner Daily Snapshot"]
         G2["Securities Practitioner Dimension"]
         G3["Calendar Date Dimension"]
@@ -74,10 +82,12 @@ flowchart LR
     S1 --> SV1
     S2 --> SV1
     S3 --> SV2
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
     SV1 --> G1
     SV1 --> G2
     SV2 --> G1
+    Calendar_Date --> G3
 
     G2 --> G1
     G3 --> G1

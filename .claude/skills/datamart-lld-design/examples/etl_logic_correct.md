@@ -81,9 +81,9 @@
 ## `pivot` — fanout 1 row thành nhiều rows
 
 ```csv
-"Securities Offering 360 Profile","scr_ofrg_360_prfl","Offering Type Category Code","ofrg_tp_cgy_code","false","Text","string","DD",
+"Securities Offering 360 Profile","scr_ofrg_360_prfl","Offering Type Category Code","ofrg_tp_cgy_code","false","Text","string","",
 "Branch key — ETL emit 1 row per branch",
-"'PUBLIC' UNION ALL 'PRIVATE' UNION ALL 'OTHER'","pivot","Generated","","",""
+"'PUBLIC' UNION ALL 'PRIVATE' UNION ALL 'OTHER'","pivot","Public Company Securities Offering","company_securities_issuance","Offering Type Category Code","ofrg_tp_cgy_code"
 ```
 
 ```csv
@@ -104,7 +104,7 @@ UNION ALL company_securities_issuance.planned_security_qty - (company_securities
 ```csv
 "Advisory Firm Rating Report","adv_firm_rtg_rpt","Advisory Firm Name","adv_firm_nm","true","Text","string","",
 "Tên đơn vị tư vấn — PENDING",
-"","pending","Generated","","",""
+"","pending","","","",""
 ```
 
-**Đặc điểm:** `etl_logic` trống; `source_entity = Generated` (tạm); `etl_logic_type = pending`.
+**Đặc điểm:** `etl_logic` trống; `source_entity` trống; `etl_logic_type = pending`. Không dùng `Generated` cho pending — `Generated` chỉ dành riêng cho Surrogate Key (PK) và Surrogate Dimension Key (FK).

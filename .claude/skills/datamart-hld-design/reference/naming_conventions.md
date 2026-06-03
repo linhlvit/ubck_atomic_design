@@ -59,9 +59,9 @@ Mọi Fact bắt buộc có ít nhất 1 FK date đến Calendar Date Dimension.
 
 ---
 
-## Dimension SCD
+## Dimension và Operational SCD
 
-- **SCD2 bắt buộc** cho tất cả Dimension trừ Calendar Date Dimension
+- **SCD Type 4A bắt buộc** cho tất cả Dimension (trừ Calendar Date Dimension) và Operational
 - ETL tự quản lý `Effective Date` / `Expiry Date` — không thiết kế trong schema
 - **Conformed Dimension** (dùng chung cross-module): Calendar Date, Geographic Area, Classification
 

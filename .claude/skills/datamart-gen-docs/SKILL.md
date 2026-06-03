@@ -353,12 +353,13 @@ Ví dụ:
   - Tên logical lấy từ `Entities.csv` cột `datamart_entity`
 - **Tên subgraph luôn là**: `Staging`, `Atomic`, `Datamart` — KHÔNG thêm tên hệ thống kể cả khi có nhiều nguồn (VD sai: `Staging_FMS["Staging (FMS)"]`, VD đúng: `Staging`)
 - Mũi tên nét liền `-->`, không label, không layer Báo cáo
-- **Copy nguyên diagram từ HLD** — lấy nguyên mermaid flowchart từ HLD Section 1, chỉ đổi alias subgraph nếu HLD dùng tên khác (VD: `SRC` → `Staging`, `SIL` → `Atomic`, `GOLD` → `Datamart`). Không tự vẽ lại.
+- **Lấy cấu trúc từ HLD** — đổi alias subgraph nếu HLD dùng tên khác (VD: `SRC` → `Staging`, `SIL` → `Atomic`, `GOLD` → `Datamart`). Không tự vẽ lại topology.
 - **1 diagram / 1 bảng Gold (Fact hoặc Operational)**: Dimension KHÔNG tách diagram riêng — luôn gộp vào subgraph Datamart của diagram Fact/Operational mà nó phục vụ.
   - Nếu 1 Cụm HLD có N Fact và M Operational → tạo N+M diagram riêng
-  - Mỗi diagram: copy nguyên phần Staging→Atomic từ HLD + chỉ giữ lại 1 bảng Gold trong subgraph Datamart (kèm Dimension liên quan)
-  - Đúng: nhóm có 1 Fact + 1 Operational → 2 diagram riêng; nhóm có 3 Operational → 3 diagram riêng
-  - Sai: tách Dimension thành diagram riêng; gộp nhiều Fact/Operational vào 1 diagram
+  - Mỗi diagram: **chỉ giữ lại node Staging và Atomic thực sự có đường đi đến bảng Gold đó** — loại bỏ node thừa không có mũi tên nối vào bảng Gold đang xét (dù node đó có trong diagram HLD gốc)
+  - Kiểm tra: với mỗi Atomic node, trace ngược mũi tên — nếu Atomic_X → Gold_target thì giữ, kèm Staging_Y → Atomic_X; nếu Atomic_X chỉ → Gold_khác thì bỏ khỏi diagram này
+  - Đúng: nhóm có 1 Fact + 1 Operational → 2 diagram riêng, mỗi diagram chỉ có node thực sự feed bảng Gold đó
+  - Sai: tách Dimension thành diagram riêng; gộp nhiều Fact/Operational vào 1 diagram; copy nguyên toàn bộ Staging+Atomic từ HLD khi cụm có nhiều bảng Gold
 
 ```
 ```mermaid
@@ -388,6 +389,8 @@ flowchart LR
 Format: `**Mục đích:** [Nội dung]`
 
 **B.3.4 Mô tả luồng**
+
+> **Quy tắc nhất quán với diagram:** Mô tả luồng Staging→Atomic **chỉ liệt kê các bảng Atomic có trong diagram của nhóm này** — không mô tả node đã bị loại khỏi diagram vì không feed bảng Gold đang xét. Diagram và mô tả luồng phải khớp 1-1.
 
 Staging → Atomic — mỗi dòng mô tả 1 bảng Atomic, source nhắc ở cuối:
 ```
@@ -581,6 +584,8 @@ Theo sau heading là metadata bảng:
 - [ ] Mũi tên nét liền, không label, không layer Báo cáo
 - [ ] Nhiều hệ thống nguồn → nhiều subgraph Staging riêng (VD: `Staging_FMS["Staging (FMS)"]`)
 - [ ] Mỗi diagram chỉ có **1 bảng Gold** (Fact hoặc Operational) — nhóm N bảng Gold → N diagram riêng
+- [ ] Node Staging/Atomic trong mỗi diagram **chỉ gồm node thực sự feed bảng Gold đó** — không copy toàn bộ node từ HLD khi cụm có nhiều bảng Gold (trace mũi tên: Atomic_X → Gold_target mới giữ)
+- [ ] Mô tả luồng Staging→Atomic khớp 1-1 với node trong diagram (không mô tả node đã bị loại)
 - [ ] Đã bỏ nhóm chỉ reuse Datamart không có Staging/Atomic riêng
 - [ ] Mô tả Staging→Atomic: tên Atomic in đậm đứng đầu, source ở cuối câu
 - [ ] Bảng CV ghi đầy đủ `Classification Value (tên_scheme)`

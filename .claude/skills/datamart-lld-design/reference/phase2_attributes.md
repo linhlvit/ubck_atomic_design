@@ -48,6 +48,7 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 ❌ `data_domain = Surrogate Dimension Key` mà `key` không phải `FK → <Dim>`.
 ❌ `data_domain = Surrogate Key` trên Fact table.
 ❌ `key = FK → Classification Dimension (scheme: X)` — không hợp lệ ở bất kỳ đâu.
+❌ `key = DD` trên Operational — DD chỉ hợp lệ trên Fact. Branch key của pivot trên Operational dùng `key` trống.
 
 ---
 

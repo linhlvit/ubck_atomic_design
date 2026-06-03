@@ -74,6 +74,31 @@ Bắt buộc xác định Driving Table trước khi điền `etl_logic`:
 
 Ghi rõ Driving Table trong `description` của row PK/BK.
 
+**Driving Table khi Fact không có join key chung (No Driving Table):**
+Fact dùng pattern CROSS JOIN scalar subquery (mỗi measure aggregate độc lập từ 1 Atomic table) — không có driving table. Không thêm `src_stm_code` cho loại bảng này.
+
+### Bước 1b — Bổ sung `src_stm_code` cho Dimension và Operational
+
+Mọi bảng `dim` và `operational` **phải có** attribute `src_stm_code` (thêm cuối danh sách attribute của bảng).
+
+| Trường hợp | ETL Logic | etl_logic_type |
+|---|---|---|
+| Driving table single-source | `<driving_table>.src_stm_code` | `direct` |
+| Driving table multi-source | `<driving_table>.src_stm_code WHERE <driving_table>.src_stm_code = '<value>'` | `direct` |
+
+**Xử lý multi-source driving table:**
+Nếu Atomic driving table nhận dữ liệu từ nhiều `src_stm_code` khác nhau, phải xác định nguồn chính thức dùng cho Datamart, rồi:
+1. Thêm điều kiện lọc vào `etl_logic`: `WHERE src_stm_code = '<giá_trị_nguồn_chính_thức>'`
+2. Ghi rõ lý do lọc trong `description`
+3. Vẫn dùng `etl_logic_type = direct` (lọc ở ETL, không phải transform)
+
+Spec row `src_stm_code`:
+```
+nullable=false | data_domain=Classification Value | data_type=string | key=(trống)
+source_entity=<tên Atomic entity của driving table>
+atomic_table=<driving_table> | source_attribute=Source System Code | atomic_column=src_stm_code
+```
+
 ### Bước 2 — Tra atomic_attributes.csv
 
 Với mỗi attribute cần map:
@@ -98,7 +123,8 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 ```
 □ Driving Table ghi rõ trong description của PK/BK
 □ Mọi mapping tra từ atomic_attributes.csv — không đoán
-□ etl_logic_type điền mọi row (trừ PK/NK/BK)
+□ etl_logic_type điền mọi row — kể cả pending row, trừ PK/NK/BK
+□ etl_logic (content) trống chỉ khi key ∈ {PK, NK, BK} hoặc etl_logic_type = pending
 □ etl_logic: mọi column reference có table_name. prefix
 □ etl_logic có dấu phẩy bên trong → đã double-quote trong CSV
 □ join_atomic: ghi rõ INNER JOIN hay LEFT JOIN
@@ -111,6 +137,9 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 □ Mọi Dimension có ≥1 NK
 □ Mọi Operational có đủ PK (_id) + BK (_code)
 □ Không thiết kế Effective Date / Expiry Date / Population Date
+□ Mọi bảng dim/operational có attribute src_stm_code (cuối danh sách)
+□ src_stm_code: driving table multi-source → thêm WHERE filter + ghi rõ trong description
+□ src_stm_code: fact No-Driving-Table → không thêm
 □ nullable = false cho PK / BK / NK / FK
 □ data_domain = Classification Value → key trống
 □ data_domain = Surrogate Dimension Key → key = FK → <Dim>

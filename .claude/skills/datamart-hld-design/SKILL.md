@@ -106,10 +106,11 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file và yêu cầ
 
 ### Section 2 — Tổng quan báo cáo
 - [ ] Hierarchy: `### Tab` → `#### Nhóm` → `##### PENDING/READY` (chỉ khi có cả 2)
-- [ ] Block READY có đủ: Phân loại / Atomic / Mockup / Source / Bảng KPI / Star Schema / Lineage Mart / Bảng grain
+- [ ] Block READY có đủ: Phân loại / Atomic / Mockup / Source / Bảng KPI / Star Schema / Lineage Mart → Báo cáo / Bảng grain
 - [ ] Block PENDING có đủ: KPI liên quan / Lý do / Atomic cần bổ sung / Mart dự kiến (chỉ tên + grain)
 - [ ] Bảng KPI PENDING: chỉ 4 cột (KPI ID / Tên KPI / Tính chất / Trạng thái) — không có Đơn vị, Công thức
 - [ ] Bảng PENDING không có Star Schema, erDiagram, Lineage flowchart
+- [ ] Block PENDING không tạo Open Issue (Section 4) về grain/schema/logic — chỉ ghi nhận Atomic cần bổ sung
 - [ ] KPI ID đã được khai sinh trong Section 2 trước khi xuất hiện ở file khác
 
 ### Section 3 — Mô hình tổng thể

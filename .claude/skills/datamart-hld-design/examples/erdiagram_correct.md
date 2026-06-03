@@ -6,7 +6,7 @@
 erDiagram
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
-        date Calendar_Date NK
+        date Calendar_Date
         int Year
         int Quarter
         int Month
@@ -15,7 +15,7 @@ erDiagram
     }
     Fund_Management_Company_Dimension {
         string Fund_Management_Company_Dimension_Id PK
-        string Company_Code NK
+        string Company_Code
         string Company_Name
         string Life_Cycle_Status_Code
     }

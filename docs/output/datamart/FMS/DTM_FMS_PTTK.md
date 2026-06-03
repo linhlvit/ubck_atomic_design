@@ -137,22 +137,16 @@ Atomic → Datamart:
 flowchart LR
     subgraph Staging
         S1["FMS.SECURITIES"]
-        S2["FMS.FUNDS"]
         S4["FMS.RPTVALUES"]
         S5["FMS.RANK"]
         S6["FMS.RATINGPD"]
-        S7["FMS.INVESACC"]
-        S8["FMS.INVES"]
     end
 
     subgraph Atomic
         SV1["Fund Management Company"]
-        SV2["Investment Fund"]
         SV4["Report Import Value"]
         SV5["Member Rating"]
         SV6["Member Rating Period"]
-        SV7["Discretionary Investment Account"]
-        SV8["Discretionary Investment Investor"]
     end
 
     subgraph Datamart
@@ -160,12 +154,9 @@ flowchart LR
     end
 
     S1 --> SV1
-    S2 --> SV2
     S4 --> SV4
     S5 --> SV5
     S6 --> SV6
-    S7 --> SV7
-    S8 --> SV8
 
     SV1 --> G1
     SV4 --> G1
@@ -179,12 +170,9 @@ flowchart LR
 
 Staging → Atomic:
 - **Fund Management Company:** Bảng lưu thông tin công ty quản lý quỹ lấy thông tin từ bảng FMS.SECURITIES
-- **Investment Fund:** Bảng lưu thông tin quỹ đầu tư lấy thông tin từ bảng FMS.FUNDS
 - **Report Import Value:** Bảng lưu giá trị các chỉ tiêu báo cáo định kỳ (AUM, lợi nhuận, vốn CSH) lấy thông tin từ bảng FMS.RPTVALUES
 - **Member Rating:** Bảng lưu kết quả xếp loại CAMEL của thành viên lấy thông tin từ bảng FMS.RANK
 - **Member Rating Period:** Bảng lưu thông tin kỳ đánh giá xếp loại lấy thông tin từ bảng FMS.RATINGPD
-- **Discretionary Investment Account:** Bảng lưu thông tin hợp đồng ủy thác danh mục đầu tư lấy thông tin từ bảng FMS.INVESACC
-- **Discretionary Investment Investor:** Bảng lưu thông tin nhà đầu tư ủy thác lấy thông tin từ bảng FMS.INVES
 
 Atomic → Datamart:
 - **Fund Management Company Profile:** Bảng tác nghiệp lưu danh sách CTQLQ ở trạng thái mới nhất, 1 dòng per CTQLQ tại tháng slicer
@@ -199,20 +187,12 @@ flowchart LR
         S1["FMS.SECURITIES"]
         S2["FMS.FUNDS"]
         S4["FMS.RPTVALUES"]
-        S5["FMS.RANK"]
-        S6["FMS.RATINGPD"]
-        S7["FMS.INVESACC"]
-        S8["FMS.INVES"]
     end
 
     subgraph Atomic
         SV1["Fund Management Company"]
         SV2["Investment Fund"]
         SV4["Report Import Value"]
-        SV5["Member Rating"]
-        SV6["Member Rating Period"]
-        SV7["Discretionary Investment Account"]
-        SV8["Discretionary Investment Investor"]
     end
 
     subgraph Datamart
@@ -222,10 +202,6 @@ flowchart LR
     S1 --> SV1
     S2 --> SV2
     S4 --> SV4
-    S5 --> SV5
-    S6 --> SV6
-    S7 --> SV7
-    S8 --> SV8
 
     SV1 --> G2
     SV2 --> G2
@@ -240,10 +216,6 @@ Staging → Atomic:
 - **Fund Management Company:** Bảng lưu thông tin công ty quản lý quỹ lấy thông tin từ bảng FMS.SECURITIES
 - **Investment Fund:** Bảng lưu thông tin quỹ đầu tư lấy thông tin từ bảng FMS.FUNDS
 - **Report Import Value:** Bảng lưu giá trị các chỉ tiêu báo cáo định kỳ (NAV quỹ) lấy thông tin từ bảng FMS.RPTVALUES
-- **Member Rating:** Bảng lưu kết quả xếp loại CAMEL của thành viên lấy thông tin từ bảng FMS.RANK
-- **Member Rating Period:** Bảng lưu thông tin kỳ đánh giá xếp loại lấy thông tin từ bảng FMS.RATINGPD
-- **Discretionary Investment Account:** Bảng lưu thông tin hợp đồng ủy thác danh mục đầu tư lấy thông tin từ bảng FMS.INVESACC
-- **Discretionary Investment Investor:** Bảng lưu thông tin nhà đầu tư ủy thác lấy thông tin từ bảng FMS.INVES
 
 Atomic → Datamart:
 - **Fund Management Company Fund List:** Bảng tác nghiệp lưu danh sách quỹ per CTQLQ ở trạng thái mới nhất, 1 dòng per quỹ × tháng slicer
@@ -256,20 +228,12 @@ Atomic → Datamart:
 flowchart LR
     subgraph Staging
         S1["FMS.SECURITIES"]
-        S2["FMS.FUNDS"]
-        S4["FMS.RPTVALUES"]
-        S5["FMS.RANK"]
-        S6["FMS.RATINGPD"]
         S7["FMS.INVESACC"]
         S8["FMS.INVES"]
     end
 
     subgraph Atomic
         SV1["Fund Management Company"]
-        SV2["Investment Fund"]
-        SV4["Report Import Value"]
-        SV5["Member Rating"]
-        SV6["Member Rating Period"]
         SV7["Discretionary Investment Account"]
         SV8["Discretionary Investment Investor"]
     end
@@ -279,10 +243,6 @@ flowchart LR
     end
 
     S1 --> SV1
-    S2 --> SV2
-    S4 --> SV4
-    S5 --> SV5
-    S6 --> SV6
     S7 --> SV7
     S8 --> SV8
 
@@ -297,10 +257,6 @@ flowchart LR
 
 Staging → Atomic:
 - **Fund Management Company:** Bảng lưu thông tin công ty quản lý quỹ lấy thông tin từ bảng FMS.SECURITIES
-- **Investment Fund:** Bảng lưu thông tin quỹ đầu tư lấy thông tin từ bảng FMS.FUNDS
-- **Report Import Value:** Bảng lưu giá trị các chỉ tiêu báo cáo định kỳ lấy thông tin từ bảng FMS.RPTVALUES
-- **Member Rating:** Bảng lưu kết quả xếp loại CAMEL của thành viên lấy thông tin từ bảng FMS.RANK
-- **Member Rating Period:** Bảng lưu thông tin kỳ đánh giá xếp loại lấy thông tin từ bảng FMS.RATINGPD
 - **Discretionary Investment Account:** Bảng lưu thông tin hợp đồng ủy thác danh mục đầu tư lấy thông tin từ bảng FMS.INVESACC
 - **Discretionary Investment Investor:** Bảng lưu thông tin nhà đầu tư ủy thác lấy thông tin từ bảng FMS.INVES
 

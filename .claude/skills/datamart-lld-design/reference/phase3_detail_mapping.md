@@ -50,13 +50,17 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 | `JOIN_KEY` | FK dùng để join |
 | `DERIVED` | KPI Phái sinh — tính tại presentation layer |
 
-**Mapping từ Phân loại BA:**
+**Mapping từ Phân loại BA / Tính chất HLD:**
 
-| Phân loại BA | column_role |
+| Phân loại BA / Tính chất HLD | column_role |
 |---|---|
 | `Chiều` | `SLICER` / `FILTER` / `GROUP_BY` |
 | `Chỉ tiêu cơ sở` | `MEASURE` |
 | `Chỉ tiêu phái sinh` | `DERIVED` (ưu tiên) hoặc `MEASURE` nếu lưu trong mart |
+| `Attribute` (KPI tác nghiệp trên Operational) | `SLICER` — column hiển thị / filter trực tiếp, không aggregate |
+
+**Lưu ý `tinh_chat` cho dòng FILTER/SLICER của KPI Base:**
+Dòng FILTER/SLICER thuộc cùng KPI Base (cùng `kpi_id`) kế thừa `tinh_chat = "Base"` từ KPI cha — không để trống.
 
 ---
 
