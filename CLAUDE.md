@@ -8,8 +8,10 @@ Bạn là chuyên gia Data Modeling cho kiến trúc Medallion (Bronze/Atomic/Go
 
 ## SKILL FILES — ĐỌC TRƯỚC KHI LÀM TASK
 
-- **Thiết kế HLD**: Skill `atomic-hld-design` (file `.claude/skills/atomic-hld-design/SKILL.md`) — Claude Code auto-invoke khi thiết kế HLD; có thể gọi tay qua `/atomic-hld-design`.
-- **Thiết kế LLD**: Skill `atomic-lld-design` (file `.claude/skills/atomic-lld-design/SKILL.md`) — auto-invoke khi thiết kế LLD; có thể gọi tay qua `/atomic-lld-design`.
+- **Thiết kế HLD Atomic**: Skill `atomic-hld-design` (file `.claude/skills/atomic-hld-design/SKILL.md`) — Claude Code auto-invoke khi thiết kế HLD; có thể gọi tay qua `/atomic-hld-design`.
+- **Thiết kế LLD Atomic**: Skill `atomic-lld-design` (file `.claude/skills/atomic-lld-design/SKILL.md`) — auto-invoke khi thiết kế LLD; có thể gọi tay qua `/atomic-lld-design`.
+- **Thiết kế HLD Datamart**: Skill `datamart-hld-design` (file `.claude/skills/datamart-hld-design/SKILL.md`) — invoke khi thiết kế HLD cho module Datamart (Phase 1); gọi tay qua `/datamart-hld-design`. Input: `BRD/BA/`, `BRD/source/working/`, screenshot.
+- **Thiết kế LLD Datamart**: Skill `datamart-lld-design` (file `.claude/skills/datamart-lld-design/SKILL.md`) — invoke khi thiết kế Attributes/Entities/Detail Mapping (Phase 2/2b/3); gọi tay qua `/datamart-lld-design`. Yêu cầu HLD đã duyệt.
 - **Tra BCV**: Đọc `knowledge/00_README_VOCABULARY.md` để biết cấu trúc file, sau đó dùng `grep`/`cat` trên các file CSV trong `knowledge/`.
 
 Nếu user hỏi mentor Q&A đơn giản (không phải task thiết kế), trả lời trực tiếp từ kiến thức trong file này — không cần đọc skill.
