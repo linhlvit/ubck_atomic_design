@@ -18,7 +18,7 @@ input:
   table_name: TRSFERINDER
   alias: tr_in
   select_fields: Id, SecId, TransDate, Quantity, Price, DateCreated, DateModified
-  filter: created_at >= {data_date}
+  filter: created_at = to_date("etl_date", 'yyyy-MM-dd')
 relationship: []
 mapping_columns:
 - target_column: fnd_mgt_co_shr_tfr_id

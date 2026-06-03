@@ -19,7 +19,7 @@ input:
   alias: rank
   select_fields: Id, SecId, RatingPdId, TotalScore, RankValue, RankClass, DateCreated,
     DateModified
-  filter: created_at >= {data_date}
+  filter: created_at = to_date("etl_date", 'yyyy-MM-dd')
 relationship: []
 mapping_columns:
 - target_column: mbr_rtg_id

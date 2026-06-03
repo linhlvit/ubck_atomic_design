@@ -19,7 +19,7 @@ input:
   alias: tr
   select_fields: Id, FndId, MBFId, TransDate, Quantity, Price, TransType, DateCreated,
     DateModified
-  filter: created_at >= {data_date}
+  filter: created_at = to_date("etl_date", 'yyyy-MM-dd')
 relationship: []
 mapping_columns:
 - target_column: ivsm_fnd_ivsr_cptl_tfr_id

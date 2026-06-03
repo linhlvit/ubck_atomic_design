@@ -20,7 +20,7 @@ input:
   alias: mb
   select_fields: Id, MBFId, OldCapital, NewCapital, ChangeDate, Reason, CreatedBy,
     DateCreated, DateModified
-  filter: created_at >= {data_date}
+  filter: created_at = to_date("etl_date", 'yyyy-MM-dd')
 relationship: []
 mapping_columns:
 - target_column: ivsm_fnd_ivsr_cptl_chg_log_id
