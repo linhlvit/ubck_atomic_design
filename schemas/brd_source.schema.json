@@ -218,10 +218,10 @@
         "data_change_mode": {
           "type": "string",
           "enum": [
-            "Full",
+            "Update",
             "Append"
           ],
-          "description": "Chế độ ingest: Full (replace toàn bộ) hoặc Append (incremental theo filter)"
+          "description": "Chế độ ingest: Update (replace toàn bộ) hoặc Append (incremental theo filter)"
         },
         "filter_logic": {
           "oneOf": [
@@ -233,7 +233,7 @@
               "minLength": 3
             }
           ],
-          "description": "Điều kiện filter incremental (VD: 'created_at >= {data_date}'). null nếu data_change_mode = Full"
+          "description": "Điều kiện filter incremental (VD: 'created_at >= {data_date}'). null nếu data_change_mode = Update"
         },
         "filter_note": {
           "oneOf": [
@@ -245,7 +245,7 @@
               "minLength": 3
             }
           ],
-          "description": "Giải thích ngắn về filter logic, ngữ nghĩa của cột lọc. null nếu data_change_mode = Full"
+          "description": "Giải thích ngắn về filter logic, ngữ nghĩa của cột lọc. null nếu data_change_mode = Update"
         }
       }
     },
