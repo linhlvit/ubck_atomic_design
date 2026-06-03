@@ -81,21 +81,46 @@ Fact dùng pattern CROSS JOIN scalar subquery (mỗi measure aggregate độc l�
 
 Mọi bảng `dim` và `operational` **phải có** attribute `src_stm_code` (thêm cuối danh sách attribute của bảng).
 
+**Xác định driving table để lấy `src_stm_code`:** Driving table = bảng chính của grain — bảng có PK/BK trong Attributes, các attribute của nó dùng `etl_logic_type = direct`. Bảng phụ (`etl_logic_type = join_atomic`) **không dùng** để xác định `src_stm_code`.
+
 | Trường hợp | ETL Logic | etl_logic_type |
 |---|---|---|
 | Driving table single-source | `<driving_table>.src_stm_code` | `direct` |
-| Driving table multi-source | `<driving_table>.src_stm_code WHERE <driving_table>.src_stm_code = '<value>'` | `direct` |
+| Driving table multi-source (WHERE filter) | `<driving_table>.src_stm_code WHERE <driving_table>.src_stm_code = '<value>'` | `direct` |
+| Multi-source tách bộ (xem bên dưới) | `<atomic_table>.src_stm_code WHERE <partition_key> = '<value>'` | `direct` hoặc `pending` |
 
-**Xử lý multi-source driving table:**
-Nếu Atomic driving table nhận dữ liệu từ nhiều `src_stm_code` khác nhau, phải xác định nguồn chính thức dùng cho Datamart, rồi:
+**Xử lý multi-source driving table — WHERE filter:**
+Nếu Atomic driving table nhận dữ liệu từ nhiều `src_stm_code` nhưng Datamart chỉ cần 1 nguồn chính thức:
 1. Thêm điều kiện lọc vào `etl_logic`: `WHERE src_stm_code = '<giá_trị_nguồn_chính_thức>'`
 2. Ghi rõ lý do lọc trong `description`
-3. Vẫn dùng `etl_logic_type = direct` (lọc ở ETL, không phải transform)
+3. Vẫn dùng `etl_logic_type = direct`
+
+**Xử lý multi-source — Tách bộ (UNION/Partition pattern):**
+Áp dụng khi bảng Datamart populate từ **nhiều nguồn độc lập** theo 1 trong 2 trường hợp:
+
+| Trường hợp | Mô tả | Ví dụ |
+|---|---|---|
+| **A — Partition trên 1 Atomic table** | 1 Atomic table chứa nhiều nhóm data phân biệt qua 1 partition key, mỗi nhóm có `src_stm_code` riêng | `cv` phân biệt theo `scm_code` — mỗi scheme có `src_stm_code` khác nhau |
+| **B — UNION nhiều Atomic tables** | Datamart populate từ N Atomic tables độc lập, mỗi table có schema/grain riêng | Bảng tổng hợp từ `insp_case` + `surveil_nfrc_case` + ... |
+
+Cách xử lý tách bộ:
+1. **Tách thành N bộ attribute** — 1 bộ per partition value (scheme) hoặc per Atomic table
+2. **Mỗi bộ** gồm đầy đủ tất cả attribute của bảng (PK/NK/BK + các cột + `src_stm_code`)
+3. **`src_stm_code`** của mỗi bộ map từ Atomic source tương ứng
+4. Nếu Atomic source chưa xác định → `etl_logic_type = pending` toàn bộ bộ đó
+5. **Tên cột** `datamart_column` align với tên cột Atomic source tương ứng
+
+**Trường hợp đặc biệt — Conformed Classification Dimension (`cl_dim`):**
+- Tách theo `scm_code` (scheme) — mỗi scheme = 1 bộ 5 dòng
+- Tên cột align với Atomic `cv`: `scm_code`, `cl_code`, `cl_nm`
+- Scheme load từ `cv` → `etl_logic = cv.<col> WHERE cv.scm_code = '<SCHEME>'`, `etl_logic_type = direct`
+- Scheme ETL-generated (không qua `cv`) → `etl_logic_type = pending` toàn bộ bộ
+- **Detail Mapping**: tên logical dùng `Scheme Code=` và `Classification Code=` (không phải `Scheme=` / `Code=`)
 
 Spec row `src_stm_code`:
 ```
 nullable=false | data_domain=Classification Value | data_type=string | key=(trống)
-source_entity=<tên Atomic entity của driving table>
+source_entity=<tên Atomic entity của driving table / Atomic table tương ứng bộ>
 atomic_table=<driving_table> | source_attribute=Source System Code | atomic_column=src_stm_code
 ```
 
@@ -138,8 +163,11 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 □ Mọi Operational có đủ PK (_id) + BK (_code)
 □ Không thiết kế Effective Date / Expiry Date / Population Date
 □ Mọi bảng dim/operational có attribute src_stm_code (cuối danh sách)
-□ src_stm_code: driving table multi-source → thêm WHERE filter + ghi rõ trong description
+□ src_stm_code: driving table multi-source (1 nguồn chính thức) → WHERE filter + ghi rõ description
+□ src_stm_code: multi-source tách bộ (partition/UNION) → N bộ × M dòng, mỗi bộ có src_stm_code riêng
+□ src_stm_code: bộ chưa xác định Atomic source → etl_logic_type = pending toàn bộ bộ đó
 □ src_stm_code: fact No-Driving-Table → không thêm
+□ cl_dim: tên cột scm_code / cl_code / cl_nm (align Atomic cv); Detail Mapping dùng Scheme Code= / Classification Code=
 □ nullable = false cho PK / BK / NK / FK
 □ data_domain = Classification Value → key trống
 □ data_domain = Surrogate Dimension Key → key = FK → <Dim>
