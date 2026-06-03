@@ -85,15 +85,18 @@ Mọi bảng `dim` và `operational` **phải có** attribute `src_stm_code` (th
 
 | Trường hợp | ETL Logic | etl_logic_type |
 |---|---|---|
-| Driving table single-source | `<driving_table>.src_stm_code` | `direct` |
-| Driving table multi-source (WHERE filter) | `<driving_table>.src_stm_code WHERE <driving_table>.src_stm_code = '<value>'` | `direct` |
+| Driving table single-source | `<driving_table>.src_stm_code WHERE <driving_table>.src_stm_code = '<value>'` | `direct` |
+| Driving table multi-source (nhiều nguồn, lấy 1 chính thức) | `<driving_table>.src_stm_code WHERE <driving_table>.src_stm_code = '<value>'` | `direct` |
+| Driving table multi-source (nhiều nguồn, lấy nhiều) | `<driving_table>.src_stm_code WHERE <driving_table>.src_stm_code IN ('<val1>','<val2>')` | `direct` |
 | Multi-source tách bộ (xem bên dưới) | `<atomic_table>.src_stm_code WHERE <partition_key> = '<value>'` | `direct` hoặc `pending` |
 
-**Xử lý multi-source driving table — WHERE filter:**
-Nếu Atomic driving table nhận dữ liệu từ nhiều `src_stm_code` nhưng Datamart chỉ cần 1 nguồn chính thức:
-1. Thêm điều kiện lọc vào `etl_logic`: `WHERE src_stm_code = '<giá_trị_nguồn_chính_thức>'`
-2. Ghi rõ lý do lọc trong `description`
-3. Vẫn dùng `etl_logic_type = direct`
+**Quy tắc WHERE filter bắt buộc (forward-compatibility):**
+Mọi `src_stm_code` attribute **luôn phải có điều kiện lọc** — kể cả khi Atomic driving table hiện chỉ có 1 nguồn. Lý do: nếu sau này Atomic nhận thêm nguồn mới, Datamart ETL không bị ảnh hưởng mà không cần sửa schema.
+
+1. Single-source: `WHERE <driving_table>.src_stm_code = '<giá_trị>'`
+2. Multi-source lấy 1 chính thức: `WHERE <driving_table>.src_stm_code = '<giá_trị_chính_thức>'`
+3. Multi-source lấy nhiều: `WHERE <driving_table>.src_stm_code IN ('<val1>','<val2>',...)`
+4. Vẫn dùng `etl_logic_type = direct` cho tất cả trường hợp trên
 
 **Xử lý multi-source — Tách bộ (UNION/Partition pattern):**
 Áp dụng khi bảng Datamart populate từ **nhiều nguồn độc lập** theo 1 trong 2 trường hợp:
@@ -163,7 +166,8 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 □ Mọi Operational có đủ PK (_id) + BK (_code)
 □ Không thiết kế Effective Date / Expiry Date / Population Date
 □ Mọi bảng dim/operational có attribute src_stm_code (cuối danh sách)
-□ src_stm_code: driving table multi-source (1 nguồn chính thức) → WHERE filter + ghi rõ description
+□ src_stm_code: mọi bảng (kể cả single-source) → luôn có WHERE filter trong etl_logic (forward-compatibility)
+□ src_stm_code: multi-source nhiều nguồn dùng cùng lúc → dùng WHERE IN (...)
 □ src_stm_code: multi-source tách bộ (partition/UNION) → N bộ × M dòng, mỗi bộ có src_stm_code riêng
 □ src_stm_code: bộ chưa xác định Atomic source → etl_logic_type = pending toàn bộ bộ đó
 □ src_stm_code: fact No-Driving-Table → không thêm
