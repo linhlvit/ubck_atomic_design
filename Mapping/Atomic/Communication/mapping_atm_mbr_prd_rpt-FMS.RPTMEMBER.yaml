@@ -20,7 +20,7 @@ input:
   select_fields: Id, SecId, FndId, BkMId, FrBrId, RptId, PrdId, IsImport, RptName,
     ContentSummary, ReportType, Type, PeriodType, YearValue, DayReport, DeadlineSend,
     DateSubmitted, Status, CreatedBy, DateCreated, DateModified
-  filter: created_at = to_date("etl_date", 'yyyy-MM-dd')
+  filter: created_at = {etl_date}
 relationship: []
 mapping_columns:
 - target_column: mbr_prd_rpt_id

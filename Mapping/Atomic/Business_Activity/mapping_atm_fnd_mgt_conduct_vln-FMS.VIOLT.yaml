@@ -19,7 +19,7 @@ input:
   alias: vi
   select_fields: Id, SecId, FndId, ViolType, ViolContent, ViolDate, ViolStatus, Note,
     DateCreated, DateModified
-  filter: created_at = to_date("etl_date", 'yyyy-MM-dd')
+  filter: created_at = {etl_date}
 relationship: []
 mapping_columns:
 - target_column: fnd_mgt_conduct_vln_id

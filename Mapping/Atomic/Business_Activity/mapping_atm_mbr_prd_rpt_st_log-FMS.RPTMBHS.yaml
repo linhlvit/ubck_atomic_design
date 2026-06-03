@@ -18,7 +18,7 @@ input:
   table_name: RPTMBHS
   alias: rp
   select_fields: Id, RptMbId, Status, ChgById, ContentSummary, Note, RptName
-  filter: created_at = to_date("etl_date", 'yyyy-MM-dd')
+  filter: created_at = {etl_date}
 relationship: []
 mapping_columns:
 - target_column: mbr_prd_rpt_hist_id
