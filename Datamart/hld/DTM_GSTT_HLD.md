@@ -1,4 +1,4 @@
-# DTM_GSTT_HLD — v3.3
+# DTM_GSTT_HLD — v3.4
 
 **Phiên bản:** 3.4
 **Ngày cập nhật:** 2026-05-15
@@ -14,12 +14,13 @@
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1A["MDDS StockInfor"]
-        S1B["OrderTrade Trade HOSE"]
-        S1C["OrderTrade Trade HNX"]
-        S1D["IDS data BCTC"]
-        S1E["ECAT Security"]
-        S1F["IDS company profiles"]
+        S1A["MDDS.StockInfor"]
+        S1B["OrderTrade.Trade_HOSE"]
+        S1C["OrderTrade.Trade_HNX"]
+        S1D["IDS.data"]
+        S1E["ECAT.Security"]
+        S1F["IDS.company_profiles"]
+        S1G["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
         A1A["Security Trading Snapshot"]
@@ -27,15 +28,16 @@ flowchart LR
         A1C["Public Company Financial Report Value"]
         A1D["Security"]
         A1E["Public Company"]
+        A1F["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        D1["Security Trading Snapshot Dimension"]
-        D2["Public Company Dimension"]
-        D5["Calendar Date Dimension"]
-        F1["Fact Security Daily Market Summary"]
-        D1 --> F1
-        D2 --> F1
-        D5 --> F1
+        scr_tdg_snpst_dim["Security Trading Snapshot Dimension"]
+        pblc_co_dim["Public Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
+        fct_scr_dly_mkt_smry["Fact Security Daily Market Summary"]
+        scr_tdg_snpst_dim --> fct_scr_dly_mkt_smry
+        pblc_co_dim --> fct_scr_dly_mkt_smry
+        cdr_dt_dim --> fct_scr_dly_mkt_smry
     end
     S1A --> A1A
     S1B --> A1B
@@ -43,11 +45,13 @@ flowchart LR
     S1D --> A1C
     S1E --> A1D
     S1F --> A1E
-    A1A --> F1
-    A1B --> F1
-    A1C --> F1
-    A1D --> D1
-    A1E --> D2
+    S1G --> A1F
+    A1A --> fct_scr_dly_mkt_smry
+    A1B --> fct_scr_dly_mkt_smry
+    A1C --> fct_scr_dly_mkt_smry
+    A1D --> scr_tdg_snpst_dim
+    A1E --> pblc_co_dim
+    A1F --> cdr_dt_dim
 ```
 
 > **Ghi chú:** `Fact Security Daily Market Summary` phục vụ toàn bộ Nhóm 1, 3, 6–27d_heatmap và STT 49. Schema đầy đủ bao gồm cột GT Tự doanh (STT 43 — O_GSTT_22 Closed), cột GT Phân loại NĐT (STT 44/45 — O_GSTT_23 Closed), cột KL Thỏa Thuận (STT 49) — tất cả có nguồn từ `Securities Trade`, không cần Cụm riêng.
@@ -59,31 +63,35 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S2A["MDDS CorpBondInfor"]
-        S2B["OrderTrade Trade HOSE BDO"]
-        S2C["IDS company profiles"]
+        S2A["MDDS.CorpBondInfor"]
+        S2B["OrderTrade.Trade_HOSE_BDO"]
+        S2C["IDS.company_profiles"]
+        S2D["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
         A2A["Corporate Bond Trading Snapshot"]
         A2B["Securities Trade"]
         A2C["Public Company"]
+        A2D["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        D3["Corporate Bond Trading Snapshot Dimension"]
-        D4["Corporate Bond Trading Snapshot Industry Dimension"]
-        D5["Calendar Date Dimension"]
-        F2["Fact Corporate Bond Daily Market Summary"]
-        D3 --> F2
-        D4 --> F2
-        D5 --> F2
+        crp_bnd_tdg_snpst_dim["Corporate Bond Trading Snapshot Dimension"]
+        crp_bnd_tdg_snpst_idy_dim["Corporate Bond Trading Snapshot Industry Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
+        fct_crp_bnd_dly_mkt_smry["Fact Corporate Bond Daily Market Summary"]
+        crp_bnd_tdg_snpst_dim --> fct_crp_bnd_dly_mkt_smry
+        crp_bnd_tdg_snpst_idy_dim --> fct_crp_bnd_dly_mkt_smry
+        cdr_dt_dim --> fct_crp_bnd_dly_mkt_smry
     end
     S2A --> A2A
     S2B --> A2B
     S2C --> A2C
-    A2A --> F2
-    A2B --> F2
-    A2C --> D3
-    A2C --> D4
+    S2D --> A2D
+    A2A --> fct_crp_bnd_dly_mkt_smry
+    A2B --> fct_crp_bnd_dly_mkt_smry
+    A2C --> crp_bnd_tdg_snpst_dim
+    A2C --> crp_bnd_tdg_snpst_idy_dim
+    A2D --> cdr_dt_dim
 ```
 
 ---
@@ -186,7 +194,7 @@ flowchart LR
 erDiagram
     Fact_Security_Daily_Market_Summary {
         string Security_Trading_Snapshot_Dimension_Id FK
-        string Industry_Dimension_Id FK
+        string Public_Company_Dimension_Id FK
         string Trading_Date_Dimension_Id FK
         int Total_Match_Volume
         float Total_Match_Value
@@ -224,7 +232,7 @@ erDiagram
         string Index_Codes
     }
     Public_Company_Dimension {
-        string Industry_Dimension_Id PK
+        string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
@@ -236,9 +244,9 @@ erDiagram
         int Quarter
         boolean Is_Trading_Day
     }
-    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
 ```
 
 > **Ghi chú thiết kế Security Trading Snapshot Dimension:** Driving table = `scr_tdg_snpst` (Security Trading Snapshot). `Security_Name` lấy từ `scr_tdg_snpst.full_nm`. Entity `Security` (`scr` ← ECAT) không có FK ngược về `scr_tdg_snpst` — không tham gia ETL job này. `Index_Codes` cần xác nhận Atomic column (O_GSTT_3 Closed nhưng source column chưa map).
@@ -261,15 +269,15 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Security Daily Market Summary | 1 row / mã CK / ngày |
-| Security Trading Snapshot Dimension | 1 row / mã CK (SCD2) |
-| Public Company Dimension | 1 row / mã CK (SCD2) |
+| Security Trading Snapshot Dimension | 1 row / mã CK (SCD4A) |
+| Public Company Dimension | 1 row / mã CK (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
 
 ---
 
 #### Nhóm 2 — Bảng số liệu Trái phiếu DN niêm yết
 
-##### READY (1 KPI PENDING)
+##### READY
 
 > **Phân loại:** Phân tích
 > **Atomic:** `Corporate Bond Trading Snapshot` ← MDDS.CorpBondInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE (Market=BDO) — **READY**
@@ -292,7 +300,22 @@ flowchart LR
 | K_GSTT_17b | KLGD TPDN | Trái phiếu | Phái sinh | `SUM(Exec Volume WHERE Market Id Code = 'BDO' AND Board Type IN ('G1','G2','G3','T1','T2','T3'))` |
 | K_GSTT_18b | GTGD TPDN | Tỷ VNĐ | Phái sinh | `SUM(Exec Value WHERE Market Id Code = 'BDO' AND Board Type IN ('G1','G2','G3','T1','T2','T3'))` |
 | K_GSTT_23 | Doanh thu | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
-| K_GSTT_24 | YTM bình quân | % | Cơ sở | **PENDING** — O_GSTT_6 |
+
+##### PENDING
+
+**KPI liên quan:** K_GSTT_24
+
+**Lý do pending:** Chưa xác định field YTM trong Atomic entity `Corporate Bond Trading Snapshot` — O_GSTT_6.
+
+**Atomic cần bổ sung:** Xác nhận field YTM trong `Corporate Bond Trading Snapshot` (MDDS.CorpBondInfor).
+
+**Mart dự kiến:** Bổ sung cột `Average_YTM` vào `Fact Corporate Bond Daily Market Summary` khi Atomic xác nhận.
+
+**Bảng KPI PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_GSTT_24 | YTM bình quân | Cơ sở | PENDING |
 
 **Star Schema:**
 
@@ -326,9 +349,9 @@ erDiagram
         int Quarter
         boolean Is_Trading_Day
     }
-    Corporate_Bond_Trading_Snapshot_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : ""
-    Corporate_Bond_Trading_Snapshot_Industry_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : ""
-    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : ""
+    Corporate_Bond_Trading_Snapshot_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : " "
+    Corporate_Bond_Trading_Snapshot_Industry_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : " "
+    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : " "
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -346,8 +369,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Corporate Bond Daily Market Summary | 1 row / mã TP / ngày |
-| Corporate Bond Trading Snapshot Dimension | 1 row / mã TP (SCD2) |
-| Corporate Bond Trading Snapshot Industry Dimension | 1 row / mã TP (SCD2) |
+| Corporate Bond Trading Snapshot Dimension | 1 row / mã TP (SCD4A) |
+| Corporate Bond Trading Snapshot Industry Dimension | 1 row / mã TP (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
 
 ---
@@ -385,7 +408,7 @@ flowchart LR
 erDiagram
     Fact_Security_Daily_Market_Summary {
         string Security_Trading_Snapshot_Dimension_Id FK
-        string Industry_Dimension_Id FK
+        string Public_Company_Dimension_Id FK
         string Trading_Date_Dimension_Id FK
         int Total_Match_Volume
         float Total_Match_Value
@@ -423,7 +446,7 @@ erDiagram
         string Index_Codes
     }
     Public_Company_Dimension {
-        string Industry_Dimension_Id PK
+        string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
@@ -435,9 +458,9 @@ erDiagram
         int Quarter
         boolean Is_Trading_Day
     }
-    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -455,8 +478,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Security Daily Market Summary | 1 row / mã CK / ngày |
-| Security Trading Snapshot Dimension | 1 row / mã CK (SCD2) |
-| Public Company Dimension | 1 row / mã CK (SCD2) |
+| Security Trading Snapshot Dimension | 1 row / mã CK (SCD4A) |
+| Public Company Dimension | 1 row / mã CK (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
 
 ---
@@ -467,28 +490,34 @@ flowchart LR
 
 ##### PENDING
 
-> **Lý do:** `MDDS.IDXInfor` đang thay đổi thiết kế CSDL nguồn — O_GSTT_12.
+**KPI liên quan:** K_GSTT_26–39
 
-**KPI liên quan (tất cả PENDING):**
+**Lý do pending:** `MDDS.IDXInfor` đang thay đổi thiết kế CSDL nguồn — O_GSTT_12.
 
-| KPI ID | Tên KPI | Lý do PENDING |
-|---|---|---|
-| K_GSTT_26 | Giá trị chỉ số (điểm số) | O_GSTT_12 |
-| K_GSTT_27 | Thay đổi điểm chỉ số (+/-) | O_GSTT_12 |
-| K_GSTT_28 | % thay đổi điểm chỉ số | O_GSTT_12 |
-| K_GSTT_29 | KLGD của chỉ số | O_GSTT_12 |
-| K_GSTT_30 | GTGD của chỉ số | O_GSTT_12 |
-| K_GSTT_31 | Số mã tăng giá | O_GSTT_12 |
-| K_GSTT_32 | Số mã giảm giá | O_GSTT_12 |
-| K_GSTT_33 | Số mã đứng giá | O_GSTT_12 |
-| K_GSTT_34 | Số mã tăng trần | O_GSTT_12 |
-| K_GSTT_35 | Số mã giảm sàn | O_GSTT_12 |
-| K_GSTT_36 | KLNN ròng theo chỉ số | O_GSTT_12 |
-| K_GSTT_37 | GTNN ròng theo chỉ số | O_GSTT_12 |
-| K_GSTT_38 | KLGD thỏa thuận chỉ số | O_GSTT_12 |
-| K_GSTT_39 | GTGD thỏa thuận chỉ số | O_GSTT_12 |
+**Atomic cần bổ sung:** `Market Index Snapshot` (MDDS.IDXInfor) — chờ schema ổn định.
 
-**Mart dự kiến (placeholder):** `Fact Market Index Daily Snapshot` — grain: 1 row / Index Code / ngày; `Market Index Dimension` — NK: Index Code.
+**Mart dự kiến:**
+- `Fact Market Index Daily Snapshot` — grain: 1 row / Index Code / ngày
+- `Market Index Dimension` — NK: Index Code
+
+**Bảng KPI PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_GSTT_26 | Giá trị chỉ số (điểm số) | Cơ sở | PENDING |
+| K_GSTT_27 | Thay đổi điểm chỉ số (+/-) | Phái sinh | PENDING |
+| K_GSTT_28 | % thay đổi điểm chỉ số | Phái sinh | PENDING |
+| K_GSTT_29 | KLGD của chỉ số | Phái sinh | PENDING |
+| K_GSTT_30 | GTGD của chỉ số | Phái sinh | PENDING |
+| K_GSTT_31 | Số mã tăng giá | Phái sinh | PENDING |
+| K_GSTT_32 | Số mã giảm giá | Phái sinh | PENDING |
+| K_GSTT_33 | Số mã đứng giá | Phái sinh | PENDING |
+| K_GSTT_34 | Số mã tăng trần | Phái sinh | PENDING |
+| K_GSTT_35 | Số mã giảm sàn | Phái sinh | PENDING |
+| K_GSTT_36 | KLNN ròng theo chỉ số | Phái sinh | PENDING |
+| K_GSTT_37 | GTNN ròng theo chỉ số | Phái sinh | PENDING |
+| K_GSTT_38 | KLGD thỏa thuận chỉ số | Phái sinh | PENDING |
+| K_GSTT_39 | GTGD thỏa thuận chỉ số | Phái sinh | PENDING |
 
 ---
 
@@ -496,25 +525,30 @@ flowchart LR
 
 ##### PENDING
 
-> **Lý do 1:** IDXInfor PENDING — O_GSTT_12
-> **Lý do 2:** VSDC TT138 chưa có Atomic — O_GSTT_13
-> **Lý do 3:** IDS.categories chưa có Atomic — O_GSTT_14
+**KPI liên quan:** K_GSTT_40–48
 
-**KPI liên quan (tất cả PENDING):**
+**Lý do pending:** (1) IDXInfor PENDING — O_GSTT_12; (2) VSDC TT138 Số CP lưu hành chưa có Atomic — O_GSTT_13.
 
-| KPI ID | Tên KPI | Lý do PENDING |
-|---|---|---|
-| K_GSTT_40 | Giá trị chỉ số | O_GSTT_12 |
-| K_GSTT_41 | Giá đóng cửa chỉ số | O_GSTT_12 |
-| K_GSTT_42 | LNST aggregate theo rổ | O_GSTT_12 |
-| K_GSTT_43 | VCSH aggregate theo rổ | O_GSTT_12 |
-| K_GSTT_44 | Số CP đang lưu hành | O_GSTT_13 |
-| K_GSTT_45 | P/E thị trường | O_GSTT_12, O_GSTT_13 |
-| K_GSTT_46 | P/B thị trường | O_GSTT_12, O_GSTT_13 |
-| K_GSTT_47 | EPS thị trường | O_GSTT_13 |
-| K_GSTT_48 | Vốn hóa thị trường | O_GSTT_12, O_GSTT_13 |
+**Atomic cần bổ sung:**
+- `Market Index Snapshot` (MDDS.IDXInfor) — O_GSTT_12
+- `Security Share Volume` (VSDC TT138) — O_GSTT_13
 
-**Mart dự kiến (placeholder):** `Fact Market Valuation Snapshot` — grain: 1 row / Index Code / quý.
+**Mart dự kiến:**
+- `Fact Market Valuation Snapshot` — grain: 1 row / Index Code / quý
+
+**Bảng KPI PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_GSTT_40 | Giá trị chỉ số | Cơ sở | PENDING |
+| K_GSTT_41 | Giá đóng cửa chỉ số | Cơ sở | PENDING |
+| K_GSTT_42 | LNST aggregate theo rổ | Phái sinh | PENDING |
+| K_GSTT_43 | VCSH aggregate theo rổ | Phái sinh | PENDING |
+| K_GSTT_44 | Số CP đang lưu hành | Cơ sở | PENDING |
+| K_GSTT_45 | P/E thị trường | Phái sinh | PENDING |
+| K_GSTT_46 | P/B thị trường | Phái sinh | PENDING |
+| K_GSTT_47 | EPS thị trường | Phái sinh | PENDING |
+| K_GSTT_48 | Vốn hóa thị trường | Phái sinh | PENDING |
 
 ---
 
@@ -558,7 +592,7 @@ flowchart LR
 erDiagram
     Fact_Security_Daily_Market_Summary {
         string Security_Trading_Snapshot_Dimension_Id FK
-        string Industry_Dimension_Id FK
+        string Public_Company_Dimension_Id FK
         string Trading_Date_Dimension_Id FK
         int Total_Match_Volume
         float Total_Match_Value
@@ -596,7 +630,7 @@ erDiagram
         string Index_Codes
     }
     Public_Company_Dimension {
-        string Industry_Dimension_Id PK
+        string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
@@ -608,9 +642,9 @@ erDiagram
         int Quarter
         boolean Is_Trading_Day
     }
-    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -628,8 +662,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Security Daily Market Summary | 1 row / mã CK / ngày |
-| Security Trading Snapshot Dimension | 1 row / mã CK (SCD2) |
-| Public Company Dimension | 1 row / mã CK (SCD2) |
+| Security Trading Snapshot Dimension | 1 row / mã CK (SCD4A) |
+| Public Company Dimension | 1 row / mã CK (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
 
 ---
@@ -779,7 +813,7 @@ flowchart LR
 erDiagram
     Fact_Security_Daily_Market_Summary {
         string Security_Trading_Snapshot_Dimension_Id FK
-        string Industry_Dimension_Id FK
+        string Public_Company_Dimension_Id FK
         string Trading_Date_Dimension_Id FK
         int Total_Match_Volume
         float Total_Match_Value
@@ -817,7 +851,7 @@ erDiagram
         string Index_Codes
     }
     Public_Company_Dimension {
-        string Industry_Dimension_Id PK
+        string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
@@ -829,9 +863,9 @@ erDiagram
         int Quarter
         boolean Is_Trading_Day
     }
-    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
-    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : ""
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
+    Calendar_Date_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -849,8 +883,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Security Daily Market Summary | 1 row / mã CK / ngày |
-| Security Trading Snapshot Dimension | 1 row / mã CK (SCD2) |
-| Public Company Dimension | 1 row / mã CK (SCD2) |
+| Security Trading Snapshot Dimension | 1 row / mã CK (SCD4A) |
+| Public Company Dimension | 1 row / mã CK (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
 
 ---
@@ -1537,27 +1571,32 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 ##### PENDING
 
-> **Lý do:** `CSIDXInfor` và `IDXInfor` — PENDING O_GSTT_12. FREE FLOAT chưa có Atomic — O_GSTT_25.
+**KPI liên quan:** K_GSTT_66–70, K_GSTT_85
 
-**KPI liên quan (tất cả PENDING):**
+**Lý do pending:** `CSIDXInfor` và `IDXInfor` — PENDING O_GSTT_12. FREE FLOAT chưa có Atomic — O_GSTT_25.
 
-| KPI ID | Tên KPI | Nguồn BA | Lý do PENDING |
+**Atomic cần bổ sung:**
+- `Market Index Snapshot` (MDDS.IDXInfor) — O_GSTT_12
+- `Index Constituent Snapshot` (MDDS.CSIDXInfor) — O_GSTT_12
+- `Security Share Volume` (VSDC TT138, Free Float) — O_GSTT_25
+
+**Mart dự kiến:**
+- `Fact Index Constituent Contribution Snapshot` — grain: 1 row / mã CK / index code / ngày
+
+**Bảng KPI PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSTT_66 | Giá trị chỉ số (VNINDEX...) | IDXInfor.CloseIndex | O_GSTT_12 |
-| K_GSTT_67 | Biến động điểm (+/-) | IDXInfor | O_GSTT_12 |
-| K_GSTT_68 | % Biến động chỉ số | IDXInfor | O_GSTT_12 |
-| K_GSTT_69 | Tỷ trọng mã trong rổ (%) | `(Vốn hóa mã / Tổng vốn hóa rổ) × 100` — MSS + MDDS | O_GSTT_12, O_GSTT_13 |
-| K_GSTT_70 | Điểm đóng góp theo Số CPLH | `indx_constituent_snpst.stk_ctb` | O_GSTT_12 |
-| K_GSTT_85 | Điểm đóng góp theo Free Float | Vốn hóa tự do chuyển nhượng — MSS/MDDS | O_GSTT_12, O_GSTT_25 |
-| K_GSTT_1 | Khối lượng giao dịch | Securities Trade.Exec Volume | READY — reuse |
-| K_GSTT_4 | Giá trị giao dịch | Securities Trade.Exec Value | READY — reuse |
-| K_GSTT_2 | Giá đóng cửa | Security Trading Snapshot.Close Price | READY — reuse |
-| K_GSTT_3 | % Biến động giá | `(Close Price − Reference Price) / Reference Price × 100` | READY — phái sinh tại query layer |
+| K_GSTT_66 | Giá trị chỉ số (VNINDEX...) | Cơ sở | PENDING |
+| K_GSTT_67 | Biến động điểm (+/-) | Phái sinh | PENDING |
+| K_GSTT_68 | % Biến động chỉ số | Phái sinh | PENDING |
+| K_GSTT_69 | Tỷ trọng mã trong rổ (%) | Phái sinh | PENDING |
+| K_GSTT_70 | Điểm đóng góp theo Số CPLH | Cơ sở | PENDING |
+| K_GSTT_85 | Điểm đóng góp theo Free Float | Phái sinh | PENDING |
 
 > *K_GSTT_74–76: gap — rút khỏi scope (KL Tự doanh không yêu cầu theo BA STT 42).*
 > *K_GSTT_86–88: gap — rút khỏi scope (Biểu đồ GTNN intraday theo giờ — O_GSTT_24 Closed, EOD đủ).*
-
-**Mart dự kiến (placeholder):** `Fact Index Constituent Contribution Snapshot` — grain: 1 row / mã CK / index code / ngày.
+> *K_GSTT_1, K_GSTT_2, K_GSTT_3, K_GSTT_4 — READY, reuse từ `Fact Security Daily Market Summary`.*
 
 ---
 
@@ -1754,27 +1793,27 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 > **Lý do:** Toàn bộ KPI STT 45 PENDING — thiếu Atomic cho 2 nguồn trọng yếu: VSDC TT138 (O_GSTT_13) và IDS Financial Statement (O_GSTT_26).
 
-**KPI liên quan:**
+**Bảng KPI PENDING:**
 
-| KPI ID | Tên KPI | Nguồn BA | Lý do PENDING |
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSTT_90 | Giá trị vốn hóa thị trường | MSS + MDDS | Phụ thuộc Số CP lưu hành — O_GSTT_13 |
-| K_GSTT_91 | Giá cao nhất 4 tuần gần nhất | MDDS | Derive từ `Fact Security Daily Market Summary` — hợp lệ khi mart có đủ lịch sử |
-| K_GSTT_92 | Giá thấp nhất 4 tuần gần nhất | MDDS | Tương tự K_GSTT_91 |
-| K_GSTT_93 | Giá cao nhất 52 tuần gần nhất | MDDS | Tương tự K_GSTT_91 |
-| K_GSTT_94 | Giá thấp nhất 52 tuần gần nhất | MDDS | Tương tự K_GSTT_91 |
-| K_GSTT_95 | Khối lượng CP niêm yết hiện tại | MSS/VSDC TT138 | O_GSTT_13 |
-| K_GSTT_96 | Khối lượng CP đang lưu hành | MSS/VSDC TT138 | O_GSTT_13 |
-| K_GSTT_97 | Khối lượng CP đang lưu hành bình quân | MSS/VSDC TT138 | Phái sinh từ K_GSTT_96 — PENDING |
-| K_GSTT_98 | LNST | IDS-GSĐC | Atomic IDS Financial Statement chưa xác nhận — O_GSTT_26 |
-| K_GSTT_99 | Số cổ phiếu đang lưu hành | MSS/VSDC TT138 | O_GSTT_13 |
-| K_GSTT_100 | EPS quý gần nhất | IDS + MSS + MDDS | Phái sinh từ K_GSTT_98 / K_GSTT_99 — PENDING |
-| K_GSTT_101 | EPS bình quân 4 quý gần nhất | IDS + MSS | Phái sinh từ K_GSTT_100 — PENDING |
-| K_GSTT_102 | VCSH | IDS-GSĐC | O_GSTT_26 |
-| K_GSTT_103 | Giá trị sổ sách quý gần nhất | IDS + MSS + MDDS | Phái sinh từ K_GSTT_102 / K_GSTT_99 — PENDING |
-| K_GSTT_104 | Giá trị sổ sách bình quân 4 quý | IDS + MSS | Phái sinh từ K_GSTT_103 — PENDING |
-| K_GSTT_105 | P/E | MSS + IDS + MDDS | Phái sinh từ K_GSTT_100 — PENDING |
-| K_GSTT_106 | P/B | MSS + IDS + MDDS | Phái sinh từ K_GSTT_103 — PENDING |
+| K_GSTT_90 | Giá trị vốn hóa thị trường | Phái sinh | PENDING |
+| K_GSTT_91 | Giá cao nhất 4 tuần gần nhất | Phái sinh | PENDING |
+| K_GSTT_92 | Giá thấp nhất 4 tuần gần nhất | Phái sinh | PENDING |
+| K_GSTT_93 | Giá cao nhất 52 tuần gần nhất | Phái sinh | PENDING |
+| K_GSTT_94 | Giá thấp nhất 52 tuần gần nhất | Phái sinh | PENDING |
+| K_GSTT_95 | Khối lượng CP niêm yết hiện tại | Cơ sở | PENDING |
+| K_GSTT_96 | Khối lượng CP đang lưu hành | Cơ sở | PENDING |
+| K_GSTT_97 | Khối lượng CP đang lưu hành bình quân | Phái sinh | PENDING |
+| K_GSTT_98 | LNST | Cơ sở | PENDING |
+| K_GSTT_99 | Số cổ phiếu đang lưu hành | Cơ sở | PENDING |
+| K_GSTT_100 | EPS quý gần nhất | Phái sinh | PENDING |
+| K_GSTT_101 | EPS bình quân 4 quý gần nhất | Phái sinh | PENDING |
+| K_GSTT_102 | VCSH | Cơ sở | PENDING |
+| K_GSTT_103 | Giá trị sổ sách quý gần nhất | Phái sinh | PENDING |
+| K_GSTT_104 | Giá trị sổ sách bình quân 4 quý | Phái sinh | PENDING |
+| K_GSTT_105 | P/E | Phái sinh | PENDING |
+| K_GSTT_106 | P/B | Phái sinh | PENDING |
 
 **Lý do PENDING chi tiết:**
 - Nhóm KPI vốn hóa, KL CP, Số CP lưu hành: phụ thuộc **VSDC TT138** — O_GSTT_13 đang Open.
@@ -1824,21 +1863,23 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 | Tên bảng | Grain |
 |---|---|
 | Fact Security Daily Market Summary | 1 row / mã CK / ngày giao dịch |
-| Security Trading Snapshot Dimension | 1 row / mã CK (SCD2) |
+| Security Trading Snapshot Dimension | 1 row / mã CK (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
 
 #### PENDING — STT 46 KPI chưa có Atomic
 
-| KPI ID | Tên KPI | Nguồn | Lý do PENDING |
+**Bảng KPI PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_GSTT_108 | Tỷ trọng trong chỉ số (%) | MDDS/CSIDXInfor | O_GSTT_12 — IDXInfor schema chưa ổn định |
-| K_GSTT_109 | Điểm đóng góp | MSS + MDDS | O_GSTT_12 |
-| K_GSTT_110 | Doanh thu | IDS-GSĐC | O_GSTT_26 |
-| K_GSTT_111 | Lợi nhuận | IDS-GSĐC | O_GSTT_26 |
-| K_GSTT_112 | P/E thị trường | MSS + IDS + MDDS | Phụ thuộc K_GSTT_98/99 — PENDING |
-| K_GSTT_113 | P/B thị trường | MSS + IDS + MDDS | Phụ thuộc K_GSTT_102/99 — PENDING |
-| K_GSTT_114 | EPS thị trường | MSS + IDS | Phụ thuộc K_GSTT_98/99 — PENDING |
-| K_GSTT_115 | Vốn hóa thị trường | MSS + MDDS | O_GSTT_13 |
+| K_GSTT_108 | Tỷ trọng trong chỉ số (%) | Phái sinh | PENDING |
+| K_GSTT_109 | Điểm đóng góp | Phái sinh | PENDING |
+| K_GSTT_110 | Doanh thu | Cơ sở | PENDING |
+| K_GSTT_111 | Lợi nhuận | Cơ sở | PENDING |
+| K_GSTT_112 | P/E thị trường | Phái sinh | PENDING |
+| K_GSTT_113 | P/B thị trường | Phái sinh | PENDING |
+| K_GSTT_114 | EPS thị trường | Phái sinh | PENDING |
+| K_GSTT_115 | Vốn hóa thị trường | Phái sinh | PENDING |
 
 ---
 
@@ -1878,17 +1919,25 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 | Tên bảng | Grain |
 |---|---|
 | Fact Security Daily Market Summary | 1 row / mã CK / ngày giao dịch |
-| Security Trading Snapshot Dimension | 1 row / mã CK (SCD2) |
+| Security Trading Snapshot Dimension | 1 row / mã CK (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
 
 #### PENDING — STT 38/46 KPI chưa có Atomic
 
-| KPI ID | Tên KPI | Nguồn | Lý do PENDING | Atomic cần bổ sung |
-|---|---|---|---|---|
-| K_GSTT_121 | Doanh thu | IDS-GSĐC | O_GSTT_26 — IDS BCTC entities đã Confirmed nhưng bị chặn bởi O_GSTT_13 (Shares Outstanding) ở các mart liên quan | `Public Company Financial Report Value` (pblc_co_fnc_rpt_val) |
-| K_GSTT_122 | Lợi nhuận sau thuế | IDS-GSĐC | O_GSTT_26 — cùng blockers với K_GSTT_121 | `Public Company Financial Report Value` (pblc_co_fnc_rpt_val) |
+**KPI liên quan:** K_GSTT_121, K_GSTT_122
 
-> **Mart dự kiến khi Atomic sẵn sàng:** Gộp vào `Fact Security Daily Market Summary` qua cơ chế forward-fill BCTC — pattern đã xác nhận tại O_GSTT_9.
+**Lý do pending:** IDS BCTC entities đã Confirmed nhưng bị chặn bởi O_GSTT_13 (Shares Outstanding từ VSDC) — O_GSTT_26.
+
+**Atomic cần bổ sung:** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val` ← IDS.data).
+
+**Mart dự kiến:** Gộp vào `Fact Security Daily Market Summary` qua cơ chế forward-fill BCTC — pattern đã xác nhận tại O_GSTT_9.
+
+**Bảng KPI PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_GSTT_121 | Doanh thu | Cơ sở | PENDING |
+| K_GSTT_122 | Lợi nhuận sau thuế | Cơ sở | PENDING |
 
 ---
 
@@ -1944,43 +1993,31 @@ flowchart LR
 graph TB
     classDef fact fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef dim fill:#dcfce7,stroke:#16a34a,color:#14532d
-    classDef pending fill:#fef9c3,stroke:#ca8a04,color:#713f12
     classDef oper fill:#fce7f3,stroke:#9d174d,color:#4a044e
 
     F1["Fact Security Daily Market Summary"]:::fact
     F2["Fact Corporate Bond Daily Market Summary"]:::fact
-    F3["Fact Index Constituent Contribution Snapshot"]:::pending
-    F4["Fact Market Index Daily Snapshot"]:::pending
-    F5["Fact Market Valuation Snapshot"]:::pending
-    F6["Fact Security Valuation Snapshot"]:::pending
     O1["Stock Holder Ownership Profile"]:::oper
     D1["Security Trading Snapshot Dimension"]:::dim
     D2["Public Company Dimension"]:::dim
     D3["Corporate Bond Trading Snapshot Dimension"]:::dim
+    D4["Corporate Bond Trading Snapshot Industry Dimension"]:::dim
     D5["Calendar Date Dimension"]:::dim
 
     D1 --> F1
     D2 --> F1
     D5 --> F1
     D3 --> F2
+    D4 --> F2
     D5 --> F2
-    D5 --> F3
-    D5 --> F4
-    D5 --> F5
-    D1 --> F6
-    D5 --> F6
 ```
 
 **Bảng Phân tích:**
 
-| Bảng Datamart | Loại | Grain | Nhóm | Trạng thái |
+| Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính |
 |---|---|---|---|---|
-| Fact Security Daily Market Summary | Fact Periodic Snapshot | 1 row / mã CK / ngày | 1, 3, 6–27d_heatmap, STT 49 | READY |
-| Fact Corporate Bond Daily Market Summary | Fact Periodic Snapshot | 1 row / mã TP / ngày | 2 | READY |
-| Fact Index Constituent Contribution Snapshot | Fact Periodic Snapshot | 1 row / mã CK / index code / ngày | 27a | **PENDING** O_GSTT_12 |
-| Fact Market Index Daily Snapshot | Fact Periodic Snapshot | 1 row / Index Code / ngày | 4 | **PENDING** O_GSTT_12 |
-| Fact Market Valuation Snapshot | Fact Periodic Snapshot | 1 row / Index Code / quý | 5 | **PENDING** O_GSTT_12, O_GSTT_13 |
-| Fact Security Valuation Snapshot | Fact Periodic Snapshot | 1 row / mã CK / ngày | STT 48 | **PENDING** O_GSTT_13, O_GSTT_26 |
+| Fact Security Daily Market Summary | Tổng hợp thị trường cổ phiếu hàng ngày — giá, khối lượng, KLNN, dòng tiền phân loại NĐT | Fact Snapshot | 1 row / mã CK / ngày | Security Trading Snapshot, Securities Trade |
+| Fact Corporate Bond Daily Market Summary | Tổng hợp thị trường trái phiếu DN niêm yết hàng ngày | Fact Snapshot | 1 row / mã TP / ngày | Corporate Bond Trading Snapshot, Securities Trade |
 
 > **Schema `Fact Security Daily Market Summary` — đầy đủ (v3.3):**
 >
@@ -2006,13 +2043,15 @@ graph TB
 
 **Bảng Dimension:**
 
-| Bảng Datamart | NK | Nhóm |
-|---|---|---|
-| Security Trading Snapshot Dimension | Symbol | 1, 3, 6–27d_heatmap, STT 49 |
-| Public Company Dimension | Equity Ticker | 1, 3, 6–27d_heatmap |
-| Corporate Bond Trading Snapshot Dimension | Bond Ticker | 2 |
-| Corporate Bond Trading Snapshot Industry Dimension | Bond Ticker | 2 |
-| Calendar Date Dimension | Date (Conformed) | Tất cả |
+*Tất cả Dimension áp dụng SCD Type 4A.*
+
+| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính | Conformed |
+|---|---|---|---|---|
+| Security Trading Snapshot Dimension | Thông tin mã chứng khoán, sàn, loại, rổ chỉ số | 1 row / mã CK | Security Trading Snapshot | Không |
+| Public Company Dimension | Thông tin công ty đại chúng và ngành IDS | 1 row / mã CK | Public Company | Không |
+| Corporate Bond Trading Snapshot Dimension | Thông tin mã trái phiếu doanh nghiệp niêm yết | 1 row / mã TP | Corporate Bond Trading Snapshot | Không |
+| Corporate Bond Trading Snapshot Industry Dimension | Ngành IDS của tổ chức phát hành trái phiếu | 1 row / mã TP | Public Company | Không |
+| Calendar Date Dimension | Lịch giao dịch và ngày lễ | 1 row / ngày | Calendar Date | Có |
 
 > Dimension PENDING chưa thiết kế: `Market Index Dimension` (Nhóm 4, 5, 27a).
 
@@ -2048,4 +2087,5 @@ graph TB
 | O_GSTT_24 | Biểu đồ GTNN intraday theo giờ (STT 40) — grain cần xác nhận | Closed — EOD đủ. Câu lệnh tham khảo BA STT 40 dùng `GROUP BY symbol, ngay_gd` — aggregate theo ngày. Line chart tích lũy theo giờ trên UI là presentation layer / real-time feed riêng, không phải từ datamart. `Fact Security Daily Market Summary` EOD đáp ứng đủ — không cần bảng intraday mới. K_GSTT_86–88 rút khỏi scope mart. | K_GSTT_86–88 | Closed |
 | O_GSTT_25 | FREE FLOAT chưa có nguồn — BA và Atomic đều chưa xác định | BA STT 39: công thức `wi = (Giá đóng cửa × KL tự do chuyển nhượng) / ΣMarketCap`. Bảng nguồn và trường nguồn để trống trong BA, trạng thái Pending, đánh giá Khó. Cần BA làm việc với MSS/MDDS team để xác định field `KL tự do chuyển nhượng` trước khi thiết kế Atomic. | K_GSTT_85 | Open — blocked by BA |
 | O_GSTT_26 | IDS BCTC — Atomic entities cho LNST, VCSH, Doanh thu | Confirmed — tất cả entities đã có trong `atomic_attributes.csv`: `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val` ← `IDS.data`); `Public Company Report Submission` (`pblc_co_rpt_subm` ← `IDS.company_data`); `Financial Report Catalog` (`fnc_rpt_ctlg` ← `IDS.report_catalog`); `Financial Report Row Template` (`fnc_rpt_row_tpl` ← `IDS.rrow`); `Financial Report Column Template` (`fnc_rpt_clmn_tpl` ← `IDS.rcol`). Filter mapping: Report Type Code LIKE `'BCKQKD%'`/`'BCDKT%'` → `fnc_rpt_ctlg.fnc_rpt_ctlg_bsn_code`; Enterprise Type Code (`dn`/`bh`/`td`) → `fnc_rpt_ctlg.entp_tp_code`; Row Description → `fnc_rpt_row_tpl.row_dsc_clmn_code`; Column Code `'1'` (kỳ hiện tại) → `fnc_rpt_clmn_tpl.clmn_code`; Year/Quarter → `pblc_co_rpt_subm.rpt_yr`/`rpt_qtr`. Blocker còn lại: O_GSTT_13 (Shares Outstanding từ VSDC). | K_GSTT_22, K_GSTT_25, K_GSTT_98–115 | Confirmed |
-| O_GSTT_27 | KL Thỏa Thuận (STT 46) — Board Type HOSE ('T1','T2','T3','T4','T6') có bao gồm lô lẻ (T4, T6) không? | Tạm thời include toàn bộ Board Type IN ('T1','T2','T3','T4','T6') — BA ghi chú cần hỏi nghiệp vụ | K_GSTT_107 | Open || O_GSTT_28 | STT 47 — nguồn Atomic cho "Sở hữu và giao dịch nội bộ" — BA ghi VSDC nhưng Atomic source là IDS | Atomic team xác nhận: `Stock Holder` và `Stock Control` tại `IDS.stock_holders` / `IDS.stock_controls` là nguồn chính thức cho dữ liệu cổ đông. BA ghi VSDC là nguồn gốc ban đầu nhưng data đã được ingest vào IDS. | K_GSTT_123–128 | Open |
+| O_GSTT_27 | KL Thỏa Thuận (STT 46) — Board Type HOSE ('T1','T2','T3','T4','T6') có bao gồm lô lẻ (T4, T6) không? | Tạm thời include toàn bộ Board Type IN ('T1','T2','T3','T4','T6') — BA ghi chú cần hỏi nghiệp vụ | K_GSTT_107 | Open |
+| O_GSTT_28 | STT 47 — nguồn Atomic cho "Sở hữu và giao dịch nội bộ" — BA ghi VSDC nhưng Atomic source là IDS | Atomic team xác nhận: `Stock Holder` và `Stock Control` tại `IDS.stock_holders` / `IDS.stock_controls` là nguồn chính thức cho dữ liệu cổ đông. BA ghi VSDC là nguồn gốc ban đầu nhưng data đã được ingest vào IDS. | K_GSTT_123–128 | Open |
