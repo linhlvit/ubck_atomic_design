@@ -101,18 +101,22 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S3A["MDDS CSIDXInfor"]
+        S3A["MDDS.CSIDXInfor"]
+        S3B["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
         A3A["Index Constituent Snapshot"]
+        A3B["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        F3["Fact Index Constituent Contribution Snapshot"]
-        D5["Calendar Date Dimension"]
-        D5 --> F3
+        fct_indx_cst_ctb_snpst["Fact Index Constituent Contribution Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
+        cdr_dt_dim --> fct_indx_cst_ctb_snpst
     end
     S3A --> A3A
-    A3A --> F3
+    S3B --> A3B
+    A3A --> fct_indx_cst_ctb_snpst
+    A3B --> cdr_dt_dim
 ```
 
 > **PENDING O_GSTT_12** — không triển khai cho đến khi IDXInfor schema xác nhận.
@@ -124,20 +128,20 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S4A["IDS stock_holders"]
-        S4B["IDS stock_controls"]
+        S4A["IDS.stock_holders"]
+        S4B["IDS.stock_controls"]
     end
     subgraph SIL["Atomic"]
         A4A["Stock Holder"]
         A4B["Stock Control"]
     end
     subgraph GOLD["Datamart"]
-        O1["Stock Holder Ownership Profile"]
+        stk_hldr_ownrshp_prfl["Stock Holder Ownership Profile"]
     end
     S4A --> A4A
     S4B --> A4B
-    A4A --> O1
-    A4B --> O1
+    A4A --> stk_hldr_ownrshp_prfl
+    A4B --> stk_hldr_ownrshp_prfl
 ```
 
 ---
@@ -230,19 +234,23 @@ erDiagram
         string Floor_Code
         string Stock_Type_Code
         string Index_Codes
+        string Source_System_Code
     }
     Public_Company_Dimension {
         string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
-        date Trading_Date_Dimension_Id PK
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
-        int Month
         int Quarter
-        boolean Is_Trading_Day
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
     Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
@@ -301,22 +309,6 @@ flowchart LR
 | K_GSTT_18b | GTGD TPDN | Tỷ VNĐ | Phái sinh | `SUM(Exec Value WHERE Market Id Code = 'BDO' AND Board Type IN ('G1','G2','G3','T1','T2','T3'))` |
 | K_GSTT_23 | Doanh thu | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
 
-##### PENDING
-
-**KPI liên quan:** K_GSTT_24
-
-**Lý do pending:** Chưa xác định field YTM trong Atomic entity `Corporate Bond Trading Snapshot` — O_GSTT_6.
-
-**Atomic cần bổ sung:** Xác nhận field YTM trong `Corporate Bond Trading Snapshot` (MDDS.CorpBondInfor).
-
-**Mart dự kiến:** Bổ sung cột `Average_YTM` vào `Fact Corporate Bond Daily Market Summary` khi Atomic xác nhận.
-
-**Bảng KPI PENDING:**
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_GSTT_24 | YTM bình quân | Cơ sở | PENDING |
-
 **Star Schema:**
 
 ```mermaid
@@ -335,19 +327,23 @@ erDiagram
         string Bond_Issuer_Dimension_Id PK
         string Bond_Ticker
         string Issuer_Name
+        string Source_System_Code
     }
     Corporate_Bond_Trading_Snapshot_Industry_Dimension {
         string Bond_Issuer_Industry_Dimension_Id PK
         string Bond_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
-        date Trading_Date_Dimension_Id PK
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
-        int Month
         int Quarter
-        boolean Is_Trading_Day
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Corporate_Bond_Trading_Snapshot_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : " "
     Corporate_Bond_Trading_Snapshot_Industry_Dimension ||--o{ Fact_Corporate_Bond_Daily_Market_Summary : " "
@@ -372,6 +368,22 @@ flowchart LR
 | Corporate Bond Trading Snapshot Dimension | 1 row / mã TP (SCD4A) |
 | Corporate Bond Trading Snapshot Industry Dimension | 1 row / mã TP (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày |
+
+##### PENDING
+
+**KPI liên quan:** K_GSTT_24
+
+**Lý do pending:** Chưa xác định field YTM trong Atomic entity `Corporate Bond Trading Snapshot` — O_GSTT_6.
+
+**Atomic cần bổ sung:** Xác nhận field YTM trong `Corporate Bond Trading Snapshot` (MDDS.CorpBondInfor).
+
+**Mart dự kiến:** Bổ sung cột `Average_YTM` vào `Fact Corporate Bond Daily Market Summary` khi Atomic xác nhận.
+
+**Bảng KPI PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_GSTT_24 | YTM bình quân | Cơ sở | PENDING |
 
 ---
 
@@ -444,19 +456,23 @@ erDiagram
         string Floor_Code
         string Stock_Type_Code
         string Index_Codes
+        string Source_System_Code
     }
     Public_Company_Dimension {
         string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
-        date Trading_Date_Dimension_Id PK
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
-        int Month
         int Quarter
-        boolean Is_Trading_Day
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
     Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
@@ -628,19 +644,23 @@ erDiagram
         string Floor_Code
         string Stock_Type_Code
         string Index_Codes
+        string Source_System_Code
     }
     Public_Company_Dimension {
         string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
-        date Trading_Date_Dimension_Id PK
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
-        int Month
         int Quarter
-        boolean Is_Trading_Day
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
     Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
@@ -849,19 +869,23 @@ erDiagram
         string Floor_Code
         string Stock_Type_Code
         string Index_Codes
+        string Source_System_Code
     }
     Public_Company_Dimension {
         string Public_Company_Dimension_Id PK
         string Equity_Ticker
         string Industry_Level1_Code
         string Industry_Level1_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
-        date Trading_Date_Dimension_Id PK
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
-        int Month
         int Quarter
-        boolean Is_Trading_Day
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
     Public_Company_Dimension ||--o{ Fact_Security_Daily_Market_Summary : " "
@@ -1868,6 +1892,17 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 #### PENDING — STT 46 KPI chưa có Atomic
 
+**KPI liên quan:** K_GSTT_108–115
+
+**Lý do pending:** Tỷ trọng/điểm đóng góp chờ IDXInfor — O_GSTT_12; Doanh thu/Lợi nhuận chờ IDS BCTC — O_GSTT_26; P/E, P/B, EPS, Vốn hóa chờ Shares Outstanding — O_GSTT_13.
+
+**Atomic cần bổ sung:**
+- `Market Index Snapshot` (MDDS.IDXInfor) — O_GSTT_12
+- `Security Share Volume` (VSDC TT138) — O_GSTT_13
+- `Public Company Financial Report Value` (IDS.data) — O_GSTT_26
+
+**Mart dự kiến:** Bổ sung vào `Fact Security Daily Market Summary` và `Fact Index Constituent Contribution Snapshot` khi Atomic sẵn sàng.
+
 **Bảng KPI PENDING:**
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
@@ -2036,14 +2071,14 @@ graph TB
 
 **Bảng Tác nghiệp:**
 
-| Bảng Datamart | Atomic nguồn | Grain | Nhóm | Trạng thái |
-|---|---|---|---|---|
-| Stock Holder Ownership Profile | Stock Holder, Stock Control | 1 row / cổ đông / công ty đại chúng | 28 | READY |
+| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính |
+|---|---|---|---|
+| Stock Holder Ownership Profile | Thông tin sở hữu và người nội bộ của công ty đại chúng | 1 row / cổ đông / công ty đại chúng | Stock Holder, Stock Control |
 
 
 **Bảng Dimension:**
 
-*Tất cả Dimension áp dụng SCD Type 4A.*
+*SCD Type 4A áp dụng cho tất cả Dimension — ngoại trừ `Calendar Date Dimension` (static dimension, không thay đổi theo thời gian).*
 
 | Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính | Conformed |
 |---|---|---|---|---|
@@ -2051,7 +2086,7 @@ graph TB
 | Public Company Dimension | Thông tin công ty đại chúng và ngành IDS | 1 row / mã CK | Public Company | Không |
 | Corporate Bond Trading Snapshot Dimension | Thông tin mã trái phiếu doanh nghiệp niêm yết | 1 row / mã TP | Corporate Bond Trading Snapshot | Không |
 | Corporate Bond Trading Snapshot Industry Dimension | Ngành IDS của tổ chức phát hành trái phiếu | 1 row / mã TP | Public Company | Không |
-| Calendar Date Dimension | Lịch giao dịch và ngày lễ | 1 row / ngày | Calendar Date | Có |
+| Calendar Date Dimension | Lịch ngày đầy đủ (dense) — ngày lễ, năm, quý, tháng. Conformed dimension dùng chung toàn Datamart. | 1 row / ngày | Calendar Date | Có |
 
 > Dimension PENDING chưa thiết kế: `Market Index Dimension` (Nhóm 4, 5, 27a).
 

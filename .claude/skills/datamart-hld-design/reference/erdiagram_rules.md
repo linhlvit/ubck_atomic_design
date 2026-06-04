@@ -94,6 +94,42 @@ Ví dụ: nếu `Fact_FMS_Snapshot` có 5 trường ở Section 2 Nhóm 1, thì 
 
 ---
 
+## Calendar Date Dimension — schema chuẩn bắt buộc
+
+```
+Calendar_Date_Dimension {
+    string Calendar_Date_Dimension_Id PK
+    date Calendar_Date
+    int Year
+    int Quarter
+    int Month
+    boolean Holiday_Flag
+    string Source_System_Code
+}
+```
+
+- `Is_Trading_Day` **không** tồn tại trong Atomic `cdr_dt` — không thêm vào erDiagram.
+- `Is_Weekend`, `Holiday_Name` chỉ dùng nếu module thực sự cần và Atomic có field tương ứng.
+- `Source_System_Code` bắt buộc — Calendar Date là static dimension, không có SCD.
+
+---
+
+## `Source_System_Code` trong erDiagram Dimension và Operational
+
+Mọi bảng `Dimension` và `Operational` **bắt buộc có** `Source_System_Code` (thêm cuối danh sách field):
+
+```
+    Any_Dimension {
+        string Any_Dimension_Id PK
+        ...
+        string Source_System_Code
+    }
+```
+
+❌ Không thêm `Source_System_Code` vào Fact — Fact không có driving table cố định.
+
+---
+
 ## Ví dụ erDiagram đúng
 
 ```mermaid
@@ -104,14 +140,15 @@ erDiagram
         int Year
         int Quarter
         int Month
-        boolean Is_Weekend
-        string Holiday_Name
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Fund_Management_Company_Dimension {
         string Fund_Management_Company_Dimension_Id PK
         string Company_Code
         string Company_Name
         string Life_Cycle_Status_Code
+        string Source_System_Code
     }
     Fact_Fund_Management_Company_Snapshot {
         string Snapshot_Date_Dimension_Id FK
