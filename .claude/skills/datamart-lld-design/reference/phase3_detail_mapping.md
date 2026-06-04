@@ -98,6 +98,18 @@ Dòng FILTER/SLICER thuộc cùng KPI Base (cùng `kpi_id`) kế thừa `tinh_ch
 
 ## Quy trình đối chiếu BA trước khi sinh
 
+**Bước 0 — Cross-check BA ↔ HLD (BẮT BUỘC — thực hiện trước bước 1):**
+
+1. Với mỗi dòng BA có `Trạng thái mapping ∈ {Done, Doing, Pending}` (kể cả `Phân loại = Chiều`):
+   - Tìm KPI_ID tương ứng trong bảng KPI của nhóm đó trong HLD
+   - Nếu KPI_ID chưa có trong HLD → **DỪNG**, báo cáo danh sách thiếu theo nhóm
+2. ❌ Không tự sinh KPI_ID mới — KPI_ID mới phải được khai sinh trong HLD trước
+3. ❌ Không bỏ qua dòng `Phân loại = Chiều` — Chiều cũng cần KPI_ID riêng
+4. ❌ Không dùng shorthand "xem nhóm khác" — mỗi nhóm phải có đủ KPI_ID explicit trong output
+5. Chỉ tiếp tục bước 1 khi **tất cả** dòng Done/Doing/Pending từ BA đều đã có KPI_ID trong HLD
+
+**Bước 1 — Lọc và chuẩn bị:**
+
 1. Lọc Done/Doing/Pending từ BA file
 2. Xác định `mart_table` + `mart_column` từ Attributes.csv cho từng dòng
 3. Nếu không tìm được → `ghi_chu = "Thiếu cột trong mart — cần bổ sung Attributes"`

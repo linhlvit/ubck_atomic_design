@@ -49,9 +49,11 @@ Phase 2+: Chờ user duyệt HLD trước khi chuyển sang datamart-lld-design
 
 ## BƯỚC 1 — ĐỌC INPUT (thứ tự bắt buộc)
 
-1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract KPI:
-   - Lọc cột `Phân loại`: `Chiều` → slicer/filter dimension; `Cơ sở` + `Phái sinh` → KPI list
-   - Ghi nhận cột `Trạng thái mapping` — phân biệt Done/Doing/Pending
+1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`:
+   - `Phân loại = Chiều` → slicer/filter dimension — **phải có KPI_ID**, không được bỏ qua
+   - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
+   - Ghi nhận `Trạng thái mapping` — phân biệt Done/Doing/Pending
+   - ❌ Không bỏ qua dòng `Phân loại = Chiều` — đây là phần của bảng KPI, không chỉ là gợi ý thiết kế
 
 2. **Screenshot** — xác định scope boundary (tab, nhóm, loại thông tin hiển thị)
 
@@ -112,6 +114,10 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file và yêu cầ
 - [ ] Bảng PENDING không có Star Schema, erDiagram, Lineage flowchart
 - [ ] Block PENDING không tạo Open Issue (Section 4) về grain/schema/logic — chỉ ghi nhận Atomic cần bổ sung
 - [ ] KPI ID đã được khai sinh trong Section 2 trước khi xuất hiện ở file khác
+- [ ] Mọi dòng BA `Phân loại = "Chiều"` phải có KPI_ID trong bảng KPI của nhóm tương ứng — không được bỏ qua
+- [ ] Chiều dùng như ETL filter nội bộ (không hiển thị UI) → ghi rõ trong cột Ghi chú: "dùng trong formula KPI K_X_N" — vẫn phải có KPI_ID
+- [ ] Cấm dùng shorthand "xem Nhóm N" thay thế bảng KPI — nếu nhóm reuse KPI từ nhóm khác, liệt kê explicit từng KPI_ID kèm ghi chú nguồn gốc: "Reuse từ Nhóm N"
+- [ ] Đọc toàn bộ BA file trước khi viết bảng KPI — đảm bảo không sót dòng nào có `Trạng thái mapping ∈ {Done, Doing, Pending}`
 
 ### Section 3 — Mô hình tổng thể
 - [ ] Không bao gồm PENDING

@@ -209,11 +209,18 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 ### Checklist Phase 3
 
 ```
+PRE-CHECK (trước khi sinh — bắt buộc):
+□ Cross-check BA ↔ HLD: mọi dòng Done/Doing/Pending (kể cả Chiều) đều có KPI_ID trong HLD
+□ Nếu dòng BA nào chưa có KPI_ID → DỪNG và báo cáo trước khi tiếp tục
+□ Không tự sinh KPI_ID mới trong Phase 3 — KPI_ID mới phải được khai sinh trong HLD trước
+
+OUTPUT CHECK:
 □ Tất cả dòng Done/Doing/Pending từ BA file đều có trong output
 □ KPI PENDING từ HLD cũng có trong output (mart_table/mart_column/logic trống)
 □ Không bỏ qua dòng Phân loại = Chiều
 □ Không bỏ qua dòng Trạng thái = Doing
-□ Không bỏ qua chiều lặp lại giữa các nhóm — mỗi nhóm có đủ SLICER/FILTER
+□ Không bỏ qua chiều lặp lại giữa các nhóm — mỗi nhóm có đủ SLICER/FILTER explicit (không dùng shorthand "xem nhóm X")
+□ Không có KPI_ID trong output mà chưa được khai sinh trong HLD
 □ tinh_chat khớp với Tính chất trong HLD bảng KPI
 □ mart_table dùng tên logical; mart_column dùng tên logical
 □ logic dùng tên physical (physical_table.physical_column)

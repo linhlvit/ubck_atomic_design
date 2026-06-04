@@ -167,6 +167,20 @@ flowchart LR
 
 **Bảng KPI:**
 
+*Chiều (Slicer / Filter):*
+
+| KPI ID | Tên KPI | Tính chất | Nguồn / Cơ chế lọc |
+|---|---|---|---|
+| K_GSTT_129 | Mã CK | Chiều | `Security Trading Snapshot Dimension.Symbol` — SLICER chọn 1 hoặc nhiều mã |
+| K_GSTT_130 | Ngành | Chiều | `Public Company Dimension.Industry Level1 Code` — GROUP_BY / SLICER |
+| K_GSTT_131 | Sàn | Chiều | `Security Trading Snapshot Dimension.Floor Code` — FILTER cố định theo tab (HOSE/HNX/UPCOM) |
+| K_GSTT_132 | Ngày | Chiều | `Calendar Date Dimension.Calendar Date` — SLICER chọn ngày / khoảng ngày |
+| K_GSTT_133 | Chỉ số | Chiều | `Security Trading Snapshot Dimension.Index Codes` — FILTER: `ARRAY_CONTAINS(idx_codes, :selected_index)` |
+| K_GSTT_134 | Loại phái sinh | Chiều | `Security Trading Snapshot Dimension.Floor Code = '03'` AND `Stock Type Code = 'FU'` — FILTER vào phái sinh; SLICER phân loại theo `Underlying Symbol`: `IN ('VN30','VN100')` → Phái sinh chỉ số; `IN ('GB05','GD10')` → Phái sinh TPCP (GB05 = TPCP 5 năm, GD10 = TPCP 10 năm). Giá trị lưu trong `scr_tdg_snpst_dim.ulyg_symb` ← `MDDS.StockInfor.underlyingSymbol`. |
+| K_GSTT_137 | Phương thức khớp lệnh | Chiều | SLICER UI: user chọn "Khớp lệnh" hoặc "Thỏa thuận". ETL: Fact có sẵn 2 cột riêng — `Total_Match_Volume`/`Total_Match_Value` (khớp lệnh) và `PT_Total_Match_Volume`/`PT_Total_Match_Value` (thỏa thuận). Presentation layer dùng cột tương ứng theo lựa chọn. Không cần cột `Board_Type_Code` riêng trong Fact. |
+
+*Chỉ tiêu:*
+
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
 |---|---|---|---|---|
 | K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Exec Volume)` từ Trade_HOSE/HNX, Market Id Code IN (STO, STX, UPX) |
@@ -233,7 +247,9 @@ erDiagram
         string Security_Name
         string Floor_Code
         string Stock_Type_Code
+        string Underlying_Symbol
         string Index_Codes
+        date Maturity_Date
         string Source_System_Code
     }
     Public_Company_Dimension {
@@ -307,6 +323,9 @@ flowchart LR
 | K_GSTT_16b | % Thay đổi TPDN | % | Phái sinh | `(Close Price − Reference Price) / Reference Price × 100` |
 | K_GSTT_17b | KLGD TPDN | Trái phiếu | Phái sinh | `SUM(Exec Volume WHERE Market Id Code = 'BDO' AND Board Type IN ('G1','G2','G3','T1','T2','T3'))` |
 | K_GSTT_18b | GTGD TPDN | Tỷ VNĐ | Phái sinh | `SUM(Exec Value WHERE Market Id Code = 'BDO' AND Board Type IN ('G1','G2','G3','T1','T2','T3'))` |
+| K_GSTT_19b | Giá mở cửa TPDN | VNĐ | Cơ sở | `Corporate Bond Trading Snapshot.Open Price` |
+| K_GSTT_20b | Ngày đáo hạn trái phiếu | Ngày | Cơ sở | `Corporate Bond Trading Snapshot Dimension.Maturity Date` |
+| K_GSTT_21b | Lãi suất trái phiếu | % | Cơ sở | `Corporate Bond Trading Snapshot Dimension.Interest Rate` |
 | K_GSTT_23 | Doanh thu | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
 
 **Star Schema:**
@@ -327,6 +346,9 @@ erDiagram
         string Bond_Issuer_Dimension_Id PK
         string Bond_Ticker
         string Issuer_Name
+        date Maturity_Date
+        float Open_Price
+        float Interest_Rate
         string Source_System_Code
     }
     Corporate_Bond_Trading_Snapshot_Industry_Dimension {
@@ -455,7 +477,9 @@ erDiagram
         string Security_Name
         string Floor_Code
         string Stock_Type_Code
+        string Underlying_Symbol
         string Index_Codes
+        date Maturity_Date
         string Source_System_Code
     }
     Public_Company_Dimension {
@@ -525,15 +549,20 @@ flowchart LR
 | K_GSTT_28 | % thay đổi điểm chỉ số | Phái sinh | PENDING |
 | K_GSTT_29 | KLGD của chỉ số | Phái sinh | PENDING |
 | K_GSTT_30 | GTGD của chỉ số | Phái sinh | PENDING |
-| K_GSTT_31 | Số mã tăng giá | Phái sinh | PENDING |
-| K_GSTT_32 | Số mã giảm giá | Phái sinh | PENDING |
-| K_GSTT_33 | Số mã đứng giá | Phái sinh | PENDING |
-| K_GSTT_34 | Số mã tăng trần | Phái sinh | PENDING |
-| K_GSTT_35 | Số mã giảm sàn | Phái sinh | PENDING |
+| K_GSTT_31 | Số mã tăng giá | Cơ sở | PENDING |
+| K_GSTT_32 | Số mã giảm giá | Cơ sở | PENDING |
+| K_GSTT_33 | Số mã đứng giá | Cơ sở | PENDING |
+| K_GSTT_34 | Số mã tăng trần | Cơ sở | PENDING |
+| K_GSTT_35 | Số mã giảm sàn | Cơ sở | PENDING |
 | K_GSTT_36 | KLNN ròng theo chỉ số | Phái sinh | PENDING |
 | K_GSTT_37 | GTNN ròng theo chỉ số | Phái sinh | PENDING |
 | K_GSTT_38 | KLGD thỏa thuận chỉ số | Phái sinh | PENDING |
 | K_GSTT_39 | GTGD thỏa thuận chỉ số | Phái sinh | PENDING |
+| K_GSTT_138 | Chỉ số | Chiều | PENDING |
+| K_GSTT_139 | Theo giờ trong ngày | Chiều | PENDING |
+| K_GSTT_154 | Giá đóng cửa chỉ số | Cơ sở | PENDING |
+| K_GSTT_155 | Giá cao nhất chỉ số | Cơ sở | PENDING |
+| K_GSTT_156 | Giá thấp nhất chỉ số | Cơ sở | PENDING |
 
 ---
 
@@ -565,6 +594,10 @@ flowchart LR
 | K_GSTT_46 | P/B thị trường | Phái sinh | PENDING |
 | K_GSTT_47 | EPS thị trường | Phái sinh | PENDING |
 | K_GSTT_48 | Vốn hóa thị trường | Phái sinh | PENDING |
+| K_GSTT_140 | Chỉ số | Chiều | PENDING |
+| K_GSTT_141 | Ngành | Chiều | PENDING |
+| K_GSTT_142 | Sàn | Chiều | PENDING |
+| K_GSTT_143 | Ngày | Chiều | PENDING |
 
 ---
 
@@ -643,7 +676,9 @@ erDiagram
         string Security_Name
         string Floor_Code
         string Stock_Type_Code
+        string Underlying_Symbol
         string Index_Codes
+        date Maturity_Date
         string Source_System_Code
     }
     Public_Company_Dimension {
@@ -868,7 +903,9 @@ erDiagram
         string Security_Name
         string Floor_Code
         string Stock_Type_Code
+        string Underlying_Symbol
         string Index_Codes
+        date Maturity_Date
         string Source_System_Code
     }
     Public_Company_Dimension {
@@ -1054,9 +1091,14 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
 |---|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | READY |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` | READY |
 | K_GSTT_4 | Tổng GTGD | Tỷ VNĐ | Phái sinh | `SUM(Total Match Value)` trong [Từ ngày → Đến ngày] — tiêu chí ranking | READY |
 | K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` | READY |
 | K_GSTT_3 | % Thay đổi | % | Phái sinh | `(Close Price − Reference Price) / Reference Price × 100` | READY |
+| K_GSTT_25 | LNST | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_43 | VCSH | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
 | K_GSTT_49 | Số CP lưu hành | Cổ phiếu | Cơ sở | VSDC TT138.2025 Mẫu số 01 | **PENDING** — O_GSTT_13 |
 | K_GSTT_50 | Vốn hóa | Tỷ VNĐ | Phái sinh | `Close Price × Shares Outstanding` | **PENDING** — O_GSTT_13 |
 | K_GSTT_51 | P/E | lần (x) | Phái sinh | `Close Price ÷ (Net Profit After Tax ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
@@ -1088,6 +1130,9 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
 |---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` |
 | K_GSTT_19 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Open Price` |
 | K_GSTT_20 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot.High Price` |
 | K_GSTT_21 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot.Low Price` |
@@ -1181,6 +1226,66 @@ flowchart LR
 > - Filter: `WHERE (Close_Price - Reference_Price) / Reference_Price > 0 ORDER BY (Close_Price - Reference_Price) / Reference_Price DESC LIMIT N`
 > - Filter tab HOSE / HNX / UPCOM: `WHERE Security_Trading_Snapshot_Dimension.Floor_Code = '<sàn>'`
 > - Filter tab Chỉ số thị trường / Chỉ số nhóm ngành: `WHERE Security_Trading_Snapshot_Dimension.Index_Codes CONTAINS '<index_code>'`
+
+---
+
+#### Nhóm 32b — Top Tăng Giá theo Sàn / Chỉ số (Bảng số liệu)
+
+##### READY một phần (4 KPI PENDING — O_GSTT_13)
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
+|---|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | READY |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | READY |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` | READY |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` | READY |
+| K_GSTT_3 | % Thay đổi | % | Phái sinh | `(Close Price − Reference Price) / Reference Price × 100` — tiêu chí filter (> 0) và ranking DESC | READY |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong [Từ ngày → Đến ngày] | READY |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` | READY |
+| K_GSTT_25 | LNST | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_43 | VCSH | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_49 | Số CP lưu hành | Cổ phiếu | Cơ sở | VSDC TT138.2025 Mẫu số 01 | **PENDING** — O_GSTT_13 |
+| K_GSTT_50 | Vốn hóa | Tỷ VNĐ | Phái sinh | `Close Price × Shares Outstanding` | **PENDING** — O_GSTT_13 |
+| K_GSTT_51 | P/E | lần (x) | Phái sinh | `Close Price ÷ (Net Profit After Tax ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+| K_GSTT_52 | P/B | lần (x) | Phái sinh | `Close Price ÷ (Equity ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 6 — Top Khối lượng Toàn thị trường (Bảng số liệu)*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện tăng giá và ranking giống Nhóm 16*
+
+---
+
+#### Nhóm 33b — Top Tăng Giá theo Sàn / Chỉ số (Biểu đồ kỹ thuật)
+
+##### READY
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY** / `Public Company Financial Report Value` ← IDS.data — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
+|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` |
+| K_GSTT_19 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Open Price` |
+| K_GSTT_20 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot.High Price` |
+| K_GSTT_21 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot.Low Price` |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong [Từ ngày → Đến ngày] |
+| K_GSTT_22 | Doanh thu | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+| K_GSTT_25 | Lợi nhuận sau thuế | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 3 — Biểu đồ kỹ thuật Cổ phiếu*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện tăng giá và ranking giống Nhóm 17*
 
 ---
 
@@ -1351,6 +1456,69 @@ flowchart LR
 
 ---
 
+#### Nhóm 24b — Top Vượt Đỉnh theo Sàn / Chỉ số (Bảng số liệu)
+
+##### READY một phần (2 KPI PENDING — O_GSTT_13)
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
+|---|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | READY |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | READY |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` | READY |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` | READY |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong ngày chọn | READY |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` | READY |
+| K_GSTT_3 | % Thay đổi | % | Phái sinh | `(Close Price − Reference Price) / Reference Price × 100` | READY |
+| K_GSTT_60 | Đỉnh Cũ | VNĐ | Phái sinh | `MAX(High Price) OVER (PARTITION BY Symbol ORDER BY Trading Date ROWS BETWEEN <preset> PRECEDING AND 1 PRECEDING)` | READY |
+| K_GSTT_25 | LNST | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_43 | VCSH | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_49 | Số CP lưu hành | Cổ phiếu | Cơ sở | VSDC TT138.2025 Mẫu số 01 | **PENDING** — O_GSTT_13 |
+| K_GSTT_51 | P/E | lần (x) | Phái sinh | `Close Price ÷ (Net Profit After Tax ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+| K_GSTT_52 | P/B | lần (x) | Phái sinh | `Close Price ÷ (Equity ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 6 — Top Khối lượng Toàn thị trường (Bảng số liệu)*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện vượt đỉnh và ranking giống Nhóm 20*
+> - Lineage đích: `RPT24b["Top Vượt Đỉnh theo Sàn / Chỉ số — Bảng số liệu"]`
+
+---
+
+#### Nhóm 25b — Top Vượt Đỉnh theo Sàn / Chỉ số (Biểu đồ kỹ thuật)
+
+##### READY
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY** / `Public Company Financial Report Value` ← IDS.data — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
+|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` |
+| K_GSTT_19 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Open Price` |
+| K_GSTT_20 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot.High Price` |
+| K_GSTT_21 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot.Low Price` |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong ngày chọn |
+| K_GSTT_60 | Đỉnh Cũ | VNĐ | Phái sinh | `MAX(High Price) OVER (PARTITION BY Symbol ORDER BY Trading Date ROWS BETWEEN <preset> PRECEDING AND 1 PRECEDING)` |
+| K_GSTT_22 | Doanh thu | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+| K_GSTT_25 | Lợi nhuận sau thuế | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 3 — Biểu đồ kỹ thuật Cổ phiếu*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện vượt đỉnh và ranking giống Nhóm 21*
+> - Lineage đích: `RPT25b["Top Vượt Đỉnh theo Sàn / Chỉ số — Biểu đồ kỹ thuật"]`
+
+---
+
 ### Tab Top Thùng Đáy
 
 > **Phân loại:** Phân tích
@@ -1437,6 +1605,68 @@ flowchart LR
 
 ---
 
+#### Nhóm 28b — Top Thùng Đáy theo Sàn / Chỉ số (Bảng số liệu)
+
+##### READY một phần (2 KPI PENDING — O_GSTT_13)
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
+|---|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | READY |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | READY |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` | READY |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` | READY |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong ngày chọn | READY |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` | READY |
+| K_GSTT_3 | % Thay đổi | % | Phái sinh | `(Close Price − Reference Price) / Reference Price × 100` | READY |
+| K_GSTT_61 | Đáy Cũ | VNĐ | Phái sinh | `MIN(Low Price) OVER (PARTITION BY Symbol ORDER BY Trading Date ROWS BETWEEN <preset> PRECEDING AND 1 PRECEDING)` | READY |
+| K_GSTT_25 | LNST | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_43 | VCSH | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_51 | P/E | lần (x) | Phái sinh | `Close Price ÷ (Net Profit After Tax ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+| K_GSTT_52 | P/B | lần (x) | Phái sinh | `Close Price ÷ (Equity ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 6 — Top Khối lượng Toàn thị trường (Bảng số liệu)*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện thùng đáy và ranking giống Nhóm 22*
+> - Lineage đích: `RPT28b["Top Thùng Đáy theo Sàn / Chỉ số — Bảng số liệu"]`
+
+---
+
+#### Nhóm 29 — Top Thùng Đáy theo Sàn / Chỉ số (Biểu đồ kỹ thuật)
+
+##### READY
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY** / `Public Company Financial Report Value` ← IDS.data — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
+|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` |
+| K_GSTT_19 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Open Price` |
+| K_GSTT_20 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot.High Price` |
+| K_GSTT_21 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot.Low Price` |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong ngày chọn |
+| K_GSTT_61 | Đáy Cũ | VNĐ | Phái sinh | `MIN(Low Price) OVER (PARTITION BY Symbol ORDER BY Trading Date ROWS BETWEEN <preset> PRECEDING AND 1 PRECEDING)` |
+| K_GSTT_22 | Doanh thu | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+| K_GSTT_25 | Lợi nhuận sau thuế | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 3 — Biểu đồ kỹ thuật Cổ phiếu*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện thùng đáy và ranking giống Nhóm 23*
+> - Lineage đích: `RPT29["Top Thùng Đáy theo Sàn / Chỉ số — Biểu đồ kỹ thuật"]`
+
+---
+
 ### Tab Top NDTNN
 
 > **Tên hiển thị UI:** Top Giao dịch Khối ngoại
@@ -1466,6 +1696,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
 |---|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | READY |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` | READY |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` | READY |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` | READY |
 | K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong [Từ ngày → Đến ngày] | READY |
 | K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` | READY |
 | K_GSTT_3 | % Thay đổi | % | Phái sinh | `(Close Price − Reference Price) / Reference Price × 100` | READY |
@@ -1475,6 +1710,12 @@ flowchart LR
 | K_GSTT_62 | KL Bán Ròng | Cổ phiếu | Phái sinh | `Foreign Sell Volume − Foreign Buy Volume` — tiêu chí ranking "KL Bán Ròng" | READY |
 | K_GSTT_11 | GT Mua Ròng | Tỷ VNĐ | Phái sinh | `Foreign Buy Value − Foreign Sell Value` — tiêu chí ranking "GT Mua Ròng" | READY |
 | K_GSTT_63 | GT Bán Ròng | Tỷ VNĐ | Phái sinh | `Foreign Sell Value − Foreign Buy Value` — tiêu chí ranking "GT Bán Ròng" | READY |
+| K_GSTT_25 | LNST | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_43 | VCSH | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_49 | Số CP lưu hành | Cổ phiếu | Cơ sở | VSDC TT138.2025 Mẫu số 01 | **PENDING** — O_GSTT_13 |
+| K_GSTT_50 | Vốn hóa | Tỷ VNĐ | Phái sinh | `Close Price × Shares Outstanding` | **PENDING** — O_GSTT_13 |
+| K_GSTT_51 | P/E | lần (x) | Phái sinh | `Close Price ÷ (Net Profit After Tax ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+| K_GSTT_52 | P/B | lần (x) | Phái sinh | `Close Price ÷ (Equity ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
 
 > **Lưu ý thiết kế:** Tất cả KPI đã có sẵn trong `Fact Security Daily Market Summary`. KL/GT Mua Ròng / Bán Ròng là phái sinh tại query layer — không lưu trong mart.
 
@@ -1505,6 +1746,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
 |---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` |
 | K_GSTT_19 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Open Price` |
 | K_GSTT_20 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot.High Price` |
 | K_GSTT_21 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot.Low Price` |
@@ -1521,6 +1767,75 @@ flowchart LR
 > - Lineage đích: `RPT25["Top NDTNN — Biểu đồ kỹ thuật"]`
 > - Filter tab HOSE / HNX / UPCOM: `WHERE Security_Trading_Snapshot_Dimension.Floor_Code = '<sàn>'`
 > - Filter tab Chỉ số thị trường / Chỉ số nhóm ngành: `WHERE Security_Trading_Snapshot_Dimension.Index_Codes CONTAINS '<index_code>'`
+
+---
+
+#### Nhóm 36b — Top NDTNN theo Sàn / Chỉ số (Bảng số liệu)
+
+##### READY một phần (4 KPI PENDING — O_GSTT_13)
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
+|---|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | READY |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | READY |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` | READY |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` | READY |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong [Từ ngày → Đến ngày] | READY |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` | READY |
+| K_GSTT_3 | % Thay đổi | % | Phái sinh | `(Close Price − Reference Price) / Reference Price × 100` | READY |
+| K_GSTT_8 | KLNN mua | Cổ phiếu | Cơ sở | `SUM(Exec Volume WHERE Buy Foreign Investor Type IN ('10','20'))` | READY |
+| K_GSTT_9 | KLNN bán | Cổ phiếu | Cơ sở | `SUM(Exec Volume WHERE Sell Foreign Investor Type IN ('10','20'))` | READY |
+| K_GSTT_10 | KL Mua Ròng | Cổ phiếu | Phái sinh | `Foreign Buy Volume − Foreign Sell Volume` — tiêu chí ranking "KL Mua Ròng" | READY |
+| K_GSTT_62 | KL Bán Ròng | Cổ phiếu | Phái sinh | `Foreign Sell Volume − Foreign Buy Volume` — tiêu chí ranking "KL Bán Ròng" | READY |
+| K_GSTT_11 | GT Mua Ròng | Tỷ VNĐ | Phái sinh | `Foreign Buy Value − Foreign Sell Value` — tiêu chí ranking "GT Mua Ròng" | READY |
+| K_GSTT_63 | GT Bán Ròng | Tỷ VNĐ | Phái sinh | `Foreign Sell Value − Foreign Buy Value` — tiêu chí ranking "GT Bán Ròng" | READY |
+| K_GSTT_25 | LNST | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_43 | VCSH | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD | READY |
+| K_GSTT_49 | Số CP lưu hành | Cổ phiếu | Cơ sở | VSDC TT138.2025 Mẫu số 01 | **PENDING** — O_GSTT_13 |
+| K_GSTT_50 | Vốn hóa | Tỷ VNĐ | Phái sinh | `Close Price × Shares Outstanding` | **PENDING** — O_GSTT_13 |
+| K_GSTT_51 | P/E | lần (x) | Phái sinh | `Close Price ÷ (Net Profit After Tax ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+| K_GSTT_52 | P/B | lần (x) | Phái sinh | `Close Price ÷ (Equity ÷ Shares Outstanding)` | **PENDING** — O_GSTT_13 |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 6 — Top Khối lượng Toàn thị trường (Bảng số liệu)*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện ranking NDTNN giống Nhóm 24*
+
+---
+
+#### Nhóm 37b — Top NDTNN theo Sàn / Chỉ số (Biểu đồ kỹ thuật)
+
+##### READY
+
+> **Phân loại:** Phân tích
+> **Atomic:** `Security Trading Snapshot` ← MDDS.StockInfor — **READY** / `Securities Trade` ← OrderTrade.Trade_HOSE, Trade_HNX — **READY** / `Public Company Financial Report Value` ← IDS.data — **READY**
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
+|---|---|---|---|---|
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` |
+| K_GSTT_133 | Bộ chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` |
+| K_GSTT_19 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Open Price` |
+| K_GSTT_20 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot.High Price` |
+| K_GSTT_21 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot.Low Price` |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` |
+| K_GSTT_1 | Tổng KLGD | Cổ phiếu | Phái sinh | `SUM(Total Match Volume)` trong [Từ ngày → Đến ngày] |
+| K_GSTT_8 | KLNN mua | Cổ phiếu | Cơ sở | `SUM(Exec Volume WHERE Buy Foreign Investor Type IN ('10','20'))` |
+| K_GSTT_9 | KLNN bán | Cổ phiếu | Cơ sở | `SUM(Exec Volume WHERE Sell Foreign Investor Type IN ('10','20'))` |
+| K_GSTT_10 | KL Mua Ròng | Cổ phiếu | Phái sinh | `Foreign Buy Volume − Foreign Sell Volume` |
+| K_GSTT_22 | Doanh thu | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+| K_GSTT_25 | Lợi nhuận sau thuế | Tỷ VNĐ | Cơ sở | `Public Company Financial Report Value.Data Value` — forward-fill từ BCKQKD |
+
+> *Star Schema, Source, Lineage, Bảng grain: xem Nhóm 3 — Biểu đồ kỹ thuật Cổ phiếu*
+> *Khác biệt: Filter sàn qua `Floor_Code`; filter chỉ số qua `Index_Codes`; điều kiện ranking NDTNN giống Nhóm 25*
 
 ---
 
@@ -1611,6 +1926,14 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
+| K_GSTT_129 | Mã CK | Chiều | READY |
+| K_GSTT_131 | Sàn | Chiều | READY |
+| K_GSTT_132 | Ngày | Chiều | READY |
+| K_GSTT_133 | Chỉ số | Chiều | READY |
+| K_GSTT_2 | Giá đóng cửa | Cơ sở | READY |
+| K_GSTT_3 | % Biến động giá | Phái sinh | READY |
+| K_GSTT_4 | Giá trị giao dịch | Cơ sở | READY |
+| K_GSTT_120 | Khối lượng giao dịch | Phái sinh | READY |
 | K_GSTT_66 | Giá trị chỉ số (VNINDEX...) | Cơ sở | PENDING |
 | K_GSTT_67 | Biến động điểm (+/-) | Phái sinh | PENDING |
 | K_GSTT_68 | % Biến động chỉ số | Phái sinh | PENDING |
@@ -1722,6 +2045,10 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
 |---|---|---|---|---|---|
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` — FILTER | READY |
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` — SLICER | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` — SLICER kỳ 1N/5N/20N/YTD | READY |
+| K_GSTT_144 | Phân loại giao dịch tự doanh | — | Chiều | `Securities Trade.Client House Type Code = '30'` (House) — filter trong ETL; hiển thị UI nhãn "Tự doanh" | READY |
 | K_GSTT_71 | GT Tự doanh mua | Tỷ VNĐ | Phái sinh | `SUM(Securities Trade.Exec Value WHERE Buy Client House Type Code = '30')` — Trade_HOSE/HNX | READY |
 | K_GSTT_72 | GT Tự doanh bán | Tỷ VNĐ | Phái sinh | `SUM(Securities Trade.Exec Value WHERE Sell Client House Type Code = '30')` — Trade_HOSE/HNX | READY |
 | K_GSTT_73 | GT Tự doanh ròng | Tỷ VNĐ | Phái sinh | `K_GSTT_71 − K_GSTT_72` — kích thước ô treemap | READY |
@@ -1764,6 +2091,14 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
 |---|---|---|---|---|---|
+| K_GSTT_136 | Phân loại Nhà đầu tư | — | Chiều | SLICER UI: Cá nhân / Tổ chức trong nước / Tự doanh / Nước ngoài — presentation layer dùng để chọn cột mart tương ứng | READY |
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` — SLICER | READY |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` — FILTER | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` — SLICER kỳ 1N/5N/20N/YTD | READY |
+| K_GSTT_19 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Open Price` | READY |
+| K_GSTT_20 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot.High Price` | READY |
+| K_GSTT_21 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot.Low Price` | READY |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot.Close Price` | READY |
 | K_GSTT_77 | GT Cá nhân mua | Tỷ VNĐ | Phái sinh | `SUM(Securities Trade.Exec Value WHERE Buy Investor Type Code='8000' AND Buy Foreign Investor Type Code='00')` | READY |
 | K_GSTT_78 | GT Cá nhân bán | Tỷ VNĐ | Phái sinh | `SUM(Securities Trade.Exec Value WHERE Sell Investor Type Code='8000' AND Sell Foreign Investor Type Code='00')` | READY |
 | K_GSTT_79 | GT Cá nhân ròng | Tỷ VNĐ | Phái sinh | `K_GSTT_77 − K_GSTT_78` | READY |
@@ -1797,6 +2132,8 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
 |---|---|---|---|---|---|
+| K_GSTT_136 | Phân loại Nhà đầu tư | — | Chiều | Reuse từ Nhóm 27d — SLICER UI chọn nhóm NĐT | READY |
+| K_GSTT_129 | Mã CK | — | Chiều | Reuse từ Nhóm 27d — `Security Trading Snapshot Dimension.Symbol` | READY |
 | K_GSTT_4 | GT Khớp lệnh | Tỷ VNĐ | Phái sinh | `SUM(Securities Trade.Exec Value WHERE Board Type Code NOT IN ('T1','T2','T3','T4','T6'))` | READY |
 | K_GSTT_15 | GT Thỏa thuận | Tỷ VNĐ | Phái sinh | `SUM(Securities Trade.Exec Value WHERE Board Type Code IN ('T1','T2','T3','T4','T6'))` | READY |
 | K_GSTT_89 | Tổng GTGD | Tỷ VNĐ | Phái sinh | `K_GSTT_4 + K_GSTT_15` | READY |
@@ -1821,6 +2158,9 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
+| K_GSTT_129 | Mã CK | Chiều | READY |
+| K_GSTT_132 | Ngày | Chiều | READY |
+| K_GSTT_2 | Giá đóng cửa | Cơ sở | READY |
 | K_GSTT_90 | Giá trị vốn hóa thị trường | Phái sinh | PENDING |
 | K_GSTT_91 | Giá cao nhất 4 tuần gần nhất | Phái sinh | PENDING |
 | K_GSTT_92 | Giá thấp nhất 4 tuần gần nhất | Phái sinh | PENDING |
@@ -1876,7 +2216,41 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn |
 |---|---|---|---|---|
-| K_GSTT_107 | KL Thỏa Thuận | Cổ phiếu | Cơ sở | `SUM(Securities Trade.Exec Volume) WHERE Board Type Code IN ('T1','T2','T3','T4','T6')` — Trade_HOSE + Trade_HNX |
+| K_GSTT_129 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` — SLICER | READY |
+| K_GSTT_131 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` — FILTER | READY |
+| K_GSTT_130 | Ngành | — | Chiều | `Public Company Dimension.Industry Category Level 1 Name` — GROUP_BY | READY |
+| K_GSTT_132 | Ngày | — | Chiều | `Calendar Date Dimension.Date` — SLICER | READY |
+| K_GSTT_133 | Chỉ số | — | Chiều | `Security Trading Snapshot Dimension.Index Codes` — FILTER | READY |
+| K_GSTT_145 | Giá tham chiếu | VNĐ | Phái sinh | `fct_scr_dly_mkt_smry.refr_prc` — Giá tham chiếu phiên | READY |
+| K_GSTT_2 | Giá đóng cửa | VNĐ | Cơ sở | `fct_scr_dly_mkt_smry.cls_prc` — Reuse | READY |
+| K_GSTT_116 | Giá mở cửa | VNĐ | Cơ sở | `fct_scr_dly_mkt_smry.opn_prc` — Reuse | READY |
+| K_GSTT_117 | Giá cao nhất | VNĐ | Cơ sở | `fct_scr_dly_mkt_smry.high_prc` — Reuse | READY |
+| K_GSTT_118 | Giá thấp nhất | VNĐ | Cơ sở | `fct_scr_dly_mkt_smry.low_prc` — Reuse | READY |
+| K_GSTT_53 | Thay đổi (+/-) | VNĐ | Phái sinh | `fct_scr_dly_mkt_smry.cls_prc - fct_scr_dly_mkt_smry.refr_prc` — Reuse | READY |
+| K_GSTT_3 | % thay đổi | % | Phái sinh | `(cls_prc - refr_prc) / refr_prc * 100` — Reuse | READY |
+| K_GSTT_22 | Doanh thu | Tỷ VNĐ | Cơ sở | `fct_scr_dly_mkt_smry.net_rev` — Reuse | READY |
+| K_GSTT_25 | Lợi nhuận sau thuế | Tỷ VNĐ | Cơ sở | `fct_scr_dly_mkt_smry.net_prft_aft_tax` — Reuse | READY |
+| K_GSTT_1 | Tổng KL | Cổ phiếu | Phái sinh | `SUM(fct_scr_dly_mkt_smry.tot_mtch_vol)` — Reuse | READY |
+| K_GSTT_4 | Tổng GT | VNĐ | Phái sinh | `SUM(fct_scr_dly_mkt_smry.tot_mtch_val)` — Reuse | READY |
+| K_GSTT_8 | KLNN mua | Cổ phiếu | Phái sinh | `SUM(fct_scr_dly_mkt_smry.frgn_buy_vol)` — Reuse | READY |
+| K_GSTT_9 | KLNN bán | Cổ phiếu | Phái sinh | `SUM(fct_scr_dly_mkt_smry.frgn_sell_vol)` — Reuse | READY |
+| K_GSTT_10 | KLNN ròng | Cổ phiếu | Phái sinh | `frgn_buy_vol - frgn_sell_vol` — Reuse | READY |
+| K_GSTT_11 | GTNN mua | VNĐ | Phái sinh | `SUM(fct_scr_dly_mkt_smry.frgn_buy_val)` — Reuse | READY |
+| K_GSTT_12 | GTNN bán | VNĐ | Phái sinh | `SUM(fct_scr_dly_mkt_smry.frgn_sell_val)` — Reuse | READY |
+| K_GSTT_13 | GTNN ròng | VNĐ | Phái sinh | `frgn_buy_val - frgn_sell_val` — Reuse | READY |
+| K_GSTT_107 | KL Thỏa Thuận | Cổ phiếu | Cơ sở | `SUM(Securities Trade.Exec Volume) WHERE Board Type Code IN ('T1','T2','T3','T4','T6')` — Trade_HOSE + Trade_HNX | READY |
+| K_GSTT_71 | GT mua tự doanh | VNĐ | Phái sinh | `fct_scr_dly_mkt_smry.prop_buy_val` — Reuse | READY |
+| K_GSTT_72 | GT bán tự doanh | VNĐ | Phái sinh | `fct_scr_dly_mkt_smry.prop_sell_val` — Reuse | READY |
+| K_GSTT_147 | GT tự doanh ròng | VNĐ | Phái sinh | `fct_scr_dly_mkt_smry.prop_buy_val - fct_scr_dly_mkt_smry.prop_sell_val` | READY |
+| K_GSTT_83 | KL mua tự doanh | Cổ phiếu | Phái sinh | `fct_scr_dly_mkt_smry.prop_buy_val` — Reuse | READY |
+| K_GSTT_84 | KL bán tự doanh | Cổ phiếu | Phái sinh | `fct_scr_dly_mkt_smry.prop_sell_val` — Reuse | READY |
+| K_GSTT_73 | KL tự doanh ròng | Cổ phiếu | Phái sinh | `fct_scr_dly_mkt_smry.prop_buy_val - fct_scr_dly_mkt_smry.prop_sell_val` — Reuse | READY |
+| K_GSTT_148 | GT mua | VNĐ | Phái sinh | `SUM(fct_scr_dly_mkt_smry.buy_val)` — GT mua toàn thị trường theo mã CK | READY |
+| K_GSTT_149 | GT bán | VNĐ | Phái sinh | `SUM(fct_scr_dly_mkt_smry.sell_val)` — GT bán toàn thị trường theo mã CK | READY |
+| K_GSTT_150 | GT ròng | VNĐ | Phái sinh | `buy_val - sell_val` | READY |
+| K_GSTT_151 | KL mua | Cổ phiếu | Phái sinh | `SUM(fct_scr_dly_mkt_smry.buy_vol)` — KL mua toàn thị trường theo mã CK | READY |
+| K_GSTT_152 | KL bán | Cổ phiếu | Phái sinh | `SUM(fct_scr_dly_mkt_smry.sell_vol)` — KL bán toàn thị trường theo mã CK | READY |
+| K_GSTT_153 | KL ròng | Cổ phiếu | Phái sinh | `buy_vol - sell_vol` | READY |
 
 > **Ghi chú:** Toàn bộ KPI còn lại của STT 46 đều ghi **Trùng** trong BA — reuse `Fact Security Daily Market Summary` và các Dimension đã thiết kế. Không cần mart mới.
 
@@ -1907,6 +2281,7 @@ Footer: 48 CỔ PHIẾU · 10 NGÀNH · XEM THEO: VỐN HÓA
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
+| K_GSTT_146 | Giá trị chỉ số | Cơ sở | PENDING |
 | K_GSTT_108 | Tỷ trọng trong chỉ số (%) | Phái sinh | PENDING |
 | K_GSTT_109 | Điểm đóng góp | Phái sinh | PENDING |
 | K_GSTT_110 | Doanh thu | Cơ sở | PENDING |
@@ -2124,3 +2499,4 @@ graph TB
 | O_GSTT_26 | IDS BCTC — Atomic entities cho LNST, VCSH, Doanh thu | Confirmed — tất cả entities đã có trong `atomic_attributes.csv`: `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val` ← `IDS.data`); `Public Company Report Submission` (`pblc_co_rpt_subm` ← `IDS.company_data`); `Financial Report Catalog` (`fnc_rpt_ctlg` ← `IDS.report_catalog`); `Financial Report Row Template` (`fnc_rpt_row_tpl` ← `IDS.rrow`); `Financial Report Column Template` (`fnc_rpt_clmn_tpl` ← `IDS.rcol`). Filter mapping: Report Type Code LIKE `'BCKQKD%'`/`'BCDKT%'` → `fnc_rpt_ctlg.fnc_rpt_ctlg_bsn_code`; Enterprise Type Code (`dn`/`bh`/`td`) → `fnc_rpt_ctlg.entp_tp_code`; Row Description → `fnc_rpt_row_tpl.row_dsc_clmn_code`; Column Code `'1'` (kỳ hiện tại) → `fnc_rpt_clmn_tpl.clmn_code`; Year/Quarter → `pblc_co_rpt_subm.rpt_yr`/`rpt_qtr`. Blocker còn lại: O_GSTT_13 (Shares Outstanding từ VSDC). | K_GSTT_22, K_GSTT_25, K_GSTT_98–115 | Confirmed |
 | O_GSTT_27 | KL Thỏa Thuận (STT 46) — Board Type HOSE ('T1','T2','T3','T4','T6') có bao gồm lô lẻ (T4, T6) không? | Tạm thời include toàn bộ Board Type IN ('T1','T2','T3','T4','T6') — BA ghi chú cần hỏi nghiệp vụ | K_GSTT_107 | Open |
 | O_GSTT_28 | STT 47 — nguồn Atomic cho "Sở hữu và giao dịch nội bộ" — BA ghi VSDC nhưng Atomic source là IDS | Atomic team xác nhận: `Stock Holder` và `Stock Control` tại `IDS.stock_holders` / `IDS.stock_controls` là nguồn chính thức cho dữ liệu cổ đông. BA ghi VSDC là nguồn gốc ban đầu nhưng data đã được ingest vào IDS. | K_GSTT_123–128 | Open |
+| O_GSTT_29 | Giá trị `ulyg_symb` phân loại HĐTL — đã xác nhận từ BA | Confirmed: `ulyg_symb IN ('VN30','VN100')` → Phái sinh chỉ số cổ phiếu; `ulyg_symb IN ('GB05','GD10')` → Phái sinh TPCP (GB05=5 năm, GD10=10 năm). Chứng quyền (`StockType='W'`) dùng mã CK cơ sở làm `ulyg_symb` — không thuộc scope phái sinh FDS (`FloorCode='03' AND StockType='FU'`). K_GSTT_134 đã cập nhật. | K_GSTT_134 | Closed |
