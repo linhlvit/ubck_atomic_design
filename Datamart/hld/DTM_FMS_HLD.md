@@ -13,43 +13,43 @@ Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 1. Fact này là **Market-Level Aggr
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.SECURITIES"]
-        S2["FMS.FUNDS"]
-        S3["FMS.FORBRCH"]
-        S4["FMS.AGENCIES"]
-        S6["FMS.RPTVALUES"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_FORBRCH["FMS.FORBRCH"]
+        FMS_AGENCIES["FMS.AGENCIES"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Fund Management Company"]
-        SV2["Investment Fund"]
-        SV3["Foreign Fund Management Organization Unit"]
-        SV4["Fund Distribution Agent"]
-        SV6["Report Import Value"]
-        SV7["Calendar Date"]
+        Fund_Management_Company["Fund Management Company"]
+        Investment_Fund["Investment Fund"]
+        Foreign_Fund_Management_Organization_Unit["Foreign Fund Management Organization Unit"]
+        Fund_Distribution_Agent["Fund Distribution Agent"]
+        Report_Import_Value["Report Import Value"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Fact Fund Management Company Snapshot"]
-        G2["Calendar Date Dimension"]
+        fct_fms_mkt_snpst["Fact Fund Management Company Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
-    S6 --> SV6
-    SE1 --> SV7
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_FUNDS --> Investment_Fund
+    FMS_FORBRCH --> Foreign_Fund_Management_Organization_Unit
+    FMS_AGENCIES --> Fund_Distribution_Agent
+    FMS_RPTVALUES --> Report_Import_Value
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
-    SV6 --> G1
-    SV7 --> G2
+    Fund_Management_Company --> fct_fms_mkt_snpst
+    Investment_Fund --> fct_fms_mkt_snpst
+    Foreign_Fund_Management_Organization_Unit --> fct_fms_mkt_snpst
+    Fund_Distribution_Agent --> fct_fms_mkt_snpst
+    Report_Import_Value --> fct_fms_mkt_snpst
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
+    cdr_dt_dim --> fct_fms_mkt_snpst
 ```
 
 ### Cụm 2: Số liệu hợp đồng UTDM per CTQLQ (`Fact Discretionary Investment Contract Snapshot`)
@@ -59,37 +59,37 @@ Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 2. Tất cả KPI từ "Tổng từ 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.RPTMEMBER"]
-        S2["FMS.RPTVALUES"]
-        S3["FMS.SECURITIES"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Member Periodic Report"]
-        SV2["Report Import Value"]
-        SV3["Fund Management Company"]
-        SV4["Calendar Date"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Report_Import_Value["Report Import Value"]
+        Fund_Management_Company["Fund Management Company"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Fact Discretionary Investment Contract Snapshot"]
-        G2["Fund Management Company Dimension"]
-        G3["Calendar Date Dimension"]
+        fct_utdm_snpst["Fact Discretionary Investment Contract Snapshot"]
+        fnd_mgt_co_dim["Fund Management Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    SE1 --> SV4
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_SECURITIES --> Fund_Management_Company
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G2
-    SV4 --> G3
+    Member_Periodic_Report --> fct_utdm_snpst
+    Report_Import_Value --> fct_utdm_snpst
+    Fund_Management_Company --> fnd_mgt_co_dim
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
-    G3 --> G1
+    fnd_mgt_co_dim --> fct_utdm_snpst
+    cdr_dt_dim --> fct_utdm_snpst
 ```
 
 ### Cụm 3: Hồ sơ CTQLQ — flat + drill-down (Tác nghiệp)
@@ -99,51 +99,51 @@ Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 3. **1 bảng flat chính** (`Fund M
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.SECURITIES"]
-        S2["FMS.FUNDS"]
-        S4["FMS.RPTVALUES"]
-        S5["FMS.RANK"]
-        S6["FMS.RATINGPD"]
-        S7["FMS.INVESACC"]
-        S8["FMS.INVES"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_RANK["FMS.RANK"]
+        FMS_RATINGPD["FMS.RATINGPD"]
+        FMS_INVESACC["FMS.INVESACC"]
+        FMS_INVES["FMS.INVES"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Fund Management Company"]
-        SV2["Investment Fund"]
-        SV4["Report Import Value"]
-        SV5["Member Rating"]
-        SV6["Member Rating Period"]
-        SV7["Discretionary Investment Account"]
-        SV8["Discretionary Investment Investor"]
+        Fund_Management_Company["Fund Management Company"]
+        Investment_Fund["Investment Fund"]
+        Report_Import_Value["Report Import Value"]
+        Member_Rating["Member Rating"]
+        Member_Rating_Period["Member Rating Period"]
+        Discretionary_Investment_Account["Discretionary Investment Account"]
+        Discretionary_Investment_Investor["Discretionary Investment Investor"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Fund Management Company Profile"]
-        G2["Fund Management Company Fund List"]
-        G3["Fund Management Company Contract List"]
+        fnd_mgt_co_prf["Fund Management Company Profile"]
+        fnd_mgt_co_fnd_lst["Fund Management Company Fund List"]
+        fnd_mgt_co_ctr_lst["Fund Management Company Contract List"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S4 --> SV4
-    S5 --> SV5
-    S6 --> SV6
-    S7 --> SV7
-    S8 --> SV8
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_FUNDS --> Investment_Fund
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_RANK --> Member_Rating
+    FMS_RATINGPD --> Member_Rating_Period
+    FMS_INVESACC --> Discretionary_Investment_Account
+    FMS_INVES --> Discretionary_Investment_Investor
 
-    SV1 --> G1
-    SV4 --> G1
-    SV5 --> G1
-    SV6 --> G1
+    Fund_Management_Company --> fnd_mgt_co_prf
+    Report_Import_Value --> fnd_mgt_co_prf
+    Member_Rating --> fnd_mgt_co_prf
+    Member_Rating_Period --> fnd_mgt_co_prf
 
-    SV1 --> G2
-    SV2 --> G2
-    SV4 --> G2
+    Fund_Management_Company --> fnd_mgt_co_fnd_lst
+    Investment_Fund --> fnd_mgt_co_fnd_lst
+    Report_Import_Value --> fnd_mgt_co_fnd_lst
 
-    SV1 --> G3
-    SV7 --> G3
-    SV8 --> G3
+    Fund_Management_Company --> fnd_mgt_co_ctr_lst
+    Discretionary_Investment_Account --> fnd_mgt_co_ctr_lst
+    Discretionary_Investment_Investor --> fnd_mgt_co_ctr_lst
 ```
 
 ---
@@ -155,51 +155,51 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 4 (Biểu đồ Tổng NAV & Tỷ l�
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.RPTMEMBER"]
-        S2["FMS.RPTVALUES"]
-        S3["FMS.FUNDS"]
-        S4["FMS.SECURITIES"]
-        S5["QLRR.risk_indicator"]
-        S6["QLRR.risk_indicator_value"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        QLRR_risk_indicator["QLRR.risk_indicator"]
+        QLRR_risk_indicator_value["QLRR.risk_indicator_value"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Member Periodic Report"]
-        SV2["Report Import Value"]
-        SV3["Investment Fund"]
-        SV4["Fund Management Company"]
-        SV5["Risk Indicator"]
-        SV6["Risk Indicator Value"]
-        SV7["Calendar Date"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Report_Import_Value["Report Import Value"]
+        Investment_Fund["Investment Fund"]
+        Fund_Management_Company["Fund Management Company"]
+        Risk_Indicator["Risk Indicator"]
+        Risk_Indicator_Value["Risk Indicator Value"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund NAV Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Fund Management Company Dimension"]
-        G4["Calendar Date Dimension"]
+        fct_inv_fnd_nav_snpst["Fact Investment Fund NAV Snapshot"]
+        inv_fnd_dim["Investment Fund Dimension"]
+        fnd_mgt_co_dim["Fund Management Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
-    S5 --> SV5
-    S6 --> SV6
-    SE1 --> SV7
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_FUNDS --> Investment_Fund
+    FMS_SECURITIES --> Fund_Management_Company
+    QLRR_risk_indicator --> Risk_Indicator
+    QLRR_risk_indicator_value --> Risk_Indicator_Value
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV5 --> G1
-    SV6 --> G1
-    SV3 --> G2
-    SV4 --> G3
-    SV7 --> G4
+    Member_Periodic_Report --> fct_inv_fnd_nav_snpst
+    Report_Import_Value --> fct_inv_fnd_nav_snpst
+    Risk_Indicator --> fct_inv_fnd_nav_snpst
+    Risk_Indicator_Value --> fct_inv_fnd_nav_snpst
+    Investment_Fund --> inv_fnd_dim
+    Fund_Management_Company --> fnd_mgt_co_dim
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
-    G3 --> G1
-    G4 --> G1
+    inv_fnd_dim --> fct_inv_fnd_nav_snpst
+    fnd_mgt_co_dim --> fct_inv_fnd_nav_snpst
+    cdr_dt_dim --> fct_inv_fnd_nav_snpst
 ```
 
 ### Cụm 5: Số lượng quỹ theo loại hình (`Fact Investment Fund Count Snapshot`)
@@ -209,27 +209,27 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 7 (Số lượng quỹ ĐTCK). Market
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.FUNDS"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_FUNDS["FMS.FUNDS"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Investment Fund"]
-        SV2["Calendar Date"]
+        Investment_Fund["Investment Fund"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund Count Snapshot"]
-        G2["Calendar Date Dimension"]
+        fct_inv_fnd_cnt_snpst["Fact Investment Fund Count Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    SE1 --> SV2
+    FMS_FUNDS --> Investment_Fund
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G2
+    Investment_Fund --> fct_inv_fnd_cnt_snpst
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
+    cdr_dt_dim --> fct_inv_fnd_cnt_snpst
 ```
 
 ### Cụm 6: Số CCQ lưu hành per quỹ (`Fact Investment Fund CCQ Snapshot`)
@@ -239,34 +239,34 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 8 (Tăng trưởng CCQ lưu hành). S
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.FUNDS"]
-        S2["FMS.TRANSFERMBF"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_TRANSFERMBF["FMS.TRANSFERMBF"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Investment Fund"]
-        SV2["Investment Fund Certificate Transfer"]
-        SV3["Calendar Date"]
+        Investment_Fund["Investment Fund"]
+        Investment_Fund_Certificate_Transfer["Investment Fund Certificate Transfer"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund CCQ Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Calendar Date Dimension"]
+        fct_inv_fnd_ccq_snpst["Fact Investment Fund CCQ Snapshot"]
+        inv_fnd_dim["Investment Fund Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    SE1 --> SV3
+    FMS_FUNDS --> Investment_Fund
+    FMS_TRANSFERMBF --> Investment_Fund_Certificate_Transfer
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV1 --> G2
-    SV3 --> G3
+    Investment_Fund --> fct_inv_fnd_ccq_snpst
+    Investment_Fund_Certificate_Transfer --> fct_inv_fnd_ccq_snpst
+    Investment_Fund --> inv_fnd_dim
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
-    G3 --> G1
+    inv_fnd_dim --> fct_inv_fnd_ccq_snpst
+    cdr_dt_dim --> fct_inv_fnd_ccq_snpst
 ```
 
 ### Cụm 7: Danh sách quỹ (Tác nghiệp)
@@ -276,32 +276,32 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 10 (Danh sách các quỹ đầu tư)
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.FUNDS"]
-        S2["FMS.SECURITIES"]
-        S3["FMS.RPTMEMBER"]
-        S4["FMS.RPTVALUES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Investment Fund"]
-        SV2["Fund Management Company"]
-        SV3["Member Periodic Report"]
-        SV4["Report Import Value"]
+        Investment_Fund["Investment Fund"]
+        Fund_Management_Company["Fund Management Company"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Report_Import_Value["Report Import Value"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Investment Fund Profile"]
+        inv_fnd_prf["Investment Fund Profile"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
+    FMS_FUNDS --> Investment_Fund
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_RPTVALUES --> Report_Import_Value
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
+    Investment_Fund --> inv_fnd_prf
+    Fund_Management_Company --> inv_fnd_prf
+    Member_Periodic_Report --> inv_fnd_prf
+    Report_Import_Value --> inv_fnd_prf
 ```
 
 ---
@@ -317,32 +317,32 @@ Phục vụ Tab DATA EXPLORER — Nhóm 12–16. Toàn bộ 63 pass-through tabs
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.RPTVALUES"]
-        S2["FMS.RPTMEMBER"]
-        S3["FMS.SECURITIES"]
-        S4["FMS.FUNDS"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_FUNDS["FMS.FUNDS"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Report Import Value"]
-        SV2["Member Periodic Report"]
-        SV3["Fund Management Company"]
-        SV4["Investment Fund"]
+        Report_Import_Value["Report Import Value"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Fund_Management_Company["Fund Management Company"]
+        Investment_Fund["Investment Fund"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Report Pass-through View"]
+        rpt_pass_thru_view["Report Pass-through View"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_FUNDS --> Investment_Fund
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
+    Report_Import_Value --> rpt_pass_thru_view
+    Member_Periodic_Report --> rpt_pass_thru_view
+    Fund_Management_Company --> rpt_pass_thru_view
+    Investment_Fund --> rpt_pass_thru_view
 ```
 
 ### Cụm 9: Báo cáo giao dịch nhân viên CTQLQ (Tác nghiệp)
@@ -352,31 +352,31 @@ Phục vụ Tab BÁO CÁO / CÔNG TY QLQ — Nhóm 11. Cross-module FMS × GSGD:
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["FMS.TLProfiles"]
-        S2["FMS.SECURITIES"]
-        S3["GSGD.investor_account"]
+        FMS_TLProfiles["FMS.TLProfiles"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        GSGD_investor_account["GSGD.investor_account"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Fund Management Company Key Person"]
-        SV2["Involved Party Alternative Identification"]
-        SV3["Fund Management Company"]
-        SV4["Investor Trading Account"]
+        Fund_Management_Company_Key_Person["Fund Management Company Key Person"]
+        Involved_Party_Alternative_Identification["Involved Party Alternative Identification"]
+        Fund_Management_Company["Fund Management Company"]
+        Investor_Trading_Account["Investor Trading Account"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Fund Management Company Staff Trade Report"]
+        fnd_mgt_co_stf_trd_rpt["Fund Management Company Staff Trade Report"]
     end
 
-    S1 --> SV1
-    S1 --> SV2
-    S2 --> SV3
-    S3 --> SV4
+    FMS_TLProfiles --> Fund_Management_Company_Key_Person
+    FMS_TLProfiles --> Involved_Party_Alternative_Identification
+    FMS_SECURITIES --> Fund_Management_Company
+    GSGD_investor_account --> Investor_Trading_Account
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
+    Fund_Management_Company_Key_Person --> fnd_mgt_co_stf_trd_rpt
+    Involved_Party_Alternative_Identification --> fnd_mgt_co_stf_trd_rpt
+    Fund_Management_Company --> fnd_mgt_co_stf_trd_rpt
+    Investor_Trading_Account --> fnd_mgt_co_stf_trd_rpt
 ```
 
 
@@ -456,6 +456,7 @@ erDiagram
         boolean Is_Weekend
         boolean Holiday_Flag
         string Holiday_Name
+        string Source_System_Code
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Fund_Management_Company_Snapshot : "Snapshot Date Dimension Id"
@@ -532,7 +533,6 @@ erDiagram
         float Total_Trust_Market_Value
         float Individual_Trust_Market_Value
         float Organization_Trust_Market_Value
-        datetime Population_Date
     }
     Fund_Management_Company_Dimension {
         string Fund_Management_Company_Dimension_Id PK
@@ -541,8 +541,7 @@ erDiagram
         string Company_Short_Name
         string Company_Name
         string Life_Cycle_Status_Code
-        date Effective_Date
-        date Expiry_Date
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -554,6 +553,7 @@ erDiagram
         boolean Is_Weekend
         boolean Holiday_Flag
         string Holiday_Name
+        string Source_System_Code
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Discretionary_Investment_Contract_Snapshot : "Report Date Dimension Id"
@@ -582,7 +582,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Discretionary Investment Contract Snapshot | 1 CTQLQ × 1 Report Template × 1 Report Date |
-| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -660,7 +660,7 @@ erDiagram
         int Discretionary_Contract_Count
         string Report_Period_Code
         date Rating_Period_End_Date
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -678,7 +678,7 @@ erDiagram
         float Fund_Capital_Amount
         float Fund_NAV_Amount
         string Report_Period_Code
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -696,7 +696,7 @@ erDiagram
         float Trust_Market_Value
         date Contract_Start_Date
         string Report_Period_Code
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -789,7 +789,6 @@ erDiagram
         float VN_Index_Value
         varchar Overnight_Rate_Indicator_Code
         float Overnight_Rate_Value
-        datetime Population_Date
     }
     Investment_Fund_Dimension {
         string Investment_Fund_Dimension_Id PK
@@ -799,8 +798,7 @@ erDiagram
         string Fund_Type_Code
         string Practice_Status_Code
         float Fund_Capital_Amount
-        date Effective_Date
-        date Expiry_Date
+        string Source_System_Code
     }
     Fund_Management_Company_Dimension {
         string Fund_Management_Company_Dimension_Id PK
@@ -809,8 +807,7 @@ erDiagram
         string Company_Short_Name
         string Company_Name
         string Life_Cycle_Status_Code
-        date Effective_Date
-        date Expiry_Date
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -822,6 +819,7 @@ erDiagram
         boolean Is_Weekend
         boolean Holiday_Flag
         string Holiday_Name
+        string Source_System_Code
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_NAV_Snapshot : "Report Date Dimension Id"
@@ -863,8 +861,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
-| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
+| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -934,8 +932,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
-| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
+| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -988,7 +986,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -1035,7 +1033,6 @@ erDiagram
         int Money_Market_Fund_Count
         int Infrastructure_Bond_Fund_Count
         int Retirement_Fund_Count
-        datetime Population_Date
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1047,6 +1044,7 @@ erDiagram
         boolean Is_Weekend
         boolean Holiday_Flag
         string Holiday_Name
+        string Source_System_Code
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_Count_Snapshot : "Snapshot Date Dimension Id"
@@ -1119,7 +1117,6 @@ erDiagram
         varchar Report_Template_Code
         varchar Reporting_Period_Code
         float Outstanding_Unit_Count
-        datetime Population_Date
     }
     Investment_Fund_Dimension {
         string Investment_Fund_Dimension_Id PK
@@ -1129,8 +1126,7 @@ erDiagram
         string Fund_Type_Code
         string Practice_Status_Code
         float Fund_Capital_Amount
-        date Effective_Date
-        date Expiry_Date
+        string Source_System_Code
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1142,6 +1138,7 @@ erDiagram
         boolean Is_Weekend
         boolean Holiday_Flag
         string Holiday_Name
+        string Source_System_Code
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : "Report Date Dimension Id"
@@ -1170,7 +1167,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund CCQ Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -1249,7 +1246,7 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record (ds_rcrd_st = 1)) |
+| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
 | Calendar Date Dimension | 1 ngày |
 
 ---
@@ -1299,7 +1296,7 @@ erDiagram
         float Fund_NAV_Amount
         float Net_Profit_Amount
         float Outstanding_Unit_Count
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -1388,7 +1385,7 @@ erDiagram
         string Identification_Number
         string Investor_Trading_Account_Code
         string Securities_Company_Code
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -1478,7 +1475,7 @@ erDiagram
         float Cell_Value
         string Cell_Text_Value
         string Data_Unit
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -2896,25 +2893,25 @@ flowchart LR
 
 ```mermaid
 graph TB
-    classDef dim fill:#E6F1FB,stroke:#185FA5,color:#0C447C
-    classDef fact fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
-    classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
+    classDef fact fill:#4472C4,color:#fff
+    classDef dim fill:#70AD47,color:#fff
+    classDef operational fill:#ED7D31,color:#fff
 
-    DIM_DATE["Calendar Date Dimension"]:::dim
-    DIM_CO["Fund Management Company Dimension SCD2"]:::dim
-    DIM_FUND["Investment Fund Dimension SCD2"]:::dim
+    DIM_DATE(["Calendar Date Dimension"]):::dim
+    DIM_CO(["Fund Management Company Dimension"]):::dim
+    DIM_FUND(["Investment Fund Dimension"]):::dim
 
-    FACT_MKT["Fact Fund Management Company Snapshot"]:::fact
-    FACT_UTDM["Fact Discretionary Investment Contract Snapshot"]:::fact
-    FACT_NAV["Fact Investment Fund NAV Snapshot"]:::fact
-    FACT_CNT["Fact Investment Fund Count Snapshot"]:::fact
-    FACT_CCQ["Fact Investment Fund CCQ Snapshot"]:::fact
+    FACT_MKT(["Fact Fund Management Company Snapshot"]):::fact
+    FACT_UTDM(["Fact Discretionary Investment Contract Snapshot"]):::fact
+    FACT_NAV(["Fact Investment Fund NAV Snapshot"]):::fact
+    FACT_CNT(["Fact Investment Fund Count Snapshot"]):::fact
+    FACT_CCQ(["Fact Investment Fund CCQ Snapshot"]):::fact
 
-    OPR_CO_PRF["Fund Management Company Profile"]:::oper
-    OPR_FND_LST["Fund Management Company Fund List"]:::oper
-    OPR_CTR_LST["Fund Management Company Contract List"]:::oper
-    OPR_FUND_PRF["Investment Fund Profile"]:::oper
-    OPR_RPT_VIEW["Report Pass-through View"]:::oper
+    OPR_CO_PRF(["Fund Management Company Profile"]):::operational
+    OPR_FND_LST(["Fund Management Company Fund List"]):::operational
+    OPR_CTR_LST(["Fund Management Company Contract List"]):::operational
+    OPR_FUND_PRF(["Investment Fund Profile"]):::operational
+    OPR_RPT_VIEW(["Report Pass-through View"]):::operational
 
     DIM_DATE --> FACT_MKT
     DIM_DATE --> FACT_UTDM
@@ -2925,8 +2922,8 @@ graph TB
     DIM_CO --> FACT_NAV
     DIM_FUND --> FACT_NAV
     DIM_FUND --> FACT_CCQ
-    OPR_CO_PRF -->|"drill FK"| OPR_FND_LST
-    OPR_CO_PRF -->|"drill FK"| OPR_CTR_LST
+    OPR_CO_PRF --> OPR_FND_LST
+    OPR_CO_PRF --> OPR_CTR_LST
 ```
 
 **Bảng Phân tích (Star Schema):**
@@ -2950,11 +2947,13 @@ graph TB
 
 **Bảng Dimension:**
 
-| Dimension | Loại | Mô tả | Trạng thái |
-|---|---|---|---|
-| Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng/ngày lễ phục vụ slicer. Map từ Atomic `Calendar Date` (`cdr_dt`) | READY |
-| Fund Management Company Dimension | Reference per module (SCD2) | CTQLQ — Mã/Tên/Trạng thái | READY |
-| Investment Fund Dimension | Reference per module (SCD2) | Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái ← FMS.FUNDS | READY |
+*Tất cả Dimension áp dụng SCD Type 4A.*
+
+| Dimension | Mô tả | Grain | Nguồn Atomic chính | Conformed |
+|---|---|---|---|---|
+| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/ngày lễ phục vụ slicer | 1 ngày | Calendar Date | Có |
+| Fund Management Company Dimension | CTQLQ — Mã/Tên/Trạng thái | 1 CTQLQ | Fund Management Company | Không |
+| Investment Fund Dimension | Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái | 1 quỹ | Investment Fund | Không |
 
 ---
 

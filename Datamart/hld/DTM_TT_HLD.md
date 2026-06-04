@@ -28,6 +28,7 @@ flowchart LR
         S6["ThanhTra.DM_CONG_TY_QLQ"]
         S7["ThanhTra.DM_CONG_TY_DC"]
         S8["ThanhTra.DM_DOI_TUONG_KHAC"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
@@ -35,9 +36,11 @@ flowchart LR
         SV2["Inspection Case Conclusion"]
         SV3["Inspection Decision"]
         SV4["Inspection Decision Subject"]
+        Calendar_Date["Calendar Date"]
+        Classification_Value["Classification Value"]
     end
 
-    subgraph Datamart["Datamart"]
+    subgraph GOLD["Datamart"]
         G1["Fact Inspection Case Activity"]
         G2["Calendar Date Dimension"]
         G3["Classification Dimension"]
@@ -51,14 +54,15 @@ flowchart LR
     S6 --> SV4
     S7 --> SV4
     S8 --> SV4
-
-    SV3 ~~~ G2
+    ECAT_HolidayInfo --> Calendar_Date
 
     SV1 --> G1
     SV2 --> G1
     SV3 --> G1
     SV4 --> G1
 
+    Calendar_Date --> G2
+    Classification_Value --> G3
     G2 --> G1
     G3 --> G1
 ```
@@ -79,7 +83,7 @@ flowchart LR
         SV2["Inspection Decision"]
     end
 
-    subgraph Datamart["Datamart"]
+    subgraph GOLD["Datamart"]
         G1["Inspection Case List"]
     end
 
@@ -99,14 +103,17 @@ flowchart LR
     subgraph SRC["Staging"]
         S1["ThanhTra.GS_VAN_BAN_XU_LY"]
         S2["ThanhTra.GS_HO_SO"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Surveillance Enforcement Decision"]
         SV2["Surveillance Enforcement Case"]
+        Calendar_Date["Calendar Date"]
+        Classification_Value["Classification Value"]
     end
 
-    subgraph Datamart["Datamart"]
+    subgraph GOLD["Datamart"]
         G2["Fact Penalty Decision"]
         G1["Penalty Decision List"]
         G3["Calendar Date Dimension"]
@@ -115,14 +122,15 @@ flowchart LR
 
     S1 --> SV1
     S2 --> SV2
+    ECAT_HolidayInfo --> Calendar_Date
 
     SV1 --> G2
     SV2 --> G2
     SV1 --> G1
     SV2 --> G1
 
-    SV2 ~~~ G3
-
+    Calendar_Date --> G3
+    Classification_Value --> G4
     G3 --> G2
     G4 --> G2
 ```
@@ -141,7 +149,7 @@ flowchart LR
         SV1["Complaint Petition"]
     end
 
-    subgraph Datamart["Datamart"]
+    subgraph GOLD["Datamart"]
         G1["Complaint Petition List"]
     end
 
@@ -206,31 +214,35 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Activity : "Received Date Dimension Id"
-    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Subject Category Dimension Id"
-    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Violation Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Activity : " "
+    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : " "
     Fact_Inspection_Case_Activity {
-        int Received_Date_Dimension_Id FK
-        int Subject_Category_Dimension_Id FK
-        int Violation_Type_Dimension_Id FK
+        string Received_Date_Dimension_Id FK
+        string Subject_Category_Dimension_Id FK
+        string Violation_Type_Dimension_Id FK
         varchar Inspection_Case_Code
         varchar Inspection_Decision_Subject_Code
         varchar Inspection_Type_Code
         varchar Case_Status_Code
-        datetime Population_Date
     }
     Calendar_Date_Dimension {
-        int Date_Dimension_Id PK
-        date Full_Date
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
         int Month
         int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
+        string Source_System_Code
     }
     Classification_Dimension {
-        int Classification_Dimension_Id PK
+        string Classification_Dimension_Id PK
         varchar Scheme
         varchar Code
         varchar Name
+        string Source_System_Code
     }
 ```
 
@@ -255,7 +267,7 @@ flowchart LR
         G3["Classification Dimension"]
     end
     subgraph RPT["Tab TỔNG QUAN"]
-        R1["KPI cards\n(Tổng / Hoàn thành / Đang TH)"]
+        R1["KPI cards: Tổng / Hoàn thành / Đang TH"]
         R2["Biểu đồ bar theo tháng"]
         R3["Donut cơ cấu theo hành vi"]
         R4["Donut cơ cấu theo đối tượng"]
@@ -427,7 +439,7 @@ erDiagram
         varchar Case_Status_Code
         date Received_Date
         int Received_Year
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -696,29 +708,33 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision : "Violation Report Date Dimension Id"
-    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Penalty Subject Category Dimension Id"
-    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Violation Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision : " "
+    Classification_Dimension ||--o{ Fact_Penalty_Decision : " "
     Fact_Penalty_Decision {
-        int Violation_Report_Date_Dimension_Id FK
-        int Penalty_Subject_Category_Dimension_Id FK
-        int Violation_Type_Dimension_Id FK
+        string Violation_Report_Date_Dimension_Id FK
+        string Penalty_Subject_Category_Dimension_Id FK
+        string Violation_Type_Dimension_Id FK
         varchar Penalty_Decision_Code
         float Total_Penalty_Amount
-        datetime Population_Date
     }
     Calendar_Date_Dimension {
-        int Date_Dimension_Id PK
-        date Full_Date
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
         int Month
         int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
+        string Source_System_Code
     }
     Classification_Dimension {
-        int Classification_Dimension_Id PK
+        string Classification_Dimension_Id PK
         varchar Scheme
         varchar Code
         varchar Name
+        string Source_System_Code
     }
 ```
 
@@ -741,7 +757,7 @@ flowchart LR
         G3["Classification Dimension"]
     end
     subgraph RPT["Tab XỬ PHẠT"]
-        R1["KPI cards\n(Tổng QĐ / Tổng tiền)"]
+        R1["KPI cards: Tổng QĐ / Tổng tiền"]
         R2["Biểu đồ bar+line theo tháng"]
         R3["Donut cơ cấu theo hành vi"]
         R4["Donut cơ cấu theo đối tượng"]
@@ -916,7 +932,7 @@ erDiagram
         date Violation_Report_Date
         int Violation_Report_Year
         float Total_Penalty_Amount
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -1093,7 +1109,7 @@ erDiagram
         varchar Petition_Status_Code
         date Submission_Date
         int Submission_Year
-        datetime Population_Date
+        string Source_System_Code
     }
 ```
 
@@ -1202,23 +1218,21 @@ flowchart LR
 
 ```mermaid
 graph TB
-    classDef dim fill:#E6F1FB,stroke:#185FA5,color:#0C447C
-    classDef fact fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
-    classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
+    classDef fact fill:#4472C4,color:#fff
+    classDef dim fill:#70AD47,color:#fff
+    classDef operational fill:#ED7D31,color:#fff
 
-    DIM_DATE["Calendar Date Dimension"]:::dim
-    DIM_CLASS["Classification Dimension"]:::dim
-    FACT_INSP["Fact Inspection Case Activity"]:::fact
-    FACT_PEN["Fact Penalty Decision"]:::fact
-    OPR_LIST["Inspection Case List"]:::oper
-    OPR_PEN["Penalty Decision List"]:::oper
-    OPR_COMP["Complaint Petition List"]:::oper
+    DIM_DATE(["Calendar Date Dimension"]):::dim
+    DIM_CLASS(["Classification Dimension"]):::dim
+    FACT_INSP(["Fact Inspection Case Activity"]):::fact
+    FACT_PEN(["Fact Penalty Decision"]):::fact
+    OPR_LIST(["Inspection Case List"]):::operational
+    OPR_PEN(["Penalty Decision List"]):::operational
+    OPR_COMP(["Complaint Petition List"]):::operational
 
     DIM_DATE --> FACT_INSP
     DIM_CLASS --> FACT_INSP
-    DIM_CLASS --> FACT_INSP
     DIM_DATE --> FACT_PEN
-    DIM_CLASS --> FACT_PEN
     DIM_CLASS --> FACT_PEN
 ```
 
