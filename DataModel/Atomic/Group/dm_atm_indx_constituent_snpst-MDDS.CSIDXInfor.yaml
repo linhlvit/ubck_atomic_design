@@ -34,7 +34,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Index Constituent Snapshot Code
@@ -48,7 +48,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.ID
     comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Market Index Snapshot Id
@@ -76,7 +76,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.IndexCode
     comment: "FK target: Market Index Snapshot.Market Index Snapshot Id. Join qua (index_code / trading_date)."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Index Code
@@ -90,7 +90,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.IndexCode
     comment: "Lookup pair: Market Index Snapshot.Index Code. Pair with Market Index Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Security Trading Snapshot Id
@@ -104,7 +104,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.Symbol
     comment: "FK target: Security Trading Snapshot.Security Trading Snapshot Id. Join qua (symbol / trading_date)."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Symbol
@@ -118,7 +118,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.Symbol
     comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with Security Trading Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Snapshot Time
@@ -132,7 +132,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.TradingDate
     comment: "BK. Nguồn string — lưu dạng Text theo quyết định T2-02. Data type nguồn không rõ là date hay HHmmss string — cần profile trước khi ETL. BK = (index_code / symbol / snapshot_time)."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Floor Code
@@ -146,7 +146,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.FloorCode
     comment: "Scheme: MDDS_FLOOR_CODE. Nguồn string — khớp tự nhiên với Classification Value."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Index Id
@@ -160,7 +160,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.IndexId
     comment: Nguồn int — ETL cần convert sang string. Mã số nội bộ sàn — denormalized text.
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Weighted
@@ -174,7 +174,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.Weighted
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Add Date
@@ -188,7 +188,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.AddDate
     comment: Nguồn string — ETL cần parse sang Date. Cần validate format ngày hợp lệ.
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Stock Contribution
@@ -202,7 +202,7 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.StockNo
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
   - name: Total Match Volume
@@ -216,5 +216,5 @@ attributes:
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.TotalQtty
     comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
-    classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+    classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null

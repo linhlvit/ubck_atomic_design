@@ -34,7 +34,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: PK surrogate. Shared entity với ThanhTra.DM_CONG_TY_DC.
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Public Company Code
@@ -48,7 +48,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.id
     comment: "BK chính. PK của company_profiles; cũng = company_detail.company_profile_id (quan hệ 1-1). company_detail.id là PK kỹ thuật riêng — bỏ qua."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Public Company Name
@@ -76,7 +76,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.company_name_vn
     comment: "company_detail.company_name_vn cùng giá trị (1-1) — map primary từ company_profiles."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Public Company English Name
@@ -90,7 +90,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.company_name_en
     comment: "company_detail.company_name_en cùng giá trị (1-1) — map primary từ company_profiles."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Public Company Short Name
@@ -104,7 +104,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Company Type Code
@@ -118,7 +118,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: "Scheme: TT_COMPANY_TYPE."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -132,7 +132,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Life Cycle Status Code
@@ -146,7 +146,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: "Scheme: LIFE_CYCLE_STATUS."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Business License Number
@@ -160,7 +160,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Website
@@ -174,7 +174,7 @@ attributes:
     source_table: company_detail
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Business Registration Number
@@ -188,7 +188,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.business_reg_no
     comment: "company_detail.business_reg_no cùng giá trị (1-1) — map primary từ company_profiles."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: First Registration Date
@@ -202,7 +202,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.first_reg_date
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Latest Registration Date
@@ -216,7 +216,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.latest_reg_date
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Latest Registration Province Code
@@ -230,7 +230,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.latest_reg_prov
     comment: Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS.
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Industry Category Id
@@ -244,7 +244,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.category_id
     comment: "FK target: categories — Classification Value scheme IDS_INDUSTRY_CATEGORY (theo HLD). Giữ Id để truy lại categories khi cần. Cặp Id+Code theo pattern."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Industry Category Code
@@ -258,7 +258,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.category_id
     comment: "Scheme: IDS_INDUSTRY_CATEGORY. Pair with Industry Category Id. Theo HLD T1-04: categories là Classification Value không phải Atomic entity."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Industry Category Level1 Code
@@ -272,7 +272,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.category_l1_id
     comment: "Scheme: IDS_INDUSTRY_CATEGORY. Cùng scheme với Industry Category Code — denormalize cấp 1."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Industry Category Level2 Code
@@ -286,7 +286,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.category_l2_id
     comment: "Scheme: IDS_INDUSTRY_CATEGORY. Cùng scheme với Industry Category Code — denormalize cấp 2."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: IDS Status Code
@@ -300,7 +300,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.status_ids_cd
     comment: "Scheme: IDS_COMPANY_STATUS."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Auto Approval Flag
@@ -314,7 +314,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.auto_approval_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Company Login
@@ -328,7 +328,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.company_login
     comment: "Denormalized text — logins là bảng hệ thống out-of-scope."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Approver Comment
@@ -342,7 +342,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.approver_comment
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Parent Company Flag
@@ -356,7 +356,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.parent_company_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Equity Listing Exchange Code
@@ -370,7 +370,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.equity_listing_exch_cd
     comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Trùng nội dung với company_detail.equity_listing_exch (Text denormalized) — chọn cd làm primary."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Equity Listing Exchange Name
@@ -384,7 +384,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.equity_listing_exch
     comment: Denormalized text từ company_detail — không có scheme.
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Bond Listing Exchange Name
@@ -398,7 +398,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.bond_listing_exch
     comment: Denormalized text từ company_detail — không có scheme.
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Equity Security Flag
@@ -412,7 +412,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.equity_security_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Bond Security Flag
@@ -426,7 +426,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.bond_security_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Equity Ticker
@@ -440,7 +440,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.equity_ticker
     comment: "company_detail.equity_ticker cùng giá trị (1-1) — map primary từ company_profiles."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Bond Ticker
@@ -454,7 +454,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.bond_ticker
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Equity Listed Quantity
@@ -468,7 +468,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.equity_listed_qty
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Bond Listed Quantity
@@ -482,7 +482,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.bond_listed_qty
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: International Exchange Name
@@ -496,7 +496,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.intl_exch
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: International Ticker
@@ -510,7 +510,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.intl_ticker
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: ISIN Code
@@ -524,7 +524,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.isin_cd
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Securities Type Code
@@ -538,7 +538,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.securities_type_cd
     comment: "Scheme: IDS_SECURITIES_TYPE."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Public Company Form Code
@@ -552,7 +552,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.public_company_form_cd
     comment: "Scheme: IDS_PUBLIC_COMPANY_FORM."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Capital Paid Reported Amount
@@ -566,7 +566,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.capital_paid_reported
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Treasury Shares Quantity
@@ -580,7 +580,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.treasury_shares
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Fiscal Year Start Date
@@ -594,7 +594,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.fy_start_date
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Fiscal Year End Date
@@ -608,7 +608,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.fy_end_date
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Financial Statement Type Code
@@ -622,7 +622,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.financial_stmt_type_cd
     comment: "Scheme: IDS_FINANCIAL_STMT_TYPE."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: IDS Registration Flag
@@ -636,7 +636,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.ids_reg_status_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: IDS Registration Date
@@ -650,7 +650,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.ids_reg_date
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Public Company Flag
@@ -664,7 +664,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.public_com_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Public Bond Issuer Flag
@@ -678,7 +678,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.public_bond_issuer_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Large Public Company Flag
@@ -692,7 +692,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.large_public_com_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Former State Owned Flag
@@ -706,7 +706,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.former_state_owned_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Equitisation License Date
@@ -720,7 +720,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.equit_license_date
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Capital At Equitisation Amount
@@ -734,7 +734,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.capital_at_equit
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Has State Own Flag
@@ -748,7 +748,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.has_state_own_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: FDI Company Flag
@@ -762,7 +762,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.fdi_com_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Has Parent Company Flag
@@ -776,7 +776,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.has_parent_com_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Has Subsidiaries Flag
@@ -790,7 +790,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.has_subsidiaries_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Has Joint Ventures Flag
@@ -804,7 +804,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.has_joint_ventures_flg
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Enterprise Type Code
@@ -818,7 +818,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.report_type_cd
     comment: "Scheme: IDS_ENTERPRISE_TYPE. company_detail.report_type_cd cùng giá trị (1-1) — map primary từ company_profiles."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Specialist Notes
@@ -832,7 +832,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_detail.specialist_notes
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Created By Login Name
@@ -846,7 +846,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.created_by
     comment: "Denormalized — logins là bảng hệ thống out-of-scope. Audit từ company_detail là 1-1 với company_profiles."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Created Timestamp
@@ -860,7 +860,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.created_date
     comment: "Audit từ company_detail là 1-1 với company_profiles."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Last Updated By Login Name
@@ -874,7 +874,7 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.last_updated_by
     comment: "Denormalized — logins là bảng hệ thống out-of-scope."
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null
 
   - name: Last Updated Timestamp
@@ -888,5 +888,5 @@ attributes:
     source_table: company_detail
     source_column: IDS.company_profiles.last_updated_date
     comment: null
-    classification_context: "Source System Code = 'IDS_company_detail'"
+    classification_context: "Source System Code = 'IDS_COMPANY_DETAIL'"
     etl_derived_value: null

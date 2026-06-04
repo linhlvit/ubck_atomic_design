@@ -34,7 +34,7 @@ attributes:
     source_table: TransLog
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Security Match Log Code
@@ -48,7 +48,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.Id
     comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_table: TransLog
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Security Trading Snapshot Id
@@ -76,7 +76,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.symbol
     comment: "FK target: Security Trading Snapshot.Security Trading Snapshot Id. Join qua (symbol / trading_date)."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Symbol
@@ -90,7 +90,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.symbol
     comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with Security Trading Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Trading Date
@@ -104,7 +104,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.tradingdate
     comment: "BK — grain = (symbol / trading_date / sequence_msg). Nguồn string (dd/mm/yyyy) — ETL cần parse sang Date."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Sequence Message
@@ -118,7 +118,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.sequenceMsg
     comment: "BK. Nguồn int — khớp tự nhiên với Small Counter. Xem T2-01: cần xác nhận uniqueness scope trong (symbol / trading_date)."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Match Time
@@ -132,7 +132,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.formattedTime
     comment: "Nguồn string (HH:mm:ss) — khớp tự nhiên với Text."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Match Direction Code
@@ -146,7 +146,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.lastColor
     comment: "Scheme: MDDS_MATCH_DIRECTION. Nguồn string — khớp tự nhiên với Classification Value. Xem T2-04: semantics B/S ngược thông thường — document rõ ràng."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Match Price
@@ -160,7 +160,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.formattedMatchPrice
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Match Volume
@@ -174,7 +174,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.formattedVol
     comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Price Change Value
@@ -188,7 +188,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.formattedChangeValue
     comment: Nguồn string — ETL cần parse sang decimal. Có thể mang giá trị âm.
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Change Color
@@ -202,7 +202,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.changeColor
     comment: Nguồn string — khớp tự nhiên với Text. Indicator hiển thị UI — denormalized text.
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Accumulated Volume
@@ -216,7 +216,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.formattedAccVol
     comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Accumulated Value
@@ -230,7 +230,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.formattedAccVal
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Total Buy Volume
@@ -244,7 +244,7 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.totalBuyVol
     comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
   - name: Total Sell Volume
@@ -258,5 +258,5 @@ attributes:
     source_table: TransLog
     source_column: MDDS.TransLog.totalSellVol
     comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric và không vượt quá INT_MAX."
-    classification_context: "Source System Code = 'MDDS_TransLog'"
+    classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null

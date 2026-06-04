@@ -34,7 +34,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "PK surrogate. Entity \"Securities Order\" gộp Order_HOSE + Order_HNX phân biệt qua Market Id Code."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Securities Order Code
@@ -48,7 +48,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.order ID
     comment: BK chính. Order ID ổn định hơn Order Reception Number (reset mỗi ngày). Unique trong luồng KRX.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Accept Number
@@ -62,7 +62,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Reception Number
     comment: "BK phụ HNX — tương đương Order Accept # của HOSE. Unique trong (Trade Date + Symbol). Nguồn Number(11) — ETL convert sang string."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -76,7 +76,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Trade Date
@@ -90,7 +90,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Trade date
     comment: Nguồn Character(8) — ETL parse sang date.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Date
@@ -104,7 +104,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Date
     comment: Nguồn Character(8) — ETL parse sang date.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Time
@@ -118,7 +118,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.order accept time
     comment: HNX có độ phân giải cao hơn HOSE (9 vs 6 ký tự). Lưu Text vì không có ngày kèm theo.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Market Id Code
@@ -132,7 +132,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Market ID
     comment: "Scheme: ORDERTRADE_MARKET_ID."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Symbol Code
@@ -146,7 +146,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Issue Code
     comment: FK suy luận đến Instrument ngoài scope — lưu Text denormalized.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Currency Code
@@ -160,7 +160,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "FK target: Currency.Currency Code."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Board Type Code
@@ -174,7 +174,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Board ID
     comment: "Scheme: ORDERTRADE_BOARD_TYPE."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Session Code
@@ -188,7 +188,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Session ID
     comment: "Scheme: ORDERTRADE_SESSION."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Action Type Code
@@ -202,7 +202,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Replace/cancel classification code
     comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX dùng mã 1/2/3 — HOSE dùng N/M/C. ETL cần chuẩn hóa về cùng bộ giá trị (xem HLD 6d)."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Side Code
@@ -216,7 +216,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Sell/Buy Classification Code
     comment: "HNX dùng 1/2/3 thay vì B/S như HOSE. ETL cần chuẩn hóa về cùng bộ giá trị trên entity gộp (đề xuất: B/S/X)."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Type Code
@@ -230,7 +230,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Type Code
     comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX có thêm X và Y so với HOSE."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Condition Code
@@ -244,7 +244,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Condition Code
     comment: "Scheme: ORDERTRADE_ORDER_CONDITION."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Status Code
@@ -258,7 +258,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Scheme: ORDERTRADE_ORDER_STATUS. Chỉ có tường minh trên HOSE. HNX: xem attr_OrderTrade_Order_HNX.csv — pending ETL derive."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Client House Type Code
@@ -272,7 +272,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Client/House Classification Code
     comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Investor Type Code
@@ -286,7 +286,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Investor Classification Code
     comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. HNX dùng mã 4 chữ số khác HOSE — cần profile mapping (xem HLD T1-02)."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Foreign Investor Type Code
@@ -300,7 +300,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Foreign Investor Type Code
     comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Short Sell Type Code
@@ -314,7 +314,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Scheme: ORDERTRADE_SHORT_SELL_TYPE. Chỉ có trên HOSE — nullable trên entity gộp."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Market Maker Order Indicator
@@ -328,7 +328,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: Giá trị tường minh Y/N — dùng Indicator thay vì Boolean vì nguồn không lưu true/false.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Price
@@ -342,7 +342,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Price
     comment: Nguồn Number(15) — khớp domain. Nullable vì Market order giá trị 0.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Volume
@@ -356,7 +356,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Quantity
     comment: Nguồn Number(10).
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Matched Volume
@@ -370,7 +370,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: Nguồn Number(10). Giá trị tích lũy tại thời điểm event — đúng cho Fact Append.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Remaining Volume
@@ -384,7 +384,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Remaining Quantity
     comment: Nguồn Number(10).
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Immediate Matched Volume
@@ -398,7 +398,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Khác Matched VOL (tích lũy) — đây là khối lượng khớp tức thì tại event này. Giữ nguyên theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Execution Price
@@ -412,7 +412,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Snapshot giá khớp tại event lệnh — khác với Exec Price trên Trade (confirmed per-match). Nullable vì lệnh chưa khớp. Giữ theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Last Traded Price
@@ -426,7 +426,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Market reference snapshot tại thời điểm đặt lệnh. Giữ theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Price Vs Ltp
@@ -440,7 +440,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Derived từ Order Price và LTP trên cùng bản ghi. Giữ nguyên từ nguồn theo T1-04 confirm — không tính lại trên Atomic."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Buy Up Sell Down Amount
@@ -454,7 +454,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Nguồn Number(15). Giữ theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Buy Up Sell Down Tick
@@ -468,7 +468,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Nguồn Number. Giữ theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Matched Ratio
@@ -482,7 +482,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Nguồn Number — dạng phần trăm. ETL cần verify đơn vị nguồn (0–1 hay 0–100) và chuẩn hóa sang Percentage domain. Giữ theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: New High Low Price Indicator
@@ -496,7 +496,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Nguồn Character — giá trị tường minh. Giữ theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Expected Execution Price
@@ -510,7 +510,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Nguồn Number(15). Giữ theo T1-04 confirm — cần chú ý phân biệt với Execution Price (confirmed)."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Expected Execution Volume
@@ -524,7 +524,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Nguồn Number(10). Giữ theo T1-04 confirm."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Icd Bug Quantity
@@ -538,7 +538,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Nguồn Number — operational correction field. Giữ theo T1-05 confirm: lấy đủ các trường nguồn OrderTrade."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Member Code
@@ -552,7 +552,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Member ID
     comment: FK suy luận đến Member ngoài scope — lưu Text denormalized.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Member Name
@@ -566,7 +566,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: "Trường derived từ BRK # — denormalized snapshot tại thời điểm event. Tham chiếu HLD D-04 không bỏ trường này vì là text reference, không phải calculated metric."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Account Number
@@ -580,7 +580,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Account Number
     comment: FK suy luận đến Account ngoài scope — lưu Text denormalized.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Account Holder Name
@@ -594,7 +594,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: Snapshot denormalized tại thời điểm event.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Account Pin Code
@@ -608,7 +608,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: Mã định danh phụ của tài khoản tại CTCK — denormalized.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Orig Securities Order Code
@@ -622,7 +622,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Original order ID
     comment: "Self-reference về Securities Order Code của lệnh gốc."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Orig Order Accept Number
@@ -636,7 +636,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Original Order Reception Number
     comment: BK phụ của lệnh gốc — tương đương Orig Order Accept Number HOSE. Nguồn Number(11) — ETL convert sang string.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Trader Code
@@ -650,7 +650,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: Snapshot denormalized.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Trader Name
@@ -664,7 +664,7 @@ attributes:
     source_table: Order_HNX
     source_column: null
     comment: Snapshot denormalized.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Reference Sequence Number
@@ -678,7 +678,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Message Sequence
     comment: Metadata luồng dữ liệu — dùng để audit/trace event order.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Order Reject Reason Code
@@ -692,7 +692,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Order Reject Reason Code
     comment: Chỉ có trên HNX — nullable trên entity gộp. Nguồn Character(4). Lưu Text vì chưa profile bộ giá trị đầy đủ.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Public Volume
@@ -706,7 +706,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Public quantity
     comment: Chỉ có trên HNX Iceberg order — nullable trên entity gộp. NULL nếu không phải Iceberg.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Condition Price
@@ -720,7 +720,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Condition price
     comment: Chỉ có trên HNX Stop order — nullable trên entity gộp. NULL nếu không phải Stop order.
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Orig Order Type Code
@@ -734,7 +734,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Original Order Type Code
     comment: "Scheme: ORDERTRADE_ORDER_TYPE. Snapshot loại lệnh gốc tại thời điểm sửa — chỉ có trên HNX."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Quote Request Type Code
@@ -748,7 +748,7 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Quote Request Type
     comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. Chỉ có trên HNX (thị trường phái sinh/repo) — nullable trên entity gộp."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null
 
   - name: Auto Cancel Reason Code
@@ -762,5 +762,5 @@ attributes:
     source_table: Order_HNX
     source_column: OrderTrade.Order_HNX.Automated Cancel Processing Classification
     comment: "Scheme: ORDERTRADE_AUTO_CANCEL_REASON. Chỉ có trên HNX — nullable trên entity gộp."
-    classification_context: "Source System Code = 'OrderTrade_Order_HNX'"
+    classification_context: "Source System Code = 'ORDERTRADE_ORDER_HNX'"
     etl_derived_value: null

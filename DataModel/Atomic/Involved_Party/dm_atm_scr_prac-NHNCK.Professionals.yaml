@@ -34,7 +34,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: "PK surrogate. BCV: \"Individual\" (Involved Party). Domain prefix \"Securities Practitioner\" theo HLD."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Practitioner Code
@@ -48,7 +48,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.Id
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Full Name
@@ -76,7 +76,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.FullName
     comment: "BCV: \"Full Name\" (Involved Party)."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Birth Year
@@ -90,7 +90,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.BirthYear
     comment: "Text vì là năm dạng \"1990\". Lấy từ Professionals (không có trong ProfessionalHistories)."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Date Of Birth
@@ -104,7 +104,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.ProfessionalHistories.BirthDate
     comment: Lấy từ bản mới nhất ProfessionalHistories (ORDER BY ChangeDate DESC). Professionals chỉ có BirthYear.
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Individual Gender Code
@@ -118,7 +118,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.ProfessionalHistories.Gender
     comment: "Scheme: INDIVIDUAL_GENDER. Lấy từ bản mới nhất ProfessionalHistories."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Nationality Code
@@ -132,7 +132,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.ProfessionalHistories.NationalityId
     comment: "Scheme: NATIONALITY. Lấy từ bản mới nhất ProfessionalHistories. Thay thế Country Code từ Professionals.CountryId (cùng ngữ nghĩa quốc tịch)."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Education Level Code
@@ -146,7 +146,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.ProfessionalHistories.EducationLevelId
     comment: "Scheme: EDUCATION_LEVEL. Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Birth Place
@@ -160,7 +160,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.ProfessionalHistories.PlaceOfBirth
     comment: Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này.
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Practitioner Registration Type Code
@@ -174,7 +174,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.ProfessionalHistories.RegistrationType
     comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE. Lấy từ bản mới nhất ProfessionalHistories. Khác với Applications.RegistrationType (loại đăng ký hồ sơ CCHN)."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Practice Status Code
@@ -188,7 +188,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.ProfessionalHistories.StatusWork
     comment: "Scheme: PRACTICE_STATUS. Lấy từ bản mới nhất ProfessionalHistories. 5 giá trị: 0=Chưa hành nghề; 1=Hành nghề; 2=Thu hồi cho cấp lại; 3=Thu hồi không cấp lại; 4=Hành nghề có thời hạn."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Country of Residence Geographic Area Id
@@ -202,7 +202,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.CountryId
     comment: "FK target: Geographic Area.Geographic Area Id."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Country of Residence Geographic Area Code
@@ -216,7 +216,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.CountryId
     comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Residence Geographic Area Id."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Identity Reference Code
@@ -230,7 +230,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.IdentityId
     comment: Bảng identity riêng không có trong scope NHNCK — lưu BK dạng Text.
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Relationship Type Code
@@ -244,7 +244,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.RelationshipType
     comment: "Scheme: PRACTITIONER_RELATIONSHIP_TYPE."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Occupation Name
@@ -258,7 +258,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.Occupation
     comment: Text tự do.
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Workplace Name
@@ -272,7 +272,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.Workplace
     comment: Text tự do.
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Practitioner Note
@@ -286,7 +286,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.Note
     comment: null
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Created Timestamp
@@ -300,7 +300,7 @@ attributes:
     source_table: Professionals
     source_column: NHNCK.Professionals.CreatedAt
     comment: null
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Securities Company Id
@@ -314,7 +314,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: "FK target: Securities Company.Securities Company Id."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -328,7 +328,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Employee Code
@@ -342,7 +342,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: Mã nhân viên do CTCK cấp — bổ sung từ SCMS. Không có trong NHNCK.
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: License Number
@@ -356,7 +356,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Employment Start Date
@@ -370,7 +370,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Employment End Date
@@ -384,7 +384,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Note
@@ -398,7 +398,7 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
   - name: Practitioner Status Code
@@ -412,5 +412,5 @@ attributes:
     source_table: Professionals
     source_column: null
     comment: "Scheme: SCMS_COMPANY_STATUS."
-    classification_context: "Source System Code = 'NHNCK_Professionals'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null

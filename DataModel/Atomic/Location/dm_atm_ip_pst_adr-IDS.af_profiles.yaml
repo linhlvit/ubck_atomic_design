@@ -34,7 +34,7 @@ attributes:
     source_table: af_profiles
     source_column: IDS.af_profiles.id
     comment: "FK target: Audit Firm.Audit Firm Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -48,7 +48,7 @@ attributes:
     source_table: af_profiles
     source_column: IDS.af_profiles.id
     comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,8 +62,8 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: IDS_af_profiles
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: IDS_AF_PROFILES
 
   - name: Address Type Code
     physical_name: adr_tp_code
@@ -76,7 +76,7 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: HEAD_OFFICE
 
   - name: Address Value
@@ -90,7 +90,7 @@ attributes:
     source_table: af_profiles
     source_column: IDS.af_profiles.address
     comment: null
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Province Id
@@ -104,7 +104,7 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: "FK target: Geographic Area.Geographic Area Id. Lookup: DM_TINH_THANH."
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Province Code
@@ -118,7 +118,7 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id. // Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS."
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: District Name
@@ -132,7 +132,7 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: Text denormalized — không có bảng lookup quận/huyện trong scope.
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Ward Name
@@ -146,7 +146,7 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: Text denormalized.
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Geographic Area Id
@@ -160,7 +160,7 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: "FK target: Geographic Area.Geographic Area Id."
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Geographic Area Code
@@ -174,7 +174,7 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Geographic Area Id."
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Address Detail
@@ -188,5 +188,5 @@ attributes:
     source_table: af_profiles
     source_column: null
     comment: Text tự do — denormalized.
-    classification_context: "Source System Code = 'IDS_af_profiles' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null

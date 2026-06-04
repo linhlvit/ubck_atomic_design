@@ -34,7 +34,7 @@ attributes:
     source_table: ECAT_29_HolidayInfo
     source_column: null
     comment: PK dạng yyyymmdd — tiện join và partition trực tiếp mà không cần surrogate số tuần tự.
-    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HOLIDAYINFO'"
     etl_derived_value: null
 
   - name: Calendar Date
@@ -48,7 +48,7 @@ attributes:
     source_table: ECAT_29_HolidayInfo
     source_column: null
     comment: "BK nghiệp vụ — unique. ETL tự sinh mọi ngày. Không phụ thuộc ECAT_29 về danh sách ngày. BCV Term: Day Of Calendar Year (Time Period)."
-    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HOLIDAYINFO'"
     etl_derived_value: ETL generated (dense)
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_table: ECAT_29_HolidayInfo
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HOLIDAYINFO'"
     etl_derived_value: null
 
   - name: Holiday Flag
@@ -76,7 +76,7 @@ attributes:
     source_table: ECAT_29_HolidayInfo
     source_column: ECAT.ECAT_29_HolidayInfo.calendar_date
     comment: "BCV Term: Public Holiday Flag. ETL merge: nếu calendar_date match ngày trong ECAT_29 → true, ngược lại → false."
-    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HOLIDAYINFO'"
     etl_derived_value: false
 
   - name: Holiday Name
@@ -90,5 +90,5 @@ attributes:
     source_table: ECAT_29_HolidayInfo
     source_column: ECAT.ECAT_29_HolidayInfo.holiday_name
     comment: null
-    classification_context: "Source System Code = 'ECAT_ECAT_29_HolidayInfo'"
+    classification_context: "Source System Code = 'ECAT_ECAT_29_HOLIDAYINFO'"
     etl_derived_value: null

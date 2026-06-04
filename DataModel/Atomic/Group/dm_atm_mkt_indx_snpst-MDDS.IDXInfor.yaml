@@ -34,7 +34,7 @@ attributes:
     source_table: IDXInfor
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Market Index Snapshot Code
@@ -48,7 +48,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.ID
     comment: BK chính. PK nguồn string (GUID) — khớp tự nhiên với Text.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_table: IDXInfor
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Index Code
@@ -76,7 +76,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.IndexCode
     comment: BK nghiệp vụ. Phân biệt chỉ số trong ngày giao dịch. Nguồn string — khớp tự nhiên với Text.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Trading Date
@@ -90,7 +90,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.TradingDate
     comment: BK. Nguồn string — ETL cần parse sang Date. Cần validate format ngày hợp lệ.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Update Time
@@ -104,7 +104,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.Time
     comment: BK — lưu dạng Text vì nguồn string là chuỗi thời gian trong ngày (HHmmss) — khớp tự nhiên với Text.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Index Name
@@ -118,7 +118,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.IndexName
     comment: Nguồn string — khớp tự nhiên với Text.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Floor Code
@@ -132,7 +132,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.FloorCode
     comment: "Scheme: MDDS_FLOOR_CODE. Nguồn string — khớp tự nhiên với Classification Value."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Index Type Code
@@ -146,7 +146,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.TypeIndex
     comment: "Scheme: MDDS_INDEX_TYPE. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số (0 / 1 / 2 / 3 / 4) làm code."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Current Status Code
@@ -160,7 +160,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.CurrentStatus
     comment: "Scheme: MDDS_INDEX_STATUS. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số làm code."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Index Id
@@ -174,7 +174,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.IndexId
     comment: Nguồn int — ETL cần convert sang string. Mã số nội bộ sàn — denormalized text.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Index Value
@@ -188,7 +188,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.IndexValue
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Prior Index Value
@@ -202,7 +202,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.PriorIndexVal
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Highest Index Value
@@ -216,7 +216,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.HighestIndex
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Lowest Index Value
@@ -230,7 +230,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.LowestIndex
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Close Index Value
@@ -244,7 +244,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.CloseIndex
     comment: "Nguồn string — ETL cần parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Index Change Value
@@ -258,7 +258,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.Change
     comment: Nguồn double — khớp tự nhiên với Currency Amount. Có thể mang giá trị âm.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Index Change Ratio
@@ -272,7 +272,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.RatioChange
     comment: Nguồn double — khớp tự nhiên với Percentage.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Total Match Volume
@@ -286,7 +286,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.TotalQtty
     comment: Nguồn double — ETL cần cast sang int. Cần validate không vượt quá INT_MAX (double có thể lưu giá trị lớn hơn int).
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Total Match Value
@@ -300,7 +300,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.TotalValue
     comment: Nguồn double — khớp tự nhiên với Currency Amount (decimal).
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: PT Total Volume
@@ -314,7 +314,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.TotalQttyPT
     comment: Nguồn double — ETL cần cast sang int. Cần validate không vượt quá INT_MAX.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: PT Total Value
@@ -328,7 +328,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.TotalValuePT
     comment: Nguồn double — khớp tự nhiên với Currency Amount (decimal).
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Total Stock Count
@@ -342,7 +342,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.TotalStock
     comment: "Nguồn string — ETL cần parse sang int. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Advance Count
@@ -356,7 +356,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.Up
     comment: Nguồn int — khớp tự nhiên với Small Counter.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Decline Count
@@ -370,7 +370,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.Down
     comment: Nguồn int — khớp tự nhiên với Small Counter.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: No Change Count
@@ -384,7 +384,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.NoChange
     comment: Nguồn int — khớp tự nhiên với Small Counter.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Ceiling Count
@@ -398,7 +398,7 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.Ceiling
     comment: Nguồn int — khớp tự nhiên với Small Counter.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
 
   - name: Floor Limit Count
@@ -412,5 +412,5 @@ attributes:
     source_table: IDXInfor
     source_column: MDDS.IDXInfor.Floor
     comment: Nguồn int — khớp tự nhiên với Small Counter.
-    classification_context: "Source System Code = 'MDDS_IDXInfor'"
+    classification_context: "Source System Code = 'MDDS_IDXINFOR'"
     etl_derived_value: null
