@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "atomic_model.schema.json",
+  "title": "Atomic Model",
+  "description": "Consolidated Atomic layer data model — entities with attributes and multi-source mappings.",
+  "type": "object",
+  "required": ["schema_type", "schema_version", "entities"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "atomic_model"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entity" }
+    }
+  },
+
+  "$defs": {
+
+    "entity": {
+      "type": "object",
+      "required": ["ldm", "attributes"],
+      "additionalProperties": false,
+      "properties": {
+        "ldm": { "$ref": "#/$defs/ldm" },
+        "attributes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/attribute" }
+        }
+      }
+    },
+
+    "ldm": {
+      "type": "object",
+      "required": [
+        "id", "logical_name", "physical_name", "layer", "version",
+        "status", "bcv_core_object", "bcv_concept",
+        "table_type", "etl_pattern", "description", "owner", "sources"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique entity ID. Format: ATM-{physical_name}.",
+          "pattern": "^ATM-[a-z][a-z0-9_-]*$"
+        },
+        "logical_name": {
+          "type": "string",
+          "description": "Human-readable entity name in Title Case.",
+          "minLength": 1
+        },
+        "physical_name": {
+          "type": "string",
+          "description": "Snake_case table name on Delta Lake (hyphens allowed for legacy names).",
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "layer": {
+          "type": "string",
+          "const": "Atomic"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "approved"]
+        },
+        "bcv_core_object": {
+          "type": "string",
+          "enum": [
+            "Arrangement",
+            "Business Activity",
+            "Common",
+            "Communication",
+            "Condition",
+            "Documentation",
+            "Event",
+            "Group",
+            "Involved Party",
+            "Location",
+            "Product",
+            "Transaction"
+          ]
+        },
+        "bcv_concept": {
+          "type": "string",
+          "description": "BCV concept string. Formats: '[Core Object] Concept Name', '[Core Object]' (pending), or 'ETL Pattern — ...' for technical entities.",
+          "pattern": "^(\\[.+\\]( .+)?|ETL Pattern.+|Junction|Shared Entity)$"
+        },
+        "table_type": {
+          "type": "string",
+          "enum": ["Fundamental", "Relative", "Classification", "Fact Append", "Fact Snapshot"]
+        },
+        "etl_pattern": {
+          "type": "string",
+          "enum": ["SCD4A", "SCD2", "Upsert", "Fact Append", "Fact Snapshot"]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": { "$ref": "#/$defs/owner" },
+        "references": { "$ref": "#/$defs/references" },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/source_system_code" },
+          "description": "Source systems this entity consolidates from."
+        }
+      }
+    },
+
+    "owner": {
+      "type": "object",
+      "required": ["steward", "data_modeler"],
+      "additionalProperties": false,
+      "properties": {
+        "steward": {
+          "type": "string",
+          "format": "email"
+        },
+        "data_modeler": {
+          "type": "string",
+          "format": "email"
+        }
+      }
+    },
+
+    "references": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "brd": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "BRD reference ID. Format: BRD-SRC-{SOURCE}-{TABLE}.",
+            "pattern": "^BRD-"
+          }
+        }
+      }
+    },
+
+    "attribute": {
+      "type": "object",
+      "required": [
+        "name", "physical_name", "business_meaning",
+        "data_domain", "data_type",
+        "nullable", "is_primary_key",
+        "comment", "etl_derived_value",
+        "source_mappings"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Logical attribute name in Title Case.",
+          "minLength": 1
+        },
+        "physical_name": {
+          "type": "string",
+          "description": "Snake_case column name (hyphens allowed for legacy names).",
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "business_meaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_domain": {
+          "type": "string",
+          "enum": [
+            "Surrogate Key",
+            "Text",
+            "Classification Value",
+            "Date",
+            "Timestamp",
+            "Currency Amount",
+            "Interest Rate",
+            "Exchange Rate",
+            "Percentage",
+            "Indicator",
+            "Boolean",
+            "Small Counter",
+            "Array<Text>",
+            "Array<Struct>"
+          ]
+        },
+        "data_type": {
+          "type": "string",
+          "description": "Physical Delta Lake / Spark SQL data type.",
+          "anyOf": [
+            { "enum": ["string", "boolean", "date", "timestamp", "int"] },
+            { "pattern": "^decimal\\(\\d+,\\d+\\)$" },
+            { "enum": ["array<string>"] },
+            { "pattern": "^array<struct<.+>>$" }
+          ]
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "is_primary_key": {
+          "type": "boolean"
+        },
+        "comment": {
+          "type": ["string", "null"]
+        },
+        "etl_derived_value": {
+          "type": ["string", "boolean", "integer", "null"],
+          "description": "Hardcoded or derived ETL expression when there is no direct source column. Boolean false means explicitly not derived."
+        },
+        "source_mappings": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/source_mapping" }
+        }
+      }
+    },
+
+    "source_mapping": {
+      "type": "object",
+      "required": ["source_system", "source_table", "source_column"],
+      "additionalProperties": false,
+      "properties": {
+        "source_system": { "$ref": "#/$defs/source_system_code" },
+        "source_table": {
+          "type": "string",
+          "description": "Source table name (unqualified).",
+          "minLength": 1
+        },
+        "source_column": {
+          "type": ["string", "null"],
+          "description": "Fully-qualified source column: {SOURCE}.{TABLE}.{COLUMN}, or null for derived/surrogate fields."
+        },
+        "classification_context": {
+          "type": ["string", "null"],
+          "description": "Partition / filter condition used to identify this source slice, e.g. \"Source System Code = 'FIMS_TABLE'\"."
+        }
+      }
+    },
+
+    "source_system_code": {
+      "type": "string",
+      "enum": [
+        "ECAT",
+        "FIMS",
+        "FMS",
+        "GSGD",
+        "IDS",
+        "KNT",
+        "MDDS",
+        "NHNCK",
+        "OrderTrade",
+        "QLRR",
+        "SCMS",
+        "TTHC",
+        "ThanhTra"
+      ]
+    }
+  }
+}
