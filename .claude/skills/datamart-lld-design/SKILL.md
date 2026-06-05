@@ -211,16 +211,18 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 ```
 PRE-CHECK (trước khi sinh — bắt buộc):
 □ Cross-check BA ↔ HLD: mọi dòng Done/Doing/Pending (kể cả Chiều) đều có KPI_ID trong HLD
-□ Nếu dòng BA nào chưa có KPI_ID → DỪNG và báo cáo trước khi tiếp tục
+□ Nếu dòng BA nào chưa có KPI_ID → DỪNG và báo cáo danh sách theo nhóm trước khi tiếp tục
 □ Không tự sinh KPI_ID mới trong Phase 3 — KPI_ID mới phải được khai sinh trong HLD trước
+□ Đếm N_BA (tổng dòng BA Done/Doing/Pending kể cả trùng) và N_KPI (unique sau loại trùng theo cột Đánh giá) → báo cáo 2 con số cho user trước khi sinh
 
 OUTPUT CHECK:
-□ Tất cả dòng Done/Doing/Pending từ BA file đều có trong output
+□ Số dòng Detail Mapping ≥ N_BA — báo danh sách dòng BA bị bỏ sót nếu thiếu
+□ Số KPI_ID unique trong output = N_KPI — báo cáo nếu lệch
+□ Không có KPI_ID trong output mà chưa được khai sinh trong HLD — báo danh sách nếu vi phạm
 □ KPI PENDING từ HLD cũng có trong output (mart_table/mart_column/logic trống)
 □ Không bỏ qua dòng Phân loại = Chiều
 □ Không bỏ qua dòng Trạng thái = Doing
 □ Không bỏ qua chiều lặp lại giữa các nhóm — mỗi nhóm có đủ SLICER/FILTER explicit (không dùng shorthand "xem nhóm X")
-□ Không có KPI_ID trong output mà chưa được khai sinh trong HLD
 □ tinh_chat khớp với Tính chất trong HLD bảng KPI
 □ mart_table dùng tên logical; mart_column dùng tên logical
 □ logic dùng tên physical (physical_table.physical_column)

@@ -98,15 +98,31 @@ Dòng FILTER/SLICER thuộc cùng KPI Base (cùng `kpi_id`) kế thừa `tinh_ch
 
 ## Quy trình đối chiếu BA trước khi sinh
 
-**Bước 0 — Cross-check BA ↔ HLD (BẮT BUỘC — thực hiện trước bước 1):**
+**Bước 0 — Cross-check BA ↔ HLD ↔ Detail Mapping (BẮT BUỘC — thực hiện trước bước 1):**
 
+**0.a — Kiểm tra độ phủ BA → HLD:**
 1. Với mỗi dòng BA có `Trạng thái mapping ∈ {Done, Doing, Pending}` (kể cả `Phân loại = Chiều`):
    - Tìm KPI_ID tương ứng trong bảng KPI của nhóm đó trong HLD
    - Nếu KPI_ID chưa có trong HLD → **DỪNG**, báo cáo danh sách thiếu theo nhóm
 2. ❌ Không tự sinh KPI_ID mới — KPI_ID mới phải được khai sinh trong HLD trước
 3. ❌ Không bỏ qua dòng `Phân loại = Chiều` — Chiều cũng cần KPI_ID riêng
 4. ❌ Không dùng shorthand "xem nhóm khác" — mỗi nhóm phải có đủ KPI_ID explicit trong output
-5. Chỉ tiếp tục bước 1 khi **tất cả** dòng Done/Doing/Pending từ BA đều đã có KPI_ID trong HLD
+5. Chỉ tiếp tục bước 0.b khi **tất cả** dòng Done/Doing/Pending từ BA đều đã có KPI_ID trong HLD
+
+**0.b — Kiểm tra số lượng (đếm và báo cáo trước khi sinh):**
+1. Đếm **tổng dòng BA** có `Trạng thái ∈ {Done, Doing, Pending}` (kể cả dòng bị đánh dấu trùng trong cột `Đánh giá`) → gọi là **N_BA**
+2. Đếm số dòng BA **unique** sau khi loại trùng theo cột `Đánh giá` → gọi là **N_KPI** (= số KPI_ID cần có trong HLD)
+3. Báo cáo cho user trước khi sinh:
+   > "BA có **N_BA** dòng cần mapping, trong đó **N_KPI** KPI unique (sau loại trùng theo cột Đánh giá). Detail Mapping output sẽ có tối thiểu N_BA dòng và đúng N_KPI KPI_ID unique."
+4. Sau khi sinh xong → kiểm tra:
+   - Số dòng trong Detail Mapping ≥ N_BA (≥ vì 1 dòng BA có thể sinh nhiều dòng MEASURE/FILTER/SLICER)
+   - Nếu có dòng BA nào không tìm thấy trong output → báo danh sách trước khi giao file
+
+**0.c — Kiểm tra tính hợp lệ Detail Mapping → HLD (sau khi sinh):**
+1. Lấy danh sách KPI_ID unique trong Detail Mapping output
+2. Số KPI_ID unique phải = **N_KPI**
+3. Đối chiếu từng KPI_ID với bảng KPI trong HLD — nếu có KPI_ID nào không tìm thấy → **báo cáo danh sách** và yêu cầu khai sinh trong HLD trước khi giao file
+4. ❌ Không giao file Detail Mapping khi còn KPI_ID chưa được khai trong HLD
 
 **Bước 1 — Lọc và chuẩn bị:**
 

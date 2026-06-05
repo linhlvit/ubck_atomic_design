@@ -26,6 +26,7 @@ graph TB
     OPR5["Practitioner Exam History"]:::oper
     OPR6["Practitioner Training History"]:::oper
     OPR7["Practitioner Related Party Profile"]:::oper
+    OPR9["Practitioner Listed Company Role"]:::oper
     OPR8["Practitioner Data Explorer"]:::oper
 
     DIM_DATE --> FACT_CERT
@@ -254,6 +255,22 @@ erDiagram
 
 ---
 
+### Nhóm 12b — Vai trò tại DN niêm yết
+
+> **Ghi chú:** `Practitioner Listed Company Role` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Organization Employment Report`, filter theo `src_stm_code = 'NHNCK_OrganizationReports'`.
+
+#### Star schema
+
+*Không có relationship line — bảng tác nghiệp*
+
+#### Bảng entity
+
+| Datamart entity | Description | Grain | KPI |
+|---|---|---|---|
+| Practitioner Listed Company Role | Vai trò tại DN niêm yết/UPCOM — toàn bộ vai trò per NHN: tên DN, vị trí, trạng thái, ngày bắt đầu/kết thúc. Atomic: Securities Practitioner Organization Employment Report | 1 vai trò per NHN | K_NHNCK_81–85 |
+
+---
+
 ## Tab DATA EXPLORER
 
 ### Nhóm 13 — Data Explorer (Tra cứu tổng hợp CCHN)
@@ -287,4 +304,5 @@ erDiagram
 | `Practitioner Exam History` | operational | draft | 1 lần thi per NHN | K_NHNCK_59–63 | Securities Practitioner Qualification Examination Assessment Result / Securities Practitioner Qualification Examination Assessment / Securities Practitioner License Decision Document |
 | `Practitioner Training History` | operational | draft | 1 enrollment per NHN | K_NHNCK_64–67 | Securities Practitioner Professional Training Class Enrollment / Securities Practitioner Professional Training Class |
 | `Practitioner Related Party Profile` | operational | draft | 1 người liên quan per NHN | K_NHNCK_75–78 | Securities Practitioner Related Party |
+| `Practitioner Listed Company Role` | operational | draft | 1 vai trò per NHN | K_NHNCK_81–85 | Securities Practitioner Organization Employment Report |
 | `Practitioner Data Explorer` | operational | draft | 1 CCHN per NHN | K_NHNCK_68–74 | Securities Practitioner License Certificate Document / Securities Practitioner / Securities Practitioner Organization Employment Report |
