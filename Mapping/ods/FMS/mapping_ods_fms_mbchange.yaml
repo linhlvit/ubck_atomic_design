@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-FMS.MBCHANGE
+  logical_name: Mapping ODS – source FMS.MBCHANGE
+  physical_name: ods_fms_mbchange
+  dm_ref: null
+  brd_ref: BRD-SRC-FMS-MBCHANGE
+target:
+  namespace: ods
+  physical_name: ods_fms_mbchange
+  etl_handle: Fact Append
+  description: Lịch sử thay đổi vốn góp nhà đầu tư quỹ
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: MBCHANGE
+  alias: mb
+  select_fields: id, mbfid, oldcapital, newcapital, changedate, reason, deleted, createdby,
+    datecreated, datemodified
+  filter: created_at = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: mb.id
+  data_type: string
+  description: Mã ID lịch sử thay đổi vốn góp (PK)
+  target_attr_name: null
+- target_column: mbfid
+  transformation: mb.mbfid
+  data_type: string
+  description: Mã ID nhà đầu tư quỹ. FK → MBFUND.Id
+  target_attr_name: null
+- target_column: oldcapital
+  transformation: mb.oldcapital
+  data_type: decimal(23,2)
+  description: Vốn góp trước thay đổi
+  target_attr_name: null
+- target_column: newcapital
+  transformation: mb.newcapital
+  data_type: decimal(23,2)
+  description: Vốn góp sau thay đổi
+  target_attr_name: null
+- target_column: changedate
+  transformation: mb.changedate
+  data_type: date
+  description: Ngày thay đổi
+  target_attr_name: null
+- target_column: reason
+  transformation: mb.reason
+  data_type: string
+  description: Lý do thay đổi
+  target_attr_name: null
+- target_column: deleted
+  transformation: mb.deleted
+  data_type: boolean
+  description: Trạng thái bản ghi
+  target_attr_name: null
+- target_column: createdby
+  transformation: mb.createdby
+  data_type: string
+  description: Người tạo
+  target_attr_name: null
+- target_column: datecreated
+  transformation: mb.datecreated
+  data_type: date
+  description: Ngày tạo
+  target_attr_name: null
+- target_column: datemodified
+  transformation: mb.datemodified
+  data_type: date
+  description: Ngày sửa
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
