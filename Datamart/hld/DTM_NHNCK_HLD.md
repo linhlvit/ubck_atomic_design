@@ -1338,25 +1338,41 @@ flowchart LR
 
 ---
 
-##### PENDING — Hồ sơ & Danh mục — Vai trò tại DN niêm yết (STT 3.2.2.3)
+##### Nhóm 12b — Vai trò tại DN niêm yết (STT 3.2.2.3)
 
-**KPI liên quan:** Tên DN niêm yết/UPCOM, Vai trò, Trạng thái vai trò, Mã CTCK, Số lượng cổ phiếu sở hữu
+> Phân loại: **Tác nghiệp**
+> Atomic: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
+> Ghi chú: BA v2 xác nhận `OrganizationReports` bao gồm vai trò tại DN niêm yết/UPCOM. Tên DN tạm lấy `Workplace Name` (text tự do). Trạng thái derive từ `Termination Date` (NULL = Hiện tại, có giá trị = Đã kết thúc). K_NHNCK_85 (Số cổ phiếu sở hữu) vẫn PENDING nguồn VSDC.
 
-**Lý do pending:** BA map Tên DN → `OrganizationReports.OrganizationId/Workplace`, Vai trò → `OrganizationReports.Position`, Mã CTCK → `Organizations.OrganizationCode (WHERE OrganizationTypeId=1)` — tất cả đều nguồn NHNCK READY theo BA. Tuy nhiên HLD đang giữ PENDING vì HTTT chưa xác nhận `OrganizationReports` có bao gồm DN niêm yết/UPCOM hay chỉ tổ chức KDCK. Trạng thái và Số lượng cổ phiếu sở hữu (nguồn VSDC) chưa có Atomic. Cần HTTT xác nhận phạm vi `OrganizationReports` trước khi chuyển READY.
+**Bảng KPI:**
 
-**Bảng KPI — PENDING:**
+| KPI ID | Tên KPI | Tính chất | Trạng thái | Nguồn |
+|---|---|---|---|---|
+| K_NHNCK_81 | Tên DN niêm yết/UPCOM | Base | READY | `Securities Practitioner Organization Employment Report`.Workplace Name — tạm dùng text tự do |
+| K_NHNCK_82 | Vai trò tại DN | Base | READY | `Securities Practitioner Organization Employment Report`.Position Name |
+| K_NHNCK_83 | Trạng thái vai trò | Base | READY | Derived: `Termination Date IS NULL → "Hiện tại"`, có giá trị → "Đã kết thúc" |
+| K_NHNCK_84 | Mã CTCK | Base | PENDING — nguồn `Organizations.OrganizationCode WHERE OrganizationTypeId=1`; chờ xác nhận phạm vi | — |
+| K_NHNCK_85 | Số lượng cổ phiếu sở hữu | Derived | PENDING — nguồn VSDC chưa có Atomic | — |
 
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_NHNCK_81 | Tên DN niêm yết/UPCOM | Base | PENDING — chờ HTTT xác nhận `OrganizationReports` scope |
-| K_NHNCK_82 | Vai trò tại DN | Base | PENDING — chờ HTTT xác nhận `OrganizationReports` scope |
-| K_NHNCK_83 | Trạng thái vai trò | Base | PENDING — BA_Mapping trống, chưa xác nhận nguồn |
-| K_NHNCK_84 | Mã CTCK | Base | PENDING — nguồn `Organizations.OrganizationCode WHERE OrganizationTypeId=1`; chờ xác nhận phạm vi |
-| K_NHNCK_85 | Số lượng cổ phiếu sở hữu | Derived | PENDING — nguồn VSDC chưa có Atomic |
+**Schema bảng tác nghiệp:**
 
-**Atomic cần bổ sung:** (1) HTTT xác nhận `OrganizationReports` có bao gồm DN niêm yết/UPCOM không; (2) Entity sở hữu cổ phần cá nhân (VSDC) có FK về `Securities Practitioner`.
+```mermaid
+erDiagram
+    Practitioner_Listed_Company_Role {
+        varchar Practitioner_Code PK
+        varchar Organization_Employment_Report_Code PK
+        varchar Workplace_Name
+        varchar Position_Name
+        varchar Employment_Status
+        date Hire_Date
+        date Termination_Date
+        datetime Population_Date
+    }
+```
 
-**Mart dự kiến khi Atomic sẵn sàng:** `Practitioner Listed Company Role` — grain = 1 vai trò per NHN per DN niêm yết.
+**Mart:** `Practitioner Listed Company Role` — grain = 1 vai trò per NHN per DN niêm yết.
+
+**Atomic cần bổ sung:** Entity sở hữu cổ phần cá nhân (VSDC) có FK về `Securities Practitioner` — cho K_NHNCK_85.
 
 ---
 
@@ -1434,6 +1450,7 @@ graph TB
 | `Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 | READY |
 | `Practitioner Training History` | 1 khóa học per NHN | K_NHNCK_64–67 (partial — xem O_NHNCK_9) | DRAFT |
 | `Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–79 (+ K_NHNCK_80 PENDING — chờ HTTT xác nhận chức vụ người LQ) | READY |
+| `Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–83 READY; K_NHNCK_84–85 PENDING | PARTIAL |
 | `Practitioner Data Explorer` | 1 CCHN per NHN (toàn bộ trạng thái — slicer filter tại query time) | K_NHNCK_68–74 | READY |
 
 **Bảng Dimension:**
@@ -1455,7 +1472,7 @@ graph TB
 | O_NHNCK_3 | Logic YTD: năm hiện tại đến today; năm quá khứ đến 31/12/Y. | Đã xác nhận. | K_NHNCK_2, 2a, 2b | Closed |
 | O_NHNCK_4 | Tuổi tính từ `Date_Of_Birth` (date) từ `ProfessionalHistories.BirthDate`. | `Age = Year(Snapshot_Date) − Year(Date_Of_Birth)`. Đã xác nhận. | K_NHNCK_23–32, K_NHNCK_35 | Closed |
 | O_NHNCK_5 | `Has_Active_Violation`: ETL tính tại thời điểm snapshot chạy hàng ngày — Atomic không lưu lịch sử thay đổi trạng thái vi phạm theo ngày nên không thể tính point-in-time chính xác. Logic tạm: `Has_Active_Violation = TRUE` nếu NHN có ít nhất 1 `Conduct Violation` có `Violation_Status_Code = 1 (ACTIVE)` tại thời điểm ETL chạy. Slicer năm lấy row Snapshot_Date = 31/12/Y (quá khứ) hoặc MAX ngày (hiện tại). | Tạm chấp nhận — cần BA xác nhận có đúng yêu cầu nghiệp vụ không. | K_NHNCK_4 | Open |
-| O_NHNCK_6 | (Cập nhật v6.3) Scope còn lại PENDING: (1) Dashboard Mạng lưới — đã READY, dùng Employment History + Related Party Profile (nguồn NHNCK). (2) Vai trò tại DN niêm yết — toàn bộ PENDING: BA v2 field "Tên DN" đánh dấu "Hỏi HTTT", chưa xác nhận OrganizationReports có bao gồm DN niêm yết/UPCOM không; Số cổ phiếu sở hữu nguồn VSDC chưa có Atomic. Giữ PENDING đến khi HTTT xác nhận đầy đủ. (3) Tài khoản & Số dư Cross-broker — PENDING VSDC. Cần: (a) HTTT xác nhận phạm vi OrganizationReports; (b) Atomic VSDC entity sở hữu cổ phần + tài khoản giao dịch có FK về Securities Practitioner. | PENDING — Vai trò DN niêm yết + Tài khoản & Số dư. Dashboard Mạng lưới đã READY (Nhóm 8 + Nhóm 12). | K_NHNCK_33 (một phần) | Open |
+| O_NHNCK_6 | (Cập nhật v6.4) K_NHNCK_81 (Tên DN), K_NHNCK_82 (Vai trò), K_NHNCK_83 (Trạng thái) — BA v2 xác nhận `OrganizationReports` bao gồm vai trò tại DN niêm yết/UPCOM. Tên DN tạm dùng `Workplace Name`. Trạng thái derive từ `Termination Date`. Chuyển 3 KPI này READY, bảng `Practitioner Listed Company Role` READY (partial). Còn PENDING: K_NHNCK_84 (Mã CTCK — chờ xác nhận phạm vi `Organizations`), K_NHNCK_85 (Số cổ phiếu sở hữu — nguồn VSDC chưa có Atomic), K_NHNCK_86–89 (Tài khoản & Số dư — VSDC). | K_NHNCK_81–83 READY. K_NHNCK_84, 85, 86–89 vẫn PENDING. | K_NHNCK_81–85 | Open |
 | O_NHNCK_7 | Counter "N N/Quan": nguồn `Securities Practitioner Related Party` (NHNCK) READY. Cần BA xác nhận filter loại quan hệ: toàn bộ hay chỉ một số loại (vợ/chồng, con, bố/mẹ...)? Counter "N Doanh nghiệp": PENDING chờ Atomic SGDCK. | `Related_Party_Count` = COUNT(*) từ `Securities Practitioner Related Party` — tạm tính toàn bộ. | K_NHNCK_42 | Open |
 | O_NHNCK_8 | Logic Đạt/Không đạt trong `Practitioner Exam History`: Atomic `ExamDetails` có `Examination_Result_Code` (scheme: EXAMINATION_RESULT — 1: Đạt, 0: Không đạt) — đã có sẵn, không cần derive. | Dùng `Examination_Result_Code` trực tiếp từ Atomic. Đã xác nhận. | K_NHNCK_63 | Closed |
 | O_NHNCK_9 | `Training_Hours` (số giờ cập nhật kiến thức) hiển thị trên màn hình nhưng không tìm thấy attribute tương ứng trong Atomic `SpecializationCourseDetails`. BA v2 xác nhận: "Chưa biết tính như nào ra số giờ" — chờ HTTT cung cấp thêm thông tin về cách tính số giờ từ nguồn. K_NHNCK_65 và K_NHNCK_67 giữ PENDING cho đến khi HTTT làm rõ. | `Practitioner Training History` ở trạng thái DRAFT — thiếu attribute giờ học. K_NHNCK_65, K_NHNCK_67 PENDING chờ HTTT. | K_NHNCK_65, K_NHNCK_67 | Open |
