@@ -1,7 +1,7 @@
 # Business Vocabulary Database — Hướng dẫn tham chiếu
 
 ## Tổng quan
-Đây là bộ từ điển thuật ngữ nghiệp vụ ngành Tài chính (Financial Services), dựa trên Knowledge Accelerator for Financial Services (KAFS). Bộ dữ liệu này là nguồn tham chiếu chính để BA sử dụng khi thiết kế data model, đảm bảo đặt tên và định nghĩa nhất quán với chuẩn nghiệp vụ.
+Đây là bộ từ điển thuật ngữ nghiệp vụ ngành Tài chính (Financial Services). Bộ dữ liệu này là nguồn tham chiếu chính để BA/Data Modeler sử dụng khi thiết kế data model, đảm bảo đặt tên và định nghĩa nhất quán với chuẩn nghiệp vụ.
 
 ## Cấu trúc dữ liệu
 
