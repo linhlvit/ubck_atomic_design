@@ -1192,6 +1192,8 @@ flowchart LR
 | K_NHNCK_76 | Mối quan hệ | Text | Base | `Securities Practitioner Related Party`.Relationship Type Code — ETL denormalize Relationship Type Name khi populate bảng |
 | K_NHNCK_77 | Nghề nghiệp | Text | Base | `Securities Practitioner Related Party`.Occupation Name |
 | K_NHNCK_78 | Nơi làm việc | Text | Base | `Securities Practitioner Related Party`.Workplace Name |
+| K_NHNCK_79 | CCCD/CMND/Hộ chiếu người liên quan | Text | Base | `Securities Practitioner Related Party`.Identity Reference Code — BA map: `ProfessionalRelationships.IdentityId` |
+| K_NHNCK_80 | Chức vụ, vai trò của người liên quan | Text | Base | **PENDING** — BA map ghi `ProfessionalRelationships.Occupation` nhưng đánh dấu "Hỏi lại HTTT". Cần HTTT xác nhận attribute chức vụ/position của người liên quan trong `ProfessionalRelationships` |
 
 **Schema bảng tác nghiệp:**
 
@@ -1204,6 +1206,7 @@ erDiagram
         varchar Relationship_Type_Name
         varchar Occupation_Name
         varchar Workplace_Name
+        varchar Identity_Reference_Code
         datetime Population_Date
     }
 ```
@@ -1337,9 +1340,19 @@ flowchart LR
 
 ##### PENDING — Hồ sơ & Danh mục — Vai trò tại DN niêm yết (STT 3.2.2.3)
 
-**KPI liên quan:** Tên DN niêm yết/UPCOM, Vai trò (HĐQT, Cổ đông lớn, Cố vấn...), Trạng thái, Số lượng cổ phiếu sở hữu
+**KPI liên quan:** Tên DN niêm yết/UPCOM, Vai trò, Trạng thái vai trò, Mã CTCK, Số lượng cổ phiếu sở hữu
 
-**Lý do pending:** BA v2 field "Tên DN niêm yết" map về `OrganizationReports.OrganizationId` nhưng đánh dấu "Hỏi HTTT" (chưa xác nhận). Chưa rõ `NHNCK.OrganizationReports` có bao gồm DN niêm yết/UPCOM hay chỉ tổ chức KDCK. Số lượng cổ phiếu sở hữu nguồn VSDC chưa có Atomic. Giữ toàn bộ PENDING cho đến khi HTTT xác nhận đầy đủ.
+**Lý do pending:** BA map Tên DN → `OrganizationReports.OrganizationId/Workplace`, Vai trò → `OrganizationReports.Position`, Mã CTCK → `Organizations.OrganizationCode (WHERE OrganizationTypeId=1)` — tất cả đều nguồn NHNCK READY theo BA. Tuy nhiên HLD đang giữ PENDING vì HTTT chưa xác nhận `OrganizationReports` có bao gồm DN niêm yết/UPCOM hay chỉ tổ chức KDCK. Trạng thái và Số lượng cổ phiếu sở hữu (nguồn VSDC) chưa có Atomic. Cần HTTT xác nhận phạm vi `OrganizationReports` trước khi chuyển READY.
+
+**Bảng KPI — PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NHNCK_81 | Tên DN niêm yết/UPCOM | Base | PENDING — chờ HTTT xác nhận `OrganizationReports` scope |
+| K_NHNCK_82 | Vai trò tại DN | Base | PENDING — chờ HTTT xác nhận `OrganizationReports` scope |
+| K_NHNCK_83 | Trạng thái vai trò | Base | PENDING — BA_Mapping trống, chưa xác nhận nguồn |
+| K_NHNCK_84 | Mã CTCK | Base | PENDING — nguồn `Organizations.OrganizationCode WHERE OrganizationTypeId=1`; chờ xác nhận phạm vi |
+| K_NHNCK_85 | Số lượng cổ phiếu sở hữu | Derived | PENDING — nguồn VSDC chưa có Atomic |
 
 **Atomic cần bổ sung:** (1) HTTT xác nhận `OrganizationReports` có bao gồm DN niêm yết/UPCOM không; (2) Entity sở hữu cổ phần cá nhân (VSDC) có FK về `Securities Practitioner`.
 
@@ -1349,9 +1362,18 @@ flowchart LR
 
 ##### PENDING — Hồ sơ & Danh mục — Tài khoản & Số dư Cross-broker (STT 3.2.2.3)
 
-**KPI liên quan:** Mã CTCK, Số tài khoản, Tên chủ tài khoản, Mã CK nắm giữ chính (tối đa 2 mã lớn nhất), Số dư tài khoản (tỷ VNĐ) (nguồn VSDC)
+**KPI liên quan:** Số tài khoản, Tên chủ tài khoản, Mã CK nắm giữ chính (tối đa 2 mã lớn nhất), Số dư tài khoản (tỷ VNĐ)
 
-**Lý do pending:** Atomic VSDC chưa có entity tài khoản giao dịch cá nhân join được với `Securities Practitioner`.
+**Lý do pending:** Nguồn VSDC — Atomic VSDC chưa có entity tài khoản giao dịch cá nhân join được với `Securities Practitioner`.
+
+**Bảng KPI — PENDING:**
+
+| KPI ID | Tên KPI | Tính chất | Trạng thái |
+|---|---|---|---|
+| K_NHNCK_86 | Số tài khoản | Base | PENDING — nguồn VSDC chưa có Atomic |
+| K_NHNCK_87 | Tên chủ tài khoản | Base | PENDING — nguồn VSDC chưa có Atomic |
+| K_NHNCK_88 | Mã CK nắm giữ chính | Base | PENDING — nguồn VSDC chưa có Atomic |
+| K_NHNCK_89 | Số dư tài khoản (tỷ VNĐ) | Base | PENDING — nguồn VSDC chưa có Atomic |
 
 **Atomic cần bổ sung:** Entity tài khoản giao dịch (VSDC) có FK về `Securities Practitioner` qua CMND/CCCD hoặc mã NHN.
 
@@ -1411,7 +1433,7 @@ graph TB
 | `Practitioner Violation History` | 1 vi phạm per NHN | K_NHNCK_54–58 | READY |
 | `Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 | READY |
 | `Practitioner Training History` | 1 khóa học per NHN | K_NHNCK_64–67 (partial — xem O_NHNCK_9) | DRAFT |
-| `Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–78 + Dashboard Mạng lưới (BA v2 xác nhận nguồn NHNCK) | READY |
+| `Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–79 (+ K_NHNCK_80 PENDING — chờ HTTT xác nhận chức vụ người LQ) | READY |
 | `Practitioner Data Explorer` | 1 CCHN per NHN (toàn bộ trạng thái — slicer filter tại query time) | K_NHNCK_68–74 | READY |
 
 **Bảng Dimension:**
@@ -1438,4 +1460,4 @@ graph TB
 | O_NHNCK_8 | Logic Đạt/Không đạt trong `Practitioner Exam History`: Atomic `ExamDetails` có `Examination_Result_Code` (scheme: EXAMINATION_RESULT — 1: Đạt, 0: Không đạt) — đã có sẵn, không cần derive. | Dùng `Examination_Result_Code` trực tiếp từ Atomic. Đã xác nhận. | K_NHNCK_63 | Closed |
 | O_NHNCK_9 | `Training_Hours` (số giờ cập nhật kiến thức) hiển thị trên màn hình nhưng không tìm thấy attribute tương ứng trong Atomic `SpecializationCourseDetails`. BA v2 xác nhận: "Chưa biết tính như nào ra số giờ" — chờ HTTT cung cấp thêm thông tin về cách tính số giờ từ nguồn. K_NHNCK_65 và K_NHNCK_67 giữ PENDING cho đến khi HTTT làm rõ. | `Practitioner Training History` ở trạng thái DRAFT — thiếu attribute giờ học. K_NHNCK_65, K_NHNCK_67 PENDING chờ HTTT. | K_NHNCK_65, K_NHNCK_67 | Open |
 | O_NHNCK_10 | `Is_Reissue_Indicator` trên Fact Certificate Snapshot: ETL-derived bằng cách join `CertificateRecords → Applications` lấy `Application_Type_Code` (scheme: APPLICATION_TYPE). BA v2 xác nhận scheme APPLICATION_TYPE có 4 giá trị: (1) "Hồ sơ cấp mới" → `Is_Reissue_Indicator = FALSE`; (2) "Hồ sơ cấp lại do thu hồi", (3) "Hồ sơ cấp lại do hỏng mất", (4) "Hồ sơ cấp lại do thay đổi thông tin" → `Is_Reissue_Indicator = TRUE`. ETL logic: nếu Application_Type_Code thuộc nhóm (2)/(3)/(4) thì TRUE, chỉ (1) là FALSE. K_NHNCK_2b đếm tất cả 3 loại cấp lại gộp chung. | `Is_Reissue_Indicator = TRUE` nếu ApplicationType ∈ {cấp lại do thu hồi, do hỏng mất, do thay đổi thông tin}. Đã xác nhận logic với BA v2. | K_NHNCK_2a, K_NHNCK_2b | Closed |
-| O_NHNCK_11 | "Mạng lưới người có liên quan" (STT 3.2.2.3) — BA v2 + Screenshot xác nhận toàn bộ map về `NHNCK.ProfessionalRelationships` (Họ tên: ProfessionalRelationships.FullName, Mối quan hệ: .RelationshipType, Nghề nghiệp: .Occupation). Nguồn là NHNCK không phải SGDCK. `Practitioner Related Party Profile` (Nhóm 12) đã thiết kế đúng và đủ. | Đã xác nhận nguồn NHNCK READY. Nhóm 12 (`Practitioner Related Party Profile`) phục vụ toàn bộ. | K_NHNCK_75–78 | Closed |
+| O_NHNCK_11 | "Mạng lưới người có liên quan" (STT 3.2.2.3) — BA v2 + Screenshot xác nhận toàn bộ map về `NHNCK.ProfessionalRelationships` (Họ tên: ProfessionalRelationships.FullName, Mối quan hệ: .RelationshipType, Nghề nghiệp: .Occupation). Nguồn là NHNCK không phải SGDCK. `Practitioner Related Party Profile` (Nhóm 12) đã thiết kế đúng và đủ. Bổ sung K_NHNCK_79 (CCCD — BA map: ProfessionalRelationships.IdentityId, READY) và K_NHNCK_80 (Chức vụ người LQ — PENDING, "Hỏi HTTT"). | Đã xác nhận nguồn NHNCK READY. K_NHNCK_79 READY. K_NHNCK_80 PENDING chờ HTTT xác nhận attribute. | K_NHNCK_75–79, K_NHNCK_80 | Open |
