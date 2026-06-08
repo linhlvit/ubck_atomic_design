@@ -20,6 +20,7 @@ description: |
   - [`reference/flowchart_rules.md`](reference/flowchart_rules.md) — subgraph syntax, Calendar Date, node ID
   - [`reference/erdiagram_rules.md`](reference/erdiagram_rules.md) — types hợp lệ, PK/FK only, naming
   - [`reference/naming_conventions.md`](reference/naming_conventions.md) — tên bảng Fact/Dim/Operational, KPI ID
+  - [`reference/source_alias_mapping.md`](reference/source_alias_mapping.md) — bảng alias tên nguồn BA → Atomic (tra TRƯỚC KHI kết luận PENDING)
 - **Examples:**
   - [`examples/erdiagram_correct.md`](examples/erdiagram_correct.md) — erDiagram đúng
   - [`examples/erdiagram_wrong.md`](examples/erdiagram_wrong.md) — 5 pattern sai erDiagram
@@ -58,6 +59,7 @@ Phase 2+: Chờ user duyệt HLD trước khi chuyển sang datamart-lld-design
 2. **Screenshot** — xác định scope boundary (tab, nhóm, loại thông tin hiển thị)
 
 3. **Source Analysis MD** (`BRD/source/working/{Module}_Source_Analysis.md`) — xác định Atomic entity nào READY / PENDING
+   - Nếu tên nguồn trong BA không tìm thấy trong `Atomic/lld/` → tra [`reference/source_alias_mapping.md`](reference/source_alias_mapping.md) trước khi kết luận PENDING
 
 4. **atomic_attributes.csv** — xác nhận tên entity/attribute khi cần (không đoán)
 
