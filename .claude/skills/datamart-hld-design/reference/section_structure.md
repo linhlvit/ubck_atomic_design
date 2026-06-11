@@ -77,7 +77,7 @@ flowchart LR
 ### Block PENDING — thứ tự bắt buộc
 
 ```markdown
-**KPI liên quan:** K_{MODULE}_N, K_{MODULE}_M, ...
+**KPI liên quan:** K_{MODULE}_N (mới); K_{MODULE}_X, K_{MODULE}_Y (reuse từ Nhóm M)
 
 **Lý do pending:** [Mô tả ngắn lý do Atomic chưa sẵn sàng]
 
@@ -88,14 +88,32 @@ flowchart LR
 
 **Bảng KPI PENDING:**
 
+*KPI mới (chưa khai sinh ở Nhóm trước):*
+
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
 | K_{MODULE}_N | ... | Cơ sở / Phái sinh / Chiều | PENDING |
+
+*KPI reuse từ Nhóm M (không cấp ID mới):*   ← chỉ thêm bảng này nếu có reuse
+
+| KPI ID | Tên KPI | Ghi chú |
+|---|---|---|
+| K_{MODULE}_X | ... | Reuse từ Nhóm M |
 ```
 
-❌ Bảng KPI PENDING chỉ có **4 cột** — KHÔNG có Đơn vị, Công thức.
+❌ Bảng KPI PENDING chỉ có **4 cột** (KPI mới) — KHÔNG có Đơn vị, Công thức.
 ❌ KHÔNG thiết kế Star Schema, erDiagram, Lineage cho block PENDING.
 ❌ KHÔNG tạo Open Issue về grain/schema/logic cho bảng PENDING — chỉ issue xác nhận thiếu Atomic.
+
+**Quy tắc "KPI liên quan" trong PENDING header:**
+- Liệt kê đúng và đủ các ID thực sự xuất hiện trong bảng KPI bên dưới (cả mới lẫn reuse)
+- Sau khi sửa bảng KPI → cập nhật dòng này ngay, không để lệch
+
+**Pattern: Nhóm lặp lại cùng cấu trúc KPI (VD: HĐTL VN30 / VN100 / TPCP):**
+- Nhóm đầu tiên → khai sinh KPI ID mới đầy đủ
+- Nhóm tiếp theo cùng cấu trúc → block PENDING chỉ chứa bảng reuse, KHÔNG cấp ID mới
+- Mart dự kiến ghi "(reuse)" để rõ không tạo Fact mới
+- Lý do pending và Atomic cần bổ sung ghi ngắn "xem Nhóm [tên nhóm đầu tiên]"
 
 ---
 

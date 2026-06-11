@@ -12,7 +12,7 @@ BA file thường ghi tên nguồn theo tên nghiệp vụ hoặc tên hệ th�
 
 | Tên trong BA | Tên Atomic (thực tế) | Ghi chú |
 |---|---|---|
-| `MSS` | `GSDC` | Market Surveillance System — hệ thống giám sát giao dịch; Source Analysis: `GSDC_Source_Analysis.md` |
+| `MSS` | `GSGD` | Market Surveillance System — hệ thống giám sát giao dịch; Source Analysis: `GSGD_Source_Analysis.md` |
 | `GSRR` | `QLRR` | Tên gọi cũ của hệ thống quản lý rủi ro; Source Analysis: `QLRR_Source_Analysis.md` |
 | `QLRR` | `QLRR` | Tên hiện tại — khớp trực tiếp |
 | `NDTNN` | `FIMS` | Tên nghiệp vụ (Nhà đầu tư nước ngoài) → hệ thống FIMS; Source Analysis: `FIMS_Source_Analysis.md` |

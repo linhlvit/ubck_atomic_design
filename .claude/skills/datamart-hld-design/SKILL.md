@@ -69,9 +69,15 @@ Phase 2+: Chờ user duyệt HLD trước khi chuyển sang datamart-lld-design
 
 | KPI | Hành xử |
 |---|---|
-| Atomic READY | In-scope — thiết kế đầy đủ |
+| Atomic READY + `Trang thai mapping = Done/Doing` | In-scope — thiết kế đầy đủ (READY) |
+| Atomic READY + `Trang thai mapping = Pending` | PENDING — Atomic có nhưng Mart chưa sẵn sàng |
+| Atomic READY + `Trang thai mapping = blank` | PENDING — xử lý như Pending |
 | Atomic PENDING | PENDING — placeholder + lý do + Atomic cần bổ sung |
 | Không tìm được Atomic | Out-of-scope — ghi nhận, KHÔNG thiết kế |
+
+> **Rule quan trọng (từ thực tế thiết kế PTTT):** `Trang thai mapping = blank` **KHÔNG phải Out-of-scope** — xử lý như **Pending**. Out-of-scope chỉ áp dụng khi không tìm được Atomic entity phù hợp.
+
+> **Pattern "Fact thiếu FK":** Atomic entity nguồn đã READY nhưng Fact hiện tại thiếu FK đến một chiều cần bổ sung (VD: `Member Report Indicator Value` đã có nhưng cần thêm `Securities Company Dimension` để breakdown per-CTCK) → vẫn là **PENDING**, lý do ghi là "Fact cần bổ sung FK đến [Dimension]", Atomic cần bổ sung ghi tên Fact + chiều cần thêm.
 
 ❌ Không reuse fact/dim từ module khác để lấp KPI thiếu Atomic.
 
@@ -120,6 +126,8 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file và yêu cầ
 - [ ] Chiều dùng như ETL filter nội bộ (không hiển thị UI) → ghi rõ trong cột Ghi chú: "dùng trong formula KPI K_X_N" — vẫn phải có KPI_ID
 - [ ] Cấm dùng shorthand "xem Nhóm N" thay thế bảng KPI — nếu nhóm reuse KPI từ nhóm khác, liệt kê explicit từng KPI_ID kèm ghi chú nguồn gốc: "Reuse từ Nhóm N"
 - [ ] Đọc toàn bộ BA file trước khi viết bảng KPI — đảm bảo không sót dòng nào có `Trạng thái mapping ∈ {Done, Doing, Pending}`
+- [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse bằng bảng riêng (xem format trong `reference/section_structure.md`)
+- [ ] **Đồng bộ "KPI liên quan" trong PENDING header:** Sau khi hoàn thiện bảng KPI PENDING, kiểm tra lại dòng `**KPI liên quan:**` — phải khớp chính xác với tất cả ID xuất hiện trong bảng (cả mới lẫn reuse). Nếu bảng KPI thay đổi → cập nhật dòng này ngay
 
 ### Section 3 — Mô hình tổng thể
 - [ ] Không bao gồm PENDING

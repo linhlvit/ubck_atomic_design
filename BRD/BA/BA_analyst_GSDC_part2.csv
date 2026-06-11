@@ -1,11 +1,5 @@
-﻿STT;Mã;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện dữ liệu;Câu lệnh SQL;Note;Kết quả Test;Model;DMT
-;;;Tên chiều/chỉ tiêu/thuộc tính;List công thức;Dashboard/báo cáo/DataExplorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: lấy 1: 1 từ nguồn
-TB: có tính toán tổng hợp
-Khó: Có logic phức tạp và lấy nhiều mốc thời gian
-Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";Phục vụ design;;;;;"Done: đã map xong
-doing: đang xem xét
-failed: đã xem nhưng chưa maping được
-(null): chưa làm";;Bảng(s) trong CSDL IDS;Trường SELECT;WHERE / GROUP BY / HAVING;SQL tham khảo;;;;
+﻿;;;;;;;;;;;;;;;;;;;;;Review design;;
+STT;Mã;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện dữ liệu;Câu lệnh SQL;Note;Kết quả Test;Model;DMT;Hoàn thành DEV
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;A - TÀI SẢN NGẮN HẠN (100 = 110 + 120 + 130 + 140 + 150 + 190);100;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -32,7 +26,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '100'";;;;
+AND rr.row_desc = '100'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;I. Tiền và các khoản tương đương tiền;110;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -59,7 +53,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '110'";;;;
+AND rr.row_desc = '110'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Tiền;111;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -86,7 +80,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '111'";;;;
+AND rr.row_desc = '111'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Các khoản tương đương tiền;112;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -113,7 +107,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '112'";;;;
+AND rr.row_desc = '112'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;II. Các khoản đầu tư tài chính ngắn hạn;120;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -140,7 +134,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '120'";;;;
+AND rr.row_desc = '120'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Đầu tư ngắn hạn;121;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -167,7 +161,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '121'";;;;
+AND rr.row_desc = '121'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Dự phòng giảm giá đầu tư ngắn hạn;129;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -194,7 +188,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '129'";;;;
+AND rr.row_desc = '129'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;III. Các khoản phải thu ngắn hạn;130;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -221,7 +215,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '130'";;;;
+AND rr.row_desc = '130'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Phải thu của khách hàng;131;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -248,7 +242,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '131'";;;;
+AND rr.row_desc = '131'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1.1 Phải thu về hợp đồng bảo hiểm;131.1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -275,7 +269,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '131.1'";;;;
+AND rr.row_desc = '131.1'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1.2 Phải thu khác của khách hàng;131.2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -302,7 +296,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '131.2'";;;;
+AND rr.row_desc = '131.2'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Trả trước cho người bán;132;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -329,7 +323,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '132'";;;;
+AND rr.row_desc = '132'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Phải thu nội bộ ngắn hạn;133;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -356,7 +350,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '133'";;;;
+AND rr.row_desc = '133'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Các khoản phải thu khác;135;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -383,7 +377,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '135'";;;;
+AND rr.row_desc = '135'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;5. Dự phòng các khoản phải thu khó đòi;139;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -410,7 +404,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '139'";;;;
+AND rr.row_desc = '139'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;IV. Hàng tồn kho;140;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -437,7 +431,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '140'";;;;
+AND rr.row_desc = '140'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Hàng tồn kho;141;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -464,7 +458,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '141'";;;;
+AND rr.row_desc = '141'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Dự phòng giảm giá hàng tồn kho;149;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -491,7 +485,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '149'";;;;
+AND rr.row_desc = '149'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;V. Tài sản ngắn hạn khác;150;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -518,7 +512,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '150'";;;;
+AND rr.row_desc = '150'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Chi phí trả trước ngắn hạn;151;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -545,7 +539,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '151'";;;;
+AND rr.row_desc = '151'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1.1. Chi phí hoa hồng chưa phân bổ;151.1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -572,7 +566,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '151.1'";;;;
+AND rr.row_desc = '151.1'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1.2. Chi phí trả trước ngắn hạn khác;151.2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -599,7 +593,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '151.2'";;;;
+AND rr.row_desc = '151.2'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Thuế GTGT được khấu trừ;152;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -626,7 +620,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '152'";;;;
+AND rr.row_desc = '152'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Thuế và các khoản khác phải thu Nhà nước;154;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -653,7 +647,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '154'";;;;
+AND rr.row_desc = '154'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Giao dịch mua bán lại trái phiếu Chính phủ;157;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -680,7 +674,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '157'";;;;
+AND rr.row_desc = '157'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;5. Tài sản ngắn hạn khác;158;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -707,7 +701,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '158'";;;;
+AND rr.row_desc = '158'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;VIII. Tài sản tái bảo hiểm;190;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -734,7 +728,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '190'";;;;
+AND rr.row_desc = '190'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Dự phòng phí nhượng tái bảo hiểm;191;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -761,7 +755,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '191'";;;;
+AND rr.row_desc = '191'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Dự phòng bồi thường nhượng tái bảo hiểm;192;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -788,7 +782,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '192'";;;;
+AND rr.row_desc = '192'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;B - TÀI SẢN DÀI HẠN (200 = 210 + 220 + 240 + 250 + 260);200;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -815,7 +809,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '200'";;;;
+AND rr.row_desc = '200'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;I. Các khoản phải thu dài hạn;210;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -842,7 +836,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '210'";;;;
+AND rr.row_desc = '210'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Phải thu dài hạn của khách hàng;211;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -869,7 +863,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '211'";;;;
+AND rr.row_desc = '211'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Vốn kinh doanh của đơn vị trực thuộc;212;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -896,7 +890,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '212'";;;;
+AND rr.row_desc = '212'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Phải thu dài hạn nội bộ;213;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -923,7 +917,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '213'";;;;
+AND rr.row_desc = '213'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Phải thu dài hạn khác;218;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -950,7 +944,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '218'";;;;
+AND rr.row_desc = '218'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4.1. Kí quỹ bảo hiểm;218.1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -977,7 +971,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '218.1'";;;;
+AND rr.row_desc = '218.1'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4.2. Phải thu dài hạn khác;218.2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1004,7 +998,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '218.2'";;;;
+AND rr.row_desc = '218.2'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;II. Tài sản cố định;220;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1031,7 +1025,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '220'";;;;
+AND rr.row_desc = '220'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Tài sản cố định hữu hình;221;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1058,7 +1052,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '221'";;;;
+AND rr.row_desc = '221'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Nguyên giá;222;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1085,7 +1079,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '222'";;;;
+AND rr.row_desc = '222'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Giá trị hao mòn luỹ kế (*);223;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1112,7 +1106,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '223'";;;;
+AND rr.row_desc = '223'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Tài sản cố định thuê tài chính;224;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1139,7 +1133,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '224'";;;;
+AND rr.row_desc = '224'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Nguyên giá;225;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1166,7 +1160,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '225'";;;;
+AND rr.row_desc = '225'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Giá trị hao mòn luỹ kế (*);226;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1193,7 +1187,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '226'";;;;
+AND rr.row_desc = '226'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Tài sản cố định vô hình;227;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1220,7 +1214,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '227'";;;;
+AND rr.row_desc = '227'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Nguyên giá;228;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1247,7 +1241,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '228'";;;;
+AND rr.row_desc = '228'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Giá trị hao mòn luỹ kế (*);229;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1274,7 +1268,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '229'";;;;
+AND rr.row_desc = '229'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Chi phí xây dựng cơ bản dở dang;230;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1301,7 +1295,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '230'";;;;
+AND rr.row_desc = '230'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;III. Bất động sản đầu tư;240;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1328,7 +1322,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '240'";;;;
+AND rr.row_desc = '240'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Nguyên giá;241;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1355,7 +1349,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '241'";;;;
+AND rr.row_desc = '241'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;· Giá trị hao mòn luỹ kế;242;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1382,7 +1376,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '242'";;;;
+AND rr.row_desc = '242'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;IV. Các khoản đầu tư tài chính dài hạn;250;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1409,7 +1403,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '250'";;;;
+AND rr.row_desc = '250'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Đầu tư vào công ty con;251;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1436,7 +1430,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '251'";;;;
+AND rr.row_desc = '251'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Đầu tư vào công ty liên kết, liên doanh;252;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1463,7 +1457,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '252'";;;;
+AND rr.row_desc = '252'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Đầu tư dài hạn khác;258;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1490,7 +1484,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '258'";;;;
+AND rr.row_desc = '258'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Dự phòng giảm giá đầu tư tài chính dài hạn;259;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1517,7 +1511,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '259'";;;;
+AND rr.row_desc = '259'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;V. Tài sản dài hạn khác;260;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1544,7 +1538,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '260'";;;;
+AND rr.row_desc = '260'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Chi phí trả trước dài hạn;261;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1571,7 +1565,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '261'";;;;
+AND rr.row_desc = '261'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;TỔNG CỘNG TÀI SẢN (270 = 100 + 200);270;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1598,7 +1592,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '270'";;;;
+AND rr.row_desc = '270'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;A - NỢ PHẢI TRẢ (300 = 310 + 330);300;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1625,7 +1619,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '300'";;;;
+AND rr.row_desc = '300'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;I. Nợ ngắn hạn;310;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1652,7 +1646,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '310'";;;;
+AND rr.row_desc = '310'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Vay và nợ ngắn hạn;311;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1679,7 +1673,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '311'";;;;
+AND rr.row_desc = '311'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Phải trả cho người bán;312;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1706,7 +1700,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '312'";;;;
+AND rr.row_desc = '312'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2.1. Phải trả về hợp đồng bảo hiểm;312.1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1733,7 +1727,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '312.1'";;;;
+AND rr.row_desc = '312.1'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2.2. Phải trả khác cho người bán;312.2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1760,7 +1754,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '312.2'";;;;
+AND rr.row_desc = '312.2'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Người mua trả tiền trước;313;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1787,7 +1781,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '313'";;;;
+AND rr.row_desc = '313'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Thuế và các khoản phải nộp Nhà nước;314;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1814,7 +1808,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '314'";;;;
+AND rr.row_desc = '314'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;5. Phải trả người lao động;315;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1841,7 +1835,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '315'";;;;
+AND rr.row_desc = '315'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;6. Chi phí phải trả;316;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1868,7 +1862,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '316'";;;;
+AND rr.row_desc = '316'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;7. Phải trả nội bộ;317;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1895,7 +1889,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '317'";;;;
+AND rr.row_desc = '317'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;8. Doanh thu chưa thực hiện ngắn hạn;318;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1922,7 +1916,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '318'";;;;
+AND rr.row_desc = '318'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;8. Các khoản phải trả, phải nộp khác;319;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1949,7 +1943,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '319'";;;;
+AND rr.row_desc = '319'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;9. Doanh thu hoa hồng chưa được hưởng;319.1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -1976,7 +1970,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '319.1'";;;;
+AND rr.row_desc = '319.1'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;10. Dự phòng phải trả ngắn hạn;320;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2003,7 +1997,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '320'";;;;
+AND rr.row_desc = '320'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;11. Quỹ khen thưởng, phúc lợi;323;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2030,7 +2024,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '323'";;;;
+AND rr.row_desc = '323'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;12. Giao dịch mua bán lại trái phiếu Chính phủ;327;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2057,7 +2051,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '327'";;;;
+AND rr.row_desc = '327'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;13. Dự phòng nghiệp vụ;329;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2084,7 +2078,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '329'";;;;
+AND rr.row_desc = '329'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;13.1. Dự phòng phí bảo hiểm gốc và nhận tái bảo hiểm;329.1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2111,7 +2105,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '329.1'";;;;
+AND rr.row_desc = '329.1'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;13.2. Dự phòng bồi thường bảo hiểm gốc và nhận tái bảo hiểm;329.2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2138,7 +2132,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '329.2'";;;;
+AND rr.row_desc = '329.2'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;13.3. Dự phòng dao động lớn;329.3;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2165,7 +2159,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '329.3'";;;;
+AND rr.row_desc = '329.3'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;II. Nợ dài hạn;330;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2192,7 +2186,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '330'";;;;
+AND rr.row_desc = '330'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Phải trả dài hạn người bán;331;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2219,7 +2213,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '331'";;;;
+AND rr.row_desc = '331'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Phải trả dài hạn nội bộ;332;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2246,7 +2240,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '332'";;;;
+AND rr.row_desc = '332'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Phải trả dài hạn khác;333;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2273,7 +2267,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '333'";;;;
+AND rr.row_desc = '333'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Vay và nợ dài hạn;334;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2300,7 +2294,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '334'";;;;
+AND rr.row_desc = '334'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;5. Thuế thu nhập hoãn lại phải trả;335;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2327,7 +2321,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '335'";;;;
+AND rr.row_desc = '335'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;6. Dự phòng trợ cấp mất việc làm;336;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2354,7 +2348,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '336'";;;;
+AND rr.row_desc = '336'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;7. Dự phòng phải trả dài hạn;337;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2381,7 +2375,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '337'";;;;
+AND rr.row_desc = '337'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;8. Doanh thu chưa thực hiện;338;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2408,7 +2402,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '338'";;;;
+AND rr.row_desc = '338'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;9. Quỹ phát triển khoa học và công nghệ;339;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2435,7 +2429,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '339'";;;;
+AND rr.row_desc = '339'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;B - VỐN CHỦ SỞ HỮU (400 = 410);400;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2462,7 +2456,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '400'";;;;
+AND rr.row_desc = '400'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;I. Vốn chủ sở hữu;410;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2489,7 +2483,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '410'";;;;
+AND rr.row_desc = '410'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;1. Vốn đầu tư của chủ sở hữu;411;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2516,7 +2510,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '411'";;;;
+AND rr.row_desc = '411'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;2. Thặng dư vốn cổ phần;412;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2543,7 +2537,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '412'";;;;
+AND rr.row_desc = '412'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;3. Vốn khác của chủ sở hữu;413;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2570,7 +2564,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '413'";;;;
+AND rr.row_desc = '413'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;4. Cổ phiếu quỹ;414;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2597,7 +2591,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '414'";;;;
+AND rr.row_desc = '414'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;5. Chênh lệch đánh giá lại tài sản;415;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2624,7 +2618,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '415'";;;;
+AND rr.row_desc = '415'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;6. Chênh lệch tỷ giá hối đoái;416;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2651,7 +2645,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '416'";;;;
+AND rr.row_desc = '416'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;7. Quỹ đầu tư phát triển;417;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2678,7 +2672,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '417'";;;;
+AND rr.row_desc = '417'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;8. Quỹ dự phòng tài chính;418;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2705,7 +2699,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '418'";;;;
+AND rr.row_desc = '418'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;9. Quỹ dự trữ bắt buộc;419;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2732,7 +2726,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '419'";;;;
+AND rr.row_desc = '419'";;;;;Done
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;10. Quỹ khác thuộc vốn chủ sở hữu;420;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2759,7 +2753,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '420'";;;;
+AND rr.row_desc = '420'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;11. Lợi nhuận sau thuế chưa phân phối;421;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2786,7 +2780,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '421'";;;;
+AND rr.row_desc = '421'";;;;;Chưa có SQL
 25;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Bảng cân đối kế toán;TỔNG CỘNG NGUỒN VỐN (430 = 300 + 400);440;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2813,7 +2807,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '440'";;;;
+AND rr.row_desc = '440'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);1. Doanh thu thuần hoạt động kinh doanh bảo hiểm;10;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2840,7 +2834,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '10'";;;;
+AND rr.row_desc = '10'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);2. Doanh thu kinh doanh bất động sản đầu tư;11;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2867,7 +2861,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '11'";;;;
+AND rr.row_desc = '11'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);3. Doanh thu hoạt động tài chính;12;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2894,7 +2888,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '12'";;;;
+AND rr.row_desc = '12'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);4. Thu nhập khác;13;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2921,7 +2915,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '13'";;;;
+AND rr.row_desc = '13'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);5. Tổng chi phí hoạt động kinh doanh bảo hiểm;20;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2948,7 +2942,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '20'";;;;
+AND rr.row_desc = '20'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);6. Giá vốn bất động sản đầu tư;21;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -2975,7 +2969,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '21'";;;;
+AND rr.row_desc = '21'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);7. Chi phí hoạt động tài chính;22;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3002,7 +2996,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '22'";;;;
+AND rr.row_desc = '22'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);8. Chi phí quản lý doanh nghiệp;23;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3029,7 +3023,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '23'";;;;
+AND rr.row_desc = '23'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);9. Chi phí khác;24;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3056,7 +3050,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '24'";;;;
+AND rr.row_desc = '24'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);10. Tổng lợi nhuận kế toán trước thuế (50=10+11+12+13-20-21-22-23-24);50;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3083,7 +3077,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '50'";;;;
+AND rr.row_desc = '50'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);11. Chi phí thuế TNDN hiện hành;51;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3110,7 +3104,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '51'";;;;
+AND rr.row_desc = '51'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);12. Chi phí thuế TNDN hoãn lại;52;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3137,7 +3131,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '52'";;;;
+AND rr.row_desc = '52'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);13. Lợi nhuận sau thuế thu nhập doanh nghiệp (60=50-51-52);60;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3164,7 +3158,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '60'";;;;
+AND rr.row_desc = '60'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);14. Lợi ích của cổ đông không kiểm soát;61;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3191,7 +3185,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '61'";;;;
+AND rr.row_desc = '61'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);15. Lợi nhuận sau thuế (62=60-61);62;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3218,7 +3212,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '62'";;;;
+AND rr.row_desc = '62'";;;;;Done
 26;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo kết quả kinh doanh theo (năm, bán niên);16. Lãi cơ bản trên cổ phiếu;70;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3245,8 +3239,8 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '70'";;;;
-27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;I - Lưu chuyển tiền từ hoạt động kinh doanh;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '70'";;;;;Done
+27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;I - Lưu chuyển tiền từ hoạt động kinh doanh;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;1. Tiền từ thu phí và hoa hồng;1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3273,7 +3267,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '01'";;;;
+AND rr.row_desc = '01'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;2. Tiền thu từ các khoản nợ phí và hoa hồng;2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3300,7 +3294,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '02'";;;;
+AND rr.row_desc = '02'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;3. Tiền thu từ các khoản thu được giảm chi;3;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3327,7 +3321,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '03'";;;;
+AND rr.row_desc = '03'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;4. Tiền thu từ các hoạt động kinh doanh khác;4;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3354,7 +3348,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '04'";;;;
+AND rr.row_desc = '04'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;5. Trả tiền bồi thường bảo hiểm;5;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3381,7 +3375,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '05'";;;;
+AND rr.row_desc = '05'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;6. Trả tiền hoa hồng và các khoản nợ khác của kinh doanh bảo hiểm;6;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3408,7 +3402,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '06'";;;;
+AND rr.row_desc = '06'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;7. Trả tiền cho người bán, người cung cấp dịch vụ;7;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3435,7 +3429,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '07'";;;;
+AND rr.row_desc = '07'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;8. Trả tiền cho cán bộ công nhân viên;8;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3462,7 +3456,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '08'";;;;
+AND rr.row_desc = '08'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;9. Trả tiền nộp thuế và các khoản nợ Nhà nước;9;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3489,7 +3483,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '09'";;;;
+AND rr.row_desc = '09'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;10. Trả tiền cho các khoản nợ khác;10;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3516,7 +3510,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '10'";;;;
+AND rr.row_desc = '10'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;11. Tiền tạm ứng cho cán bộ công nhân viên và ứng trước cho người bán;11;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3543,7 +3537,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '11'";;;;
+AND rr.row_desc = '11'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;Lưu chuyển tiền thuần từ hoạt động kinh doanh;20;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3570,8 +3564,8 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '20'";;;;
-27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;II - Lưu chuyển tiền từ hoạt động đầu tư;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '20'";;;;;Done
+27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;II - Lưu chuyển tiền từ hoạt động đầu tư;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;1. Tiền thu từ các khoản đầu tư vào đơn vị khác;21;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3598,7 +3592,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '21'";;;;
+AND rr.row_desc = '21'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;2. Tiền thu lãi đầu tư;22;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3625,7 +3619,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '22'";;;;
+AND rr.row_desc = '22'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;3. Tiền thu do bán tài sản cố định;23;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3652,7 +3646,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '23'";;;;
+AND rr.row_desc = '23'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;4. Tiền đầu tư vào các đơn vị khác;24;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3679,7 +3673,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '24'";;;;
+AND rr.row_desc = '24'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;5. Tiền mua tài sản cố định;25;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3706,7 +3700,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '25'";;;;
+AND rr.row_desc = '25'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;Lưu chuyển tiền thuần từ hoạt động đầu tư;30;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3733,8 +3727,8 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '30'";;;;
-27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;III - Lưu chuyển tiền từ hoạt động tài chính;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '30'";;;;;Done
+27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;III - Lưu chuyển tiền từ hoạt động tài chính;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;1. Tiền thu do đi vay;31;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3761,7 +3755,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '31'";;;;
+AND rr.row_desc = '31'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;2. Tiền thu do các chủ sở hữu góp vốn;32;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3788,7 +3782,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '32'";;;;
+AND rr.row_desc = '32'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;3. Tiền thu từ lãi tiền gửi;33;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3815,7 +3809,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '33'";;;;
+AND rr.row_desc = '33'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;4. Tiền đã trả nợ vay;34;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3842,7 +3836,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '34'";;;;
+AND rr.row_desc = '34'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;5. Tiền đã hoàn vốn cho các chủ sở hữu;35;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3869,7 +3863,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '35'";;;;
+AND rr.row_desc = '35'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;6. Tiền lãi đã trả cho các nhà đầu tư vào doanh nghiệp;36;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3896,7 +3890,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '36'";;;;
+AND rr.row_desc = '36'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;Lưu chuyển tiền thuần từ hoạt động tài chính;40;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3923,7 +3917,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '40'";;;;
+AND rr.row_desc = '40'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40);50;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3950,7 +3944,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '50'";;;;
+AND rr.row_desc = '50'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;Tiền tồn đầu kỳ;60;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -3977,7 +3971,7 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '60'";;;;
+AND rr.row_desc = '60'";;;;;Done
 27;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - trực tiếp;Tiền tồn cuối kỳ (70 = 50+60);70;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4004,8 +3998,8 @@ AND rc.report_cd LIKE 'BCLCTT_TT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '70'";;;;
-28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;I. Lưu chuyển tiền từ hoạt động kinh doanh;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '70'";;;;;Done
+28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;I. Lưu chuyển tiền từ hoạt động kinh doanh;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;1. Lợi nhuận trước thuế;1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4032,8 +4026,8 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '01'";;;;
-28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;2. Điều chỉnh cho các khoản;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '01'";;;;;Chưa có SQL
+28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;2. Điều chỉnh cho các khoản;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Vướng vì lí do khác
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Khấu hao TSCĐ và BĐSĐT;2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4060,7 +4054,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '02'";;;;
+AND rr.row_desc = '02'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Các khoản dự phòng;3;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4087,7 +4081,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '03'";;;;
+AND rr.row_desc = '03'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Lãi, lỗ chênh lệch tỷ giá hối đoái do đánh giá lại các khoản mục tiền tệ có gốc ngoại tệ;4;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4114,7 +4108,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '04'";;;;
+AND rr.row_desc = '04'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Lãi, lỗ từ hoạt động đầu tư;5;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4141,7 +4135,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '05'";;;;
+AND rr.row_desc = '05'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Chi phí lãi vay;6;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4168,7 +4162,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '06'";;;;
+AND rr.row_desc = '06'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Các khoản điều chỉnh khác;7;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4195,7 +4189,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '07'";;;;
+AND rr.row_desc = '07'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;3. Lợi nhuận từ hoạt động kinh doanh trước thay đổi vốn lưu động;8;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4222,7 +4216,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '08'";;;;
+AND rr.row_desc = '08'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tăng, giảm các khoản phải thu;9;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4249,7 +4243,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '09'";;;;
+AND rr.row_desc = '09'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tăng, giảm hàng tồn kho;10;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4276,7 +4270,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '10'";;;;
+AND rr.row_desc = '10'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tăng, giảm các khoản phải trả (Không kể lãi vay phải trả, thuế thu nhập doanh nghiệp phải nộp);11;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4303,7 +4297,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '11'";;;;
+AND rr.row_desc = '11'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tăng, giảm chi phí trả trước;12;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4330,7 +4324,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '12'";;;;
+AND rr.row_desc = '12'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tăng, giảm chứng khoán kinh doanh;13;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4357,7 +4351,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '13'";;;;
+AND rr.row_desc = '13'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tiền lãi vay đã trả;14;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4384,7 +4378,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '14'";;;;
+AND rr.row_desc = '14'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Thuế thu nhập doanh nghiệp đã nộp;15;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4411,7 +4405,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '15'";;;;
+AND rr.row_desc = '15'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tiền thu khác từ hoạt động kinh doanh;16;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4438,7 +4432,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '16'";;;;
+AND rr.row_desc = '16'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;· Tiền chi khác cho hoạt động kinh doanh;17;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4465,7 +4459,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '17'";;;;
+AND rr.row_desc = '17'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;Lưu chuyển tiền thuần từ hoạt động kinh doanh;20;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4492,8 +4486,8 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '20'";;;;
-28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;II. Lưu chuyển tiền từ hoạt động đầu tư;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '20'";;;;;Done
+28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;II. Lưu chuyển tiền từ hoạt động đầu tư;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;1.Tiền chi để mua sắm, xây dựng TSCĐ và các tài sản dài hạn khác;21;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4520,7 +4514,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '21'";;;;
+AND rr.row_desc = '21'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;2.Tiền thu từ thanh lý, nhượng bán TSCĐ và các tài sản dài hạn khác;22;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4547,7 +4541,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '22'";;;;
+AND rr.row_desc = '22'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;3.Tiền chi cho vay, mua các công cụ nợ của đơn vị khác;23;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4574,7 +4568,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '23'";;;;
+AND rr.row_desc = '23'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;4.Tiền thu hồi cho vay, bán lại các công cụ nợ của đơn vị khác;24;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4601,7 +4595,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '24'";;;;
+AND rr.row_desc = '24'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;5.Tiền chi đầu tư góp vốn vào đơn vị khác;25;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4628,7 +4622,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '25'";;;;
+AND rr.row_desc = '25'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;6.Tiền thu hồi đầu tư góp vốn vào đơn vị khác;26;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4655,7 +4649,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '26'";;;;
+AND rr.row_desc = '26'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;7.Tiền thu lãi cho vay, cổ tức và lợi nhuận được chia;27;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4682,7 +4676,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '27'";;;;
+AND rr.row_desc = '27'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;Lưu chuyển tiền thuần từ hoạt động đầu tư;30;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4709,8 +4703,8 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '30'";;;;
-28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;III. Lưu chuyển tiền từ hoạt động tài chính;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '30'";;;;;Done
+28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;III. Lưu chuyển tiền từ hoạt động tài chính;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;1. Tiền thu từ phát hành cổ phiếu, nhận vốn góp của chủ sở hữu;31;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4737,7 +4731,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '31'";;;;
+AND rr.row_desc = '31'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;2. Tiền trả lại vốn góp cho các chủ sở hữu, mua lại cổ phiếu của doanh nghiệp đã phát hành;32;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4764,7 +4758,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '32'";;;;
+AND rr.row_desc = '32'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;3. Tiền thu từ đi vay;33;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4791,7 +4785,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '33'";;;;
+AND rr.row_desc = '33'";;;;;Vướng vì lí do khác
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;4. Tiền trả nợ gốc vay;34;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4818,7 +4812,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '34'";;;;
+AND rr.row_desc = '34'";;;;;Vướng vì lí do khác
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;5. Tiền trả nợ gốc thuê tài chính;35;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4845,7 +4839,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '35'";;;;
+AND rr.row_desc = '35'";;;;;Vướng vì lí do khác
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu;36;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4872,7 +4866,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '36'";;;;
+AND rr.row_desc = '36'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;Lưu chuyển tiền thuần từ hoạt động tài chính;40;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4899,7 +4893,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '40'";;;;
+AND rr.row_desc = '40'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40);50;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4926,7 +4920,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '50'";;;;
+AND rr.row_desc = '50'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;Tiền và tương đương tiền đầu kỳ;60;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4953,7 +4947,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '60'";;;;
+AND rr.row_desc = '60'";;;;;Vướng vì lí do khác
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ;61;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -4980,7 +4974,7 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '61'";;;;
+AND rr.row_desc = '61'";;;;;Done
 28;;Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết - Báo cáo lưu chuyển tiền tệ - gián tiếp;Tiền và tương đương tiền cuối kỳ (70 = 50+60+61);70;Data Explorer;Chỉ tiêu phái sinh;TB;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5007,8 +5001,8 @@ AND rc.report_cd LIKE 'BCLCTT_GT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '70'";;;;
-29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;A. TÀI SẢN;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;
+AND rr.row_desc = '70'";;;;;Done
+29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;A. TÀI SẢN;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề, không có dữ liệu số;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;I. Tiền mặt, vàng bạc, đá quý;110;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5035,7 +5029,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '110'";;;;
+AND rr.row_desc = '110'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;II. Tiền gửi tại NHNN;120;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5062,7 +5056,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '120'";;;;
+AND rr.row_desc = '120'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;III. Tiền, vàng gửi tại các TCTD khác và cho vay các TCTD khác;130;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5089,7 +5083,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '130'";;;;
+AND rr.row_desc = '130'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Tiền, vàng gửi tại các TCTD khác;131;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5116,7 +5110,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '131'";;;;
+AND rr.row_desc = '131'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Cho vay các TCTD khác;132;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5143,7 +5137,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '132'";;;;
+AND rr.row_desc = '132'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3. Dự phòng rủi ro cho vay các TCTD khác (*);139;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5170,7 +5164,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '139'";;;;
+AND rr.row_desc = '139'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;IV. Chứng khoán kinh doanh;140;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5197,7 +5191,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '140'";;;;
+AND rr.row_desc = '140'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Chứng khoán kinh doanh (1);141;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5224,7 +5218,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '141'";;;;
+AND rr.row_desc = '141'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Dự phòng giảm giá chứng khoán kinh doanh (*);149;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5251,7 +5245,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '149'";;;;
+AND rr.row_desc = '149'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;V. Các công cụ tài chính phái sinh và các tài sản tài chính khác;150;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5278,7 +5272,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '150'";;;;
+AND rr.row_desc = '150'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;VI. Cho vay khách hàng;160;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5305,7 +5299,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '160'";;;;
+AND rr.row_desc = '160'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Cho vay khách hàng;161;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5332,7 +5326,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '161'";;;;
+AND rr.row_desc = '161'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Dự phòng rủi ro cho vay khách hàng (*);169;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5359,7 +5353,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '169'";;;;
+AND rr.row_desc = '169'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;VII. Hoạt động mua nợ;180;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5386,7 +5380,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '180'";;;;
+AND rr.row_desc = '180'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Mua nợ;181;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5413,7 +5407,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '181'";;;;
+AND rr.row_desc = '181'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Dự phòng rủi ro hoạt động mua nợ;189;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5440,7 +5434,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '189'";;;;
+AND rr.row_desc = '189'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;VIII. Chứng khoán đầu tư;170;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5467,7 +5461,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '170'";;;;
+AND rr.row_desc = '170'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Chứng khoán đầu tư sẵn sàng để bán (2);171;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5494,7 +5488,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '171'";;;;
+AND rr.row_desc = '171'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Chứng khoán đầu tư giữ đến ngày đáo hạn;172;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5521,7 +5515,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '172'";;;;
+AND rr.row_desc = '172'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3. Dự phòng giảm giá chứng khoán đầu tư (*);179;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5548,7 +5542,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '179'";;;;
+AND rr.row_desc = '179'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;IX. Góp vốn, đầu tư dài hạn;210;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5575,7 +5569,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '210'";;;;
+AND rr.row_desc = '210'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Đầu tư vào công ty con;211;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5602,7 +5596,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '211'";;;;
+AND rr.row_desc = '211'";;;;;Chưa có SQL
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Vốn góp liên doanh;212;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5629,7 +5623,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '212'";;;;
+AND rr.row_desc = '212'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3. Đầu tư vào công ty liên kết;213;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5656,7 +5650,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '213'";;;;
+AND rr.row_desc = '213'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;4. Đầu tư dài hạn khác;214;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5683,7 +5677,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '214'";;;;
+AND rr.row_desc = '214'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;5. Dự phòng giảm giá đầu tư dài hạn (*);219;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5710,7 +5704,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '219'";;;;
+AND rr.row_desc = '219'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;X. Tài sản cố định;220;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5737,7 +5731,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '220'";;;;
+AND rr.row_desc = '220'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Tài sản cố định hữu hình;221;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5764,7 +5758,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '221'";;;;
+AND rr.row_desc = '221'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;a. Nguyên giá TSCĐ;222;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5791,7 +5785,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '222'";;;;
+AND rr.row_desc = '222'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;b. Hao mòn TSCĐ (*);223;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5818,7 +5812,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '223'";;;;
+AND rr.row_desc = '223'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Tài sản cố định thuê tài chính;224;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5845,7 +5839,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '224'";;;;
+AND rr.row_desc = '224'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;a. Nguyên giá TSCĐ;225;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5872,7 +5866,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '225'";;;;
+AND rr.row_desc = '225'";;;;;Chưa có SQL
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;b. Hao mòn TSCĐ (*);226;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5899,7 +5893,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '226'";;;;
+AND rr.row_desc = '226'";;;;;Chưa có SQL
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3. Tài sản cố định vô hình;227;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5926,7 +5920,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '227'";;;;
+AND rr.row_desc = '227'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;a. Nguyên giá TSCĐ;228;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5953,7 +5947,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '228'";;;;
+AND rr.row_desc = '228'";;;;;Chưa có SQL
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;b. Hao mòn TSCĐ (*);229;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -5980,7 +5974,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '229'";;;;
+AND rr.row_desc = '229'";;;;;Chưa có SQL
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;XI. Bất động sản đầu tư;240;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6007,7 +6001,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '240'";;;;
+AND rr.row_desc = '240'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;a. Nguyên giá BĐSĐT;241;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6034,7 +6028,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '241'";;;;
+AND rr.row_desc = '241'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;b. Hao mòn BĐSĐT (*);242;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6061,7 +6055,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '242'";;;;
+AND rr.row_desc = '242'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;XII. Tài sản Có khác;250;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6088,7 +6082,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '250'";;;;
+AND rr.row_desc = '250'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Các khoản phải thu;251;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6115,7 +6109,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '251'";;;;
+AND rr.row_desc = '251'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Các khoản lãi, phí phải thu;252;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6142,7 +6136,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '252'";;;;
+AND rr.row_desc = '252'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3. Tài sản thuế TNDN hoãn lại;253;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6169,7 +6163,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '253'";;;;
+AND rr.row_desc = '253'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;4. Tài sản Có khác;254;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6196,7 +6190,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '254'";;;;
+AND rr.row_desc = '254'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;· Trong đó: Lợi thế thương mại;255;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6223,7 +6217,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '255'";;;;
+AND rr.row_desc = '255'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;5. Các khoản dự phòng rủi ro cho các tài sản Có nội bảng khác (*);259;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6250,7 +6244,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '259'";;;;
+AND rr.row_desc = '259'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;Tổng tài sản Có;300;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6277,7 +6271,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '300'";;;;
+AND rr.row_desc = '300'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;B. Nợ phải trả và vốn chủ sở hữu;NV;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6304,7 +6298,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = 'NV'";;;;
+AND rr.row_desc = 'NV'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;I. Các khoản nợ Chính phủ và NHNN;310;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6331,7 +6325,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '310'";;;;
+AND rr.row_desc = '310'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;II. Tiền gửi và vay các TCTD khác;320;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6358,7 +6352,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '320'";;;;
+AND rr.row_desc = '320'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Tiền gửi của các TCTD khác;321;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6385,7 +6379,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '321'";;;;
+AND rr.row_desc = '321'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Vay các TCTD khác;322;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6412,7 +6406,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '322'";;;;
+AND rr.row_desc = '322'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;III. Tiền gửi của khách hàng;330;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6439,7 +6433,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '330'";;;;
+AND rr.row_desc = '330'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;IV. Các công cụ tài chính phái sinh và các khoản nợ tài chính khác;340;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6466,7 +6460,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '340'";;;;
+AND rr.row_desc = '340'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;V. Vốn tài trợ, uỷ thác đầu tư, cho vay TCTD chịu rủi ro;350;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6493,7 +6487,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '350'";;;;
+AND rr.row_desc = '350'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;VI. Phát hành giấy tờ có giá;360;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6520,7 +6514,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '360'";;;;
+AND rr.row_desc = '360'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;VII. Các khoản nợ khác;370;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6547,7 +6541,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '370'";;;;
+AND rr.row_desc = '370'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Các khoản lãi, phí phải trả;371;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6574,7 +6568,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '371'";;;;
+AND rr.row_desc = '371'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Thuế TNDN hoãn lại phải trả;372;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6601,7 +6595,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '372'";;;;
+AND rr.row_desc = '372'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3. Các khoản phải trả và công nợ khác;373;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6628,7 +6622,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '373'";;;;
+AND rr.row_desc = '373'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;4. Dự phòng rủi ro khác (Dự phòng cho công nợ tiềm ẩn và cam kết ngoại bảng);379;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6655,7 +6649,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '379'";;;;
+AND rr.row_desc = '379'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;Tổng nợ phải trả;400;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6682,7 +6676,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '400'";;;;
+AND rr.row_desc = '400'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;VIII. Vốn và các quỹ;500;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6709,7 +6703,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '500'";;;;
+AND rr.row_desc = '500'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1. Vốn của TCTD;410;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6736,7 +6730,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '410'";;;;
+AND rr.row_desc = '410'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;a. Vốn điều lệ;411;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6763,7 +6757,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '411'";;;;
+AND rr.row_desc = '411'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;b. Vốn đầu tư XDCB;412;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6790,7 +6784,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '412'";;;;
+AND rr.row_desc = '412'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;c. Thặng dư vốn cổ phần;413;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6817,7 +6811,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '413'";;;;
+AND rr.row_desc = '413'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;d. Cổ phiếu quỹ (*);414;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6844,7 +6838,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '414'";;;;
+AND rr.row_desc = '414'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;e. Cổ phiếu ưu đãi;415;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6871,7 +6865,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '415'";;;;
+AND rr.row_desc = '415'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;g. Vốn khác;416;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6898,7 +6892,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '416'";;;;
+AND rr.row_desc = '416'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2. Quỹ của TCTD;420;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6925,7 +6919,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '420'";;;;
+AND rr.row_desc = '420'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3. Chênh lệch tỷ giá hối đoái (3);430;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6952,7 +6946,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '430'";;;;
+AND rr.row_desc = '430'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;4. Chênh lệch đánh giá lại tài sản;440;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -6979,7 +6973,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '440'";;;;
+AND rr.row_desc = '440'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;5. Lợi nhuận chưa phân phối/ Lỗ lũy kế (3);450;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7006,7 +7000,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '450'";;;;
+AND rr.row_desc = '450'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;IX. Lợi ích của cổ đông thiểu số;700;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7033,7 +7027,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '700'";;;;
+AND rr.row_desc = '700'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;Tổng nợ phải trả và vốn chủ sở hữu;800;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7060,8 +7054,8 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '800'";;;;
-29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;CÁC CHỈ TIÊU NGOÀI BẢNG;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề: CÁC CHỈ TIÊU NGOÀI BẢNG, không có dữ liệu số;;;
+AND rr.row_desc = '800'";;;;;Done
+29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;CÁC CHỈ TIÊU NGOÀI BẢNG;null;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;;;;;Dòng tiêu đề: CÁC CHỈ TIÊU NGOÀI BẢNG, không có dữ liệu số;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;I.Nghĩa vụ nợ tiềm ẩn;910;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7088,7 +7082,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '910'";;;;
+AND rr.row_desc = '910'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1.Bảo lãnh vay vốn;911;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7115,7 +7109,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '911'";;;;
+AND rr.row_desc = '911'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2.Cam kết trong nghiệp vụ L/C;912;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7142,7 +7136,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '912'";;;;
+AND rr.row_desc = '912'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;3.Bảo lãnh khác;913;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7169,7 +7163,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '913'";;;;
+AND rr.row_desc = '913'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;II.Các cam kết đưa ra;920;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7196,7 +7190,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '920'";;;;
+AND rr.row_desc = '920'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;1.Cam kết tài trợ cho khách hàng;921;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7223,7 +7217,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '921'";;;;
+AND rr.row_desc = '921'";;;;;Done
 29;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Bảng cân đối kế toán;2.Cam kết khác;922;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7250,7 +7244,7 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '922'";;;;
+AND rr.row_desc = '922'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);1. Thu nhập lãi và các khoản thu nhập tương tự;1;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7277,7 +7271,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '01'";;;;
+AND rr.row_desc = '01'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);2. Chi phí lãi và các chi phí tương tự;2;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7304,7 +7298,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '02'";;;;
+AND rr.row_desc = '02'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);I. Thu nhập lãi thuần;3;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7331,7 +7325,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '03'";;;;
+AND rr.row_desc = '03'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);3. Thu nhập từ hoạt động dịch vụ;4;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7358,7 +7352,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '04'";;;;
+AND rr.row_desc = '04'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);4. Chi phí hoạt động dịch vụ;5;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7385,7 +7379,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '05'";;;;
+AND rr.row_desc = '05'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);II. Lãi/ lỗ thuần từ hoạt động dịch vụ;6;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7412,7 +7406,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '06'";;;;
+AND rr.row_desc = '06'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);III. Lãi/ lỗ thuần từ hoạt động kinh doanh ngoại hối;7;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7439,7 +7433,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '07'";;;;
+AND rr.row_desc = '07'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);IV. Lãi/ lỗ thuần từ mua bán chứng khoán kinh doanh;8;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7466,7 +7460,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '08'";;;;
+AND rr.row_desc = '08'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);V. Lãi/ lỗ thuần từ mua bán chứng khoán đầu tư;9;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7493,7 +7487,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '09'";;;;
+AND rr.row_desc = '09'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);5. Thu nhập từ hoạt động khác;10;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7520,7 +7514,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '10'";;;;
+AND rr.row_desc = '10'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);6. Chi phí hoạt động khác;11;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7547,7 +7541,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '11'";;;;
+AND rr.row_desc = '11'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);Vl. Lãi/ lỗ thuần từ hoạt động khác;12;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7574,7 +7568,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '12'";;;;
+AND rr.row_desc = '12'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);VII. Thu nhập từ góp vốn, mua cổ phần;13;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7601,7 +7595,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '13'";;;;
+AND rr.row_desc = '13'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);VIII. Chi phí hoạt động;14;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7628,7 +7622,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '14'";;;;
+AND rr.row_desc = '14'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);IX. Lợi nhuận thuần từ hoạt động kinh doanh trước chi phí dự phòng rủi ro tín dụng;15;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7655,7 +7649,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '15'";;;;
+AND rr.row_desc = '15'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);X. Chi phí dự phòng rủi ro tín dụng;16;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7682,7 +7676,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '16'";;;;
+AND rr.row_desc = '16'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);XI. Tổng lợi nhuận trước thuế;17;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7709,7 +7703,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '17'";;;;
+AND rr.row_desc = '17'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);7. Chi phí thuế TNDN hiện hành;18;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7736,7 +7730,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '18'";;;;
+AND rr.row_desc = '18'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);8. Chi phí thuế TNDN hoãn lại;19;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7763,7 +7757,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '19'";;;;
+AND rr.row_desc = '19'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);XII. Chi phí thuế TNDN;20;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7790,7 +7784,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '20'";;;;
+AND rr.row_desc = '20'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);XIII. Lợi nhuận sau thuế;21;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7817,7 +7811,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '21'";;;;
+AND rr.row_desc = '21'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);XIV. Lợi ích của cổ đông thiểu số;22;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7844,7 +7838,7 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '22'";;;;
+AND rr.row_desc = '22'";;;;;Done
 30;;Dữ liệu tài chính tổ chức tín dụng chi tiết - Báo cáo kết quả kinh doanh theo (Năm, bán niên);XV. Lãi cơ bản trên cổ phiếu;23;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày, CTDC, chỉ tiêu BC;IDS - GSĐC;;X;;Done;;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.rrow (rr),
@@ -7871,4 +7865,4 @@ AND rc.report_cd LIKE 'BCKQKD%'
 AND rc2.col_desc = '1'
 AND cd.report_year = :year
 AND cd.report_quarter = :quarter
-AND rr.row_desc = '23'";;;;
+AND rr.row_desc = '23'";;;;;Done
