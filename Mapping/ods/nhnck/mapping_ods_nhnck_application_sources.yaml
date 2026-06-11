@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.APPLICATION_SOURCES
+  logical_name: Mapping ODS – source NHNCK.APPLICATION_SOURCES
+  physical_name: application_sources
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_SOURCES
+target:
+  namespace: ods
+  physical_name: application_sources
+  etl_handle: Fact Snapshot
+  description: Hình thức nộp hồ sơ
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: APPLICATION_SOURCES
+  alias: ap_so
+  select_fields: id, code, item_name, label, record_status, description, created_by,
+    updated_by, created_at, updated_at
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_so.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: code
+  transformation: ap_so.code
+  data_type: string
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  target_attr_name: null
+- target_column: item_name
+  transformation: ap_so.item_name
+  data_type: string
+  description: Tên hiển thị chính
+  target_attr_name: null
+- target_column: label
+  transformation: ap_so.label
+  data_type: string
+  description: Nhãn hiển thị ngắn gọn trên badge/tag
+  target_attr_name: null
+- target_column: record_status
+  transformation: ap_so.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: description
+  transformation: ap_so.description
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: created_by
+  transformation: ap_so.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ap_so.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_at
+  transformation: ap_so.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ap_so.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

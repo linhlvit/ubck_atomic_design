@@ -1,0 +1,39 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.PROCEDURE_DOCUMENTS
+  logical_name: Mapping Staging – source NHNCK.PROCEDURE_DOCUMENTS
+  physical_name: procedure_documents
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PROCEDURE_DOCUMENTS
+target:
+  namespace: stg
+  physical_name: procedure_documents
+  etl_handle: Fact Snapshot
+  description: Liên kết thủ tục hành chính với tài liệu yêu cầu
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: PROCEDURE_DOCUMENTS
+  alias: pr_do
+  select_fields: ID, PROCEDURE_ID, DOCUMENT_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: pr_do.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: procedure_id
+  transformation: pr_do.PROCEDURE_ID
+  data_type: int
+  description: 'FK -> PROCEDURES: Thủ tục hành chính liên quan'
+  target_attr_name: null
+- target_column: document_id
+  transformation: pr_do.DOCUMENT_ID
+  data_type: int
+  description: 'FK -> DOCUMENTS: Loại tài liệu yêu cầu'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

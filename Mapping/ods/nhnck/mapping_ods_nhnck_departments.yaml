@@ -1,0 +1,60 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.DEPARTMENTS
+  logical_name: Mapping ODS – source NHNCK.DEPARTMENTS
+  physical_name: departments
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-DEPARTMENTS
+target:
+  namespace: ods
+  physical_name: departments
+  etl_handle: Fact Snapshot
+  description: Phòng ban UBCKNN
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: DEPARTMENTS
+  alias: depa
+  select_fields: id, unit_id, department_code, department_name, sort_order, description,
+    record_status
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: depa.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: unit_id
+  transformation: depa.unit_id
+  data_type: int
+  description: 'FK -> UNITS: Đơn vị nội bộ UBCKNN của người dùng/phòng ban'
+  target_attr_name: null
+- target_column: department_code
+  transformation: depa.department_code
+  data_type: string
+  description: Mã phòng ban
+  target_attr_name: null
+- target_column: department_name
+  transformation: depa.department_name
+  data_type: string
+  description: Tên phòng ban
+  target_attr_name: null
+- target_column: sort_order
+  transformation: depa.sort_order
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: description
+  transformation: depa.description
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: record_status
+  transformation: depa.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

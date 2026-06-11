@@ -1,0 +1,91 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.SEND_AND_RECIEVE_LOGS
+  logical_name: Mapping Staging – source NHNCK.SEND_AND_RECIEVE_LOGS
+  physical_name: send_and_recieve_logs
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-SEND_AND_RECIEVE_LOGS
+target:
+  namespace: stg
+  physical_name: send_and_recieve_logs
+  etl_handle: Fact Snapshot
+  description: Nhật ký gửi nhận dữ liệu tích hợp
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: SEND_AND_RECIEVE_LOGS
+  alias: se_an_re_lo
+  select_fields: ID, REQUEST_TYPE, SOURCE_TYPE, METHOD, PATH, STATUS_CODE, DURATION_TIME,
+    PAYLOAD, RESPONSE, CREATED_AT, CREATED_BY, UPDATED_AT, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: se_an_re_lo.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: request_type
+  transformation: se_an_re_lo.REQUEST_TYPE
+  data_type: int
+  description: 'Loại request tích hợp: 1=Inbound (nhận vào từ MCĐT), 2=Outbound (gửi
+    ra ngoài)'
+  target_attr_name: null
+- target_column: source_type
+  transformation: se_an_re_lo.SOURCE_TYPE
+  data_type: int
+  description: 'Nguồn dữ liệu: 1=C06/Dân cư, 2=FMS, 3=SCMS, 4=TTHC, 5=Thanh tra'
+  target_attr_name: null
+- target_column: method
+  transformation: se_an_re_lo.METHOD
+  data_type: string
+  description: 'Phương thức HTTP: GET, POST, PUT, DELETE, PATCH'
+  target_attr_name: null
+- target_column: path
+  transformation: se_an_re_lo.PATH
+  data_type: string
+  description: Đường dẫn URL endpoint API được gọi
+  target_attr_name: null
+- target_column: status_code
+  transformation: se_an_re_lo.STATUS_CODE
+  data_type: int
+  description: Mã trạng thái HTTP phản hồi (200, 201, 400, 404, 500...)
+  target_attr_name: null
+- target_column: duration_time
+  transformation: se_an_re_lo.DURATION_TIME
+  data_type: string
+  description: Thời gian thực hiện request (mili giây, kiểu FLOAT)
+  target_attr_name: null
+- target_column: payload
+  transformation: se_an_re_lo.PAYLOAD
+  data_type: string
+  description: Dữ liệu gửi đi (request body, NCLOB JSON)
+  target_attr_name: null
+- target_column: response
+  transformation: se_an_re_lo.RESPONSE
+  data_type: string
+  description: Dữ liệu nhận về (response body, NCLOB JSON)
+  target_attr_name: null
+- target_column: created_at
+  transformation: se_an_re_lo.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: se_an_re_lo.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: se_an_re_lo.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: se_an_re_lo.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

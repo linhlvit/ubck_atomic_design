@@ -1,0 +1,96 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.APPLICATION_SPECIALIZATIONS
+  logical_name: Mapping Staging – source NHNCK.APPLICATION_SPECIALIZATIONS
+  physical_name: application_specializations
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_SPECIALIZATIONS
+target:
+  namespace: stg
+  physical_name: application_specializations
+  etl_handle: Fact Snapshot
+  description: Chuyên môn liên quan đến hồ sơ
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: APPLICATION_SPECIALIZATIONS
+  alias: ap_sp
+  select_fields: ID, APPLICATION_ID, SPECIALIZATION_ID, ISSUE_DATE, ISSUE_PLACE, RECORD_STATUS,
+    NOTE, ASSIGNEE_ID, APPRAISALED_AT, CREATED_BY, CREATED_AT, UPDATED_AT, FILES,
+    UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_sp.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: application_id
+  transformation: ap_sp.APPLICATION_ID
+  data_type: int
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  target_attr_name: null
+- target_column: specialization_id
+  transformation: ap_sp.SPECIALIZATION_ID
+  data_type: int
+  description: 'FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan'
+  target_attr_name: null
+- target_column: issue_date
+  transformation: ap_sp.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp CCHN
+  target_attr_name: null
+- target_column: issue_place
+  transformation: ap_sp.ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp chứng chỉ chuyên môn
+  target_attr_name: null
+- target_column: record_status
+  transformation: ap_sp.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: note
+  transformation: ap_sp.NOTE
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: assignee_id
+  transformation: ap_sp.ASSIGNEE_ID
+  data_type: int
+  description: 'FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ'
+  target_attr_name: null
+- target_column: appraisaled_at
+  transformation: ap_sp.APPRAISALED_AT
+  data_type: date
+  description: Thời điểm cán bộ hoàn thành thẩm định tài liệu
+  target_attr_name: null
+- target_column: created_by
+  transformation: ap_sp.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: created_at
+  transformation: ap_sp.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ap_sp.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: files
+  transformation: ap_sp.FILES
+  data_type: string
+  description: 'Danh sách file đính kèm (JSON CLOB: [{name, path, size, type}...])'
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ap_sp.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

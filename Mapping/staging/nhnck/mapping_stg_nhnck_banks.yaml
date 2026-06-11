@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.BANKS
+  logical_name: Mapping Staging – source NHNCK.BANKS
+  physical_name: banks
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-BANKS
+target:
+  namespace: stg
+  physical_name: banks
+  etl_handle: Fact Snapshot
+  description: Danh mục ngân hàng (dùng cho nộp phí thi)
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: BANKS
+  alias: bank
+  select_fields: ID, BANK_CODE, BANK_NAME, SHORT_NAME, BANK_KEY, ENGLISH_BANK_NAME,
+    CREATED_AT, UPDATED_AT, CREATED_BY, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: bank.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: bank_code
+  transformation: bank.BANK_CODE
+  data_type: string
+  description: Mã ngân hàng (BIN code hoặc mã NAPAS)
+  target_attr_name: null
+- target_column: bank_name
+  transformation: bank.BANK_NAME
+  data_type: string
+  description: Tên đầy đủ của ngân hàng
+  target_attr_name: null
+- target_column: short_name
+  transformation: bank.SHORT_NAME
+  data_type: string
+  description: 'Tên viết tắt ngân hàng (VD: Vietcombank, VietinBank)'
+  target_attr_name: null
+- target_column: bank_key
+  transformation: bank.BANK_KEY
+  data_type: string
+  description: Khóa tra cứu ngân hàng (mã giao dịch nội bộ)
+  target_attr_name: null
+- target_column: english_bank_name
+  transformation: bank.ENGLISH_BANK_NAME
+  data_type: string
+  description: Tên tiếng Anh của ngân hàng
+  target_attr_name: null
+- target_column: created_at
+  transformation: bank.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: bank.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: bank.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: bank.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

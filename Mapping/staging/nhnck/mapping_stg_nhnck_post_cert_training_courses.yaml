@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.POST_CERT_TRAINING_COURSES
+  logical_name: Mapping Staging – source NHNCK.POST_CERT_TRAINING_COURSES
+  physical_name: post_cert_training_courses
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_COURSES
+target:
+  namespace: stg
+  physical_name: post_cert_training_courses
+  etl_handle: Fact Snapshot
+  description: Khóa đào tạo sau cấp CCHN (bồi dưỡng kiến thức định kỳ)
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: POST_CERT_TRAINING_COURSES
+  alias: po_ce_tr_co
+  select_fields: ID, COURSE_CODE, COURSE_NAME, CLASS_CODE, RECORD_STATUS, CREATED_AT,
+    CREATED_BY, UPDATED_AT, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: po_ce_tr_co.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: course_code
+  transformation: po_ce_tr_co.COURSE_CODE
+  data_type: string
+  description: Mã khóa học/lớp học
+  target_attr_name: null
+- target_column: course_name
+  transformation: po_ce_tr_co.COURSE_NAME
+  data_type: string
+  description: Tên khóa học/lớp học
+  target_attr_name: null
+- target_column: class_code
+  transformation: po_ce_tr_co.CLASS_CODE
+  data_type: string
+  description: Mã lớp học (định danh lớp cụ thể trong khóa)
+  target_attr_name: null
+- target_column: record_status
+  transformation: po_ce_tr_co.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: created_at
+  transformation: po_ce_tr_co.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: po_ce_tr_co.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: po_ce_tr_co.UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: po_ce_tr_co.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,80 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.DISTRICTS
+  logical_name: Mapping Staging – source NHNCK.DISTRICTS
+  physical_name: districts
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-DISTRICTS
+target:
+  namespace: stg
+  physical_name: districts
+  etl_handle: Fact Snapshot
+  description: Danh mục quận/huyện
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: DISTRICTS
+  alias: dist
+  select_fields: ID, COUNTRY_ID, PROVINCE_ID, DISTRICT_CODE, DISTRICT_NAME, CREATED_AT,
+    CREATED_BY, UPDATED_AT, RECORD_STATUS, RECORD_TYPE, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: dist.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: country_id
+  transformation: dist.COUNTRY_ID
+  data_type: int
+  description: 'FK -> COUNTRIES: Quốc gia liên quan'
+  target_attr_name: null
+- target_column: province_id
+  transformation: dist.PROVINCE_ID
+  data_type: int
+  description: 'FK -> PROVINCES: Tỉnh/thành phố liên quan'
+  target_attr_name: null
+- target_column: district_code
+  transformation: dist.DISTRICT_CODE
+  data_type: string
+  description: Mã quận/huyện theo chuẩn quốc gia
+  target_attr_name: null
+- target_column: district_name
+  transformation: dist.DISTRICT_NAME
+  data_type: string
+  description: Tên quận/huyện/thị xã/thành phố thuộc tỉnh
+  target_attr_name: null
+- target_column: created_at
+  transformation: dist.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: dist.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: dist.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: dist.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: record_type
+  transformation: dist.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: dist.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

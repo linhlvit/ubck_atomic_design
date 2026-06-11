@@ -1,0 +1,86 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.APPLICATION_STATUSES
+  logical_name: Mapping Staging – source NHNCK.APPLICATION_STATUSES
+  physical_name: application_statuses
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_STATUSES
+target:
+  namespace: stg
+  physical_name: application_statuses
+  etl_handle: Fact Snapshot
+  description: Định nghĩa các trạng thái của hồ sơ
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: APPLICATION_STATUSES
+  alias: ap_st
+  select_fields: ID, STATUS_CODE, STATUS_NAME, LABEL, DESCRIPTION, SORT_ORDER, ACTIVE,
+    ORIGINAL_DATA, CREATED_BY, UPDATED_BY, CREATED_AT, UPDATED_AT
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_st.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: status_code
+  transformation: ap_st.STATUS_CODE
+  data_type: string
+  description: Mã trạng thái HTTP phản hồi (200, 201, 400, 404, 500...)
+  target_attr_name: null
+- target_column: status_name
+  transformation: ap_st.STATUS_NAME
+  data_type: string
+  description: Tên trạng thái hồ sơ hiển thị trên giao diện
+  target_attr_name: null
+- target_column: label
+  transformation: ap_st.LABEL
+  data_type: string
+  description: Nhãn hiển thị ngắn gọn trên badge/tag
+  target_attr_name: null
+- target_column: description
+  transformation: ap_st.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: sort_order
+  transformation: ap_st.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: active
+  transformation: ap_st.ACTIVE
+  data_type: int
+  description: 'Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu'
+  target_attr_name: null
+- target_column: original_data
+  transformation: ap_st.ORIGINAL_DATA
+  data_type: int
+  description: 'Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người
+    dùng tạo'
+  target_attr_name: null
+- target_column: created_by
+  transformation: ap_st.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ap_st.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_at
+  transformation: ap_st.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ap_st.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

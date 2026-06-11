@@ -1,0 +1,65 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.SYSTEM_PARAMETERS
+  logical_name: Mapping Staging – source NHNCK.SYSTEM_PARAMETERS
+  physical_name: system_parameters
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-SYSTEM_PARAMETERS
+target:
+  namespace: stg
+  physical_name: system_parameters
+  etl_handle: Fact Snapshot
+  description: Tham số hệ thống
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: SYSTEM_PARAMETERS
+  alias: sy_pa
+  select_fields: ID, PARAMETER_CODE, PARAM_VALUE, DESCRIPTION, SORT_ORDER, DATA_TYPE,
+    DISPLAYED, RECORD_TYPE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: sy_pa.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: parameter_code
+  transformation: sy_pa.PARAMETER_CODE
+  data_type: string
+  description: 'Mã tham số cấu hình (key tra cứu, VD: MAX_EXAM_ATTEMPTS)'
+  target_attr_name: null
+- target_column: param_value
+  transformation: sy_pa.PARAM_VALUE
+  data_type: string
+  description: Giá trị tham số hệ thống (NCLOB, định dạng tùy theo kiểu dữ liệu)
+  target_attr_name: null
+- target_column: description
+  transformation: sy_pa.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: sort_order
+  transformation: sy_pa.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: data_type
+  transformation: sy_pa.DATA_TYPE
+  data_type: int
+  description: 'Kiểu dữ liệu của tham số: 1=Chuỗi, 2=Số, 3=Boolean, 4=JSON, 5=Mảng'
+  target_attr_name: null
+- target_column: displayed
+  transformation: sy_pa.DISPLAYED
+  data_type: int
+  description: 'Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn'
+  target_attr_name: null
+- target_column: record_type
+  transformation: sy_pa.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.PERMISSIONS
+  logical_name: Mapping Staging – source NHNCK.PERMISSIONS
+  physical_name: permissions
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PERMISSIONS
+target:
+  namespace: stg
+  physical_name: permissions
+  etl_handle: Fact Snapshot
+  description: Danh mục quyền hạn trong hệ thống
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: PERMISSIONS
+  alias: perm
+  select_fields: ID, CODE, PERMISSION_NAME, PARENT_CODE, ABBREVIATION, SORT_ORDER,
+    ACTIVE, MENU_FLAG, PATH, DESCRIPTION
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: perm.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: code
+  transformation: perm.CODE
+  data_type: string
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  target_attr_name: null
+- target_column: permission_name
+  transformation: perm.PERMISSION_NAME
+  data_type: string
+  description: Tên quyền hành động đã thực hiện
+  target_attr_name: null
+- target_column: parent_code
+  transformation: perm.PARENT_CODE
+  data_type: string
+  description: Mã quyền cha trong cây phân cấp quyền
+  target_attr_name: null
+- target_column: abbreviation
+  transformation: perm.ABBREVIATION
+  data_type: string
+  description: Tên viết tắt của tổ chức/quyền
+  target_attr_name: null
+- target_column: sort_order
+  transformation: perm.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: active
+  transformation: perm.ACTIVE
+  data_type: int
+  description: 'Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu'
+  target_attr_name: null
+- target_column: menu_flag
+  transformation: perm.MENU_FLAG
+  data_type: int
+  description: 'Cờ quyền là menu (có đường dẫn URL): 1=Là menu, 0=Là quyền hành động'
+  target_attr_name: null
+- target_column: path
+  transformation: perm.PATH
+  data_type: string
+  description: Đường dẫn URL endpoint API được gọi
+  target_attr_name: null
+- target_column: description
+  transformation: perm.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

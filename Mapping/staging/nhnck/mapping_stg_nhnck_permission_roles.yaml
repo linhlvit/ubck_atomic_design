@@ -1,0 +1,39 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.PERMISSION_ROLES
+  logical_name: Mapping Staging – source NHNCK.PERMISSION_ROLES
+  physical_name: permission_roles
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PERMISSION_ROLES
+target:
+  namespace: stg
+  physical_name: permission_roles
+  etl_handle: Fact Snapshot
+  description: Phân quyền theo nhóm vai trò
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: PERMISSION_ROLES
+  alias: pe_ro
+  select_fields: ID, PERMISSION_ID, ROLE_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: pe_ro.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: permission_id
+  transformation: pe_ro.PERMISSION_ID
+  data_type: int
+  description: 'FK -> PERMISSIONS: Quyền hạn liên quan'
+  target_attr_name: null
+- target_column: role_id
+  transformation: pe_ro.ROLE_ID
+  data_type: int
+  description: 'FK -> ROLES: Vai trò liên quan'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

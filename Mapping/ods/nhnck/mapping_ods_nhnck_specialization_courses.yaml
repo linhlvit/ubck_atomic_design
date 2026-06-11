@@ -1,0 +1,96 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.SPECIALIZATION_COURSES
+  logical_name: Mapping ODS – source NHNCK.SPECIALIZATION_COURSES
+  physical_name: specialization_courses
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
+target:
+  namespace: ods
+  physical_name: specialization_courses
+  etl_handle: Fact Snapshot
+  description: Danh mục khóa học chuyên môn
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: SPECIALIZATION_COURSES
+  alias: sp_co
+  select_fields: id, specialization_id, academic_year, course_code, course_name, created_at,
+    created_by, updated_at, updated_by, record_status, exam_date_from, exam_date_to,
+    address, province_id
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: sp_co.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: specialization_id
+  transformation: sp_co.specialization_id
+  data_type: int
+  description: 'FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan'
+  target_attr_name: null
+- target_column: academic_year
+  transformation: sp_co.academic_year
+  data_type: int
+  description: Năm học của lớp chứng chỉ chuyên môn
+  target_attr_name: null
+- target_column: course_code
+  transformation: sp_co.course_code
+  data_type: string
+  description: Mã khóa học/lớp học
+  target_attr_name: null
+- target_column: course_name
+  transformation: sp_co.course_name
+  data_type: string
+  description: Tên khóa học/lớp học
+  target_attr_name: null
+- target_column: created_at
+  transformation: sp_co.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: sp_co.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: sp_co.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: sp_co.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: sp_co.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: exam_date_from
+  transformation: sp_co.exam_date_from
+  data_type: date
+  description: Ngày bắt đầu thi chứng chỉ chuyên môn
+  target_attr_name: null
+- target_column: exam_date_to
+  transformation: sp_co.exam_date_to
+  data_type: string
+  description: Ngày kết thúc thi chứng chỉ chuyên môn
+  target_attr_name: null
+- target_column: address
+  transformation: sp_co.address
+  data_type: string
+  description: Địa chỉ trụ sở tổ chức (NCLOB)
+  target_attr_name: null
+- target_column: province_id
+  transformation: sp_co.province_id
+  data_type: int
+  description: 'FK -> PROVINCES: Tỉnh/thành phố liên quan'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

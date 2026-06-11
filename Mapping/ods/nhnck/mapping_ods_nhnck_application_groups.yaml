@@ -1,0 +1,107 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.APPLICATION_GROUPS
+  logical_name: Mapping ODS – source NHNCK.APPLICATION_GROUPS
+  physical_name: application_groups
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_GROUPS
+target:
+  namespace: ods
+  physical_name: application_groups
+  etl_handle: Fact Snapshot
+  description: Nhóm hồ sơ CCHN xử lý tập thể (batch)
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: APPLICATION_GROUPS
+  alias: ap_gr
+  select_fields: id, group_name, description, record_status, decision_id, group_created_date,
+    group_completed_date, notes, application_count, created_at, updated_at, created_by,
+    updated_by, application_type, submited_date, submited_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_gr.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: group_name
+  transformation: ap_gr.group_name
+  data_type: string
+  description: Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý)
+  target_attr_name: null
+- target_column: description
+  transformation: ap_gr.description
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: record_status
+  transformation: ap_gr.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: decision_id
+  transformation: ap_gr.decision_id
+  data_type: int
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  target_attr_name: null
+- target_column: group_created_date
+  transformation: ap_gr.group_created_date
+  data_type: date
+  description: Ngày tạo nhóm hồ sơ/CCHN
+  target_attr_name: null
+- target_column: group_completed_date
+  transformation: ap_gr.group_completed_date
+  data_type: date
+  description: Ngày hoàn thành xử lý nhóm hồ sơ/CCHN
+  target_attr_name: null
+- target_column: notes
+  transformation: ap_gr.notes
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: application_count
+  transformation: ap_gr.application_count
+  data_type: int
+  description: Số lượng hồ sơ trong nhóm
+  target_attr_name: null
+- target_column: created_at
+  transformation: ap_gr.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ap_gr.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: ap_gr.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ap_gr.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: application_type
+  transformation: ap_gr.application_type
+  data_type: int
+  description: 'Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông
+    tin, 3=Cấp lại mất CCHN'
+  target_attr_name: null
+- target_column: submited_date
+  transformation: ap_gr.submited_date
+  data_type: date
+  description: Ngày nhóm hồ sơ được gửi lên cấp trên xử lý
+  target_attr_name: null
+- target_column: submited_by
+  transformation: ap_gr.submited_by
+  data_type: int
+  description: 'FK -> USERS: Người gửi nhóm hồ sơ lên cấp trên'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

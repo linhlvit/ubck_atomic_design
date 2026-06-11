@@ -1,0 +1,85 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.ORGANIZATION_REPORT_YEARLYS
+  logical_name: Mapping Staging – source NHNCK.ORGANIZATION_REPORT_YEARLYS
+  physical_name: organization_report_yearlys
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORT_YEARLYS
+target:
+  namespace: stg
+  physical_name: organization_report_yearlys
+  etl_handle: Fact Snapshot
+  description: Báo cáo hàng năm của tổ chức về người hành nghề
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: ORGANIZATION_REPORT_YEARLYS
+  alias: or_re_ye
+  select_fields: ID, ORGANIZATION_ID, ITEM_NAME, SUBMISSION_DATE, REPORT_YEAR, RECORD_TYPE,
+    FILE_PATH, RECORD_STATUS, CREATED_AT, UPDATED_AT, CREATED_BY, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: or_re_ye.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: organization_id
+  transformation: or_re_ye.ORGANIZATION_ID
+  data_type: int
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  target_attr_name: null
+- target_column: item_name
+  transformation: or_re_ye.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính
+  target_attr_name: null
+- target_column: submission_date
+  transformation: or_re_ye.SUBMISSION_DATE
+  data_type: date
+  description: Ngày nộp hồ sơ chính thức
+  target_attr_name: null
+- target_column: report_year
+  transformation: or_re_ye.REPORT_YEAR
+  data_type: string
+  description: Năm báo cáo (định dạng YYYY)
+  target_attr_name: null
+- target_column: record_type
+  transformation: or_re_ye.RECORD_TYPE
+  data_type: string
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: file_path
+  transformation: or_re_ye.FILE_PATH
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: record_status
+  transformation: or_re_ye.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: created_at
+  transformation: or_re_ye.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: or_re_ye.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: or_re_ye.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: or_re_ye.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

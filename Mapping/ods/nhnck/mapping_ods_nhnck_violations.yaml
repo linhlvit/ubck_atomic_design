@@ -1,0 +1,90 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.VIOLATIONS
+  logical_name: Mapping ODS – source NHNCK.VIOLATIONS
+  physical_name: violations
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-VIOLATIONS
+target:
+  namespace: ods
+  physical_name: violations
+  etl_handle: Fact Snapshot
+  description: Thông tin vi phạm của người hành nghề
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: VIOLATIONS
+  alias: viol
+  select_fields: id, professional_id, full_name, birth_date, identity_number, note,
+    created_by, created_at, decision_id, record_type, record_status, updated_by, updated_at
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: viol.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: professional_id
+  transformation: viol.professional_id
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: full_name
+  transformation: viol.full_name
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: null
+- target_column: birth_date
+  transformation: viol.birth_date
+  data_type: date
+  description: Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)
+  target_attr_name: null
+- target_column: identity_number
+  transformation: viol.identity_number
+  data_type: string
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  target_attr_name: null
+- target_column: note
+  transformation: viol.note
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: created_by
+  transformation: viol.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: created_at
+  transformation: viol.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: decision_id
+  transformation: viol.decision_id
+  data_type: int
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  target_attr_name: null
+- target_column: record_type
+  transformation: viol.record_type
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: record_status
+  transformation: viol.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: updated_by
+  transformation: viol.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_at
+  transformation: viol.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

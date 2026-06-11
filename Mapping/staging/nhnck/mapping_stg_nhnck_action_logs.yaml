@@ -1,0 +1,85 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.ACTION_LOGS
+  logical_name: Mapping Staging – source NHNCK.ACTION_LOGS
+  physical_name: action_logs
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-ACTION_LOGS
+target:
+  namespace: stg
+  physical_name: action_logs
+  etl_handle: Fact Snapshot
+  description: Nhật ký hoạt động của người dùng trên hệ thống
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: ACTION_LOGS
+  alias: ac_lo
+  select_fields: ID, USER_ID, CLIENT_MACHINE, DETAILS, CREATED_AT, PERMISSION_NAME,
+    ACTION_NAME, SUCCESS_FLAG, ERROR_MESSAGE, UPDATED_AT, CREATED_BY, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ac_lo.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: user_id
+  transformation: ac_lo.USER_ID
+  data_type: int
+  description: 'FK -> USERS: Người dùng liên quan'
+  target_attr_name: null
+- target_column: client_machine
+  transformation: ac_lo.CLIENT_MACHINE
+  data_type: string
+  description: Tên máy tính hoặc IP của người dùng thực hiện hành động
+  target_attr_name: null
+- target_column: details
+  transformation: ac_lo.DETAILS
+  data_type: string
+  description: Chi tiết hành động được ghi log (NCLOB JSON)
+  target_attr_name: null
+- target_column: created_at
+  transformation: ac_lo.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: permission_name
+  transformation: ac_lo.PERMISSION_NAME
+  data_type: string
+  description: Tên quyền hành động đã thực hiện
+  target_attr_name: null
+- target_column: action_name
+  transformation: ac_lo.ACTION_NAME
+  data_type: string
+  description: Tên cụ thể của hành động thực hiện
+  target_attr_name: null
+- target_column: success_flag
+  transformation: ac_lo.SUCCESS_FLAG
+  data_type: int
+  description: 'Cờ thao tác thành công: 1=Thành công, 0=Thất bại'
+  target_attr_name: null
+- target_column: error_message
+  transformation: ac_lo.ERROR_MESSAGE
+  data_type: string
+  description: Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action)
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ac_lo.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: ac_lo.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ac_lo.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

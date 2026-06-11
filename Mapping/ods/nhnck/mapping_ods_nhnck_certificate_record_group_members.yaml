@@ -1,0 +1,71 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS
+  logical_name: Mapping ODS – source NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS
+  physical_name: certificate_record_group_members
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_GROUP_MEMBERS
+target:
+  namespace: ods
+  physical_name: certificate_record_group_members
+  etl_handle: Fact Snapshot
+  description: Thành viên trong nhóm chứng chỉ hành nghề
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: CERTIFICATE_RECORD_GROUP_MEMBERS
+  alias: ce_re_gr_me
+  select_fields: id, certificate_record_group_id, certificate_record_id, added_date,
+    added_by, record_status, reissue, revocation_reason, order_index
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ce_re_gr_me.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_record_group_id
+  transformation: ce_re_gr_me.certificate_record_group_id
+  data_type: int
+  description: 'FK -> CERTIFICATE_RECORD_GROUPS: Nhóm cấp/thu hồi CCHN'
+  target_attr_name: null
+- target_column: certificate_record_id
+  transformation: ce_re_gr_me.certificate_record_id
+  data_type: int
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  target_attr_name: null
+- target_column: added_date
+  transformation: ce_re_gr_me.added_date
+  data_type: date
+  description: Ngày thêm bản ghi CCHN vào nhóm
+  target_attr_name: null
+- target_column: added_by
+  transformation: ce_re_gr_me.added_by
+  data_type: int
+  description: 'FK -> USERS: Người thêm bản ghi CCHN vào nhóm'
+  target_attr_name: null
+- target_column: record_status
+  transformation: ce_re_gr_me.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: reissue
+  transformation: ce_re_gr_me.reissue
+  data_type: int
+  description: 'Cờ bản ghi CCHN này là cấp lại (không phải cấp mới): 1=Cấp lại, 0=Cấp
+    mới'
+  target_attr_name: null
+- target_column: revocation_reason
+  transformation: ce_re_gr_me.revocation_reason
+  data_type: string
+  description: Lý do thu hồi CCHN
+  target_attr_name: null
+- target_column: order_index
+  transformation: ce_re_gr_me.order_index
+  data_type: int
+  description: Thứ tự của bản ghi trong nhóm
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

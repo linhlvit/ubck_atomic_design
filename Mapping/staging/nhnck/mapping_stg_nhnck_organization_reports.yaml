@@ -1,0 +1,194 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.ORGANIZATION_REPORTS
+  logical_name: Mapping Staging – source NHNCK.ORGANIZATION_REPORTS
+  physical_name: organization_reports
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORTS
+target:
+  namespace: stg
+  physical_name: organization_reports
+  etl_handle: Fact Snapshot
+  description: Báo cáo về người hành nghề từ tổ chức
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: ORGANIZATION_REPORTS
+  alias: or_re
+  select_fields: ID, ORGANIZATION_ID, PROFESSIONAL_ID, CERTIFICATE_ID, CERTIFICATE_RECORD_ID,
+    FULL_NAME, BIRTH_DATE, IDENTITY_NUMBER, POSITION, DEPARTMENT, WORKPLACE, HIRE_DATE,
+    TERMINATION_DATE, CERTIFICATE_NUMBER, ISSUE_DATE, DISCIPLINES, DESCRIPTION, REPORT_DATE,
+    SYNC_ID, SYNC_CREATED_AT, SYNC_UPDATED_AT, RECORD_TYPE, PARENT_REPORT_ID, RECORD_STATUS,
+    STATUS_ORGANIZATION, FILE_PATH, FILE_PATH_TERMINATION, BUSINESS_DEPARTMENT, NOTES,
+    CREATED_AT, CREATED_BY, UPDATED_AT, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: or_re.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: organization_id
+  transformation: or_re.ORGANIZATION_ID
+  data_type: int
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  target_attr_name: null
+- target_column: professional_id
+  transformation: or_re.PROFESSIONAL_ID
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: or_re.CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: certificate_record_id
+  transformation: or_re.CERTIFICATE_RECORD_ID
+  data_type: int
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  target_attr_name: null
+- target_column: full_name
+  transformation: or_re.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: null
+- target_column: birth_date
+  transformation: or_re.BIRTH_DATE
+  data_type: date
+  description: Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)
+  target_attr_name: null
+- target_column: identity_number
+  transformation: or_re.IDENTITY_NUMBER
+  data_type: string
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  target_attr_name: null
+- target_column: position
+  transformation: or_re.POSITION
+  data_type: string
+  description: Chức vụ/vị trí đảm nhiệm
+  target_attr_name: null
+- target_column: department
+  transformation: or_re.DEPARTMENT
+  data_type: string
+  description: Phòng ban công tác
+  target_attr_name: null
+- target_column: workplace
+  transformation: or_re.WORKPLACE
+  data_type: string
+  description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
+  target_attr_name: null
+- target_column: hire_date
+  transformation: or_re.HIRE_DATE
+  data_type: date
+  description: Ngày tuyển dụng NHNCK vào làm việc tại tổ chức
+  target_attr_name: null
+- target_column: termination_date
+  transformation: or_re.TERMINATION_DATE
+  data_type: date
+  description: Ngày chấm dứt hợp đồng lao động của NHNCK
+  target_attr_name: null
+- target_column: certificate_number
+  transformation: or_re.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số CCHN cấp cho NHNCK
+  target_attr_name: null
+- target_column: issue_date
+  transformation: or_re.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp CCHN
+  target_attr_name: null
+- target_column: disciplines
+  transformation: or_re.DISCIPLINES
+  data_type: string
+  description: Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB)
+  target_attr_name: null
+- target_column: description
+  transformation: or_re.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: report_date
+  transformation: or_re.REPORT_DATE
+  data_type: date
+  description: Ngày lập báo cáo của tổ chức về NHNCK
+  target_attr_name: null
+- target_column: sync_id
+  transformation: or_re.SYNC_ID
+  data_type: string
+  description: ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK
+  target_attr_name: null
+- target_column: sync_created_at
+  transformation: or_re.SYNC_CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi báo cáo trong hệ thống đồng bộ nguồn
+  target_attr_name: null
+- target_column: sync_updated_at
+  transformation: or_re.SYNC_UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật báo cáo trong hệ thống đồng bộ nguồn
+  target_attr_name: null
+- target_column: record_type
+  transformation: or_re.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: parent_report_id
+  transformation: or_re.PARENT_REPORT_ID
+  data_type: int
+  description: 'FK -> ORGANIZATION_REPORTS: Báo cáo gốc/cha (khi báo cáo điều chỉnh)'
+  target_attr_name: null
+- target_column: record_status
+  transformation: or_re.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: status_organization
+  transformation: or_re.STATUS_ORGANIZATION
+  data_type: int
+  description: Trạng thái của tổ chức tại thời điểm báo cáo
+  target_attr_name: null
+- target_column: file_path
+  transformation: or_re.FILE_PATH
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: file_path_termination
+  transformation: or_re.FILE_PATH_TERMINATION
+  data_type: string
+  description: Đường dẫn file quyết định/biên bản chấm dứt hợp đồng
+  target_attr_name: null
+- target_column: business_department
+  transformation: or_re.BUSINESS_DEPARTMENT
+  data_type: string
+  description: Phòng nghiệp vụ UBCKNN quản lý tổ chức này (tên phòng)
+  target_attr_name: null
+- target_column: notes
+  transformation: or_re.NOTES
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: created_at
+  transformation: or_re.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: or_re.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: or_re.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: or_re.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

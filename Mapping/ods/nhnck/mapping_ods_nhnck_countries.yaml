@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.COUNTRIES
+  logical_name: Mapping ODS – source NHNCK.COUNTRIES
+  physical_name: countries
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-COUNTRIES
+target:
+  namespace: ods
+  physical_name: countries
+  etl_handle: Fact Snapshot
+  description: Danh mục quốc gia/quốc tịch
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: COUNTRIES
+  alias: coun
+  select_fields: id, country_code, country_name, default_flag, created_at, created_by,
+    updated_at, record_status, updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: coun.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: country_code
+  transformation: coun.country_code
+  data_type: string
+  description: Mã quốc gia theo chuẩn ISO 3166-1 alpha-2
+  target_attr_name: null
+- target_column: country_name
+  transformation: coun.country_name
+  data_type: string
+  description: Tên quốc gia/vùng lãnh thổ
+  target_attr_name: null
+- target_column: default_flag
+  transformation: coun.default_flag
+  data_type: int
+  description: 'Cờ là mẫu/giá trị mặc định: 1=Mặc định, 0=Không phải mặc định'
+  target_attr_name: null
+- target_column: created_at
+  transformation: coun.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: coun.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: coun.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: coun.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: updated_by
+  transformation: coun.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

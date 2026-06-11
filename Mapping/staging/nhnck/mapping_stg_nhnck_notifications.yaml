@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.NOTIFICATIONS
+  logical_name: Mapping Staging – source NHNCK.NOTIFICATIONS
+  physical_name: notifications
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-NOTIFICATIONS
+target:
+  namespace: stg
+  physical_name: notifications
+  etl_handle: Fact Snapshot
+  description: Thông báo trong hệ thống
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: NOTIFICATIONS
+  alias: noti
+  select_fields: ID, ACTION_TYPE, RECORD_TYPE, READ_FLAG, CONTENT, LINK, RECEIVER_ID,
+    SENT_AT, READ_AT
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: noti.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: action_type
+  transformation: noti.ACTION_TYPE
+  data_type: int
+  description: Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ)
+  target_attr_name: null
+- target_column: record_type
+  transformation: noti.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: read_flag
+  transformation: noti.READ_FLAG
+  data_type: int
+  description: 'Cờ đã đọc thông báo: 1=Đã đọc, 0=Chưa đọc'
+  target_attr_name: null
+- target_column: content
+  transformation: noti.CONTENT
+  data_type: string
+  description: Nội dung của thông báo/thư điện tử/bổ sung hồ sơ
+  target_attr_name: null
+- target_column: link
+  transformation: noti.LINK
+  data_type: string
+  description: URL điều hướng khi người dùng nhấp vào thông báo
+  target_attr_name: null
+- target_column: receiver_id
+  transformation: noti.RECEIVER_ID
+  data_type: int
+  description: 'FK -> USERS: Người nhận/tiếp nhận hành động xử lý'
+  target_attr_name: null
+- target_column: sent_at
+  transformation: noti.SENT_AT
+  data_type: timestamp
+  description: Thời điểm thông báo được gửi đi
+  target_attr_name: null
+- target_column: read_at
+  transformation: noti.READ_AT
+  data_type: timestamp
+  description: Thời điểm người nhận đọc thông báo
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

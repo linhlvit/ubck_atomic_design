@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.EXAM_SESSION_FEES
+  logical_name: Mapping ODS – source NHNCK.EXAM_SESSION_FEES
+  physical_name: exam_session_fees
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-EXAM_SESSION_FEES
+target:
+  namespace: ods
+  physical_name: exam_session_fees
+  etl_handle: Fact Snapshot
+  description: Phí thi sát hạch
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: EXAM_SESSION_FEES
+  alias: ex_se_fe
+  select_fields: id, exam_session_id, certificate_id, fee_exam, fee_appeal, record_status,
+    created_at, updated_at, created_by, updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ex_se_fe.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: exam_session_id
+  transformation: ex_se_fe.exam_session_id
+  data_type: int
+  description: 'FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan'
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: ex_se_fe.certificate_id
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: fee_exam
+  transformation: ex_se_fe.fee_exam
+  data_type: decimal(18,2)
+  description: 'Mức phí dự thi sát hạch (đơn vị: VNĐ)'
+  target_attr_name: null
+- target_column: fee_appeal
+  transformation: ex_se_fe.fee_appeal
+  data_type: decimal(18,2)
+  description: 'Mức phí phúc khảo bài thi (đơn vị: VNĐ)'
+  target_attr_name: null
+- target_column: record_status
+  transformation: ex_se_fe.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: created_at
+  transformation: ex_se_fe.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ex_se_fe.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: ex_se_fe.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ex_se_fe.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

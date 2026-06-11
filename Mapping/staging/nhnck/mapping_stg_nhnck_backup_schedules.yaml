@@ -1,0 +1,54 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.BACKUP_SCHEDULES
+  logical_name: Mapping Staging – source NHNCK.BACKUP_SCHEDULES
+  physical_name: backup_schedules
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-BACKUP_SCHEDULES
+target:
+  namespace: stg
+  physical_name: backup_schedules
+  etl_handle: Fact Snapshot
+  description: Lịch tự động sao lưu cơ sở dữ liệu
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: BACKUP_SCHEDULES
+  alias: ba_sc
+  select_fields: ID, FILE_PATH, SCHEDULE_TYPE, HOUR, MINUTE, DAY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ba_sc.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: file_path
+  transformation: ba_sc.FILE_PATH
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: schedule_type
+  transformation: ba_sc.SCHEDULE_TYPE
+  data_type: int
+  description: 'Loại lịch sao lưu: 1=Hàng ngày, 2=Hàng tuần, 3=Hàng tháng'
+  target_attr_name: null
+- target_column: hour
+  transformation: ba_sc.HOUR
+  data_type: int
+  description: Giờ thực hiện sao lưu tự động (0-23)
+  target_attr_name: null
+- target_column: minute
+  transformation: ba_sc.MINUTE
+  data_type: int
+  description: Phút thực hiện sao lưu tự động (0-59)
+  target_attr_name: null
+- target_column: day
+  transformation: ba_sc.DAY
+  data_type: int
+  description: Ngày thực hiện sao lưu (1-31 cho tháng, 0-6 cho tuần)
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

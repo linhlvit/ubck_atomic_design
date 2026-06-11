@@ -1,0 +1,101 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.UNITS
+  logical_name: Mapping ODS – source NHNCK.UNITS
+  physical_name: units
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-UNITS
+target:
+  namespace: ods
+  physical_name: units
+  etl_handle: Fact Snapshot
+  description: Danh mục đơn vị
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: UNITS
+  alias: unit
+  select_fields: id, parent_id, level_, unit_code, unit_name, address, phone_number,
+    email, fax, description, created_at, created_by, updated_at, record_status, updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: unit.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: parent_id
+  transformation: unit.parent_id
+  data_type: int
+  description: 'FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp'
+  target_attr_name: null
+- target_column: level_
+  transformation: unit.level_
+  data_type: string
+  description: 'Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh
+    từ khóa Oracle)'
+  target_attr_name: null
+- target_column: unit_code
+  transformation: unit.unit_code
+  data_type: string
+  description: Mã đơn vị nội bộ UBCKNN
+  target_attr_name: null
+- target_column: unit_name
+  transformation: unit.unit_name
+  data_type: string
+  description: Tên đơn vị nội bộ UBCKNN
+  target_attr_name: null
+- target_column: address
+  transformation: unit.address
+  data_type: string
+  description: Địa chỉ trụ sở tổ chức (NCLOB)
+  target_attr_name: null
+- target_column: phone_number
+  transformation: unit.phone_number
+  data_type: string
+  description: Số điện thoại cố định
+  target_attr_name: null
+- target_column: email
+  transformation: unit.email
+  data_type: string
+  description: Địa chỉ email liên lạc
+  target_attr_name: null
+- target_column: fax
+  transformation: unit.fax
+  data_type: string
+  description: Số fax liên lạc
+  target_attr_name: null
+- target_column: description
+  transformation: unit.description
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: created_at
+  transformation: unit.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: unit.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: unit.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: unit.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: updated_by
+  transformation: unit.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

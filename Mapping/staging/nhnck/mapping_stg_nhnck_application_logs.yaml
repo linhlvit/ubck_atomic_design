@@ -1,0 +1,54 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.APPLICATION_LOGS
+  logical_name: Mapping Staging – source NHNCK.APPLICATION_LOGS
+  physical_name: application_logs
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_LOGS
+target:
+  namespace: stg
+  physical_name: application_logs
+  etl_handle: Fact Snapshot
+  description: Nhật ký hoạt động trên hồ sơ CCHN
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: APPLICATION_LOGS
+  alias: ap_lo
+  select_fields: ID, APPLICATION_ID, DETAIL, CREATED_BY, CREATED_AT, UPDATED_AT
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_lo.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: application_id
+  transformation: ap_lo.APPLICATION_ID
+  data_type: int
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  target_attr_name: null
+- target_column: detail
+  transformation: ap_lo.DETAIL
+  data_type: string
+  description: Chi tiết nội dung nhật ký hoặc thao tác
+  target_attr_name: null
+- target_column: created_by
+  transformation: ap_lo.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: created_at
+  transformation: ap_lo.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ap_lo.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

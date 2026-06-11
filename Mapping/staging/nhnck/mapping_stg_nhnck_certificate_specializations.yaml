@@ -1,0 +1,55 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.CERTIFICATE_SPECIALIZATIONS
+  logical_name: Mapping Staging – source NHNCK.CERTIFICATE_SPECIALIZATIONS
+  physical_name: certificate_specializations
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_SPECIALIZATIONS
+target:
+  namespace: stg
+  physical_name: certificate_specializations
+  etl_handle: Fact Snapshot
+  description: Chuyên môn liên quan loại chứng chỉ
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: CERTIFICATE_SPECIALIZATIONS
+  alias: ce_sp
+  select_fields: ID, CERTIFICATE_ID, SPECIALIZATION_ID, SORT_ORDER, DOCUMENT_TYPE,
+    REQUIRED_FIELD
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ce_sp.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: ce_sp.CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: specialization_id
+  transformation: ce_sp.SPECIALIZATION_ID
+  data_type: int
+  description: 'FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan'
+  target_attr_name: null
+- target_column: sort_order
+  transformation: ce_sp.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: document_type
+  transformation: ce_sp.DOCUMENT_TYPE
+  data_type: int
+  description: Loại tài liệu hoặc loại mã tự tăng
+  target_attr_name: null
+- target_column: required_field
+  transformation: ce_sp.REQUIRED_FIELD
+  data_type: int
+  description: 'Cờ bắt buộc nộp tài liệu/điền trường: 1=Bắt buộc, 0=Tùy chọn'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

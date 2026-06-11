@@ -1,0 +1,54 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.BACKUPS
+  logical_name: Mapping Staging – source NHNCK.BACKUPS
+  physical_name: backups
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-BACKUPS
+target:
+  namespace: stg
+  physical_name: backups
+  etl_handle: Fact Append
+  description: Thông tin file sao lưu cơ sở dữ liệu
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: BACKUPS
+  alias: back
+  select_fields: ID, FILE_NAME, FILE_PATH, BACKUP_TYPE, CREATED_AT, CREATED_BY
+  filter: created_at >= {data_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: back.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: file_name
+  transformation: back.FILE_NAME
+  data_type: string
+  description: Tên file sao lưu hoặc file đính kèm
+  target_attr_name: null
+- target_column: file_path
+  transformation: back.FILE_PATH
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: backup_type
+  transformation: back.BACKUP_TYPE
+  data_type: int
+  description: 'Loại sao lưu: 1=Full backup, 2=Incremental backup'
+  target_attr_name: null
+- target_column: created_at
+  transformation: back.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: back.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

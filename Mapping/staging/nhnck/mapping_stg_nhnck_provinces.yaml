@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.PROVINCES
+  logical_name: Mapping Staging – source NHNCK.PROVINCES
+  physical_name: provinces
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PROVINCES
+target:
+  namespace: stg
+  physical_name: provinces
+  etl_handle: Fact Snapshot
+  description: Danh mục tỉnh/thành phố
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: PROVINCES
+  alias: prov
+  select_fields: ID, COUNTRY_ID, PROVINCE_CODE, PROVINCE_NAME, CREATED_AT, CREATED_BY,
+    UPDATED_AT, RECORD_STATUS, RECORD_TYPE, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: prov.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: country_id
+  transformation: prov.COUNTRY_ID
+  data_type: int
+  description: 'FK -> COUNTRIES: Quốc gia liên quan'
+  target_attr_name: null
+- target_column: province_code
+  transformation: prov.PROVINCE_CODE
+  data_type: string
+  description: Mã tỉnh/thành phố theo chuẩn quốc gia
+  target_attr_name: null
+- target_column: province_name
+  transformation: prov.PROVINCE_NAME
+  data_type: string
+  description: Tên tỉnh/thành phố trực thuộc trung ương
+  target_attr_name: null
+- target_column: created_at
+  transformation: prov.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: prov.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: prov.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: prov.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: record_type
+  transformation: prov.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: prov.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

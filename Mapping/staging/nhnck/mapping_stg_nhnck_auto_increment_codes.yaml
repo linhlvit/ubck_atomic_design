@@ -1,0 +1,49 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.AUTO_INCREMENT_CODES
+  logical_name: Mapping Staging – source NHNCK.AUTO_INCREMENT_CODES
+  physical_name: auto_increment_codes
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-AUTO_INCREMENT_CODES
+target:
+  namespace: stg
+  physical_name: auto_increment_codes
+  etl_handle: Fact Snapshot
+  description: Quản lý số tự tăng cho mã CCHN và mã tài liệu
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: AUTO_INCREMENT_CODES
+  alias: au_in_co
+  select_fields: ID, CERTIFICATE_ID, CODE, RECORD_TYPE, DOCUMENT_TYPE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: au_in_co.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: au_in_co.CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: code
+  transformation: au_in_co.CODE
+  data_type: string
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  target_attr_name: null
+- target_column: record_type
+  transformation: au_in_co.RECORD_TYPE
+  data_type: int
+  description: 'Loại bản ghi: 1=Cấp mới, 2=Cấp lại'
+  target_attr_name: null
+- target_column: document_type
+  transformation: au_in_co.DOCUMENT_TYPE
+  data_type: int
+  description: Loại tài liệu hoặc loại mã tự tăng
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

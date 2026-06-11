@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.CERTIFICATE_NUMBER_TEMPLATES
+  logical_name: Mapping Staging – source NHNCK.CERTIFICATE_NUMBER_TEMPLATES
+  physical_name: certificate_number_templates
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_NUMBER_TEMPLATES
+target:
+  namespace: stg
+  physical_name: certificate_number_templates
+  etl_handle: Fact Snapshot
+  description: Mã tài liệu kết hợp chứng chỉ từ một cửa điện tử
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: CERTIFICATE_NUMBER_TEMPLATES
+  alias: ce_nu_te
+  select_fields: ID, CODE, CERTIFICATE_ID, RECORD_TYPE, DEFAULT_FLAG, ITEM_NAME, CREATED_AT,
+    UPDATED_AT, CREATED_BY, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ce_nu_te.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: code
+  transformation: ce_nu_te.CODE
+  data_type: string
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: ce_nu_te.CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: record_type
+  transformation: ce_nu_te.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: default_flag
+  transformation: ce_nu_te.DEFAULT_FLAG
+  data_type: int
+  description: 'Cờ là mẫu/giá trị mặc định: 1=Mặc định, 0=Không phải mặc định'
+  target_attr_name: null
+- target_column: item_name
+  transformation: ce_nu_te.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính
+  target_attr_name: null
+- target_column: created_at
+  transformation: ce_nu_te.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ce_nu_te.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: ce_nu_te.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ce_nu_te.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

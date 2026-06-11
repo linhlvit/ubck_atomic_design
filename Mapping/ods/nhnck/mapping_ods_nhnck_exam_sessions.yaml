@@ -1,0 +1,145 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.EXAM_SESSIONS
+  logical_name: Mapping ODS – source NHNCK.EXAM_SESSIONS
+  physical_name: exam_sessions
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-EXAM_SESSIONS
+target:
+  namespace: ods
+  physical_name: exam_sessions
+  etl_handle: Fact Snapshot
+  description: Danh mục các đợt thi sát hạch
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: EXAM_SESSIONS
+  alias: ex_se
+  select_fields: id, item_name, code, report_year, session_, organizing_unit, application_start_date,
+    application_end_date, exam_start_date, exam_end_date, file_path, noti_date, exam_locations,
+    submission_methods, record_status, created_at, updated_at, created_by, updated_by,
+    decision_id, bank_id, bank_account_number, bank_account_name
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ex_se.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: item_name
+  transformation: ex_se.item_name
+  data_type: string
+  description: Tên hiển thị chính
+  target_attr_name: null
+- target_column: code
+  transformation: ex_se.code
+  data_type: string
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  target_attr_name: null
+- target_column: report_year
+  transformation: ex_se.report_year
+  data_type: int
+  description: Năm báo cáo (định dạng YYYY)
+  target_attr_name: null
+- target_column: session_
+  transformation: ex_se.session_
+  data_type: int
+  description: 'Kỳ thi trong năm (1=Kỳ 1, 2=Kỳ 2...) — tên gốc: Session (thêm _ để
+    tránh từ khóa Oracle)'
+  target_attr_name: null
+- target_column: organizing_unit
+  transformation: ex_se.organizing_unit
+  data_type: string
+  description: 'Đơn vị tổ chức đợt thi sát hạch CCHN (tên đơn vị, VD: Vụ nghiệp vụ
+    II - UBCKNN)'
+  target_attr_name: null
+- target_column: application_start_date
+  transformation: ex_se.application_start_date
+  data_type: string
+  description: Ngày bắt đầu nhận đăng ký dự thi (VARCHAR2 vì có thể lưu dạng chuỗi
+    mô tả)
+  target_attr_name: null
+- target_column: application_end_date
+  transformation: ex_se.application_end_date
+  data_type: string
+  description: Ngày kết thúc nhận đăng ký dự thi
+  target_attr_name: null
+- target_column: exam_start_date
+  transformation: ex_se.exam_start_date
+  data_type: string
+  description: Ngày bắt đầu kỳ thi sát hạch
+  target_attr_name: null
+- target_column: exam_end_date
+  transformation: ex_se.exam_end_date
+  data_type: string
+  description: Ngày kết thúc kỳ thi sát hạch
+  target_attr_name: null
+- target_column: file_path
+  transformation: ex_se.file_path
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: noti_date
+  transformation: ex_se.noti_date
+  data_type: string
+  description: Ngày thông báo kết quả thi sát hạch
+  target_attr_name: null
+- target_column: exam_locations
+  transformation: ex_se.exam_locations
+  data_type: string
+  description: Địa điểm tổ chức thi (NVARCHAR2 mô tả địa điểm)
+  target_attr_name: null
+- target_column: submission_methods
+  transformation: ex_se.submission_methods
+  data_type: string
+  description: Phương thức nộp hồ sơ đăng ký dự thi (trực tiếp, online...)
+  target_attr_name: null
+- target_column: record_status
+  transformation: ex_se.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: created_at
+  transformation: ex_se.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ex_se.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: ex_se.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ex_se.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: decision_id
+  transformation: ex_se.decision_id
+  data_type: int
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  target_attr_name: null
+- target_column: bank_id
+  transformation: ex_se.bank_id
+  data_type: int
+  description: 'FK -> BANKS: Ngân hàng thu phí đăng ký/dự thi'
+  target_attr_name: null
+- target_column: bank_account_number
+  transformation: ex_se.bank_account_number
+  data_type: string
+  description: Số tài khoản ngân hàng thu phí thi
+  target_attr_name: null
+- target_column: bank_account_name
+  transformation: ex_se.bank_account_name
+  data_type: string
+  description: Tên chủ tài khoản ngân hàng thu phí thi
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

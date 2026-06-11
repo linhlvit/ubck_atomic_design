@@ -1,0 +1,39 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.CERTIFICATE_DEPARTMENTS
+  logical_name: Mapping Staging – source NHNCK.CERTIFICATE_DEPARTMENTS
+  physical_name: certificate_departments
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_DEPARTMENTS
+target:
+  namespace: stg
+  physical_name: certificate_departments
+  etl_handle: Fact Snapshot
+  description: Liên kết phòng ban với loại chứng chỉ
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: CERTIFICATE_DEPARTMENTS
+  alias: ce_de
+  select_fields: ID, CERTIFICATE_ID, DEPARTMENT_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ce_de.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: ce_de.CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: department_id
+  transformation: ce_de.DEPARTMENT_ID
+  data_type: int
+  description: 'FK -> DEPARTMENTS: Phòng ban của người dùng'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

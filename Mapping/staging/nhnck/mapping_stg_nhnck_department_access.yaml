@@ -1,0 +1,39 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.DEPARTMENT_ACCESS
+  logical_name: Mapping Staging – source NHNCK.DEPARTMENT_ACCESS
+  physical_name: department_access
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-DEPARTMENT_ACCESS
+target:
+  namespace: stg
+  physical_name: department_access
+  etl_handle: Fact Snapshot
+  description: Quản lý quyền khai thác giữa các phòng ban
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: DEPARTMENT_ACCESS
+  alias: de_ac
+  select_fields: ID, DEPARTMENT_ID, DEPARTMENT_ACCESS_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: de_ac.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: department_id
+  transformation: de_ac.DEPARTMENT_ID
+  data_type: int
+  description: 'FK -> DEPARTMENTS: Phòng ban của người dùng'
+  target_attr_name: null
+- target_column: department_access_id
+  transformation: de_ac.DEPARTMENT_ACCESS_ID
+  data_type: int
+  description: 'FK -> DEPARTMENTS: Phòng ban được phép truy cập'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

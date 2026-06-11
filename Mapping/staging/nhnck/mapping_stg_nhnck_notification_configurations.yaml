@@ -1,0 +1,101 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.NOTIFICATION_CONFIGURATIONS
+  logical_name: Mapping Staging – source NHNCK.NOTIFICATION_CONFIGURATIONS
+  physical_name: notification_configurations
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-NOTIFICATION_CONFIGURATIONS
+target:
+  namespace: stg
+  physical_name: notification_configurations
+  etl_handle: Fact Snapshot
+  description: Cấu hình thông báo theo sự kiện nghiệp vụ
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: NOTIFICATION_CONFIGURATIONS
+  alias: no_co
+  select_fields: ID, RECORD_TYPE, ITEM_NAME, TRIGGER_EVENT, ACTION_TYPE, NOTI_ENABLED,
+    SMS_ENABLED, EMAIL_ENABLED, CONTENT_NOTI, CONTENT_SMS, CONTENT_EMAIL, NOTI_PARAMETERS_JSON,
+    SMS_PARAMETERS_JSON, EMAIL_PARAMETERS_JSON, RECEIVERS_JSON
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: no_co.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: record_type
+  transformation: no_co.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: item_name
+  transformation: no_co.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính
+  target_attr_name: null
+- target_column: trigger_event
+  transformation: no_co.TRIGGER_EVENT
+  data_type: string
+  description: Tên sự kiện nghiệp vụ kích hoạt gửi thông báo (mã sự kiện)
+  target_attr_name: null
+- target_column: action_type
+  transformation: no_co.ACTION_TYPE
+  data_type: int
+  description: Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ)
+  target_attr_name: null
+- target_column: noti_enabled
+  transformation: no_co.NOTI_ENABLED
+  data_type: int
+  description: 'Cờ bật thông báo in-app: 1=Gửi thông báo in-app, 0=Không gửi'
+  target_attr_name: null
+- target_column: sms_enabled
+  transformation: no_co.SMS_ENABLED
+  data_type: int
+  description: 'Cờ bật gửi SMS: 1=Gửi SMS, 0=Không gửi'
+  target_attr_name: null
+- target_column: email_enabled
+  transformation: no_co.EMAIL_ENABLED
+  data_type: int
+  description: 'Cờ bật gửi email: 1=Gửi email, 0=Không gửi'
+  target_attr_name: null
+- target_column: content_noti
+  transformation: no_co.CONTENT_NOTI
+  data_type: string
+  description: Template nội dung thông báo in-app (NCLOB, có placeholder {variable})
+  target_attr_name: null
+- target_column: content_sms
+  transformation: no_co.CONTENT_SMS
+  data_type: string
+  description: Template nội dung SMS (NCLOB, có placeholder {variable})
+  target_attr_name: null
+- target_column: content_email
+  transformation: no_co.CONTENT_EMAIL
+  data_type: string
+  description: Template nội dung email HTML (NCLOB, có placeholder {variable})
+  target_attr_name: null
+- target_column: noti_parameters_json
+  transformation: no_co.NOTI_PARAMETERS_JSON
+  data_type: string
+  description: Danh sách tham số cho template in-app (JSON NCLOB)
+  target_attr_name: null
+- target_column: sms_parameters_json
+  transformation: no_co.SMS_PARAMETERS_JSON
+  data_type: string
+  description: Danh sách tham số cho template SMS (JSON NCLOB)
+  target_attr_name: null
+- target_column: email_parameters_json
+  transformation: no_co.EMAIL_PARAMETERS_JSON
+  data_type: string
+  description: Danh sách tham số cho template email (JSON NCLOB)
+  target_attr_name: null
+- target_column: receivers_json
+  transformation: no_co.RECEIVERS_JSON
+  data_type: string
+  description: 'Danh sách đối tượng nhận thông báo (JSON NCLOB: roles, units, users)'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.ROLES
+  logical_name: Mapping Staging – source NHNCK.ROLES
+  physical_name: roles
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-ROLES
+target:
+  namespace: stg
+  physical_name: roles
+  etl_handle: Fact Snapshot
+  description: Danh mục vai trò (nhóm quyền) trong hệ thống
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: ROLES
+  alias: role
+  select_fields: ID, GROUP_CODE, GROUP_NAME, DESCRIPTION, CREATED_AT, CREATED_BY,
+    UPDATED_AT, RECORD_STATUS, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: role.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: group_code
+  transformation: role.GROUP_CODE
+  data_type: string
+  description: Mã nhóm quyền (role code)
+  target_attr_name: null
+- target_column: group_name
+  transformation: role.GROUP_NAME
+  data_type: string
+  description: Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý)
+  target_attr_name: null
+- target_column: description
+  transformation: role.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: created_at
+  transformation: role.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: role.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: role.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: role.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: updated_by
+  transformation: role.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

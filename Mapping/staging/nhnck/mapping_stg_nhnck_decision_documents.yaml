@@ -1,0 +1,90 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.DECISION_DOCUMENTS
+  logical_name: Mapping Staging – source NHNCK.DECISION_DOCUMENTS
+  physical_name: decision_documents
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-DECISION_DOCUMENTS
+target:
+  namespace: stg
+  physical_name: decision_documents
+  etl_handle: Fact Snapshot
+  description: Tài liệu đính kèm của quyết định
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: DECISION_DOCUMENTS
+  alias: de_do
+  select_fields: ID, DECISION_ID, RECORD_TYPE, DECISION_NUMBER, POSITION, FILE_PATH,
+    SIGNED_BY, SIGNED_DATE, RECORD_STATUS, CREATED_AT, UPDATED_AT, CREATED_BY, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: de_do.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: decision_id
+  transformation: de_do.DECISION_ID
+  data_type: int
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  target_attr_name: null
+- target_column: record_type
+  transformation: de_do.RECORD_TYPE
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: decision_number
+  transformation: de_do.DECISION_NUMBER
+  data_type: string
+  description: 'Số quyết định hành chính (VD: 123/QĐ-UBCK)'
+  target_attr_name: null
+- target_column: position
+  transformation: de_do.POSITION
+  data_type: string
+  description: Chức vụ/vị trí đảm nhiệm
+  target_attr_name: null
+- target_column: file_path
+  transformation: de_do.FILE_PATH
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: signed_by
+  transformation: de_do.SIGNED_BY
+  data_type: string
+  description: 'FK -> USERS: Người thực hiện ký số'
+  target_attr_name: null
+- target_column: signed_date
+  transformation: de_do.SIGNED_DATE
+  data_type: date
+  description: Ngày ký ban hành quyết định
+  target_attr_name: null
+- target_column: record_status
+  transformation: de_do.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: created_at
+  transformation: de_do.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: de_do.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: de_do.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: de_do.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

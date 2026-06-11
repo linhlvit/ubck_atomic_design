@@ -1,0 +1,111 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.DIGITAL_CERTIFICATES
+  logical_name: Mapping Staging – source NHNCK.DIGITAL_CERTIFICATES
+  physical_name: digital_certificates
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-DIGITAL_CERTIFICATES
+target:
+  namespace: stg
+  physical_name: digital_certificates
+  etl_handle: Fact Snapshot
+  description: Chứng thư số
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: DIGITAL_CERTIFICATES
+  alias: di_ce
+  select_fields: ID, SUBJECT, COMPANY_NAME, TAX_CODE, EMAIL, ISSUER, SERIAL_NUMBER,
+    VALID_FROM, VALID_TO, BASE64_DATA, THUMBPRINT, FULL_DATA, RECORD_STATUS, CREATED_AT,
+    UPDATED_AT, CREATED_BY, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: di_ce.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: subject
+  transformation: di_ce.SUBJECT
+  data_type: string
+  description: Tên chủ thể trên chứng thư số (Distinguished Name)
+  target_attr_name: null
+- target_column: company_name
+  transformation: di_ce.COMPANY_NAME
+  data_type: string
+  description: Tên tổ chức trên chứng thư số
+  target_attr_name: null
+- target_column: tax_code
+  transformation: di_ce.TAX_CODE
+  data_type: string
+  description: Mã số thuế trên chứng thư số
+  target_attr_name: null
+- target_column: email
+  transformation: di_ce.EMAIL
+  data_type: string
+  description: Địa chỉ email liên lạc
+  target_attr_name: null
+- target_column: issuer
+  transformation: di_ce.ISSUER
+  data_type: string
+  description: Tổ chức cấp chứng thư số (Certificate Authority)
+  target_attr_name: null
+- target_column: serial_number
+  transformation: di_ce.SERIAL_NUMBER
+  data_type: string
+  description: Số serial duy nhất của chứng thư số
+  target_attr_name: null
+- target_column: valid_from
+  transformation: di_ce.VALID_FROM
+  data_type: date
+  description: Ngày bắt đầu hiệu lực của chứng thư số
+  target_attr_name: null
+- target_column: valid_to
+  transformation: di_ce.VALID_TO
+  data_type: date
+  description: Ngày hết hạn hiệu lực của chứng thư số
+  target_attr_name: null
+- target_column: base64_data
+  transformation: di_ce.BASE64_DATA
+  data_type: string
+  description: Dữ liệu chứng thư số mã hóa Base64 (NCLOB)
+  target_attr_name: null
+- target_column: thumbprint
+  transformation: di_ce.THUMBPRINT
+  data_type: string
+  description: Fingerprint/thumbprint SHA1 của chứng thư số
+  target_attr_name: null
+- target_column: full_data
+  transformation: di_ce.FULL_DATA
+  data_type: string
+  description: Dữ liệu đầy đủ của chứng thư số (NCLOB)
+  target_attr_name: null
+- target_column: record_status
+  transformation: di_ce.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: created_at
+  transformation: di_ce.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: di_ce.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: di_ce.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: di_ce.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

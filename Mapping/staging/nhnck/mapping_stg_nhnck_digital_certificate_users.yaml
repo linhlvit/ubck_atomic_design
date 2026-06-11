@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.DIGITAL_CERTIFICATE_USERS
+  logical_name: Mapping Staging – source NHNCK.DIGITAL_CERTIFICATE_USERS
+  physical_name: digital_certificate_users
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-DIGITAL_CERTIFICATE_USERS
+target:
+  namespace: stg
+  physical_name: digital_certificate_users
+  etl_handle: Fact Snapshot
+  description: Tài khoản được sử dụng chứng thư số
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: DIGITAL_CERTIFICATE_USERS
+  alias: di_ce_us
+  select_fields: ID, DIGITAL_CERTIFICATE_ID, USER_ID, ROLE, RECORD_STATUS, NOTES,
+    CREATED_AT, UPDATED_AT, CREATED_BY, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: di_ce_us.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: digital_certificate_id
+  transformation: di_ce_us.DIGITAL_CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> DIGITAL_CERTIFICATES: Chứng thư số liên quan'
+  target_attr_name: null
+- target_column: user_id
+  transformation: di_ce_us.USER_ID
+  data_type: int
+  description: 'FK -> USERS: Người dùng liên quan'
+  target_attr_name: null
+- target_column: role
+  transformation: di_ce_us.ROLE
+  data_type: string
+  description: 'Vai trò sử dụng chứng thư số: SIGN=Ký số, ENCRYPT=Mã hóa'
+  target_attr_name: null
+- target_column: record_status
+  transformation: di_ce_us.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: notes
+  transformation: di_ce_us.NOTES
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: created_at
+  transformation: di_ce_us.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: di_ce_us.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: di_ce_us.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: di_ce_us.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

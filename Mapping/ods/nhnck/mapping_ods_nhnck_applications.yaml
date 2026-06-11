@@ -1,0 +1,206 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.APPLICATIONS
+  logical_name: Mapping ODS – source NHNCK.APPLICATIONS
+  physical_name: applications
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATIONS
+target:
+  namespace: ods
+  physical_name: applications
+  etl_handle: Fact Snapshot
+  description: Hồ sơ đăng ký chứng chỉ hành nghề
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: id, professional_id, status_id, certificate_id, certificate_record_id,
+    previous_certificate_id, previous_certificate_record_id, exam_session_id, registration_type,
+    application_type, application_code, title, submission_date, supplement_date, reissue_reason,
+    rejection_reason, certificate_number, issue_date, previous_certificate_number,
+    previous_issue_date, note, violated, data_exploitable, assignee_id, info_verify_id,
+    certificate_receipt_method, certificate_receipt_address, receipt_status, supplement_letter_date,
+    certificate_receipt_phone, reissue_hsm, created_at, updated_at, updated_by, created_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: appl.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: professional_id
+  transformation: appl.professional_id
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: status_id
+  transformation: appl.status_id
+  data_type: int
+  description: 'FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại'
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: appl.certificate_id
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: certificate_record_id
+  transformation: appl.certificate_record_id
+  data_type: int
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  target_attr_name: null
+- target_column: previous_certificate_id
+  transformation: appl.previous_certificate_id
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại CCHN cũ (khi cấp lại)'
+  target_attr_name: null
+- target_column: previous_certificate_record_id
+  transformation: appl.previous_certificate_record_id
+  data_type: int
+  description: 'FK -> CERTIFICATE_RECORDS: CCHN cũ cần cấp lại'
+  target_attr_name: null
+- target_column: exam_session_id
+  transformation: appl.exam_session_id
+  data_type: int
+  description: 'FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan'
+  target_attr_name: null
+- target_column: registration_type
+  transformation: appl.registration_type
+  data_type: int
+  description: 'Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)'
+  target_attr_name: null
+- target_column: application_type
+  transformation: appl.application_type
+  data_type: int
+  description: 'Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông
+    tin, 3=Cấp lại mất CCHN'
+  target_attr_name: null
+- target_column: application_code
+  transformation: appl.application_code
+  data_type: string
+  description: Mã hồ sơ (mã định danh duy nhất do hệ thống sinh)
+  target_attr_name: null
+- target_column: title
+  transformation: appl.title
+  data_type: string
+  description: Tiêu đề/tên hồ sơ hoặc nhóm
+  target_attr_name: null
+- target_column: submission_date
+  transformation: appl.submission_date
+  data_type: date
+  description: Ngày nộp hồ sơ chính thức
+  target_attr_name: null
+- target_column: supplement_date
+  transformation: appl.supplement_date
+  data_type: date
+  description: Ngày nộp bổ sung hồ sơ
+  target_attr_name: null
+- target_column: reissue_reason
+  transformation: appl.reissue_reason
+  data_type: string
+  description: Lý do xin cấp lại CCHN (NCLOB)
+  target_attr_name: null
+- target_column: rejection_reason
+  transformation: appl.rejection_reason
+  data_type: string
+  description: Lý do trả lại/từ chối hồ sơ (NCLOB)
+  target_attr_name: null
+- target_column: certificate_number
+  transformation: appl.certificate_number
+  data_type: string
+  description: Số CCHN cấp cho NHNCK
+  target_attr_name: null
+- target_column: issue_date
+  transformation: appl.issue_date
+  data_type: date
+  description: Ngày cấp CCHN
+  target_attr_name: null
+- target_column: previous_certificate_number
+  transformation: appl.previous_certificate_number
+  data_type: string
+  description: Số CCHN cũ (trước khi cấp lại)
+  target_attr_name: null
+- target_column: previous_issue_date
+  transformation: appl.previous_issue_date
+  data_type: date
+  description: Ngày cấp CCHN cũ
+  target_attr_name: null
+- target_column: note
+  transformation: appl.note
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: violated
+  transformation: appl.violated
+  data_type: int
+  description: 'Cờ NHNCK vi phạm quy định: 1=Có vi phạm, 0=Không vi phạm'
+  target_attr_name: null
+- target_column: data_exploitable
+  transformation: appl.data_exploitable
+  data_type: int
+  description: 'Cờ dữ liệu có thể khai thác/sử dụng: 1=Có thể dùng, 0=Không'
+  target_attr_name: null
+- target_column: assignee_id
+  transformation: appl.assignee_id
+  data_type: int
+  description: 'FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ'
+  target_attr_name: null
+- target_column: info_verify_id
+  transformation: appl.info_verify_id
+  data_type: int
+  description: 'FK -> USERS: Cán bộ xác minh thông tin hồ sơ'
+  target_attr_name: null
+- target_column: certificate_receipt_method
+  transformation: appl.certificate_receipt_method
+  data_type: int
+  description: 'Phương thức nhận CCHN: 1=Nhận tại UBCKNN, 2=Gửi bưu điện, 3=Điện tử'
+  target_attr_name: null
+- target_column: certificate_receipt_address
+  transformation: appl.certificate_receipt_address
+  data_type: string
+  description: Địa chỉ nhận CCHN qua bưu điện
+  target_attr_name: null
+- target_column: receipt_status
+  transformation: appl.receipt_status
+  data_type: int
+  description: 'Trạng thái nhận CCHN: 1=Đã nhận, 0=Chưa nhận'
+  target_attr_name: null
+- target_column: supplement_letter_date
+  transformation: appl.supplement_letter_date
+  data_type: date
+  description: Ngày ban hành công văn yêu cầu bổ sung hồ sơ
+  target_attr_name: null
+- target_column: certificate_receipt_phone
+  transformation: appl.certificate_receipt_phone
+  data_type: string
+  description: Số điện thoại liên lạc khi nhận CCHN
+  target_attr_name: null
+- target_column: reissue_hsm
+  transformation: appl.reissue_hsm
+  data_type: string
+  description: Thông tin HSM (Hardware Security Module) khi cấp CCHN điện tử
+  target_attr_name: null
+- target_column: created_at
+  transformation: appl.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: appl.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: appl.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: appl.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

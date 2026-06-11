@@ -1,0 +1,86 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.SPECIALIZATIONS
+  logical_name: Mapping Staging – source NHNCK.SPECIALIZATIONS
+  physical_name: specializations
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-SPECIALIZATIONS
+target:
+  namespace: stg
+  physical_name: specializations
+  etl_handle: Fact Snapshot
+  description: Danh mục chuyên môn/chứng chỉ chuyên môn
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: SPECIALIZATIONS
+  alias: spec
+  select_fields: ID, SPECIALIZATION_CODE, SPECIALIZATION_NAME, REFERENCE, CREATED_AT,
+    CREATED_BY, UPDATED_AT, ACTIVE, ORIGINAL_DATA, RECORD_STATUS, MCDT_CODE, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: spec.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: specialization_code
+  transformation: spec.SPECIALIZATION_CODE
+  data_type: string
+  description: Mã chuyên ngành CCHN (mã định danh duy nhất)
+  target_attr_name: null
+- target_column: specialization_name
+  transformation: spec.SPECIALIZATION_NAME
+  data_type: string
+  description: 'Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)'
+  target_attr_name: null
+- target_column: reference
+  transformation: spec.REFERENCE
+  data_type: string
+  description: Trích dẫn căn cứ pháp lý của quyết định
+  target_attr_name: null
+- target_column: created_at
+  transformation: spec.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: spec.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: spec.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: active
+  transformation: spec.ACTIVE
+  data_type: int
+  description: 'Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu'
+  target_attr_name: null
+- target_column: original_data
+  transformation: spec.ORIGINAL_DATA
+  data_type: int
+  description: 'Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người
+    dùng tạo'
+  target_attr_name: null
+- target_column: record_status
+  transformation: spec.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: mcdt_code
+  transformation: spec.MCDT_CODE
+  data_type: string
+  description: Mã chuyên ngành trên hệ thống Cổng DVC quốc gia (MCĐT)
+  target_attr_name: null
+- target_column: updated_by
+  transformation: spec.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

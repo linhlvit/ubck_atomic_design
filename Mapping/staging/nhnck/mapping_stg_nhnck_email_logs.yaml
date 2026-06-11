@@ -1,0 +1,65 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.EMAIL_LOGS
+  logical_name: Mapping Staging – source NHNCK.EMAIL_LOGS
+  physical_name: email_logs
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-EMAIL_LOGS
+target:
+  namespace: stg
+  physical_name: email_logs
+  etl_handle: Fact Append
+  description: Nhật ký gửi email trong hệ thống
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: EMAIL_LOGS
+  alias: em_lo
+  select_fields: ID, RECEIVER_ID, EMAIL_TO, SUBJECT, BODY, RECORD_STATUS, ERROR_MESSAGE,
+    CREATED_AT
+  filter: created_at >= {data_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: em_lo.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: receiver_id
+  transformation: em_lo.RECEIVER_ID
+  data_type: int
+  description: 'FK -> USERS: Người nhận/tiếp nhận hành động xử lý'
+  target_attr_name: null
+- target_column: email_to
+  transformation: em_lo.EMAIL_TO
+  data_type: string
+  description: Địa chỉ email người nhận
+  target_attr_name: null
+- target_column: subject
+  transformation: em_lo.SUBJECT
+  data_type: string
+  description: Tên chủ thể trên chứng thư số (Distinguished Name)
+  target_attr_name: null
+- target_column: body
+  transformation: em_lo.BODY
+  data_type: string
+  description: Nội dung email đầy đủ (NCLOB HTML)
+  target_attr_name: null
+- target_column: record_status
+  transformation: em_lo.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: error_message
+  transformation: em_lo.ERROR_MESSAGE
+  data_type: string
+  description: Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action)
+  target_attr_name: null
+- target_column: created_at
+  transformation: em_lo.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

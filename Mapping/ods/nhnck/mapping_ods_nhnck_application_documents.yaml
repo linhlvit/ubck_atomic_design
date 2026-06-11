@@ -1,0 +1,96 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.APPLICATION_DOCUMENTS
+  logical_name: Mapping ODS – source NHNCK.APPLICATION_DOCUMENTS
+  physical_name: application_documents
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_DOCUMENTS
+target:
+  namespace: ods
+  physical_name: application_documents
+  etl_handle: Fact Snapshot
+  description: Tài liệu đính kèm trong hồ sơ
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: APPLICATION_DOCUMENTS
+  alias: ap_do
+  select_fields: id, application_id, document_id, description, record_status, assignee_id,
+    files, document_name, note, created_at, appraisaled_at, updated_at, created_by,
+    updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_do.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: application_id
+  transformation: ap_do.application_id
+  data_type: int
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  target_attr_name: null
+- target_column: document_id
+  transformation: ap_do.document_id
+  data_type: int
+  description: 'FK -> DOCUMENTS: Loại tài liệu yêu cầu'
+  target_attr_name: null
+- target_column: description
+  transformation: ap_do.description
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: record_status
+  transformation: ap_do.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: assignee_id
+  transformation: ap_do.assignee_id
+  data_type: int
+  description: 'FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ'
+  target_attr_name: null
+- target_column: files
+  transformation: ap_do.files
+  data_type: string
+  description: 'Danh sách file đính kèm (JSON CLOB: [{name, path, size, type}...])'
+  target_attr_name: null
+- target_column: document_name
+  transformation: ap_do.document_name
+  data_type: string
+  description: Tên tài liệu (snapshot tại thời điểm nộp hồ sơ)
+  target_attr_name: null
+- target_column: note
+  transformation: ap_do.note
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: created_at
+  transformation: ap_do.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: appraisaled_at
+  transformation: ap_do.appraisaled_at
+  data_type: date
+  description: Thời điểm cán bộ hoàn thành thẩm định tài liệu
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ap_do.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: ap_do.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ap_do.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

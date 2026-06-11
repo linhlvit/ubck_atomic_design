@@ -1,0 +1,94 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.CERTIFICATES
+  logical_name: Mapping ODS – source NHNCK.CERTIFICATES
+  physical_name: certificates
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATES
+target:
+  namespace: ods
+  physical_name: certificates
+  etl_handle: Fact Snapshot
+  description: Danh mục các loại chứng chỉ hành nghề
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: CERTIFICATES
+  alias: cert
+  select_fields: id, certificate_code, certificate_name, description, created_at,
+    updated_at, displayed, sort_order, original_data, processing_days, record_status,
+    created_by, updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: cert.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_code
+  transformation: cert.certificate_code
+  data_type: string
+  description: 'Mã loại chứng chỉ hành nghề (mã định danh duy nhất, VD: QLQY, PTDT,
+    MTCK)'
+  target_attr_name: null
+- target_column: certificate_name
+  transformation: cert.certificate_name
+  data_type: string
+  description: 'Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi
+    giới CK)'
+  target_attr_name: null
+- target_column: description
+  transformation: cert.description
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: created_at
+  transformation: cert.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: cert.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: displayed
+  transformation: cert.displayed
+  data_type: int
+  description: 'Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn'
+  target_attr_name: null
+- target_column: sort_order
+  transformation: cert.sort_order
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: original_data
+  transformation: cert.original_data
+  data_type: int
+  description: 'Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người
+    dùng tạo'
+  target_attr_name: null
+- target_column: processing_days
+  transformation: cert.processing_days
+  data_type: int
+  description: Số ngày làm việc xử lý hồ sơ theo quy định
+  target_attr_name: null
+- target_column: record_status
+  transformation: cert.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: created_by
+  transformation: cert.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: cert.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

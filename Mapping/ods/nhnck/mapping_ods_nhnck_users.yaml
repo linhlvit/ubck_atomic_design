@@ -1,0 +1,121 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.USERS
+  logical_name: Mapping ODS – source NHNCK.USERS
+  physical_name: users
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-USERS
+target:
+  namespace: ods
+  physical_name: users
+  etl_handle: Fact Snapshot
+  description: Thông tin người dùng hệ thống (cán bộ UBCKNN)
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: USERS
+  alias: user
+  select_fields: id, unit_id, department_id, position_id, username, password, full_name,
+    email, phone_number, gender, ldap, updated_at, created_at, created_by, record_status,
+    record_type, updated_by, updated_password_at, professional_id
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: user.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: unit_id
+  transformation: user.unit_id
+  data_type: int
+  description: 'FK -> UNITS: Đơn vị nội bộ UBCKNN của người dùng/phòng ban'
+  target_attr_name: null
+- target_column: department_id
+  transformation: user.department_id
+  data_type: int
+  description: 'FK -> DEPARTMENTS: Phòng ban của người dùng'
+  target_attr_name: null
+- target_column: position_id
+  transformation: user.position_id
+  data_type: int
+  description: 'FK -> POSITIONS: Chức vụ của người dùng'
+  target_attr_name: null
+- target_column: username
+  transformation: user.username
+  data_type: string
+  description: Tên đăng nhập vào hệ thống
+  target_attr_name: null
+- target_column: password
+  transformation: user.password
+  data_type: string
+  description: Mật khẩu đã mã hóa (bcrypt hash)
+  target_attr_name: null
+- target_column: full_name
+  transformation: user.full_name
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: null
+- target_column: email
+  transformation: user.email
+  data_type: string
+  description: Địa chỉ email liên lạc
+  target_attr_name: null
+- target_column: phone_number
+  transformation: user.phone_number
+  data_type: string
+  description: Số điện thoại cố định
+  target_attr_name: null
+- target_column: gender
+  transformation: user.gender
+  data_type: int
+  description: 'Giới tính: 0=Nam, 1=Nữ'
+  target_attr_name: null
+- target_column: ldap
+  transformation: user.ldap
+  data_type: string
+  description: Thông tin LDAP/AD của tài khoản (dùng cho đăng nhập SSO nội bộ)
+  target_attr_name: null
+- target_column: updated_at
+  transformation: user.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_at
+  transformation: user.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: user.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: record_status
+  transformation: user.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: record_type
+  transformation: user.record_type
+  data_type: int
+  description: Loại/phân loại của bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: user.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_password_at
+  transformation: user.updated_password_at
+  data_type: date
+  description: Ngày đổi mật khẩu lần cuối
+  target_attr_name: null
+- target_column: professional_id
+  transformation: user.professional_id
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

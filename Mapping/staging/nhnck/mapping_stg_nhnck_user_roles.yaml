@@ -1,0 +1,39 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.USER_ROLES
+  logical_name: Mapping Staging – source NHNCK.USER_ROLES
+  physical_name: user_roles
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-USER_ROLES
+target:
+  namespace: stg
+  physical_name: user_roles
+  etl_handle: Fact Snapshot
+  description: Phân quyền người dùng theo vai trò
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: USER_ROLES
+  alias: us_ro
+  select_fields: ID, USER_ID, ROLE_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: us_ro.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: user_id
+  transformation: us_ro.USER_ID
+  data_type: int
+  description: 'FK -> USERS: Người dùng liên quan'
+  target_attr_name: null
+- target_column: role_id
+  transformation: us_ro.ROLE_ID
+  data_type: int
+  description: 'FK -> ROLES: Vai trò liên quan'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

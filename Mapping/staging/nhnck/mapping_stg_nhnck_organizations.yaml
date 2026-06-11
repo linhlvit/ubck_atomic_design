@@ -1,0 +1,180 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.ORGANIZATIONS
+  logical_name: Mapping Staging – source NHNCK.ORGANIZATIONS
+  physical_name: organizations
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-ORGANIZATIONS
+target:
+  namespace: stg
+  physical_name: organizations
+  etl_handle: Fact Snapshot
+  description: Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: ORGANIZATIONS
+  alias: org
+  select_fields: ID, PARENT_ID, ORGANIZATION_TYPE_ID, LINKED_ID, SYNC_ID, LEVEL_,
+    ORGANIZATION_CODE, ORGANIZATION_NAME, ENGLISH_NAME, ABBREVIATION, ADDRESS, FAX,
+    PHONE_NUMBER, MOBILE_NUMBER, REPRESENTATIVE, EMAIL, DESCRIPTION, LICENSE_NUMBER,
+    LICENSE_ISSUER, LICENSE_DATE, RECORD_STATUS, SORT_ORDER, LAST_SYNC_DATE, SYNC_STATUS,
+    CREATED_AT, CREATED_BY, UPDATED_AT, UPDATED_BY, WEBSITE, CHARTER_CAPITAL
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: org.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: parent_id
+  transformation: org.PARENT_ID
+  data_type: int
+  description: 'FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp'
+  target_attr_name: null
+- target_column: organization_type_id
+  transformation: org.ORGANIZATION_TYPE_ID
+  data_type: int
+  description: 'FK -> loại tổ chức kinh doanh CK: 0=Khác, 1=Công ty chứng khoán (CTCK),
+    2=Công ty quản lý quỹ (QLQ), 3=Ngân hàng'
+  target_attr_name: null
+- target_column: linked_id
+  transformation: org.LINKED_ID
+  data_type: int
+  description: ID liên kết với tổ chức trong hệ thống FMS hoặc SCMS
+  target_attr_name: null
+- target_column: sync_id
+  transformation: org.SYNC_ID
+  data_type: string
+  description: ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK
+  target_attr_name: null
+- target_column: level_
+  transformation: org.LEVEL_
+  data_type: string
+  description: 'Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh
+    từ khóa Oracle)'
+  target_attr_name: null
+- target_column: organization_code
+  transformation: org.ORGANIZATION_CODE
+  data_type: string
+  description: Mã tổ chức kinh doanh chứng khoán
+  target_attr_name: null
+- target_column: organization_name
+  transformation: org.ORGANIZATION_NAME
+  data_type: string
+  description: Tên đầy đủ của tổ chức kinh doanh chứng khoán
+  target_attr_name: null
+- target_column: english_name
+  transformation: org.ENGLISH_NAME
+  data_type: string
+  description: Tên tiếng Anh của tổ chức
+  target_attr_name: null
+- target_column: abbreviation
+  transformation: org.ABBREVIATION
+  data_type: string
+  description: Tên viết tắt của tổ chức/quyền
+  target_attr_name: null
+- target_column: address
+  transformation: org.ADDRESS
+  data_type: string
+  description: Địa chỉ trụ sở tổ chức (NCLOB)
+  target_attr_name: null
+- target_column: fax
+  transformation: org.FAX
+  data_type: string
+  description: Số fax liên lạc
+  target_attr_name: null
+- target_column: phone_number
+  transformation: org.PHONE_NUMBER
+  data_type: string
+  description: Số điện thoại cố định
+  target_attr_name: null
+- target_column: mobile_number
+  transformation: org.MOBILE_NUMBER
+  data_type: string
+  description: Số điện thoại di động
+  target_attr_name: null
+- target_column: representative
+  transformation: org.REPRESENTATIVE
+  data_type: string
+  description: Tên người đại diện theo pháp luật của tổ chức
+  target_attr_name: null
+- target_column: email
+  transformation: org.EMAIL
+  data_type: string
+  description: Địa chỉ email liên lạc
+  target_attr_name: null
+- target_column: description
+  transformation: org.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: license_number
+  transformation: org.LICENSE_NUMBER
+  data_type: string
+  description: Số giấy phép hoạt động kinh doanh chứng khoán
+  target_attr_name: null
+- target_column: license_issuer
+  transformation: org.LICENSE_ISSUER
+  data_type: string
+  description: Cơ quan cấp giấy phép (UBCKNN)
+  target_attr_name: null
+- target_column: license_date
+  transformation: org.LICENSE_DATE
+  data_type: date
+  description: Ngày cấp giấy phép hoạt động
+  target_attr_name: null
+- target_column: record_status
+  transformation: org.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: sort_order
+  transformation: org.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: last_sync_date
+  transformation: org.LAST_SYNC_DATE
+  data_type: date
+  description: Ngày đồng bộ dữ liệu tổ chức từ FMS/SCMS gần nhất
+  target_attr_name: null
+- target_column: sync_status
+  transformation: org.SYNC_STATUS
+  data_type: int
+  description: 'Trạng thái đồng bộ: 1=Đã đồng bộ, 0=Chưa đồng bộ, 2=Lỗi đồng bộ'
+  target_attr_name: null
+- target_column: created_at
+  transformation: org.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: org.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: org.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: org.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: website
+  transformation: org.WEBSITE
+  data_type: string
+  description: Địa chỉ website của tổ chức
+  target_attr_name: null
+- target_column: charter_capital
+  transformation: org.CHARTER_CAPITAL
+  data_type: string
+  description: Vốn điều lệ của tổ chức kinh doanh CK
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

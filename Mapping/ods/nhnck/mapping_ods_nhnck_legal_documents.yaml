@@ -1,0 +1,111 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.LEGAL_DOCUMENTS
+  logical_name: Mapping ODS – source NHNCK.LEGAL_DOCUMENTS
+  physical_name: legal_documents
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-LEGAL_DOCUMENTS
+target:
+  namespace: ods
+  physical_name: legal_documents
+  etl_handle: Fact Snapshot
+  description: Văn bản pháp lý về hành nghề chứng khoán
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: LEGAL_DOCUMENTS
+  alias: le_do
+  select_fields: id, document_number, document_name, issuing_agency, reference, file_name,
+    file_path, issue_date, position, signatory, created_at, created_by, updated_at,
+    record_status, featured, reason, updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: le_do.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: document_number
+  transformation: le_do.document_number
+  data_type: string
+  description: 'Số hiệu văn bản pháp lý (VD: 119/2020/NĐ-CP, 116/2020/TT-BTC)'
+  target_attr_name: null
+- target_column: document_name
+  transformation: le_do.document_name
+  data_type: string
+  description: Tên tài liệu (snapshot tại thời điểm nộp hồ sơ)
+  target_attr_name: null
+- target_column: issuing_agency
+  transformation: le_do.issuing_agency
+  data_type: string
+  description: Cơ quan ban hành văn bản pháp lý (Chính phủ, Bộ Tài chính, UBCKNN...)
+  target_attr_name: null
+- target_column: reference
+  transformation: le_do.reference
+  data_type: string
+  description: Trích dẫn căn cứ pháp lý của quyết định
+  target_attr_name: null
+- target_column: file_name
+  transformation: le_do.file_name
+  data_type: string
+  description: Tên file sao lưu hoặc file đính kèm
+  target_attr_name: null
+- target_column: file_path
+  transformation: le_do.file_path
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: issue_date
+  transformation: le_do.issue_date
+  data_type: date
+  description: Ngày cấp CCHN
+  target_attr_name: null
+- target_column: position
+  transformation: le_do.position
+  data_type: string
+  description: Chức vụ/vị trí đảm nhiệm
+  target_attr_name: null
+- target_column: signatory
+  transformation: le_do.signatory
+  data_type: string
+  description: Họ tên người ký quyết định
+  target_attr_name: null
+- target_column: created_at
+  transformation: le_do.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: le_do.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: le_do.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: le_do.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: featured
+  transformation: le_do.featured
+  data_type: int
+  description: 'Cờ nổi bật/được đánh dấu quan trọng: 1=Nổi bật, 0=Bình thường'
+  target_attr_name: null
+- target_column: reason
+  transformation: le_do.reason
+  data_type: string
+  description: Lý do thực hiện thao tác hoặc thay đổi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: le_do.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

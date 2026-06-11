@@ -1,0 +1,111 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.EXAM_DETAILS
+  logical_name: Mapping ODS – source NHNCK.EXAM_DETAILS
+  physical_name: exam_details
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
+target:
+  namespace: ods
+  physical_name: exam_details
+  etl_handle: Fact Snapshot
+  description: Kết quả các kỳ thi sát hạch
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: EXAM_DETAILS
+  alias: ex_de
+  select_fields: id, professional_id, certificate_id, exam_session_id, sequence_number,
+    exam_number, law_score, law_result, specialization_score, specialization_result,
+    result, note, created_at, updated_at, created_by, updated_by, application_id
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ex_de.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: professional_id
+  transformation: ex_de.professional_id
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: ex_de.certificate_id
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: exam_session_id
+  transformation: ex_de.exam_session_id
+  data_type: int
+  description: 'FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan'
+  target_attr_name: null
+- target_column: sequence_number
+  transformation: ex_de.sequence_number
+  data_type: int
+  description: Số thứ tự dự thi của NHNCK trong đợt thi
+  target_attr_name: null
+- target_column: exam_number
+  transformation: ex_de.exam_number
+  data_type: string
+  description: Số báo danh thi sát hạch
+  target_attr_name: null
+- target_column: law_score
+  transformation: ex_de.law_score
+  data_type: int
+  description: Điểm phần thi pháp luật chứng khoán
+  target_attr_name: null
+- target_column: law_result
+  transformation: ex_de.law_result
+  data_type: int
+  description: 'Kết quả phần thi pháp luật: -1=Không thi, 0=Không đạt, 1=Đạt'
+  target_attr_name: null
+- target_column: specialization_score
+  transformation: ex_de.specialization_score
+  data_type: int
+  description: Điểm phần thi chuyên ngành
+  target_attr_name: null
+- target_column: specialization_result
+  transformation: ex_de.specialization_result
+  data_type: int
+  description: 'Kết quả phần thi chuyên ngành: -1=Không thi, 0=Không đạt, 1=Đạt'
+  target_attr_name: null
+- target_column: result
+  transformation: ex_de.result
+  data_type: int
+  description: 'Kết quả thi: -1=Không thi, 0=Không đạt, 1=Đạt'
+  target_attr_name: null
+- target_column: note
+  transformation: ex_de.note
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: created_at
+  transformation: ex_de.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ex_de.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: ex_de.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ex_de.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: application_id
+  transformation: ex_de.application_id
+  data_type: int
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

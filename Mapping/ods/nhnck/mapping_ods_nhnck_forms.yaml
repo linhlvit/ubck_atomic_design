@@ -1,0 +1,96 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.FORMS
+  logical_name: Mapping ODS – source NHNCK.FORMS
+  physical_name: forms
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-FORMS
+target:
+  namespace: ods
+  physical_name: forms
+  etl_handle: Fact Snapshot
+  description: Biểu mẫu liên quan đến quy trình cấp CCHN
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: FORMS
+  alias: form
+  select_fields: id, certificate_id, form_name, reference, description, file_name,
+    file_path, created_at, created_by, updated_at, record_status, sort_order, featured,
+    updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: form.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: form.certificate_id
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: form_name
+  transformation: form.form_name
+  data_type: string
+  description: 'Tên biểu mẫu (VD: Đơn đề nghị cấp CCHN, Bảng kê hồ sơ...)'
+  target_attr_name: null
+- target_column: reference
+  transformation: form.reference
+  data_type: string
+  description: Trích dẫn căn cứ pháp lý của quyết định
+  target_attr_name: null
+- target_column: description
+  transformation: form.description
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: null
+- target_column: file_name
+  transformation: form.file_name
+  data_type: string
+  description: Tên file sao lưu hoặc file đính kèm
+  target_attr_name: null
+- target_column: file_path
+  transformation: form.file_path
+  data_type: string
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  target_attr_name: null
+- target_column: created_at
+  transformation: form.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: form.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: form.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: record_status
+  transformation: form.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: sort_order
+  transformation: form.sort_order
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: featured
+  transformation: form.featured
+  data_type: int
+  description: 'Cờ nổi bật/được đánh dấu quan trọng: 1=Nổi bật, 0=Bình thường'
+  target_attr_name: null
+- target_column: updated_by
+  transformation: form.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

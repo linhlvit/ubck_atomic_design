@@ -1,0 +1,82 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
+  logical_name: Mapping ODS – source NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
+  physical_name: certificate_record_status_histories
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_STATUS_HISTORIES
+target:
+  namespace: ods
+  physical_name: certificate_record_status_histories
+  etl_handle: Fact Snapshot
+  description: Lịch sử trạng thái chứng chỉ hành nghề
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: CERTIFICATE_RECORD_STATUS_HISTORIES
+  alias: ce_re_st_hi
+  select_fields: id, certificate_record_id, update_type, old_status, new_status, decision_id,
+    reason, created_by, created_at, updated_at, updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ce_re_st_hi.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_record_id
+  transformation: ce_re_st_hi.certificate_record_id
+  data_type: int
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  target_attr_name: null
+- target_column: update_type
+  transformation: ce_re_st_hi.update_type
+  data_type: string
+  description: Loại cập nhật trạng thái CCHN (chuỗi mô tả hành động thay đổi)
+  target_attr_name: null
+- target_column: old_status
+  transformation: ce_re_st_hi.old_status
+  data_type: int
+  description: 'Trạng thái CCHN trước khi thay đổi: 0=Chưa sử dụng, 1=Đang sử dụng,
+    2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực'
+  target_attr_name: null
+- target_column: new_status
+  transformation: ce_re_st_hi.new_status
+  data_type: int
+  description: 'Trạng thái CCHN sau khi thay đổi: 0=Chưa sử dụng, 1=Đang sử dụng,
+    2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực'
+  target_attr_name: null
+- target_column: decision_id
+  transformation: ce_re_st_hi.decision_id
+  data_type: int
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  target_attr_name: null
+- target_column: reason
+  transformation: ce_re_st_hi.reason
+  data_type: string
+  description: Lý do thực hiện thao tác hoặc thay đổi
+  target_attr_name: null
+- target_column: created_by
+  transformation: ce_re_st_hi.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: created_at
+  transformation: ce_re_st_hi.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ce_re_st_hi.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ce_re_st_hi.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

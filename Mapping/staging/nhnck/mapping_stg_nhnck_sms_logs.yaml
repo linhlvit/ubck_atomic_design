@@ -1,0 +1,59 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.SMS_LOGS
+  logical_name: Mapping Staging – source NHNCK.SMS_LOGS
+  physical_name: sms_logs
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-SMS_LOGS
+target:
+  namespace: stg
+  physical_name: sms_logs
+  etl_handle: Fact Append
+  description: Nhật ký gửi SMS trong hệ thống
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: SMS_LOGS
+  alias: sm_lo
+  select_fields: ID, RECEIVER_ID, SMS_TO, MESSAGE, RECORD_STATUS, ERROR_MESSAGE, CREATED_AT
+  filter: created_at >= {data_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: sm_lo.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: receiver_id
+  transformation: sm_lo.RECEIVER_ID
+  data_type: int
+  description: 'FK -> USERS: Người nhận/tiếp nhận hành động xử lý'
+  target_attr_name: null
+- target_column: sms_to
+  transformation: sm_lo.SMS_TO
+  data_type: string
+  description: Số điện thoại người nhận SMS
+  target_attr_name: null
+- target_column: message
+  transformation: sm_lo.MESSAGE
+  data_type: string
+  description: Nội dung tin nhắn SMS
+  target_attr_name: null
+- target_column: record_status
+  transformation: sm_lo.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: error_message
+  transformation: sm_lo.ERROR_MESSAGE
+  data_type: string
+  description: Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action)
+  target_attr_name: null
+- target_column: created_at
+  transformation: sm_lo.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

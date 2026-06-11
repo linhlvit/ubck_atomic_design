@@ -1,0 +1,54 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.APPLICATION_GROUP_MEMBERS
+  logical_name: Mapping Staging – source NHNCK.APPLICATION_GROUP_MEMBERS
+  physical_name: application_group_members
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_GROUP_MEMBERS
+target:
+  namespace: stg
+  physical_name: application_group_members
+  etl_handle: Fact Snapshot
+  description: Thành viên (hồ sơ) trong nhóm xử lý tập thể
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: APPLICATION_GROUP_MEMBERS
+  alias: ap_gr_me
+  select_fields: ID, APPLICATION_GROUP_ID, APPLICATION_ID, RECORD_STATUS, NOTES, ORDER_INDEX
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_gr_me.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: application_group_id
+  transformation: ap_gr_me.APPLICATION_GROUP_ID
+  data_type: int
+  description: 'FK -> APPLICATION_GROUPS: Nhóm hồ sơ chứa bản ghi này'
+  target_attr_name: null
+- target_column: application_id
+  transformation: ap_gr_me.APPLICATION_ID
+  data_type: int
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  target_attr_name: null
+- target_column: record_status
+  transformation: ap_gr_me.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: notes
+  transformation: ap_gr_me.NOTES
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: order_index
+  transformation: ap_gr_me.ORDER_INDEX
+  data_type: int
+  description: Thứ tự của bản ghi trong nhóm
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

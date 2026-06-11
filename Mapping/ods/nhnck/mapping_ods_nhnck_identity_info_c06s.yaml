@@ -1,0 +1,232 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.IDENTITY_INFO_C06S
+  logical_name: Mapping ODS – source NHNCK.IDENTITY_INFO_C06S
+  physical_name: identity_info_c06s
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-IDENTITY_INFO_C06S
+target:
+  namespace: ods
+  physical_name: identity_info_c06s
+  etl_handle: Fact Snapshot
+  description: Lịch sử kiểm tra xác thực với C06
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: IDENTITY_INFO_C06S
+  alias: id_in_c0
+  select_fields: id, full_name, first_name, birth_date, birth_year, identity_number,
+    gender, national, religion, permanent_country_code, permanent_province_code, permanent_district_code,
+    permanent_detail, current_country_code, current_province_code, current_district_code,
+    current_detail, country_code, place_of_birth, hometown, father_full_name, father_country_code,
+    father_identity_number, father_identity_number_old, mother_full_name, mother_country_code,
+    mother_identity_number, mother_identity_number_old, couple_full_name, couple_country_code,
+    couple_identity_number, couple_identity_number_old, created_at, updated_at, created_by,
+    updated_by, user_updated_id, place_of_birth_country_code, place_of_birth_province_code,
+    place_of_birth_district_code
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: id_in_c0.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: full_name
+  transformation: id_in_c0.full_name
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: null
+- target_column: first_name
+  transformation: id_in_c0.first_name
+  data_type: string
+  description: Tên đệm và tên riêng (tên gọi) của người hành nghề
+  target_attr_name: null
+- target_column: birth_date
+  transformation: id_in_c0.birth_date
+  data_type: date
+  description: Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)
+  target_attr_name: null
+- target_column: birth_year
+  transformation: id_in_c0.birth_year
+  data_type: string
+  description: Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)
+  target_attr_name: null
+- target_column: identity_number
+  transformation: id_in_c0.identity_number
+  data_type: string
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  target_attr_name: null
+- target_column: gender
+  transformation: id_in_c0.gender
+  data_type: string
+  description: 'Giới tính: 0=Nam, 1=Nữ'
+  target_attr_name: null
+- target_column: national
+  transformation: id_in_c0.national
+  data_type: string
+  description: Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư)
+  target_attr_name: null
+- target_column: religion
+  transformation: id_in_c0.religion
+  data_type: string
+  description: Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư)
+  target_attr_name: null
+- target_column: permanent_country_code
+  transformation: id_in_c0.permanent_country_code
+  data_type: string
+  description: Mã quốc gia địa chỉ thường trú (theo C06)
+  target_attr_name: null
+- target_column: permanent_province_code
+  transformation: id_in_c0.permanent_province_code
+  data_type: string
+  description: Mã tỉnh/thành phố địa chỉ thường trú (theo C06)
+  target_attr_name: null
+- target_column: permanent_district_code
+  transformation: id_in_c0.permanent_district_code
+  data_type: string
+  description: Mã quận/huyện địa chỉ thường trú (theo C06)
+  target_attr_name: null
+- target_column: permanent_detail
+  transformation: id_in_c0.permanent_detail
+  data_type: string
+  description: Địa chỉ chi tiết thường trú (số nhà, đường, phường/xã theo C06)
+  target_attr_name: null
+- target_column: current_country_code
+  transformation: id_in_c0.current_country_code
+  data_type: string
+  description: Mã quốc gia địa chỉ tạm trú (theo C06)
+  target_attr_name: null
+- target_column: current_province_code
+  transformation: id_in_c0.current_province_code
+  data_type: string
+  description: Mã tỉnh/thành phố địa chỉ tạm trú (theo C06)
+  target_attr_name: null
+- target_column: current_district_code
+  transformation: id_in_c0.current_district_code
+  data_type: string
+  description: Mã quận/huyện địa chỉ tạm trú (theo C06)
+  target_attr_name: null
+- target_column: current_detail
+  transformation: id_in_c0.current_detail
+  data_type: string
+  description: Địa chỉ chi tiết tạm trú (theo C06)
+  target_attr_name: null
+- target_column: country_code
+  transformation: id_in_c0.country_code
+  data_type: string
+  description: Mã quốc gia theo chuẩn ISO 3166-1 alpha-2
+  target_attr_name: null
+- target_column: place_of_birth
+  transformation: id_in_c0.place_of_birth
+  data_type: string
+  description: Nơi sinh của người hành nghề
+  target_attr_name: null
+- target_column: hometown
+  transformation: id_in_c0.hometown
+  data_type: string
+  description: Quê quán theo C06 CSDL quốc gia về dân cư
+  target_attr_name: null
+- target_column: father_full_name
+  transformation: id_in_c0.father_full_name
+  data_type: string
+  description: Họ tên đầy đủ của bố (theo C06)
+  target_attr_name: null
+- target_column: father_country_code
+  transformation: id_in_c0.father_country_code
+  data_type: string
+  description: Mã quốc tịch của bố (theo C06)
+  target_attr_name: null
+- target_column: father_identity_number
+  transformation: id_in_c0.father_identity_number
+  data_type: string
+  description: Số CMND/CCCD của bố (theo C06)
+  target_attr_name: null
+- target_column: father_identity_number_old
+  transformation: id_in_c0.father_identity_number_old
+  data_type: string
+  description: Số CMND cũ của bố (trước khi đổi CCCD, theo C06)
+  target_attr_name: null
+- target_column: mother_full_name
+  transformation: id_in_c0.mother_full_name
+  data_type: string
+  description: Họ tên đầy đủ của mẹ (theo C06)
+  target_attr_name: null
+- target_column: mother_country_code
+  transformation: id_in_c0.mother_country_code
+  data_type: string
+  description: Mã quốc tịch của mẹ (theo C06)
+  target_attr_name: null
+- target_column: mother_identity_number
+  transformation: id_in_c0.mother_identity_number
+  data_type: string
+  description: Số CMND/CCCD của mẹ (theo C06)
+  target_attr_name: null
+- target_column: mother_identity_number_old
+  transformation: id_in_c0.mother_identity_number_old
+  data_type: string
+  description: Số CMND cũ của mẹ (theo C06)
+  target_attr_name: null
+- target_column: couple_full_name
+  transformation: id_in_c0.couple_full_name
+  data_type: string
+  description: Họ tên đầy đủ của vợ/chồng (theo C06)
+  target_attr_name: null
+- target_column: couple_country_code
+  transformation: id_in_c0.couple_country_code
+  data_type: string
+  description: Mã quốc tịch của vợ/chồng (theo C06)
+  target_attr_name: null
+- target_column: couple_identity_number
+  transformation: id_in_c0.couple_identity_number
+  data_type: string
+  description: Số CMND/CCCD của vợ/chồng (theo C06)
+  target_attr_name: null
+- target_column: couple_identity_number_old
+  transformation: id_in_c0.couple_identity_number_old
+  data_type: string
+  description: Số CMND cũ của vợ/chồng (theo C06)
+  target_attr_name: null
+- target_column: created_at
+  transformation: id_in_c0.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: id_in_c0.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: id_in_c0.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: id_in_c0.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: user_updated_id
+  transformation: id_in_c0.user_updated_id
+  data_type: int
+  description: 'FK -> USERS: Người cập nhật thông tin C06 lần cuối'
+  target_attr_name: null
+- target_column: place_of_birth_country_code
+  transformation: id_in_c0.place_of_birth_country_code
+  data_type: string
+  description: Mã quốc gia nơi sinh (theo C06, kiểu NCHAR)
+  target_attr_name: null
+- target_column: place_of_birth_province_code
+  transformation: id_in_c0.place_of_birth_province_code
+  data_type: string
+  description: Mã tỉnh/thành phố nơi sinh (theo C06, kiểu NCHAR)
+  target_attr_name: null
+- target_column: place_of_birth_district_code
+  transformation: id_in_c0.place_of_birth_district_code
+  data_type: string
+  description: Mã quận/huyện nơi sinh (theo C06, kiểu NCHAR)
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

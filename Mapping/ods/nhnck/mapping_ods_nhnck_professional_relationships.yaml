@@ -1,0 +1,101 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.PROFESSIONAL_RELATIONSHIPS
+  logical_name: Mapping ODS – source NHNCK.PROFESSIONAL_RELATIONSHIPS
+  physical_name: professional_relationships
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_RELATIONSHIPS
+target:
+  namespace: ods
+  physical_name: professional_relationships
+  etl_handle: Fact Snapshot
+  description: Thông tin quan hệ gia đình/xã hội của người hành nghề
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: PROFESSIONAL_RELATIONSHIPS
+  alias: pr_re
+  select_fields: id, professional_id, relationship_type, full_name, birth_year, address,
+    occupation, workplace, note, created_at, country_id, identity_id, updated_at,
+    created_by, updated_by
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: pr_re.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: professional_id
+  transformation: pr_re.professional_id
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: relationship_type
+  transformation: pr_re.relationship_type
+  data_type: int
+  description: 'Loại quan hệ gia đình: 1=Chồng/vợ, 2=Con, 3=Bố, 4=Mẹ, 5=Ông, 6=Bà'
+  target_attr_name: null
+- target_column: full_name
+  transformation: pr_re.full_name
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: null
+- target_column: birth_year
+  transformation: pr_re.birth_year
+  data_type: int
+  description: Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)
+  target_attr_name: null
+- target_column: address
+  transformation: pr_re.address
+  data_type: string
+  description: Địa chỉ trụ sở tổ chức (NCLOB)
+  target_attr_name: null
+- target_column: occupation
+  transformation: pr_re.occupation
+  data_type: string
+  description: Nghề nghiệp của thành viên gia đình
+  target_attr_name: null
+- target_column: workplace
+  transformation: pr_re.workplace
+  data_type: string
+  description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
+  target_attr_name: null
+- target_column: note
+  transformation: pr_re.note
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: created_at
+  transformation: pr_re.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: country_id
+  transformation: pr_re.country_id
+  data_type: int
+  description: 'FK -> COUNTRIES: Quốc gia liên quan'
+  target_attr_name: null
+- target_column: identity_id
+  transformation: pr_re.identity_id
+  data_type: string
+  description: Số CMND/CCCD của thành viên gia đình
+  target_attr_name: null
+- target_column: updated_at
+  transformation: pr_re.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: pr_re.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: pr_re.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

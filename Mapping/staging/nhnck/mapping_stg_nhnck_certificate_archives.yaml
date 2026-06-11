@@ -1,0 +1,122 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.CERTIFICATE_ARCHIVES
+  logical_name: Mapping Staging – source NHNCK.CERTIFICATE_ARCHIVES
+  physical_name: certificate_archives
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_ARCHIVES
+target:
+  namespace: stg
+  physical_name: certificate_archives
+  etl_handle: Fact Snapshot
+  description: Thông tin lưu trữ bản CCHN giấy
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: CERTIFICATE_ARCHIVES
+  alias: ce_ar
+  select_fields: ID, CERTIFICATE_ID, PROFESSIONAL_ID, CERTIFICATE_RECORD_ID, NATIONALITY_ID,
+    ARCHIVE_NUMBER, CERTIFICATE_NUMBER, ARCHIVE_DATE, RECEIVED_DATE, RECIPIENT, IDENTITY_NUMBER,
+    INTRODUCTION_LETTER_NUMBER, INTRODUCTION_LETTER, NOTE, PAYMENT_STATUS, CREATED_AT,
+    CREATED_BY, UPDATED_AT, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ce_ar.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: ce_ar.CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: professional_id
+  transformation: ce_ar.PROFESSIONAL_ID
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: certificate_record_id
+  transformation: ce_ar.CERTIFICATE_RECORD_ID
+  data_type: int
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  target_attr_name: null
+- target_column: nationality_id
+  transformation: ce_ar.NATIONALITY_ID
+  data_type: int
+  description: 'FK -> COUNTRIES: Quốc tịch của người hành nghề'
+  target_attr_name: null
+- target_column: archive_number
+  transformation: ce_ar.ARCHIVE_NUMBER
+  data_type: string
+  description: Số lưu trữ vật lý của bản CCHN trong kho lưu trữ
+  target_attr_name: null
+- target_column: certificate_number
+  transformation: ce_ar.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số CCHN cấp cho NHNCK
+  target_attr_name: null
+- target_column: archive_date
+  transformation: ce_ar.ARCHIVE_DATE
+  data_type: date
+  description: Ngày đưa vào lưu trữ
+  target_attr_name: null
+- target_column: received_date
+  transformation: ce_ar.RECEIVED_DATE
+  data_type: date
+  description: Ngày người nhận đến lấy CCHN
+  target_attr_name: null
+- target_column: recipient
+  transformation: ce_ar.RECIPIENT
+  data_type: string
+  description: Họ tên người đến nhận CCHN (có thể là ủy quyền)
+  target_attr_name: null
+- target_column: identity_number
+  transformation: ce_ar.IDENTITY_NUMBER
+  data_type: string
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  target_attr_name: null
+- target_column: introduction_letter_number
+  transformation: ce_ar.INTRODUCTION_LETTER_NUMBER
+  data_type: string
+  description: Số công văn giới thiệu (khi nhận thay)
+  target_attr_name: null
+- target_column: introduction_letter
+  transformation: ce_ar.INTRODUCTION_LETTER
+  data_type: string
+  description: Thông tin công văn giới thiệu (tên đơn vị, ngày ký)
+  target_attr_name: null
+- target_column: note
+  transformation: ce_ar.NOTE
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: payment_status
+  transformation: ce_ar.PAYMENT_STATUS
+  data_type: int
+  description: 'Trạng thái thanh toán phí lưu trữ: 1=Đã thanh toán, 0=Chưa'
+  target_attr_name: null
+- target_column: created_at
+  transformation: ce_ar.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: ce_ar.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ce_ar.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ce_ar.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

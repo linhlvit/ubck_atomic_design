@@ -1,0 +1,101 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.VERIFY_APPLICATION_STATUSES
+  logical_name: Mapping ODS – source NHNCK.VERIFY_APPLICATION_STATUSES
+  physical_name: verify_application_statuses
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-VERIFY_APPLICATION_STATUSES
+target:
+  namespace: ods
+  physical_name: verify_application_statuses
+  etl_handle: Fact Snapshot
+  description: Yêu cầu phê duyệt lãnh đạo cho hồ sơ
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: VERIFY_APPLICATION_STATUSES
+  alias: ve_ap_st
+  select_fields: id, application_id, status_id, prev_status_id, record_status, reason,
+    spec_reason, org_reason, overview_reason, overview_file_path, verified_by, created_by,
+    created_at, updated_by, updated_at
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ve_ap_st.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: application_id
+  transformation: ve_ap_st.application_id
+  data_type: int
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  target_attr_name: null
+- target_column: status_id
+  transformation: ve_ap_st.status_id
+  data_type: int
+  description: 'FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại'
+  target_attr_name: null
+- target_column: prev_status_id
+  transformation: ve_ap_st.prev_status_id
+  data_type: int
+  description: 'FK -> APPLICATION_STATUSES: Trạng thái hồ sơ trước khi xác minh'
+  target_attr_name: null
+- target_column: record_status
+  transformation: ve_ap_st.record_status
+  data_type: int
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  target_attr_name: null
+- target_column: reason
+  transformation: ve_ap_st.reason
+  data_type: string
+  description: Lý do thực hiện thao tác hoặc thay đổi
+  target_attr_name: null
+- target_column: spec_reason
+  transformation: ve_ap_st.spec_reason
+  data_type: string
+  description: Lý do từ chối theo khía cạnh chuyên ngành (NCLOB)
+  target_attr_name: null
+- target_column: org_reason
+  transformation: ve_ap_st.org_reason
+  data_type: string
+  description: Lý do từ chối theo khía cạnh tổ chức (NCLOB)
+  target_attr_name: null
+- target_column: overview_reason
+  transformation: ve_ap_st.overview_reason
+  data_type: string
+  description: Lý do từ chối tổng quan của hồ sơ (NCLOB)
+  target_attr_name: null
+- target_column: overview_file_path
+  transformation: ve_ap_st.overview_file_path
+  data_type: string
+  description: Đường dẫn file tài liệu tổng quan thẩm định hồ sơ
+  target_attr_name: null
+- target_column: verified_by
+  transformation: ve_ap_st.verified_by
+  data_type: int
+  description: 'FK -> USERS: Người xác minh/thẩm định cuối cùng'
+  target_attr_name: null
+- target_column: created_by
+  transformation: ve_ap_st.created_by
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: created_at
+  transformation: ve_ap_st.created_at
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: ve_ap_st.updated_by
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_at
+  transformation: ve_ap_st.updated_at
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

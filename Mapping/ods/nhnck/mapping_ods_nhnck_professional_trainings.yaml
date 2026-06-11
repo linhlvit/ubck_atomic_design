@@ -1,0 +1,65 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.PROFESSIONAL_TRAININGS
+  logical_name: Mapping ODS – source NHNCK.PROFESSIONAL_TRAININGS
+  physical_name: professional_trainings
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_TRAININGS
+target:
+  namespace: ods
+  physical_name: professional_trainings
+  etl_handle: Fact Snapshot
+  description: Lịch sử đào tạo, bồi dưỡng của người hành nghề
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: PROFESSIONAL_TRAININGS
+  alias: pr_tr
+  select_fields: id, professional_id, start_date, end_date, training_place, specialization,
+    awards, disciplines
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: pr_tr.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: professional_id
+  transformation: pr_tr.professional_id
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: start_date
+  transformation: pr_tr.start_date
+  data_type: string
+  description: Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)
+  target_attr_name: null
+- target_column: end_date
+  transformation: pr_tr.end_date
+  data_type: string
+  description: Ngày kết thúc (công tác, đào tạo, nghỉ việc...)
+  target_attr_name: null
+- target_column: training_place
+  transformation: pr_tr.training_place
+  data_type: string
+  description: Nơi đào tạo/bồi dưỡng
+  target_attr_name: null
+- target_column: specialization
+  transformation: pr_tr.specialization
+  data_type: string
+  description: Chuyên ngành được đào tạo
+  target_attr_name: null
+- target_column: awards
+  transformation: pr_tr.awards
+  data_type: string
+  description: Khen thưởng đã nhận
+  target_attr_name: null
+- target_column: disciplines
+  transformation: pr_tr.disciplines
+  data_type: string
+  description: Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB)
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

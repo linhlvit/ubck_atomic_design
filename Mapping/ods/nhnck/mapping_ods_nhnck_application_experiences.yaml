@@ -1,0 +1,101 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ODS-NHNCK.APPLICATION_EXPERIENCES
+  logical_name: Mapping ODS – source NHNCK.APPLICATION_EXPERIENCES
+  physical_name: application_experiences
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
+target:
+  namespace: ods
+  physical_name: application_experiences
+  etl_handle: Fact Snapshot
+  description: Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
+input:
+- source_type: physical_table
+  namespace: stg
+  table_name: APPLICATION_EXPERIENCES
+  alias: ap_ex
+  select_fields: id, application_id, document_id, work_duration, organization_id,
+    organization_name, department_name, insurance_number, labor_contract, director_confirmation,
+    note, total_duration, start_date, end_date, position
+  filter: ds_snpst_dt = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ap_ex.id
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: application_id
+  transformation: ap_ex.application_id
+  data_type: int
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  target_attr_name: null
+- target_column: document_id
+  transformation: ap_ex.document_id
+  data_type: int
+  description: 'FK -> DOCUMENTS: Loại tài liệu yêu cầu'
+  target_attr_name: null
+- target_column: work_duration
+  transformation: ap_ex.work_duration
+  data_type: int
+  description: Thời gian làm việc (số tháng) tại tổ chức này
+  target_attr_name: null
+- target_column: organization_id
+  transformation: ap_ex.organization_id
+  data_type: int
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  target_attr_name: null
+- target_column: organization_name
+  transformation: ap_ex.organization_name
+  data_type: string
+  description: Tên đầy đủ của tổ chức kinh doanh chứng khoán
+  target_attr_name: null
+- target_column: department_name
+  transformation: ap_ex.department_name
+  data_type: string
+  description: Tên phòng ban
+  target_attr_name: null
+- target_column: insurance_number
+  transformation: ap_ex.insurance_number
+  data_type: string
+  description: Số sổ bảo hiểm xã hội (dùng để xác minh kinh nghiệm)
+  target_attr_name: null
+- target_column: labor_contract
+  transformation: ap_ex.labor_contract
+  data_type: string
+  description: Thông tin hợp đồng lao động (số HĐ, loại HĐ)
+  target_attr_name: null
+- target_column: director_confirmation
+  transformation: ap_ex.director_confirmation
+  data_type: string
+  description: Xác nhận của giám đốc/lãnh đạo tổ chức về kinh nghiệm làm việc
+  target_attr_name: null
+- target_column: note
+  transformation: ap_ex.note
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: null
+- target_column: total_duration
+  transformation: ap_ex.total_duration
+  data_type: int
+  description: Tổng thời gian kinh nghiệm tích lũy (số tháng)
+  target_attr_name: null
+- target_column: start_date
+  transformation: ap_ex.start_date
+  data_type: date
+  description: Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)
+  target_attr_name: null
+- target_column: end_date
+  transformation: ap_ex.end_date
+  data_type: date
+  description: Ngày kết thúc (công tác, đào tạo, nghỉ việc...)
+  target_attr_name: null
+- target_column: position
+  transformation: ap_ex.position
+  data_type: string
+  description: Chức vụ/vị trí đảm nhiệm
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

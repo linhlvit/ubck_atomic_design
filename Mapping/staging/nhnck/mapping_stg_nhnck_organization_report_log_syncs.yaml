@@ -1,0 +1,125 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.ORGANIZATION_REPORT_LOG_SYNCS
+  logical_name: Mapping Staging – source NHNCK.ORGANIZATION_REPORT_LOG_SYNCS
+  physical_name: organization_report_log_syncs
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORT_LOG_SYNCS
+target:
+  namespace: stg
+  physical_name: organization_report_log_syncs
+  etl_handle: Fact Snapshot
+  description: Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: ORGANIZATION_REPORT_LOG_SYNCS
+  alias: or_re_lo_sy
+  select_fields: ID, FULL_NAME, POSITION, DEPARTMENT, HIRE_DATE, TERMINATION_DATE,
+    CERTIFICATE_NUMBER, ISSUE_DATE, REPORT_DATE, VALID_CERTIFICATE_NUM, VALID_ISSUE_DATE,
+    VALID_HIRE_DATE, VALID_TERMINATION_DATE, CREATED_AT, UPDATED_AT, CREATED_BY, UPDATED_BY,
+    REPORT_YEARLY_ID, ORGANIZATION_REPORT_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: or_re_lo_sy.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: full_name
+  transformation: or_re_lo_sy.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: null
+- target_column: position
+  transformation: or_re_lo_sy.POSITION
+  data_type: string
+  description: Chức vụ/vị trí đảm nhiệm
+  target_attr_name: null
+- target_column: department
+  transformation: or_re_lo_sy.DEPARTMENT
+  data_type: string
+  description: Phòng ban công tác
+  target_attr_name: null
+- target_column: hire_date
+  transformation: or_re_lo_sy.HIRE_DATE
+  data_type: date
+  description: Ngày tuyển dụng NHNCK vào làm việc tại tổ chức
+  target_attr_name: null
+- target_column: termination_date
+  transformation: or_re_lo_sy.TERMINATION_DATE
+  data_type: date
+  description: Ngày chấm dứt hợp đồng lao động của NHNCK
+  target_attr_name: null
+- target_column: certificate_number
+  transformation: or_re_lo_sy.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số CCHN cấp cho NHNCK
+  target_attr_name: null
+- target_column: issue_date
+  transformation: or_re_lo_sy.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp CCHN
+  target_attr_name: null
+- target_column: report_date
+  transformation: or_re_lo_sy.REPORT_DATE
+  data_type: date
+  description: Ngày lập báo cáo của tổ chức về NHNCK
+  target_attr_name: null
+- target_column: valid_certificate_num
+  transformation: or_re_lo_sy.VALID_CERTIFICATE_NUM
+  data_type: int
+  description: 'Cờ số CCHN hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ'
+  target_attr_name: null
+- target_column: valid_issue_date
+  transformation: or_re_lo_sy.VALID_ISSUE_DATE
+  data_type: int
+  description: 'Cờ ngày cấp CCHN hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp
+    lệ'
+  target_attr_name: null
+- target_column: valid_hire_date
+  transformation: or_re_lo_sy.VALID_HIRE_DATE
+  data_type: int
+  description: 'Cờ ngày tuyển dụng hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không
+    hợp lệ'
+  target_attr_name: null
+- target_column: valid_termination_date
+  transformation: or_re_lo_sy.VALID_TERMINATION_DATE
+  data_type: int
+  description: 'Cờ ngày chấm dứt hợp đồng hợp lệ trong báo cáo tổ chức: 1=Hợp lệ,
+    0=Không hợp lệ'
+  target_attr_name: null
+- target_column: created_at
+  transformation: or_re_lo_sy.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: or_re_lo_sy.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: created_by
+  transformation: or_re_lo_sy.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_by
+  transformation: or_re_lo_sy.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: report_yearly_id
+  transformation: or_re_lo_sy.REPORT_YEARLY_ID
+  data_type: int
+  description: 'FK -> ORGANIZATION_REPORT_YEARLYS: Báo cáo năm chứa bản ghi này'
+  target_attr_name: null
+- target_column: organization_report_id
+  transformation: or_re_lo_sy.ORGANIZATION_REPORT_ID
+  data_type: int
+  description: 'FK -> ORGANIZATION_REPORTS: Báo cáo tổ chức liên quan'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

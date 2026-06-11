@@ -1,0 +1,44 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.PROCEDURE_FORMS
+  logical_name: Mapping Staging – source NHNCK.PROCEDURE_FORMS
+  physical_name: procedure_forms
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PROCEDURE_FORMS
+target:
+  namespace: stg
+  physical_name: procedure_forms
+  etl_handle: Fact Snapshot
+  description: Liên kết thủ tục hành chính với biểu mẫu
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: PROCEDURE_FORMS
+  alias: pr_fo
+  select_fields: ID, PROCEDURE_ID, FORM_ID, QUANTITY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: pr_fo.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: procedure_id
+  transformation: pr_fo.PROCEDURE_ID
+  data_type: int
+  description: 'FK -> PROCEDURES: Thủ tục hành chính liên quan'
+  target_attr_name: null
+- target_column: form_id
+  transformation: pr_fo.FORM_ID
+  data_type: int
+  description: 'FK -> FORMS: Biểu mẫu trong thủ tục hành chính'
+  target_attr_name: null
+- target_column: quantity
+  transformation: pr_fo.QUANTITY
+  data_type: int
+  description: Số lượng biểu mẫu cần nộp trong thủ tục
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

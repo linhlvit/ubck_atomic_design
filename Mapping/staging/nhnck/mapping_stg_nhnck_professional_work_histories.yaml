@@ -1,0 +1,101 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.PROFESSIONAL_WORK_HISTORIES
+  logical_name: Mapping Staging – source NHNCK.PROFESSIONAL_WORK_HISTORIES
+  physical_name: professional_work_histories
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_WORK_HISTORIES
+target:
+  namespace: stg
+  physical_name: professional_work_histories
+  etl_handle: Fact Snapshot
+  description: Lịch sử làm việc của người hành nghề
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: PROFESSIONAL_WORK_HISTORIES
+  alias: pr_wo_hi
+  select_fields: ID, ORGANIZATION_ID, PROFESSIONAL_ID, UNIT_NAME, START_DATE, END_DATE,
+    WORKPLACE, POSITION_ID, POSITION_NAME, AWARDS, DISCIPLINES, CREATED_AT, CREATED_BY,
+    UPDATED_AT, UPDATED_BY
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: pr_wo_hi.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: organization_id
+  transformation: pr_wo_hi.ORGANIZATION_ID
+  data_type: int
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  target_attr_name: null
+- target_column: professional_id
+  transformation: pr_wo_hi.PROFESSIONAL_ID
+  data_type: int
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  target_attr_name: null
+- target_column: unit_name
+  transformation: pr_wo_hi.UNIT_NAME
+  data_type: string
+  description: Tên đơn vị nội bộ UBCKNN
+  target_attr_name: null
+- target_column: start_date
+  transformation: pr_wo_hi.START_DATE
+  data_type: date
+  description: Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)
+  target_attr_name: null
+- target_column: end_date
+  transformation: pr_wo_hi.END_DATE
+  data_type: date
+  description: Ngày kết thúc (công tác, đào tạo, nghỉ việc...)
+  target_attr_name: null
+- target_column: workplace
+  transformation: pr_wo_hi.WORKPLACE
+  data_type: string
+  description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
+  target_attr_name: null
+- target_column: position_id
+  transformation: pr_wo_hi.POSITION_ID
+  data_type: int
+  description: 'FK -> POSITIONS: Chức vụ của người dùng'
+  target_attr_name: null
+- target_column: position_name
+  transformation: pr_wo_hi.POSITION_NAME
+  data_type: string
+  description: Tên chức vụ tại thời điểm công tác (snapshot)
+  target_attr_name: null
+- target_column: awards
+  transformation: pr_wo_hi.AWARDS
+  data_type: string
+  description: Khen thưởng đã nhận
+  target_attr_name: null
+- target_column: disciplines
+  transformation: pr_wo_hi.DISCIPLINES
+  data_type: string
+  description: Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB)
+  target_attr_name: null
+- target_column: created_at
+  transformation: pr_wo_hi.CREATED_AT
+  data_type: date
+  description: Thời điểm tạo bản ghi
+  target_attr_name: null
+- target_column: created_by
+  transformation: pr_wo_hi.CREATED_BY
+  data_type: int
+  description: ID tài khoản người tạo bản ghi
+  target_attr_name: null
+- target_column: updated_at
+  transformation: pr_wo_hi.UPDATED_AT
+  data_type: date
+  description: Thời điểm cập nhật bản ghi lần cuối
+  target_attr_name: null
+- target_column: updated_by
+  transformation: pr_wo_hi.UPDATED_BY
+  data_type: int
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

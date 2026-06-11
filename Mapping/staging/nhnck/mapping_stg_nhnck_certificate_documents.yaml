@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-STG-NHNCK.CERTIFICATE_DOCUMENTS
+  logical_name: Mapping Staging – source NHNCK.CERTIFICATE_DOCUMENTS
+  physical_name: certificate_documents
+  dm_ref: null
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_DOCUMENTS
+target:
+  namespace: stg
+  physical_name: certificate_documents
+  etl_handle: Fact Snapshot
+  description: Tài liệu liên quan của loại chứng chỉ
+input:
+- source_type: physical_table
+  namespace: src
+  table_name: CERTIFICATE_DOCUMENTS
+  alias: ce_do
+  select_fields: ID, CERTIFICATE_ID, DOCUMENT_ID, REQUIRED_FIELD, SORT_ORDER, FORMAT,
+    ATTACHMENT_DISPLAYED, DOCUMENT_TYPE, DISPLAY_FLAG
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: id
+  transformation: ce_do.ID
+  data_type: int
+  description: Khóa chính của bản ghi (số tự tăng)
+  target_attr_name: null
+- target_column: certificate_id
+  transformation: ce_do.CERTIFICATE_ID
+  data_type: int
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  target_attr_name: null
+- target_column: document_id
+  transformation: ce_do.DOCUMENT_ID
+  data_type: int
+  description: 'FK -> DOCUMENTS: Loại tài liệu yêu cầu'
+  target_attr_name: null
+- target_column: required_field
+  transformation: ce_do.REQUIRED_FIELD
+  data_type: int
+  description: 'Cờ bắt buộc nộp tài liệu/điền trường: 1=Bắt buộc, 0=Tùy chọn'
+  target_attr_name: null
+- target_column: sort_order
+  transformation: ce_do.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: null
+- target_column: format
+  transformation: ce_do.FORMAT
+  data_type: string
+  description: 'Định dạng tệp được chấp nhận (VD: PDF, JPEG, PNG)'
+  target_attr_name: null
+- target_column: attachment_displayed
+  transformation: ce_do.ATTACHMENT_DISPLAYED
+  data_type: int
+  description: 'Cờ hiển thị tệp đính kèm trên giao diện: 1=Hiển thị, 0=Ẩn'
+  target_attr_name: null
+- target_column: document_type
+  transformation: ce_do.DOCUMENT_TYPE
+  data_type: int
+  description: Loại tài liệu hoặc loại mã tự tăng
+  target_attr_name: null
+- target_column: display_flag
+  transformation: ce_do.DISPLAY_FLAG
+  data_type: int
+  description: 'Cờ hiển thị: 1=Hiển thị, 0=Không hiển thị'
+  target_attr_name: null
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
