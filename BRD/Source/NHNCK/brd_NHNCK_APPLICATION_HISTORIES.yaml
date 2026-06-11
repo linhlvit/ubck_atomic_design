@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_HISTORIES
+brd_ref: BRD-SRC-NHNCK-APPLICATION_HISTORIES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: STATUS_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại'
+  key: FK
+  fk_note: FK → APPLICATION_STATUSES.ID
+- name: TITLE
+  data_type: NVARCHAR2(1024)
+  description: Tiêu đề/tên hồ sơ hoặc nhóm
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NCLOB
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: SENDER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người gửi hành động xử lý'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: RECEIVER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người nhận/tiếp nhận hành động xử lý'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: RECEIVER_NAME
+  data_type: NVARCHAR2(1024)
+  description: Tên người nhận (snapshot tại thời điểm xử lý)
+  key: null
+  fk_note: null
+- name: REJECTED
+  data_type: NUMBER(1,0)
+  description: 'Cờ hồ sơ bị trả lại: 1=Bị trả lại, 0=Không'
+  key: null
+  fk_note: null
+- name: FEEDBACK
+  data_type: NCLOB
+  description: Phản hồi/nhận xét của cán bộ xử lý (NCLOB)
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

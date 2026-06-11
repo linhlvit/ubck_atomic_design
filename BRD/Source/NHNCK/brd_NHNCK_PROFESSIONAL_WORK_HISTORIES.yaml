@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: PROFESSIONAL_WORK_HISTORIES
+brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_WORK_HISTORIES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: ORGANIZATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+- name: PROFESSIONAL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+- name: UNIT_NAME
+  data_type: NVARCHAR2(1024)
+  description: Tên đơn vị nội bộ UBCKNN
+  key: null
+  fk_note: null
+- name: START_DATE
+  data_type: DATE
+  description: Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)
+  key: null
+  fk_note: null
+- name: END_DATE
+  data_type: DATE
+  description: Ngày kết thúc (công tác, đào tạo, nghỉ việc...)
+  key: null
+  fk_note: null
+- name: WORKPLACE
+  data_type: NVARCHAR2(2000)
+  description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
+  key: null
+  fk_note: null
+- name: POSITION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> POSITIONS: Chức vụ của người dùng'
+  key: FK
+  fk_note: FK → POSITIONS.ID
+- name: POSITION_NAME
+  data_type: NVARCHAR2(500)
+  description: Tên chức vụ tại thời điểm công tác (snapshot)
+  key: null
+  fk_note: null
+- name: AWARDS
+  data_type: NVARCHAR2(2000)
+  description: Khen thưởng đã nhận
+  key: null
+  fk_note: null
+- name: DISCIPLINES
+  data_type: NVARCHAR2(2000)
+  description: Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

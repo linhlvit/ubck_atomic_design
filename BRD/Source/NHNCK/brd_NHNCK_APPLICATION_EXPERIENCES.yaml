@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_EXPERIENCES
+brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: DOCUMENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DOCUMENTS: Loại tài liệu yêu cầu'
+  key: FK
+  fk_note: FK → DOCUMENTS.ID
+- name: WORK_DURATION
+  data_type: NUMBER(10,0)
+  description: Thời gian làm việc (số tháng) tại tổ chức này
+  key: null
+  fk_note: null
+- name: ORGANIZATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+- name: ORGANIZATION_NAME
+  data_type: NVARCHAR2(1024)
+  description: Tên đầy đủ của tổ chức kinh doanh chứng khoán
+  key: null
+  fk_note: null
+- name: DEPARTMENT_NAME
+  data_type: NVARCHAR2(1024)
+  description: Tên phòng ban
+  key: null
+  fk_note: null
+- name: INSURANCE_NUMBER
+  data_type: NVARCHAR2(1024)
+  description: Số sổ bảo hiểm xã hội (dùng để xác minh kinh nghiệm)
+  key: null
+  fk_note: null
+- name: LABOR_CONTRACT
+  data_type: NVARCHAR2(1024)
+  description: Thông tin hợp đồng lao động (số HĐ, loại HĐ)
+  key: null
+  fk_note: null
+- name: DIRECTOR_CONFIRMATION
+  data_type: NVARCHAR2(1024)
+  description: Xác nhận của giám đốc/lãnh đạo tổ chức về kinh nghiệm làm việc
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: NCLOB
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: TOTAL_DURATION
+  data_type: NUMBER(10,0)
+  description: Tổng thời gian kinh nghiệm tích lũy (số tháng)
+  key: null
+  fk_note: null
+- name: START_DATE
+  data_type: DATE
+  description: Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)
+  key: null
+  fk_note: null
+- name: END_DATE
+  data_type: DATE
+  description: Ngày kết thúc (công tác, đào tạo, nghỉ việc...)
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: NVARCHAR2(2000)
+  description: Chức vụ/vị trí đảm nhiệm
+  key: null
+  fk_note: null

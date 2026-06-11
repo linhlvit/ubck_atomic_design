@@ -1,0 +1,131 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SPECIALIZATION_COURSE_DETAILS
+brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSE_DETAILS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: SPECIALIZATION_COURSE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> SPECIALIZATION_COURSES: Lớp học chứng chỉ chuyên môn'
+  key: FK
+  fk_note: FK → SPECIALIZATION_COURSES.ID
+- name: PROFESSIONAL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+- name: EXAM_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số báo danh thi sát hạch
+  key: null
+  fk_note: null
+- name: FULL_NAME
+  data_type: NVARCHAR2(255)
+  description: Họ và tên đầy đủ của người hành nghề
+  key: null
+  fk_note: null
+- name: BIRTH_DATE
+  data_type: DATE
+  description: Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)
+  key: null
+  fk_note: null
+- name: PERMANENT_COUNTRY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> COUNTRIES: Quốc gia địa chỉ thường trú'
+  key: FK
+  fk_note: FK → COUNTRIES.ID
+- name: PERMANENT_PROVINCE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROVINCES: Tỉnh/thành phố địa chỉ thường trú'
+  key: FK
+  fk_note: FK → PROVINCES.ID
+- name: PERMANENT_DISTRICT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DISTRICTS: Quận/huyện địa chỉ thường trú'
+  key: FK
+  fk_note: FK → DISTRICTS.ID
+- name: PLACE_OF_BIRTH
+  data_type: NVARCHAR2(1024)
+  description: Nơi sinh của người hành nghề
+  key: null
+  fk_note: null
+- name: IDENTITY_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu'
+  key: null
+  fk_note: null
+- name: IDENTITY_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  key: null
+  fk_note: null
+- name: IDENTITY_ISSUE_DATE
+  data_type: DATE
+  description: Ngày cấp CMND/CCCD/Hộ chiếu
+  key: null
+  fk_note: null
+- name: IDENTITY_ISSUE_PLACE
+  data_type: NVARCHAR2(255)
+  description: Nơi cấp CMND/CCCD/Hộ chiếu
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: DESCRIPTION
+  data_type: NVARCHAR2(500)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: EXAM_SCORE
+  data_type: FLOAT
+  description: Điểm thi chứng chỉ chuyên môn (FLOAT)
+  key: null
+  fk_note: null
+- name: RESULT
+  data_type: NUMBER(10,0)
+  description: 'Kết quả thi: -1=Không thi, 0=Không đạt, 1=Đạt'
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: NVARCHAR2(1024)
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: SPECIALIZATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan'
+  key: FK
+  fk_note: FK → SPECIALIZATIONS.ID
+- name: ASSIGNEE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ'
+  key: FK
+  fk_note: FK → USERS.ID

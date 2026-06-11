@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: CERTIFICATE_RECORD_GROUP_MEMBERS
+brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_GROUP_MEMBERS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: CERTIFICATE_RECORD_GROUP_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATE_RECORD_GROUPS: Nhóm cấp/thu hồi CCHN'
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORD_GROUPS.ID
+- name: CERTIFICATE_RECORD_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+- name: ADDED_DATE
+  data_type: DATE
+  description: Ngày thêm bản ghi CCHN vào nhóm
+  key: null
+  fk_note: null
+- name: ADDED_BY
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người thêm bản ghi CCHN vào nhóm'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: REISSUE
+  data_type: NUMBER(10,0)
+  description: 'Cờ bản ghi CCHN này là cấp lại (không phải cấp mới): 1=Cấp lại, 0=Cấp mới'
+  key: null
+  fk_note: null
+- name: REVOCATION_REASON
+  data_type: NVARCHAR2(2000)
+  description: Lý do thu hồi CCHN
+  key: null
+  fk_note: null
+- name: ORDER_INDEX
+  data_type: NUMBER(10,0)
+  description: Thứ tự của bản ghi trong nhóm
+  key: null
+  fk_note: null

@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: PROFESSIONAL_TRAININGS
+brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_TRAININGS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PROFESSIONAL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+- name: START_DATE
+  data_type: NVARCHAR2(10)
+  description: Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)
+  key: null
+  fk_note: null
+- name: END_DATE
+  data_type: NVARCHAR2(10)
+  description: Ngày kết thúc (công tác, đào tạo, nghỉ việc...)
+  key: null
+  fk_note: null
+- name: TRAINING_PLACE
+  data_type: NVARCHAR2(2000)
+  description: Nơi đào tạo/bồi dưỡng
+  key: null
+  fk_note: null
+- name: SPECIALIZATION
+  data_type: NVARCHAR2(1024)
+  description: Chuyên ngành được đào tạo
+  key: null
+  fk_note: null
+- name: AWARDS
+  data_type: NVARCHAR2(2000)
+  description: Khen thưởng đã nhận
+  key: null
+  fk_note: null
+- name: DISCIPLINES
+  data_type: NVARCHAR2(2000)
+  description: Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB)
+  key: null
+  fk_note: null

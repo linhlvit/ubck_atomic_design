@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_STATUSES
+brd_ref: BRD-SRC-NHNCK-APPLICATION_STATUSES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: STATUS_CODE
+  data_type: NVARCHAR2(100)
+  description: Mã trạng thái HTTP phản hồi (200, 201, 400, 404, 500...)
+  key: null
+  fk_note: null
+- name: STATUS_NAME
+  data_type: NVARCHAR2(250)
+  description: Tên trạng thái hồ sơ hiển thị trên giao diện
+  key: null
+  fk_note: null
+- name: LABEL
+  data_type: NVARCHAR2(250)
+  description: Nhãn hiển thị ngắn gọn trên badge/tag
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(2000)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: SORT_ORDER
+  data_type: NUMBER(10,0)
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu'
+  key: null
+  fk_note: null
+- name: ORIGINAL_DATA
+  data_type: NUMBER(1,0)
+  description: 'Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo'
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null

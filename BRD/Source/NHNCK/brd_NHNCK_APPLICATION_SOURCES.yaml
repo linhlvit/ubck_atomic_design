@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_SOURCES
+brd_ref: BRD-SRC-NHNCK-APPLICATION_SOURCES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: CODE
+  data_type: NVARCHAR2(100)
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  key: null
+  fk_note: null
+- name: ITEM_NAME
+  data_type: NVARCHAR2(250)
+  description: Tên hiển thị chính
+  key: null
+  fk_note: null
+- name: LABEL
+  data_type: NVARCHAR2(250)
+  description: Nhãn hiển thị ngắn gọn trên badge/tag
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(2000)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null

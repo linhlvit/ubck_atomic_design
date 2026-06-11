@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: USERS
+brd_ref: BRD-SRC-NHNCK-USERS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: UNIT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> UNITS: Đơn vị nội bộ UBCKNN của người dùng/phòng ban'
+  key: FK
+  fk_note: FK → UNITS.ID
+- name: DEPARTMENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DEPARTMENTS: Phòng ban của người dùng'
+  key: FK
+  fk_note: FK → DEPARTMENTS.ID
+- name: POSITION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> POSITIONS: Chức vụ của người dùng'
+  key: FK
+  fk_note: FK → POSITIONS.ID
+- name: USERNAME
+  data_type: NVARCHAR2(50)
+  description: Tên đăng nhập vào hệ thống
+  key: null
+  fk_note: null
+- name: PASSWORD
+  data_type: NVARCHAR2(100)
+  description: Mật khẩu đã mã hóa (bcrypt hash)
+  key: null
+  fk_note: null
+- name: FULL_NAME
+  data_type: NVARCHAR2(255)
+  description: Họ và tên đầy đủ của người hành nghề
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: NVARCHAR2(255)
+  description: Địa chỉ email liên lạc
+  key: null
+  fk_note: null
+- name: PHONE_NUMBER
+  data_type: NVARCHAR2(20)
+  description: Số điện thoại cố định
+  key: null
+  fk_note: null
+- name: GENDER
+  data_type: NUMBER(1,0)
+  description: 'Giới tính: 0=Nam, 1=Nữ'
+  key: null
+  fk_note: null
+- name: LDAP
+  data_type: NVARCHAR2(200)
+  description: Thông tin LDAP/AD của tài khoản (dùng cho đăng nhập SSO nội bộ)
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_PASSWORD_AT
+  data_type: DATE
+  description: Ngày đổi mật khẩu lần cuối
+  key: null
+  fk_note: null
+- name: PROFESSIONAL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID

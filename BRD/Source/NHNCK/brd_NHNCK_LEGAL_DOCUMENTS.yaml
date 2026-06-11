@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: LEGAL_DOCUMENTS
+brd_ref: BRD-SRC-NHNCK-LEGAL_DOCUMENTS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: DOCUMENT_NUMBER
+  data_type: NVARCHAR2(50)
+  description: 'Số hiệu văn bản pháp lý (VD: 119/2020/NĐ-CP, 116/2020/TT-BTC)'
+  key: null
+  fk_note: null
+- name: DOCUMENT_NAME
+  data_type: NVARCHAR2(2000)
+  description: Tên tài liệu (snapshot tại thời điểm nộp hồ sơ)
+  key: null
+  fk_note: null
+- name: ISSUING_AGENCY
+  data_type: NVARCHAR2(1024)
+  description: Cơ quan ban hành văn bản pháp lý (Chính phủ, Bộ Tài chính, UBCKNN...)
+  key: null
+  fk_note: null
+- name: REFERENCE
+  data_type: NCLOB
+  description: Trích dẫn căn cứ pháp lý của quyết định
+  key: null
+  fk_note: null
+- name: FILE_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên file sao lưu hoặc file đính kèm
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: NVARCHAR2(1024)
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  key: null
+  fk_note: null
+- name: ISSUE_DATE
+  data_type: DATE
+  description: Ngày cấp CCHN
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: NVARCHAR2(1024)
+  description: Chức vụ/vị trí đảm nhiệm
+  key: null
+  fk_note: null
+- name: SIGNATORY
+  data_type: NVARCHAR2(255)
+  description: Họ tên người ký quyết định
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: FEATURED
+  data_type: NUMBER(10,0)
+  description: 'Cờ nổi bật/được đánh dấu quan trọng: 1=Nổi bật, 0=Bình thường'
+  key: null
+  fk_note: null
+- name: REASON
+  data_type: NVARCHAR2(2000)
+  description: Lý do thực hiện thao tác hoặc thay đổi
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

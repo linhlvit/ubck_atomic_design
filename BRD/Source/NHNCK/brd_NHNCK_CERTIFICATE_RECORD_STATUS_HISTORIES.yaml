@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: CERTIFICATE_RECORD_STATUS_HISTORIES
+brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_STATUS_HISTORIES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: CERTIFICATE_RECORD_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+- name: UPDATE_TYPE
+  data_type: NVARCHAR2(50)
+  description: Loại cập nhật trạng thái CCHN (chuỗi mô tả hành động thay đổi)
+  key: null
+  fk_note: null
+- name: OLD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái CCHN trước khi thay đổi: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực'
+  key: null
+  fk_note: null
+- name: NEW_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái CCHN sau khi thay đổi: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực'
+  key: null
+  fk_note: null
+- name: DECISION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  key: FK
+  fk_note: FK → DECISIONS.ID
+- name: REASON
+  data_type: NVARCHAR2(2000)
+  description: Lý do thực hiện thao tác hoặc thay đổi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_RE_EXAMS
+brd_ref: BRD-SRC-NHNCK-APPLICATION_RE_EXAMS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: EXAM_DETAIL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> EXAM_DETAILS: Chi tiết bài thi liên quan'
+  key: FK
+  fk_note: FK → EXAM_DETAILS.ID
+- name: RE_APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ đăng ký thi lại mới'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

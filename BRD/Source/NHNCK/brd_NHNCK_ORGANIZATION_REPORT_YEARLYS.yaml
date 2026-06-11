@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: ORGANIZATION_REPORT_YEARLYS
+brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORT_YEARLYS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: ORGANIZATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+- name: ITEM_NAME
+  data_type: NVARCHAR2(2000)
+  description: Tên hiển thị chính
+  key: null
+  fk_note: null
+- name: SUBMISSION_DATE
+  data_type: DATE
+  description: Ngày nộp hồ sơ chính thức
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: NVARCHAR2(100)
+  description: Năm báo cáo (định dạng YYYY)
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NVARCHAR2(100)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: NVARCHAR2(2000)
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_FEES
+brd_ref: BRD-SRC-NHNCK-APPLICATION_FEES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: PROFESSIONAL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+- name: FEE_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại phí: 1=Phí thi, 2=Phí phúc khảo, 3=Phí cấp chứng chỉ'
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: NVARCHAR2(255)
+  description: Nội dung của thông báo/thư điện tử/bổ sung hồ sơ
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: NVARCHAR2(255)
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: REQUEST_DATE
+  data_type: DATE
+  description: Ngày yêu cầu nộp phí
+  key: null
+  fk_note: null
+- name: PAYMENT_DATE
+  data_type: DATE
+  description: Ngày thực tế thanh toán phí
+  key: null
+  fk_note: null
+- name: EXPIRY_DATE
+  data_type: DATE
+  description: Ngày hết hạn thanh toán phí
+  key: null
+  fk_note: null
+- name: FEE
+  data_type: NUMBER(18,2)
+  description: 'Số tiền phí (đơn vị: VNĐ)'
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: NVARCHAR2(2000)
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null

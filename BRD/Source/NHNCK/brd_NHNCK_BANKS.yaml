@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: BANKS
+brd_ref: BRD-SRC-NHNCK-BANKS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: BANK_CODE
+  data_type: NVARCHAR2(255)
+  description: Mã ngân hàng (BIN code hoặc mã NAPAS)
+  key: null
+  fk_note: null
+- name: BANK_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên đầy đủ của ngân hàng
+  key: null
+  fk_note: null
+- name: SHORT_NAME
+  data_type: NVARCHAR2(255)
+  description: 'Tên viết tắt ngân hàng (VD: Vietcombank, VietinBank)'
+  key: null
+  fk_note: null
+- name: BANK_KEY
+  data_type: NVARCHAR2(255)
+  description: Khóa tra cứu ngân hàng (mã giao dịch nội bộ)
+  key: null
+  fk_note: null
+- name: ENGLISH_BANK_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên tiếng Anh của ngân hàng
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

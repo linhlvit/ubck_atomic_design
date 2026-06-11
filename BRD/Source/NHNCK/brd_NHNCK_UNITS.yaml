@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: UNITS
+brd_ref: BRD-SRC-NHNCK-UNITS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PARENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp'
+  key: FK
+  fk_note: FK → UNITS.ID
+- name: LEVEL_
+  data_type: NVARCHAR2(50)
+  description: 'Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh từ khóa Oracle)'
+  key: null
+  fk_note: null
+- name: UNIT_CODE
+  data_type: NVARCHAR2(100)
+  description: Mã đơn vị nội bộ UBCKNN
+  key: null
+  fk_note: null
+- name: UNIT_NAME
+  data_type: NVARCHAR2(1000)
+  description: Tên đơn vị nội bộ UBCKNN
+  key: null
+  fk_note: null
+- name: ADDRESS
+  data_type: NVARCHAR2(255)
+  description: Địa chỉ trụ sở tổ chức (NCLOB)
+  key: null
+  fk_note: null
+- name: PHONE_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số điện thoại cố định
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: NVARCHAR2(50)
+  description: Địa chỉ email liên lạc
+  key: null
+  fk_note: null
+- name: FAX
+  data_type: NVARCHAR2(50)
+  description: Số fax liên lạc
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(1024)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

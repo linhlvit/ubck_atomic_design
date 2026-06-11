@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: DISTRICTS
+brd_ref: BRD-SRC-NHNCK-DISTRICTS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: COUNTRY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> COUNTRIES: Quốc gia liên quan'
+  key: FK
+  fk_note: FK → COUNTRIES.ID
+- name: PROVINCE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROVINCES: Tỉnh/thành phố liên quan'
+  key: FK
+  fk_note: FK → PROVINCES.ID
+- name: DISTRICT_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã quận/huyện theo chuẩn quốc gia
+  key: null
+  fk_note: null
+- name: DISTRICT_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên quận/huyện/thị xã/thành phố thuộc tỉnh
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

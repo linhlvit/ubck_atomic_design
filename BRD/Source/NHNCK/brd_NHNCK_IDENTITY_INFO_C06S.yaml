@@ -1,0 +1,206 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: IDENTITY_INFO_C06S
+brd_ref: BRD-SRC-NHNCK-IDENTITY_INFO_C06S
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: FULL_NAME
+  data_type: NVARCHAR2(255)
+  description: Họ và tên đầy đủ của người hành nghề
+  key: null
+  fk_note: null
+- name: FIRST_NAME
+  data_type: NVARCHAR2(50)
+  description: Tên đệm và tên riêng (tên gọi) của người hành nghề
+  key: null
+  fk_note: null
+- name: BIRTH_DATE
+  data_type: DATE
+  description: Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)
+  key: null
+  fk_note: null
+- name: BIRTH_YEAR
+  data_type: NVARCHAR2(4)
+  description: Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)
+  key: null
+  fk_note: null
+- name: IDENTITY_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  key: null
+  fk_note: null
+- name: GENDER
+  data_type: NVARCHAR2(50)
+  description: 'Giới tính: 0=Nam, 1=Nữ'
+  key: null
+  fk_note: null
+- name: NATIONAL
+  data_type: NVARCHAR2(500)
+  description: Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư)
+  key: null
+  fk_note: null
+- name: RELIGION
+  data_type: NVARCHAR2(500)
+  description: Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư)
+  key: null
+  fk_note: null
+- name: PERMANENT_COUNTRY_CODE
+  data_type: NVARCHAR2(500)
+  description: Mã quốc gia địa chỉ thường trú (theo C06)
+  key: null
+  fk_note: null
+- name: PERMANENT_PROVINCE_CODE
+  data_type: NVARCHAR2(500)
+  description: Mã tỉnh/thành phố địa chỉ thường trú (theo C06)
+  key: null
+  fk_note: null
+- name: PERMANENT_DISTRICT_CODE
+  data_type: NVARCHAR2(500)
+  description: Mã quận/huyện địa chỉ thường trú (theo C06)
+  key: null
+  fk_note: null
+- name: PERMANENT_DETAIL
+  data_type: NVARCHAR2(2000)
+  description: Địa chỉ chi tiết thường trú (số nhà, đường, phường/xã theo C06)
+  key: null
+  fk_note: null
+- name: CURRENT_COUNTRY_CODE
+  data_type: NVARCHAR2(500)
+  description: Mã quốc gia địa chỉ tạm trú (theo C06)
+  key: null
+  fk_note: null
+- name: CURRENT_PROVINCE_CODE
+  data_type: NVARCHAR2(500)
+  description: Mã tỉnh/thành phố địa chỉ tạm trú (theo C06)
+  key: null
+  fk_note: null
+- name: CURRENT_DISTRICT_CODE
+  data_type: NVARCHAR2(500)
+  description: Mã quận/huyện địa chỉ tạm trú (theo C06)
+  key: null
+  fk_note: null
+- name: CURRENT_DETAIL
+  data_type: NVARCHAR2(2000)
+  description: Địa chỉ chi tiết tạm trú (theo C06)
+  key: null
+  fk_note: null
+- name: COUNTRY_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã quốc gia theo chuẩn ISO 3166-1 alpha-2
+  key: null
+  fk_note: null
+- name: PLACE_OF_BIRTH
+  data_type: NVARCHAR2(1024)
+  description: Nơi sinh của người hành nghề
+  key: null
+  fk_note: null
+- name: HOMETOWN
+  data_type: NVARCHAR2(2000)
+  description: Quê quán theo C06 CSDL quốc gia về dân cư
+  key: null
+  fk_note: null
+- name: FATHER_FULL_NAME
+  data_type: NVARCHAR2(255)
+  description: Họ tên đầy đủ của bố (theo C06)
+  key: null
+  fk_note: null
+- name: FATHER_COUNTRY_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã quốc tịch của bố (theo C06)
+  key: null
+  fk_note: null
+- name: FATHER_IDENTITY_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CMND/CCCD của bố (theo C06)
+  key: null
+  fk_note: null
+- name: FATHER_IDENTITY_NUMBER_OLD
+  data_type: NVARCHAR2(50)
+  description: Số CMND cũ của bố (trước khi đổi CCCD, theo C06)
+  key: null
+  fk_note: null
+- name: MOTHER_FULL_NAME
+  data_type: NVARCHAR2(255)
+  description: Họ tên đầy đủ của mẹ (theo C06)
+  key: null
+  fk_note: null
+- name: MOTHER_COUNTRY_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã quốc tịch của mẹ (theo C06)
+  key: null
+  fk_note: null
+- name: MOTHER_IDENTITY_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CMND/CCCD của mẹ (theo C06)
+  key: null
+  fk_note: null
+- name: MOTHER_IDENTITY_NUMBER_OLD
+  data_type: NVARCHAR2(50)
+  description: Số CMND cũ của mẹ (theo C06)
+  key: null
+  fk_note: null
+- name: COUPLE_FULL_NAME
+  data_type: NVARCHAR2(255)
+  description: Họ tên đầy đủ của vợ/chồng (theo C06)
+  key: null
+  fk_note: null
+- name: COUPLE_COUNTRY_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã quốc tịch của vợ/chồng (theo C06)
+  key: null
+  fk_note: null
+- name: COUPLE_IDENTITY_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CMND/CCCD của vợ/chồng (theo C06)
+  key: null
+  fk_note: null
+- name: COUPLE_IDENTITY_NUMBER_OLD
+  data_type: NVARCHAR2(50)
+  description: Số CMND cũ của vợ/chồng (theo C06)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: USER_UPDATED_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người cập nhật thông tin C06 lần cuối'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: PLACE_OF_BIRTH_COUNTRY_CODE
+  data_type: NCHAR(500)
+  description: Mã quốc gia nơi sinh (theo C06, kiểu NCHAR)
+  key: null
+  fk_note: null
+- name: PLACE_OF_BIRTH_PROVINCE_CODE
+  data_type: NCHAR(500)
+  description: Mã tỉnh/thành phố nơi sinh (theo C06, kiểu NCHAR)
+  key: null
+  fk_note: null
+- name: PLACE_OF_BIRTH_DISTRICT_CODE
+  data_type: NCHAR(500)
+  description: Mã quận/huyện nơi sinh (theo C06, kiểu NCHAR)
+  key: null
+  fk_note: null

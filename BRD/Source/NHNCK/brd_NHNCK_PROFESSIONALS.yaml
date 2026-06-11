@@ -1,0 +1,236 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: PROFESSIONALS
+brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: ORGANIZATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+- name: NATIONALITY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> COUNTRIES: Quốc tịch của người hành nghề'
+  key: FK
+  fk_note: FK → COUNTRIES.ID
+- name: EDUCATION_LEVEL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> EDUCATION_LEVELS: Trình độ học vấn'
+  key: FK
+  fk_note: FK → EDUCATION_LEVELS.ID
+- name: REGISTRATION_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)'
+  key: null
+  fk_note: null
+- name: USERNAME
+  data_type: NVARCHAR2(50)
+  description: Tên đăng nhập vào hệ thống
+  key: null
+  fk_note: null
+- name: PASSWORD
+  data_type: NVARCHAR2(250)
+  description: Mật khẩu đã mã hóa (bcrypt hash)
+  key: null
+  fk_note: null
+- name: FULL_NAME
+  data_type: NVARCHAR2(255)
+  description: Họ và tên đầy đủ của người hành nghề
+  key: null
+  fk_note: null
+- name: FIRST_NAME
+  data_type: NVARCHAR2(50)
+  description: Tên đệm và tên riêng (tên gọi) của người hành nghề
+  key: null
+  fk_note: null
+- name: AVATAR
+  data_type: NVARCHAR2(500)
+  description: Đường dẫn/URL ảnh đại diện của người hành nghề
+  key: null
+  fk_note: null
+- name: BIRTH_DATE
+  data_type: DATE
+  description: Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)
+  key: null
+  fk_note: null
+- name: BIRTH_YEAR
+  data_type: NVARCHAR2(4)
+  description: Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)
+  key: null
+  fk_note: null
+- name: GENDER
+  data_type: NUMBER(10,0)
+  description: 'Giới tính: 0=Nam, 1=Nữ'
+  key: null
+  fk_note: null
+- name: PERMANENT_COUNTRY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> COUNTRIES: Quốc gia địa chỉ thường trú'
+  key: FK
+  fk_note: FK → COUNTRIES.ID
+- name: PERMANENT_PROVINCE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROVINCES: Tỉnh/thành phố địa chỉ thường trú'
+  key: FK
+  fk_note: FK → PROVINCES.ID
+- name: PERMANENT_DISTRICT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DISTRICTS: Quận/huyện địa chỉ thường trú'
+  key: FK
+  fk_note: FK → DISTRICTS.ID
+- name: PERMANENT_ADDRESS
+  data_type: NVARCHAR2(2000)
+  description: Địa chỉ cụ thể theo thường trú (số nhà, đường, phường/xã...)
+  key: null
+  fk_note: null
+- name: CURRENT_COUNTRY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> COUNTRIES: Quốc gia địa chỉ tạm trú hiện tại'
+  key: FK
+  fk_note: FK → COUNTRIES.ID
+- name: CURRENT_PROVINCE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROVINCES: Tỉnh/thành phố địa chỉ tạm trú'
+  key: FK
+  fk_note: FK → PROVINCES.ID
+- name: CURRENT_DISTRICT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DISTRICTS: Quận/huyện địa chỉ tạm trú'
+  key: FK
+  fk_note: FK → DISTRICTS.ID
+- name: PLACE_OF_BIRTH
+  data_type: NVARCHAR2(1024)
+  description: Nơi sinh của người hành nghề
+  key: null
+  fk_note: null
+- name: ADDRESS
+  data_type: NVARCHAR2(2000)
+  description: Địa chỉ trụ sở tổ chức (NCLOB)
+  key: null
+  fk_note: null
+- name: IDENTITY_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  key: null
+  fk_note: null
+- name: IDENTITY_ISSUE_DATE
+  data_type: DATE
+  description: Ngày cấp CMND/CCCD/Hộ chiếu
+  key: null
+  fk_note: null
+- name: IDENTITY_ISSUE_PLACE
+  data_type: NVARCHAR2(255)
+  description: Nơi cấp CMND/CCCD/Hộ chiếu
+  key: null
+  fk_note: null
+- name: PHONE_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số điện thoại cố định
+  key: null
+  fk_note: null
+- name: MOBILE_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số điện thoại di động
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: NVARCHAR2(255)
+  description: Địa chỉ email liên lạc
+  key: null
+  fk_note: null
+- name: WORKPLACE
+  data_type: NVARCHAR2(1024)
+  description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: IDENTITY_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu'
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: NVARCHAR2(2000)
+  description: Chức vụ/vị trí đảm nhiệm
+  key: null
+  fk_note: null
+- name: DEPARTMENT
+  data_type: NVARCHAR2(2000)
+  description: Phòng ban công tác
+  key: null
+  fk_note: null
+- name: PREVIOUS_IDENTITY_NUMBER
+  data_type: NVARCHAR2(500)
+  description: Số CMND cũ (trước khi đổi sang CCCD)
+  key: null
+  fk_note: null
+- name: HOMETOWN
+  data_type: NVARCHAR2(500)
+  description: Quê quán theo C06 CSDL quốc gia về dân cư
+  key: null
+  fk_note: null
+- name: NATIONAL
+  data_type: NVARCHAR2(500)
+  description: Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư)
+  key: null
+  fk_note: null
+- name: RELIGION
+  data_type: NVARCHAR2(500)
+  description: Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư)
+  key: null
+  fk_note: null
+- name: STATUS_WORK
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái hành nghề: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Cấp hành nghề có thời hạn'
+  key: null
+  fk_note: null
+- name: STATUS_ACCOUNT
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái tài khoản người hành nghề: 0=Chưa kích hoạt, 1=Đang hoạt động, 2=Khóa'
+  key: null
+  fk_note: null
+- name: PLACE_OF_BIRTH_COUNTRY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> COUNTRIES: Quốc gia nơi sinh'
+  key: FK
+  fk_note: FK → COUNTRIES.ID
+- name: PLACE_OF_BIRTH_PROVINCE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROVINCES: Tỉnh/thành phố nơi sinh'
+  key: FK
+  fk_note: FK → PROVINCES.ID
+- name: PLACE_OF_BIRTH_DISTRICT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DISTRICTS: Quận/huyện nơi sinh'
+  key: FK
+  fk_note: FK → DISTRICTS.ID

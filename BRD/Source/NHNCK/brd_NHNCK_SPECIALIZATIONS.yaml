@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SPECIALIZATIONS
+brd_ref: BRD-SRC-NHNCK-SPECIALIZATIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: SPECIALIZATION_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã chuyên ngành CCHN (mã định danh duy nhất)
+  key: null
+  fk_note: null
+- name: SPECIALIZATION_NAME
+  data_type: NVARCHAR2(500)
+  description: 'Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)'
+  key: null
+  fk_note: null
+- name: REFERENCE
+  data_type: NCLOB
+  description: Trích dẫn căn cứ pháp lý của quyết định
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu'
+  key: null
+  fk_note: null
+- name: ORIGINAL_DATA
+  data_type: NUMBER(1,0)
+  description: 'Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo'
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: MCDT_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã chuyên ngành trên hệ thống Cổng DVC quốc gia (MCĐT)
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

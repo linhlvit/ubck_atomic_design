@@ -1,0 +1,171 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: ORGANIZATION_REPORTS
+brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORTS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: ORGANIZATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+- name: PROFESSIONAL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+- name: CERTIFICATE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  key: FK
+  fk_note: FK → CERTIFICATES.ID
+- name: CERTIFICATE_RECORD_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+- name: FULL_NAME
+  data_type: NVARCHAR2(510)
+  description: Họ và tên đầy đủ của người hành nghề
+  key: null
+  fk_note: null
+- name: BIRTH_DATE
+  data_type: DATE
+  description: Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)
+  key: null
+  fk_note: null
+- name: IDENTITY_NUMBER
+  data_type: NVARCHAR2(100)
+  description: Số CMND/CCCD/Hộ chiếu của người hành nghề
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: NVARCHAR2(1000)
+  description: Chức vụ/vị trí đảm nhiệm
+  key: null
+  fk_note: null
+- name: DEPARTMENT
+  data_type: NVARCHAR2(2000)
+  description: Phòng ban công tác
+  key: null
+  fk_note: null
+- name: WORKPLACE
+  data_type: NVARCHAR2(2000)
+  description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
+  key: null
+  fk_note: null
+- name: HIRE_DATE
+  data_type: DATE
+  description: Ngày tuyển dụng NHNCK vào làm việc tại tổ chức
+  key: null
+  fk_note: null
+- name: TERMINATION_DATE
+  data_type: DATE
+  description: Ngày chấm dứt hợp đồng lao động của NHNCK
+  key: null
+  fk_note: null
+- name: CERTIFICATE_NUMBER
+  data_type: NVARCHAR2(100)
+  description: Số CCHN cấp cho NHNCK
+  key: null
+  fk_note: null
+- name: ISSUE_DATE
+  data_type: DATE
+  description: Ngày cấp CCHN
+  key: null
+  fk_note: null
+- name: DISCIPLINES
+  data_type: NCLOB
+  description: Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB)
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(1100)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: REPORT_DATE
+  data_type: DATE
+  description: Ngày lập báo cáo của tổ chức về NHNCK
+  key: null
+  fk_note: null
+- name: SYNC_ID
+  data_type: NVARCHAR2(100)
+  description: ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK
+  key: null
+  fk_note: null
+- name: SYNC_CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi báo cáo trong hệ thống đồng bộ nguồn
+  key: null
+  fk_note: null
+- name: SYNC_UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật báo cáo trong hệ thống đồng bộ nguồn
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null
+- name: PARENT_REPORT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATION_REPORTS: Báo cáo gốc/cha (khi báo cáo điều chỉnh)'
+  key: FK
+  fk_note: FK → ORGANIZATION_REPORTS.ID
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: STATUS_ORGANIZATION
+  data_type: NUMBER(10,0)
+  description: Trạng thái của tổ chức tại thời điểm báo cáo
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: NVARCHAR2(2000)
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  key: null
+  fk_note: null
+- name: FILE_PATH_TERMINATION
+  data_type: NVARCHAR2(2000)
+  description: Đường dẫn file quyết định/biên bản chấm dứt hợp đồng
+  key: null
+  fk_note: null
+- name: BUSINESS_DEPARTMENT
+  data_type: NVARCHAR2(1100)
+  description: Phòng nghiệp vụ UBCKNN quản lý tổ chức này (tên phòng)
+  key: null
+  fk_note: null
+- name: NOTES
+  data_type: NCLOB
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

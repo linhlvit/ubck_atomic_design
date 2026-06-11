@@ -1,0 +1,156 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: ORGANIZATIONS
+brd_ref: BRD-SRC-NHNCK-ORGANIZATIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PARENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp'
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+- name: ORGANIZATION_TYPE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> loại tổ chức kinh doanh CK: 0=Khác, 1=Công ty chứng khoán (CTCK), 2=Công ty quản lý quỹ (QLQ), 3=Ngân hàng'
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+- name: LINKED_ID
+  data_type: NUMBER(10,0)
+  description: ID liên kết với tổ chức trong hệ thống FMS hoặc SCMS
+  key: null
+  fk_note: null
+- name: SYNC_ID
+  data_type: NVARCHAR2(100)
+  description: ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK
+  key: null
+  fk_note: null
+- name: LEVEL_
+  data_type: NVARCHAR2(100)
+  description: 'Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh từ khóa Oracle)'
+  key: null
+  fk_note: null
+- name: ORGANIZATION_CODE
+  data_type: NVARCHAR2(100)
+  description: Mã tổ chức kinh doanh chứng khoán
+  key: null
+  fk_note: null
+- name: ORGANIZATION_NAME
+  data_type: NVARCHAR2(2000)
+  description: Tên đầy đủ của tổ chức kinh doanh chứng khoán
+  key: null
+  fk_note: null
+- name: ENGLISH_NAME
+  data_type: NVARCHAR2(2000)
+  description: Tên tiếng Anh của tổ chức
+  key: null
+  fk_note: null
+- name: ABBREVIATION
+  data_type: NVARCHAR2(2000)
+  description: Tên viết tắt của tổ chức/quyền
+  key: null
+  fk_note: null
+- name: ADDRESS
+  data_type: NCLOB
+  description: Địa chỉ trụ sở tổ chức (NCLOB)
+  key: null
+  fk_note: null
+- name: FAX
+  data_type: NVARCHAR2(100)
+  description: Số fax liên lạc
+  key: null
+  fk_note: null
+- name: PHONE_NUMBER
+  data_type: NVARCHAR2(100)
+  description: Số điện thoại cố định
+  key: null
+  fk_note: null
+- name: MOBILE_NUMBER
+  data_type: NVARCHAR2(100)
+  description: Số điện thoại di động
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE
+  data_type: NVARCHAR2(510)
+  description: Tên người đại diện theo pháp luật của tổ chức
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: NVARCHAR2(200)
+  description: Địa chỉ email liên lạc
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NCLOB
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: LICENSE_NUMBER
+  data_type: NVARCHAR2(100)
+  description: Số giấy phép hoạt động kinh doanh chứng khoán
+  key: null
+  fk_note: null
+- name: LICENSE_ISSUER
+  data_type: NVARCHAR2(100)
+  description: Cơ quan cấp giấy phép (UBCKNN)
+  key: null
+  fk_note: null
+- name: LICENSE_DATE
+  data_type: DATE
+  description: Ngày cấp giấy phép hoạt động
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: SORT_ORDER
+  data_type: NUMBER(10,0)
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  key: null
+  fk_note: null
+- name: LAST_SYNC_DATE
+  data_type: DATE
+  description: Ngày đồng bộ dữ liệu tổ chức từ FMS/SCMS gần nhất
+  key: null
+  fk_note: null
+- name: SYNC_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái đồng bộ: 1=Đã đồng bộ, 0=Chưa đồng bộ, 2=Lỗi đồng bộ'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: WEBSITE
+  data_type: NVARCHAR2(2000)
+  description: Địa chỉ website của tổ chức
+  key: null
+  fk_note: null
+- name: CHARTER_CAPITAL
+  data_type: NVARCHAR2(2000)
+  description: Vốn điều lệ của tổ chức kinh doanh CK
+  key: null
+  fk_note: null

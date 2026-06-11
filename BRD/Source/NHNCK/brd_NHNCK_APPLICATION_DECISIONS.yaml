@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_DECISIONS
+brd_ref: BRD-SRC-NHNCK-APPLICATION_DECISIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: DECISION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  key: FK
+  fk_note: FK → DECISIONS.ID

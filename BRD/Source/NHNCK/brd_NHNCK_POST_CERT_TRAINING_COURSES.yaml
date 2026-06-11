@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: POST_CERT_TRAINING_COURSES
+brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_COURSES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: COURSE_CODE
+  data_type: VARCHAR2(50 BYTE)
+  description: Mã khóa học/lớp học
+  key: null
+  fk_note: null
+- name: COURSE_NAME
+  data_type: NVARCHAR2(500)
+  description: Tên khóa học/lớp học
+  key: null
+  fk_note: null
+- name: CLASS_CODE
+  data_type: VARCHAR2(50 BYTE)
+  description: Mã lớp học (định danh lớp cụ thể trong khóa)
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID

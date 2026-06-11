@@ -1,0 +1,121 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: EXAM_SESSIONS
+brd_ref: BRD-SRC-NHNCK-EXAM_SESSIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: ITEM_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên hiển thị chính
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: NVARCHAR2(50)
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: NUMBER(10,0)
+  description: Năm báo cáo (định dạng YYYY)
+  key: null
+  fk_note: null
+- name: SESSION_
+  data_type: NUMBER(10,0)
+  description: 'Kỳ thi trong năm (1=Kỳ 1, 2=Kỳ 2...) — tên gốc: Session (thêm _ để tránh từ khóa Oracle)'
+  key: null
+  fk_note: null
+- name: ORGANIZING_UNIT
+  data_type: NVARCHAR2(255)
+  description: 'Đơn vị tổ chức đợt thi sát hạch CCHN (tên đơn vị, VD: Vụ nghiệp vụ II - UBCKNN)'
+  key: null
+  fk_note: null
+- name: APPLICATION_START_DATE
+  data_type: VARCHAR2(200)
+  description: Ngày bắt đầu nhận đăng ký dự thi (VARCHAR2 vì có thể lưu dạng chuỗi mô tả)
+  key: null
+  fk_note: null
+- name: APPLICATION_END_DATE
+  data_type: VARCHAR2(200)
+  description: Ngày kết thúc nhận đăng ký dự thi
+  key: null
+  fk_note: null
+- name: EXAM_START_DATE
+  data_type: VARCHAR2(200)
+  description: Ngày bắt đầu kỳ thi sát hạch
+  key: null
+  fk_note: null
+- name: EXAM_END_DATE
+  data_type: VARCHAR2(200)
+  description: Ngày kết thúc kỳ thi sát hạch
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: NVARCHAR2(500)
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  key: null
+  fk_note: null
+- name: NOTI_DATE
+  data_type: VARCHAR2(200)
+  description: Ngày thông báo kết quả thi sát hạch
+  key: null
+  fk_note: null
+- name: EXAM_LOCATIONS
+  data_type: NVARCHAR2(1000)
+  description: Địa điểm tổ chức thi (NVARCHAR2 mô tả địa điểm)
+  key: null
+  fk_note: null
+- name: SUBMISSION_METHODS
+  data_type: NVARCHAR2(100)
+  description: Phương thức nộp hồ sơ đăng ký dự thi (trực tiếp, online...)
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: DECISION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  key: FK
+  fk_note: FK → DECISIONS.ID
+- name: BANK_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> BANKS: Ngân hàng thu phí đăng ký/dự thi'
+  key: FK
+  fk_note: FK → BANKS.ID
+- name: BANK_ACCOUNT_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số tài khoản ngân hàng thu phí thi
+  key: null
+  fk_note: null
+- name: BANK_ACCOUNT_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên chủ tài khoản ngân hàng thu phí thi
+  key: null
+  fk_note: null

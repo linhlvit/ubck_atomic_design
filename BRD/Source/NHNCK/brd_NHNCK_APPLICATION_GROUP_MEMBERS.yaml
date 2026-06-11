@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_GROUP_MEMBERS
+brd_ref: BRD-SRC-NHNCK-APPLICATION_GROUP_MEMBERS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_GROUP_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATION_GROUPS: Nhóm hồ sơ chứa bản ghi này'
+  key: FK
+  fk_note: FK → APPLICATION_GROUPS.ID
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: NOTES
+  data_type: NVARCHAR2(500)
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: ORDER_INDEX
+  data_type: NUMBER(10,0)
+  description: Thứ tự của bản ghi trong nhóm
+  key: null
+  fk_note: null

@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATION_GROUPS
+brd_ref: BRD-SRC-NHNCK-APPLICATION_GROUPS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: GROUP_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý)
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(1000)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: DECISION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
+  key: FK
+  fk_note: FK → DECISIONS.ID
+- name: GROUP_CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo nhóm hồ sơ/CCHN
+  key: null
+  fk_note: null
+- name: GROUP_COMPLETED_DATE
+  data_type: DATE
+  description: Ngày hoàn thành xử lý nhóm hồ sơ/CCHN
+  key: null
+  fk_note: null
+- name: NOTES
+  data_type: NVARCHAR2(2000)
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: APPLICATION_COUNT
+  data_type: NUMBER(10,0)
+  description: Số lượng hồ sơ trong nhóm
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: APPLICATION_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN'
+  key: null
+  fk_note: null
+- name: SUBMITED_DATE
+  data_type: DATE
+  description: Ngày nhóm hồ sơ được gửi lên cấp trên xử lý
+  key: null
+  fk_note: null
+- name: SUBMITED_BY
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người gửi nhóm hồ sơ lên cấp trên'
+  key: FK
+  fk_note: FK → USERS.ID

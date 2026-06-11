@@ -1,0 +1,181 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: APPLICATIONS
+brd_ref: BRD-SRC-NHNCK-APPLICATIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PROFESSIONAL_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+- name: STATUS_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại'
+  key: FK
+  fk_note: FK → APPLICATION_STATUSES.ID
+- name: CERTIFICATE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  key: FK
+  fk_note: FK → CERTIFICATES.ID
+- name: CERTIFICATE_RECORD_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+- name: PREVIOUS_CERTIFICATE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATES: Loại CCHN cũ (khi cấp lại)'
+  key: FK
+  fk_note: FK → CERTIFICATES.ID
+- name: PREVIOUS_CERTIFICATE_RECORD_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATE_RECORDS: CCHN cũ cần cấp lại'
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+- name: EXAM_SESSION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan'
+  key: FK
+  fk_note: FK → EXAM_SESSIONS.ID
+- name: REGISTRATION_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)'
+  key: null
+  fk_note: null
+- name: APPLICATION_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN'
+  key: null
+  fk_note: null
+- name: APPLICATION_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã hồ sơ (mã định danh duy nhất do hệ thống sinh)
+  key: null
+  fk_note: null
+- name: TITLE
+  data_type: NVARCHAR2(255)
+  description: Tiêu đề/tên hồ sơ hoặc nhóm
+  key: null
+  fk_note: null
+- name: SUBMISSION_DATE
+  data_type: DATE
+  description: Ngày nộp hồ sơ chính thức
+  key: null
+  fk_note: null
+- name: SUPPLEMENT_DATE
+  data_type: DATE
+  description: Ngày nộp bổ sung hồ sơ
+  key: null
+  fk_note: null
+- name: REISSUE_REASON
+  data_type: NCLOB
+  description: Lý do xin cấp lại CCHN (NCLOB)
+  key: null
+  fk_note: null
+- name: REJECTION_REASON
+  data_type: NCLOB
+  description: Lý do trả lại/từ chối hồ sơ (NCLOB)
+  key: null
+  fk_note: null
+- name: CERTIFICATE_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CCHN cấp cho NHNCK
+  key: null
+  fk_note: null
+- name: ISSUE_DATE
+  data_type: DATE
+  description: Ngày cấp CCHN
+  key: null
+  fk_note: null
+- name: PREVIOUS_CERTIFICATE_NUMBER
+  data_type: NVARCHAR2(50)
+  description: Số CCHN cũ (trước khi cấp lại)
+  key: null
+  fk_note: null
+- name: PREVIOUS_ISSUE_DATE
+  data_type: DATE
+  description: Ngày cấp CCHN cũ
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: NVARCHAR2(1024)
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: VIOLATED
+  data_type: NUMBER(1,0)
+  description: 'Cờ NHNCK vi phạm quy định: 1=Có vi phạm, 0=Không vi phạm'
+  key: null
+  fk_note: null
+- name: DATA_EXPLOITABLE
+  data_type: NUMBER(1,0)
+  description: 'Cờ dữ liệu có thể khai thác/sử dụng: 1=Có thể dùng, 0=Không'
+  key: null
+  fk_note: null
+- name: ASSIGNEE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: INFO_VERIFY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Cán bộ xác minh thông tin hồ sơ'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: CERTIFICATE_RECEIPT_METHOD
+  data_type: NUMBER(10,0)
+  description: 'Phương thức nhận CCHN: 1=Nhận tại UBCKNN, 2=Gửi bưu điện, 3=Điện tử'
+  key: null
+  fk_note: null
+- name: CERTIFICATE_RECEIPT_ADDRESS
+  data_type: NVARCHAR2(2000)
+  description: Địa chỉ nhận CCHN qua bưu điện
+  key: null
+  fk_note: null
+- name: RECEIPT_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái nhận CCHN: 1=Đã nhận, 0=Chưa nhận'
+  key: null
+  fk_note: null
+- name: SUPPLEMENT_LETTER_DATE
+  data_type: DATE
+  description: Ngày ban hành công văn yêu cầu bổ sung hồ sơ
+  key: null
+  fk_note: null
+- name: CERTIFICATE_RECEIPT_PHONE
+  data_type: NVARCHAR2(2000)
+  description: Số điện thoại liên lạc khi nhận CCHN
+  key: null
+  fk_note: null
+- name: REISSUE_HSM
+  data_type: NVARCHAR2(50)
+  description: Thông tin HSM (Hardware Security Module) khi cấp CCHN điện tử
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK → USERS.ID
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK → USERS.ID

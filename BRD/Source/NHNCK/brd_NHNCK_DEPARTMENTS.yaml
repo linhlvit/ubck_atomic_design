@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: DEPARTMENTS
+brd_ref: BRD-SRC-NHNCK-DEPARTMENTS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: UNIT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> UNITS: Đơn vị nội bộ UBCKNN của người dùng/phòng ban'
+  key: FK
+  fk_note: FK → UNITS.ID
+- name: DEPARTMENT_CODE
+  data_type: NVARCHAR2(50)
+  description: Mã phòng ban
+  key: null
+  fk_note: null
+- name: DEPARTMENT_NAME
+  data_type: NVARCHAR2(255)
+  description: Tên phòng ban
+  key: null
+  fk_note: null
+- name: SORT_ORDER
+  data_type: NUMBER(10,0)
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(1024)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
