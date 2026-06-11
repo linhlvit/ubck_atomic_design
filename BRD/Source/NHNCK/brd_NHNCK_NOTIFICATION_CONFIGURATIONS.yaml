@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: NOTIFICATION_CONFIGURATIONS
+brd_ref: BRD-SRC-NHNCK-NOTIFICATION_CONFIGURATIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null
+- name: ITEM_NAME
+  data_type: NVARCHAR2(255 CHAR)
+  description: Tên hiển thị chính
+  key: null
+  fk_note: null
+- name: TRIGGER_EVENT
+  data_type: NVARCHAR2(500 CHAR)
+  description: Tên sự kiện nghiệp vụ kích hoạt gửi thông báo (mã sự kiện)
+  key: null
+  fk_note: null
+- name: ACTION_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ)
+  key: null
+  fk_note: null
+- name: NOTI_ENABLED
+  data_type: NUMBER(1,0)
+  description: 'Cờ bật thông báo in-app: 1=Gửi thông báo in-app, 0=Không gửi'
+  key: null
+  fk_note: null
+- name: SMS_ENABLED
+  data_type: NUMBER(1,0)
+  description: 'Cờ bật gửi SMS: 1=Gửi SMS, 0=Không gửi'
+  key: null
+  fk_note: null
+- name: EMAIL_ENABLED
+  data_type: NUMBER(1,0)
+  description: 'Cờ bật gửi email: 1=Gửi email, 0=Không gửi'
+  key: null
+  fk_note: null
+- name: CONTENT_NOTI
+  data_type: NCLOB
+  description: Template nội dung thông báo in-app (NCLOB, có placeholder {variable})
+  key: null
+  fk_note: null
+- name: CONTENT_SMS
+  data_type: NCLOB
+  description: Template nội dung SMS (NCLOB, có placeholder {variable})
+  key: null
+  fk_note: null
+- name: CONTENT_EMAIL
+  data_type: NCLOB
+  description: Template nội dung email HTML (NCLOB, có placeholder {variable})
+  key: null
+  fk_note: null
+- name: NOTI_PARAMETERS_JSON
+  data_type: NCLOB
+  description: Danh sách tham số cho template in-app (JSON NCLOB)
+  key: null
+  fk_note: null
+- name: SMS_PARAMETERS_JSON
+  data_type: NCLOB
+  description: Danh sách tham số cho template SMS (JSON NCLOB)
+  key: null
+  fk_note: null
+- name: EMAIL_PARAMETERS_JSON
+  data_type: NCLOB
+  description: Danh sách tham số cho template email (JSON NCLOB)
+  key: null
+  fk_note: null
+- name: RECEIVERS_JSON
+  data_type: NCLOB
+  description: 'Danh sách đối tượng nhận thông báo (JSON NCLOB: roles, units, users)'
+  key: null
+  fk_note: null

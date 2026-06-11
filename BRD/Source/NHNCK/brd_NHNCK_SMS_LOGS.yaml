@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SMS_LOGS
+brd_ref: BRD-SRC-NHNCK-SMS_LOGS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: null
+  fk_note: null
+- name: RECEIVER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người nhận/tiếp nhận hành động xử lý'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: SMS_TO
+  data_type: NVARCHAR2(20 CHAR)
+  description: Số điện thoại người nhận SMS
+  key: null
+  fk_note: null
+- name: MESSAGE
+  data_type: NVARCHAR2(1000 CHAR)
+  description: Nội dung tin nhắn SMS
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NVARCHAR2(50 CHAR)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: ERROR_MESSAGE
+  data_type: NCLOB
+  description: Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null

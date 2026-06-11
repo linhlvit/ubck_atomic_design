@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: NOTIFICATIONS
+brd_ref: BRD-SRC-NHNCK-NOTIFICATIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: null
+  fk_note: null
+- name: ACTION_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ)
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null
+- name: READ_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Cờ đã đọc thông báo: 1=Đã đọc, 0=Chưa đọc'
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: NCLOB
+  description: Nội dung của thông báo/thư điện tử/bổ sung hồ sơ
+  key: null
+  fk_note: null
+- name: LINK
+  data_type: NVARCHAR2(500 CHAR)
+  description: URL điều hướng khi người dùng nhấp vào thông báo
+  key: null
+  fk_note: null
+- name: RECEIVER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người nhận/tiếp nhận hành động xử lý'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: SENT_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm thông báo được gửi đi
+  key: null
+  fk_note: null
+- name: READ_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm người nhận đọc thông báo
+  key: null
+  fk_note: null

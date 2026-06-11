@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: CERTIFICATE_DEPARTMENTS
+brd_ref: BRD-SRC-NHNCK-CERTIFICATE_DEPARTMENTS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: CERTIFICATE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  key: FK
+  fk_note: FK → CERTIFICATES.ID
+- name: DEPARTMENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DEPARTMENTS: Phòng ban của người dùng'
+  key: FK
+  fk_note: FK → DEPARTMENTS.ID

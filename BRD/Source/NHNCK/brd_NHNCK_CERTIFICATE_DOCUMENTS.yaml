@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: CERTIFICATE_DOCUMENTS
+brd_ref: BRD-SRC-NHNCK-CERTIFICATE_DOCUMENTS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: CERTIFICATE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  key: FK
+  fk_note: FK → CERTIFICATES.ID
+- name: DOCUMENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DOCUMENTS: Loại tài liệu yêu cầu'
+  key: FK
+  fk_note: FK → DOCUMENTS.ID
+- name: REQUIRED_FIELD
+  data_type: NUMBER(1,0)
+  description: 'Cờ bắt buộc nộp tài liệu/điền trường: 1=Bắt buộc, 0=Tùy chọn'
+  key: null
+  fk_note: null
+- name: SORT_ORDER
+  data_type: NUMBER(10,0)
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  key: null
+  fk_note: null
+- name: FORMAT
+  data_type: NVARCHAR2(50 CHAR)
+  description: 'Định dạng tệp được chấp nhận (VD: PDF, JPEG, PNG)'
+  key: null
+  fk_note: null
+- name: ATTACHMENT_DISPLAYED
+  data_type: NUMBER(1,0)
+  description: 'Cờ hiển thị tệp đính kèm trên giao diện: 1=Hiển thị, 0=Ẩn'
+  key: null
+  fk_note: null
+- name: DOCUMENT_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại tài liệu hoặc loại mã tự tăng
+  key: null
+  fk_note: null
+- name: DISPLAY_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Cờ hiển thị: 1=Hiển thị, 0=Không hiển thị'
+  key: null
+  fk_note: null

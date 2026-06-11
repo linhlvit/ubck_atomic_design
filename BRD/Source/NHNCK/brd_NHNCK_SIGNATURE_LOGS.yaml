@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SIGNATURE_LOGS
+brd_ref: BRD-SRC-NHNCK-SIGNATURE_LOGS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+- name: CERTIFICATE_RECORD_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+- name: SIGNED_BY
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người thực hiện ký số'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: SIGNED_AT
+  data_type: DATE
+  description: Thời điểm ký số tài liệu/hồ sơ
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null
+- name: HASH
+  data_type: NVARCHAR2(510 CHAR)
+  description: Giá trị hash của tài liệu đã được ký số
+  key: null
+  fk_note: null
+- name: CER_PATH
+  data_type: NVARCHAR2(510 CHAR)
+  description: Đường dẫn file chứng chỉ số dùng để ký
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK suy luận → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK suy luận → USERS.ID

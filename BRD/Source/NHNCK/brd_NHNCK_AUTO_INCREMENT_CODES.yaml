@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: AUTO_INCREMENT_CODES
+brd_ref: BRD-SRC-NHNCK-AUTO_INCREMENT_CODES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: CERTIFICATE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
+  key: FK
+  fk_note: FK → CERTIFICATES.ID
+- name: CODE
+  data_type: NVARCHAR2(10 CHAR)
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại bản ghi: 1=Cấp mới, 2=Cấp lại'
+  key: null
+  fk_note: null
+- name: DOCUMENT_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại tài liệu hoặc loại mã tự tăng
+  key: null
+  fk_note: null

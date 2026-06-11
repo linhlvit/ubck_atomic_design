@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SYSTEM_PARAMETERS
+brd_ref: BRD-SRC-NHNCK-SYSTEM_PARAMETERS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PARAMETER_CODE
+  data_type: NVARCHAR2(255 CHAR)
+  description: 'Mã tham số cấu hình (key tra cứu, VD: MAX_EXAM_ATTEMPTS)'
+  key: null
+  fk_note: null
+- name: PARAM_VALUE
+  data_type: NCLOB
+  description: Giá trị tham số hệ thống (NCLOB, định dạng tùy theo kiểu dữ liệu)
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(1024 CHAR)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: SORT_ORDER
+  data_type: NUMBER(10,0)
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  key: null
+  fk_note: null
+- name: DATA_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Kiểu dữ liệu của tham số: 1=Chuỗi, 2=Số, 3=Boolean, 4=JSON, 5=Mảng'
+  key: null
+  fk_note: null
+- name: DISPLAYED
+  data_type: NUMBER(10,0)
+  description: 'Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn'
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại/phân loại của bản ghi
+  key: null
+  fk_note: null

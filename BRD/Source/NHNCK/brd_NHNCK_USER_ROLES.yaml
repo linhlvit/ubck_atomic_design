@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: USER_ROLES
+brd_ref: BRD-SRC-NHNCK-USER_ROLES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: USER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người dùng liên quan'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: ROLE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ROLES: Vai trò liên quan'
+  key: FK
+  fk_note: FK → ROLES.ID

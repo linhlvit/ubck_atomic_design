@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: BACKUP_SCHEDULES
+brd_ref: BRD-SRC-NHNCK-BACKUP_SCHEDULES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: FILE_PATH
+  data_type: NVARCHAR2(500 CHAR)
+  description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
+  key: null
+  fk_note: null
+- name: SCHEDULE_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại lịch sao lưu: 1=Hàng ngày, 2=Hàng tuần, 3=Hàng tháng'
+  key: null
+  fk_note: null
+- name: HOUR
+  data_type: NUMBER(10,0)
+  description: Giờ thực hiện sao lưu tự động (0-23)
+  key: null
+  fk_note: null
+- name: MINUTE
+  data_type: NUMBER(10,0)
+  description: Phút thực hiện sao lưu tự động (0-59)
+  key: null
+  fk_note: null
+- name: DAY
+  data_type: NUMBER(10,0)
+  description: Ngày thực hiện sao lưu (1-31 cho tháng, 0-6 cho tuần)
+  key: null
+  fk_note: null

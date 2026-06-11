@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: PERMISSION_ROLES
+brd_ref: BRD-SRC-NHNCK-PERMISSION_ROLES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PERMISSION_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PERMISSIONS: Quyền hạn liên quan'
+  key: FK
+  fk_note: FK → PERMISSIONS.ID
+- name: ROLE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ROLES: Vai trò liên quan'
+  key: FK
+  fk_note: FK → ROLES.ID

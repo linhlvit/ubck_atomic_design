@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: PERMISSIONS
+brd_ref: BRD-SRC-NHNCK-PERMISSIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: CODE
+  data_type: NVARCHAR2(50 CHAR)
+  description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
+  key: null
+  fk_note: null
+- name: PERMISSION_NAME
+  data_type: NVARCHAR2(255 CHAR)
+  description: Tên quyền hành động đã thực hiện
+  key: null
+  fk_note: null
+- name: PARENT_CODE
+  data_type: NVARCHAR2(50 CHAR)
+  description: Mã quyền cha trong cây phân cấp quyền
+  key: null
+  fk_note: null
+- name: ABBREVIATION
+  data_type: NVARCHAR2(50 CHAR)
+  description: Tên viết tắt của tổ chức/quyền
+  key: null
+  fk_note: null
+- name: SORT_ORDER
+  data_type: NUMBER(10,0)
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu'
+  key: null
+  fk_note: null
+- name: MENU_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Cờ quyền là menu (có đường dẫn URL): 1=Là menu, 0=Là quyền hành động'
+  key: null
+  fk_note: null
+- name: PATH
+  data_type: NVARCHAR2(255 CHAR)
+  description: Đường dẫn URL endpoint API được gọi
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(1024 CHAR)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null

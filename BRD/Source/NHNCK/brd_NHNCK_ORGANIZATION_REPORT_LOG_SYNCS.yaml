@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: ORGANIZATION_REPORT_LOG_SYNCS
+brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORT_LOG_SYNCS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: FULL_NAME
+  data_type: NVARCHAR2(510 CHAR)
+  description: Họ và tên đầy đủ của người hành nghề
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: NVARCHAR2(1000 CHAR)
+  description: Chức vụ/vị trí đảm nhiệm
+  key: null
+  fk_note: null
+- name: DEPARTMENT
+  data_type: NVARCHAR2(2000 CHAR)
+  description: Phòng ban công tác
+  key: null
+  fk_note: null
+- name: HIRE_DATE
+  data_type: DATE
+  description: Ngày tuyển dụng NHNCK vào làm việc tại tổ chức
+  key: null
+  fk_note: null
+- name: TERMINATION_DATE
+  data_type: DATE
+  description: Ngày chấm dứt hợp đồng lao động của NHNCK
+  key: null
+  fk_note: null
+- name: CERTIFICATE_NUMBER
+  data_type: NVARCHAR2(100 CHAR)
+  description: Số CCHN cấp cho NHNCK
+  key: null
+  fk_note: null
+- name: ISSUE_DATE
+  data_type: DATE
+  description: Ngày cấp CCHN
+  key: null
+  fk_note: null
+- name: REPORT_DATE
+  data_type: DATE
+  description: Ngày lập báo cáo của tổ chức về NHNCK
+  key: null
+  fk_note: null
+- name: VALID_CERTIFICATE_NUM
+  data_type: NUMBER(1,0)
+  description: 'Cờ số CCHN hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ'
+  key: null
+  fk_note: null
+- name: VALID_ISSUE_DATE
+  data_type: NUMBER(1,0)
+  description: 'Cờ ngày cấp CCHN hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ'
+  key: null
+  fk_note: null
+- name: VALID_HIRE_DATE
+  data_type: NUMBER(1,0)
+  description: 'Cờ ngày tuyển dụng hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ'
+  key: null
+  fk_note: null
+- name: VALID_TERMINATION_DATE
+  data_type: NUMBER(1,0)
+  description: 'Cờ ngày chấm dứt hợp đồng hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK suy luận → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK suy luận → USERS.ID
+- name: REPORT_YEARLY_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATION_REPORT_YEARLYS: Báo cáo năm chứa bản ghi này'
+  key: FK
+  fk_note: FK → ORGANIZATION_REPORT_YEARLYS.ID
+- name: ORGANIZATION_REPORT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> ORGANIZATION_REPORTS: Báo cáo tổ chức liên quan'
+  key: FK
+  fk_note: FK → ORGANIZATION_REPORTS.ID

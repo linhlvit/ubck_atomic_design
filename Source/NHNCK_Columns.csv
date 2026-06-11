@@ -1,519 +1,1155 @@
-﻿Tên bảng,Tên trường,Mô tả,Khóa,Ghi chú (FK suy luận)
-ActionLogs,Id,ID định danh (tự động tăng),PK,
-ActionLogs,UserId,ID tài khoản thao tác,FK,FK → Users.Id
-ActionLogs,ClientMachine,Địa chỉ IP máy thực hiện,,
-ActionLogs,Detail,Mô tả nội dung thao tác,,
-ActionLogs,CreatedAt,Ngày tạo,,
-ApplicationDocuments,Id,Mã định danh tài liệu hồ sơ (tự động tăng),PK,
-ApplicationDocuments,ApplicationId,Mã hồ sơ,FK,FK → Applications.Id
-ApplicationDocuments,DocumentId,Mã tài liệu,FK,FK → Documents.Id
-ApplicationDocuments,Description,Mô tả,,
-ApplicationDocuments,FileName,Tên file,,
-ApplicationDocuments,Format,Loại file,,
-ApplicationDocuments,FilePath,Đường dẫn tệp,,
-ApplicationDocuments,FileSize,Dung lượng file,,
-ApplicationDocuments,AssigneeId,ID người thẩm định,FK,FK → Assignee.Id
-ApplicationDocuments,AppraisaledAt,Ngày thẩm định,,
-ApplicationDocuments,Note,Ghi chú,,
-ApplicationDocuments,DocumentName,Tên tài liệu,,
-ApplicationDocuments,IsInvalid,Cờ hợp lệ,,
-ApplicationDocuments,IsIncomplete,Cờ hoàn thành,,
-ApplicationDocuments,Status,Trạng thái thẩm định,,
-ApplicationDocuments,CreatedAt,Ngày tạo,,
-ApplicationFees,Id,ID phí hồ sơ (tự động tăng),PK,
-ApplicationFees,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
-ApplicationFees,ProfessionalId,ID người hành nghề,FK,FK → Professionals.Id
-ApplicationFees,FeeType,Loại phí,,
-ApplicationFees,Fee,Giá trị phí,,
-ApplicationFees,Content,Nội dung,,
-ApplicationFees,Note,Ghi chú,,
-ApplicationFees,Status,Trạng thái phí,,
-ApplicationFees,RequestDate,Ngày yêu cầu,,
-ApplicationFees,PaymentDate,Ngày thanh toán,,
-ApplicationFees,ExpiryDate,Ngày hết hạn,,
-ApplicationFees,UpdatedAt,Ngày cập nhật,,
-ApplicationFees,CreatedAt,Ngày tạo,,
-ApplicationFees,CreatedBy,ID người tạo,,
-Applications,Id,Mã định danh hồ sơ (tự động tăng),PK,
-Applications,CertificateId,Mã chứng chỉ,FK,FK → Certificates.Id
-Applications,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-Applications,StatusId,Mã trạng thái hồ sơ,FK,FK → Statuses.Id
-Applications,CertificateRecordId,ID chứng chỉ hành nghề,FK,FK → CertificateRecords.Id
-Applications,PreviousCertificateId,ID loại chứng chỉ trước đó,,FK suy luận → Certificates.Id
-Applications,PreviousCertificateRecordId,ID chứng chỉ hành nghề trước đó,,FK suy luận → CertificateRecords.Id
-Applications,RegistrationType,Loại đăng ký,,
-Applications,ApplicationType,Loại hồ sơ,,
-Applications,ApplicationCode,Mã hồ sơ,,
-Applications,Title,Tiêu đề hồ sơ,,
-Applications,SubmissionDate,Ngày nộp,,
-Applications,SupplementDate,Ngày bổ sung,,
-Applications,ReissueReason,Lý do cấp,,
-Applications,RejectionReason,Lý do từ chối,,
-Applications,CertificateNumber,Số chứng chỉ,,
-Applications,IssueDate,Ngày cấp chứng chỉ,,
-Applications,PreviousCertificateNumber,Số chứng chỉ trước đó,,
-Applications,PreviousIssueDate,Ngày cấp chứng chỉ trước đó,,
-Applications,Note,Ghi chú,,
-Applications,IsViolated,Cờ vi phạm,,
-Applications,IsDateExploitable,Cờ khai thác theo ngày,,
-Applications,UpdatedAt,Ngày cập nhật,,
-Applications,UpdatedBy,ID người cập nhật,,
-Applications,CreatedAt,Ngày tạo,,
-Applications,CreatedBy,ID người tạo,,
-Applications,CertificateReceiptMethod,Phương thức nhận chứng chỉ,,
-Applications,CertificateReceiptAddress,Địa chỉ nhận chứng chỉ,,
-Applications,ReceiptStatus,Trạng thái nhận,,
-Applications,SupplementLetterDate,Ngày thư bổ sung,,
-Applications,CertificateReceiptPhone,Số điện thoại nhận chứng chỉ,,
-Applications,ReissueHSM,Mã tái cấp HSM,,
-Applications,ExamSessionId,ID kỳ thi,,FK suy luận → ExamSessions.Id
-Applications,AssigneeId,ID cán bộ xử lý,,FK suy luận → Users.Id
-Applications,InfoVerifyId,ID yêu cầu phê duyệt lãnh đạo,,FK suy luận → VerifyApplicationStatuses.Id
-ApplicationSources,Id,ID dữ liệu (tự động tăng),PK,
-ApplicationSources,Code,Mã hình thức nộp hồ sơ,,
-ApplicationSources,Name,Tên hình thức nộp hồ sơ,,
-ApplicationSources,Label,Tên hiển thị trang tra cứu,,
-ApplicationSources,Description,Mô tả,,
-ApplicationSources,Status,Trạng thái,,
-ApplicationSources,CreatedAt,Ngày tạo,,
-ApplicationSources,UpdatedAt,Ngày cập nhật,,
-ApplicationSources,CreatedBy,ID người tạo,,
-ApplicationSources,UpdatedBy,ID người cập nhật,,
-ApplicationSpecializations,Id,ID dữ liệu (tự động tăng),PK,
-ApplicationSpecializations,ApplicationId,Mã hồ sơ,FK,FK → Applications.Id
-ApplicationSpecializations,SpecializationId,Mã chuyên môn,FK,FK → Specializations.Id
-ApplicationSpecializations,Note,Nội dung,,
-ApplicationSpecializations,FileName,Tên file,,
-ApplicationSpecializations,FilePath,Đường dẫn file,,
-ApplicationSpecializations,Format,Loại file,,
-ApplicationSpecializations,FileSize,Dung lượng file,,
-ApplicationSpecializations,AssigneeId,ID người thẩm định,,FK suy luận → Users.Id
-ApplicationSpecializations,AppraisaledAt,Thời gian thẩm định,,
-ApplicationSpecializations,Status,Trạng thái thẩm định,,
-ApplicationStatuses,Id,ID dữ liệu (tự động tăng),PK,
-ApplicationStatuses,StatusName,Tên trạng thái,,
-ApplicationStatuses,StatusCode,Mã trạng thái,,
-ApplicationStatuses,Label,Tên hiển thị trang tra cứu,,
-ApplicationStatuses,IsActive,Trạng thái hoạt động,,
-ApplicationStatuses,SortOrder,Thứ tự sắp xếp,,
-ApplicationStatuses,IsOriginalData,Cờ dữ liệu gốc,,
-CertificateDepartments,Id,ID dữ liệu (tự động tăng),PK,
-CertificateDepartments,CertificateId,ID loại chứng chỉ,,FK suy luận → Certificates.Id
-CertificateDepartments,DepartmentId,ID phòng ban,,FK suy luận → Department(s).Id
-CertificateDocuments,Id,ID dữ liệu (tự động tăng),PK,
-CertificateDocuments,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
-CertificateDocuments,DocumentId,ID tài liệu,FK,FK → Document.Id
-CertificateDocuments,IsDisplay,Cờ hiển thị,,
-CertificateDocuments,IsRequire,Cờ bắt buộc,,
-CertificateDocuments,DocumnetType,Loại tài liệu,,
-CertificateNumberTemplates,Id,ID dữ liệu (tự động tăng),PK,
-CertificateNumberTemplates,Code,Mã tài liệu,,
-CertificateNumberTemplates,CertificateId,ID loại chứng chỉ,,FK suy luận → Certificates.Id
-CertificateNumberTemplates,Type,Loại tài liệu,,
-CertificateNumberTemplates,IsDefault,Cờ mặc định bắt buộc,,
-CertificateNumberTemplates,Name,Tên,,
-CertificateRecordGroupMembers,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordGroupMembers,CertificateRecordGroupId,ID nhóm chứng chỉ,FK,FK → CertificateRecordGroup.Id
-CertificateRecordGroupMembers,CertificateRecordId,ID chứng chỉ hành nghề,FK,FK → CertificateRecord.Id
-CertificateRecordGroupMembers,IsReissue,Cờ cho phép cấp lại,,
-CertificateRecordGroupMembers,RevocationReason,Lý do thu hồi/hủy,,
-CertificateRecordGroupMembers,OrderIndex,Thứ tự sắp xếp,,
-CertificateRecordGroupMembers,Status,Trạng thái,,
-CertificateRecordGroups,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordGroups,GroupName,Tên nhóm chứng chỉ,,
-CertificateRecordGroups,Type,Loại chứng chỉ,,
-CertificateRecordGroups,DecisionId,ID quyết định,FK,FK (xem constraint)
-CertificateRecordGroups,Description,Mô tả,,
-CertificateRecordGroups,Notes,Ghi chú,,
-CertificateRecordGroups,Status,Trạng thái,,
-CertificateRecordGroups,CreatedAt,Thời gian tạo,,
-CertificateRecordGroups,UpdatedAt,Thời gian cập nhật gần nhất,,
-CertificateRecordLogs,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordLogs,CertificateRecordId,ID chứng chỉ,,FK suy luận → CertificateRecords.Id
-CertificateRecordLogs,ActionType,Loại hành động,,
-CertificateRecordLogs,CertificateNumber,Số chứng chỉ,,
-CertificateRecordLogs,DecisionId,ID quyết định,,FK suy luận → Decisions.Id
-CertificateRecordLogs,IssueDate,Ngày quyết định,,
-CertificateRecordLogs,Note,Ghi chú,,
-CertificateRecordLogs,CreatedBy,Người xử lý,,
-CertificateRecords,Id,Mã định danh (tự động tăng),PK,
-CertificateRecords,ProfessionalFullName,Họ và tên người hành nghề,,
-CertificateRecords,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
-CertificateRecords,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-CertificateRecords,IssueDecisionId,ID quyết định cấp,FK,FK → IssueDecisions.Id
-CertificateRecords,RevocationDecisionId,ID quyết định thu hồi,FK,FK → RevocationDecisions.Id
-CertificateRecords,CannellationDecisionId,ID quyết định hủy,FK,FK → CannellationDecisions.Id
-CertificateRecords,CertificateNumber,Số chứng chỉ,,
-CertificateRecords,IssueDate,Ngày cấp,,
-CertificateRecords,RevocationDate,Ngày thu hồi,,
-CertificateRecords,RevocationReason,Lý do thu hồi,,
-CertificateRecords,Status,"Trạng thái (0: Chưa sử dụng, 1: Đang sử dụng, 2: Thu hồi, 3: Đã hủy)",,
-CertificateRecords,ProcessStatus,"Trạng thái ký (Đã cấp, Đã ký, Đã trả)",,
-CertificateRecords,Description,Mô tả,,
-CertificateRecords,CreatedAt,Ngày tạo,,
-CertificateRecords,CreatedBy,Người tạo,,
-CertificateRecords,AllowReissue,"Cho phép cấp lại (0: Không cho phép, 1: Cho phép)",,
-CertificateRecordStatusHistories,Id,ID dữ liệu (tự động tăng),PK,
-CertificateRecordStatusHistories,CertificateRecordId,ID chứng chỉ hành nghề,,FK suy luận → CertificateRecords.Id
-CertificateRecordStatusHistories,UpdateType,"Loại cập nhật (Manual, System, Decision)",,
-CertificateRecordStatusHistories,OldStatus,Trạng thái ban đầu,,
-CertificateRecordStatusHistories,NewStatus,Trạng thái cập nhật,,
-CertificateRecordStatusHistories,DecisionId,ID quyết định,FK,FK → Decisions.Id
-CertificateRecordStatusHistories,Reason,Lý do thay đổi,,
-CertificateRecordStatusHistories,CreatedAt,Thời gian tạo,,
-CertificateRecordStatusHistories,UpdatedAt,Thời gian cập nhật gần nhất,,
-Certificates,Id,ID loại chứng chỉ (tự động tăng),PK,
-Certificates,CertificateCode,Mã loại chứng chỉ,,
-Certificates,CertificateName,Tên loại chứng chỉ,,
-Certificates,Description,Mô tả,,
-Certificates,SortOrder,Thứ tự sắp xếp,,
-Certificates,IsOriginalData,Cờ dữ liệu gốc,,
-Certificates,ProcessingDays,Số ngày xử lý,,
-Certificates,Status,Trạng thái,,
-Certificates,CreatedAt,Thời gian tạo,,
-Certificates,UpdatedAt,Thời gian cập nhật gần nhất,,
-CertificateSpecializations,Id,ID dữ liệu (tự động tăng),PK,
-CertificateSpecializations,CertificateId,Mã chứng chỉ,FK,FK → Certificates.Id
-CertificateSpecializations,SpecializationId,Mã chuyên môn,FK,FK → Specializations.Id
-Decisions,Id,ID quyết định (tự động tăng),PK,
-Decisions,DecisionNumber,Số quyết định,,
-Decisions,Title,Tiêu đề quyết định,,
-Decisions,Reference,Trích dẫn,,
-Decisions,DecisionContent,Nội dung quyết định,,
-Decisions,SignedDate,Ngày ký,,
-Decisions,Signatory,Người ký,,
-Decisions,Position,Chức vụ người ký,,
-Decisions,DecisionUnit,Đơn vị ban hành,,
-Decisions,FileName,Tên file đính kèm,,
-Decisions,FilePath,Đường dẫn file,,
-Decisions,TypeId,Loại quyết định,,FK suy luận → Type(s).Id
-Decisions,Status,Trạng thái quyết định,,
-Decisions,CreatedBy,ID người tạo,,
-Decisions,CreatedAt,Thời gian tạo,,
-Decisions,UpdatedAt,Thời gian cập nhật gần nhất,,
-DepartmentAccess,Id,ID dữ liệu (tự động tăng),PK,
-DepartmentAccess,DepartmentId,ID phòng ban được khai thác,FK,FK (xem constraint)
-DepartmentAccess,DepartmentAccessId,ID phòng ban có quyền khai thác,FK,FK (xem constraint)
-DigitalCertificates,Id,ID dữ liệu (tự động tăng),PK,
-DigitalCertificates,DigitalCertificateId,ID chứng thư số,,
-DigitalCertificates,UserId,ID tài khoản được sử dụng,FK,FK (xem constraint)
-DigitalCertificates,Status,Trạng thái,,
-DigitalCertificates,Notes,Mô tả,,
-DigitalCertificateUsers,Id,ID dữ liệu (tự động tăng),PK,
-DigitalCertificateUsers,DigitalCertificateId,ID chứng thư số,FK,FK (xem constraint)
-DigitalCertificateUsers,UserId,ID tài khoản được sử dụng,FK,FK (xem constraint)
-DigitalCertificateUsers,Status,Trạng thái,,
-DigitalCertificateUsers,Notes,Mô tả,,
-Documents,Id,Mã định danh tài liệu (tự động tăng),PK,
-Documents,DocumentCode,Mã tài liệu,,
-Documents,DocumentName,Tên tài liệu,,
-Documents,SortOrder,Thứ tự sắp xếp,,
-Documents,Reference,Trích dẫn,,
-Documents,Status,Trạng thái,,
-Documents,IsOriginalData,Cờ dữ liệu gốc,,
-Documents,CreatedBy,ID người tạo,,
-Documents,CreatedAt,Thời gian tạo,,
-Documents,UpdatedAt,Thời gian cập nhật gần nhất,,
-EducationLevels,Id,Mã định danh trình độ học vấn (tự động tăng),PK,
-EducationLevels,LevelName,Tên trình độ học vấn,,
-EducationLevels,Description,Mô tả,,
-EducationLevels,Status,Trạng thái,,
-EducationLevels,IsOriginalData,Cờ dữ liệu gốc,,
-ExamDetails,Id,Mã định danh (tự động tăng),PK,
-ExamDetails,ProfessionalId,ID người hành nghề,FK,FK → Professionals.Id
-ExamDetails,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
-ExamDetails,ExamSessionId,ID kỳ thi,FK,FK → ExamSessions.Id
-ExamDetails,SequenceNumber,Số thứ tự,,
-ExamDetails,ExamNumber,Số báo danh,,
-ExamDetails,LawScore,Điểm thi luật,,
-ExamDetails,LawResult,"Kết quả luật (1: Đạt, 0: Không đạt)",,
-ExamDetails,SpecializationScore,Điểm thi chuyên môn,,
-ExamDetails,SpecializationResult,"Kết quả chuyên môn (1: Đạt, 0: Không đạt)",,
-ExamDetails,Result,"Kết quả tổng (1: Đạt, 0: Không đạt)",,
-ExamDetails,Note,Ghi chú,,
-ExamDetails,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
-ExamDetails,CreatedAt,Ngày tạo,,
-ExamDetails,CreatedBy,Người tạo,,
-ExamSessionFees,Id,Mã định danh (tự động tăng),PK,
-ExamSessionFees,ExamSessionId,ID đợt thi sát hạch,FK,FK → ExamSessions.Id
-ExamSessionFees,CertificateId,ID loại chứng chỉ,FK,FK → Certificates.Id
-ExamSessionFees,FeeExam,Phí thi,,
-ExamSessionFees,FeeAppeal,Phí phúc khảo,,
-ExamSessionFees,Status,Trạng thái,,
-ExamSessionFees,CreatedAt,Ngày tạo,,
-ExamSessionFees,CreatedBy,Người tạo,,
-ExamSessionFees,UpdatedAt,Ngày cập nhật,,
-ExamSessionFees,UpdatedBy,Người cập nhật,,
-ExamSessions,Id,Mã định danh (tự động tăng),PK,
-ExamSessions,Code,Mã đợt thi,,
-ExamSessions,Name,Tên đợt thi,,
-ExamSessions,Year,Năm diễn ra,,
-ExamSessions,Session,Đợt thi,,
-ExamSessions,OrganizingUnit,Đơn vị tổ chức,,
-ExamSessions,ApplicationStartDate,Ngày bắt đầu nhận hồ sơ,,
-ExamSessions,ApplicationEndDate,Ngày kết thúc nhận hồ sơ,,
-ExamSessions,ExamStartDate,Ngày bắt đầu thi,,
-ExamSessions,ExamEndDate,Ngày kết thúc thi,,
-ExamSessions,FilePath,Đường dẫn tài liệu,,
-ExamSessions,NotiDate,Ngày thông báo,,
-ExamSessions,ExamLocations,Nơi diễn ra,,
-ExamSessions,SubmissionMethods,Phương thức nộp,,
-ExamSessions,CreatedBy,Người tạo,,
-ExamSessions,Status,"Trạng thái (0: Chưa hoàn thành, 1: Đã hoàn thành)",,
-ExamSessions,DecisionId,ID quyết định,FK,FK (xem constraint)
-IdentityInfoC06s,Id,Mã định danh lịch sử (tự động tăng),PK,
-IdentityInfoC06s,FullName,Họ và tên,,
-IdentityInfoC06s,FirstName,Tên,,
-IdentityInfoC06s,BirthDate,Ngày sinh,,
-IdentityInfoC06s,BirthYear,Năm sinh,,
-IdentityInfoC06s,IdentityNumber,Số định danh,,
-IdentityInfoC06s,Gender,"Giới tính (0: Nữ, 1: Nam)",,
-IdentityInfoC06s,National,Quốc tịch,,
-IdentityInfoC06s,Religion,Tôn giáo,,
-IdentityInfoC06s,PermanentCountryCode,Quốc gia nguyên quán,,
-IdentityInfoC06s,PermanentProvinceCode,Tỉnh thành nguyên quán,,
-IdentityInfoC06s,PermanentDistrictCode,Quận huyện nguyên quán,,
-IdentityInfoC06s,PermanentDetail,Địa chỉ nguyên quán chi tiết,,
-IdentityInfoC06s,CurrentCountryCode,Quốc gia hiện tại,,
-IdentityInfoC06s,CurrentProvinceCode,Tỉnh thành hiện tại,,
-IdentityInfoC06s,CurrentDistrictCode,Quận huyện hiện tại,,
-IdentityInfoC06s,CurrentDetail,Địa chỉ hiện tại chi tiết,,
-IdentityInfoC06s,CountryCode,Mã quốc gia,,
-IdentityInfoC06s,PlaceOfBirth,Nơi sinh,,
-IdentityInfoC06s,Hometown,Địa chỉ nhà,,
-IdentityInfoC06s,FatherFullName,Họ tên bố,,
-IdentityInfoC06s,FatherCountryCode,Quốc gia của bố,,
-IdentityInfoC06s,FatherIdentityNumber,Số định danh của bố,,
-IdentityInfoC06s,FatherIdentityNumberOld,Số định danh cũ của bố,,
-IdentityInfoC06s,MotherFullName,Họ tên mẹ,,
-IdentityInfoC06s,MotherCountryCode,Quốc gia của mẹ,,
-IdentityInfoC06s,MotherIdentityNumber,Số định danh của mẹ,,
-IdentityInfoC06s,MotherIdentityNumberOld,Số định danh cũ của mẹ,,
-IdentityInfoC06s,CoupleFullName,Họ tên vợ/chồng,,
-IdentityInfoC06s,CoupleCountryCode,Quốc gia của vợ/chồng,,
-IdentityInfoC06s,CoupleIdentityNumber,Số định danh của vợ/chồng,,
-IdentityInfoC06s,CoupleIdentityNumberOld,Số định danh cũ của vợ/chồng,,
-IdentityInfoC06s,UserUpdateId,ID người cập nhật,,FK suy luận → UserUpdate(s).Id
-OrganizationReports,Id,Mã định danh (tự động tăng),PK,
-OrganizationReports,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-OrganizationReports,OrganizationId,Mã tổ chức,FK,FK → Organizations.Id
-OrganizationReports,CertificateId,Mã chứng chỉ,FK,FK → Certificates.Id
-OrganizationReports,FullName,Họ và tên,,
-OrganizationReports,BirthDate,Ngày sinh,,
-OrganizationReports,IdentityNumber,Số chứng minh thư,,
-OrganizationReports,Position,Chức vụ,,
-OrganizationReports,Department,Phòng ban,,
-OrganizationReports,Workplace,Nơi công tác,,
-OrganizationReports,HireDate,Ngày tiếp nhận,,
-OrganizationReports,TerminationDate,Ngày thôi việc,,
-OrganizationReports,CertificateNumber,Số chứng chỉ,,
-OrganizationReports,IssueDate,Ngày cấp chứng chỉ,,
-OrganizationReports,Disciplines,Kỷ luật (vi phạm hoặc xử phạt),,
-OrganizationReports,Description,Mô tả,,
-OrganizationReports,CreatedAt,Ngày tạo,,
-OrganizationReports,ReportDate,Ngày báo cáo,,
-OrganizationReports,CreatedBy,Người tạo,,
-OrganizationReports,SyncId,Mã đồng bộ,,
-OrganizationReports,SyncCreatedAt,Ngày tạo đồng bộ,,
-OrganizationReports,SyncUpdatedAt,Ngày cập nhật đồng bộ,,
-OrganizationReports,Type,Loại báo cáo,,
-OrganizationReports,UpdatedAt,Ngày cập nhật,,
-OrganizationReports,ParentReportId,Mã báo cáo cha,FK,FK → ParentReports.Id
-OrganizationReports,CertificateRecordId,Mã chứng chỉ hành nghề,,FK suy luận → CertificateRecords.Id
-OrganizationReports,BusinessDepartment,Phòng ban nghiệp vụ,,
-Organizations,Id,Mã định danh tổ chức (tự động tăng),PK,
-Organizations,OrganizationCode,Mã tổ chức,,
-Organizations,OrganizationName,Tên tổ chức,,
-Organizations,Address,Địa chỉ tổ chức,,
-Organizations,PhoneNumber,Số điện thoại,,
-Organizations,Email,Email,,
-Organizations,Fax,Số fax,,
-Organizations,OrganizationTypeId,"Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác)",,
-Organizations,OrganizationReportIds,ID báo cáo tổ chức,FK,FK (xem constraint)
-Organizations,ParentId,ID tổ chức cha,,FK suy luận → Organizations.Id
-Organizations,LinkedId,ID liên kết,,
-Organizations,SyncId,ID dữ liệu đồng bộ,,
-Organizations,Level,Cấp độ tổ chức,,
-Organizations,EnglishName,Tên tiếng Anh,,
-Organizations,Abbreviation,Tên viết tắt,,
-Organizations,MobileNumber,Số di động,,
-Organizations,Representative,Người đại diện,,
-Organizations,Description,Mô tả,,
-Organizations,LicenseNumber,Số giấy phép,,
-Organizations,LicenseIssuer,Cơ quan cấp giấy phép,,
-Organizations,LicenseDate,Ngày cấp giấy phép,,
-Organizations,Status,Trạng thái,,
-Organizations,SortOrder,Thứ tự sắp xếp,,
-Organizations,LastSyncDate,Lần cuối cập nhật,,
-Organizations,SyncStatus,Trạng thái đồng bộ,,
-Organizations,CharterCapital,Vốn điều lệ,,
-Organizations,Website,Địa chỉ website,,
-Organizations,CreatedBy,ID người tạo,,
-Organizations,CreatedAt,Thời gian tạo,,
-Organizations,UpdatedAt,Thời gian cập nhật gần nhất,,
-ProfessionalHistories,Id,Mã định danh lịch sử (tự động tăng),PK,
-ProfessionalHistories,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-ProfessionalHistories,RegistrationType,Hình thức đăng ký,,
-ProfessionalHistories,EducationLevelId,Mã trình độ học vấn,FK,FK (xem constraint)
-ProfessionalHistories,OrganizationId,Mã tổ chức,FK,FK (xem constraint)
-ProfessionalHistories,NationalityId,Mã quốc gia,FK,FK (xem constraint)
-ProfessionalHistories,FullName,Họ và tên,,
-ProfessionalHistories,FirstName,Tên,,
-ProfessionalHistories,BirthDate,Ngày sinh,,
-ProfessionalHistories,BirthYear,Năm sinh,,
-ProfessionalHistories,Gender,"Giới tính (0: Nữ, 1: Nam)",,
-ProfessionalHistories,PermanentCountryId,Quốc gia nguyên quán,,FK suy luận → PermanentCountry(s).Id
-ProfessionalHistories,PermanentProvinceId,Tỉnh thành nguyên quán,,FK suy luận → PermanentProvince(s).Id
-ProfessionalHistories,PermanentDistrictId,Quận huyện nguyên quán,,FK suy luận → PermanentDistrict(s).Id
-ProfessionalHistories,PermanentAddress,Địa chỉ chi tiết nguyên quán,,
-ProfessionalHistories,CurrentCountryId,Quốc gia hiện tại,,FK suy luận → CurrentCountry(s).Id
-ProfessionalHistories,CurrentProvinceId,Tỉnh thành hiện tại,,FK suy luận → CurrentProvince(s).Id
-ProfessionalHistories,CurrentDistrictId,Quận huyện hiện tại,,FK suy luận → CurrentDistrict(s).Id
-ProfessionalHistories,PlaceOfBirth,Nơi sinh,,
-ProfessionalHistories,IdentityNumber,Số chứng minh thư/CCCD,,
-ProfessionalHistories,IdentityIssueDate,Ngày cấp,,
-ProfessionalHistories,IdentityIssuePlace,Nơi cấp,,
-ProfessionalHistories,Address,Địa chỉ,,
-ProfessionalHistories,Email,Email,,
-ProfessionalHistories,PhoneNumber,Số điện thoại,,
-ProfessionalHistories,MobileNumber,Số di động,,
-ProfessionalHistories,Workplace,Nơi làm việc,,
-ProfessionalHistories,Status,Trạng thái,,
-ProfessionalHistories,PreviousIdentityNumber,Số định danh cũ,,
-ProfessionalHistories,ChangeDate,Ngày thay đổi,,
-ProfessionalHistories,ReasonUpdate,Lý do thay đổi,,
-ProfessionalHistories,StatusWork,"Trạng thái làm việc (1: Hành nghề, 0: Chưa hành nghề, 2: Thu hồi cho cấp lại, 3: Thu hồi không cấp lại, 4: Hành nghề có thời hạn)",,
-ProfessionalHistories,StatusAccount,"Trạng thái tài khoản (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
-ProfessionalRelationships,Id,Mã định danh quan hệ (tự động tăng),PK,
-ProfessionalRelationships,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-ProfessionalRelationships,FullName,Họ và tên người liên quan,,
-ProfessionalRelationships,RelationshipType,"Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà)",,
-ProfessionalRelationships,BirthYear,Năm sinh,,
-ProfessionalRelationships,Address,Địa chỉ,,
-ProfessionalRelationships,Occupation,Nghề nghiệp,,
-ProfessionalRelationships,Workplace,Nơi làm việc,,
-ProfessionalRelationships,Note,Ghi chú,,
-ProfessionalRelationships,IdentityId,Mã định danh,,FK suy luận → Identity(s).Id
-ProfessionalRelationships,CountryId,Mã quốc gia,,FK suy luận → Country(s).Id
-ProfessionalRelationships,CreatedAt,Ngày tạo,,
-Professionals,Id,Mã định danh người hành nghề (tự động tăng),PK,
-Professionals,FullName,Họ và tên,,
-Professionals,RelationshipType,Loại quan hệ,,
-Professionals,BirthYear,Năm sinh,,
-Professionals,Address,Địa chỉ,,
-Professionals,Occupation,Nghề nghiệp,,
-Professionals,Workplace,Nơi làm việc,,
-Professionals,Note,Ghi chú,,
-Professionals,IdentityId,Mã định danh,,FK suy luận → Identity(s).Id
-Professionals,CountryId,Mã quốc gia,,FK suy luận → Country(s).Id
-Professionals,CreatedAt,Ngày tạo,,
-ProfessionalWorkHistories,Id,Mã định danh (tự động tăng),PK,
-ProfessionalWorkHistories,CertificateId,Mã chứng chỉ,FK,FK (xem constraint)
-ProfessionalWorkHistories,Name,Tên biểu mẫu/vị trí công tác,,
-ProfessionalWorkHistories,Reference,Tài liệu tham chiếu,,
-ProfessionalWorkHistories,Description,Mô tả,,
-ProfessionalWorkHistories,FileName,Tên file đính kèm,,
-ProfessionalWorkHistories,FilePath,Đường dẫn file,,
-ProfessionalWorkHistories,Status,Trạng thái,,
-ProfessionalWorkHistories,SortOrder,Thứ tự sắp xếp,,
-ProfessionalWorkHistories,IsFeatured,Cờ nổi bật,,
-ProfessionalWorkHistories,CreatedBy,ID người tạo,,
-ProfessionalWorkHistories,CreatedAt,Thời gian tạo,,
-ProfessionalWorkHistories,UpdatedAt,Thời gian cập nhật gần nhất,,
-SpecializationCourseDetails,Id,Mã định danh chi tiết khóa học (tự động tăng),PK,
-SpecializationCourseDetails,SpecializationCourseId,Mã khóa học chuyên môn,FK,FK → SpecializationCourses.Id
-SpecializationCourseDetails,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-SpecializationCourseDetails,ExamNumber,Số dự thi,,
-SpecializationCourseDetails,Fullname,Họ và tên,,
-SpecializationCourseDetails,IdentityNumber,Số định danh,,
-SpecializationCourseDetails,Description,Mô tả,,
-SpecializationCourseDetails,ExamScore,Điểm thi,,
-SpecializationCourseDetails,Result,"Kết quả thi (1: Đạt, 0: Không đạt)",,
-SpecializationCourseDetails,Note,Ghi chú,,
-SpecializationCourseDetails,BirthDate,Ngày sinh,,
-SpecializationCourseDetails,PlaceOfDate,Nơi sinh,,
-SpecializationCourseDetails,Status,"Trạng thái (0: Chờ thẩm định, 1: Xác nhận, 2: Yêu cầu nộp lại, 3: Từ chối)",,
-SpecializationCourseDetails,AssigneeId,Người xử lý,FK,FK (xem constraint)
-SpecializationCourseDetails,CreatedBy,Người tạo,,
-SpecializationCourseDetails,CreatedAt,Ngày tạo,,
-SpecializationCourseDetails,UpdatedAt,Ngày cập nhật,,
-SpecializationCourseDetails,UpdatedBy,Người cập nhật,,
-SpecializationCourses,Id,Mã định danh (tự động tăng),PK,
-SpecializationCourses,SpecializationId,Mã chuyên môn,FK,FK → Specializations.Id
-SpecializationCourses,AcademicYear,Năm học,,
-SpecializationCourses,CourseCode,Mã khóa học,,
-SpecializationCourses,CourseName,Tên khóa học,,
-SpecializationCourses,IsActive,Trạng thái hoạt động,,
-SpecializationCourses,Description,Mô tả,,
-SpecializationCourses,ExamDate,Ngày thi,,
-SpecializationCourses,Status,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
-SpecializationCourses,FilePath,Đường dẫn tài liệu,,
-SpecializationCourses,CreatedBy,Người tạo,,
-SpecializationCourses,CreatedAt,Ngày tạo,,
-SpecializationCourses,UpdatedAt,Ngày cập nhật,,
-SpecializationCourses,UpdatedBy,Người cập nhật,,
-Specializations,Id,Mã định danh (tự động tăng),PK,
-Specializations,SpecializationCode,Mã chứng chỉ chuyên môn,,
-Specializations,SpecializationName,Tên chứng chỉ chuyên môn,,
-Specializations,Reference,"Thông tin pháp lý, quy định liên quan",,
-Specializations,IsActive,Không sử dụng,,
-Specializations,IsOriginalData,Không sử dụng,,
-Specializations,Status,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
-Specializations,CreatedBy,Người tạo,,
-Specializations,CreatedAt,Ngày tạo,,
-Specializations,UpdatedAt,Ngày cập nhật,,
-SystemParameters,Id,Mã định danh (tự động tăng),PK,
-SystemParameters,ParameterCode,Mã tham số,,
-SystemParameters,Value,Giá trị tham số,,
-SystemParameters,Description,Mô tả,,
-SystemParameters,SortOrder,Ưu tiên hiển thị,,
-SystemParameters,DataType,Kiểu dữ liệu,,
-SystemParameters,IsDisplayed,Cờ hiển thị,,
-SystemParameters,Type,"Loại tham số (1: Tham số hệ thống, 2: Cấu hình kết nối)",,
-Units,Id,Mã định danh đơn vị (tự động tăng),PK,
-Units,UnitCode,Mã đơn vị,,
-Units,UnitName,Tên đơn vị,,
-Units,Status,Trạng thái,,
-Units,Description,Mô tả đơn vị,,
-VerifyApplicationStatuses,Id,Chỉ số định danh (tự động tăng),PK,
-VerifyApplicationStatuses,ApplicationId,ID hồ sơ,FK,FK → Applications.Id
-VerifyApplicationStatuses,StatusId,Trạng thái hồ sơ,FK,FK (xem constraint)
-VerifyApplicationStatuses,Reason,Lý do thay đổi trạng thái,,
-VerifyApplicationStatuses,SpecReason,Nội dung - Lãnh đạo chuyên môn,,
-VerifyApplicationStatuses,OrgReason,Nội dung - Lãnh đạo UBCK,,
-VerifyApplicationStatuses,OverviewReason,Nội dung - Cán bộ tổng hợp,,
-VerifyApplicationStatuses,PrevStatusId,ID trạng thái trước đó của hồ sơ,,FK suy luận → PrevStatus(s).Id
-VerifyApplicationStatuses,VerifiedBy,Người duyệt trạng thái,,
-VerifyApplicationStatuses,CreatedAt,Thời gian tạo,,
-VerifyApplicationStatuses,CreatedBy,ID người tạo,,
-VerifyApplicationStatuses,UpdatedAt,Thời gian cập nhật,,
-VerifyApplicationStatuses,UpdatedBy,Người cập nhật,,
-Violations,Id,Mã định danh (tự động tăng),PK,
-Violations,ProfessionalId,Mã người hành nghề,FK,FK → Professionals.Id
-Violations,FullName,Họ và tên,,
-Violations,BirthDate,Ngày sinh,,
-Violations,IdentityNumber,Số chứng minh thư/CCCD,,
-Violations,Note,Ghi chú,,
-Violations,DecisionId,ID quyết định xử phạt,,FK suy luận → Decisions.Id
-Violations,Type,"Loại vi phạm (1: Hành chính, 2: Pháp luật)",,
-Violations,Status,"Trạng thái (1: Hoạt động, 0: Không hoạt động, -1: Đã xóa)",,
-Violations,CreatedBy,Người tạo,,
-Violations,CreatedAt,Ngày tạo,,
-Violations,UpdatedBy,Người cập nhật,,
-Violations,UpdatedAt,Ngày cập nhật,,
-Departments,Id,ID phòng ban (tự động tăng),PK,
-Departments,DepartmentCode,Mã phòng ban,,
-Departments,DepartmentName,Tên phòng ban,,
-Departments,UnitId,Mã đơn vị,FK,FK → Units.Id
-Departments,Status,Trạng thái,,
-Departments,SortOrder,Thứ tự sắp xếp,,
-Departments,Description,Mô tả phòng ban,,
-PermissionRoles,Id,Mã định danh (tự động tăng),PK,
-PermissionRoles,PermissionId,Mã quyền hạn,FK,FK → Permissions.Id
-PermissionRoles,RoleId,Mã nhóm người dùng,FK,FK → Roles.Id
-Positions,Id,Mã định danh chức vụ (tự động tăng),PK,
-Positions,PositionName,Tên chức vụ,,
-Positions,Status,Trạng thái,,
-Positions,CreatedBy,ID người tạo,,
-Positions,CreatedAt,Thời gian tạo,,
-Positions,UpdatedAt,Thời gian cập nhật gần nhất,,
+﻿Tên bảng,Tên trường,Kiểu dữ liệu,Mô tả,Khóa,Ghi chú (FK suy luận)
+ACTION_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+ACTION_LOGS,USER_ID,"NUMBER(10,0)",FK -> USERS: Người dùng liên quan,FK,FK → USERS.ID
+ACTION_LOGS,CLIENT_MACHINE,NVARCHAR2(50 CHAR),Tên máy tính hoặc IP của người dùng thực hiện hành động,,
+ACTION_LOGS,DETAILS,NCLOB,Chi tiết hành động được ghi log (NCLOB JSON),,
+ACTION_LOGS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+ACTION_LOGS,PERMISSION_NAME,NVARCHAR2(50 CHAR),Tên quyền hành động đã thực hiện,,
+ACTION_LOGS,ACTION_NAME,NVARCHAR2(50 CHAR),Tên cụ thể của hành động thực hiện,,
+ACTION_LOGS,SUCCESS_FLAG,"NUMBER(1,0)","Cờ thao tác thành công: 1=Thành công, 0=Thất bại",,
+ACTION_LOGS,ERROR_MESSAGE,NCLOB,Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action),,
+ACTION_LOGS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+ACTION_LOGS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+ACTION_LOGS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATIONS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+APPLICATIONS,STATUS_ID,"NUMBER(10,0)",FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại,FK,FK → APPLICATION_STATUSES.ID
+APPLICATIONS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+APPLICATIONS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+APPLICATIONS,PREVIOUS_CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại CCHN cũ (khi cấp lại),FK,FK → CERTIFICATES.ID
+APPLICATIONS,PREVIOUS_CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: CCHN cũ cần cấp lại,FK,FK → CERTIFICATE_RECORDS.ID
+APPLICATIONS,EXAM_SESSION_ID,"NUMBER(10,0)",FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan,FK,FK → EXAM_SESSIONS.ID
+APPLICATIONS,REGISTRATION_TYPE,"NUMBER(10,0)","Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)",,
+APPLICATIONS,APPLICATION_TYPE,"NUMBER(10,0)","Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN",,
+APPLICATIONS,APPLICATION_CODE,NVARCHAR2(50 CHAR),Mã hồ sơ (mã định danh duy nhất do hệ thống sinh),,
+APPLICATIONS,TITLE,NVARCHAR2(255 CHAR),Tiêu đề/tên hồ sơ hoặc nhóm,,
+APPLICATIONS,SUBMISSION_DATE,DATE,Ngày nộp hồ sơ chính thức,,
+APPLICATIONS,SUPPLEMENT_DATE,DATE,Ngày nộp bổ sung hồ sơ,,
+APPLICATIONS,REISSUE_REASON,NCLOB,Lý do xin cấp lại CCHN (NCLOB),,
+APPLICATIONS,REJECTION_REASON,NCLOB,Lý do trả lại/từ chối hồ sơ (NCLOB),,
+APPLICATIONS,CERTIFICATE_NUMBER,NVARCHAR2(50 CHAR),Số CCHN cấp cho NHNCK,,
+APPLICATIONS,ISSUE_DATE,DATE,Ngày cấp CCHN,,
+APPLICATIONS,PREVIOUS_CERTIFICATE_NUMBER,NVARCHAR2(50 CHAR),Số CCHN cũ (trước khi cấp lại),,
+APPLICATIONS,PREVIOUS_ISSUE_DATE,DATE,Ngày cấp CCHN cũ,,
+APPLICATIONS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+APPLICATIONS,VIOLATED,"NUMBER(1,0)","Cờ NHNCK vi phạm quy định: 1=Có vi phạm, 0=Không vi phạm",,
+APPLICATIONS,DATA_EXPLOITABLE,"NUMBER(1,0)","Cờ dữ liệu có thể khai thác/sử dụng: 1=Có thể dùng, 0=Không",,
+APPLICATIONS,ASSIGNEE_ID,"NUMBER(10,0)",FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ,FK,FK → USERS.ID
+APPLICATIONS,INFO_VERIFY_ID,"NUMBER(10,0)",FK -> USERS: Cán bộ xác minh thông tin hồ sơ,FK,FK → USERS.ID
+APPLICATIONS,CERTIFICATE_RECEIPT_METHOD,"NUMBER(10,0)","Phương thức nhận CCHN: 1=Nhận tại UBCKNN, 2=Gửi bưu điện, 3=Điện tử",,
+APPLICATIONS,CERTIFICATE_RECEIPT_ADDRESS,NVARCHAR2(2000 CHAR),Địa chỉ nhận CCHN qua bưu điện,,
+APPLICATIONS,RECEIPT_STATUS,"NUMBER(10,0)","Trạng thái nhận CCHN: 1=Đã nhận, 0=Chưa nhận",,
+APPLICATIONS,SUPPLEMENT_LETTER_DATE,DATE,Ngày ban hành công văn yêu cầu bổ sung hồ sơ,,
+APPLICATIONS,CERTIFICATE_RECEIPT_PHONE,NVARCHAR2(2000 CHAR),Số điện thoại liên lạc khi nhận CCHN,,
+APPLICATIONS,REISSUE_HSM,NVARCHAR2(50 CHAR),Thông tin HSM (Hardware Security Module) khi cấp CCHN điện tử,,
+APPLICATIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_ARCHIVES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_ARCHIVES,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_ARCHIVES,LOCATION,NVARCHAR2(1024 CHAR),"Địa điểm lưu trữ vật lý của hồ sơ CCHN (tên kho, phòng, ngăn tủ...)",,
+APPLICATION_ARCHIVES,PHONE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại cố định,,
+APPLICATION_ARCHIVES,CONTACT,NVARCHAR2(1024 CHAR),Tên người liên hệ phụ trách kho lưu trữ hồ sơ,,
+APPLICATION_ARCHIVES,NOTE,NCLOB,Ghi chú bổ sung,,
+APPLICATION_ARCHIVES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_ARCHIVES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_ARCHIVES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_ARCHIVES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_DECISIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_DECISIONS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_DECISIONS,DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm,FK,FK → DECISIONS.ID
+APPLICATION_DOCUMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_DOCUMENTS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_DOCUMENTS,DOCUMENT_ID,"NUMBER(10,0)",FK -> DOCUMENTS: Loại tài liệu yêu cầu,FK,FK → DOCUMENTS.ID
+APPLICATION_DOCUMENTS,DESCRIPTION,NVARCHAR2(2000 CHAR),Mô tả chi tiết,,
+APPLICATION_DOCUMENTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_DOCUMENTS,ASSIGNEE_ID,"NUMBER(10,0)",FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ,FK,FK → USERS.ID
+APPLICATION_DOCUMENTS,FILES,CLOB,"Danh sách file đính kèm (JSON CLOB: [{name, path, size, type}...])",,
+APPLICATION_DOCUMENTS,DOCUMENT_NAME,NVARCHAR2(1024 CHAR),Tên tài liệu (snapshot tại thời điểm nộp hồ sơ),,
+APPLICATION_DOCUMENTS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+APPLICATION_DOCUMENTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_DOCUMENTS,APPRAISALED_AT,DATE,Thời điểm cán bộ hoàn thành thẩm định tài liệu,,
+APPLICATION_DOCUMENTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_DOCUMENTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_DOCUMENTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_DOCUMENT_HISTORIES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_DOCUMENT_HISTORIES,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_DOCUMENT_HISTORIES,DOCUMENT_ID,"NUMBER(10,0)",FK -> DOCUMENTS: Loại tài liệu yêu cầu,FK,FK → DOCUMENTS.ID
+APPLICATION_DOCUMENT_HISTORIES,INVALID,"NUMBER(1,0)","Cờ tài liệu không hợp lệ (không đúng quy định): 1=Không hợp lệ, 0=Hợp lệ",,
+APPLICATION_DOCUMENT_HISTORIES,INCOMPLETE,"NUMBER(1,0)","Cờ tài liệu không đầy đủ/thiếu thông tin: 1=Không đầy đủ, 0=Đầy đủ",,
+APPLICATION_DOCUMENT_HISTORIES,DESCRIPTION,NVARCHAR2(2000 CHAR),Mô tả chi tiết,,
+APPLICATION_DOCUMENT_HISTORIES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_DOCUMENT_HISTORIES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_DOCUMENT_HISTORIES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_DOCUMENT_HISTORIES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_DOCUMENT_HISTORIES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_EXPERIENCES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_EXPERIENCES,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_EXPERIENCES,DOCUMENT_ID,"NUMBER(10,0)",FK -> DOCUMENTS: Loại tài liệu yêu cầu,FK,FK → DOCUMENTS.ID
+APPLICATION_EXPERIENCES,WORK_DURATION,"NUMBER(10,0)",Thời gian làm việc (số tháng) tại tổ chức này,,
+APPLICATION_EXPERIENCES,ORGANIZATION_ID,"NUMBER(10,0)",FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK,FK,FK → ORGANIZATIONS.ID
+APPLICATION_EXPERIENCES,ORGANIZATION_NAME,NVARCHAR2(1024 CHAR),Tên đầy đủ của tổ chức kinh doanh chứng khoán,,
+APPLICATION_EXPERIENCES,DEPARTMENT_NAME,NVARCHAR2(1024 CHAR),Tên phòng ban,,
+APPLICATION_EXPERIENCES,INSURANCE_NUMBER,NVARCHAR2(1024 CHAR),Số sổ bảo hiểm xã hội (dùng để xác minh kinh nghiệm),,
+APPLICATION_EXPERIENCES,LABOR_CONTRACT,NVARCHAR2(1024 CHAR),"Thông tin hợp đồng lao động (số HĐ, loại HĐ)",,
+APPLICATION_EXPERIENCES,DIRECTOR_CONFIRMATION,NVARCHAR2(1024 CHAR),Xác nhận của giám đốc/lãnh đạo tổ chức về kinh nghiệm làm việc,,
+APPLICATION_EXPERIENCES,NOTE,NCLOB,Ghi chú bổ sung,,
+APPLICATION_EXPERIENCES,TOTAL_DURATION,"NUMBER(10,0)",Tổng thời gian kinh nghiệm tích lũy (số tháng),,
+APPLICATION_EXPERIENCES,START_DATE,DATE,"Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)",,
+APPLICATION_EXPERIENCES,END_DATE,DATE,"Ngày kết thúc (công tác, đào tạo, nghỉ việc...)",,
+APPLICATION_EXPERIENCES,POSITION,NVARCHAR2(2000 CHAR),Chức vụ/vị trí đảm nhiệm,,
+APPLICATION_FEES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_FEES,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_FEES,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+APPLICATION_FEES,FEE_TYPE,"NUMBER(10,0)","Loại phí: 1=Phí thi, 2=Phí phúc khảo, 3=Phí cấp chứng chỉ",,
+APPLICATION_FEES,CONTENT,NVARCHAR2(255 CHAR),Nội dung của thông báo/thư điện tử/bổ sung hồ sơ,,
+APPLICATION_FEES,NOTE,NVARCHAR2(255 CHAR),Ghi chú bổ sung,,
+APPLICATION_FEES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_FEES,REQUEST_DATE,DATE,Ngày yêu cầu nộp phí,,
+APPLICATION_FEES,PAYMENT_DATE,DATE,Ngày thực tế thanh toán phí,,
+APPLICATION_FEES,EXPIRY_DATE,DATE,Ngày hết hạn thanh toán phí,,
+APPLICATION_FEES,FEE,"NUMBER(18,2)",Số tiền phí (đơn vị: VNĐ),,
+APPLICATION_FEES,FILE_PATH,NVARCHAR2(2000 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+APPLICATION_FEES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_FEES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_FEES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_FEES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_GROUPS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_GROUPS,GROUP_NAME,NVARCHAR2(255 CHAR),Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý),,
+APPLICATION_GROUPS,DESCRIPTION,NVARCHAR2(1000 CHAR),Mô tả chi tiết,,
+APPLICATION_GROUPS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_GROUPS,DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm,FK,FK → DECISIONS.ID
+APPLICATION_GROUPS,GROUP_CREATED_DATE,DATE,Ngày tạo nhóm hồ sơ/CCHN,,
+APPLICATION_GROUPS,GROUP_COMPLETED_DATE,DATE,Ngày hoàn thành xử lý nhóm hồ sơ/CCHN,,
+APPLICATION_GROUPS,NOTES,NVARCHAR2(2000 CHAR),Ghi chú bổ sung,,
+APPLICATION_GROUPS,APPLICATION_COUNT,"NUMBER(10,0)",Số lượng hồ sơ trong nhóm,,
+APPLICATION_GROUPS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_GROUPS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_GROUPS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_GROUPS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_GROUPS,APPLICATION_TYPE,"NUMBER(10,0)","Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN",,
+APPLICATION_GROUPS,SUBMITED_DATE,DATE,Ngày nhóm hồ sơ được gửi lên cấp trên xử lý,,
+APPLICATION_GROUPS,SUBMITED_BY,"NUMBER(10,0)",FK -> USERS: Người gửi nhóm hồ sơ lên cấp trên,FK,FK → USERS.ID
+APPLICATION_GROUP_MEMBERS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_GROUP_MEMBERS,APPLICATION_GROUP_ID,"NUMBER(10,0)",FK -> APPLICATION_GROUPS: Nhóm hồ sơ chứa bản ghi này,FK,FK → APPLICATION_GROUPS.ID
+APPLICATION_GROUP_MEMBERS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_GROUP_MEMBERS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_GROUP_MEMBERS,NOTES,NVARCHAR2(500 CHAR),Ghi chú bổ sung,,
+APPLICATION_GROUP_MEMBERS,ORDER_INDEX,"NUMBER(10,0)",Thứ tự của bản ghi trong nhóm,,
+APPLICATION_HISTORIES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_HISTORIES,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_HISTORIES,STATUS_ID,"NUMBER(10,0)",FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại,FK,FK → APPLICATION_STATUSES.ID
+APPLICATION_HISTORIES,TITLE,NVARCHAR2(1024 CHAR),Tiêu đề/tên hồ sơ hoặc nhóm,,
+APPLICATION_HISTORIES,DESCRIPTION,NCLOB,Mô tả chi tiết,,
+APPLICATION_HISTORIES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_HISTORIES,SENDER_ID,"NUMBER(10,0)",FK -> USERS: Người gửi hành động xử lý,FK,FK → USERS.ID
+APPLICATION_HISTORIES,RECEIVER_ID,"NUMBER(10,0)",FK -> USERS: Người nhận/tiếp nhận hành động xử lý,FK,FK → USERS.ID
+APPLICATION_HISTORIES,RECEIVER_NAME,NVARCHAR2(1024 CHAR),Tên người nhận (snapshot tại thời điểm xử lý),,
+APPLICATION_HISTORIES,REJECTED,"NUMBER(1,0)","Cờ hồ sơ bị trả lại: 1=Bị trả lại, 0=Không",,
+APPLICATION_HISTORIES,FEEDBACK,NCLOB,Phản hồi/nhận xét của cán bộ xử lý (NCLOB),,
+APPLICATION_HISTORIES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_HISTORIES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_HISTORIES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_LOGS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_LOGS,DETAIL,NVARCHAR2(1024 CHAR),Chi tiết nội dung nhật ký hoặc thao tác,,
+APPLICATION_LOGS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_LOGS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_LOGS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_PROFESSIONALS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_PROFESSIONALS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_PROFESSIONALS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+APPLICATION_PROFESSIONALS,ORGANIZATION_ID,"NUMBER(10,0)",FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK,FK,FK → ORGANIZATIONS.ID
+APPLICATION_PROFESSIONALS,NATIONALITY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc tịch của người hành nghề,FK,FK → COUNTRIES.ID
+APPLICATION_PROFESSIONALS,EDUCATION_LEVEL_ID,"NUMBER(10,0)",FK -> EDUCATION_LEVELS: Trình độ học vấn,FK,FK → EDUCATION_LEVELS.ID
+APPLICATION_PROFESSIONALS,REGISTRATION_TYPE,"NUMBER(10,0)","Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)",,
+APPLICATION_PROFESSIONALS,USERNAME,NVARCHAR2(50 CHAR),Tên đăng nhập vào hệ thống,,
+APPLICATION_PROFESSIONALS,PASSWORD,NVARCHAR2(50 CHAR),Mật khẩu đã mã hóa (bcrypt hash),,
+APPLICATION_PROFESSIONALS,FULL_NAME,NVARCHAR2(255 CHAR),Họ và tên đầy đủ của người hành nghề,,
+APPLICATION_PROFESSIONALS,FIRST_NAME,NVARCHAR2(50 CHAR),Tên đệm và tên riêng (tên gọi) của người hành nghề,,
+APPLICATION_PROFESSIONALS,AVATAR,NVARCHAR2(500 CHAR),Đường dẫn/URL ảnh đại diện của người hành nghề,,
+APPLICATION_PROFESSIONALS,BIRTH_DATE,DATE,"Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)",,
+APPLICATION_PROFESSIONALS,BIRTH_YEAR,NVARCHAR2(4 CHAR),"Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)",,
+APPLICATION_PROFESSIONALS,GENDER,"NUMBER(10,0)","Giới tính: 0=Nam, 1=Nữ",,
+APPLICATION_PROFESSIONALS,PERMANENT_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia địa chỉ thường trú,FK,FK → COUNTRIES.ID
+APPLICATION_PROFESSIONALS,PERMANENT_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố địa chỉ thường trú,FK,FK → PROVINCES.ID
+APPLICATION_PROFESSIONALS,PERMANENT_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện địa chỉ thường trú,FK,FK → DISTRICTS.ID
+APPLICATION_PROFESSIONALS,PERMANENT_ADDRESS,NVARCHAR2(2000 CHAR),"Địa chỉ cụ thể theo thường trú (số nhà, đường, phường/xã...)",,
+APPLICATION_PROFESSIONALS,CURRENT_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia địa chỉ tạm trú hiện tại,FK,FK → COUNTRIES.ID
+APPLICATION_PROFESSIONALS,CURRENT_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố địa chỉ tạm trú,FK,FK → PROVINCES.ID
+APPLICATION_PROFESSIONALS,CURRENT_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện địa chỉ tạm trú,FK,FK → DISTRICTS.ID
+APPLICATION_PROFESSIONALS,PLACE_OF_BIRTH,NVARCHAR2(1024 CHAR),Nơi sinh của người hành nghề,,
+APPLICATION_PROFESSIONALS,ADDRESS,NVARCHAR2(2000 CHAR),Địa chỉ trụ sở tổ chức (NCLOB),,
+APPLICATION_PROFESSIONALS,IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+APPLICATION_PROFESSIONALS,IDENTITY_ISSUE_DATE,DATE,Ngày cấp CMND/CCCD/Hộ chiếu,,
+APPLICATION_PROFESSIONALS,IDENTITY_ISSUE_PLACE,NVARCHAR2(255 CHAR),Nơi cấp CMND/CCCD/Hộ chiếu,,
+APPLICATION_PROFESSIONALS,PHONE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại cố định,,
+APPLICATION_PROFESSIONALS,MOBILE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại di động,,
+APPLICATION_PROFESSIONALS,EMAIL,NVARCHAR2(255 CHAR),Địa chỉ email liên lạc,,
+APPLICATION_PROFESSIONALS,WORKPLACE,NVARCHAR2(1024 CHAR),Nơi làm việc hiện tại (tên tổ chức kinh doanh CK),,
+APPLICATION_PROFESSIONALS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_PROFESSIONALS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_PROFESSIONALS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_PROFESSIONALS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_PROFESSIONALS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_PROFESSIONALS,IDENTITY_TYPE,"NUMBER(10,0)","Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu",,
+APPLICATION_PROFESSIONALS,POSITION,NVARCHAR2(2000 CHAR),Chức vụ/vị trí đảm nhiệm,,
+APPLICATION_PROFESSIONALS,DEPARTMENT,NVARCHAR2(2000 CHAR),Phòng ban công tác,,
+APPLICATION_PROFESSIONALS,PREVIOUS_IDENTITY_NUMBER,NVARCHAR2(500 CHAR),Số CMND cũ (trước khi đổi sang CCCD),,
+APPLICATION_RE_EXAMS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_RE_EXAMS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_RE_EXAMS,EXAM_DETAIL_ID,"NUMBER(10,0)",FK -> EXAM_DETAILS: Chi tiết bài thi liên quan,FK,FK → EXAM_DETAILS.ID
+APPLICATION_RE_EXAMS,RE_APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ đăng ký thi lại mới,FK,FK → APPLICATIONS.ID
+APPLICATION_RE_EXAMS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_RE_EXAMS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_RE_EXAMS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_RE_EXAMS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_RE_EXAMS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_SOURCES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_SOURCES,CODE,NVARCHAR2(100 CHAR),"Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)",,
+APPLICATION_SOURCES,ITEM_NAME,NVARCHAR2(250 CHAR),Tên hiển thị chính,,
+APPLICATION_SOURCES,LABEL,NVARCHAR2(250 CHAR),Nhãn hiển thị ngắn gọn trên badge/tag,,
+APPLICATION_SOURCES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_SOURCES,DESCRIPTION,NVARCHAR2(2000 CHAR),Mô tả chi tiết,,
+APPLICATION_SOURCES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_SOURCES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_SOURCES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_SOURCES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_SPECIALIZATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_SPECIALIZATIONS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_SPECIALIZATIONS,SPECIALIZATION_ID,"NUMBER(10,0)",FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan,FK,FK → SPECIALIZATIONS.ID
+APPLICATION_SPECIALIZATIONS,ISSUE_DATE,DATE,Ngày cấp CCHN,,
+APPLICATION_SPECIALIZATIONS,ISSUE_PLACE,NVARCHAR2(1024 CHAR),Nơi cấp chứng chỉ chuyên môn,,
+APPLICATION_SPECIALIZATIONS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+APPLICATION_SPECIALIZATIONS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+APPLICATION_SPECIALIZATIONS,ASSIGNEE_ID,"NUMBER(10,0)",FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ,FK,FK → USERS.ID
+APPLICATION_SPECIALIZATIONS,APPRAISALED_AT,DATE,Thời điểm cán bộ hoàn thành thẩm định tài liệu,,
+APPLICATION_SPECIALIZATIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_SPECIALIZATIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_SPECIALIZATIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_SPECIALIZATIONS,FILES,CLOB,"Danh sách file đính kèm (JSON CLOB: [{name, path, size, type}...])",,
+APPLICATION_SPECIALIZATIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_STATUSES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_STATUSES,STATUS_CODE,NVARCHAR2(100 CHAR),"Mã trạng thái HTTP phản hồi (200, 201, 400, 404, 500...)",,
+APPLICATION_STATUSES,STATUS_NAME,NVARCHAR2(250 CHAR),Tên trạng thái hồ sơ hiển thị trên giao diện,,
+APPLICATION_STATUSES,LABEL,NVARCHAR2(250 CHAR),Nhãn hiển thị ngắn gọn trên badge/tag,,
+APPLICATION_STATUSES,DESCRIPTION,NVARCHAR2(2000 CHAR),Mô tả chi tiết,,
+APPLICATION_STATUSES,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+APPLICATION_STATUSES,ACTIVE,"NUMBER(1,0)","Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu",,
+APPLICATION_STATUSES,ORIGINAL_DATA,"NUMBER(1,0)","Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo",,
+APPLICATION_STATUSES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_STATUSES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+APPLICATION_STATUSES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_STATUSES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_SUPPLEMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+APPLICATION_SUPPLEMENTS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+APPLICATION_SUPPLEMENTS,SUPPLEMENT_DATE,DATE,Ngày nộp bổ sung hồ sơ,,
+APPLICATION_SUPPLEMENTS,CONTENT,NVARCHAR2(2000 CHAR),Nội dung của thông báo/thư điện tử/bổ sung hồ sơ,,
+APPLICATION_SUPPLEMENTS,SUPPLEMENTED_BY,"NUMBER(10,0)",FK -> USERS/PROFESSIONALS: Người nộp bổ sung hồ sơ (cán bộ hoặc NHNCK),FK,FK → USERS.ID
+APPLICATION_SUPPLEMENTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+APPLICATION_SUPPLEMENTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+APPLICATION_SUPPLEMENTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+APPLICATION_SUPPLEMENTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+AUTO_INCREMENT_CODES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+AUTO_INCREMENT_CODES,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+AUTO_INCREMENT_CODES,CODE,NVARCHAR2(10 CHAR),"Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)",,
+AUTO_INCREMENT_CODES,RECORD_TYPE,"NUMBER(10,0)","Loại bản ghi: 1=Cấp mới, 2=Cấp lại",,
+AUTO_INCREMENT_CODES,DOCUMENT_TYPE,"NUMBER(10,0)",Loại tài liệu hoặc loại mã tự tăng,,
+BACKUPS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+BACKUPS,FILE_NAME,NVARCHAR2(255 CHAR),Tên file sao lưu hoặc file đính kèm,,
+BACKUPS,FILE_PATH,NVARCHAR2(1024 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+BACKUPS,BACKUP_TYPE,"NUMBER(10,0)","Loại sao lưu: 1=Full backup, 2=Incremental backup",,
+BACKUPS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+BACKUPS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+BACKUP_SCHEDULES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+BACKUP_SCHEDULES,FILE_PATH,NVARCHAR2(500 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+BACKUP_SCHEDULES,SCHEDULE_TYPE,"NUMBER(10,0)","Loại lịch sao lưu: 1=Hàng ngày, 2=Hàng tuần, 3=Hàng tháng",,
+BACKUP_SCHEDULES,HOUR,"NUMBER(10,0)",Giờ thực hiện sao lưu tự động (0-23),,
+BACKUP_SCHEDULES,MINUTE,"NUMBER(10,0)",Phút thực hiện sao lưu tự động (0-59),,
+BACKUP_SCHEDULES,DAY,"NUMBER(10,0)","Ngày thực hiện sao lưu (1-31 cho tháng, 0-6 cho tuần)",,
+BANKS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+BANKS,BANK_CODE,NVARCHAR2(255 CHAR),Mã ngân hàng (BIN code hoặc mã NAPAS),,
+BANKS,BANK_NAME,NVARCHAR2(255 CHAR),Tên đầy đủ của ngân hàng,,
+BANKS,SHORT_NAME,NVARCHAR2(255 CHAR),"Tên viết tắt ngân hàng (VD: Vietcombank, VietinBank)",,
+BANKS,BANK_KEY,NVARCHAR2(255 CHAR),Khóa tra cứu ngân hàng (mã giao dịch nội bộ),,
+BANKS,ENGLISH_BANK_NAME,NVARCHAR2(255 CHAR),Tên tiếng Anh của ngân hàng,,
+BANKS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+BANKS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+BANKS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+BANKS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATES,CERTIFICATE_CODE,NVARCHAR2(50 CHAR),"Mã loại chứng chỉ hành nghề (mã định danh duy nhất, VD: QLQY, PTDT, MTCK)",,
+CERTIFICATES,CERTIFICATE_NAME,NVARCHAR2(500 CHAR),"Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi giới CK)",,
+CERTIFICATES,DESCRIPTION,NVARCHAR2(250 CHAR),Mô tả chi tiết,,
+CERTIFICATES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATES,DISPLAYED,"NUMBER(1,0)","Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn",,
+CERTIFICATES,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+CERTIFICATES,ORIGINAL_DATA,"NUMBER(1,0)","Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo",,
+CERTIFICATES,PROCESSING_DAYS,"NUMBER(10,0)",Số ngày làm việc xử lý hồ sơ theo quy định,,
+CERTIFICATES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+CERTIFICATES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_ARCHIVES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_ARCHIVES,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+CERTIFICATE_ARCHIVES,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+CERTIFICATE_ARCHIVES,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+CERTIFICATE_ARCHIVES,NATIONALITY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc tịch của người hành nghề,FK,FK → COUNTRIES.ID
+CERTIFICATE_ARCHIVES,ARCHIVE_NUMBER,NVARCHAR2(50 CHAR),Số lưu trữ vật lý của bản CCHN trong kho lưu trữ,,
+CERTIFICATE_ARCHIVES,CERTIFICATE_NUMBER,NVARCHAR2(50 CHAR),Số CCHN cấp cho NHNCK,,
+CERTIFICATE_ARCHIVES,ARCHIVE_DATE,DATE,Ngày đưa vào lưu trữ,,
+CERTIFICATE_ARCHIVES,RECEIVED_DATE,DATE,Ngày người nhận đến lấy CCHN,,
+CERTIFICATE_ARCHIVES,RECIPIENT,NVARCHAR2(500 CHAR),Họ tên người đến nhận CCHN (có thể là ủy quyền),,
+CERTIFICATE_ARCHIVES,IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+CERTIFICATE_ARCHIVES,INTRODUCTION_LETTER_NUMBER,NVARCHAR2(50 CHAR),Số công văn giới thiệu (khi nhận thay),,
+CERTIFICATE_ARCHIVES,INTRODUCTION_LETTER,NVARCHAR2(1024 CHAR),"Thông tin công văn giới thiệu (tên đơn vị, ngày ký)",,
+CERTIFICATE_ARCHIVES,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+CERTIFICATE_ARCHIVES,PAYMENT_STATUS,"NUMBER(10,0)","Trạng thái thanh toán phí lưu trữ: 1=Đã thanh toán, 0=Chưa",,
+CERTIFICATE_ARCHIVES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATE_ARCHIVES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATE_ARCHIVES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATE_ARCHIVES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_CONVERSION_REQUESTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_CONVERSION_REQUESTS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+CERTIFICATE_CONVERSION_REQUESTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+CERTIFICATE_CONVERSION_REQUESTS,NOTES,NVARCHAR2(2000 CHAR),Ghi chú bổ sung,,
+CERTIFICATE_CONVERSION_REQUESTS,PROCESSED_AT,DATE,Thời điểm xử lý xong yêu cầu chuyển đổi,,
+CERTIFICATE_CONVERSION_REQUESTS,PROCESSED_BY,"NUMBER(10,0)",FK -> USERS: Người xử lý yêu cầu chuyển đổi,FK,FK → USERS.ID
+CERTIFICATE_CONVERSION_REQUESTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATE_CONVERSION_REQUESTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATE_CONVERSION_REQUESTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATE_CONVERSION_REQUESTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_DEPARTMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_DEPARTMENTS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+CERTIFICATE_DEPARTMENTS,DEPARTMENT_ID,"NUMBER(10,0)",FK -> DEPARTMENTS: Phòng ban của người dùng,FK,FK → DEPARTMENTS.ID
+CERTIFICATE_DOCUMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_DOCUMENTS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+CERTIFICATE_DOCUMENTS,DOCUMENT_ID,"NUMBER(10,0)",FK -> DOCUMENTS: Loại tài liệu yêu cầu,FK,FK → DOCUMENTS.ID
+CERTIFICATE_DOCUMENTS,REQUIRED_FIELD,"NUMBER(1,0)","Cờ bắt buộc nộp tài liệu/điền trường: 1=Bắt buộc, 0=Tùy chọn",,
+CERTIFICATE_DOCUMENTS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+CERTIFICATE_DOCUMENTS,FORMAT,NVARCHAR2(50 CHAR),"Định dạng tệp được chấp nhận (VD: PDF, JPEG, PNG)",,
+CERTIFICATE_DOCUMENTS,ATTACHMENT_DISPLAYED,"NUMBER(1,0)","Cờ hiển thị tệp đính kèm trên giao diện: 1=Hiển thị, 0=Ẩn",,
+CERTIFICATE_DOCUMENTS,DOCUMENT_TYPE,"NUMBER(10,0)",Loại tài liệu hoặc loại mã tự tăng,,
+CERTIFICATE_DOCUMENTS,DISPLAY_FLAG,"NUMBER(1,0)","Cờ hiển thị: 1=Hiển thị, 0=Không hiển thị",,
+CERTIFICATE_NUMBER_TEMPLATES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_NUMBER_TEMPLATES,CODE,NVARCHAR2(10 CHAR),"Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)",,
+CERTIFICATE_NUMBER_TEMPLATES,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+CERTIFICATE_NUMBER_TEMPLATES,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+CERTIFICATE_NUMBER_TEMPLATES,DEFAULT_FLAG,"NUMBER(1,0)","Cờ là mẫu/giá trị mặc định: 1=Mặc định, 0=Không phải mặc định",,
+CERTIFICATE_NUMBER_TEMPLATES,ITEM_NAME,NVARCHAR2(200 CHAR),Tên hiển thị chính,,
+CERTIFICATE_NUMBER_TEMPLATES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATE_NUMBER_TEMPLATES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATE_NUMBER_TEMPLATES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATE_NUMBER_TEMPLATES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_RECORDS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_RECORDS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+CERTIFICATE_RECORDS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+CERTIFICATE_RECORDS,ISSUE_DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định cấp CCHN,FK,FK → DECISIONS.ID
+CERTIFICATE_RECORDS,REVOCATION_DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định thu hồi CCHN,FK,FK → DECISIONS.ID
+CERTIFICATE_RECORDS,CERTIFICATE_NUMBER,NVARCHAR2(50 CHAR),Số CCHN cấp cho NHNCK,,
+CERTIFICATE_RECORDS,ISSUE_DATE,DATE,Ngày cấp CCHN,,
+CERTIFICATE_RECORDS,REVOCATION_DATE,DATE,Ngày thu hồi CCHN,,
+CERTIFICATE_RECORDS,REVOCATION_REASON,NVARCHAR2(2000 CHAR),Lý do thu hồi CCHN,,
+CERTIFICATE_RECORDS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+CERTIFICATE_RECORDS,DESCRIPTION,NVARCHAR2(2000 CHAR),Mô tả chi tiết,,
+CERTIFICATE_RECORDS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATE_RECORDS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATE_RECORDS,ALLOW_REISSUE,"NUMBER(10,0)",Số lần được phép cấp lại CCHN (0=không được cấp lại),,
+CERTIFICATE_RECORDS,PROFESSIONAL_FULL_NAME,NVARCHAR2(50 CHAR),Họ tên người hành nghề tại thời điểm cấp CCHN (snapshot),,
+CERTIFICATE_RECORDS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATE_RECORDS,PROCESS_STATUS,"NUMBER(10,0)","Trạng thái quy trình xử lý CCHN: 1=Đã cấp, 2=Đã ký nháy, 3=Đã ký, 4=Đã trả",,
+CERTIFICATE_RECORDS,CER_PATH,VARCHAR2(500 CHAR),Đường dẫn file chứng chỉ số dùng để ký,,
+CERTIFICATE_RECORDS,CANCELLATION_DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hủy bỏ CCHN,FK,FK → DECISIONS.ID
+CERTIFICATE_RECORDS,CONVERSION_STATUS,"NUMBER(10,0)","Trạng thái chuyển đổi CCHN điện tử: 1=Chứng chỉ giấy, 2=Chờ chuyển đổi điện tử, 3=Chứng chỉ số",,
+CERTIFICATE_RECORDS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_RECORD_GROUPS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_RECORD_GROUPS,GROUP_NAME,NVARCHAR2(255 CHAR),Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý),,
+CERTIFICATE_RECORD_GROUPS,DESCRIPTION,NVARCHAR2(2000 CHAR),Mô tả chi tiết,,
+CERTIFICATE_RECORD_GROUPS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+CERTIFICATE_RECORD_GROUPS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+CERTIFICATE_RECORD_GROUPS,DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm,FK,FK → DECISIONS.ID
+CERTIFICATE_RECORD_GROUPS,GROUP_CREATED_DATE,DATE,Ngày tạo nhóm hồ sơ/CCHN,,
+CERTIFICATE_RECORD_GROUPS,GROUP_COMPLETED_DATE,DATE,Ngày hoàn thành xử lý nhóm hồ sơ/CCHN,,
+CERTIFICATE_RECORD_GROUPS,NOTES,NVARCHAR2(2000 CHAR),Ghi chú bổ sung,,
+CERTIFICATE_RECORD_GROUPS,CERTIFICATE_RECORD_COUNT,"NUMBER(10,0)",Số lượng bản ghi CCHN trong nhóm,,
+CERTIFICATE_RECORD_GROUPS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATE_RECORD_GROUPS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATE_RECORD_GROUPS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATE_RECORD_GROUPS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_RECORD_GROUP_MEMBERS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_RECORD_GROUP_MEMBERS,CERTIFICATE_RECORD_GROUP_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORD_GROUPS: Nhóm cấp/thu hồi CCHN,FK,FK → CERTIFICATE_RECORD_GROUPS.ID
+CERTIFICATE_RECORD_GROUP_MEMBERS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+CERTIFICATE_RECORD_GROUP_MEMBERS,ADDED_DATE,DATE,Ngày thêm bản ghi CCHN vào nhóm,,
+CERTIFICATE_RECORD_GROUP_MEMBERS,ADDED_BY,"NUMBER(10,0)",FK -> USERS: Người thêm bản ghi CCHN vào nhóm,FK,FK → USERS.ID
+CERTIFICATE_RECORD_GROUP_MEMBERS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+CERTIFICATE_RECORD_GROUP_MEMBERS,REISSUE,"NUMBER(10,0)","Cờ bản ghi CCHN này là cấp lại (không phải cấp mới): 1=Cấp lại, 0=Cấp mới",,
+CERTIFICATE_RECORD_GROUP_MEMBERS,REVOCATION_REASON,NVARCHAR2(2000 CHAR),Lý do thu hồi CCHN,,
+CERTIFICATE_RECORD_GROUP_MEMBERS,ORDER_INDEX,"NUMBER(10,0)",Thứ tự của bản ghi trong nhóm,,
+CERTIFICATE_RECORD_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_RECORD_LOGS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+CERTIFICATE_RECORD_LOGS,ACTION_TYPE,NVARCHAR2(50 CHAR),Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ),,
+CERTIFICATE_RECORD_LOGS,CERTIFICATE_NUMBER,NVARCHAR2(100 CHAR),Số CCHN cấp cho NHNCK,,
+CERTIFICATE_RECORD_LOGS,ISSUE_DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định cấp CCHN,FK,FK → DECISIONS.ID
+CERTIFICATE_RECORD_LOGS,ISSUE_DATE,DATE,Ngày cấp CCHN,,
+CERTIFICATE_RECORD_LOGS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATE_RECORD_LOGS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATE_RECORD_LOGS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATE_RECORD_LOGS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+CERTIFICATE_RECORD_LOGS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_RECORD_STATUS_HISTORIES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_RECORD_STATUS_HISTORIES,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+CERTIFICATE_RECORD_STATUS_HISTORIES,UPDATE_TYPE,NVARCHAR2(50 CHAR),Loại cập nhật trạng thái CCHN (chuỗi mô tả hành động thay đổi),,
+CERTIFICATE_RECORD_STATUS_HISTORIES,OLD_STATUS,"NUMBER(10,0)","Trạng thái CCHN trước khi thay đổi: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực",,
+CERTIFICATE_RECORD_STATUS_HISTORIES,NEW_STATUS,"NUMBER(10,0)","Trạng thái CCHN sau khi thay đổi: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực",,
+CERTIFICATE_RECORD_STATUS_HISTORIES,DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm,FK,FK → DECISIONS.ID
+CERTIFICATE_RECORD_STATUS_HISTORIES,REASON,NVARCHAR2(2000 CHAR),Lý do thực hiện thao tác hoặc thay đổi,,
+CERTIFICATE_RECORD_STATUS_HISTORIES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+CERTIFICATE_RECORD_STATUS_HISTORIES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+CERTIFICATE_RECORD_STATUS_HISTORIES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+CERTIFICATE_RECORD_STATUS_HISTORIES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+CERTIFICATE_SPECIALIZATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+CERTIFICATE_SPECIALIZATIONS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+CERTIFICATE_SPECIALIZATIONS,SPECIALIZATION_ID,"NUMBER(10,0)",FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan,FK,FK → SPECIALIZATIONS.ID
+CERTIFICATE_SPECIALIZATIONS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+CERTIFICATE_SPECIALIZATIONS,DOCUMENT_TYPE,"NUMBER(10,0)",Loại tài liệu hoặc loại mã tự tăng,,
+CERTIFICATE_SPECIALIZATIONS,REQUIRED_FIELD,"NUMBER(1,0)","Cờ bắt buộc nộp tài liệu/điền trường: 1=Bắt buộc, 0=Tùy chọn",,
+COUNTRIES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+COUNTRIES,COUNTRY_CODE,NVARCHAR2(50 CHAR),Mã quốc gia theo chuẩn ISO 3166-1 alpha-2,,
+COUNTRIES,COUNTRY_NAME,NVARCHAR2(255 CHAR),Tên quốc gia/vùng lãnh thổ,,
+COUNTRIES,DEFAULT_FLAG,"NUMBER(1,0)","Cờ là mẫu/giá trị mặc định: 1=Mặc định, 0=Không phải mặc định",,
+COUNTRIES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+COUNTRIES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+COUNTRIES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+COUNTRIES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+COUNTRIES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+DECISIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DECISIONS,DECISION_NUMBER,NVARCHAR2(255 CHAR),Số quyết định hành chính (VD: 123/QĐ-UBCK),,
+DECISIONS,TITLE,NVARCHAR2(1024 CHAR),Tiêu đề/tên hồ sơ hoặc nhóm,,
+DECISIONS,REFERENCE,NVARCHAR2(2000 CHAR),Trích dẫn căn cứ pháp lý của quyết định,,
+DECISIONS,DECISION_CONTENT,NCLOB,Nội dung đầy đủ của quyết định (NCLOB),,
+DECISIONS,SIGNED_DATE,DATE,Ngày ký ban hành quyết định,,
+DECISIONS,SIGNATORY,NVARCHAR2(255 CHAR),Họ tên người ký quyết định,,
+DECISIONS,POSITION,NVARCHAR2(1024 CHAR),Chức vụ/vị trí đảm nhiệm,,
+DECISIONS,DECISION_UNIT,NVARCHAR2(1024 CHAR),Đơn vị ban hành quyết định (VD: Ủy ban Chứng khoán Nhà nước),,
+DECISIONS,FILE_NAME,NVARCHAR2(255 CHAR),Tên file sao lưu hoặc file đính kèm,,
+DECISIONS,FILE_PATH,NVARCHAR2(1024 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+DECISIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+DECISIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+DECISIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+DECISIONS,DECISION_TYPE_ID,"NUMBER(10,0)","Loại quyết định: 1=Cấp mới chứng chỉ, 2=Thu hồi chứng chỉ, 3=Cấp lại chứng chỉ, 4=Công nhận KQ thi sát hạch, 5=Xử lý vi phạm NHNCK, 6=Hủy chứng chỉ hành nghề, 7=Khác",,
+DECISIONS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+DECISIONS,CONTENT,NCLOB,Nội dung của thông báo/thư điện tử/bổ sung hồ sơ,,
+DECISIONS,ACTIVE,"NUMBER(1,0)","Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu",,
+DECISIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+DECISION_DOCUMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DECISION_DOCUMENTS,DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm,FK,FK → DECISIONS.ID
+DECISION_DOCUMENTS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+DECISION_DOCUMENTS,DECISION_NUMBER,NVARCHAR2(255 CHAR),Số quyết định hành chính (VD: 123/QĐ-UBCK),,
+DECISION_DOCUMENTS,POSITION,NVARCHAR2(255 CHAR),Chức vụ/vị trí đảm nhiệm,,
+DECISION_DOCUMENTS,FILE_PATH,NVARCHAR2(255 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+DECISION_DOCUMENTS,SIGNED_BY,NVARCHAR2(255 CHAR),FK -> USERS: Người thực hiện ký số,FK,FK → USERS.ID
+DECISION_DOCUMENTS,SIGNED_DATE,DATE,Ngày ký ban hành quyết định,,
+DECISION_DOCUMENTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+DECISION_DOCUMENTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+DECISION_DOCUMENTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+DECISION_DOCUMENTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+DECISION_DOCUMENTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+DEPARTMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DEPARTMENTS,UNIT_ID,"NUMBER(10,0)",FK -> UNITS: Đơn vị nội bộ UBCKNN của người dùng/phòng ban,FK,FK → UNITS.ID
+DEPARTMENTS,DEPARTMENT_CODE,NVARCHAR2(50 CHAR),Mã phòng ban,,
+DEPARTMENTS,DEPARTMENT_NAME,NVARCHAR2(255 CHAR),Tên phòng ban,,
+DEPARTMENTS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+DEPARTMENTS,DESCRIPTION,NVARCHAR2(1024 CHAR),Mô tả chi tiết,,
+DEPARTMENTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+DEPARTMENT_ACCESS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DEPARTMENT_ACCESS,DEPARTMENT_ID,"NUMBER(10,0)",FK -> DEPARTMENTS: Phòng ban của người dùng,FK,FK → DEPARTMENTS.ID
+DEPARTMENT_ACCESS,DEPARTMENT_ACCESS_ID,"NUMBER(10,0)",FK -> DEPARTMENTS: Phòng ban được phép truy cập,FK,FK → DEPARTMENTS.ID
+DIGITAL_CERTIFICATES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DIGITAL_CERTIFICATES,SUBJECT,NVARCHAR2(1000 CHAR),Tên chủ thể trên chứng thư số (Distinguished Name),,
+DIGITAL_CERTIFICATES,COMPANY_NAME,NVARCHAR2(500 CHAR),Tên tổ chức trên chứng thư số,,
+DIGITAL_CERTIFICATES,TAX_CODE,VARCHAR2(50 CHAR),Mã số thuế trên chứng thư số,,
+DIGITAL_CERTIFICATES,EMAIL,NVARCHAR2(255 CHAR),Địa chỉ email liên lạc,,
+DIGITAL_CERTIFICATES,ISSUER,NVARCHAR2(500 CHAR),Tổ chức cấp chứng thư số (Certificate Authority),,
+DIGITAL_CERTIFICATES,SERIAL_NUMBER,VARCHAR2(100 CHAR),Số serial duy nhất của chứng thư số,,
+DIGITAL_CERTIFICATES,VALID_FROM,DATE,Ngày bắt đầu hiệu lực của chứng thư số,,
+DIGITAL_CERTIFICATES,VALID_TO,DATE,Ngày hết hạn hiệu lực của chứng thư số,,
+DIGITAL_CERTIFICATES,BASE64_DATA,NCLOB,Dữ liệu chứng thư số mã hóa Base64 (NCLOB),,
+DIGITAL_CERTIFICATES,THUMBPRINT,VARCHAR2(100 CHAR),Fingerprint/thumbprint SHA1 của chứng thư số,,
+DIGITAL_CERTIFICATES,FULL_DATA,NCLOB,Dữ liệu đầy đủ của chứng thư số (NCLOB),,
+DIGITAL_CERTIFICATES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+DIGITAL_CERTIFICATES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+DIGITAL_CERTIFICATES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+DIGITAL_CERTIFICATES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+DIGITAL_CERTIFICATES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+DIGITAL_CERTIFICATE_USERS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DIGITAL_CERTIFICATE_USERS,DIGITAL_CERTIFICATE_ID,"NUMBER(10,0)",FK -> DIGITAL_CERTIFICATES: Chứng thư số liên quan,FK,FK → DIGITAL_CERTIFICATES.ID
+DIGITAL_CERTIFICATE_USERS,USER_ID,"NUMBER(10,0)",FK -> USERS: Người dùng liên quan,FK,FK → USERS.ID
+DIGITAL_CERTIFICATE_USERS,ROLE,VARCHAR2(50 CHAR),"Vai trò sử dụng chứng thư số: SIGN=Ký số, ENCRYPT=Mã hóa",,
+DIGITAL_CERTIFICATE_USERS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+DIGITAL_CERTIFICATE_USERS,NOTES,NVARCHAR2(500 CHAR),Ghi chú bổ sung,,
+DIGITAL_CERTIFICATE_USERS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+DIGITAL_CERTIFICATE_USERS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+DIGITAL_CERTIFICATE_USERS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+DIGITAL_CERTIFICATE_USERS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+DISTRICTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DISTRICTS,COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia liên quan,FK,FK → COUNTRIES.ID
+DISTRICTS,PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố liên quan,FK,FK → PROVINCES.ID
+DISTRICTS,DISTRICT_CODE,NVARCHAR2(50 CHAR),Mã quận/huyện theo chuẩn quốc gia,,
+DISTRICTS,DISTRICT_NAME,NVARCHAR2(255 CHAR),Tên quận/huyện/thị xã/thành phố thuộc tỉnh,,
+DISTRICTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+DISTRICTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+DISTRICTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+DISTRICTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+DISTRICTS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+DISTRICTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+DOCUMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DOCUMENTS,DOCUMENT_CODE,NVARCHAR2(50 CHAR),Mã tài liệu (mã định danh duy nhất trong danh mục),,
+DOCUMENTS,DOCUMENT_NAME,NVARCHAR2(500 CHAR),Tên tài liệu (snapshot tại thời điểm nộp hồ sơ),,
+DOCUMENTS,REFERENCE,NCLOB,Trích dẫn căn cứ pháp lý của quyết định,,
+DOCUMENTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+DOCUMENTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+DOCUMENTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+DOCUMENTS,ACTIVE,"NUMBER(1,0)","Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu",,
+DOCUMENTS,ORIGINAL_DATA,"NUMBER(1,0)","Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo",,
+DOCUMENTS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+DOCUMENTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+DOCUMENTS,MCDT_CODE,NVARCHAR2(50 CHAR),Mã chuyên ngành trên hệ thống Cổng DVC quốc gia (MCĐT),,
+DOCUMENTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+DOCUMENT_SIGN_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+DOCUMENT_SIGN_LOGS,DOCUMENT_ID,"NUMBER(10,0)",FK -> DOCUMENTS: Loại tài liệu yêu cầu,FK,FK → DOCUMENTS.ID
+DOCUMENT_SIGN_LOGS,SIGNED_BY,"NUMBER(10,0)",FK -> USERS: Người thực hiện ký số,FK,FK → USERS.ID
+DOCUMENT_SIGN_LOGS,SIGNED_AT,DATE,Thời điểm ký số tài liệu/hồ sơ,,
+DOCUMENT_SIGN_LOGS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+DOCUMENT_SIGN_LOGS,HASH,NVARCHAR2(510 CHAR),Giá trị hash của tài liệu đã được ký số,,
+DOCUMENT_SIGN_LOGS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+DOCUMENT_SIGN_LOGS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+DOCUMENT_SIGN_LOGS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+EDUCATION_LEVELS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+EDUCATION_LEVELS,LEVEL_NAME,NVARCHAR2(255 CHAR),"Tên trình độ học vấn (Trung cấp, Cao đẳng, Đại học, Thạc sĩ, Tiến sĩ...)",,
+EDUCATION_LEVELS,DESCRIPTION,NVARCHAR2(500 CHAR),Mô tả chi tiết,,
+EDUCATION_LEVELS,DISPLAYED,"NUMBER(1,0)","Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn",,
+EDUCATION_LEVELS,ORIGINAL_DATA,"NUMBER(1,0)","Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo",,
+EDUCATION_LEVELS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+EDUCATION_LEVELS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+EDUCATION_LEVELS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+EDUCATION_LEVELS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+EDUCATION_LEVELS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+EMAIL_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),,
+EMAIL_LOGS,RECEIVER_ID,"NUMBER(10,0)",FK -> USERS: Người nhận/tiếp nhận hành động xử lý,FK,FK → USERS.ID
+EMAIL_LOGS,EMAIL_TO,NVARCHAR2(1000 CHAR),Địa chỉ email người nhận,,
+EMAIL_LOGS,SUBJECT,NVARCHAR2(500 CHAR),Tên chủ thể trên chứng thư số (Distinguished Name),,
+EMAIL_LOGS,BODY,NCLOB,Nội dung email đầy đủ (NCLOB HTML),,
+EMAIL_LOGS,RECORD_STATUS,NVARCHAR2(50 CHAR),"Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+EMAIL_LOGS,ERROR_MESSAGE,NCLOB,Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action),,
+EMAIL_LOGS,CREATED_AT,TIMESTAMP(6),Thời điểm tạo bản ghi,,
+EXAM_DETAILS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+EXAM_DETAILS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+EXAM_DETAILS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+EXAM_DETAILS,EXAM_SESSION_ID,"NUMBER(10,0)",FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan,FK,FK → EXAM_SESSIONS.ID
+EXAM_DETAILS,SEQUENCE_NUMBER,"NUMBER(10,0)",Số thứ tự dự thi của NHNCK trong đợt thi,,
+EXAM_DETAILS,EXAM_NUMBER,NVARCHAR2(50 CHAR),Số báo danh thi sát hạch,,
+EXAM_DETAILS,LAW_SCORE,"NUMBER(10,0)",Điểm phần thi pháp luật chứng khoán,,
+EXAM_DETAILS,LAW_RESULT,"NUMBER(10,0)","Kết quả phần thi pháp luật: -1=Không thi, 0=Không đạt, 1=Đạt",,
+EXAM_DETAILS,SPECIALIZATION_SCORE,"NUMBER(10,0)",Điểm phần thi chuyên ngành,,
+EXAM_DETAILS,SPECIALIZATION_RESULT,"NUMBER(10,0)","Kết quả phần thi chuyên ngành: -1=Không thi, 0=Không đạt, 1=Đạt",,
+EXAM_DETAILS,RESULT,"NUMBER(10,0)","Kết quả thi: -1=Không thi, 0=Không đạt, 1=Đạt",,
+EXAM_DETAILS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+EXAM_DETAILS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+EXAM_DETAILS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+EXAM_DETAILS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+EXAM_DETAILS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+EXAM_DETAILS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+EXAM_SESSIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+EXAM_SESSIONS,ITEM_NAME,NVARCHAR2(255 CHAR),Tên hiển thị chính,,
+EXAM_SESSIONS,CODE,NVARCHAR2(50 CHAR),"Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)",,
+EXAM_SESSIONS,REPORT_YEAR,"NUMBER(10,0)",Năm báo cáo (định dạng YYYY),,
+EXAM_SESSIONS,SESSION_,"NUMBER(10,0)","Kỳ thi trong năm (1=Kỳ 1, 2=Kỳ 2...) — tên gốc: Session (thêm _ để tránh từ khóa Oracle)",,
+EXAM_SESSIONS,ORGANIZING_UNIT,NVARCHAR2(255 CHAR),"Đơn vị tổ chức đợt thi sát hạch CCHN (tên đơn vị, VD: Vụ nghiệp vụ II - UBCKNN)",,
+EXAM_SESSIONS,APPLICATION_START_DATE,VARCHAR2(200 CHAR),Ngày bắt đầu nhận đăng ký dự thi (VARCHAR2 vì có thể lưu dạng chuỗi mô tả),,
+EXAM_SESSIONS,APPLICATION_END_DATE,VARCHAR2(200 CHAR),Ngày kết thúc nhận đăng ký dự thi,,
+EXAM_SESSIONS,EXAM_START_DATE,VARCHAR2(200 CHAR),Ngày bắt đầu kỳ thi sát hạch,,
+EXAM_SESSIONS,EXAM_END_DATE,VARCHAR2(200 CHAR),Ngày kết thúc kỳ thi sát hạch,,
+EXAM_SESSIONS,FILE_PATH,NVARCHAR2(500 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+EXAM_SESSIONS,NOTI_DATE,VARCHAR2(200 CHAR),Ngày thông báo kết quả thi sát hạch,,
+EXAM_SESSIONS,EXAM_LOCATIONS,NVARCHAR2(1000 CHAR),Địa điểm tổ chức thi (NVARCHAR2 mô tả địa điểm),,
+EXAM_SESSIONS,SUBMISSION_METHODS,NVARCHAR2(100 CHAR),"Phương thức nộp hồ sơ đăng ký dự thi (trực tiếp, online...)",,
+EXAM_SESSIONS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+EXAM_SESSIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+EXAM_SESSIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+EXAM_SESSIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+EXAM_SESSIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+EXAM_SESSIONS,DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm,FK,FK → DECISIONS.ID
+EXAM_SESSIONS,BANK_ID,"NUMBER(10,0)",FK -> BANKS: Ngân hàng thu phí đăng ký/dự thi,FK,FK → BANKS.ID
+EXAM_SESSIONS,BANK_ACCOUNT_NUMBER,NVARCHAR2(50 CHAR),Số tài khoản ngân hàng thu phí thi,,
+EXAM_SESSIONS,BANK_ACCOUNT_NAME,NVARCHAR2(255 CHAR),Tên chủ tài khoản ngân hàng thu phí thi,,
+EXAM_SESSION_FEES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+EXAM_SESSION_FEES,EXAM_SESSION_ID,"NUMBER(10,0)",FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan,FK,FK → EXAM_SESSIONS.ID
+EXAM_SESSION_FEES,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+EXAM_SESSION_FEES,FEE_EXAM,"NUMBER(18,2)",Mức phí dự thi sát hạch (đơn vị: VNĐ),,
+EXAM_SESSION_FEES,FEE_APPEAL,"NUMBER(18,2)",Mức phí phúc khảo bài thi (đơn vị: VNĐ),,
+EXAM_SESSION_FEES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+EXAM_SESSION_FEES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+EXAM_SESSION_FEES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+EXAM_SESSION_FEES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+EXAM_SESSION_FEES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+FORMS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+FORMS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+FORMS,FORM_NAME,NVARCHAR2(255 CHAR),"Tên biểu mẫu (VD: Đơn đề nghị cấp CCHN, Bảng kê hồ sơ...)",,
+FORMS,REFERENCE,NCLOB,Trích dẫn căn cứ pháp lý của quyết định,,
+FORMS,DESCRIPTION,NVARCHAR2(1024 CHAR),Mô tả chi tiết,,
+FORMS,FILE_NAME,NVARCHAR2(255 CHAR),Tên file sao lưu hoặc file đính kèm,,
+FORMS,FILE_PATH,NVARCHAR2(500 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+FORMS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+FORMS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+FORMS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+FORMS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+FORMS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+FORMS,FEATURED,"NUMBER(1,0)","Cờ nổi bật/được đánh dấu quan trọng: 1=Nổi bật, 0=Bình thường",,
+FORMS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+IDENTITY_INFO_C06S,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+IDENTITY_INFO_C06S,FULL_NAME,NVARCHAR2(255 CHAR),Họ và tên đầy đủ của người hành nghề,,
+IDENTITY_INFO_C06S,FIRST_NAME,NVARCHAR2(50 CHAR),Tên đệm và tên riêng (tên gọi) của người hành nghề,,
+IDENTITY_INFO_C06S,BIRTH_DATE,DATE,"Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)",,
+IDENTITY_INFO_C06S,BIRTH_YEAR,NVARCHAR2(4 CHAR),"Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)",,
+IDENTITY_INFO_C06S,IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+IDENTITY_INFO_C06S,GENDER,NVARCHAR2(50 CHAR),"Giới tính: 0=Nam, 1=Nữ",,
+IDENTITY_INFO_C06S,NATIONAL,NVARCHAR2(500 CHAR),Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư),,
+IDENTITY_INFO_C06S,RELIGION,NVARCHAR2(500 CHAR),Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư),,
+IDENTITY_INFO_C06S,PERMANENT_COUNTRY_CODE,NVARCHAR2(500 CHAR),Mã quốc gia địa chỉ thường trú (theo C06),,
+IDENTITY_INFO_C06S,PERMANENT_PROVINCE_CODE,NVARCHAR2(500 CHAR),Mã tỉnh/thành phố địa chỉ thường trú (theo C06),,
+IDENTITY_INFO_C06S,PERMANENT_DISTRICT_CODE,NVARCHAR2(500 CHAR),Mã quận/huyện địa chỉ thường trú (theo C06),,
+IDENTITY_INFO_C06S,PERMANENT_DETAIL,NVARCHAR2(2000 CHAR),"Địa chỉ chi tiết thường trú (số nhà, đường, phường/xã theo C06)",,
+IDENTITY_INFO_C06S,CURRENT_COUNTRY_CODE,NVARCHAR2(500 CHAR),Mã quốc gia địa chỉ tạm trú (theo C06),,
+IDENTITY_INFO_C06S,CURRENT_PROVINCE_CODE,NVARCHAR2(500 CHAR),Mã tỉnh/thành phố địa chỉ tạm trú (theo C06),,
+IDENTITY_INFO_C06S,CURRENT_DISTRICT_CODE,NVARCHAR2(500 CHAR),Mã quận/huyện địa chỉ tạm trú (theo C06),,
+IDENTITY_INFO_C06S,CURRENT_DETAIL,NVARCHAR2(2000 CHAR),Địa chỉ chi tiết tạm trú (theo C06),,
+IDENTITY_INFO_C06S,COUNTRY_CODE,NVARCHAR2(50 CHAR),Mã quốc gia theo chuẩn ISO 3166-1 alpha-2,,
+IDENTITY_INFO_C06S,PLACE_OF_BIRTH,NVARCHAR2(1024 CHAR),Nơi sinh của người hành nghề,,
+IDENTITY_INFO_C06S,HOMETOWN,NVARCHAR2(2000 CHAR),Quê quán theo C06 CSDL quốc gia về dân cư,,
+IDENTITY_INFO_C06S,FATHER_FULL_NAME,NVARCHAR2(255 CHAR),Họ tên đầy đủ của bố (theo C06),,
+IDENTITY_INFO_C06S,FATHER_COUNTRY_CODE,NVARCHAR2(50 CHAR),Mã quốc tịch của bố (theo C06),,
+IDENTITY_INFO_C06S,FATHER_IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD của bố (theo C06),,
+IDENTITY_INFO_C06S,FATHER_IDENTITY_NUMBER_OLD,NVARCHAR2(50 CHAR),"Số CMND cũ của bố (trước khi đổi CCCD, theo C06)",,
+IDENTITY_INFO_C06S,MOTHER_FULL_NAME,NVARCHAR2(255 CHAR),Họ tên đầy đủ của mẹ (theo C06),,
+IDENTITY_INFO_C06S,MOTHER_COUNTRY_CODE,NVARCHAR2(50 CHAR),Mã quốc tịch của mẹ (theo C06),,
+IDENTITY_INFO_C06S,MOTHER_IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD của mẹ (theo C06),,
+IDENTITY_INFO_C06S,MOTHER_IDENTITY_NUMBER_OLD,NVARCHAR2(50 CHAR),Số CMND cũ của mẹ (theo C06),,
+IDENTITY_INFO_C06S,COUPLE_FULL_NAME,NVARCHAR2(255 CHAR),Họ tên đầy đủ của vợ/chồng (theo C06),,
+IDENTITY_INFO_C06S,COUPLE_COUNTRY_CODE,NVARCHAR2(50 CHAR),Mã quốc tịch của vợ/chồng (theo C06),,
+IDENTITY_INFO_C06S,COUPLE_IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD của vợ/chồng (theo C06),,
+IDENTITY_INFO_C06S,COUPLE_IDENTITY_NUMBER_OLD,NVARCHAR2(50 CHAR),Số CMND cũ của vợ/chồng (theo C06),,
+IDENTITY_INFO_C06S,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+IDENTITY_INFO_C06S,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+IDENTITY_INFO_C06S,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+IDENTITY_INFO_C06S,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+IDENTITY_INFO_C06S,USER_UPDATED_ID,"NUMBER(10,0)",FK -> USERS: Người cập nhật thông tin C06 lần cuối,FK,FK → USERS.ID
+IDENTITY_INFO_C06S,PLACE_OF_BIRTH_COUNTRY_CODE,NCHAR(500 CHAR),"Mã quốc gia nơi sinh (theo C06, kiểu NCHAR)",,
+IDENTITY_INFO_C06S,PLACE_OF_BIRTH_PROVINCE_CODE,NCHAR(500 CHAR),"Mã tỉnh/thành phố nơi sinh (theo C06, kiểu NCHAR)",,
+IDENTITY_INFO_C06S,PLACE_OF_BIRTH_DISTRICT_CODE,NCHAR(500 CHAR),"Mã quận/huyện nơi sinh (theo C06, kiểu NCHAR)",,
+LEGAL_DOCUMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+LEGAL_DOCUMENTS,DOCUMENT_NUMBER,NVARCHAR2(50 CHAR),"Số hiệu văn bản pháp lý (VD: 119/2020/NĐ-CP, 116/2020/TT-BTC)",,
+LEGAL_DOCUMENTS,DOCUMENT_NAME,NVARCHAR2(2000 CHAR),Tên tài liệu (snapshot tại thời điểm nộp hồ sơ),,
+LEGAL_DOCUMENTS,ISSUING_AGENCY,NVARCHAR2(1024 CHAR),"Cơ quan ban hành văn bản pháp lý (Chính phủ, Bộ Tài chính, UBCKNN...)",,
+LEGAL_DOCUMENTS,REFERENCE,NCLOB,Trích dẫn căn cứ pháp lý của quyết định,,
+LEGAL_DOCUMENTS,FILE_NAME,NVARCHAR2(255 CHAR),Tên file sao lưu hoặc file đính kèm,,
+LEGAL_DOCUMENTS,FILE_PATH,NVARCHAR2(1024 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+LEGAL_DOCUMENTS,ISSUE_DATE,DATE,Ngày cấp CCHN,,
+LEGAL_DOCUMENTS,POSITION,NVARCHAR2(1024 CHAR),Chức vụ/vị trí đảm nhiệm,,
+LEGAL_DOCUMENTS,SIGNATORY,NVARCHAR2(255 CHAR),Họ tên người ký quyết định,,
+LEGAL_DOCUMENTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+LEGAL_DOCUMENTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+LEGAL_DOCUMENTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+LEGAL_DOCUMENTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+LEGAL_DOCUMENTS,FEATURED,"NUMBER(10,0)","Cờ nổi bật/được đánh dấu quan trọng: 1=Nổi bật, 0=Bình thường",,
+LEGAL_DOCUMENTS,REASON,NVARCHAR2(2000 CHAR),Lý do thực hiện thao tác hoặc thay đổi,,
+LEGAL_DOCUMENTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+NOTIFICATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),,
+NOTIFICATIONS,ACTION_TYPE,"NUMBER(10,0)",Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ),,
+NOTIFICATIONS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+NOTIFICATIONS,READ_FLAG,"NUMBER(1,0)","Cờ đã đọc thông báo: 1=Đã đọc, 0=Chưa đọc",,
+NOTIFICATIONS,CONTENT,NCLOB,Nội dung của thông báo/thư điện tử/bổ sung hồ sơ,,
+NOTIFICATIONS,LINK,NVARCHAR2(500 CHAR),URL điều hướng khi người dùng nhấp vào thông báo,,
+NOTIFICATIONS,RECEIVER_ID,"NUMBER(10,0)",FK -> USERS: Người nhận/tiếp nhận hành động xử lý,FK,FK → USERS.ID
+NOTIFICATIONS,SENT_AT,TIMESTAMP(6),Thời điểm thông báo được gửi đi,,
+NOTIFICATIONS,READ_AT,TIMESTAMP(6),Thời điểm người nhận đọc thông báo,,
+NOTIFICATION_CONFIGURATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),,
+NOTIFICATION_CONFIGURATIONS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+NOTIFICATION_CONFIGURATIONS,ITEM_NAME,NVARCHAR2(255 CHAR),Tên hiển thị chính,,
+NOTIFICATION_CONFIGURATIONS,TRIGGER_EVENT,NVARCHAR2(500 CHAR),Tên sự kiện nghiệp vụ kích hoạt gửi thông báo (mã sự kiện),,
+NOTIFICATION_CONFIGURATIONS,ACTION_TYPE,"NUMBER(10,0)",Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ),,
+NOTIFICATION_CONFIGURATIONS,NOTI_ENABLED,"NUMBER(1,0)","Cờ bật thông báo in-app: 1=Gửi thông báo in-app, 0=Không gửi",,
+NOTIFICATION_CONFIGURATIONS,SMS_ENABLED,"NUMBER(1,0)","Cờ bật gửi SMS: 1=Gửi SMS, 0=Không gửi",,
+NOTIFICATION_CONFIGURATIONS,EMAIL_ENABLED,"NUMBER(1,0)","Cờ bật gửi email: 1=Gửi email, 0=Không gửi",,
+NOTIFICATION_CONFIGURATIONS,CONTENT_NOTI,NCLOB,"Template nội dung thông báo in-app (NCLOB, có placeholder {variable})",,
+NOTIFICATION_CONFIGURATIONS,CONTENT_SMS,NCLOB,"Template nội dung SMS (NCLOB, có placeholder {variable})",,
+NOTIFICATION_CONFIGURATIONS,CONTENT_EMAIL,NCLOB,"Template nội dung email HTML (NCLOB, có placeholder {variable})",,
+NOTIFICATION_CONFIGURATIONS,NOTI_PARAMETERS_JSON,NCLOB,Danh sách tham số cho template in-app (JSON NCLOB),,
+NOTIFICATION_CONFIGURATIONS,SMS_PARAMETERS_JSON,NCLOB,Danh sách tham số cho template SMS (JSON NCLOB),,
+NOTIFICATION_CONFIGURATIONS,EMAIL_PARAMETERS_JSON,NCLOB,Danh sách tham số cho template email (JSON NCLOB),,
+NOTIFICATION_CONFIGURATIONS,RECEIVERS_JSON,NCLOB,"Danh sách đối tượng nhận thông báo (JSON NCLOB: roles, units, users)",,
+ORGANIZATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+ORGANIZATIONS,PARENT_ID,"NUMBER(10,0)",FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp,FK,FK suy luận → ORGANIZATIONS.ID
+ORGANIZATIONS,ORGANIZATION_TYPE_ID,"NUMBER(10,0)","FK -> loại tổ chức kinh doanh CK: 0=Khác, 1=Công ty chứng khoán (CTCK), 2=Công ty quản lý quỹ (QLQ), 3=Ngân hàng",FK,FK suy luận → ORGANIZATIONS.ID
+ORGANIZATIONS,LINKED_ID,"NUMBER(10,0)",ID liên kết với tổ chức trong hệ thống FMS hoặc SCMS,,
+ORGANIZATIONS,SYNC_ID,NVARCHAR2(100 CHAR),ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK,,
+ORGANIZATIONS,LEVEL_,NVARCHAR2(100 CHAR),Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh từ khóa Oracle),,
+ORGANIZATIONS,ORGANIZATION_CODE,NVARCHAR2(100 CHAR),Mã tổ chức kinh doanh chứng khoán,,
+ORGANIZATIONS,ORGANIZATION_NAME,NVARCHAR2(2000 CHAR),Tên đầy đủ của tổ chức kinh doanh chứng khoán,,
+ORGANIZATIONS,ENGLISH_NAME,NVARCHAR2(2000 CHAR),Tên tiếng Anh của tổ chức,,
+ORGANIZATIONS,ABBREVIATION,NVARCHAR2(2000 CHAR),Tên viết tắt của tổ chức/quyền,,
+ORGANIZATIONS,ADDRESS,NCLOB,Địa chỉ trụ sở tổ chức (NCLOB),,
+ORGANIZATIONS,FAX,NVARCHAR2(100 CHAR),Số fax liên lạc,,
+ORGANIZATIONS,PHONE_NUMBER,NVARCHAR2(100 CHAR),Số điện thoại cố định,,
+ORGANIZATIONS,MOBILE_NUMBER,NVARCHAR2(100 CHAR),Số điện thoại di động,,
+ORGANIZATIONS,REPRESENTATIVE,NVARCHAR2(510 CHAR),Tên người đại diện theo pháp luật của tổ chức,,
+ORGANIZATIONS,EMAIL,NVARCHAR2(200 CHAR),Địa chỉ email liên lạc,,
+ORGANIZATIONS,DESCRIPTION,NCLOB,Mô tả chi tiết,,
+ORGANIZATIONS,LICENSE_NUMBER,NVARCHAR2(100 CHAR),Số giấy phép hoạt động kinh doanh chứng khoán,,
+ORGANIZATIONS,LICENSE_ISSUER,NVARCHAR2(100 CHAR),Cơ quan cấp giấy phép (UBCKNN),,
+ORGANIZATIONS,LICENSE_DATE,DATE,Ngày cấp giấy phép hoạt động,,
+ORGANIZATIONS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+ORGANIZATIONS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+ORGANIZATIONS,LAST_SYNC_DATE,DATE,Ngày đồng bộ dữ liệu tổ chức từ FMS/SCMS gần nhất,,
+ORGANIZATIONS,SYNC_STATUS,"NUMBER(10,0)","Trạng thái đồng bộ: 1=Đã đồng bộ, 0=Chưa đồng bộ, 2=Lỗi đồng bộ",,
+ORGANIZATIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+ORGANIZATIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+ORGANIZATIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+ORGANIZATIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+ORGANIZATIONS,WEBSITE,NVARCHAR2(2000 CHAR),Địa chỉ website của tổ chức,,
+ORGANIZATIONS,CHARTER_CAPITAL,NVARCHAR2(2000 CHAR),Vốn điều lệ của tổ chức kinh doanh CK,,
+ORGANIZATION_REPORTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+ORGANIZATION_REPORTS,ORGANIZATION_ID,"NUMBER(10,0)",FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK,FK,FK → ORGANIZATIONS.ID
+ORGANIZATION_REPORTS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+ORGANIZATION_REPORTS,CERTIFICATE_ID,"NUMBER(10,0)",FK -> CERTIFICATES: Loại chứng chỉ hành nghề,FK,FK → CERTIFICATES.ID
+ORGANIZATION_REPORTS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+ORGANIZATION_REPORTS,FULL_NAME,NVARCHAR2(510 CHAR),Họ và tên đầy đủ của người hành nghề,,
+ORGANIZATION_REPORTS,BIRTH_DATE,DATE,"Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)",,
+ORGANIZATION_REPORTS,IDENTITY_NUMBER,NVARCHAR2(100 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+ORGANIZATION_REPORTS,POSITION,NVARCHAR2(1000 CHAR),Chức vụ/vị trí đảm nhiệm,,
+ORGANIZATION_REPORTS,DEPARTMENT,NVARCHAR2(2000 CHAR),Phòng ban công tác,,
+ORGANIZATION_REPORTS,WORKPLACE,NVARCHAR2(2000 CHAR),Nơi làm việc hiện tại (tên tổ chức kinh doanh CK),,
+ORGANIZATION_REPORTS,HIRE_DATE,DATE,Ngày tuyển dụng NHNCK vào làm việc tại tổ chức,,
+ORGANIZATION_REPORTS,TERMINATION_DATE,DATE,Ngày chấm dứt hợp đồng lao động của NHNCK,,
+ORGANIZATION_REPORTS,CERTIFICATE_NUMBER,NVARCHAR2(100 CHAR),Số CCHN cấp cho NHNCK,,
+ORGANIZATION_REPORTS,ISSUE_DATE,DATE,Ngày cấp CCHN,,
+ORGANIZATION_REPORTS,DISCIPLINES,NCLOB,Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB),,
+ORGANIZATION_REPORTS,DESCRIPTION,NVARCHAR2(1100 CHAR),Mô tả chi tiết,,
+ORGANIZATION_REPORTS,REPORT_DATE,DATE,Ngày lập báo cáo của tổ chức về NHNCK,,
+ORGANIZATION_REPORTS,SYNC_ID,NVARCHAR2(100 CHAR),ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK,,
+ORGANIZATION_REPORTS,SYNC_CREATED_AT,DATE,Thời điểm tạo bản ghi báo cáo trong hệ thống đồng bộ nguồn,,
+ORGANIZATION_REPORTS,SYNC_UPDATED_AT,DATE,Thời điểm cập nhật báo cáo trong hệ thống đồng bộ nguồn,,
+ORGANIZATION_REPORTS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+ORGANIZATION_REPORTS,PARENT_REPORT_ID,"NUMBER(10,0)",FK -> ORGANIZATION_REPORTS: Báo cáo gốc/cha (khi báo cáo điều chỉnh),FK,FK → ORGANIZATION_REPORTS.ID
+ORGANIZATION_REPORTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+ORGANIZATION_REPORTS,STATUS_ORGANIZATION,"NUMBER(10,0)",Trạng thái của tổ chức tại thời điểm báo cáo,,
+ORGANIZATION_REPORTS,FILE_PATH,NVARCHAR2(2000 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+ORGANIZATION_REPORTS,FILE_PATH_TERMINATION,NVARCHAR2(2000 CHAR),Đường dẫn file quyết định/biên bản chấm dứt hợp đồng,,
+ORGANIZATION_REPORTS,BUSINESS_DEPARTMENT,NVARCHAR2(1100 CHAR),Phòng nghiệp vụ UBCKNN quản lý tổ chức này (tên phòng),,
+ORGANIZATION_REPORTS,NOTES,NCLOB,Ghi chú bổ sung,,
+ORGANIZATION_REPORTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+ORGANIZATION_REPORTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+ORGANIZATION_REPORTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+ORGANIZATION_REPORTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+ORGANIZATION_REPORT_LOG_SYNCS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+ORGANIZATION_REPORT_LOG_SYNCS,FULL_NAME,NVARCHAR2(510 CHAR),Họ và tên đầy đủ của người hành nghề,,
+ORGANIZATION_REPORT_LOG_SYNCS,POSITION,NVARCHAR2(1000 CHAR),Chức vụ/vị trí đảm nhiệm,,
+ORGANIZATION_REPORT_LOG_SYNCS,DEPARTMENT,NVARCHAR2(2000 CHAR),Phòng ban công tác,,
+ORGANIZATION_REPORT_LOG_SYNCS,HIRE_DATE,DATE,Ngày tuyển dụng NHNCK vào làm việc tại tổ chức,,
+ORGANIZATION_REPORT_LOG_SYNCS,TERMINATION_DATE,DATE,Ngày chấm dứt hợp đồng lao động của NHNCK,,
+ORGANIZATION_REPORT_LOG_SYNCS,CERTIFICATE_NUMBER,NVARCHAR2(100 CHAR),Số CCHN cấp cho NHNCK,,
+ORGANIZATION_REPORT_LOG_SYNCS,ISSUE_DATE,DATE,Ngày cấp CCHN,,
+ORGANIZATION_REPORT_LOG_SYNCS,REPORT_DATE,DATE,Ngày lập báo cáo của tổ chức về NHNCK,,
+ORGANIZATION_REPORT_LOG_SYNCS,VALID_CERTIFICATE_NUM,"NUMBER(1,0)","Cờ số CCHN hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ",,
+ORGANIZATION_REPORT_LOG_SYNCS,VALID_ISSUE_DATE,"NUMBER(1,0)","Cờ ngày cấp CCHN hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ",,
+ORGANIZATION_REPORT_LOG_SYNCS,VALID_HIRE_DATE,"NUMBER(1,0)","Cờ ngày tuyển dụng hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ",,
+ORGANIZATION_REPORT_LOG_SYNCS,VALID_TERMINATION_DATE,"NUMBER(1,0)","Cờ ngày chấm dứt hợp đồng hợp lệ trong báo cáo tổ chức: 1=Hợp lệ, 0=Không hợp lệ",,
+ORGANIZATION_REPORT_LOG_SYNCS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+ORGANIZATION_REPORT_LOG_SYNCS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+ORGANIZATION_REPORT_LOG_SYNCS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+ORGANIZATION_REPORT_LOG_SYNCS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+ORGANIZATION_REPORT_LOG_SYNCS,REPORT_YEARLY_ID,"NUMBER(10,0)",FK -> ORGANIZATION_REPORT_YEARLYS: Báo cáo năm chứa bản ghi này,FK,FK → ORGANIZATION_REPORT_YEARLYS.ID
+ORGANIZATION_REPORT_LOG_SYNCS,ORGANIZATION_REPORT_ID,"NUMBER(10,0)",FK -> ORGANIZATION_REPORTS: Báo cáo tổ chức liên quan,FK,FK → ORGANIZATION_REPORTS.ID
+ORGANIZATION_REPORT_YEARLYS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+ORGANIZATION_REPORT_YEARLYS,ORGANIZATION_ID,"NUMBER(10,0)",FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK,FK,FK → ORGANIZATIONS.ID
+ORGANIZATION_REPORT_YEARLYS,ITEM_NAME,NVARCHAR2(2000 CHAR),Tên hiển thị chính,,
+ORGANIZATION_REPORT_YEARLYS,SUBMISSION_DATE,DATE,Ngày nộp hồ sơ chính thức,,
+ORGANIZATION_REPORT_YEARLYS,REPORT_YEAR,NVARCHAR2(100 CHAR),Năm báo cáo (định dạng YYYY),,
+ORGANIZATION_REPORT_YEARLYS,RECORD_TYPE,NVARCHAR2(100 CHAR),Loại/phân loại của bản ghi,,
+ORGANIZATION_REPORT_YEARLYS,FILE_PATH,NVARCHAR2(2000 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
+ORGANIZATION_REPORT_YEARLYS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+ORGANIZATION_REPORT_YEARLYS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+ORGANIZATION_REPORT_YEARLYS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+ORGANIZATION_REPORT_YEARLYS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+ORGANIZATION_REPORT_YEARLYS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+PERMISSIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PERMISSIONS,CODE,NVARCHAR2(50 CHAR),"Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)",,
+PERMISSIONS,PERMISSION_NAME,NVARCHAR2(255 CHAR),Tên quyền hành động đã thực hiện,,
+PERMISSIONS,PARENT_CODE,NVARCHAR2(50 CHAR),Mã quyền cha trong cây phân cấp quyền,,
+PERMISSIONS,ABBREVIATION,NVARCHAR2(50 CHAR),Tên viết tắt của tổ chức/quyền,,
+PERMISSIONS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+PERMISSIONS,ACTIVE,"NUMBER(1,0)","Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu",,
+PERMISSIONS,MENU_FLAG,"NUMBER(1,0)","Cờ quyền là menu (có đường dẫn URL): 1=Là menu, 0=Là quyền hành động",,
+PERMISSIONS,PATH,NVARCHAR2(255 CHAR),Đường dẫn URL endpoint API được gọi,,
+PERMISSIONS,DESCRIPTION,NVARCHAR2(1024 CHAR),Mô tả chi tiết,,
+PERMISSION_ROLES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PERMISSION_ROLES,PERMISSION_ID,"NUMBER(10,0)",FK -> PERMISSIONS: Quyền hạn liên quan,FK,FK → PERMISSIONS.ID
+PERMISSION_ROLES,ROLE_ID,"NUMBER(10,0)",FK -> ROLES: Vai trò liên quan,FK,FK → ROLES.ID
+POSITIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+POSITIONS,POSITION_NAME,NVARCHAR2(255 CHAR),Tên chức vụ tại thời điểm công tác (snapshot),,
+POSITIONS,DESCRIPTION,NVARCHAR2(1024 CHAR),Mô tả chi tiết,,
+POSITIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+POSITIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+POSITIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+POSITIONS,ACTIVE,"NUMBER(1,0)","Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu",,
+POSITIONS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+POSITIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+POST_CERT_TRAINING_COURSES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+POST_CERT_TRAINING_COURSES,COURSE_CODE,VARCHAR2(50 BYTE),Mã khóa học/lớp học,,
+POST_CERT_TRAINING_COURSES,COURSE_NAME,NVARCHAR2(500 CHAR),Tên khóa học/lớp học,,
+POST_CERT_TRAINING_COURSES,CLASS_CODE,VARCHAR2(50 BYTE),Mã lớp học (định danh lớp cụ thể trong khóa),,
+POST_CERT_TRAINING_COURSES,RECORD_STATUS,"NUMBER(1,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+POST_CERT_TRAINING_COURSES,CREATED_AT,TIMESTAMP(6),Thời điểm tạo bản ghi,,
+POST_CERT_TRAINING_COURSES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+POST_CERT_TRAINING_COURSES,UPDATED_AT,TIMESTAMP(6),Thời điểm cập nhật bản ghi lần cuối,,
+POST_CERT_TRAINING_COURSES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+PROCEDURES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROCEDURES,PROCEDURE_TYPE,"NUMBER(10,0)","Loại thủ tục: 1=Cấp mới CCHN, 2=Cấp lại CCHN, 3=Thu hồi CCHN...",,
+PROCEDURES,IMAGE,NVARCHAR2(500 CHAR),Đường dẫn ảnh minh họa thủ tục,,
+PROCEDURES,TITLE,NVARCHAR2(255 CHAR),Tiêu đề/tên hồ sơ hoặc nhóm,,
+PROCEDURES,CONTENT,NCLOB,Nội dung của thông báo/thư điện tử/bổ sung hồ sơ,,
+PROCEDURES,PROCESSING_TIME,NCLOB,Thời gian xử lý theo quy định (NCLOB mô tả),,
+PROCEDURES,TARGET_AUDIENCE,NVARCHAR2(1024 CHAR),Đối tượng áp dụng thủ tục,,
+PROCEDURES,IMPLEMENTING_AGENCY,NVARCHAR2(2000 CHAR),Cơ quan thực hiện thủ tục hành chính,,
+PROCEDURES,OUTCOME,NCLOB,Kết quả đầu ra của thủ tục (NCLOB),,
+PROCEDURES,FEE,NVARCHAR2(50 CHAR),Số tiền phí (đơn vị: VNĐ),,
+PROCEDURES,REQUIREMENTS,NCLOB,Yêu cầu điều kiện để thực hiện thủ tục (NCLOB),,
+PROCEDURES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+PROCEDURES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+PROCEDURES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+PROCEDURES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+PROCEDURES,FEATURED,"NUMBER(10,0)","Cờ nổi bật/được đánh dấu quan trọng: 1=Nổi bật, 0=Bình thường",,
+PROCEDURES,REASON,NVARCHAR2(2000 CHAR),Lý do thực hiện thao tác hoặc thay đổi,,
+PROCEDURES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+PROCEDURE_DOCUMENTS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROCEDURE_DOCUMENTS,PROCEDURE_ID,"NUMBER(10,0)",FK -> PROCEDURES: Thủ tục hành chính liên quan,FK,FK → PROCEDURES.ID
+PROCEDURE_DOCUMENTS,DOCUMENT_ID,"NUMBER(10,0)",FK -> DOCUMENTS: Loại tài liệu yêu cầu,FK,FK → DOCUMENTS.ID
+PROCEDURE_FORMS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROCEDURE_FORMS,PROCEDURE_ID,"NUMBER(10,0)",FK -> PROCEDURES: Thủ tục hành chính liên quan,FK,FK → PROCEDURES.ID
+PROCEDURE_FORMS,FORM_ID,"NUMBER(10,0)",FK -> FORMS: Biểu mẫu trong thủ tục hành chính,FK,FK → FORMS.ID
+PROCEDURE_FORMS,QUANTITY,"NUMBER(10,0)",Số lượng biểu mẫu cần nộp trong thủ tục,,
+PROFESSIONALS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROFESSIONALS,ORGANIZATION_ID,"NUMBER(10,0)",FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK,FK,FK → ORGANIZATIONS.ID
+PROFESSIONALS,NATIONALITY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc tịch của người hành nghề,FK,FK → COUNTRIES.ID
+PROFESSIONALS,EDUCATION_LEVEL_ID,"NUMBER(10,0)",FK -> EDUCATION_LEVELS: Trình độ học vấn,FK,FK → EDUCATION_LEVELS.ID
+PROFESSIONALS,REGISTRATION_TYPE,"NUMBER(10,0)","Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)",,
+PROFESSIONALS,USERNAME,NVARCHAR2(50 CHAR),Tên đăng nhập vào hệ thống,,
+PROFESSIONALS,PASSWORD,NVARCHAR2(250 CHAR),Mật khẩu đã mã hóa (bcrypt hash),,
+PROFESSIONALS,FULL_NAME,NVARCHAR2(255 CHAR),Họ và tên đầy đủ của người hành nghề,,
+PROFESSIONALS,FIRST_NAME,NVARCHAR2(50 CHAR),Tên đệm và tên riêng (tên gọi) của người hành nghề,,
+PROFESSIONALS,AVATAR,NVARCHAR2(500 CHAR),Đường dẫn/URL ảnh đại diện của người hành nghề,,
+PROFESSIONALS,BIRTH_DATE,DATE,"Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)",,
+PROFESSIONALS,BIRTH_YEAR,NVARCHAR2(4 CHAR),"Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)",,
+PROFESSIONALS,GENDER,"NUMBER(10,0)","Giới tính: 0=Nam, 1=Nữ",,
+PROFESSIONALS,PERMANENT_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia địa chỉ thường trú,FK,FK → COUNTRIES.ID
+PROFESSIONALS,PERMANENT_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố địa chỉ thường trú,FK,FK → PROVINCES.ID
+PROFESSIONALS,PERMANENT_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện địa chỉ thường trú,FK,FK → DISTRICTS.ID
+PROFESSIONALS,PERMANENT_ADDRESS,NVARCHAR2(2000 CHAR),"Địa chỉ cụ thể theo thường trú (số nhà, đường, phường/xã...)",,
+PROFESSIONALS,CURRENT_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia địa chỉ tạm trú hiện tại,FK,FK → COUNTRIES.ID
+PROFESSIONALS,CURRENT_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố địa chỉ tạm trú,FK,FK → PROVINCES.ID
+PROFESSIONALS,CURRENT_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện địa chỉ tạm trú,FK,FK → DISTRICTS.ID
+PROFESSIONALS,PLACE_OF_BIRTH,NVARCHAR2(1024 CHAR),Nơi sinh của người hành nghề,,
+PROFESSIONALS,ADDRESS,NVARCHAR2(2000 CHAR),Địa chỉ trụ sở tổ chức (NCLOB),,
+PROFESSIONALS,IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+PROFESSIONALS,IDENTITY_ISSUE_DATE,DATE,Ngày cấp CMND/CCCD/Hộ chiếu,,
+PROFESSIONALS,IDENTITY_ISSUE_PLACE,NVARCHAR2(255 CHAR),Nơi cấp CMND/CCCD/Hộ chiếu,,
+PROFESSIONALS,PHONE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại cố định,,
+PROFESSIONALS,MOBILE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại di động,,
+PROFESSIONALS,EMAIL,NVARCHAR2(255 CHAR),Địa chỉ email liên lạc,,
+PROFESSIONALS,WORKPLACE,NVARCHAR2(1024 CHAR),Nơi làm việc hiện tại (tên tổ chức kinh doanh CK),,
+PROFESSIONALS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+PROFESSIONALS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+PROFESSIONALS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+PROFESSIONALS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+PROFESSIONALS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+PROFESSIONALS,IDENTITY_TYPE,"NUMBER(10,0)","Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu",,
+PROFESSIONALS,POSITION,NVARCHAR2(2000 CHAR),Chức vụ/vị trí đảm nhiệm,,
+PROFESSIONALS,DEPARTMENT,NVARCHAR2(2000 CHAR),Phòng ban công tác,,
+PROFESSIONALS,PREVIOUS_IDENTITY_NUMBER,NVARCHAR2(500 CHAR),Số CMND cũ (trước khi đổi sang CCCD),,
+PROFESSIONALS,HOMETOWN,NVARCHAR2(500 CHAR),Quê quán theo C06 CSDL quốc gia về dân cư,,
+PROFESSIONALS,NATIONAL,NVARCHAR2(500 CHAR),Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư),,
+PROFESSIONALS,RELIGION,NVARCHAR2(500 CHAR),Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư),,
+PROFESSIONALS,STATUS_WORK,"NUMBER(10,0)","Trạng thái hành nghề: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Cấp hành nghề có thời hạn",,
+PROFESSIONALS,STATUS_ACCOUNT,"NUMBER(10,0)","Trạng thái tài khoản người hành nghề: 0=Chưa kích hoạt, 1=Đang hoạt động, 2=Khóa",,
+PROFESSIONALS,PLACE_OF_BIRTH_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia nơi sinh,FK,FK → COUNTRIES.ID
+PROFESSIONALS,PLACE_OF_BIRTH_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố nơi sinh,FK,FK → PROVINCES.ID
+PROFESSIONALS,PLACE_OF_BIRTH_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện nơi sinh,FK,FK → DISTRICTS.ID
+PROFESSIONAL_HISTORIES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROFESSIONAL_HISTORIES,ORGANIZATION_ID,"NUMBER(10,0)",FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK,FK,FK → ORGANIZATIONS.ID
+PROFESSIONAL_HISTORIES,NATIONALITY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc tịch của người hành nghề,FK,FK → COUNTRIES.ID
+PROFESSIONAL_HISTORIES,EDUCATION_LEVEL_ID,"NUMBER(10,0)",FK -> EDUCATION_LEVELS: Trình độ học vấn,FK,FK → EDUCATION_LEVELS.ID
+PROFESSIONAL_HISTORIES,REGISTRATION_TYPE,"NUMBER(10,0)","Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)",,
+PROFESSIONAL_HISTORIES,USERNAME,NVARCHAR2(50 CHAR),Tên đăng nhập vào hệ thống,,
+PROFESSIONAL_HISTORIES,PASSWORD,NVARCHAR2(50 CHAR),Mật khẩu đã mã hóa (bcrypt hash),,
+PROFESSIONAL_HISTORIES,FULL_NAME,NVARCHAR2(255 CHAR),Họ và tên đầy đủ của người hành nghề,,
+PROFESSIONAL_HISTORIES,FIRST_NAME,NVARCHAR2(50 CHAR),Tên đệm và tên riêng (tên gọi) của người hành nghề,,
+PROFESSIONAL_HISTORIES,AVATAR,NVARCHAR2(500 CHAR),Đường dẫn/URL ảnh đại diện của người hành nghề,,
+PROFESSIONAL_HISTORIES,BIRTH_DATE,DATE,"Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)",,
+PROFESSIONAL_HISTORIES,BIRTH_YEAR,NVARCHAR2(4 CHAR),"Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)",,
+PROFESSIONAL_HISTORIES,GENDER,"NUMBER(10,0)","Giới tính: 0=Nam, 1=Nữ",,
+PROFESSIONAL_HISTORIES,PERMANENT_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia địa chỉ thường trú,FK,FK → COUNTRIES.ID
+PROFESSIONAL_HISTORIES,PERMANENT_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố địa chỉ thường trú,FK,FK → PROVINCES.ID
+PROFESSIONAL_HISTORIES,PERMANENT_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện địa chỉ thường trú,FK,FK → DISTRICTS.ID
+PROFESSIONAL_HISTORIES,PERMANENT_ADDRESS,NVARCHAR2(2000 CHAR),"Địa chỉ cụ thể theo thường trú (số nhà, đường, phường/xã...)",,
+PROFESSIONAL_HISTORIES,CURRENT_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia địa chỉ tạm trú hiện tại,FK,FK → COUNTRIES.ID
+PROFESSIONAL_HISTORIES,CURRENT_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố địa chỉ tạm trú,FK,FK → PROVINCES.ID
+PROFESSIONAL_HISTORIES,CURRENT_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện địa chỉ tạm trú,FK,FK → DISTRICTS.ID
+PROFESSIONAL_HISTORIES,PLACE_OF_BIRTH,NVARCHAR2(1024 CHAR),Nơi sinh của người hành nghề,,
+PROFESSIONAL_HISTORIES,ADDRESS,NVARCHAR2(2000 CHAR),Địa chỉ trụ sở tổ chức (NCLOB),,
+PROFESSIONAL_HISTORIES,IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+PROFESSIONAL_HISTORIES,IDENTITY_ISSUE_DATE,DATE,Ngày cấp CMND/CCCD/Hộ chiếu,,
+PROFESSIONAL_HISTORIES,IDENTITY_ISSUE_PLACE,NVARCHAR2(255 CHAR),Nơi cấp CMND/CCCD/Hộ chiếu,,
+PROFESSIONAL_HISTORIES,PHONE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại cố định,,
+PROFESSIONAL_HISTORIES,MOBILE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại di động,,
+PROFESSIONAL_HISTORIES,EMAIL,NVARCHAR2(255 CHAR),Địa chỉ email liên lạc,,
+PROFESSIONAL_HISTORIES,WORKPLACE,NVARCHAR2(1024 CHAR),Nơi làm việc hiện tại (tên tổ chức kinh doanh CK),,
+PROFESSIONAL_HISTORIES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+PROFESSIONAL_HISTORIES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+PROFESSIONAL_HISTORIES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+PROFESSIONAL_HISTORIES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+PROFESSIONAL_HISTORIES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+PROFESSIONAL_HISTORIES,IDENTITY_TYPE,"NUMBER(10,0)","Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu",,
+PROFESSIONAL_HISTORIES,POSITION,NVARCHAR2(2000 CHAR),Chức vụ/vị trí đảm nhiệm,,
+PROFESSIONAL_HISTORIES,DEPARTMENT,NVARCHAR2(2000 CHAR),Phòng ban công tác,,
+PROFESSIONAL_HISTORIES,PREVIOUS_IDENTITY_NUMBER,NVARCHAR2(500 CHAR),Số CMND cũ (trước khi đổi sang CCCD),,
+PROFESSIONAL_HISTORIES,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+PROFESSIONAL_HISTORIES,CHANGE_DATE,DATE,Ngày ghi nhận thay đổi thông tin,,
+PROFESSIONAL_HISTORIES,NATIONAL,NVARCHAR2(500 CHAR),Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư),,
+PROFESSIONAL_HISTORIES,RELIGION,NVARCHAR2(500 CHAR),Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư),,
+PROFESSIONAL_HISTORIES,HOMETOWN,NVARCHAR2(500 CHAR),Quê quán theo C06 CSDL quốc gia về dân cư,,
+PROFESSIONAL_HISTORIES,STATUS_WORK,"NUMBER(10,0)","Trạng thái hành nghề: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Cấp hành nghề có thời hạn",,
+PROFESSIONAL_HISTORIES,REASON_UPDATE,NVARCHAR2(2000 CHAR),Lý do cập nhật thông tin người hành nghề,,
+PROFESSIONAL_HISTORIES,STATUS_ACCOUNT,"NUMBER(10,0)","Trạng thái tài khoản người hành nghề: 0=Chưa kích hoạt, 1=Đang hoạt động, 2=Khóa",,
+PROFESSIONAL_RELATIONSHIPS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROFESSIONAL_RELATIONSHIPS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+PROFESSIONAL_RELATIONSHIPS,RELATIONSHIP_TYPE,"NUMBER(10,0)","Loại quan hệ gia đình: 1=Chồng/vợ, 2=Con, 3=Bố, 4=Mẹ, 5=Ông, 6=Bà",,
+PROFESSIONAL_RELATIONSHIPS,FULL_NAME,NVARCHAR2(500 CHAR),Họ và tên đầy đủ của người hành nghề,,
+PROFESSIONAL_RELATIONSHIPS,BIRTH_YEAR,"NUMBER(10,0)","Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)",,
+PROFESSIONAL_RELATIONSHIPS,ADDRESS,NVARCHAR2(2000 CHAR),Địa chỉ trụ sở tổ chức (NCLOB),,
+PROFESSIONAL_RELATIONSHIPS,OCCUPATION,NVARCHAR2(2000 CHAR),Nghề nghiệp của thành viên gia đình,,
+PROFESSIONAL_RELATIONSHIPS,WORKPLACE,NVARCHAR2(2000 CHAR),Nơi làm việc hiện tại (tên tổ chức kinh doanh CK),,
+PROFESSIONAL_RELATIONSHIPS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+PROFESSIONAL_RELATIONSHIPS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+PROFESSIONAL_RELATIONSHIPS,COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia liên quan,FK,FK → COUNTRIES.ID
+PROFESSIONAL_RELATIONSHIPS,IDENTITY_ID,NVARCHAR2(50 CHAR),Số CMND/CCCD của thành viên gia đình,,
+PROFESSIONAL_RELATIONSHIPS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+PROFESSIONAL_RELATIONSHIPS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+PROFESSIONAL_RELATIONSHIPS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+PROFESSIONAL_TRAININGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROFESSIONAL_TRAININGS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+PROFESSIONAL_TRAININGS,START_DATE,NVARCHAR2(10 CHAR),"Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)",,
+PROFESSIONAL_TRAININGS,END_DATE,NVARCHAR2(10 CHAR),"Ngày kết thúc (công tác, đào tạo, nghỉ việc...)",,
+PROFESSIONAL_TRAININGS,TRAINING_PLACE,NVARCHAR2(2000 CHAR),Nơi đào tạo/bồi dưỡng,,
+PROFESSIONAL_TRAININGS,SPECIALIZATION,NVARCHAR2(1024 CHAR),Chuyên ngành được đào tạo,,
+PROFESSIONAL_TRAININGS,AWARDS,NVARCHAR2(2000 CHAR),Khen thưởng đã nhận,,
+PROFESSIONAL_TRAININGS,DISCIPLINES,NVARCHAR2(2000 CHAR),Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB),,
+PROFESSIONAL_WORK_HISTORIES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROFESSIONAL_WORK_HISTORIES,ORGANIZATION_ID,"NUMBER(10,0)",FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK,FK,FK → ORGANIZATIONS.ID
+PROFESSIONAL_WORK_HISTORIES,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+PROFESSIONAL_WORK_HISTORIES,UNIT_NAME,NVARCHAR2(1024 CHAR),Tên đơn vị nội bộ UBCKNN,,
+PROFESSIONAL_WORK_HISTORIES,START_DATE,DATE,"Ngày bắt đầu (công tác, đào tạo, tuyển dụng...)",,
+PROFESSIONAL_WORK_HISTORIES,END_DATE,DATE,"Ngày kết thúc (công tác, đào tạo, nghỉ việc...)",,
+PROFESSIONAL_WORK_HISTORIES,WORKPLACE,NVARCHAR2(2000 CHAR),Nơi làm việc hiện tại (tên tổ chức kinh doanh CK),,
+PROFESSIONAL_WORK_HISTORIES,POSITION_ID,"NUMBER(10,0)",FK -> POSITIONS: Chức vụ của người dùng,FK,FK → POSITIONS.ID
+PROFESSIONAL_WORK_HISTORIES,POSITION_NAME,NVARCHAR2(500 CHAR),Tên chức vụ tại thời điểm công tác (snapshot),,
+PROFESSIONAL_WORK_HISTORIES,AWARDS,NVARCHAR2(2000 CHAR),Khen thưởng đã nhận,,
+PROFESSIONAL_WORK_HISTORIES,DISCIPLINES,NVARCHAR2(2000 CHAR),Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB),,
+PROFESSIONAL_WORK_HISTORIES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+PROFESSIONAL_WORK_HISTORIES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+PROFESSIONAL_WORK_HISTORIES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+PROFESSIONAL_WORK_HISTORIES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+PROVINCES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+PROVINCES,COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia liên quan,FK,FK → COUNTRIES.ID
+PROVINCES,PROVINCE_CODE,NVARCHAR2(50 CHAR),Mã tỉnh/thành phố theo chuẩn quốc gia,,
+PROVINCES,PROVINCE_NAME,NVARCHAR2(250 CHAR),Tên tỉnh/thành phố trực thuộc trung ương,,
+PROVINCES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+PROVINCES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+PROVINCES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+PROVINCES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+PROVINCES,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+PROVINCES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+ROLES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+ROLES,GROUP_CODE,NVARCHAR2(50 CHAR),Mã nhóm quyền (role code),,
+ROLES,GROUP_NAME,NVARCHAR2(255 CHAR),Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý),,
+ROLES,DESCRIPTION,NVARCHAR2(1024 CHAR),Mô tả chi tiết,,
+ROLES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+ROLES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+ROLES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+ROLES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+ROLES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+SEND_AND_RECIEVE_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+SEND_AND_RECIEVE_LOGS,REQUEST_TYPE,"NUMBER(10,0)","Loại request tích hợp: 1=Inbound (nhận vào từ MCĐT), 2=Outbound (gửi ra ngoài)",,
+SEND_AND_RECIEVE_LOGS,SOURCE_TYPE,"NUMBER(10,0)","Nguồn dữ liệu: 1=C06/Dân cư, 2=FMS, 3=SCMS, 4=TTHC, 5=Thanh tra",,
+SEND_AND_RECIEVE_LOGS,METHOD,NVARCHAR2(10 CHAR),"Phương thức HTTP: GET, POST, PUT, DELETE, PATCH",,
+SEND_AND_RECIEVE_LOGS,PATH,NVARCHAR2(500 CHAR),Đường dẫn URL endpoint API được gọi,,
+SEND_AND_RECIEVE_LOGS,STATUS_CODE,"NUMBER(10,0)","Mã trạng thái HTTP phản hồi (200, 201, 400, 404, 500...)",,
+SEND_AND_RECIEVE_LOGS,DURATION_TIME,FLOAT,"Thời gian thực hiện request (mili giây, kiểu FLOAT)",,
+SEND_AND_RECIEVE_LOGS,PAYLOAD,NCLOB,"Dữ liệu gửi đi (request body, NCLOB JSON)",,
+SEND_AND_RECIEVE_LOGS,RESPONSE,NCLOB,"Dữ liệu nhận về (response body, NCLOB JSON)",,
+SEND_AND_RECIEVE_LOGS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+SEND_AND_RECIEVE_LOGS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+SEND_AND_RECIEVE_LOGS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+SEND_AND_RECIEVE_LOGS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+SIGNATURE_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+SIGNATURE_LOGS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+SIGNATURE_LOGS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
+SIGNATURE_LOGS,SIGNED_BY,"NUMBER(10,0)",FK -> USERS: Người thực hiện ký số,FK,FK → USERS.ID
+SIGNATURE_LOGS,SIGNED_AT,DATE,Thời điểm ký số tài liệu/hồ sơ,,
+SIGNATURE_LOGS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+SIGNATURE_LOGS,HASH,NVARCHAR2(510 CHAR),Giá trị hash của tài liệu đã được ký số,,
+SIGNATURE_LOGS,CER_PATH,NVARCHAR2(510 CHAR),Đường dẫn file chứng chỉ số dùng để ký,,
+SIGNATURE_LOGS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+SIGNATURE_LOGS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+SIGNATURE_LOGS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+SIGNATURE_LOGS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+SMS_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),,
+SMS_LOGS,RECEIVER_ID,"NUMBER(10,0)",FK -> USERS: Người nhận/tiếp nhận hành động xử lý,FK,FK → USERS.ID
+SMS_LOGS,SMS_TO,NVARCHAR2(20 CHAR),Số điện thoại người nhận SMS,,
+SMS_LOGS,MESSAGE,NVARCHAR2(1000 CHAR),Nội dung tin nhắn SMS,,
+SMS_LOGS,RECORD_STATUS,NVARCHAR2(50 CHAR),"Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+SMS_LOGS,ERROR_MESSAGE,NCLOB,Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action),,
+SMS_LOGS,CREATED_AT,TIMESTAMP(6),Thời điểm tạo bản ghi,,
+SPECIALIZATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+SPECIALIZATIONS,SPECIALIZATION_CODE,NVARCHAR2(50 CHAR),Mã chuyên ngành CCHN (mã định danh duy nhất),,
+SPECIALIZATIONS,SPECIALIZATION_NAME,NVARCHAR2(500 CHAR),"Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)",,
+SPECIALIZATIONS,REFERENCE,NCLOB,Trích dẫn căn cứ pháp lý của quyết định,,
+SPECIALIZATIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+SPECIALIZATIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+SPECIALIZATIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+SPECIALIZATIONS,ACTIVE,"NUMBER(1,0)","Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu",,
+SPECIALIZATIONS,ORIGINAL_DATA,"NUMBER(1,0)","Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo",,
+SPECIALIZATIONS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+SPECIALIZATIONS,MCDT_CODE,NVARCHAR2(50 CHAR),Mã chuyên ngành trên hệ thống Cổng DVC quốc gia (MCĐT),,
+SPECIALIZATIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+SPECIALIZATION_COURSES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+SPECIALIZATION_COURSES,SPECIALIZATION_ID,"NUMBER(10,0)",FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan,FK,FK → SPECIALIZATIONS.ID
+SPECIALIZATION_COURSES,ACADEMIC_YEAR,"NUMBER(10,0)",Năm học của lớp chứng chỉ chuyên môn,,
+SPECIALIZATION_COURSES,COURSE_CODE,NVARCHAR2(50 CHAR),Mã khóa học/lớp học,,
+SPECIALIZATION_COURSES,COURSE_NAME,NVARCHAR2(500 CHAR),Tên khóa học/lớp học,,
+SPECIALIZATION_COURSES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+SPECIALIZATION_COURSES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+SPECIALIZATION_COURSES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+SPECIALIZATION_COURSES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+SPECIALIZATION_COURSES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+SPECIALIZATION_COURSES,EXAM_DATE_FROM,DATE,Ngày bắt đầu thi chứng chỉ chuyên môn,,
+SPECIALIZATION_COURSES,EXAM_DATE_TO,VARCHAR2(200 CHAR),Ngày kết thúc thi chứng chỉ chuyên môn,,
+SPECIALIZATION_COURSES,ADDRESS,NCHAR(500 CHAR),Địa chỉ trụ sở tổ chức (NCLOB),,
+SPECIALIZATION_COURSES,PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố liên quan,FK,FK → PROVINCES.ID
+SPECIALIZATION_COURSE_DETAILS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+SPECIALIZATION_COURSE_DETAILS,SPECIALIZATION_COURSE_ID,"NUMBER(10,0)",FK -> SPECIALIZATION_COURSES: Lớp học chứng chỉ chuyên môn,FK,FK → SPECIALIZATION_COURSES.ID
+SPECIALIZATION_COURSE_DETAILS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+SPECIALIZATION_COURSE_DETAILS,EXAM_NUMBER,NVARCHAR2(50 CHAR),Số báo danh thi sát hạch,,
+SPECIALIZATION_COURSE_DETAILS,FULL_NAME,NVARCHAR2(255 CHAR),Họ và tên đầy đủ của người hành nghề,,
+SPECIALIZATION_COURSE_DETAILS,BIRTH_DATE,DATE,"Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)",,
+SPECIALIZATION_COURSE_DETAILS,PERMANENT_COUNTRY_ID,"NUMBER(10,0)",FK -> COUNTRIES: Quốc gia địa chỉ thường trú,FK,FK → COUNTRIES.ID
+SPECIALIZATION_COURSE_DETAILS,PERMANENT_PROVINCE_ID,"NUMBER(10,0)",FK -> PROVINCES: Tỉnh/thành phố địa chỉ thường trú,FK,FK → PROVINCES.ID
+SPECIALIZATION_COURSE_DETAILS,PERMANENT_DISTRICT_ID,"NUMBER(10,0)",FK -> DISTRICTS: Quận/huyện địa chỉ thường trú,FK,FK → DISTRICTS.ID
+SPECIALIZATION_COURSE_DETAILS,PLACE_OF_BIRTH,NVARCHAR2(1024 CHAR),Nơi sinh của người hành nghề,,
+SPECIALIZATION_COURSE_DETAILS,IDENTITY_TYPE,"NUMBER(10,0)","Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu",,
+SPECIALIZATION_COURSE_DETAILS,IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+SPECIALIZATION_COURSE_DETAILS,IDENTITY_ISSUE_DATE,DATE,Ngày cấp CMND/CCCD/Hộ chiếu,,
+SPECIALIZATION_COURSE_DETAILS,IDENTITY_ISSUE_PLACE,NVARCHAR2(255 CHAR),Nơi cấp CMND/CCCD/Hộ chiếu,,
+SPECIALIZATION_COURSE_DETAILS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+SPECIALIZATION_COURSE_DETAILS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+SPECIALIZATION_COURSE_DETAILS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+SPECIALIZATION_COURSE_DETAILS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+SPECIALIZATION_COURSE_DETAILS,DESCRIPTION,NVARCHAR2(500 CHAR),Mô tả chi tiết,,
+SPECIALIZATION_COURSE_DETAILS,EXAM_SCORE,FLOAT,Điểm thi chứng chỉ chuyên môn (FLOAT),,
+SPECIALIZATION_COURSE_DETAILS,RESULT,"NUMBER(10,0)","Kết quả thi: -1=Không thi, 0=Không đạt, 1=Đạt",,
+SPECIALIZATION_COURSE_DETAILS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+SPECIALIZATION_COURSE_DETAILS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+SPECIALIZATION_COURSE_DETAILS,SPECIALIZATION_ID,"NUMBER(10,0)",FK -> SPECIALIZATIONS: Chuyên ngành CCHN liên quan,FK,FK → SPECIALIZATIONS.ID
+SPECIALIZATION_COURSE_DETAILS,ASSIGNEE_ID,"NUMBER(10,0)",FK -> USERS: Cán bộ UBCKNN được phân công xử lý hồ sơ,FK,FK → USERS.ID
+SYSTEM_PARAMETERS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+SYSTEM_PARAMETERS,PARAMETER_CODE,NVARCHAR2(255 CHAR),"Mã tham số cấu hình (key tra cứu, VD: MAX_EXAM_ATTEMPTS)",,
+SYSTEM_PARAMETERS,PARAM_VALUE,NCLOB,"Giá trị tham số hệ thống (NCLOB, định dạng tùy theo kiểu dữ liệu)",,
+SYSTEM_PARAMETERS,DESCRIPTION,NVARCHAR2(1024 CHAR),Mô tả chi tiết,,
+SYSTEM_PARAMETERS,SORT_ORDER,"NUMBER(10,0)",Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước),,
+SYSTEM_PARAMETERS,DATA_TYPE,"NUMBER(10,0)","Kiểu dữ liệu của tham số: 1=Chuỗi, 2=Số, 3=Boolean, 4=JSON, 5=Mảng",,
+SYSTEM_PARAMETERS,DISPLAYED,"NUMBER(10,0)","Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn",,
+SYSTEM_PARAMETERS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+UNITS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+UNITS,PARENT_ID,"NUMBER(10,0)",FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp,FK,FK suy luận → UNITS.ID
+UNITS,LEVEL_,NVARCHAR2(50 CHAR),Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh từ khóa Oracle),,
+UNITS,UNIT_CODE,NVARCHAR2(100 CHAR),Mã đơn vị nội bộ UBCKNN,,
+UNITS,UNIT_NAME,NVARCHAR2(1000 CHAR),Tên đơn vị nội bộ UBCKNN,,
+UNITS,ADDRESS,NVARCHAR2(255 CHAR),Địa chỉ trụ sở tổ chức (NCLOB),,
+UNITS,PHONE_NUMBER,NVARCHAR2(50 CHAR),Số điện thoại cố định,,
+UNITS,EMAIL,NVARCHAR2(50 CHAR),Địa chỉ email liên lạc,,
+UNITS,FAX,NVARCHAR2(50 CHAR),Số fax liên lạc,,
+UNITS,DESCRIPTION,NVARCHAR2(1024 CHAR),Mô tả chi tiết,,
+UNITS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+UNITS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+UNITS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+UNITS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+UNITS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+USERS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+USERS,UNIT_ID,"NUMBER(10,0)",FK -> UNITS: Đơn vị nội bộ UBCKNN của người dùng/phòng ban,FK,FK → UNITS.ID
+USERS,DEPARTMENT_ID,"NUMBER(10,0)",FK -> DEPARTMENTS: Phòng ban của người dùng,FK,FK → DEPARTMENTS.ID
+USERS,POSITION_ID,"NUMBER(10,0)",FK -> POSITIONS: Chức vụ của người dùng,FK,FK → POSITIONS.ID
+USERS,USERNAME,NVARCHAR2(50 CHAR),Tên đăng nhập vào hệ thống,,
+USERS,PASSWORD,NVARCHAR2(100 CHAR),Mật khẩu đã mã hóa (bcrypt hash),,
+USERS,FULL_NAME,NVARCHAR2(255 CHAR),Họ và tên đầy đủ của người hành nghề,,
+USERS,EMAIL,NVARCHAR2(255 CHAR),Địa chỉ email liên lạc,,
+USERS,PHONE_NUMBER,NVARCHAR2(20 CHAR),Số điện thoại cố định,,
+USERS,GENDER,"NUMBER(1,0)","Giới tính: 0=Nam, 1=Nữ",,
+USERS,LDAP,NVARCHAR2(200 CHAR),Thông tin LDAP/AD của tài khoản (dùng cho đăng nhập SSO nội bộ),,
+USERS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+USERS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+USERS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+USERS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+USERS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+USERS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+USERS,UPDATED_PASSWORD_AT,DATE,Ngày đổi mật khẩu lần cuối,,
+USERS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+USER_ROLES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+USER_ROLES,USER_ID,"NUMBER(10,0)",FK -> USERS: Người dùng liên quan,FK,FK → USERS.ID
+USER_ROLES,ROLE_ID,"NUMBER(10,0)",FK -> ROLES: Vai trò liên quan,FK,FK → ROLES.ID
+VERIFY_APPLICATION_STATUSES,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+VERIFY_APPLICATION_STATUSES,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
+VERIFY_APPLICATION_STATUSES,STATUS_ID,"NUMBER(10,0)",FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại,FK,FK → APPLICATION_STATUSES.ID
+VERIFY_APPLICATION_STATUSES,PREV_STATUS_ID,"NUMBER(10,0)",FK -> APPLICATION_STATUSES: Trạng thái hồ sơ trước khi xác minh,FK,FK → APPLICATION_STATUSES.ID
+VERIFY_APPLICATION_STATUSES,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+VERIFY_APPLICATION_STATUSES,REASON,NCLOB,Lý do thực hiện thao tác hoặc thay đổi,,
+VERIFY_APPLICATION_STATUSES,SPEC_REASON,NCLOB,Lý do từ chối theo khía cạnh chuyên ngành (NCLOB),,
+VERIFY_APPLICATION_STATUSES,ORG_REASON,NCLOB,Lý do từ chối theo khía cạnh tổ chức (NCLOB),,
+VERIFY_APPLICATION_STATUSES,OVERVIEW_REASON,NCLOB,Lý do từ chối tổng quan của hồ sơ (NCLOB),,
+VERIFY_APPLICATION_STATUSES,OVERVIEW_FILE_PATH,NVARCHAR2(200 CHAR),Đường dẫn file tài liệu tổng quan thẩm định hồ sơ,,
+VERIFY_APPLICATION_STATUSES,VERIFIED_BY,"NUMBER(10,0)",FK -> USERS: Người xác minh/thẩm định cuối cùng,FK,FK → USERS.ID
+VERIFY_APPLICATION_STATUSES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+VERIFY_APPLICATION_STATUSES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+VERIFY_APPLICATION_STATUSES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+VERIFY_APPLICATION_STATUSES,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+VIOLATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
+VIOLATIONS,PROFESSIONAL_ID,"NUMBER(10,0)",FK -> PROFESSIONALS: Người hành nghề liên quan,FK,FK → PROFESSIONALS.ID
+VIOLATIONS,FULL_NAME,NVARCHAR2(255 CHAR),Họ và tên đầy đủ của người hành nghề,,
+VIOLATIONS,BIRTH_DATE,DATE,"Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)",,
+VIOLATIONS,IDENTITY_NUMBER,NVARCHAR2(50 CHAR),Số CMND/CCCD/Hộ chiếu của người hành nghề,,
+VIOLATIONS,NOTE,NVARCHAR2(1024 CHAR),Ghi chú bổ sung,,
+VIOLATIONS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
+VIOLATIONS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
+VIOLATIONS,DECISION_ID,"NUMBER(10,0)",FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm,FK,FK → DECISIONS.ID
+VIOLATIONS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
+VIOLATIONS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
+VIOLATIONS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
+VIOLATIONS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
+flyway_schema_history,installed_rank,"NUMBER(38,0)",,,
+flyway_schema_history,version,VARCHAR2(50 BYTE),,,
+flyway_schema_history,description,VARCHAR2(200 BYTE),,,
+flyway_schema_history,type,VARCHAR2(20 BYTE),,,
+flyway_schema_history,script,VARCHAR2(1000 BYTE),,,
+flyway_schema_history,checksum,"NUMBER(38,0)",,,
+flyway_schema_history,installed_by,VARCHAR2(100 BYTE),,,
+flyway_schema_history,installed_on,TIMESTAMP(6),,,
+flyway_schema_history,execution_time,"NUMBER(38,0)",,,
+flyway_schema_history,success,"NUMBER(1,0)",,,

@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: PROCEDURE_DOCUMENTS
+brd_ref: BRD-SRC-NHNCK-PROCEDURE_DOCUMENTS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PROCEDURE_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> PROCEDURES: Thủ tục hành chính liên quan'
+  key: FK
+  fk_note: FK → PROCEDURES.ID
+- name: DOCUMENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DOCUMENTS: Loại tài liệu yêu cầu'
+  key: FK
+  fk_note: FK → DOCUMENTS.ID

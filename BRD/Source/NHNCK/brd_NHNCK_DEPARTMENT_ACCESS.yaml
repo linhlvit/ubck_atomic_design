@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: DEPARTMENT_ACCESS
+brd_ref: BRD-SRC-NHNCK-DEPARTMENT_ACCESS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: DEPARTMENT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DEPARTMENTS: Phòng ban của người dùng'
+  key: FK
+  fk_note: FK → DEPARTMENTS.ID
+- name: DEPARTMENT_ACCESS_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> DEPARTMENTS: Phòng ban được phép truy cập'
+  key: FK
+  fk_note: FK → DEPARTMENTS.ID

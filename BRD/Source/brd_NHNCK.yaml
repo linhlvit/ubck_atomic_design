@@ -18,7 +18,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-SYSTEM_PARAMETERS
   brd_name: Design Atomic từ nguồn NHNCK bảng SYSTEM_PARAMETERS
   type: Theo Source
@@ -34,7 +37,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-DIGITAL_CERTIFICATES
   brd_name: Design Atomic từ nguồn NHNCK bảng DIGITAL_CERTIFICATES
   type: Theo Source
@@ -46,11 +52,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational/PKI data
     table: DIGITAL_CERTIFICATES
-    related_tables: null
+    related_tables:
+    - table: DIGITAL_CERTIFICATE_USERS
+      relation: 1-N — Tài khoản được sử dụng chứng thư số
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-DIGITAL_CERTIFICATE_USERS
   brd_name: Design Atomic từ nguồn NHNCK bảng DIGITAL_CERTIFICATE_USERS
   type: Theo Source
@@ -62,11 +73,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational/PKI data
     table: DIGITAL_CERTIFICATE_USERS
-    related_tables: null
+    related_tables:
+    - table: DIGITAL_CERTIFICATES
+      relation: FK cha — Chứng thư số
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PERMISSION_ROLES
   brd_name: Design Atomic từ nguồn NHNCK bảng PERMISSION_ROLES
   type: Theo Source
@@ -86,7 +104,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-DEPARTMENT_ACCESS
   brd_name: Design Atomic từ nguồn NHNCK bảng DEPARTMENT_ACCESS
   type: Theo Source
@@ -98,11 +119,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational/system data
     table: DEPARTMENT_ACCESS
-    related_tables: null
+    related_tables:
+    - table: DEPARTMENTS
+      relation: FK cha — Phòng ban UBCKNN
+    - table: DEPARTMENTS
+      relation: FK cha — Phòng ban UBCKNN
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-USERS
   brd_name: Design Atomic từ nguồn NHNCK bảng USERS
   type: Theo Source
@@ -115,8 +143,58 @@ brd_entries:
     scope_reason: null
     table: USERS
     related_tables:
+    - table: UNITS
+      relation: FK cha — Danh mục đơn vị
+    - table: DEPARTMENTS
+      relation: FK cha — Phòng ban UBCKNN
+    - table: POSITIONS
+      relation: FK cha — Chức vụ trong tổ chức
+    - table: PROFESSIONALS
+      relation: FK cha — Thông tin người hành nghề chứng khoán
     - table: ACTION_LOGS
       relation: 1-N — Nhật ký hoạt động của người dùng trên hệ thống
+    - table: APPLICATIONS
+      relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATIONS
+      relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATION_DOCUMENTS
+      relation: 1-N — Tài liệu đính kèm trong hồ sơ
+    - table: APPLICATION_GROUPS
+      relation: 1-N — Nhóm hồ sơ CCHN xử lý tập thể (batch)
+    - table: APPLICATION_HISTORIES
+      relation: 1-N — Lịch sử xử lý hồ sơ CCHN (chuyển trạng thái)
+    - table: APPLICATION_HISTORIES
+      relation: 1-N — Lịch sử xử lý hồ sơ CCHN (chuyển trạng thái)
+    - table: APPLICATION_SPECIALIZATIONS
+      relation: 1-N — Chuyên môn liên quan đến hồ sơ
+    - table: APPLICATION_SUPPLEMENTS
+      relation: 1-N — Thông tin bổ sung hồ sơ CCHN
+    - table: CERTIFICATE_CONVERSION_REQUESTS
+      relation: 1-N — Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử
+    - table: CERTIFICATE_RECORD_GROUP_MEMBERS
+      relation: 1-N — Thành viên trong nhóm chứng chỉ hành nghề
+    - table: DECISION_DOCUMENTS
+      relation: 1-N — Tài liệu đính kèm của quyết định
+    - table: DIGITAL_CERTIFICATE_USERS
+      relation: 1-N — Tài khoản được sử dụng chứng thư số
+    - table: DOCUMENT_SIGN_LOGS
+      relation: 1-N — Nhật ký ký số tài liệu
+    - table: EMAIL_LOGS
+      relation: 1-N — Nhật ký gửi email trong hệ thống
+    - table: IDENTITY_INFO_C06_S
+      relation: 1-N — IDENTITY_INFO_C06_S
+    - table: NOTIFICATIONS
+      relation: 1-N — Thông báo trong hệ thống
+    - table: SIGNATURE_LOGS
+      relation: 1-N — Nhật ký ký số hồ sơ/CCHN
+    - table: SMS_LOGS
+      relation: 1-N — Nhật ký gửi SMS trong hệ thống
+    - table: SPECIALIZATION_COURSE_DETAILS
+      relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
+    - table: USER_ROLES
+      relation: 1-N — Phân quyền người dùng theo vai trò
+    - table: VERIFY_APPLICATION_STATUSES
+      relation: 1-N — Yêu cầu phê duyệt lãnh đạo cho hồ sơ
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -136,8 +214,14 @@ brd_entries:
     scope_reason: null
     table: UNITS
     related_tables:
+    - table: UNITS
+      relation: FK cha — Danh mục đơn vị
     - table: DEPARTMENTS
       relation: 1-N — Phòng ban UBCKNN
+    - table: UNITS
+      relation: 1-N — Danh mục đơn vị
+    - table: USERS
+      relation: 1-N — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -159,6 +243,14 @@ brd_entries:
     related_tables:
     - table: UNITS
       relation: FK cha — Danh mục đơn vị
+    - table: CERTIFICATE_DEPARTMENTS
+      relation: 1-N — Liên kết phòng ban với loại chứng chỉ
+    - table: DEPARTMENT_ACCESS
+      relation: 1-N — Quản lý quyền khai thác giữa các phòng ban
+    - table: DEPARTMENT_ACCESS
+      relation: 1-N — Quản lý quyền khai thác giữa các phòng ban
+    - table: USERS
+      relation: 1-N — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -177,7 +269,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: POSITIONS
-    related_tables: null
+    related_tables:
+    - table: PROFESSIONAL_WORK_HISTORIES
+      relation: 1-N — Lịch sử làm việc của người hành nghề
+    - table: USERS
+      relation: 1-N — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -199,8 +295,18 @@ brd_entries:
     related_tables:
     - table: APPLICATIONS
       relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATIONS
+      relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: AUTO_INCREMENT_CODES
+      relation: 1-N — Quản lý số tự tăng cho mã CCHN và mã tài liệu
+    - table: CERTIFICATE_ARCHIVES
+      relation: 1-N — Thông tin lưu trữ bản CCHN giấy
+    - table: CERTIFICATE_DEPARTMENTS
+      relation: 1-N — Liên kết phòng ban với loại chứng chỉ
     - table: CERTIFICATE_DOCUMENTS
       relation: 1-N — Tài liệu liên quan của loại chứng chỉ
+    - table: CERTIFICATE_NUMBER_TEMPLATES
+      relation: 1-N — Mã tài liệu kết hợp chứng chỉ từ một cửa điện tử
     - table: CERTIFICATE_RECORDS
       relation: 1-N — Chứng chỉ hành nghề được cấp
     - table: CERTIFICATE_SPECIALIZATIONS
@@ -209,6 +315,8 @@ brd_entries:
       relation: 1-N — Kết quả các kỳ thi sát hạch
     - table: EXAM_SESSION_FEES
       relation: 1-N — Phí thi sát hạch
+    - table: FORMS
+      relation: 1-N — Biểu mẫu liên quan đến quy trình cấp CCHN
     - table: ORGANIZATION_REPORTS
       relation: 1-N — Báo cáo về người hành nghề từ tổ chức
     notes: null
@@ -232,12 +340,15 @@ brd_entries:
     related_tables:
     - table: CERTIFICATES
       relation: FK cha — Danh mục các loại chứng chỉ hành nghề
-    - table: DOCUMENT
-      relation: FK cha — DOCUMENT
+    - table: DOCUMENTS
+      relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-CERTIFICATE_SPECIALIZATIONS
   brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_SPECIALIZATIONS
   type: Theo Source
@@ -257,7 +368,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-CERTIFICATE_DEPARTMENTS
   brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_DEPARTMENTS
   type: Theo Source
@@ -269,11 +383,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Application config
     table: CERTIFICATE_DEPARTMENTS
-    related_tables: null
+    related_tables:
+    - table: CERTIFICATES
+      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
+    - table: DEPARTMENTS
+      relation: FK cha — Phòng ban UBCKNN
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-CERTIFICATE_NUMBER_TEMPLATES
   brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_NUMBER_TEMPLATES
   type: Theo Source
@@ -285,11 +406,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Config/template data
     table: CERTIFICATE_NUMBER_TEMPLATES
-    related_tables: null
+    related_tables:
+    - table: CERTIFICATES
+      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-SPECIALIZATIONS
   brd_name: Design Atomic từ nguồn NHNCK bảng SPECIALIZATIONS
   type: Theo Source
@@ -308,6 +434,8 @@ brd_entries:
       relation: 1-N — Chuyên môn liên quan loại chứng chỉ
     - table: SPECIALIZATION_COURSES
       relation: 1-N — Danh mục khóa học chuyên môn
+    - table: SPECIALIZATION_COURSE_DETAILS
+      relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -329,6 +457,16 @@ brd_entries:
     related_tables:
     - table: APPLICATION_DOCUMENTS
       relation: 1-N — Tài liệu đính kèm trong hồ sơ
+    - table: APPLICATION_DOCUMENT_HISTORIES
+      relation: 1-N — Lịch sử thẩm định từng tài liệu trong hồ sơ
+    - table: APPLICATION_EXPERIENCES
+      relation: 1-N — Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
+    - table: CERTIFICATE_DOCUMENTS
+      relation: 1-N — Tài liệu liên quan của loại chứng chỉ
+    - table: DOCUMENT_SIGN_LOGS
+      relation: 1-N — Nhật ký ký số tài liệu
+    - table: PROCEDURE_DOCUMENTS
+      relation: 1-N — Liên kết thủ tục hành chính với tài liệu yêu cầu
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -347,7 +485,13 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: EDUCATION_LEVELS
-    related_tables: null
+    related_tables:
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -367,8 +511,28 @@ brd_entries:
     scope_reason: null
     table: ORGANIZATIONS
     related_tables:
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: APPLICATION_EXPERIENCES
+      relation: 1-N — Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: ORGANIZATIONS
+      relation: 1-N — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: ORGANIZATIONS
+      relation: 1-N — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
     - table: ORGANIZATION_REPORTS
       relation: 1-N — Báo cáo về người hành nghề từ tổ chức
+    - table: ORGANIZATION_REPORT_YEARLYS
+      relation: 1-N — Báo cáo hàng năm của tổ chức về người hành nghề
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: PROFESSIONAL_WORK_HISTORIES
+      relation: 1-N — Lịch sử làm việc của người hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -388,8 +552,28 @@ brd_entries:
     scope_reason: null
     table: DECISIONS
     related_tables:
+    - table: APPLICATION_DECISIONS
+      relation: 1-N — Liên kết hồ sơ CCHN với quyết định tương ứng
+    - table: APPLICATION_GROUPS
+      relation: 1-N — Nhóm hồ sơ CCHN xử lý tập thể (batch)
+    - table: CERTIFICATE_RECORDS
+      relation: 1-N — Chứng chỉ hành nghề được cấp
+    - table: CERTIFICATE_RECORDS
+      relation: 1-N — Chứng chỉ hành nghề được cấp
+    - table: CERTIFICATE_RECORDS
+      relation: 1-N — Chứng chỉ hành nghề được cấp
+    - table: CERTIFICATE_RECORD_GROUPS
+      relation: 1-N — Nhóm chứng chỉ hành nghề
+    - table: CERTIFICATE_RECORD_LOGS
+      relation: 1-N — Nhật ký chứng chỉ hành nghề
     - table: CERTIFICATE_RECORD_STATUS_HISTORIES
       relation: 1-N — Lịch sử trạng thái chứng chỉ hành nghề
+    - table: DECISION_DOCUMENTS
+      relation: 1-N — Tài liệu đính kèm của quyết định
+    - table: EXAM_SESSIONS
+      relation: 1-N — Danh mục các đợt thi sát hạch
+    - table: VIOLATIONS
+      relation: 1-N — Thông tin vi phạm của người hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -427,7 +611,15 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_STATUSES
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATION_HISTORIES
+      relation: 1-N — Lịch sử xử lý hồ sơ CCHN (chuyển trạng thái)
+    - table: VERIFY_APPLICATION_STATUSES
+      relation: 1-N — Yêu cầu phê duyệt lãnh đạo cho hồ sơ
+    - table: VERIFY_APPLICATION_STATUSES
+      relation: 1-N — Yêu cầu phê duyệt lãnh đạo cho hồ sơ
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -447,22 +639,56 @@ brd_entries:
     scope_reason: null
     table: APPLICATIONS
     related_tables:
-    - table: CERTIFICATES
-      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
     - table: PROFESSIONALS
       relation: FK cha — Thông tin người hành nghề chứng khoán
-    - table: STATUSES
-      relation: FK cha — STATUSES
+    - table: APPLICATION_STATUSES
+      relation: FK cha — Định nghĩa các trạng thái của hồ sơ
+    - table: CERTIFICATES
+      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
     - table: CERTIFICATE_RECORDS
       relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: CERTIFICATES
+      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: EXAM_SESSIONS
+      relation: FK cha — Danh mục các đợt thi sát hạch
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    - table: APPLICATION_ARCHIVES
+      relation: 1-N — Thông tin lưu trữ vật lý hồ sơ CCHN
+    - table: APPLICATION_DECISIONS
+      relation: 1-N — Liên kết hồ sơ CCHN với quyết định tương ứng
     - table: APPLICATION_DOCUMENTS
       relation: 1-N — Tài liệu đính kèm trong hồ sơ
+    - table: APPLICATION_DOCUMENT_HISTORIES
+      relation: 1-N — Lịch sử thẩm định từng tài liệu trong hồ sơ
+    - table: APPLICATION_EXPERIENCES
+      relation: 1-N — Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
     - table: APPLICATION_FEES
       relation: 1-N — Phí thanh toán liên quan đến hồ sơ
+    - table: APPLICATION_GROUP_MEMBERS
+      relation: 1-N — Thành viên (hồ sơ) trong nhóm xử lý tập thể
+    - table: APPLICATION_HISTORIES
+      relation: 1-N — Lịch sử xử lý hồ sơ CCHN (chuyển trạng thái)
+    - table: APPLICATION_LOGS
+      relation: 1-N — Nhật ký hoạt động trên hồ sơ CCHN
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: APPLICATION_RE_EXAMS
+      relation: 1-N — Hồ sơ đăng ký thi lại
+    - table: APPLICATION_RE_EXAMS
+      relation: 1-N — Hồ sơ đăng ký thi lại
     - table: APPLICATION_SPECIALIZATIONS
       relation: 1-N — Chuyên môn liên quan đến hồ sơ
+    - table: APPLICATION_SUPPLEMENTS
+      relation: 1-N — Thông tin bổ sung hồ sơ CCHN
     - table: EXAM_DETAILS
       relation: 1-N — Kết quả các kỳ thi sát hạch
+    - table: SIGNATURE_LOGS
+      relation: 1-N — Nhật ký ký số hồ sơ/CCHN
     - table: VERIFY_APPLICATION_STATUSES
       relation: 1-N — Yêu cầu phê duyệt lãnh đạo cho hồ sơ
     notes: null
@@ -488,15 +714,15 @@ brd_entries:
       relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
     - table: DOCUMENTS
       relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
-    - table: ASSIGNEE
-      relation: FK cha — ASSIGNEE
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {data_date}
-      filter_note: Tài liệu đính kèm trong hồ sơ — append theo CreatedAt
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-APPLICATION_FEES
   brd_name: Design Atomic từ nguồn NHNCK bảng APPLICATION_FEES
   type: Theo Source
@@ -536,13 +762,15 @@ brd_entries:
       relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
     - table: SPECIALIZATIONS
       relation: FK cha — Danh mục chuyên môn/chứng chỉ chuyên môn
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: appraisaled_at >= {data_date}
-      filter_note: Chuyên môn trong hồ sơ — append theo ngày thẩm định
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-VERIFY_APPLICATION_STATUSES
   brd_name: Design Atomic từ nguồn NHNCK bảng VERIFY_APPLICATION_STATUSES
   type: Theo Source
@@ -557,6 +785,12 @@ brd_entries:
     related_tables:
     - table: APPLICATIONS
       relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATION_STATUSES
+      relation: FK cha — Định nghĩa các trạng thái của hồ sơ
+    - table: APPLICATION_STATUSES
+      relation: FK cha — Định nghĩa các trạng thái của hồ sơ
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -595,6 +829,12 @@ brd_entries:
     scope_reason: null
     table: EXAM_SESSIONS
     related_tables:
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
+    - table: BANKS
+      relation: FK cha — Danh mục ngân hàng (dùng cho nộp phí thi)
+    - table: APPLICATIONS
+      relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
     - table: EXAM_DETAILS
       relation: 1-N — Kết quả các kỳ thi sát hạch
     - table: EXAM_SESSION_FEES
@@ -626,13 +866,15 @@ brd_entries:
       relation: FK cha — Danh mục các đợt thi sát hạch
     - table: APPLICATIONS
       relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATION_RE_EXAMS
+      relation: 1-N — Hồ sơ đăng ký thi lại
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {data_date}
-      filter_note: Kết quả các kỳ thi sát hạch — append theo CreatedAt
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-EXAM_SESSION_FEES
   brd_name: Design Atomic từ nguồn NHNCK bảng EXAM_SESSION_FEES
   type: Theo Source
@@ -670,6 +912,8 @@ brd_entries:
     related_tables:
     - table: SPECIALIZATIONS
       relation: FK cha — Danh mục chuyên môn/chứng chỉ chuyên môn
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
     - table: SPECIALIZATION_COURSE_DETAILS
       relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
     notes: null
@@ -695,6 +939,16 @@ brd_entries:
       relation: FK cha — Danh mục khóa học chuyên môn
     - table: PROFESSIONALS
       relation: FK cha — Thông tin người hành nghề chứng khoán
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
+    - table: SPECIALIZATIONS
+      relation: FK cha — Danh mục chuyên môn/chứng chỉ chuyên môn
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -713,7 +967,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: CERTIFICATE_RECORD_GROUPS
-    related_tables: null
+    related_tables:
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
+    - table: CERTIFICATE_RECORD_GROUP_MEMBERS
+      relation: 1-N — Thành viên trong nhóm chứng chỉ hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -733,10 +991,12 @@ brd_entries:
     scope_reason: null
     table: CERTIFICATE_RECORD_GROUP_MEMBERS
     related_tables:
-    - table: CERTIFICATE_RECORD_GROUP
-      relation: FK cha — CERTIFICATE_RECORD_GROUP
-    - table: CERTIFICATE_RECORD
-      relation: FK cha — CERTIFICATE_RECORD
+    - table: CERTIFICATE_RECORD_GROUPS
+      relation: FK cha — Nhóm chứng chỉ hành nghề
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -760,21 +1020,37 @@ brd_entries:
       relation: FK cha — Danh mục các loại chứng chỉ hành nghề
     - table: PROFESSIONALS
       relation: FK cha — Thông tin người hành nghề chứng khoán
-    - table: ISSUE_DECISIONS
-      relation: FK cha — ISSUE_DECISIONS
-    - table: REVOCATION_DECISIONS
-      relation: FK cha — REVOCATION_DECISIONS
-    - table: CANNELLATION_DECISIONS
-      relation: FK cha — CANNELLATION_DECISIONS
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
     - table: APPLICATIONS
       relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATIONS
+      relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: CERTIFICATE_ARCHIVES
+      relation: 1-N — Thông tin lưu trữ bản CCHN giấy
+    - table: CERTIFICATE_CONVERSION_REQUESTS
+      relation: 1-N — Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử
+    - table: CERTIFICATE_RECORD_GROUP_MEMBERS
+      relation: 1-N — Thành viên trong nhóm chứng chỉ hành nghề
+    - table: CERTIFICATE_RECORD_LOGS
+      relation: 1-N — Nhật ký chứng chỉ hành nghề
+    - table: CERTIFICATE_RECORD_STATUS_HISTORIES
+      relation: 1-N — Lịch sử trạng thái chứng chỉ hành nghề
+    - table: ORGANIZATION_REPORTS
+      relation: 1-N — Báo cáo về người hành nghề từ tổ chức
+    - table: SIGNATURE_LOGS
+      relation: 1-N — Nhật ký ký số hồ sơ/CCHN
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {data_date}
-      filter_note: Chứng chỉ hành nghề được cấp — append theo CreatedAt
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-CERTIFICATE_RECORD_STATUS_HISTORIES
   brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_RECORD_STATUS_HISTORIES
   type: Theo Source
@@ -787,6 +1063,8 @@ brd_entries:
     scope_reason: null
     table: CERTIFICATE_RECORD_STATUS_HISTORIES
     related_tables:
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
     - table: DECISIONS
       relation: FK cha — Danh mục các quyết định hành chính
     notes: null
@@ -807,14 +1085,18 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: CERTIFICATE_RECORD_LOGS
-    related_tables: null
+    related_tables:
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: issue_date >= {data_date}
-      filter_note: Log hành động chứng chỉ — append theo ngày quyết định
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROFESSIONALS
   brd_name: Design Atomic từ nguồn NHNCK bảng PROFESSIONALS
   type: Theo Source
@@ -827,10 +1109,38 @@ brd_entries:
     scope_reason: null
     table: PROFESSIONALS
     related_tables:
-    - table: APPLICATION_FEES
-      relation: 1-N — Phí thanh toán liên quan đến hồ sơ
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: EDUCATION_LEVELS
+      relation: FK cha — Danh mục trình độ học vấn
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
     - table: APPLICATIONS
       relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATION_FEES
+      relation: 1-N — Phí thanh toán liên quan đến hồ sơ
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: CERTIFICATE_ARCHIVES
+      relation: 1-N — Thông tin lưu trữ bản CCHN giấy
     - table: CERTIFICATE_RECORDS
       relation: 1-N — Chứng chỉ hành nghề được cấp
     - table: EXAM_DETAILS
@@ -841,17 +1151,23 @@ brd_entries:
       relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
     - table: PROFESSIONAL_RELATIONSHIPS
       relation: 1-N — Thông tin quan hệ gia đình/xã hội của người hành nghề
+    - table: PROFESSIONAL_TRAININGS
+      relation: 1-N — Lịch sử đào tạo, bồi dưỡng của người hành nghề
+    - table: PROFESSIONAL_WORK_HISTORIES
+      relation: 1-N — Lịch sử làm việc của người hành nghề
     - table: SPECIALIZATION_COURSE_DETAILS
       relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
+    - table: USERS
+      relation: 1-N — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     - table: VIOLATIONS
       relation: 1-N — Thông tin vi phạm của người hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {data_date}
-      filter_note: Thông tin người hành nghề chứng khoán — append theo CreatedAt
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROFESSIONAL_HISTORIES
   brd_name: Design Atomic từ nguồn NHNCK bảng PROFESSIONAL_HISTORIES
   type: Theo Source
@@ -864,15 +1180,33 @@ brd_entries:
     scope_reason: null
     table: PROFESSIONAL_HISTORIES
     related_tables:
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: EDUCATION_LEVELS
+      relation: FK cha — Danh mục trình độ học vấn
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
     - table: PROFESSIONALS
       relation: FK cha — Thông tin người hành nghề chứng khoán
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: change_date >= {data_date}
-      filter_note: Lịch sử thay đổi định danh người hành nghề — append theo ngày thay đổi
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROFESSIONAL_RELATIONSHIPS
   brd_name: Design Atomic từ nguồn NHNCK bảng PROFESSIONAL_RELATIONSHIPS
   type: Theo Source
@@ -887,13 +1221,15 @@ brd_entries:
     related_tables:
     - table: PROFESSIONALS
       relation: FK cha — Thông tin người hành nghề chứng khoán
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {data_date}
-      filter_note: Thông tin quan hệ gia đình/xã hội của người hành nghề — append theo CreatedAt
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROFESSIONAL_WORK_HISTORIES
   brd_name: Design Atomic từ nguồn NHNCK bảng PROFESSIONAL_WORK_HISTORIES
   type: Theo Source
@@ -905,7 +1241,13 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: PROFESSIONAL_WORK_HISTORIES
-    related_tables: null
+    related_tables:
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: PROFESSIONALS
+      relation: FK cha — Thông tin người hành nghề chứng khoán
+    - table: POSITIONS
+      relation: FK cha — Chức vụ trong tổ chức
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -927,6 +1269,8 @@ brd_entries:
     related_tables:
     - table: PROFESSIONALS
       relation: FK cha — Thông tin người hành nghề chứng khoán
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -946,14 +1290,20 @@ brd_entries:
     scope_reason: null
     table: ORGANIZATION_REPORTS
     related_tables:
-    - table: PROFESSIONALS
-      relation: FK cha — Thông tin người hành nghề chứng khoán
     - table: ORGANIZATIONS
       relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: PROFESSIONALS
+      relation: FK cha — Thông tin người hành nghề chứng khoán
     - table: CERTIFICATES
       relation: FK cha — Danh mục các loại chứng chỉ hành nghề
-    - table: PARENT_REPORTS
-      relation: FK cha — PARENT_REPORTS
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: ORGANIZATION_REPORTS
+      relation: FK cha — Báo cáo về người hành nghề từ tổ chức
+    - table: ORGANIZATION_REPORTS
+      relation: 1-N — Báo cáo về người hành nghề từ tổ chức
+    - table: ORGANIZATION_REPORT_LOG_SYNCS
+      relation: 1-N — Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -978,7 +1328,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-ROLES
   brd_name: Design Atomic từ nguồn NHNCK bảng ROLES
   type: Theo Source
@@ -993,10 +1346,15 @@ brd_entries:
     related_tables:
     - table: PERMISSION_ROLES
       relation: 1-N — Phân quyền theo nhóm vai trò
+    - table: USER_ROLES
+      relation: 1-N — Phân quyền người dùng theo vai trò
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-USER_ROLES
   brd_name: Design Atomic từ nguồn NHNCK bảng USER_ROLES
   type: Theo Source
@@ -1008,11 +1366,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational/system data
     table: USER_ROLES
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    - table: ROLES
+      relation: FK cha — Danh mục vai trò (nhóm quyền) trong hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-AUTO_INCREMENT_CODES
   brd_name: Design Atomic từ nguồn NHNCK bảng AUTO_INCREMENT_CODES
   type: Theo Source
@@ -1024,11 +1389,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Sequence/counter table
     table: AUTO_INCREMENT_CODES
-    related_tables: null
+    related_tables:
+    - table: CERTIFICATES
+      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-BACKUPS
   brd_name: Design Atomic từ nguồn NHNCK bảng BACKUPS
   type: Theo Source
@@ -1044,7 +1414,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: created_at >= {data_date}
+      filter_note: Thông tin file sao lưu cơ sở dữ liệu — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-BACKUP_SCHEDULES
   brd_name: Design Atomic từ nguồn NHNCK bảng BACKUP_SCHEDULES
   type: Theo Source
@@ -1060,7 +1433,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-EMAIL_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng EMAIL_LOGS
   type: Theo Source
@@ -1072,11 +1448,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational log
     table: EMAIL_LOGS
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: created_at >= {data_date}
+      filter_note: Nhật ký gửi email trong hệ thống — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-SMS_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng SMS_LOGS
   type: Theo Source
@@ -1088,11 +1469,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational log
     table: SMS_LOGS
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: created_at >= {data_date}
+      filter_note: Nhật ký gửi SMS trong hệ thống — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-SEND_AND_RECIEVE_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng SEND_AND_RECIEVE_LOGS
   type: Theo Source
@@ -1108,7 +1494,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-DOCUMENT_SIGN_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng DOCUMENT_SIGN_LOGS
   type: Theo Source
@@ -1120,11 +1509,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational log
     table: DOCUMENT_SIGN_LOGS
-    related_tables: null
+    related_tables:
+    - table: DOCUMENTS
+      relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-SIGNATURE_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng SIGNATURE_LOGS
   type: Theo Source
@@ -1136,11 +1532,20 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational log
     table: SIGNATURE_LOGS
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-NOTIFICATIONS
   brd_name: Design Atomic từ nguồn NHNCK bảng NOTIFICATIONS
   type: Theo Source
@@ -1152,11 +1557,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational/notification data
     table: NOTIFICATIONS
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-NOTIFICATION_CONFIGURATIONS
   brd_name: Design Atomic từ nguồn NHNCK bảng NOTIFICATION_CONFIGURATIONS
   type: Theo Source
@@ -1172,7 +1582,10 @@ brd_entries:
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-COUNTRIES
   brd_name: Design Atomic từ nguồn NHNCK bảng COUNTRIES
   type: Theo Source
@@ -1184,7 +1597,37 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: COUNTRIES
-    related_tables: null
+    related_tables:
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: CERTIFICATE_ARCHIVES
+      relation: 1-N — Thông tin lưu trữ bản CCHN giấy
+    - table: DISTRICTS
+      relation: 1-N — Danh mục quận/huyện
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: PROFESSIONAL_RELATIONSHIPS
+      relation: 1-N — Thông tin quan hệ gia đình/xã hội của người hành nghề
+    - table: PROVINCES
+      relation: 1-N — Danh mục tỉnh/thành phố
+    - table: SPECIALIZATION_COURSE_DETAILS
+      relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1203,7 +1646,29 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: PROVINCES
-    related_tables: null
+    related_tables:
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: DISTRICTS
+      relation: 1-N — Danh mục quận/huyện
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: SPECIALIZATION_COURSES
+      relation: 1-N — Danh mục khóa học chuyên môn
+    - table: SPECIALIZATION_COURSE_DETAILS
+      relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1222,7 +1687,27 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: DISTRICTS
-    related_tables: null
+    related_tables:
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: APPLICATION_PROFESSIONALS
+      relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONALS
+      relation: 1-N — Thông tin người hành nghề chứng khoán
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: PROFESSIONAL_HISTORIES
+      relation: 1-N — Lịch sử thay đổi định danh cá nhân của người hành nghề
+    - table: SPECIALIZATION_COURSE_DETAILS
+      relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1241,7 +1726,9 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: BANKS
-    related_tables: null
+    related_tables:
+    - table: EXAM_SESSIONS
+      relation: 1-N — Danh mục các đợt thi sát hạch
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1260,7 +1747,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: FORMS
-    related_tables: null
+    related_tables:
+    - table: CERTIFICATES
+      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
+    - table: PROCEDURE_FORMS
+      relation: 1-N — Liên kết thủ tục hành chính với biểu mẫu
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1298,11 +1789,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Application config
     table: PROCEDURES
-    related_tables: null
+    related_tables:
+    - table: PROCEDURE_DOCUMENTS
+      relation: 1-N — Liên kết thủ tục hành chính với tài liệu yêu cầu
+    - table: PROCEDURE_FORMS
+      relation: 1-N — Liên kết thủ tục hành chính với biểu mẫu
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROCEDURE_DOCUMENTS
   brd_name: Design Atomic từ nguồn NHNCK bảng PROCEDURE_DOCUMENTS
   type: Theo Source
@@ -1314,11 +1812,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Application config
     table: PROCEDURE_DOCUMENTS
-    related_tables: null
+    related_tables:
+    - table: PROCEDURES
+      relation: FK cha — Thủ tục hành chính cấp CCHN
+    - table: DOCUMENTS
+      relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROCEDURE_FORMS
   brd_name: Design Atomic từ nguồn NHNCK bảng PROCEDURE_FORMS
   type: Theo Source
@@ -1330,11 +1835,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Application config
     table: PROCEDURE_FORMS
-    related_tables: null
+    related_tables:
+    - table: PROCEDURES
+      relation: FK cha — Thủ tục hành chính cấp CCHN
+    - table: FORMS
+      relation: FK cha — Biểu mẫu liên quan đến quy trình cấp CCHN
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-DECISION_DOCUMENTS
   brd_name: Design Atomic từ nguồn NHNCK bảng DECISION_DOCUMENTS
   type: Theo Source
@@ -1346,7 +1858,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: DECISION_DOCUMENTS
-    related_tables: null
+    related_tables:
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1365,11 +1881,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Physical archive metadata
     table: APPLICATION_ARCHIVES
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-APPLICATION_DECISIONS
   brd_name: Design Atomic từ nguồn NHNCK bảng APPLICATION_DECISIONS
   type: Theo Source
@@ -1381,7 +1902,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_DECISIONS
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1400,7 +1925,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_DOCUMENT_HISTORIES
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: DOCUMENTS
+      relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1419,7 +1948,13 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_EXPERIENCES
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: DOCUMENTS
+      relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1438,7 +1973,13 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_GROUPS
-    related_tables: null
+    related_tables:
+    - table: DECISIONS
+      relation: FK cha — Danh mục các quyết định hành chính
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    - table: APPLICATION_GROUP_MEMBERS
+      relation: 1-N — Thành viên (hồ sơ) trong nhóm xử lý tập thể
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1457,7 +1998,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_GROUP_MEMBERS
-    related_tables: null
+    related_tables:
+    - table: APPLICATION_GROUPS
+      relation: FK cha — Nhóm hồ sơ CCHN xử lý tập thể (batch)
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1476,7 +2021,15 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_HISTORIES
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: APPLICATION_STATUSES
+      relation: FK cha — Định nghĩa các trạng thái của hồ sơ
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1495,11 +2048,16 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational audit log
     table: APPLICATION_LOGS
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-APPLICATION_PROFESSIONALS
   brd_name: Design Atomic từ nguồn NHNCK bảng APPLICATION_PROFESSIONALS
   type: Theo Source
@@ -1511,7 +2069,29 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_PROFESSIONALS
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: PROFESSIONALS
+      relation: FK cha — Thông tin người hành nghề chứng khoán
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: EDUCATION_LEVELS
+      relation: FK cha — Danh mục trình độ học vấn
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
+    - table: PROVINCES
+      relation: FK cha — Danh mục tỉnh/thành phố
+    - table: DISTRICTS
+      relation: FK cha — Danh mục quận/huyện
     notes: Snapshot tại thời điểm nộp hồ sơ — có thể khác PROFESSIONALS hiện tại
     data_volume_hint: null
     refresh_frequency: null
@@ -1530,7 +2110,13 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_RE_EXAMS
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: EXAM_DETAILS
+      relation: FK cha — Kết quả các kỳ thi sát hạch
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1549,7 +2135,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: APPLICATION_SUPPLEMENTS
-    related_tables: null
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1568,11 +2158,22 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Physical archive metadata
     table: CERTIFICATE_ARCHIVES
-    related_tables: null
+    related_tables:
+    - table: CERTIFICATES
+      relation: FK cha — Danh mục các loại chứng chỉ hành nghề
+    - table: PROFESSIONALS
+      relation: FK cha — Thông tin người hành nghề chứng khoán
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: COUNTRIES
+      relation: FK cha — Danh mục quốc gia/quốc tịch
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-CERTIFICATE_CONVERSION_REQUESTS
   brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_CONVERSION_REQUESTS
   type: Theo Source
@@ -1584,11 +2185,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational/migration data
     table: CERTIFICATE_CONVERSION_REQUESTS
-    related_tables: null
+    related_tables:
+    - table: CERTIFICATE_RECORDS
+      relation: FK cha — Chứng chỉ hành nghề được cấp
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROFESSIONAL_TRAININGS
   brd_name: Design Atomic từ nguồn NHNCK bảng PROFESSIONAL_TRAININGS
   type: Theo Source
@@ -1600,7 +2208,9 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: PROFESSIONAL_TRAININGS
-    related_tables: null
+    related_tables:
+    - table: PROFESSIONALS
+      relation: FK cha — Thông tin người hành nghề chứng khoán
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1619,11 +2229,18 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: Operational log
     table: ORGANIZATION_REPORT_LOG_SYNCS
-    related_tables: null
+    related_tables:
+    - table: ORGANIZATION_REPORT_YEARLYS
+      relation: FK cha — Báo cáo hàng năm của tổ chức về người hành nghề
+    - table: ORGANIZATION_REPORTS
+      relation: FK cha — Báo cáo về người hành nghề từ tổ chức
     notes: null
     data_volume_hint: null
     refresh_frequency: null
-    ingestion: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-NHNCK-ORGANIZATION_REPORT_YEARLYS
   brd_name: Design Atomic từ nguồn NHNCK bảng ORGANIZATION_REPORT_YEARLYS
   type: Theo Source
@@ -1635,7 +2252,11 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: ORGANIZATION_REPORT_YEARLYS
-    related_tables: null
+    related_tables:
+    - table: ORGANIZATIONS
+      relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
+    - table: ORGANIZATION_REPORT_LOG_SYNCS
+      relation: 1-N — Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
     notes: null
     data_volume_hint: null
     refresh_frequency: null

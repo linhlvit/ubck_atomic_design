@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: PROCEDURES
+brd_ref: BRD-SRC-NHNCK-PROCEDURES
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: PROCEDURE_TYPE
+  data_type: NUMBER(10,0)
+  description: 'Loại thủ tục: 1=Cấp mới CCHN, 2=Cấp lại CCHN, 3=Thu hồi CCHN...'
+  key: null
+  fk_note: null
+- name: IMAGE
+  data_type: NVARCHAR2(500 CHAR)
+  description: Đường dẫn ảnh minh họa thủ tục
+  key: null
+  fk_note: null
+- name: TITLE
+  data_type: NVARCHAR2(255 CHAR)
+  description: Tiêu đề/tên hồ sơ hoặc nhóm
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: NCLOB
+  description: Nội dung của thông báo/thư điện tử/bổ sung hồ sơ
+  key: null
+  fk_note: null
+- name: PROCESSING_TIME
+  data_type: NCLOB
+  description: Thời gian xử lý theo quy định (NCLOB mô tả)
+  key: null
+  fk_note: null
+- name: TARGET_AUDIENCE
+  data_type: NVARCHAR2(1024 CHAR)
+  description: Đối tượng áp dụng thủ tục
+  key: null
+  fk_note: null
+- name: IMPLEMENTING_AGENCY
+  data_type: NVARCHAR2(2000 CHAR)
+  description: Cơ quan thực hiện thủ tục hành chính
+  key: null
+  fk_note: null
+- name: OUTCOME
+  data_type: NCLOB
+  description: Kết quả đầu ra của thủ tục (NCLOB)
+  key: null
+  fk_note: null
+- name: FEE
+  data_type: NVARCHAR2(50 CHAR)
+  description: 'Số tiền phí (đơn vị: VNĐ)'
+  key: null
+  fk_note: null
+- name: REQUIREMENTS
+  data_type: NCLOB
+  description: Yêu cầu điều kiện để thực hiện thủ tục (NCLOB)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK suy luận → USERS.ID
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(10,0)
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: FEATURED
+  data_type: NUMBER(10,0)
+  description: 'Cờ nổi bật/được đánh dấu quan trọng: 1=Nổi bật, 0=Bình thường'
+  key: null
+  fk_note: null
+- name: REASON
+  data_type: NVARCHAR2(2000 CHAR)
+  description: Lý do thực hiện thao tác hoặc thay đổi
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK suy luận → USERS.ID

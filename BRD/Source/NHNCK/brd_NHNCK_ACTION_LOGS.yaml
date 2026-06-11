@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: ACTION_LOGS
+brd_ref: BRD-SRC-NHNCK-ACTION_LOGS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: USER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> USERS: Người dùng liên quan'
+  key: FK
+  fk_note: FK → USERS.ID
+- name: CLIENT_MACHINE
+  data_type: NVARCHAR2(50 CHAR)
+  description: Tên máy tính hoặc IP của người dùng thực hiện hành động
+  key: null
+  fk_note: null
+- name: DETAILS
+  data_type: NCLOB
+  description: Chi tiết hành động được ghi log (NCLOB JSON)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: PERMISSION_NAME
+  data_type: NVARCHAR2(50 CHAR)
+  description: Tên quyền hành động đã thực hiện
+  key: null
+  fk_note: null
+- name: ACTION_NAME
+  data_type: NVARCHAR2(50 CHAR)
+  description: Tên cụ thể của hành động thực hiện
+  key: null
+  fk_note: null
+- name: SUCCESS_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Cờ thao tác thành công: 1=Thành công, 0=Thất bại'
+  key: null
+  fk_note: null
+- name: ERROR_MESSAGE
+  data_type: NCLOB
+  description: Thông báo lỗi chi tiết (khi gửi email/SMS thất bại hoặc lỗi action)
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người tạo bản ghi
+  key: null
+  fk_note: FK suy luận → USERS.ID
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: FK suy luận → USERS.ID
