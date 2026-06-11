@@ -124,34 +124,90 @@ def merge_entity_group(files: list[Path]) -> tuple[dict, list[str]]:
     ldm["references"] = refs
 
     # ── attributes ───────────────────────────────────────────────────────────
-    # Index canonical attrs by name
-    canon_attrs = {a["name"]: dict(a) for a in (canon.get("attributes") or [])}
+    # Index canonical attrs by physical_name (đề phòng canonical file có duplicate name)
+    canon_attrs_by_pname: dict[str, dict] = {}
+    for a in (canon.get("attributes") or []):
+        pname = a.get("physical_name")
+        if pname and pname not in canon_attrs_by_pname:
+            canon_attrs_by_pname[pname] = dict(a)
+    # Cũng index by name để lookup khi các file khác gửi attr theo name
+    canon_attrs_by_name: dict[str, dict] = {}
+    for a in (canon.get("attributes") or []):
+        name = a["name"]
+        pname = a.get("physical_name")
+        if pname and pname in canon_attrs_by_pname:
+            canon_attrs_by_name[name] = canon_attrs_by_pname[pname]
 
-    # Với mỗi attr trong canonical, thu thập source_mapping từ tất cả files
-    # (file nào có attr tên đó thì thêm 1 entry)
+    # Thu thập source_mappings và tất cả business_meaning theo physical_name
     attr_mappings: dict[str, list[dict]] = defaultdict(list)
+    attr_meanings: dict[str, list[str]] = defaultdict(list)  # physical_name → list of unique meanings
+    attr_comments: dict[str, list[str]] = defaultdict(list)  # physical_name → list of unique comments
+
     for f, d in docs:
         for attr in (d.get("attributes") or []):
             name = attr["name"]
+            pname = attr.get("physical_name") or ""
             mapping = build_source_mapping(attr)
-            attr_mappings[name].append(mapping)
-            # warn diff business_meaning / comment nếu khác canonical
-            if name in canon_attrs:
-                warn_diff(f"attr[{name}].business_meaning",
-                          canon_attrs[name].get("business_meaning"),
-                          attr.get("business_meaning"),
-                          canon_path.name, f.name, warnings)
-                warn_diff(f"attr[{name}].comment",
-                          canon_attrs[name].get("comment"),
-                          attr.get("comment"),
-                          canon_path.name, f.name, warnings)
+            attr_mappings[pname].append(mapping)
 
-    # Build final attribute list từ canonical, thay thế source fields bằng source_mappings
+            bm = attr.get("business_meaning") or ""
+            if bm and bm not in attr_meanings[pname]:
+                attr_meanings[pname].append(bm)
+
+            cm = attr.get("comment") or ""
+            if cm and cm not in attr_comments[pname]:
+                attr_comments[pname].append(cm)
+
+            # warn nếu structural fields khác canonical
+            canon_ref = canon_attrs_by_name.get(name) or canon_attrs_by_pname.get(pname)
+            if canon_ref:
+                for field in ("data_domain", "data_type", "nullable"):
+                    warn_diff(f"attr[{pname}].{field}",
+                              canon_ref.get(field),
+                              attr.get(field),
+                              canon_path.name, f.name, warnings)
+
+    # Build final attribute list — dedup theo physical_name, merge business_meaning
+    seen_physical: dict[str, int] = {}
     final_attrs = []
     for attr in (canon.get("attributes") or []):
+        pname = attr.get("physical_name")
+        if pname and pname in seen_physical:
+            # Duplicate physical_name trong canonical (multi-record-group file):
+            # merge source_mappings vào slot đã có, không tạo bản mới
+            existing = final_attrs[seen_physical[pname]]
+            for sm in attr_mappings.get(pname, []):
+                if sm not in existing["source_mappings"]:
+                    existing["source_mappings"].append(sm)
+            continue
+
         a = {k: v for k, v in attr.items()
              if k not in ("source_system", "source_table", "source_column", "classification_context")}
-        a["source_mappings"] = attr_mappings.get(attr["name"], [build_source_mapping(attr)])
+        a["source_mappings"] = attr_mappings.get(pname, [build_source_mapping(attr)])
+
+        # Merge business_meaning: nếu có nhiều giá trị khác nhau, nối bằng " / "
+        meanings = attr_meanings.get(pname, [])
+        if len(meanings) > 1:
+            a["business_meaning"] = " / ".join(meanings)
+            warnings.append(
+                f"  MERGE attr[{pname}].business_meaning ({len(meanings)} values): "
+                + " / ".join(f'"{m}"' for m in meanings)
+            )
+        elif meanings:
+            a["business_meaning"] = meanings[0]
+
+        # Merge comment tương tự
+        comments = attr_comments.get(pname, [])
+        if len(comments) > 1:
+            a["comment"] = " / ".join(comments)
+            warnings.append(
+                f"  MERGE attr[{pname}].comment ({len(comments)} values)"
+            )
+        elif comments:
+            a["comment"] = comments[0]
+
+        if pname:
+            seen_physical[pname] = len(final_attrs)
         final_attrs.append(a)
 
     return {"ldm": ldm, "attributes": final_attrs}, warnings
