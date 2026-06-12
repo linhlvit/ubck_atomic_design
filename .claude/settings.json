@@ -54,6 +54,9 @@
       "Bash(cp \"c:/Users/linhl_ufzmt5s/OneDrive/One - UBCK/Design/ubck_atomic_design/docs/templates/sample/UBCKNN_Thiet ke co so du lieu_Template.docx\" template.docx)",
       "Bash(unzip -o template.docx word/styles.xml -d template_docx)",
       "Bash(python3 -c ' *)",
+      "Bash(python3 .claude/skills/slide-pptx-builder/md_to_pptx.py *)",
+      "Write(docs/output/slides/**)",
+      "Edit(/.claude/skills/slide-pptx-builder/**)",
       "Bash(python /tmp/debug1.py)",
       "Bash(python /tmp/debug2.py)",
       "Bash(python /tmp/debug3.py)",
@@ -220,7 +223,33 @@
       "Read(//c/Users/linhl_ufzmt5s/OneDrive/One - UBCK/Design/ubck_atomic_design/**)",
       "PowerShell(Get-ChildItem \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\Atomic\\\\lld\" -File | Where-Object {$_.Name -match \"manifest|pending\"} | Select-Object Name)",
       "PowerShell(\\(Get-Content \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\BRD\\\\Source\\\\_summary.csv\" | Measure-Object -Line\\).Lines; \\(Get-Content \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\DataModel\\\\Atomic\\\\_summary.csv\" | Measure-Object -Line\\).Lines)",
-      "PowerShell(\\(Get-Content \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\BRD\\\\Source\\\\_summary.csv\" | Measure-Object -Line\\).Lines)"
+      "PowerShell(\\(Get-Content \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\BRD\\\\Source\\\\_summary.csv\" | Measure-Object -Line\\).Lines)",
+      "Bash(Sort-Object Name)",
+      "Bash(Find \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\DataModel\\\\Atomic\" -name \"*FMS.SECURITIES*\" -type f)",
+      "Bash(Find \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\DataModel\\\\Atomic\" -name \"*fnd_mgt_co*\" -type f)",
+      "Bash(Find \"c:\\\\Users\\\\linhl_ufzmt5s\\\\OneDrive\\\\One - UBCK\\\\Design\\\\ubck_atomic_design\\\\DataModel\\\\Atomic\" -name \"*QLRR*risk_indicator*\" -type f)",
+      "Bash(Select-Object -First 5)",
+      "Bash(Format-Table FullName)",
+      "Bash(awk -F',' '$10==\"FMS\" {print $4}' _summary.csv)",
+      "Bash(awk -F',' '$4==\"ip_pst_adr\" && $10==\"FMS\" {print $2, $5, $11}' _summary.csv)",
+      "Bash(awk -F',' '$4==\"ip_alt_identn\" && $10==\"FMS\" {print $2, $5, $11}' _summary.csv)",
+      "Bash(awk -F',' '$4==\"cstd_bnk\" {print $2, $10}' _summary.csv)",
+      "Bash(awk -F',' 'NR>1 {print $10}' _summary.csv)",
+      "Bash(sed 's/-[A-Z]*\\\\.[A-Z_]*\\\\.yaml$/.yaml/')",
+      "Bash(awk -F',' 'NR==1 {print NF; print}' _summary.csv)",
+      "Bash(python scripts/physicalize_fk_comments.py --target yaml-files --dry-run)",
+      "Bash(python scripts/physicalize_fk_comments.py --target yaml-files)",
+      "PowerShell(python -c \"import playwright; print\\('ok'\\)\" 2>&1)",
+      "PowerShell(python -m pip show playwright 2>&1)",
+      "PowerShell(python -m pip show selenium 2>&1)",
+      "PowerShell(python -m pip show reportlab 2>&1)",
+      "PowerShell(python -m pip show weasyprint 2>&1)",
+      "Bash(python3.12 .claude/skills/atomic-gen-docs/scripts/gen_handover.py --source NHNCK --mode sample)",
+      "Bash(pip3.12 install *)",
+      "Bash(python3.12 .claude/skills/atomic-gen-docs/scripts/gen_handover.py --source NHNCK --mode fragments)",
+      "Bash(python3.12 .claude/skills/atomic-gen-docs/scripts/gen_handover.py --source NHNCK --mode full)",
+      "Bash(python3.12 .claude/skills/atomic-gen-docs/scripts/gen_handover.py --source NHNCK --mode docx)",
+      "Bash(brew install *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\linhl_ufzmt5s\\OneDrive\\One - UBCK\\Design\\ubck_atomic_design\\Atomic\\lld",
@@ -229,5 +258,19 @@
       "c:\\Users\\linhl_ufzmt5s\\.claude\\plans",
       "c:\\Users\\linhl_ufzmt5s\\OneDrive\\One - UBCK\\Design\\ubck_atomic_design\\BRD\\Source\\FMS"
     ]
+  },
+  "mcpServers": {
+    "oracle-thanhtra": {
+      "command": "/opt/homebrew/bin/python3.12",
+      "args": [
+        "/Users/linhlevan/.claude/oracle_mcp_server.py"
+      ]
+    },
+    "oracle-nhnck": {
+      "command": "/opt/homebrew/bin/python3.12",
+      "args": [
+        "/Users/linhlevan/.claude/oracle_mcp_nhnck.py"
+      ]
+    }
   }
 }
