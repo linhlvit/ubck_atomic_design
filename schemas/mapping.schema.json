@@ -88,8 +88,8 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^MAP-(?:ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
-          "description": "Định danh duy nhất: MAP-(ATM|DTM)-{physical_name}-{SOURCE}.{TABLE}"
+          "pattern": "^MAP-(?:STG|ODS|ATM|DTM)-(?:[a-z][a-z0-9_]*-)?[A-Za-z][A-Za-z0-9_.]*$",
+          "description": "Định danh duy nhất: MAP-{LAYER}-{physical_name}-{SOURCE}.{TABLE}. Staging: MAP-STG-{SOURCE}.{TABLE}"
         },
         "logical_name": {
           "type": "string",
@@ -104,8 +104,12 @@
         "dm_ref": {
           "oneOf": [
             {
+              "type": "null",
+              "description": "null cho STG và ODS layer (không có DataModel reference)"
+            },
+            {
               "type": "string",
-              "pattern": "^(?:ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
+              "pattern": "^(?:STG|ODS|ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$",
               "description": "Tham chiếu đến DM YAML id — single source"
             },
             {
@@ -113,7 +117,7 @@
               "minItems": 2,
               "items": {
                 "type": "string",
-                "pattern": "^(?:ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$"
+                "pattern": "^(?:STG|ODS|ATM|DTM)-[a-z][a-z0-9_]*-[A-Za-z][A-Za-z0-9_.]*$"
               },
               "description": "Tham chiếu đến nhiều DM YAML id — multi-source shared entity"
             }
@@ -138,11 +142,13 @@
       "properties": {
         "namespace": {
           "type": "string",
-          "const": [
+          "enum": [
+            "stg",
+            "ods",
             "atm",
             "dtm"
           ],
-          "description": "Namespace đích — là 'atm' / 'dtm"
+          "description": "Namespace đích — là 'stg' / 'ods' / 'atm' / 'dtm'"
         },
         "physical_name": {
           "type": "string",
@@ -191,14 +197,17 @@
             {
               "type": "string",
               "enum": [
-                "ods"
+                "src",
+                "stg",
+                "ods",
+                "atm"
               ]
             },
             {
               "type": "null"
             }
           ],
-          "description": "Namespace ODS — null nếu là CTE"
+          "description": "Namespace nguồn: src (Source), stg (Staging), ods (ODS), atm (Atomic). null nếu là CTE"
         },
         "table_name": {
           "type": "string",
@@ -373,18 +382,24 @@
           "description": "Biểu thức transformation. Null nếu chưa xác định."
         },
         "data_type": {
-          "type": "string",
-          "enum": [
-            "string",
-            "date",
-            "timestamp",
-            "boolean",
-            "int",
-            "decimal(23,2)",
-            "decimal(5,2)",
-            "decimal(8,5)",
-            "array<string>",
-            "array<struct<...>>"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "string",
+                "date",
+                "timestamp",
+                "boolean",
+                "int",
+                "double",
+                "array<string>",
+                "array<struct<...>>"
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "^decimal\\(\\d+,\\d+\\)$"
+            }
           ],
           "description": "Kiểu dữ liệu đích (Delta Lake / Spark)"
         },
