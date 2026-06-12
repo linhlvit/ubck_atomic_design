@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-scr_ofrg_ap-TTHC.ContentItemIndex
-  logical_name: "Atomic - Securities Offering Application – source TTHC.ContentItemIndex"
-
+  logical_name: Securities Offering Application
   physical_name: scr_ofrg_ap
   layer: Atomic
   version: "1.0"
@@ -15,8 +14,7 @@ ldm:
   etl_pattern: SCD4A
   source: TTHC
   description: |
-    Hồ sơ chào bán chứng khoán từ TTHC.ContentItemIndex (Orchard Core). ETL filter: Published=1 AND Latest=1.
-    Application Status Code là ETL derived từ ContentType kết quả và WorkflowIndex.WorkflowStatus.
+    Hồ sơ đăng ký chào bán / phát hành chứng khoán do tổ chức nộp qua portal TTHC — tờ khai Eform (Latest=1, Published=1) phân biệt 11 loại hình chào bán.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -34,7 +32,7 @@ attributes:
     source_system: TTHC
     source_table: ContentItemIndex
     source_column: null
-    comment: "PK surrogate."
+    comment: PK surrogate.
     classification_context: "Source System Code = 'TTHC_CONTENTITEMINDEX'"
     etl_derived_value: null
 
@@ -48,7 +46,7 @@ attributes:
     source_system: TTHC
     source_table: ContentItemIndex
     source_column: TTHC.ContentItemIndex.ContentItemId
-    comment: "BK chính. Mã UUID do Orchard Core sinh."
+    comment: BK chính. Mã UUID do Orchard Core sinh.
     classification_context: "Source System Code = 'TTHC_CONTENTITEMINDEX'"
     etl_derived_value: null
 
@@ -110,7 +108,7 @@ attributes:
 
   - name: Application Status Code
     physical_name: ap_st_code
-    business_meaning: Trạng thái nghiệp vụ tổng hợp — Chờ xử lý / Đang xử lý / Đã cấp phép / Bị từ chối.
+    business_meaning: "Trạng thái nghiệp vụ tổng hợp: Chờ xử lý / Đang xử lý / Đã cấp phép / Bị từ chối."
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -124,7 +122,7 @@ attributes:
 
   - name: Owner User Name
     physical_name: own_usr_nm
-    business_meaning: Tên người dùng sở hữu hồ sơ (Owner). Denormalized — UserIndex out-of-scope.
+    business_meaning: "Tên người dùng sở hữu hồ sơ (Owner). Denormalized — UserIndex out-of-scope."
     data_domain: Text
     data_type: string
     nullable: true
@@ -132,13 +130,13 @@ attributes:
     source_system: TTHC
     source_table: ContentItemIndex
     source_column: TTHC.ContentItemIndex.Owner
-    comment: "Denormalized — UserIndex là bảng hệ thống ngoài scope."
+    comment: Denormalized — UserIndex là bảng hệ thống ngoài scope.
     classification_context: "Source System Code = 'TTHC_CONTENTITEMINDEX'"
     etl_derived_value: null
 
   - name: Author User Name
     physical_name: ahr_usr_nm
-    business_meaning: Tên tác giả tạo hồ sơ (Author). Denormalized — UserIndex out-of-scope.
+    business_meaning: "Tên tác giả tạo hồ sơ (Author). Denormalized — UserIndex out-of-scope."
     data_domain: Text
     data_type: string
     nullable: true
@@ -146,7 +144,7 @@ attributes:
     source_system: TTHC
     source_table: ContentItemIndex
     source_column: TTHC.ContentItemIndex.Author
-    comment: "Denormalized — UserIndex là bảng hệ thống ngoài scope."
+    comment: Denormalized — UserIndex là bảng hệ thống ngoài scope.
     classification_context: "Source System Code = 'TTHC_CONTENTITEMINDEX'"
     etl_derived_value: null
 

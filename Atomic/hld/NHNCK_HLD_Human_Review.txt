@@ -1,0 +1,78 @@
+Pending issue:
+-----------------------------
+DECISIONS: làm rõ Append/Update
+PROFESSIONAL_WORK_HISTORIES: làm rõ cơ chế lưu trữ dạng Append/Update, key nghiệp vụ là gì.
+PROFESSIONAL_RELATIONSHIPS: làm rõ cơ chế lưu trữ dạng Append/Update, key nghiệp vụ là gì.
+VIOLATIONS: làm rõ cơ chế lưu trữ có phải là dạng Append không.
+ORGANIZATION_REPORTS: làm rõ cơ chế lưu trữ có phải là dạng Append không.
+IDENTITY_INFO_C06S: làm rõ cơ chế có phải là dạng Append không, key nghiệp vụ là gì.
+
+Các danh mục sau lấy từ nguồn nào là chuẩn?
+- UNITS	Danh mục đơn vị thuộc UBCKNN
+- DEPARTMENTS	Danh mục phòng ban thuộc UBCKNN
+- ORGANIZATIONS	Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...)
+- COUNTRIES, PROVINCES, DISTRICTS: các danh mục dùng chung, cần làm rõ lấy từ nguồn nào là chuẩn.
+Bảng ORGANIZATIONS theo ý nghĩa là Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) -> cần làm rõ dữ liệu gốc ở các phân hệ gốc nào (như FMS, ...) và NHNCK chỉ sử dụng - không làm thay đổi thông tin này đúng không?
+
+
+Review HLD lần 1 (Done): Xem xét về table type và danh sách bảng out of scope.
+---------
+- CERTIFICATE_RECORDS đổi table type thành Fundamental
+- CERTIFICATE_RECORD_GROUP_MEMBERS: out of scope - do đây là đặc thù khi cấp chứng chỉ hành nghề theo lô, nhưng đây chỉ là quy trình đặc thù của nguồn, khi khai thác báo cáo chỉ quan tâm đển CERTIFICATE_RECORDS chi tiết.
+- APPLICATIONS đổi table type thành Fundamental
+- PROFESSIONAL_WORK_HISTORIES đổi table type thành Fundamental.
+- PROFESSIONAL_RELATIONSHIPS đổi table type thành Fundamental.
+- VIOLATIONS đổi table type thành Fact Append.
+- ORGANIZATION_REPORTS đổi table type thành Fact Append.
+- IDENTITY_INFO_C06S đổi table type thành Fact Append.
+- SPECIALIZATION_COURSE_DETAILS đổi table type thành Fundamental.
+- SPECIALIZATION_COURSE_DETAILS đổi table type thành Fundamental.
+- EXAM_SESSION_FEES đổi table type thành Fundamental.
+- APPLICATION_SPECIALIZATIONS, APPLICATION_DOCUMENTS đổi table type thành Fundamental.
+- APPLICATION_LOGS: out of scope, đây là log tác nghiệp của ứng dụng nguồn, không có nhu cầu khai thác trên báo cáo.
+- APPLICATION_FEES đổi table type thành Fundamental.
+- VERIFY_APPLICATION_STATUSES: out of scope, đây là bước xác minh trung gian ở nguồn, không có nhu cầu khai thác trên báo cáo.
+- CERTIFICATE_RECORD_STATUS_HISTORIES: out of scope, đây là bảng audit log ở nguồn.
+- CERTIFICATE_RECORD_LOGS: out of scope, đây là active log ở nguồn.
+
+- PROFESSIONAL_TRAININGS: xem xét bảng này nên được thiết kế, có ý nghĩa nghiệp vụ.
+- ORGANIZATION_REPORT_YEARLYS: các bảng dạng dữ liệu báo cáo nộp định kỳ, lưu trữ dưới dạng tên file, không có dữ liệu nghiệp vụ - đây là nguyên nhân để out-of-scope, trừ khi bảng được sử dụng trong BRD Report.
+- APPLICATION_SOURCES, và các bảng tương tự đang được mô tả trong mục 7f. Bảng ngoài scope, nhưng mô tả là để ở Classification Value -> không ghi vào 7f, do tạo confuse - thực chất bảng này vẫn in-scope.
+- CERTIFICATE_RECORD_GROUPS: cách mô tả ở mục 7f thiếu nhất quán, mục 7f là danh sách các bảng out of scope, nhưng mô tả bảng này lại ghi 'đã được thiết kế Atomic'.
+- Các bảng dạng batch processing metadata ở hệ thống nguồn cần được đưa vào tiêu chí để không thiết kế. Cần cập nhật skill ra sao hãy báo tôi review.
+- APPLICATION_DECISIONS: bảng này mô tả là pure junction, có được thiết kế thì không đưa vào mục 7f, và đưa vào mục 7d. Và thiết kế bảng này nên đưa design Atomic bảng DECISONS (do 1 quyết định bao gồm nhiều hồ sơ CCHN).
+- APPLICATION_DOCUMENT_HISTORIES: là quy trình internal tác nghiệp từ nguồn, đây là lý do out of scope, không phải 'thiếu cấu trúc nghiệp vụ tường minh'.
+- APPLICATION_EXPERIENCES, APPLICATION_PROFESSIONALS, APPLICATION_RE_EXAMS: các bảng này có ý nghĩa nghiệp vụ, gắn liền với APPLICATION, nên được thiết kế.
+- APPLICATION_SUPPLEMENTS, DECISION_DOCUMENTS: các bảng này lưu dạng sự kiện, file tài liệu, không có các dữ liệu nghiệp vụ - đây là lý do để out of scope.
+
+Review HLD lần 2 (Done): Xem xét về table type và danh sách bảng out of scope.
+-------------
+- COUNTRIES: mô tả Shared reference data — dùng chung với các source system khác qua Classification Value. chưa đúng, mà phải là đưa vào Geographic Area.
+- EXAM_DETAILS đổi table type thành Fundamental.
+
+Review HLD lần 3 (Done): đánh giá 7e. Điểm cần xác nhận
+-----------
+DECISIONS.CREATED_BY là FK thực hay audit field kỹ thuật? -> FK thật đến Users.
+ORGANIZATIONS có bao gồm cả UBCKNN không? -> không bao gồm.
+ORGANIZATIONS.ORGANIZATION_TYPE_ID tự tham chiếu — là loại hình tổ chức (Classification Value) hay FK entity khác? -> là loại hình tổ chức (Classfication Value)
+POST_CERT_TRAINING_COURSES — có bảng đăng ký tham gia khóa học nào chưa được khảo sát không? -> Chỉ là danh sách khóa học (để bồi dưỡng kiến thức định kỳ cho NHNCK), nhưng chỉ là danh mục, không có entity liên quan nên để là out of scope.
+PROFESSIONALS.ORGANIZATION_ID trỏ đến ORGANIZATIONS (Tier 1) — có nên giữ Practitioner ở Tier 2 không? -> nên giữ ở Tier 2 - ý nghĩa là NHNCK đang làm việc ở tổ chức nào (đã thiết kế ở Tier 1)
+APPLICATIONS.CERTIFICATE_RECORD_ID và PREVIOUS_CERTIFICATE_RECORD_ID đều nullable? -> đúng.
+EXAM_DETAILS.APPLICATION_ID nullable — có trường hợp thi không có hồ sơ đăng ký không? -> không.
+IDENTITY_INFO_C06S — không có file per-table đầy đủ. Cột PROFESSIONAL_ID suy luận từ tên bảng. -> bảng này là thông tin của công dân, entity đứng 1 mình, nên để out of scope, khi nào có nhu cầu khai thác sẽ đánh giá thêm.
+APPLICATION_PROFESSIONALS — bảng có cột USERNAME/PASSWORD. Cần loại bỏ credentials khi thiết kế Atomic. -> đúng, cần loại bỏ credentials trong design Atomic.
+APPLICATION_RE_EXAMS.RE_APPLICATION_ID nullable — dòng với RE_APPLICATION_ID = null có hợp lệ không? -> hợp lệ.
+APPLICATION_FEES đổi từ Fact Append sang Fundamental. Trường hợp nào phí bị cập nhật (cancel, refund)? -> có khả năng cập nhật phí.
+SPECIALIZATION_COURSES.SPECIALIZATION_ID trỏ đến SPECIALIZATIONS (Classification Value) — xác nhận không có FK đến entity nghiệp vụ Tier 1 nào khác.-> đúng.
+
+
+Review HLD lần 4 (Done): Tên Entity và Concept.
+------------
+Table Type của Geographic Area là Fundamental, không phải Classification.
+Atomic Entity của Country, Province, District (các danh mục địa bàn) đều đưa chung vào 1 bảng atomic là Geographic Area, phân biệt loại danh mục bằng Geographic Area Type Code.
+Regulatory Authority Organization Unit: ngoài phân biệt đơn vị và phòng ban theo Source System Code và theo business attribute trên atomic là Organization Unit Type Code.
+APPLICATION_DOCUMENTS: xem lại tiêu chí, đề xuất out-of-scope do đây là bảng chỉ lưu các file attachment.
+
+
+Q/A:
+- Trong quy trình thiết kế HLD (lần đầu và sau mỗi lần human-review), Mỗi lần đọc file brd_{Source}.yaml sẽ tốn kém, do file này lớn, có cách nào để tối ưu không?

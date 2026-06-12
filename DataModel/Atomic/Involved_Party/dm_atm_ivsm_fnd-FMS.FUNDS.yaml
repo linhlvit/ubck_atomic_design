@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-ivsm_fnd-FMS.FUNDS
-  logical_name: "Investment Fund"
-
+  logical_name: Investment Fund
   physical_name: ivsm_fnd
   layer: Atomic
   version: "1.0"
@@ -117,7 +116,7 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: FMS.FUNDS.SecId
-    comment: "FK target: fnd_mgt_co.fnd_mgt_co_id. Classification: Source System Code = 'FMS_SECURITIES'."
+    comment: "FK target: fnd_mgt_co.fnd_mgt_co_id."
     classification_context: "Source System Code = 'FMS_FUNDS'"
     etl_derived_value: null
 
@@ -131,7 +130,7 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: FMS.FUNDS.SecId
-    comment: "Lookup pair: fnd_mgt_co.fnd_mgt_co_code. Pair with fnd_mgt_co_id. Classification: Source System Code = 'FMS_SECURITIES'."
+    comment: "Lookup pair: fnd_mgt_co.fnd_mgt_co_code. Pair with fnd_mgt_co_id."
     classification_context: "Source System Code = 'FMS_FUNDS'"
     etl_derived_value: null
 
@@ -229,7 +228,7 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: FMS.AGENFUNDS.AgnId
-    comment: "Pure junction AGENFUNDS → denormalize thành ARRAY. Struct: {fnd_dstr_agnt_id: Surrogate Key; fnd_dstr_agnt_code: Text}. HLD decision: FMS_HLD_Tier3.md."
+    comment: "Pure junction AGENFUNDS → denormalize thành ARRAY. Struct: {agent_id: Surrogate Key; agent_code: Text}. HLD decision: FMS_HLD_Tier3.md."
     classification_context: "Source System Code = 'FMS_FUNDS'"
     etl_derived_value: null
 
@@ -243,7 +242,7 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: FMS.FNDSBMN.BmnId
-    comment: "Pure junction FNDSBMN → denormalize thành ARRAY. Struct: {cstd_bnk_id: Surrogate Key; cstd_bnk_code: Text}. HLD decision: FMS_HLD_Tier3.md."
+    comment: "Pure junction FNDSBMN → denormalize thành ARRAY. Struct: {bank_id: Surrogate Key; bank_code: Text}. HLD decision: FMS_HLD_Tier3.md."
     classification_context: "Source System Code = 'FMS_FUNDS'"
     etl_derived_value: null
 

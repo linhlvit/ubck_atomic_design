@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-ap_rvw_workflow-TTHC.WorkflowIndex
-  logical_name: "Atomic - Application Review Workflow – source TTHC.WorkflowIndex"
-
+  logical_name: Application Review Workflow
   physical_name: ap_rvw_workflow
   layer: Atomic
   version: "1.0"
@@ -15,8 +14,7 @@ ldm:
   etl_pattern: Fact Append
   source: TTHC
   description: |
-    Workflow instance xét duyệt hồ sơ chào bán chứng khoán từ TTHC.WorkflowIndex (Orchard Core).
-    FK đến Securities Offering Application qua CorrelationId — pending xác nhận T2-01.
+    Workflow instance xét duyệt hồ sơ đăng ký chào bán — ghi nhận từng lần chạy quy trình (WorkflowId, WorkflowStatus, CreatedUtc) gắn với hồ sơ qua CorrelationId.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -34,7 +32,7 @@ attributes:
     source_system: TTHC
     source_table: WorkflowIndex
     source_column: null
-    comment: "PK surrogate."
+    comment: PK surrogate.
     classification_context: "Source System Code = 'TTHC_WORKFLOWINDEX'"
     etl_derived_value: null
 
@@ -48,7 +46,7 @@ attributes:
     source_system: TTHC
     source_table: WorkflowIndex
     source_column: TTHC.WorkflowIndex.WorkflowId
-    comment: "BK chính. Mã UUID do Orchard Core sinh."
+    comment: BK chính. Mã UUID do Orchard Core sinh.
     classification_context: "Source System Code = 'TTHC_WORKFLOWINDEX'"
     etl_derived_value: null
 
@@ -68,7 +66,7 @@ attributes:
 
   - name: Securities Offering Application Id
     physical_name: scr_ofrg_ap_id
-    business_meaning: FK đến hồ sơ chào bán gắn với workflow. ETL derived từ CorrelationId (chờ xác nhận T2-01 — cột chưa có trong Columns.csv).
+    business_meaning: "FK đến hồ sơ chào bán gắn với workflow. ETL derived từ CorrelationId (chờ xác nhận T2-01 — cột chưa có trong Columns.csv)."
     data_domain: Surrogate Key
     data_type: string
     nullable: true
@@ -76,13 +74,13 @@ attributes:
     source_system: TTHC
     source_table: WorkflowIndex
     source_column: null
-    comment: "FK target: Securities Offering Application.Securities Offering Application Id. [PENDING T2-01] Cột CorrelationId chưa được xác nhận trong WorkflowIndex — cần profile DB. Mapping tạm để giữ ý định thiết kế."
+    comment: "FK target: scr_ofrg_ap.scr_ofrg_ap_id. [PENDING T2-01] Cột CorrelationId chưa được xác nhận trong WorkflowIndex — cần profile DB. Mapping tạm để giữ ý định thiết kế."
     classification_context: "Source System Code = 'TTHC_WORKFLOWINDEX'"
     etl_derived_value: null
 
   - name: Securities Offering Application Code
     physical_name: scr_ofrg_ap_code
-    business_meaning: Mã ContentItemId hồ sơ. ETL derived từ CorrelationId (chờ xác nhận T2-01).
+    business_meaning: "Mã ContentItemId hồ sơ. ETL derived từ CorrelationId (chờ xác nhận T2-01)."
     data_domain: Text
     data_type: string
     nullable: true
@@ -90,7 +88,7 @@ attributes:
     source_system: TTHC
     source_table: WorkflowIndex
     source_column: null
-    comment: "Lookup pair: Securities Offering Application.Securities Offering Application Code. Pair with Securities Offering Application Id. [PENDING T2-01]"
+    comment: "Lookup pair: scr_ofrg_ap.scr_ofrg_ap_code. Pair with scr_ofrg_ap_id. [PENDING T2-01]"
     classification_context: "Source System Code = 'TTHC_WORKFLOWINDEX'"
     etl_derived_value: null
 

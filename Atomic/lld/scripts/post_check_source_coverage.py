@@ -139,6 +139,9 @@ def load_mapped_columns():
             parts = col.split(".")
             if len(parts) == 3:
                 mapped.add((parts[0], parts[1], parts[2].upper()))
+            elif len(parts) == 4:
+                # 4-part: SOURCE.schema.TABLE.COLUMN → strip schema
+                mapped.add((parts[0], parts[2], parts[3].upper()))
     return mapped
 
 
@@ -185,9 +188,13 @@ def load_atomic_source_columns(filter_source=None, filter_table=None):
             if not col:
                 continue
             parts = col.split(".")
-            if len(parts) != 3:
+            if len(parts) == 3:
+                ss, st, c = parts[0], parts[1], parts[2]
+            elif len(parts) == 4:
+                # 4-part: SOURCE.schema.TABLE.COLUMN → strip schema
+                ss, st, c = parts[0], parts[2], parts[3]
+            else:
                 continue
-            ss, st, c = parts[0], parts[1], parts[2]
             if filter_source and ss != filter_source:
                 continue
             if filter_table and st != filter_table:

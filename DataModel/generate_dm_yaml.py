@@ -124,6 +124,41 @@ def yaml_nullable_str(value):
     return yaml_str(v)
 
 
+def normalize_comment(comment, name_to_table):
+    """Replace logical entity names in FK/Lookup comments with physical table names."""
+    if not comment or not name_to_table:
+        return comment
+    # Sort by length descending to avoid partial-match issues
+    for ename in sorted(name_to_table, key=len, reverse=True):
+        tname = name_to_table[ename]
+        if ename not in comment:
+            continue
+        comment = comment.replace(
+            f"{ename}.{ename} Id", f"{tname}.{tname}_id"
+        )
+        comment = comment.replace(
+            f"{ename}.{ename} Code", f"{tname}.{tname}_code"
+        )
+        comment = comment.replace(
+            f"Pair with {ename} Id", f"Pair with {tname}_id"
+        )
+        comment = comment.replace(
+            f"Pair with {ename} Code", f"Pair with {tname}_code"
+        )
+    return comment
+
+
+def normalize_classification_ctx(ctx):
+    """Uppercase the value inside single quotes in 'Source System Code = ...' patterns."""
+    if not ctx:
+        return ctx
+    return re.sub(
+        r"(=\s*')([^']+)(')",
+        lambda m: m.group(1) + m.group(2).upper() + m.group(3),
+        ctx
+    )
+
+
 # ---------------------------------------------------------------------------
 # Derive BRD reference
 # ---------------------------------------------------------------------------
@@ -137,7 +172,7 @@ def brd_ref(source_system, source_table):
 # ---------------------------------------------------------------------------
 # Build YAML content for one (table, source, src_table) group
 # ---------------------------------------------------------------------------
-def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, etl_map):
+def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, etl_map, name_to_table=None):
     entity_name   = attrs[0]["atomic_entity"].strip()
     bcv_core      = entity_meta.get("bcv_core_object", "")
     bcv_concept   = entity_meta.get("bcv_concept", "")
@@ -148,7 +183,7 @@ def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, et
 
     # Build ldm.id: ATM-{physical_name}-{SOURCE}.{SRC_TABLE}
     ldm_id = f"ATM-{atomic_table}-{source_system}.{source_table}"
-    logical_name = f"Atomic - {entity_name} – source {source_system}.{source_table}"
+    logical_name = entity_name
     physical_name = atomic_table
 
     lines = []
@@ -159,6 +194,7 @@ def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, et
     lines.append(f"  id: {ldm_id}")
     lines.append(f"  logical_name: {yaml_str(logical_name)}")
     lines.append(f"  physical_name: {physical_name}")
+    lines.append("  layer: Atomic")
     lines.append('  version: "1.0"')
     lines.append(f"  status: {status if status in ('draft','approved') else 'draft'}")
     lines.append(f"  bcv_core_object: {yaml_str(bcv_core)}")
@@ -180,8 +216,8 @@ def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, et
 
     for attr in attrs:
         src_col = attr["source_column"].strip()
-        comment = attr["comment"].strip()
-        ctx     = attr["classification_context"].strip()
+        comment = normalize_comment(attr["comment"].strip(), name_to_table)
+        ctx     = normalize_classification_ctx(attr["classification_context"].strip())
         derived = attr["etl_derived_value"].strip()
 
         lines.append(f"  - name: {yaml_str(attr['atomic_attribute'].strip())}")
@@ -214,13 +250,19 @@ def main():
     entities    = load_entities(ENTITIES_CSV)
 
     # Load attributes, group by (atomic_table, source_system, source_table)
+    # Also build entity_name → atomic_table map for comment normalization
     groups = defaultdict(list)
+    name_to_table = {}
     with open(ATTRS_CSV, encoding="utf-8-sig") as f:
         for row in csv.DictReader(f):
             key = (row["atomic_table"].strip(),
                    row["source_system"].strip(),
                    row["source_table"].strip())
             groups[key].append(row)
+            ename = row["atomic_entity"].strip()
+            tname = row["atomic_table"].strip()
+            if ename and tname:
+                name_to_table.setdefault(ename, tname)
 
     created = skipped = 0
 
@@ -242,7 +284,7 @@ def main():
 
         # Skip the already-created sample file for dscl_ahr-FIMS.AUTHOANNOUNCE
         # (overwrite it so it stays consistent)
-        content = build_yaml(atomic_table, source_system, source_table, attrs, meta, etl_map)
+        content = build_yaml(atomic_table, source_system, source_table, attrs, meta, etl_map, name_to_table)
 
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)

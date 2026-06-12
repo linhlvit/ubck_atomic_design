@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-mkt_surveil_sspcs_ac-GSGD.suspicious_account
-  logical_name: "Market Surveillance Suspicious Account"
-
+  logical_name: Market Surveillance Suspicious Account
   physical_name: mkt_surveil_sspcs_ac
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: GSGD
     source_table: suspicious_account
     source_column: GSGD.suspicious_account.case_file_id
-    comment: "FK target: Market Surveillance Case.Market Surveillance Case Id."
+    comment: "FK target: mkt_surveil_case.mkt_surveil_case_id."
     classification_context: "Source System Code = 'GSGD_SUSPICIOUS_ACCOUNT'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: GSGD
     source_table: suspicious_account
     source_column: GSGD.suspicious_account.case_file_id
-    comment: "Lookup pair: Market Surveillance Case.Market Surveillance Case Code. Pair with Market Surveillance Case Id."
+    comment: "Lookup pair: mkt_surveil_case.mkt_surveil_case_code. Pair with mkt_surveil_case_id."
     classification_context: "Source System Code = 'GSGD_SUSPICIOUS_ACCOUNT'"
     etl_derived_value: null
 
@@ -103,7 +102,7 @@ attributes:
     source_system: GSGD
     source_table: suspicious_account
     source_column: GSGD.suspicious_account.account_id
-    comment: "FK target: Investor Trading Account.Investor Trading Account Id."
+    comment: "FK target: ivsr_tdg_ac.ivsr_tdg_ac_id."
     classification_context: "Source System Code = 'GSGD_SUSPICIOUS_ACCOUNT'"
     etl_derived_value: null
 
@@ -117,7 +116,7 @@ attributes:
     source_system: GSGD
     source_table: suspicious_account
     source_column: GSGD.suspicious_account.account_id
-    comment: "Lookup pair: Investor Trading Account.Investor Trading Account Code. Pair with Investor Trading Account Id."
+    comment: "Lookup pair: ivsr_tdg_ac.ivsr_tdg_ac_code. Pair with ivsr_tdg_ac_id."
     classification_context: "Source System Code = 'GSGD_SUSPICIOUS_ACCOUNT'"
     etl_derived_value: null
 

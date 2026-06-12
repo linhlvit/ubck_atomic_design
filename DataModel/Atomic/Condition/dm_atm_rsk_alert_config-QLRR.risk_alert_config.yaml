@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-rsk_alert_config-QLRR.risk_alert_config
-  logical_name: "Risk Alert Config"
-
+  logical_name: Risk Alert Config
   physical_name: rsk_alert_config
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: QLRR
     source_table: risk_alert_config
     source_column: QLRR.risk_alert_config.indicator_id
-    comment: "FK target: Risk Indicator.Risk Indicator Id. HLD T2-02: indicator_type=1 map indicator_id; indicator_type=2 map custom_indicator_id — cả 2 về ds_indicator_id."
+    comment: "FK target: rsk_ind.rsk_ind_id. HLD T2-02: indicator_type=1 map indicator_id; indicator_type=2 map custom_indicator_id — cả 2 về ds_indicator_id."
     classification_context: "Source System Code = 'QLRR_RISK_ALERT_CONFIG'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: QLRR
     source_table: risk_alert_config
     source_column: QLRR.risk_alert_config.indicator_id
-    comment: "Lookup pair: Risk Indicator.Risk Indicator Code. Pair with Risk Indicator Id."
+    comment: "Lookup pair: rsk_ind.rsk_ind_code. Pair with rsk_ind_id."
     classification_context: "Source System Code = 'QLRR_RISK_ALERT_CONFIG'"
     etl_derived_value: null
 

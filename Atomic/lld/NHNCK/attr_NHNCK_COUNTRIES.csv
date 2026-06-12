@@ -1,0 +1,11 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Geographic Area Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Geographic Area"" (Location).",,
+Geographic Area Code,Mã quốc gia nguồn. BK,Text,false,false,draft,NHNCK.qlnhn.COUNTRIES.ID,BK chính. Giá trị từ PK số tự tăng của bảng nguồn.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=NHNCK.COUNTRIES,
+Geographic Area Type Code,Phân loại vùng địa lý — Quốc gia,Classification Value,false,false,draft,,,GEOGRAPHIC_AREA_TYPE=COUNTRY,
+Geographic Area Name,Tên quốc gia/vùng lãnh thổ,Text,false,false,draft,NHNCK.qlnhn.COUNTRIES.COUNTRY_NAME,,,
+ISO Country Code,Mã quốc gia ISO 3166-1 alpha-2,Text,true,false,draft,NHNCK.qlnhn.COUNTRIES.COUNTRY_CODE,,,
+Parent Geographic Area Id,FK đến vùng địa lý cha (self-ref). NULL cho quốc gia,Surrogate Key,true,false,draft,,"FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không có parent.",,
+Parent Geographic Area Code,Mã vùng địa lý cha,Text,true,false,draft,,"Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic Area Id.",,
+Default Flag,Cờ mặc định: true=Mặc định; false=Không,Boolean,false,false,draft,NHNCK.qlnhn.COUNTRIES.DEFAULT_FLAG,Giá trị 1 → true; 0 → false.,,
+Geographic Area Status Code,Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động,Classification Value,true,false,draft,NHNCK.qlnhn.COUNTRIES.RECORD_STATUS,Scheme: GEOGRAPHIC_AREA_STATUS.,,

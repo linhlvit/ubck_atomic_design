@@ -1,0 +1,275 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-reg_ahr_ofcr-NHNCK.USERS
+  logical_name: Regulatory Authority Officer
+  physical_name: reg_ahr_ofcr
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Cán bộ, chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK. Ghi nhận thông tin nhân sự, đơn vị/phòng ban phụ trách và trạng thái tài khoản. Không lưu thông tin xác thực (PASSWORD).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-USERS
+
+attributes:
+  - name: Regulatory Authority Officer Id
+    physical_name: reg_ahr_ofcr_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: USERS
+    source_column: null
+    comment: "PK surrogate. BCV: \"Individual\" (Involved Party). Domain prefix \"Regulatory Authority Officer\" theo HLD."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Regulatory Authority Officer Code
+    physical_name: reg_ahr_ofcr_code
+    business_meaning: Mã cán bộ/chuyên viên UBCK. BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên đầy đủ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.FULL_NAME
+    comment: "BCV: \"Full Name\" (Involved Party)."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Individual Gender Code
+    physical_name: idv_gnd_code
+    business_meaning: Giới tính
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.GENDER
+    comment: "Scheme: INDIVIDUAL_GENDER. Nguồn: 0=Nam, 1=Nữ."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Organization Unit Id
+    physical_name: ou_id
+    business_meaning: FK đến Regulatory Authority Organization Unit (đơn vị)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.UNIT_ID
+    comment: "FK target: reg_ahr_ou.reg_ahr_ou_id."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Organization Unit Code
+    physical_name: ou_code
+    business_meaning: Mã đơn vị
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.UNIT_ID
+    comment: "Lookup pair: reg_ahr_ou.reg_ahr_ou_code. Pair with Organization Unit Id."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Department Id
+    physical_name: dept_id
+    business_meaning: FK đến Regulatory Authority Organization Unit (phòng ban)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.DEPARTMENT_ID
+    comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. (Represents the DEPARTMENT node)"
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Department Code
+    physical_name: dept_code
+    business_meaning: Mã phòng ban
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.DEPARTMENT_ID
+    comment: "Lookup pair: reg_ahr_ou.reg_ahr_ou_code. Pair with Department Id. (Represents the DEPARTMENT node)"
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Position Code
+    physical_name: pos_code
+    business_meaning: Mã vị trí/chức danh
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.POSITION_ID
+    comment: "Scheme: POSITION. POSITION_ID là lookup Classification Value."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Id
+    physical_name: scr_prac_id
+    business_meaning: FK đến Securities Practitioner (nếu cán bộ cũng là NHNCK)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.PROFESSIONAL_ID
+    comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer có thể không là NHNCK."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Code
+    physical_name: scr_prac_code
+    business_meaning: Mã người hành nghề liên kết
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.PROFESSIONAL_ID
+    comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with scr_prac_id. Nullable — officer có thể không là NHNCK."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: rcrd_st_code
+    business_meaning: Trạng thái hoạt động của cán bộ
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.RECORD_STATUS
+    comment: "Scheme: OFFICER_STATUS. Nguồn: 1=Hoạt động."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Record Type Code
+    physical_name: rcrd_tp_code
+    business_meaning: Loại bản ghi cán bộ
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.RECORD_TYPE
+    comment: "Scheme: RECORD_TYPE."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Thời điểm tạo bản ghi
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.UPDATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã cán bộ tạo bản ghi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.CREATED_BY
+    comment: "Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh vòng lặp surrogate."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã cán bộ cập nhật bản ghi lần cuối
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.UPDATED_BY
+    comment: "Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh vòng lặp surrogate."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null

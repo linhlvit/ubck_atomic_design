@@ -8,12 +8,11 @@
 
 ## 6a. Bảng tổng quan BCV Concept
 
-| BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Atomic Entity | BCV Term |
-|---|---|---|---|---|---|---|
-| Involved Party | [Involved Party] Individual | Individual | Professionals, ProfessionalHistories | Thông tin người hành nghề chứng khoán được UBCKNN quản lý | Securities Practitioner | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã người hành nghề, họ tên, ngày sinh đầy đủ, giới tính, quốc tịch, nơi sinh, trình độ học vấn, hình thức đăng ký, trạng thái hành nghề, trạng thái xác thực C06. Không FK đến bảng nghiệp vụ nào trong Tier 1 (chỉ dùng shared entities). **ETL note:** `Professionals` cung cấp Practitioner Code và surrogate key; các attribute cá nhân chi tiết (BirthDate, Gender, EducationLevelId, NationalityId, RegistrationType...) lấy từ bản mới nhất của `ProfessionalHistories` (ORDER BY ChangeDate DESC, Id DESC). |
-| Event | [Event] Training Course | Training Course | SpecializationCourses | Danh mục khóa học chuyên môn bổ sung kiến thức cho người hành nghề | Securities Practitioner Professional Training Class | Training Course — *"Identifies an Event that is a course of instruction."* Cấu trúc trường: mã khóa học, tên khóa học, loại chuyên môn, thời gian, địa điểm, trạng thái. Master entity của khóa học — không gắn với người cụ thể. |
-| Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CertificateRecordGroups | Nhóm quyết định cấp/thu hồi/hủy chứng chỉ (1 quyết định có thể ảnh hưởng nhiều CCHN) | Securities Practitioner License Certificate Group Document | Government Registration Document — cấu trúc trường: tên nhóm, loại nhóm (Cấp/Thu hồi/Hủy/Chuyển đổi), FK đến Decision, FK đến Officer (CreatedBy), trạng thái nhóm. FK đến Tier 1 (Decision + Officer). |
-| Communication | [Communication] Assessment | Assessment | ExamSessions | Danh mục các đợt thi sát hạch cấp CCHN do UBCKNN tổ chức | Securities Practitioner Qualification Examination Assessment | Assessment — *"Identifies a Communication that is an evaluation or appraisal."* Cấu trúc trường: Session Code/Name/Number, Examination Year/Location, Organizer Name, Registration/Examination Start/End Date, Application Source Code, Examination Status Code, FK đến Decision, FK đến Officer (CreatedBy + UpdatedBy). FK đến Tier 1 (Decision + Officer). |
+| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
+|---|---|---|---|---|---|---|---|---|
+| Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS, PROFESSIONAL_HISTORIES | Update | Thông tin người hành nghề chứng khoán được UBCKNN quản lý | Securities Practitioner | Fundamental | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã người hành nghề, họ tên, ngày sinh đầy đủ, giới tính, quốc tịch, nơi sinh, trình độ học vấn, hình thức đăng ký, trạng thái hành nghề, trạng thái tài khoản. Không FK đến bảng nghiệp vụ nào trong Tier 1 (chỉ dùng shared entities). **ETL note:** `PROFESSIONALS` cung cấp Practitioner Code và surrogate key; các attribute cá nhân chi tiết (BIRTH_DATE, GENDER, EDUCATION_LEVEL_ID, NATIONALITY_ID, REGISTRATION_TYPE...) lấy từ bản mới nhất của `PROFESSIONAL_HISTORIES` (ORDER BY CHANGE_DATE DESC, ID DESC). |
+| Event | [Event] Training Course | Training Course | SPECIALIZATION_COURSES | Update | Danh mục khóa học chuyên môn bổ sung kiến thức cho người hành nghề | Securities Practitioner Professional Training Class | Fundamental | Training Course — *"Identifies an Event that is a course of instruction."* Cấu trúc trường: mã khóa học, tên khóa học, loại chuyên môn, thời gian thi, địa điểm, trạng thái. Master entity của khóa học — không gắn với người cụ thể. |
+| Communication | [Communication] Assessment | Assessment | EXAM_SESSIONS | Update | Danh mục các đợt thi sát hạch cấp CCHN do UBCKNN tổ chức | Securities Practitioner Qualification Examination Assessment | Fundamental | Assessment — *"Identifies a Communication that is an evaluation or appraisal."* Cấu trúc trường: Session CODE/ITEM_NAME/SESSION_, REPORT_YEAR, ORGANIZING_UNIT, APPLICATION_START_DATE/END_DATE, EXAM_START_DATE/END_DATE, EXAM_LOCATIONS, SUBMISSION_METHODS, RECORD_STATUS, FK đến DECISIONS, FK đến USERS (CREATED_BY + UPDATED_BY), BANK_ID (phí thi). FK đến Tier 1 (Decision + Officer). |
 
 ---
 
@@ -24,19 +23,19 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    Professionals["**Professionals**\nNgười hành nghề CK"]:::src
-    ProfessionalHistories["**ProfessionalHistories**\nLịch sử thông tin người hành nghề\n(lấy bản mới nhất)"]:::src
-    SpecializationCourses["**SpecializationCourses**\nKhóa học chuyên môn"]:::src
-    CertificateRecordGroups["**CertificateRecordGroups**\nNhóm chứng chỉ"]:::src
-    ExamSessions["**ExamSessions**\nĐợt thi sát hạch"]:::src
+    PROFESSIONALS["**PROFESSIONALS**\nNgười hành nghề CK"]:::src
+    PROFESSIONAL_HISTORIES["**PROFESSIONAL_HISTORIES**\nLịch sử thông tin người hành nghề\n(lấy bản mới nhất)"]:::src
+    SPECIALIZATION_COURSES["**SPECIALIZATION_COURSES**\nKhóa học chuyên môn"]:::src
+    EXAM_SESSIONS["**EXAM_SESSIONS**\nĐợt thi sát hạch"]:::src
 
-    Decisions["**Decisions** (Tier 1)"]:::outscope
-    Users["**Users** (Tier 1)"]:::outscope
+    DECISIONS["**DECISIONS** (Tier 1)"]:::outscope
+    USERS["**USERS** (Tier 1)"]:::outscope
+    BANKS["**BANKS** (Classification Value)"]:::outscope
 
-    CertificateRecordGroups -->|"DecisionId"| Decisions
-    CertificateRecordGroups -->|"CreatedBy"| Users
-    ExamSessions -->|"DecisionId"| Decisions
-    ExamSessions -->|"CreatedBy, UpdatedBy"| Users
+    PROFESSIONAL_HISTORIES -->|"PROFESSIONAL_ID"| PROFESSIONALS
+    EXAM_SESSIONS -->|"DECISION_ID"| DECISIONS
+    EXAM_SESSIONS -->|"CREATED_BY, UPDATED_BY"| USERS
+    EXAM_SESSIONS -->|"BANK_ID"| BANKS
 ```
 
 ---
@@ -49,10 +48,9 @@ graph TD
     classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    PRAC["**Securities Practitioner**\n[Involved Party] Individual\nProfessionals + ProfessionalHistories"]:::atomic
-    TRAINCLASS["**Securities Practitioner\nProfessional Training Class**\n[Event] Training Course\nSpecializationCourses"]:::atomic
-    CERTGRP["**Securities Practitioner\nLicense Certificate Group Document**\n[Documentation] Gov. Registration Document\nCertificateRecordGroups"]:::atomic
-    EXAM["**Securities Practitioner\nQualification Examination Assessment**\n[Communication] Assessment\nExamSessions"]:::atomic
+    PRAC["**Securities Practitioner**\n[Involved Party] Individual\nPROFESSIONALS + PROFESSIONAL_HISTORIES"]:::atomic
+    TRAINCLASS["**Securities Practitioner\nProfessional Training Class**\n[Event] Training Course\nSPECIALIZATION_COURSES"]:::atomic
+    EXAM["**Securities Practitioner\nQualification Examination Assessment**\n[Communication] Assessment\nEXAM_SESSIONS"]:::atomic
 
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
@@ -64,8 +62,6 @@ graph TD
     ADDR -.->|"shared"| PRAC
     EADDR -.->|"shared"| PRAC
     ALTID -.->|"shared"| PRAC
-    CERTGRP -->|"Decision FK"| DECISION
-    CERTGRP -->|"Created By Officer FK"| OFFICER
     EXAM -->|"Decision FK"| DECISION
     EXAM -->|"Created By Officer FK"| OFFICER
     EXAM -->|"Updated By Officer FK"| OFFICER
@@ -75,7 +71,9 @@ graph TD
 
 ## 6d. Danh mục & Tham chiếu
 
-Không có bảng mới nào trong Tier 2 thuộc dạng Classification Value — đã liệt kê đầy đủ ở Tier 1.
+| Source Table | Mô tả | Scheme Code | Ghi chú |
+|---|---|---|---|
+| BANKS | Danh mục ngân hàng (dùng cho nộp phí thi) | BANK | Classification Value. FK từ EXAM_SESSIONS.BANK_ID — chỉ có mã + tên ngân hàng. |
 
 ---
 
@@ -89,66 +87,6 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 
 | # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
-| 1 | `Professionals` có FK đến bất kỳ bảng nghiệp vụ Tier 1 nào không (ngoài shared entities)? | Nếu có → phải chuyển sang Tier 3. Hiện tại thiết kế ở Tier 2 vì không thấy FK nghiệp vụ. |
-| 2 | `SpecializationCourses` có FK đến bảng nào ngoài danh mục không? | Nếu có → phải điều chỉnh Tier. |
-
----
-
-## Entities trong Tier 2
-
-### 1. Securities Practitioner
-**Source:** `Professionals` + `ProfessionalHistories` (bản mới nhất) | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party
-
-**Grain:** 1 dòng = 1 người hành nghề chứng khoán được UBCKNN quản lý.
-
-**Attributes chính:** Practitioner Code, Full Name, Date Of Birth, Individual Gender Code, Nationality Code, Birth Place, Education Level Code, Registration Type Code, Practice Status Code, C06 Verification Status Code.
-
-**ETL note:** `Professionals` là nguồn chính cho Practitioner Code và identity key. Các attribute cá nhân chi tiết (Date Of Birth đầy đủ, Gender, Education Level, Nationality, Registration Type) lấy từ bản mới nhất của `ProfessionalHistories` (ORDER BY ChangeDate DESC, Id DESC — 1 dòng per ProfessionalId).
-
-**Shared entities:** IP Postal Address (PermanentAddress, CurrentAddress), IP Electronic Address (Phone, Email), IP Alt Identification (IdentityNumber — CCCD).
-
-**Được FK từ:** License Application, License Certificate Document, Employment Status, Related Party, Conduct Violation, Organization Employment Report, Identity Verification Record, Training Class Enrollment (Tier 3), Examination Assessment Result (Tier 3).
-
----
-
-### 2. Securities Practitioner Professional Training Class
-**Source:** `SpecializationCourses` | **BCV Concept:** [Event] Training Course | **BCO:** Event
-
-**Grain:** 1 dòng = 1 khóa học chuyên môn bổ sung kiến thức cho người hành nghề. Master entity — không gắn với người cụ thể.
-
-**Attributes chính:** Training Class Code, Training Class Name, Specialization Type Code, Duration, Location, Status Code.
-
-**Được FK từ:** Training Class Enrollment (Tier 3).
-
----
-
-### 3. Securities Practitioner License Certificate Group Document
-**Source:** `CertificateRecordGroups` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation
-
-**Grain:** 1 dòng = 1 nhóm quyết định cấp/thu hồi/hủy chứng chỉ.
-
-**Attributes chính:** Group Name, Group Type Code (Cấp/Thu hồi/Hủy/Chuyển đổi), License Decision Document FK (Id + Code), Created By Officer FK (Id + Code), Group Status Code.
-
-**Được FK từ:** License Certificate Group Member (Tier 3).
-
----
-
-### 4. Securities Practitioner Qualification Examination Assessment
-**Source:** `ExamSessions` | **BCV Concept:** [Communication] Assessment | **BCO:** Communication
-
-**Grain:** 1 dòng = 1 đợt thi sát hạch cấp CCHN do UBCKNN tổ chức.
-
-**Attributes chính:** Session Code, Session Name, Session Number, Examination Year, Examination Location, Organizer Name, Registration Start/End Date, Examination Start/End Date, Application Source Code, Examination Status Code, License Decision Document FK (Id + Code), Created By Officer FK (Id + Code), Updated By Officer FK (Id + Code).
-
-**Được FK từ:** License Application (Tier 3), Examination Assessment Result (Tier 3), Examination Assessment Fee (Tier 3).
-
----
-
-## Attribute Summary
-
-| Atomic Entity | # Attributes | PK | Key FKs |
-|---|---|---|---|
-| Securities Practitioner | 15 | Practitioner Id | — |
-| Securities Practitioner Professional Training Class | ~10 | Training Class Id | — |
-| Securities Practitioner License Certificate Group Document | 13 | License Certificate Group Document Id | Decision, Officer (CreatedBy) |
-| Securities Practitioner Qualification Examination Assessment | 25 | Examination Assessment Id | Decision, Officer (×2: CreatedBy + UpdatedBy) |
+| 1 | `PROFESSIONALS` có FK đến bất kỳ bảng nghiệp vụ Tier 1 nào không (ngoài ORGANIZATIONS, COUNTRIES, PROVINCES, DISTRICTS là danh mục)? | Hiện tại ORGANIZATION_ID trỏ đến ORGANIZATIONS — là Tier 1 entity, không phải Classification Value. Tuy nhiên PROFESSIONALS thiết kế ở Tier 2 vì ORGANIZATION_ID là FK mô tả tổ chức hiện tại (denormalized, có thể null), không phải dependency lifecycle. Cần xác nhận. |
+| 2 | `SPECIALIZATION_COURSES.SPECIALIZATION_ID` trỏ đến SPECIALIZATIONS (Classification Value) — xác nhận không có FK đến entity nghiệp vụ Tier 1 nào khác. | **Xác nhận: đúng.** SPECIALIZATION_ID là Classification Value → Tier 2 giữ nguyên. |
+| 3 | `EXAM_SESSIONS.BANK_ID` — BANKS chỉ là danh mục thanh toán phí? Hay BANKS là entity Tier 1 phức tạp hơn? | Nếu BANKS chỉ có CODE + NAME → Classification Value, không tạo Atomic entity. |

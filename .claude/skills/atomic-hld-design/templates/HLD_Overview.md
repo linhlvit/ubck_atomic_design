@@ -89,3 +89,18 @@ erDiagram
 GRAIN: 1 dòng = 1 bảng nguồn. KHÔNG gộp `table1, table2`.
 GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 -->
+
+---
+
+## Entities
+
+> Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.csv`.
+> Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
+
+### 1. {Atomic Entity Name}
+**Source:** `{SOURCE_TABLE}` | **BCV Concept:** {[Concept] Term} | **BCO:** {Core Object} | **Table Type:** {Fundamental/Relative/...}
+**Description:** {1–2 câu tiếng Việt — BCV Term + ý nghĩa nghiệp vụ bảng nguồn}
+
+**Grain:** 1 dòng = {mô tả grain}.
+
+**Attributes chính:** {danh sách attribute chính, FK và ETL-derived nếu có}.

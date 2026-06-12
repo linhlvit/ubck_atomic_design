@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-dscl_rprs_key_psn-FIMS.TLPROFILES
-  logical_name: "Disclosure Representative Key Person"
-
+  logical_name: Disclosure Representative Key Person
   physical_name: dscl_rprs_key_psn
   layer: Atomic
   version: "1.0"
@@ -74,7 +73,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.NaId
-    comment: "FK target: Geographic Area.Geographic Area Id. ID quốc tịch lấy từ bảng NATIONAL."
+    comment: "FK target: geo.geo_id. ID quốc tịch lấy từ bảng NATIONAL."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -88,7 +87,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.NaId
-    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality Id."
+    comment: "Lookup pair: geo.geo_code. Pair with Nationality Id."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -102,7 +101,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.FundComId
-    comment: "FK target: Fund Management Company.Fund Management Company Id. ID lấy từ bảng FUNDCOMPANY."
+    comment: "FK target: fnd_mgt_co.fnd_mgt_co_id. ID lấy từ bảng FUNDCOMPANY."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -116,7 +115,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.FundComId
-    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    comment: "Lookup pair: fnd_mgt_co.fnd_mgt_co_code. Pair with fnd_mgt_co_id."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -130,7 +129,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.SecComId
-    comment: "FK target: Securities Company.Securities Company Id. ID lấy từ bảng SECURITIESCOMPANY."
+    comment: "FK target: scr_co.scr_co_id. ID lấy từ bảng SECURITIESCOMPANY."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -144,7 +143,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.SecComId
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    comment: "Lookup pair: scr_co.scr_co_code. Pair with scr_co_id."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -158,7 +157,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.BankId
-    comment: "FK target: Custodian Bank.Custodian Bank Id. ID lấy từ bảng BANKMONI."
+    comment: "FK target: cstd_bnk.cstd_bnk_id. ID lấy từ bảng BANKMONI."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -172,7 +171,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.BankId
-    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
+    comment: "Lookup pair: cstd_bnk.cstd_bnk_code. Pair with cstd_bnk_id."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -186,7 +185,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.DepCenId
-    comment: "FK target: Depository Center.Depository Center Id. ID lấy từ bảng DEPOSITORYCENTER."
+    comment: "FK target: depst_cntr.depst_cntr_id. ID lấy từ bảng DEPOSITORYCENTER."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -200,7 +199,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.DepCenId
-    comment: "Lookup pair: Depository Center.Depository Center Code. Pair with Depository Center Id."
+    comment: "Lookup pair: depst_cntr.depst_cntr_code. Pair with depst_cntr_id."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -214,7 +213,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.StockCenId
-    comment: "FK target: Stock Exchange.Stock Exchange Id. ID lấy từ bảng STOCKEXCHANGE."
+    comment: "FK target: stk_exg.stk_exg_id. ID lấy từ bảng STOCKEXCHANGE."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -228,7 +227,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.StockCenId
-    comment: "Lookup pair: Stock Exchange.Stock Exchange Code. Pair with Stock Exchange Id."
+    comment: "Lookup pair: stk_exg.stk_exg_code. Pair with stk_exg_id."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -242,7 +241,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.InDiRepCenId
-    comment: "FK target: Disclosure Representative.Disclosure Representative Id. ID lấy từ bảng INFODISCREPRES."
+    comment: "FK target: dscl_rprs.dscl_rprs_id. ID lấy từ bảng INFODISCREPRES."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 
@@ -256,7 +255,7 @@ attributes:
     source_system: FIMS
     source_table: TLPROFILES
     source_column: FIMS.TLPROFILES.InDiRepCenId
-    comment: "Lookup pair: Disclosure Representative.Disclosure Representative Code. Pair with Disclosure Representative Id."
+    comment: "Lookup pair: dscl_rprs.dscl_rprs_code. Pair with dscl_rprs_id."
     classification_context: "Source System Code = 'FIMS_TLPROFILES'"
     etl_derived_value: null
 

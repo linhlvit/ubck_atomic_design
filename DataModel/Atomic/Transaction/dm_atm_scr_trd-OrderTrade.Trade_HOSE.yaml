@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-scr_trd-OrderTrade.Trade_HOSE
-  logical_name: "Securities Trade"
-
+  logical_name: Securities Trade
   physical_name: scr_trd
   layer: Atomic
   version: "1.0"
@@ -131,7 +130,7 @@ attributes:
     source_system: OrderTrade
     source_table: Trade_HOSE
     source_column: OrderTrade.Trade_HOSE.Currency
-    comment: "FK target: Currency.Currency Code."
+    comment: "FK target: ccy.ccy_code."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HOSE'"
     etl_derived_value: null
 
@@ -257,7 +256,7 @@ attributes:
     source_system: OrderTrade
     source_table: Trade_HOSE
     source_column: "OrderTrade.Trade_HOSE.Buy - Order Accept #"
-    comment: "FK target: Securities Order.Securities Order Id. Nullable khi lệnh mua không resolve được (xem HLD T2-01). ETL lookup qua (Trade Date + Symbol + Buy Order Accept #)."
+    comment: "FK target: scr_ordr.scr_ordr_id. Nullable khi lệnh mua không resolve được (xem HLD T2-01). ETL lookup qua (Trade Date + Symbol + Buy Order Accept #)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HOSE'"
     etl_derived_value: null
 
@@ -271,7 +270,7 @@ attributes:
     source_system: OrderTrade
     source_table: Trade_HOSE
     source_column: "OrderTrade.Trade_HOSE.Buy - Order Accept #"
-    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Buy Securities Order Id. Nguồn Number(11) — ETL convert sang string."
+    comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Buy Securities Order Id. Nguồn Number(11) — ETL convert sang string."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HOSE'"
     etl_derived_value: null
 
@@ -495,7 +494,7 @@ attributes:
     source_system: OrderTrade
     source_table: Trade_HOSE
     source_column: "OrderTrade.Trade_HOSE.Sell - Order Accept #"
-    comment: "FK target: Securities Order.Securities Order Id. Nullable khi lệnh bán không resolve được (xem HLD T2-01). ETL lookup qua (Trade Date + Symbol + Sell Order Accept #)."
+    comment: "FK target: scr_ordr.scr_ordr_id. Nullable khi lệnh bán không resolve được (xem HLD T2-01). ETL lookup qua (Trade Date + Symbol + Sell Order Accept #)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HOSE'"
     etl_derived_value: null
 
@@ -509,7 +508,7 @@ attributes:
     source_system: OrderTrade
     source_table: Trade_HOSE
     source_column: "OrderTrade.Trade_HOSE.Sell - Order Accept #"
-    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Sell Securities Order Id. Nguồn Number(11) — ETL convert sang string."
+    comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Sell Securities Order Id. Nguồn Number(11) — ETL convert sang string."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HOSE'"
     etl_derived_value: null
 

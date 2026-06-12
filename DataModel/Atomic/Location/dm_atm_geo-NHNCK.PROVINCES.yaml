@@ -1,0 +1,275 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-geo-NHNCK.PROVINCES
+  logical_name: Geographic Area
+  physical_name: geo
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: "[Location] Geographic Area"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code. Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-PROVINCES
+
+attributes:
+  - name: Geographic Area Id
+    physical_name: geo_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Geographic Area Code
+    physical_name: geo_code
+    business_meaning: Mã tỉnh/thành phố nguồn. BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: NHNCK.PROVINCES.ID
+    comment: BK chính. Giá trị từ PK số tự tăng của bảng nguồn.
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Geographic Area Short Code
+    physical_name: geo_shrt_code
+    business_meaning: Mã viết tắt quốc tịch/quốc gia.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: Mã ISO hoặc mã nghiệp vụ do FIMS định nghĩa.
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Geographic Area Name
+    physical_name: geo_nm
+    business_meaning: Tên tỉnh/thành phố
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: NHNCK.PROVINCES.PROVINCE_NAME
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: lcs_code
+    business_meaning: "Trạng thái: 0: Không sử dụng 1: Sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: "Scheme: LIFE_CYCLE_STATUS."
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Created By
+    physical_name: crt_by
+    business_meaning: Người tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: Mã người dùng hệ thống — denormalized.
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Ngày cập nhật bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Geographic Area Type Code
+    physical_name: geo_tp_code
+    business_meaning: Phân loại vùng địa lý — Tỉnh/Thành phố
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Geographic Area Business Code
+    physical_name: geo_bsn_code
+    business_meaning: Mã quốc tịch/quốc gia (mã nghiệp vụ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Id
+    physical_name: prn_geo_id
+    business_meaning: FK đến quốc gia cha
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: NHNCK.PROVINCES.COUNTRY_ID
+    comment: "FK target: geo.geo_id. Parent là COUNTRY."
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Code
+    physical_name: prn_geo_code
+    business_meaning: Mã quốc gia cha
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: NHNCK.PROVINCES.COUNTRY_ID
+    comment: "Lookup pair: geo.geo_code. Pair with Parent Geographic Area Id."
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: ISO Country Code
+    physical_name: iso_cty_code
+    business_meaning: Mã tỉnh/thành theo chuẩn
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: NHNCK.PROVINCES.PROVINCE_CODE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Default Flag
+    physical_name: dflt_f
+    business_meaning: Cờ mặc định
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: NHNCK.PROVINCES.DEFAULT_FLAG
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null
+
+  - name: Geographic Area Status Code
+    physical_name: geo_st_code
+    business_meaning: Trạng thái bản ghi
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROVINCES
+    source_column: NHNCK.PROVINCES.RECORD_STATUS
+    comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+    classification_context: "Source System Code = 'NHNCK_PROVINCES'"
+    etl_derived_value: null

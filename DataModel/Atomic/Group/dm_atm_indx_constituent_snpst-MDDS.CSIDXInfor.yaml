@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-indx_constituent_snpst-MDDS.CSIDXInfor
-  logical_name: "Index Constituent Snapshot"
-
+  logical_name: Index Constituent Snapshot
   physical_name: indx_constituent_snpst
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: MDDS
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.IndexCode
-    comment: "FK target: Market Index Snapshot.Market Index Snapshot Id. Join qua (index_code / trading_date)."
+    comment: "FK target: mkt_indx_snpst.mkt_indx_snpst_id. Join qua (index_code / trading_date)."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: MDDS
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.IndexCode
-    comment: "Lookup pair: Market Index Snapshot.Index Code. Pair with Market Index Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
+    comment: "Lookup pair: Market Index Snapshot.Index Code. Pair with mkt_indx_snpst_id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -103,7 +102,7 @@ attributes:
     source_system: MDDS
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.Symbol
-    comment: "FK target: Security Trading Snapshot.Security Trading Snapshot Id. Join qua (symbol / trading_date)."
+    comment: "FK target: scr_tdg_snpst.scr_tdg_snpst_id. Join qua (symbol / trading_date)."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -117,7 +116,7 @@ attributes:
     source_system: MDDS
     source_table: CSIDXInfor
     source_column: MDDS.CSIDXInfor.Symbol
-    comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with Security Trading Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
+    comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with scr_tdg_snpst_id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 

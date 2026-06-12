@@ -48,9 +48,9 @@ FIELDS = ["source_system", "source_table", "description", "group", "reason"]
 def parse_7f(md_path: Path, source_system: str) -> list[dict]:
     text = md_path.read_text(encoding="utf-8")
 
-    # Tìm section 7f — từ heading đến heading tiếp theo (## hoặc EOF)
+    # Tìm section 7f — từ heading đến heading tiếp theo (## / ### / #### hoặc EOF)
     match = re.search(
-        r"^#{2,3}\s+7f\b[^\n]*\n(.+?)(?=^#{2,3}\s|\Z)",
+        r"^#{2,4}\s+7f\b[^\n]*\n(.+?)(?=^#{2,4}\s|\Z)",
         text, re.MULTILINE | re.DOTALL
     )
     if not match:

@@ -60,10 +60,11 @@ Nếu không có BRD → bỏ qua highlight, tạo diagram không có BRD layer.
 
 | MODE | Giai đoạn chạy | Ghi đè CSV gốc |
 |---|---|---|
-| `full` (mặc định) | 1 → 2 → 3 → 4 | Có (tạo mới hoàn toàn) |
-| `reconcile` | 1 → 1b → 4 | Không — chỉ cập nhật cột Ghi chú và tạo Reconcile file |
+| `full` (mặc định) | 1 → 2 → 3 → 4 → 4b | Có (tạo mới hoàn toàn) |
+| `reconcile` | 1 → 1b → 4 → 4b | Không — chỉ cập nhật cột Ghi chú và tạo Reconcile file |
 
 Giai đoạn 4 (sinh BRD YAML) luôn chạy ở cả hai mode sau khi có CSV hoàn chỉnh.
+Giai đoạn 4b (cập nhật scope từ BRD Excel) chỉ chạy khi `BRD_FILE` được cung cấp **và** cột "Bảng nguồn" đã được điền — bỏ qua nếu chưa có.
 
 Nếu người dùng đã có CSV tài liệu thiết kế và chỉ muốn đối chiếu → hỏi xác nhận
 MODE trước khi chạy, tránh ghi đè dữ liệu tài liệu.
@@ -210,51 +211,41 @@ TABLE_NAME,FK_COL,"Comment Oracle",FK,FK → REF_TABLE.REF_COL
 
 Dùng Python script sinh file `docs/output/{SOURCE}/{SOURCE}_ER_Diagram.html`.
 
-### 3.1 — Parse BRD (nếu có)
+**Lưu ý:** Giai đoạn 3 chạy **sau** Giai đoạn 4 (đã có `brd_{SOURCE}.yaml` hoàn chỉnh). Mọi thông tin cần thiết lấy từ YAML — không đọc BRD Excel thêm.
+
+### 3.1 — Nguồn dữ liệu cho diagram
+
+Đọc `BRD/Source/brd_{SOURCE}.yaml` để lấy:
+
+- **Badge in-scope (BRD)**: bảng có `scope_status: in_scope` → `"brd": true` trong data JS
+- **Nhóm nghiệp vụ**: lấy từ `functional_group` của mỗi entry → dùng làm `group` trong data JS
+- **Màu nhóm**: map từ `functional_group` string sang màu hex. Dùng palette mặc định nếu group chưa được định nghĩa sẵn:
 
 ```python
-import openpyxl, re
+import yaml
 
-wb = openpyxl.load_workbook(BRD_FILE, data_only=True)
-ws = wb[BRD_SHEET]
+with open(f'BRD/Source/brd_{SOURCE}.yaml', encoding='utf-8') as f:
+    doc = yaml.safe_load(f)
 
-# Tìm index cột từ header row (row 2 thường là header)
-header = [str(c.value) if c.value else '' for c in ws[2]]
-sql_col = header.index(BRD_SQL_COL)        # cột "Câu lệnh tham khảo"
-status_col = header.index(BRD_STATUS_COL)  # cột "Trạng thái mapping"
+# Build lookup: table_name → {group, scope}
+table_meta = {}
+for entry in doc['brd_entries']:
+    c = entry['content']
+    table_meta[c['table']] = {
+        'group': c.get('functional_group', 'other'),
+        'brd': c.get('scope_status') == 'in_scope',
+    }
 
-# Chỉ lấy rows có status == BRD_STATUS_VAL ('Done')
-brd_sql_list = []
-for row in ws.iter_rows(min_row=3, values_only=True):
-    if str(row[status_col]).strip() != BRD_STATUS_VAL: continue
-    sql = row[sql_col]
-    if not sql or str(sql).upper().startswith('CHƯA'): continue
-    brd_sql_list.append(str(sql).upper())
-
-full_sql = '\n'.join(brd_sql_list)
-brd_tables = set(re.findall(r'{SCHEMA}\.([A-Z_]+)', full_sql))
+# Auto-assign màu cho các group chưa có sẵn
+PALETTE = ['#4f46e5','#059669','#dc2626','#7c3aed','#d97706','#0891b2','#6b7280','#0d9488']
+group_colors = {}
+for meta in table_meta.values():
+    g = meta['group']
+    if g not in group_colors:
+        group_colors[g] = PALETTE[len(group_colors) % len(PALETTE)]
 ```
 
-Extract cột BRD: dùng pattern `ALIAS.COLUMN_NAME` và `SCHEMA.TABLE .{0,300} COLUMN` để tìm cột nào xuất hiện trong SQL của từng bảng BRD.
-
-### 3.2 — Nhóm nghiệp vụ
-
-Định nghĩa `get_group(table_name)` dựa trên prefix bảng — phù hợp với từng source.  
-Ví dụ ThanhTra:
-
-| Prefix | Nhóm | Màu |
-|---|---|---|
-| `INSPECTION_*` | Thanh tra | `#4f46e5` |
-| `EXAMINATION_*` | Kiểm tra | `#059669` |
-| `PENALTY_*`, `VIOLATION_*` | Xử phạt VPHC | `#dc2626` |
-| `PETITION*`, `CITIZEN_*` | Đơn thư | `#7c3aed` |
-| `ANTI_*`, `ADHOC_*` | PCTN/PCRT | `#d97706` |
-| `DOCUMENT_*`, `FORM_*`, `LEGAL_*` | Biểu mẫu | `#0891b2` |
-| `DYNAMIC*`, `CODE_*`, `flyway_*` | Hệ thống | `#6b7280` |
-
-Hỏi người dùng nếu không rõ prefix mapping.
-
-### 3.3 — Cấu trúc data JS nhúng vào HTML
+### 3.2 — Cấu trúc data JS nhúng vào HTML
 
 ```json
 {
@@ -277,7 +268,7 @@ Hỏi người dùng nếu không rõ prefix mapping.
 }
 ```
 
-### 3.4 — Tính năng bắt buộc của HTML
+### 3.3 — Tính năng bắt buộc của HTML
 
 - **Light theme** (bg `#f0f2f7`, surface `#fff`)
 - **Sidebar**: search, danh sách nhóm, stats (đang hiện / BRD / FK)
@@ -294,7 +285,7 @@ Hỏi người dùng nếu không rõ prefix mapping.
 - **Layout persistence**: `localStorage` (served) hoặc in-memory + Export/Import JSON (file://)
 - **Copy text**: cho phép select/copy tên bảng, comment, tên cột
 
-### 3.5 — Kiểm tra sau khi tạo
+### 3.4 — Kiểm tra sau khi tạo
 
 1. Mở HTML trong browser → sidebar hiện đủ nhóm nghiệp vụ
 2. Click 1 nhóm → bảng hiện, không có bảng bị lạc ra xa
@@ -402,6 +393,100 @@ print('Missing ingestion:', missing)
 
 # 4. Số columns files = tổng số bảng (Tables.csv)
 ls BRD/Source/{SOURCE}/ | wc -l
+```
+
+---
+
+## Giai đoạn 4b — Cập nhật scope_status từ BRD Excel
+
+**Điều kiện chạy:** `BRD_FILE` được cung cấp **và** cột "Bảng nguồn" trong BRD Excel đã được điền (thường sau khi đã chạy Giai đoạn 3 + xác nhận bảng nguồn). Nếu cột chưa điền → bỏ qua giai đoạn này.
+
+**Tham số bổ sung** (thêm vào bảng đầu vào khi có BRD):
+
+| Tham số | Mô tả | Ví dụ NHNCK |
+|---|---|---|
+| `BRD_SOURCE_COL` | Header cột "Bảng nguồn" đã điền | `Bảng nguồn` |
+| `BRD_NGUON_COL` | Header cột lọc source system | `Nguồn` |
+| `BRD_NGUON_VAL` | Giá trị filter (tên source) | `NHNCK` |
+
+### Logic extract bảng từ Excel
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook(BRD_FILE, data_only=True)
+ws = wb[BRD_SHEET]
+
+header = [str(c.value or '').strip() for c in ws[2]]  # header ở row 2
+col_nguon  = next(i for i,h in enumerate(header) if h == BRD_NGUON_COL)
+col_bang_p = next(i for i,h in enumerate(header) if h == BRD_SOURCE_COL)
+
+brd_tables = set()
+for row in ws.iter_rows(min_row=3, values_only=True):
+    if not any(row): continue
+    if str(row[col_nguon] or '').strip() != BRD_NGUON_VAL: continue
+    val = str(row[col_bang_p] or '').strip()
+    for t in val.split(','):
+        t = t.strip()
+        if t:
+            brd_tables.add(t)
+```
+
+### Cập nhật brd_{SOURCE}.yaml
+
+- Bảng có tên trong `brd_tables` → `scope_status: in_scope`
+- Bảng không có trong `brd_tables` → `scope_status: out_of_scope`
+- Dùng regex patch text-level (không parse/dump YAML để giữ nguyên format + comments):
+
+```python
+import re
+
+with open(f'BRD/Source/brd_{SOURCE}.yaml', encoding='utf-8') as f:
+    content = f.read()
+
+changed = 0
+
+def patch_entry(m):
+    global changed
+    entry_text = m.group(0)
+    tm = re.search(r'^    table:\s+(\S+)', entry_text, re.MULTILINE)
+    if not tm:
+        return entry_text
+    table_name = tm.group(1)
+    desired = 'in_scope' if table_name in brd_tables else 'out_of_scope'
+    current = 'in_scope' if 'scope_status: in_scope' in entry_text else 'out_of_scope'
+    if desired != current:
+        entry_text = entry_text.replace(
+            f'scope_status: {current}', f'scope_status: {desired}'
+        )
+        changed += 1
+    return entry_text
+
+patched = re.sub(
+    r'(?s)(^- brd_id:.*?)(?=^- brd_id:|\Z)',
+    patch_entry,
+    content,
+    flags=re.MULTILINE
+)
+
+with open(f'BRD/Source/brd_{SOURCE}.yaml', 'w', encoding='utf-8') as f:
+    f.write(patched)
+
+print(f"Đã cập nhật {changed} bảng")
+```
+
+### Sau khi patch
+
+Rebuild `_summary.csv`:
+```bash
+/opt/homebrew/bin/python3.12 scripts/generate_brd_summary.py
+```
+
+### Kiểm tra
+
+```bash
+grep "scope_status:" BRD/Source/brd_{SOURCE}.yaml | sort | uniq -c
+# → in_scope count phải bằng len(brd_tables)
 ```
 
 ---

@@ -8,13 +8,16 @@
 
 ## 6a. Bảng tổng quan BCV Concept
 
-| BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Atomic Entity | BCV Term |
-|---|---|---|---|---|---|---|
-| Involved Party | [Involved Party] Organization | Organization | Units | Danh mục đơn vị thuộc UBCKNN | Regulatory Authority Organization Unit | Organization — cơ cấu tổ chức UBCKNN dạng cây self-referencing. Cấu trúc trường tương tự Departments (code, name, parent, status, sort order) → gộp 2 nguồn thành 1 Atomic entity, Classification Value phân biệt UNIT / DEPARTMENT. |
-| Involved Party | [Involved Party] Organization | Organization | Departments | Danh mục phòng ban thuộc UBCKNN | Regulatory Authority Organization Unit | Organization — cùng Atomic entity với Units. Parent của Department trỏ đến Unit (UnitId). 2 attr file riêng biệt (attr_NHNCK_Units.csv + attr_NHNCK_Departments.csv) nhưng cùng 1 Atomic entity. |
-| Involved Party | [Involved Party] Organization | Organization | Organizations | Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) | Securities Organization Reference | Organization — *"Identifies an Involved Party that may stand alone in an operational or legal context."* Cấu trúc trường: mã tổ chức, tên, loại hình, vốn điều lệ, trạng thái, self-ref Parent. Được FK từ Employment Status và Organization Employment Report. |
-| Documentation | [Documentation] Gov. Registration Document | Government Registration Document | Decisions | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Government Registration Document — *"Identifies a Documentation Item that is issued by a principality or sovereignty."* Cấu trúc trường: số QĐ, tiêu đề, loại, ngày ký, người ký, trạng thái, file đính kèm. Được FK từ Certificate Document (×2), Certificate Group Document, Conduct Violation, Examination Assessment. |
-| Involved Party | [Involved Party] Individual | Individual | Users | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Regulatory Authority Officer | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã cán bộ, username, họ tên, email, điện thoại, FK đến Organization Unit (×2: đơn vị + phòng ban), chức vụ, trạng thái. Không lưu PasswordHash. |
+| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
+|---|---|---|---|---|---|---|---|---|
+| Location | [Location] Geographic Area | Geographic Area | COUNTRIES | Update | Danh mục quốc gia/vùng lãnh thổ theo ISO 3166 | Geographic Area | Fundamental | Geographic Area — BCV ngoại lệ: dù chỉ có Code+Name vẫn là Atomic entity vì BCV có Data Concept Location riêng. Cùng Atomic entity với PROVINCES + DISTRICTS, phân biệt bằng Geographic Area Type Code = COUNTRY. |
+| Location | [Location] Geographic Area | Geographic Area | PROVINCES | Update | Danh mục tỉnh/thành phố trực thuộc trung ương | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với COUNTRIES + DISTRICTS. Geographic Area Type Code = PROVINCE. FK self-ref đến Geographic Area cha (COUNTRY). |
+| Location | [Location] Geographic Area | Geographic Area | DISTRICTS | Update | Danh mục quận/huyện/thị xã | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với COUNTRIES + PROVINCES. Geographic Area Type Code = DISTRICT. FK self-ref đến Geographic Area cha (PROVINCE → COUNTRY). |
+| Involved Party | [Involved Party] Organization | Organization | UNITS | Update | Danh mục đơn vị thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cơ cấu tổ chức UBCKNN dạng cây self-referencing. Cùng Atomic entity với DEPARTMENTS. Phân biệt bằng Organization Unit Type Code (UNIT/DEPARTMENT) và Source System Code. |
+| Involved Party | [Involved Party] Organization | Organization | DEPARTMENTS | Update | Danh mục phòng ban thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cùng Atomic entity với UNITS. Parent của DEPARTMENTS trỏ đến UNITS (UNIT_ID). Phân biệt bằng Organization Unit Type Code = DEPARTMENT và Source System Code. 2 attr file riêng biệt (attr_NHNCK_Units.csv + attr_NHNCK_Departments.csv). |
+| Involved Party | [Involved Party] Organization | Organization | ORGANIZATIONS | Update | Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) | Securities Organization Reference | Fundamental | Organization — *"Identifies an Involved Party that may stand alone in an operational or legal context."* Cấu trúc trường: mã tổ chức, tên, loại hình, vốn điều lệ, trạng thái, self-ref PARENT_ID. Được FK từ Employment Status và Organization Employment Report. |
+| Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISIONS | Update | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Fundamental | Government Registration Document — *"Identifies a Documentation Item that is issued by a principality or sovereignty."* Cấu trúc trường: số QĐ, tiêu đề, loại quyết định, ngày ký, người ký, trạng thái, file đính kèm. Được FK từ Certificate Document (×2), Certificate Group Document, Conduct Violation, Examination Assessment. |
+| Involved Party | [Involved Party] Individual | Individual | USERS | Update | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Regulatory Authority Officer | Fundamental | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã cán bộ, username, họ tên, email, điện thoại, FK đến Organization Unit (×2: đơn vị + phòng ban), chức vụ, trạng thái. Không lưu PASSWORD. |
 
 ---
 
@@ -24,18 +27,24 @@
 graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
 
-    Units["**Units**\nDanh mục đơn vị UBCKNN"]:::src
-    Departments["**Departments**\nDanh mục phòng ban UBCKNN"]:::src
-    Organizations["**Organizations**\nTổ chức tham gia TTCK"]:::src
-    Decisions["**Decisions**\nQuyết định hành chính"]:::src
-    Users["**Users**\nCán bộ UBCKNN"]:::src
-
-    Departments -->|"UnitId"| Units
-    Users -->|"UnitId"| Units
-    Users -->|"DepartmentId"| Departments
-    Decisions -->|"CreatedBy"| Users
-    Organizations -->|"CreatedBy"| Users
-    Organizations -->|"ParentId (self-ref)"| Organizations
+    COUNTRIES["**COUNTRIES**\nDanh mục quốc gia"]:::src
+    PROVINCES["**PROVINCES**\nDanh mục tỉnh/thành phố"]:::src
+    DISTRICTS["**DISTRICTS**\nDanh mục quận/huyện"]:::src
+    UNITS["**UNITS**\nDanh mục đơn vị UBCKNN"]:::src
+    DEPARTMENTS["**DEPARTMENTS**\nDanh mục phòng ban UBCKNN"]:::src
+    ORGANIZATIONS["**ORGANIZATIONS**\nTổ chức tham gia TTCK"]:::src
+    DECISIONS["**DECISIONS**\nQuyết định hành chính"]:::src
+    USERS["**USERS**\nCán bộ UBCKNN"]:::src
+    PROVINCES -->|"COUNTRY_ID"| COUNTRIES
+    DISTRICTS -->|"COUNTRY_ID"| COUNTRIES
+    DISTRICTS -->|"PROVINCE_ID"| PROVINCES
+    DEPARTMENTS -->|"UNIT_ID"| UNITS
+    USERS -->|"UNIT_ID"| UNITS
+    USERS -->|"DEPARTMENT_ID"| DEPARTMENTS
+    DECISIONS -->|"CREATED_BY"| USERS
+    ORGANIZATIONS -->|"CREATED_BY"| USERS
+    ORGANIZATIONS -->|"PARENT_ID (self-ref)"| ORGANIZATIONS
+    ORGANIZATIONS -->|"ORGANIZATION_TYPE_ID (self-ref)"| ORGANIZATIONS
 ```
 
 ---
@@ -47,18 +56,19 @@ graph TD
     classDef atomic fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
 
-    ORGUNIT["**Regulatory Authority Organization Unit**\n[Involved Party] Organization\nUnits + Departments"]:::atomic
-    SECORG["**Securities Organization Reference**\n[Involved Party] Organization\nOrganizations"]:::atomic
-    DECISION["**Securities Practitioner License Decision Document**\n[Documentation] Gov. Registration Document\nDecisions"]:::atomic
-    OFFICER["**Regulatory Authority Officer**\n[Involved Party] Individual\nUsers"]:::atomic
-
+    GEOAREA["**Geographic Area**\n[Location] Geographic Area\nCOUNTRIES + PROVINCES + DISTRICTS\n(phân biệt bằng Geographic Area Type Code)"]:::atomic
+    ORGUNIT["**Regulatory Authority Organization Unit**\n[Involved Party] Organization\nUNITS + DEPARTMENTS"]:::atomic
+    SECORG["**Securities Organization Reference**\n[Involved Party] Organization\nORGANIZATIONS"]:::atomic
+    DECISION["**Securities Practitioner License Decision Document**\n[Documentation] Gov. Registration Document\nDECISIONS"]:::atomic
+    OFFICER["**Regulatory Authority Officer**\n[Involved Party] Individual\nUSERS"]:::atomic
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
     ALTID["IP Alt Identification"]:::shared
 
+    GEOAREA -->|"Parent Geographic Area FK (self-ref)"| GEOAREA
     ORGUNIT -->|"Parent Organization Unit FK (self-ref)"| ORGUNIT
-    OFFICER -->|"Organization Unit FK (UnitId)"| ORGUNIT
-    OFFICER -->|"Department Organization Unit FK (DepartmentId)"| ORGUNIT
+    OFFICER -->|"Organization Unit FK (UNIT_ID)"| ORGUNIT
+    OFFICER -->|"Department Organization Unit FK (DEPARTMENT_ID)"| ORGUNIT
     DECISION -->|"Created By Officer FK"| OFFICER
     SECORG -->|"Created By Officer FK"| OFFICER
     SECORG -->|"Parent Organization FK (self-ref)"| SECORG
@@ -73,13 +83,13 @@ graph TD
 
 | Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
 |---|---|---|---|
-| Positions | Danh mục chức vụ | POSITION | Chỉ có Code + Name → Classification Value (Employment Position Type). Không tạo Atomic entity. |
-| EducationLevels | Danh mục trình độ học vấn | EDUCATION_LEVEL | Classification Value. |
-| ApplicationStatuses | Định nghĩa trạng thái hồ sơ | APPLICATION_STATUS | Classification Value. |
-| Certificates | Danh mục loại chứng chỉ hành nghề | CERTIFICATE_TYPE | Classification Value. |
-| Specializations | Danh mục chuyên môn | SPECIALIZATION | Classification Value. |
-| Documents | Danh mục loại tài liệu hồ sơ | DOCUMENT_TYPE | Classification Value. |
-| ApplicationSources | Hình thức nộp hồ sơ | APPLICATION_SOURCE | Classification Value. |
+| POSITIONS | Danh mục chức vụ | POSITION | Chỉ có Code + Name → Classification Value (Employment Position Type). Không tạo Atomic entity. |
+| EDUCATION_LEVELS | Danh mục trình độ học vấn | EDUCATION_LEVEL | Classification Value. |
+| APPLICATION_STATUSES | Định nghĩa trạng thái hồ sơ | APPLICATION_STATUS | Classification Value. |
+| CERTIFICATES | Danh mục loại chứng chỉ hành nghề | CERTIFICATE_TYPE | Classification Value — chỉ có CERTIFICATE_CODE + CERTIFICATE_NAME + metadata vận hành. |
+| SPECIALIZATIONS | Danh mục chuyên môn | SPECIALIZATION | Classification Value. |
+| DOCUMENTS | Danh mục loại tài liệu hồ sơ | DOCUMENT_TYPE | Classification Value. |
+| APPLICATION_SOURCES | Hình thức nộp hồ sơ | APPLICATION_SOURCE | Classification Value. |
 
 ---
 
@@ -93,62 +103,6 @@ Không có bảng nào trong Tier 1 chưa đủ thông tin cột.
 
 | # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
-| 1 | `Decisions.CreatedBy` là FK thực đến Users hay chỉ là audit field? | Nếu là audit field kỹ thuật → không ảnh hưởng dependency giữa Decision và Officer. Thiết kế hiện tại giữ FK này trên Atomic entity. |
-| 2 | Organizations có bao gồm cả UBCKNN (tự tham chiếu) hay chỉ là tổ chức tham gia TTCK? | Nếu UBCKNN cũng có trong bảng → cần xem xét quan hệ với Regulatory Authority Organization Unit. |
-
----
-
-## Entities trong Tier 1
-
-### 1. Regulatory Authority Organization Unit
-**Source:** `Units` + `Departments` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party
-
-**Grain:** 1 dòng = 1 đơn vị hoặc phòng ban thuộc UBCKNN. Cấu trúc cây self-referencing: Department → Unit → NULL.
-
-**Attributes chính:** Organization Unit Code, Organization Unit Type Code (ETL-derived: UNIT / DEPARTMENT), Organization Unit Name, Parent Organization Unit Id/Code (self-ref — Units: NULL; Departments: UnitId), Organization Unit Status Code, Sort Order.
-
-**Lưu ý thiết kế:** 2 attr file riêng (`attr_NHNCK_Units.csv` + `attr_NHNCK_Departments.csv`) nhưng cùng Atomic entity name. Organization Unit Type Code phân biệt loại — ETL-derived, không có trong nguồn.
-
----
-
-### 2. Securities Organization Reference
-**Source:** `Organizations` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party
-
-**Grain:** 1 dòng = 1 tổ chức tham gia thị trường chứng khoán được UBCKNN quản lý.
-
-**Attributes chính:** Organization Code, Organization Name, English Name, Abbreviation, Organization Type Code, Charter Capital Amount, Organization Status Code, Created By Officer FK, self-ref Parent Organization Id/Code.
-
-**Shared entities:** IP Postal Address, IP Electronic Address, IP Alt Identification.
-
----
-
-### 3. Securities Practitioner License Decision Document
-**Source:** `Decisions` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation
-
-**Grain:** 1 dòng = 1 quyết định hành chính do UBCKNN ban hành (cấp/thu hồi/hủy CCHN, công nhận kết quả thi...).
-
-**Attributes chính:** Decision Number, Decision Title, Decision Type Code, Signed Date, Signatory Name, Decision Status Code, file đính kèm, Created By Officer FK.
-
-**Được FK từ:** License Certificate Document (×2: cấp + thu hồi), License Certificate Group Document, Conduct Violation, Examination Assessment.
-
----
-
-### 4. Regulatory Authority Officer
-**Source:** `Users` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party
-
-**Grain:** 1 dòng = 1 cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK.
-
-**Attributes chính:** Officer Code, Username, Full Name, Email, Phone Number, Individual Gender Code, Organization Unit Id/Code (FK → Unit), Department Organization Unit Id/Code (FK → Department), Position Code (Classification Value — không tạo FK entity riêng), Officer Status Code.
-
-**Lưu ý:** Không lưu PasswordHash — loại bỏ thông tin bảo mật. Position Code → Classification Value scheme POSITION.
-
----
-
-## Attribute Summary
-
-| Atomic Entity | # Attributes | PK | Key FKs |
-|---|---|---|---|
-| Regulatory Authority Organization Unit | 10 × 2 sources | Organization Unit Id | self-ref Parent Organization Unit |
-| Securities Organization Reference | 22 | Securities Organization Reference Id | self-ref Parent; Officer (CreatedBy) |
-| Securities Practitioner License Decision Document | 16 | License Decision Document Id | Officer (CreatedBy) |
-| Regulatory Authority Officer | 17 | Officer Id | Organization Unit (×2: Unit + Department) |
+| 1 | `DECISIONS.CREATED_BY` là FK thực đến USERS. | **Xác nhận.** FK thực → thiết kế giữ Created By Officer FK trên entity License Decision Document. |
+| 2 | `ORGANIZATIONS` có bao gồm cả UBCKNN không? | **Xác nhận: không bao gồm.** ORGANIZATIONS chỉ chứa tổ chức tham gia TTCK bên ngoài → không có overlap với Regulatory Authority Organization Unit. |
+| 3 | `ORGANIZATIONS.ORGANIZATION_TYPE_ID` tự tham chiếu — là loại hình tổ chức (Classification Value) hay FK entity khác? | **Xác nhận: Classification Value.** Xử lý thành ORGANIZATION_TYPE_CODE trên Atomic, không tạo FK entity riêng. |

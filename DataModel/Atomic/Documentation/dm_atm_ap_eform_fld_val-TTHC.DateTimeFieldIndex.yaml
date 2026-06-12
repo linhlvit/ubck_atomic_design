@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-ap_eform_fld_val-TTHC.DateTimeFieldIndex
-  logical_name: "Atomic - Application Eform Field Value – source TTHC.DateTimeFieldIndex"
-
+  logical_name: Application Eform Field Value
   physical_name: ap_eform_fld_val
   layer: Atomic
   version: "1.0"
@@ -15,8 +14,7 @@ ldm:
   etl_pattern: Fact Append
   source: TTHC
   description: |
-    Bộ giá trị Eform của một ContentItem — primary source là DateTimeFieldIndex, aggregate từ tất cả 11 *FieldIndex tables.
-    Grain = 1 ContentItem (Published=1 AND Latest=1). ETL join qua ContentItemId.
+    Toàn bộ giá trị field của tờ khai Eform đã index — UNION ALL 11 bảng *FieldIndex. Grain: 1 dòng = 1 giá trị field của 1 ContentItem. field_data_type_code phân biệt loại dữ liệu; string_value lưu universal TEXT.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -76,7 +74,7 @@ attributes:
     source_system: TTHC
     source_table: DateTimeFieldIndex
     source_column: TTHC.ContentItemIndex.ContentItemId
-    comment: "FK target: Securities Offering Application.Securities Offering Application Id."
+    comment: "FK target: scr_ofrg_ap.scr_ofrg_ap_id."
     classification_context: "Source System Code = 'TTHC_DATETIMEFIELDINDEX'"
     etl_derived_value: null
 
@@ -96,23 +94,23 @@ attributes:
 
   - name: Text Fields
     physical_name: tx_fields
-    business_meaning: Tập hợp các field dạng văn bản (TextFieldIndex) của ContentItem. Mỗi phần tử = 1 field.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    business_meaning: "Tập hợp các field dạng văn bản (TextFieldIndex) của ContentItem. Mỗi phần tử = 1 field."
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
     source_table: DateTimeFieldIndex
     source_column: TTHC.TextFieldIndex.ContentField
-    comment: "ETL aggregate: GROUP BY ContentItemId từ TextFieldIndex. Struct: {content_part: Text; content_field: Text; text_value: Text; big_text_value: Text}."
+    comment: "ETL aggregate: GROUP BY ContentItemId từ TextFieldIndex. Struct: {content_part: Text; content_field: Text; text_value: Text; big_text_value: Text}. ETL: COALESCE(Text, null) → text_value; COALESCE(BigText, null) → big_text_value. Cả hai có thể null."
     classification_context: "Source System Code = 'TTHC_DATETIMEFIELDINDEX'"
     etl_derived_value: ETL derived
 
   - name: Html Fields
     physical_name: html_fields
     business_meaning: Tập hợp các field dạng HTML (HtmlFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
@@ -125,64 +123,64 @@ attributes:
   - name: Multi Text Fields
     physical_name: multi_tx_fields
     business_meaning: Tập hợp các field dạng đa văn bản (MultiTextFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
     source_table: DateTimeFieldIndex
     source_column: TTHC.MultiTextFieldIndex.ContentField
-    comment: "ETL aggregate: GROUP BY ContentItemId từ MultiTextFieldIndex. Struct: {content_part: Text; content_field: Text; value: Text; big_value: Text}."
+    comment: "ETL aggregate: GROUP BY ContentItemId từ MultiTextFieldIndex. Struct: {content_part: Text; content_field: Text; value: Text; big_value: Text}. Cả Value và BigValue giữ nguyên — không merge."
     classification_context: "Source System Code = 'TTHC_DATETIMEFIELDINDEX'"
     etl_derived_value: ETL derived
 
   - name: Link Fields
     physical_name: link_fields
     business_meaning: Tập hợp các field dạng liên kết (LinkFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
     source_table: DateTimeFieldIndex
     source_column: TTHC.LinkFieldIndex.ContentField
-    comment: "ETL aggregate: GROUP BY ContentItemId từ LinkFieldIndex. Struct: {content_part: Text; content_field: Text; url: Text; big_url: Text; link_text: Text; big_link_text: Text}."
+    comment: "ETL aggregate: GROUP BY ContentItemId từ LinkFieldIndex. Struct: {content_part: Text; content_field: Text; url: Text; big_url: Text; link_text: Text; big_link_text: Text}. Giữ đầy đủ 4 cột giá trị."
     classification_context: "Source System Code = 'TTHC_DATETIMEFIELDINDEX'"
     etl_derived_value: ETL derived
 
   - name: Numeric Fields
     physical_name: num_fields
     business_meaning: Tập hợp các field dạng số (NumericFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
     source_table: DateTimeFieldIndex
     source_column: TTHC.NumericFieldIndex.ContentField
-    comment: "ETL aggregate: GROUP BY ContentItemId từ NumericFieldIndex. Struct: {content_part: Text; content_field: Text; numeric_value: Currency Amount}."
+    comment: "ETL aggregate: GROUP BY ContentItemId từ NumericFieldIndex. Struct: {content_part: Text; content_field: Text; numeric_value: Currency Amount}. Nguồn data type DECIMAL — giữ nguyên precision."
     classification_context: "Source System Code = 'TTHC_DATETIMEFIELDINDEX'"
     etl_derived_value: ETL derived
 
   - name: Date Fields
     physical_name: dt_fields
     business_meaning: Tập hợp các field dạng ngày (DateFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
     source_table: DateTimeFieldIndex
     source_column: TTHC.DateFieldIndex.ContentField
-    comment: "ETL aggregate: GROUP BY ContentItemId từ DateFieldIndex. Struct: {content_part: Text; content_field: Text; date_value: Date}."
+    comment: "ETL aggregate: GROUP BY ContentItemId từ DateFieldIndex. Struct: {content_part: Text; content_field: Text; date_value: Date}. Nguồn DATETIME chỉ lưu ngày — cast về Date."
     classification_context: "Source System Code = 'TTHC_DATETIMEFIELDINDEX'"
     etl_derived_value: ETL derived
 
   - name: Datetime Fields
     physical_name: dttm_fields
     business_meaning: Tập hợp các field dạng ngày giờ (DateTimeFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
@@ -195,8 +193,8 @@ attributes:
   - name: Time Fields
     physical_name: tm_fields
     business_meaning: Tập hợp các field dạng giờ (TimeFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
@@ -209,8 +207,8 @@ attributes:
   - name: Boolean Fields
     physical_name: booln_fields
     business_meaning: Tập hợp các field dạng đúng/sai (BooleanFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
@@ -223,8 +221,8 @@ attributes:
   - name: Content Picker Fields
     physical_name: cntnt_picker_fields
     business_meaning: Tập hợp các field dạng content picker (ContentPickerFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC
@@ -237,8 +235,8 @@ attributes:
   - name: User Picker Fields
     physical_name: usr_picker_fields
     business_meaning: Tập hợp các field dạng user picker (UserPickerFieldIndex) của ContentItem.
-    data_domain: Array<Struct>
-    data_type: "array<struct<...>>"
+    data_domain: "Array<Struct>"
+    data_type: array<struct<...>>
     nullable: true
     is_primary_key: false
     source_system: TTHC

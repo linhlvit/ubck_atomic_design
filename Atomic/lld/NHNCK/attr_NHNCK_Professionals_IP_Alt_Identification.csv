@@ -1,6 +1,9 @@
-﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-Involved Party Id,FK đến Securities Practitioner,Surrogate Key,false,false,draft,NHNCK.Professionals.Id,FK target: Securities Practitioner.Practitioner Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã người hành nghề,Text,false,false,draft,NHNCK.Professionals.Id,Lookup pair: Securities Practitioner.Practitioner Code. Pair with Involved Party Id.,,
-Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Professionals,
-Identification Type Code,Loại giấy tờ định danh — CCCD/CMND,Classification Value,false,false,draft,,,IP_ALT_ID_TYPE=CITIZEN_ID,
-Identification Number,Mã định danh giấy tờ tùy thân (FK bảng identity riêng),Text,true,false,draft,NHNCK.Professionals.IdentityId,Nguồn mới: IdentityId tham chiếu bảng identity riêng — không có detail trực tiếp trong Professionals.,IP_ALT_ID_TYPE=CITIZEN_ID,
+attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Securities Practitioner.,Surrogate Key,false,false,draft,NHNCK.qlnhn.PROFESSIONALS.ID,FK target: Securities Practitioner.Securities Practitioner Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã người hành nghề.,Text,false,false,draft,NHNCK.qlnhn.PROFESSIONALS.ID,Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.PROFESSIONALS,
+Identification Type Code,Loại giấy tờ định danh.,Classification Value,false,false,draft,NHNCK.qlnhn.PROFESSIONALS.IDENTITY_TYPE,"Scheme: NHNCK_IDENTITY_TYPE. ETL map từ NUMBER: 1=CMND, 2=CCCD, 3=PASSPORT.",NHNCK_IDENTITY_TYPE,
+Identification Number,Số giấy tờ định danh (CMND/CCCD/Hộ chiếu).,Text,false,false,draft,NHNCK.qlnhn.PROFESSIONALS.IDENTITY_NUMBER,BK của shared entity cùng với Involved Party Id + Identification Type Code.,,
+Identification Issue Date,Ngày cấp giấy tờ định danh.,Date,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.IDENTITY_ISSUE_DATE,,,
+Identification Issue Place,Nơi cấp giấy tờ định danh.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.IDENTITY_ISSUE_PLACE,,,
+Previous Identification Number,Số CMND cũ (trước khi đổi sang CCCD).,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PREVIOUS_IDENTITY_NUMBER,Lưu lại để tra cứu lịch sử giấy tờ.,,

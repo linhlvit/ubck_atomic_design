@@ -9,12 +9,15 @@ Nguồn dữ liệu:
   - manifest.csv           : mapping source → entity (source_system, source_table,
                              atomic_entity, group, lld_file)
   - <SOURCE>/<lld_file>    : từng file attr CSV
+  - {SOURCE}_HLD_Tier{N}.md: parse **Description:** từ entity section để populate
+                             description trong atomic_entities.csv (nếu chưa có)
 
 Output:
   - atomic_attributes.csv  : mapping detail — 1 dòng per (entity × attribute × source × context)
 
 Luồng:
   manifest.csv + attr_*.csv → build_attributes() → atomic_attributes.csv
+  HLD Tier files → parse_hld_descriptions() → dùng làm fallback description
 
 Grain của atomic_attributes.csv:
   1 dòng = 1 (atomic_entity, atomic_attribute, source_system, source_table,
@@ -41,6 +44,7 @@ Cách dùng:
 """
 
 import csv
+import re
 import argparse
 import sys
 import io
@@ -105,6 +109,46 @@ ENTITY_FIELDS = [
     "bcv_core_object", "bcv_concept", "atomic_entity",
     "table_type", "status", "description", "source_table",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Parse **Description:** từ section "## Entities" trong HLD Overview file
+# Source of truth: {SOURCE}_HLD_Overview.md → ## Entities → ### N. {Entity Name}
+# Returns: dict { atomic_entity_name → description_text }
+# ---------------------------------------------------------------------------
+def parse_hld_descriptions(source_system: str) -> dict[str, str]:
+    result: dict[str, str] = {}
+    overview_path = HLD_DIR / f"{source_system}_HLD_Overview.md"
+    if not overview_path.exists():
+        return result
+
+    text = overview_path.read_text(encoding="utf-8")
+
+    # Tìm section "## Entities" (từ heading đến heading ## tiếp theo hoặc EOF)
+    section_match = re.search(
+        r"^##\s+Entities\s*\n(.+?)(?=^##\s|\Z)",
+        text, re.MULTILINE | re.DOTALL
+    )
+    if not section_match:
+        return result
+
+    section = section_match.group(1)
+
+    # Tìm tất cả entity headings trong section: "### N. Entity Name"
+    for m in re.finditer(r"^###\s+\d+\.\s+(.+)$", section, re.MULTILINE):
+        entity_name = m.group(1).strip()
+        rest = section[m.end():]
+        desc_match = re.search(
+            r"^\*\*Description:\*\*\s*(.+)$",
+            rest[:500],
+            re.MULTILINE,
+        )
+        if desc_match:
+            desc = desc_match.group(1).strip()
+            if entity_name not in result:
+                result[entity_name] = desc
+
+    return result
 
 
 def bco_sort_key(bco: str) -> int:
@@ -230,7 +274,7 @@ def get_distinct_context_keys(attr_rows: list[dict], source_system: str, source_
     """
     addr_types: set = set()
     for ar in attr_rows:
-        ctx = ar.get("classification_context", "").strip()
+        ctx = (ar.get("classification_context") or "").strip()
         addr = _extract_addr_part(ctx)
         if addr:
             addr_types.add(addr)
@@ -253,7 +297,7 @@ def find_attr_in_ctx(attr_rows: list[dict], attr_name: str, ctx_key: str,
     for ar in attr_rows:
         if ar["attribute_name"] != attr_name:
             continue
-        raw_ctx   = ar.get("classification_context", "").strip()
+        raw_ctx   = (ar.get("classification_context") or "").strip()
         addr_part = _extract_addr_part(raw_ctx)
         ar_ctx    = build_ctx_string(source_system, source_table, addr_part)
 
@@ -282,7 +326,7 @@ def build_master_attrs(entity_manifest_rows: list[dict]) -> "OrderedDict[tuple, 
         attr_rows = load_attr_file(m["source_system"], m["lld_file"])
         for ar in attr_rows:
             name     = ar["attribute_name"]
-            raw_ctx  = ar.get("classification_context", "").strip()
+            raw_ctx  = (ar.get("classification_context") or "").strip()
             addr_part = _extract_addr_part(raw_ctx)
             key = (name, addr_part)
 
@@ -415,11 +459,14 @@ def build_attributes(manifest_rows: list[dict],
 
 
 # ---------------------------------------------------------------------------
-# Build atomic_entities rows (giữ nguyên logic)
+# Build atomic_entities rows
+# Ưu tiên description: (1) existing atomic_entities.csv, (2) HLD Tier **Description:**
 # ---------------------------------------------------------------------------
 def build_entities(manifest_rows: list[dict],
-                   existing_entities: dict[str, dict]) -> list[dict]:
+                   existing_entities: dict[str, dict],
+                   hld_descriptions: dict[str, str] | None = None) -> list[dict]:
     entity_map: dict[str, dict] = {}
+    hld_desc = hld_descriptions or {}
 
     for m in manifest_rows:
         atomic_entity = m["atomic_entity"]
@@ -427,12 +474,16 @@ def build_entities(manifest_rows: list[dict],
 
         if atomic_entity not in entity_map:
             existing = existing_entities.get(atomic_entity, {})
+            # Description priority: existing file > HLD Tier > empty
+            existing_desc = existing.get("description", "").strip()
+            description = existing_desc or hld_desc.get(atomic_entity, "")
+
             entity_map[atomic_entity] = {
                 "bcv_core_object": existing.get("bcv_core_object", ""),
                 "bcv_concept":     existing.get("bcv_concept", ""),
                 "atomic_entity":   atomic_entity,
                 "table_type":      existing.get("table_type", ""),
-                "description":     existing.get("description", ""),
+                "description":     description,
                 "source_table":    source_table,
                 "status":          existing.get("status", "draft"),
             }
@@ -469,10 +520,19 @@ def main():
     all_manifest = load_manifest()
     print(f"  {len(all_manifest)} entries", file=sys.stderr)
 
+    # --- Parse HLD descriptions từ tất cả source systems có trong manifest ---
+    source_systems = {m["source_system"] for m in all_manifest}
+    hld_descriptions: dict[str, str] = {}
+    for src in sorted(source_systems):
+        found = parse_hld_descriptions(src)
+        hld_descriptions.update(found)
+    if hld_descriptions:
+        print(f"  HLD descriptions tìm được: {len(hld_descriptions)}", file=sys.stderr)
+
     # --- Build entities ---
     if not args.skip_entities:
         print("Build atomic_entities...", file=sys.stderr)
-        ent_rows = build_entities(all_manifest, entity_lookup)
+        ent_rows = build_entities(all_manifest, entity_lookup, hld_descriptions)
         print(f"  {len(ent_rows)} entity rows", file=sys.stderr)
         write_csv(OUT_ENTITIES, ENTITY_FIELDS, ent_rows, dry_run=args.dry_run)
 

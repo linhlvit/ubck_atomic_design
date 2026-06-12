@@ -3,12 +3,11 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-corp_bond_mtch_log-MDDS.CorpBondMatch
-  logical_name: "Corporate Bond Match Log"
-
+  logical_name: Corporate Bond Match Log
   physical_name: corp_bond_mtch_log
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Transaction
   bcv_concept: "[Transaction] Sell Transaction"
   table_type: Fact Append
@@ -75,7 +74,7 @@ attributes:
     source_system: MDDS
     source_table: CorpBondMatch
     source_column: MDDS.CorpBondMatch.symbol
-    comment: "FK target: Corporate Bond Trading Snapshot.Corporate Bond Trading Snapshot Id. Join qua (symbol / trading_date)."
+    comment: "FK target: corp_bond_tdg_snpst.corp_bond_tdg_snpst_id. Join qua (symbol / trading_date)."
     classification_context: "Source System Code = 'MDDS_CORPBONDMATCH'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: MDDS
     source_table: CorpBondMatch
     source_column: MDDS.CorpBondMatch.symbol
-    comment: "Lookup pair: Corporate Bond Trading Snapshot.Symbol. Pair with Corporate Bond Trading Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
+    comment: "Lookup pair: Corporate Bond Trading Snapshot.Symbol. Pair with corp_bond_tdg_snpst_id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
     classification_context: "Source System Code = 'MDDS_CORPBONDMATCH'"
     etl_derived_value: null
 

@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-dscl_ancm-FIMS.ANNOUNCE
-  logical_name: "Disclosure Announcement"
-
+  logical_name: Disclosure Announcement
   physical_name: dscl_ancm
   layer: Atomic
   version: "1.0"
@@ -74,7 +73,7 @@ attributes:
     source_system: FIMS
     source_table: ANNOUNCE
     source_column: FIMS.ANNOUNCE.InRepId
-    comment: "FK target: Disclosure Representative.Disclosure Representative Id."
+    comment: "FK target: dscl_rprs.dscl_rprs_id."
     classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
     etl_derived_value: null
 
@@ -88,7 +87,7 @@ attributes:
     source_system: FIMS
     source_table: ANNOUNCE
     source_column: FIMS.ANNOUNCE.InRepId
-    comment: "Lookup pair: Disclosure Representative.Disclosure Representative Code. Pair with Disclosure Representative Id."
+    comment: "Lookup pair: dscl_rprs.dscl_rprs_code. Pair with dscl_rprs_id."
     classification_context: "Source System Code = 'FIMS_ANNOUNCE'"
     etl_derived_value: null
 

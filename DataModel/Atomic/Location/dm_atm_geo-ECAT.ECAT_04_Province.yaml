@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-geo-ECAT.ECAT_04_Province
-  logical_name: "Geographic Area"
-
+  logical_name: Geographic Area
   physical_name: geo
   layer: Atomic
   version: "1.0"
@@ -63,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'ECAT_ECAT_04_PROVINCE'"
-    etl_derived_value: ECAT_ECAT_04_PROVINCE
+    etl_derived_value: null
 
   - name: Geographic Area Short Code
     physical_name: geo_shrt_code
@@ -215,7 +214,7 @@ attributes:
     source_system: ECAT
     source_table: ECAT_04_Province
     source_column: null
-    comment: "FK target: Geographic Area.Geographic Area Id. Self-join phân cấp: COUNTRY (cha=null) → REGION → PROVINCE_OLD/PROVINCE → DISTRICT_OLD → WARD_OLD/WARD. ETL resolve parent_code sang surrogate Id."
+    comment: "FK target: geo.geo_id. Self-join phân cấp: COUNTRY (cha=null) → REGION → PROVINCE_OLD/PROVINCE → DISTRICT_OLD → WARD_OLD/WARD. ETL resolve parent_code sang surrogate Id."
     classification_context: "Source System Code = 'ECAT_ECAT_04_PROVINCE'"
     etl_derived_value: null
 
@@ -229,6 +228,48 @@ attributes:
     source_system: ECAT
     source_table: ECAT_04_Province
     source_column: "ECAT.ECAT_02_Region.parent_code, ECAT.ECAT_03_ProvinceOld.parent_code, ECAT.ECAT_04_Province.parent_code, ECAT.ECAT_05_DistrictOld.parent_code, ECAT.ECAT_06_WardOld.parent_code, ECAT.ECAT_07_Ward.parent_code"
-    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic Area Id. ECAT_01_Country không có parent_code (NULL)."
+    comment: "Lookup pair: geo.geo_code. Pair with Parent Geographic Area Id. ECAT_01_Country không có parent_code (NULL)."
+    classification_context: "Source System Code = 'ECAT_ECAT_04_PROVINCE'"
+    etl_derived_value: null
+
+  - name: ISO Country Code
+    physical_name: iso_cty_code
+    business_meaning: "Mã quốc gia ISO 3166-1 alpha-2"
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_04_Province
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_ECAT_04_PROVINCE'"
+    etl_derived_value: null
+
+  - name: Default Flag
+    physical_name: dflt_f
+    business_meaning: "Cờ mặc định: true=Mặc định; false=Không"
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_04_Province
+    source_column: null
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'ECAT_ECAT_04_PROVINCE'"
+    etl_derived_value: null
+
+  - name: Geographic Area Status Code
+    physical_name: geo_st_code
+    business_meaning: "Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ECAT_04_Province
+    source_column: null
+    comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
     classification_context: "Source System Code = 'ECAT_ECAT_04_PROVINCE'"
     etl_derived_value: null

@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-ip_alt_identn-FIMS.BANKMONI
-  logical_name: "Involved Party Alternative Identification"
-
+  logical_name: Involved Party Alternative Identification
   physical_name: ip_alt_identn
   layer: Atomic
   version: "1.0"
@@ -33,7 +32,7 @@ attributes:
     source_system: FIMS
     source_table: BANKMONI
     source_column: FIMS.BANKMONI.Id
-    comment: "FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng."
+    comment: "FK target: cstd_bnk.cstd_bnk_id. Shared entity — không có PK surrogate riêng."
     classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
@@ -47,7 +46,7 @@ attributes:
     source_system: FIMS
     source_table: BANKMONI
     source_column: FIMS.BANKMONI.Id
-    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id."
+    comment: "Lookup pair: cstd_bnk.cstd_bnk_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
@@ -121,6 +120,48 @@ attributes:
     classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
+  - name: Identification Issue Date
+    physical_name: identn_issu_dt
+    business_meaning: Ngày cấp giấy tờ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identn_issu_plc
+    business_meaning: Nơi cấp giấy tờ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Previous Identification Number
+    physical_name: prev_identn_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
   - name: Involved Party Id
     physical_name: ip_id
     business_meaning: FK đến Custodian Bank.
@@ -131,7 +172,7 @@ attributes:
     source_system: FIMS
     source_table: BANKMONI
     source_column: FIMS.BANKMONI.Id
-    comment: "FK target: Custodian Bank.Custodian Bank Id. Shared entity — không có PK surrogate riêng."
+    comment: "FK target: cstd_bnk.cstd_bnk_id. Shared entity — không có PK surrogate riêng."
     classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'OPERATING_LICENSE'"
     etl_derived_value: null
 
@@ -145,7 +186,7 @@ attributes:
     source_system: FIMS
     source_table: BANKMONI
     source_column: FIMS.BANKMONI.Id
-    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Involved Party Id."
+    comment: "Lookup pair: cstd_bnk.cstd_bnk_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'OPERATING_LICENSE'"
     etl_derived_value: null
 
@@ -216,5 +257,47 @@ attributes:
     source_table: BANKMONI
     source_column: FIMS.BANKMONI.RegAdd
     comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'OPERATING_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identn_issu_dt
+    business_meaning: Ngày cấp giấy tờ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'OPERATING_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identn_issu_plc
+    business_meaning: Nơi cấp giấy tờ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'OPERATING_LICENSE'"
+    etl_derived_value: null
+
+  - name: Previous Identification Number
+    physical_name: prev_identn_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
     classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type Code = 'OPERATING_LICENSE'"
     etl_derived_value: null

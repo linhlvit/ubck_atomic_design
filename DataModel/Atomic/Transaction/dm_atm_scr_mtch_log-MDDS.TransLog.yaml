@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-scr_mtch_log-MDDS.TransLog
-  logical_name: "Security Match Log"
-
+  logical_name: Security Match Log
   physical_name: scr_mtch_log
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: MDDS
     source_table: TransLog
     source_column: MDDS.TransLog.symbol
-    comment: "FK target: Security Trading Snapshot.Security Trading Snapshot Id. Join qua (symbol / trading_date)."
+    comment: "FK target: scr_tdg_snpst.scr_tdg_snpst_id. Join qua (symbol / trading_date)."
     classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: MDDS
     source_table: TransLog
     source_column: MDDS.TransLog.symbol
-    comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with Security Trading Snapshot Id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
+    comment: "Lookup pair: Security Trading Snapshot.Symbol. Pair with scr_tdg_snpst_id. BK nghiệp vụ. Nguồn string — khớp tự nhiên với Text."
     classification_context: "Source System Code = 'MDDS_TRANSLOG'"
     etl_derived_value: null
 

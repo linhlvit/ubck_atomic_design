@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-audt_firm_sanction-IDS.af_sanctions
-  logical_name: "Audit Firm Sanction"
-
+  logical_name: Audit Firm Sanction
   physical_name: audt_firm_sanction
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: af_sanctions
     source_column: IDS.af_sanctions.af_approval_id
-    comment: "FK target: Audit Firm Approval.Audit Firm Approval Id. Nullable — NULL khi sanction_target_type_code = kiểm toán viên."
+    comment: "FK target: audt_firm_aprv.audt_firm_aprv_id. Nullable — NULL khi sanction_target_type_code = kiểm toán viên."
     classification_context: "Source System Code = 'IDS_AF_SANCTIONS'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: af_sanctions
     source_column: IDS.af_sanctions.af_approval_id
-    comment: "Lookup pair: Audit Firm Approval.Audit Firm Approval Code. Pair with Audit Firm Approval Id."
+    comment: "Lookup pair: audt_firm_aprv.audt_firm_aprv_code. Pair with audt_firm_aprv_id."
     classification_context: "Source System Code = 'IDS_AF_SANCTIONS'"
     etl_derived_value: null
 
@@ -103,7 +102,7 @@ attributes:
     source_system: IDS
     source_table: af_sanctions
     source_column: IDS.af_sanctions.af_auditor_approval_id
-    comment: "FK target: Auditor Approval.Auditor Approval Id. Nullable — NULL khi sanction_target_type_code = công ty kiểm toán."
+    comment: "FK target: auditor_aprv.auditor_aprv_id. Nullable — NULL khi sanction_target_type_code = công ty kiểm toán."
     classification_context: "Source System Code = 'IDS_AF_SANCTIONS'"
     etl_derived_value: null
 
@@ -117,7 +116,7 @@ attributes:
     source_system: IDS
     source_table: af_sanctions
     source_column: IDS.af_sanctions.af_auditor_approval_id
-    comment: "Lookup pair: Auditor Approval.Auditor Approval Code. Pair with Auditor Approval Id."
+    comment: "Lookup pair: auditor_aprv.auditor_aprv_code. Pair with auditor_aprv_id."
     classification_context: "Source System Code = 'IDS_AF_SANCTIONS'"
     etl_derived_value: null
 

@@ -1,216 +1,152 @@
-## 2.1 NHNCK — Phân hệ Quản lý giám sát người hành nghề chứng khoán
+## NHNCK — Hệ thống Quản lý giám sát người hành nghề chứng khoán
 
-### 2.1.1 Các mô hình quan hệ dữ liệu
+### Các mô hình quan hệ dữ liệu
 
-- DBML tổng hợp (tất cả bảng): [`NHNCK.dbml`](NHNCK.dbml) — paste vào https://dbdiagram.io để render.
-- Diagram theo mảng nghiệp vụ:
-  - **UID03 — Quản lý hồ sơ**: [`NHNCK_UID03.dbml`](NHNCK_UID03.dbml)
-
+![Mô hình quan hệ dữ liệu NHNCK](NHNCK/fragments/NHNCK_diagram.png)
 
 **Danh sách bảng:**
 
 | STT | Tên bảng | Mô tả |
 |---|---|---|
-| 1 | scr_prac_license_ap | Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý. |
-| 2 | scr_prac_license_ap_ed_ctf_doc | Văn bằng/chứng chỉ học tập đính kèm hồ sơ CCHN. Ghi nhận loại chuyên môn và file đính kèm kèm trạng thái thẩm định. |
-| 3 | scr_prac_license_ap_doc_attch | Tài liệu đính kèm hồ sơ CCHN. Ghi nhận loại tài liệu và trạng thái thẩm định. |
+| 1 | scr_prac_conduct_vln | Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only. FK đến Practitioner và Decision. |
+| 2 | scr_prac_prof_trn_clss_enrollment | Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa đào tạo chuyên môn. Ghi nhận điểm thi, kết quả đạt/không đạt và trạng thái ghi danh. |
 
 
 
 
-### 2.1.2 Bảng scr_prac_license_ap
-
-- **Mô tả:** Hồ sơ đăng ký cấp/cấp lại/gia hạn chứng chỉ hành nghề chứng khoán. Ghi nhận đầy đủ thông tin người nộp và kết quả xử lý.
-- **Tên vật lý:** scr_prac_license_ap
-- **Đường dẫn trên kho dữ liệu:**
-- **Các trường partition:**
-- **Thời gian lưu trữ:** 5 năm
-- **Định dạng lưu trữ:** Iceberg
+### Bảng scr_prac_conduct_vln
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | license_ap_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | license_ap_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.Applications' | Mã nguồn dữ liệu |
-| 4 | prac_id | BIGINT |  |  | F |  | FK đến Securities Practitioner |
-| 5 | prac_code | STRING |  |  |  |  | Mã người hành nghề |
-| 6 | ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ đăng ký |
-| 7 | ap_st_code | STRING | X |  |  |  | Trạng thái hồ sơ (FK → ApplicationStatuses) |
-| 8 | license_ctf_doc_id | BIGINT | X |  | F |  | FK đến CCHN đã được cấp (nếu có) |
-| 9 | license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN đã cấp |
-| 10 | prev_ctf_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ trước đó |
-| 11 | prev_license_ctf_doc_id | BIGINT | X |  | F |  | FK đến CCHN trước đó |
-| 12 | prev_license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN trước đó |
-| 13 | exam_ases_id | BIGINT | X |  | F |  | FK đến đợt thi (nếu hồ sơ gắn với kỳ thi) |
-| 14 | exam_ases_code | STRING | X |  |  |  | Mã đợt thi |
-| 15 | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến cán bộ xử lý |
-| 16 | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ xử lý |
-| 17 | license_ap_verf_st_id | BIGINT | X |  | F |  | FK đến yêu cầu phê duyệt lãnh đạo |
-| 18 | license_ap_verf_st_code | STRING | X |  |  |  | Mã yêu cầu phê duyệt |
-| 19 | ap_code | STRING | X |  |  |  | Mã hồ sơ (mã nghiệp vụ) |
-| 20 | ap_ttl | STRING | X |  |  |  | Tiêu đề hồ sơ |
-| 21 | rgst_tp_code | STRING | X |  |  |  | Loại đăng ký |
-| 22 | ap_tp_code | STRING | X |  |  |  | Loại hồ sơ |
-| 23 | subm_dt | DATE | X |  |  |  | Ngày nộp hồ sơ |
-| 24 | supplement_dt | DATE | X |  |  |  | Ngày bổ sung hồ sơ |
-| 25 | supplement_ltr_dt | DATE | X |  |  |  | Ngày thư yêu cầu bổ sung |
-| 26 | reissue_rsn | STRING | X |  |  |  | Lý do cấp lại |
-| 27 | rejection_rsn | STRING | X |  |  |  | Lý do từ chối |
-| 28 | ctf_nbr | STRING | X |  |  |  | Số chứng chỉ (snapshot tại thời điểm cấp) |
-| 29 | issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ (snapshot) |
-| 30 | prev_ctf_nbr | STRING | X |  |  |  | Số chứng chỉ trước đó (snapshot) |
-| 31 | prev_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ trước đó (snapshot) |
-| 32 | reissue_hsm_code | STRING | X |  |  |  | Mã tái cấp HSM |
-| 33 | ctf_recpt_mth_code | STRING | X |  |  |  | Phương thức nhận chứng chỉ |
-| 34 | ctf_recpt_adr | STRING | X |  |  |  | Địa chỉ nhận chứng chỉ |
-| 35 | ctf_recpt_ph | STRING | X |  |  |  | Số điện thoại nhận chứng chỉ |
-| 36 | recpt_st_code | STRING | X |  |  |  | Trạng thái nhận chứng chỉ |
-| 37 | is_violated_ind | BOOLEAN | X |  |  |  | Cờ vi phạm |
-| 38 | is_dt_exploitable_ind | BOOLEAN | X |  |  |  | Cờ khai thác theo ngày |
-| 39 | ap_note | STRING | X |  |  |  | Ghi chú |
-| 40 | crt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer |
-| 41 | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo |
-| 42 | udt_by_ofcr_id | BIGINT | X |  | F |  | FK đến Officer |
-| 43 | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật |
-| 44 | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo |
-| 45 | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật |
+| 1 | scr_prac_conduct_vln_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key). |
+| 2 | scr_prac_conduct_vln_code | STRING |  |  |  |  | Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.VIOLATIONS' | Mã hệ thống nguồn. |
+| 4 | scr_prac_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán bị vi phạm. |
+| 5 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề chứng khoán bị vi phạm. |
+| 6 | license_dcsn_doc_id | STRING | X |  | F |  | FK đến quyết định xử lý vi phạm. |
+| 7 | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định xử lý vi phạm. |
+| 8 | prac_nm_at_vln | STRING | X |  |  |  | Họ tên người hành nghề tại thời điểm vi phạm (snapshot). |
+| 9 | prac_brth_dt_at_vln | DATE | X |  |  |  | Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot). |
+| 10 | prac_id_nbr_at_vln | STRING | X |  |  |  | Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot). |
+| 11 | vln_rcrd_dt | TIMESTAMP |  |  |  |  | Ngày ghi nhận vi phạm (business event date). |
+| 12 | note | STRING | X |  |  |  | Ghi chú vi phạm. |
+| 13 | rcrd_tp_code | STRING | X |  |  |  | Phân loại bản ghi. |
+| 14 | rcrd_st_code | STRING |  |  |  |  | Trạng thái bản ghi vi phạm (1=Hoạt động). |
 
 
-#### 2.1.2.1 Constraint
+#### Constraint
 
 **Khóa chính (Primary Key):**
 
-| Tên trường | Tên cột |
-|---|---|
-| License Application Id | license_ap_id |
+| Tên trường |
+|---|
+| scr_prac_conduct_vln_id |
 
 
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Tên cột | Bảng tham chiếu | Trường tham chiếu | Cột tham chiếu |
-|---|---|---|---|---|
-| Practitioner Id | prac_id | scr_prac | Practitioner Id | prac_id |
-| License Certificate Document Id | license_ctf_doc_id | scr_prac_license_ctf_doc | License Certificate Document Id | license_ctf_doc_id |
-| Previous License Certificate Document Id | prev_license_ctf_doc_id | scr_prac_license_ctf_doc | License Certificate Document Id | license_ctf_doc_id |
-| Examination Assessment Id | exam_ases_id | scr_prac_qualf_exam_ases | Examination Assessment Id | exam_ases_id |
-| Assignee Officer Id | assignee_ofcr_id | regulatory_authority_officer | Officer Id |  |
-| License Application Verification Status Id | license_ap_verf_st_id | scr_prac_license_ap_verf_st | License Application Verification Status Id | license_ap_verf_st_id |
-| Created By Officer Id | crt_by_ofcr_id | regulatory_authority_officer | Officer Id |  |
-| Updated By Officer Id | udt_by_ofcr_id | regulatory_authority_officer | Officer Id |  |
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| scr_prac_id | scr_prac | scr_prac_id |
+| license_dcsn_doc_id |  |  |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
 
 
 
 
-
-
-### 2.1.3 Bảng scr_prac_license_ap_ed_ctf_doc
-
-- **Mô tả:** Văn bằng/chứng chỉ học tập đính kèm hồ sơ CCHN. Ghi nhận loại chuyên môn và file đính kèm kèm trạng thái thẩm định.
-- **Tên vật lý:** scr_prac_license_ap_ed_ctf_doc
-- **Đường dẫn trên kho dữ liệu:**
-- **Các trường partition:**
-- **Thời gian lưu trữ:** 5 năm
-- **Định dạng lưu trữ:** Iceberg
+### Bảng scr_prac_prof_trn_clss_enrollment
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | license_ap_ed_ctf_doc_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | license_ap_ed_ctf_doc_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.ApplicationSpecializations' | Mã nguồn dữ liệu |
-| 4 | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ |
-| 5 | license_ap_code | STRING |  |  |  |  | Mã hồ sơ |
-| 6 | specialization_tp_code | STRING |  |  |  |  | Mã chuyên môn (FK → Specializations) |
-| 7 | file_nm | STRING | X |  |  |  | Tên file chứng chỉ chuyên môn |
-| 8 | file_path | STRING | X |  |  |  | Đường dẫn file |
-| 9 | file_fmt | STRING | X |  |  |  | Loại file |
-| 10 | file_sz | STRING | X |  |  |  | Dung lượng file (bytes) |
-| 11 | specialization_note | STRING | X |  |  |  | Nội dung/ghi chú |
-| 12 | aprs_st_code | STRING | X |  |  |  | Trạng thái thẩm định |
-| 13 | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến người thẩm định |
-| 14 | assignee_ofcr_code | STRING | X |  |  |  | Mã người thẩm định |
-| 15 | appraisaled_tms | TIMESTAMP | X |  |  |  | Ngày thẩm định |
+| 1 | scr_prac_prof_trn_clss_enrollment_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | scr_prac_prof_trn_clss_enrollment_code | STRING |  |  |  |  | Mã định danh (BK từ PK nguồn) |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.SPECIALIZATION_COURSE_DETAILS' | Mã nguồn dữ liệu |
+| 4 | scr_prac_prof_trn_clss_id | STRING |  |  | F |  | FK đến lớp đào tạo nghiệp vụ chứng khoán |
+| 5 | scr_prac_prof_trn_clss_code | STRING |  |  |  |  | Mã lớp đào tạo |
+| 6 | scr_prac_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán |
+| 7 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề |
+| 8 | specialization_tp_code | STRING |  |  |  |  | Loại chuyên ngành đào tạo |
+| 9 | exam_nbr | STRING | X |  |  |  | Số báo danh dự thi |
+| 10 | prac_nm_at_enrollment | STRING | X |  |  |  | Họ tên học viên tại thời điểm đăng ký (snapshot) |
+| 11 | prac_brth_dt_at_enrollment | DATE | X |  |  |  | Ngày sinh tại thời điểm đăng ký (snapshot) |
+| 12 | plc_of_brth | STRING | X |  |  |  | Nơi sinh (snapshot) |
+| 13 | perm_rsdnc_cty_id | STRING | X |  | F |  | FK đến quốc gia thường trú (snapshot) |
+| 14 | perm_rsdnc_cty_code | STRING | X |  |  |  | Mã quốc gia thường trú |
+| 15 | perm_rsdnc_prov_id | STRING | X |  | F |  | FK đến tỉnh/thành thường trú (snapshot) |
+| 16 | perm_rsdnc_prov_code | STRING | X |  |  |  | Mã tỉnh/thành thường trú |
+| 17 | perm_rsdnc_dstc_id | STRING | X |  | F |  | FK đến quận/huyện thường trú (snapshot) |
+| 18 | perm_rsdnc_dstc_code | STRING | X |  |  |  | Mã quận/huyện thường trú |
+| 19 | prac_id_tp_code_at_enrollment | STRING | X |  |  |  | Loại giấy tờ định danh tại thời điểm đăng ký (snapshot) |
+| 20 | prac_id_nbr_at_enrollment | STRING | X |  |  |  | Số định danh tại thời điểm đăng ký (snapshot) |
+| 21 | prac_id_issu_dt_at_enrollment | DATE | X |  |  |  | Ngày cấp giấy tờ định danh (snapshot) |
+| 22 | prac_id_issu_plc_at_enrollment | STRING | X |  |  |  | Nơi cấp giấy tờ định danh (snapshot) |
+| 23 | exam_scor | DECIMAL(5,2) | X |  |  |  | Điểm thi |
+| 24 | trn_rslt_code | STRING | X |  |  |  | Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt) |
+| 25 | rcrd_st_code | STRING | X |  |  |  | Trạng thái bản ghi |
+| 26 | dsc | STRING | X |  |  |  | Mô tả |
+| 27 | note | STRING | X |  |  |  | Ghi chú |
+| 28 | assignee_ofcr_id | STRING | X |  | F |  | FK đến cán bộ phụ trách (nullable) |
+| 29 | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ phụ trách |
+| 30 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi |
+| 31 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi |
+| 32 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer tạo bản ghi |
+| 33 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer cập nhật bản ghi |
 
 
-#### 2.1.3.1 Constraint
+#### Constraint
 
 **Khóa chính (Primary Key):**
 
-| Tên trường | Tên cột |
-|---|---|
-| License Application Education Certificate Document Id | license_ap_ed_ctf_doc_id |
+| Tên trường |
+|---|
+| scr_prac_prof_trn_clss_enrollment_id |
 
 
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Tên cột | Bảng tham chiếu | Trường tham chiếu | Cột tham chiếu |
-|---|---|---|---|---|
-| License Application Id | license_ap_id | scr_prac_license_ap | License Application Id | license_ap_id |
-| Assignee Officer Id | assignee_ofcr_id | regulatory_authority_officer | Officer Id |  |
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| scr_prac_prof_trn_clss_id | scr_prac_prof_trn_clss | scr_prac_prof_trn_clss_id |
+| scr_prac_id | scr_prac | scr_prac_id |
+| perm_rsdnc_cty_id | geo | geo_id |
+| perm_rsdnc_prov_id | geo | geo_id |
+| perm_rsdnc_dstc_id | geo | geo_id |
+| assignee_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
+| crt_by_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
+| udt_by_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
 
 
 
 
+### Stored Procedure/Function
 
+N/A
 
-### 2.1.4 Bảng scr_prac_license_ap_doc_attch
+### Package
 
-- **Mô tả:** Tài liệu đính kèm hồ sơ CCHN. Ghi nhận loại tài liệu và trạng thái thẩm định.
-- **Tên vật lý:** scr_prac_license_ap_doc_attch
-- **Đường dẫn trên kho dữ liệu:**
-- **Các trường partition:**
-- **Thời gian lưu trữ:** 5 năm
-- **Định dạng lưu trữ:** Iceberg
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | license_ap_doc_attch_id | BIGINT |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | license_ap_doc_attch_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.ApplicationDocuments' | Mã nguồn dữ liệu |
-| 4 | license_ap_id | BIGINT |  |  | F |  | FK đến hồ sơ |
-| 5 | license_ap_code | STRING |  |  |  |  | Mã hồ sơ |
-| 6 | doc_tp_code | STRING | X |  | F |  | Mã loại tài liệu (FK → Documents) |
-| 7 | doc_nm | STRING | X |  |  |  | Tên tài liệu |
-| 8 | file_nm | STRING | X |  |  |  | Tên file |
-| 9 | file_path | STRING | X |  |  |  | Đường dẫn file |
-| 10 | file_fmt | STRING | X |  |  |  | Loại file (pdf, docx...) |
-| 11 | file_sz | STRING | X |  |  |  | Dung lượng file (bytes) |
-| 12 | attch_dsc | STRING | X |  |  |  | Mô tả tài liệu |
-| 13 | attch_note | STRING | X |  |  |  | Ghi chú thẩm định |
-| 14 | aprs_st_code | STRING | X |  |  |  | Trạng thái thẩm định |
-| 15 | is_inval_ind | BOOLEAN | X |  |  |  | Cờ không hợp lệ |
-| 16 | is_incom_ind | BOOLEAN | X |  |  |  | Cờ chưa hoàn thành |
-| 17 | assignee_ofcr_id | BIGINT | X |  | F |  | FK đến người thẩm định |
-| 18 | assignee_ofcr_code | STRING | X |  |  |  | Mã người thẩm định |
-| 19 | appraisaled_tms | TIMESTAMP | X |  |  |  | Ngày thẩm định |
-| 20 | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo |
-
-
-#### 2.1.4.1 Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường | Tên cột |
-|---|---|
-| License Application Document Attachment Id | license_ap_doc_attch_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Tên cột | Bảng tham chiếu | Trường tham chiếu | Cột tham chiếu |
-|---|---|---|---|---|
-| License Application Id | license_ap_id | scr_prac_license_ap | License Application Id | license_ap_id |
-| Assignee Officer Id | assignee_ofcr_id | regulatory_authority_officer | Officer Id |  |
-
-
-
-
-
+N/A

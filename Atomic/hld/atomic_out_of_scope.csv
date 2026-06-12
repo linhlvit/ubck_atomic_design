@@ -135,19 +135,53 @@ IDS,countries,Danh mục quốc gia,Reference Data,Reference data set — map v�
 IDS,lookup_values,Danh mục giá trị tra cứu,Reference Data,Reference data sets — mỗi lookup_group = 1 Classification Value scheme IDS_*
 IDS,provinces,Danh mục tỉnh/thành phố,Reference Data,Reference data set — map vào shared Geographic Area (PROVINCE)
 IDS,departments,Phòng ban UBCK,Shared Entity,Dùng shared Regulatory Authority Organization Unit khi cần FK — không thiết kế riêng IDS
-NHNCK,CertificateNumberTemplates,Template số chứng chỉ,Config,Config/template data.
-NHNCK,CertificateDepartments,Phòng ban chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,CertificateDocuments,Tài liệu chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,CertificateSpecializations,Chuyên môn chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,DigitalCertificateUsers,Người dùng chứng chỉ số,Digital Cert,Operational/PKI data.
-NHNCK,DigitalCertificates,Chứng chỉ số,Digital Cert,Operational/PKI data — không phải CCHN.
-NHNCK,DepartmentAccess,Quyền truy cập theo phòng ban,System / Auth,Operational/system data.
-NHNCK,PermissionRoles,Phân quyền theo vai trò,System / Auth,Operational/system data.
-NHNCK,Permissions,Danh mục quyền hạn,System / Auth,Operational/system data.
-NHNCK,Roles,Danh mục vai trò,System / Auth,Operational/system data.
-NHNCK,UserRoles,Phân quyền người dùng,System / Auth,Operational/system data — không có giá trị nghiệp vụ.
-NHNCK,SystemParameters,Tham số hệ thống,System / Config,Config data.
-NHNCK,ActionLogs,Nhật ký hành động hệ thống,System / Log,System audit log — không phải nghiệp vụ CCHN.
+NHNCK,CERTIFICATE_DEPARTMENTS,Liên kết phòng ban với loại chứng chỉ,Application Config,Application config.
+NHNCK,CERTIFICATE_DOCUMENTS,Liên kết loại tài liệu với loại chứng chỉ,Application Config,"Application config — cấu hình quy trình, không phải instance data."
+NHNCK,CERTIFICATE_NUMBER_TEMPLATES,Template sinh số chứng chỉ,Application Config,Config/template data.
+NHNCK,CERTIFICATE_SPECIALIZATIONS,Liên kết chuyên môn với loại chứng chỉ,Application Config,Application config.
+NHNCK,FORMS,Biểu mẫu liên quan đến quy trình cấp CCHN,Application Config,Application config.
+NHNCK,LEGAL_DOCUMENTS,Văn bản pháp lý về hành nghề chứng khoán,Application Config,"Application config — tài liệu tham chiếu pháp lý, không phải instance data."
+NHNCK,PROCEDURES,Thủ tục hành chính cấp CCHN,Application Config,Application config — cấu hình quy trình.
+NHNCK,PROCEDURE_DOCUMENTS,Liên kết thủ tục hành chính với tài liệu yêu cầu,Application Config,Application config.
+NHNCK,PROCEDURE_FORMS,Liên kết thủ tục hành chính với biểu mẫu,Application Config,Application config.
+NHNCK,APPLICATION_ARCHIVES,Thông tin lưu trữ vật lý hồ sơ CCHN,Archive / Physical,Physical archive metadata — không có giá trị phân tích.
+NHNCK,CERTIFICATE_ARCHIVES,Thông tin lưu trữ bản CCHN giấy,Archive / Physical,Physical archive metadata.
+NHNCK,APPLICATION_GROUPS,Nhóm hồ sơ CCHN xử lý tập thể (container batch),Batch Processing,"Batch processing metadata — container tổ chức xử lý tập thể tại nguồn; thông tin quyết định đã có trên DECISIONS (Tier 1), danh sách hồ sơ đã có trên APPLICATIONS."
+NHNCK,APPLICATION_GROUP_MEMBERS,Thành viên (hồ sơ) trong nhóm xử lý tập thể,Batch Processing,Batch processing metadata — danh sách hồ sơ trong nhóm; không có attribute nghiệp vụ độc lập ngoài FK và ORDER_INDEX vận hành.
+NHNCK,CERTIFICATE_RECORD_GROUPS,Nhóm quyết định cấp/thu hồi/hủy chứng chỉ (container batch),Batch Processing,"Batch processing metadata — container tổ chức xử lý tập thể tại nguồn; thông tin quyết định đã có trên DECISIONS (Tier 1), danh sách CCHN đã có trên CERTIFICATE_RECORDS."
+NHNCK,CERTIFICATE_RECORD_GROUP_MEMBERS,Thành viên CCHN trong nhóm quyết định batch,Batch Processing,"Batch processing metadata — danh sách CCHN trong nhóm; dữ liệu nghiệp vụ (REVOCATION_REASON, REISSUE) thuộc về CERTIFICATE_RECORDS, không phải thuộc quan hệ thành viên."
+NHNCK,DIGITAL_CERTIFICATES,Chứng thư số PKI,Digital Cert,Operational/PKI data — không phải CCHN.
+NHNCK,DIGITAL_CERTIFICATE_USERS,Người dùng được sử dụng chứng thư số,Digital Cert,Operational/PKI data.
+NHNCK,IDENTITY_INFO_C06S,Lịch sử xác thực danh tính người hành nghề với hệ thống C06 (Bộ Công An),Isolated,"Isolated entity — không có file per-table đầy đủ, cột PROFESSIONAL_ID chỉ là suy luận từ tên bảng; thiếu thông tin cấu trúc cột để thiết kế entity. Đánh giá lại khi có nhu cầu khai thác."
+NHNCK,POST_CERT_TRAINING_COURSES,Danh mục khóa học bồi dưỡng kiến thức định kỳ sau cấp CCHN,Isolated,Isolated entity — không có bảng đăng ký/enrollment liên quan trong scope; chỉ là danh mục tham chiếu không có giá trị phân tích độc lập tại thời điểm thiết kế.
+NHNCK,CERTIFICATE_CONVERSION_REQUESTS,Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử,Operational,"Operational/migration data — nghiệp vụ 1 lần, không có giá trị phân tích liên tục."
+NHNCK,ORGANIZATION_REPORT_LOG_SYNCS,Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức,Operational,Operational sync log.
+NHNCK,ORGANIZATION_REPORT_YEARLYS,Báo cáo hàng năm của tổ chức về người hành nghề,Operational,Cần khảo sát thêm cấu trúc cột để xác định có phải entity độc lập không.
+NHNCK,APPLICATION_LOGS,Nhật ký thay đổi trạng thái/nội dung hồ sơ,Source Process Log,Quy trình internal tác nghiệp ứng dụng nguồn — không phải sự kiện nghiệp vụ độc lập.
+NHNCK,CERTIFICATE_RECORD_LOGS,Nhật ký hoạt động trên chứng chỉ hành nghề,Source Process Log,Audit log nguồn — không phải sự kiện nghiệp vụ tường minh.
+NHNCK,CERTIFICATE_RECORD_STATUS_HISTORIES,Lịch sử thay đổi trạng thái chứng chỉ hành nghề,Source Process Log,Audit log nguồn — trạng thái lifecycle nằm trên CERTIFICATE_RECORDS; log nguồn không cần thiết trên Atomic.
+NHNCK,VERIFY_APPLICATION_STATUSES,Bước xác minh hồ sơ tại từng cấp phê duyệt,Source Process Log,Bước xác minh trung gian trong quy trình nguồn — không có giá trị phân tích độc lập.
+NHNCK,APPLICATION_DOCUMENTS,Tài liệu vật lý (file attachment) đính kèm hồ sơ đăng ký,Sub-process,"Bảng lưu file attachment (tên file, đường dẫn, loại tài liệu) — không có attribute nghiệp vụ độc lập ngoài con trỏ file; thông tin loại tài liệu đã có trên APPLICATION_SPECIALIZATIONS."
+NHNCK,APPLICATION_DOCUMENT_HISTORIES,Lịch sử thẩm định từng tài liệu trong hồ sơ,Sub-process,Quy trình internal tác nghiệp từ nguồn — không phản ánh sự kiện nghiệp vụ có giá trị phân tích.
+NHNCK,APPLICATION_SUPPLEMENTS,Thông tin bổ sung hồ sơ CCHN,Sub-process,Sub-process bổ sung hồ sơ theo yêu cầu — cấu trúc internal tác nghiệp tại nguồn.
+NHNCK,DECISION_DOCUMENTS,Tài liệu đính kèm của quyết định,Sub-process,Sub-process lưu file đính kèm — không có giá trị phân tích nghiệp vụ độc lập.
+NHNCK,DEPARTMENT_ACCESS,Quản lý quyền khai thác giữa các phòng ban,System / Auth,Operational/system data.
+NHNCK,PERMISSIONS,Danh mục quyền hạn trong hệ thống,System / Auth,Operational/system data.
+NHNCK,PERMISSION_ROLES,Phân quyền theo nhóm vai trò,System / Auth,Operational/system data.
+NHNCK,ROLES,Danh mục vai trò trong hệ thống,System / Auth,Operational/system data.
+NHNCK,USER_ROLES,Phân quyền người dùng theo vai trò,System / Auth,Operational/system data — không có giá trị nghiệp vụ.
+NHNCK,AUTO_INCREMENT_CODES,Quản lý số tự tăng cho mã CCHN và mã tài liệu,System / Config,Sequence/counter table — operational data.
+NHNCK,BACKUP_SCHEDULES,Lịch tự động sao lưu cơ sở dữ liệu,System / Config,Operational/system data.
+NHNCK,NOTIFICATION_CONFIGURATIONS,Cấu hình thông báo theo sự kiện nghiệp vụ,System / Config,Application config data.
+NHNCK,SYSTEM_PARAMETERS,Tham số cấu hình hệ thống,System / Config,Config data.
+NHNCK,ACTION_LOGS,Nhật ký hành động của người dùng trên hệ thống,System / Log,System audit log — không phải nghiệp vụ CCHN.
+NHNCK,BACKUPS,Thông tin file sao lưu cơ sở dữ liệu,System / Log,Operational/system data.
+NHNCK,DOCUMENT_SIGN_LOGS,Nhật ký ký số tài liệu,System / Log,Operational log.
+NHNCK,EMAIL_LOGS,Nhật ký gửi email trong hệ thống,System / Log,Operational log — không phải nghiệp vụ CCHN.
+NHNCK,NOTIFICATIONS,Thông báo trong hệ thống,System / Log,Operational/notification data.
+NHNCK,SEND_AND_RECIEVE_LOGS,Nhật ký gửi nhận dữ liệu tích hợp,System / Log,Operational log.
+NHNCK,SIGNATURE_LOGS,Nhật ký ký số hồ sơ/CCHN,System / Log,Operational log.
+NHNCK,SMS_LOGS,Nhật ký gửi SMS trong hệ thống,System / Log,Operational log.
 QLRR,risk_report_placeholder_config,Cấu hình mapping placeholder trong template báo cáo,Config kỹ thuật,Operational/system data — không có giá trị nghiệp vụ
 QLRR,permission_group,Nhóm quyền,Phân quyền,Operational/system data — không có giá trị nghiệp vụ
 QLRR,permission_group_indicator,Phân quyền chỉ tiêu theo nhóm,Phân quyền,Operational/system data — không có giá trị nghiệp vụ

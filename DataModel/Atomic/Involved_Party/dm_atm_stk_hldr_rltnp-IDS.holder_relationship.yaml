@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-stk_hldr_rltnp-IDS.holder_relationship
-  logical_name: "Stock Holder Relationship"
-
+  logical_name: Stock Holder Relationship
   physical_name: stk_hldr_rltnp
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: holder_relationship
     source_column: IDS.holder_relationship.stock_holder_id
-    comment: "FK target: Stock Holder.Stock Holder Id."
+    comment: "FK target: stk_hldr.stk_hldr_id."
     classification_context: "Source System Code = 'IDS_HOLDER_RELATIONSHIP'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: holder_relationship
     source_column: IDS.holder_relationship.stock_holder_id
-    comment: "Lookup pair: Stock Holder.Stock Holder Code. Pair with Stock Holder Id."
+    comment: "Lookup pair: stk_hldr.stk_hldr_code. Pair with stk_hldr_id."
     classification_context: "Source System Code = 'IDS_HOLDER_RELATIONSHIP'"
     etl_derived_value: null
 
@@ -103,7 +102,7 @@ attributes:
     source_system: IDS
     source_table: holder_relationship
     source_column: IDS.holder_relationship.related_holder_id
-    comment: "FK target: Stock Holder.Stock Holder Id. Cặp FK thứ 2."
+    comment: "FK target: stk_hldr.stk_hldr_id. Cặp FK thứ 2."
     classification_context: "Source System Code = 'IDS_HOLDER_RELATIONSHIP'"
     etl_derived_value: null
 
@@ -117,7 +116,7 @@ attributes:
     source_system: IDS
     source_table: holder_relationship
     source_column: IDS.holder_relationship.related_holder_id
-    comment: "Lookup pair: Stock Holder.Stock Holder Code. Pair with Related Stock Holder Id."
+    comment: "Lookup pair: stk_hldr.stk_hldr_code. Pair with Related Stock Holder Id."
     classification_context: "Source System Code = 'IDS_HOLDER_RELATIONSHIP'"
     etl_derived_value: null
 

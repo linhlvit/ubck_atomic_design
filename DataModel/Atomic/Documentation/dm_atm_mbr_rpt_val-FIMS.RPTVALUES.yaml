@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-mbr_rpt_val-FIMS.RPTVALUES
-  logical_name: "Member Report Value"
-
+  logical_name: Member Report Value
   physical_name: mbr_rpt_val
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.MebId
-    comment: "FK target: Member Regulatory Report.Member Regulatory Report Id."
+    comment: "FK target: mbr_reg_rpt.mbr_reg_rpt_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.MebId
-    comment: "Lookup pair: Member Regulatory Report.Member Regulatory Report Code. Pair with Member Regulatory Report Id."
+    comment: "Lookup pair: mbr_reg_rpt.mbr_reg_rpt_code. Pair with mbr_reg_rpt_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -103,7 +102,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.PrdId
-    comment: "FK target: Reporting Period.Reporting Period Id."
+    comment: "FK target: rpt_prd.rpt_prd_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -117,7 +116,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.PrdId
-    comment: "Lookup pair: Reporting Period.Reporting Period Code. Pair with Reporting Period Id."
+    comment: "Lookup pair: rpt_prd.rpt_prd_code. Pair with rpt_prd_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -131,7 +130,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.RptId
-    comment: "FK target: Report Template.Report Template Id."
+    comment: "FK target: rpt_tpl.rpt_tpl_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -145,7 +144,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.RptId
-    comment: "Lookup pair: Report Template.Report Template Code. Pair with Report Template Id."
+    comment: "Lookup pair: rpt_tpl.rpt_tpl_code. Pair with rpt_tpl_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -201,7 +200,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.FundId
-    comment: "FK target: Fund Management Company.Fund Management Company Id."
+    comment: "FK target: fnd_mgt_co.fnd_mgt_co_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -215,7 +214,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.FundId
-    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    comment: "Lookup pair: fnd_mgt_co.fnd_mgt_co_code. Pair with fnd_mgt_co_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -229,7 +228,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.SecId
-    comment: "FK target: Securities Company.Securities Company Id."
+    comment: "FK target: scr_co.scr_co_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -243,7 +242,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.SecId
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    comment: "Lookup pair: scr_co.scr_co_code. Pair with scr_co_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -257,7 +256,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.BankId
-    comment: "FK target: Custodian Bank.Custodian Bank Id."
+    comment: "FK target: cstd_bnk.cstd_bnk_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -271,7 +270,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.BankId
-    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
+    comment: "Lookup pair: cstd_bnk.cstd_bnk_code. Pair with cstd_bnk_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -285,7 +284,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.DepId
-    comment: "FK target: Depository Center.Depository Center Id."
+    comment: "FK target: depst_cntr.depst_cntr_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -299,7 +298,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.DepId
-    comment: "Lookup pair: Depository Center.Depository Center Code. Pair with Depository Center Id."
+    comment: "Lookup pair: depst_cntr.depst_cntr_code. Pair with depst_cntr_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -313,7 +312,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.StockId
-    comment: "FK target: Stock Exchange.Stock Exchange Id."
+    comment: "FK target: stk_exg.stk_exg_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -327,7 +326,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.StockId
-    comment: "Lookup pair: Stock Exchange.Stock Exchange Code. Pair with Stock Exchange Id."
+    comment: "Lookup pair: stk_exg.stk_exg_code. Pair with stk_exg_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -341,7 +340,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.InId
-    comment: "FK target: Disclosure Representative.Disclosure Representative Id."
+    comment: "FK target: dscl_rprs.dscl_rprs_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -355,7 +354,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.InId
-    comment: "Lookup pair: Disclosure Representative.Disclosure Representative Code. Pair with Disclosure Representative Id."
+    comment: "Lookup pair: dscl_rprs.dscl_rprs_code. Pair with dscl_rprs_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -369,7 +368,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.BranId
-    comment: "FK target: Fund Management Company Organization Unit.Fund Management Company Organization Unit Id."
+    comment: "FK target: fnd_mgt_co_ou.fnd_mgt_co_ou_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 
@@ -383,7 +382,7 @@ attributes:
     source_system: FIMS
     source_table: RPTVALUES
     source_column: FIMS.RPTVALUES.BranId
-    comment: "Lookup pair: Fund Management Company Organization Unit.Fund Management Company Organization Unit Code. Pair with Fund Management Company Organization Unit Id."
+    comment: "Lookup pair: fnd_mgt_co_ou.fnd_mgt_co_ou_code. Pair with fnd_mgt_co_ou_id."
     classification_context: "Source System Code = 'FIMS_RPTVALUES'"
     etl_derived_value: null
 

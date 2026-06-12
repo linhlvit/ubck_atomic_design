@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-scr_prac-SCMS.CTCK_NGUOI_HANH_NGHE_CK
-  logical_name: "Securities Practitioner"
-
+  logical_name: Securities Practitioner
   physical_name: scr_prac
   layer: Atomic
   version: "1.0"
@@ -15,7 +14,7 @@ ldm:
   etl_pattern: SCD4A
   source: SCMS
   description: |
-    Người hành nghề chứng khoán được UBCKNN cấp phép. Ghi nhận thông tin cá nhân và trạng thái hành nghề. Attribute chi tiết (BirthDate full
+    Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin nhân thân và trạng thái hành nghề.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -65,244 +64,6 @@ attributes:
     classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
     etl_derived_value: null
 
-  - name: Full Name
-    physical_name: full_nm
-    business_meaning: Họ và tên người hành nghề.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.HO_TEN
-    comment: null
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Birth Year
-    physical_name: brth_yr
-    business_meaning: Năm sinh
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Text vì là năm dạng \"1990\". Lấy từ Professionals (không có trong ProfessionalHistories)."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Date Of Birth
-    physical_name: dob
-    business_meaning: Ngày sinh.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.NGAY_SINH
-    comment: null
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Individual Gender Code
-    physical_name: idv_gnd_code
-    business_meaning: Giới tính
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Scheme: INDIVIDUAL_GENDER. Lấy từ bản mới nhất ProfessionalHistories."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Nationality Code
-    physical_name: nat_code
-    business_meaning: Quốc tịch
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Scheme: NATIONALITY. Lấy từ bản mới nhất ProfessionalHistories. Thay thế Country Code từ Professionals.CountryId (cùng ngữ nghĩa quốc tịch)."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Education Level Code
-    physical_name: ed_lvl_code
-    business_meaning: Trình độ học vấn
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Scheme: EDUCATION_LEVEL. Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Birth Place
-    physical_name: brth_plc
-    business_meaning: Nơi sinh
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: Lấy từ bản mới nhất ProfessionalHistories. Professionals không có trường này.
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Practitioner Registration Type Code
-    physical_name: prac_rgst_tp_code
-    business_meaning: Hình thức đăng ký người hành nghề vào hệ thống
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE. Lấy từ bản mới nhất ProfessionalHistories. Khác với Applications.RegistrationType (loại đăng ký hồ sơ CCHN)."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Practice Status Code
-    physical_name: practice_st_code
-    business_meaning: Trạng thái hành nghề
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Scheme: PRACTICE_STATUS. Lấy từ bản mới nhất ProfessionalHistories. 5 giá trị: 0=Chưa hành nghề; 1=Hành nghề; 2=Thu hồi cho cấp lại; 3=Thu hồi không cấp lại; 4=Hành nghề có thời hạn."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Country of Residence Geographic Area Id
-    physical_name: cty_of_rsdnc_geo_id
-    business_meaning: FK đến quốc gia cư trú.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "FK target: Geographic Area.Geographic Area Id."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Country of Residence Geographic Area Code
-    physical_name: cty_of_rsdnc_geo_code
-    business_meaning: Mã quốc gia cư trú.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country of Residence Geographic Area Id."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Identity Reference Code
-    physical_name: id_refr_code
-    business_meaning: Mã định danh giấy tờ tùy thân (FK bảng identity riêng)
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: Bảng identity riêng không có trong scope NHNCK — lưu BK dạng Text.
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Relationship Type Code
-    physical_name: rltnp_tp_code
-    business_meaning: Loại quan hệ người hành nghề
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: "Scheme: PRACTITIONER_RELATIONSHIP_TYPE."
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Occupation Name
-    physical_name: ocp_nm
-    business_meaning: Nghề nghiệp
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: Text tự do.
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Workplace Name
-    physical_name: workplace_nm
-    business_meaning: Nơi làm việc
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: Text tự do.
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Practitioner Note
-    physical_name: prac_note
-    business_meaning: Ghi chú
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
-  - name: Created Timestamp
-    physical_name: crt_tms
-    business_meaning: Ngày tạo.
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: CTCK_NGUOI_HANH_NGHE_CK
-    source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.NGAY_TAO
-    comment: null
-    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
-    etl_derived_value: null
-
   - name: Securities Company Id
     physical_name: scr_co_id
     business_meaning: FK đến công ty chứng khoán nơi hành nghề.
@@ -313,7 +74,7 @@ attributes:
     source_system: SCMS
     source_table: CTCK_NGUOI_HANH_NGHE_CK
     source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.CTCK_THONG_TIN_ID
-    comment: "FK target: Securities Company.Securities Company Id."
+    comment: "FK target: scr_co.scr_co_id."
     classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
     etl_derived_value: null
 
@@ -327,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: CTCK_NGUOI_HANH_NGHE_CK
     source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.CTCK_THONG_TIN_ID
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    comment: "Lookup pair: scr_co.scr_co_code. Pair with scr_co_id."
     classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
     etl_derived_value: null
 
@@ -342,6 +103,34 @@ attributes:
     source_table: CTCK_NGUOI_HANH_NGHE_CK
     source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.MA_NHAN_VIEN
     comment: Mã nhân viên do CTCK cấp — bổ sung từ SCMS. Không có trong NHNCK.
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên người hành nghề.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.HO_TEN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dob
+    business_meaning: Ngày sinh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.NGAY_SINH
+    comment: null
     classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
     etl_derived_value: null
 
@@ -412,5 +201,327 @@ attributes:
     source_table: CTCK_NGUOI_HANH_NGHE_CK
     source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.TRANG_THAI
     comment: "Scheme: SCMS_COMPANY_STATUS."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Ngày tạo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: SCMS.CTCK_NGUOI_HANH_NGHE_CK.NGAY_TAO
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Id
+    physical_name: scr_prac_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "PK surrogate. BCV: \"Individual\" (Involved Party)."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Code
+    physical_name: scr_prac_code
+    business_meaning: Mã người hành nghề. BK từ PK nguồn
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Given Name
+    physical_name: gvn_nm
+    business_meaning: Tên đệm và tên riêng
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Birth Date
+    physical_name: brth_dt
+    business_meaning: Ngày sinh
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Birth Year
+    physical_name: brth_yr
+    business_meaning: Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: Nguồn lưu NVARCHAR2(4) — giữ dạng text.
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Gender Code
+    physical_name: gnd_code
+    business_meaning: "Giới tính: 0=Nam / 1=Nữ"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "Scheme: INDIVIDUAL_GENDER. Nguồn lưu NUMBER — ETL convert sang code."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Education Level Code
+    physical_name: ed_lvl_code
+    business_meaning: Trình độ học vấn
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "Scheme: EDUCATION_LEVEL. Nguồn lưu FK số — ETL lookup convert sang code."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Practitioner Registration Type Code
+    physical_name: prac_rgst_tp_code
+    business_meaning: "Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE. Nguồn lưu NUMBER — ETL convert sang code."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Practice Status Code
+    physical_name: practice_st_code
+    business_meaning: Trạng thái hành nghề chứng khoán
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "Scheme: PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Account Status Code
+    physical_name: ac_st_code
+    business_meaning: Trạng thái tài khoản người dùng trên cổng NHNCK
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động / 2=Khóa."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Organization Id
+    physical_name: org_id
+    business_meaning: FK đến tổ chức chứng khoán hiện tại (nullable)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "FK target: scr_org_refr.scr_org_refr_id. Nullable — người hành nghề có thể chưa công tác."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Organization Code
+    physical_name: org_code
+    business_meaning: Mã tổ chức (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "Lookup pair: scr_org_refr.scr_org_refr_code. Pair with Organization Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nat_id
+    business_meaning: FK đến Geographic Area (quốc tịch)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nat_code
+    business_meaning: Mã quốc gia/quốc tịch (denormalized)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: "Lookup pair: geo.geo_code. Pair with Nationality Id."
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Workplace Name
+    physical_name: workplace_nm
+    business_meaning: Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: Denormalized text. Có thể khác Organization Name khi người hành nghề làm ở chi nhánh.
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Position Name
+    physical_name: pos_nm
+    business_meaning: Chức vụ hiện tại (denormalized text tự do)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: Denormalized text — không FK vì không có bảng Position chuẩn dùng chung.
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Department Name
+    physical_name: dept_nm
+    business_meaning: Phòng ban hiện tại (denormalized text tự do)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: Denormalized text.
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Previous Identity Number
+    physical_name: prev_id_nbr
+    business_meaning: Số CMND cũ trước khi chuyển sang CCCD
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Hometown
+    physical_name: hometown
+    business_meaning: Quê quán (dữ liệu tích hợp C06)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Ethnicity Name
+    physical_name: ethnicity_nm
+    business_meaning: Dân tộc (dữ liệu tích hợp C06)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Religion Name
+    physical_name: rlg_nm
+    business_meaning: Tôn giáo (dữ liệu tích hợp C06)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
+    etl_derived_value: null
+
+  - name: Place of Birth Description
+    physical_name: plc_of_brth_dsc
+    business_meaning: Nơi sinh (text tự do)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CTCK_NGUOI_HANH_NGHE_CK
+    source_column: null
+    comment: null
     classification_context: "Source System Code = 'SCMS_CTCK_NGUOI_HANH_NGHE_CK'"
     etl_derived_value: null

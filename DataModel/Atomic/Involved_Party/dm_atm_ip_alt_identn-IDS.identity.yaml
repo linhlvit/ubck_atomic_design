@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-ip_alt_identn-IDS.identity
-  logical_name: "Involved Party Alternative Identification"
-
+  logical_name: Involved Party Alternative Identification
   physical_name: ip_alt_identn
   layer: Atomic
   version: "1.0"
@@ -33,8 +32,8 @@ attributes:
     source_system: IDS
     source_table: identity
     source_column: IDS.identity.stock_holder_id
-    comment: "FK target: Stock Holder.Stock Holder Id. Shared entity — không có PK surrogate riêng."
-    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(source)'"
+    comment: "FK target: stk_hldr.stk_hldr_id. Shared entity — không có PK surrogate riêng."
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,8 +46,8 @@ attributes:
     source_system: IDS
     source_table: identity
     source_column: IDS.identity.stock_holder_id
-    comment: "Lookup pair: Stock Holder.Stock Holder Code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(source)'"
+    comment: "Lookup pair: stk_hldr.stk_hldr_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +61,7 @@ attributes:
     source_table: identity
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(source)'"
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null
 
   - name: Identification Type Code
@@ -76,7 +75,7 @@ attributes:
     source_table: identity
     source_column: IDS.identity.identity_type_cd
     comment: "Scheme: IP_ALT_ID_TYPE. ETL map identity_type_cd (scheme IDS_IDENTITY_TYPE theo lookup_values) sang scheme chuẩn IP_ALT_ID_TYPE khi ingestion."
-    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(source)'"
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null
 
   - name: Identification Number
@@ -90,7 +89,7 @@ attributes:
     source_table: identity
     source_column: IDS.identity.identity_no
     comment: null
-    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(source)'"
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null
 
   - name: Issue Date
@@ -104,7 +103,7 @@ attributes:
     source_table: identity
     source_column: IDS.identity.identity_issued_date
     comment: null
-    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(source)'"
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null
 
   - name: Issuing Authority Name
@@ -118,5 +117,47 @@ attributes:
     source_table: identity
     source_column: IDS.identity.identity_issued_place
     comment: null
-    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(source)'"
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identn_issu_dt
+    business_meaning: Ngày cấp giấy tờ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: identity
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identn_issu_plc
+    business_meaning: Nơi cấp giấy tờ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: identity
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Previous Identification Number
+    physical_name: prev_identn_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: identity
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null

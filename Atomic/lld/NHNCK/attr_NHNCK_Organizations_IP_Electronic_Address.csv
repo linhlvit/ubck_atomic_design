@@ -1,12 +1,47 @@
 ﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-Involved Party Id,FK đến Securities Organization Reference,Surrogate Key,false,false,draft,NHNCK.Organizations.Id,FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng.,,
-Involved Party Code,Mã tổ chức,Text,false,false,draft,NHNCK.Organizations.Id,Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id.,,
-Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Organizations,
-Electronic Address Type Code,Loại kênh liên lạc — điện thoại,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,
-Electronic Address Value,Số điện thoại,Text,true,false,draft,NHNCK.Organizations.PhoneNumber,,IP_ELEC_ADDR_TYPE=PHONE,
-Electronic Address Type Code,Loại kênh liên lạc — số di động,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=MOBILE,
-Electronic Address Value,Số di động,Text,true,false,draft,NHNCK.Organizations.MobileNumber,,IP_ELEC_ADDR_TYPE=MOBILE,
-Electronic Address Type Code,Loại kênh liên lạc — email,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL,
-Electronic Address Value,Email,Text,true,false,draft,NHNCK.Organizations.Email,,IP_ELEC_ADDR_TYPE=EMAIL,
-Electronic Address Type Code,Loại kênh liên lạc — fax,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=FAX,
-Electronic Address Value,Fax,Text,true,false,draft,NHNCK.Organizations.Fax,,IP_ELEC_ADDR_TYPE=FAX,
+Involved Party Id,FK đến Securities Organization Reference.,Surrogate Key,false,false,draft,NHNCK.qlnhn.ORGANIZATIONS.ID,FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã tổ chức.,Text,false,false,draft,NHNCK.qlnhn.ORGANIZATIONS.ID,Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.ORGANIZATIONS,
+Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Value,Số điện thoại cố định của tổ chức.,Text,true,false,draft,NHNCK.qlnhn.ORGANIZATIONS.PHONE_NUMBER,,IP_ELEC_ADDR_TYPE=PHONE,
+Electronic Address Type Code,Loại kênh liên lạc — số di động.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=MOBILE,
+Electronic Address Value,Số di động của tổ chức.,Text,true,false,draft,NHNCK.qlnhn.ORGANIZATIONS.MOBILE_NUMBER,,IP_ELEC_ADDR_TYPE=MOBILE,
+Electronic Address Type Code,Loại kênh liên lạc — fax.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=FAX,
+Electronic Address Value,Số fax của tổ chức.,Text,true,false,draft,NHNCK.qlnhn.ORGANIZATIONS.FAX,,IP_ELEC_ADDR_TYPE=FAX,
+Electronic Address Type Code,Loại kênh liên lạc — email.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Value,Địa chỉ email của tổ chức.,Text,true,false,draft,NHNCK.qlnhn.ORGANIZATIONS.EMAIL,,IP_ELEC_ADDR_TYPE=EMAIL,
+Electronic Address Type Code,Loại kênh liên lạc — website.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=WEBSITE,
+Electronic Address Value,Địa chỉ website của tổ chức.,Text,true,false,draft,NHNCK.qlnhn.ORGANIZATIONS.WEBSITE,,IP_ELEC_ADDR_TYPE=WEBSITE,
+
+---
+
+**Tóm tắt các thay đổi so với file cũ:**
+
+**attr_NHNCK_Organizations.csv — 12 điểm sửa:**
+
+| Thay đổi | Chi tiết |
+|---|---|
+| Source columns format | Đổi toàn bộ sang fully qualified `NHNCK.qlnhn.ORGANIZATIONS.COLUMN` |
+| Tên attribute | `Organization Name` → `Securities Organization Reference Name` |
+| Tên attribute | `English Name` → `Securities Organization Reference English Name` |
+| Tên attribute | `Abbreviation` → `Securities Organization Reference Short Name` |
+| Tên attribute | `Representative Name` → `Legal Representative Name` |
+| Tên attribute | `License Issuer` → `License Issuer Name` |
+| Tên attribute | `Parent Organization Id/Code` → `Parent Securities Organization Reference Id/Code` |
+| Tên attribute | `Organization Status Code` → `Record Status Code` + source map đúng `RECORD_STATUS` |
+| Tên attribute | `Linked Id` → `External System Linked Id` |
+| Tên attribute | `Sync Id` → `External System Sync Id` |
+| Tên attribute | `Organization Description` → `Description` |
+| Thêm mới | `Updated By Officer Id` + `Updated By Officer Code` (từ `UPDATED_BY`) |
+| Conversion risk | `Charter Capital Amount` — ghi chú NVARCHAR2 → decimal |
+| Domain Date | `Created Date` / `Updated Date` dùng `Date` (nguồn là Oracle `DATE`, không phải TIMESTAMP) |
+| `etl_derived_value` | `Source System Code` → thêm `NHNCK.ORGANIZATIONS` |
+
+**attr_NHNCK_Organizations_IP_Postal_Address.csv:** Source columns đổi sang fully qualified.
+
+**attr_NHNCK_Organizations_IP_Electronic_Address.csv:** Thêm block WEBSITE (`IP_ELEC_ADDR_TYPE=WEBSITE`) + source columns đổi sang fully qualified.
+
+**Lưu ý pending cần document thêm:**
+- `CREATED_BY` / `UPDATED_BY` nguồn là `NUMBER(10,0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS.
+- `WEBSITE` đã chuyển sang IP Electronic Address (không còn trong entity chính) — nếu file cũ có trường `Website` ở entity chính cần xóa (đã xóa trong file mới này).
+- `SORT_ORDER` source `NUMBER` → `Small Counter`: không cần ghi chú conversion risk vì NUMBER → integer là tự nhiên.

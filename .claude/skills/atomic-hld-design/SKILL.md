@@ -7,7 +7,8 @@ description: |
   {SOURCE}_HLD_Tier{N}.md hoặc {SOURCE}_HLD_Overview.md trong Atomic/hld/.
   Cũng dùng khi cập nhật mục 7f (bảng ngoài scope), điều chỉnh source_table cho
   shared entity, hoặc cần chạy aggregate_atomic.py / aggregate_out_of_scope.py.
-  Yêu cầu: source_system phải có file Source/{SOURCE}_Tables.csv và {SOURCE}_Columns.csv.
+  Yêu cầu: source_system phải có thư mục BRD/Source/{SOURCE}/ chứa các file
+  brd_{SOURCE}_{TABLE}.yaml per-table (schema_type: brd_source_columns).
 ---
 
 # Skill: Thiết kế HLD (High-Level Design)
@@ -30,10 +31,19 @@ description: |
 
 ### Bước 1 — Thu thập input
 
-1. Đọc file cấu trúc CSDL nguồn trong `Source/` — file `*_Tables` và `*_Columns`.
-2. Xác định danh sách bảng nguồn trong scope.
+1. **Đọc cấu trúc cột từ `BRD/Source/{SOURCE}/`** — mỗi bảng có 1 file `brd_{SOURCE}_{TABLE}.yaml`
+   (schema_type: `brd_source_columns`). Đây là nguồn input bắt buộc và duy nhất về cấu trúc CSDL nguồn.
+   - Danh sách bảng = tất cả file `.yaml` trong thư mục đó.
+   - Scope status (in_scope / out_of_scope) đọc từ `BRD/Source/brd_{SOURCE}.yaml` (file tổng hợp).
+   - Cấu trúc cột (tên cột, kiểu dữ liệu, FK) đọc từ file per-table.
+2. Xác định danh sách bảng trong scope từ `brd_{SOURCE}.yaml` (cột `scope_status: in_scope`).
+   Khi thiết kế lại source đã có HLD trước đó: ưu tiên tái sử dụng phân tích cũ cho các bảng
+   giữ nguyên cấu trúc — không bắt buộc phải trùng khớp với danh sách in_scope của BRD.
+   Một khi bảng nguồn đã được thiết kế Atomic → cập nhật scope_status thành in_scope.
 3. Đọc các file HLD đã có trong `docs/approved/` (nếu có source system liên quan).
-4. **Đọc `Atomic/hld/atomic_entities.csv`** — lọc theo source system đang thiết kế (cột `source_table`), ghi nhận tất cả dòng có `status=approved`. Tên approved là **LOCKED** — dùng đúng tên đó trong HLD, không tự sinh tên mới. Dòng `status=draft` có thể điều chỉnh khi cần.
+4. **Đọc `Atomic/lld/manifest.csv`** — lọc theo source system đang thiết kế (cột `source_system`),
+   ghi nhận tất cả entity đã có. Tên entity trong manifest là **LOCKED** — dùng đúng tên đó trong HLD,
+   không tự sinh tên mới.
 
 ### Bước 1b — Xác định Table Type
 
@@ -85,6 +95,20 @@ Thiết kế nền móng trước, xây dựng quan hệ sau. Mỗi tầng = 1 f
   - **ETL Pattern — Activity/Status Log** = Atomic entity ghi nhận sự kiện nghiệp vụ có cột tường minh (trạng thái trước/sau, lý do thay đổi, timestamp) → trong scope Atomic, tạo entity riêng.
   - Dấu hiệu Audit Log nguồn: có cặp `OldValue`/`NewValue` (hoặc `PrevValue`/`ValueChange`) kèm cột `FieldName` — 1 dòng mô tả 1 field thay đổi bất kỳ.
 - Bảng **Snapshot nguồn** (cột IsBefore + blob data như SecData/TLData): cùng lý do với Audit Log nguồn → ngoài scope Atomic.
+- Bảng **File Attachment** (bảng chỉ lưu con trỏ file: tên file, đường dẫn, loại file) — không có attribute nghiệp vụ độc lập ngoài metadata file → ngoài scope Atomic. Thông tin loại tài liệu đã có trên entity chính hoặc entity classification. VD: `APPLICATION_DOCUMENTS` chỉ lưu FILE_NAME + FILE_PATH + DOCUMENT_TYPE_ID → ngoài scope.
+- Bảng **Batch Processing Metadata** (bảng chỉ theo dõi danh sách thành viên của một nhóm xử lý tập thể tại nguồn, không phản ánh instance nghiệp vụ độc lập): ngoài scope Atomic.
+
+  **Dấu hiệu nhận biết:**
+  - Tên bảng dạng `*_GROUP_MEMBERS`, `*_BATCH_MEMBERS`, `*_LOT_MEMBERS` — chỉ lưu danh sách thành viên của một batch/group đã có entity Atomic.
+  - Bảng chỉ có 2 FK: FK đến bảng group + FK đến bảng nghiệp vụ chính. Không có attribute nghiệp vụ riêng (không có trạng thái, ngày tháng, số tiền...).
+  - Mục đích = tổ chức xử lý tập thể tại phía ứng dụng nguồn (bulk operation), không phản ánh quan hệ nghiệp vụ dài hạn cần phân tích.
+
+  **Phân biệt với entity nghiệp vụ thực sự — kiểm tra 2 điều kiện:**
+  1. Attribute trên bảng group có thể đọc từ entity đã thiết kế không? Nếu có → ngoài scope.
+     VD: CERTIFICATE_RECORD_GROUPS có DECISION_ID, nhưng DECISIONS đã là entity Tier 1 — không cần thêm entity group để truy cập thông tin quyết định.
+  2. Attribute trên bảng members có thuộc về instance nghiệp vụ chính không? Nếu có → ghi thẳng lên entity chính.
+     VD: CERTIFICATE_RECORD_GROUP_MEMBERS có REVOCATION_REASON — thông tin này thuộc về CERTIFICATE_RECORDS, không phải thuộc về quan hệ thành viên.
+  - Bảng group chỉ trong scope khi nó đại diện cho một **entity nghiệp vụ độc lập** mà không thể suy ra từ entity đã có (VD: đợt thi EXAM_SESSIONS có ngày thi, địa điểm, quyết định — không thể suy ra từ DECISIONS đơn thuần).
 
 ### Bước 3 — Trace dependency cho mỗi bảng
 
@@ -112,6 +136,8 @@ Quy trình tra BCV:
 - Bảng chỉ có Code + Name, không có instance data → reference data set → Classification Value.
 - `grep -i "{term}" knowledge/reference_data_sets.csv` — nếu có reference data set tương ứng → Classification Value.
 - **Ngoại lệ — Geographic Area**: Bảng lưu danh mục khu vực địa lý (tỉnh, thành phố, quốc gia...) dù chỉ có Code + Name → **Atomic entity [Location] Geographic Area**, không phải Classification Value. Lý do: BCV có Data Concept riêng là Location.
+  - **Table Type = Fundamental** (không phải Classification) — entity địa lý có lifecycle riêng, được FK từ nhiều entity nghiệp vụ, là nền tảng toàn dự án.
+  - **Pattern gộp nhiều cấp vào 1 entity**: nếu source system có nhiều bảng địa lý (COUNTRIES, PROVINCES, DISTRICTS) → gộp vào 1 Atomic entity `Geographic Area`, phân biệt bằng `Geographic Area Type Code` (ETL-derived: COUNTRY / PROVINCE / DISTRICT). Quan hệ self-referencing: DISTRICT → PROVINCE → COUNTRY → NULL. Không tạo 3 entity riêng biệt.
 
 **Pure junction table giữa entity và Classification Value:** Bảng chỉ có 2 trường nghiệp vụ — 1 trỏ đến entity chính, 1 trỏ đến bảng danh mục — không có attribute nghiệp vụ riêng → **không tạo Atomic entity**. Denormalize thành trường `ARRAY<Classification Value Code>` trên entity chính.
 
@@ -148,6 +174,22 @@ Copy [`templates/HLD_Tier.md`](templates/HLD_Tier.md) làm starting point. Repla
 | 6e | Bảng chờ thiết kế |
 | 6f | Điểm cần xác nhận |
 
+**Cấu trúc bảng mục 6a — 9 cột bắt buộc:**
+
+| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
+
+- **Source Table Change Mode**: lấy từ `BRD/Source/brd_{SOURCE}.yaml` → `content.ingestion.data_change_mode`. Giá trị: `Update` / `Append` / `N/A` (chưa định nghĩa).
+- **Table Type**: table_type Atomic đã xác định ở Bước 1b.
+
+**Mục đích cột Source Table Change Mode:** Hỗ trợ human review cross-check cơ chế cập nhật nguồn ↔ ETL pattern Atomic:
+
+| Source Change Mode | Table Type Atomic | Nhận xét |
+|---|---|---|
+| `Append` | `Fact Append` | Phù hợp — nguồn chỉ thêm, Atomic insert-only. |
+| `Update` | `Fundamental` / `Relative` | Bình thường — SCD4A/SCD2 xử lý update. |
+| `Update` | `Fact Append` | Cần review — nguồn có update nhưng Atomic insert-only. ETL có drop & reload không? |
+| `Append` | `Fundamental` | Cần review — nguồn không update nhưng Atomic dùng SCD4A. Business rule là gì? |
+
 **Quy tắc cột "BCV Term" (mục 6a):** Viết đủ 3 phần:
 1. Term candidate tìm được + BCV mô tả gì.
 2. Đánh giá cấu trúc trường bảng nguồn nói gì.
@@ -165,6 +207,8 @@ Nếu term candidate không khớp với cấu trúc trường → nêu rõ tạ
 - Ghi rõ vấn đề cần review: entity chưa chắc chắn, scope mờ, dependency chéo tầng.
 - Ghi dạng fact, không so sánh version.
 
+**Tier file KHÔNG chứa section Entities.** Grain, attributes chính, và phân tích BCV Term nằm trong mục 6a BCV Term column — đó là tài liệu phân tích thiết kế.
+
 ## Bước 7 — Tạo file HLD Overview
 
 Thực hiện **sau khi hoàn thành thiết kế Tier cuối cùng**. Quản lý lịch sử thay đổi qua Git — chỉ cần 1 file duy nhất.
@@ -179,16 +223,34 @@ Format dưới đây là contract giữa HLD Overview và các script aggregate 
 
 **Heading bắt buộc** (chính xác từng ký tự, đúng cấp `####`, đúng tiền tố `7a.`...`7f.`):
 
-| Section | Heading | Cấu trúc bảng |
+| Section | Heading | Cấu trúc |
 |---|---|---|
-| 7a | `#### 7a. Bảng tổng quan Atomic entities` | 8 cột: `Tier \| BCV Core Object \| BCV Concept \| Category \| Source Table \| Mô tả bảng nguồn \| Atomic Entity \| BCV Term` |
+| 7a | `#### 7a. Bảng tổng quan Atomic entities` | 10 cột: `Tier \| BCV Core Object \| BCV Concept \| Category \| Source Table \| Source Table Change Mode \| Mô tả bảng nguồn \| Atomic Entity \| Table Type \| BCV Term` |
 | 7b | `#### 7b. Diagram Atomic tổng (Mermaid)` | 1 mermaid diagram |
 | 7c | `#### 7c. Bảng Classification Value` | 4 cột: `Source Table \| Mô tả \| BCV Term \| Xử lý Atomic` |
 | 7d | `#### 7d. Junction Tables` | 4 cột: `Source Table \| Mô tả \| Entity chính \| Xử lý trên Atomic` |
 | 7e | `#### 7e. Điểm cần xác nhận` | 4 cột: `# \| Tier \| Câu hỏi \| Ảnh hưởng` |
 | 7f | `#### 7f. Bảng ngoài scope` | 4 cột: `Nhóm \| Source Table \| Mô tả bảng nguồn \| Lý do ngoài scope` |
+| Entities | `## Entities` | 1 section per entity: `### N.` + `**Description:**` |
 
 **Grain:** Mỗi dòng bảng = 1 record. Mục 7f bắt buộc grain `(source_system, source_table)` — không gộp nhiều bảng vào 1 ô.
+
+### Section Entities — source of truth cho `atomic_entities.csv`
+
+Đặt **sau mục 7f**, cuối file Overview. `aggregate_atomic.py` parse section này để lấy `description`.
+
+Format bắt buộc cho mỗi entity:
+
+```markdown
+### N. {Atomic Entity Name}
+**Tier:** {1/2/3/...} | **Source:** `{SOURCE_TABLE}` | **BCV Concept:** {[Concept] Term} | **BCO:** {Core Object} | **Table Type:** {Fundamental/...}
+**Description:** {1–2 câu tiếng Việt — BCV Term + ý nghĩa nghiệp vụ bảng nguồn}
+```
+
+- `**Description:**` phải nằm trong **500 ký tự đầu tiên** sau heading `### N.` — script dừng tìm sau đó.
+- Viết tiếng Việt **có dấu đầy đủ** (Unicode UTF-8). Không viết tắt, không viết không dấu.
+- Thứ tự entities trong section = thứ tự Tier (T1 trước, T4 sau), trong cùng Tier = alphabetical.
+- Khi có thay đổi entity (tên, description, table_type) → cập nhật section này, rồi chạy `aggregate_atomic.py`.
 
 ### Mục 7f — Bảng ngoài scope
 
@@ -204,7 +266,7 @@ Format dưới đây là contract giữa HLD Overview và các script aggregate 
 
 Hai file này là bảng tổng hợp toàn dự án. Encoding + workflow xem [`reference/file_layout.md`](reference/file_layout.md).
 
-**Source-of-truth:** HLD Overview (mục 7f) và file Tier. Hai file aggregate luôn được sinh bằng script.
+**Source-of-truth:** HLD Overview — mục 7f cho `atomic_out_of_scope.csv`, section Entities cho `atomic_entities.csv`. Hai file aggregate luôn được sinh bằng script.
 
 ### atomic_entities.csv
 
@@ -261,6 +323,8 @@ Cần thay đổi cột LOCKED → đổi `status → draft` trước, sửa, r�
 - [ ] **Chạy aggregate verify:** `python Atomic/lld/scripts/aggregate_out_of_scope.py --source {SOURCE}` không có WARN, output có đủ số dòng.
 - [ ] **Chạy aggregate atomic entities:** `python Atomic/lld/scripts/aggregate_atomic.py` thành công, không có entity lock vi phạm.
 - [ ] **Cross-check số liệu:** số entity Atomic trong mục 7a Overview = số entity trong tất cả mục 6a các Tier.
+- [ ] **Source Table Change Mode đã điền:** tất cả dòng mục 7a và 6a có giá trị `Update` / `Append` / `N/A` — không để trống. Lấy từ `BRD/Source/brd_{SOURCE}.yaml → content.ingestion.data_change_mode`.
+- [ ] **Cross-check Change Mode ↔ Table Type:** dòng nào có `(Update, Fact Append)` hoặc `(Append, Fundamental/Relative)` → ghi vào mục 7e "Điểm cần xác nhận" với câu hỏi về ETL pattern.
 
 ## QUY TẮC REFERENCE GIỮA CÁC TẦNG
 

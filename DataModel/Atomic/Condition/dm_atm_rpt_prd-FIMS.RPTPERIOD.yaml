@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-rpt_prd-FIMS.RPTPERIOD
-  logical_name: "Reporting Period"
-
+  logical_name: Reporting Period
   physical_name: rpt_prd
   layer: Atomic
   version: "1.0"
@@ -150,7 +149,7 @@ attributes:
     etl_derived_value: null
 
   - name: "Self-set Period Id"
-    physical_name: selfset_prd_id
+    physical_name: self-set_prd_id
     business_meaning: FK đến kỳ báo cáo do cán bộ UB tự thiết lập (SELFSETPD). Nullable.
     data_domain: Surrogate Key
     data_type: string
@@ -164,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - name: "Self-set Period Code"
-    physical_name: selfset_prd_code
+    physical_name: self-set_prd_code
     business_meaning: Mã kỳ báo cáo tự thiết lập.
     data_domain: Text
     data_type: string
@@ -187,7 +186,7 @@ attributes:
     source_system: FIMS
     source_table: RPTPERIOD
     source_column: FIMS.RPTPERIOD.RptId
-    comment: "FK target: Report Template.Report Template Id."
+    comment: "FK target: rpt_tpl.rpt_tpl_id."
     classification_context: "Source System Code = 'FIMS_RPTPERIOD'"
     etl_derived_value: null
 
@@ -201,7 +200,7 @@ attributes:
     source_system: FIMS
     source_table: RPTPERIOD
     source_column: FIMS.RPTPERIOD.RptId
-    comment: "Lookup pair: Report Template.Report Template Code. Pair with Report Template Id."
+    comment: "Lookup pair: rpt_tpl.rpt_tpl_code. Pair with rpt_tpl_id."
     classification_context: "Source System Code = 'FIMS_RPTPERIOD'"
     etl_derived_value: null
 

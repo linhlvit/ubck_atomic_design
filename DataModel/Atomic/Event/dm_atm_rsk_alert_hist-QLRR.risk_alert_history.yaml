@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-rsk_alert_hist-QLRR.risk_alert_history
-  logical_name: "Risk Alert History"
-
+  logical_name: Risk Alert History
   physical_name: rsk_alert_hist
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: QLRR
     source_table: risk_alert_history
     source_column: QLRR.risk_alert_history.alert_id
-    comment: "FK target: Risk Alert.Risk Alert Id."
+    comment: "FK target: rsk_alert.rsk_alert_id."
     classification_context: "Source System Code = 'QLRR_RISK_ALERT_HISTORY'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: QLRR
     source_table: risk_alert_history
     source_column: QLRR.risk_alert_history.alert_id
-    comment: "Lookup pair: Risk Alert.Risk Alert Code. Pair with Risk Alert Id."
+    comment: "Lookup pair: rsk_alert.rsk_alert_code. Pair with rsk_alert_id."
     classification_context: "Source System Code = 'QLRR_RISK_ALERT_HISTORY'"
     etl_derived_value: null
 
@@ -103,7 +102,7 @@ attributes:
     source_system: QLRR
     source_table: risk_alert_history
     source_column: QLRR.risk_alert_history.resolution_id
-    comment: "FK target: Risk Alert Resolution.Risk Alert Resolution Id. Nullable — HLD T4-01: event_type=1 chưa có resolution_id."
+    comment: "FK target: rsk_alert_rsl.rsk_alert_rsl_id. Nullable — HLD T4-01: event_type=1 chưa có resolution_id."
     classification_context: "Source System Code = 'QLRR_RISK_ALERT_HISTORY'"
     etl_derived_value: null
 
@@ -117,7 +116,7 @@ attributes:
     source_system: QLRR
     source_table: risk_alert_history
     source_column: QLRR.risk_alert_history.resolution_id
-    comment: "Lookup pair: Risk Alert Resolution.Risk Alert Resolution Code. Pair with Risk Alert Resolution Id. Nullable."
+    comment: "Lookup pair: rsk_alert_rsl.rsk_alert_rsl_code. Pair with rsk_alert_rsl_id. Nullable."
     classification_context: "Source System Code = 'QLRR_RISK_ALERT_HISTORY'"
     etl_derived_value: null
 

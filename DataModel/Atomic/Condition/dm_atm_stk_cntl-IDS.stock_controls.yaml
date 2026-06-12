@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-stk_cntl-IDS.stock_controls
-  logical_name: "Stock Control"
-
+  logical_name: Stock Control
   physical_name: stk_cntl
   layer: Atomic
   version: "1.0"
@@ -75,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: stock_controls
     source_column: IDS.stock_controls.stock_holder_id
-    comment: "FK target: Stock Holder.Stock Holder Id."
+    comment: "FK target: stk_hldr.stk_hldr_id."
     classification_context: "Source System Code = 'IDS_STOCK_CONTROLS'"
     etl_derived_value: null
 
@@ -89,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: stock_controls
     source_column: IDS.stock_controls.stock_holder_id
-    comment: "Lookup pair: Stock Holder.Stock Holder Code. Pair with Stock Holder Id."
+    comment: "Lookup pair: stk_hldr.stk_hldr_code. Pair with stk_hldr_id."
     classification_context: "Source System Code = 'IDS_STOCK_CONTROLS'"
     etl_derived_value: null
 

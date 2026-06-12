@@ -1,0 +1,6 @@
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+Involved Party Id,FK đến Regulatory Authority Officer,Surrogate Key,false,false,draft,NHNCK.qlnhn.USERS.ID,FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Shared entity — không có PK surrogate riêng.,,
+Involved Party Code,Mã cán bộ UBCK,Text,false,false,draft,NHNCK.qlnhn.USERS.ID,Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Involved Party Id.,,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.USERS,
+Electronic Address Type Code,Loại địa chỉ điện tử,Classification Value,false,false,draft,,Scheme: IP_ELEC_ADDR_TYPE. ETL tự gán theo loại dữ liệu (EMAIL hoặc PHONE).,IP_ELEC_ADDR_TYPE,
+Electronic Address,Giá trị địa chỉ điện tử (email hoặc số điện thoại),Text,false,false,draft,NHNCK.qlnhn.USERS.EMAIL,"ETL UNPIVOT: EMAIL→IP_ELEC_ADDR_TYPE=EMAIL; PHONE_NUMBER (NHNCK.qlnhn.USERS.PHONE_NUMBER)→PHONE. Mỗi cột tạo 1 dòng riêng.",,

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>ThanhTra ER Diagram — INSPECT Schema</title>
+<style>
+:root{
+  --bg:#f0f2f7;--surface:#fff;--surface2:#f5f6fa;--border:#d1d5e0;
+  --accent:#4f46e5;--accent2:#0891b2;--text:#1e2130;--muted:#6b7280;
+  --amber:#d97706;--blue:#2563eb;
+  --brd-border:#4f46e5;--fk-border:#93a3c8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;overflow:hidden}
+.app{display:flex;height:100vh}
+.sidebar{width:256px;min-width:256px;background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;z-index:10;box-shadow:2px 0 8px rgba(0,0,0,.06)}
+.sb-title{padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.sb-title h2{font-size:13px;font-weight:700}
+.sb-title p{font-size:11px;color:var(--muted);margin-top:2px}
+.sb-section{padding:10px 14px;border-bottom:1px solid var(--border)}
+.sb-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:7px}
+.search-box{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:6px 10px;color:var(--text);font-size:12px;outline:none}
+.search-box:focus{border-color:var(--accent)}
+.hint{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}
+.grp-list{overflow-y:auto;flex:1;padding:6px 0}
+.grp-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;
+  border-left:3px solid transparent;transition:all .12s}
+.grp-item:hover{background:var(--surface2)}
+.grp-item.active{border-left-color:var(--accent);background:rgba(79,70,229,.06)}
+.grp-item.active .grp-name{color:var(--text);font-weight:600}
+.grp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.grp-name{font-size:12px;color:var(--muted);flex:1}
+.grp-count{font-size:10px;color:var(--muted);background:var(--surface2);
+  border-radius:3px;padding:1px 5px;min-width:18px;text-align:center}
+.stats{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap}
+.stat{background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:5px 10px;flex:1;min-width:56px;text-align:center}
+.stat-n{font-size:15px;font-weight:700;color:var(--accent)}
+.stat-l{font-size:9px;color:var(--muted);margin-top:1px}
+.canvas-wrap{flex:1;overflow:hidden;position:relative;background:var(--bg)}
+#canvas{position:absolute;top:0;left:0;transform-origin:0 0}
+#svg-layer{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
+.tbl-card{position:absolute;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:9px;width:252px;overflow:hidden;cursor:default;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);transition:opacity .18s,box-shadow .15s;display:none}
+.tbl-card.visible{display:block}
+.tbl-card:hover{box-shadow:0 2px 12px rgba(79,70,229,.18);z-index:5}
+.tbl-card.brd-table{border-color:var(--brd-border);box-shadow:0 0 0 1px var(--brd-border),0 2px 10px rgba(79,70,229,.15)}
+.tbl-card.fk-linked{border-color:var(--fk-border)}
+.tbl-card.selected{box-shadow:0 0 0 2.5px var(--accent),0 4px 18px rgba(79,70,229,.25);z-index:9}
+.tbl-card.neighbor{box-shadow:0 0 0 2px var(--accent2),0 2px 12px rgba(8,145,178,.2);z-index:7}
+.tbl-card.dimmed{opacity:.12}
+.tbl-hdr{padding:8px 10px 5px;border-bottom:1px solid var(--border)}
+.tbl-badges{display:flex;gap:4px;margin-bottom:3px;flex-wrap:wrap}
+.badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.4px}
+.badge-brd{background:rgba(79,70,229,.14);color:#3730a3;border:1px solid rgba(79,70,229,.35)}
+.badge-grp{font-size:9px;padding:1px 5px;border-radius:3px;border:1px solid;opacity:.85}
+.tbl-name{font-size:11px;font-weight:700;word-break:break-word;line-height:1.3}
+.tbl-cmt{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.35}
+.col-list{max-height:220px;overflow-y:auto}
+.col-row{display:flex;align-items:center;padding:2px 10px;border-bottom:1px solid rgba(209,213,224,.5);gap:3px}
+.col-row:last-child{border-bottom:none}
+.col-row.brd-col{background:rgba(79,70,229,.07)}
+.col-row.dim-col{opacity:.38}
+.col-icon{width:12px;font-size:9px;text-align:center;flex-shrink:0}
+.col-name{flex:1;font-size:10px;font-family:Consolas,monospace;word-break:break-all}
+.col-row.brd-col .col-name{color:#3730a3;font-weight:600}
+.kbadge{font-size:8px;padding:1px 3px;border-radius:2px;flex-shrink:0}
+.kpk{background:rgba(217,119,6,.15);color:var(--amber);border:1px solid rgba(217,119,6,.3)}
+.kfk{background:rgba(37,99,235,.12);color:var(--blue);border:1px solid rgba(37,99,235,.25)}
+.brd-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-left:2px}
+.fk-path{stroke:#93a3c8;stroke-width:2;fill:none;opacity:.75;cursor:pointer;
+  pointer-events:stroke;transition:opacity .15s}
+.fk-path.hidden-line{opacity:0;pointer-events:none}
+.fk-path.active-line{stroke:var(--accent2);stroke-width:3;opacity:1}
+.fk-path.dim-line{opacity:.07;pointer-events:none}
+.zoom-ctrl{position:absolute;bottom:14px;right:14px;display:flex;flex-direction:column;gap:4px;z-index:20}
+.zbtn{width:30px;height:30px;border-radius:6px;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 3px rgba(0,0,0,.08);transition:all .12s}
+.zbtn:hover{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+#tip{position:fixed;background:#1e2130;color:#e2e8f0;border-radius:6px;
+  padding:5px 10px;font-size:11px;pointer-events:none;z-index:200;display:none;
+  max-width:300px;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.legend{position:absolute;bottom:14px;left:14px;background:var(--surface);border:1px solid var(--border);
+  border-radius:7px;padding:8px 12px;font-size:10px;color:var(--muted);z-index:20;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);line-height:1.8}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tbl-card.dragging-card{opacity:.85;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:100;cursor:grabbing}
+.layout-bar{padding:8px 14px;border-top:1px solid var(--border);display:flex;gap:5px;flex-wrap:wrap}
+.lbtn{flex:1;padding:5px 6px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);
+  color:var(--muted);font-size:10px;cursor:pointer;text-align:center;transition:all .12s;white-space:nowrap}
+.lbtn:hover{border-color:var(--accent);color:var(--accent);background:rgba(79,70,229,.06)}
+.lbtn.warn:hover{border-color:var(--red,#dc2626);color:var(--red,#dc2626)}
+.local-warn{padding:5px 14px;font-size:9px;color:var(--amber,#d97706);border-top:1px solid var(--border);
+  background:rgba(217,119,6,.06);display:none}
+.tbl-hdr{cursor:pointer;user-select:none}
+.col-list{user-select:text;cursor:text}
+.col-name{cursor:text}
+.tbl-name{cursor:pointer;user-select:text}
+.tbl-cmt{user-select:text}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{animation:spin .6s linear}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="sb-title"><h2>ThanhTra ER Diagram</h2><p>Schema INSPECT &middot; BRD Mapping</p></div>
+  <div class="sb-section">
+    <span class="sb-label">Tìm kiếm bảng</span>
+    <input class="search-box" id="searchBox" placeholder="Tên bảng..." type="text">
+  </div>
+  <div class="sb-section" style="padding-bottom:6px">
+    <span class="sb-label">Nhóm nghiệp vụ</span>
+    <p class="hint">Click nhóm &rarr; hiện bảng trong nhóm.<br>Click bảng &rarr; hiện bảng có quan hệ FK.<br>Click lại &rarr; bỏ chọn.</p>
+  </div>
+  <div class="grp-list" id="grpList"></div>
+  <div class="stats" id="statsBar"></div>
+  <div class="local-warn" id="localWarn">&#9888; Mở qua file:// — layout lưu trong phiên này.<br>Dùng Export để lưu lâu dài.</div>
+  <div class="layout-bar">
+    <button class="lbtn" onclick="exportLayout()" title="Tải file layout.json về máy">&#8595; Export</button>
+    <button class="lbtn" onclick="document.getElementById('importFile').click()" title="Nạp file layout.json đã lưu">&#8593; Import</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importLayout(this)">
+  </div>
+</div>
+<div class="canvas-wrap" id="canvasWrap">
+  <div id="canvas"><svg id="svg-layer"></svg></div>
+  <div class="zoom-ctrl">
+    <button class="zbtn" onclick="zoomBy(1.2)" title="Zoom in">+</button>
+    <button class="zbtn" onclick="zoomBy(0.83)" title="Zoom out">&minus;</button>
+    <button class="zbtn" onclick="fitView()" title="Fit view">&#x229F;</button>
+    <button class="zbtn" id="btnAutoLayout" onclick="autoLayout()" title="Auto arrange layout" style="font-size:12px">&#x27F3;</button>
+    <button class="zbtn" onclick="resetLayout()" title="Xóa layout đã lưu, reset về mặc định" style="font-size:11px">&#x2715;</button>
+  </div>
+  <div class="legend">
+    <div><b style="color:var(--brd-border)">&#9632;</b> Dùng trong BRD &nbsp;<b style="color:var(--fk-border)">&#9632;</b> Liên quan FK</div>
+    <div>&#9679; Cột dùng trong BRD &nbsp; 🔑 PK &nbsp; 🔗 FK</div>
+    <div style="color:#93a3c8">&#8212;&#8212; Đường FK (hover để xem chi tiết)</div>
+  </div>
+</div>
+</div>
+<div id="tip"></div>
+<script>
+const RAW={"tables": [{"name": "ADHOC_ADMIN_VIOLATION_REPORT", "comment": "Báo cáo đột xuất, theo yêu cầu về hoạt động xử lý VPHC", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REPORT_TYPE", "desc": "Loại: AD_HOC (Đột xuất), ON_DEMAND (Theo yêu cầu)", "key": "", "fk": "", "brd": false}, {"name": "REQUESTING_UNIT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_FROM", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TO", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ADHOC_ANTI_CORRUPTION_REPORT", "comment": "Báo cáo đột xuất, theo yêu cầu về hoạt động PCTN", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REPORT_TYPE", "desc": "Loại: AD_HOC (Đột xuất), ON_DEMAND (Theo yêu cầu)", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REQUESTING_AUTHORITY", "desc": "Cơ quan yêu cầu báo cáo", "key": "", "fk": "", "brd": false}, {"name": "REQUEST_DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REQUEST_DOCUMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBMISSION_DEADLINE", "desc": "Thời hạn nộp báo cáo", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ADHOC_INSPECTION_REPORT", "comment": "Báo cáo đột xuất hoặc theo yêu cầu về hoạt động thanh tra, kiểm tra", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REPORT_TYPE", "desc": "Loại báo cáo: AD_HOC (Đột xuất), ON_DEMAND (Theo yêu cầu)", "key": "", "fk": "", "brd": false}, {"name": "REQUESTING_UNIT", "desc": "Đơn vị yêu cầu (VD: Lãnh đạo UBCKNN, Bộ Tài chính, TTCP)", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_FROM", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TO", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ADMIN_VIOLATION_REPORT_OUTLINE", "comment": "Đề cương báo cáo thi hành pháp luật xử lý VPHC (TT 19/2025/TT-BTP)", "group": "other", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TYPE", "desc": "Kỳ báo cáo: HALF_YEAR (6 tháng), YEAR (Năm)", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ANTI_CORRUPTION_DOCUMENT", "comment": "Văn bản chỉ đạo và triển khai công tác phòng, chống tham nhũng tại UBCKNN", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "DOCUMENT_TYPE", "desc": "Loại VB: SUBMISSION_REPORT (Tờ trình LĐ UBCKNN), DEPLOYMENT_LETTER (VB gửi đơn vị UBCKNN triển khai), RESULT_REPORT (CV UBCKNN báo cáo kết quả)", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISSUED_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUMMARY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECEIVING_UNIT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "QUARTER", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ANTI_CORRUPTION_PERIODIC_REPORT", "comment": "Báo cáo định kỳ PCTN theo biểu mẫu TT 06/2025/TT-TTCP", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REPORT_TEMPLATE", "desc": "Loại mẫu: TEMPLATE_01_PCTN (01/PCTN), TEMPLATE_02_PCTN (02/PCTN), TEMPLATE_03_PCTN (03/PCTN)", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TYPE", "desc": "Kỳ: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4, HALF_YEAR, NINE_MONTHS, YEAR", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DATA_PERIOD_FROM", "desc": "Thời gian chốt số liệu - Từ ngày", "key": "", "fk": "", "brd": false}, {"name": "DATA_PERIOD_TO", "desc": "Thời gian chốt số liệu - Đến ngày", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ANTI_CORRUPTION_REPORT_OUTLINE", "comment": "Đề cương BC công tác PCTN (Mẫu số 03 TT 06/2025/TT-TTCP)", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TYPE", "desc": "Kỳ: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4, HALF_YEAR, NINE_MONTHS, YEAR, THEMATIC", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ANTI_MONEY_LAUNDERING_DOCUMENT", "comment": "Văn bản chỉ đạo và triển khai công tác phòng, chống rửa tiền trong lĩnh vực chứng khoán", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "DOCUMENT_TYPE", "desc": "Loại VB: SUBMISSION_REPORT (Tờ trình LĐ UBCKNN), DEPLOYMENT_LETTER (VB gửi đơn vị UBCKNN triển khai), RESULT_REPORT (CV UBCKNN báo cáo kết quả)", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISSUED_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUMMARY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "QUARTER", "desc": "Quý: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4", "key": "", "fk": "", "brd": false}, {"name": "RECEIVING_UNIT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "ANTI_MONEY_LAUNDERING_REPORT", "comment": "Báo cáo định kỳ và theo yêu cầu về hoạt động PCRT/PCTKB/PCTTPBVKHDHL", "group": "anti", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REPORT_TYPE", "desc": "Loại: PERIODIC (Định kỳ), ON_DEMAND (Theo yêu cầu)", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TYPE", "desc": "Kỳ: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4, HALF_YEAR, YEAR. Bắt buộc khi report_type=PERIODIC", "key": "", "fk": "", "brd": false}, {"name": "REQUESTING_AUTHORITY", "desc": "Cơ quan yêu cầu (VD: Vụ TC Ngân hàng - BTC, Cục PCRT - NHNN). Bắt buộc khi report_type=ON_DEMAND", "key": "", "fk": "", "brd": false}, {"name": "REQUEST_DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "CITIZEN_COMPLAINT_REPORT_OUTLINE", "comment": "Đề cương BC công tác tiếp công dân, giải quyết KN-TC (Mẫu số 02 TT 06/2025/TT-TTCP)", "group": "petition", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TYPE", "desc": "Kỳ: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4, HALF_YEAR, NINE_MONTHS, YEAR, THEMATIC", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "CITIZEN_RECEPTION", "comment": "Thông tin tiếp công dân tại Thanh tra UBCKNN", "group": "petition", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "RECEPTION_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECEIVER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECEIVER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_TYPE", "desc": "Phân loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NUMBER_OF_PEOPLE", "desc": "Số người (tiếp đông người: nhóm có tối đa 5 người đại diện)", "key": "", "fk": "", "brd": false}, {"name": "SUMMARY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "HAS_PETITION", "desc": "Có đơn: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "PETITION_CATEGORY", "desc": "Loại đơn: COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo), FEEDBACK_SUGGESTION (Phản ánh kiến nghị). Bắt buộc khi has_petition=1", "key": "", "fk": "", "brd": false}, {"name": "PROCESSING_STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PETITION_ID", "desc": "FK -> petition (liên kết hồ sơ đơn thư, thêm FK sau khi tạo bảng petition)", "key": "FK", "fk": "FK → PETITION.ID", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "CODE_SEQUENCE_COUNTER", "comment": "Counter sinh số thứ tự cho mã tự động (SELECT FOR UPDATE)", "group": "system", "brd": false, "fk_linked": false, "cols": [{"name": "PREFIX", "desc": "Tiền tố mã: HSTT, HSKT, HS-VPHC, HVVP, HTXP, ...", "key": "PK", "fk": "", "brd": false}, {"name": "YEAR_KEY", "desc": "Năm (2024/2025) hoặc 0000 cho counter không theo năm", "key": "", "fk": "", "brd": false}, {"name": "LAST_SEQ", "desc": "Số thứ tự cuối cùng đã cấp phát", "key": "", "fk": "", "brd": false}]}, {"name": "DOCUMENT_ATTACHMENT", "comment": "Văn bản/File đính kèm dùng chung cho nhiều thực thể (polymorphic)", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "ENTITY_TYPE", "desc": "Tên bảng gốc: inspection_team, examination_team, inspection_conclusion, adhoc_inspection_report...", "key": "", "fk": "", "brd": false}, {"name": "ENTITY_ID", "desc": "ID bản ghi trong bảng gốc", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_NUMBER", "desc": "Số văn bản (nullable, dùng cho hồ sơ đoàn)", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_CATEGORY", "desc": "Phân loại văn bản: SURVEY_REPORT, INSPECTION_DECISION, SUPERVISION_DECISION, INSPECTION_PLAN, CONCLUSION, PENALTY_DECISION, FOLLOW_UP_LETTER, REQUEST_LETTER, REPORT_FILE, APPENDIX, OTHER", "key": "", "fk": "", "brd": false}, {"name": "FILE_PATH", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FILE_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FILE_SIZE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SORT_ORDER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "DOCUMENT_TEMPLATE", "comment": "Biểu mẫu Word — header; phiên bản file lưu ở document_template_version", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "CODE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TEMPLATE_TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "DRAFT | ACTIVE | INACTIVE", "key": "", "fk": "", "brd": false}, {"name": "CURRENT_VERSION_NUMBER", "desc": "Số phiên bản file đang hiệu hành (NULL nếu chưa upload)", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "OFFICIAL_LETTER_SUBTYPE", "desc": "Mã loại công văn (PRE_VIOLATION_NOTICE_1, REMINDER, ...) — chỉ dùng khi template_type = CONG_VAN", "key": "", "fk": "", "brd": false}]}, {"name": "DOCUMENT_TEMPLATE_KEY_ASSIGN", "comment": "Biểu mẫu — các key (placeholder) được phép dùng / đã gán (N-N)", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TEMPLATE_ID", "desc": "", "key": "FK", "fk": "FK → DOCUMENT_TEMPLATE.ID", "brd": false}, {"name": "KEY_DEFINITION_ID", "desc": "", "key": "FK", "fk": "FK → DOCUMENT_TEMPLATE_KEY_DEFINITION.ID", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TEMPLATE_VERSION_ID", "desc": "Phiên bản file .docx mà bộ key này đi kèm (mỗi version một tập gán riêng)", "key": "FK", "fk": "FK → DOCUMENT_TEMPLATE_VERSION.ID", "brd": false}]}, {"name": "DOCUMENT_TEMPLATE_KEY_DEFINITION", "comment": "Danh mục placeholder (key) quy định theo loại biểu mẫu — dùng khi gán key lên mẫu Word", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "KEY_CODE", "desc": "Tên biến trong Word (không gồm {{ }}), ví dụ tenDoiTuong", "key": "", "fk": "", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TEMPLATE_TYPE", "desc": "BB_VPHC | QD_XU_PHAT | CONG_VAN | BAO_CAO", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "KEY_KIND", "desc": "STATIC | DYNAMIC — key cứng (map API) hoặc động", "key": "", "fk": "", "brd": false}, {"name": "OFFICIAL_LETTER_SUBTYPE", "desc": "Khi template_type = CONG_VAN: PAYMENT_GUIDE, REMINDER, ...", "key": "", "fk": "", "brd": false}, {"name": "API_FIELD_KEY", "desc": "Map với GET .../payment-guide-data (vd: totalFineAmount)", "key": "", "fk": "", "brd": false}, {"name": "INTERACTION_MODE", "desc": "PLAIN | SINGLE_SELECT | LOOP_BLOCK — cách dùng key khi merge/điền biểu mẫu", "key": "", "fk": "", "brd": false}, {"name": "FALLBACK_CONFIG_JSON", "desc": "JSON cấu hình nguồn chọn dự phòng khi apiFieldKey không có dữ liệu", "key": "", "fk": "", "brd": false}]}, {"name": "DOCUMENT_TEMPLATE_VERSION", "comment": "Lịch sử phiên bản file .docx của biểu mẫu", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TEMPLATE_ID", "desc": "", "key": "FK", "fk": "FK → DOCUMENT_TEMPLATE.ID", "brd": false}, {"name": "VERSION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FILE_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCX_CONTENT", "desc": "Nội dung file .docx (đã gán placeholder từ CMS)", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "DYNAMICCOLUMNS", "comment": "", "group": "system", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TABLECONFIGID", "desc": "", "key": "FK", "fk": "FK → DYNAMICTABLES.ID", "brd": false}, {"name": "COLUMNNAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DATATYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISNULLABLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISPRIMARYKEY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DEFAULTVALUE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ORDERINDEX", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATEDAT", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "DYNAMICCONNECTIONS", "comment": "", "group": "system", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TABLENAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SCHEMANAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONNECTIONNAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MAPPINGCONFIG", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SOURCEDATAPATH", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "POSTPROCESSHANDLER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "POSTPROCESSSCRIPT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SOURCEAPIURL", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "HTTPMETHOD", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RESPONSETYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CUSTOMHEADERS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REQUESTBODYTEMPLATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISACTIVE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATEDAT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "UPDATEDAT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATEDBY", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "DYNAMICGENERATORCONFIG", "comment": "", "group": "system", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TABLENAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COLUMNNAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PATTERN", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NUMBERLENGTH", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RESETTYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISACTIVE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATEDAT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "UPDATEDAT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATEDBY", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "DYNAMICGENERATORSEQ", "comment": "", "group": "system", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TABLENAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COLUMNNAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CURRENTSEQ", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "DYNAMICTABLES", "comment": "", "group": "system", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TABLENAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SCHEMANAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATEDAT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "UPDATEDAT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATEDBY", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "EXAMINATION_ANNUAL_PLAN", "comment": "Kế hoạch kiểm tra chuyên đề hằng năm. Mỗi năm chỉ 1 kế hoạch", "group": "examination", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PLAN_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "EXAMINATION_ANNUAL_PLAN_TARGET", "comment": "Đối tượng dự kiến kiểm tra trong kế hoạch hàng năm", "group": "examination", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "EXAMINATION_ANNUAL_PLAN_ID", "desc": "", "key": "FK", "fk": "FK → EXAMINATION_ANNUAL_PLAN.ID", "brd": false}, {"name": "TARGET_TYPE", "desc": "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER", "key": "", "fk": "", "brd": false}, {"name": "TARGET_REFERENCE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TARGET_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PLANNED_CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PLANNED_QUARTER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LEADING_UNIT_ID", "desc": "ID đơn vị chủ trì kiểm tra", "key": "", "fk": "", "brd": false}, {"name": "LEADING_UNIT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "EXAMINATION_RESULT_NOTICE", "comment": "Thông báo kết quả kiểm tra gắn với hồ sơ đoàn, mỗi thông báo gắn 1 đối tượng", "group": "examination", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "EXAMINATION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → EXAMINATION_TEAM.ID", "brd": true}, {"name": "NOTICE_NUMBER", "desc": "Số công văn thông báo", "key": "", "fk": "", "brd": false}, {"name": "ISSUED_DATE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "ANNOUNCED_DATE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "TARGET_TYPE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "TARGET_REFERENCE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TARGET_NAME", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECOMMENDATION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "EXECUTION_STATUS", "desc": "Trạng thái thực hiện: NOT_EXECUTED, FULLY_EXECUTED, PARTIALLY_EXECUTED", "key": "", "fk": "", "brd": true}, {"name": "EXECUTION_DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "EXAMINATION_RESULT_NOTICE_REMEDIAL", "comment": "Danh sách biện pháp khắc phục trong thông báo kết quả kiểm tra", "group": "examination", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "EXAMINATION_RESULT_NOTICE_ID", "desc": "", "key": "FK", "fk": "FK → EXAMINATION_RESULT_NOTICE.ID", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SORT_ORDER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "EXAMINATION_TEAM", "comment": "Hồ sơ đoàn kiểm tra (định kỳ/đột xuất). Mã tự sinh: HSKT-YYYY-XXX", "group": "examination", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "CODE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "EXAMINATION_ANNUAL_PLAN_ID", "desc": "", "key": "FK", "fk": "FK → EXAMINATION_ANNUAL_PLAN.ID", "brd": false}, {"name": "UNIT_ID", "desc": "Đơn vị kiểm tra (tự động gán theo Ban của người dùng)", "key": "", "fk": "", "brd": false}, {"name": "UNIT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PLAN_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FORM_TYPE", "desc": "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)", "key": "", "fk": "", "brd": true}, {"name": "START_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "END_DATE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "DURATION_DAYS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ANNOUNCEMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "EXAMINATION_PERIOD_FROM", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "EXAMINATION_PERIOD_TO", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ANTI_MONEY_LAUNDERING", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ABNORMAL_TRANSACTION_CHECK", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "EXAMINATION_TEAM_MEMBER", "comment": "Thành phần nhân sự đoàn kiểm tra", "group": "examination", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "EXAMINATION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → EXAMINATION_TEAM.ID", "brd": false}, {"name": "USER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "USER_FULL_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "USER_ACCOUNT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DEPARTMENT_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DEPARTMENT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ROLE_IN_TEAM", "desc": "Vai trò: LEADER (Trưởng đoàn), MEMBER (Thành viên)", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "EXAMINATION_TEAM_TARGET", "comment": "Đối tượng kiểm tra trong hồ sơ đoàn", "group": "examination", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "EXAMINATION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → EXAMINATION_TEAM.ID", "brd": true}, {"name": "TARGET_TYPE", "desc": "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION", "key": "", "fk": "", "brd": true}, {"name": "TARGET_REFERENCE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TARGET_NAME", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ACCOUNT_NUMBER", "desc": "Số tài khoản chứng khoán (cá nhân và tổ chức)", "key": "", "fk": "", "brd": false}, {"name": "SECURITIES_COMPANY_NAME", "desc": "CTCK nơi mở tài khoản (cá nhân và tổ chức)", "key": "", "fk": "", "brd": false}, {"name": "ADDRESS", "desc": "Địa chỉ (cá nhân và tổ chức)", "key": "", "fk": "", "brd": false}, {"name": "CITIZEN_ID", "desc": "Số CCCD/CMND - chỉ dùng cho cá nhân (targetType=INDIVIDUAL)", "key": "", "fk": "", "brd": false}, {"name": "BUSINESS_REGISTRATION_NUMBER", "desc": "Số đăng ký kinh doanh - chỉ dùng cho tổ chức (targetType=ORGANIZATION)", "key": "", "fk": "", "brd": false}, {"name": "LEGAL_REP_NAME", "desc": "Tên người đại diện theo pháp luật - chỉ dùng cho tổ chức", "key": "", "fk": "", "brd": false}, {"name": "LEGAL_REP_CITIZEN_ID", "desc": "CCCD người đại diện theo pháp luật - chỉ dùng cho tổ chức", "key": "", "fk": "", "brd": false}]}, {"name": "FORM_TEMPLATE", "comment": "Biểu mẫu văn bản sử dụng trong phân hệ thanh tra chứng khoán", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "UUID - Khóa chính", "key": "PK", "fk": "", "brd": false}, {"name": "CODE", "desc": "Mã biểu mẫu, UNIQUE", "key": "", "fk": "", "brd": false}, {"name": "NAME", "desc": "Tên biểu mẫu", "key": "", "fk": "", "brd": false}, {"name": "CATEGORY", "desc": "Loại biểu mẫu: VIOLATION_REPORT (BB VPHC), PENALTY_DECISION (QĐ xử phạt), OFFICIAL_LETTER (Công văn), REPORT (Báo cáo)", "key": "", "fk": "", "brd": false}, {"name": "CURRENT_VERSION", "desc": "Số phiên bản hiện tại", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "FORM_TEMPLATE_PLACEHOLDER", "comment": "Cấu hình trường dữ liệu động (placeholder) trong biểu mẫu", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "UUID - Khóa chính", "key": "PK", "fk": "", "brd": false}, {"name": "FORM_TEMPLATE_VERSION_ID", "desc": "FK -> form_template_version", "key": "FK", "fk": "FK → FORM_TEMPLATE_VERSION.ID", "brd": false}, {"name": "PLACEHOLDER_KEY", "desc": "Key của placeholder trong file mẫu (vd: {{ten_to_chuc}})", "key": "", "fk": "", "brd": false}, {"name": "PLACEHOLDER_LABEL", "desc": "Nhãn hiển thị cho người dùng", "key": "", "fk": "", "brd": false}, {"name": "DATA_TYPE", "desc": "Kiểu dữ liệu: TEXT, DATE, NUMBER, CURRENCY, SELECTION", "key": "", "fk": "", "brd": false}, {"name": "REQUIRED", "desc": "Bắt buộc: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "DEFAULT_VALUE", "desc": "Giá trị mặc định", "key": "", "fk": "", "brd": false}, {"name": "SORT_ORDER", "desc": "Thứ tự hiển thị", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "API_BINDING_PATH", "desc": "Đường dẫn trường trong JSON phản hồi API (vd: violation.subjectName)", "key": "", "fk": "", "brd": false}]}, {"name": "FORM_TEMPLATE_VERSION", "comment": "Lịch sử phiên bản biểu mẫu, hỗ trợ xem lịch sử và khôi phục", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "UUID - Khóa chính", "key": "PK", "fk": "", "brd": false}, {"name": "FORM_TEMPLATE_ID", "desc": "FK -> form_template", "key": "FK", "fk": "FK → FORM_TEMPLATE.ID", "brd": false}, {"name": "VERSION_NUMBER", "desc": "Số thứ tự phiên bản", "key": "", "fk": "", "brd": false}, {"name": "FILE_PATH", "desc": "Đường dẫn file mẫu (.docx) trên storage", "key": "", "fk": "", "brd": false}, {"name": "FILE_NAME", "desc": "Tên file gốc khi upload", "key": "", "fk": "", "brd": false}, {"name": "FILE_SIZE", "desc": "Dung lượng file (bytes)", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_ANNUAL_PLAN", "comment": "Kế hoạch thanh tra định kỳ hằng năm của Thanh tra UBCKNN", "group": "inspection", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PLAN_YEAR", "desc": "Năm thanh tra, UNIQUE (mỗi năm chỉ 1 kế hoạch)", "key": "", "fk": "", "brd": false}, {"name": "DECISION_NUMBER", "desc": "Số quyết định ban hành (bắt buộc khi status=APPROVED)", "key": "", "fk": "", "brd": false}, {"name": "DECISION_DATE", "desc": "Ngày quyết định (bắt buộc khi status=APPROVED)", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_ANNUAL_PLAN_TARGET", "comment": "Đối tượng dự kiến thanh tra trong kế hoạch hàng năm", "group": "inspection", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "INSPECTION_ANNUAL_PLAN_ID", "desc": "", "key": "FK", "fk": "FK → INSPECTION_ANNUAL_PLAN.ID", "brd": false}, {"name": "TARGET_TYPE", "desc": "Loại đối tượng: SECURITIES_COMPANY (CTCK), FUND_MANAGEMENT_COMPANY (CTQLQ), PUBLIC_COMPANY (CTĐC)", "key": "", "fk": "", "brd": false}, {"name": "TARGET_REFERENCE_ID", "desc": "ID tham chiếu đối tượng trong hệ thống nguồn (IDS/SCMS/FMS)", "key": "", "fk": "", "brd": false}, {"name": "TARGET_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TARGET_CODE", "desc": "Mã chứng khoán hoặc mã số doanh nghiệp (VNM, SSI, ...)", "key": "", "fk": "", "brd": false}, {"name": "TARGET_SOURCE", "desc": "Hệ thống nguồn cung cấp thông tin đối tượng: IDS | SCMS | FMS", "key": "", "fk": "", "brd": false}, {"name": "PLANNED_QUARTER", "desc": "Quý dự kiến thanh tra: 1, 2, 3, 4", "key": "", "fk": "", "brd": false}, {"name": "PLANNED_CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_CONCLUSION", "comment": "Kết luận thanh tra gắn với hồ sơ đoàn, mỗi kết luận gắn 1 đối tượng", "group": "inspection", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "INSPECTION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → INSPECTION_TEAM.ID", "brd": true}, {"name": "CONCLUSION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISSUED_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ANNOUNCED_DATE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "TARGET_TYPE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "TARGET_REFERENCE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TARGET_NAME", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "GOVERNMENT_INSPECTOR_SENT_DATE", "desc": "Ngày gửi cho Thanh tra Chính phủ", "key": "", "fk": "", "brd": false}, {"name": "RECOMMENDATION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "EXECUTION_STATUS", "desc": "Trạng thái thực hiện: NOT_EXECUTED (Chưa thực hiện), FULLY_EXECUTED (Đã khắc phục xong), PARTIALLY_EXECUTED (Đã khắc phục 1 phần)", "key": "", "fk": "", "brd": true}, {"name": "EXECUTION_DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_CONCLUSION_REMEDIAL", "comment": "Danh sách biện pháp khắc phục trong kết luận thanh tra", "group": "inspection", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "INSPECTION_CONCLUSION_ID", "desc": "", "key": "FK", "fk": "FK → INSPECTION_CONCLUSION.ID", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SORT_ORDER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_REPORT_OUTLINE", "comment": "Đề cương báo cáo công tác thanh tra (Mẫu số 01 - TT 06/2025/TT-TTCP)", "group": "inspection", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TITLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TYPE", "desc": "Loại kỳ: QUARTER, HALF_YEAR, NINE_MONTHS, YEAR", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_VALUE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_TEAM", "comment": "Hồ sơ đoàn thanh tra (định kỳ và đột xuất). Mã tự sinh: HSTT-YYYY-XXX", "group": "inspection", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "CODE", "desc": "Mã hồ sơ tự sinh: HSTT-YYYY-XXX", "key": "", "fk": "", "brd": false}, {"name": "INSPECTION_ANNUAL_PLAN_ID", "desc": "FK -> inspection_annual_plan (chỉ có khi form_type=PERIODIC)", "key": "FK", "fk": "FK → INSPECTION_ANNUAL_PLAN.ID", "brd": false}, {"name": "PLAN_YEAR", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "FORM_TYPE", "desc": "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)", "key": "", "fk": "", "brd": true}, {"name": "START_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "END_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DURATION_DAYS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ANNOUNCEMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "INSPECTION_PERIOD_FROM", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "INSPECTION_PERIOD_TO", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ANTI_MONEY_LAUNDERING", "desc": "Có thanh tra PCRT: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "ABNORMAL_TRANSACTION_CHECK", "desc": "Kiểm tra giao dịch bất thường: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERIFICATION_MINUTES_SIGN_DATE", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_TEAM_MEMBER", "comment": "Thành phần nhân sự đoàn thanh tra", "group": "inspection", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "INSPECTION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → INSPECTION_TEAM.ID", "brd": false}, {"name": "USER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "USER_FULL_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "USER_ACCOUNT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DEPARTMENT_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DEPARTMENT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ROLE_IN_TEAM", "desc": "Vai trò: LEADER (Trưởng đoàn), MEMBER (Thành viên)", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "INSPECTION_TEAM_TARGET", "comment": "Đối tượng thanh tra trong hồ sơ đoàn", "group": "inspection", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "INSPECTION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → INSPECTION_TEAM.ID", "brd": true}, {"name": "TARGET_TYPE", "desc": "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY", "key": "", "fk": "", "brd": true}, {"name": "TARGET_REFERENCE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TARGET_NAME", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "Nội dung thanh tra (per-target)", "key": "", "fk": "", "brd": false}, {"name": "INSPECTION_PERIOD_FROM", "desc": "Thời kỳ thanh tra từ (per-target)", "key": "", "fk": "", "brd": false}, {"name": "INSPECTION_PERIOD_TO", "desc": "Thời kỳ thanh tra đến (per-target)", "key": "", "fk": "", "brd": false}, {"name": "ANTI_MONEY_LAUNDERING", "desc": "Có/không thanh tra về PCRT: 1=Có, 0=Không", "key": "", "fk": "", "brd": false}, {"name": "ABNORMAL_TRANSACTION_CHECK", "desc": "Kiểm tra giao dịch bất thường: 1=Có, 0=Không. Nếu =1 thì không tạo thông báo kết quả kiểm tra", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "Ghi chú (per-target)", "key": "", "fk": "", "brd": false}]}, {"name": "LEGAL_DOCUMENT", "comment": "Danh mục Văn bản pháp luật", "group": "document", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "CODE", "desc": "Mã tự động: VBPL-XXXX", "key": "", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISSUED_DATE", "desc": "Ngày ban hành", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "ACTIVE = Đang sử dụng, INACTIVE = Ngừng sử dụng", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "NOTIFICATION", "comment": "", "group": "other", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "RECIPIENT_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TITLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MESSAGE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REFERENCE_TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REFERENCE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "IS_READ", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_DECISION", "comment": "Quyết định xử phạt VPHC, liên kết hồ sơ VPHC và BB VPHC", "group": "penalty", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "DECISION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISSUED_DATE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "SUMMARY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SIGNER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SIGNER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_CASE_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_CASE.ID", "brd": true}, {"name": "DECISION_CATEGORY", "desc": "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ UBCKNN ký)", "key": "", "fk": "", "brd": false}, {"name": "ASSIGNED_OFFICER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ASSIGNED_OFFICER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ANTI_MONEY_LAUNDERING", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TOTAL_FINE_AMOUNT", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "PAYMENT_DEADLINE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: DRAFT, PENDING_APPROVAL, APPROVED, REJECTED, ISSUED, ENFORCED", "key": "", "fk": "", "brd": true}, {"name": "COMPLAINT_EXISTS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COMPLAINT_CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COMPLAINT_RECEIVED_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COMPLAINT_STATUS", "desc": "Trạng thái khiếu nại: PROCESSING (Đang xử lý), RESOLVED (Đã giải quyết)", "key": "", "fk": "", "brd": false}, {"name": "COMPLAINT_RESULT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAWSUIT_EXISTS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAWSUIT_CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBMITTED_BY_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "APPROVER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBMITTED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SIGNED_DOCUMENT_URL", "desc": "URL file PDF đã ký số, cập nhật sau khi VBĐH callback (3.2.4 feature 5.9)", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_DECISION_APPROVAL_HISTORY", "comment": "Lịch sử phê duyệt, ký số, ban hành QĐ xử phạt", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "PENALTY_DECISION_ID", "desc": "", "key": "FK", "fk": "FK → PENALTY_DECISION.ID", "brd": false}, {"name": "ACTION", "desc": "Thao tác: CREATED, EDITED, SUBMITTED, APPROVED, REJECTED, SENT_TO_SUBJECT", "key": "", "fk": "", "brd": false}, {"name": "PERFORMED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERFORMED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REJECTION_REASON", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_DECISION_CIRCUMSTANCE", "comment": "Tình tiết tăng nặng/giảm nhẹ theo hành vi vi phạm", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "PENALTY_DECISION_SUBJECT_BEHAVIOR_ID", "desc": "", "key": "FK", "fk": "FK → PENALTY_DECISION_SUBJECT_BEHAVIOR.ID", "brd": false}, {"name": "CIRCUMSTANCE_TYPE", "desc": "Loại: AGGRAVATING (Tăng nặng), MITIGATING (Giảm nhẹ)", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_DECISION_SUBJECT", "comment": "Đối tượng vi phạm trong QĐ xử phạt + theo dõi thi hành nộp phạt", "group": "penalty", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "PENALTY_DECISION_ID", "desc": "", "key": "FK", "fk": "FK → PENALTY_DECISION.ID", "brd": true}, {"name": "SUBJECT_TYPE", "desc": "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)", "key": "", "fk": "", "brd": true}, {"name": "SUBJECT_NAME", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "SUBJECT_ID_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_DOB", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_ADDRESS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_LEGAL_REP", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_LEGAL_REP_TITLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TOTAL_FINE_AMOUNT", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "PAID_AMOUNT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COERCED_AMOUNT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PAYMENT_RECEIVED_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COMPLIANCE_STATUS", "desc": "Chấp hành: NOT_PAID, PAID, PARTIALLY_PAID, UNDER_APPEAL", "key": "", "fk": "", "brd": false}, {"name": "ENFORCEMENT_PROGRESS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PAYMENT_PROOF_URL", "desc": "URL file chứng từ nộp tiền phạt do người vi phạm upload (Bước 9 — QT 7)", "key": "", "fk": "", "brd": false}, {"name": "PAYMENT_PROOF_UPLOADED_AT", "desc": "Thời điểm người vi phạm upload chứng từ nộp phạt (Bước 10 — QT 7)", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_TAX_CODE", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_DECISION_SUBJECT_BEHAVIOR", "comment": "Hành vi vi phạm theo từng đối tượng trong QĐ xử phạt, kèm khung phạt và mức phạt", "group": "penalty", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "PENALTY_DECISION_SUBJECT_ID", "desc": "", "key": "FK", "fk": "FK → PENALTY_DECISION_SUBJECT.ID", "brd": true}, {"name": "VIOLATION_BEHAVIOR_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_BEHAVIOR.ID", "brd": true}, {"name": "PENALTY_TYPE_ID", "desc": "", "key": "FK", "fk": "FK → PENALTY_TYPE.ID", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LEGAL_BASIS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MIN_FINE_AMOUNT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MAX_FINE_AMOUNT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "APPLIED_FINE_AMOUNT", "desc": "Mức phạt tiền áp dụng (tự động tính theo công thức, cho phép điều chỉnh thủ công)", "key": "", "fk": "", "brd": false}, {"name": "REMEDIAL_MEASURE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REMEDIAL_DEADLINE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_DECISION_VIOLATION_RECORD", "comment": "Bảng trung gian N-N: Quyết định xử phạt ↔ Biên bản VPHC", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "PENALTY_DECISION_ID", "desc": "", "key": "FK", "fk": "FK → PENALTY_DECISION.ID", "brd": false}, {"name": "VIOLATION_RECORD_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_RECORD.ID", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_TYPE", "comment": "Danh mục hình thức xử phạt vi phạm hành chính trong lĩnh vực chứng khoán", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "UUID - Khóa chính", "key": "PK", "fk": "", "brd": false}, {"name": "CODE", "desc": "Mã hình thức xử phạt, tự động sinh, UNIQUE", "key": "", "fk": "", "brd": false}, {"name": "NAME", "desc": "Tên hình thức xử phạt", "key": "", "fk": "", "brd": false}, {"name": "CATEGORY", "desc": "Phân loại: PRIMARY_PENALTY (Xử phạt chính), SUPPLEMENTARY_PENALTY (Xử phạt bổ sung), REMEDIAL_MEASURE (Biện pháp khắc phục hậu quả)", "key": "", "fk": "", "brd": false}, {"name": "DESCRIPTION", "desc": "Mô tả chi tiết", "key": "", "fk": "", "brd": false}, {"name": "LEGAL_BASIS", "desc": "Căn cứ pháp luật (điều, khoản, điểm)", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "Ghi chú", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PENALTY_TYPE_VIOLATION_BEHAVIOR", "comment": "Bảng trung gian N-N: Hành vi vi phạm - Hình thức xử phạt BỔ SUNG", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "PENALTY_TYPE_ID", "desc": "", "key": "FK", "fk": "FK → PENALTY_TYPE.ID", "brd": false}, {"name": "VIOLATION_BEHAVIOR_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_BEHAVIOR.ID", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PETITION", "comment": "Đơn thư nhận tại Thanh tra UBCKNN. Mã vụ việc tự sinh: [2 ký tự CV][YY][STT]", "group": "petition", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "CODE", "desc": "Mã vụ việc tự động sinh. VD: DA2540", "key": "", "fk": "", "brd": false}, {"name": "RECEIVED_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FORWARDING_UNIT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENDER_NAME", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "SENDER_ADDRESS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PETITION_CATEGORY", "desc": "Loại đơn: FEEDBACK_SUGGESTION (PAKN), COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo)", "key": "", "fk": "", "brd": true}, {"name": "RELATED_TO_CORPORATE_BOND", "desc": "Liên quan TPDN: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "ELIGIBLE_FOR_PROCESSING", "desc": "Đủ điều kiện xử lý: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "WITHIN_JURISDICTION", "desc": "Thuộc thẩm quyền: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "ASSIGNED_OFFICER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ASSIGNED_OFFICER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DUPLICATE_TYPE", "desc": "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)", "key": "", "fk": "", "brd": false}, {"name": "ORIGINAL_PETITION_ID", "desc": "FK tự tham chiếu -> petition (đơn gốc). Bắt buộc khi duplicate_type=DUPLICATE", "key": "FK", "fk": "FK → PETITION.ID", "brd": false}, {"name": "SUBMISSION_NUMBER", "desc": "Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc)", "key": "", "fk": "", "brd": false}, {"name": "TRANSFERRED_AUTHORITY", "desc": "Tên cơ quan có thẩm quyền nhận chuyển đơn", "key": "", "fk": "", "brd": false}, {"name": "INTERNAL_TRANSFER_UNIT_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "INTERNAL_TRANSFER_UNIT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ARCHIVED", "desc": "Lưu đơn: 0=Không, 1=Có", "key": "", "fk": "", "brd": false}, {"name": "GUIDANCE_DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "GUIDANCE_DOCUMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)", "key": "", "fk": "", "brd": true}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "END_DATE", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PETITION_DOCUMENT", "comment": "Phiếu/Công văn xử lý đơn thư, mỗi văn bản gắn 1 đơn thư. File xuất qua document_attachment", "group": "petition", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "PETITION_ID", "desc": "", "key": "FK", "fk": "FK → PETITION.ID", "brd": false}, {"name": "DOCUMENT_TYPE", "desc": "Loại: CLASSIFICATION_REPORT (Tờ trình phân loại), MULTI_CONTENT_GUIDE (Phiếu hướng dẫn đơn nhiều ND), ACCEPTANCE_NOTICE (CV thông báo thụ lý KN-TC), FEEDBACK_PROPOSAL (Phiếu đề xuất xử lý PAKN), ACCEPTANCE_PROPOSAL (Phiếu đề xuất thụ lý KN/TC), FEEDBACK_TRANSFER (Phiếu chuyển đơn PAKN), DENUNCIATION_TRANSFER (Phiếu chuyển đơn TC), INVESTOR_RESPONSE (CV trả lời NĐT)", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CLASSIFICATION_RESULT", "desc": "Kết quả phân loại (Tờ trình): WITHIN_JURISDICTION, NOT_WITHIN_JURISDICTION, MULTI_CONTENT", "key": "", "fk": "", "brd": false}, {"name": "PROPOSED_ACTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TRANSFER_TARGET_UNIT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RESOLUTION_DEADLINE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SIGNER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ACCEPTANCE_PROPOSAL_TYPE", "desc": "Đề xuất thụ lý (Phiếu đề xuất thụ lý): ACCEPT, REJECT", "key": "", "fk": "", "brd": false}, {"name": "REJECTION_REASON", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PREPARED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PREPARED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_TEMPLATE_ID", "desc": "CMS document_template id dùng cho màn nhập liệu biểu mẫu đơn thư", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_TEMPLATE_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FIELD_HTML_JSON", "desc": "JSON {instanceId: html} — nội dung rich text người dùng đã sửa từng ô trên biểu mẫu", "key": "", "fk": "", "brd": false}]}, {"name": "POST_INSPECTION_PROCESSING", "comment": "", "group": "other", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "INSPECTION_CONCLUSION_ID", "desc": "", "key": "FK", "fk": "FK → INSPECTION_CONCLUSION.ID", "brd": false}, {"name": "REQUIREMENT_SUMMARY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REQUIREMENT_TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RESPONSIBLE_PARTY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DUE_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "IMPLEMENTATION_NOTES", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_UPDATED_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MONITORING_OFFICER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MONITORING_OFFICER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RESULT_SUMMARY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PRIVATE_CATALOG_ITEM", "comment": "", "group": "other", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "CATALOG_TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CODE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ITEM_VALUE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SORT_ORDER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PROACTIVE_NOTICE", "comment": "", "group": "other", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "TITLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTICE_TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PRIORITY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENDER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENDER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENT_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ATTACHMENT_IDS_JSON", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "PROACTIVE_NOTICE_RECIPIENT", "comment": "", "group": "other", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "PROACTIVE_NOTICE_ID", "desc": "", "key": "FK", "fk": "FK → PROACTIVE_NOTICE.ID", "brd": false}, {"name": "COMPANY_CODE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COMPANY_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "COMPANY_TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONFIRMATION_STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONFIRMED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONFIRMED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PUSH_STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PUSH_ERROR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "SECURITY_MEASURE_DECISION", "comment": "QĐ áp dụng biện pháp phòng ngừa, ngăn chặn VPPL về chứng khoán và TTCK", "group": "security", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "DECISION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DECISION_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MEASURE_TYPE", "desc": "Loại biện pháp: BAN_POSITION (Cấm đảm nhiệm chức vụ), BAN_ACTIVITY (Cấm thực hiện hoạt động CK), FREEZE_ACCOUNT (Phong tỏa tài khoản CK), OTHER (Khác)", "key": "", "fk": "", "brd": false}, {"name": "EFFECTIVE_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DURATION_MONTHS", "desc": "Thời hạn áp dụng (số tháng)", "key": "", "fk": "", "brd": false}, {"name": "SIGNER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUMMARY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENT_STATUS", "desc": "Trạng thái gửi: NOT_SENT (Chưa gửi), SENT (Đã gửi)", "key": "", "fk": "", "brd": false}, {"name": "SENT_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENT_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "SECURITY_MEASURE_DECISION_RECIPIENT", "comment": "Tổ chức nhận QĐ biện pháp phòng ngừa, ngăn chặn - theo dõi trạng thái nhận", "group": "security", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "SECURITY_MEASURE_DECISION_ID", "desc": "", "key": "FK", "fk": "FK → SECURITY_MEASURE_DECISION.ID", "brd": false}, {"name": "RECIPIENT_TYPE", "desc": "Loại: SECURITIES_COMPANY (CTCK), FUND_MANAGEMENT_COMPANY (CT QLQ), STOCK_EXCHANGE (Sở GDCK), VSDC, SSC_DEPARTMENT (Ban nghiệp vụ UBCKNN)", "key": "", "fk": "", "brd": false}, {"name": "RECIPIENT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECIPIENT_REFERENCE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONFIRMATION_STATUS", "desc": "Trạng thái nhận: NOT_CONFIRMED (Chưa xác nhận), CONFIRMED (Đã xác nhận)", "key": "", "fk": "", "brd": false}, {"name": "CONFIRMED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONFIRMED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "SECURITY_MEASURE_DECISION_SUBJECT", "comment": "Đối tượng bị áp dụng biện pháp phòng ngừa, ngăn chặn", "group": "security", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "SECURITY_MEASURE_DECISION_ID", "desc": "", "key": "FK", "fk": "FK → SECURITY_MEASURE_DECISION.ID", "brd": false}, {"name": "SUBJECT_TYPE", "desc": "Loại: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_ID_NUMBER", "desc": "Số CCCD/CMND (cá nhân) hoặc Mã số doanh nghiệp (tổ chức)", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_DOB", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_ADDRESS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_LEGAL_REP", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "SECURITY_MEASURE_EXECUTION", "comment": "Tình hình thực hiện QĐ biện pháp phòng ngừa, ngăn chặn do tổ chức/cá nhân báo cáo", "group": "security", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "SECURITY_MEASURE_DECISION_ID", "desc": "", "key": "FK", "fk": "FK → SECURITY_MEASURE_DECISION.ID", "brd": false}, {"name": "REPORTER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "REPORT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "EXECUTION_RESULT", "desc": "Kết quả: FULLY_EXECUTED (Đã thực hiện đầy đủ), IN_PROGRESS (Đang thực hiện), NOT_EXECUTED (Chưa thực hiện)", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "SUPERVISION_ACTIVITY_REPORT", "comment": "Báo cáo hoạt động kiểm tra của Ban nghiệp vụ gửi Thanh tra", "group": "other", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "UNIT_ID", "desc": "ID đơn vị báo cáo (tự động gán)", "key": "", "fk": "", "brd": false}, {"name": "UNIT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TITLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_TYPE", "desc": "Loại kỳ: MONTH, QUARTER, HALF_YEAR, NINE_MONTHS, YEAR, OTHER", "key": "", "fk": "", "brd": false}, {"name": "PERIOD_VALUE", "desc": "Giá trị kỳ (số tháng hoặc quý, nếu áp dụng)", "key": "", "fk": "", "brd": false}, {"name": "REPORT_YEAR", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CONTENT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: DRAFT (Nháp), SENT_TO_INSPECTOR (Đã gửi Thanh tra)", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_BEHAVIOR", "comment": "Danh mục hành vi vi phạm hành chính trong lĩnh vực chứng khoán và TTCK", "group": "penalty", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "UUID - Khóa chính", "key": "PK", "fk": "", "brd": true}, {"name": "CODE", "desc": "Mã hành vi, tự động sinh, UNIQUE", "key": "", "fk": "", "brd": false}, {"name": "NAME", "desc": "Tên hành vi vi phạm", "key": "", "fk": "", "brd": true}, {"name": "DESCRIPTION", "desc": "Mô tả chi tiết hành vi", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_CLAUSE", "desc": "Điều, khoản, điểm của VBQPPL quy định về hành vi vi phạm", "key": "", "fk": "", "brd": false}, {"name": "PRIMARY_PENALTY_TYPE_ID", "desc": "FK -> penalty_type: Hình thức xử phạt chính (chỉ chọn 1)", "key": "FK", "fk": "FK → PENALTY_TYPE.ID", "brd": false}, {"name": "MIN_FINE_AMOUNT", "desc": "Mức phạt tiền tối thiểu (VNĐ)", "key": "", "fk": "", "brd": false}, {"name": "MAX_FINE_AMOUNT", "desc": "Mức phạt tiền tối đa (VNĐ), phải >= min_fine_amount", "key": "", "fk": "", "brd": false}, {"name": "REMEDIAL_MEASURE", "desc": "Biện pháp khắc phục hậu quả (cho phép nhập nhiều biện pháp)", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "Ghi chú", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LEGAL_DOCUMENT", "desc": "Văn bản pháp luật (nhập text)", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_BEHAVIOR_LEGAL_DOCUMENT", "comment": "Liên kết nhiều-nhiều Hành vi vi phạm - Văn bản pháp luật", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "VIOLATION_BEHAVIOR_ID", "desc": "FK → violation_behavior.id", "key": "FK", "fk": "FK → VIOLATION_BEHAVIOR.ID", "brd": false}, {"name": "LEGAL_DOCUMENT_ID", "desc": "FK → legal_document.id", "key": "FK", "fk": "FK → LEGAL_DOCUMENT.ID", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_CASE", "comment": "Hồ sơ xử lý VPHC - đối tượng trung tâm kết nối BB VPHC, QĐ xử phạt, công văn", "group": "penalty", "brd": true, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": true}, {"name": "CODE", "desc": "Mã hồ sơ tự động sinh", "key": "", "fk": "", "brd": false}, {"name": "NAME", "desc": "", "key": "", "fk": "", "brd": true}, {"name": "SOURCE_CATEGORY", "desc": "Nguồn gửi: INSPECTION_RESULT, INTERNAL_UNIT, STOCK_EXCHANGE, VSDC, OTHER_SUPERVISION", "key": "", "fk": "", "brd": false}, {"name": "SOURCE_UNIT_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SOURCE_UNIT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "INSPECTION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → INSPECTION_TEAM.ID", "brd": true}, {"name": "EXAMINATION_TEAM_ID", "desc": "", "key": "FK", "fk": "FK → EXAMINATION_TEAM.ID", "brd": true}, {"name": "ASSIGNED_OFFICER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ASSIGNED_OFFICER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUPERVISING_LEADER_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUPERVISING_LEADER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: NEW, PROCESSING, DECISION_ISSUED, ENFORCED, CLOSED", "key": "", "fk": "", "brd": true}, {"name": "BOND_ISSUER_CODE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "MARKET_TYPE", "desc": "Thị trường: DOMESTIC (Trong nước), INTERNATIONAL (Quốc tế)", "key": "", "fk": "", "brd": false}, {"name": "BOND_CODE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PROCESSING_PROGRESS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_CASE_OUTPUT_DOCUMENT", "comment": "", "group": "penalty", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "VIOLATION_CASE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_TYPE", "desc": "Mã loại biểu mẫu/công văn thuộc nhóm VPHC trong cấu hình biểu mẫu", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PENALTY_DECISION_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_CASE_RECEIVED_DOCUMENT", "comment": "Văn bản tiếp nhận trong hồ sơ xử lý VPHC", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "VIOLATION_CASE_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_CASE.ID", "brd": false}, {"name": "DOCUMENT_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISSUING_UNIT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_SUBJECT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_RECORD_ID", "desc": "FK -> violation_record (nếu chọn từ BB VPHC trên phân hệ, thêm FK sau khi tạo bảng violation_record)", "key": "FK", "fk": "FK → VIOLATION_RECORD.ID", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "ISSUING_UNIT_ID", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_CASE_STATUS_HISTORY", "comment": "Lịch sử chuyển trạng thái hồ sơ xử lý VPHC", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "VIOLATION_CASE_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_CASE.ID", "brd": false}, {"name": "FROM_STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "TO_STATUS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CHANGED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CHANGED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NOTE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_RECORD", "comment": "Biên bản VPHC (giấy/điện tử), liên kết hồ sơ VPHC và đoàn thanh tra/kiểm tra", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "RECORD_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECORD_DATE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECORD_TYPE", "desc": "Phân loại: PAPER (Biên bản giấy), ELECTRONIC (Biên bản điện tử)", "key": "", "fk": "", "brd": false}, {"name": "INSPECTION_TEAM_ID", "desc": "ID đoàn thanh tra liên kết với biên bản VPHC (không bắt buộc)", "key": "FK", "fk": "FK → INSPECTION_TEAM.ID", "brd": false}, {"name": "EXAMINATION_TEAM_ID", "desc": "ID đoàn kiểm tra liên kết với biên bản VPHC (không bắt buộc)", "key": "FK", "fk": "FK → EXAMINATION_TEAM.ID", "brd": false}, {"name": "VIOLATION_TIME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LOCATION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SOURCE_INFO", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECORDER_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECORDER_TITLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "RECORDER_UNIT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_TYPE", "desc": "Đối tượng vi phạm: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_ID_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_DOB", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_ADDRESS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_LEGAL_REP", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_LEGAL_REP_TITLE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_EMAIL", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SUBJECT_PHONE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "STATUS", "desc": "Trạng thái: DRAFT, SIGNED, NUMBERED, SENT_TO_SUBJECT", "key": "", "fk": "", "brd": false}, {"name": "SIGNED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SIGNED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "NUMBERED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENT_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SENT_TO_INSPECTOR", "desc": "Đã gửi Thanh tra (dành cho ĐVGS): 0=Chưa, 1=Đã gửi", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FORWARDED_TO_INSPECTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FORWARDED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FORWARDED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATOR_SIGNED_FILE_URL", "desc": "URL file biên bản VPHC đã có chữ ký của người vi phạm / đại diện tổ chức (Bước 7.1 — QT 7)", "key": "", "fk": "", "brd": false}, {"name": "VIOLATOR_CONFIRMED_RECEIPT_AT", "desc": "Thời điểm người vi phạm xác nhận đã nhận / tải về / mở xem biên bản (Bước 7.2 — QT 7)", "key": "", "fk": "", "brd": false}, {"name": "VIOLATOR_CONFIRMED_BY", "desc": "Tên người vi phạm / đại diện tổ chức xác nhận (xác thực qua VNeID — Bước 7.2 — QT 7)", "key": "", "fk": "", "brd": false}, {"name": "RECORDER_UNIT_ID", "desc": "ID đơn vị (eCAT); recorder_unit giữ tên hiển thị", "key": "", "fk": "", "brd": false}, {"name": "SIGNATURE_TYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FIRST_SIGNED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FIRST_SIGNED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "SIGNED_DOCUMENT_URL", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VIOLATION_RECORD_BEHAVIOR", "comment": "Hành vi vi phạm ghi nhận trong biên bản VPHC", "group": "penalty", "brd": false, "fk_linked": true, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "VIOLATION_RECORD_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_RECORD.ID", "brd": false}, {"name": "VIOLATION_BEHAVIOR_ID", "desc": "", "key": "FK", "fk": "FK → VIOLATION_BEHAVIOR.ID", "brd": false}, {"name": "DESCRIPTION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LEGAL_BASIS", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}]}, {"name": "VPHC_PROCESS_OFFICIAL_LETTER", "comment": "Tạo công văn theo biểu mẫu CMS — liên kết hồ sơ / biên bản / quyết định VPHC", "group": "other", "brd": false, "fk_linked": false, "cols": [{"name": "ID", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "OFFICIAL_LETTER_SUBTYPE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_TEMPLATE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DOCUMENT_TEMPLATE_NAME", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_CASE_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_CASE_CODE", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_RECORD_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VIOLATION_RECORD_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PENALTY_DECISION_ID", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "PENALTY_DECISION_NUMBER", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "CREATED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_AT", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "LAST_MODIFIED_BY", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "VERSION", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "DELETED", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "FIELD_HTML_JSON", "desc": "JSON {instanceId: html} — nội dung rich text người dùng đã sửa từng ô", "key": "", "fk": "", "brd": false}, {"name": "FIELD_SOURCE_JSON", "desc": "JSON {instanceId: plain} — snapshot dữ liệu API tại thời điểm lưu, dùng để phát hiện lệch và reset ô", "key": "", "fk": "", "brd": false}, {"name": "MANUAL_MERGE_DATA_JSON", "desc": "JSON patch dữ liệu merge do người dùng chọn thủ công khi nguồn API chính rỗng", "key": "", "fk": "", "brd": false}, {"name": "OUTPUT_DOCUMENT_ID", "desc": "Liên kết tới văn bản đầu ra trong hồ sơ xử lý VPHC khi công văn đã được đồng bộ", "key": "", "fk": "", "brd": false}]}, {"name": "flyway_schema_history", "comment": "", "group": "system", "brd": false, "fk_linked": false, "cols": [{"name": "installed_rank", "desc": "", "key": "PK", "fk": "", "brd": false}, {"name": "version", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "description", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "type", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "script", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "checksum", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "installed_by", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "installed_on", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "execution_time", "desc": "", "key": "", "fk": "", "brd": false}, {"name": "success", "desc": "", "key": "", "fk": "", "brd": false}]}], "fks": [{"ft": "CITIZEN_RECEPTION", "fc": "PETITION_ID", "tt": "PETITION", "tc": "ID"}, {"ft": "DOCUMENT_TEMPLATE_KEY_ASSIGN", "fc": "TEMPLATE_ID", "tt": "DOCUMENT_TEMPLATE", "tc": "ID"}, {"ft": "DOCUMENT_TEMPLATE_KEY_ASSIGN", "fc": "KEY_DEFINITION_ID", "tt": "DOCUMENT_TEMPLATE_KEY_DEFINITION", "tc": "ID"}, {"ft": "DOCUMENT_TEMPLATE_KEY_ASSIGN", "fc": "TEMPLATE_VERSION_ID", "tt": "DOCUMENT_TEMPLATE_VERSION", "tc": "ID"}, {"ft": "DOCUMENT_TEMPLATE_VERSION", "fc": "TEMPLATE_ID", "tt": "DOCUMENT_TEMPLATE", "tc": "ID"}, {"ft": "DYNAMICCOLUMNS", "fc": "TABLECONFIGID", "tt": "DYNAMICTABLES", "tc": "ID"}, {"ft": "EXAMINATION_ANNUAL_PLAN_TARGET", "fc": "EXAMINATION_ANNUAL_PLAN_ID", "tt": "EXAMINATION_ANNUAL_PLAN", "tc": "ID"}, {"ft": "EXAMINATION_RESULT_NOTICE", "fc": "EXAMINATION_TEAM_ID", "tt": "EXAMINATION_TEAM", "tc": "ID"}, {"ft": "EXAMINATION_RESULT_NOTICE_REMEDIAL", "fc": "EXAMINATION_RESULT_NOTICE_ID", "tt": "EXAMINATION_RESULT_NOTICE", "tc": "ID"}, {"ft": "EXAMINATION_TEAM", "fc": "EXAMINATION_ANNUAL_PLAN_ID", "tt": "EXAMINATION_ANNUAL_PLAN", "tc": "ID"}, {"ft": "EXAMINATION_TEAM_MEMBER", "fc": "EXAMINATION_TEAM_ID", "tt": "EXAMINATION_TEAM", "tc": "ID"}, {"ft": "EXAMINATION_TEAM_TARGET", "fc": "EXAMINATION_TEAM_ID", "tt": "EXAMINATION_TEAM", "tc": "ID"}, {"ft": "FORM_TEMPLATE_PLACEHOLDER", "fc": "FORM_TEMPLATE_VERSION_ID", "tt": "FORM_TEMPLATE_VERSION", "tc": "ID"}, {"ft": "FORM_TEMPLATE_VERSION", "fc": "FORM_TEMPLATE_ID", "tt": "FORM_TEMPLATE", "tc": "ID"}, {"ft": "INSPECTION_ANNUAL_PLAN_TARGET", "fc": "INSPECTION_ANNUAL_PLAN_ID", "tt": "INSPECTION_ANNUAL_PLAN", "tc": "ID"}, {"ft": "INSPECTION_CONCLUSION", "fc": "INSPECTION_TEAM_ID", "tt": "INSPECTION_TEAM", "tc": "ID"}, {"ft": "INSPECTION_CONCLUSION_REMEDIAL", "fc": "INSPECTION_CONCLUSION_ID", "tt": "INSPECTION_CONCLUSION", "tc": "ID"}, {"ft": "INSPECTION_TEAM", "fc": "INSPECTION_ANNUAL_PLAN_ID", "tt": "INSPECTION_ANNUAL_PLAN", "tc": "ID"}, {"ft": "INSPECTION_TEAM_MEMBER", "fc": "INSPECTION_TEAM_ID", "tt": "INSPECTION_TEAM", "tc": "ID"}, {"ft": "INSPECTION_TEAM_TARGET", "fc": "INSPECTION_TEAM_ID", "tt": "INSPECTION_TEAM", "tc": "ID"}, {"ft": "PENALTY_DECISION", "fc": "VIOLATION_CASE_ID", "tt": "VIOLATION_CASE", "tc": "ID"}, {"ft": "PENALTY_DECISION_APPROVAL_HISTORY", "fc": "PENALTY_DECISION_ID", "tt": "PENALTY_DECISION", "tc": "ID"}, {"ft": "PENALTY_DECISION_CIRCUMSTANCE", "fc": "PENALTY_DECISION_SUBJECT_BEHAVIOR_ID", "tt": "PENALTY_DECISION_SUBJECT_BEHAVIOR", "tc": "ID"}, {"ft": "PENALTY_DECISION_SUBJECT", "fc": "PENALTY_DECISION_ID", "tt": "PENALTY_DECISION", "tc": "ID"}, {"ft": "PENALTY_DECISION_SUBJECT_BEHAVIOR", "fc": "PENALTY_DECISION_SUBJECT_ID", "tt": "PENALTY_DECISION_SUBJECT", "tc": "ID"}, {"ft": "PENALTY_DECISION_SUBJECT_BEHAVIOR", "fc": "VIOLATION_BEHAVIOR_ID", "tt": "VIOLATION_BEHAVIOR", "tc": "ID"}, {"ft": "PENALTY_DECISION_SUBJECT_BEHAVIOR", "fc": "PENALTY_TYPE_ID", "tt": "PENALTY_TYPE", "tc": "ID"}, {"ft": "PENALTY_DECISION_VIOLATION_RECORD", "fc": "PENALTY_DECISION_ID", "tt": "PENALTY_DECISION", "tc": "ID"}, {"ft": "PENALTY_DECISION_VIOLATION_RECORD", "fc": "VIOLATION_RECORD_ID", "tt": "VIOLATION_RECORD", "tc": "ID"}, {"ft": "PENALTY_TYPE_VIOLATION_BEHAVIOR", "fc": "PENALTY_TYPE_ID", "tt": "PENALTY_TYPE", "tc": "ID"}, {"ft": "PENALTY_TYPE_VIOLATION_BEHAVIOR", "fc": "VIOLATION_BEHAVIOR_ID", "tt": "VIOLATION_BEHAVIOR", "tc": "ID"}, {"ft": "PETITION", "fc": "ORIGINAL_PETITION_ID", "tt": "PETITION", "tc": "ID"}, {"ft": "PETITION_DOCUMENT", "fc": "PETITION_ID", "tt": "PETITION", "tc": "ID"}, {"ft": "POST_INSPECTION_PROCESSING", "fc": "INSPECTION_CONCLUSION_ID", "tt": "INSPECTION_CONCLUSION", "tc": "ID"}, {"ft": "PROACTIVE_NOTICE_RECIPIENT", "fc": "PROACTIVE_NOTICE_ID", "tt": "PROACTIVE_NOTICE", "tc": "ID"}, {"ft": "SECURITY_MEASURE_DECISION_RECIPIENT", "fc": "SECURITY_MEASURE_DECISION_ID", "tt": "SECURITY_MEASURE_DECISION", "tc": "ID"}, {"ft": "SECURITY_MEASURE_DECISION_SUBJECT", "fc": "SECURITY_MEASURE_DECISION_ID", "tt": "SECURITY_MEASURE_DECISION", "tc": "ID"}, {"ft": "SECURITY_MEASURE_EXECUTION", "fc": "SECURITY_MEASURE_DECISION_ID", "tt": "SECURITY_MEASURE_DECISION", "tc": "ID"}, {"ft": "VIOLATION_BEHAVIOR", "fc": "PRIMARY_PENALTY_TYPE_ID", "tt": "PENALTY_TYPE", "tc": "ID"}, {"ft": "VIOLATION_BEHAVIOR_LEGAL_DOCUMENT", "fc": "VIOLATION_BEHAVIOR_ID", "tt": "VIOLATION_BEHAVIOR", "tc": "ID"}, {"ft": "VIOLATION_BEHAVIOR_LEGAL_DOCUMENT", "fc": "LEGAL_DOCUMENT_ID", "tt": "LEGAL_DOCUMENT", "tc": "ID"}, {"ft": "VIOLATION_CASE", "fc": "INSPECTION_TEAM_ID", "tt": "INSPECTION_TEAM", "tc": "ID"}, {"ft": "VIOLATION_CASE", "fc": "EXAMINATION_TEAM_ID", "tt": "EXAMINATION_TEAM", "tc": "ID"}, {"ft": "VIOLATION_CASE_RECEIVED_DOCUMENT", "fc": "VIOLATION_CASE_ID", "tt": "VIOLATION_CASE", "tc": "ID"}, {"ft": "VIOLATION_CASE_RECEIVED_DOCUMENT", "fc": "VIOLATION_RECORD_ID", "tt": "VIOLATION_RECORD", "tc": "ID"}, {"ft": "VIOLATION_CASE_STATUS_HISTORY", "fc": "VIOLATION_CASE_ID", "tt": "VIOLATION_CASE", "tc": "ID"}, {"ft": "VIOLATION_RECORD", "fc": "INSPECTION_TEAM_ID", "tt": "INSPECTION_TEAM", "tc": "ID"}, {"ft": "VIOLATION_RECORD", "fc": "EXAMINATION_TEAM_ID", "tt": "EXAMINATION_TEAM", "tc": "ID"}, {"ft": "VIOLATION_RECORD_BEHAVIOR", "fc": "VIOLATION_RECORD_ID", "tt": "VIOLATION_RECORD", "tc": "ID"}, {"ft": "VIOLATION_RECORD_BEHAVIOR", "fc": "VIOLATION_BEHAVIOR_ID", "tt": "VIOLATION_BEHAVIOR", "tc": "ID"}]};
+const GROUPS={
+  inspection:{label:"Thanh tra",color:"#4f46e5"},
+  examination:{label:"Kiểm tra",color:"#059669"},
+  penalty:{label:"Xử phạt VPHC",color:"#dc2626"},
+  petition:{label:"Đơn thư / Tiếp dân",color:"#7c3aed"},
+  anti:{label:"PCTN / PCRT / Báo cáo",color:"#d97706"},
+  security:{label:"Biện pháp phòng ngừa",color:"#ea580c"},
+  document:{label:"Biểu mẫu / Tài liệu",color:"#0891b2"},
+  system:{label:"Hệ thống",color:"#6b7280"},
+  other:{label:"Khác",color:"#9ca3af"}
+};
+const CARD_W=252,CARD_H=190;
+let scale=1,panX=0,panY=0,dragMode=false,dragSX=0,dragSY=0,panSX=0,panSY=0;
+let activeGroup=null,selectedTable=null;
+let positions={},cardEls={},lineEls=[];
+const fkFrom={},fkTo={};
+const STORAGE_KEY='er_thanhtra_layout_v1';
+// Storage wrapper: localStorage (served) → in-memory (file://)
+const Store=(()=>{
+  let mem=null;
+  function canLS(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true;}catch(e){return false;}}
+  const useLS=canLS();
+  return{
+    set(k,v){
+      if(useLS){try{localStorage.setItem(k,v);}catch(e){}}
+      else mem=v;
+    },
+    get(k){
+      if(useLS){try{return localStorage.getItem(k);}catch(e){return null;}}
+      return mem;
+    },
+    remove(k){
+      if(useLS){try{localStorage.removeItem(k);}catch(e){}}
+      else mem=null;
+    },
+    isLocal:!useLS
+  };
+})();
+function saveLayout(){
+  try{
+    const data={positions:{},activeGroup,pan:{x:panX,y:panY},scale};
+    Object.entries(positions).forEach(([k,v])=>data.positions[k]={x:Math.round(v.x),y:Math.round(v.y)});
+    Store.set(STORAGE_KEY,JSON.stringify(data));
+  }catch(e){}
+}
+function loadLayout(){
+  try{
+    const raw=Store.get(STORAGE_KEY);
+    if(!raw) return false;
+    const data=JSON.parse(raw);
+    if(data.positions) Object.assign(positions,data.positions);
+    if(data.pan){panX=data.pan.x;panY=data.pan.y;}
+    if(data.scale) scale=data.scale;
+    return data;
+  }catch(e){return false;}
+}
+function resetLayout(){
+  try{Store.remove(STORAGE_KEY);}catch(e){}
+  Object.keys(positions).forEach(k=>delete positions[k]);
+  if(activeGroup) showGroup(activeGroup);
+  else{RAW.tables.forEach(t=>cardEls[t.name].classList.remove('visible'));updateLines(new Set(),null);updateStats(0,0);}
+}
+RAW.fks.forEach(e=>{(fkFrom[e.ft]||(fkFrom[e.ft]=[])).push(e);(fkTo[e.tt]||(fkTo[e.tt]=[])).push(e);});
+function linkedTables(name){const s=new Set();(fkFrom[name]||[]).forEach(e=>s.add(e.tt));(fkTo[name]||[]).forEach(e=>s.add(e.ft));return s;}
+
+function initPositions(subset){
+  const n=subset.length; if(!n) return;
+  const nameSet=new Set(subset.map(t=>t.name));
+  const edges=RAW.fks.filter(e=>nameSet.has(e.ft)&&nameSet.has(e.tt));
+
+  // ── Bước 1: tìm connected components ──────────────────────────────────────
+  const adj={};
+  subset.forEach(t=>adj[t.name]=new Set());
+  edges.forEach(e=>{adj[e.ft].add(e.tt);adj[e.tt].add(e.ft);});
+  const visited=new Set(), components=[];
+  subset.forEach(t=>{
+    if(visited.has(t.name)) return;
+    const comp=[], queue=[t.name];
+    while(queue.length){
+      const cur=queue.pop();
+      if(visited.has(cur)) continue;
+      visited.add(cur); comp.push(cur);
+      adj[cur].forEach(nb=>{if(!visited.has(nb)) queue.push(nb);});
+    }
+    components.push(comp);
+  });
+  // Sort: component lớn trước
+  components.sort((a,b)=>b.length-a.length);
+
+  // ── Bước 2: layout từng component bằng force ──────────────────────────────
+  const PAD_X=60, PAD_Y=60;
+  const compBounds=[]; // {x,y,w,h} sau khi layout
+  const localPos={}; // {name:{x,y}} relative to 0,0
+
+  components.forEach(comp=>{
+    const cn=comp.length;
+    if(cn===1){
+      // Isolated node: đặt tại gốc
+      localPos[comp[0]]={x:0,y:0};
+      compBounds.push({names:comp,w:CARD_W,h:CARD_H});
+      return;
+    }
+    // Init vòng tròn nhỏ
+    const R=Math.max(180,cn*36);
+    comp.forEach((name,i)=>{
+      const a=2*Math.PI*i/cn;
+      localPos[name]={x:R+R*Math.cos(a),y:R+R*Math.sin(a)};
+    });
+    const compEdges=edges.filter(e=>comp.includes(e.ft)&&comp.includes(e.tt));
+    const K=Math.sqrt((2*R*2*R)/Math.max(cn,1))*1.1;
+    const cx=R, cy=R;
+    for(let iter=0;iter<220;iter++){
+      const cool=1-iter/220, tmax=Math.max(3,80*cool*cool);
+      const dvx={},dvy={};
+      comp.forEach(name=>{dvx[name]=0;dvy[name]=0;});
+      // Repulsion
+      for(let i=0;i<comp.length;i++){
+        for(let j=i+1;j<comp.length;j++){
+          const pa=localPos[comp[i]],pb=localPos[comp[j]];
+          let dx=pa.x-pb.x,dy=pa.y-pb.y;
+          const dist=Math.sqrt(dx*dx+dy*dy)||1;
+          const rep=K*K/dist;
+          dx/=dist;dy/=dist;
+          dvx[comp[i]]+=dx*rep;dvy[comp[i]]+=dy*rep;
+          dvx[comp[j]]-=dx*rep;dvy[comp[j]]-=dy*rep;
+        }
+      }
+      // Attraction (FK edges)
+      compEdges.forEach(e=>{
+        const pa=localPos[e.ft],pb=localPos[e.tt];
+        let dx=pb.x-pa.x,dy=pb.y-pa.y;
+        const dist=Math.sqrt(dx*dx+dy*dy)||1;
+        const att=Math.min(dist,K*2)*0.4;
+        dx/=dist;dy/=dist;
+        dvx[e.ft]+=dx*att;dvy[e.ft]+=dy*att;
+        dvx[e.tt]-=dx*att;dvy[e.tt]-=dy*att;
+      });
+      // Gravity to center
+      comp.forEach(name=>{
+        const p=localPos[name];
+        dvx[name]+=(cx-p.x)*0.12;
+        dvy[name]+=(cy-p.y)*0.12;
+      });
+      // Apply
+      comp.forEach(name=>{
+        const p=localPos[name];
+        const spd=Math.sqrt(dvx[name]**2+dvy[name]**2)||1;
+        const c=Math.min(spd,tmax)/spd;
+        p.x+=dvx[name]*c;p.y+=dvy[name]*c;
+      });
+      // Overlap push
+      for(let i=0;i<comp.length;i++){
+        for(let j=i+1;j<comp.length;j++){
+          const pa=localPos[comp[i]],pb=localPos[comp[j]];
+          const minX=CARD_W+20,minY=CARD_H+20;
+          const dx=pb.x-pa.x,dy=pb.y-pa.y;
+          const ox=minX-Math.abs(dx),oy=minY-Math.abs(dy);
+          if(ox>0&&oy>0){
+            const push=(ox<oy?ox:oy)/2+1;
+            if(Math.abs(dx)<0.01&&Math.abs(dy)<0.01){pa.x-=push;pb.x+=push;}
+            else if(ox<oy){pa.x-=Math.sign(dx)*push;pb.x+=Math.sign(dx)*push;}
+            else{pa.y-=Math.sign(dy)*push;pb.y+=Math.sign(dy)*push;}
+          }
+        }
+      }
+    }
+    // Normalize local coords
+    let mnX=Infinity,mnY=Infinity,mxX=-Infinity,mxY=-Infinity;
+    comp.forEach(name=>{
+      mnX=Math.min(mnX,localPos[name].x);mnY=Math.min(mnY,localPos[name].y);
+      mxX=Math.max(mxX,localPos[name].x+CARD_W);mxY=Math.max(mxY,localPos[name].y+CARD_H);
+    });
+    comp.forEach(name=>{localPos[name].x-=mnX;localPos[name].y-=mnY;});
+    compBounds.push({names:comp,w:mxX-mnX,h:mxY-mnY});
+  });
+
+  // ── Bước 3: pack các component bằng shelf packing ─────────────────────────
+  // Sắp xếp components vào các hàng (rows), mỗi hàng không vượt maxRowW
+  const maxRowW=Math.max(1200, compBounds.reduce((s,c)=>Math.max(s,c.w),0)+PAD_X);
+  let curX=0,curY=0,rowH=0;
+  const offsets={}; // {compIdx: {ox,oy}}
+  compBounds.forEach((cb,ci)=>{
+    if(curX>0 && curX+cb.w+PAD_X>maxRowW){
+      curY+=rowH+PAD_Y; curX=0; rowH=0;
+    }
+    offsets[ci]={ox:curX,oy:curY};
+    curX+=cb.w+PAD_X;
+    rowH=Math.max(rowH,cb.h);
+  });
+
+  // ── Bước 4: áp dụng vào positions ─────────────────────────────────────────
+  compBounds.forEach((cb,ci)=>{
+    const {ox,oy}=offsets[ci];
+    cb.names.forEach(name=>{
+      const lp=localPos[name]||{x:0,y:0};
+      positions[name]={x:ox+lp.x+40,y:oy+lp.y+40};
+    });
+  });
+  let minX=Infinity,minY=Infinity;
+  subset.forEach(t=>{minX=Math.min(minX,positions[t.name].x);minY=Math.min(minY,positions[t.name].y);});
+  subset.forEach(t=>{positions[t.name].x-=minX-40;positions[t.name].y-=minY-40;});
+}
+
+function placeCards(subset){
+  subset.forEach(t=>{
+    const el=cardEls[t.name],p=positions[t.name];
+    if(p){el.style.left=Math.round(p.x)+"px";el.style.top=Math.round(p.y)+"px";}
+  });
+}
+
+function buildCards(){
+  const canvas=document.getElementById("canvas");
+  RAW.tables.forEach(t=>{
+    const g=GROUPS[t.group]||GROUPS.other;
+    const div=document.createElement("div");
+    div.className="tbl-card"+(t.brd?" brd-table":t.fk_linked?" fk-linked":"");
+    div.id="card-"+t.name;
+    div.style.cssText="left:0px;top:0px";
+    div.innerHTML=
+      '<div class="tbl-hdr">'+
+        '<div class="tbl-badges">'+
+          (t.brd?'<span class="badge badge-brd">BRD</span>':'')+
+          '<span class="badge badge-grp" style="color:'+g.color+';border-color:'+g.color+'55">'+g.label+'</span>'+
+        '</div>'+
+        '<div class="tbl-name">'+t.name+'</div>'+
+        (t.comment?'<div class="tbl-cmt">'+esc(t.comment)+'</div>':'')+
+      '</div>'+
+      '<div class="col-list">'+
+        t.cols.map(c=>{
+          const isPk=c.key==="PK",isFk=c.key==="FK";
+          return '<div class="col-row'+(c.brd?' brd-col':(!isPk?' dim-col':''))+'">'+
+            '<span class="col-icon">'+(isPk?"🔑":isFk?"🔗":"")+'</span>'+
+            '<span class="col-name">'+c.name+'</span>'+
+            (isPk?'<span class="kbadge kpk">PK</span>':'')+
+            (isFk?'<span class="kbadge kfk">FK</span>':'')+
+            (c.brd?'<span class="brd-dot"></span>':'')+
+          '</div>';
+        }).join("")+
+      '</div>';
+    div.addEventListener("click",e=>{e.stopPropagation();onSelectTable(t.name);});
+    // Drag card
+    div.addEventListener("mousedown",e=>{
+      if(e.button!==0) return;
+      e.stopPropagation();
+      const tname=t.name;
+      const startX=e.clientX,startY=e.clientY;
+      const startL=parseFloat(div.style.left),startT=parseFloat(div.style.top);
+      let moved=false;
+      function onMove(ev){
+        const dx=(ev.clientX-startX)/scale,dy=(ev.clientY-startY)/scale;
+        if(!moved&&Math.abs(dx)+Math.abs(dy)<4) return;
+        moved=true;
+        div.classList.add("dragging-card");
+        positions[tname]={x:startL+dx,y:startT+dy};
+        div.style.left=Math.round(positions[tname].x)+"px";
+        div.style.top=Math.round(positions[tname].y)+"px";
+        // Redraw lines live
+        const visSet=new Set(RAW.tables.filter(t=>cardEls[t.name].classList.contains("visible")).map(t=>t.name));
+        updateLines(visSet,selectedTable);
+      }
+      function onUp(ev){
+        window.removeEventListener("mousemove",onMove);
+        window.removeEventListener("mouseup",onUp);
+        div.classList.remove("dragging-card");
+        if(moved){
+          window._justDragged=true;
+          setTimeout(()=>{window._justDragged=false;},50);
+          saveLayout();
+        }
+      }
+      window.addEventListener("mousemove",onMove);
+      window.addEventListener("mouseup",onUp);
+    });
+    canvas.appendChild(div);
+    cardEls[t.name]=div;
+  });
+}
+
+function buildLines(){
+  const svg=document.getElementById("svg-layer");
+  const defs=document.createElementNS("http://www.w3.org/2000/svg","defs");
+  defs.innerHTML=
+    '<marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#93a3c8"/></marker>'+
+    '<marker id="arr-hl" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#0891b2"/></marker>';
+  svg.appendChild(defs);
+  RAW.fks.forEach((e,i)=>{
+    const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("class","fk-path hidden-line");
+    path.setAttribute("marker-end","url(#arr)");
+    path.dataset.ft=e.ft;path.dataset.tt=e.tt;
+    path.addEventListener("mouseenter",ev=>showTip(ev,e.ft+"."+e.fc+" &rarr; "+e.tt+"."+e.tc));
+    path.addEventListener("mouseleave",hideTip);
+    svg.appendChild(path);
+    lineEls.push({el:path,fk:e});
+  });
+}
+
+function showGroup(k){
+  activeGroup=k;selectedTable=null;
+  const subset=RAW.tables.filter(t=>t.group===k);
+  const nameSet=new Set(subset.map(t=>t.name));
+  initPositions(subset);
+  placeCards(subset);
+  RAW.tables.forEach(t=>{
+    const el=cardEls[t.name];
+    if(nameSet.has(t.name)){el.className="tbl-card visible"+(t.brd?" brd-table":t.fk_linked?" fk-linked":"");}
+    else{el.classList.remove("visible");}
+  });
+  updateLines(nameSet,null);
+  updateSvg(subset);
+  updateStats(subset.length,subset.filter(t=>t.brd).length);
+  setTimeout(()=>{fitView();saveLayout();},60);
+}
+
+function onSelectTable(name){
+  if(selectedTable===name){clearSel();return;}
+  selectedTable=name;
+  const linked=linkedTables(name);
+  // Chỉ highlight/dim — KHÔNG re-layout, KHÔNG fitView
+  // Bảng hiện visible trong nhóm: giữ nguyên, chỉ đổi class
+  const visNames=new Set(RAW.tables.filter(t=>cardEls[t.name].classList.contains("visible")).map(t=>t.name));
+  // Nếu chưa có bảng nào visible (chưa chọn nhóm): hiện FK neighborhood
+  if(visNames.size===0){
+    const nameSet=new Set([name,...linked]);
+    const subset=RAW.tables.filter(t=>nameSet.has(t.name));
+    if(subset.some(t=>!positions[t.name])) initPositions(subset);
+    placeCards(subset);
+    RAW.tables.forEach(t=>{
+      const el=cardEls[t.name];
+      if(!nameSet.has(t.name)){el.classList.remove("visible");return;}
+      let cls="tbl-card visible";
+      if(t.brd) cls+=" brd-table"; else if(t.fk_linked) cls+=" fk-linked";
+      if(t.name===name) cls+=" selected"; else cls+=" neighbor";
+      el.className=cls;
+    });
+    updateLines(nameSet,name);
+    updateSvg(subset);
+    updateStats(nameSet.size,[...nameSet].filter(n=>RAW.tables.find(t=>t.name===n&&t.brd)).length);
+    setTimeout(fitView,60);
+    return;
+  }
+  // Đang trong nhóm: chỉ thay đổi visual class, không dịch chuyển
+  RAW.tables.forEach(t=>{
+    const el=cardEls[t.name];
+    if(!visNames.has(t.name)) return;
+    let cls="tbl-card visible";
+    if(t.brd) cls+=" brd-table"; else if(t.fk_linked) cls+=" fk-linked";
+    if(t.name===name) cls+=" selected";
+    else if(linked.has(t.name)) cls+=" neighbor";
+    else cls+=" dimmed";
+    el.className=cls;
+  });
+  updateLines(visNames,name);
+  updateStats(visNames.size,[...visNames].filter(n=>RAW.tables.find(t=>t.name===n&&t.brd)).length);
+}
+
+function clearSel(){
+  selectedTable=null;
+  if(activeGroup){
+    // Bỏ highlight/dim, giữ nguyên layout
+    const subset=RAW.tables.filter(t=>t.group===activeGroup);
+    const nameSet=new Set(subset.map(t=>t.name));
+    subset.forEach(t=>{
+      const el=cardEls[t.name];
+      let cls="tbl-card visible";
+      if(t.brd) cls+=" brd-table"; else if(t.fk_linked) cls+=" fk-linked";
+      el.className=cls;
+    });
+    updateLines(nameSet,null);
+    updateStats(subset.length,subset.filter(t=>t.brd).length);
+  } else {
+    RAW.tables.forEach(t=>cardEls[t.name].classList.remove("visible"));
+    updateLines(new Set(),null);updateStats(0,0);
+  }
+}
+
+function autoLayout(){
+  // Re-layout các bảng đang visible
+  const btn=document.getElementById("btnAutoLayout");
+  btn.classList.add("spinning");
+  const subset=RAW.tables.filter(t=>cardEls[t.name].classList.contains("visible"));
+  if(!subset.length){btn.classList.remove("spinning");return;}
+  // Reset positions để force layout lại từ đầu
+  subset.forEach(t=>delete positions[t.name]);
+  initPositions(subset);
+  placeCards(subset);
+  // Redraw lines
+  const visSet=new Set(subset.map(t=>t.name));
+  updateLines(visSet,selectedTable);
+  updateSvg(subset);
+  setTimeout(()=>{fitView();btn.classList.remove("spinning");saveLayout();},80);
+}
+
+function updateLines(visSet,sel){
+  lineEls.forEach(({el,fk})=>{
+    if(!visSet.has(fk.ft)||!visSet.has(fk.tt)){el.setAttribute("class","fk-path hidden-line");return;}
+    const isActive=sel&&(fk.ft===sel||fk.tt===sel);
+    el.setAttribute("class","fk-path"+(isActive?" active-line":sel?" dim-line":""));
+    el.setAttribute("marker-end",isActive?"url(#arr-hl)":"url(#arr)");
+    drawLine(el,fk);
+  });
+}
+
+function drawLine(p,e){
+  const fa=cardEls[e.ft],ta=cardEls[e.tt]; if(!fa||!ta) return;
+  if(e.ft===e.tt){
+    const x=parseFloat(fa.style.left)+CARD_W/2,y=parseFloat(fa.style.top);
+    p.setAttribute("d","M"+x+","+y+" C"+(x+80)+","+(y-60)+" "+(x+80)+","+(y-20)+" "+(x+20)+","+y);
+    return;
+  }
+  const fx=parseFloat(fa.style.left)+fa.offsetWidth,fy=parseFloat(fa.style.top)+fa.offsetHeight/2;
+  const tx=parseFloat(ta.style.left),ty=parseFloat(ta.style.top)+ta.offsetHeight/2;
+  const mx=(fx+tx)/2;
+  p.setAttribute("d","M"+fx+","+fy+" C"+mx+","+fy+" "+mx+","+ty+" "+tx+","+ty);
+}
+
+function updateSvg(subset){
+  let mx=0,my=0;
+  subset.forEach(t=>{const el=cardEls[t.name];mx=Math.max(mx,parseFloat(el.style.left)+CARD_W);my=Math.max(my,parseFloat(el.style.top)+CARD_H);});
+  const svg=document.getElementById("svg-layer");
+  svg.setAttribute("width",mx+120);svg.setAttribute("height",my+120);
+}
+
+function buildGroupList(){
+  const cnt={};
+  RAW.tables.forEach(t=>cnt[t.group]=(cnt[t.group]||0)+1);
+  const cont=document.getElementById("grpList");
+  Object.entries(GROUPS).forEach(([k,g])=>{
+    if(!cnt[k]) return;
+    const div=document.createElement("div");
+    div.className="grp-item";div.dataset.grp=k;
+    div.innerHTML='<span class="grp-dot" style="background:'+g.color+'"></span>'+'<span class="grp-name">'+g.label+'</span>'+'<span class="grp-count">'+cnt[k]+'</span>';
+    div.addEventListener("click",()=>{
+      if(activeGroup===k){activeGroup=null;selectedTable=null;
+        document.querySelectorAll(".grp-item").forEach(el=>el.classList.remove("active"));
+        RAW.tables.forEach(t=>cardEls[t.name].classList.remove("visible"));
+        updateLines(new Set(),null);updateStats(0,0);return;
+      }
+      document.querySelectorAll(".grp-item").forEach(el=>el.classList.toggle("active",el.dataset.grp===k));
+      showGroup(k);
+    });
+    cont.appendChild(div);
+  });
+}
+
+function updateStats(shown,brd){
+  document.getElementById("statsBar").innerHTML=
+    '<div class="stat"><div class="stat-n">'+shown+'</div><div class="stat-l">Đang hiện</div></div>'+
+    '<div class="stat"><div class="stat-n" style="color:var(--brd-border)">'+brd+'</div><div class="stat-l">BRD</div></div>'+
+    '<div class="stat"><div class="stat-n">'+RAW.fks.length+'</div><div class="stat-l">FK</div></div>';
+}
+
+function applyTransform(){document.getElementById("canvas").style.transform="translate("+panX+"px,"+panY+"px) scale("+scale+")";}
+function zoomBy(f,cx,cy){
+  const wrap=document.getElementById("canvasWrap");
+  const mx=cx??wrap.offsetWidth/2,my=cy??wrap.offsetHeight/2;
+  const ns=Math.min(3,Math.max(.08,scale*f));
+  panX=mx-(mx-panX)*ns/scale;panY=my-(my-panY)*ns/scale;
+  scale=ns;applyTransform();
+}
+function fitView(){
+  const vis=RAW.tables.filter(t=>cardEls[t.name]&&cardEls[t.name].classList.contains("visible"));
+  if(!vis.length) return;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  vis.forEach(t=>{const el=cardEls[t.name],x=parseFloat(el.style.left),y=parseFloat(el.style.top);x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x+CARD_W);y1=Math.max(y1,y+CARD_H);});
+  const wrap=document.getElementById("canvasWrap"),W=wrap.offsetWidth-48,H=wrap.offsetHeight-48;
+  const ns=Math.min(3,Math.max(.08,Math.min(W/(x1-x0),H/(y1-y0))*.88));
+  panX=(W-(x1-x0)*ns)/2-x0*ns+24;panY=(H-(y1-y0)*ns)/2-y0*ns+24;
+  scale=ns;applyTransform();
+}
+
+const wrap=document.getElementById("canvasWrap");
+wrap.addEventListener("wheel",e=>{
+  e.preventDefault();
+  const r=wrap.getBoundingClientRect();
+  zoomBy(e.deltaY<0?1.12:.9,e.clientX-r.left,e.clientY-r.top);
+},{passive:false});
+wrap.addEventListener("mousedown",e=>{
+  if(e.button!==0||e.target.closest(".tbl-card")) return;
+  dragMode=true;dragSX=e.clientX;dragSY=e.clientY;panSX=panX;panSY=panY;
+  wrap.style.cursor="grabbing";
+});
+window.addEventListener("mousemove",e=>{if(dragMode){panX=panSX+(e.clientX-dragSX);panY=panSY+(e.clientY-dragSY);applyTransform();}});
+window.addEventListener("mouseup",()=>{dragMode=false;wrap.style.cursor="default";});
+// Click vùng trắng → bỏ chọn (dùng canvasWrap để bắt mọi click không phải card)
+document.getElementById("canvasWrap").addEventListener("click",e=>{
+  if(window._justDragged) return;
+  if(!e.target.closest(".tbl-card") && !e.target.closest(".zbtn")) clearSel();
+});
+
+document.getElementById("searchBox").addEventListener("input",function(){
+  const q=this.value.trim().toLowerCase();
+  if(!q){if(activeGroup)showGroup(activeGroup);return;}
+  const match=RAW.tables.find(t=>t.name.toLowerCase().includes(q));
+  if(match) onSelectTable(match.name);
+});
+
+const tipEl=document.getElementById("tip");
+function showTip(e,txt){tipEl.style.display="block";tipEl.innerHTML=txt;}
+function hideTip(){tipEl.style.display="none";}
+document.addEventListener("mousemove",e=>{if(tipEl.style.display!=="none"){tipEl.style.left=(e.clientX+12)+"px";tipEl.style.top=(e.clientY-8)+"px";}});
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function exportLayout(){
+  const data=Store.get(STORAGE_KEY);
+  if(!data){alert('Chưa có layout để export. Hãy chọn nhóm hoặc kéo bảng trước.');return;}
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='thanhtra_er_layout.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importLayout(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      Store.set(STORAGE_KEY,JSON.stringify(data));
+      // Apply immediately
+      if(data.positions) Object.assign(positions,data.positions);
+      if(data.pan){panX=data.pan.x;panY=data.pan.y;}
+      if(data.scale) scale=data.scale;
+      applyTransform();
+      if(data.activeGroup && GROUPS[data.activeGroup]){
+        activeGroup=data.activeGroup;
+        document.querySelectorAll('.grp-item').forEach(el=>el.classList.toggle('active',el.dataset.grp===data.activeGroup));
+        const subset=RAW.tables.filter(t=>t.group===data.activeGroup);
+        const nameSet=new Set(subset.map(t=>t.name));
+        placeCards(subset);
+        RAW.tables.forEach(t=>{
+          const el=cardEls[t.name];
+          if(nameSet.has(t.name)) el.className='tbl-card visible'+(t.brd?' brd-table':t.fk_linked?' fk-linked':'');
+          else el.classList.remove('visible');
+        });
+        updateLines(nameSet,null);updateSvg(subset);updateStats(subset.length,subset.filter(t=>t.brd).length);
+      }
+    }catch(ex){alert('File không hợp lệ: '+ex.message);}
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+buildCards();
+buildLines();
+buildGroupList();
+updateStats(0,0);
+// Hiện warning nếu file://
+if(Store.isLocal) document.getElementById('localWarn').style.display='block';
+// Restore layout đã lưu
+(function(){
+  const saved=loadLayout();
+  if(!saved) return;
+  applyTransform();
+  // Nếu có activeGroup được lưu → hiện lại nhóm đó với positions đã lưu
+  if(saved.activeGroup && GROUPS[saved.activeGroup]){
+    activeGroup=saved.activeGroup;
+    document.querySelectorAll('.grp-item').forEach(el=>el.classList.toggle('active',el.dataset.grp===saved.activeGroup));
+    const subset=RAW.tables.filter(t=>t.group===saved.activeGroup);
+    const nameSet=new Set(subset.map(t=>t.name));
+    // Dùng positions đã lưu, chỉ fallback initPositions nếu thiếu
+    const missing=subset.filter(t=>!positions[t.name]);
+    if(missing.length) initPositions(missing);
+    placeCards(subset);
+    RAW.tables.forEach(t=>{
+      const el=cardEls[t.name];
+      if(nameSet.has(t.name)) el.className='tbl-card visible'+(t.brd?' brd-table':t.fk_linked?' fk-linked':'');
+      else el.classList.remove('visible');
+    });
+    const visSet=new Set(subset.map(t=>t.name));
+    updateLines(visSet,null);
+    updateSvg(subset);
+    updateStats(subset.length,subset.filter(t=>t.brd).length);
+  }
+})();
+</script>
+</body>
+</html>

@@ -3,8 +3,7 @@ schema_version: "1.0"
 
 ldm:
   id: ATM-dscl_notf-IDS.notifications
-  logical_name: "Disclosure Notification"
-
+  logical_name: Disclosure Notification
   physical_name: dscl_notf
   layer: Atomic
   version: "1.0"
@@ -89,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: notifications
     source_column: IDS.notifications.form_id
-    comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id."
+    comment: "FK target: dscl_form_defn.dscl_form_defn_id."
     classification_context: "Source System Code = 'IDS_NOTIFICATIONS'"
     etl_derived_value: null
 
@@ -103,7 +102,7 @@ attributes:
     source_system: IDS
     source_table: notifications
     source_column: IDS.notifications.form_cd
-    comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Business Code. Pair with Disclosure Form Definition Id. Nguồn lưu denormalized form_cd cùng form_id."
+    comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Business Code. Pair with dscl_form_defn_id. Nguồn lưu denormalized form_cd cùng form_id."
     classification_context: "Source System Code = 'IDS_NOTIFICATIONS'"
     etl_derived_value: null
 
