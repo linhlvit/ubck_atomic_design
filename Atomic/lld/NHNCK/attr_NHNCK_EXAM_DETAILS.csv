@@ -22,12 +22,6 @@ Updated At,Thời điểm cập nhật bản ghi,Timestamp,true,false,pending,NH
 Created By,Người tạo bản ghi,Text,true,false,pending,NHNCK.qlnhn.EXAM_DETAILS.CREATED_BY,,,
 Updated By,Người cập nhật bản ghi,Text,true,false,pending,NHNCK.qlnhn.EXAM_DETAILS.UPDATED_BY,,,
 
----
-
-**Giải thích các quyết định thiết kế:**
-
-1. **Law Score / Specialization Score → Small Counter** (không phải Text): Theo yêu cầu trong prompt; khác với file ExamDetails cũ dùng Text — file cũ có comment giải thích có thể dạng text, nhưng bảng EXAM_DETAILS nguồn khai báo kiểu NUMBER nên Small Counter phù hợp hơn.
-
 2. **Law Result / Specialization Result → Classification Value (EXAM_SCORE_RESULT)** thay vì Boolean: Vì giá trị có 3 trạng thái (-1/0/1), Boolean chỉ đủ cho 2 trạng thái. Scheme EXAM_SCORE_RESULT là scheme mới đã liệt kê trong danh sách "SCHEMES MỚI CẦN THÊM".
 
 3. **Overall Result → EXAMINATION_RESULT** (scheme đã có) thay vì EXAM_SCORE_RESULT: Theo yêu cầu trong prompt, giữ nhất quán với các entity khác dùng EXAMINATION_RESULT cho kết quả tổng thể.

@@ -330,48 +330,6 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: "---"
-    physical_name: ---
-    business_meaning: null
-    data_domain: null
-    data_type: 
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: "**Giải thích các quyết định thiết kế:**"
-    physical_name: **giải_thích_các_quyết_định_thiết_kế:**
-    business_meaning: null
-    data_domain: null
-    data_type: 
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: "1. **Law Score / Specialization Score → Small Counter** (không phải Text): Theo yêu cầu trong prompt; khác với file ExamDetails cũ dùng Text — file cũ có comment giải thích có thể dạng text"
-    physical_name: 1._**law_scor_x_specialization_scor_→_sml_counter**_(không_phải_text):_theo_yêu_cầu_trong_prompt;_khác_với_file_examdetails_cũ_dùng_tx_—_file_cũ_có_cmnt_giải_thích_có_thể_dạng_tx
-    business_meaning: nhưng bảng EXAM_DETAILS nguồn khai báo kiểu NUMBER nên Small Counter phù hợp hơn.
-    data_domain: null
-    data_type: 
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
   - name: "2. **Law Result / Specialization Result → Classification Value (EXAM_SCORE_RESULT)** thay vì Boolean: Vì giá trị có 3 trạng thái (-1/0/1)"
     physical_name: 2._**law_rslt_x_specialization_rslt_→_cv_(exam_score_result)**_thay_vì_boolean:_vì_giá_trị_có_3_trạng_thái_(-1/0/1)
     business_meaning: "Boolean chỉ đủ cho 2 trạng thái. Scheme EXAM_SCORE_RESULT là scheme mới đã liệt kê trong danh sách \"SCHEMES MỚI CẦN THÊM\"."
