@@ -108,7 +108,7 @@ def transform(logical_name: str, entries: list[tuple[str, str]]) -> str:
         if not matched:
             j = text.find(" ", i)
             j = j if j != -1 else len(text)
-            tokens.append(text[i:j])
+            tokens.append(text[i:j].replace("-", "_"))
             i = j
     return "_".join(t for t in tokens if t)
 

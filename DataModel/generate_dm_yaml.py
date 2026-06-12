@@ -250,10 +250,17 @@ def main():
     etl_map     = load_etl_map(RULE_CSV)
     entities    = load_entities(ENTITIES_CSV)
 
-    # Load attributes, group by (atomic_table, source_system, source_table)
-    # Also build entity_name → atomic_table map for comment normalization
-    groups = defaultdict(list)
+    # Build entity_name → atomic_table map from ALL sources (needed for cross-source FK comments)
     name_to_table = {}
+    with open(ATTRS_CSV, encoding="utf-8-sig") as f:
+        for row in csv.DictReader(f):
+            ename = row["atomic_entity"].strip()
+            tname = row["atomic_table"].strip()
+            if ename and tname:
+                name_to_table.setdefault(ename, tname)
+
+    # Load attributes, group by (atomic_table, source_system, source_table)
+    groups = defaultdict(list)
     with open(ATTRS_CSV, encoding="utf-8-sig") as f:
         for row in csv.DictReader(f):
             src = row["source_system"].strip()
@@ -261,10 +268,6 @@ def main():
                 continue
             key = (row["atomic_table"].strip(), src, row["source_table"].strip())
             groups[key].append(row)
-            ename = row["atomic_entity"].strip()
-            tname = row["atomic_table"].strip()
-            if ename and tname:
-                name_to_table.setdefault(ename, tname)
 
     created = skipped = 0
 

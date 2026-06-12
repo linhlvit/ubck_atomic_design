@@ -107,6 +107,23 @@ def check_source_column_format(rows):
     return issues
 
 
+def check_physical_name_chars(rows):
+    """C6: atomic_table hoặc atomic_column chứa ký tự không hợp lệ (ngoài a-z, 0-9, _)."""
+    import re
+    valid = re.compile(r"^[a-z0-9_]+$")
+    seen = set()
+    issues = []
+    for r in rows:
+        for col in ("atomic_table", "atomic_column"):
+            val = r.get(col, "").strip()
+            if not val or val in seen:
+                continue
+            seen.add(val)
+            if not valid.match(val):
+                issues.append(f"  {col}='{val}'  ({r['atomic_entity']})")
+    return issues
+
+
 def report(title, issues, ok_msg):
     print(f"\n{'=' * 60}")
     print(f"[CHECK] {title}")
@@ -144,6 +161,10 @@ def main():
     report("C5 – source_column không đúng định dạng SOURCE.table.column",
            check_source_column_format(rows),
            "Mọi source_column đều đúng 3 phần.")
+
+    report("C6 – Physical name chứa ký tự không hợp lệ (ngoài a-z, 0-9, _)",
+           check_physical_name_chars(rows),
+           "Mọi physical name đều hợp lệ.")
 
     print(f"\n{'=' * 60}")
     print("Hoàn thành post-check.")
