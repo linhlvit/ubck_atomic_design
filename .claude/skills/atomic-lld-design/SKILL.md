@@ -108,6 +108,14 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
 #### 3d. Classification Value
 - **Chỉ 1 trường Code** (data domain = `Classification Value`). KHÔNG tạo cặp Id + Code.
 - Áp dụng cho: Classification Value, Currency, Calendar Date, mọi bảng danh mục SCD1 không có surrogate key.
+- **`etl_derived_value` bắt buộc điền cho Classification Value:**
+
+  | Dạng `classification_context` | `etl_derived_value` |
+  |---|---|
+  | `SCHEME=VALUE` (cố định, VD: `IP_ELEC_ADDR_TYPE=PHONE`) | Điền literal VALUE: `PHONE` |
+  | `SOURCE_SYSTEM=SRC.TABLE` | Điền literal: `SRC.TABLE` |
+  | `SCHEME` (không có `=VALUE`, dynamic — VD: `IP_ADDR_TYPE`) | Để **null** hoặc ghi expression mapping ETL (VD: `1=CMND;2=CCCD;3=PASSPORT`) |
+  | Không có `classification_context` | Để null |
 
 #### 3e. PK nguồn và BK
 - PK bảng nguồn (VD: `ID`) → map vào **Entity Code (BK)**, không đưa vào technical field.
@@ -225,6 +233,7 @@ Trước khi xuất file:
 - [ ] **Shared entity — cột không map:** PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.csv`?
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
+- [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC.TABLE`. Dynamic context (không có `=VALUE`) → null hoặc expression mapping.
 - [ ] **Post-check:** Sau khi chạy aggregate, chạy `post_check_atomic.py` (xem [`reference/post_check_codes.md`](reference/post_check_codes.md)) và xử lý mọi warning trước khi kết thúc Tier.
 - [ ] **Source coverage:** Chạy `post_check_source_coverage.py --source {SOURCE}` — mọi bảng đã thiết kế đều có 100% cột map (hoặc pending với reason rõ).
 
@@ -344,6 +353,23 @@ Dòng 2 phải trả về rỗng — nếu có file thiếu `layer` thì re-gene
 
 ---
 
+### Bước 9b — Validate YAML (Phase 4b)
+
+Sau khi generate, validate toàn bộ YAML files theo `schemas/dm.schema.json`:
+
+```bash
+python DataModel/validate_dm_yaml.py --source {SOURCE}
+```
+
+**Điều kiện passed**: `Failed: 0`. Nếu có file fail → sửa LLD CSV nguồn → re-aggregate → re-generate → validate lại. KHÔNG sang Phase 5 khi còn failed.
+
+**Lỗi thường gặp:**
+- `data_domain` nhận giá trị lạ → CSV có dấu phẩy trong description không được quote → bọc `"..."` quanh giá trị đó
+- `physical_name` pattern fail → chạy lại `transform_physical_names.py`, kiểm tra C6 trong `post_check_atomic.py`
+- `source_column` nhận giá trị sai cột → cùng nguyên nhân CSV bị shift cột
+
+---
+
 ### Bước 10 — Consolidate (Phase 5)
 
 Sinh `_summary.csv` và `atomic_model.yaml` từ các YAML files của source vừa generate:
@@ -371,6 +397,7 @@ Sau khi hoàn thành thiết kế LLD cho 1 source system, xác nhận từng b�
 | 3 — Post-check | `post_check_atomic.py` + `post_check_source_coverage.py --source {SOURCE}` | **0 WARNING** |
 | 3b — Physical name | `transform_physical_names.py` | `atomic_table` + `atomic_column` đã có trong `atomic_attributes.csv` |
 | 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng với số entity trong manifest; 0 file thiếu `layer: Atomic` |
+| 4b — Validate YAML | `validate_dm_yaml.py --source {SOURCE}` | **Failed: 0** |
 | 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `_summary.csv` có đúng N dòng; `atomic_model.yaml` parse được bằng `yaml.safe_load()` |
 
 ---

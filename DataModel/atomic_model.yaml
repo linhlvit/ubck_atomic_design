@@ -757,15 +757,15 @@ entities:
     etl_derived_value: null
   - name: Examination Session Number
     physical_name: exam_ssn_nbr
-    business_meaning: Kỳ thi trong năm (1
-    data_domain: 2…)
-    data_type: null
-    nullable: false
-    is_primary_key: true
+    business_meaning: Kỳ thi trong năm (1, 2…)
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
     source_system: NHNCK
     source_table: EXAM_SESSIONS
-    source_column: draft
-    comment: NHNCK.qlnhn.EXAM_SESSIONS.SESSION_
+    source_column: NHNCK.qlnhn.EXAM_SESSIONS.SESSION_NUMBER
+    comment: null
     classification_context: Source System Code = 'NHNCK_EXAM_SESSIONS'
     etl_derived_value: null
   - name: Organizing Unit Name
@@ -4028,7 +4028,7 @@ entities:
     source_column: null
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.PROFESSIONALS
   - name: Identification Issue Date
     physical_name: identn_issu_dt
     business_meaning: Ngày cấp giấy tờ định danh.
@@ -4135,7 +4135,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.ORGANIZATIONS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — email.
@@ -4149,7 +4149,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: EMAIL
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Địa chỉ email của tổ chức.
@@ -4207,7 +4207,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'FAX'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.ORGANIZATIONS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — fax.
@@ -4221,7 +4221,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'FAX'
-    etl_derived_value: null
+    etl_derived_value: FAX
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Số fax của tổ chức.
@@ -4279,7 +4279,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'MOBILE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.ORGANIZATIONS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — số di động.
@@ -4293,7 +4293,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'MOBILE'
-    etl_derived_value: null
+    etl_derived_value: MOBILE
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Số di động của tổ chức.
@@ -4351,7 +4351,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.ORGANIZATIONS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại.
@@ -4365,7 +4365,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: PHONE
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Số điện thoại cố định của tổ chức.
@@ -4423,7 +4423,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'WEBSITE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.ORGANIZATIONS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — website.
@@ -4437,7 +4437,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic
       Address Type Code = 'WEBSITE'
-    etl_derived_value: null
+    etl_derived_value: WEBSITE
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Địa chỉ website của tổ chức.
@@ -4518,7 +4518,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS' | Electronic
       Address Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.PROFESSIONALS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — email.
@@ -4532,7 +4532,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS' | Electronic
       Address Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: EMAIL
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Địa chỉ email.
@@ -4589,7 +4589,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS' | Electronic
       Address Type Code = 'MOBILE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.PROFESSIONALS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại di động.
@@ -4603,7 +4603,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS' | Electronic
       Address Type Code = 'MOBILE'
-    etl_derived_value: null
+    etl_derived_value: MOBILE
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Số điện thoại di động.
@@ -4660,7 +4660,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS' | Electronic
       Address Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.PROFESSIONALS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại cố định.
@@ -4674,7 +4674,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS' | Electronic
       Address Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: PHONE
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Số điện thoại cố định.
@@ -4755,7 +4755,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.UNITS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — email
@@ -4769,17 +4769,17 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: EMAIL
   - name: Electronic Address Value
     physical_name: elc_adr_val
-    business_meaning: Số điện thoại đơn vị
+    business_meaning: Email đơn vị
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: UNITS
-    source_column: NHNCK.qlnhn.UNITS.PHONE_NUMBER
+    source_column: NHNCK.qlnhn.UNITS.EMAIL
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'EMAIL'
@@ -4826,7 +4826,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'FAX'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.UNITS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — fax
@@ -4840,17 +4840,17 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'FAX'
-    etl_derived_value: null
+    etl_derived_value: FAX
   - name: Electronic Address Value
     physical_name: elc_adr_val
-    business_meaning: Số điện thoại đơn vị
+    business_meaning: Số fax đơn vị
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: UNITS
-    source_column: NHNCK.qlnhn.UNITS.PHONE_NUMBER
+    source_column: NHNCK.qlnhn.UNITS.FAX
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'FAX'
@@ -4897,7 +4897,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.UNITS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại
@@ -4911,7 +4911,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Electronic Address
       Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: PHONE
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Số điện thoại đơn vị
@@ -4993,7 +4993,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_USERS' | Electronic Address
       Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.USERS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại địa chỉ điện tử — email.
@@ -5007,7 +5007,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_USERS' | Electronic Address
       Type Code = 'EMAIL'
-    etl_derived_value: null
+    etl_derived_value: EMAIL
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Địa chỉ email cán bộ.
@@ -5065,7 +5065,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_USERS' | Electronic Address
       Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.USERS
   - name: Electronic Address Type Code
     physical_name: elc_adr_tp_code
     business_meaning: Loại địa chỉ điện tử — điện thoại.
@@ -5079,7 +5079,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_USERS' | Electronic Address
       Type Code = 'PHONE'
-    etl_derived_value: null
+    etl_derived_value: PHONE
   - name: Electronic Address Value
     physical_name: elc_adr_val
     business_meaning: Số điện thoại cán bộ.
@@ -5161,7 +5161,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type
       Code = 'HEAD_OFFICE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.ORGANIZATIONS
   - name: Address Type Code
     physical_name: adr_tp_code
     business_meaning: Loại địa chỉ — trụ sở chính.
@@ -5175,7 +5175,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type
       Code = 'HEAD_OFFICE'
-    etl_derived_value: null
+    etl_derived_value: HEAD_OFFICE
   - name: Address Value
     physical_name: adr_val
     business_meaning: Địa chỉ trụ sở chính của tổ chức.
@@ -5395,7 +5395,7 @@ entities:
     source_column: null
     comment: null
     classification_context: Source System Code = 'NHNCK_PROFESSIONALS'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.PROFESSIONALS
   - name: Address Detail
     physical_name: adr_dtl
     business_meaning: Địa chỉ văn phòng đại diện.
@@ -5481,7 +5481,7 @@ entities:
     is_primary_key: false
     source_system: NHNCK
     source_table: UNITS
-    source_column: NHNCK.UNITS.ID
+    source_column: NHNCK.qlnhn.UNITS.ID
     comment: 'FK target: reg_ahr_ou.reg_ahr_ou_id. Shared entity — không có PK surrogate
       riêng.'
     classification_context: Source System Code = 'NHNCK_UNITS' | Address Type Code
@@ -5496,7 +5496,7 @@ entities:
     is_primary_key: false
     source_system: NHNCK
     source_table: UNITS
-    source_column: NHNCK.UNITS.UNIT_CODE
+    source_column: NHNCK.qlnhn.UNITS.UNIT_CODE
     comment: 'Lookup pair: reg_ahr_ou.reg_ahr_ou_code. Pair with Involved Party Id.'
     classification_context: Source System Code = 'NHNCK_UNITS' | Address Type Code
       = 'HEAD_OFFICE'
@@ -5514,7 +5514,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Address Type Code
       = 'HEAD_OFFICE'
-    etl_derived_value: null
+    etl_derived_value: NHNCK.UNITS
   - name: Address Type Code
     physical_name: adr_tp_code
     business_meaning: Loại địa chỉ — trụ sở chính
@@ -5528,7 +5528,7 @@ entities:
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Address Type Code
       = 'HEAD_OFFICE'
-    etl_derived_value: null
+    etl_derived_value: HEAD_OFFICE
   - name: Address Value
     physical_name: adr_val
     business_meaning: Địa chỉ trụ sở đơn vị
@@ -5538,7 +5538,7 @@ entities:
     is_primary_key: false
     source_system: NHNCK
     source_table: UNITS
-    source_column: NHNCK.UNITS.ADDRESS
+    source_column: NHNCK.qlnhn.UNITS.ADDRESS
     comment: null
     classification_context: Source System Code = 'NHNCK_UNITS' | Address Type Code
       = 'HEAD_OFFICE'

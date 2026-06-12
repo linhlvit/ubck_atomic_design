@@ -80,15 +80,15 @@ attributes:
 
   - name: Examination Session Number
     physical_name: exam_ssn_nbr
-    business_meaning: Kỳ thi trong năm (1
-    data_domain: 2…)
-    data_type: 
-    nullable: false
-    is_primary_key: true
+    business_meaning: "Kỳ thi trong năm (1, 2…)"
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
     source_system: NHNCK
     source_table: EXAM_SESSIONS
-    source_column: draft
-    comment: NHNCK.qlnhn.EXAM_SESSIONS.SESSION_
+    source_column: NHNCK.qlnhn.EXAM_SESSIONS.SESSION_NUMBER
+    comment: null
     classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
     etl_derived_value: null
 
