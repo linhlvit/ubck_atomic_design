@@ -17,7 +17,7 @@ etl_pattern mapping from system/rules/rule_map_technical_table_type.csv:
   Classification -> Upsert
 
 Usage:
-  python DataModel/generate_dm_yaml.py [--dry-run]
+  python DataModel/generate_dm_yaml.py [--source NHNCK] [--dry-run]
 """
 
 import csv
@@ -244,6 +244,7 @@ def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, et
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="Print file list without writing")
+    parser.add_argument("--source", help="Only generate files for this source system (e.g. NHNCK)")
     args = parser.parse_args()
 
     etl_map     = load_etl_map(RULE_CSV)
@@ -255,9 +256,10 @@ def main():
     name_to_table = {}
     with open(ATTRS_CSV, encoding="utf-8-sig") as f:
         for row in csv.DictReader(f):
-            key = (row["atomic_table"].strip(),
-                   row["source_system"].strip(),
-                   row["source_table"].strip())
+            src = row["source_system"].strip()
+            if args.source and src != args.source:
+                continue
+            key = (row["atomic_table"].strip(), src, row["source_table"].strip())
             groups[key].append(row)
             ename = row["atomic_entity"].strip()
             tname = row["atomic_table"].strip()

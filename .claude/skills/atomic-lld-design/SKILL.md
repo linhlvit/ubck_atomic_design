@@ -317,6 +317,64 @@ Tra 1 tên cụ thể để kiểm tra:
 python Atomic/lld/scripts/transform_physical_names.py --name "Fund Management Company Code"
 ```
 
+### Bước 9 — Generate YAML (Phase 4)
+
+Chạy script sinh file YAML per (atomic_table, source_system, source_table):
+
+```bash
+python DataModel/generate_dm_yaml.py --source {SOURCE}
+```
+
+**`--source` flag**: chỉ sinh file cho source được chỉ định. Nếu bỏ flag → sinh tất cả source (không dùng khi làm việc đơn source).
+
+Output: `DataModel/Atomic/{BCV_Folder}/dm_atm_{table}-{SOURCE}.{SRC_TABLE}.yaml`
+
+**Sub-folder theo BCV Core Object:**
+`Arrangement`, `Business_Activity`, `Common`, `Communication`, `Condition`, `Documentation`, `Event`, `Group`, `Involved_Party`, `Location`, `Product`, `Transaction`
+
+**Kiểm tra nhanh sau khi generate:**
+```bash
+# Đếm file vừa sinh
+ls DataModel/Atomic/**/*-{SOURCE}.*.yaml | wc -l
+
+# Kiểm tra layer: Atomic có đủ không
+grep -rL "layer: Atomic" DataModel/Atomic/ --include="*.yaml" | grep {SOURCE}
+```
+Dòng 2 phải trả về rỗng — nếu có file thiếu `layer` thì re-generate.
+
+---
+
+### Bước 10 — Consolidate (Phase 5)
+
+Sinh `_summary.csv` và `atomic_model.yaml` từ các YAML files của source vừa generate:
+
+```bash
+python DataModel/gen_summary_and_model.py --source {SOURCE}
+```
+
+Output:
+- `DataModel/Atomic/_summary.csv` — 13 cột: `subfolder, file_name, id, physical_name, logical_name, bcv_core_object, bcv_concept, table_type, etl_pattern, source, status, attribute_count, brd_ref`
+- `DataModel/atomic_model.yaml` — consolidated model (`schema_type: atomic_model`, `entities:` list)
+
+**Lưu ý:** Script này đọc **tất cả** YAML files trong `DataModel/Atomic/` — kể cả source khác nếu có. Dùng `--source` để lọc chỉ ghi vào `_summary.csv` các dòng của source đó, nhưng `atomic_model.yaml` luôn chứa toàn bộ.
+
+---
+
+## CHECKLIST HOÀN THÀNH TOÀN BỘ PIPELINE
+
+Sau khi hoàn thành thiết kế LLD cho 1 source system, xác nhận từng bước:
+
+| Phase | Script | Điều kiện passed |
+|---|---|---|
+| 1 — LLD Design | (manual) | Mọi `attr_*.csv` trong `Atomic/lld/{SOURCE}/` đã đủ và đúng chuẩn |
+| 2 — Aggregate | `aggregate_atomic.py` | Số rows in ra hợp lý, không có ERROR |
+| 3 — Post-check | `post_check_atomic.py` + `post_check_source_coverage.py --source {SOURCE}` | **0 WARNING** |
+| 3b — Physical name | `transform_physical_names.py` | `atomic_table` + `atomic_column` đã có trong `atomic_attributes.csv` |
+| 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng với số entity trong manifest; 0 file thiếu `layer: Atomic` |
+| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `_summary.csv` có đúng N dòng; `atomic_model.yaml` parse được bằng `yaml.safe_load()` |
+
+---
+
 ## QUY TẮC ĐẶT TÊN ATTRIBUTE
 
 ### Prefix nhất quán trong nhóm trường
