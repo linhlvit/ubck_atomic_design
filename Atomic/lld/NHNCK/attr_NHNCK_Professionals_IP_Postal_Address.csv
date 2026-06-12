@@ -1,12 +1,12 @@
 ﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Involved Party Id,FK đến Securities Practitioner.,Surrogate Key,false,false,draft,NHNCK.qlnhn.PROFESSIONALS.ID,FK target: Securities Practitioner.Securities Practitioner Id. Shared entity — không có PK surrogate riêng.,,
 Involved Party Code,Mã người hành nghề.,Text,false,false,draft,NHNCK.qlnhn.PROFESSIONALS.ID,Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Involved Party Id.,,
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.PROFESSIONALS,
-Address Type Code,Loại địa chỉ.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. ETL tạo 3 dòng: PERMANENT / CURRENT / PLACE_OF_BIRTH.,IP_ADDR_TYPE,
-Address Value,Giá trị địa chỉ.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_ADDRESS,"ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.qlnhn.PROFESSIONALS.ADDRESS khi PERMANENT_ADDRESS null. ETL xử lý logic này.",,
-Country Id,FK đến Geographic Area — quốc gia.,Surrogate Key,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID,FK target: Geographic Area.Geographic Area Id.,,
-Country Code,Mã quốc gia.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with Country Id.,,
-Province Id,FK đến Geographic Area — tỉnh/thành.,Surrogate Key,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID,FK target: Geographic Area.Geographic Area Id.,,
-Province Code,Mã tỉnh/thành.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id.,,
-District Id,FK đến Geographic Area — quận/huyện.,Surrogate Key,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID,FK target: Geographic Area.Geographic Area Id.,,
-District Code,Mã quận/huyện.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with District Id.,,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.PROFESSIONALS,NHNCK.PROFESSIONALS
+Address Type Code,Loại địa chỉ.,Classification Value,false,false,draft,,Scheme: IP_ADDR_TYPE. Nguồn NHNCK chỉ có địa chỉ thường trú (PERMANENT_ADDRESS).,IP_ADDR_TYPE=PERMANENT,PERMANENT
+Address Value,Giá trị địa chỉ.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_ADDRESS,ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.qlnhn.PROFESSIONALS.ADDRESS khi PERMANENT_ADDRESS null. ETL xử lý logic này.,IP_ADDR_TYPE=PERMANENT,
+Country Id,FK đến Geographic Area — quốc gia.,Surrogate Key,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID,FK target: Geographic Area.Geographic Area Id.,IP_ADDR_TYPE=PERMANENT,
+Country Code,Mã quốc gia.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with Country Id.,IP_ADDR_TYPE=PERMANENT,
+Province Id,FK đến Geographic Area — tỉnh/thành.,Surrogate Key,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID,FK target: Geographic Area.Geographic Area Id.,IP_ADDR_TYPE=PERMANENT,
+Province Code,Mã tỉnh/thành.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id.,IP_ADDR_TYPE=PERMANENT,
+District Id,FK đến Geographic Area — quận/huyện.,Surrogate Key,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID,FK target: Geographic Area.Geographic Area Id.,IP_ADDR_TYPE=PERMANENT,
+District Code,Mã quận/huyện.,Text,true,false,draft,NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with District Id.,IP_ADDR_TYPE=PERMANENT,
