@@ -117,6 +117,8 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
   | `SCHEME` (không có `=VALUE`, dynamic — VD: `IP_ADDR_TYPE`) | Để **null** hoặc ghi expression mapping ETL (VD: `1=CMND;2=CCCD;3=PASSPORT`) |
   | Không có `classification_context` | Để null |
 
+  > **Lưu ý quan trọng — IP Postal Address:** Nếu bảng nguồn **chỉ có 1 loại địa chỉ cụ thể** (VD: chỉ có `PERMANENT_ADDRESS`, không có cột address_type), KHÔNG dùng bare `IP_ADDR_TYPE` — phải hardcode: `IP_ADDR_TYPE=PERMANENT`. Bare context khiến aggregate bỏ sót `Address Type Code` khi merge nhiều source. Chỉ dùng `IP_ADDR_TYPE` (bare/dynamic) khi nguồn thực sự có cột type động qua lookup.
+
 #### 3e. PK nguồn và BK
 - PK bảng nguồn (VD: `ID`) → map vào **Entity Code (BK)**, không đưa vào technical field.
 - Mã nghiệp vụ khác có tính unique (VD: `MA_SO_THUE`) → trường nghiệp vụ riêng, không phải BK.
@@ -234,6 +236,7 @@ Trước khi xuất file:
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
 - [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC.TABLE`. Dynamic context (không có `=VALUE`) → null hoặc expression mapping.
+- [ ] **Post-check C7:** Sau aggregate, chạy `post_check_atomic.py` và kiểm tra C7 — mọi `Classification Value` có context `SCHEME=VALUE` đều phải có `etl_derived_value`.
 - [ ] **Post-check:** Sau khi chạy aggregate, chạy `post_check_atomic.py` (xem [`reference/post_check_codes.md`](reference/post_check_codes.md)) và xử lý mọi warning trước khi kết thúc Tier.
 - [ ] **Source coverage:** Chạy `post_check_source_coverage.py --source {SOURCE}` — mọi bảng đã thiết kế đều có 100% cột map (hoặc pending với reason rõ).
 

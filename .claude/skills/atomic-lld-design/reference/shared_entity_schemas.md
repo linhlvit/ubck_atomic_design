@@ -68,6 +68,7 @@ Mọi attribute trong file shared entity phải có `classification_context` v�
 Chọn value theo nguồn:
 - **Nguồn có cột type động qua lookup** (VD: `identity_type_cd` → CMND/CCCD/Hộ chiếu/GPKD) → dùng placeholder `(source)`: `IP_ALT_ID_TYPE=(source)`. ETL map value runtime.
 - **Nguồn cố định 1 loại** (VD: chỉ có cột `phone_no` = PHONE) → hardcode: `IP_ELEC_ADDR_TYPE=PHONE`.
+- **Nguồn chỉ có 1 loại địa chỉ cụ thể** (VD: chỉ có `PERMANENT_ADDRESS`, không có cột address_type) → hardcode loại đó: `IP_ADDR_TYPE=PERMANENT`. **KHÔNG dùng bare `IP_ADDR_TYPE`** — aggregate sẽ bỏ sót `Address Type Code` khi merge nhiều source.
 
 Scheme áp dụng:
 - `IP_ADDR_TYPE` (IP Postal Address)
@@ -80,7 +81,7 @@ Scheme áp dụng:
 |---|---|---|
 | `SCHEME=VALUE` (giá trị cố định) | Điền literal VALUE | `IP_ELEC_ADDR_TYPE=PHONE` → `PHONE` |
 | `SOURCE_SYSTEM=SRC.TABLE` | Điền literal `SRC.TABLE` | `SOURCE_SYSTEM=NHNCK.PROFESSIONALS` → `NHNCK.PROFESSIONALS` |
-| `SCHEME` (dynamic, không có `=VALUE`) | null hoặc expression mapping | `IP_ADDR_TYPE` → null (ETL tự xử lý) |
+| `SCHEME` (dynamic — nguồn thực sự có cột type lookup) | null hoặc expression mapping | `IP_ALT_ID_TYPE=(source)` → null |
 | `SCHEME=(source)` (lookup từ nguồn) | Expression mapping nếu biết | `NHNCK_IDENTITY_TYPE` → `1=CMND;2=CCCD;3=PASSPORT` |
 
 **Lý do:** ETL engineer đọc `etl_derived_value` để biết giá trị nào cần hardcode vào cột này mà không cần parse `classification_context`. Bỏ trống = ETL phải đoán.

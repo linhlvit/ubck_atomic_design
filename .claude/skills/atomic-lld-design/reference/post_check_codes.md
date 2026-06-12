@@ -1,12 +1,12 @@
-# Post-check codes — chi tiết C1–C5 + Source Coverage
+# Post-check codes — chi tiết C1–C7 + Source Coverage
 
-## post_check_atomic.py — C1 đến C5
+## post_check_atomic.py — C1 đến C7
 
 ```bash
 python Atomic/lld/scripts/post_check_atomic.py
 ```
 
-Script kiểm tra 5 tiêu chí và in báo cáo — không sửa file nào.
+Script kiểm tra 7 tiêu chí và in báo cáo — không sửa file nào.
 
 | Check | Mô tả | Nguyên nhân phổ biến | Hành động |
 |---|---|---|---|
@@ -15,6 +15,8 @@ Script kiểm tra 5 tiêu chí và in báo cáo — không sửa file nào.
 | C3 | Cùng tên attr nhưng data_domain khác nhau giữa các entity | Typo hoặc copy sai data domain từ entity khác | Sửa domain về giá trị chuẩn trong 12 Data Domain |
 | C4 | PK có nullable=true | Copy sai từ trường khác | Đặt `nullable=false` cho PK |
 | C5 | source_column không đúng 3 phần | Thừa schema (VD: `SCMS.scms.table.col`) hoặc thiếu source prefix | Sửa về đúng `SOURCE.table.column` |
+| C6 | Physical name chứa ký tự không hợp lệ | Dấu `-` hoặc ký tự đặc biệt trong logical name chưa transform đúng | Sửa logical name trong CSV, chạy lại aggregate |
+| C7 | Classification Value có `classification_context = SCHEME=VALUE` nhưng `etl_derived_value` trống | Bỏ sót điền `etl_derived_value` ở Phase 1 LLD | Điền literal VALUE vào `etl_derived_value` trong CSV nguồn, chạy lại aggregate |
 
 ## post_check_source_coverage.py
 

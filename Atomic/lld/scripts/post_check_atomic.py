@@ -124,6 +124,33 @@ def check_physical_name_chars(rows):
     return issues
 
 
+
+
+def check_etl_derived_missing(rows):
+    """C7: Classification Value có classification_context dạng SCHEME=VALUE hoặc SOURCE_SYSTEM=...
+    nhưng etl_derived_value trống — ETL engineer sẽ không biết giá trị cần hardcode."""
+    seen = set()
+    issues = []
+    for r in rows:
+        if r.get("data_domain", "").strip() != "Classification Value":
+            continue
+        ctx = r.get("classification_context", "").strip()
+        etl = r.get("etl_derived_value", "").strip()
+        # Chỉ check khi context có dạng SCHEME=VALUE (có dấu =, không phải placeholder =(source))
+        if "=" not in ctx or ctx.endswith("=(source)"):
+            continue
+        key = (r["atomic_entity"], r["source_system"], r["source_table"],
+               r["atomic_attribute"], ctx)
+        if key in seen:
+            continue
+        seen.add(key)
+        if not etl:
+            issues.append(
+                f"  {r['atomic_entity']}.{r['atomic_attribute']}"
+                f"  [{r['source_system']}.{r['source_table']}]"
+                f"  ctx='{ctx}'"
+            )
+    return issues
 def report(title, issues, ok_msg):
     print(f"\n{'=' * 60}")
     print(f"[CHECK] {title}")
@@ -165,6 +192,11 @@ def main():
     report("C6 – Physical name chứa ký tự không hợp lệ (ngoài a-z, 0-9, _)",
            check_physical_name_chars(rows),
            "Mọi physical name đều hợp lệ.")
+
+    report("C7 – Classification Value có context SCHEME=VALUE nhưng etl_derived_value trống",
+           check_etl_derived_missing(rows),
+           "Mọi Classification Value với context cố định đều có etl_derived_value.")
+
 
     print(f"\n{'=' * 60}")
     print("Hoàn thành post-check.")
