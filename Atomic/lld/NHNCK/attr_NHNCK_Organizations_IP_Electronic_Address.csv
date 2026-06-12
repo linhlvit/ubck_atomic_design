@@ -12,36 +12,3 @@ Electronic Address Type Code,Loại kênh liên lạc — email.,Classification 
 Electronic Address Value,Địa chỉ email của tổ chức.,Text,true,false,draft,NHNCK.qlnhn.ORGANIZATIONS.EMAIL,,IP_ELEC_ADDR_TYPE=EMAIL,
 Electronic Address Type Code,Loại kênh liên lạc — website.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=WEBSITE,
 Electronic Address Value,Địa chỉ website của tổ chức.,Text,true,false,draft,NHNCK.qlnhn.ORGANIZATIONS.WEBSITE,,IP_ELEC_ADDR_TYPE=WEBSITE,
-
----
-
-**Tóm tắt các thay đổi so với file cũ:**
-
-**attr_NHNCK_Organizations.csv — 12 điểm sửa:**
-
-| Thay đổi | Chi tiết |
-|---|---|
-| Source columns format | Đổi toàn bộ sang fully qualified `NHNCK.qlnhn.ORGANIZATIONS.COLUMN` |
-| Tên attribute | `Organization Name` → `Securities Organization Reference Name` |
-| Tên attribute | `English Name` → `Securities Organization Reference English Name` |
-| Tên attribute | `Abbreviation` → `Securities Organization Reference Short Name` |
-| Tên attribute | `Representative Name` → `Legal Representative Name` |
-| Tên attribute | `License Issuer` → `License Issuer Name` |
-| Tên attribute | `Parent Organization Id/Code` → `Parent Securities Organization Reference Id/Code` |
-| Tên attribute | `Organization Status Code` → `Record Status Code` + source map đúng `RECORD_STATUS` |
-| Tên attribute | `Linked Id` → `External System Linked Id` |
-| Tên attribute | `Sync Id` → `External System Sync Id` |
-| Tên attribute | `Organization Description` → `Description` |
-| Thêm mới | `Updated By Officer Id` + `Updated By Officer Code` (từ `UPDATED_BY`) |
-| Conversion risk | `Charter Capital Amount` — ghi chú NVARCHAR2 → decimal |
-| Domain Date | `Created Date` / `Updated Date` dùng `Date` (nguồn là Oracle `DATE`, không phải TIMESTAMP) |
-| `etl_derived_value` | `Source System Code` → thêm `NHNCK.ORGANIZATIONS` |
-
-**attr_NHNCK_Organizations_IP_Postal_Address.csv:** Source columns đổi sang fully qualified.
-
-**attr_NHNCK_Organizations_IP_Electronic_Address.csv:** Thêm block WEBSITE (`IP_ELEC_ADDR_TYPE=WEBSITE`) + source columns đổi sang fully qualified.
-
-**Lưu ý pending cần document thêm:**
-- `CREATED_BY` / `UPDATED_BY` nguồn là `NUMBER(10,0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS.
-- `WEBSITE` đã chuyển sang IP Electronic Address (không còn trong entity chính) — nếu file cũ có trường `Website` ở entity chính cần xóa (đã xóa trong file mới này).
-- `SORT_ORDER` source `NUMBER` → `Small Counter`: không cần ghi chú conversion risk vì NUMBER → integer là tự nhiên.
