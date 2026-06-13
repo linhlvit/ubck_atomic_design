@@ -2,13 +2,13 @@
 gen_summary_and_model.py
 ------------------------
 Phase 5: Consolidate DataModel YAML files into:
-  - DataModel/Atomic/_summary.csv   (13-column index, UTF-8 with BOM)
-  - DataModel/atomic_model.yaml     (consolidated per-entity, all sources)
+  - DataModel/Atomic/dm_manifest.csv  (13-column index, UTF-8 with BOM)
+  - DataModel/atomic_model.yaml       (consolidated per-entity, all sources)
 
 Usage:
   python DataModel/gen_summary_and_model.py [--source NHNCK] [--dry-run]
 
-  --source: optional filter for _summary.csv rows only.
+  --source: optional filter for dm_manifest.csv rows only.
             atomic_model.yaml always consolidates ALL sources.
 """
 
@@ -23,7 +23,7 @@ import yaml
 
 ROOT       = Path(__file__).resolve().parent.parent
 ATOMIC_DIR = ROOT / "DataModel" / "Atomic"
-SUMMARY_OUT = ATOMIC_DIR / "_summary.csv"
+SUMMARY_OUT = ATOMIC_DIR / "dm_manifest.csv"
 MODEL_OUT   = ROOT / "DataModel" / "atomic_model.yaml"
 
 SUMMARY_COLS = [
@@ -44,7 +44,7 @@ ATTR_CONFLICT_FIELDS = ["data_domain", "data_type", "nullable", "is_primary_key"
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--source", help="Filter _summary.csv rows to this source only")
+    p.add_argument("--source", help="Filter dm_manifest.csv rows to this source only")
     p.add_argument("--dry-run", action="store_true", help="Print counts, write nothing")
     return p.parse_args()
 
@@ -228,16 +228,19 @@ def build_consolidated_entity(physical_name, docs_for_entity):
         first = occs[0]
 
         # Build source_mappings: group by source_system.
-        # Dedup by (source_system, source_table, source_column) so that attributes
-        # with multiple source columns per table (e.g. ip_elc_adr: PHONE_NUMBER,
-        # MOBILE_NUMBER, EMAIL... all from UNITS) are preserved as separate entries.
+        # Dedup by (source_system, source_table, source_column, etl_derived_value) so that:
+        # - attributes with multiple source columns per table are preserved (e.g. ip_elc_adr
+        #   Electronic Address Value: PHONE_NUMBER, EMAIL, FAX all from UNITS)
+        # - Classification Value attributes with source_column=null but different
+        #   etl_derived_value are also preserved (e.g. Electronic Address Type Code:
+        #   EMAIL, FAX, PHONE all from UNITS with source_column=null)
         sm_dict = collections.OrderedDict()  # source_system → list of entries
-        seen_sm = set()                       # dedup key: (ss, st, source_column)
+        seen_sm = set()                       # dedup key: (ss, st, source_column, etl_derived_value)
         for occ in occs:
             ss = occ["source_system"]
             st = occ["source_table"]
             sc = occ["source_column"]
-            dedup_key = (ss, st, sc)
+            dedup_key = (ss, st, sc, occ["etl_derived_value"])
             if dedup_key in seen_sm:
                 continue
             seen_sm.add(dedup_key)
@@ -316,14 +319,14 @@ def main():
 
     print(f"Total YAML files  : {len(all_rows)}")
     print(f"Distinct entities : {len(entities)}")
-    print(f"_summary.csv rows : {len(summary_rows)}"
+    print(f"dm_manifest.csv rows : {len(summary_rows)}"
           + (f" (source={args.source})" if args.source else ""))
 
     if args.dry_run:
         print("(dry-run — nothing written)")
         return
 
-    # Write _summary.csv (UTF-8 with BOM)
+    # Write dm_manifest.csv (UTF-8 with BOM)
     with open(SUMMARY_OUT, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=SUMMARY_COLS)
         w.writeheader()

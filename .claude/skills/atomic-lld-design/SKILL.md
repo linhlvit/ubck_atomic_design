@@ -394,17 +394,17 @@ python DataModel/validate_dm_yaml.py --source {SOURCE}
 
 ### Bước 10 — Consolidate (Phase 5)
 
-Sinh `_summary.csv` và `atomic_model.yaml` từ các YAML files của source vừa generate:
+Sinh `dm_manifest.csv` và `atomic_model.yaml` từ các YAML files của source vừa generate:
 
 ```bash
 python DataModel/gen_summary_and_model.py --source {SOURCE}
 ```
 
 Output:
-- `DataModel/Atomic/_summary.csv` — 13 cột: `subfolder, file_name, id, physical_name, logical_name, bcv_core_object, bcv_concept, table_type, etl_pattern, source, status, attribute_count, brd_ref`
+- `DataModel/Atomic/dm_manifest.csv` — 13 cột: `subfolder, file_name, id, physical_name, logical_name, bcv_core_object, bcv_concept, table_type, etl_pattern, source, status, attribute_count, brd_ref`
 - `DataModel/atomic_model.yaml` — consolidated model (`schema_type: atomic_model`, `entities:` list)
 
-**Lưu ý:** Script này đọc **tất cả** YAML files trong `DataModel/Atomic/` — kể cả source khác nếu có. Dùng `--source` để lọc chỉ ghi vào `_summary.csv` các dòng của source đó, nhưng `atomic_model.yaml` luôn chứa toàn bộ.
+**Lưu ý:** Script này đọc **tất cả** YAML files trong `DataModel/Atomic/` — kể cả source khác nếu có. Dùng `--source` để lọc chỉ ghi vào `dm_manifest.csv` các dòng của source đó, nhưng `atomic_model.yaml` luôn chứa toàn bộ.
 
 ---
 
@@ -420,7 +420,7 @@ Sau khi hoàn thành thiết kế LLD cho 1 source system, xác nhận từng b�
 | 3b — Physical name | `transform_physical_names.py` | `atomic_table` + `atomic_column` đã có trong `atomic_attributes.csv` |
 | 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng với số entity trong manifest; 0 file thiếu `layer: Atomic` |
 | 4b — Validate YAML | `validate_dm_yaml.py --source {SOURCE}` | **Failed: 0** |
-| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `_summary.csv` có đúng N dòng; `atomic_model.yaml` parse được bằng `yaml.safe_load()` |
+| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `dm_manifest.csv` có đúng N dòng; `atomic_model.yaml` parse được bằng `yaml.safe_load()` |
 
 ---
 

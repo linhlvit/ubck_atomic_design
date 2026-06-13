@@ -20,6 +20,8 @@
 |---|---|---|
 | `Atomic/lld/atomic_attributes.csv` | `aggregate_atomic.py` | manifest.csv + tất cả attr_*.csv |
 | `Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.csv + atomic_entities.csv (description preserve) |
+| `DataModel/Atomic/dm_manifest.csv` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
+| `DataModel/atomic_model.yaml` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
 
 ## Cấu trúc file attr_*.csv (10 cột)
 
