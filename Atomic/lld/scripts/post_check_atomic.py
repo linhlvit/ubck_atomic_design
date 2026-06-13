@@ -151,6 +151,36 @@ def check_etl_derived_missing(rows):
                 f"  ctx='{ctx}'"
             )
     return issues
+
+
+def check_source_system_code(rows):
+    """C8: Source System Code (src_stm_code) phải có:
+    - classification_context = SOURCE_SYSTEM=NHNCK.TABLE (không free-text, không bare, không trống)
+    - etl_derived_value = NHNCK.TABLE (không trống)
+    """
+    seen = set()
+    issues = []
+    for r in rows:
+        if r.get("atomic_attribute", "").strip() != "src_stm_code":
+            continue
+        key = (r["atomic_entity"], r["source_system"], r["source_table"])
+        if key in seen:
+            continue
+        seen.add(key)
+        ctx = r.get("classification_context", "").strip()
+        etl = r.get("etl_derived_value", "").strip()
+        prefix = f"  {r['atomic_entity']}  [{r['source_system']}.{r['source_table']}]"
+        if not ctx.startswith("SOURCE_SYSTEM="):
+            issues.append(
+                f"{prefix}  classification_context='{ctx}' (phải là SOURCE_SYSTEM=...)"
+            )
+        elif not etl:
+            issues.append(
+                f"{prefix}  etl_derived_value trống (phải là '{ctx.split('=', 1)[1]}')"
+            )
+    return issues
+
+
 def report(title, issues, ok_msg):
     print(f"\n{'=' * 60}")
     print(f"[CHECK] {title}")
@@ -197,6 +227,9 @@ def main():
            check_etl_derived_missing(rows),
            "Mọi Classification Value với context cố định đều có etl_derived_value.")
 
+    report("C8 – Source System Code: classification_context hoặc etl_derived_value sai/trống",
+           check_source_system_code(rows),
+           "Mọi src_stm_code đều có classification_context và etl_derived_value chuẩn.")
 
     print(f"\n{'=' * 60}")
     print("Hoàn thành post-check.")

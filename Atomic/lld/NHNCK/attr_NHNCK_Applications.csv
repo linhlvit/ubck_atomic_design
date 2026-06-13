@@ -1,11 +1,11 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Securities Practitioner License Application Id,Id tự sinh (surrogate key).,Surrogate Key,false,true,draft,,PK surrogate. BCV: [Documentation] Government Registration Document.,,
 Securities Practitioner License Application Code,Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.,Text,false,false,draft,NHNCK.qlnhn.APPLICATIONS.APPLICATION_CODE,BK chính. Mã định danh duy nhất của hồ sơ.,,
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.APPLICATIONS,
+Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.APPLICATIONS,NHNCK.APPLICATIONS
 Application Type Code,Loại hồ sơ.,Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATIONS.APPLICATION_TYPE,"Scheme: NHNCK_APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN.",NHNCK_APPLICATION_TYPE,
-Application Status Code,Trạng thái hồ sơ hiện tại.,Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATIONS.STATUS_ID,"FK → APPLICATION_STATUSES (Classification Value). Scheme: NHNCK_APPLICATION_STATUS.",NHNCK_APPLICATION_STATUS,
+Application Status Code,Trạng thái hồ sơ hiện tại.,Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATIONS.STATUS_ID,FK → APPLICATION_STATUSES (Classification Value). Scheme: NHNCK_APPLICATION_STATUS.,NHNCK_APPLICATION_STATUS,
 Registration Type Code,Nguồn tiếp nhận hồ sơ.,Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATIONS.REGISTRATION_TYPE,"Scheme: NHNCK_REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập tay.",NHNCK_REGISTRATION_TYPE,
-Certificate Type Code,Loại chứng chỉ hành nghề đăng ký.,Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_ID,"FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE.",NHNCK_CERTIFICATE_TYPE,
+Certificate Type Code,Loại chứng chỉ hành nghề đăng ký.,Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_ID,FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE.,NHNCK_CERTIFICATE_TYPE,
 Title,Tiêu đề hoặc tên nhóm hồ sơ.,Text,true,false,draft,NHNCK.qlnhn.APPLICATIONS.TITLE,,,
 Submission Date,Ngày nộp hồ sơ chính thức.,Date,true,false,draft,NHNCK.qlnhn.APPLICATIONS.SUBMISSION_DATE,,,
 Supplement Date,Ngày nộp bổ sung hồ sơ.,Date,true,false,draft,NHNCK.qlnhn.APPLICATIONS.SUPPLEMENT_DATE,,,
@@ -14,7 +14,7 @@ Certificate Number,Số CCHN cấp cho người hành nghề.,Text,true,false,dr
 Issue Date,Ngày cấp CCHN.,Date,true,false,draft,NHNCK.qlnhn.APPLICATIONS.ISSUE_DATE,,,
 Previous Certificate Number,Số CCHN cũ trước khi cấp lại.,Text,true,false,draft,NHNCK.qlnhn.APPLICATIONS.PREVIOUS_CERTIFICATE_NUMBER,,,
 Previous Issue Date,Ngày cấp CCHN cũ.,Date,true,false,draft,NHNCK.qlnhn.APPLICATIONS.PREVIOUS_ISSUE_DATE,,,
-Previous Certificate Type Code,Loại CCHN cũ khi cấp lại.,Classification Value,true,false,draft,NHNCK.qlnhn.APPLICATIONS.PREVIOUS_CERTIFICATE_ID,"FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE.",NHNCK_CERTIFICATE_TYPE,
+Previous Certificate Type Code,Loại CCHN cũ khi cấp lại.,Classification Value,true,false,draft,NHNCK.qlnhn.APPLICATIONS.PREVIOUS_CERTIFICATE_ID,FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE.,NHNCK_CERTIFICATE_TYPE,
 Reissue Reason,Lý do xin cấp lại CCHN.,Text,true,false,draft,NHNCK.qlnhn.APPLICATIONS.REISSUE_REASON,Nguồn lưu NCLOB — ETL convert sang string.,,
 Rejection Reason,Lý do trả lại hoặc từ chối hồ sơ.,Text,true,false,draft,NHNCK.qlnhn.APPLICATIONS.REJECTION_REASON,Nguồn lưu NCLOB — ETL convert sang string.,,
 Certificate Receipt Method Code,Phương thức nhận CCHN.,Classification Value,true,false,draft,NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD,"Scheme: NHNCK_CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi bưu điện, 3=Điện tử.",NHNCK_CERT_RECEIPT_METHOD,

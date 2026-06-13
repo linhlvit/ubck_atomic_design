@@ -124,7 +124,25 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
 - Mã nghiệp vụ khác có tính unique (VD: `MA_SO_THUE`) → trường nghiệp vụ riêng, không phải BK.
 
 #### 3f. Source System Code
-- Mô tả chi tiết đến mức tên bảng nguồn: `DCST.THONG_TIN_DK_THUE`, không chỉ ghi `DCST`.
+
+Format bắt buộc — **cả 2 trường phải nhất quán:**
+
+| Trường | Giá trị bắt buộc |
+|---|---|
+| `classification_context` | `SOURCE_SYSTEM=NHNCK.TABLE_NAME` |
+| `etl_derived_value` | `NHNCK.TABLE_NAME` (phần VALUE sau dấu `=`) |
+
+`TABLE_NAME` = tên bảng nguồn cụ thể (không phải chỉ tên source system).
+
+**Pattern sai — KHÔNG dùng:**
+
+| Pattern sai | Lý do |
+|---|---|
+| `SOURCE_SYSTEM` (bare, thiếu `=VALUE`) | aggregate không derive được etl_derived_value |
+| `''` (trống) | aggregate bỏ qua hoàn toàn |
+| `'ETL-derived = NHNCK.TABLE'` (free-text) | không đúng format `SCHEME=VALUE` |
+| `'SCHEME=SOURCE_SYSTEM'` (key/value đảo ngược) | context không có ý nghĩa |
+| `'Scheme: SOURCE_SYSTEM. ...'` (free-text) | không phải machine-readable format |
 
 #### 3g. Metadata nguồn
 - Trường metadata truyền nhận (VD: `GOI_TIN_ID`) → trường nghiệp vụ bình thường, không đưa vào nhóm `ds_`.
@@ -236,7 +254,8 @@ Trước khi xuất file:
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
 - [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC.TABLE`. Dynamic context (không có `=VALUE`) → null hoặc expression mapping.
-- [ ] **Post-check C7:** Sau aggregate, chạy `post_check_atomic.py` và kiểm tra C7 — mọi `Classification Value` có context `SCHEME=VALUE` đều phải có `etl_derived_value`.
+- [ ] **Source System Code:** `classification_context = SOURCE_SYSTEM=NHNCK.TABLE_NAME` (không free-text, không bare, không trống); `etl_derived_value = NHNCK.TABLE_NAME` (bắt buộc, không trống).
+- [ ] **Post-check C7 + C8:** Sau aggregate, chạy `post_check_atomic.py` — C7 kiểm tra mọi `Classification Value` có context `SCHEME=VALUE` đều có `etl_derived_value`; C8 kiểm tra riêng `Source System Code`.
 - [ ] **Post-check:** Sau khi chạy aggregate, chạy `post_check_atomic.py` (xem [`reference/post_check_codes.md`](reference/post_check_codes.md)) và xử lý mọi warning trước khi kết thúc Tier.
 - [ ] **Source coverage:** Chạy `post_check_source_coverage.py --source {SOURCE}` — mọi bảng đã thiết kế đều có 100% cột map (hoặc pending với reason rõ).
 

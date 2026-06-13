@@ -1,6 +1,6 @@
-# Post-check codes — chi tiết C1–C7 + Source Coverage
+# Post-check codes — chi tiết C1–C8 + Source Coverage
 
-## post_check_atomic.py — C1 đến C7
+## post_check_atomic.py — C1 đến C8
 
 ```bash
 python Atomic/lld/scripts/post_check_atomic.py
@@ -17,6 +17,7 @@ Script kiểm tra 7 tiêu chí và in báo cáo — không sửa file nào.
 | C5 | source_column không đúng 3 phần | Thừa schema (VD: `SCMS.scms.table.col`) hoặc thiếu source prefix | Sửa về đúng `SOURCE.table.column` |
 | C6 | Physical name chứa ký tự không hợp lệ | Dấu `-` hoặc ký tự đặc biệt trong logical name chưa transform đúng | Sửa logical name trong CSV, chạy lại aggregate |
 | C7 | Classification Value có `classification_context = SCHEME=VALUE` nhưng `etl_derived_value` trống | Bỏ sót điền `etl_derived_value` ở Phase 1 LLD | Điền literal VALUE vào `etl_derived_value` trong CSV nguồn, chạy lại aggregate |
+| C8 | `Source System Code` có `classification_context` sai format (free-text, bare, trống, đảo ngược) hoặc `etl_derived_value` trống | Nhập sai format khi viết LLD; phải là `SOURCE_SYSTEM=NHNCK.TABLE` + `etl_derived_value=NHNCK.TABLE` | Sửa `classification_context` và `etl_derived_value` trong CSV nguồn theo pattern chuẩn |
 
 ## post_check_source_coverage.py
 

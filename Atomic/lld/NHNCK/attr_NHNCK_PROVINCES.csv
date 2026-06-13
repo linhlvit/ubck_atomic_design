@@ -1,11 +1,11 @@
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
 Geographic Area Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: ""Geographic Area"" (Location).",,
 Geographic Area Code,Mã tỉnh/thành phố nguồn. BK,Text,false,false,draft,NHNCK.PROVINCES.ID,BK chính. Giá trị từ PK số tự tăng của bảng nguồn.,,
-Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=NHNCK.PROVINCES,
+Source System Code,Mã nguồn dữ liệu,Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. BK. Hardcode.,SOURCE_SYSTEM=NHNCK.PROVINCES,NHNCK.PROVINCES
 Geographic Area Type Code,Phân loại vùng địa lý — Tỉnh/Thành phố,Classification Value,false,false,draft,,,GEOGRAPHIC_AREA_TYPE=PROVINCE,
 Geographic Area Name,Tên tỉnh/thành phố,Text,false,false,draft,NHNCK.PROVINCES.PROVINCE_NAME,,,
 ISO Country Code,Mã tỉnh/thành theo chuẩn,Text,true,false,draft,NHNCK.PROVINCES.PROVINCE_CODE,,,
-Parent Geographic Area Id,FK đến quốc gia cha,Surrogate Key,true,false,draft,NHNCK.PROVINCES.COUNTRY_ID,"FK target: Geographic Area.Geographic Area Id. Parent là COUNTRY.",,
-Parent Geographic Area Code,Mã quốc gia cha,Text,true,false,draft,NHNCK.PROVINCES.COUNTRY_ID,"Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic Area Id.",,
+Parent Geographic Area Id,FK đến quốc gia cha,Surrogate Key,true,false,draft,NHNCK.PROVINCES.COUNTRY_ID,FK target: Geographic Area.Geographic Area Id. Parent là COUNTRY.,,
+Parent Geographic Area Code,Mã quốc gia cha,Text,true,false,draft,NHNCK.PROVINCES.COUNTRY_ID,Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic Area Id.,,
 Default Flag,Cờ mặc định,Boolean,false,false,draft,NHNCK.PROVINCES.DEFAULT_FLAG,Giá trị 1 → true; 0 → false.,,
 Geographic Area Status Code,Trạng thái bản ghi,Classification Value,true,false,draft,NHNCK.PROVINCES.RECORD_STATUS,Scheme: GEOGRAPHIC_AREA_STATUS.,,

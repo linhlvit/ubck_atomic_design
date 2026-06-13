@@ -1,15 +1,15 @@
 ﻿attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-Securities Practitioner License Application Education Certificate Document Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,"PK surrogate. BCV: Documentation. Securities Practitioner License Application Education Certificate Document.",,
+Securities Practitioner License Application Education Certificate Document Id,Id tự sinh (surrogate key),Surrogate Key,false,true,draft,,PK surrogate. BCV: Documentation. Securities Practitioner License Application Education Certificate Document.,,
 Securities Practitioner License Application Education Certificate Document Code,Mã định danh bản ghi chuyên môn. BK,Text,false,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.ID,BK từ APPLICATION_SPECIALIZATIONS.ID.,,
 License Application Id,FK đến License Application (hồ sơ đăng ký),Surrogate Key,false,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.APPLICATION_ID,FK target: License Application.License Application Id.,,
 License Application Code,Mã hồ sơ đăng ký. Lookup pair,Text,false,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.APPLICATION_ID,Lookup pair: License Application.License Application Code. Pair with License Application Id.,,
 Specialization Type Code,Mã loại chuyên môn (Classification Value),Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID,Scheme: SPECIALIZATION. Phân loại chuyên ngành chứng chỉ.,SPECIALIZATION,
 Certificate Issue Date,Ngày cấp chứng chỉ chuyên môn,Date,true,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.ISSUE_DATE,,,
 Certificate Issue Place,Nơi cấp chứng chỉ chuyên môn,Text,true,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.ISSUE_PLACE,,,
-Appraisal Status Code,Trạng thái thẩm định chứng chỉ (Classification Value),Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.RECORD_STATUS,"Scheme: APPRAISAL_STATUS. Map từ RECORD_STATUS: 1=Đạt/0=Chưa thẩm định.",APPRAISAL_STATUS,
+Appraisal Status Code,Trạng thái thẩm định chứng chỉ (Classification Value),Classification Value,false,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.RECORD_STATUS,Scheme: APPRAISAL_STATUS. Map từ RECORD_STATUS: 1=Đạt/0=Chưa thẩm định.,APPRAISAL_STATUS,
 Appraisal Completed Date,Thời điểm thẩm định hoàn tất,Timestamp,true,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.APPRAISALED_AT,,,
 Appraised By Officer Id,FK đến cán bộ thẩm định (Regulatory Authority Officer),Surrogate Key,true,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID,FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.,,
 Appraised By Officer Code,Mã cán bộ thẩm định. Lookup pair,Text,true,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID,Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Appraised By Officer Id.,,
 Attachment Files,Danh sách file đính kèm (JSON CLOB),Text,true,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.FILES,Lưu nguyên JSON list [{name; path; size; type}] dưới dạng Text.,,
 Note,Ghi chú bổ sung,Text,true,false,draft,NHNCK.qlnhn.APPLICATION_SPECIALIZATIONS.NOTE,,,
-Source System Code,Mã hệ thống nguồn (ETL-derived),Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS.,SOURCE_SYSTEM,NHNCK.APPLICATION_SPECIALIZATIONS
+Source System Code,Mã hệ thống nguồn (ETL-derived),Classification Value,false,false,draft,,Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS.,SOURCE_SYSTEM=NHNCK.APPLICATION_SPECIALIZATIONS,NHNCK.APPLICATION_SPECIALIZATIONS
