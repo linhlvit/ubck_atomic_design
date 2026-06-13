@@ -819,7 +819,7 @@ entities:
   - name: Created Timestamp
     physical_name: crt_tms
     business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: Pending — chờ xác nhận ánh xạ audit field.
+    comment_1st: null
     data_domain_most: Timestamp
     data_type_most: timestamp
     nullable_most: true
@@ -832,11 +832,11 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_AT
         business_meaning: Thời điểm tạo bản ghi
-        comment: Pending — chờ xác nhận ánh xạ audit field.
+        comment: null
   - name: Updated Timestamp
     physical_name: udt_tms
     business_meaning_1st: Thời điểm cập nhật bản ghi
-    comment_1st: Pending — chờ xác nhận ánh xạ audit field.
+    comment_1st: null
     data_domain_most: Timestamp
     data_type_most: timestamp
     nullable_most: true
@@ -849,11 +849,11 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_AT
         business_meaning: Thời điểm cập nhật bản ghi
-        comment: Pending — chờ xác nhận ánh xạ audit field.
+        comment: null
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
-    business_meaning_1st: FK đến Officer tạo bản ghi
-    comment_1st: 'Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    business_meaning_1st: FK đến cán bộ tạo bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -865,12 +865,31 @@ entities:
       source_tables:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
-        business_meaning: FK đến Officer tạo bản ghi
-        comment: 'Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+        business_meaning: FK đến cán bộ tạo bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ tạo bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: SPECIALIZATION_COURSE_DETAILS
+        source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
+        business_meaning: Mã cán bộ tạo bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
-    business_meaning_1st: FK đến Officer cập nhật bản ghi
-    comment_1st: 'Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -882,8 +901,27 @@ entities:
       source_tables:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
-        business_meaning: FK đến Officer cập nhật bản ghi
-        comment: 'Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+        business_meaning: FK đến cán bộ cập nhật bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ cập nhật bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: SPECIALIZATION_COURSE_DETAILS
+        source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
+        business_meaning: Mã cán bộ cập nhật bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-scr_prac_qualf_exam_ases
     logical_name_1st: Securities Practitioner Qualification Examination Assessment
@@ -1718,8 +1756,8 @@ entities:
         source_column: NHNCK.qlnhn.EXAM_DETAILS.NOTE
         business_meaning: Ghi chú
         comment: null
-  - name: Created At
-    physical_name: crt_at
+  - name: Created Timestamp
+    physical_name: crt_tms
     business_meaning_1st: Thời điểm tạo bản ghi
     comment_1st: null
     data_domain_most: Timestamp
@@ -1735,8 +1773,8 @@ entities:
         source_column: NHNCK.qlnhn.EXAM_DETAILS.CREATED_AT
         business_meaning: Thời điểm tạo bản ghi
         comment: null
-  - name: Updated At
-    physical_name: udt_at
+  - name: Updated Timestamp
+    physical_name: udt_tms
     business_meaning_1st: Thời điểm cập nhật bản ghi
     comment_1st: null
     data_domain_most: Timestamp
@@ -1752,10 +1790,28 @@ entities:
         source_column: NHNCK.qlnhn.EXAM_DETAILS.UPDATED_AT
         business_meaning: Thời điểm cập nhật bản ghi
         comment: null
-  - name: Created By
-    physical_name: crt_by
-    business_meaning_1st: Người tạo bản ghi
-    comment_1st: null
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ tạo bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: EXAM_DETAILS
+        source_column: NHNCK.qlnhn.EXAM_DETAILS.CREATED_BY
+        business_meaning: FK đến cán bộ tạo bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ tạo bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -1767,12 +1823,31 @@ entities:
       source_tables:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.qlnhn.EXAM_DETAILS.CREATED_BY
-        business_meaning: Người tạo bản ghi
-        comment: null
-  - name: Updated By
-    physical_name: udt_by
-    business_meaning_1st: Người cập nhật bản ghi
-    comment_1st: null
+        business_meaning: Mã cán bộ tạo bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: EXAM_DETAILS
+        source_column: NHNCK.qlnhn.EXAM_DETAILS.UPDATED_BY
+        business_meaning: FK đến cán bộ cập nhật bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ cập nhật bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -1784,8 +1859,9 @@ entities:
       source_tables:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.qlnhn.EXAM_DETAILS.UPDATED_BY
-        business_meaning: Người cập nhật bản ghi
-        comment: null
+        business_meaning: Mã cán bộ cập nhật bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-scr_prac_qualf_exam_ases_fee
     logical_name_1st: Securities Practitioner Qualification Examination Assessment
@@ -2007,7 +2083,7 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến Officer (người tạo)
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2020,12 +2096,12 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_BY
         business_meaning: FK đến Officer (người tạo)
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã người tạo
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Created By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -2038,12 +2114,12 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_BY
         business_meaning: Mã người tạo
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Created By Officer Id.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến Officer (người cập nhật)
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2056,12 +2132,12 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_BY
         business_meaning: FK đến Officer (người cập nhật)
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã người cập nhật
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Updated By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -2074,8 +2150,8 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_BY
         business_meaning: Mã người cập nhật
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Updated By Officer Id.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-scr_prac_license_ap
     logical_name_1st: Securities Practitioner License Application
@@ -3254,8 +3330,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến Officer tạo bản ghi
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id. Pending — nguồn
-      USERS chưa map.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa
+      map.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3268,13 +3344,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_BY
         business_meaning: FK đến Officer tạo bản ghi
-        comment: 'FK target: Regulatory Authority Officer.Officer Id. Pending — nguồn
-          USERS chưa map.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa
+          map.'
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã người tạo
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Created By Officer Id. Pending.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id. Pending.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -3287,13 +3363,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_BY
         business_meaning: Mã người tạo
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Created By Officer Id. Pending.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id. Pending.'
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến Officer cập nhật bản ghi
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id. Pending — nguồn
-      USERS chưa map.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa
+      map.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3306,13 +3382,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_BY
         business_meaning: FK đến Officer cập nhật bản ghi
-        comment: 'FK target: Regulatory Authority Officer.Officer Id. Pending — nguồn
-          USERS chưa map.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa
+          map.'
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã người cập nhật
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Updated By Officer Id. Pending.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id. Pending.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -3325,8 +3401,8 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_BY
         business_meaning: Mã người cập nhật
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Updated By Officer Id. Pending.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id. Pending.'
   - name: Created Timestamp
     physical_name: crt_tms
     business_meaning_1st: Thời điểm tạo
@@ -4766,7 +4842,7 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến nhân viên UBCKNN tạo bản ghi.
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -4779,12 +4855,12 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.qlnhn.ORGANIZATION_REPORTS.CREATED_BY
         business_meaning: FK đến nhân viên UBCKNN tạo bản ghi.
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã nhân viên tạo bản ghi (denormalized).
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Created By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -4797,8 +4873,8 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.qlnhn.ORGANIZATION_REPORTS.CREATED_BY
         business_meaning: Mã nhân viên tạo bản ghi (denormalized).
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Created By Officer Id.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
   - name: Updated Timestamp
     physical_name: udt_tms
     business_meaning_1st: Thời điểm cập nhật bản ghi gần nhất.
@@ -4819,7 +4895,7 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến nhân viên UBCKNN cập nhật bản ghi.
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -4832,12 +4908,12 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.qlnhn.ORGANIZATION_REPORTS.UPDATED_BY
         business_meaning: FK đến nhân viên UBCKNN cập nhật bản ghi.
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã nhân viên cập nhật bản ghi (denormalized).
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Updated By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -4850,8 +4926,8 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.qlnhn.ORGANIZATION_REPORTS.UPDATED_BY
         business_meaning: Mã nhân viên cập nhật bản ghi (denormalized).
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Updated By Officer Id.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-scr_prac_prof_trn_clss
     logical_name_1st: Securities Practitioner Professional Training Class
@@ -5082,10 +5158,10 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn
         comment: 'ETL-derived: luôn = ''NHNCK.SPECIALIZATION_COURSES'''
-  - name: Created At
-    physical_name: crt_at
-    business_meaning_1st: Thời điểm tạo bản ghi (pending)
-    comment_1st: 'Pending: chưa xác định ETL handling.'
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning_1st: Thời điểm tạo bản ghi
+    comment_1st: null
     data_domain_most: Timestamp
     data_type_most: timestamp
     nullable_most: true
@@ -5097,29 +5173,12 @@ entities:
       source_tables:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi (pending)
-        comment: 'Pending: chưa xác định ETL handling.'
-  - name: Created By
-    physical_name: crt_by
-    business_meaning_1st: Người tạo bản ghi — FK đến USERS (pending)
-    comment_1st: 'Pending: chưa xác định mapping đến Atomic entity USERS.'
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_BY
-        business_meaning: Người tạo bản ghi — FK đến USERS (pending)
-        comment: 'Pending: chưa xác định mapping đến Atomic entity USERS.'
-  - name: Updated At
-    physical_name: udt_at
-    business_meaning_1st: Thời điểm cập nhật bản ghi (pending)
-    comment_1st: 'Pending: chưa xác định ETL handling.'
+        business_meaning: Thời điểm tạo bản ghi
+        comment: null
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning_1st: Thời điểm cập nhật bản ghi
+    comment_1st: null
     data_domain_most: Timestamp
     data_type_most: timestamp
     nullable_most: true
@@ -5131,12 +5190,48 @@ entities:
       source_tables:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi (pending)
-        comment: 'Pending: chưa xác định ETL handling.'
-  - name: Updated By
-    physical_name: udt_by
-    business_meaning_1st: Người cập nhật bản ghi — FK đến USERS (pending)
-    comment_1st: 'Pending: chưa xác định mapping đến Atomic entity USERS.'
+        business_meaning: Thời điểm cập nhật bản ghi
+        comment: null
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ tạo bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: SPECIALIZATION_COURSES
+        source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_BY
+        business_meaning: FK đến cán bộ tạo bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ tạo bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: SPECIALIZATION_COURSES
+        source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_BY
+        business_meaning: Mã cán bộ tạo bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -5148,8 +5243,27 @@ entities:
       source_tables:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.UPDATED_BY
-        business_meaning: Người cập nhật bản ghi — FK đến USERS (pending)
-        comment: 'Pending: chưa xác định mapping đến Atomic entity USERS.'
+        business_meaning: FK đến cán bộ cập nhật bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ cập nhật bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: SPECIALIZATION_COURSES
+        source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.UPDATED_BY
+        business_meaning: Mã cán bộ cập nhật bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-ip_alt_identn
     logical_name_1st: Involved Party Alternative Identification
@@ -6313,11 +6427,28 @@ entities:
         source_column: NHNCK.qlnhn.USERS.UPDATED_AT
         business_meaning: Thời điểm cập nhật bản ghi lần cuối
         comment: null
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ tạo bản ghi (self-ref)
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: USERS
+        source_column: NHNCK.qlnhn.USERS.CREATED_BY
+        business_meaning: FK đến cán bộ tạo bản ghi (self-ref)
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi
-    comment_1st: 'Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh
-      vòng lặp surrogate.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -6330,13 +6461,30 @@ entities:
       - source_table: USERS
         source_column: NHNCK.qlnhn.USERS.CREATED_BY
         business_meaning: Mã cán bộ tạo bản ghi
-        comment: 'Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh
-          vòng lặp surrogate.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ cập nhật bản ghi lần cuối (self-ref)
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: USERS
+        source_column: NHNCK.qlnhn.USERS.UPDATED_BY
+        business_meaning: FK đến cán bộ cập nhật bản ghi lần cuối (self-ref)
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi lần cuối
-    comment_1st: 'Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh
-      vòng lặp surrogate.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -6349,8 +6497,8 @@ entities:
       - source_table: USERS
         source_column: NHNCK.qlnhn.USERS.UPDATED_BY
         business_meaning: Mã cán bộ cập nhật bản ghi lần cuối
-        comment: 'Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh
-          vòng lặp surrogate.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-reg_ahr_ou
     logical_name_1st: Regulatory Authority Organization Unit
@@ -7055,10 +7203,44 @@ entities:
         business_meaning: 'Trạng thái đồng bộ: 0=Chưa đồng bộ, 1=Đã đồng bộ, 2=Lỗi.'
         comment: 'Scheme: SYNC_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert
           sang string.'
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning_1st: Thời điểm tạo bản ghi.
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: ORGANIZATIONS
+        source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_AT
+        business_meaning: Thời điểm tạo bản ghi.
+        comment: null
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning_1st: Thời điểm cập nhật bản ghi gần nhất.
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: ORGANIZATIONS
+        source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_AT
+        business_meaning: Thời điểm cập nhật bản ghi gần nhất.
+        comment: null
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ tạo bản ghi.
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -7071,12 +7253,12 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_BY
         business_meaning: FK đến cán bộ tạo bản ghi.
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi.
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Created By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -7089,31 +7271,12 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_BY
         business_meaning: Mã cán bộ tạo bản ghi.
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Created By Officer Id.'
-  - name: Created Date
-    physical_name: crt_dt
-    business_meaning_1st: Ngày tạo bản ghi.
-    comment_1st: Nguồn là DATE (không có giờ) — dùng domain Date. Nếu hệ thống nguồn
-      thực tế lưu cả timestamp, cần profile lại và đổi sang Timestamp.
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_AT
-        business_meaning: Ngày tạo bản ghi.
-        comment: Nguồn là DATE (không có giờ) — dùng domain Date. Nếu hệ thống nguồn
-          thực tế lưu cả timestamp, cần profile lại và đổi sang Timestamp.
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ cập nhật bản ghi gần nhất.
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -7126,12 +7289,12 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_BY
         business_meaning: FK đến cán bộ cập nhật bản ghi gần nhất.
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi gần nhất.
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Updated By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -7144,27 +7307,8 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_BY
         business_meaning: Mã cán bộ cập nhật bản ghi gần nhất.
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Updated By Officer Id.'
-  - name: Updated Date
-    physical_name: udt_dt
-    business_meaning_1st: Ngày cập nhật bản ghi gần nhất.
-    comment_1st: Nguồn là DATE (không có giờ) — dùng domain Date. Nếu hệ thống nguồn
-      thực tế lưu cả timestamp, cần profile lại và đổi sang Timestamp.
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_AT
-        business_meaning: Ngày cập nhật bản ghi gần nhất.
-        comment: Nguồn là DATE (không có giờ) — dùng domain Date. Nếu hệ thống nguồn
-          thực tế lưu cả timestamp, cần profile lại và đổi sang Timestamp.
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-scr_prac
     logical_name_1st: Securities Practitioner
@@ -9970,7 +10114,7 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến Regulatory Authority Officer — người tạo
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9983,12 +10127,12 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.qlnhn.PROFESSIONAL_RELATIONSHIPS.CREATED_BY
         business_meaning: FK đến Regulatory Authority Officer — người tạo
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã người tạo
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Created By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -10001,12 +10145,12 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.qlnhn.PROFESSIONAL_RELATIONSHIPS.CREATED_BY
         business_meaning: Mã người tạo
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Created By Officer Id.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến Regulatory Authority Officer — người cập nhật
-    comment_1st: 'FK target: Regulatory Authority Officer.Officer Id.'
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -10019,12 +10163,12 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.qlnhn.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY
         business_meaning: FK đến Regulatory Authority Officer — người cập nhật
-        comment: 'FK target: Regulatory Authority Officer.Officer Id.'
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã người cập nhật
-    comment_1st: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-      Updated By Officer Id.'
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -10037,8 +10181,8 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.qlnhn.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY
         business_meaning: Mã người cập nhật
-        comment: 'Lookup pair: Regulatory Authority Officer.Officer Code. Pair with
-          Updated By Officer Id.'
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'
 - ldm:
     id: ATM-geo
     logical_name_1st: Geographic Area
@@ -10819,43 +10963,9 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn
         comment: null
-  - name: Created By User Id
-    physical_name: crt_by_usr_id
-    business_meaning_1st: FK đến User (người tạo) — pending
-    comment_1st: 'FK target: User.User Id. Pending.'
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_BY
-        business_meaning: FK đến User (người tạo) — pending
-        comment: 'FK target: User.User Id. Pending.'
-  - name: Created By User Code
-    physical_name: crt_by_usr_code
-    business_meaning_1st: Mã user (lookup pair — pending)
-    comment_1st: 'Lookup pair: User.User Code. Pair with Created By User Id. Pending.'
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_BY
-        business_meaning: Mã user (lookup pair — pending)
-        comment: 'Lookup pair: User.User Code. Pair with Created By User Id. Pending.'
-  - name: Created At
-    physical_name: crt_at
-    business_meaning_1st: Thời điểm tạo bản ghi — pending
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning_1st: Thời điểm tạo bản ghi
     comment_1st: null
     data_domain_most: Timestamp
     data_type_most: timestamp
@@ -10868,45 +10978,11 @@ entities:
       source_tables:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi — pending
+        business_meaning: Thời điểm tạo bản ghi
         comment: null
-  - name: Updated By User Id
-    physical_name: udt_by_usr_id
-    business_meaning_1st: FK đến User (người cập nhật) — pending
-    comment_1st: 'FK target: User.User Id. Pending.'
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_BY
-        business_meaning: FK đến User (người cập nhật) — pending
-        comment: 'FK target: User.User Id. Pending.'
-  - name: Updated By User Code
-    physical_name: udt_by_usr_code
-    business_meaning_1st: Mã user (lookup pair — pending)
-    comment_1st: 'Lookup pair: User.User Code. Pair with Updated By User Id. Pending.'
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_BY
-        business_meaning: Mã user (lookup pair — pending)
-        comment: 'Lookup pair: User.User Code. Pair with Updated By User Id. Pending.'
-  - name: Updated At
-    physical_name: udt_at
-    business_meaning_1st: Thời điểm cập nhật bản ghi — pending
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning_1st: Thời điểm cập nhật bản ghi
     comment_1st: null
     data_domain_most: Timestamp
     data_type_most: timestamp
@@ -10919,5 +10995,77 @@ entities:
       source_tables:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi — pending
+        business_meaning: Thời điểm cập nhật bản ghi
         comment: null
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ tạo bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: APPLICATION_FEES
+        source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_BY
+        business_meaning: FK đến cán bộ tạo bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ tạo bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+      Officer Id.'
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: APPLICATION_FEES
+        source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_BY
+        business_meaning: Mã cán bộ tạo bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By
+          Officer Id.'
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
+    comment_1st: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: APPLICATION_FEES
+        source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_BY
+        business_meaning: FK đến cán bộ cập nhật bản ghi
+        comment: 'FK target: reg_ahr_ofcr.reg_ahr_ofcr_id.'
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning_1st: Mã cán bộ cập nhật bản ghi
+    comment_1st: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+      Officer Id.'
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: APPLICATION_FEES
+        source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_BY
+        business_meaning: Mã cán bộ cập nhật bản ghi
+        comment: 'Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By
+          Officer Id.'

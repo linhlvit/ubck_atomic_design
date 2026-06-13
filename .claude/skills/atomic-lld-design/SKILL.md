@@ -93,6 +93,7 @@ Sau khi chọn xong Data Domain, đọc lại data type của cột nguồn tron
 | Tình huống | Hành động |
 |---|---|
 | Data type nguồn khớp tự nhiên với domain (ví dụ: `date` → `Date`, `decimal` → `Currency Amount`) | Không cần ghi chú thêm |
+| Data type nguồn hẹp hơn domain nhưng là **widening conversion** (ví dụ: `date` → `Timestamp`, `int` → `decimal`) | Không cần ghi chú — ETL cast tự nhiên, không mất dữ liệu |
 | Data type nguồn là `string`/`varchar` nhưng domain chọn là số (`Small Counter`, `Currency Amount`...) | Ghi chú vào comment: `"Nguồn lưu dạng string — ETL cần cast/parse sang [data type vật lý]. Cần validate không có giá trị non-numeric."` |
 | Data type nguồn là số (`int`, `decimal`) nhưng domain chọn là `Text` hoặc `Classification Value` | Ghi chú: `"Nguồn lưu dạng số — ETL cần convert sang string. Giữ nguyên leading zeros nếu có."` |
 | Data type nguồn không khai báo trong Columns.csv | Ghi chú: `"Data type nguồn không rõ — cần profile trước khi ETL. Domain tạm chọn dựa trên mô tả cột."` |
@@ -171,6 +172,28 @@ Khi 1 Atomic entity gộp từ 2 bảng nguồn quan hệ 1-1 (VD: Public Compan
 3. **KHÔNG** ghi `"X.col1, Y.col2"` trong `source_columns`. Script `post_check_atomic.py` C5 kiểm tra format đúng 3 phần `SOURCE.table.column`.
 4. **PK kỹ thuật của bảng phụ** (VD: `company_detail.id`) cũng document pending: "PK kỹ thuật riêng của bảng detail, không phải BK của entity."
 
+#### 3k. Audit block (Created/Updated)
+
+Khi bảng nguồn có cặp `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY`, luôn map theo block 6 attribute chuẩn:
+
+| Attribute Name | Data Domain | source_columns | Comment |
+|---|---|---|---|
+| `Created Timestamp` | `Timestamp` | `*.CREATED_AT` | (trống) |
+| `Updated Timestamp` | `Timestamp` | `*.UPDATED_AT` | (trống) |
+| `Created By [Entity] Id` | `Surrogate Key` | `*.CREATED_BY` | `FK target: {Entity}.{Entity} Id.` |
+| `Created By [Entity] Code` | `Text` | `*.CREATED_BY` | `Lookup pair: {Entity}.{Entity} Code. Pair with Created By [Entity] Id.` |
+| `Updated By [Entity] Id` | `Surrogate Key` | `*.UPDATED_BY` | `FK target: {Entity}.{Entity} Id.` |
+| `Updated By [Entity] Code` | `Text` | `*.UPDATED_BY` | `Lookup pair: {Entity}.{Entity} Code. Pair with Updated By [Entity] Id.` |
+
+**Quy tắc:**
+- `[Entity]` = tên ngắn của Atomic entity đích dùng trong tên attribute (ví dụ: `Officer` khi FK target là `Regulatory Authority Officer`).
+- Comment `FK target:` và `Lookup pair:` phải dùng **tên attribute đầy đủ** (có prefix entity) — không dùng tên rút gọn.
+  - Đúng: `FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.`
+  - Sai: `FK target: Regulatory Authority Officer.Officer Id.`
+- **Self-reference** (entity FK về chính nó): vẫn dùng đầy đủ cặp Id + Code — không bỏ Id.
+- **Nguồn `DATE` (không có giờ)**: vẫn dùng domain `Timestamp` — widening conversion, không cần ghi chú.
+- **FK target chưa xác định** (entity chưa thiết kế): giữ đủ 6 attribute, đặt `status=pending`, comment `Pending — FK target chưa xác định.`
+
 ### Bước 4 — Rà soát shared entity
 
 Nếu bảng nguồn có grain = 1 Involved Party:
@@ -244,6 +267,7 @@ Trước khi xuất file:
 - [ ] **Conversion risk:** Mọi attribute có Data Domain không khớp tự nhiên với data type nguồn (ví dụ: nguồn `string` → domain `Small Counter`) đã có comment ghi chú conversion risk chưa? Nếu data type nguồn không khai báo → đã ghi "cần profile" trong comment?
 - [ ] **Domain mới:** Nếu có attribute dùng tag `[PROPOSE NEW DOMAIN]` → đã tách thành điểm cần xác nhận riêng để reviewer quyết định bổ sung vào `reference/data_domains.md`?
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
+- [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest.

@@ -190,9 +190,9 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: NHNCK.SPECIALIZATION_COURSES
 
-  - name: Created At
-    physical_name: crt_at
-    business_meaning: Thời điểm tạo bản ghi (pending)
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Thời điểm tạo bản ghi
     data_domain: Timestamp
     data_type: timestamp
     nullable: true
@@ -200,27 +200,13 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_AT
-    comment: "Pending: chưa xác định ETL handling."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
-  - name: Created By
-    physical_name: crt_by
-    business_meaning: Người tạo bản ghi — FK đến USERS (pending)
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_BY
-    comment: "Pending: chưa xác định mapping đến Atomic entity USERS."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Updated At
-    physical_name: udt_at
-    business_meaning: Thời điểm cập nhật bản ghi (pending)
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Thời điểm cập nhật bản ghi
     data_domain: Timestamp
     data_type: timestamp
     nullable: true
@@ -228,13 +214,41 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.UPDATED_AT
-    comment: "Pending: chưa xác định ETL handling."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
-  - name: Updated By
-    physical_name: udt_by
-    business_meaning: Người cập nhật bản ghi — FK đến USERS (pending)
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến cán bộ tạo bản ghi
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSES
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_BY
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã cán bộ tạo bản ghi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSES
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.CREATED_BY
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: FK đến cán bộ cập nhật bản ghi
     data_domain: Surrogate Key
     data_type: string
     nullable: true
@@ -242,6 +256,20 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.UPDATED_BY
-    comment: "Pending: chưa xác định mapping đến Atomic entity USERS."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã cán bộ cập nhật bản ghi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSES
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSES.UPDATED_BY
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null

@@ -344,6 +344,34 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATIONS
+    source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Thời điểm cập nhật bản ghi gần nhất.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATIONS
+    source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    etl_derived_value: null
+
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning: FK đến cán bộ tạo bản ghi.
@@ -354,7 +382,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_BY
-    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
@@ -368,21 +396,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Created By Officer Id."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-    etl_derived_value: null
-
-  - name: Created Date
-    physical_name: crt_dt
-    business_meaning: Ngày tạo bản ghi.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.qlnhn.ORGANIZATIONS.CREATED_AT
-    comment: "Nguồn là DATE (không có giờ) — dùng domain Date. Nếu hệ thống nguồn thực tế lưu cả timestamp, cần profile lại và đổi sang Timestamp."
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By Officer Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
@@ -396,7 +410,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_BY
-    comment: "FK target: Regulatory Authority Officer.Officer Id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
@@ -410,20 +424,6 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Officer Code. Pair with Updated By Officer Id."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-    etl_derived_value: null
-
-  - name: Updated Date
-    physical_name: udt_dt
-    business_meaning: Ngày cập nhật bản ghi gần nhất.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.qlnhn.ORGANIZATIONS.UPDATED_AT
-    comment: "Nguồn là DATE (không có giờ) — dùng domain Date. Nếu hệ thống nguồn thực tế lưu cả timestamp, cần profile lại và đổi sang Timestamp."
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
