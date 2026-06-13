@@ -227,28 +227,33 @@ def build_consolidated_entity(physical_name, docs_for_entity):
     for (name, phys_name), occs in attr_occurrences.items():
         first = occs[0]
 
-        # Build source_mappings: group by source_system
-        # Within each source_system, collect distinct (source_table, source_column)
-        # pairs, carrying business_meaning and comment from the first occurrence
-        # of that (source_system, source_table) pair.
-        sm_dict = collections.OrderedDict()  # source_system → OrderedDict(source_table → entry)
+        # Build source_mappings: group by source_system.
+        # Dedup by (source_system, source_table, source_column) so that attributes
+        # with multiple source columns per table (e.g. ip_elc_adr: PHONE_NUMBER,
+        # MOBILE_NUMBER, EMAIL... all from UNITS) are preserved as separate entries.
+        sm_dict = collections.OrderedDict()  # source_system → list of entries
+        seen_sm = set()                       # dedup key: (ss, st, source_column)
         for occ in occs:
             ss = occ["source_system"]
             st = occ["source_table"]
+            sc = occ["source_column"]
+            dedup_key = (ss, st, sc)
+            if dedup_key in seen_sm:
+                continue
+            seen_sm.add(dedup_key)
             if ss not in sm_dict:
-                sm_dict[ss] = collections.OrderedDict()
-            if st not in sm_dict[ss]:
-                sm_dict[ss][st] = {
-                    "source_table":    st,
-                    "source_column":   occ["source_column"],
-                    "business_meaning": occ["business_meaning"],
-                    "comment":         occ["comment"],
-                }
+                sm_dict[ss] = []
+            sm_dict[ss].append({
+                "source_table":     st,
+                "source_column":    sc,
+                "business_meaning": occ["business_meaning"],
+                "comment":          occ["comment"],
+            })
 
         source_mappings = [
             {
                 "source_system": ss,
-                "source_tables": list(tables.values()),
+                "source_tables": tables,
             }
             for ss, tables in sm_dict.items()
         ]
