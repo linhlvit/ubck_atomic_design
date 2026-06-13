@@ -31,7 +31,7 @@ description: |
 ## ĐIỀU KIỆN TIÊN QUYẾT
 
 - HLD đã được duyệt cho source system đang thiết kế.
-- File HLD nằm tại `Atomic/hld/{SOURCE}_HLD_Overview.md` và `{SOURCE}_HLD_Tier{N}.md`.
+- File HLD nằm tại `DataModel/working/Atomic/hld/{SOURCE}_HLD_Overview.md` và `{SOURCE}_HLD_Tier{N}.md`.
 
 ## QUY TRÌNH THIẾT KẾ LLD
 
@@ -337,7 +337,7 @@ python Atomic/lld/scripts/aggregate_atomic.py
 
 Script tự động:
 - Đọc `manifest.csv` → biết toàn bộ entity và file LLD.
-- Đọc `Atomic/hld/atomic_entities.csv` → lấy `bcv_core_object` cho mỗi entity.
+- Đọc `DataModel/working/Atomic/hld/atomic_entities.csv` → lấy `bcv_core_object` cho mỗi entity.
 - Đọc từng `attr_*.csv` → thu thập attributes.
 - Gộp shared entities (IP Alt Identification, IP Postal Address, IP Electronic Address) từ mọi source → 1 dòng duy nhất mỗi attribute, source_column merge.
 - Sort: `bcv_core_object` (A→Z) → `atomic_entity` (A→Z) → thứ tự attribute giữ nguyên.

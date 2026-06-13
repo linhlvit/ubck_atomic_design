@@ -4,15 +4,15 @@
 
 | File | Vai trò |
 |---|---|
-| `Atomic/hld/{SOURCE}_HLD_Tier{N}.md` | Detail design cho 1 Tier — chứa mục 6a–6f |
-| `Atomic/hld/{SOURCE}_HLD_Overview.md` | Tổng hợp toàn bộ Tier — chứa mục 7a–7f |
+| `DataModel/working/Atomic/hld/{SOURCE}_HLD_Tier{N}.md` | Detail design cho 1 Tier — chứa mục 6a–6f |
+| `DataModel/working/Atomic/hld/{SOURCE}_HLD_Overview.md` | Tổng hợp toàn bộ Tier — chứa mục 7a–7f |
 
 ## File auto-generated bởi script
 
 | File | Sinh bởi | Source-of-truth |
 |---|---|---|
-| `Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.csv + attr_*.csv + atomic_entities.csv (description preserve) |
-| `Atomic/hld/atomic_out_of_scope.csv` | `aggregate_out_of_scope.py` | Mục 7f của tất cả `{SOURCE}_HLD_Overview.md` |
+| `DataModel/working/Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.csv + attr_*.csv + atomic_entities.csv (description preserve) |
+| `DataModel/working/Atomic/hld/atomic_out_of_scope.csv` | `aggregate_out_of_scope.py` | Mục 7f của tất cả `{SOURCE}_HLD_Overview.md` |
 
 ## File config / metadata (Atomic/lld/)
 

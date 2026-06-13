@@ -115,13 +115,11 @@ IDS,company_profiles_his,Lịch sử thay đổi company_profiles,Audit Log ngu�
 IDS,fields_history,Lịch sử thay đổi fields,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Atomic tự track
 IDS,form_fields_history,Lịch sử thay đổi form_fields,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Atomic tự track
 IDS,stockholder_history,Lịch sử thay đổi cổ đông,Audit Log nguồn,Bảng lịch sử kỹ thuật — SCD2 Atomic tự track
-IDS,data,BCTC cell values (FK company_data),Cascade drop,Cascade drop từ company_data
 IDS,data_values,Form field values (FK company_data),Cascade drop,"Cascade drop từ company_data. Nếu anchor khôi phục, cần map cả field_id và form_field_id"
-IDS,report_approval,Phê duyệt báo cáo (FK company_data),Cascade drop,Cascade drop từ company_data
-IDS,report_extensions,Gia hạn báo cáo (FK company_data),Cascade drop,Cascade drop từ company_data
+IDS,report_approval,Phê duyệt báo cáo (FK company_data),Cascade drop,"Cascade drop — quy trình phê duyệt nội bộ hệ thống, không có giá trị nghiệp vụ Atomic"
+IDS,report_extensions,Gia hạn báo cáo (FK company_data),Cascade drop,"Cascade drop — gia hạn kỹ thuật, không có giá trị nghiệp vụ Atomic"
 IDS,fields,Field definition cho form,Form Metadata,Field definition metadata — denormalized vào data_values khi anchor khôi phục
 IDS,form_fields,Junction lưu fields trong 1 form,Form Metadata,Field definition metadata — denormalized vào data_values khi anchor khôi phục
-IDS,company_data,Bảng trung gian lưu forms thuộc company_profiles,Intermediate,Intermediate linking table — không có business lifecycle độc lập
 IDS,noti_config_apply,Junction giữa noti_config và company_profiles,Junction,Pure junction table — không có business attribute
 IDS,data_access_rules,Phân quyền dữ liệu,Operational / System,System config/metadata — out-of-scope
 IDS,data_types,Định nghĩa kiểu dữ liệu cho fields,Operational / System,System config/metadata — out-of-scope

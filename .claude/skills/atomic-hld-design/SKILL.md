@@ -4,7 +4,7 @@ description: |
   Thiết kế High-Level Design (HLD) cho Atomic source system trong kiến trúc Medallion.
   Sử dụng khi: thiết kế HLD cho 1 source mới (DCST/FIMS/FMS/GSGD/IDS/NHNCK/SCMS/QLRR/ThanhTra...),
   phân tầng Tier dependency, tra BCV, rà soát shared entity, xuất file
-  {SOURCE}_HLD_Tier{N}.md hoặc {SOURCE}_HLD_Overview.md trong Atomic/hld/.
+  {SOURCE}_HLD_Tier{N}.md hoặc {SOURCE}_HLD_Overview.md trong DataModel/working/Atomic/hld/.
   Cũng dùng khi cập nhật mục 7f (bảng ngoài scope), điều chỉnh source_table cho
   shared entity, hoặc cần chạy aggregate_atomic.py / aggregate_out_of_scope.py.
   Yêu cầu: source_system phải có thư mục BRD/Source/{SOURCE}/ chứa các file
@@ -161,7 +161,7 @@ Với mỗi entity thuộc concept `[Involved Party]`, kiểm tra:
 
 ### Bước 6 — Xuất file HLD Tier
 
-**Tên file:** `Atomic/hld/{SOURCE_SYSTEM}_HLD_Tier{N}.md`
+**Tên file:** `DataModel/working/Atomic/hld/{SOURCE_SYSTEM}_HLD_Tier{N}.md`
 
 Copy [`templates/HLD_Tier.md`](templates/HLD_Tier.md) làm starting point. Replace placeholder, điền nội dung 6 mục:
 
@@ -213,7 +213,7 @@ Nếu term candidate không khớp với cấu trúc trường → nêu rõ tạ
 
 Thực hiện **sau khi hoàn thành thiết kế Tier cuối cùng**. Quản lý lịch sử thay đổi qua Git — chỉ cần 1 file duy nhất.
 
-**Tên file:** `Atomic/hld/{SOURCE_SYSTEM}_HLD_Overview.md`
+**Tên file:** `DataModel/working/Atomic/hld/{SOURCE_SYSTEM}_HLD_Overview.md`
 
 Copy [`templates/HLD_Overview.md`](templates/HLD_Overview.md) làm starting point.
 
@@ -310,7 +310,7 @@ Cần thay đổi cột LOCKED → đổi `status → draft` trước, sửa, r�
    ```
 3. Verify số dòng source trong output csv = số dòng mục 7f của HLD Overview:
    ```bash
-   grep "^{SOURCE}," Atomic/hld/atomic_out_of_scope.csv | wc -l
+   grep "^{SOURCE}," DataModel/working/Atomic/hld/atomic_out_of_scope.csv | wc -l
    ```
    Nếu lệch → check lại format mục 7f theo Bước 7.
 
