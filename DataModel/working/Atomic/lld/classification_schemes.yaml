@@ -1,0 +1,510 @@
+schema_type: "classification_scheme_registry"
+schema_version: "1.0"
+
+schemes:
+  - scheme_code: "APPLICATION_STATUS"
+    name: "Trạng thái hồ sơ — values from ApplicationStatuses"
+    source_type: "source_table"
+    source_table: "NHNCK.qlnhn.ApplicationStatuses"
+    used_in_entities:
+      - "License Application"
+      - "App Processing Activity Log"
+    values: []
+
+  - scheme_code: "APPRAISAL_STATUS"
+    name: "Trạng thái thẩm định tài liệu — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ApplicationSpecializations.Status"
+    used_in_entities:
+      - "App Education Certificate Document"
+      - "App Document Attachment"
+    values: []
+
+  - scheme_code: "BANK"
+    name: null
+    source_type: "source_table"
+    source_table: "NHNCK.EXAM_SESSIONS"
+    used_in_entities:
+      - "Securities Practitioner Qualification Exam Session"
+    values: []
+
+  - scheme_code: "CERTIFICATE_STATUS"
+    name: "Trạng thái chứng chỉ — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.CertificateRecords.Status"
+    used_in_entities:
+      - "License Certificate Document"
+      - "Certificate Document Status History (From/To)"
+    values: []
+
+  - scheme_code: "CERTIFICATE_TYPE"
+    name: "Loại chứng chỉ hành nghề — values from Certificates"
+    source_type: "source_table"
+    source_table: "NHNCK.qlnhn.Certificates"
+    used_in_entities:
+      - "License Application"
+      - "License Certificate Document"
+      - "Organization Employment Report"
+    values: []
+
+  - scheme_code: "CONVERSION_STATUS"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Securities Practitioner License Certificate"
+    values: []
+
+  - scheme_code: "COURSE_STATUS"
+    name: "Trạng thái khóa học (1:HĐ, 0:Không HĐ, -1:Đã xóa)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.SpecializationCourses.Status"
+    used_in_entities:
+      - "Professional Training Class"
+    values: []
+
+  - scheme_code: "DECISION_STATUS"
+    name: "Trạng thái quyết định"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Decisions.Status"
+    used_in_entities:
+      - "License Decision Document"
+    values: []
+
+  - scheme_code: "DECISION_TYPE"
+    name: "Loại quyết định"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Decisions.TypeId"
+    used_in_entities:
+      - "License Decision Document"
+    values: []
+
+  - scheme_code: "DOCUMENT_TYPE"
+    name: "Loại tài liệu — values from Documents"
+    source_type: "source_table"
+    source_table: "NHNCK.qlnhn.Documents"
+    used_in_entities:
+      - "App Document Attachment"
+    values: []
+
+  - scheme_code: "EDUCATION_LEVEL"
+    name: "Trình độ học vấn — values from EducationLevels"
+    source_type: "source_table"
+    source_table: "NHNCK.qlnhn.EducationLevels"
+    used_in_entities:
+      - "Securities Practitioner"
+    values: []
+
+  - scheme_code: "EXAMINATION_RESULT"
+    name: "Kết quả thi (Đạt/Không đạt/Chưa thi)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ExamDetails.Result"
+    used_in_entities:
+      - "Qualification Examination Assessment Result"
+    values: []
+
+  - scheme_code: "EXAMINATION_STATUS"
+    name: "Trạng thái đợt thi (Khởi tạo/Đang thực hiện/Hoàn thành)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ExamSessions.Status"
+    used_in_entities:
+      - "Qualification Examination Assessment"
+    values: []
+
+  - scheme_code: "EXAM_SCORE_RESULT"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Securities Practitioner Qualification Exam Result"
+    values: []
+
+  - scheme_code: "FEE_TYPE"
+    name: "Loại phí — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ApplicationFees.FeeType"
+    used_in_entities:
+      - "License Application Fee"
+    values: []
+
+  - scheme_code: "GEOGRAPHIC_AREA_STATUS"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Geographic Area"
+    values: []
+
+  - scheme_code: "GEOGRAPHIC_AREA_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Geographic Area"
+    values:
+      - code: "COUNTRY"
+        name: "Quốc gia / quốc tịch — từ FIMS.NATIONAL + FMS.NATIONAL + SCMS.DM_QUOC_TICH"
+        source_table: "FIMS.NATIONAL, FMS.NATIONAL, SCMS.DM_QUOC_TICH"
+      - code: "DISTRICT_OLD"
+        name: "Quận/Huyện (cũ — pre-2025) — từ ECAT_05_DistrictOld"
+        source_table: "ECAT.ECAT_05_DistrictOld"
+      - code: "PROVINCE"
+        name: "Tỉnh / thành phố trong nước — từ SCMS.DM_TINH_THANH"
+        source_table: "SCMS.DM_TINH_THANH"
+      - code: "PROVINCE_OLD"
+        name: "Tỉnh/Thành phố (cũ — pre-2025) — từ ECAT_03_ProvinceOld"
+        source_table: "ECAT.ECAT_03_ProvinceOld"
+      - code: "REGION"
+        name: "Vùng/miền Việt Nam (từ ECAT_02_Region)"
+        source_table: "ECAT.ECAT_02_Region"
+      - code: "WARD"
+        name: "Phường/Xã/Thị trấn (chuẩn — post-sáp nhập 2025) — từ ECAT_07_Ward"
+        source_table: "ECAT.ECAT_07_Ward"
+      - code: "WARD_OLD"
+        name: "Phường/Xã/Thị trấn (cũ — pre-2025) — từ ECAT_06_WardOld"
+        source_table: "ECAT.ECAT_06_WardOld"
+
+  - scheme_code: "IDENTITY_DOCUMENT_TYPE"
+    name: null
+    source_type: "source_table"
+    source_table: "NHNCK.SPECIALIZATION_COURSE_DETAILS"
+    used_in_entities:
+      - "Securities Practitioner Training Course Enrollment"
+    values: []
+
+  - scheme_code: "INDIVIDUAL_GENDER"
+    name: "Giới tính — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ProfessionalHistories.Gender"
+    used_in_entities:
+      - "Securities Practitioner"
+    values: []
+
+  - scheme_code: "IP_ADDR_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "IP Postal Address"
+    values:
+      - code: "ADDRESS"
+        name: "Địa chỉ chung (không phân biệt loại)"
+        source_table: null
+      - code: "BUSINESS"
+        name: "Địa chỉ kinh doanh"
+        source_table: null
+      - code: "CURRENT"
+        name: "Nơi ở hiện tại"
+        source_table: null
+      - code: "HEAD_OFFICE"
+        name: "Địa chỉ trụ sở chính"
+        source_table: null
+      - code: "PERMANENT"
+        name: "Nơi thường trú"
+        source_table: null
+
+  - scheme_code: "IP_ALT_ID_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "IP Alt Identification"
+    values:
+      - code: "BUSINESS_LICENSE"
+        name: "Giấy phép thành lập"
+        source_table: null
+      - code: "CITIZEN_ID"
+        name: "CCCD"
+        source_table: null
+      - code: "ESTABLISHMENT_DECISION"
+        name: "Quyết định thành lập"
+        source_table: null
+      - code: "NATIONAL_ID"
+        name: "CMND"
+        source_table: null
+      - code: "OPERATING_LICENSE"
+        name: "Giấy phép đăng ký/hoạt động (GPDC/GPHĐ)"
+        source_table: null
+      - code: "PASSPORT"
+        name: "Hộ chiếu"
+        source_table: null
+      - code: "PRACTITIONER_LICENSE"
+        name: "Chứng chỉ hành nghề (CCHN)"
+        source_table: null
+
+  - scheme_code: "IP_ELEC_ADDR_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "IP Electronic Address"
+    values:
+      - code: "EMAIL"
+        name: "Email"
+        source_table: null
+      - code: "EMAIL_BUSINESS"
+        name: "Email kinh doanh"
+        source_table: null
+      - code: "EMAIL_DISCLOSURE"
+        name: "Email công bố thông tin"
+        source_table: null
+      - code: "FAX"
+        name: "Fax"
+        source_table: null
+      - code: "FAX_BUSINESS"
+        name: "Fax kinh doanh"
+        source_table: null
+      - code: "FAX_HEAD_OFFICE"
+        name: "Fax trụ sở chính"
+        source_table: null
+      - code: "HOTLINE"
+        name: "Số điện thoại hotline"
+        source_table: null
+      - code: "MOBILE"
+        name: "Số di động"
+        source_table: null
+      - code: "PHONE"
+        name: "Điện thoại"
+        source_table: null
+      - code: "PHONE_BUSINESS"
+        name: "Điện thoại kinh doanh"
+        source_table: null
+      - code: "PHONE_HEAD_OFFICE"
+        name: "Điện thoại trụ sở chính"
+        source_table: null
+      - code: "WEBSITE"
+        name: "Website tổ chức"
+        source_table: null
+
+  - scheme_code: "NHNCK_APPLICATION_STATUS"
+    name: null
+    source_type: "source_table"
+    source_table: "NHNCK.APPLICATION_STATUSES"
+    used_in_entities:
+      - "Securities Practitioner License Application"
+    values: []
+
+  - scheme_code: "NHNCK_APPLICATION_TYPE"
+    name: null
+    source_type: "source_table"
+    source_table: "NHNCK.APPLICATION_STATUSES"
+    used_in_entities:
+      - "Securities Practitioner License Application"
+    values: []
+
+  - scheme_code: "NHNCK_CERTIFICATE_TYPE"
+    name: null
+    source_type: "source_table"
+    source_table: "NHNCK.CERTIFICATES"
+    used_in_entities:
+      - "Securities Practitioner License Application"
+    values: []
+
+  - scheme_code: "NHNCK_CERT_RECEIPT_METHOD"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Securities Practitioner License Application"
+    values:
+      - code: "ELECTRONIC"
+        name: "Điện tử"
+        source_table: null
+      - code: "IN_PERSON"
+        name: "Nhận tại UBCKNN"
+        source_table: null
+      - code: "POSTAL"
+        name: "Gửi bưu điện"
+        source_table: null
+
+  - scheme_code: "NHNCK_RECEIPT_STATUS"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Securities Practitioner License Application"
+    values:
+      - code: "PENDING"
+        name: "Chưa nhận"
+        source_table: null
+      - code: "RECEIVED"
+        name: "Đã nhận"
+        source_table: null
+
+  - scheme_code: "NHNCK_REGISTRATION_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Securities Practitioner License Application"
+    values:
+      - code: "MANUAL"
+        name: "Nhập tay"
+        source_table: null
+      - code: "MCDT"
+        name: "MCĐT/Cổng DVC"
+        source_table: null
+
+  - scheme_code: "OFFICER_STATUS"
+    name: "Trạng thái người dùng"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Users.Status"
+    used_in_entities:
+      - "Regulatory Authority Officer"
+    values: []
+
+  - scheme_code: "ORGANIZATION_LEVEL"
+    name: "Cấp độ tổ chức"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Organizations.Level"
+    used_in_entities:
+      - "Securities Organization Reference"
+    values: []
+
+  - scheme_code: "ORGANIZATION_STATUS"
+    name: "Trạng thái tổ chức"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Organizations.Status"
+    used_in_entities:
+      - "Securities Organization Reference"
+    values: []
+
+  - scheme_code: "ORGANIZATION_TYPE"
+    name: "Loại tổ chức (1:CTCK, 2:QLQ, 3:NH, 4:Khác)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Organizations.OrganizationTypeId"
+    used_in_entities:
+      - "Securities Organization Reference"
+    values: []
+
+  - scheme_code: "ORGANIZATION_UNIT_STATUS"
+    name: "Trạng thái đơn vị/phòng ban"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Units.Status"
+    used_in_entities:
+      - "Regulatory Authority Organization Unit"
+    values: []
+
+  - scheme_code: "ORGANIZATION_UNIT_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Regulatory Authority Organization Unit"
+    values:
+      - code: "DEPARTMENT"
+        name: "Phòng ban"
+        source_table: null
+      - code: "UNIT"
+        name: "Đơn vị"
+        source_table: null
+
+  - scheme_code: "PAYMENT_STATUS"
+    name: "Trạng thái thanh toán — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ApplicationFees.Status"
+    used_in_entities:
+      - "License Application Fee"
+    values: []
+
+  - scheme_code: "POSITION"
+    name: "Chức vụ — values from Positions"
+    source_type: "source_table"
+    source_table: "NHNCK.qlnhn.Positions"
+    used_in_entities:
+      - "(reserved — WorkHistories dùng text tự do)"
+    values: []
+
+  - scheme_code: "PRACTICE_STATUS"
+    name: "Trạng thái hành nghề — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ProfessionalHistories.StatusWork"
+    used_in_entities:
+      - "Securities Practitioner"
+    values: []
+
+  - scheme_code: "PRACTITIONER_REGISTRATION_TYPE"
+    name: "Hình thức đăng ký người hành nghề vào hệ thống — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ProfessionalHistories.RegistrationType"
+    used_in_entities:
+      - "Securities Practitioner"
+    values: []
+
+  - scheme_code: "PROCESS_STATUS"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Securities Practitioner License Certificate"
+    values: []
+
+  - scheme_code: "RECORD_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities: []
+    values: []
+
+  - scheme_code: "RELATIONSHIP_TYPE"
+    name: "Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà) — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.ProfessionalRelationships.RelationshipType"
+    used_in_entities:
+      - "Related Party"
+    values: []
+
+  - scheme_code: "REPORT_TYPE"
+    name: "Loại báo cáo — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.OrganizationReports.Type"
+    used_in_entities:
+      - "Organization Employment Report"
+    values: []
+
+  - scheme_code: "SOURCE_SYSTEM"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities: []
+    values: []
+
+  - scheme_code: "SPECIALIZATION"
+    name: "Chuyên môn — values from Specializations"
+    source_type: "source_table"
+    source_table: "NHNCK.qlnhn.Specializations"
+    used_in_entities:
+      - "App Education Certificate Document"
+    values: []
+
+  - scheme_code: "SYNC_STATUS"
+    name: "Trạng thái đồng bộ"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Organizations.SyncStatus"
+    used_in_entities:
+      - "Securities Organization Reference"
+    values: []
+
+  - scheme_code: "TRAINING_RESULT"
+    name: "Kết quả đào tạo — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.SpecializationCourseDetails.Result"
+    used_in_entities:
+      - "Professional Training Class Enrollment"
+    values: []
+
+  - scheme_code: "VIOLATION_STATUS"
+    name: "Trạng thái vi phạm (Hiệu lực/Không hiệu lực) — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.qlnhn.Violations.Status"
+    used_in_entities:
+      - "Conduct Violation"
+    values: []
+
+  - scheme_code: "WORK_STATUS_ORGANIZATION"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Securities Practitioner Employment Status"
+    values: []

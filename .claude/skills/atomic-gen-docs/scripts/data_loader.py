@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import csv
 import re
+import yaml
 from pathlib import Path
 from typing import Any
 
@@ -492,14 +493,16 @@ def load_source_systems(repo_root: Path) -> dict[str, str]:
     return {r["source_system"]: r["description"] for r in rows if r.get("source_system")}
 
 
-def load_classifications(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "DataModel" / "working" / "Atomic" / "lld" / "ref_shared_entity_classifications.csv")
+def load_classifications(repo_root: Path, source: str) -> list[dict]:
+    path = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "classification_schemes.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    schemes = data.get("schemes", [])
     out = []
-    for r in rows:
-        used_in = r.get("used_in_entities", "")
-        src_table = r.get("source_table", "")
-        if source in used_in or src_table.startswith(f"{source}."):
-            out.append(r)
+    for s in schemes:
+        used_in = s.get("used_in_entities") or []
+        src_table = s.get("source_table") or ""
+        if source in " ".join(used_in) or src_table.startswith(f"{source}."):
+            out.append(s)
     return out
 
 

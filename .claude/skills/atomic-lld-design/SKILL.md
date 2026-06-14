@@ -7,7 +7,7 @@ description: |
   IP Alt Identification), xuất file lld_{SOURCE}_{TABLE}.yaml trong
   DataModel/working/Atomic/lld/{SOURCE}/.
   Cũng dùng khi: consolidate entity từ nhiều source (Level 2), cập nhật manifest.yaml,
-  ref_shared_entity_classifications.csv, pending_design.csv;
+  classification_schemes.yaml, pending_design.csv;
   chạy validate_lld_yaml.py, aggregate_atomic.py, post_check_atomic.py,
   post_check_source_coverage.py.
   Yêu cầu: HLD đã duyệt cho source_system tương ứng.
@@ -70,7 +70,7 @@ description: |
 5. **LLD entity tương đồng từ source khác** (nếu có): Nếu entity đang thiết kế có kiểu tương đồng với entity ở source khác (cùng BCV Concept, hoặc cùng loại shared entity), đọc ít nhất 1 file LLD tương ứng từ source đó. Mục đích: lấy đúng pattern tên attribute, format nullable, format source_columns, FK comment.
    - Ví dụ: thiết kế IP Postal Address cho FMS → đọc `DataModel/working/Atomic/lld/NHNCK/lld_NHNCK_PROFESSIONALS_IP_Postal_Address.yaml`.
    - Ví dụ: thiết kế entity `[Involved Party] Organization` → đọc `DataModel/working/Atomic/lld/DCST/lld_DCST_THONG_TIN_DK_THUE.yaml` (nếu đã có).
-6. **`Atomic/lld/ref_shared_entity_classifications.csv`** → kiểm tra Classification Value đã chuẩn hóa.
+6. **`Atomic/lld/classification_schemes.yaml`** → kiểm tra Classification Value đã chuẩn hóa.
 7. **`DataModel/working/Atomic/lld/manifest.yaml`** → biết file LLD nào đã có và `design_status` tương ứng.
 
 ### Bước 2 — Xác định Atomic entity target và Tier
@@ -260,9 +260,9 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
 
 **Classification Value:**
 - `Scheme: {SCHEME_CODE}. {notes}`
-- Scheme Code = `UPPER_SNAKE_CASE`, nhất quán với `ref_shared_entity_classifications.csv`.
+- Scheme Code = `UPPER_SNAKE_CASE`, nhất quán với `classification_schemes.yaml`.
 - KHÔNG dùng cả `FK target:` và `Scheme:` cho cùng 1 trường.
-- **Bắt buộc cross-check:** Mọi Scheme Code dùng trong LLD phải tồn tại trong `ref_shared_entity_classifications.csv`. Nếu chưa có → thêm vào ref file ngay trong cùng lượt thiết kế.
+- **Bắt buộc cross-check:** Mọi Scheme Code dùng trong LLD phải tồn tại trong `classification_schemes.yaml`. Nếu chưa có → thêm vào ref file ngay trong cùng lượt thiết kế.
 
 **Trường nghiệp vụ:**
 - Ghi BCV Term đã tra cứu được (nếu có) + lý do chọn tên attribute.
@@ -291,7 +291,7 @@ Trước khi xuất file:
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest.
-- [ ] **Cross-check scheme:** Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột `classification_context` đều có trong `ref_shared_entity_classifications.csv`.
+- [ ] **Cross-check scheme:** Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột `classification_context` đều có trong `classification_schemes.yaml`.
 - [ ] **Trường địa lý:** mã quốc gia/tỉnh/huyện/xã được xử lý đúng theo bối cảnh nguồn (xem [`reference/shared_entity_schemas.md`](reference/shared_entity_schemas.md)).
 - [ ] **Shared entity type động:** Nếu nguồn có cột type qua lookup_values (`identity_type_cd`...) → đã dùng `SCHEME=(source)` placeholder chưa? Không để bare context.
 - [ ] **Shared entity — cột không map:** PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.csv`?
@@ -393,7 +393,7 @@ attributes:
     design_status: draft
 ```
 
-### Cập nhật ref_shared_entity_classifications.csv
+### Cập nhật classification_schemes.yaml
 
 1. Đọc toàn bộ file hiện tại.
 2. Bổ sung scheme/giá trị mới phát sinh.
