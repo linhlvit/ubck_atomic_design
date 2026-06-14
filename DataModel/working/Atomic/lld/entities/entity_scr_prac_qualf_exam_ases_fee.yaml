@@ -1,202 +1,190 @@
-schema_type: entity_consolidation
+schema_type: "entity_consolidation"
 schema_version: "1.0"
-
 entity:
-  entity_name: Securities Practitioner Qualification Examination Assessment Fee
-  physical_name: scr_prac_qualf_exam_ases_fee
-  bcv_core_object: Condition
+  entity_name: "Securities Practitioner Qualification Examination Assessment Fee"
+  physical_name: "scr_prac_qualf_exam_ases_fee"
+  bcv_core_object: "Condition"
   bcv_concept: "[Condition] Financial Charge"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  consolidation_status: pending
+  table_type: "Fundamental"
+  etl_pattern: "SCD4A"
+  consolidation_status: "pending"
   consolidated_by: null
   consolidated_at: null
-
 sources:
-  - source_system: NHNCK
-    source_table: EXAM_SESSION_FEES
-    lld_file: NHNCK/lld_NHNCK_EXAM_SESSION_FEES.yaml
-
-consolidation_notes:
-  []
-
+- source_system: "NHNCK"
+  source_table: "EXAM_SESSION_FEES"
+  lld_file: "NHNCK/lld_NHNCK_EXAM_SESSION_FEES.yaml"
+consolidation_notes: []
 attributes:
-  - attribute_name: Securities Practitioner Qualification Examination Assessment Fee Id
-    physical_name: scr_prac_qualf_exam_ases_fee_id
-    description: Id tự sinh (surrogate key)
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    comment: "PK surrogate. BCV: \"Condition\" (Condition). Mức phí thi theo đợt thi + loại chứng chỉ."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: null
-
-  - attribute_name: Securities Practitioner Qualification Examination Assessment Fee Code
-    physical_name: scr_prac_qualf_exam_ases_fee_code
-    description: Mã định danh (tự động tăng). BK
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    comment: BK chính.
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.ID
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: Mã nguồn dữ liệu
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    comment: "Scheme: SOURCE_SYSTEM. ETL-derived."
-    classification_context: "SOURCE_SYSTEM=..."
-    etl_derived_value: NHNCK.EXAM_SESSION_FEES
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: null
-
-  - attribute_name: Examination Assessment Id
-    physical_name: exam_ases_id
-    description: FK đến đợt thi (Exam Assessment)
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: false
-    comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.EXAM_SESSION_ID
-
-  - attribute_name: Examination Assessment Code
-    physical_name: exam_ases_code
-    description: Mã đợt thi
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.EXAM_SESSION_ID
-
-  - attribute_name: Certificate Type Code
-    physical_name: ctf_tp_code
-    description: Mã loại chứng chỉ
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    comment: "Scheme: CERTIFICATE_TYPE."
-    classification_context: CERTIFICATE_TYPE
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.CERTIFICATE_ID
-
-  - attribute_name: Examination Fee Amount
-    physical_name: exam_fee_amt
-    description: Mức phí dự thi (VNĐ)
-    data_domain: Currency Amount
-    nullable: true
-    is_primary_key: false
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.FEE_EXAM
-
-  - attribute_name: Appeal Fee Amount
-    physical_name: appeal_fee_amt
-    description: Mức phí phúc khảo (VNĐ)
-    data_domain: Currency Amount
-    nullable: true
-    is_primary_key: false
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.FEE_APPEAL
-
-  - attribute_name: Record Status Code
-    physical_name: rcrd_st_code
-    description: Trạng thái bản ghi
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    comment: "Scheme: EXAMINATION_STATUS. 1=Hoạt động."
-    classification_context: EXAMINATION_STATUS
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.RECORD_STATUS
-
-  - attribute_name: Created Timestamp
-    physical_name: crt_tms
-    description: Thời điểm tạo
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_AT
-
-  - attribute_name: Updated Timestamp
-    physical_name: udt_tms
-    description: Thời điểm cập nhật
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_AT
-
-  - attribute_name: Created By Officer Id
-    physical_name: crt_by_ofcr_id
-    description: FK đến Officer (người tạo)
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_BY
-
-  - attribute_name: Created By Officer Code
-    physical_name: crt_by_ofcr_code
-    description: Mã người tạo
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_BY
-
-  - attribute_name: Updated By Officer Id
-    physical_name: udt_by_ofcr_id
-    description: FK đến Officer (người cập nhật)
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_BY
-
-  - attribute_name: Updated By Officer Code
-    physical_name: udt_by_ofcr_code
-    description: Mã người cập nhật
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.EXAM_SESSION_FEES: NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_BY
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Fee\
+    \ Id"
+  physical_name: "scr_prac_qualf_exam_ases_fee_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"Condition\" (Condition). Mức phí thi theo đợt thi\
+    \ + loại chứng chỉ."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: null
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Fee\
+    \ Code"
+  physical_name: "scr_prac_qualf_exam_ases_fee_code"
+  description: "Mã định danh (tự động tăng). BK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. ETL-derived."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "NHNCK.EXAM_SESSION_FEES"
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: null
+- attribute_name: "Examination Assessment Id"
+  physical_name: "exam_ases_id"
+  description: "FK đến đợt thi (Exam Assessment)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
+    \ Assessment Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.EXAM_SESSION_ID"
+- attribute_name: "Examination Assessment Code"
+  physical_name: "exam_ases_code"
+  description: "Mã đợt thi"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination\
+    \ Assessment Code. Pair with Examination Assessment Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.EXAM_SESSION_ID"
+- attribute_name: "Certificate Type Code"
+  physical_name: "ctf_tp_code"
+  description: "Mã loại chứng chỉ"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: CERTIFICATE_TYPE."
+  classification_context: "CERTIFICATE_TYPE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.CERTIFICATE_ID"
+- attribute_name: "Examination Fee Amount"
+  physical_name: "exam_fee_amt"
+  description: "Mức phí dự thi (VNĐ)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.FEE_EXAM"
+- attribute_name: "Appeal Fee Amount"
+  physical_name: "appeal_fee_amt"
+  description: "Mức phí phúc khảo (VNĐ)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.FEE_APPEAL"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: EXAMINATION_STATUS. 1=Hoạt động."
+  classification_context: "EXAMINATION_STATUS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.RECORD_STATUS"
+- attribute_name: "Created Timestamp"
+  physical_name: "crt_tms"
+  description: "Thời điểm tạo"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_AT"
+- attribute_name: "Updated Timestamp"
+  physical_name: "udt_tms"
+  description: "Thời điểm cập nhật"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_AT"
+- attribute_name: "Created By Officer Id"
+  physical_name: "crt_by_ofcr_id"
+  description: "FK đến Officer (người tạo)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_BY"
+- attribute_name: "Created By Officer Code"
+  physical_name: "crt_by_ofcr_code"
+  description: "Mã người tạo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.CREATED_BY"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "udt_by_ofcr_id"
+  description: "FK đến Officer (người cập nhật)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_BY"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "udt_by_ofcr_code"
+  description: "Mã người cập nhật"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.EXAM_SESSION_FEES: "NHNCK.qlnhn.EXAM_SESSION_FEES.UPDATED_BY"

@@ -1,190 +1,181 @@
-schema_type: entity_consolidation
+schema_type: "entity_consolidation"
 schema_version: "1.0"
-
 entity:
-  entity_name: Securities Practitioner Conduct Violation
-  physical_name: scr_prac_conduct_vln
-  bcv_core_object: Business Activity
+  entity_name: "Securities Practitioner Conduct Violation"
+  physical_name: "scr_prac_conduct_vln"
+  bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  consolidation_status: pending
+  table_type: "Fact Append"
+  etl_pattern: "Fact Append"
+  consolidation_status: "pending"
   consolidated_by: null
   consolidated_at: null
-
 sources:
-  - source_system: NHNCK
-    source_table: VIOLATIONS
-    lld_file: NHNCK/lld_NHNCK_VIOLATIONS.yaml
-
-consolidation_notes:
-  []
-
+- source_system: "NHNCK"
+  source_table: "VIOLATIONS"
+  lld_file: "NHNCK/lld_NHNCK_VIOLATIONS.yaml"
+consolidation_notes: []
 attributes:
-  - attribute_name: Securities Practitioner Conduct Violation Id
-    physical_name: scr_prac_conduct_vln_id
-    description: Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key).
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    comment: "PK surrogate. BCV: \"Business Activity\" (Conduct Violation). Vi phạm đạo đức nghề nghiệp của người hành nghề chứng khoán."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: null
-
-  - attribute_name: Securities Practitioner Conduct Violation Code
-    physical_name: scr_prac_conduct_vln_code
-    description: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn.
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.ID
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=..."
-    etl_derived_value: NHNCK.VIOLATIONS
-    source_mappings:
-      NHNCK.VIOLATIONS: null
-
-  - attribute_name: Securities Practitioner Id
-    physical_name: scr_prac_id
-    description: FK đến người hành nghề chứng khoán bị vi phạm.
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: false
-    comment: "FK target: Securities Practitioner.Securities Practitioner Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.PROFESSIONAL_ID
-
-  - attribute_name: Securities Practitioner Code
-    physical_name: scr_prac_code
-    description: Mã người hành nghề chứng khoán bị vi phạm.
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Securities Practitioner Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.PROFESSIONAL_ID
-
-  - attribute_name: License Decision Document Id
-    physical_name: license_dcsn_doc_id
-    description: FK đến quyết định xử lý vi phạm.
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    comment: "FK target: License Decision Document.License Decision Document Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.DECISION_ID
-
-  - attribute_name: License Decision Document Code
-    physical_name: license_dcsn_doc_code
-    description: Mã quyết định xử lý vi phạm.
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with License Decision Document Id."
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.DECISION_ID
-
-  - attribute_name: Practitioner Name At Violation
-    physical_name: prac_nm_at_vln
-    description: Họ tên người hành nghề tại thời điểm vi phạm (snapshot).
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS.
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.FULL_NAME
-
-  - attribute_name: Practitioner Birth Date At Violation
-    physical_name: prac_brth_dt_at_vln
-    description: Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot).
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS.
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.BIRTH_DATE
-
-  - attribute_name: Practitioner Identity Number At Violation
-    physical_name: prac_id_nbr_at_vln
-    description: Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot).
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Grain ≠ Involved Party nên không tách IP Alt Identification.
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.IDENTITY_NUMBER
-
-  - attribute_name: Violation Record Date
-    physical_name: vln_rcrd_dt
-    description: Ngày ghi nhận vi phạm (business event date).
-    data_domain: Timestamp
-    nullable: false
-    is_primary_key: false
-    comment: Business event date của Fact Append — thời điểm vi phạm được ghi nhận vào hệ thống.
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.CREATED_AT
-
-  - attribute_name: Note
-    physical_name: note
-    description: Ghi chú vi phạm.
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.NOTE
-
-  - attribute_name: Record Type Code
-    physical_name: rcrd_tp_code
-    description: Phân loại bản ghi.
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    comment: "Scheme: RECORD_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: RECORD_TYPE
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.RECORD_TYPE
-
-  - attribute_name: Record Status Code
-    physical_name: rcrd_st_code
-    description: "Trạng thái bản ghi vi phạm (1=Hoạt động)."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: VIOLATION_STATUS
-    etl_derived_value: null
-    source_mappings:
-      NHNCK.VIOLATIONS: NHNCK.qlnhn.VIOLATIONS.RECORD_STATUS
+- attribute_name: "Securities Practitioner Conduct Violation Id"
+  physical_name: "scr_prac_conduct_vln_id"
+  description: "Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"Business Activity\" (Conduct Violation). Vi phạm\
+    \ đạo đức nghề nghiệp của người hành nghề chứng khoán."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: null
+- attribute_name: "Securities Practitioner Conduct Violation Code"
+  physical_name: "scr_prac_conduct_vln_code"
+  description: "Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "NHNCK.VIOLATIONS"
+  source_mappings:
+    NHNCK.VIOLATIONS: null
+- attribute_name: "Securities Practitioner Id"
+  physical_name: "scr_prac_id"
+  description: "FK đến người hành nghề chứng khoán bị vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.PROFESSIONAL_ID"
+- attribute_name: "Securities Practitioner Code"
+  physical_name: "scr_prac_code"
+  description: "Mã người hành nghề chứng khoán bị vi phạm."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.PROFESSIONAL_ID"
+- attribute_name: "License Decision Document Id"
+  physical_name: "license_dcsn_doc_id"
+  description: "FK đến quyết định xử lý vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: License Decision Document.License Decision Document Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.DECISION_ID"
+- attribute_name: "License Decision Document Code"
+  physical_name: "license_dcsn_doc_code"
+  description: "Mã quyết định xử lý vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
+    \ Pair with License Decision Document Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.DECISION_ID"
+- attribute_name: "Practitioner Name At Violation"
+  physical_name: "prac_nm_at_vln"
+  description: "Họ tên người hành nghề tại thời điểm vi phạm (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại\
+    \ PROFESSIONALS."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.FULL_NAME"
+- attribute_name: "Practitioner Birth Date At Violation"
+  physical_name: "prac_brth_dt_at_vln"
+  description: "Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại\
+    \ PROFESSIONALS."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.BIRTH_DATE"
+- attribute_name: "Practitioner Identity Number At Violation"
+  physical_name: "prac_id_nbr_at_vln"
+  description: "Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Grain ≠ Involved\
+    \ Party nên không tách IP Alt Identification."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.IDENTITY_NUMBER"
+- attribute_name: "Violation Record Date"
+  physical_name: "vln_rcrd_dt"
+  description: "Ngày ghi nhận vi phạm (business event date)."
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  comment: "Business event date của Fact Append — thời điểm vi phạm được ghi nhận\
+    \ vào hệ thống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.CREATED_AT"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.NOTE"
+- attribute_name: "Record Type Code"
+  physical_name: "rcrd_tp_code"
+  description: "Phân loại bản ghi."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: RECORD_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang\
+    \ string."
+  classification_context: "RECORD_TYPE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.RECORD_TYPE"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
+  description: "Trạng thái bản ghi vi phạm (1=Hoạt động)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
+    \ sang string."
+  classification_context: "VIOLATION_STATUS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.VIOLATIONS: "NHNCK.qlnhn.VIOLATIONS.RECORD_STATUS"

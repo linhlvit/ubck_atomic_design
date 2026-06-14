@@ -23,10 +23,31 @@ import sys
 import io
 import argparse
 import csv
-import yaml as _yaml
+import yaml
 from pathlib import Path
 from collections import OrderedDict
 from typing import Optional
+
+
+# ---------------------------------------------------------------------------
+# Custom YAML Dumper: double-quote string values, plain keys, native bool/null
+# ---------------------------------------------------------------------------
+class DQDumper(yaml.Dumper):
+    pass
+
+def _str_val_representer(dumper, data):
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style='"')
+
+def _mapping_representer(dumper, data):
+    pairs = []
+    for k, v in data.items():
+        key_node = dumper.represent_scalar("tag:yaml.org,2002:str", k, style=None)
+        val_node = dumper.represent_data(v)
+        pairs.append((key_node, val_node))
+    return yaml.MappingNode("tag:yaml.org,2002:map", pairs)
+
+DQDumper.add_representer(str, _str_val_representer)
+DQDumper.add_representer(dict, _mapping_representer)
 
 # Fix encoding trên Windows terminal
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
@@ -54,7 +75,7 @@ SOURCE_SYSTEM_SCHEME = "SOURCE_SYSTEM="
 # ---------------------------------------------------------------------------
 
 def load_yaml(path: Path) -> dict:
-    return _yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
 def load_manifest() -> list:
@@ -238,98 +259,66 @@ def consolidate_attrs(entity_name: str, sources: list) -> tuple:
 
 
 # ---------------------------------------------------------------------------
-# YAML builder — minimal serialization
+# YAML builder — dict + DQDumper
 # ---------------------------------------------------------------------------
 
-def _qs(v) -> str:
-    """YAML safe scalar."""
-    if v is None:
-        return "null"
-    s = str(v)
-    if not s:
-        return "null"
-    specials = (':', '#', '{', '}', '[', ']', ',', '&', '*', '?', '|',
-                '-', '<', '>', '=', '!', '%', '@', '`')
-    if any(c in s for c in specials) or s.startswith('"') or "'" in s:
-        return '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
-    if s.lower() in ("true", "false", "null", "yes", "no", "on", "off"):
-        return f'"{s}"'
-    return s
+def _build_attr_dict(key: tuple, meta: dict) -> dict:
+    attr_name, _ = key
+    src_map = meta.get("_source_mappings", {})
+    ctx = (meta.get("classification_context") or "").strip()
+    if ctx.startswith(SOURCE_SYSTEM_SCHEME):
+        ctx = "SOURCE_SYSTEM=..."
+    return {
+        "attribute_name": attr_name,
+        "physical_name": meta.get("physical_name") or None,
+        "description": meta.get("description") or None,
+        "data_domain": meta.get("data_domain") or "Text",
+        "nullable": bool(meta.get("nullable", True)),
+        "is_primary_key": bool(meta.get("is_primary_key", False)),
+        "comment": meta.get("comment") or None,
+        "classification_context": ctx if ctx else None,
+        "etl_derived_value": _etl_derived(meta),
+        "source_mappings": dict(src_map),
+    }
 
 
-def _bool_s(v) -> str:
-    if isinstance(v, bool):
-        return "true" if v else "false"
-    return "true" if str(v).strip().lower() == "true" else "false"
-
-
-def build_entity_yaml(entity_name: str,
+def build_entity_dict(entity_name: str,
                       physical_name: str,
                       entity_meta: dict,
                       sources: list,
                       master_attrs: OrderedDict,
-                      notes: list) -> str:
-    lines = []
-    lines.append("schema_type: entity_consolidation")
-    lines.append('schema_version: "1.0"')
-    lines.append("")
-    lines.append("entity:")
-    lines.append(f"  entity_name: {_qs(entity_name)}")
-    lines.append(f"  physical_name: {physical_name}")
-    lines.append(f"  bcv_core_object: {_qs(entity_meta.get('bcv_core_object', ''))}")
-    lines.append(f"  bcv_concept: {_qs(entity_meta.get('bcv_concept'))}")
-    lines.append(f"  table_type: {_qs(entity_meta.get('table_type', 'Fundamental'))}")
-    # etl_pattern: derive from table_type
+                      notes: list) -> dict:
     tt = entity_meta.get("table_type", "Fundamental")
     etl_map = {
         "Fundamental": "SCD4A", "Relative": "SCD2",
         "Fact Append": "Fact Append", "Fact Snapshot": "Fact Snapshot",
         "Classification": "Upsert",
     }
-    lines.append(f"  etl_pattern: {etl_map.get(tt, 'SCD4A')}")
-    lines.append("  consolidation_status: pending")
-    lines.append("  consolidated_by: null")
-    lines.append("  consolidated_at: null")
-    lines.append("")
-
-    lines.append("sources:")
-    for src in sources:
-        lines.append(f"  - source_system: {src['source_system']}")
-        lines.append(f"    source_table: {src['source_table']}")
-        lines.append(f"    lld_file: {src['lld_file']}")
-    lines.append("")
-
-    lines.append("consolidation_notes:")
-    if notes:
-        for n in notes:
-            lines.append(f'  - "{n}"')
-    else:
-        lines.append("  []")
-    lines.append("")
-
-    lines.append("attributes:")
-    for (attr_name, addr_ctx), meta in master_attrs.items():
-        src_map = meta.get("_source_mappings", {})
-        ctx     = (meta.get("classification_context") or "").strip()
-        # Normalize SOURCE_SYSTEM context to generic marker
-        if ctx.startswith(SOURCE_SYSTEM_SCHEME):
-            ctx = "SOURCE_SYSTEM=..."
-
-        lines.append(f"  - attribute_name: {_qs(attr_name)}")
-        lines.append(f"    physical_name: {_qs(meta.get('physical_name'))}")
-        lines.append(f"    description: {_qs(meta.get('description'))}")
-        lines.append(f"    data_domain: {_qs(meta.get('data_domain', 'Text'))}")
-        lines.append(f"    nullable: {_bool_s(meta.get('nullable', True))}")
-        lines.append(f"    is_primary_key: {_bool_s(meta.get('is_primary_key', False))}")
-        lines.append(f"    comment: {_qs(meta.get('comment'))}")
-        lines.append(f"    classification_context: {_qs(ctx if ctx else None)}")
-        lines.append(f"    etl_derived_value: {_qs(_etl_derived(meta))}")
-        lines.append("    source_mappings:")
-        for src_label, col_val in src_map.items():
-            lines.append(f"      {src_label}: {_qs(col_val)}")
-        lines.append("")
-
-    return "\n".join(lines)
+    return {
+        "schema_type": "entity_consolidation",
+        "schema_version": "1.0",
+        "entity": {
+            "entity_name": entity_name,
+            "physical_name": physical_name,
+            "bcv_core_object": entity_meta.get("bcv_core_object", ""),
+            "bcv_concept": entity_meta.get("bcv_concept") or None,
+            "table_type": tt,
+            "etl_pattern": etl_map.get(tt, "SCD4A"),
+            "consolidation_status": "pending",
+            "consolidated_by": None,
+            "consolidated_at": None,
+        },
+        "sources": [
+            {
+                "source_system": s["source_system"],
+                "source_table":  s["source_table"],
+                "lld_file":      s["lld_file"],
+            }
+            for s in sources
+        ],
+        "consolidation_notes": notes if notes else [],
+        "attributes": [_build_attr_dict(k, meta) for k, meta in master_attrs.items()],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -402,7 +391,7 @@ def main():
         entity_meta = entity_meta_map.get(entity_name, {})
         master_attrs, notes = consolidate_attrs(entity_name, sources)
 
-        yaml_content = build_entity_yaml(
+        data_dict = build_entity_dict(
             entity_name=entity_name,
             physical_name=physical_name,
             entity_meta=entity_meta,
@@ -416,7 +405,9 @@ def main():
             print(f"    {len(master_attrs)} attributes, {len(notes)} notes")
         else:
             ENTITIES_DIR.mkdir(parents=True, exist_ok=True)
-            out_path.write_text(yaml_content, encoding="utf-8")
+            with open(out_path, "w", encoding="utf-8") as f:
+                yaml.dump(data_dict, f, Dumper=DQDumper, allow_unicode=True,
+                          sort_keys=False, default_flow_style=False)
             print(f"  ✓ → {out_path.relative_to(ROOT)}")
             print(f"    {len(master_attrs)} attributes, {len(notes)} consolidation notes")
 

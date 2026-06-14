@@ -53,6 +53,7 @@ PROJECT_ROOT = LLD_DIR.parent.parent.parent.parent
 DICT_PATH       = PROJECT_ROOT / "system" / "rules" / "rule_transform_logical_name.csv"
 DATA_TYPE_PATH  = PROJECT_ROOT / "system" / "rules" / "rule_map_data_type.csv"
 ATOMIC_ATTRS    = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
+ENTITIES_DIR    = LLD_DIR / "entities"
 
 COL_ENTITY_PHYS = "atomic_table"
 COL_ATTR_PHYS   = "atomic_column"
@@ -205,6 +206,26 @@ def patch_lld_files(
 
 
 # ---------------------------------------------------------------------------
+# Patch entity_*.yaml — normalize double-quote format
+# ---------------------------------------------------------------------------
+def patch_entity_files(dry_run: bool) -> int:
+    entity_files = sorted(ENTITIES_DIR.glob("entity_*.yaml"))
+    total = 0
+    for path in entity_files:
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if not data:
+            continue
+        if dry_run:
+            print(f"[DRY-RUN] {path.relative_to(PROJECT_ROOT)}: normalize")
+        else:
+            with open(path, "w", encoding="utf-8") as f:
+                yaml.dump(data, f, Dumper=DQDumper, allow_unicode=True,
+                          sort_keys=False, default_flow_style=False)
+        total += 1
+    return total
+
+
+# ---------------------------------------------------------------------------
 # Patch atomic_attributes.yaml
 # ---------------------------------------------------------------------------
 def patch_atomic_attributes(
@@ -274,6 +295,9 @@ def main() -> None:
     # --- Chế độ batch ---
     n1 = patch_lld_files(entries, domain_map, dry_run=args.dry_run)
     print(f"  lld_*.yaml: {n1} thay doi", file=sys.stderr)
+
+    n_entity = patch_entity_files(dry_run=args.dry_run)
+    print(f"  entity_*.yaml: {n_entity} files normalized", file=sys.stderr)
 
     n2 = patch_atomic_attributes(entries, domain_map, dry_run=args.dry_run)
     print(f"  atomic_attributes.yaml: {n2} entries", file=sys.stderr)
