@@ -125,11 +125,17 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file và yêu cầ
 - [ ] Dimension seed từ Classification Value: chỉ vẽ node `Classification Value` trong Atomic
 
 ### Section 2 — Tổng quan báo cáo
-- [ ] Hierarchy: `### Tab` → `#### Nhóm` → `##### PENDING/READY` (chỉ khi có cả 2) — tên `#### Nhóm` phải copy chính xác từ phần sau dấu `/` trong cột **Dashboard/báo cáo** của BA, kèm số STT. Không đặt tên mô tả riêng. Ví dụ đúng: `#### Nhóm 8 - Chỉ số chung`; sai: `#### Nhóm Thanh khoản thị trường`
+- [ ] Hierarchy: `### Tab` → `#### Nhóm` → `##### PENDING/READY` (chỉ khi có cả 2) — quy tắc đặt tên:
+  - **Tên Tab** (`### Tab`): lấy phần TRƯỚC dấu `/` trong cột **Dashboard/báo cáo** của BA (VD: `Dashboard Giám sát rủi ro`)
+  - **Tên Nhóm** (`#### Nhóm`): lấy phần SAU dấu `/`, kèm **số STT từ BA** — format: `#### Nhóm {STT} - {tên sau dấu /}`. Số nhóm = STT trong BA, KHÔNG tự đánh số lại
+  - Ví dụ đúng: BA ghi `Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống`, STT=1 → Tab: `### Tab Dashboard Giám sát rủi ro`, Nhóm: `#### Nhóm 1 - Chỉ số rủi ro hệ thống`
+  - Ví dụ đúng: BA ghi `Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro`, STT=2 → Nhóm: `#### Nhóm 2 - Phân tích đóng góp rủi ro`
+  - Sai: `#### Nhóm Thanh khoản thị trường` (thiếu số STT); sai: `#### Nhóm 1` (thiếu tên)
 - [ ] Block READY có đủ: Phân loại / Atomic / Mockup / Source / Bảng KPI / Star Schema / Lineage Mart → Báo cáo / Bảng grain
 - [ ] **Bảng KPI READY chỉ có 1 bảng duy nhất** — KHÔNG tách thành `*KPI mới:*` và `*KPI reuse:*` thành 2 bảng riêng. Reuse được liệt kê cùng bảng với KPI mới; thêm cột "Ghi chú" để đánh dấu nguồn gốc reuse
 - [ ] **Lineage Mart → Báo cáo chỉ vẽ từ Datamart lên báo cáo** — KHÔNG vẽ Atomic entities trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational (physical name trong GOLD layer), không phải Atomic entity
-- [ ] Block PENDING có đủ: KPI liên quan / Lý do / Atomic cần bổ sung / Mart dự kiến (chỉ tên + grain)
+- [ ] Block PENDING có đủ: KPI liên quan / Lý do / Atomic cần bổ sung / Mart dự kiến (chỉ tên + grain) / Bảng mapping nguồn (Atomic Placeholder)
+- [ ] Bảng mapping nguồn: mỗi dòng = 1 Atomic entity, điền đủ Bảng nguồn BA + Atomic entity dự kiến + Atomic table dự kiến (TBD nếu chưa rõ)
 - [ ] Bảng KPI PENDING: chỉ 4 cột (KPI ID / Tên KPI / Tính chất / Trạng thái) — không có Đơn vị, Công thức
 - [ ] **KPI reuse trong PENDING thêm vào bảng 4 cột bình thường** — KHÔNG tách bảng reuse riêng. Cột Tên KPI ghi thêm "(reuse từ Nhóm M)" để phân biệt. "KPI liên quan" header phải bao gồm cả ID reuse này
 - [ ] **KPI Done (sub-component) đã khai sinh ở Nhóm trước → reuse vào bảng KPI READY** — KHÔNG để trong PENDING header. Sub-component Done = thuộc READY, sub-component Pending = thuộc PENDING
