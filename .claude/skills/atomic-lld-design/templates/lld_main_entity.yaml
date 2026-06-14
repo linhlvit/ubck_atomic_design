@@ -1,0 +1,156 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: {SOURCE}
+  source_table: {TABLE}
+  atomic_entity: {Entity Name}
+  entity_physical_name: {entity_physical_name}
+  bcv_core_object: {BCV Core Object}
+  bcv_concept: "{[BCV Concept]}"
+  table_type: {Fundamental|Relative|Fact Append|Fact Snapshot|Classification}
+  group: T{N}
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: ""
+
+attributes:
+  # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
+  - attribute_name: "{Entity Name} Id"
+    physical_name: "{entity_physical_name}_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"{BCV Concept}\". {Mô tả ngắn entity}."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── BUSINESS KEY ────────────────────────────────────────────────────
+  - attribute_name: "{Entity Name} Code"
+    physical_name: "{entity_physical_name}_code"
+    description: "{Mô tả gốc từ nguồn}. BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM={SOURCE}.{TABLE}"
+    etl_derived_value: "{SOURCE}.{TABLE}"
+
+  # ── FK ĐẾN ENTITY CHA (nếu có) ─────────────────────────────────────
+  # - attribute_name: "{Parent Entity} Id"
+  #   physical_name: "{parent_physical_name}_id"
+  #   description: "FK đến {Parent Entity}."
+  #   data_domain: Surrogate Key
+  #   nullable: false
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.{FK_COLUMN}"
+  #   comment: "FK target: {Parent Entity}.{Parent Entity} Id."
+  #   classification_context: null
+  #   etl_derived_value: null
+
+  # - attribute_name: "{Parent Entity} Code"
+  #   physical_name: "{parent_physical_name}_code"
+  #   description: "Mã {Parent Entity}."
+  #   data_domain: Text
+  #   nullable: false
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.{FK_COLUMN}"
+  #   comment: "Lookup pair: {Parent Entity}.{Parent Entity} Code. Pair with {Parent Entity} Id."
+  #   classification_context: null
+  #   etl_derived_value: null
+
+  # ── BUSINESS ATTRIBUTES ─────────────────────────────────────────────
+  # - attribute_name: "{Attribute Name}"
+  #   physical_name: "{attribute_physical_name}"
+  #   description: "{Mô tả gốc từ nguồn}."
+  #   data_domain: {Text|Date|Timestamp|Currency Amount|...}
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.{COLUMN}"
+  #   comment: null
+  #   classification_context: null
+  #   etl_derived_value: null
+
+  # ── AUDIT BLOCK (nếu nguồn có CREATED_AT/CREATED_BY/UPDATED_AT/UPDATED_BY) ──
+  # - attribute_name: Created Timestamp
+  #   physical_name: created_ts
+  #   description: "Thời điểm tạo bản ghi."
+  #   data_domain: Timestamp
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.CREATED_AT"
+  #   comment: null
+  #   classification_context: null
+  #   etl_derived_value: null
+
+  # - attribute_name: Updated Timestamp
+  #   physical_name: updated_ts
+  #   description: "Thời điểm cập nhật bản ghi."
+  #   data_domain: Timestamp
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.UPDATED_AT"
+  #   comment: null
+  #   classification_context: null
+  #   etl_derived_value: null
+
+  # - attribute_name: "Created By {OfficerEntity} Id"
+  #   physical_name: "created_by_{officer_physical_name}_id"
+  #   description: "FK đến {OfficerEntity} (người tạo)."
+  #   data_domain: Surrogate Key
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.CREATED_BY"
+  #   comment: "FK target: {OfficerEntity}.{OfficerEntity} Id."
+  #   classification_context: null
+  #   etl_derived_value: null
+
+  # - attribute_name: "Created By {OfficerEntity} Code"
+  #   physical_name: "created_by_{officer_physical_name}_code"
+  #   description: "Mã {OfficerEntity} (người tạo)."
+  #   data_domain: Text
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.CREATED_BY"
+  #   comment: "Lookup pair: {OfficerEntity}.{OfficerEntity} Code. Pair with Created By {OfficerEntity} Id."
+  #   classification_context: null
+  #   etl_derived_value: null

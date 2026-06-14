@@ -3,7 +3,7 @@ generate_dm_yaml.py
 -------------------
 Generate DataModel/Atomic/{BCV_Folder}/dm_atm_{table}-{SOURCE}.{SRC_TABLE}.yaml
 for every (atomic_table, source_system, source_table) combination
-found in Atomic/lld/atomic_attributes.csv.
+found in DataModel/working/Atomic/lld/atomic_attributes.yaml.
 
 Sub-folder per BCV Core Object:
   Arrangement, Business Activity, Common, Communication, Condition,
@@ -25,14 +25,16 @@ import os
 import re
 import sys
 import argparse
+import yaml
+from pathlib import Path
 from collections import defaultdict
 
 # ---------------------------------------------------------------------------
 # Paths (relative to project root)
 # ---------------------------------------------------------------------------
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ATTRS_CSV   = os.path.join(ROOT, "Atomic", "lld", "atomic_attributes.csv")
-ENTITIES_CSV= os.path.join(ROOT, "Atomic", "hld", "atomic_entities.csv")
+ROOT        = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ATTRS_YAML  = os.path.join(ROOT, "DataModel", "working", "Atomic", "lld", "atomic_attributes.yaml")
+ENTITIES_CSV= os.path.join(ROOT, "DataModel", "working", "Atomic", "hld", "atomic_entities.csv")
 RULE_CSV    = os.path.join(ROOT, "system", "rules", "rule_map_technical_table_type.csv")
 OUT_DIR     = os.path.join(ROOT, "DataModel", "Atomic")
 
@@ -250,24 +252,43 @@ def main():
     etl_map     = load_etl_map(RULE_CSV)
     entities    = load_entities(ENTITIES_CSV)
 
-    # Build entity_name → atomic_table map from ALL sources (needed for cross-source FK comments)
-    name_to_table = {}
-    with open(ATTRS_CSV, encoding="utf-8-sig") as f:
-        for row in csv.DictReader(f):
-            ename = row["atomic_entity"].strip()
-            tname = row["atomic_table"].strip()
-            if ename and tname:
-                name_to_table.setdefault(ename, tname)
+    # Load attributes from YAML
+    _adata = yaml.safe_load(Path(ATTRS_YAML).read_text(encoding="utf-8"))
+    _attrs_raw = (_adata or {}).get("attributes", [])
+    # Normalize: bool → string, None → ""
+    def _norm(a):
+        r = dict(a)
+        for k in ("nullable", "is_primary_key"):
+            v = r.get(k)
+            if isinstance(v, bool):
+                r[k] = "true" if v else "false"
+            elif v is None:
+                r[k] = ""
+        for k in ("atomic_entity","atomic_table","atomic_column","atomic_attribute",
+                  "source_column","source_system","source_table","comment",
+                  "classification_context","etl_derived_value","description",
+                  "data_domain","data_type","bcv_core_object"):
+            if r.get(k) is None:
+                r[k] = ""
+        return r
+    all_attrs = [_norm(a) for a in _attrs_raw]
 
-    # Load attributes, group by (atomic_table, source_system, source_table)
+    # Build entity_name → atomic_table map from ALL sources
+    name_to_table = {}
+    for row in all_attrs:
+        ename = row["atomic_entity"].strip()
+        tname = row["atomic_table"].strip()
+        if ename and tname:
+            name_to_table.setdefault(ename, tname)
+
+    # Group by (atomic_table, source_system, source_table)
     groups = defaultdict(list)
-    with open(ATTRS_CSV, encoding="utf-8-sig") as f:
-        for row in csv.DictReader(f):
-            src = row["source_system"].strip()
-            if args.source and src != args.source:
-                continue
-            key = (row["atomic_table"].strip(), src, row["source_table"].strip())
-            groups[key].append(row)
+    for row in all_attrs:
+        src = row["source_system"].strip()
+        if args.source and src != args.source:
+            continue
+        key = (row["atomic_table"].strip(), src, row["source_table"].strip())
+        groups[key].append(row)
 
     created = skipped = 0
 

@@ -1,0 +1,478 @@
+schema_type: entity_consolidation
+schema_version: "1.0"
+
+entity:
+  entity_name: Securities Practitioner License Application
+  physical_name: scr_prac_license_ap
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  consolidation_status: pending
+  consolidated_by: null
+  consolidated_at: null
+
+sources:
+  - source_system: NHNCK
+    source_table: APPLICATIONS
+    lld_file: NHNCK/lld_NHNCK_APPLICATIONS.yaml
+
+consolidation_notes:
+  []
+
+attributes:
+  - attribute_name: Securities Practitioner License Application Id
+    physical_name: scr_prac_license_ap_id
+    description: Id tự sinh (surrogate key).
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    comment: "PK surrogate. BCV: [Documentation] Government Registration Document."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: null
+
+  - attribute_name: Securities Practitioner License Application Code
+    physical_name: scr_prac_license_ap_code
+    description: Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: BK chính. Mã định danh duy nhất của hồ sơ.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.APPLICATION_CODE
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: null
+    classification_context: "SOURCE_SYSTEM=..."
+    etl_derived_value: NHNCK.APPLICATIONS
+    source_mappings:
+      NHNCK.APPLICATIONS: null
+
+  - attribute_name: Application Type Code
+    physical_name: ap_tp_code
+    description: Loại hồ sơ.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: NHNCK_APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
+    classification_context: NHNCK_APPLICATION_TYPE
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.APPLICATION_TYPE
+
+  - attribute_name: Application Status Code
+    physical_name: ap_st_code
+    description: Trạng thái hồ sơ hiện tại.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "FK → APPLICATION_STATUSES (Classification Value). Scheme: NHNCK_APPLICATION_STATUS."
+    classification_context: NHNCK_APPLICATION_STATUS
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.STATUS_ID
+
+  - attribute_name: Registration Type Code
+    physical_name: rgst_tp_code
+    description: Nguồn tiếp nhận hồ sơ.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: NHNCK_REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập tay."
+    classification_context: NHNCK_REGISTRATION_TYPE
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.REGISTRATION_TYPE
+
+  - attribute_name: Certificate Type Code
+    physical_name: ctf_tp_code
+    description: Loại chứng chỉ hành nghề đăng ký.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE."
+    classification_context: NHNCK_CERTIFICATE_TYPE
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_ID
+
+  - attribute_name: Title
+    physical_name: ttl
+    description: Tiêu đề hoặc tên nhóm hồ sơ.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.TITLE
+
+  - attribute_name: Submission Date
+    physical_name: subm_dt
+    description: Ngày nộp hồ sơ chính thức.
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.SUBMISSION_DATE
+
+  - attribute_name: Supplement Date
+    physical_name: supplement_dt
+    description: Ngày nộp bổ sung hồ sơ.
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.SUPPLEMENT_DATE
+
+  - attribute_name: Supplement Letter Date
+    physical_name: supplement_ltr_dt
+    description: Ngày ban hành công văn yêu cầu bổ sung hồ sơ.
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.SUPPLEMENT_LETTER_DATE
+
+  - attribute_name: Certificate Number
+    physical_name: ctf_nbr
+    description: Số CCHN cấp cho người hành nghề.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_NUMBER
+
+  - attribute_name: Issue Date
+    physical_name: issu_dt
+    description: Ngày cấp CCHN.
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.ISSUE_DATE
+
+  - attribute_name: Previous Certificate Number
+    physical_name: prev_ctf_nbr
+    description: Số CCHN cũ trước khi cấp lại.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.PREVIOUS_CERTIFICATE_NUMBER
+
+  - attribute_name: Previous Issue Date
+    physical_name: prev_issu_dt
+    description: Ngày cấp CCHN cũ.
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.PREVIOUS_ISSUE_DATE
+
+  - attribute_name: Previous Certificate Type Code
+    physical_name: prev_ctf_tp_code
+    description: Loại CCHN cũ khi cấp lại.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: "FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE."
+    classification_context: NHNCK_CERTIFICATE_TYPE
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.PREVIOUS_CERTIFICATE_ID
+
+  - attribute_name: Reissue Reason
+    physical_name: reissue_rsn
+    description: Lý do xin cấp lại CCHN.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: Nguồn lưu NCLOB — ETL convert sang string.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.REISSUE_REASON
+
+  - attribute_name: Rejection Reason
+    physical_name: rejection_rsn
+    description: Lý do trả lại hoặc từ chối hồ sơ.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: Nguồn lưu NCLOB — ETL convert sang string.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.REJECTION_REASON
+
+  - attribute_name: Certificate Receipt Method Code
+    physical_name: ctf_recpt_mth_code
+    description: Phương thức nhận CCHN.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: "Scheme: NHNCK_CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi bưu điện, 3=Điện tử."
+    classification_context: NHNCK_CERT_RECEIPT_METHOD
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD
+
+  - attribute_name: Certificate Receipt Address
+    physical_name: ctf_recpt_adr
+    description: Địa chỉ nhận CCHN qua bưu điện.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_RECEIPT_ADDRESS
+
+  - attribute_name: Certificate Receipt Phone
+    physical_name: ctf_recpt_ph
+    description: Số điện thoại liên lạc khi nhận CCHN.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_RECEIPT_PHONE
+
+  - attribute_name: Receipt Status Code
+    physical_name: recpt_st_code
+    description: Trạng thái nhận CCHN.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: "Scheme: NHNCK_RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
+    classification_context: NHNCK_RECEIPT_STATUS
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.RECEIPT_STATUS
+
+  - attribute_name: Violated Indicator
+    physical_name: violated_ind
+    description: Cờ người hành nghề vi phạm quy định.
+    data_domain: Boolean
+    nullable: true
+    is_primary_key: false
+    comment: "Nguồn lưu NUMBER(1): 1=Có vi phạm, 0=Không vi phạm."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.VIOLATED
+
+  - attribute_name: Data Exploitable Indicator
+    physical_name: data_exploitable_ind
+    description: Cờ dữ liệu có thể khai thác.
+    data_domain: Boolean
+    nullable: true
+    is_primary_key: false
+    comment: "Nguồn lưu NUMBER(1): 1=Có thể dùng, 0=Không."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.DATA_EXPLOITABLE
+
+  - attribute_name: Reissue Hsm
+    physical_name: reissue_hsm
+    description: Thông tin HSM khi cấp CCHN điện tử.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.REISSUE_HSM
+
+  - attribute_name: Note
+    physical_name: note
+    description: Ghi chú bổ sung.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.NOTE
+
+  - attribute_name: Securities Practitioner Id
+    physical_name: scr_prac_id
+    description: FK đến Securities Practitioner.
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.PROFESSIONAL_ID
+
+  - attribute_name: Securities Practitioner Code
+    physical_name: scr_prac_code
+    description: Mã người hành nghề.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Securities Practitioner Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.PROFESSIONAL_ID
+
+  - attribute_name: License Certificate Document Id
+    physical_name: license_ctf_doc_id
+    description: FK đến License Certificate Document (CCHN trong sổ đăng bộ).
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner License Certificate Document.Securities Practitioner License Certificate Document Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_RECORD_ID
+
+  - attribute_name: License Certificate Document Code
+    physical_name: license_ctf_doc_code
+    description: Mã CCHN trong sổ đăng bộ.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities Practitioner License Certificate Document Code. Pair with License Certificate Document Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.CERTIFICATE_RECORD_ID
+
+  - attribute_name: Previous License Certificate Document Id
+    physical_name: prev_license_ctf_doc_id
+    description: FK đến CCHN cũ (khi cấp lại).
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner License Certificate Document.Securities Practitioner License Certificate Document Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID
+
+  - attribute_name: Previous License Certificate Document Code
+    physical_name: prev_license_ctf_doc_code
+    description: Mã CCHN cũ.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities Practitioner License Certificate Document Code. Pair with Previous License Certificate Document Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID
+
+  - attribute_name: Examination Assessment Id
+    physical_name: exam_ases_id
+    description: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities Practitioner Qualification Examination Assessment Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.EXAM_SESSION_ID
+
+  - attribute_name: Examination Assessment Code
+    physical_name: exam_ases_code
+    description: Mã đợt thi sát hạch.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities Practitioner Qualification Examination Assessment Code. Pair with Examination Assessment Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.EXAM_SESSION_ID
+
+  - attribute_name: Assignee Officer Id
+    physical_name: assignee_ofcr_id
+    description: FK đến Regulatory Authority Officer — cán bộ được phân công xử lý hồ sơ.
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.ASSIGNEE_ID
+
+  - attribute_name: Assignee Officer Code
+    physical_name: assignee_ofcr_code
+    description: Mã cán bộ được phân công.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Assignee Officer Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.ASSIGNEE_ID
+
+  - attribute_name: Info Verify Officer Id
+    physical_name: info_verify_ofcr_id
+    description: FK đến Regulatory Authority Officer — cán bộ xác minh thông tin.
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.INFO_VERIFY_ID
+
+  - attribute_name: Info Verify Officer Code
+    physical_name: info_verify_ofcr_code
+    description: Mã cán bộ xác minh thông tin.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Info Verify Officer Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATIONS: NHNCK.qlnhn.APPLICATIONS.INFO_VERIFY_ID

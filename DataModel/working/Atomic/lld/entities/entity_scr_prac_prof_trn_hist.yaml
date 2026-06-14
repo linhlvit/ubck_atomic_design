@@ -1,0 +1,154 @@
+schema_type: entity_consolidation
+schema_version: "1.0"
+
+entity:
+  entity_name: Securities Practitioner Professional Training History
+  physical_name: scr_prac_prof_trn_hist
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  consolidation_status: pending
+  consolidated_by: null
+  consolidated_at: null
+
+sources:
+  - source_system: NHNCK
+    source_table: PROFESSIONAL_TRAININGS
+    lld_file: NHNCK/lld_NHNCK_PROFESSIONAL_TRAININGS.yaml
+
+consolidation_notes:
+  []
+
+attributes:
+  - attribute_name: Securities Practitioner Professional Training History Id
+    physical_name: scr_prac_prof_trn_hist_id
+    description: Khóa đại diện cho bản ghi lịch sử đào tạo / bồi dưỡng chuyên môn của người hành nghề chứng khoán (surrogate key).
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    comment: "PK surrogate. BCV: \"Individual Education / Training History\" (Involved Party)."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: null
+
+  - attribute_name: Securities Practitioner Professional Training History Code
+    physical_name: scr_prac_prof_trn_hist_code
+    description: Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.ID
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=..."
+    etl_derived_value: NHNCK.PROFESSIONAL_TRAININGS
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: null
+
+  - attribute_name: Securities Practitioner Id
+    physical_name: scr_prac_id
+    description: Surrogate key FK đến người hành nghề chứng khoán.
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.PROFESSIONAL_ID
+
+  - attribute_name: Securities Practitioner Code
+    physical_name: scr_prac_code
+    description: Mã kỹ thuật của người hành nghề (dư thừa).
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Securities Practitioner Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.PROFESSIONAL_ID
+
+  - attribute_name: Training Start Date
+    physical_name: trn_strt_dt
+    description: Ngày bắt đầu khóa đào tạo / bồi dưỡng chuyên môn.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: Nguồn lưu dạng NVARCHAR2(10) — ETL cần parse sang Date; giữ Text domain để tránh lỗi chuyển đổi khi dữ liệu không chuẩn.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.START_DATE
+
+  - attribute_name: Training End Date
+    physical_name: trn_end_dt
+    description: Ngày kết thúc khóa đào tạo / bồi dưỡng chuyên môn.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: Nguồn lưu dạng NVARCHAR2(10) — ETL cần parse sang Date; nullable khi khóa học chưa kết thúc.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.END_DATE
+
+  - attribute_name: Training Place
+    physical_name: trn_plc
+    description: Nơi tổ chức đào tạo / bồi dưỡng.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.TRAINING_PLACE
+
+  - attribute_name: Specialization Description
+    physical_name: specialization_dsc
+    description: Chuyên ngành được đào tạo (text tự do từ nguồn).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: Lưu nguyên giá trị text — không chuẩn hóa thành Classification Value vì dữ liệu tự do.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.SPECIALIZATION
+
+  - attribute_name: Awards
+    physical_name: awards
+    description: Thông tin khen thưởng nhận được trong quá trình đào tạo.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.AWARDS
+
+  - attribute_name: Disciplines
+    physical_name: disciplines
+    description: Thông tin kỷ luật trong quá trình đào tạo.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.PROFESSIONAL_TRAININGS: NHNCK.qlnhn.PROFESSIONAL_TRAININGS.DISCIPLINES

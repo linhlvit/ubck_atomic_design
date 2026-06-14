@@ -1,0 +1,147 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: NHNCK
+  source_table: COUNTRIES
+  atomic_entity: Geographic Area
+  entity_physical_name: geo
+  bcv_core_object: Location
+  bcv_concept: "[Location] Geographic Area"
+  table_type: Fundamental
+  group: T1
+  design_status: approved
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Geographic Area Id
+    physical_name: geo_id
+    description: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Geographic Area Code
+    physical_name: geo_code
+    description: Mã quốc gia nguồn. BK
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.COUNTRIES.ID
+    comment: BK chính. Giá trị từ PK số tự tăng của bảng nguồn.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "SOURCE_SYSTEM=NHNCK.COUNTRIES"
+    etl_derived_value: NHNCK.COUNTRIES
+
+  - attribute_name: Geographic Area Type Code
+    physical_name: geo_tp_code
+    description: Phân loại vùng địa lý — Quốc gia
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "GEOGRAPHIC_AREA_TYPE=COUNTRY"
+    etl_derived_value: null
+
+  - attribute_name: Geographic Area Name
+    physical_name: geo_nm
+    description: Tên quốc gia/vùng lãnh thổ
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.COUNTRIES.COUNTRY_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: ISO Country Code
+    physical_name: iso_cty_code
+    description: "Mã quốc gia ISO 3166-1 alpha-2"
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.COUNTRIES.COUNTRY_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Parent Geographic Area Id
+    physical_name: prn_geo_id
+    description: "FK đến vùng địa lý cha (self-ref). NULL cho quốc gia"
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không có parent."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Parent Geographic Area Code
+    physical_name: prn_geo_code
+    description: Mã vùng địa lý cha
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic Area Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Default Flag
+    physical_name: dflt_f
+    description: "Cờ mặc định: true=Mặc định; false=Không"
+    data_domain: Boolean
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.COUNTRIES.DEFAULT_FLAG
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Geographic Area Status Code
+    physical_name: geo_st_code
+    description: "Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động"
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.COUNTRIES.RECORD_STATUS
+    comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,228 @@
+schema_type: entity_consolidation
+schema_version: "1.0"
+
+entity:
+  entity_name: Involved Party Electronic Address
+  physical_name: ip_elc_adr
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  consolidation_status: pending
+  consolidated_by: null
+  consolidated_at: null
+
+sources:
+  - source_system: NHNCK
+    source_table: UNITS
+    lld_file: NHNCK/lld_NHNCK_UNITS_IP_Electronic_Address.yaml
+  - source_system: NHNCK
+    source_table: ORGANIZATIONS
+    lld_file: NHNCK/lld_NHNCK_ORGANIZATIONS_IP_Electronic_Address.yaml
+  - source_system: NHNCK
+    source_table: USERS
+    lld_file: NHNCK/lld_NHNCK_USERS_IP_Electronic_Address.yaml
+  - source_system: NHNCK
+    source_table: PROFESSIONALS
+    lld_file: NHNCK/lld_NHNCK_PROFESSIONALS_IP_Electronic_Address.yaml
+
+consolidation_notes:
+  - "⚠️ NHNCK.USERS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=FAX) — đặt nullable=true"
+  - "⚠️ NHNCK.UNITS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=MOBILE) — đặt nullable=true"
+  - "⚠️ NHNCK.UNITS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=WEBSITE) — đặt nullable=true"
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: ip_id
+    description: FK đến Regulatory Authority Organization Unit
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.ID
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.ID
+      NHNCK.USERS: NHNCK.qlnhn.USERS.ID
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.ID
+
+  - attribute_name: Involved Party Code
+    physical_name: ip_code
+    description: Mã người hành nghề.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.UNIT_CODE
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.ID
+      NHNCK.USERS: NHNCK.qlnhn.USERS.ID
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.ID
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: null
+    classification_context: "SOURCE_SYSTEM=..."
+    etl_derived_value: NHNCK.UNITS
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại kênh liên lạc — điện thoại cố định.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: PHONE
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Số điện thoại cố định của tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.PHONE_NUMBER
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.PHONE_NUMBER
+      NHNCK.USERS: NHNCK.qlnhn.USERS.PHONE_NUMBER
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PHONE_NUMBER
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại địa chỉ điện tử — email.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+    etl_derived_value: EMAIL
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Địa chỉ email của tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.EMAIL
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.EMAIL
+      NHNCK.USERS: NHNCK.qlnhn.USERS.EMAIL
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.EMAIL
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại kênh liên lạc — fax.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+    etl_derived_value: FAX
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Số fax của tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.FAX
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.FAX
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại kênh liên lạc — điện thoại di động.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
+    etl_derived_value: MOBILE
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Số di động của tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.MOBILE_NUMBER
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.MOBILE_NUMBER
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại kênh liên lạc — website.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+    etl_derived_value: WEBSITE
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Địa chỉ website của tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.WEBSITE
+      NHNCK.USERS: null
+      NHNCK.PROFESSIONALS: null

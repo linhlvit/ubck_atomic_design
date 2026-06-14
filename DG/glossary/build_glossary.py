@@ -1,7 +1,7 @@
 """
 build_glossary.py
 =================
-Tạo business_glossary.csv và glossary_mappings.csv từ atomic_attributes.csv (NHNCK).
+Tạo business_glossary.csv và glossary_mappings.csv từ atomic_attributes.yaml (NHNCK).
 
 Output:
   DG/glossary/business_glossary.csv   — 1 dòng = 1 business term
@@ -21,6 +21,7 @@ Primary entity detection (để xác định primary_grain):
 import csv
 import sys
 import io
+import yaml
 from collections import defaultdict, OrderedDict
 from pathlib import Path
 
@@ -31,8 +32,8 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ('utf-8', 'utf-8-s
 
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = SCRIPT_DIR.parent.parent   # ubck_atomic_design/
-ATTRS_PATH = REPO_ROOT / 'Atomic' / 'lld' / 'atomic_attributes.csv'
-ATOMIC_ENTITIES_PATH = REPO_ROOT / 'Atomic' / 'hld' / 'atomic_entities.csv'
+ATTRS_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'lld' / 'atomic_attributes.yaml'
+ATOMIC_ENTITIES_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'hld' / 'atomic_entities.csv'
 OUT_GLOSSARY = SCRIPT_DIR / 'business_glossary.csv'
 OUT_MAPPINGS = SCRIPT_DIR / 'glossary_mappings.csv'
 
@@ -214,23 +215,34 @@ def get_primary_entity(attr_name: str, entity_rows: dict) -> str:
 
 
 def load_filtered_attrs(source_system: str = 'NHNCK') -> list[dict]:
+    data = yaml.safe_load(ATTRS_PATH.read_text(encoding='utf-8'))
     rows = []
     seen: set = set()
-    with open(ATTRS_PATH, encoding='utf-8-sig', newline='') as f:
-        for row in csv.DictReader(f):
-            if row['source_system'] != source_system:
-                continue
-            entity = row['atomic_entity']
-            attr = row['atomic_attribute']
-            key = (entity, attr)
-            if key in seen:
-                continue
-            seen.add(key)
-            if row['data_domain'] in EXCLUDE_DOMAINS:
-                continue
-            if attr in EXCLUDE_ATTRS:
-                continue
-            rows.append(row)
+    for a in (data or {}).get('attributes', []):
+        r = dict(a)
+        for k in ('nullable', 'is_primary_key'):
+            v = r.get(k)
+            if isinstance(v, bool):
+                r[k] = 'true' if v else 'false'
+            elif v is None:
+                r[k] = ''
+        for k in ('source_system', 'atomic_entity', 'atomic_attribute',
+                  'data_domain', 'description', 'comment'):
+            if r.get(k) is None:
+                r[k] = ''
+        if r['source_system'] != source_system:
+            continue
+        entity = r['atomic_entity']
+        attr = r['atomic_attribute']
+        key = (entity, attr)
+        if key in seen:
+            continue
+        seen.add(key)
+        if r['data_domain'] in EXCLUDE_DOMAINS:
+            continue
+        if attr in EXCLUDE_ATTRS:
+            continue
+        rows.append(r)
     return rows
 
 

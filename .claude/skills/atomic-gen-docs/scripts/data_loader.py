@@ -127,7 +127,20 @@ def parse_uid_groups(repo_root: Path, source: str) -> list[dict]:
 
 
 def load_manifest(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "lld" / "manifest.csv")
+    import yaml as _yaml
+    mpath = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "manifest.yaml"
+    data = _yaml.safe_load(mpath.read_text(encoding="utf-8"))
+    rows = []
+    for e in (data or {}).get("entries", []):
+        if e.get("group", "") == "pending":
+            continue
+        rows.append({
+            "source_system": e.get("source_system", ""),
+            "source_table":  e.get("source_table", ""),
+            "atomic_entity": e.get("atomic_entity", ""),
+            "group":         e.get("group", ""),
+            "lld_file":      e.get("lld_file", ""),
+        })
     return [r for r in rows if r["source_system"] == source]
 
 
@@ -187,8 +200,27 @@ def _parse_fk_target(comment: str) -> tuple[str, str] | None:
 
 
 def load_all_attributes(repo_root: Path) -> list[dict[str, str]]:
-    """Đọc atomic_attributes.csv một lần, cache trong module scope."""
-    return _read_csv(repo_root / "Atomic" / "lld" / "atomic_attributes.csv")
+    """Đọc atomic_attributes.yaml một lần, trả về list flat dicts."""
+    import yaml as _yaml
+    path = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "atomic_attributes.yaml"
+    data = _yaml.safe_load(path.read_text(encoding="utf-8"))
+    rows = []
+    for a in (data or {}).get("attributes", []):
+        r = dict(a)
+        for k in ("nullable", "is_primary_key"):
+            v = r.get(k)
+            if isinstance(v, bool):
+                r[k] = "true" if v else "false"
+            elif v is None:
+                r[k] = ""
+        for k in ("atomic_entity","atomic_table","atomic_column","atomic_attribute",
+                  "source_column","source_system","source_table","comment",
+                  "classification_context","etl_derived_value","description",
+                  "data_domain","data_type","bcv_core_object"):
+            if r.get(k) is None:
+                r[k] = ""
+        rows.append(r)
+    return rows
 
 
 def load_attributes(
@@ -461,7 +493,7 @@ def load_source_systems(repo_root: Path) -> dict[str, str]:
 
 
 def load_classifications(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "lld" / "ref_shared_entity_classifications.csv")
+    rows = _read_csv(repo_root / "DataModel" / "working" / "Atomic" / "lld" / "ref_shared_entity_classifications.csv")
     out = []
     for r in rows:
         used_in = r.get("used_in_entities", "")
@@ -472,7 +504,7 @@ def load_classifications(repo_root: Path, source: str) -> list[dict[str, str]]:
 
 
 def load_pendings(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "lld" / "pending_design.csv")
+    rows = _read_csv(repo_root / "DataModel" / "working" / "Atomic" / "lld" / "pending_design.csv")
     return [r for r in rows if r["source_system"] == source]
 
 

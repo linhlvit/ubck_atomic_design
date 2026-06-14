@@ -1,0 +1,135 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: NHNCK
+  source_table: UNITS
+  atomic_entity: Involved Party Electronic Address
+  entity_physical_name: ip_elc_adr
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  group: T1
+  design_status: approved
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: ip_id
+    description: FK đến Regulatory Authority Organization Unit
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.UNITS.ID
+    comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: ip_code
+    description: Mã đơn vị
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.UNITS.UNIT_CODE
+    comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=NHNCK.UNITS"
+    etl_derived_value: NHNCK.UNITS
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại kênh liên lạc — điện thoại
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: PHONE
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Số điện thoại đơn vị
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.UNITS.PHONE_NUMBER
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: null
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại kênh liên lạc — email
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+    etl_derived_value: EMAIL
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Email đơn vị
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.UNITS.EMAIL
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+    etl_derived_value: null
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: elc_adr_tp_code
+    description: Loại kênh liên lạc — fax
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+    etl_derived_value: FAX
+
+  - attribute_name: Electronic Address Value
+    physical_name: elc_adr_val
+    description: Số fax đơn vị
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.UNITS.FAX
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+    etl_derived_value: null

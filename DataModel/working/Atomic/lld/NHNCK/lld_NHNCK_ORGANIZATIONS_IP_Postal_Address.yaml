@@ -1,0 +1,85 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: NHNCK
+  source_table: ORGANIZATIONS
+  atomic_entity: Involved Party Postal Address
+  entity_physical_name: ip_pst_adr
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  group: T1
+  design_status: approved
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: ip_id
+    description: FK đến Securities Organization Reference.
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATIONS.ID
+    comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity — không có PK surrogate riêng."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: ip_code
+    description: Mã tổ chức.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATIONS.ID
+    comment: "Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=NHNCK.ORGANIZATIONS"
+    etl_derived_value: NHNCK.ORGANIZATIONS
+
+  - attribute_name: Address Type Code
+    physical_name: adr_tp_code
+    description: Loại địa chỉ — trụ sở chính.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: HEAD_OFFICE
+
+  - attribute_name: Address Value
+    physical_name: adr_val
+    description: Địa chỉ trụ sở chính của tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATIONS.ADDRESS
+    comment: null
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: null

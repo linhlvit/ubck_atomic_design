@@ -1,0 +1,120 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+# Template: Involved Party Alternative Identification
+# Dùng khi bảng nguồn có cột giấy tờ tùy thân (CMND/CCCD/Passport/...)
+# classification_context: IP_ALT_ID_TYPE=(source) nếu type lấy từ lookup, hoặc IP_ALT_ID_TYPE=CMND nếu hardcode
+
+metadata:
+  source_system: {SOURCE}
+  source_table: {TABLE}
+  atomic_entity: Involved Party Alternative Identification
+  entity_physical_name: ip_alt_id
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Alternative Identification"
+  table_type: Relative
+  group: T{N}
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: ""
+
+attributes:
+  # ── INVOLVED PARTY FK ────────────────────────────────────────────────
+  - attribute_name: Involved Party Id
+    physical_name: ip_id
+    description: "FK đến {Parent Entity} (Involved Party)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns:
+      - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
+    comment: "FK target: {Parent Entity}.{Parent Entity} Id."
+    classification_context: "IP_ALT_ID_TYPE=(source)"
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: ip_code
+    description: "Mã {Parent Entity}."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
+    comment: "Lookup pair: {Parent Entity}.{Parent Entity} Code. Pair with Involved Party Id."
+    classification_context: "IP_ALT_ID_TYPE=(source)"
+    etl_derived_value: null
+
+  # ── ALT ID TYPE ──────────────────────────────────────────────────────
+  - attribute_name: Alternative Identification Type Code
+    physical_name: alt_id_type_code
+    description: "Loại giấy tờ tùy thân."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns:
+      - "{SOURCE}.{schema}.{TABLE}.{ID_TYPE_COLUMN}"
+    comment: "Scheme: IP_ALT_ID_TYPE. (source) — type lấy động từ nguồn."
+    classification_context: "IP_ALT_ID_TYPE=(source)"
+    etl_derived_value: null
+
+  # ── SOURCE SYSTEM CODE ───────────────────────────────────────────────
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM={SOURCE}.{TABLE}"
+    etl_derived_value: "{SOURCE}.{TABLE}"
+
+  # ── IDENTIFICATION FIELDS ─────────────────────────────────────────────
+  - attribute_name: Alternative Identification Number
+    physical_name: alt_id_num
+    description: "Số giấy tờ tùy thân."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "{SOURCE}.{schema}.{TABLE}.{ID_NUMBER_COLUMN}"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=(source)"
+    etl_derived_value: null
+
+  # - attribute_name: Alternative Identification Issue Date
+  #   physical_name: alt_id_issue_dt
+  #   description: "Ngày cấp giấy tờ."
+  #   data_domain: Date
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.{ISSUE_DATE_COLUMN}"
+  #   comment: null
+  #   classification_context: "IP_ALT_ID_TYPE=(source)"
+  #   etl_derived_value: null
+
+  # - attribute_name: Alternative Identification Issue Place
+  #   physical_name: alt_id_issue_place
+  #   description: "Nơi cấp giấy tờ."
+  #   data_domain: Text
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.{ISSUE_PLACE_COLUMN}"
+  #   comment: null
+  #   classification_context: "IP_ALT_ID_TYPE=(source)"
+  #   etl_derived_value: null

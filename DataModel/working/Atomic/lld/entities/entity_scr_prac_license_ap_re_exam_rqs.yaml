@@ -1,0 +1,214 @@
+schema_type: entity_consolidation
+schema_version: "1.0"
+
+entity:
+  entity_name: "Securities Practitioner License Application Re-Exam Request"
+  physical_name: scr_prac_license_ap_re_exam_rqs
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  consolidation_status: pending
+  consolidated_by: null
+  consolidated_at: null
+
+sources:
+  - source_system: NHNCK
+    source_table: APPLICATION_RE_EXAMS
+    lld_file: NHNCK/lld_NHNCK_APPLICATION_RE_EXAMS.yaml
+
+consolidation_notes:
+  []
+
+attributes:
+  - attribute_name: "Securities Practitioner License Application Re-Exam Request Id"
+    physical_name: scr_prac_license_ap_re_exam_rqs_id
+    description: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    comment: "PK surrogate. BCV: \"Documentation\" (Resource Item). Yêu cầu thi lại CCHN."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: null
+
+  - attribute_name: "Securities Practitioner License Application Re-Exam Request Code"
+    physical_name: scr_prac_license_ap_re_exam_rqs_code
+    description: Mã định danh. BK
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: BK chính. PK nguồn.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.ID
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "SOURCE_SYSTEM=..."
+    etl_derived_value: NHNCK.APPLICATION_RE_EXAMS
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: null
+
+  - attribute_name: License Application Id
+    physical_name: license_ap_id
+    description: FK đến hồ sơ gốc đã thi trượt
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner License Application.License Application Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.APPLICATION_ID
+
+  - attribute_name: License Application Code
+    physical_name: license_ap_code
+    description: Mã hồ sơ gốc
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.APPLICATION_ID
+
+  - attribute_name: Examination Assessment Result Id
+    physical_name: exam_ases_rslt_id
+    description: FK đến kết quả thi trượt
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner Qualification Examination Assessment Result.Examination Assessment Result Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID
+
+  - attribute_name: Examination Assessment Result Code
+    physical_name: exam_ases_rslt_code
+    description: Mã kết quả thi trượt
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment Result.Examination Assessment Result Code. Pair with Examination Assessment Result Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID
+
+  - attribute_name: "Re-Exam License Application Id"
+    physical_name: re_exam_license_ap_id
+    description: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Securities Practitioner License Application.License Application Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
+
+  - attribute_name: "Re-Exam License Application Code"
+    physical_name: re_exam_license_ap_code
+    description: Mã hồ sơ thi lại mới
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Securities Practitioner License Application.License Application Code. Pair with Re-Exam License Application Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
+
+  - attribute_name: Record Status Code
+    physical_name: rcrd_st_code
+    description: "Trạng thái bản ghi (1=Hoạt động)"
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: APPLICATION_STATUS."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.RECORD_STATUS
+
+  - attribute_name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    description: FK đến Officer tạo bản ghi
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Pending — nguồn USERS chưa map."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_BY
+
+  - attribute_name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    description: Mã người tạo
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id. Pending."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_BY
+
+  - attribute_name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    description: FK đến Officer cập nhật bản ghi
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Pending — nguồn USERS chưa map."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_BY
+
+  - attribute_name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    description: Mã người cập nhật
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id. Pending."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_BY
+
+  - attribute_name: Created Timestamp
+    physical_name: crt_tms
+    description: Thời điểm tạo
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    comment: Pending — kiểu DATE nguồn map sang Timestamp Atomic.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_AT
+
+  - attribute_name: Updated Timestamp
+    physical_name: udt_tms
+    description: Thời điểm cập nhật
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    comment: Pending — kiểu DATE nguồn map sang Timestamp Atomic.
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.APPLICATION_RE_EXAMS: NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_AT

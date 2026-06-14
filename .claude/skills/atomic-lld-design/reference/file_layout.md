@@ -4,53 +4,106 @@
 
 | File | Vai trò | Encoding |
 |---|---|---|
-| `Atomic/lld/{SOURCE}/attr_{SOURCE}_{table}.csv` | Attribute mapping cho 1 bảng nguồn | UTF-8 with BOM (`utf-8-sig`) |
+| `DataModel/working/Atomic/lld/{SOURCE}/lld_{SOURCE}_{table}.yaml` | Attribute mapping cho 1 bảng nguồn | UTF-8 |
 
-## File config / metadata (Atomic/lld/)
+## File config / metadata (DataModel/working/Atomic/lld/)
 
 | File | Vai trò | Encoding |
 |---|---|---|
-| `Atomic/lld/manifest.csv` | Mapping `(source_system, source_table) → (atomic_entity, group, lld_file)` | UTF-8 with BOM |
-| `Atomic/lld/ref_shared_entity_classifications.csv` | Danh mục Classification Value scheme toàn dự án | UTF-8 with BOM |
-| `Atomic/lld/pending_design.csv` | Cột nguồn pending decision (reason + action) | UTF-8 with BOM |
+| `DataModel/working/Atomic/lld/manifest.yaml` | Mapping `(source_system, source_table) → (atomic_entity, group, lld_file)` | UTF-8 |
+| `DataModel/working/Atomic/lld/ref_shared_entity_classifications.csv` | Danh mục Classification Value scheme toàn dự án | UTF-8 with BOM |
+| `DataModel/working/Atomic/lld/pending_design.csv` | Cột nguồn pending decision (reason + action) | UTF-8 with BOM |
 
 ## File auto-generated bởi script
 
 | File | Sinh bởi | Source-of-truth |
 |---|---|---|
-| `Atomic/lld/atomic_attributes.csv` | `aggregate_atomic.py` | manifest.csv + tất cả attr_*.csv |
-| `DataModel/working/Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.csv + atomic_entities.csv (description preserve) |
+| `DataModel/working/Atomic/lld/atomic_attributes.yaml` | `aggregate_atomic.py` | manifest.yaml + tất cả lld_*.yaml |
+| `DataModel/working/Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.yaml + atomic_entities.csv (description preserve) |
 | `DataModel/Atomic/dm_manifest.csv` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
 | `DataModel/atomic_model.yaml` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
 
-## Cấu trúc file attr_*.csv (10 cột)
+## Cấu trúc file lld_*.yaml (Level 1 per source table)
 
-```
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+```yaml
+schema_type: lld_attributes
+schema_version: "1.0"
+
+metadata:
+  source_system: NHNCK
+  source_table: PROFESSIONALS
+  atomic_entity: Securities Practitioner
+  design_status: draft   # draft | approved
+
+attributes:
+  - attribute_name: Securities Practitioner Id
+    description: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    source_columns: null
+    comment: null
+    classification_context: null
+    etl_derived_value: null
 ```
 
-- `etl_derived_value`: để rỗng nếu không có giá trị ETL-derived cố định.
-- `classification_context` format nội bộ: `SCHEME=VALUE`. Script `aggregate_atomic.py` tự convert sang format output `Field Name = 'VALUE'` khi ghi vào `atomic_attributes.csv`.
+- `etl_derived_value`: để null nếu không có giá trị ETL-derived cố định.
+- `classification_context` format: `SCHEME=VALUE`. Script `aggregate_atomic.py` tự convert sang format output `Field Name = 'VALUE'` khi ghi vào `atomic_attributes.yaml`.
+
+## Cấu trúc atomic_attributes.yaml
+
+Flat list (1 entry = entity × attribute × source × context):
+
+```yaml
+schema_type: atomic_attributes
+schema_version: "1.0"
+
+attributes:
+  - bcv_core_object: Involved Party
+    atomic_entity: Securities Practitioner
+    atomic_table: scr_prac
+    atomic_attribute: Securities Practitioner Id
+    atomic_column: scr_prac_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    data_type: bigint
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: null
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+```
 
 ## Encoding chuẩn
 
-Mọi file CSV trong dự án dùng **UTF-8 with BOM** (`utf-8-sig` trong Python). Lý do: Excel/Windows tool nhận diện đúng tiếng Việt khi mở trực tiếp; script Python đọc với `utf-8-sig` strip BOM tự động.
+File YAML dùng **UTF-8** (không BOM). File CSV còn lại dùng **UTF-8 with BOM** (`utf-8-sig`).
 
-Sau Write/Edit nếu cần kiểm tra/strip BOM dư thừa (VD: file bị ghi 2 lần BOM), dùng:
+Sau Write/Edit nếu cần kiểm tra/strip BOM dư thừa, dùng:
 
 ```bash
-python Atomic/lld/scripts/strip_bom.py {path}
+python DataModel/working/Atomic/lld/scripts/strip_bom.py {path}
 ```
 
-## Cấu trúc manifest.csv
+## Cấu trúc manifest.yaml
 
-```
-source_system,source_table,atomic_entity,group,lld_file
+```yaml
+schema_type: manifest
+schema_version: "1.0"
+
+entries:
+  - source_system: NHNCK
+    source_table: PROFESSIONALS
+    atomic_entity: Securities Practitioner
+    group: T1
+    lld_file: NHNCK/lld_NHNCK_PROFESSIONALS.yaml
 ```
 
-- `atomic_entity`: tên Atomic entity đích — phải khớp với `atomic_entities.csv`.
+- `atomic_entity`: phải khớp với `atomic_entities.csv`.
 - `group`: tier nhóm (`T1`, `T2`, `T3`, `T4`, hoặc `pending`).
-- `lld_file`: tên file `attr_*.csv` tương ứng.
+- `lld_file`: đường dẫn tương đối so với `DataModel/working/Atomic/lld/`.
 
 ## Cấu trúc ref_shared_entity_classifications.csv
 

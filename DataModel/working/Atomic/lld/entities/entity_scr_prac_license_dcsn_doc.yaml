@@ -1,0 +1,226 @@
+schema_type: entity_consolidation
+schema_version: "1.0"
+
+entity:
+  entity_name: Securities Practitioner License Decision Document
+  physical_name: scr_prac_license_dcsn_doc
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  consolidation_status: pending
+  consolidated_by: null
+  consolidated_at: null
+
+sources:
+  - source_system: NHNCK
+    source_table: DECISIONS
+    lld_file: NHNCK/lld_NHNCK_DECISIONS.yaml
+
+consolidation_notes:
+  []
+
+attributes:
+  - attribute_name: Securities Practitioner License Decision Document Id
+    physical_name: scr_prac_license_dcsn_doc_id
+    description: Surrogate key cho quyết định hành chính
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: null
+
+  - attribute_name: Securities Practitioner License Decision Document Code
+    physical_name: scr_prac_license_dcsn_doc_code
+    description: Business key từ PK nguồn DECISIONS.ID
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.ID
+
+  - attribute_name: Decision Number
+    physical_name: dcsn_nbr
+    description: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.DECISION_NUMBER
+
+  - attribute_name: Decision Title
+    physical_name: dcsn_ttl
+    description: Tiêu đề/tên quyết định hành chính
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.TITLE
+
+  - attribute_name: Legal Reference
+    physical_name: lgl_refr
+    description: Căn cứ pháp lý của quyết định
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.REFERENCE
+
+  - attribute_name: Decision Content
+    physical_name: dcsn_cntnt
+    description: Nội dung đầy đủ của quyết định
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.DECISION_CONTENT
+
+  - attribute_name: Decision Signed Date
+    physical_name: dcsn_signed_dt
+    description: Ngày ký ban hành quyết định
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.SIGNED_DATE
+
+  - attribute_name: Signatory Name
+    physical_name: signatory_nm
+    description: Họ tên người ký quyết định
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.SIGNATORY
+
+  - attribute_name: Signatory Position
+    physical_name: signatory_pos
+    description: Chức vụ của người ký quyết định
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.POSITION
+
+  - attribute_name: Issuing Organization Name
+    physical_name: issu_org_nm
+    description: "Tên đơn vị ban hành quyết định (VD: Ủy ban Chứng khoán Nhà nước)"
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.DECISION_UNIT
+
+  - attribute_name: Attachment File Name
+    physical_name: attch_file_nm
+    description: Tên file văn bản đính kèm
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.FILE_NAME
+
+  - attribute_name: Attachment File Path
+    physical_name: attch_file_path
+    description: Đường dẫn lưu trữ file đính kèm
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.FILE_PATH
+
+  - attribute_name: Decision Type Code
+    physical_name: dcsn_tp_code
+    description: Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại / ...)
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi; 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
+    classification_context: DECISION_TYPE
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.DECISION_TYPE_ID
+
+  - attribute_name: Record Status Code
+    physical_name: rcrd_st_code
+    description: Trạng thái hiệu lực của bản ghi quyết định
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: DECISION_STATUS. Values: 1=Hoạt động; 0=Không hoạt động."
+    classification_context: DECISION_STATUS
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.RECORD_STATUS
+
+  - attribute_name: Notification Content
+    physical_name: notf_cntnt
+    description: Nội dung thông báo hoặc yêu cầu bổ sung hồ sơ kèm theo
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.CONTENT
+
+  - attribute_name: Active Flag
+    physical_name: actv_f
+    description: "Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô hiệu)"
+    data_domain: Boolean
+    nullable: false
+    is_primary_key: false
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.DECISIONS: NHNCK.qlnhn.DECISIONS.ACTIVE
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn của bản ghi
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "ETL-derived: NHNCK.DECISIONS."
+    classification_context: "SOURCE_SYSTEM=..."
+    etl_derived_value: NHNCK.DECISIONS
+    source_mappings:
+      NHNCK.DECISIONS: null

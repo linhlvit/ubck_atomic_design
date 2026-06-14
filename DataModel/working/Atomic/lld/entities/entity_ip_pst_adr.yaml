@@ -1,0 +1,211 @@
+schema_type: entity_consolidation
+schema_version: "1.0"
+
+entity:
+  entity_name: Involved Party Postal Address
+  physical_name: ip_pst_adr
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  consolidation_status: pending
+  consolidated_by: null
+  consolidated_at: null
+
+sources:
+  - source_system: NHNCK
+    source_table: UNITS
+    lld_file: NHNCK/lld_NHNCK_UNITS_IP_Postal_Address.yaml
+  - source_system: NHNCK
+    source_table: ORGANIZATIONS
+    lld_file: NHNCK/lld_NHNCK_ORGANIZATIONS_IP_Postal_Address.yaml
+  - source_system: NHNCK
+    source_table: PROFESSIONALS
+    lld_file: NHNCK/lld_NHNCK_PROFESSIONALS_IP_Postal_Address.yaml
+
+consolidation_notes:
+  - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=HEAD_OFFICE) — đặt nullable=true"
+  - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=PERMANENT) — đặt nullable=true"
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: ip_id
+    description: FK đến Regulatory Authority Organization Unit
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.ID
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.ID
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.ID
+
+  - attribute_name: Involved Party Code
+    physical_name: ip_code
+    description: Mã người hành nghề.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.UNIT_CODE
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.ID
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.ID
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: null
+    classification_context: "SOURCE_SYSTEM=..."
+    etl_derived_value: NHNCK.UNITS
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Address Type Code
+    physical_name: adr_tp_code
+    description: Loại địa chỉ — trụ sở chính.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: HEAD_OFFICE
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Address Value
+    physical_name: adr_val
+    description: Địa chỉ trụ sở chính của tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: null
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: NHNCK.qlnhn.UNITS.ADDRESS
+      NHNCK.ORGANIZATIONS: NHNCK.qlnhn.ORGANIZATIONS.ADDRESS
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Address Type Code
+    physical_name: adr_tp_code
+    description: Loại địa chỉ.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    comment: "Scheme: IP_ADDR_TYPE. Nguồn NHNCK chỉ có địa chỉ thường trú (PERMANENT_ADDRESS)."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: PERMANENT
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: null
+
+  - attribute_name: Address Value
+    physical_name: adr_val
+    description: Giá trị địa chỉ.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.qlnhn.PROFESSIONALS.ADDRESS khi PERMANENT_ADDRESS null. ETL xử lý logic này."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PERMANENT_ADDRESS
+
+  - attribute_name: Country Id
+    physical_name: cty_id
+    description: FK đến Geographic Area — quốc gia.
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Geographic Area.Geographic Area Id."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID
+
+  - attribute_name: Country Code
+    physical_name: cty_code
+    description: Mã quốc gia.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country Id."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID
+
+  - attribute_name: Province Id
+    physical_name: prov_id
+    description: FK đến Geographic Area — tỉnh/thành.
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Geographic Area.Geographic Area Id."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID
+
+  - attribute_name: Province Code
+    physical_name: prov_code
+    description: Mã tỉnh/thành.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Id."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID
+
+  - attribute_name: District Id
+    physical_name: dstc_id
+    description: FK đến Geographic Area — quận/huyện.
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    comment: "FK target: Geographic Area.Geographic Area Id."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID
+
+  - attribute_name: District Code
+    physical_name: dstc_code
+    description: Mã quận/huyện.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with District Id."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    source_mappings:
+      NHNCK.UNITS: null
+      NHNCK.ORGANIZATIONS: null
+      NHNCK.PROFESSIONALS: NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID

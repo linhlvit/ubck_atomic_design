@@ -1,0 +1,553 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: NHNCK
+  source_table: ORGANIZATION_REPORTS
+  atomic_entity: Securities Practitioner Organization Employment Report
+  entity_physical_name: scr_prac_org_emp_rpt
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Employer Registration"
+  table_type: Fact Append
+  group: T3
+  design_status: approved
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Securities Practitioner Organization Employment Report Id
+    physical_name: scr_prac_org_emp_rpt_id
+    description: Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key).
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Securities Practitioner Organization Employment Report Code
+    physical_name: scr_prac_org_emp_rpt_code
+    description: Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn.
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.ID
+    comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=NHNCK.ORGANIZATION_REPORTS"
+    etl_derived_value: NHNCK.ORGANIZATION_REPORTS
+
+  - attribute_name: Securities Organization Reference Id
+    physical_name: scr_org_refr_id
+    description: FK đến tổ chức kinh doanh chứng khoán.
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.ORGANIZATION_ID
+    comment: "FK target: Securities Organization Reference.Securities Organization Reference Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Securities Organization Reference Code
+    physical_name: scr_org_refr_code
+    description: Mã tổ chức (denormalized).
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.ORGANIZATION_ID
+    comment: "Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Securities Organization Reference Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Securities Practitioner Id
+    physical_name: scr_prac_id
+    description: FK đến người hành nghề chứng khoán.
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.PROFESSIONAL_ID
+    comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Securities Practitioner Code
+    physical_name: scr_prac_code
+    description: Mã người hành nghề (denormalized).
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.PROFESSIONAL_ID
+    comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Securities Practitioner Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: License Certificate Document Id
+    physical_name: license_ctf_doc_id
+    description: FK đến hồ sơ chứng chỉ hành nghề (nullable).
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID
+    comment: "FK target: License Certificate Document.License Certificate Document Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: License Certificate Document Code
+    physical_name: license_ctf_doc_code
+    description: Mã hồ sơ chứng chỉ hành nghề (denormalized).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID
+    comment: "Lookup pair: License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Certificate Type Code
+    physical_name: ctf_tp_code
+    description: Loại chứng chỉ hành nghề tại thời điểm báo cáo.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.CERTIFICATE_ID
+    comment: "Scheme: CERTIFICATE_TYPE. Map từ FK CERTIFICATE_ID — lưu mã loại chứng chỉ không tạo FK entity."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Parent Report Id
+    physical_name: prn_rpt_id
+    description: "FK self-ref — báo cáo gốc được điều chỉnh (nullable)."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.PARENT_REPORT_ID
+    comment: "FK target: Securities Practitioner Organization Employment Report.Securities Practitioner Organization Employment Report Id. Self-referencing."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Parent Report Code
+    physical_name: prn_rpt_code
+    description: Mã báo cáo gốc (denormalized).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.PARENT_REPORT_ID
+    comment: "Lookup pair: Securities Practitioner Organization Employment Report.Securities Practitioner Organization Employment Report Code. Pair with Parent Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practitioner Name At Report
+    physical_name: prac_nm_at_rpt
+    description: Họ và tên người hành nghề tại thời điểm lập báo cáo (snapshot).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.FULL_NAME
+    comment: Denormalized snapshot từ PROFESSIONALS.FULL_NAME tại thời điểm báo cáo.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practitioner Birth Date At Report
+    physical_name: prac_brth_dt_at_rpt
+    description: Ngày sinh người hành nghề tại thời điểm lập báo cáo (snapshot).
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.BIRTH_DATE
+    comment: Denormalized snapshot.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practitioner Identity Number At Report
+    physical_name: prac_id_nbr_at_rpt
+    description: Số định danh cá nhân tại thời điểm lập báo cáo (snapshot).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.IDENTITY_NUMBER
+    comment: Denormalized snapshot.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practitioner Position At Report
+    physical_name: prac_pos_at_rpt
+    description: Chức vụ của người hành nghề tại tổ chức (snapshot).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.POSITION
+    comment: Denormalized snapshot.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practitioner Department At Report
+    physical_name: prac_dept_at_rpt
+    description: Phòng ban của người hành nghề tại tổ chức (snapshot).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.DEPARTMENT
+    comment: Denormalized snapshot.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practitioner Workplace At Report
+    physical_name: prac_workplace_at_rpt
+    description: Nơi làm việc của người hành nghề tại thời điểm báo cáo (snapshot).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.WORKPLACE
+    comment: Denormalized snapshot.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Certificate Number At Report
+    physical_name: ctf_nbr_at_rpt
+    description: Số chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.CERTIFICATE_NUMBER
+    comment: Denormalized snapshot.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Certificate Issue Date At Report
+    physical_name: ctf_issu_dt_at_rpt
+    description: Ngày cấp chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot).
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.ISSUE_DATE
+    comment: Denormalized snapshot.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Hire Date
+    physical_name: hire_dt
+    description: Ngày tuyển dụng vào tổ chức.
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.HIRE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Termination Date
+    physical_name: tmt_dt
+    description: "Ngày chấm dứt hợp đồng lao động (NULL = đang làm việc)."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.TERMINATION_DATE
+    comment: "NULL = đang làm việc tại tổ chức."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Report Date
+    physical_name: rpt_dt
+    description: Ngày lập báo cáo.
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.REPORT_DATE
+    comment: Business event date.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Disciplines
+    physical_name: disciplines
+    description: Kỷ luật của người hành nghề tại tổ chức.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.DISCIPLINES
+    comment: Lưu dạng văn bản tự do (NCLOB nguồn).
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Description
+    physical_name: dsc
+    description: Mô tả bổ sung cho báo cáo.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Notes
+    physical_name: notes
+    description: Ghi chú nội bộ.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.NOTES
+    comment: Lưu dạng văn bản tự do (NCLOB nguồn).
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Business Department Name
+    physical_name: bsn_dept_nm
+    description: Tên phòng nghiệp vụ UBCKNN phụ trách (denormalized text).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.BUSINESS_DEPARTMENT
+    comment: Lưu tên text — không FK đến Departments vì là text tự do phản ánh cơ cấu tổ chức tại thời điểm báo cáo.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Report File Path
+    physical_name: rpt_file_path
+    description: Đường dẫn file báo cáo đính kèm.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.FILE_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Termination File Path
+    physical_name: tmt_file_path
+    description: Đường dẫn file chấm dứt hợp đồng đính kèm.
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.FILE_PATH_TERMINATION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: External Sync Id
+    physical_name: ext_sync_id
+    description: Mã đồng bộ từ hệ thống ngoài (FMS/SCMS).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.SYNC_ID
+    comment: Metadata đồng bộ liên hệ thống.
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Record Type Code
+    physical_name: rcrd_tp_code
+    description: Phân loại loại bản ghi báo cáo.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.RECORD_TYPE
+    comment: "Scheme: REPORT_TYPE. Nguồn lưu dạng NUMBER — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Organization Status Code At Report
+    physical_name: org_st_code_at_rpt
+    description: Trạng thái tổ chức tại thời điểm lập báo cáo.
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.STATUS_ORGANIZATION
+    comment: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Record Status Code
+    physical_name: rcrd_st_code
+    description: "Trạng thái bản ghi báo cáo (1=Hoạt động)."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.RECORD_STATUS
+    comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Sync Created Timestamp
+    physical_name: sync_crt_tms
+    description: Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn.
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.SYNC_CREATED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Sync Updated Timestamp
+    physical_name: sync_udt_tms
+    description: Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn.
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.SYNC_UPDATED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: crt_tms
+    description: Thời điểm tạo bản ghi trong NHNCK.
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.CREATED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    description: FK đến nhân viên UBCKNN tạo bản ghi.
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.CREATED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    description: Mã nhân viên tạo bản ghi (denormalized).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.CREATED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: udt_tms
+    description: Thời điểm cập nhật bản ghi gần nhất.
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.UPDATED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    description: FK đến nhân viên UBCKNN cập nhật bản ghi.
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.UPDATED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    description: Mã nhân viên cập nhật bản ghi (denormalized).
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: pending
+    source_columns:
+      - NHNCK.qlnhn.ORGANIZATION_REPORTS.UPDATED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
+    classification_context: null
+    etl_derived_value: null
