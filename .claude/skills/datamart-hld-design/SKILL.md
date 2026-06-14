@@ -51,6 +51,16 @@ Phase 2+: Chờ user duyệt HLD trước khi chuyển sang datamart-lld-design
 ## BƯỚC 1 — ĐỌC INPUT (thứ tự bắt buộc)
 
 1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`:
+
+   > ⚠️ **Đọc CSV đúng cách:** File BA chứa cell multi-line (SQL, mô tả dài) — mỗi newline trong cell tạo thêm dòng vật lý. Đọc raw lines sẽ cho số dòng sai (VD: 452 chỉ tiêu nhưng 7358 dòng vật lý). **Bắt buộc dùng `csv.reader` với `delimiter=';'`** để parse đúng quoted multiline cells. STT trong file là số thứ tự nhóm/tab — mỗi STT = 1 nhóm duy nhất.
+   >
+   > ```python
+   > import csv, io
+   > with open('BA_analyst_{MODULE}.csv', encoding='utf-8-sig') as f:
+   >     content = f.read()
+   > reader = csv.reader(io.StringIO(content), delimiter=';')
+   > rows = list(reader)
+   > ```
    - `Phân loại = Chiều` → slicer/filter dimension — **phải có KPI_ID**, không được bỏ qua
    - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
    - Ghi nhận `Trạng thái mapping` — phân biệt Done/Doing/Pending
@@ -115,10 +125,14 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file và yêu cầ
 - [ ] Dimension seed từ Classification Value: chỉ vẽ node `Classification Value` trong Atomic
 
 ### Section 2 — Tổng quan báo cáo
-- [ ] Hierarchy: `### Tab` → `#### Nhóm` → `##### PENDING/READY` (chỉ khi có cả 2)
+- [ ] Hierarchy: `### Tab` → `#### Nhóm` → `##### PENDING/READY` (chỉ khi có cả 2) — tên `#### Nhóm` phải copy chính xác từ phần sau dấu `/` trong cột **Dashboard/báo cáo** của BA, kèm số STT. Không đặt tên mô tả riêng. Ví dụ đúng: `#### Nhóm 8 - Chỉ số chung`; sai: `#### Nhóm Thanh khoản thị trường`
 - [ ] Block READY có đủ: Phân loại / Atomic / Mockup / Source / Bảng KPI / Star Schema / Lineage Mart → Báo cáo / Bảng grain
+- [ ] **Bảng KPI READY chỉ có 1 bảng duy nhất** — KHÔNG tách thành `*KPI mới:*` và `*KPI reuse:*` thành 2 bảng riêng. Reuse được liệt kê cùng bảng với KPI mới; thêm cột "Ghi chú" để đánh dấu nguồn gốc reuse
+- [ ] **Lineage Mart → Báo cáo chỉ vẽ từ Datamart lên báo cáo** — KHÔNG vẽ Atomic entities trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational (physical name trong GOLD layer), không phải Atomic entity
 - [ ] Block PENDING có đủ: KPI liên quan / Lý do / Atomic cần bổ sung / Mart dự kiến (chỉ tên + grain)
 - [ ] Bảng KPI PENDING: chỉ 4 cột (KPI ID / Tên KPI / Tính chất / Trạng thái) — không có Đơn vị, Công thức
+- [ ] **KPI reuse trong PENDING thêm vào bảng 4 cột bình thường** — KHÔNG tách bảng reuse riêng. Cột Tên KPI ghi thêm "(reuse từ Nhóm M)" để phân biệt. "KPI liên quan" header phải bao gồm cả ID reuse này
+- [ ] **KPI Done (sub-component) đã khai sinh ở Nhóm trước → reuse vào bảng KPI READY** — KHÔNG để trong PENDING header. Sub-component Done = thuộc READY, sub-component Pending = thuộc PENDING
 - [ ] Bảng PENDING không có Star Schema, erDiagram, Lineage flowchart
 - [ ] Block PENDING không tạo Open Issue (Section 4) về grain/schema/logic — chỉ ghi nhận Atomic cần bổ sung
 - [ ] KPI ID đã được khai sinh trong Section 2 trước khi xuất hiện ở file khác
@@ -126,7 +140,10 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file và yêu cầ
 - [ ] Chiều dùng như ETL filter nội bộ (không hiển thị UI) → ghi rõ trong cột Ghi chú: "dùng trong formula KPI K_X_N" — vẫn phải có KPI_ID
 - [ ] Cấm dùng shorthand "xem Nhóm N" thay thế bảng KPI — nếu nhóm reuse KPI từ nhóm khác, liệt kê explicit từng KPI_ID kèm ghi chú nguồn gốc: "Reuse từ Nhóm N"
 - [ ] Đọc toàn bộ BA file trước khi viết bảng KPI — đảm bảo không sót dòng nào có `Trạng thái mapping ∈ {Done, Doing, Pending}`
-- [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse bằng bảng riêng (xem format trong `reference/section_structure.md`)
+- [ ] **Mọi dòng Done không note "Trùng" → bắt buộc có KPI_ID trong nhóm:** Nếu concept đã khai ở nhóm khác → reuse explicit trong bảng KPI nhóm này, không được im lặng bỏ qua
+- [ ] **Dòng Done là sub-component của KPI phức tạp → vẫn cấp KPI_ID riêng:** Không gộp im lặng sub-component vào KPI cha. Ngoại lệ duy nhất: cột Đánh giá ghi "Trùng" → reuse ID đã có
+- [ ] **Cấm thêm KPI không có dòng BA tương ứng:** Bảng KPI READY chỉ chứa KPI có dòng BA trong nhóm đó (mới hoặc reuse). Không thêm KPI từ suy luận nghiệp vụ dù hợp lý
+- [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse **trong cùng bảng KPI 6 cột duy nhất** — điền cột Ghi chú = "Reuse từ Nhóm X". KHÔNG tạo bảng reuse riêng.
 - [ ] **Đồng bộ "KPI liên quan" trong PENDING header:** Sau khi hoàn thiện bảng KPI PENDING, kiểm tra lại dòng `**KPI liên quan:**` — phải khớp chính xác với tất cả ID xuất hiện trong bảng (cả mới lẫn reuse). Nếu bảng KPI thay đổi → cập nhật dòng này ngay
 
 ### Section 3 — Mô hình tổng thể

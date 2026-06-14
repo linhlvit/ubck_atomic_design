@@ -1595,7 +1595,7 @@ flowchart LR
 
 ### Tab Dòng tiền & Cơ cấu nhà đầu tư
 
-#### Nhóm Chỉ số chung
+#### Nhóm 13 - Chỉ số chung
 
 > Phân loại: **Phân tích**
 > Atomic: `Securities Trade` ← OrderTrade.Trade_HOSE, OrderTrade.Trade_HNX — **READY**
@@ -1624,35 +1624,23 @@ flowchart LR
 
 **Bảng KPI:**
 
-*KPI mới:*
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
-|---|---|---|---|---|
-| K_PTTT_128 | Nhóm nhà đầu tư | — | Chiều | Phân loại nhóm NĐT: NĐTNN / Tự doanh / Tổ chức trong nước / Cá nhân trong nước |
-| K_PTTT_129 | Dòng tiền ròng nhóm NĐT NĐTNN | Tỷ VNĐ | Phái sinh | Σ GTGD mua NĐTNN − Σ GTGD bán NĐTNN trong ngày |
-| K_PTTT_130 | Dòng tiền ròng nhóm NĐT Tự doanh | Tỷ VNĐ | Phái sinh | Σ GTGD mua Tự doanh − Σ GTGD bán Tự doanh trong ngày |
-| K_PTTT_131 | Dòng tiền ròng nhóm NĐT Tổ chức trong nước | Tỷ VNĐ | Phái sinh | Σ GTGD mua Tổ chức trong nước − Σ GTGD bán Tổ chức trong nước trong ngày |
-| K_PTTT_132 | Dòng tiền ròng nhóm NĐT Cá nhân trong nước | Tỷ VNĐ | Phái sinh | Σ GTGD mua Cá nhân trong nước − Σ GTGD bán Cá nhân trong nước trong ngày |
-| K_PTTT_133 | GTGD mua NĐTNN | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp) từ Securities Trade: Buy_Foreigner_Investor_Type IN ('10','20'), Market_ID IN ('STO','STX','UPX') |
-| K_PTTT_134 | GTGD bán NĐTNN | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp) từ Securities Trade: Sell_Foreigner_Investor_Type IN ('10','20') |
-| K_PTTT_135 | GTGD mua Tự doanh | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp): Buy_Client_House_Classification IN ('30') |
-| K_PTTT_136 | GTGD bán Tự doanh | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp): Sell_Client_House_Classification IN ('30') |
-| K_PTTT_137 | GTGD mua Tổ chức trong nước | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp): Buy_Investor_Classification_Code ≠ '8000', Buy_Client_House = '10' |
-| K_PTTT_138 | GTGD bán Tổ chức trong nước | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp): Sell_Investor_Classification_Code ≠ '8000', Sell_Client_House = '10' |
-| K_PTTT_139 | GTGD mua Cá nhân trong nước | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp): Buy_Investor_Classification_Code = '8000' |
-| K_PTTT_140 | GTGD bán Cá nhân trong nước | Tỷ VNĐ | Phái sinh | Σ (KLGD × Giá khớp): Sell_Investor_Classification_Code = '8000' |
-| K_PTTT_141 | KLGD | Cổ phiếu | Cơ sở | Số lượng chứng khoán khớp lệnh (Execution Volume / Trade Quantity) từ Securities Trade |
-| K_PTTT_142 | Giá khớp | VNĐ | Cơ sở | Giá thực hiện khớp lệnh (Execution Price / Trade Price) từ Securities Trade |
-| K_PTTT_143 | Tỷ trọng GTGD (%) Cá nhân trong nước | % | Phái sinh | GTGD mua Cá nhân trong nước / Tổng GTGD toàn thị trường × 100 |
-| K_PTTT_144 | Tỷ trọng GTGD (%) Cá nhân nước ngoài | % | Phái sinh | GTGD mua NĐTNN cá nhân / Tổng GTGD toàn thị trường × 100 |
-| K_PTTT_145 | Tỷ trọng GTGD (%) Tổ chức trong nước | % | Phái sinh | GTGD mua Tổ chức trong nước / Tổng GTGD toàn thị trường × 100 |
-| K_PTTT_146 | Tỷ trọng GTGD (%) Tổ chức nước ngoài | % | Phái sinh | GTGD mua NĐTNN tổ chức / Tổng GTGD toàn thị trường × 100 |
-
-*KPI reuse (không cấp ID mới):*
-
-| KPI ID | Tên KPI | Ghi chú |
-|---|---|---|
-| K_PTTT_106 | Thời gian thống kê (Ngày) | Reuse từ Nhóm Thanh khoản thị trường |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
+|---|---|---|---|---|---|
+| K_PTTT_106 | Thời gian thống kê (Ngày) | Ngày | Chiều | Trade Date từ Trade_HOSE/HNX — filter Market ID IN ('STO','STX','UPX') | Reuse từ Nhóm 8 - Chỉ số chung |
+| K_PTTT_129 | Dòng tiền ròng nhóm NĐT NĐTNN | Tỷ VNĐ | Phái sinh | Σ GTGD mua NĐTNN − Σ GTGD bán NĐTNN; Buy/Sell Foreigner Investor Type IN ('10','20'), Market ID IN ('STO','STX','UPX') | |
+| K_PTTT_130 | Dòng tiền ròng nhóm NĐT Tự doanh | Tỷ VNĐ | Phái sinh | Σ GTGD mua Tự doanh − Σ GTGD bán Tự doanh; Buy/Sell Client/House Classification Code IN ('30'), Market ID IN ('STO','STX','UPX') | |
+| K_PTTT_131 | Dòng tiền ròng nhóm NĐT Tổ chức trong nước | Tỷ VNĐ | Phái sinh | Σ GTGD mua Tổ chức TN − Σ GTGD bán Tổ chức TN; Buy/Sell Investor Classification Code <> '8000', Market ID IN ('STO','STX','UPX') | |
+| K_PTTT_132 | Dòng tiền ròng nhóm NĐT Cá nhân trong nước | Tỷ VNĐ | Phái sinh | Σ GTGD mua Cá nhân TN − Σ GTGD bán Cá nhân TN; Buy/Sell Investor Classification Code = '8000', Market ID IN ('STO','STX','UPX') | |
+| K_PTTT_133 | GTGD mua NĐTNN | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Buy Foreigner Investor Type IN ('10','20') | |
+| K_PTTT_134 | GTGD bán NĐTNN | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Sell Foreigner Investor Type IN ('10','20') | |
+| K_PTTT_135 | GTGD mua NĐT Tự doanh | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Buy Client/House Classification Code IN ('30') | |
+| K_PTTT_136 | GTGD bán NĐT Tự doanh | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Sell Client/House Classification Code IN ('30') | |
+| K_PTTT_137 | GTGD mua NĐT Tổ chức trong nước | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Buy Investor Classification Code <> '8000' | |
+| K_PTTT_138 | GTGD bán NĐT Tổ chức trong nước | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Sell Investor Classification Code <> '8000' | |
+| K_PTTT_139 | GTGD mua NĐT Cá nhân trong nước | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Buy Investor Classification Code = '8000' | |
+| K_PTTT_140 | GTGD bán NĐT Cá nhân trong nước | Tỷ VNĐ | Phái sinh | Σ (Execution Volume × Execution Price) từ Trade_HOSE + Σ (Trade Quantity × Trade Price) từ Trade_HNX; Sell Investor Classification Code = '8000' | |
+| K_PTTT_141 | KLGD | Cổ phiếu | Cơ sở | Σ Execution Volume từ Trade_HOSE + Σ Trade Quantity từ Trade_HNX, Market ID IN ('STO','STX','UPX') | |
+| K_PTTT_142 | Giá khớp | VNĐ | Cơ sở | Execution Price từ Trade_HOSE / Trade Price từ Trade_HNX, Market ID IN ('STO','STX','UPX') | |
 
 **Star Schema:**
 
@@ -1723,24 +1711,19 @@ flowchart LR
 
 **Bảng KPI:**
 
-*KPI reuse từ Nhóm Chỉ số chung (không cấp ID mới):*
+*KPI reuse từ Nhóm 13 - Chỉ số chung (không cấp ID mới):*
 
 | KPI ID | Tên KPI | Ghi chú |
 |---|---|---|
-| K_PTTT_106 | Thời gian thống kê (Ngày) | Reuse từ Nhóm Thanh khoản thị trường |
-| K_PTTT_128 | Nhóm nhà đầu tư | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_133 | GTGD mua NĐTNN | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_134 | GTGD bán NĐTNN | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_135 | GTGD mua Tự doanh | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_136 | GTGD bán Tự doanh | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_137 | GTGD mua Tổ chức trong nước | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_138 | GTGD bán Tổ chức trong nước | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_139 | GTGD mua Cá nhân trong nước | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_140 | GTGD bán Cá nhân trong nước | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_143 | Tỷ trọng GTGD (%) Cá nhân trong nước | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_144 | Tỷ trọng GTGD (%) Cá nhân nước ngoài | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_145 | Tỷ trọng GTGD (%) Tổ chức trong nước | Reuse từ Nhóm Chỉ số chung |
-| K_PTTT_146 | Tỷ trọng GTGD (%) Tổ chức nước ngoài | Reuse từ Nhóm Chỉ số chung |
+| K_PTTT_106 | Thời gian thống kê (Ngày) | Reuse từ Nhóm 8 - Chỉ số chung |
+| K_PTTT_133 | GTGD mua NĐTNN | Reuse từ Nhóm 13 - Chỉ số chung |
+| K_PTTT_134 | GTGD bán NĐTNN | Reuse từ Nhóm 13 - Chỉ số chung |
+| K_PTTT_135 | GTGD mua NĐT Tự doanh | Reuse từ Nhóm 13 - Chỉ số chung |
+| K_PTTT_136 | GTGD bán NĐT Tự doanh | Reuse từ Nhóm 13 - Chỉ số chung |
+| K_PTTT_137 | GTGD mua NĐT Tổ chức trong nước | Reuse từ Nhóm 13 - Chỉ số chung |
+| K_PTTT_138 | GTGD bán NĐT Tổ chức trong nước | Reuse từ Nhóm 13 - Chỉ số chung |
+| K_PTTT_139 | GTGD mua NĐT Cá nhân trong nước | Reuse từ Nhóm 13 - Chỉ số chung |
+| K_PTTT_140 | GTGD bán NĐT Cá nhân trong nước | Reuse từ Nhóm 13 - Chỉ số chung |
 
 **Star Schema:**
 
@@ -1895,8 +1878,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Ghi chú |
 |---|---|---|
-| K_PTTT_106 | Thời gian thống kê (Ngày) | Reuse từ Nhóm Thanh khoản thị trường |
-| K_PTTT_128 | Nhóm nhà đầu tư | Reuse từ Nhóm Chỉ số chung |
+| K_PTTT_106 | Thời gian thống kê (Ngày) | Reuse từ Nhóm 8 - Chỉ số chung |
 
 **Star Schema:**
 

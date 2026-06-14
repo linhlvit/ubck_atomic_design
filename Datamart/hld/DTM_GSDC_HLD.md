@@ -22,18 +22,18 @@ Phục vụ chiều nhận diện DN trên toàn bộ các màn hình.
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1[IDS.company_profiles]
-        S2[IDS.company_detail]
+        IDS_company_profiles["IDS.company_profiles"]
+        IDS_company_detail["IDS.company_detail"]
     end
     subgraph SIL["Atomic"]
-        A1[Public Company]
+        Public_Company["Public Company"]
     end
     subgraph GOLD["Datamart"]
-        D1[Public Company Dimension]
+        pblc_co_dim["Public Company Dimension"]
     end
-    S1 --> A1
-    S2 --> A1
-    A1 --> D1
+    IDS_company_profiles --> Public_Company
+    IDS_company_detail --> Public_Company
+    Public_Company --> pblc_co_dim
 ```
 
 ### Cụm 2 — Báo cáo tài chính & Nộp báo cáo
@@ -43,33 +43,34 @@ Phục vụ toàn bộ KPI tài chính tổng hợp và theo ngành (Màn hình 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S3[IDS.company_data]
-        S4[IDS.data]
-        S5[IDS.report_catalog]
-        S6[IDS.rrow]
-        S7[IDS.rcol]
+        IDS_company_profiles["IDS.company_profiles"]
+        IDS_company_detail["IDS.company_detail"]
+        IDS_company_data["IDS.company_data"]
+        IDS_data["IDS.data"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
-        A2[Public Company Report Submission]
-        A3[Public Company Financial Report Value]
-        A4[Financial Report Catalog]
-        A5[Financial Report Row Template]
-        A6[Financial Report Column Template]
+        Public_Company["Public Company"]
+        Public_Company_Report_Submission["Public Company Report Submission"]
+        Public_Company_Financial_Report_Value["Public Company Financial Report Value"]
+        Calendar_Date["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        D2[Fact Public Company Financial Summary Snapshot]
-        D1[Public Company Dimension]
-        D8[Calendar Date Dimension]
+        fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"]
+        pblc_co_dim["Public Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
-    S3 --> A2
-    S4 --> A3
-    S5 --> A4
-    S6 --> A5
-    S7 --> A6
-    A2 --> D2
-    A3 --> D2
-    D1 --> D2
-    D8 --> D2
+    IDS_company_profiles --> Public_Company
+    IDS_company_detail --> Public_Company
+    IDS_company_data --> Public_Company_Report_Submission
+    IDS_data --> Public_Company_Financial_Report_Value
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
+    Public_Company --> pblc_co_dim
+    Public_Company_Report_Submission --> fct_pblc_co_fnc_sumry_snpst
+    Public_Company_Financial_Report_Value --> fct_pblc_co_fnc_sumry_snpst
+    Calendar_Date --> cdr_dt_dim
+    pblc_co_dim --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 ### Cụm 3 — Chi tiết BCTC từng CTDC & Danh mục template (DB21–32 + DB39)
@@ -79,38 +80,48 @@ Phục vụ Data Explorer tra cứu giá trị từng chỉ tiêu BCTC theo CTDC
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S3b[IDS.company_data]
-        S4b[IDS.data]
-        S5b[IDS.report_catalog]
-        S6b[IDS.rrow]
-        S7b[IDS.rcol]
+        IDS_company_profiles_b["IDS.company_profiles"]
+        IDS_company_detail_b["IDS.company_detail"]
+        IDS_company_data_b["IDS.company_data"]
+        IDS_data_b["IDS.data"]
+        IDS_report_catalog_b["IDS.report_catalog"]
+        IDS_rrow_b["IDS.rrow"]
+        IDS_rcol_b["IDS.rcol"]
+        ECAT_ECAT_29_HolidayInfo_b["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
-        A2b[Public Company Report Submission]
-        A3b[Public Company Financial Report Value]
-        A4b[Financial Report Catalog]
-        A5b[Financial Report Row Template]
-        A6b[Financial Report Column Template]
+        Public_Company_b["Public Company"]
+        Public_Company_Report_Submission_b["Public Company Report Submission"]
+        Public_Company_Financial_Report_Value_b["Public Company Financial Report Value"]
+        Financial_Report_Catalog_b["Financial Report Catalog"]
+        Financial_Report_Row_Template_b["Financial Report Row Template"]
+        Financial_Report_Column_Template_b["Financial Report Column Template"]
+        Calendar_Date_b["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        D10[Fact Public Company Financial Report Value]
-        D9[Financial Report Catalog Dimension]
-        D1b[Public Company Dimension]
-        D8b[Calendar Date Dimension]
+        fct_pblc_co_fnc_rpt_val["Fact Public Company Financial Report Value"]
+        fnc_rpt_ctlg_dim["Financial Report Catalog Dimension"]
+        pblc_co_dim_b["Public Company Dimension"]
+        cdr_dt_dim_b["Calendar Date Dimension"]
     end
-    S3b --> A2b
-    S4b --> A3b
-    S5b --> A4b
-    S6b --> A5b
-    S7b --> A6b
-    A3b --> D10
-    A2b --> D10
-    A4b --> D9
-    A5b --> D9
-    A6b --> D9
-    D1b --> D10
-    D8b --> D10
-    D9 --> D10
+    IDS_company_profiles_b --> Public_Company_b
+    IDS_company_detail_b --> Public_Company_b
+    IDS_company_data_b --> Public_Company_Report_Submission_b
+    IDS_data_b --> Public_Company_Financial_Report_Value_b
+    IDS_report_catalog_b --> Financial_Report_Catalog_b
+    IDS_rrow_b --> Financial_Report_Row_Template_b
+    IDS_rcol_b --> Financial_Report_Column_Template_b
+    ECAT_ECAT_29_HolidayInfo_b --> Calendar_Date_b
+    Public_Company_b --> pblc_co_dim_b
+    Public_Company_Financial_Report_Value_b --> fct_pblc_co_fnc_rpt_val
+    Public_Company_Report_Submission_b --> fct_pblc_co_fnc_rpt_val
+    Financial_Report_Catalog_b --> fnc_rpt_ctlg_dim
+    Financial_Report_Row_Template_b --> fnc_rpt_ctlg_dim
+    Financial_Report_Column_Template_b --> fnc_rpt_ctlg_dim
+    Calendar_Date_b --> cdr_dt_dim_b
+    pblc_co_dim_b --> fct_pblc_co_fnc_rpt_val
+    cdr_dt_dim_b --> fct_pblc_co_fnc_rpt_val
+    fnc_rpt_ctlg_dim --> fct_pblc_co_fnc_rpt_val
 ```
 
 ### Cụm 4 — Điểm chấm & Xếp loại CTDC *(PENDING)*
@@ -193,7 +204,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    D1[Public Company Dimension] --> R1[Bảng Xếp hạng — Cột Tên DN và Mã DN]
+    pblc_co_dim["Public Company Dimension"] --> R1["Bảng Xếp hạng — Cột Tên DN và Mã DN"]
 ```
 
 **Bảng grain:**
@@ -416,11 +427,11 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    F1[Fact Public Company Financial Summary Snapshot] --> R1[Thẻ Số doanh nghiệp]
-    F1 --> R2[Thẻ Tỷ lệ nộp BCTC]
-    F1 --> R3[Thẻ Công ty báo lãi]
-    D1[Public Company Dimension] --> F1
-    D8[Calendar Date Dimension] --> F1
+    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R1["Thẻ Số doanh nghiệp"]
+    fct_pblc_co_fnc_sumry_snpst --> R2["Thẻ Tỷ lệ nộp BCTC"]
+    fct_pblc_co_fnc_sumry_snpst --> R3["Thẻ Công ty báo lãi"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 **Bảng grain:**
@@ -481,10 +492,10 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    F1[Fact Public Company Financial Summary Snapshot] --> R4[Nhóm thẻ KPI tài chính tổng hợp]
-    F1 --> R5[YoY — tính tại query layer từ 2 kỳ]
-    D1[Public Company Dimension] --> F1
-    D8[Calendar Date Dimension] --> F1
+    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R4["Nhóm thẻ KPI tài chính tổng hợp"]
+    fct_pblc_co_fnc_sumry_snpst --> R5["YoY — tính tại query layer từ 2 kỳ"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 **Bảng grain:**
@@ -530,9 +541,9 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    F1[Fact Public Company Financial Summary Snapshot] --> R6[Bảng Thống kê theo ngành — BCĐKT + KQKD + Tỷ số tài chính]
-    D1[Public Company Dimension] --> F1
-    D8[Calendar Date Dimension] --> F1
+    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R6["Bảng Thống kê theo ngành — BCĐKT + KQKD + Tỷ số tài chính"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 **Bảng grain:**
@@ -564,9 +575,9 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    F1[Fact Public Company Financial Summary Snapshot] --> R9[Thẻ CTDC chưa niêm yết]
-    D1[Public Company Dimension] --> F1
-    D8[Calendar Date Dimension] --> F1
+    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R9["Thẻ CTDC chưa niêm yết"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 **Bảng grain:**
@@ -750,10 +761,10 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 ```mermaid
 flowchart LR
-    F3[Fact Public Company Financial Report Value] --> R21[STT 21 — BCĐKT DN thông thường]
-    D1b[Public Company Dimension] --> F3
-    D8b[Calendar Date Dimension] --> F3
-    D9[Financial Report Catalog Dimension] --> F3
+    fct_pblc_co_fnc_rpt_val["Fact Public Company Financial Report Value"] --> R21["STT 21 — BCĐKT DN thông thường"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_rpt_val
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_rpt_val
+    fnc_rpt_ctlg_dim["Financial Report Catalog Dimension"] --> fct_pblc_co_fnc_rpt_val
 ```
 
 **Bảng grain:**
@@ -1550,10 +1561,10 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    F3[Fact Public Company Financial Report Value] --> R39[STT 39 — Hệ số tài chính cơ bản per CTDC]
-    D1b[Public Company Dimension] --> F3
-    D8b[Calendar Date Dimension] --> F3
-    D9[Financial Report Catalog Dimension] --> F3
+    fct_pblc_co_fnc_rpt_val["Fact Public Company Financial Report Value"] --> R39["STT 39 — Hệ số tài chính cơ bản per CTDC"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_rpt_val
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_rpt_val
+    fnc_rpt_ctlg_dim["Financial Report Catalog Dimension"] --> fct_pblc_co_fnc_rpt_val
 ```
 
 **Bảng grain:**
@@ -1596,9 +1607,9 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    F1[Fact Public Company Financial Summary Snapshot] --> R40[BC01.1 — Số DN BCTC DN báo lãi theo sàn]
-    D1[Public Company Dimension] --> F1
-    D8[Calendar Date Dimension] --> F1
+    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R40["BC01.1 — Số DN BCTC DN báo lãi theo sàn"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 **Bảng grain:**
@@ -1719,9 +1730,9 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    F1[Fact Public Company Financial Summary Snapshot] --> R43[BC22 — Tổng hợp tài chính theo sàn + YoY]
-    D1[Public Company Dimension] --> F1
-    D8[Calendar Date Dimension] --> F1
+    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R43["BC22 — Tổng hợp tài chính theo sàn + YoY"]
+    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 **Bảng grain:**

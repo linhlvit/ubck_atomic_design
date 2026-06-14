@@ -47,9 +47,11 @@ Nếu Nhóm chỉ có READY hoặc chỉ có PENDING → không cần header `##
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
-|---|---|---|---|---|
-| K_{MODULE}_N | ... | ... | Cơ sở / Phái sinh / Chiều | ... |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
+|---|---|---|---|---|---|
+| K_{MODULE}_N | ... | ... | Cơ sở / Phái sinh / Chiều | ... | *(để trống nếu KPI mới; điền "Reuse từ Nhóm X" nếu reuse)* |
+
+> ⚠️ **1 bảng duy nhất cho cả KPI mới lẫn reuse** — KHÔNG tách thành `*KPI mới:*` / `*KPI reuse:*` riêng biệt.
 
 **Star Schema:**
 
@@ -64,6 +66,8 @@ erDiagram
 flowchart LR
     ...
 ```
+
+> ⚠️ **Chỉ vẽ từ GOLD (Datamart) lên báo cáo** — KHÔNG vẽ Atomic entities (SIL layer) trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational thuộc GOLD layer.
 
 **Bảng grain:**
 
@@ -88,20 +92,15 @@ flowchart LR
 
 **Bảng KPI PENDING:**
 
-*KPI mới (chưa khai sinh ở Nhóm trước):*
-
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
 | K_{MODULE}_N | ... | Cơ sở / Phái sinh / Chiều | PENDING |
-
-*KPI reuse từ Nhóm M (không cấp ID mới):*   ← chỉ thêm bảng này nếu có reuse
-
-| KPI ID | Tên KPI | Ghi chú |
-|---|---|---|
-| K_{MODULE}_X | ... | Reuse từ Nhóm M |
+| K_{MODULE}_X | ... (reuse từ Nhóm M) | Cơ sở / Phái sinh | PENDING |
 ```
 
-❌ Bảng KPI PENDING chỉ có **4 cột** (KPI mới) — KHÔNG có Đơn vị, Công thức.
+> ⚠️ **KPI reuse trong PENDING thêm vào bảng 4 cột bình thường** — KHÔNG tách thành bảng reuse riêng. Cột Tên KPI ghi thêm "(reuse từ Nhóm M)" để phân biệt nguồn gốc.
+
+❌ Bảng KPI PENDING chỉ có **4 cột** — KHÔNG có Đơn vị, Công thức.
 ❌ KHÔNG thiết kế Star Schema, erDiagram, Lineage cho block PENDING.
 ❌ KHÔNG tạo Open Issue về grain/schema/logic cho bảng PENDING — chỉ issue xác nhận thiếu Atomic.
 

@@ -1983,7 +1983,7 @@ s.tradingdate,
 s.closePrice AS gia_dong_cua,
 s.FloorCode
 FROM StockInfor s
-WHERE s.tradingdate = :input_date";;;;;
+WHERE s.tradingdate = :input_date";Trùng dòng 9;;;;
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;Giá đóng cửa ngày P(t-1);Giá đóng cửa ngày t-1;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate;"tradingdate = ngày giao dịch trước :input_date; FloorCode IN ('02','04','10')";"SELECT 
 s.symbol,
 s.tradingdate,
@@ -1995,7 +1995,7 @@ SELECT MAX(tradingdate)
 FROM StockInfor
 WHERE tradingdate < :input_date
 );
-";;;;;
+";Trùng dòng 10;;;;
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;"Cấu hình ngưỡng trạng thái của Chỉ số độ căng margin (Margin tension)
 ";Cấu hình ngưỡng trạng thái của Chỉ số độ căng margin (Margin tension);Dashboard;Chỉ tiêu phái sinh;Khó;;Kho dữ liệu;x;;;Done;Kho dữ liệu;DW;;;;;;;;
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;"Chỉ số độ căng margin (Margin tension)
@@ -2848,7 +2848,7 @@ Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) """;;;;;;;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Tổng Vốn hóa (MarketCapi);ΣMarketCap toàn ngành;Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Ngành;MDDS, MSS;x;x;;Pending;"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;;;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Vốn hóa (MarketCapi);MarketCapi = Giá đóng cửa * KL CK lưu hành;Dashboard;Chỉ tiêu phái sinh;TB;Thời gian, Ngành;MDDS, MSS;x;x;;Pending;"Thông tin thị trường
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Vốn hóa (MarketCapi);MarketCapi = Giá đóng cửa * Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu phái sinh;TB;Thời gian, Ngành;MDDS, MSS;x;x;;Pending;"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;;;;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá đóng cửa;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT
 s.symbol,
@@ -2857,7 +2857,7 @@ s.closePrice AS gia_dong_cua,
 s.FloorCode
 FROM StockInfor s
 WHERE s.tradingdate = :input_date";;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;KL CK lưu hành;KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MSS;x;x;;Pending;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);;;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;KL CK lưu hành;Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MSS;x;x;;Pending;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);;;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;StressScore từng mã trong ngành là tổng hợp trọng số của 3 yếu tố chính;StressScorei = (W₁ × Pdrawdown_i) + (W₂ × Pvolatility_i) + (W₃ × Pselling_i);Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;;"StockInfor (PriceBoardAPI) 
 Trade_HOSE / Trade_HNX";"StockInfor.closePrice, StockInfor.high, StockInfor.totalTrading
 Trade_HOSE.[Execution - Volume], [Sell - Invest Type]
@@ -2965,7 +2965,7 @@ AND tradingdate < cp.tradingdate
 )
 WHERE cp.tradingdate = :input_date
 AND cp.FloorCode IN ('02', '04', '10');";;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá đóng cửa ngày P(t);Giá đóng cửa ngày t;Dashboard;Chỉ tiêu cơ sở;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);"StockInfor.symbol
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá đóng cửa ngày P(t);Giá đóng cửa ngày t;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);"StockInfor.symbol
 StockInfor.closePrice
 StockInfor.tradingdate";"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT
 s.symbol,
@@ -2974,8 +2974,8 @@ s.closePrice AS gia_dong_cua,
 s.FloorCode
 FROM StockInfor s
 WHERE s.tradingdate = :input_date
-AND s.FloorCode IN ('02','04','10')";;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá đóng cửa ngày P(t-1);Giá đóng cửa ngày t-1;Dashboard;Chỉ tiêu cơ sở;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);"StockInfor.symbol
+AND s.FloorCode IN ('02','04','10')";Trùng dòng 9;;;;
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá đóng cửa ngày P(t-1);Giá đóng cửa ngày t-1;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);"StockInfor.symbol
 StockInfor.closePrice
 StockInfor.tradingdate";"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT 
 s.symbol,
@@ -2990,8 +2990,8 @@ SELECT MAX(tradingdate)
 FROM StockInfor
 WHERE tradingdate < :input_date
 );
-";;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Lợi suất trung bình 30 phiên (μ);R̄ = Σ(Ri)/30;Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);"StockInfor.symbol
+";Trùng dòng 10;;;;
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Lợi suất trung bình 30 phiên (μ);R̄ = Σ(Ri)/30;Dashboard;Chỉ tiêu phái sinh;Trùng;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);"StockInfor.symbol
 StockInfor.closePrice
 StockInfor.tradingdate";"tradingdate <= :input_date; 
 FloorCode IN ('02','04','10');
@@ -3024,7 +3024,7 @@ WHERE rn <= 30
 )
 GROUP BY cp.symbol;
 
-";Trùng;;;;
+";Trùng dòng 11;;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Selling Pressure (Pselling_i);"Pselling_i = SellVolume_i/TotalVolume_i
 ​";Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
 - Hose: 
@@ -3108,52 +3108,21 @@ GROUP BY sub.indexCode, sub.ngay_gd
 ON total.ma_chi_so = sell.ma_chi_so
 AND total.ngay_gd = sell.ngay_gd;";Logic xác định 'bán chủ động' (aggressor) cần thêm thông tin từ sổ lệnh (Order book) để so sánh thứ tự thời gian. Đây là cách đơn giản hóa: dùng phía bán trong Trade_HOSE/HNX.;;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;SellVolume_i;"Khối lượng bán chủ động (Thông tin sổ lệnh đặt, sổ lệnh khớp từ SGDCK để xác định khối lượng bán chủ động)
-";Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";Market ID in ( 'STO', 'STX', 'UPX');"SELECT
-sub.indexCode AS ma_chi_so,
-sub.ngay_gd,
-SUM(sub.kl_gd) AS tong_kl_gd,
-SUM(sub.gt_gd) AS tong_gt_gd
-FROM (
-SELECT
-idx.indexCode,
-t.[Trade Date] AS ngay_gd,
-t.[Execution - Volume] AS kl_gd,
-t.[Execution - Value] AS gt_gd
-FROM Trade_HOSE t
-JOIN CSIDXInfor idx
-ON t.Symbol = idx.symbol
-AND t.[Trade Date] = idx.tradingdate
-AND idx.indexCode = :ma_chi_so
-WHERE t.[Trade Date] = :ngay_gd
-AND t.[Market ID] = 'STO' 
-AND t.[Board Type] LIKE '%G%' 
-
-UNION ALL
-
-SELECT
-idx.indexCode,
-t.[Trade date] AS ngay_gd,
-t.[Trade quantity] AS kl_gd,
-CAST(t.[Trade price] AS NUMERIC)
-* CAST(t.[Trade quantity] AS NUMERIC) AS gt_gd
-FROM Trade_HNX t
-JOIN CSIDXInfor idx
-ON t.[Issue Code] = idx.symbol
-AND t.[Trade date] = idx.tradingdate
-AND idx.indexCode = :ma_chi_so
-WHERE t.[Trade date] = :ngay_gd
-AND t.[Market ID] IN ('STX', 'UPX') -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
--- UPCOM, loại BDX/HCX/DVX
-AND t.[Board ID] LIKE '%G%' 
-) sub
-GROUP BY sub.indexCode, sub.ngay_gd;";"totalSellVol bảng TransLog
+N phiên";Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;TransLog;;totalSellVol;"SELECT
+t.symbol,
+t.tradingdate,
+SUM(
+CASE
+WHEN t.lastColor = 'S'
+THEN CAST(REPLACE(t.formattedVol, ',', '') AS NUMERIC)
+ELSE 0
+END
+) AS sell_volume_i
+FROM TransLog t
+WHERE t.tradingdate = :input_date
+GROUP BY t.symbol, t.tradingdate;";"totalSellVol bảng TransLog
 ";;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;TotalVolume_i;Tổng toàn bộ khối lượng giao dịch;Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;Thông tin thị trường;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;TotalVolume_i;Tổng toàn bộ khối lượng giao dịch N phiên;Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MSS;x;x;;Done;Thông tin thị trường;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
 - Hose: 
 Execution - Volume
 - HNX: 
@@ -3211,7 +3180,7 @@ WHERE t.[Trade date] = :ngay_gd
 AND t.[Market ID] = 'UPX' -- UPCOM, loại BDX/HCX/DVX
 
 ) sub
-GROUP BY sub.indexCode, sub.ngay_gd;";;;;;
+GROUP BY sub.indexCode, sub.ngay_gd;";KL giao dịch N phiên;;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;"Sector Liquid Score – Chỉ số dòng tiền của ngành
 ";LiquidScore_Sector = TotalValue_Sector / TotalCap_Sector;Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Pending;Thông tin thị trường;"StockInfor (PriceBoardAPI)
 IDS.company_detail";"StockInfor.totalTradingValue (GTGD ngày)
@@ -3298,7 +3267,7 @@ s.FloorCode
 FROM StockInfor s
 WHERE s.tradingdate = :input_date
 AND s.FloorCode IN ('02','04','10')";Trùng;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Khối lượng giao dịch;Khối lượng giao dịch;Dashboard;Chỉ tiêu phái sinh;Dễ;Thời gian, Mã chứng khoán;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Khối lượng giao dịch;Khối lượng giao dịch (Volume) của cổ phiếu i;Dashboard;Chỉ tiêu phái sinh;Dễ;Thời gian, Mã chứng khoán;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
 - Hose: 
 Execution - Volume
 - HNX: 
@@ -3342,16 +3311,17 @@ AND t.[Market ID] IN ('STX', 'UPX') -- Cổ phiếu HNX niêm yết, loại BDX/
 GROUP BY sub.indexCode, sub.ngay_gd;";Trùng;;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Tổng Vốn hóa (TotalCap_Sector);TotalCap_Sector = ∑MarketCap_i;Dashboard;Chỉ tiêu phái sinh;Trùng;Thời gian, Ngành;MDDS, MSS;x;x;;Pending;Thông tin thị trường;"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;Trùng;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;MarketCap_i;MarketCap_i = Giá cổ phiếu * Số cổ phiếu lưu hành;Dashboard;Chỉ tiêu phái sinh;TB;Thời gian, Ngành;MDDS, MSS;x;x;;Pending;Thông tin thị trường;"Thông tin thị trường
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;MarketCap_i;MarketCap_i = Giá cổ phiếu * Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu phái sinh;TB;Thời gian, Ngành;MDDS, MSS;x;x;;Pending;Thông tin thị trường;"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;Trùng;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá cổ phiếu;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá cổ phiếu;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian, Ngành;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT
 s.symbol,
 s.tradingdate,
 s.closePrice AS gia_dong_cua,
 s.FloorCode
 FROM StockInfor s
 WHERE s.tradingdate = :input_date";Trùng;;;;
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Số cổ phiếu lưu hành;Sổ cổ phiếu lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MSS;x;x;;Pending;Sổ lệnh;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Khối lượng cổ phiếu lưu hành;Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian, Ngành;MSS;x;x;;Pending;Sổ lệnh;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;
+Trùng dòng 168";;;;
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Sector Debt Score – Chỉ số sức khỏe tài chính của ngành;Σ Nợ phải trả (ngành) / Σ VCSH (ngành);Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Ngành;IDS - GSĐC;x;x;;Done;Báo cáo tài chính công ty đại chúng;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.company_data (cd)";SUM(no_phai_tra) / NULLIF(SUM(vcsh),0) AS ty_le_no_vcsh;"-- Chỉ tiêu phái sinh
@@ -3705,7 +3675,7 @@ AND t.[Market ID] IN ('STX', 'UPX') -- Cổ phiếu HNX niêm yết, loại BDX/
 AND t.[Board ID] LIKE '%G%' 
 ) sub
 GROUP BY sub.indexCode, sub.ngay_gd;";;;;;
-8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Tốc độ vòng quay;TVIMarket = [Σ Total Trading Valuei / Σ Average Market Capi] × 252;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS, MSS;x;x;;Done;"Sổ lệnh 
+8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Tốc độ vòng quay;TVIMarket = [Σ Total Trading Valuei / Σ Average Market Capi] × 252;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS, MSS;x;x;;Pending;"Sổ lệnh 
 Thông tin thị trường";"MarketInfor (PriceBoardAPI)
 StockInfor (PriceBoardAPI)";"MarketInfor: totalValue, tradingdate, marketId
 StockInfor: closePrice, TotalListingQtty, tradingdate, FloorCode, StockType";"MarketInfor: tradingdate = :input_date; marketId IN ('10','02','04')
@@ -3729,7 +3699,7 @@ FROM trading_val tv, market_cap mc;";;;;;
 8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Phân loại;"A - Mức thấp (Cold Market): TVI < 0.5
 B - Mức trung bình (Healthy Market): TVI từ 1.0 đến 3.0
 C - Mức cao (Overheated / Bubble): TVI > 5.0
-";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS, MSS;x;x;;Done;"Sổ lệnh 
+";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS, MSS;x;x;;Pending;"Sổ lệnh 
 Thông tin thị trường";Tính từ TVI (mart.tvi_daily);tvi (tính từ MarketInfor.totalValue + StockInfor);"TVI < 0.5 → A (Cold Market)
 0.5 ≤ TVI ≤ 3.0 → B (Healthy Market)
 TVI > 5.0 → C (Overheated/Bubble)";"WITH tvi_calc AS (
@@ -3741,7 +3711,7 @@ WHEN tvi < 0.5 THEN 'A - Cold Market'
 WHEN tvi <= 3.0 THEN 'B - Healthy Market'
 ELSE 'C - Overheated/Bubble'
 END AS phan_loai_tvi
-FROM tvi_calc;";;;;;
+FROM tvi_calc;";Từ chỉ tiêu Tốc độ vòng quay phái sinh chỉ tiêu phân loại;;;;
 8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Σ Total Trading Valuei;Σ GTGD;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
 - Hose: 
 Execution - Value
@@ -3808,15 +3778,15 @@ Thông tin thị trường
 ";StockInfor (PriceBoardAPI);;"tradingdate <= :input_date; 
 FloorCode IN ('02','04','10')
 Vốn hóa bình quân = AVG(ΣMarketCapₜ) qua N ngày";;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
-8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Vốn hóa ngày t;MarketCapₜ = Giá đóng cửa ngày t * KL CK lưu hành;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS, MSS;x;x;;Pending;"Sổ lệnh
+8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Vốn hóa ngày t;MarketCapₜ = Giá đóng cửa ngày t * Khối lượng chứng khoán lưu hành;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MDDS, MSS;x;x;;Pending;"Sổ lệnh
 Thông tin thị trường";StockInfor (PriceBoardAPI);;"tradingdate = :input_date; FloorCode IN ('02','04','10')
 ";;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
-8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Giá đóng cửa ngày t;Giá đóng cửa ngày t;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate, FloorCode;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice AS gia_dong_cua_t, tradingdate
+8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Giá đóng cửa ngày t;Giá đóng cửa ngày t;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate, FloorCode;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice AS gia_dong_cua_t, tradingdate
 FROM StockInfor
 WHERE tradingdate = :input_date
 AND FloorCode IN ('02','04','10')
-ORDER BY symbol;";;;;;
-8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;KL CK lưu hành;KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MSS;x;x;;Pending;Sổ lệnh;StockInfor (PriceBoardAPI);;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
+ORDER BY symbol;";Trùng dòng 9;;;;
+8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;KL CK lưu hành;Khối lượng chứng khoán lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MSS;x;x;;Pending;Sổ lệnh;StockInfor (PriceBoardAPI);;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
 9;;Dashboard Thanh khoản và đòn bẩy/ Xu hướng thanh khoản thị trường;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;Ngày;MSS;x;x;;Done;;"Trade_HOSE / Trade_HNX
 (Sổ khớp lệnh HOSE, HNX)";Trade Date;"Market ID IN ('STO','STX','UPX')
 -- Lấy ngày giao dịch cổ phiếu HOSE/HNX/UPCOM";;;;;;
@@ -4248,7 +4218,7 @@ Trong đó:
 -- Bước 1: Δ margin balance (tháng t so với t-1)
 -- Bước 2: GTGD bình quân 20 phiên giao dịch gần nhất
 -- Bước 3: Tính Margin Stress
---Bước 4:";;;;;
+--Bước 4: Quy đổi trạng thái";;;;;
 11;;Dashboard Thanh khoản và đòn bẩy/Cấu trúc quy mô lệnh;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;Ngày;MSS;x;x;;Done;Tham số lọc;:input_date (DATE);"Tham số đầu vào; người dùng chọn ngày";"-- Chiều thời gian: tham số đầu vào
 ";;;;;;
 11;;Dashboard Thanh khoản và đòn bẩy/Cấu trúc quy mô lệnh;Quy mô lệnh;"Chia thành 2 loại GTGD:
@@ -4376,16 +4346,16 @@ Mid-cap (Vốn hóa trung bình) 2 – 10 tỷ USD
 Large-cap (Vốn hóa lớn) ≥ 10 tỷ USD";Dashboard;Chỉ tiêu phái sinh;TB;Nhóm vốn hóa, Ngày;MSS, MDDS;x;x;;Pending;"Sổ lệnh
 Thông tin thị trường";StockInfor (PriceBoardAPI);;"tradingdate = :input_date; FloorCode IN ('02','04','10')
 ";Chỉ tiêu phái sinh từ chỉ tiêu Vốn hóa MarketCap;;;;;
-12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;Vốn hóa MarketCap;Vốn hóa MarketCap = Giá đóng cửa * KL CK đang lưu hành;Dashboard;Chỉ tiêu phái sinh;TB;Nhóm vốn hóa, Ngày;MSS, MDDS;x;x;;Pending;"Sổ lệnh
+12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;Vốn hóa MarketCap;Vốn hóa MarketCap = Giá đóng cửa * Khối lượng chứng khoán lưu hành;Dashboard;Chỉ tiêu phái sinh;Trùng;Nhóm vốn hóa, Ngày;MSS, MDDS;x;x;;Pending;"Sổ lệnh
 Thông tin thị trường";StockInfor (PriceBoardAPI);;"tradingdate = :input_date; FloorCode IN ('02','04','10')
 ";;;;;;
-12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;Giá đóng cửa;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Dễ;Nhóm vốn hóa, Ngày;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate, FloorCode;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice AS gia_dong_cua_t, tradingdate
+12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;Giá đóng cửa;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Trùng;Nhóm vốn hóa, Ngày;MDDS;x;x;;Done;Thông tin thị trường;StockInfor (PriceBoardAPI);symbol, closePrice, tradingdate, FloorCode;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice AS gia_dong_cua_t, tradingdate
 FROM StockInfor
 WHERE tradingdate = :input_date
 AND FloorCode IN ('02','04','10')
 ORDER BY symbol;";;;;;
-12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;KL CK đang lưu hành;KL CK đang lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Nhóm vốn hóa, Ngày;MSS;x;x;;Pending;Sổ lệnh;StockInfor (PriceBoardAPI);;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
-12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;Tỷ trọng thanh khoản của từng nhóm vốn hóa;Tỷ trọng thanh khoản nhóm = (∑GTGD nhóm / ∑GTGD thị trường) * 100;Dashboard;Chỉ tiêu phái sinh;TB;Nhóm vốn hóa, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE / Trade_HNX;"(Trade_HOSE):
+12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;KL CK đang lưu hành;Khối lượng chứng khoán lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Nhóm vốn hóa, Ngày;MSS;x;x;;Pending;Sổ lệnh;StockInfor (PriceBoardAPI);;;;"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;
+12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;Tỷ trọng thanh khoản của từng nhóm vốn hóa;Tỷ trọng thanh khoản nhóm = (∑GTGD nhóm / ∑GTGD thị trường) * 100;Dashboard;Chỉ tiêu phái sinh;TB;Nhóm vốn hóa, Ngày;MSS;x;x;;Pending;Sổ lệnh;Trade_HOSE / Trade_HNX;"(Trade_HOSE):
 Execution - Value: Giá trị giao dịch
 Trade_HNX:
 Trade price * Trade quantity";Market ID in (UPX,STX,STO);"SELECT 
@@ -4453,7 +4423,7 @@ AND t.[Market ID] IN ('UPX', 'STX', 'STO')
 ) 
 ) tong_tt 
 GROUP BY nhom.nhom_von_hoa, gtgd.ngay_gd, tong_tt.tong_gt_tt;";;;;;
-12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;GTGD nhóm vốn hóa;Giá trị giao dịch nhóm vốn hóa = KL khớp * Giá khớp;Dashboard;Chỉ tiêu phái sinh;TB;Nhóm vốn hóa, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE / Trade_HNX;"(Trade_HOSE):
+12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;GTGD nhóm vốn hóa;Giá trị giao dịch nhóm vốn hóa = KL khớp * Giá khớp;Dashboard;Chỉ tiêu phái sinh;TB;Nhóm vốn hóa, Ngày;MSS;x;x;;Pending;Sổ lệnh;Trade_HOSE / Trade_HNX;"(Trade_HOSE):
 Execution - Value: Giá trị giao dịch
 Trade_HNX:
 Trade price * Trade quantity";Market ID in (UPX,STX,STO);"-- HOSE
@@ -5472,11 +5442,14 @@ Trade quantity
 [Sell Client/House Classification Code] IN ('30')";Chỉ tiêu phái sinh từ chỉ tiêu Dòng tiền ròng NĐT Tự doanh tại ngày t;;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;MSS;x;x;;Done;;;;;;;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;GTGD theo nhóm cá nhân trong nước;GTGD theo nhóm cá nhân trong nước;Dashboard;Chỉ tiêu phái sinh;Khó;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] = '1100'
 [Buy - Invest Type] = '1100'
@@ -5485,16 +5458,88 @@ Market ID in ( 'STO', 'STX', 'UPX')
 Sell investor classification code = '8000'
 Buy investor classification code = '8000'
 [Buy Foreigner Investor type] IN ('00')
-[Sell Foreigner Investor type] IN ('00')";"Chỉ tiêu phái sinh từ
+[Sell Foreigner Investor type] IN ('00')";"WITH hnx_upcom AS (
+SELECT
+t.[Issue Code] AS symbol,
+t.[Trade date] AS ngay_gd,
+t.[Market ID] AS market_id,
+SUM(CASE WHEN t.[Buy investor classification code] = '8000'
+AND t.[Buy Foreigner Investor type] = '00'
+THEN CAST(t.[Trade price] AS NUMERIC)
+* CAST(t.[Trade quantity] AS NUMERIC)
+ELSE 0 END) AS gt_mua,
+SUM(CASE WHEN t.[Sell investor classification code] = '8000'
+AND t.[Sell Foreigner Investor type] = '00'
+THEN CAST(t.[Trade price] AS NUMERIC)
+* CAST(t.[Trade quantity] AS NUMERIC)
+ELSE 0 END) AS gt_ban
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+AND t.[Market ID] IN ('STO', 'STX', 'UPX')
+AND (
+(t.[Buy investor classification code] = '8000'
+AND t.[Buy Foreigner Investor type] = '00')
+OR (t.[Sell investor classification code] = '8000'
+AND t.[Sell Foreigner Investor type] = '00')
+)
+GROUP BY t.[Issue Code], t.[Trade date], t.[Market ID]
+),
+hose AS (
+SELECT
+t.Symbol AS symbol,
+t.[Trade Date] AS ngay_gd,
+t.[Market ID] AS market_id,
+SUM(CASE WHEN t.[Buy - Invest Type] = '1100'
+THEN t.[Execution - Value]
+ELSE 0 END) AS gt_mua,
+SUM(CASE WHEN t.[Sell - Invest Type] = '1100'
+THEN t.[Execution - Value]
+ELSE 0 END) AS gt_ban
+FROM Trade_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+AND t.[Market ID] = 'STO'
+AND (
+t.[Buy - Invest Type] = '1100'
+OR t.[Sell - Invest Type] = '1100'
+)
+GROUP BY t.Symbol, t.[Trade Date], t.[Market ID]
+),
+all_data AS (
+SELECT * FROM hnx_upcom
+UNION ALL
+SELECT * FROM hose
+)
+-- Tính từng sàn
+SELECT
+market_id,
+ngay_gd,
+SUM(gt_mua) AS gtgd_mua_ca_nhan,
+SUM(gt_ban) AS gtgd_ban_ca_nhan,
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu
+FROM all_data
+GROUP BY market_id, ngay_gd
+UNION ALL
+-- Tính toàn thị trường
+SELECT
+'TOTAL' AS market_id,
+ngay_gd,
+SUM(gt_mua) AS gtgd_mua_ca_nhan,
+SUM(gt_ban) AS gtgd_ban_ca_nhan,
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu
+FROM all_data
+GROUP BY ngay_gd;";"Chỉ tiêu phái sinh từ
 GTGD mua nhóm NĐT Cá nhân trong nước
 GTGD bán nhóm NĐT Cá nhân trong nước
---> Cộng tổng GTGT mua và bán";;;;;
+--> Cộng tổng GTGT mua và bán";;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;GTGD theo nhóm cá nhân nước ngoài;GTGD theo nhóm cá nhân nước ngoài;Dashboard;Chỉ tiêu phái sinh;Khó;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] = '7200'
 [Buy - Invest Type] = '7200'
@@ -5504,13 +5549,85 @@ Sell investor classification code = '8000'
 [Sell Foreigner Investor type] IN ('10', '20')
 Buy investor classification code = '8000'
 [Buy Foreigner Investor type] IN ('10', '20')
-";--> Cộng tổng GTGT mua và bán NĐTNN;;;;;
+";"WITH hnx_upcom AS (
+SELECT
+t.[Issue Code] AS symbol,
+t.[Trade date] AS ngay_gd,
+t.[Market ID] AS market_id,
+SUM(CASE WHEN t.[Buy investor classification code] = '8000'
+AND t.[Buy Foreigner Investor type] IN ('10', '20')
+THEN CAST(t.[Trade price] AS NUMERIC)
+* CAST(t.[Trade quantity] AS NUMERIC)
+ELSE 0 END) AS gt_mua,
+SUM(CASE WHEN t.[Sell investor classification code] = '8000'
+AND t.[Sell Foreigner Investor type] IN ('10', '20')
+THEN CAST(t.[Trade price] AS NUMERIC)
+* CAST(t.[Trade quantity] AS NUMERIC)
+ELSE 0 END) AS gt_ban
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+AND t.[Market ID] IN ('STO', 'STX', 'UPX')
+AND (
+(t.[Buy investor classification code] = '8000'
+AND t.[Buy Foreigner Investor type] IN ('10', '20'))
+OR (t.[Sell investor classification code] = '8000'
+AND t.[Sell Foreigner Investor type] IN ('10', '20'))
+)
+GROUP BY t.[Issue Code], t.[Trade date], t.[Market ID]
+),
+hose AS (
+SELECT
+t.Symbol AS symbol,
+t.[Trade Date] AS ngay_gd,
+t.[Market ID] AS market_id,
+SUM(CASE WHEN t.[Buy - Invest Type] = '7200'
+THEN t.[Execution - Value]
+ELSE 0 END) AS gt_mua,
+SUM(CASE WHEN t.[Sell - Invest Type] = '7200'
+THEN t.[Execution - Value]
+ELSE 0 END) AS gt_ban
+FROM Trade_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+AND t.[Market ID] = 'STO'
+AND (
+t.[Buy - Invest Type] = '7200'
+OR t.[Sell - Invest Type] = '7200'
+)
+GROUP BY t.Symbol, t.[Trade Date], t.[Market ID]
+),
+all_data AS (
+SELECT * FROM hnx_upcom
+UNION ALL
+SELECT * FROM hose
+)
+-- Tính từng sàn
+SELECT
+market_id,
+ngay_gd,
+SUM(gt_mua) AS gtgd_mua,
+SUM(gt_ban) AS gtgd_ban,
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu
+FROM all_data
+GROUP BY market_id, ngay_gd
+UNION ALL
+-- Tính toàn thị trường
+SELECT
+'TOTAL' AS market_id,
+ngay_gd,
+SUM(gt_mua) AS gtgd_mua,
+SUM(gt_ban) AS gtgd_ban,
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu
+FROM all_data
+GROUP BY ngay_gd;";--> Cộng tổng GTGT mua và bán NĐTNN;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;GTGD theo nhóm tổ chức trong nước;GTGD theo nhóm tổ chức trong nước;Dashboard;Chỉ tiêu phái sinh;Khó;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] NOT IN ('1100', '1200')
 [Buy - Invest Type] NOT IN ('1100', '1200')
@@ -5521,13 +5638,89 @@ Market ID in ( 'STO', 'STX', 'UPX')
 Sell investor classification code <> '8000'
 Buy investor classification code <> '8000'
 [Buy Foreigner Investor type] IN ('00')
-[Sell Foreigner Investor type] IN ('00')";;;;;;
+[Sell Foreigner Investor type] IN ('00')";"WITH hnx_upcom AS ( 
+SELECT 
+t.[Issue Code] AS symbol, 
+t.[Trade date] AS ngay_gd, 
+t.[Market ID] AS market_id, 
+SUM(CASE WHEN t.[Buy investor classification code] <> '8000' 
+AND t.[Buy Foreigner Investor type] = '00' 
+THEN CAST(t.[Trade price] AS NUMERIC) 
+* CAST(t.[Trade quantity] AS NUMERIC) 
+ELSE 0 END) AS gt_mua, 
+SUM(CASE WHEN t.[Sell investor classification code] <> '8000' 
+AND t.[Sell Foreigner Investor type] = '00' 
+THEN CAST(t.[Trade price] AS NUMERIC) 
+* CAST(t.[Trade quantity] AS NUMERIC) 
+ELSE 0 END) AS gt_ban 
+FROM Trade_HNX t 
+WHERE t.[Trade date] = :ngay_gd 
+AND t.[Market ID] IN ('STO', 'STX', 'UPX') 
+AND ( 
+(t.[Buy investor classification code] <> '8000' 
+AND t.[Buy Foreigner Investor type] = '00') 
+OR (t.[Sell investor classification code] <> '8000' 
+AND t.[Sell Foreigner Investor type] = '00') 
+) 
+GROUP BY t.[Issue Code], t.[Trade date], t.[Market ID] 
+), 
+hose AS ( 
+SELECT 
+t.Symbol AS symbol, 
+t.[Trade Date] AS ngay_gd, 
+t.[Market ID] AS market_id, 
+SUM(CASE WHEN t.[Buy - Invest Type] NOT IN ('1100', '1200') 
+AND t.[Buy - Foreigner Investor type] = '00' 
+THEN t.[Execution - Value] 
+ELSE 0 END) AS gt_mua, 
+SUM(CASE WHEN t.[Sell - Invest Type] NOT IN ('1100', '1200') 
+AND t.[Sell - Foreigner Investor type] = '00' 
+THEN t.[Execution - Value] 
+ELSE 0 END) AS gt_ban 
+FROM Trade_HOSE t 
+WHERE t.[Trade Date] = :ngay_gd 
+AND t.[Market ID] = 'STO' 
+AND ( 
+(t.[Buy - Invest Type] NOT IN ('1100', '1200') 
+AND t.[Buy - Foreigner Investor type] = '00') 
+OR (t.[Sell - Invest Type] NOT IN ('1100', '1200') 
+AND t.[Sell - Foreigner Investor type] = '00') 
+) 
+GROUP BY t.Symbol, t.[Trade Date], t.[Market ID] 
+), 
+all_data AS ( 
+SELECT * FROM hnx_upcom 
+UNION ALL 
+SELECT * FROM hose 
+) 
+-- Tính từng sàn 
+SELECT 
+market_id, 
+ngay_gd, 
+SUM(gt_mua) AS gtgd_mua, 
+SUM(gt_ban) AS gtgd_ban, 
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu 
+FROM all_data 
+GROUP BY market_id, ngay_gd 
+UNION ALL 
+-- Tính toàn thị trường 
+SELECT 
+'TOTAL' AS market_id, 
+ngay_gd, 
+SUM(gt_mua) AS gtgd_mua, 
+SUM(gt_ban) AS gtgd_ban, 
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu 
+FROM all_data 
+GROUP BY ngay_gd;";;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;GTGD theo nhóm tổ chức nước ngoài;GTGD theo nhóm tổ chức nước ngoài;Dashboard;Chỉ tiêu phái sinh;Khó;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] = '7100'
 [Buy - Invest Type] = '7100'
@@ -5535,14 +5728,86 @@ Market ID in ( 'STO')
 Market ID in ( 'STO', 'STX', 'UPX')
 Sell/ Buy investor classification code <> '8000'
 [Buy Foreigner Investor type] IN ('10', '20')
-[Sell Foreigner Investor type] IN ('10', '20')";;;;;;
+[Sell Foreigner Investor type] IN ('10', '20')";"WITH hnx_upcom AS (
+SELECT
+t.[Issue Code] AS symbol,
+t.[Trade date] AS ngay_gd,
+t.[Market ID] AS market_id,
+SUM(CASE WHEN t.[Buy investor classification code] <> '8000'
+AND t.[Buy Foreigner Investor type] IN ('10', '20')
+THEN CAST(t.[Trade price] AS NUMERIC)
+* CAST(t.[Trade quantity] AS NUMERIC)
+ELSE 0 END) AS gt_mua,
+SUM(CASE WHEN t.[Sell investor classification code] <> '8000'
+AND t.[Sell Foreigner Investor type] IN ('10', '20')
+THEN CAST(t.[Trade price] AS NUMERIC)
+* CAST(t.[Trade quantity] AS NUMERIC)
+ELSE 0 END) AS gt_ban
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+AND t.[Market ID] IN ('STO', 'STX', 'UPX')
+AND (
+(t.[Buy investor classification code] <> '8000'
+AND t.[Buy Foreigner Investor type] IN ('10', '20'))
+OR (t.[Sell investor classification code] <> '8000'
+AND t.[Sell Foreigner Investor type] IN ('10', '20'))
+)
+GROUP BY t.[Issue Code], t.[Trade date], t.[Market ID]
+),
+hose AS (
+SELECT
+t.Symbol AS symbol,
+t.[Trade Date] AS ngay_gd,
+t.[Market ID] AS market_id,
+SUM(CASE WHEN t.[Buy - Invest Type] = '7100'
+THEN t.[Execution - Value]
+ELSE 0 END) AS gt_mua,
+SUM(CASE WHEN t.[Sell - Invest Type] = '7100'
+THEN t.[Execution - Value]
+ELSE 0 END) AS gt_ban
+FROM Trade_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+AND t.[Market ID] = 'STO'
+AND (
+t.[Buy - Invest Type] = '7100'
+OR t.[Sell - Invest Type] = '7100'
+)
+GROUP BY t.Symbol, t.[Trade Date], t.[Market ID]
+),
+all_data AS (
+SELECT * FROM hnx_upcom
+UNION ALL
+SELECT * FROM hose
+)
+-- Tính từng sàn
+SELECT
+market_id,
+ngay_gd,
+SUM(gt_mua) AS gtgd_mua,
+SUM(gt_ban) AS gtgd_ban,
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu
+FROM all_data
+GROUP BY market_id, ngay_gd
+UNION ALL
+-- Tính toàn thị trường
+SELECT
+'TOTAL' AS market_id,
+ngay_gd,
+SUM(gt_mua) AS gtgd_mua,
+SUM(gt_ban) AS gtgd_ban,
+SUM(gt_mua) + SUM(gt_ban) AS gtgd_nha_dau_tu
+FROM all_data
+GROUP BY ngay_gd;";;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;Tỷ trọng GTGD (%) cá nhân trong nước;"Tỷ trọng GTGD (%) cá nhân trong nước
 ∑GTGD nhóm / ∑GTGD toàn thị trường";Dashboard;Chỉ tiêu phái sinh;TB;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] = '1100'
 [Buy - Invest Type] = '1100'
@@ -5553,11 +5818,14 @@ Sell/Buy investor classification code = '8000'
 [Sell Foreigner Investor type] IN ('00')""";Chỉ tiêu phái sinh ∑GTGD nhóm / ∑GTGD toàn thị trường;;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;Tỷ trọng GTGD (%) cá nhân nước ngoài;"Tỷ trọng GTGD (%) cá nhân nước ngoài
 ∑GTGD nhóm / ∑GTGD toàn thị trường";Dashboard;Chỉ tiêu phái sinh;TB;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] = '7200'
 [Buy - Invest Type] = '7200'
@@ -5568,11 +5836,14 @@ Sell/Buy investor classification code = '8000'
 [Sell Foreigner Investor type] IN ('10', '20')""";Chỉ tiêu phái sinh ∑GTGD nhóm / ∑GTGD toàn thị trường;;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;Tỷ trọng GTGD (%) tổ chức trong nước;"Tỷ trọng GTGD (%) tổ chức trong nước
 ∑GTGD nhóm / ∑GTGD toàn thị trường";Dashboard;Chỉ tiêu phái sinh;TB;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] NOT IN ('1100', '1200')
 [Buy - Invest Type] NOT IN ('1100', '1200')
@@ -5585,11 +5856,14 @@ Sell/Buy investor classification code <> '8000'
 [Sell Foreigner Investor type] IN ('00')";Chỉ tiêu phái sinh ∑GTGD nhóm / ∑GTGD toàn thị trường;;;;;
 15;;Dashboard Dòng tiền và cơ cấu nhà đầu tư/ Cấu trúc nhà đầu tư;Tỷ trọng GTGD (%) tổ chức nước ngoài;"Tỷ trọng GTGD (%) tổ chức nước ngoài
 ∑GTGD nhóm / ∑GTGD toàn thị trường";Dashboard;Chỉ tiêu phái sinh;TB;Nhóm NĐT, Ngày;MSS;x;x;;Done;Sổ lệnh;Trade_HOSE /Trade_HNX;"lấy từ sổ lệnh: 
-- Hose: 
-Execution - Volume
-- HNX: 
-Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"--HOSE
+Trade_HOSE:
+gtgd_mua: Execution - Value 
+gtgd_ban: Execution - Value 
+
+Trade_HNX:
+gtgd_mua: Trade price * Trade quantity 
+gtgd_ban: Trade price * Trade quantity
+";"--HOSE
 Market ID in ( 'STO')
 [Sell - Invest Type] = '7100'
 [Buy - Invest Type] = '7100'
@@ -5605,7 +5879,7 @@ Sell/Buy investor classification code <> '8000'
 Execution - Volume
 - HNX: 
 Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"Market ID in ( 'STO', 'STX', 'UPX')
+";"Market ID in ( 'STO', 'STX', 'UPX')
 [Buy Foreigner Investor type] IN ('10', '20')";"SELECT
 sub.indexCode AS ma_chi_so,
 sub.ngay_gd,
@@ -5654,7 +5928,7 @@ GROUP BY sub.indexCode, sub.ngay_gd;";;;;;
 Execution - Volume
 - HNX: 
 Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"Market ID in ( 'STO', 'STX', 'UPX')
+";"Market ID in ( 'STO', 'STX', 'UPX')
 [Sell Foreigner Investor type] IN ('10', '20')";"SELECT
 sub.indexCode AS ma_chi_so,
 sub.ngay_gd,
@@ -5703,7 +5977,7 @@ GROUP BY sub.indexCode, sub.ngay_gd;";;;;;
 Execution - Volume
 - HNX: 
 Trade quantity
---> cần join qua bảng CSIDXInfor để lấy KLGD của chỉ số ";"Market ID in ( 'STO', 'STX', 'UPX')
+";"Market ID in ( 'STO', 'STX', 'UPX')
 [Buy Foreigner Investor type] IN ('10', '20')
 [Sell Foreigner Investor type] IN ('10', '20')";"WITH gtgd_mua AS (
 SELECT
@@ -5993,7 +6267,7 @@ GROUP BY sub.Symbol, sub.ngay_gd;";;;;;
 ";;;;;Fix sẵn 100.000/ 1 trái phiếu;;;;
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MSS;x;x;;Pending;- VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138);;;;;Đã xin thiết kế CSDL, đang chờ HTTT phản hồi;;;;
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Giá trị đáo hạn rủi ro cao;Σ giá trị đáo hạn trái phiếu của doanh nghiệp có xếp hạng tín nhiệm thấp;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MDDS, MSS;x;x;;Pending;"- Danh mục chứng khoán
-- VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)";;;;;chưa có bảng trong thiết kế CSDL;;;;
+- VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)";;;;;Chưa có bảng trong thiết kế CSDL;;;;
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Tổng dư nợ TP theo nhóm ngành;Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS, MDDS;x;x;;Pending;"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)";;;;;Đã xin thiết kế CSDL, đang chờ HTTT phản hồi;;;;
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Mệnh giá;Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MDDS;x;x;;Done;"- Danh mục chứng khoán
@@ -6167,7 +6441,56 @@ c.industry_name
 20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngành, Thời gian;MSS;x;x;;Pending;"VSDS lập bảo cáo đẩy cồng trung cập tập trung 
 Mẫu bc ngày TT138";;;;;Đã xin thiết kế CSDL, đang chờ HTTT phản hồi;;;;
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;MSS, MDDS;x;x;;;;;;;;;;;;
-21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Tổ chức phát hành;Định danh tổ chức phát hành;Dashboard;Chiều;Dễ;;MDDS;x;x;;;;;;;;;;;;
+21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Tổ chức phát hành;Định danh tổ chức phát hành;Dashboard;Chiều;Dễ;;IDS - GSĐC, MDDS;x;x;;Done;;;;;;"SELECT
+TP.""symbol"" AS MA_TP,
+p.company_name_vn AS TEN_TO_CHUC,
+c.industry_cd AS MA_NGANH,
+c.industry_name AS TEN_NGANH,
+CP.equity_ticker AS MA_CK,
+SUM(e.data_value) AS NO_PHAI_TRA
+FROM (
+-- Danh sách TPDN niêm yết: Lấy dữ liệu cuối cùng trong ngày
+SELECT
+""symbol"",
+""IssuerName"",
+ROW_NUMBER() OVER (PARTITION BY ""symbol"" ORDER BY ""ts"" DESC) AS rn
+FROM MDDS.StockInfor
+WHERE ""FloorCode"" = '06'
+AND ""tradingdate"" = :to_date
+) TP
+JOIN (
+-- Thông tin Mã chứng khoán (Mã cổ phiếu): Lấy dữ liệu cuối cùng trong ngày
+SELECT
+""symbol"" AS equity_ticker,
+""IssuerName"",
+ROW_NUMBER() OVER (PARTITION BY ""symbol"" ORDER BY ""ts"" DESC) AS rn
+FROM MDDS.StockInfor
+WHERE ""FloorCode"" IN ('02', '04', '10')
+AND ""tradingdate"" = :to_date
+) CP ON CP.rn = 1 AND CP.""IssuerName"" = TP.""IssuerName""
+JOIN IDS.company_profiles p ON p.equity_ticker = CP.equity_ticker
+JOIN IDS.categories c ON c.id = p.category_id
+JOIN IDS.company_data e ON e.company_profile_id = p.id
+JOIN IDS.data d ON d.company_data_id = e.company_data_id
+JOIN IDS.report_catalog rc ON rc.id = d.report_catalog_id
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
+WHERE TP.rn = 1
+AND rc2.col_desc = '1'
+AND rc.report_cd LIKE 'BCDKT%'
+AND e.report_year = :year
+AND e.report_quarter = :quarter
+AND (
+(rc.enterprise_type_cd = 'dn' AND rr.row_desc = '300')
+OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc = '300')
+OR (rc.enterprise_type_cd = 'td' AND rr.row_desc = '400')
+)
+GROUP BY
+TP.""symbol"",
+p.company_name_vn,
+c.industry_cd,
+c.industry_name,
+CP.equity_ticker;";;;;
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Dư nợ;"Tổng giá trị nợ vay hiện hữu của doanh nghiệp
 Tổng dư nợ = Mệnh giá * KL TP lưu hành";Dashboard;Chỉ tiêu phái sinh;TB;Tổ chức phát hành, Thời gian;MSS, MDDS;x;x;;Pending;"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)
@@ -6491,7 +6814,7 @@ cp.equity_ticker;";;;;;
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Ý kiến kiểm toán;Ý kiến kiểm toán BCTC trong kỳ báo cáo;Dashboard;Chỉ tiêu phái sinh;TB;Tổ chức phát hành, Thời gian;IDS - GSĐC;x;x;;Pending;Lấy từ báo cáo tài chính;;;;;Chưa có bảng nguồn;;;;
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Xếp hạng tín nhiệm;Xếp hạng tín nhiệm doanh nghiệp;Dashboard;Chỉ tiêu phái sinh;Khó;Tổ chức phát hành, Thời gian;IDS - GSĐC;x;x;;Pending;Lấy từ báo cáo tài chính;;;;;Chưa có bảng nguồn;;;;
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Xếp loại rủi ro;Nhãn rủi ro (cao, trung bình, thấp) dựa trên xếp hạng tín nhiệm.;Dashboard;Chỉ tiêu phái sinh;Khó;Tổ chức phát hành, Thời gian;IDS - GSĐC;x;x;;Pending;Lấy từ báo cáo tài chính;;;;;Thiết lập xếp loại theo xếp hạng tín nhiệm của doanh nghiệp;;;;
-22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;SCMS;x;x;;Done;;;;;;;;;;
+22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;SCMS;x;x;;;;;;;;;;;;
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
 SCMS.DM_CHI_TIEU
 SCMS.BC_THANH_VIEN";"gt.GIA_TRI,
@@ -6595,7 +6918,7 @@ gt.DM_CHI_TIEU_ID,
 dct.ID,
 dct.MA_CHI_TIEU";;"Chỉ tiêu phái sinh count CTCK cần kiểm soát
 (Tỷ lệ dự nợ margin lớn hơn mức cao)";;;;;
-22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Phân loại CTCK;CTCK;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;;"SCMS.BC_BAO_CAO_GT
+22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
 SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
 gt.DM_CHI_TIEU_ID,
 dct.ID,
@@ -6629,7 +6952,33 @@ AND bt.TRANG_THAI IN (4, 6)
 AND bt.XOA_DU_LIEU = 0";;;;;
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Hệ số đòn bẩy D/E trung bình;D/E (CTCK i) = Σ Tổng nợ phải trả / Σ VCSH;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;"-- Tính phái sinh từ chỉ tiêu:
 Tổng nợ phải trả / VCSH";;;;;
-22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Tổng nợ phải trả;Tổng nợ phải trả;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Pending;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Tổng nợ phải trả;Tổng nợ phải trả;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_THANH_VIEN 
+SCMS.BM_BAO_CAO 
+SCMS.BM_BAO_CAO_HANG 
+SCMS.BM_BAO_CAO_COT";"bsc.TEN_COT,
+bsc.BM_SHEET_ID,
+bsh.ID,
+bsh.MA_HANG,
+gt.GIA_TRI,
+gt.BC_THANH_VIEN_ID,
+gt.BM_SHEET_HANG_ID,
+bm.ID,
+bm.MA_BAO_CAO,
+btv.ID,
+btv.BM_BAO_CAO_ID,
+btv.TRANG_THAI,
+btv.NGAY_SO_LIEU";;"SELECT
+MAX(CASE WHEN bsc.TEN_COT=N'Số đầu năm' AND bsh.MA_HANG = '70' THEN CAST(gt.GIA_TRI AS VARCHAR2(4000)) END) AS ""C. NỢ PHẢI TRẢ (300 = 310 + 340)""
+FROM SCMS.BC_THANH_VIEN btv
+JOIN SCMS.BM_BAO_CAO bm ON bm.ID = btv.BM_BAO_CAO_ID
+JOIN SCMS.BC_BAO_CAO_GT gt ON gt.BC_THANH_VIEN_ID = btv.ID
+JOIN SCMS.BM_BAO_CAO_HANG bsh ON bsh.ID = gt.BM_SHEET_HANG_ID
+JOIN SCMS.BM_BAO_CAO_COT bsc ON bsc.BM_SHEET_ID = 5894
+-- AND bsc.TEN_COT = gt.TEN_COT
+WHERE bm.MA_BAO_CAO LIKE 'BCTCRLCTCK'
+AND btv.TRANG_THAI IN (2, 3)
+GROUP BY btv.ID, btv.NGAY_SO_LIEU
+ORDER BY btv.NGAY_SO_LIEU DESC;";;;;;
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;VCSH;VCSH;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
 SCMS.DM_CHI_TIEU
 SCMS.BC_THANH_VIEN";"gt.GIA_TRI,
@@ -6640,32 +6989,32 @@ bt.NGAY_SO_LIEU,
 bt.TRANG_THAI,
 bt.XOA_DU_LIEU,
 dct.ID,
-dct.MA_CHI_TIEU";;"-- Vốn chủ sở hữu 
-SELECT 
-nd.ngay, 
-TO_NUMBER(gt.GIA_TRI) AS von_chu_so_huu 
-FROM ( 
-SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay 
-FROM ( 
-SELECT MIN(bt.NGAY_SO_LIEU) AS min_ngay 
-FROM SCMS.BC_BAO_CAO_GT gt 
-JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID 
-JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID 
-WHERE dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại 
--- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id 
-AND bt.TRANG_THAI IN (4, 6) 
-AND bt.XOA_DU_LIEU = 0 
-) 
-CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE) 
-) nd 
-LEFT JOIN SCMS.BC_BAO_CAO_GT gt 
-JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID 
-JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID 
-ON dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại 
-AND TRUNC(bt.NGAY_SO_LIEU) = LAST_DAY(ADD_MONTHS(TRUNC(nd.ngay, 'Q'), 2)) 
--- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id 
-AND bt.TRANG_THAI IN (4, 6) 
-AND bt.XOA_DU_LIEU = 0 
+dct.MA_CHI_TIEU";;"-- Vốn chủ sở hữu
+SELECT
+nd.ngay,
+TO_NUMBER(gt.GIA_TRI) AS von_chu_so_huu
+FROM (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(bt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+WHERE dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+ON dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+AND TRUNC(bt.NGAY_SO_LIEU) = LAST_DAY(ADD_MONTHS(TRUNC(nd.ngay, 'Q'), 2))
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
 ORDER BY nd.ngay;";;;;;
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Thời gian;Thời gian;Dashboard;Chỉ tiêu cơ sở;Dễ;;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
@@ -6727,31 +7076,399 @@ ORDER BY nd.ngay;";;;;;
 SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
 gt.DM_CHI_TIEU_ID,
 dct.ID,
-dct.MA_CHI_TIEU";;"Chỉ tiêu phái sinh count CTCK cần kiểm soát
-(Tỷ lệ dự nợ margin lớn hơn mức cao)";;;;;
-23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Dư nợ margin;Dư nợ margin;Dashboard;Chỉ tiêu cơ sở;Dễ;Tháng, Mức độ xếp hạng;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;VCSH;VCSH;Dashboard;Chỉ tiêu cơ sở;Dễ;Tháng, Mức độ xếp hạng;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng cao;Số lượng CTCK theo từng mức xếp hạng cao;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng trung bình;Số lượng CTCK theo từng mức xếp hạng trung bình;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng thấp;Số lượng CTCK theo từng mức xếp hạng thấp;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+dct.MA_CHI_TIEU";;;Trùng dòng 343;;;;
+23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Dư nợ margin;Dư nợ margin;Dashboard;Chỉ tiêu cơ sở;Dễ;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.NGAY_SO_LIEU,
+gt.DM_CHI_TIEU_ID,
+gt.GIA_TRI,
+dct.ID,
+dct.TEN_CHI_TIEU";;"-- Dư nợ margin
+SELECT
+nd.ngay,
+SUM(TO_NUMBER(gt.GIA_TRI)) AS du_no_margin
+FROM (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(gt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+WHERE dct.TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ' -- Check
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+ON dct.TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ' -- Check
+AND TRUNC(gt.NGAY_SO_LIEU) = nd.ngay
+GROUP BY nd.ngay
+ORDER BY nd.ngay;";;;;;
+23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;VCSH;VCSH;Dashboard;Chỉ tiêu cơ sở;Dễ;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU
+SCMS.BC_THANH_VIEN";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+gt.BC_THANH_VIEN_ID,
+bt.ID,
+bt.NGAY_SO_LIEU,
+bt.TRANG_THAI,
+bt.XOA_DU_LIEU,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Vốn chủ sở hữu
+SELECT
+nd.ngay,
+TO_NUMBER(gt.GIA_TRI) AS von_chu_so_huu
+FROM (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(bt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+WHERE dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+ON dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+AND TRUNC(bt.NGAY_SO_LIEU) = LAST_DAY(ADD_MONTHS(TRUNC(nd.ngay, 'Q'), 2))
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+ORDER BY nd.ngay;";;;;;
+23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng cao;Số lượng CTCK theo từng mức xếp hạng cao;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Mức cao
+SELECT
+'Mức cao' AS phan_loai_tlvkd,
+COUNT(DISTINCT gt.MA_CTCK) AS so_luong_ctck
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct
+ON dct.ID = gt.DM_CHI_TIEU_ID
+WHERE dct.MA_CHI_TIEU = 'TY_LE_VON_KHA_DUNG'
+AND gt.GIA_TRI IS NOT NULL
+AND gt.NGAY_SO_LIEU = :input_date
+AND TO_NUMBER(gt.GIA_TRI) > 150;";;;;;
+23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng trung bình;Số lượng CTCK theo từng mức xếp hạng trung bình;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Mức trung bình 
+SELECT 
+'Mức trung bình' AS phan_loai_tlvkd, 
+COUNT(DISTINCT gt.MA_CTCK) AS so_luong_ctck 
+FROM SCMS.BC_BAO_CAO_GT gt 
+JOIN SCMS.DM_CHI_TIEU dct 
+ON dct.ID = gt.DM_CHI_TIEU_ID 
+WHERE dct.MA_CHI_TIEU = 'TY_LE_VON_KHA_DUNG' 
+AND gt.GIA_TRI IS NOT NULL 
+AND gt.NGAY_SO_LIEU = :input_date 
+AND TO_NUMBER(gt.GIA_TRI) >= 120 
+AND TO_NUMBER(gt.GIA_TRI) <= 150;";;;;;
+23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng thấp;Số lượng CTCK theo từng mức xếp hạng thấp;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Mức thấp 
+SELECT 
+'Mức thấp' AS phan_loai_tlvkd, 
+COUNT(DISTINCT gt.MA_CTCK) AS so_luong_ctck 
+FROM SCMS.BC_BAO_CAO_GT gt 
+JOIN SCMS.DM_CHI_TIEU dct 
+ON dct.ID = gt.DM_CHI_TIEU_ID 
+WHERE dct.MA_CHI_TIEU = 'TY_LE_VON_KHA_DUNG' 
+AND gt.GIA_TRI IS NOT NULL 
+AND gt.NGAY_SO_LIEU = :input_date 
+AND TO_NUMBER(gt.GIA_TRI) < 120;";;;;;
+23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Phân loại CTCK;Phân loại CTCK theo từng mức cao, trung bình, thấp;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Phân loại tỷ lệ vốn khả dụng
+SELECT DISTINCT
+CASE
+WHEN TO_NUMBER(gt.GIA_TRI) > 150 THEN 'Mức cao'
+WHEN TO_NUMBER(gt.GIA_TRI) >= 120 AND TO_NUMBER(gt.GIA_TRI) <= 150 THEN 'Mức trung bình'
+WHEN TO_NUMBER(gt.GIA_TRI) < 120 THEN 'Mức thấp'
+END AS phan_loai_tlvkd
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+WHERE dct.MA_CHI_TIEU = 'TY_LE_VON_KHA_DUNG' -- Xác nhận lại
+AND gt.GIA_TRI IS NOT NULL
+ORDER BY 1;";;;;;
 24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Thời gian (Ngày);Ngày;Dashboard;Chiều;Dễ;;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Mã CTCK;Công ty chứng khoán;Dashboard;Chiều;Dễ;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Tổng VCSH;VCSH của các CTCK;Dashboard;Chỉ tiêu cơ sở;TB;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Dư nợ margin;Dư nợ margin của các CTCK;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
-24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Mã CTCK;Công ty chứng khoán;Dashboard;Chiều;Dễ;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU
+SCMS.BC_THANH_VIEN";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+gt.BC_THANH_VIEN_ID,
+bt.ID,
+bt.NGAY_SO_LIEU,
+bt.TRANG_THAI,
+bt.XOA_DU_LIEU,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Vốn chủ sở hữu 
+SELECT 
+ctt.MA_SO, 
+ctt.TEN_VIET_TAT, 
+nd.ngay, 
+TO_NUMBER(gt.GIA_TRI) AS von_chu_so_huu 
+FROM ( 
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay 
+FROM ( 
+SELECT MIN(bt.NGAY_SO_LIEU) AS min_ngay 
+FROM SCMS.BC_BAO_CAO_GT gt 
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID 
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID 
+WHERE dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại 
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id 
+AND bt.TRANG_THAI IN (4, 6) 
+AND bt.XOA_DU_LIEU = 0 
+) 
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE) 
+) nd 
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt 
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID 
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID 
+ON dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại 
+AND TRUNC(bt.NGAY_SO_LIEU) = LAST_DAY(ADD_MONTHS(TRUNC(nd.ngay, 'Q'), 2)) 
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id 
+AND bt.TRANG_THAI IN (4, 6) 
+AND bt.XOA_DU_LIEU = 0 
+LEFT JOIN SCMS.CTCK_THONG_TIN ctt ON bt.CTCK_THONG_TIN_ID = ctt.CTCK_THONG_TIN_ID 
+
+ORDER BY nd.ngay;";;;;;
+24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Tổng VCSH;VCSH của các CTCK;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU
+SCMS.BC_THANH_VIEN";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+gt.BC_THANH_VIEN_ID,
+bt.ID,
+bt.NGAY_SO_LIEU,
+bt.TRANG_THAI,
+bt.XOA_DU_LIEU,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Vốn chủ sở hữu
+SELECT
+nd.ngay,
+TO_NUMBER(gt.GIA_TRI) AS von_chu_so_huu
+FROM (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(bt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+WHERE dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+ON dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+AND TRUNC(bt.NGAY_SO_LIEU) = LAST_DAY(ADD_MONTHS(TRUNC(nd.ngay, 'Q'), 2))
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+ORDER BY nd.ngay;";;;;;
+24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Dư nợ margin;Dư nợ margin của các CTCK;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.NGAY_SO_LIEU,
+gt.DM_CHI_TIEU_ID,
+gt.GIA_TRI,
+dct.ID,
+dct.TEN_CHI_TIEU";;"-- Dư nợ margin
+SELECT
+nd.ngay,
+SUM(TO_NUMBER(gt.GIA_TRI)) AS du_no_margin
+FROM (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(gt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+WHERE dct.TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ' -- Check
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+ON dct.TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ' -- Check
+AND TRUNC(gt.NGAY_SO_LIEU) = nd.ngay
+GROUP BY nd.ngay
+ORDER BY nd.ngay;";;;;;
+24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU
+SCMS.BC_THANH_VIEN";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+gt.BC_THANH_VIEN_ID,
+bt.ID,
+bt.NGAY_SO_LIEU,
+bt.TRANG_THAI,
+bt.XOA_DU_LIEU,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Margin/VCSH %
+WITH nd AS (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(bt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+WHERE dct.MA_CHI_TIEU = 'DU_NO_MARGIN' -- Xác nhận
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+)
+SELECT
+nd.ngay,
+ROUND(TO_NUMBER(margin_gt.GIA_TRI) / NULLIF(TO_NUMBER(vcsh_gt.GIA_TRI), 0) * 100, 2) 
+AS ty_le_margin_tren_vcsh
+FROM nd
+LEFT JOIN (
+SELECT
+TRUNC(bt.NGAY_SO_LIEU) AS ngay,
+gt.GIA_TRI
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+WHERE dct.MA_CHI_TIEU = 'DU_NO_MARGIN' -- Xác nhận
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+) margin_gt ON margin_gt.ngay = nd.ngay
+LEFT JOIN (
+SELECT
+TRUNC(bt.NGAY_SO_LIEU) AS ngay,
+gt.GIA_TRI
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+WHERE dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+) vcsh_gt ON vcsh_gt.ngay = LAST_DAY(ADD_MONTHS(TRUNC(nd.ngay, 'Q'), 2))
+ORDER BY nd.ngay;";;;;;
+24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Phân loại tỷ lệ vốn khả dụng
+SELECT DISTINCT
+CASE
+WHEN TO_NUMBER(gt.GIA_TRI) > 150 THEN 'Mức cao'
+WHEN TO_NUMBER(gt.GIA_TRI) >= 120 AND TO_NUMBER(gt.GIA_TRI) <= 150 THEN 'Mức trung bình'
+WHEN TO_NUMBER(gt.GIA_TRI) < 120 THEN 'Mức thấp'
+END AS phan_loai_tlvkd
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+WHERE dct.MA_CHI_TIEU = 'TY_LE_VON_KHA_DUNG' -- Xác nhận lại
+AND gt.GIA_TRI IS NOT NULL
+ORDER BY 1;";Trùng dòng 343;;;;
 25;;"
 Dashboard An toàn CTCK/
-Danh sách giám sát rủi ro dư nợ margin";Mã CTCK;Mã CTCK;Dashboard;Chiều;Dễ;;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+Danh sách giám sát rủi ro dư nợ margin""";Ngày;Ngày;Dashboard;Chiều;Dễ;;SCMS;;;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
 25;;"
 Dashboard An toàn CTCK/
-Danh sách giám sát rủi ro dư nợ margin";VCSH;VCSH của các CTCK;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+Danh sách giám sát rủi ro dư nợ margin";Mã CTCK;Mã CTCK;Dashboard;Chiều;Trùng;;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
 25;;"
 Dashboard An toàn CTCK/
-Danh sách giám sát rủi ro dư nợ margin";Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+Danh sách giám sát rủi ro dư nợ margin";VCSH;VCSH của các CTCK;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU
+SCMS.BC_THANH_VIEN";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+gt.BC_THANH_VIEN_ID,
+bt.ID,
+bt.NGAY_SO_LIEU,
+bt.TRANG_THAI,
+bt.XOA_DU_LIEU,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Vốn chủ sở hữu
+SELECT
+nd.ngay,
+TO_NUMBER(gt.GIA_TRI) AS von_chu_so_huu
+FROM (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(bt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+WHERE dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+JOIN SCMS.BC_THANH_VIEN bt ON bt.ID = gt.BC_THANH_VIEN_ID
+ON dct.MA_CHI_TIEU = 'VON_CHU_SO_HUU' -- Xác nhận lại
+AND TRUNC(bt.NGAY_SO_LIEU) = LAST_DAY(ADD_MONTHS(TRUNC(nd.ngay, 'Q'), 2))
+-- AND bt.CTCK_THONG_TIN_ID = :p_ctck_id
+AND bt.TRANG_THAI IN (4, 6)
+AND bt.XOA_DU_LIEU = 0
+ORDER BY nd.ngay;";;;;;
 25;;"
 Dashboard An toàn CTCK/
-Danh sách giám sát rủi ro dư nợ margin";Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+Danh sách giám sát rủi ro dư nợ margin";Dư nợ margin;Dư nợ margin;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.NGAY_SO_LIEU,
+gt.DM_CHI_TIEU_ID,
+gt.GIA_TRI,
+dct.ID,
+dct.TEN_CHI_TIEU";;"-- Dư nợ margin
+SELECT
+nd.ngay,
+SUM(TO_NUMBER(gt.GIA_TRI)) AS du_no_margin
+FROM (
+SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+FROM (
+SELECT MIN(gt.NGAY_SO_LIEU) AS min_ngay
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+WHERE dct.TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ' -- Check
+)
+CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+ON dct.TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ' -- Check
+AND TRUNC(gt.NGAY_SO_LIEU) = nd.ngay
+GROUP BY nd.ngay
+ORDER BY nd.ngay;";;;;;
+25;;"
+Dashboard An toàn CTCK/
+Danh sách giám sát rủi ro dư nợ margin";Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;
+25;;"
+Dashboard An toàn CTCK/
+Danh sách giám sát rủi ro dư nợ margin";Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SCMS.BC_BAO_CAO_GT
+SCMS.DM_CHI_TIEU";"gt.GIA_TRI,
+gt.DM_CHI_TIEU_ID,
+dct.ID,
+dct.MA_CHI_TIEU";;"-- Phân loại tỷ lệ vốn khả dụng
+SELECT DISTINCT
+CASE
+WHEN TO_NUMBER(gt.GIA_TRI) > 150 THEN 'Mức cao'
+WHEN TO_NUMBER(gt.GIA_TRI) >= 120 AND TO_NUMBER(gt.GIA_TRI) <= 150 THEN 'Mức trung bình'
+WHEN TO_NUMBER(gt.GIA_TRI) < 120 THEN 'Mức thấp'
+END AS phan_loai_tlvkd
+FROM SCMS.BC_BAO_CAO_GT gt
+JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
+WHERE dct.MA_CHI_TIEU = 'TY_LE_VON_KHA_DUNG' -- Xác nhận lại
+AND gt.GIA_TRI IS NOT NULL
+ORDER BY 1;";Trùng dòng 343;;;;
 26;;Dashboard Phái sinh / Biến động trong phiên/ VN30;Ngày;Ngày;Dashboard;Chiều;Dễ;;MDDS;x;x;;;;;;;;;;;;
 26;;Dashboard Phái sinh / Biến động trong phiên/ VN30;Hợp đồng tương lai;Hợp đồng tương lai;Dashboard;Chiều;Dễ;;MDDS;x;x;;;Thông tin thị trường;;;;;;;;;
 26;;Dashboard Phái sinh / Biến động trong phiên/ VN30;Giá trị chỉ số;Giá trị chỉ số HĐTL VN30;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày, HĐ tương lai;MDDS;x;x;;;Thông tin thị trường;;;;;;;;;
