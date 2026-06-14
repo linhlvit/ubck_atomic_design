@@ -34,7 +34,7 @@ from collections import defaultdict
 # ---------------------------------------------------------------------------
 ROOT        = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ATTRS_YAML  = os.path.join(ROOT, "DataModel", "working", "Atomic", "aggregate", "atomic_attributes.yaml")
-ENTITIES_CSV= os.path.join(ROOT, "DataModel", "working", "Atomic", "hld", "atomic_entities.csv")
+ENTITIES_YAML= os.path.join(ROOT, "DataModel", "working", "Atomic", "hld", "atomic_entities.yaml")
 RULE_CSV    = os.path.join(ROOT, "system", "rules", "rule_map_technical_table_type.csv")
 OUT_DIR     = os.path.join(ROOT, "DataModel", "Atomic")
 
@@ -72,15 +72,15 @@ def load_entities(path):
                                        status, description}"""
     entities = {}
     if os.path.exists(path):
-        with open(path, encoding="utf-8-sig") as f:
-            for row in csv.DictReader(f):
-                entities[row["atomic_entity"].strip()] = {
-                    "bcv_core_object": row["bcv_core_object"].strip(),
-                    "bcv_concept":     row["bcv_concept"].strip(),
-                    "table_type":      row["table_type"].strip(),
-                    "status":          row["status"].strip(),
-                    "description":     row["description"].strip(),
-                }
+        data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+        for row in data.get("entities", []):
+            entities[str(row.get("atomic_entity", "")).strip()] = {
+                "bcv_core_object": str(row.get("bcv_core_object", "") or "").strip(),
+                "bcv_concept":     str(row.get("bcv_concept", "") or "").strip(),
+                "table_type":      str(row.get("table_type", "") or "").strip(),
+                "status":          str(row.get("status", "") or "").strip(),
+                "description":     str(row.get("description", "") or "").strip(),
+            }
     return entities
 
 
@@ -250,7 +250,7 @@ def main():
     args = parser.parse_args()
 
     etl_map     = load_etl_map(RULE_CSV)
-    entities    = load_entities(ENTITIES_CSV)
+    entities    = load_entities(ENTITIES_YAML)
 
     # Load attributes from YAML
     _adata = yaml.safe_load(Path(ATTRS_YAML).read_text(encoding="utf-8"))

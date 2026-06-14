@@ -41,5 +41,5 @@ Script đọc `Source/{SOURCE}_Columns.csv`, so sánh với `atomic_attributes.y
 | Cột nghiệp vụ thực sự chưa map | Bỏ sót khi thiết kế | Tạo/cập nhật lld file, chạy lại aggregate |
 | Cột liên lạc/địa chỉ (DIEN_THOAI, EMAIL, DIA_CHI...) | Chưa tạo shared entity | Tạo file IP Postal/Electronic Address, thêm vào manifest |
 | FK đến bảng khác (ID, *_ID) | FK thuần — giá trị đã capture qua entity cha | Bỏ qua, ghi chú "FK only" nếu cần |
-| Cột out-of-scope theo business | Cố ý không map | Thêm vào `SKIP_COLUMNS` trong script HOẶC document trong `pending_design.csv` |
+| Cột out-of-scope theo business | Cố ý không map | Thêm vào `SKIP_COLUMNS` trong script HOẶC document trong `pending_design.yaml` |
 | Cột audit/kỹ thuật chưa có trong SKIP_COLUMNS | Pattern mới của nguồn | Thêm vào `SKIP_COLUMNS` trong script |

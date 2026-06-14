@@ -1,9 +1,9 @@
 """
 check_consistency.py
 ====================
-Kiểm tra tính nhất quán giữa HLD Markdown files và atomic_entities.csv.
+Kiểm tra tính nhất quán giữa HLD Markdown files và atomic_entities.yaml.
 
-Phát hiện xung đột: entity name trong HLD file khác với tên trong atomic_entities.csv
+Phát hiện xung đột: entity name trong HLD file khác với tên trong atomic_entities.yaml
 (source of truth cho entity-level attributes).
 Dùng sau khi re-run thiết kế HLD để đảm bảo tên reviewed không bị ghi đè.
 
@@ -13,17 +13,18 @@ Cách dùng:
   python check_consistency.py --fix-hints  # in gợi ý câu lệnh sửa (không tự sửa)
 
 Output:
-  - CONFLICT: entity trong HLD có tên khác atomic_entities.csv
+  - CONFLICT: entity trong HLD có tên khác atomic_entities.yaml
   - OK: không có xung đột
-  - WARN: entity trong atomic_entities.csv không tìm thấy trong bất kỳ HLD file nào
+  - WARN: entity trong atomic_entities.yaml không tìm thấy trong bất kỳ HLD file nào
 """
 
-import csv
 import re
 import sys
 import io
 import argparse
 from pathlib import Path
+
+import yaml
 
 # Fix encoding trên Windows terminal
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
@@ -37,12 +38,12 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-s
 SCRIPT_DIR   = Path(__file__).parent
 LLD_DIR      = SCRIPT_DIR.parent
 HLD_DIR      = LLD_DIR.parent.parent / "DataModel" / "working" / "Atomic" / "hld"
-MANIFEST     = LLD_DIR / "manifest.csv"
-OUT_ENTITIES = HLD_DIR / "atomic_entities.csv"
+MANIFEST     = LLD_DIR / "manifest.yaml"
+OUT_ENTITIES = HLD_DIR / "atomic_entities.yaml"
 
 
 # ---------------------------------------------------------------------------
-# Đọc atomic_entities.csv → danh sách entities (source of truth)
+# Đọc atomic_entities.yaml → danh sách entities (source of truth)
 # Nếu source_filter: lọc theo source_table prefix (e.g. "FMS.")
 # Returns: list of {"atomic_entity", "source_table", "status"}
 # ---------------------------------------------------------------------------
@@ -50,20 +51,20 @@ def load_reviewed_entities(source_filter: str | None = None) -> list[dict]:
     entities = []
     if not OUT_ENTITIES.exists():
         return entities
-    with open(OUT_ENTITIES, encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            atomic_entity = row["atomic_entity"].strip()
-            source_table  = row.get("source_table", "")
-            # Filter theo source system: kiểm tra source_table chứa prefix "FMS."
-            if source_filter:
-                sources = [s.strip() for s in source_table.split(",")]
-                if not any(s.upper().startswith(source_filter.upper() + ".") for s in sources):
-                    continue
-            entities.append({
-                "atomic_entity": atomic_entity,
-                "source_table":  source_table,
-                "status":        row.get("status", "draft"),
-            })
+    data = yaml.safe_load(OUT_ENTITIES.read_text(encoding="utf-8")) or {}
+    for row in data.get("entities", []):
+        atomic_entity = str(row.get("atomic_entity", "")).strip()
+        source_table  = str(row.get("source_table", "") or "")
+        # Filter theo source system: kiểm tra source_table chứa prefix "FMS."
+        if source_filter:
+            sources = [s.strip() for s in source_table.split(",")]
+            if not any(s.upper().startswith(source_filter.upper() + ".") for s in sources):
+                continue
+        entities.append({
+            "atomic_entity": atomic_entity,
+            "source_table":  source_table,
+            "status":        str(row.get("status", "draft") or "draft"),
+        })
     return entities
 
 
@@ -140,9 +141,9 @@ def check(reviewed: list[dict],
     reviewed_names = {r["atomic_entity"] for r in reviewed}
 
     print(f"\n{'='*65}")
-    print(f"  CHECK CONSISTENCY — atomic_entities.csv vs HLD files")
+    print(f"  CHECK CONSISTENCY — atomic_entities.yaml vs HLD files")
     print(f"{'='*65}")
-    print(f"  Entities trong atomic_entities.csv : {len(reviewed_names)}")
+    print(f"  Entities trong atomic_entities.yaml : {len(reviewed_names)}")
     print(f"  HLD files được kiểm tra            : {len(hld_entities)}")
     print()
 
@@ -173,11 +174,11 @@ def check(reviewed: list[dict],
             else:
                 not_found_warnings += 1
                 print(f"  WARN [draft] '{entity}'")
-            print(f"            atomic_entities.csv  : '{entity}'")
+            print(f"            atomic_entities.yaml  : '{entity}'")
             for md_file, sim_name in similar[:3]:
                 print(f"            HLD [{md_file}]     : '{sim_name}'")
             if show_hints:
-                print(f"            Gợi ý: cập nhật HLD để dùng tên từ atomic_entities.csv, hoặc")
+                print(f"            Gợi ý: cập nhật HLD để dùng tên từ atomic_entities.yaml, hoặc")
                 print(f"                   chạy rename_entity.py nếu đây là rename mới")
             print()
         else:
@@ -204,7 +205,7 @@ def check(reviewed: list[dict],
 # ---------------------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser(
-        description="Kiểm tra nhất quán entity names giữa HLD Markdown files và atomic_entities.csv."
+        description="Kiểm tra nhất quán entity names giữa HLD Markdown files và atomic_entities.yaml."
     )
     parser.add_argument("--source", metavar="SYSTEM",
                         help="Chỉ kiểm tra source system (VD: FMS, DCST, NHNCK)")
@@ -214,11 +215,11 @@ def main():
 
     source = args.source.upper() if args.source else None
 
-    print("Đọc atomic_entities.csv...", file=sys.stderr)
+    print("Đọc atomic_entities.yaml...", file=sys.stderr)
     reviewed = load_reviewed_entities(source_filter=source)
 
     if not reviewed:
-        print(f"Không tìm thấy entity nào{' cho ' + source if source else ''} trong atomic_entities.csv. Kết thúc.", file=sys.stderr)
+        print(f"Không tìm thấy entity nào{' cho ' + source if source else ''} trong atomic_entities.yaml. Kết thúc.", file=sys.stderr)
         return
 
     print(f"Đọc HLD Markdown files...", file=sys.stderr)

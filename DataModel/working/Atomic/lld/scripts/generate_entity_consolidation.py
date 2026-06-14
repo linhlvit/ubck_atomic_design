@@ -22,7 +22,6 @@ Cách dùng:
 import sys
 import io
 import argparse
-import csv
 import yaml
 from pathlib import Path
 from collections import OrderedDict
@@ -61,7 +60,7 @@ LLD_DIR       = SCRIPT_DIR.parent
 ROOT          = LLD_DIR.parent.parent.parent.parent
 MANIFEST_YAML = LLD_DIR / "manifest.yaml"
 ENTITIES_DIR  = LLD_DIR / "entities"
-ENTITIES_CSV  = ROOT / "DataModel" / "working" / "Atomic" / "hld" / "atomic_entities.csv"
+ENTITIES_YAML = ROOT / "DataModel" / "working" / "Atomic" / "hld" / "atomic_entities.yaml"
 
 # addr-type schemes — attr có context này được phân biệt theo context (không chỉ tên)
 ADDR_SCHEMES = ("IP_ADDR_TYPE=", "IP_ALT_ID_TYPE=", "IP_ELEC_ADDR_TYPE=")
@@ -89,18 +88,18 @@ def load_manifest() -> list:
 def load_atomic_entities() -> dict:
     """Dict: entity_name → {bcv_core_object, bcv_concept, table_type, etl_pattern, description}"""
     result = {}
-    if not ENTITIES_CSV.exists():
+    if not ENTITIES_YAML.exists():
         return result
-    with open(ENTITIES_CSV, encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f):
-            name = row.get("atomic_entity", "").strip()
-            if name:
-                result[name] = {
-                    "bcv_core_object": row.get("bcv_core_object", "").strip(),
-                    "bcv_concept":     row.get("bcv_concept", "").strip() or None,
-                    "table_type":      row.get("table_type", "Fundamental").strip(),
-                    "description":     row.get("description", "").strip() or None,
-                }
+    data = yaml.safe_load(ENTITIES_YAML.read_text(encoding="utf-8")) or {}
+    for row in data.get("entities", []):
+        name = str(row.get("atomic_entity", "") or "").strip()
+        if name:
+            result[name] = {
+                "bcv_core_object": str(row.get("bcv_core_object", "") or "").strip(),
+                "bcv_concept":     str(row.get("bcv_concept", "") or "").strip() or None,
+                "table_type":      str(row.get("table_type", "Fundamental") or "Fundamental").strip(),
+                "description":     str(row.get("description", "") or "").strip() or None,
+            }
     return result
 
 

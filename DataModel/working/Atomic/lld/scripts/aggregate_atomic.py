@@ -1,12 +1,12 @@
 """
 aggregate_atomic.py
 ===================
-Tổng hợp atomic_entities.csv và atomic_attributes.yaml từ các LLD files.
+Tổng hợp atomic_entities.yaml và atomic_attributes.yaml từ các LLD files.
 
 Nguồn dữ liệu:
   - DataModel/working/Atomic/lld/manifest.yaml
   - DataModel/working/Atomic/lld/{SOURCE}/lld_*.yaml
-  - atomic_entities.csv    : source of truth entity-level
+  - atomic_entities.yaml   : source of truth entity-level
   - {SOURCE}_HLD_Overview.md: parse **Description:**
 
 Output:
@@ -22,7 +22,7 @@ classification_context format (output):
 Cách dùng:
   python aggregate_atomic.py                   # rebuild toàn bộ
   python aggregate_atomic.py --dry-run         # in ra stdout, không ghi file
-  python aggregate_atomic.py --skip-entities   # bỏ qua rebuild atomic_entities.csv
+  python aggregate_atomic.py --skip-entities   # bỏ qua rebuild atomic_entities.yaml
   python aggregate_atomic.py --skip-attributes # bỏ qua rebuild atomic_attributes.yaml
 """
 
@@ -72,7 +72,7 @@ ROOT          = LLD_DIR.parent.parent.parent.parent               # project root
 HLD_DIR       = ROOT / "DataModel" / "working" / "Atomic" / "hld"
 YAML_MANIFEST = LLD_DIR / "manifest.yaml"
 OUT_ATTRS     = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
-OUT_ENTITIES  = HLD_DIR / "atomic_entities.csv"
+OUT_ENTITIES  = HLD_DIR / "atomic_entities.yaml"
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -172,9 +172,9 @@ def load_atomic_entities() -> dict[str, dict]:
     result = {}
     if not OUT_ENTITIES.exists():
         return result
-    with open(OUT_ENTITIES, encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f):
-            result[row["atomic_entity"]] = row
+    data = yaml.safe_load(OUT_ENTITIES.read_text(encoding="utf-8")) or {}
+    for row in data.get("entities", []):
+        result[row["atomic_entity"]] = row
     return result
 
 
@@ -256,6 +256,22 @@ def write_csv(path: Path, fields: list[str], rows: list[dict], dry_run: bool = F
             writer = csv.DictWriter(f, fieldnames=fields, lineterminator="\n", extrasaction="ignore")
             writer.writeheader()
             writer.writerows(rows)
+        print(f"  Ghi: {path}", file=sys.stderr)
+
+
+def write_entities_yaml(path: Path, rows: list[dict], dry_run: bool = False):
+    doc = {
+        "schema_type":    "atomic_entities",
+        "schema_version": "1.0",
+        "entities":       [dict(r) for r in rows],
+    }
+    if dry_run:
+        yaml.dump(doc, sys.stdout, Dumper=DQDumper, allow_unicode=True,
+                  sort_keys=False, default_flow_style=False)
+    else:
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(doc, f, Dumper=DQDumper, allow_unicode=True,
+                      sort_keys=False, default_flow_style=False)
         print(f"  Ghi: {path}", file=sys.stderr)
 
 
@@ -531,7 +547,7 @@ def build_attributes(manifest_rows: list[dict],
 
 # ---------------------------------------------------------------------------
 # Build atomic_entities rows
-# Ưu tiên description: (1) existing atomic_entities.csv, (2) HLD Tier **Description:**
+# Ưu tiên description: (1) existing atomic_entities.yaml, (2) HLD Tier **Description:**
 # ---------------------------------------------------------------------------
 def build_entities(manifest_rows: list[dict],
                    existing_entities: dict[str, dict],
@@ -579,11 +595,11 @@ def build_entities(manifest_rows: list[dict],
 def main():
     parser = argparse.ArgumentParser(description="Aggregate Atomic LLD CSVs")
     parser.add_argument("--dry-run",         action="store_true", help="In ra stdout thay vì ghi file")
-    parser.add_argument("--skip-entities",   action="store_true", help="Bỏ qua rebuild atomic_entities.csv")
+    parser.add_argument("--skip-entities",   action="store_true", help="Bỏ qua rebuild atomic_entities.yaml")
     parser.add_argument("--skip-attributes", action="store_true", help="Bỏ qua rebuild atomic_attributes.csv")
     args = parser.parse_args()
 
-    print("Đọc atomic_entities.csv (source of truth)...", file=sys.stderr)
+    print("Đọc atomic_entities.yaml (source of truth)...", file=sys.stderr)
     entity_lookup = load_atomic_entities()
     print(f"  {len(entity_lookup)} entities", file=sys.stderr)
 
@@ -605,7 +621,7 @@ def main():
         print("Build atomic_entities...", file=sys.stderr)
         ent_rows = build_entities(all_manifest, entity_lookup, hld_descriptions)
         print(f"  {len(ent_rows)} entity rows", file=sys.stderr)
-        write_csv(OUT_ENTITIES, ENTITY_FIELDS, ent_rows, dry_run=args.dry_run)
+        write_entities_yaml(OUT_ENTITIES, ent_rows, dry_run=args.dry_run)
 
     # --- Build attributes ---
     if not args.skip_attributes:

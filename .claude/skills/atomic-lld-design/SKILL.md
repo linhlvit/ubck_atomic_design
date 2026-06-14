@@ -490,7 +490,7 @@ python DataModel/gen_summary_and_model.py --source {SOURCE}
 ```
 
 Output:
-- `DataModel/Atomic/dm_manifest.csv`
+- `DataModel/Atomic/dm_manifest.yaml`
 - `DataModel/atomic_model.yaml`
 
 ---
@@ -507,7 +507,7 @@ Output:
 | 3b — Consolidation (nếu cần) | `DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --entities` | **Failed: 0**, `consolidation_status: approved` |
 | 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng; 0 file thiếu `layer: Atomic` |
 | 4b — Validate YAML | `validate_dm_yaml.py --source {SOURCE}` | **Failed: 0** |
-| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `dm_manifest.csv` đúng N dòng; `atomic_model.yaml` parse được |
+| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `dm_manifest.yaml` đúng N dòng; `atomic_model.yaml` parse được |
 
 ---
 

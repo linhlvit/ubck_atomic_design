@@ -41,7 +41,7 @@ description: |
    giữ nguyên cấu trúc — không bắt buộc phải trùng khớp với danh sách in_scope của BRD.
    Một khi bảng nguồn đã được thiết kế Atomic → cập nhật scope_status thành in_scope.
 3. Đọc các file HLD đã có trong `docs/approved/` (nếu có source system liên quan).
-4. **Đọc `Atomic/lld/manifest.csv`** — lọc theo source system đang thiết kế (cột `source_system`),
+4. **Đọc `DataModel/working/Atomic/lld/manifest.yaml`** — lọc theo source system đang thiết kế (cột `source_system`),
    ghi nhận tất cả entity đã có. Tên entity trong manifest là **LOCKED** — dùng đúng tên đó trong HLD,
    không tự sinh tên mới.
 
@@ -64,7 +64,7 @@ description: |
 - bcv_concept chứa "ETL Pattern" → `Fact Append`
 - bcv_core_object = Transaction → `Fact Append`
 - Tên entity chứa "Snapshot" → `Fact Snapshot`
-- bcv_core_object = Common → `Classification` (mặc định; điều chỉnh cá biệt theo quy trình status draft → approved trong atomic_entities.csv)
+- bcv_core_object = Common → `Classification` (mặc định; điều chỉnh cá biệt theo quy trình status draft → approved trong atomic_entities.yaml)
 - Không thuộc các trường hợp trên, không phụ thuộc Fundamental → `Fundamental`
 - Không thuộc các trường hợp trên, có FK đến Fundamental → `Relative`
 
@@ -200,8 +200,7 @@ Nếu term candidate không khớp với cấu trúc trường → nêu rõ tạ
 **Quy tắc mục 6d — Reference Data:**
 - Cột `Scheme Code` **không được để trống** — đặt tên scheme ngay tại bước HLD. Dùng `UPPER_SNAKE_CASE` + prefix source system (VD: `FMS_BUSINESS_TYPE`, `NHNCK_APPLICATION_STATUS`).
 - `source_type`: `source_table` (values load từ bảng nguồn) / `etl_derived` (team tự định nghĩa) / `modeler_defined` (chưa profile).
-- **Sau khi xác định Scheme Code → đăng ký ngay vào `Atomic/lld/ref_shared_entity_classifications.csv`**, kể cả khi chưa có giá trị cụ thể (ghi `(source)` hoặc `(to_define)` ở cột code).
-- Encoding khi ghi `ref_shared_entity_classifications.csv`: UTF-8 with BOM (`utf-8-sig`).
+- **Sau khi xác định Scheme Code → đăng ký ngay vào `DataModel/working/Atomic/lld/classification_schemes.yaml`**, kể cả khi chưa có giá trị cụ thể (để `values: []` hoặc liệt kê sơ bộ).
 
 **Quy tắc mục 6f — Điểm cần xác nhận:**
 - Ghi rõ vấn đề cần review: entity chưa chắc chắn, scope mờ, dependency chéo tầng.
@@ -235,7 +234,7 @@ Format dưới đây là contract giữa HLD Overview và các script aggregate 
 
 **Grain:** Mỗi dòng bảng = 1 record. Mục 7f bắt buộc grain `(source_system, source_table)` — không gộp nhiều bảng vào 1 ô.
 
-### Section Entities — source of truth cho `atomic_entities.csv`
+### Section Entities — source of truth cho `atomic_entities.yaml`
 
 Đặt **sau mục 7f**, cuối file Overview. `aggregate_atomic.py` parse section này để lấy `description`.
 
@@ -262,13 +261,13 @@ Format bắt buộc cho mỗi entity:
 
 **Cập nhật:** Khi có thay đổi ở bất kỳ Tier nào → cập nhật mục 7f trong Overview, chạy lại `aggregate_out_of_scope.py --source {SOURCE}`.
 
-## Bước 8 — Cập nhật atomic_entities.csv và atomic_out_of_scope.csv
+## Bước 8 — Cập nhật atomic_entities.yaml và atomic_out_of_scope.yaml
 
 Hai file này là bảng tổng hợp toàn dự án. Encoding + workflow xem [`reference/file_layout.md`](reference/file_layout.md).
 
-**Source-of-truth:** HLD Overview — mục 7f cho `atomic_out_of_scope.csv`, section Entities cho `atomic_entities.csv`. Hai file aggregate luôn được sinh bằng script.
+**Source-of-truth:** HLD Overview — mục 7f cho `atomic_out_of_scope.yaml`, section Entities cho `atomic_entities.yaml`. Hai file aggregate luôn được sinh bằng script.
 
-### atomic_entities.csv
+### atomic_entities.yaml
 
 **Cấu trúc:**
 ```
@@ -297,7 +296,7 @@ bcv_core_object,bcv_concept,atomic_entity,table_type,status,description,source_t
 
 Cần thay đổi cột LOCKED → đổi `status → draft` trước, sửa, rồi quyết định approve lại.
 
-### atomic_out_of_scope.csv
+### atomic_out_of_scope.yaml
 
 **Cấu trúc cột:** `source_system,source_table,description,group,reason`.
 
@@ -310,7 +309,7 @@ Cần thay đổi cột LOCKED → đổi `status → draft` trước, sửa, r�
    ```
 3. Verify số dòng source trong output csv = số dòng mục 7f của HLD Overview:
    ```bash
-   grep "^{SOURCE}," DataModel/working/Atomic/hld/atomic_out_of_scope.csv | wc -l
+   grep "source_system: \"{SOURCE}\"" DataModel/working/Atomic/hld/atomic_out_of_scope.yaml | wc -l
    ```
    Nếu lệch → check lại format mục 7f theo Bước 7.
 

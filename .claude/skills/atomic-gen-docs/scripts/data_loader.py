@@ -172,9 +172,11 @@ def enumerate_source_entities(repo_root: Path, source: str) -> list[dict[str, st
 
 
 def load_atomic_entities(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "hld" / "atomic_entities.csv")
-    # source_table có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
-    return [r for r in rows if any(t.strip().split(".", 1)[0] == source for t in r["source_table"].split(","))]
+    path = repo_root / "DataModel" / "working" / "Atomic" / "hld" / "atomic_entities.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    rows = data.get("entities", [])
+    # source_table trong atomic_entities.yaml có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
+    return [r for r in rows if any(t.strip().split(".", 1)[0] == source for t in str(r.get("source_table", "")).split(","))]
 
 
 # FK target syntax in LLD comments:
@@ -521,7 +523,7 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
     entity_rows = enumerate_source_entities(repo_root, source)
     entities_meta = load_atomic_entities(repo_root, source)
 
-    # source_table trong atomic_entities.csv có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
+    # source_table trong atomic_entities.yaml có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
     # Tạo 1 entry trong meta_lookup cho mỗi source table riêng lẻ
     meta_lookup: dict[str, dict[str, str]] = {}
     for em in entities_meta:

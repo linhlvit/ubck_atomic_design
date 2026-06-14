@@ -2,11 +2,11 @@
 aggregate_out_of_scope.py
 =========================
 Tổng hợp bảng ngoài scope từ mục 7f của tất cả HLD Overview files
-vào atomic_out_of_scope.csv.
+vào atomic_out_of_scope.yaml.
 
 Nguồn dữ liệu:
   - <SOURCE>_HLD_Overview.md : đọc mục "## 7f. Bảng ngoài scope"
-  - atomic_out_of_scope.csv  : (output) rebuild toàn bộ từ HLD files
+  - atomic_out_of_scope.yaml : (output) rebuild toàn bộ từ HLD files
 
 Grain: 1 dòng = 1 (source_system, source_table)
   Nếu 1 bảng xuất hiện nhiều dòng trong 7f → giữ nguyên (nhiều lý do).
@@ -17,12 +17,13 @@ Cách dùng:
   python aggregate_out_of_scope.py --dry-run  # in ra stdout, không ghi file
 """
 
-import csv
 import re
 import sys
 import io
 import argparse
 from pathlib import Path
+
+import yaml
 
 # Fix encoding trên Windows terminal
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
@@ -36,9 +37,7 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-s
 SCRIPT_DIR = Path(__file__).parent
 LLD_DIR    = SCRIPT_DIR.parent
 HLD_DIR    = LLD_DIR.parent.parent / "DataModel" / "working" / "Atomic" / "hld"
-OUT_FILE   = HLD_DIR / "atomic_out_of_scope.csv"
-
-FIELDS = ["source_system", "source_table", "description", "group", "reason"]
+OUT_FILE   = HLD_DIR / "atomic_out_of_scope.yaml"
 
 
 # ---------------------------------------------------------------------------
@@ -119,11 +118,11 @@ def build_out_of_scope(filter_source: str | None = None) -> list[dict]:
 
     # Nếu filter_source: chỉ rebuild output cho source đó, giữ lại các source khác
     if filter_source and OUT_FILE.exists():
-        existing = []
-        with open(OUT_FILE, encoding="utf-8-sig", newline="") as f:
-            for row in csv.DictReader(f):
-                if row["source_system"].upper() != filter_source.upper():
-                    existing.append(row)
+        existing_data = yaml.safe_load(OUT_FILE.read_text(encoding="utf-8")) or {}
+        existing = [
+            e for e in existing_data.get("entries", [])
+            if e.get("source_system", "").upper() != filter_source.upper()
+        ]
         all_rows = existing + all_rows
 
     # Sort: source_system → group → source_table
@@ -148,19 +147,17 @@ def main():
     rows = build_out_of_scope(filter_source=args.source)
     print(f"  {len(rows)} dòng tổng cộng", file=sys.stderr)
 
+    doc = {
+        "schema_type":    "atomic_out_of_scope",
+        "schema_version": "1.0",
+        "entries":        rows,
+    }
+
     if args.dry_run:
-        out = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8-sig", newline="")
-        writer = csv.DictWriter(out, fieldnames=FIELDS, lineterminator="\n",
-                                extrasaction="ignore")
-        writer.writeheader()
-        writer.writerows(rows)
-        out.flush()
+        yaml.dump(doc, sys.stdout, allow_unicode=True, sort_keys=False, default_flow_style=False)
     else:
-        with open(OUT_FILE, "w", encoding="utf-8-sig", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n",
-                                    extrasaction="ignore")
-            writer.writeheader()
-            writer.writerows(rows)
+        with open(OUT_FILE, "w", encoding="utf-8") as f:
+            yaml.dump(doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
         print(f"  Ghi: {OUT_FILE}", file=sys.stderr)
 
     print("Hoàn thành.", file=sys.stderr)

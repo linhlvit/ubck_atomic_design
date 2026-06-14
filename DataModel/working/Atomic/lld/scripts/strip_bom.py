@@ -12,7 +12,7 @@ Usage:
   python Atomic/lld/scripts/strip_bom.py <path>
 
   python Atomic/lld/scripts/strip_bom.py Atomic/lld/manifest.csv
-  python Atomic/lld/scripts/strip_bom.py DataModel/working/Atomic/hld/atomic_out_of_scope.csv
+  python Atomic/lld/scripts/strip_bom.py DataModel/working/Atomic/hld/atomic_out_of_scope.yaml
 
 Exit codes:
   0 — file OK (đã strip BOM hoặc không có BOM)

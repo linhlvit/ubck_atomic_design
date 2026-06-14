@@ -1,12 +1,12 @@
 """
 rename_entity.py
 ================
-Phát hiện rename Atomic entity từ atomic_entities.csv (source of truth)
-so sánh với manifest.csv (chứa tên cũ chưa sync) và propagate tên mới
+Phát hiện rename Atomic entity từ atomic_entities.yaml (source of truth)
+so sánh với manifest.yaml (chứa tên cũ chưa sync) và propagate tên mới
 ra tất cả file liên quan.
 
-atomic_entities.csv là source of truth:
-  - Người review sửa cột atomic_entity trực tiếp trong atomic_entities.csv
+atomic_entities.yaml là source of truth:
+  - Người review sửa trường atomic_entity trực tiếp trong atomic_entities.yaml
   - Chạy script này để propagate
   - Nếu entity đang status=approved → script dừng + báo lỗi
     → Cần đổi status → draft trước khi rename
@@ -20,11 +20,10 @@ Cách dùng:
   python rename_entity.py              # apply rename thật sự
   python rename_entity.py --dry-run    # in diff, không ghi file
 
-Phát hiện rename: atomic_entity trong atomic_entities.csv
-  khác với atomic_entity tương ứng trong manifest.csv (match theo source_table).
+Phát hiện rename: atomic_entity trong atomic_entities.yaml
+  khác với atomic_entity tương ứng trong manifest.yaml (match theo source_table).
 """
 
-import csv
 import sys
 import argparse
 import io
@@ -68,24 +67,24 @@ ROOT         = LLD_DIR.parent.parent.parent.parent
 HLD_DIR      = ROOT / "DataModel" / "working" / "Atomic" / "hld"
 YAML_MANIFEST = LLD_DIR / "manifest.yaml"
 OUT_ATTRS    = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
-OUT_ENTITIES = HLD_DIR / "atomic_entities.csv"
+OUT_ENTITIES = HLD_DIR / "atomic_entities.yaml"
 
 
 # ---------------------------------------------------------------------------
-# Đọc atomic_entities.csv → {atomic_entity: row} cho TẤT CẢ entity
+# Đọc atomic_entities.yaml → {atomic_entity: row} cho TẤT CẢ entity
 # (không filter theo status)
 # ---------------------------------------------------------------------------
 def load_all_entities() -> dict[str, dict]:
     """
-    Trả về {atomic_entity: row_dict} cho tất cả entity trong atomic_entities.csv.
+    Trả về {atomic_entity: row_dict} cho tất cả entity trong atomic_entities.yaml.
     Dùng để detect rename (diff vs manifest) và check approved lock.
     """
     result = {}
     if not OUT_ENTITIES.exists():
         return result
-    with open(OUT_ENTITIES, encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            result[row["atomic_entity"]] = row
+    data = yaml.safe_load(OUT_ENTITIES.read_text(encoding="utf-8")) or {}
+    for row in data.get("entities", []):
+        result[row["atomic_entity"]] = row
     return result
 
 
@@ -109,14 +108,14 @@ def load_manifest() -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Phát hiện rename: so sánh atomic_entities.csv (tên mới)
+# Phát hiện rename: so sánh atomic_entities.yaml (tên mới)
 # với manifest.csv (tên cũ — chưa sync)
 # Returns: list of (old_name, new_name, source_system, lld_file)
 # ---------------------------------------------------------------------------
 def detect_renames(all_entities: dict[str, dict],
                    manifest_rows: list[dict]) -> list[tuple[str, str, str, str]]:
     """
-    all_entities: {atomic_entity → row} từ atomic_entities.csv (tên mới)
+    all_entities: {atomic_entity → row} từ atomic_entities.yaml (tên mới)
     manifest_rows: danh sách rows từ manifest.csv (chứa tên cũ)
 
     Detect: dòng manifest có atomic_entity không có trong atomic_entities
@@ -281,12 +280,12 @@ def propagate_rename(old: str, new: str,
 
     total_changes = 0
 
-    # 1. atomic_entities.csv — cập nhật source_table column nếu có reference
-    cnt = patch_csv_columns(OUT_ENTITIES, old, new,
-                            columns=["source_table"],
-                            dry_run=dry_run)
+    # 1. atomic_entities.yaml — cập nhật trường source_table nếu có reference
+    cnt = patch_yaml_file(OUT_ENTITIES, old, new,
+                          string_fields=["source_table"],
+                          dry_run=dry_run)
     if cnt:
-        print(f"  {prefix}atomic_entities.csv          : {cnt} thay thế")
+        print(f"  {prefix}atomic_entities.yaml         : {cnt} thay thế")
     total_changes += cnt
 
     # 2. atomic_attributes.yaml
@@ -353,17 +352,17 @@ def propagate_rename(old: str, new: str,
 # ---------------------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser(
-        description="Propagate Atomic entity rename từ atomic_entities.csv ra tất cả file liên quan."
+        description="Propagate Atomic entity rename từ atomic_entities.yaml ra tất cả file liên quan."
     )
     parser.add_argument("--dry-run", action="store_true",
                         help="In diff ra stdout, không ghi file")
     args = parser.parse_args()
 
-    print("Đọc atomic_entities.csv (tất cả entity)...", file=sys.stderr)
+    print("Đọc atomic_entities.yaml (tất cả entity)...", file=sys.stderr)
     all_entities = load_all_entities()
 
     if not all_entities:
-        print("Không tìm thấy entity nào trong atomic_entities.csv.", file=sys.stderr)
+        print("Không tìm thấy entity nào trong atomic_entities.yaml.", file=sys.stderr)
         return
 
     print(f"  {len(all_entities)} entities", file=sys.stderr)
@@ -375,8 +374,8 @@ def main():
 
     if not renames:
         print("\nKhông phát hiện rename nào.")
-        print("Gợi ý: đảm bảo atomic_entity trong atomic_entities.csv đã sửa khác với manifest,")
-        print("        và source_table trong atomic_entities.csv khớp với fqn trong manifest.")
+        print("Gợi ý: đảm bảo atomic_entity trong atomic_entities.yaml đã sửa khác với manifest,")
+        print("        và source_table trong atomic_entities.yaml khớp với fqn trong manifest.")
         return
 
     print(f"\nPhát hiện {len(renames)} rename:")
@@ -389,7 +388,7 @@ def main():
         print(f"\nERROR: Các entity sau đang status=approved — không thể rename:")
         for name in blocked:
             print(f"  '{name}'")
-        print("\nGợi ý: đổi status → draft trong atomic_entities.csv trước khi rename.")
+        print("\nGợi ý: đổi status → draft trong atomic_entities.yaml trước khi rename.")
         sys.exit(1)
 
     for old, new, sys_name, lld in renames:

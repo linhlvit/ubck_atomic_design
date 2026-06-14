@@ -33,7 +33,7 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ('utf-8', 'utf-8-s
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = SCRIPT_DIR.parent.parent   # ubck_atomic_design/
 ATTRS_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'aggregate' / 'atomic_attributes.yaml'
-ATOMIC_ENTITIES_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'hld' / 'atomic_entities.csv'
+ATOMIC_ENTITIES_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'hld' / 'atomic_entities.yaml'
 OUT_GLOSSARY = SCRIPT_DIR / 'business_glossary.csv'
 OUT_MAPPINGS = SCRIPT_DIR / 'glossary_mappings.csv'
 
@@ -387,12 +387,11 @@ def write_csv(path: Path, fields: list[str], rows: list[dict]):
 
 
 def load_fundamental_entities() -> set[str]:
-    entities_path = ATOMIC_ENTITIES_PATH
     result = set()
-    with open(entities_path, encoding='utf-8-sig', newline='') as f:
-        for row in csv.DictReader(f):
-            if row.get('table_type', '').strip().lower() == 'fundamental':
-                result.add(row['atomic_entity'])
+    data = yaml.safe_load(ATOMIC_ENTITIES_PATH.read_text(encoding='utf-8')) or {}
+    for row in data.get('entities', []):
+        if str(row.get('table_type', '') or '').strip().lower() == 'fundamental':
+            result.add(row['atomic_entity'])
     return result
 
 
