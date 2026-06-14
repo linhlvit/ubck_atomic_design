@@ -251,7 +251,7 @@ def patch_atomic_attributes(
 # ---------------------------------------------------------------------------
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Bo sung atomic_table, atomic_column, data_type vao atomic_attributes.csv va attr_Classification_Value.csv"
+        description="Bo sung physical_name, data_type vao lld_*.yaml va atomic_table, atomic_column, data_type vao atomic_attributes.yaml"
     )
     parser.add_argument("--dry-run", action="store_true", help="In ra stdout, khong ghi file")
     parser.add_argument("--name", metavar="LOGICAL_NAME", help="Tra 1 ten cu the (in ket qua ra stdout)")

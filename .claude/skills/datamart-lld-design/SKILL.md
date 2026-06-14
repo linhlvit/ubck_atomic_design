@@ -11,7 +11,7 @@ description: |
     Datamart/hld/DTM_{MODULE}_Entities.md      (Phase 2b)
     Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv (Phase 3)
 
-  Input bắt buộc Phase 2: DTM_{MODULE}_HLD.md đã duyệt + atomic_attributes.csv
+  Input bắt buộc Phase 2: DTM_{MODULE}_HLD.md đã duyệt + atomic_attributes.yaml
 ---
 
 # Skill: Thiết kế LLD Datamart
@@ -32,19 +32,19 @@ description: |
 ## Điều kiện tiên quyết
 
 - [ ] `Datamart/hld/DTM_{MODULE}_HLD.md` tồn tại và đã được user duyệt
-- [ ] `Atomic/lld/atomic_attributes.csv` tồn tại — **nguồn sự thật duy nhất cho Atomic mapping**
+- [ ] `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` tồn tại — **nguồn sự thật duy nhất cho Atomic mapping**
 - [ ] `BRD/BA/BA_analyst_{MODULE}.csv` tồn tại (cần cho Phase 3)
-- [ ] `Atomic/lld/attr_Classification_Value.csv` tồn tại (cần khi map từ danh mục)
+- [ ] `DataModel/working/Atomic/lld/entities/entity_cv.yaml` tồn tại (cần khi map từ danh mục)
 
 > **QUYẾT ĐỊNH CỨNG:** Claude KHÔNG được đoán `source_entity` hay `source_attribute`.
-> Mọi mapping phải tra cứu trực tiếp từ `atomic_attributes.csv`.
+> Mọi mapping phải tra cứu trực tiếp từ `atomic_attributes.yaml`.
 
 ---
 
 ## QUY TRÌNH (BẮT BUỘC)
 
 ```
-Phase 2:   Claude tra atomic_attributes.csv → xuất DTM_{MODULE}_Attributes.csv
+Phase 2:   Claude tra atomic_attributes.yaml → xuất DTM_{MODULE}_Attributes.csv
            → DỪNG, chờ user duyệt
 
 Phase 2b:  Sau khi Phase 2 duyệt → xuất Entities.csv + Entities.md
@@ -127,10 +127,10 @@ source_entity=<tên Atomic entity của driving table / Atomic table tương ứ
 atomic_table=<driving_table> | source_attribute=Source System Code | atomic_column=src_stm_code
 ```
 
-### Bước 2 — Tra atomic_attributes.csv
+### Bước 2 — Tra atomic_attributes.yaml
 
 Với mỗi attribute cần map:
-1. Tra `atomic_attributes.csv` xác nhận tên `atomic_table` và `atomic_column`
+1. Tra `atomic_attributes.yaml` xác nhận tên `atomic_table` và `atomic_column`
 2. Xác định `etl_logic_type` theo rule trong [`reference/phase2_attributes.md`](reference/phase2_attributes.md)
 3. Viết `etl_logic` đúng format
 
@@ -150,7 +150,7 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 
 ```
 □ Driving Table ghi rõ trong description của PK/BK
-□ Mọi mapping tra từ atomic_attributes.csv — không đoán
+□ Mọi mapping tra từ atomic_attributes.yaml — không đoán
 □ etl_logic_type điền mọi row — kể cả pending row, trừ PK/NK/BK
 □ etl_logic (content) trống chỉ khi key ∈ {PK, NK, BK} hoặc etl_logic_type = pending
 □ etl_logic: mọi column reference có table_name. prefix

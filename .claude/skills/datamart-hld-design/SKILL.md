@@ -32,7 +32,7 @@ description: |
 - [ ] `BRD/BA/BA_analyst_{MODULE}.csv` tồn tại
 - [ ] `BRD/source/working/{Module}_Source_Analysis.md` tồn tại
 - [ ] Screenshot báo cáo đã được upload
-- [ ] `Atomic/lld/atomic_attributes.csv` tồn tại (dùng xác nhận entity READY/PENDING)
+- [ ] `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` tồn tại (dùng xác nhận entity READY/PENDING)
 
 ---
 

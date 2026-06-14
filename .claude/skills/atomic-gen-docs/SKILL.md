@@ -55,7 +55,7 @@ docs/output/
 ## Điều kiện tiên quyết
 
 - [ ] `DataModel/working/Atomic/hld/{SOURCE}_HLD_Overview.md` tồn tại
-- [ ] `Atomic/lld/atomic_attributes.csv` đã sync — chạy `aggregate_atomic.py` (tự động sinh luôn `atomic_table`, `atomic_column`, `data_type`)
+- [ ] `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` đã sync — chạy `aggregate_atomic.py` (tự động sinh luôn `atomic_table`, `atomic_column`, `data_type`)
 - [ ] `DataModel/working/Atomic/hld/atomic_entities.csv` đã sync (đã chạy `aggregate_atomic.py`)
 - [ ] Python deps: `python -c "import jinja2"` OK
 - [ ] `pandoc --version` ≥ 3.0 — chỉ cần cho `--mode docx`
