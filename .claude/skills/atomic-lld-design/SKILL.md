@@ -7,7 +7,7 @@ description: |
   IP Alt Identification), xuất file lld_{SOURCE}_{TABLE}.yaml trong
   DataModel/working/Atomic/lld/{SOURCE}/.
   Cũng dùng khi: consolidate entity từ nhiều source (Level 2), cập nhật manifest.yaml,
-  classification_schemes.yaml, pending_design.csv;
+  classification_schemes.yaml, pending_design.yaml;
   chạy validate_lld_yaml.py, aggregate_atomic.py, post_check_atomic.py,
   post_check_source_coverage.py.
   Yêu cầu: HLD đã duyệt cho source_system tương ứng.
@@ -186,7 +186,7 @@ Khi 1 Atomic entity gộp từ 2 bảng nguồn quan hệ 1-1 (VD: Public Compan
 
 **Quy tắc:**
 1. **Chọn 1 bảng làm primary source** cho các cột trùng — map `source_columns` từ bảng đó.
-2. **Cột trùng của bảng kia** document trong `pending_design.csv`:
+2. **Cột trùng của bảng kia** document trong `pending_design.yaml`:
    - `reason`: "Giá trị 1-1 với {primary_table}.{col}. Map primary từ {primary_table}."
    - `action`: "Đã capture qua {primary_table} (1-1)"
 3. **KHÔNG** ghi `"X.col1, Y.col2"` trong `source_columns`. Script `post_check_atomic.py` C5 kiểm tra format đúng 3 phần `SOURCE.table.column`.
@@ -232,7 +232,7 @@ Quy tắc grain = Involved Party luôn áp dụng, không phụ thuộc HLD Tier
 - Bảng tên trường chuẩn cho IP Postal / IP Electronic / IP Alt Identification.
 - Quy tắc `classification_context` (`SCHEME=VALUE` bắt buộc, pattern `(source)` cho type động).
 - Quy tắc trường địa lý (4 cách xử lý theo bối cảnh nguồn).
-- Cột nguồn không map được vào schema chuẩn → document trong `pending_design.csv`.
+- Cột nguồn không map được vào schema chuẩn → document trong `pending_design.yaml`.
 
 Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalized. Ví dụ: snapshot tờ khai thuế, quyết định hành chính, log kỹ thuật — địa chỉ trong các entity này là denormalized hợp lệ.
 
@@ -294,7 +294,7 @@ Trước khi xuất file:
 - [ ] **Cross-check scheme:** Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột `classification_context` đều có trong `classification_schemes.yaml`.
 - [ ] **Trường địa lý:** mã quốc gia/tỉnh/huyện/xã được xử lý đúng theo bối cảnh nguồn (xem [`reference/shared_entity_schemas.md`](reference/shared_entity_schemas.md)).
 - [ ] **Shared entity type động:** Nếu nguồn có cột type qua lookup_values (`identity_type_cd`...) → đã dùng `SCHEME=(source)` placeholder chưa? Không để bare context.
-- [ ] **Shared entity — cột không map:** PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.csv`?
+- [ ] **Shared entity — cột không map:** PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.yaml`?
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
 - [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC.TABLE`. Dynamic context (không có `=VALUE`) → null hoặc expression mapping.

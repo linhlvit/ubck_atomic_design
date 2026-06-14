@@ -506,9 +506,10 @@ def load_classifications(repo_root: Path, source: str) -> list[dict]:
     return out
 
 
-def load_pendings(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "DataModel" / "working" / "Atomic" / "lld" / "pending_design.csv")
-    return [r for r in rows if r["source_system"] == source]
+def load_pendings(repo_root: Path, source: str) -> list[dict]:
+    path = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "pending_design.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return [e for e in data.get("entries", []) if e.get("source_system") == source]
 
 
 def load_source(repo_root: Path, source: str, sample: bool = False, sample_count: int = 2) -> dict[str, Any]:

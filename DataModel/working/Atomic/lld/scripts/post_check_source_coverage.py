@@ -10,11 +10,11 @@ Logic:
   2. Đọc atomic_attributes.yaml → tập hợp cột đã map:
        source_column = "SOURCE.table.column" → (source_system, source_table, column)
   3. Đọc Source/<SOURCE>_Columns.csv → tất cả cột của từng bảng nguồn.
-  4. Đọc pending_design.csv → tập hợp cột đang chờ thiết kế (pending).
+  4. Đọc pending_design.yaml → tập hợp cột đang chờ thiết kế (pending).
   5. Với mỗi (source_system, source_table) đã thiết kế:
        - Lấy danh sách cột từ Columns file
        - Trừ đi cột đã map trong atomic_attributes
-       - Trừ đi cột trong pending_design.csv → in vào section [PENDING] riêng
+       - Trừ đi cột trong pending_design.yaml → in vào section [PENDING] riêng
        - Báo cáo cột còn thiếu (unmapped và không pending)
 
   CHECK B — source_column trong Atomic trỏ đến cột không tồn tại trong nguồn:
@@ -53,7 +53,7 @@ ROOT          = LLD_DIR.parent.parent.parent.parent
 SOURCE_DIR    = ROOT / "Source"
 YAML_MANIFEST = LLD_DIR / "manifest.yaml"
 ATTRS_FILE    = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
-PENDING_FILE  = LLD_DIR / "pending_design.csv"
+PENDING_FILE  = LLD_DIR / "pending_design.yaml"
 
 # Cột kỹ thuật/audit bỏ qua
 SKIP_COLUMNS = {
@@ -100,14 +100,14 @@ def load_pending_columns():
     pending = {}
     if not PENDING_FILE.exists():
         return pending
-    with open(PENDING_FILE, encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f):
-            ss  = row.get("source_system", "").strip()
-            st  = row.get("source_table", "").strip()
-            col = row.get("source_column", "").strip()
-            reason = row.get("reason", "").strip()
-            if ss and st and col:
-                pending[(ss, st, col.upper())] = reason
+    data = yaml.safe_load(PENDING_FILE.read_text(encoding="utf-8")) or {}
+    for entry in data.get("entries", []):
+        ss     = (entry.get("source_system") or "").strip()
+        st     = (entry.get("source_table") or "").strip()
+        col    = (entry.get("source_column") or "").strip()
+        reason = (entry.get("reason") or "").strip()
+        if ss and st and col:
+            pending[(ss, st, col.upper())] = reason
     return pending
 
 
@@ -287,7 +287,7 @@ def main():
     else:
         print(f"⚠  CHECK A: Tổng {total_unmapped} cột nguồn chưa map.")
     if total_pending > 0:
-        print(f"~  CHECK A: Tổng {total_pending} cột đang pending (xem pending_design.csv).")
+        print(f"~  CHECK A: Tổng {total_pending} cột đang pending (xem pending_design.yaml).")
 
     # ── CHECK B: source_column trong Atomic trỏ đến cột không tồn tại trong nguồn ──
     known_cols, known_tables = load_all_source_columns()

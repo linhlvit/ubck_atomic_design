@@ -1,0 +1,17 @@
+schema_type: "pending_design_registry"
+schema_version: "1.0"
+
+entries:
+  - source_system: "NHNCK"
+    source_table: "Departments"
+    source_column: "Id"
+    description: "PK nguồn của Departments"
+    reason: "BK dùng DepartmentCode thay Id — Id là PK kỹ thuật, không có giá trị nghiệp vụ riêng. Out-of-scope."
+    action: "Xác nhận out-of-scope — không map, không cần SKIP_COLUMNS toàn cục vì PK này đặc thù NHNCK"
+
+  - source_system: "NHNCK"
+    source_table: "Units"
+    source_column: "Id"
+    description: "PK nguồn của Units"
+    reason: "BK dùng UnitCode thay Id — Id là PK kỹ thuật, không có giá trị nghiệp vụ riêng. Out-of-scope."
+    action: "Xác nhận out-of-scope — không map, không cần SKIP_COLUMNS toàn cục vì PK này đặc thù NHNCK"
