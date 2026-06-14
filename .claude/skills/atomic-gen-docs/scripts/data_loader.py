@@ -202,7 +202,7 @@ def _parse_fk_target(comment: str) -> tuple[str, str] | None:
 def load_all_attributes(repo_root: Path) -> list[dict[str, str]]:
     """Đọc atomic_attributes.yaml một lần, trả về list flat dicts."""
     import yaml as _yaml
-    path = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "atomic_attributes.yaml"
+    path = repo_root / "DataModel" / "working" / "Atomic" / "aggregate" / "atomic_attributes.yaml"
     data = _yaml.safe_load(path.read_text(encoding="utf-8"))
     rows = []
     for a in (data or {}).get("attributes", []):

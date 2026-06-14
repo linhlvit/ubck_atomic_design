@@ -214,6 +214,13 @@
         "etl_derived_value": {
           "type": ["string", "null"],
           "description": "Giá trị hardcode ETL — bắt buộc khi classification_context = SCHEME=VALUE"
+        },
+        "data_type": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "minLength": 1 }
+          ],
+          "description": "Kiểu dữ liệu Delta Lake (VD: string, bigint, date, decimal(18,2)) — auto-patch bởi transform_physical_names.py"
         }
       }
     }

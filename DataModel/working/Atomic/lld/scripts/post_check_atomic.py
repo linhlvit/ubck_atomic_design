@@ -15,7 +15,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-s
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 SCRIPT_DIR = Path(__file__).parent
-ATTRS_FILE = SCRIPT_DIR.parent / "atomic_attributes.yaml"
+ATTRS_FILE = SCRIPT_DIR.parent.parent / "aggregate" / "atomic_attributes.yaml"
 
 CONTACT_KEYWORDS = [
     "phone", "email", "fax", "address", "postal", "district",

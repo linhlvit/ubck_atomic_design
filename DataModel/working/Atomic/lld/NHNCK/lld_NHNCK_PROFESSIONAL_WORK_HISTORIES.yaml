@@ -1,16 +1,15 @@
-schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: NHNCK
-  source_table: PROFESSIONAL_WORK_HISTORIES
-  atomic_entity: Securities Practitioner Employment Status
-  entity_physical_name: scr_prac_emp_st
-  bcv_core_object: Involved Party
+  source_system: "NHNCK"
+  source_table: "PROFESSIONAL_WORK_HISTORIES"
+  atomic_entity: "Securities Practitioner Employment Status"
+  entity_physical_name: "scr_prac_emp_st"
+  bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  group: T3
-  design_status: approved
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,197 +18,206 @@ metadata:
   approved_by: null
   approved_at: null
   notes: null
-
 attributes:
-  - attribute_name: Securities Practitioner Employment Status Id
-    physical_name: scr_prac_emp_st_id
-    description: Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của người hành nghề chứng khoán (surrogate key).
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. BCV: \"\"Individual Employment Status\"\" (Involved Party)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Securities Practitioner Employment Status Code
-    physical_name: scr_prac_emp_st_code
-    description: Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn.
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.ID
-    comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONAL_WORK_HISTORIES"
-    etl_derived_value: NHNCK.PROFESSIONAL_WORK_HISTORIES
-
-  - attribute_name: Securities Practitioner Id
-    physical_name: scr_prac_id
-    description: Surrogate key FK đến người hành nghề chứng khoán.
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID
-    comment: "FK target: Securities Practitioner.Securities Practitioner Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Securities Practitioner Code
-    physical_name: scr_prac_code
-    description: Mã kỹ thuật của người hành nghề (dư thừa).
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID
-    comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Securities Practitioner Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Securities Organization Reference Id
-    physical_name: scr_org_refr_id
-    description: Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành nghề làm việc.
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
-    comment: "FK target: Securities Organization Reference.Securities Organization Reference Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Securities Organization Reference Code
-    physical_name: scr_org_refr_code
-    description: Mã kỹ thuật của tổ chức (dư thừa).
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
-    comment: "Lookup pair: Securities Organization Reference.Securities Organization Reference Code. Pair with Securities Organization Reference Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Department Name
-    physical_name: dept_nm
-    description: Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot text).
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.UNIT_NAME
-    comment: Denormalized snapshot — lưu nguyên giá trị text tại thời điểm ghi nhận.
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Workplace Name
-    physical_name: workplace_nm
-    description: Tên tổ chức / nơi làm việc dạng text (có thể khác ORGANIZATION_NAME khi tổ chức đổi tên hoặc chưa có trong ORGANIZATIONS).
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.WORKPLACE
-    comment: Denormalized — giữ lại vì có thể không trùng với Securities Organization Reference Name.
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Employment Start Date
-    physical_name: emp_strt_dt
-    description: Ngày bắt đầu làm việc tại tổ chức.
-    data_domain: Date
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.START_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Employment End Date
-    physical_name: emp_end_dt
-    description: "Ngày kết thúc làm việc. Null = đang làm việc."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.END_DATE
-    comment: "Null = đang làm việc hiện tại."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Position Code
-    physical_name: pos_code
-    description: Mã chức vụ của người hành nghề tại tổ chức.
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.POSITION_ID
-    comment: "Scheme: POSITION. Nguồn lưu FK NUMBER đến bảng POSITIONS — ETL cần lookup và convert sang string code."
-    classification_context: POSITION
-    etl_derived_value: null
-
-  - attribute_name: Position Name
-    physical_name: pos_nm
-    description: Tên chức vụ snapshot tại thời điểm ghi nhận.
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.POSITION_NAME
-    comment: Snapshot text — lưu nguyên giá trị không chuẩn hóa.
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Awards
-    physical_name: awards
-    description: Thông tin khen thưởng trong thời gian làm việc tại tổ chức.
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.AWARDS
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Disciplines
-    physical_name: disciplines
-    description: Thông tin kỷ luật trong thời gian làm việc tại tổ chức.
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.DISCIPLINES
-    comment: null
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Securities Practitioner Employment Status Id"
+  physical_name: "scr_prac_emp_st_id"
+  description: "Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của\
+    \ người hành nghề chứng khoán (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"\"Individual Employment Status\"\" (Involved Party)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Employment Status Code"
+  physical_name: "scr_prac_emp_st_code"
+  description: "Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONAL_WORK_HISTORIES"
+  etl_derived_value: "NHNCK.PROFESSIONAL_WORK_HISTORIES"
+  data_type: "string"
+- attribute_name: "Securities Practitioner Id"
+  physical_name: "scr_prac_id"
+  description: "Surrogate key FK đến người hành nghề chứng khoán."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Code"
+  physical_name: "scr_prac_code"
+  description: "Mã kỹ thuật của người hành nghề (dư thừa)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Organization Reference Id"
+  physical_name: "scr_org_refr_id"
+  description: "Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành\
+    \ nghề làm việc."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Organization Reference Code"
+  physical_name: "scr_org_refr_code"
+  description: "Mã kỹ thuật của tổ chức (dư thừa)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
+  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
+    \ Reference Code. Pair with Securities Organization Reference Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Department Name"
+  physical_name: "dept_nm"
+  description: "Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot\
+    \ text)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.UNIT_NAME"
+  comment: "Denormalized snapshot — lưu nguyên giá trị text tại thời điểm ghi nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Workplace Name"
+  physical_name: "workplace_nm"
+  description: "Tên tổ chức / nơi làm việc dạng text (có thể khác ORGANIZATION_NAME\
+    \ khi tổ chức đổi tên hoặc chưa có trong ORGANIZATIONS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.WORKPLACE"
+  comment: "Denormalized — giữ lại vì có thể không trùng với Securities Organization\
+    \ Reference Name."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Employment Start Date"
+  physical_name: "emp_strt_dt"
+  description: "Ngày bắt đầu làm việc tại tổ chức."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Employment End Date"
+  physical_name: "emp_end_dt"
+  description: "Ngày kết thúc làm việc. Null = đang làm việc."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.END_DATE"
+  comment: "Null = đang làm việc hiện tại."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Position Code"
+  physical_name: "pos_code"
+  description: "Mã chức vụ của người hành nghề tại tổ chức."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.POSITION_ID"
+  comment: "Scheme: POSITION. Nguồn lưu FK NUMBER đến bảng POSITIONS — ETL cần lookup\
+    \ và convert sang string code."
+  classification_context: "POSITION"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Position Name"
+  physical_name: "pos_nm"
+  description: "Tên chức vụ snapshot tại thời điểm ghi nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.POSITION_NAME"
+  comment: "Snapshot text — lưu nguyên giá trị không chuẩn hóa."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Awards"
+  physical_name: "awards"
+  description: "Thông tin khen thưởng trong thời gian làm việc tại tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.AWARDS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disciplines"
+  physical_name: "disciplines"
+  description: "Thông tin kỷ luật trong thời gian làm việc tại tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.PROFESSIONAL_WORK_HISTORIES.DISCIPLINES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

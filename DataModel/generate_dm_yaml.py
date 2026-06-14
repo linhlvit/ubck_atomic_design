@@ -33,7 +33,7 @@ from collections import defaultdict
 # Paths (relative to project root)
 # ---------------------------------------------------------------------------
 ROOT        = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ATTRS_YAML  = os.path.join(ROOT, "DataModel", "working", "Atomic", "lld", "atomic_attributes.yaml")
+ATTRS_YAML  = os.path.join(ROOT, "DataModel", "working", "Atomic", "aggregate", "atomic_attributes.yaml")
 ENTITIES_CSV= os.path.join(ROOT, "DataModel", "working", "Atomic", "hld", "atomic_entities.csv")
 RULE_CSV    = os.path.join(ROOT, "system", "rules", "rule_map_technical_table_type.csv")
 OUT_DIR     = os.path.join(ROOT, "DataModel", "Atomic")

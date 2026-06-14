@@ -36,6 +36,27 @@ from pathlib import Path
 from collections import defaultdict, OrderedDict
 from typing import Optional
 
+
+# ---------------------------------------------------------------------------
+# Custom YAML Dumper: double-quote string values, plain keys, native bool/null
+# ---------------------------------------------------------------------------
+class DQDumper(yaml.Dumper):
+    pass
+
+def _str_val_representer(dumper, data):
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style='"')
+
+def _mapping_representer(dumper, data):
+    pairs = []
+    for k, v in data.items():
+        key_node = dumper.represent_scalar("tag:yaml.org,2002:str", k, style=None)
+        val_node = dumper.represent_data(v)
+        pairs.append((key_node, val_node))
+    return yaml.MappingNode("tag:yaml.org,2002:map", pairs)
+
+DQDumper.add_representer(str, _str_val_representer)
+DQDumper.add_representer(dict, _mapping_representer)
+
 # Fix encoding trên Windows terminal
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -50,7 +71,7 @@ LLD_DIR       = SCRIPT_DIR.parent                                 # DataModel/wo
 ROOT          = LLD_DIR.parent.parent.parent.parent               # project root
 HLD_DIR       = ROOT / "DataModel" / "working" / "Atomic" / "hld"
 YAML_MANIFEST = LLD_DIR / "manifest.yaml"
-OUT_ATTRS     = LLD_DIR / "atomic_attributes.yaml"
+OUT_ATTRS     = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
 OUT_ENTITIES  = HLD_DIR / "atomic_entities.csv"
 
 # ---------------------------------------------------------------------------
@@ -258,10 +279,10 @@ def write_attrs_yaml(path: Path, rows: list[dict], dry_run: bool = False):
     doc = {"schema_type": "atomic_attributes", "schema_version": "1.0", "attributes": entries}
 
     if dry_run:
-        print(yaml.dump(doc, allow_unicode=True, sort_keys=False, default_flow_style=False))
+        print(yaml.dump(doc, Dumper=DQDumper, allow_unicode=True, sort_keys=False, default_flow_style=False))
     else:
         with open(path, "w", encoding="utf-8") as f:
-            yaml.dump(doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+            yaml.dump(doc, f, Dumper=DQDumper, allow_unicode=True, sort_keys=False, default_flow_style=False)
         print(f"  Ghi: {path}", file=sys.stderr)
 
 

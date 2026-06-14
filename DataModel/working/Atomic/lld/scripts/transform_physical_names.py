@@ -22,6 +22,27 @@ import sys
 import yaml
 from pathlib import Path
 
+
+# ---------------------------------------------------------------------------
+# Custom YAML Dumper: double-quote string values, plain keys, native bool/null
+# ---------------------------------------------------------------------------
+class DQDumper(yaml.Dumper):
+    pass
+
+def _str_val_representer(dumper, data):
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style='"')
+
+def _mapping_representer(dumper, data):
+    pairs = []
+    for k, v in data.items():
+        key_node = dumper.represent_scalar("tag:yaml.org,2002:str", k, style=None)
+        val_node = dumper.represent_data(v)
+        pairs.append((key_node, val_node))
+    return yaml.MappingNode("tag:yaml.org,2002:map", pairs)
+
+DQDumper.add_representer(str, _str_val_representer)
+DQDumper.add_representer(dict, _mapping_representer)
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -31,7 +52,7 @@ PROJECT_ROOT = LLD_DIR.parent.parent.parent.parent
 
 DICT_PATH       = PROJECT_ROOT / "system" / "rules" / "rule_transform_logical_name.csv"
 DATA_TYPE_PATH  = PROJECT_ROOT / "system" / "rules" / "rule_map_data_type.csv"
-ATOMIC_ATTRS    = LLD_DIR / "atomic_attributes.yaml"
+ATOMIC_ATTRS    = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
 
 COL_ENTITY_PHYS = "atomic_table"
 COL_ATTR_PHYS   = "atomic_column"
@@ -148,6 +169,42 @@ def insert_after(fieldnames: list[str], after: str, new_col: str) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
+# Patch lld_*.yaml — thêm physical_name + data_type vào từng attribute
+# ---------------------------------------------------------------------------
+def patch_lld_files(
+    entries: list[tuple[str, str]],
+    domain_map: dict[str, str],
+    dry_run: bool,
+) -> int:
+    lld_files = sorted(LLD_DIR.glob("**/*.yaml"))
+    lld_files = [f for f in lld_files if f.name.startswith("lld_")]
+    total = 0
+    for path in lld_files:
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if (data or {}).get("schema_type") != "lld_source_table":
+            continue
+        changed = 0
+        for a in (data or {}).get("attributes", []):
+            attr   = a.get("attribute_name", "") or ""
+            domain = a.get("data_domain", "") or ""
+            if not a.get("physical_name"):
+                a["physical_name"] = transform(attr, entries)
+                changed += 1
+            new_dt = resolve_data_type(domain, domain_map) or None
+            if a.get("data_type") != new_dt:
+                a["data_type"] = new_dt
+                changed += 1
+        if dry_run:
+            if changed:
+                print(f"[DRY-RUN] {path.relative_to(LLD_DIR.parent.parent.parent.parent)}: {changed} thay doi")
+        else:
+            with open(path, "w", encoding="utf-8") as f:
+                yaml.dump(data, f, Dumper=DQDumper, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        total += changed
+    return total
+
+
+# ---------------------------------------------------------------------------
 # Patch atomic_attributes.yaml
 # ---------------------------------------------------------------------------
 def patch_atomic_attributes(
@@ -180,10 +237,10 @@ def patch_atomic_attributes(
         a[COL_DATA_TYPE]   = resolve_data_type(domain, domain_map)
 
     if dry_run:
-        print(yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False))
+        print(yaml.dump(data, Dumper=DQDumper, allow_unicode=True, sort_keys=False, default_flow_style=False))
     else:
         with open(ATOMIC_ATTRS, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+            yaml.dump(data, f, Dumper=DQDumper, allow_unicode=True, sort_keys=False, default_flow_style=False)
         print(f"Da cap nhat: {ATOMIC_ATTRS}", file=sys.stderr)
 
     return len(attrs)
@@ -215,8 +272,11 @@ def main() -> None:
         return
 
     # --- Chế độ batch ---
-    n1 = patch_atomic_attributes(entries, domain_map, dry_run=args.dry_run)
-    print(f"  atomic_attributes.yaml: {n1} entries", file=sys.stderr)
+    n1 = patch_lld_files(entries, domain_map, dry_run=args.dry_run)
+    print(f"  lld_*.yaml: {n1} thay doi", file=sys.stderr)
+
+    n2 = patch_atomic_attributes(entries, domain_map, dry_run=args.dry_run)
+    print(f"  atomic_attributes.yaml: {n2} entries", file=sys.stderr)
 
     print("Hoan thanh.", file=sys.stderr)
 

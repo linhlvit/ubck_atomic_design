@@ -52,7 +52,7 @@ LLD_DIR       = SCRIPT_DIR.parent
 ROOT          = LLD_DIR.parent.parent.parent.parent
 SOURCE_DIR    = ROOT / "Source"
 YAML_MANIFEST = LLD_DIR / "manifest.yaml"
-ATTRS_FILE    = LLD_DIR / "atomic_attributes.yaml"
+ATTRS_FILE    = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
 PENDING_FILE  = LLD_DIR / "pending_design.csv"
 
 # Cột kỹ thuật/audit bỏ qua

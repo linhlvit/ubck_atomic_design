@@ -32,7 +32,7 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ('utf-8', 'utf-8-s
 
 SCRIPT_DIR = Path(__file__).parent
 REPO_ROOT = SCRIPT_DIR.parent.parent   # ubck_atomic_design/
-ATTRS_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'lld' / 'atomic_attributes.yaml'
+ATTRS_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'aggregate' / 'atomic_attributes.yaml'
 ATOMIC_ENTITIES_PATH = REPO_ROOT / 'DataModel' / 'working' / 'Atomic' / 'hld' / 'atomic_entities.csv'
 OUT_GLOSSARY = SCRIPT_DIR / 'business_glossary.csv'
 OUT_MAPPINGS = SCRIPT_DIR / 'glossary_mappings.csv'

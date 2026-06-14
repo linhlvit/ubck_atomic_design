@@ -18,7 +18,7 @@
 
 | File | Sinh bởi | Source-of-truth |
 |---|---|---|
-| `DataModel/working/Atomic/lld/atomic_attributes.yaml` | `aggregate_atomic.py` | manifest.yaml + tất cả lld_*.yaml |
+| `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` | `aggregate_atomic.py` | manifest.yaml + tất cả lld_*.yaml |
 | `DataModel/working/Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.yaml + atomic_entities.csv (description preserve) |
 | `DataModel/Atomic/dm_manifest.csv` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
 | `DataModel/atomic_model.yaml` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
@@ -26,32 +26,40 @@
 ## Cấu trúc file lld_*.yaml (Level 1 per source table)
 
 ```yaml
-schema_type: lld_attributes
-schema_version: "1.0"
+schema_type: lld_source_table
+schema_version: "2.0"
 
 metadata:
   source_system: NHNCK
   source_table: PROFESSIONALS
   atomic_entity: Securities Practitioner
-  design_status: draft   # draft | approved
+  entity_physical_name: scr_prac
+  bcv_core_object: Involved Party
+  group: T1
+  design_status: draft   # draft | reviewed | approved
 
 attributes:
   - attribute_name: Securities Practitioner Id
+    physical_name: scr_prac_id        # auto-patch bởi transform_physical_names.py
+    data_type: string                  # auto-patch bởi transform_physical_names.py
     description: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
     nullable: false
     is_primary_key: true
-    source_columns: null
+    status: draft
+    source_columns: []
     comment: null
     classification_context: null
     etl_derived_value: null
 ```
 
+- `physical_name` và `data_type`: auto-patch bởi `transform_physical_names.py` — không điền tay.
 - `etl_derived_value`: để null nếu không có giá trị ETL-derived cố định.
 - `classification_context` format: `SCHEME=VALUE`. Script `aggregate_atomic.py` tự convert sang format output `Field Name = 'VALUE'` khi ghi vào `atomic_attributes.yaml`.
 
-## Cấu trúc atomic_attributes.yaml
+## Cấu trúc atomic_attributes.yaml (aggregate output)
 
+Path: `DataModel/working/Atomic/aggregate/atomic_attributes.yaml`  
 Flat list (1 entry = entity × attribute × source × context):
 
 ```yaml

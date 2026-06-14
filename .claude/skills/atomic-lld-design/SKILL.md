@@ -85,7 +85,7 @@ Từ HLD đã duyệt, xác định:
 
 ### Bước 3 — Thiết kế attribute-level
 
-Copy [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới. Nhớ sinh `physical_name` (snake_case) cho mỗi attribute ngay khi thiết kế — không cần chạy `transform_physical_names.py` sau.
+Copy [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới. Nhớ sinh `physical_name` (snake_case) cho mỗi attribute ngay khi thiết kế. `data_type` để trống — `transform_physical_names.py` sẽ tự điền dựa vào `data_domain`.
 
 #### 3a. Mô tả (description)
 - Ghép 2 phần: **mô tả gốc từ CSDL nguồn (giữ nguyên)** + mô tả bổ sung trên model (nếu có).
@@ -376,7 +376,7 @@ attributes:
     etl_derived_value: NHNCK.PROFESSIONALS
 ```
 
-**Physical name (snake_case):** AI sinh sẵn `physical_name` cho mỗi attribute khi thiết kế — không cần `transform_physical_names.py`.
+**Physical name (snake_case):** AI sinh sẵn `physical_name` cho mỗi attribute khi thiết kế. `data_type` để trống hoặc null — `transform_physical_names.py` tự patch sau khi lưu file.
 - Entity: `[domain_prefix]_[bcv_term]` (VD: `scr_practitioner`, `scr_org_ref`)
 - Attribute: `[entity_prefix]_[field]` → viết tắt thông minh, snake_case (VD: `scr_practitioner_id`, `org_full_nm`, `src_stm_code`)
 
