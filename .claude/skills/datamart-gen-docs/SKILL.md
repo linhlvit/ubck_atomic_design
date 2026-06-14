@@ -37,7 +37,7 @@ description: |
 - [ ] `Datamart/hld/DTM_{MODULE}_HLD.md` tồn tại và có Section 1 — Data Lineage
 - [ ] `Datamart/hld/DTM_{MODULE}_Entities.csv` tồn tại
 - [ ] `Datamart/lld/DTM_{MODULE}_Attributes.csv` tồn tại
-- [ ] `Atomic/lld/atomic_attributes.csv` tồn tại — dùng để lookup `source_system` cho cột Hệ thống nguồn trong bảng Physical
+- [ ] `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` tồn tại — dùng để lookup `source_system` cho cột Hệ thống nguồn trong bảng Physical
 - [ ] Python deps: `python -c "import docx"` OK — cài: `pip install python-docx`
 - [ ] mmdc (chỉ cần cho Phase 3 DOCX): `npm install -g @mermaid-js/mermaid-cli`
 
@@ -71,7 +71,7 @@ Phase 3:   Claude chạy build_docx.py → gen DOCX tổng
 hld          = "Datamart/hld/DTM_{MODULE}_HLD.md"
 ents         = "Datamart/hld/DTM_{MODULE}_Entities.csv"
 attrs        = "Datamart/lld/DTM_{MODULE}_Attributes.csv"
-atomic_attrs = "Atomic/lld/atomic_attributes.csv"   # lookup source_system cho bảng Physical
+atomic_attrs = "DataModel/working/Atomic/aggregate/atomic_attributes.yaml"   # lookup source_system cho bảng Physical
 
 # Đọc rule transform tên (luôn dùng version mới nhất):
 rule  = "system/rules/rule_transform_logical_name.csv"  # hoặc version mới nhất có trong project

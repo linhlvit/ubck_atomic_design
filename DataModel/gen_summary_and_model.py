@@ -2,19 +2,18 @@
 gen_summary_and_model.py
 ------------------------
 Phase 5: Consolidate DataModel YAML files into:
-  - DataModel/Atomic/dm_manifest.csv  (13-column index, UTF-8 with BOM)
+  - DataModel/Atomic/dm_manifest.yaml (13-column index)
   - DataModel/atomic_model.yaml       (consolidated per-entity, all sources)
 
 Usage:
   python DataModel/gen_summary_and_model.py [--source NHNCK] [--dry-run]
 
-  --source: optional filter for dm_manifest.csv rows only.
+  --source: optional filter for dm_manifest.yaml rows only.
             atomic_model.yaml always consolidates ALL sources.
 """
 
 import argparse
 import collections
-import csv
 import os
 import sys
 from pathlib import Path
@@ -23,7 +22,7 @@ import yaml
 
 ROOT       = Path(__file__).resolve().parent.parent
 ATOMIC_DIR = ROOT / "DataModel" / "Atomic"
-SUMMARY_OUT = ATOMIC_DIR / "dm_manifest.csv"
+SUMMARY_OUT = ATOMIC_DIR / "dm_manifest.yaml"
 MODEL_OUT   = ROOT / "DataModel" / "atomic_model.yaml"
 
 SUMMARY_COLS = [
@@ -44,7 +43,7 @@ ATTR_CONFLICT_FIELDS = ["data_domain", "data_type", "nullable", "is_primary_key"
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--source", help="Filter dm_manifest.csv rows to this source only")
+    p.add_argument("--source", help="Filter dm_manifest.yaml rows to this source only")
     p.add_argument("--dry-run", action="store_true", help="Print counts, write nothing")
     return p.parse_args()
 
@@ -319,18 +318,21 @@ def main():
 
     print(f"Total YAML files  : {len(all_rows)}")
     print(f"Distinct entities : {len(entities)}")
-    print(f"dm_manifest.csv rows : {len(summary_rows)}"
+    print(f"dm_manifest.yaml rows : {len(summary_rows)}"
           + (f" (source={args.source})" if args.source else ""))
 
     if args.dry_run:
         print("(dry-run — nothing written)")
         return
 
-    # Write dm_manifest.csv (UTF-8 with BOM)
-    with open(SUMMARY_OUT, "w", encoding="utf-8-sig", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=SUMMARY_COLS)
-        w.writeheader()
-        w.writerows(summary_rows)
+    # Write dm_manifest.yaml
+    manifest_doc = {
+        "schema_type":    "dm_manifest",
+        "schema_version": "1.0",
+        "entries":        summary_rows,
+    }
+    with open(SUMMARY_OUT, "w", encoding="utf-8") as f:
+        yaml.dump(manifest_doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
     print(f"Written: {SUMMARY_OUT.relative_to(ROOT)}")
 
     # Write atomic_model.yaml (all sources, consolidated)

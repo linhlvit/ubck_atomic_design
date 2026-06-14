@@ -5,7 +5,7 @@
 **Nguồn tài liệu:**
 - Cấu trúc dữ liệu nguồn: `MDDS_PriceBoardAPI.xlsx` (9 sheet, phân tích từ API spec)
 - HLD: `MDDS_HLD_Overview.md`
-- Atomic entities: `atomic_entities.csv`
+- Atomic entities: `atomic_entities.yaml`
 - Classification Value registry: `ref_shared_entity_classifications.csv`
 
 ---
@@ -193,4 +193,4 @@ Các Classification Value scheme của MDDS được đăng ký trong `ref_share
 
 **Tổng CV scheme:** 16 scheme ✅ (khớp `ref_shared_entity_classifications.csv`)
 
-**Tổng Atomic entity được ánh xạ:** Market Snapshot, Market Index Snapshot, Index Constituent Snapshot, Security Trading Snapshot, Security Match Log, Corporate Bond Trading Snapshot, Corporate Bond Match Log = **7 entities** ✅ (khớp `atomic_entities.csv`)
+**Tổng Atomic entity được ánh xạ:** Market Snapshot, Market Index Snapshot, Index Constituent Snapshot, Security Trading Snapshot, Security Match Log, Corporate Bond Trading Snapshot, Corporate Bond Match Log = **7 entities** ✅ (khớp `atomic_entities.yaml`)

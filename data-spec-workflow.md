@@ -245,7 +245,7 @@ DM gộp cả Logical Design (LDM) và Physical Design (PDM) trong **một file 
 ### 2.1 Granularity & Scope
 
 - **Granularity:** 1 file per **(atomic_table × source_system × source_table)** — entity có nhiều source sẽ có nhiều file DM
-- **Input:** BRD entries `in_scope` + `Atomic/lld/atomic_attributes.csv` + `Atomic/hld/atomic_entities.csv`
+- **Input:** BRD entries `in_scope` + `Atomic/lld/atomic_attributes.csv` + `Atomic/hld/atomic_entities.yaml`
 - **Output:** `DataModel/Atomic/{BCV_Folder}/dm_atm_{table}-{SOURCE}.{SRC_TABLE}.yaml`
 - **Tool thiết kế:** AI-Skill (`atomic-hld-design`, `atomic-lld-design`)
 - **Tool generate:** `DataModel/generate_dm_yaml.py`
@@ -410,7 +410,7 @@ python DataModel/generate_dm_yaml.py --dry-run
 python DataModel/generate_dm_yaml.py
 ```
 
-**Input:** `Atomic/lld/atomic_attributes.csv`, `Atomic/hld/atomic_entities.csv`, `system/rules/rule_map_technical_table_type.csv`  
+**Input:** `Atomic/lld/atomic_attributes.csv`, `Atomic/hld/atomic_entities.yaml`, `system/rules/rule_map_technical_table_type.csv`  
 **Output:** `DataModel/Atomic/{BCV_Folder}/dm_atm_*.yaml` (1 file per table × source combo)
 
 > Sau khi chỉnh sửa attribute trong CSV, chạy lại script để sync YAML. File đã chỉnh tay sẽ bị **overwrite** — lưu ý chỉ sửa CSV làm nguồn gốc.
@@ -481,7 +481,7 @@ Mapping là bước chuyển đổi cụ thể từng cột Bronze → Atomic, b
 ### 3.1 Granularity & Scope
 
 - **Granularity:** 1 file per **(atomic_table × source_system × source_table)** — giống với DM YAML, 1 entity có nhiều source combo sẽ có nhiều file
-- **Input:** DM YAML (`DataModel/Atomic/`) + `Mapping/registries/gm_atomic_entities.csv` + `gm_atomic_attributes.csv` + `gm_bronze_attributes.csv`
+- **Input:** DM YAML (`DataModel/Atomic/`) + `Mapping/registries/gm_atomic_entities.yaml` + `gm_atomic_attributes.csv` + `gm_bronze_attributes.csv`
 - **Output:** `Mapping/Atomic/{BCV_Folder}/mapping_atm_{table}-{SOURCE}.{SRC_TABLE}.yaml`
 - **Schema:** `schemas/mapping.schema.json` (JSON Schema Draft-07)
 - **Tool generate:** `Mapping/scripts/gen_mapping_atomic.py`
@@ -506,7 +506,7 @@ Mapping/
   rules/
     transformation_rules.yaml # Shared transformation rules — tra cứu bởi ETL generator
   registries/
-    gm_atomic_entities.csv    # metadata entity: table_type, mapping_type, description
+    gm_atomic_entities.yaml    # metadata entity: table_type, mapping_type, description
     gm_atomic_attributes.csv  # attributes: domain, source_column, transformation hints
     gm_bronze_attributes.csv  # bronze PK/FK info để auto-detect join condition
   scripts/
@@ -644,11 +644,11 @@ SELECT * FROM leg_br
 
 | File | Mô tả | Key columns |
 |---|---|---|
-| `gm_atomic_entities.csv` | Metadata entity-level | `atomic_entity`, `table_type`, `technical_table_type`, `mapping_type`, `source_table` |
+| `gm_atomic_entities.yaml` | Metadata entity-level | `atomic_entity`, `table_type`, `technical_table_type`, `mapping_type`, `source_table` |
 | `gm_atomic_attributes.csv` | Metadata attribute-level | `atomic_entity`, `atomic_attribute`, `data_domain`, `source_column`, `classification_context` |
 | `gm_bronze_attributes.csv` | Bronze PK/FK để auto-detect join | `table_name`, `column_name`, `pk/fk`, `description` |
 
-`mapping_type` trong `gm_atomic_entities.csv`:
+`mapping_type` trong `gm_atomic_entities.yaml`:
 - `regular` — 1 source table, có JOIN
 - `shared_entity` — multi-source, UNION ALL
 - `cv` — Classification Value (placeholder, chưa implement)

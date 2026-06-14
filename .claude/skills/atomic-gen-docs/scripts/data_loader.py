@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import csv
 import re
+import yaml
 from pathlib import Path
 from typing import Any
 
@@ -127,7 +128,20 @@ def parse_uid_groups(repo_root: Path, source: str) -> list[dict]:
 
 
 def load_manifest(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "lld" / "manifest.csv")
+    import yaml as _yaml
+    mpath = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "manifest.yaml"
+    data = _yaml.safe_load(mpath.read_text(encoding="utf-8"))
+    rows = []
+    for e in (data or {}).get("entries", []):
+        if e.get("group", "") == "pending":
+            continue
+        rows.append({
+            "source_system": e.get("source_system", ""),
+            "source_table":  e.get("source_table", ""),
+            "atomic_entity": e.get("atomic_entity", ""),
+            "group":         e.get("group", ""),
+            "lld_file":      e.get("lld_file", ""),
+        })
     return [r for r in rows if r["source_system"] == source]
 
 
@@ -158,9 +172,11 @@ def enumerate_source_entities(repo_root: Path, source: str) -> list[dict[str, st
 
 
 def load_atomic_entities(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "hld" / "atomic_entities.csv")
-    # source_table có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
-    return [r for r in rows if any(t.strip().split(".", 1)[0] == source for t in r["source_table"].split(","))]
+    path = repo_root / "DataModel" / "working" / "Atomic" / "hld" / "atomic_entities.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    rows = data.get("entities", [])
+    # source_table trong atomic_entities.yaml có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
+    return [r for r in rows if any(t.strip().split(".", 1)[0] == source for t in str(r.get("source_table", "")).split(","))]
 
 
 # FK target syntax in LLD comments:
@@ -187,8 +203,27 @@ def _parse_fk_target(comment: str) -> tuple[str, str] | None:
 
 
 def load_all_attributes(repo_root: Path) -> list[dict[str, str]]:
-    """Đọc atomic_attributes.csv một lần, cache trong module scope."""
-    return _read_csv(repo_root / "Atomic" / "lld" / "atomic_attributes.csv")
+    """Đọc atomic_attributes.yaml một lần, trả về list flat dicts."""
+    import yaml as _yaml
+    path = repo_root / "DataModel" / "working" / "Atomic" / "aggregate" / "atomic_attributes.yaml"
+    data = _yaml.safe_load(path.read_text(encoding="utf-8"))
+    rows = []
+    for a in (data or {}).get("attributes", []):
+        r = dict(a)
+        for k in ("nullable", "is_primary_key"):
+            v = r.get(k)
+            if isinstance(v, bool):
+                r[k] = "true" if v else "false"
+            elif v is None:
+                r[k] = ""
+        for k in ("atomic_entity","atomic_table","atomic_column","atomic_attribute",
+                  "source_column","source_system","source_table","comment",
+                  "classification_context","etl_derived_value","description",
+                  "data_domain","data_type","bcv_core_object"):
+            if r.get(k) is None:
+                r[k] = ""
+        rows.append(r)
+    return rows
 
 
 def load_attributes(
@@ -460,20 +495,23 @@ def load_source_systems(repo_root: Path) -> dict[str, str]:
     return {r["source_system"]: r["description"] for r in rows if r.get("source_system")}
 
 
-def load_classifications(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "lld" / "ref_shared_entity_classifications.csv")
+def load_classifications(repo_root: Path, source: str) -> list[dict]:
+    path = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "classification_schemes.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    schemes = data.get("schemes", [])
     out = []
-    for r in rows:
-        used_in = r.get("used_in_entities", "")
-        src_table = r.get("source_table", "")
-        if source in used_in or src_table.startswith(f"{source}."):
-            out.append(r)
+    for s in schemes:
+        used_in = s.get("used_in_entities") or []
+        src_table = s.get("source_table") or ""
+        if source in " ".join(used_in) or src_table.startswith(f"{source}."):
+            out.append(s)
     return out
 
 
-def load_pendings(repo_root: Path, source: str) -> list[dict[str, str]]:
-    rows = _read_csv(repo_root / "Atomic" / "lld" / "pending_design.csv")
-    return [r for r in rows if r["source_system"] == source]
+def load_pendings(repo_root: Path, source: str) -> list[dict]:
+    path = repo_root / "DataModel" / "working" / "Atomic" / "lld" / "pending_design.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return [e for e in data.get("entries", []) if e.get("source_system") == source]
 
 
 def load_source(repo_root: Path, source: str, sample: bool = False, sample_count: int = 2) -> dict[str, Any]:
@@ -485,7 +523,7 @@ def load_source(repo_root: Path, source: str, sample: bool = False, sample_count
     entity_rows = enumerate_source_entities(repo_root, source)
     entities_meta = load_atomic_entities(repo_root, source)
 
-    # source_table trong atomic_entities.csv có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
+    # source_table trong atomic_entities.yaml có thể là multi-value "FMS.SECURITIES, FIMS.FUNDCOMPANY, ..."
     # Tạo 1 entry trong meta_lookup cho mỗi source table riêng lẻ
     meta_lookup: dict[str, dict[str, str]] = {}
     for em in entities_meta:

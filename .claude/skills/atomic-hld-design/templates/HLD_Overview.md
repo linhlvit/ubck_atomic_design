@@ -94,7 +94,7 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 ## Entities
 
-> Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.csv`.
+> Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.yaml`.
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
 ### 1. {Atomic Entity Name}

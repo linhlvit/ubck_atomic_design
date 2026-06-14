@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/atomic_out_of_scope.schema.json",
+  "title": "Atomic Out-of-Scope Registry Schema",
+  "description": "Schema cho file atomic_out_of_scope.yaml — danh sách source table bị loại khỏi Atomic layer kèm lý do. Ghi vào DataModel/working/Atomic/hld/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_type", "schema_version", "entries"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "atomic_out_of_scope",
+      "description": "Phải là 'atomic_out_of_scope'"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema"
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 0,
+      "description": "Danh sách source table out-of-scope — mỗi entry là 1 bảng bị loại",
+      "items": {
+        "$ref": "#/definitions/out_of_scope_entry"
+      }
+    }
+  },
+  "definitions": {
+    "out_of_scope_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_system", "source_table", "reason"],
+      "properties": {
+        "source_system": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Mã source system, VD: NHNCK, FMS, DCST"
+        },
+        "source_table": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tên bảng nguồn bị loại"
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Mô tả nội dung bảng nguồn"
+        },
+        "group": {
+          "type": ["string", "null"],
+          "description": "Phân nhóm lý do loại, VD: Application Config, Audit Log, Lookup Only"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Lý do cụ thể tại sao bảng này không vào Atomic layer"
+        }
+      }
+    }
+  }
+}

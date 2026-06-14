@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/entity_consolidation.schema.json",
+  "title": "Entity Consolidation Schema",
+  "description": "Schema cho file entity_{PHYSICAL_NAME}.yaml — Level 2 consolidation: tổng hợp tất cả source mappings cho 1 Atomic entity. Ghi vào DataModel/working/Atomic/lld/entities/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_type", "schema_version", "entity", "sources", "attributes"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "entity_consolidation"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+    },
+    "entity": {
+      "$ref": "#/definitions/entity_header"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Danh sách source tables đã approved ở Level 1",
+      "items": {
+        "$ref": "#/definitions/source_ref"
+      }
+    },
+    "consolidation_notes": {
+      "type": "array",
+      "description": "Danh sách issues AI phát hiện khi consolidate — Human phải resolve trước khi approve",
+      "items": {
+        "type": "string"
+      }
+    },
+    "attributes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Attribute list thống nhất — union của tất cả source, với source_mappings per source",
+      "items": {
+        "$ref": "#/definitions/consolidated_attribute"
+      }
+    }
+  },
+  "definitions": {
+    "entity_header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_name",
+        "physical_name",
+        "bcv_core_object",
+        "table_type",
+        "consolidation_status"
+      ],
+      "properties": {
+        "entity_name": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Tên Atomic entity đầy đủ"
+        },
+        "physical_name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Physical table name (snake_case)"
+        },
+        "bcv_core_object": {
+          "type": "string",
+          "enum": [
+            "Arrangement",
+            "Business Activity",
+            "Common",
+            "Communication",
+            "Condition",
+            "Documentation",
+            "Event",
+            "Group",
+            "Involved Party",
+            "Location",
+            "Product",
+            "Transaction"
+          ]
+        },
+        "bcv_concept": {
+          "type": ["string", "null"]
+        },
+        "table_type": {
+          "type": "string",
+          "enum": ["Fundamental", "Fact Append", "Fact Snapshot", "Relative", "Classification"]
+        },
+        "etl_pattern": {
+          "type": ["string", "null"],
+          "enum": ["SCD4A", "SCD2", "Fact Append", "Upsert", null]
+        },
+        "consolidation_status": {
+          "type": "string",
+          "enum": ["pending", "approved"],
+          "description": "pending = AI đã gen, chờ Human review; approved = locked"
+        },
+        "consolidated_by": {
+          "type": ["string", "null"]
+        },
+        "consolidated_at": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "source_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_system", "source_table", "lld_file"],
+      "properties": {
+        "source_system": { "type": "string" },
+        "source_table": { "type": "string" },
+        "lld_file": {
+          "type": "string",
+          "description": "Relative path từ DataModel/working/Atomic/lld/, VD: NHNCK/lld_NHNCK_ORGANIZATIONS.yaml"
+        }
+      }
+    },
+    "consolidated_attribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attribute_name",
+        "physical_name",
+        "description",
+        "data_domain",
+        "nullable",
+        "is_primary_key",
+        "source_mappings"
+      ],
+      "properties": {
+        "attribute_name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "physical_name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "description": {
+          "type": "string"
+        },
+        "data_domain": {
+          "type": "string",
+          "enum": [
+            "Text", "Date", "Timestamp", "Currency Amount", "Interest Rate",
+            "Exchange Rate", "Percentage", "Surrogate Key", "Classification Value",
+            "Indicator", "Boolean", "Small Counter", "Array<Text>", "Array<Struct>"
+          ]
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "is_primary_key": {
+          "type": "boolean"
+        },
+        "comment": {
+          "type": ["string", "null"]
+        },
+        "classification_context": {
+          "type": ["string", "null"]
+        },
+        "etl_derived_value": {
+          "type": ["string", "null"]
+        },
+        "source_mappings": {
+          "type": "object",
+          "description": "Keys: 'SOURCE_SYSTEM.TABLE_NAME', values: fully-qualified source_column hoặc null nếu ETL-derived / không có trong source đó",
+          "additionalProperties": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    }
+  }
+}

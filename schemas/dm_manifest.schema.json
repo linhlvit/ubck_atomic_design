@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/dm_manifest.schema.json",
+  "title": "Data Model Manifest Schema",
+  "description": "Schema cho file dm_manifest.yaml — index tổng hợp tất cả dm_atm_*.yaml file, mỗi entry là 1 ETL job (physical_name × source). Sinh bởi gen_summary_and_model.py. Ghi vào DataModel/Atomic/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_type", "schema_version", "entries"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "dm_manifest",
+      "description": "Phải là 'dm_manifest'"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema"
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 0,
+      "description": "Danh sách dm_atm_*.yaml file — mỗi entry là 1 ETL job. Sinh tự động, không sửa tay.",
+      "items": {
+        "$ref": "#/definitions/dm_manifest_entry"
+      }
+    }
+  },
+  "definitions": {
+    "dm_manifest_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subfolder", "file_name", "id", "physical_name", "logical_name",
+        "bcv_core_object", "table_type", "etl_pattern", "source", "status", "attribute_count"
+      ],
+      "properties": {
+        "subfolder": {
+          "type": "string",
+          "description": "Tên thư mục con trong DataModel/Atomic/ (theo BCV Core Object, VD: Business_Activity)"
+        },
+        "file_name": {
+          "type": "string",
+          "pattern": "^dm_atm_.+\\.yaml$",
+          "description": "Tên file dm_atm_*.yaml"
+        },
+        "id": {
+          "type": "string",
+          "description": "ID duy nhất, format: ATM-{physical_name}-{SOURCE}.{TABLE}"
+        },
+        "physical_name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Physical name của Atomic entity (snake_case)"
+        },
+        "logical_name": {
+          "type": "string",
+          "description": "Logical name của Atomic entity (Title Case)"
+        },
+        "bcv_core_object": {
+          "type": "string",
+          "enum": [
+            "Arrangement",
+            "Business Activity",
+            "Common",
+            "Communication",
+            "Condition",
+            "Documentation",
+            "Event",
+            "Group",
+            "Involved Party",
+            "Location",
+            "Product",
+            "Transaction"
+          ]
+        },
+        "bcv_concept": {
+          "type": ["string", "null"],
+          "description": "BCV Concept đầy đủ"
+        },
+        "table_type": {
+          "type": "string",
+          "enum": ["Fundamental", "Fact Append", "Fact Snapshot", "Relative", "Classification"]
+        },
+        "etl_pattern": {
+          "type": "string",
+          "enum": ["SCD4A", "SCD2", "Fact Append", "Fact Snapshot", "Upsert"],
+          "description": "ETL pattern tương ứng với table_type"
+        },
+        "source": {
+          "type": "string",
+          "description": "Mã source system, VD: NHNCK"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "reviewed", "approved"]
+        },
+        "attribute_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Số lượng attributes trong dm_atm_*.yaml tương ứng"
+        },
+        "brd_ref": {
+          "type": ["string", "null"],
+          "description": "Tham chiếu BRD, VD: BRD-SRC-NHNCK-VIOLATIONS"
+        }
+      }
+    }
+  }
+}

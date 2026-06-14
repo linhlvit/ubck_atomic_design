@@ -1,0 +1,156 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Geographic Area"
+  physical_name: "geo"
+  bcv_core_object: "Location"
+  bcv_concept: "[Location] Geographic Area"
+  table_type: "Fundamental"
+  etl_pattern: "SCD4A"
+  consolidation_status: "pending"
+  consolidated_by: null
+  consolidated_at: null
+sources:
+- source_system: "NHNCK"
+  source_table: "COUNTRIES"
+  lld_file: "NHNCK/lld_NHNCK_COUNTRIES.yaml"
+- source_system: "NHNCK"
+  source_table: "PROVINCES"
+  lld_file: "NHNCK/lld_NHNCK_PROVINCES.yaml"
+- source_system: "NHNCK"
+  source_table: "DISTRICTS"
+  lld_file: "NHNCK/lld_NHNCK_DISTRICTS.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Geographic Area Id"
+  physical_name: "geo_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: null
+    NHNCK.PROVINCES: null
+    NHNCK.DISTRICTS: null
+- attribute_name: "Geographic Area Code"
+  physical_name: "geo_code"
+  description: "Mã tỉnh/thành phố nguồn. BK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính. Giá trị từ PK số tự tăng của bảng nguồn."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: "NHNCK.qlnhn.COUNTRIES.ID"
+    NHNCK.PROVINCES: "NHNCK.PROVINCES.ID"
+    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "NHNCK.COUNTRIES"
+  source_mappings:
+    NHNCK.COUNTRIES: null
+    NHNCK.PROVINCES: null
+    NHNCK.DISTRICTS: null
+- attribute_name: "Geographic Area Type Code"
+  physical_name: "geo_tp_code"
+  description: "Phân loại vùng địa lý — Tỉnh/Thành phố"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: null
+  classification_context: "GEOGRAPHIC_AREA_TYPE=COUNTRY"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: null
+    NHNCK.PROVINCES: null
+    NHNCK.DISTRICTS: null
+- attribute_name: "Geographic Area Name"
+  physical_name: "geo_nm"
+  description: "Tên quốc gia/vùng lãnh thổ"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: "NHNCK.qlnhn.COUNTRIES.COUNTRY_NAME"
+    NHNCK.PROVINCES: "NHNCK.PROVINCES.PROVINCE_NAME"
+    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.DISTRICT_NAME"
+- attribute_name: "ISO Country Code"
+  physical_name: "iso_cty_code"
+  description: "Mã quốc gia ISO 3166-1 alpha-2"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: "NHNCK.qlnhn.COUNTRIES.COUNTRY_CODE"
+    NHNCK.PROVINCES: "NHNCK.PROVINCES.PROVINCE_CODE"
+    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.DISTRICT_CODE"
+- attribute_name: "Parent Geographic Area Id"
+  physical_name: "prn_geo_id"
+  description: "FK đến vùng địa lý cha (self-ref). NULL cho quốc gia"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không\
+    \ có parent."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: null
+    NHNCK.PROVINCES: "NHNCK.PROVINCES.COUNTRY_ID"
+    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.PROVINCE_ID"
+- attribute_name: "Parent Geographic Area Code"
+  physical_name: "prn_geo_code"
+  description: "Mã vùng địa lý cha"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic\
+    \ Area Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: null
+    NHNCK.PROVINCES: "NHNCK.PROVINCES.COUNTRY_ID"
+    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.PROVINCE_ID"
+- attribute_name: "Default Flag"
+  physical_name: "dflt_f"
+  description: "Cờ mặc định: true=Mặc định; false=Không"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: "NHNCK.qlnhn.COUNTRIES.DEFAULT_FLAG"
+    NHNCK.PROVINCES: "NHNCK.PROVINCES.DEFAULT_FLAG"
+    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.DEFAULT_FLAG"
+- attribute_name: "Geographic Area Status Code"
+  physical_name: "geo_st_code"
+  description: "Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.COUNTRIES: "NHNCK.qlnhn.COUNTRIES.RECORD_STATUS"
+    NHNCK.PROVINCES: "NHNCK.PROVINCES.RECORD_STATUS"
+    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.RECORD_STATUS"

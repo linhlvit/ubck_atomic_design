@@ -11,32 +11,32 @@
 
 | File | Sinh bởi | Source-of-truth |
 |---|---|---|
-| `DataModel/working/Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.csv + attr_*.csv + atomic_entities.csv (description preserve) |
-| `DataModel/working/Atomic/hld/atomic_out_of_scope.csv` | `aggregate_out_of_scope.py` | Mục 7f của tất cả `{SOURCE}_HLD_Overview.md` |
+| `DataModel/working/Atomic/hld/atomic_entities.yaml` | `aggregate_atomic.py` | manifest.yaml + lld_*.yaml + atomic_entities.yaml (description preserve) |
+| `DataModel/working/Atomic/hld/atomic_out_of_scope.yaml` | `aggregate_out_of_scope.py` | Mục 7f của tất cả `{SOURCE}_HLD_Overview.md` |
 
-## File config / metadata (Atomic/lld/)
+## File config / metadata (DataModel/working/Atomic/lld/)
 
 | File | Vai trò | Encoding |
 |---|---|---|
-| `Atomic/lld/manifest.csv` | Mapping source_table → atomic_entity → lld_file | UTF-8 with BOM |
-| `Atomic/lld/ref_shared_entity_classifications.csv` | Danh mục Classification Value scheme toàn dự án | UTF-8 with BOM |
-| `Atomic/lld/pending_design.csv` | Cột nguồn chưa map / pending decision | UTF-8 with BOM |
+| `DataModel/working/Atomic/lld/manifest.yaml` | Mapping source_table → atomic_entity → lld_file | UTF-8 |
+| `DataModel/working/Atomic/lld/classification_schemes.yaml` | Danh mục Classification Value scheme toàn dự án | UTF-8 |
+| `DataModel/working/Atomic/lld/pending_design.yaml` | Cột nguồn chưa map / pending decision | UTF-8 |
 
 ## Encoding chuẩn
 
-Mọi file CSV trong dự án dùng **UTF-8 with BOM** (`utf-8-sig` trong Python). Lý do: Excel/Windows tool nhận diện đúng tiếng Việt khi mở trực tiếp; script Python đọc với `utf-8-sig` strip BOM tự động.
+File YAML dùng **UTF-8** (không BOM). File CSV còn lại dùng **UTF-8 with BOM** (`utf-8-sig` trong Python).
 
 | File | Encoding |
 |---|---|
-| `atomic_entities.csv` | UTF-8 with BOM |
-| `atomic_out_of_scope.csv` | UTF-8 with BOM |
-| `manifest.csv` (LLD) | UTF-8 with BOM |
-| `ref_shared_entity_classifications.csv` | UTF-8 with BOM |
-| `pending_design.csv` | UTF-8 with BOM |
-| `attr_*.csv` (LLD) | UTF-8 with BOM |
+| `atomic_entities.yaml` | UTF-8 with BOM |
+| `atomic_out_of_scope.yaml` | UTF-8 with BOM |
+| `manifest.yaml` (LLD) | UTF-8 |
+| `classification_schemes.yaml` | UTF-8 |
+| `pending_design.yaml` | UTF-8 |
+| `lld_*.yaml` (LLD per table) | UTF-8 |
 
-Sau Write/Edit nếu cần kiểm tra/strip BOM dư thừa, dùng:
+Sau Write/Edit nếu cần kiểm tra/strip BOM dư thừa trên file CSV, dùng:
 
 ```bash
-python Atomic/lld/scripts/strip_bom.py {path}
+python DataModel/working/Atomic/lld/scripts/strip_bom.py {path}
 ```

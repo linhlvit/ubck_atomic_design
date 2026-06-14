@@ -4,9 +4,11 @@ description: |
   Thiết kế Low-Level Design (LLD) cho từng bảng nguồn trong Atomic source system.
   Sử dụng khi: thiết kế attribute-level cho 1 bảng/Tier, map source columns sang
   Atomic attributes, tách shared entity (IP Postal Address / IP Electronic Address /
-  IP Alt Identification), xuất file attr_{SOURCE}_{table}.csv trong Atomic/lld/{SOURCE}/.
-  Cũng dùng khi cập nhật manifest.csv, ref_shared_entity_classifications.csv,
-  pending_design.csv; chạy aggregate_atomic.py, post_check_atomic.py,
+  IP Alt Identification), xuất file lld_{SOURCE}_{TABLE}.yaml trong
+  DataModel/working/Atomic/lld/{SOURCE}/.
+  Cũng dùng khi: consolidate entity từ nhiều source (Level 2), cập nhật manifest.yaml,
+  classification_schemes.yaml, pending_design.yaml;
+  chạy validate_lld_yaml.py, aggregate_atomic.py, post_check_atomic.py,
   post_check_source_coverage.py.
   Yêu cầu: HLD đã duyệt cho source_system tương ứng.
 ---
@@ -17,11 +19,14 @@ description: |
 
 ## Tài nguyên đi kèm
 
-- **Templates** (copy + replace placeholder):
-  - [`templates/attr_main_entity.csv`](templates/attr_main_entity.csv) — skeleton cho entity chính (PK + BK + FK + audit).
-  - [`templates/attr_shared_IP_Postal.csv`](templates/attr_shared_IP_Postal.csv) — IP Postal Address với context HEAD_OFFICE.
-  - [`templates/attr_shared_IP_Electronic.csv`](templates/attr_shared_IP_Electronic.csv) — IP Electronic Address với 4 context (PHONE/FAX/EMAIL/WEBSITE).
-  - [`templates/attr_shared_IP_Alt_Identification.csv`](templates/attr_shared_IP_Alt_Identification.csv) — IP Alt Identification với context `(source)`.
+- **Templates YAML** (copy + replace placeholder — dùng cho thiết kế mới):
+  - [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) — skeleton cho entity chính (PK + BK + FK + audit).
+  - [`templates/lld_shared_IP_Postal.yaml`](templates/lld_shared_IP_Postal.yaml) — IP Postal Address.
+  - [`templates/lld_shared_IP_Electronic.yaml`](templates/lld_shared_IP_Electronic.yaml) — IP Electronic Address (PHONE/FAX/EMAIL/WEBSITE).
+  - [`templates/lld_shared_IP_Alt_Identification.yaml`](templates/lld_shared_IP_Alt_Identification.yaml) — IP Alt Identification.
+  - [`templates/entity_template.yaml`](templates/entity_template.yaml) — skeleton Level 2 entity consolidation.
+- **Templates CSV** (legacy — chỉ dùng nếu cần tham khảo format cũ):
+  - [`templates/attr_main_entity.csv`](templates/attr_main_entity.csv)
 - **Reference** (rule chuẩn dùng chung dự án):
   - [`reference/data_domains.md`](reference/data_domains.md) — 12 Data Domain chuẩn + 2 mở rộng.
   - [`reference/shared_entity_schemas.md`](reference/shared_entity_schemas.md) — tên trường chuẩn 3 shared entity, quy tắc `classification_context`, trường địa lý.
@@ -35,6 +40,21 @@ description: |
 
 ## QUY TRÌNH THIẾT KẾ LLD
 
+### Bước 0 — Pre-flight check
+
+**Trước khi bắt đầu bất kỳ thiết kế nào**, kiểm tra trạng thái file LLD đã có:
+
+1. Đọc `DataModel/working/Atomic/lld/manifest.yaml` → lấy danh sách `lld_file` cho source đang thiết kế.
+2. Với mỗi bảng cần thiết kế, kiểm tra file `DataModel/working/Atomic/lld/{SOURCE}/lld_{SOURCE}_{TABLE}.yaml`:
+
+| Trạng thái | Hành động |
+|---|---|
+| File **không tồn tại** hoặc `design_status: draft` | ✅ Tiếp tục thiết kế |
+| File tồn tại, `design_status: reviewed` | ⚠️ Hỏi xác nhận trước khi ghi đè: "File đã reviewed — tạo lại?" |
+| File tồn tại, `design_status: approved` | ⛔ **SKIP hoàn toàn** — KHÔNG ghi đè |
+
+**Quy tắc:** `approved` = đã qua review + approval trong App. AI không bao giờ ghi đè file `approved`. Nếu cần sửa file đã approved → người thiết kế phải đổi `design_status` về `reviewed` hoặc `draft` thủ công trong App trước.
+
 ### Bước 1 — Đọc context
 
 **Đọc TRƯỚC KHI thiết kế:**
@@ -43,15 +63,15 @@ description: |
 2. **HLD Tier tương ứng** (`{SOURCE}_HLD_Tier{N}.md`) → chi tiết entity và quan hệ Tier đang thiết kế.
 3. **Source columns** (`Source/{SOURCE}_Tables.csv`, `{SOURCE}_Columns.csv`) → cột, data type, mô tả gốc.
    Ghi nhận data type của từng cột nguồn — dùng ở Bước 3b để review conversion risk và ghi chú khi data type nguồn không khai báo rõ ràng.
-4. **Tất cả file LLD đã có** trong cùng source system (`Atomic/lld/{SOURCE}/`):
+4. **Tất cả file LLD đã có** trong cùng source system (`DataModel/working/Atomic/lld/{SOURCE}/`):
    - Entity đã thiết kế và cấu trúc attribute.
    - Pattern FK đã dùng (tên trường, data domain).
    - Shared entity đã có những trường nào.
 5. **LLD entity tương đồng từ source khác** (nếu có): Nếu entity đang thiết kế có kiểu tương đồng với entity ở source khác (cùng BCV Concept, hoặc cùng loại shared entity), đọc ít nhất 1 file LLD tương ứng từ source đó. Mục đích: lấy đúng pattern tên attribute, format nullable, format source_columns, FK comment.
-   - Ví dụ: thiết kế IP Postal Address cho FMS → đọc `Atomic/lld/NHNCK/attr_NHNCK_Professionals_IP_Postal_Address.csv`.
-   - Ví dụ: thiết kế entity `[Involved Party] Organization` → đọc `Atomic/lld/DCST/attr_DCST_THONG_TIN_DK_THUE.csv`.
-6. **`Atomic/lld/ref_shared_entity_classifications.csv`** → kiểm tra Classification Value đã chuẩn hóa.
-7. **`Atomic/lld/manifest.csv`** → biết file LLD nào đã có.
+   - Ví dụ: thiết kế IP Postal Address cho FMS → đọc `DataModel/working/Atomic/lld/NHNCK/lld_NHNCK_PROFESSIONALS_IP_Postal_Address.yaml`.
+   - Ví dụ: thiết kế entity `[Involved Party] Organization` → đọc `DataModel/working/Atomic/lld/DCST/lld_DCST_THONG_TIN_DK_THUE.yaml` (nếu đã có).
+6. **`Atomic/lld/classification_schemes.yaml`** → kiểm tra Classification Value đã chuẩn hóa.
+7. **`DataModel/working/Atomic/lld/manifest.yaml`** → biết file LLD nào đã có và `design_status` tương ứng.
 
 ### Bước 2 — Xác định Atomic entity target và Tier
 
@@ -65,7 +85,7 @@ Từ HLD đã duyệt, xác định:
 
 ### Bước 3 — Thiết kế attribute-level
 
-Copy [`templates/attr_main_entity.csv`](templates/attr_main_entity.csv) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới.
+Copy [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới. Nhớ sinh `physical_name` (snake_case) cho mỗi attribute ngay khi thiết kế. `data_type` để trống — `transform_physical_names.py` sẽ tự điền dựa vào `data_domain`.
 
 #### 3a. Mô tả (description)
 - Ghép 2 phần: **mô tả gốc từ CSDL nguồn (giữ nguyên)** + mô tả bổ sung trên model (nếu có).
@@ -166,7 +186,7 @@ Khi 1 Atomic entity gộp từ 2 bảng nguồn quan hệ 1-1 (VD: Public Compan
 
 **Quy tắc:**
 1. **Chọn 1 bảng làm primary source** cho các cột trùng — map `source_columns` từ bảng đó.
-2. **Cột trùng của bảng kia** document trong `pending_design.csv`:
+2. **Cột trùng của bảng kia** document trong `pending_design.yaml`:
    - `reason`: "Giá trị 1-1 với {primary_table}.{col}. Map primary từ {primary_table}."
    - `action`: "Đã capture qua {primary_table} (1-1)"
 3. **KHÔNG** ghi `"X.col1, Y.col2"` trong `source_columns`. Script `post_check_atomic.py` C5 kiểm tra format đúng 3 phần `SOURCE.table.column`.
@@ -197,14 +217,14 @@ Khi bảng nguồn có cặp `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY`
 ### Bước 4 — Rà soát shared entity
 
 Nếu bảng nguồn có grain = 1 Involved Party:
-- Trường địa chỉ → **IP Postal Address** ([`templates/attr_shared_IP_Postal.csv`](templates/attr_shared_IP_Postal.csv))
-- Trường liên lạc → **IP Electronic Address** ([`templates/attr_shared_IP_Electronic.csv`](templates/attr_shared_IP_Electronic.csv))
-- Trường giấy tờ → **IP Alt Identification** ([`templates/attr_shared_IP_Alt_Identification.csv`](templates/attr_shared_IP_Alt_Identification.csv))
+- Trường địa chỉ → **IP Postal Address** ([`templates/lld_shared_IP_Postal.yaml`](templates/lld_shared_IP_Postal.yaml))
+- Trường liên lạc → **IP Electronic Address** ([`templates/lld_shared_IP_Electronic.yaml`](templates/lld_shared_IP_Electronic.yaml))
+- Trường giấy tờ → **IP Alt Identification** ([`templates/lld_shared_IP_Alt_Identification.yaml`](templates/lld_shared_IP_Alt_Identification.yaml))
 
 **Involved Party bao gồm cả cá nhân lẫn tổ chức.** Không phân biệt loại IP — chỉ cần entity chính đang mô tả 1 IP (cá nhân, tổ chức, công ty, chi nhánh...) là phải tách shared entity.
 
 Quy tắc grain = Involved Party luôn áp dụng, không phụ thuộc HLD Tier có liệt kê shared entity hay không. Nếu HLD Tier chưa có shared entity tương ứng, đồng bộ tài liệu sau khi thiết kế LLD:
-1. Thêm dòng vào `manifest.csv`: `{SOURCE},{table},Involved Party {Postal Address|Electronic Address|Alternative Identification},{Tier},{lld_file}`.
+1. Thêm entry vào `DataModel/working/Atomic/lld/manifest.yaml` (block `entries:`).
 2. Cập nhật `source_table` trong HLD Overview và HLD Tier tương ứng.
 3. Ghi 1 dòng vào "Điểm cần xác nhận" của HLD Tier mô tả quyết định tách shared entity.
 
@@ -212,7 +232,7 @@ Quy tắc grain = Involved Party luôn áp dụng, không phụ thuộc HLD Tier
 - Bảng tên trường chuẩn cho IP Postal / IP Electronic / IP Alt Identification.
 - Quy tắc `classification_context` (`SCHEME=VALUE` bắt buộc, pattern `(source)` cho type động).
 - Quy tắc trường địa lý (4 cách xử lý theo bối cảnh nguồn).
-- Cột nguồn không map được vào schema chuẩn → document trong `pending_design.csv`.
+- Cột nguồn không map được vào schema chuẩn → document trong `pending_design.yaml`.
 
 Nếu grain KHÔNG phải Involved Party → **KHÔNG tách**, giữ denormalized. Ví dụ: snapshot tờ khai thuế, quyết định hành chính, log kỹ thuật — địa chỉ trong các entity này là denormalized hợp lệ.
 
@@ -240,9 +260,9 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
 
 **Classification Value:**
 - `Scheme: {SCHEME_CODE}. {notes}`
-- Scheme Code = `UPPER_SNAKE_CASE`, nhất quán với `ref_shared_entity_classifications.csv`.
+- Scheme Code = `UPPER_SNAKE_CASE`, nhất quán với `classification_schemes.yaml`.
 - KHÔNG dùng cả `FK target:` và `Scheme:` cho cùng 1 trường.
-- **Bắt buộc cross-check:** Mọi Scheme Code dùng trong LLD phải tồn tại trong `ref_shared_entity_classifications.csv`. Nếu chưa có → thêm vào ref file ngay trong cùng lượt thiết kế.
+- **Bắt buộc cross-check:** Mọi Scheme Code dùng trong LLD phải tồn tại trong `classification_schemes.yaml`. Nếu chưa có → thêm vào ref file ngay trong cùng lượt thiết kế.
 
 **Trường nghiệp vụ:**
 - Ghi BCV Term đã tra cứu được (nếu có) + lý do chọn tên attribute.
@@ -271,10 +291,10 @@ Trước khi xuất file:
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest.
-- [ ] **Cross-check scheme:** Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột `classification_context` đều có trong `ref_shared_entity_classifications.csv`.
+- [ ] **Cross-check scheme:** Mọi `Scheme: XYZ` trong cột comment và mọi `XYZ=` trong cột `classification_context` đều có trong `classification_schemes.yaml`.
 - [ ] **Trường địa lý:** mã quốc gia/tỉnh/huyện/xã được xử lý đúng theo bối cảnh nguồn (xem [`reference/shared_entity_schemas.md`](reference/shared_entity_schemas.md)).
 - [ ] **Shared entity type động:** Nếu nguồn có cột type qua lookup_values (`identity_type_cd`...) → đã dùng `SCHEME=(source)` placeholder chưa? Không để bare context.
-- [ ] **Shared entity — cột không map:** PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.csv`?
+- [ ] **Shared entity — cột không map:** PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.yaml`?
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
 - [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC.TABLE`. Dynamic context (không có `=VALUE`) → null hoặc expression mapping.
@@ -285,102 +305,159 @@ Trước khi xuất file:
 
 ## OUTPUT
 
-### File LLD (.csv)
+### File LLD (.yaml) — Level 1
 
-**Tên file:** `attr_{SOURCE_SYSTEM}_{SourceTableName}.csv`. **Mỗi file = 1 bảng nguồn.** Ghi vào `Atomic/lld/{SOURCE_SYSTEM}/`.
+**Tên file:** `lld_{SOURCE_SYSTEM}_{SOURCE_TABLE}.yaml` (entity chính)
+hoặc `lld_{SOURCE_SYSTEM}_{SOURCE_TABLE}_IP_Postal_Address.yaml` v.v. (shared entity).
+**Mỗi file = 1 bảng nguồn.** Ghi vào `DataModel/working/Atomic/lld/{SOURCE_SYSTEM}/`.
 
-**Cấu trúc + encoding:** xem [`reference/file_layout.md`](reference/file_layout.md).
+**`design_status: draft`** khi xuất ra. Human review trong App → đổi thành `reviewed` → `approved`.
 
-**Ví dụ non-shared:**
-```csv
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-Securities Practitioner Id,Khóa đại diện cho NHN.,Surrogate Key,false,true,approved,,,,
-Securities Practitioner Code,"Mã NHN do UBCKNN cấp. Map từ PK bảng nguồn.",Text,false,false,approved,Professionals.ID,"BCV Term: Individual Identifier. BK của entity.",,
-Source System Code,Mã hệ thống nguồn.,Classification Value,false,false,approved,,,SOURCE_SYSTEM=NHNCK.Professionals,
+**Ví dụ non-shared (entity chính):**
+```yaml
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: NHNCK
+  source_table: PROFESSIONALS
+  atomic_entity: Securities Practitioner
+  entity_physical_name: scr_practitioner
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party]"
+  table_type: Fundamental
+  group: T1
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Securities Practitioner Id
+    physical_name: scr_practitioner_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Securities Practitioner Code
+    physical_name: scr_practitioner_code
+    description: "Mã NHN do UBCKNN cấp. Map từ PK bảng nguồn."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.qlnhn.PROFESSIONALS.ID
+    comment: "BCV Term: Individual Identifier. BK của entity."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: SOURCE_SYSTEM=NHNCK.PROFESSIONALS
+    etl_derived_value: NHNCK.PROFESSIONALS
 ```
 
-**Ví dụ shared entity (IP Electronic Address với 2 context):**
-```csv
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
-Involved Party Id,FK đến Securities Practitioner.,Surrogate Key,false,false,draft,NHNCK.qlnhn.Professionals.Id,FK target: Securities Practitioner.Securities Practitioner Id.,,
-Involved Party Code,Mã người hành nghề.,Text,false,false,draft,NHNCK.qlnhn.Professionals.Id,Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Involved Party Id.,,
-Source System Code,Mã nguồn dữ liệu.,Classification Value,false,false,draft,,,SOURCE_SYSTEM=NHNCK.Professionals,
-Electronic Address Type Code,Loại kênh liên lạc — điện thoại.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=PHONE,
-Electronic Address Value,Số điện thoại.,Text,true,false,draft,NHNCK.qlnhn.Professionals.Phone,,IP_ELEC_ADDR_TYPE=PHONE,
-Electronic Address Type Code,Loại kênh liên lạc — email.,Classification Value,false,false,draft,,,IP_ELEC_ADDR_TYPE=EMAIL,
-Electronic Address Value,Email.,Text,true,false,draft,NHNCK.qlnhn.Professionals.Email,,IP_ELEC_ADDR_TYPE=EMAIL,
+**Physical name (snake_case):** AI sinh sẵn `physical_name` cho mỗi attribute khi thiết kế. `data_type` để trống hoặc null — `transform_physical_names.py` tự patch sau khi lưu file.
+- Entity: `[domain_prefix]_[bcv_term]` (VD: `scr_practitioner`, `scr_org_ref`)
+- Attribute: `[entity_prefix]_[field]` → viết tắt thông minh, snake_case (VD: `scr_practitioner_id`, `org_full_nm`, `src_stm_code`)
+
+### Cập nhật manifest.yaml
+
+Đọc `DataModel/working/Atomic/lld/manifest.yaml`, thêm entry cho file LLD mới vừa tạo (nếu chưa có):
+
+```yaml
+  - source_system: NHNCK
+    source_table: PROFESSIONALS
+    atomic_entity: Securities Practitioner
+    group: T1
+    lld_file: NHNCK/lld_NHNCK_PROFESSIONALS.yaml
+    design_status: draft
 ```
 
-### Cập nhật manifest.csv
-
-1. Đọc toàn bộ `Atomic/lld/manifest.csv` hiện tại.
-2. Thêm dòng mới cho file LLD vừa tạo.
-3. Xuất 1 file duy nhất chứa toàn bộ cũ + mới (UTF-8 with BOM).
-
-Cấu trúc + encoding xem [`reference/file_layout.md`](reference/file_layout.md).
-
-### Cập nhật ref_shared_entity_classifications.csv
+### Cập nhật classification_schemes.yaml
 
 1. Đọc toàn bộ file hiện tại.
 2. Bổ sung scheme/giá trị mới phát sinh.
 3. Xuất 1 file duy nhất chứa toàn bộ cũ + mới.
 
-Cấu trúc xem [`reference/file_layout.md`](reference/file_layout.md).
+### Bước 7 — Validate LLD YAML
 
-### Aggregate atomic_attributes.csv và atomic_entities.csv
-
-**KHÔNG ghi thủ công vào 2 file này.** Sau khi hoàn thành toàn bộ `attr_*.csv` và `manifest.csv` của Tier:
+Sau khi thiết kế xong 1 bảng (hoặc cả Tier), chạy validate:
 
 ```bash
-python Atomic/lld/scripts/aggregate_atomic.py
+python DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --source {SOURCE}
+# Hoặc validate 1 file:
+python DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --file DataModel/working/Atomic/lld/{SOURCE}/lld_{SOURCE}_{TABLE}.yaml
 ```
 
-Script tự động:
-- Đọc `manifest.csv` → biết toàn bộ entity và file LLD.
-- Đọc `DataModel/working/Atomic/hld/atomic_entities.csv` → lấy `bcv_core_object` cho mỗi entity.
-- Đọc từng `attr_*.csv` → thu thập attributes.
-- Gộp shared entities (IP Alt Identification, IP Postal Address, IP Electronic Address) từ mọi source → 1 dòng duy nhất mỗi attribute, source_column merge.
-- Sort: `bcv_core_object` (A→Z) → `atomic_entity` (A→Z) → thứ tự attribute giữ nguyên.
-- Preserve description đã điền thủ công trong `atomic_entities.csv`.
-- Ghi đè cả 2 file output.
+**Điều kiện passed**: `Failed: 0`. Xử lý mọi E1–E6 trước khi kết thúc Tier.
 
-Script in ra số rows — báo cáo con số này cho người thiết kế xác nhận.
+Xử lý mọi warning trước khi kết thúc Tier. Sau validate, thông báo cho người thiết kế: **"Tiếp theo: Review trong App → post_check → approve → trigger Consolidate nếu entity đến từ nhiều source."**
 
-### Bước 7 — Post-check sau khi aggregate
+### Bước 8 — Post-check (sau khi Human approve Level 1)
 
-Chạy 2 script post-check (chi tiết C1–C5 và Source Coverage xem [`reference/post_check_codes.md`](reference/post_check_codes.md)):
+Khi đã approve toàn bộ bảng của Tier trong App, chạy post-check từ YAML:
 
 ```bash
-python Atomic/lld/scripts/post_check_atomic.py
-python Atomic/lld/scripts/post_check_source_coverage.py --source {SOURCE}
+python DataModel/working/Atomic/lld/scripts/post_check_atomic.py --source {SOURCE}
+python DataModel/working/Atomic/lld/scripts/post_check_source_coverage.py --source {SOURCE}
 ```
 
-Xử lý mọi warning trước khi kết thúc Tier.
+Xử lý mọi warning (chi tiết C1–C5 xem [`reference/post_check_codes.md`](reference/post_check_codes.md)) trước khi sang bước tiếp.
 
-### Bước 8 — Sinh physical name
+### Bước 9 — Entity Consolidation (Level 2, optional)
+
+**Điều kiện:** Entity đến từ nhiều source tables (VD: `Securities Organization Reference` từ cả NHNCK + SCMS).
+
+Khi Human trigger "Consolidate entity X" từ App:
+
+1. AI đọc tất cả `lld_*.yaml` có `design_status: approved` và `atomic_entity = X`.
+2. Build union attribute list, flag inconsistency:
+   - Data domain mismatch cùng attribute tên giống nhau
+   - Attribute name không nhất quán giữa source (VD: "Full Name" vs "Organization Full Name")
+   - Attribute thiếu ở một số source → đề xuất `nullable: true` cho source đó
+3. Sinh `DataModel/working/Atomic/lld/entities/entity_{PHYSICAL_NAME}.yaml` dùng [`templates/entity_template.yaml`](templates/entity_template.yaml).
+4. `consolidation_status: pending` + `consolidation_notes:` liệt kê issues.
+5. Human review trong App → resolve issues → set `consolidation_status: approved`.
 
 ```bash
-python Atomic/lld/scripts/transform_physical_names.py
+# Generate entity_*.yaml từ lld_*.yaml approved:
+python DataModel/working/Atomic/lld/scripts/generate_entity_consolidation.py
+# Chỉ 1 entity:
+python DataModel/working/Atomic/lld/scripts/generate_entity_consolidation.py --entity "Securities Practitioner"
+# Xem diff không ghi file:
+python DataModel/working/Atomic/lld/scripts/generate_entity_consolidation.py --dry-run
+
+# Validate entity_*.yaml sau khi AI sinh:
+python DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --entities
 ```
 
-Script bổ sung cột physical name trực tiếp vào 2 file output (idempotent — chạy nhiều lần không duplicate):
-- `atomic_attributes.csv`: thêm `atomic_table` (ngay sau `atomic_entity`) và `atomic_column` (ngay sau `atomic_attribute`).
-- `attr_Classification_Value.csv`: thêm `atomic_column` (ngay sau `attribute_name`).
+### Bước 10 — Generate YAML (Phase 4)
 
-Tra 1 tên cụ thể để kiểm tra:
-```bash
-python Atomic/lld/scripts/transform_physical_names.py --name "Fund Management Company Code"
-```
-
-### Bước 9 — Generate YAML (Phase 4)
-
-Chạy script sinh file YAML per (atomic_table, source_system, source_table):
+Sau khi entity_*.yaml đã approved (hoặc entity single-source chỉ cần lld_*.yaml approved):
 
 ```bash
 python DataModel/generate_dm_yaml.py --source {SOURCE}
 ```
-
-**`--source` flag**: chỉ sinh file cho source được chỉ định. Nếu bỏ flag → sinh tất cả source (không dùng khi làm việc đơn source).
 
 Output: `DataModel/Atomic/{BCV_Folder}/dm_atm_{table}-{SOURCE}.{SRC_TABLE}.yaml`
 
@@ -389,62 +466,48 @@ Output: `DataModel/Atomic/{BCV_Folder}/dm_atm_{table}-{SOURCE}.{SRC_TABLE}.yaml`
 
 **Kiểm tra nhanh sau khi generate:**
 ```bash
-# Đếm file vừa sinh
 ls DataModel/Atomic/**/*-{SOURCE}.*.yaml | wc -l
-
-# Kiểm tra layer: Atomic có đủ không
 grep -rL "layer: Atomic" DataModel/Atomic/ --include="*.yaml" | grep {SOURCE}
 ```
-Dòng 2 phải trả về rỗng — nếu có file thiếu `layer` thì re-generate.
+Dòng 2 phải trả về rỗng.
 
 ---
 
-### Bước 9b — Validate YAML (Phase 4b)
-
-Sau khi generate, validate toàn bộ YAML files theo `schemas/dm.schema.json`:
+### Bước 10b — Validate YAML (Phase 4b)
 
 ```bash
 python DataModel/validate_dm_yaml.py --source {SOURCE}
 ```
 
-**Điều kiện passed**: `Failed: 0`. Nếu có file fail → sửa LLD CSV nguồn → re-aggregate → re-generate → validate lại. KHÔNG sang Phase 5 khi còn failed.
-
-**Lỗi thường gặp:**
-- `data_domain` nhận giá trị lạ → CSV có dấu phẩy trong description không được quote → bọc `"..."` quanh giá trị đó
-- `physical_name` pattern fail → chạy lại `transform_physical_names.py`, kiểm tra C6 trong `post_check_atomic.py`
-- `source_column` nhận giá trị sai cột → cùng nguyên nhân CSV bị shift cột
+**Điều kiện passed**: `Failed: 0`. KHÔNG sang Phase 5 khi còn failed.
 
 ---
 
-### Bước 10 — Consolidate (Phase 5)
-
-Sinh `dm_manifest.csv` và `atomic_model.yaml` từ các YAML files của source vừa generate:
+### Bước 11 — Consolidate (Phase 5)
 
 ```bash
 python DataModel/gen_summary_and_model.py --source {SOURCE}
 ```
 
 Output:
-- `DataModel/Atomic/dm_manifest.csv` — 13 cột: `subfolder, file_name, id, physical_name, logical_name, bcv_core_object, bcv_concept, table_type, etl_pattern, source, status, attribute_count, brd_ref`
-- `DataModel/atomic_model.yaml` — consolidated model (`schema_type: atomic_model`, `entities:` list)
-
-**Lưu ý:** Script này đọc **tất cả** YAML files trong `DataModel/Atomic/` — kể cả source khác nếu có. Dùng `--source` để lọc chỉ ghi vào `dm_manifest.csv` các dòng của source đó, nhưng `atomic_model.yaml` luôn chứa toàn bộ.
+- `DataModel/Atomic/dm_manifest.yaml`
+- `DataModel/atomic_model.yaml`
 
 ---
 
 ## CHECKLIST HOÀN THÀNH TOÀN BỘ PIPELINE
 
-Sau khi hoàn thành thiết kế LLD cho 1 source system, xác nhận từng bước:
-
-| Phase | Script | Điều kiện passed |
+| Phase | Bước | Điều kiện passed |
 |---|---|---|
-| 1 — LLD Design | (manual) | Mọi `attr_*.csv` trong `Atomic/lld/{SOURCE}/` đã đủ và đúng chuẩn |
-| 2 — Aggregate | `aggregate_atomic.py` | Số rows in ra hợp lý, không có ERROR |
-| 3 — Post-check | `post_check_atomic.py` + `post_check_source_coverage.py --source {SOURCE}` | **0 WARNING** |
-| 3b — Physical name | `transform_physical_names.py` | `atomic_table` + `atomic_column` đã có trong `atomic_attributes.csv` |
-| 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng với số entity trong manifest; 0 file thiếu `layer: Atomic` |
+| 0 — Pre-flight | Bước 0 | `approved` files không bị ghi đè |
+| 1 — LLD Design | Bước 1–6 | Mọi `lld_*.yaml` trong `DataModel/working/Atomic/lld/{SOURCE}/` đã đủ và đúng chuẩn |
+| 1b — Validate LLD | `DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --source {SOURCE}` | **Failed: 0** |
+| 2 — Human Review Level 1 | (trong App) | Mọi `lld_*.yaml` cần thiết kế đã `design_status: approved` |
+| 3 — Post-check | `DataModel/working/Atomic/lld/scripts/post_check_atomic.py` + `post_check_source_coverage.py --source {SOURCE}` | **0 WARNING** |
+| 3b — Consolidation (nếu cần) | `DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --entities` | **Failed: 0**, `consolidation_status: approved` |
+| 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng; 0 file thiếu `layer: Atomic` |
 | 4b — Validate YAML | `validate_dm_yaml.py --source {SOURCE}` | **Failed: 0** |
-| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `dm_manifest.csv` có đúng N dòng; `atomic_model.yaml` parse được bằng `yaml.safe_load()` |
+| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `dm_manifest.yaml` đúng N dòng; `atomic_model.yaml` parse được |
 
 ---
 

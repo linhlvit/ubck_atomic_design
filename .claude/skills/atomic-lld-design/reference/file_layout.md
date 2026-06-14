@@ -4,71 +4,154 @@
 
 | File | Vai trò | Encoding |
 |---|---|---|
-| `Atomic/lld/{SOURCE}/attr_{SOURCE}_{table}.csv` | Attribute mapping cho 1 bảng nguồn | UTF-8 with BOM (`utf-8-sig`) |
+| `DataModel/working/Atomic/lld/{SOURCE}/lld_{SOURCE}_{table}.yaml` | Attribute mapping cho 1 bảng nguồn | UTF-8 |
 
-## File config / metadata (Atomic/lld/)
+## File config / metadata (DataModel/working/Atomic/lld/)
 
 | File | Vai trò | Encoding |
 |---|---|---|
-| `Atomic/lld/manifest.csv` | Mapping `(source_system, source_table) → (atomic_entity, group, lld_file)` | UTF-8 with BOM |
-| `Atomic/lld/ref_shared_entity_classifications.csv` | Danh mục Classification Value scheme toàn dự án | UTF-8 with BOM |
-| `Atomic/lld/pending_design.csv` | Cột nguồn pending decision (reason + action) | UTF-8 with BOM |
+| `DataModel/working/Atomic/lld/manifest.yaml` | Mapping `(source_system, source_table) → (atomic_entity, group, lld_file)` | UTF-8 |
+| `DataModel/working/Atomic/lld/classification_schemes.yaml` | Danh mục Classification Value scheme toàn dự án | UTF-8 |
+| `DataModel/working/Atomic/lld/pending_design.yaml` | Cột nguồn pending decision (reason + action) | UTF-8 |
 
 ## File auto-generated bởi script
 
 | File | Sinh bởi | Source-of-truth |
 |---|---|---|
-| `Atomic/lld/atomic_attributes.csv` | `aggregate_atomic.py` | manifest.csv + tất cả attr_*.csv |
-| `DataModel/working/Atomic/hld/atomic_entities.csv` | `aggregate_atomic.py` | manifest.csv + atomic_entities.csv (description preserve) |
-| `DataModel/Atomic/dm_manifest.csv` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
+| `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` | `aggregate_atomic.py` | manifest.yaml + tất cả lld_*.yaml |
+| `DataModel/working/Atomic/hld/atomic_entities.yaml` | `aggregate_atomic.py` | manifest.yaml + atomic_entities.yaml (description preserve) |
+| `DataModel/Atomic/dm_manifest.yaml` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
 | `DataModel/atomic_model.yaml` | `gen_summary_and_model.py` | tất cả `dm_atm_*.yaml` trong `DataModel/Atomic/` |
 
-## Cấu trúc file attr_*.csv (10 cột)
+## Cấu trúc file lld_*.yaml (Level 1 per source table)
 
-```
-attribute_name,description,data_domain,nullable,is_primary_key,status,source_columns,comment,classification_context,etl_derived_value
+```yaml
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: NHNCK
+  source_table: PROFESSIONALS
+  atomic_entity: Securities Practitioner
+  entity_physical_name: scr_prac
+  bcv_core_object: Involved Party
+  group: T1
+  design_status: draft   # draft | reviewed | approved
+
+attributes:
+  - attribute_name: Securities Practitioner Id
+    physical_name: scr_prac_id        # auto-patch bởi transform_physical_names.py
+    data_type: string                  # auto-patch bởi transform_physical_names.py
+    description: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: null
+    etl_derived_value: null
 ```
 
-- `etl_derived_value`: để rỗng nếu không có giá trị ETL-derived cố định.
-- `classification_context` format nội bộ: `SCHEME=VALUE`. Script `aggregate_atomic.py` tự convert sang format output `Field Name = 'VALUE'` khi ghi vào `atomic_attributes.csv`.
+- `physical_name` và `data_type`: auto-patch bởi `transform_physical_names.py` — không điền tay.
+- `etl_derived_value`: để null nếu không có giá trị ETL-derived cố định.
+- `classification_context` format: `SCHEME=VALUE`. Script `aggregate_atomic.py` tự convert sang format output `Field Name = 'VALUE'` khi ghi vào `atomic_attributes.yaml`.
+
+## Cấu trúc atomic_attributes.yaml (aggregate output)
+
+Path: `DataModel/working/Atomic/aggregate/atomic_attributes.yaml`  
+Flat list (1 entry = entity × attribute × source × context):
+
+```yaml
+schema_type: atomic_attributes
+schema_version: "1.0"
+
+attributes:
+  - bcv_core_object: Involved Party
+    atomic_entity: Securities Practitioner
+    atomic_table: scr_prac
+    atomic_attribute: Securities Practitioner Id
+    atomic_column: scr_prac_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    data_type: bigint
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: null
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+```
 
 ## Encoding chuẩn
 
-Mọi file CSV trong dự án dùng **UTF-8 with BOM** (`utf-8-sig` trong Python). Lý do: Excel/Windows tool nhận diện đúng tiếng Việt khi mở trực tiếp; script Python đọc với `utf-8-sig` strip BOM tự động.
+File YAML dùng **UTF-8** (không BOM). File CSV còn lại dùng **UTF-8 with BOM** (`utf-8-sig`).
 
-Sau Write/Edit nếu cần kiểm tra/strip BOM dư thừa (VD: file bị ghi 2 lần BOM), dùng:
+Sau Write/Edit nếu cần kiểm tra/strip BOM dư thừa, dùng:
 
 ```bash
-python Atomic/lld/scripts/strip_bom.py {path}
+python DataModel/working/Atomic/lld/scripts/strip_bom.py {path}
 ```
 
-## Cấu trúc manifest.csv
+## Cấu trúc manifest.yaml
 
-```
-source_system,source_table,atomic_entity,group,lld_file
+```yaml
+schema_type: manifest
+schema_version: "1.0"
+
+entries:
+  - source_system: NHNCK
+    source_table: PROFESSIONALS
+    atomic_entity: Securities Practitioner
+    group: T1
+    lld_file: NHNCK/lld_NHNCK_PROFESSIONALS.yaml
 ```
 
-- `atomic_entity`: tên Atomic entity đích — phải khớp với `atomic_entities.csv`.
+- `atomic_entity`: phải khớp với `atomic_entities.yaml`.
 - `group`: tier nhóm (`T1`, `T2`, `T3`, `T4`, hoặc `pending`).
-- `lld_file`: tên file `attr_*.csv` tương ứng.
+- `lld_file`: đường dẫn tương đối so với `DataModel/working/Atomic/lld/`.
 
-## Cấu trúc ref_shared_entity_classifications.csv
+## Cấu trúc classification_schemes.yaml
 
-```
-scheme_code,code,name,source_type,source_table,used_in_entities
+```yaml
+schema_type: classification_scheme_registry
+schema_version: "1.0"
+
+schemes:
+  - scheme_code: IP_ADDR_TYPE
+    name: null
+    source_type: etl_derived   # etl_derived | source_table | modeler_defined
+    source_table: null
+    used_in_entities:
+      - IP Postal Address
+    values:
+      - code: ADDRESS
+        name: Địa chỉ chung (không phân biệt loại)
+        source_table: null
 ```
 
 3 loại `source_type`:
-- `etl_derived`: team tự định nghĩa → liệt kê đầy đủ code + name.
-- `source_table`: values load từ bảng danh mục nguồn → ghi `(source)` ở cột code, ghi source table.
-- `modeler_defined`: trường text nguồn cần chuẩn hóa, chưa profile → ghi `(to_define)`.
+- `etl_derived`: team tự định nghĩa → liệt kê đầy đủ code + name trong `values[]`.
+- `source_table`: values load từ bảng danh mục nguồn → để `values: []`, ghi `source_table`.
+- `modeler_defined`: trường text nguồn cần chuẩn hóa, chưa profile → liệt kê các code đã biết hoặc để rỗng.
 
-## Cấu trúc pending_design.csv
+## Cấu trúc pending_design.yaml
 
-```
-source_system,source_table,source_column,description,reason,action
+```yaml
+schema_type: pending_design_registry
+schema_version: "1.0"
+
+entries:
+  - source_system: NHNCK
+    source_table: Departments
+    source_column: Id
+    description: PK nguồn của Departments
+    reason: BK dùng DepartmentCode thay Id — Id là PK kỹ thuật, không có giá trị nghiệp vụ riêng. Out-of-scope.
+    action: Xác nhận out-of-scope — không map, không cần SKIP_COLUMNS toàn cục vì PK này đặc thù NHNCK
 ```
 
 - `source_column`: tên cột pending (hoặc `(all)` nếu cả bảng).
-- `reason`: lý do không map vào Atomic hiện tại.
-- `action`: hành động cần làm hoặc trạng thái xử lý.
+- `reason`: lý do không map vào Atomic — phải đủ rõ để reviewer hiểu không cần xem source.
+- `action`: hành động tiếp theo hoặc kết luận cuối cùng.

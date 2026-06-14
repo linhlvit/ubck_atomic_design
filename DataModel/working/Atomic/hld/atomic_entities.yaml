@@ -1,0 +1,236 @@
+schema_type: "atomic_entities"
+schema_version: "1.0"
+entities:
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Conduct Violation"
+  atomic_entity: "Securities Practitioner Conduct Violation"
+  table_type: "Fact Append"
+  status: "approved"
+  description: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán\
+    \ được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only.\
+    \ FK đến Practitioner và Decision."
+  source_table: "NHNCK.VIOLATIONS"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa\
+    \ đào tạo chuyên môn. Ghi nhận điểm thi, kết quả đạt/không đạt và trạng thái ghi\
+    \ danh."
+  source_table: "NHNCK.SPECIALIZATION_COURSE_DETAILS"
+- bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Assessment"
+  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Đợt thi sát hạch cấp CCHN do UBCKNN tổ chức. Ghi nhận thời gian đăng\
+    \ ký và thi, địa điểm, hình thức nộp hồ sơ, quyết định công nhận kết quả và phí\
+    \ thi."
+  source_table: "NHNCK.EXAM_SESSIONS"
+- bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Assessment"
+  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Kết quả thi sát hạch của từng thí sinh trong một đợt thi. Ghi nhận\
+    \ điểm thi luật, điểm chuyên môn, kết quả từng phần và kết quả tổng thể. FK đến\
+    \ Exam Assessment và Practitioner."
+  source_table: "NHNCK.EXAM_DETAILS"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Financial Charge"
+  atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Biểu phí thi sát hạch quy định cho từng loại CCHN trong từng đợt thi\
+    \ (Condition). Phân biệt với License Application Fee là phí thực tế thu từng hồ\
+    \ sơ (Transaction)."
+  source_table: "NHNCK.EXAM_SESSION_FEES"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Application"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán. Ghi nhận loại đăng\
+    \ ký, loại hồ sơ, trạng thái, ngày nộp, CCHN liên quan và kết quả thi. FK đến\
+    \ Practitioner và Officer phụ trách."
+  source_table: "NHNCK.APPLICATIONS"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Education Certificate"
+  atomic_entity: "Securities Practitioner License Application Education Certificate\
+    \ Document"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Chứng chỉ hoặc bằng chuyên môn đào tạo đính kèm trong hồ sơ đăng ký\
+    \ CCHN. Ghi nhận loại chuyên môn, file đính kèm, trạng thái thẩm định và cán bộ\
+    \ thẩm định."
+  source_table: "NHNCK.APPLICATION_SPECIALIZATIONS"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Liên kết theo dõi chu trình thi lại — hồ sơ gốc, kết quả thi trượt\
+    \ và hồ sơ đăng ký thi lại mới (nullable nếu chưa nộp). FK đến License Application\
+    \ (×2) và Exam Assessment Result."
+  source_table: "NHNCK.APPLICATION_RE_EXAMS"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Certificate Document"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi\
+    \ nhận số CCHN, loại, ngày cấp, trạng thái và 3 quyết định liên quan (cấp/thu\
+    \ hồi/hủy). FK đến Practitioner."
+  source_table: "NHNCK.CERTIFICATE_RECORDS"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Decision Document"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Quyết định hành chính do UBCKNN ban hành liên quan đến CCHN — cấp,\
+    \ thu hồi, hủy CCHN hoặc công nhận kết quả thi. Ghi nhận số quyết định, loại,\
+    \ ngày ký và người ký."
+  source_table: "NHNCK.DECISIONS"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Employer Registration"
+  atomic_entity: "Securities Practitioner Organization Employment Report"
+  table_type: "Fact Append"
+  status: "approved"
+  description: "Báo cáo của tổ chức về tình trạng làm việc của người hành nghề. Mỗi\
+    \ dòng = 1 lần nộp báo cáo insert-only. Ghi nhận loại báo cáo, trạng thái làm\
+    \ việc, chức vụ và ngày báo cáo."
+  source_table: "NHNCK.ORGANIZATION_REPORTS"
+- bcv_core_object: "Event"
+  bcv_concept: "[Event] Training Course"
+  atomic_entity: "Securities Practitioner Professional Training Class"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán.\
+    \ Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và\
+    \ địa điểm thi."
+  source_table: "NHNCK.SPECIALIZATION_COURSES"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  atomic_entity: "Involved Party Alternative Identification"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ\
+    \ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ\
+    \ 1 nguồn."
+  source_table: "NHNCK.PROFESSIONALS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  atomic_entity: "Involved Party Electronic Address"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email).\
+    \ Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."
+  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.USERS, NHNCK.PROFESSIONALS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  atomic_entity: "Involved Party Postal Address"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường\
+    \ trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."
+  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Regulatory Authority Officer"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Cán bộ, chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK. Ghi\
+    \ nhận thông tin nhân sự, đơn vị/phòng ban phụ trách và trạng thái tài khoản.\
+    \ Không lưu thông tin xác thực (PASSWORD)."
+  source_table: "NHNCK.USERS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Regulatory Authority Organization Unit"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT\
+    \ → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung\
+    \ làm FK tổ chức nội bộ."
+  source_table: "NHNCK.UNITS, NHNCK.DEPARTMENTS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Securities Organization Reference"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Tổ chức tham gia thị trường chứng khoán được UBCKNN quản lý (CTCK,\
+    \ QLQ, Ngân hàng, v.v.). Ghi nhận mã tổ chức, tên, loại hình, vốn điều lệ và trạng\
+    \ thái hoạt động."
+  source_table: "NHNCK.ORGANIZATIONS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Securities Practitioner"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin\
+    \ nhân thân và trạng thái hành nghề."
+  source_table: "NHNCK.PROFESSIONALS, NHNCK.PROFESSIONAL_HISTORIES"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Securities Practitioner Employment Status"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Giai đoạn làm việc của người hành nghề tại một tổ chức chứng khoán.\
+    \ Ghi nhận tổ chức, chức vụ, phòng ban, ngày bắt đầu và ngày kết thúc (NULL =\
+    \ đang làm việc)."
+  source_table: "NHNCK.PROFESSIONAL_WORK_HISTORIES"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Securities Practitioner License Application Employment Experience"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Kinh nghiệm làm việc khai báo trong hồ sơ đăng ký CCHN. Ghi nhận tổ\
+    \ chức, thời gian làm việc, chức vụ, phòng ban, số BHXH và thông tin hợp đồng\
+    \ lao động."
+  source_table: "NHNCK.APPLICATION_EXPERIENCES"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Securities Practitioner License Application Snapshot"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Snapshot thông tin nhân thân của người đăng ký tại thời điểm nộp hồ\
+    \ sơ. Denormalize toàn bộ trường định danh, địa chỉ và liên lạc từ Practitioner.\
+    \ Loại bỏ USERNAME/PASSWORD."
+  source_table: "NHNCK.APPLICATION_PROFESSIONALS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Securities Practitioner Professional Training History"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Lịch sử đào tạo và bồi dưỡng của người hành nghề chứng khoán. Ghi\
+    \ nhận thời gian, địa điểm đào tạo, chuyên ngành, khen thưởng và kỷ luật. FK đến\
+    \ Practitioner."
+  source_table: "NHNCK.PROFESSIONAL_TRAININGS"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  atomic_entity: "Securities Practitioner Related Party"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan\
+    \ hệ, họ tên, năm sinh, địa chỉ, nghề nghiệp và số giấy tờ định danh của người\
+    \ thân."
+  source_table: "NHNCK.PROFESSIONAL_RELATIONSHIPS"
+- bcv_core_object: "Location"
+  bcv_concept: "[Location] Geographic Area"
+  atomic_entity: "Geographic Area"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY),\
+    \ vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện\
+    \ cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code.\
+    \ Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025."
+  source_table: "NHNCK.COUNTRIES, NHNCK.PROVINCES, NHNCK.DISTRICTS"
+- bcv_core_object: "Transaction"
+  bcv_concept: "[Event] Transaction"
+  atomic_entity: "Securities Practitioner License Application Fee"
+  table_type: "Fundamental"
+  status: "approved"
+  description: "Phí thực tế phát sinh cho hồ sơ đăng ký CCHN — phí nộp hồ sơ, phí\
+    \ cấp CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt\
+    \ với Examination Assessment Fee (Condition)."
+  source_table: "NHNCK.APPLICATION_FEES"

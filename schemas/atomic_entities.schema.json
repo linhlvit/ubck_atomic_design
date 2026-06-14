@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/atomic_entities.schema.json",
+  "title": "Atomic Entities Registry Schema",
+  "description": "Schema cho file atomic_entities.yaml — danh sách tất cả Atomic entity đã thiết kế, source of truth cho bcv_core_object, bcv_concept, table_type, status. Ghi vào DataModel/working/Atomic/hld/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_type", "schema_version", "entities"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "atomic_entities",
+      "description": "Phải là 'atomic_entities'"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema"
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 0,
+      "description": "Danh sách Atomic entity — mỗi entry là 1 entity đã thiết kế",
+      "items": {
+        "$ref": "#/definitions/atomic_entity_entry"
+      }
+    }
+  },
+  "definitions": {
+    "atomic_entity_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bcv_core_object", "atomic_entity", "table_type", "status"],
+      "properties": {
+        "bcv_core_object": {
+          "type": "string",
+          "enum": [
+            "Arrangement",
+            "Business Activity",
+            "Common",
+            "Communication",
+            "Condition",
+            "Documentation",
+            "Event",
+            "Group",
+            "Involved Party",
+            "Location",
+            "Product",
+            "Transaction"
+          ],
+          "description": "BCV Core Object — source of truth cho ETL generator"
+        },
+        "bcv_concept": {
+          "type": ["string", "null"],
+          "description": "BCV Concept đầy đủ, VD: '[Business Activity] Conduct Violation'"
+        },
+        "atomic_entity": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Tên Atomic entity đầy đủ (Title Case) — LOCKED khi status=approved"
+        },
+        "table_type": {
+          "type": "string",
+          "enum": ["Fundamental", "Fact Append", "Fact Snapshot", "Relative", "Classification"],
+          "description": "Loại bảng Atomic — xác định ETL pattern"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "approved"],
+          "description": "draft = có thể rename; approved = LOCKED, rename_entity.py từ chối"
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Mô tả nghiệp vụ của entity"
+        },
+        "source_table": {
+          "type": ["string", "null"],
+          "description": "Bảng nguồn chính (format SOURCE.TABLE). Nhiều source → dùng ký tự phân cách ';'. Cập nhật bởi aggregate_atomic.py."
+        }
+      }
+    }
+  }
+}

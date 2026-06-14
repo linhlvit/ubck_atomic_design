@@ -14,7 +14,7 @@ Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào s
 | Ngày cấp | `Issue Date` | Date |
 | Nơi cấp | `Issuing Authority Name` | Text |
 
-**Trường hợp đặc biệt:** Nguồn có `identity_no` nhưng không có cột type phân biệt → dùng `IP_ALT_ID_TYPE=NATIONAL_ID` làm default. Document trong `pending_design.csv` (`reason="Nguồn không phân biệt loại giấy tờ"`, `action="Cần profile data nguồn để xác định loại giấy tờ thực tế"`) và thêm 1 điểm xác nhận vào HLD Tier tương ứng.
+**Trường hợp đặc biệt:** Nguồn có `identity_no` nhưng không có cột type phân biệt → dùng `IP_ALT_ID_TYPE=NATIONAL_ID` làm default. Document trong `pending_design.yaml` (`reason="Nguồn không phân biệt loại giấy tờ"`, `action="Cần profile data nguồn để xác định loại giấy tờ thực tế"`) và thêm 1 điểm xác nhận vào HLD Tier tương ứng.
 
 ## IP Postal Address
 
@@ -88,9 +88,9 @@ Scheme áp dụng:
 
 ## Cột nguồn không map được vào schema chuẩn
 
-Schema shared entity cố định — không có PK surrogate riêng (chỉ FK về entity chính), không có audit fields, không có business flag. Cột nguồn không map document trong `pending_design.csv`:
+Schema shared entity cố định — không có PK surrogate riêng (chỉ FK về entity chính), không có audit fields, không có business flag. Cột nguồn không map document trong `pending_design.yaml`:
 
-| Loại cột | Lý do (ghi vào pending_design.csv) |
+| Loại cột | Lý do (ghi vào pending_design.yaml) |
 |---|---|
 | PK kỹ thuật | "Shared entity không có PK surrogate riêng — chỉ FK về entity chính." |
 | Audit fields | "Shared entity schema chuẩn không có audit fields." |

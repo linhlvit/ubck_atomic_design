@@ -99,6 +99,6 @@ KPI trong BA = Pending
 ### BA mô tả nguồn bằng tên bảng source (IDS.data, T24.FUNDS.TRANSFER...)
 
 - Cần trace qua Atomic trước khi kết luận
-- Tra `Atomic/lld/atomic_attributes.csv` để tìm entity/column tương ứng
+- Tra `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` để tìm entity/column tương ứng
 - Nếu không tìm thấy → Gap Atomic (xem trên)
 - Không map trực tiếp source table → Datamart

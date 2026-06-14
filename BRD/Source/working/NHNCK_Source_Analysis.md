@@ -8,7 +8,7 @@
 > - Đặc tả yêu cầu: `New_UBCKNN_Dac_ta_yeu_cau_NHNCK_18_03_2026.docx`
 > - Thiết kế CSDL: `New_UBCKNN_Thiet_ke_co_so_du_lieu_NHNCK_20_03_2026.docx`
 > - HLD Overview: `NHNCK_HLD_Overview.md`
-> - Atomic mapping: `atomic_entities.csv`
+> - Atomic mapping: `atomic_entities.yaml`
 
 ---
 
