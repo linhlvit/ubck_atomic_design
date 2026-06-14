@@ -47,6 +47,50 @@
       "file_naming": "transformation_rules.yaml (1 file duy nhất toàn dự án)",
       "version": "1.0",
       "notes": "File singleton — không tạo thêm file. Khi thêm rule mới, append vào mảng rules. ETL generator tham chiếu qua trường transformation_rules_ref trong mapping YAML."
+    },
+    {
+      "type": "lld_source_table",
+      "label": "LLD Source Table",
+      "description": "Thiết kế LLD Level 1 per source table — mapping source columns sang Atomic attributes",
+      "schema_file": "schemas/lld_source_table.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/{SOURCE}/lld_*.yaml",
+      "file_location": "DataModel/working/Atomic/lld/{SOURCE}/",
+      "file_naming": "lld_{SOURCE}_{TABLE}.yaml (VD: lld_NHNCK_DEPARTMENTS.yaml)",
+      "version": "1.0",
+      "notes": "Mỗi file tương ứng 1 source table. Chạy validate_lld_yaml.py để validate. design_status: draft → approved → locked."
+    },
+    {
+      "type": "entity_consolidation",
+      "label": "Entity Consolidation",
+      "description": "Level 2 consolidation — tổng hợp tất cả source mappings cho 1 Atomic entity từ nhiều source tables",
+      "schema_file": "schemas/entity_consolidation.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/entities/entity_*.yaml",
+      "file_location": "DataModel/working/Atomic/lld/entities/",
+      "file_naming": "entity_{physical_name}.yaml (VD: entity_geo.yaml)",
+      "version": "1.0",
+      "notes": "Sinh bằng generate_entity_consolidation.py. consolidation_status=approved khi Human xác nhận. entity_cv.yaml là singleton đặc biệt (không có source table)."
+    },
+    {
+      "type": "classification_scheme_registry",
+      "label": "Classification Scheme Registry",
+      "description": "Danh mục chuẩn hóa tất cả Classification Value scheme dùng trong Atomic layer",
+      "schema_file": "schemas/classification_scheme_registry.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/classification_schemes.yaml",
+      "file_location": "DataModel/working/Atomic/lld/",
+      "file_naming": "classification_schemes.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. Mọi Scheme Code dùng trong LLD phải có ở đây trước khi gán classification_context. Tra cứu bắt buộc theo atomic-lld-design SKILL."
+    },
+    {
+      "type": "pending_design_registry",
+      "label": "Pending Design Registry",
+      "description": "Design decision registry — source column cố ý không map vào Atomic, kèm lý do và hành động",
+      "schema_file": "schemas/pending_design_registry.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/pending_design.yaml",
+      "file_location": "DataModel/working/Atomic/lld/",
+      "file_naming": "pending_design.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. post_check_source_coverage.py đọc để phân biệt cột chưa map (lỗi) vs cột đang pending (chủ ý). Cập nhật ngay trong cùng lượt thiết kế LLD khi phát sinh column out-of-scope."
     }
   ]
 }

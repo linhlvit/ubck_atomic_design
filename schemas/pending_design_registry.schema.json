@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/pending_design_registry.schema.json",
+  "title": "Pending Design Registry Schema",
+  "description": "Schema cho pending_design.yaml — design decision registry ghi lại source column cố ý không map vào Atomic, kèm lý do và hành động. Singleton file tại DataModel/working/Atomic/lld/pending_design.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_type", "schema_version", "entries"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "pending_design_registry",
+      "description": "Phải là 'pending_design_registry'"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema, VD: '1.0'"
+    },
+    "entries": {
+      "type": "array",
+      "description": "Danh sách source column cố ý không map — mỗi entry là 1 quyết định thiết kế",
+      "items": {
+        "$ref": "#/definitions/pending_entry"
+      }
+    }
+  },
+  "definitions": {
+    "pending_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_system", "source_table", "source_column", "description", "reason", "action"],
+      "properties": {
+        "source_system": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Mã source system, VD: NHNCK, SCMS, FMS"
+        },
+        "source_table": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tên bảng nguồn. Dùng '(all)' nếu toàn bộ bảng out-of-scope."
+        },
+        "source_column": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tên cột nguồn. Dùng '(all)' nếu toàn bộ bảng out-of-scope."
+        },
+        "description": {
+          "type": "string",
+          "description": "Mô tả ngắn về cột này là gì"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Lý do không map vào Atomic — phải đủ rõ để reviewer hiểu không cần xem source"
+        },
+        "action": {
+          "type": "string",
+          "description": "Hành động tiếp theo hoặc kết luận cuối cùng"
+        }
+      }
+    }
+  }
+}
