@@ -307,7 +307,7 @@ Cần thay đổi cột LOCKED → đổi `status → draft` trước, sửa, r�
    ```bash
    python Atomic/lld/scripts/aggregate_out_of_scope.py --source {SOURCE}
    ```
-3. Verify số dòng source trong output csv = số dòng mục 7f của HLD Overview:
+3. Verify số dòng source trong output yaml = số dòng mục 7f của HLD Overview:
    ```bash
    grep "source_system: \"{SOURCE}\"" DataModel/working/Atomic/hld/atomic_out_of_scope.yaml | wc -l
    ```

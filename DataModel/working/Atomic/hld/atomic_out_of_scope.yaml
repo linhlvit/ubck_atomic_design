@@ -1,259 +1,257 @@
-schema_type: "atomic_out_of_scope"
+schema_type: atomic_out_of_scope
 schema_version: "1.0"
 entries:
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_DEPARTMENTS"
-  description: "Liên kết phòng ban với loại chứng chỉ"
-  group: "Application Config"
-  reason: "Application config."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_DOCUMENTS"
-  description: "Liên kết loại tài liệu với loại chứng chỉ"
-  group: "Application Config"
-  reason: "Application config — cấu hình quy trình, không phải instance data."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_NUMBER_TEMPLATES"
-  description: "Template sinh số chứng chỉ"
-  group: "Application Config"
-  reason: "Config/template data."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_SPECIALIZATIONS"
-  description: "Liên kết chuyên môn với loại chứng chỉ"
-  group: "Application Config"
-  reason: "Application config."
-- source_system: "NHNCK"
-  source_table: "FORMS"
-  description: "Biểu mẫu liên quan đến quy trình cấp CCHN"
-  group: "Application Config"
-  reason: "Application config."
-- source_system: "NHNCK"
-  source_table: "LEGAL_DOCUMENTS"
-  description: "Văn bản pháp lý về hành nghề chứng khoán"
-  group: "Application Config"
-  reason: "Application config — tài liệu tham chiếu pháp lý, không phải instance data."
-- source_system: "NHNCK"
-  source_table: "PROCEDURES"
-  description: "Thủ tục hành chính cấp CCHN"
-  group: "Application Config"
-  reason: "Application config — cấu hình quy trình."
-- source_system: "NHNCK"
-  source_table: "PROCEDURE_DOCUMENTS"
-  description: "Liên kết thủ tục hành chính với tài liệu yêu cầu"
-  group: "Application Config"
-  reason: "Application config."
-- source_system: "NHNCK"
-  source_table: "PROCEDURE_FORMS"
-  description: "Liên kết thủ tục hành chính với biểu mẫu"
-  group: "Application Config"
-  reason: "Application config."
-- source_system: "NHNCK"
-  source_table: "APPLICATION_ARCHIVES"
-  description: "Thông tin lưu trữ vật lý hồ sơ CCHN"
-  group: "Archive / Physical"
-  reason: "Physical archive metadata — không có giá trị phân tích."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_ARCHIVES"
-  description: "Thông tin lưu trữ bản CCHN giấy"
-  group: "Archive / Physical"
-  reason: "Physical archive metadata."
-- source_system: "NHNCK"
-  source_table: "APPLICATION_GROUPS"
-  description: "Nhóm hồ sơ CCHN xử lý tập thể (container batch)"
-  group: "Batch Processing"
-  reason: "Batch processing metadata — container tổ chức xử lý tập thể tại nguồn;\
-    \ thông tin quyết định đã có trên DECISIONS (Tier 1), danh sách hồ sơ đã có trên\
-    \ APPLICATIONS."
-- source_system: "NHNCK"
-  source_table: "APPLICATION_GROUP_MEMBERS"
-  description: "Thành viên (hồ sơ) trong nhóm xử lý tập thể"
-  group: "Batch Processing"
-  reason: "Batch processing metadata — danh sách hồ sơ trong nhóm; không có attribute\
-    \ nghiệp vụ độc lập ngoài FK và ORDER_INDEX vận hành."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_GROUPS"
-  description: "Nhóm quyết định cấp/thu hồi/hủy chứng chỉ (container batch)"
-  group: "Batch Processing"
-  reason: "Batch processing metadata — container tổ chức xử lý tập thể tại nguồn;\
-    \ thông tin quyết định đã có trên DECISIONS (Tier 1), danh sách CCHN đã có trên\
-    \ CERTIFICATE_RECORDS."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_GROUP_MEMBERS"
-  description: "Thành viên CCHN trong nhóm quyết định batch"
-  group: "Batch Processing"
-  reason: "Batch processing metadata — danh sách CCHN trong nhóm; dữ liệu nghiệp vụ\
-    \ (REVOCATION_REASON, REISSUE) thuộc về CERTIFICATE_RECORDS, không phải thuộc\
-    \ quan hệ thành viên."
-- source_system: "NHNCK"
-  source_table: "DIGITAL_CERTIFICATES"
-  description: "Chứng thư số PKI"
-  group: "Digital Cert"
-  reason: "Operational/PKI data — không phải CCHN."
-- source_system: "NHNCK"
-  source_table: "DIGITAL_CERTIFICATE_USERS"
-  description: "Người dùng được sử dụng chứng thư số"
-  group: "Digital Cert"
-  reason: "Operational/PKI data."
-- source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  description: "Lịch sử xác thực danh tính người hành nghề với hệ thống C06 (Bộ Công\
-    \ An)"
-  group: "Isolated"
-  reason: "Isolated entity — không có file per-table đầy đủ, cột PROFESSIONAL_ID chỉ\
-    \ là suy luận từ tên bảng; thiếu thông tin cấu trúc cột để thiết kế entity. Đánh\
-    \ giá lại khi có nhu cầu khai thác."
-- source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_COURSES"
-  description: "Danh mục khóa học bồi dưỡng kiến thức định kỳ sau cấp CCHN"
-  group: "Isolated"
-  reason: "Isolated entity — không có bảng đăng ký/enrollment liên quan trong scope;\
-    \ chỉ là danh mục tham chiếu không có giá trị phân tích độc lập tại thời điểm\
-    \ thiết kế."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_CONVERSION_REQUESTS"
-  description: "Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử"
-  group: "Operational"
-  reason: "Operational/migration data — nghiệp vụ 1 lần, không có giá trị phân tích\
-    \ liên tục."
-- source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORT_LOG_SYNCS"
-  description: "Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức"
-  group: "Operational"
-  reason: "Operational sync log."
-- source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORT_YEARLYS"
-  description: "Báo cáo hàng năm của tổ chức về người hành nghề"
-  group: "Operational"
-  reason: "Cần khảo sát thêm cấu trúc cột để xác định có phải entity độc lập không."
-- source_system: "NHNCK"
-  source_table: "APPLICATION_LOGS"
-  description: "Nhật ký thay đổi trạng thái/nội dung hồ sơ"
-  group: "Source Process Log"
-  reason: "Quy trình internal tác nghiệp ứng dụng nguồn — không phải sự kiện nghiệp\
-    \ vụ độc lập."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_LOGS"
-  description: "Nhật ký hoạt động trên chứng chỉ hành nghề"
-  group: "Source Process Log"
-  reason: "Audit log nguồn — không phải sự kiện nghiệp vụ tường minh."
-- source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  description: "Lịch sử thay đổi trạng thái chứng chỉ hành nghề"
-  group: "Source Process Log"
-  reason: "Audit log nguồn — trạng thái lifecycle nằm trên CERTIFICATE_RECORDS; log\
-    \ nguồn không cần thiết trên Atomic."
-- source_system: "NHNCK"
-  source_table: "VERIFY_APPLICATION_STATUSES"
-  description: "Bước xác minh hồ sơ tại từng cấp phê duyệt"
-  group: "Source Process Log"
-  reason: "Bước xác minh trung gian trong quy trình nguồn — không có giá trị phân\
-    \ tích độc lập."
-- source_system: "NHNCK"
-  source_table: "APPLICATION_DOCUMENTS"
-  description: "Tài liệu vật lý (file attachment) đính kèm hồ sơ đăng ký"
-  group: "Sub-process"
-  reason: "Bảng lưu file attachment (tên file, đường dẫn, loại tài liệu) — không có\
-    \ attribute nghiệp vụ độc lập ngoài con trỏ file; thông tin loại tài liệu đã có\
-    \ trên APPLICATION_SPECIALIZATIONS."
-- source_system: "NHNCK"
-  source_table: "APPLICATION_DOCUMENT_HISTORIES"
-  description: "Lịch sử thẩm định từng tài liệu trong hồ sơ"
-  group: "Sub-process"
-  reason: "Quy trình internal tác nghiệp từ nguồn — không phản ánh sự kiện nghiệp\
-    \ vụ có giá trị phân tích."
-- source_system: "NHNCK"
-  source_table: "APPLICATION_SUPPLEMENTS"
-  description: "Thông tin bổ sung hồ sơ CCHN"
-  group: "Sub-process"
-  reason: "Sub-process bổ sung hồ sơ theo yêu cầu — cấu trúc internal tác nghiệp tại\
-    \ nguồn."
-- source_system: "NHNCK"
-  source_table: "DECISION_DOCUMENTS"
-  description: "Tài liệu đính kèm của quyết định"
-  group: "Sub-process"
-  reason: "Sub-process lưu file đính kèm — không có giá trị phân tích nghiệp vụ độc\
-    \ lập."
-- source_system: "NHNCK"
-  source_table: "DEPARTMENT_ACCESS"
-  description: "Quản lý quyền khai thác giữa các phòng ban"
-  group: "System / Auth"
-  reason: "Operational/system data."
-- source_system: "NHNCK"
-  source_table: "PERMISSIONS"
-  description: "Danh mục quyền hạn trong hệ thống"
-  group: "System / Auth"
-  reason: "Operational/system data."
-- source_system: "NHNCK"
-  source_table: "PERMISSION_ROLES"
-  description: "Phân quyền theo nhóm vai trò"
-  group: "System / Auth"
-  reason: "Operational/system data."
-- source_system: "NHNCK"
-  source_table: "ROLES"
-  description: "Danh mục vai trò trong hệ thống"
-  group: "System / Auth"
-  reason: "Operational/system data."
-- source_system: "NHNCK"
-  source_table: "USER_ROLES"
-  description: "Phân quyền người dùng theo vai trò"
-  group: "System / Auth"
-  reason: "Operational/system data — không có giá trị nghiệp vụ."
-- source_system: "NHNCK"
-  source_table: "AUTO_INCREMENT_CODES"
-  description: "Quản lý số tự tăng cho mã CCHN và mã tài liệu"
-  group: "System / Config"
-  reason: "Sequence/counter table — operational data."
-- source_system: "NHNCK"
-  source_table: "BACKUP_SCHEDULES"
-  description: "Lịch tự động sao lưu cơ sở dữ liệu"
-  group: "System / Config"
-  reason: "Operational/system data."
-- source_system: "NHNCK"
-  source_table: "NOTIFICATION_CONFIGURATIONS"
-  description: "Cấu hình thông báo theo sự kiện nghiệp vụ"
-  group: "System / Config"
-  reason: "Application config data."
-- source_system: "NHNCK"
-  source_table: "SYSTEM_PARAMETERS"
-  description: "Tham số cấu hình hệ thống"
-  group: "System / Config"
-  reason: "Config data."
-- source_system: "NHNCK"
-  source_table: "ACTION_LOGS"
-  description: "Nhật ký hành động của người dùng trên hệ thống"
-  group: "System / Log"
-  reason: "System audit log — không phải nghiệp vụ CCHN."
-- source_system: "NHNCK"
-  source_table: "BACKUPS"
-  description: "Thông tin file sao lưu cơ sở dữ liệu"
-  group: "System / Log"
-  reason: "Operational/system data."
-- source_system: "NHNCK"
-  source_table: "DOCUMENT_SIGN_LOGS"
-  description: "Nhật ký ký số tài liệu"
-  group: "System / Log"
-  reason: "Operational log."
-- source_system: "NHNCK"
-  source_table: "EMAIL_LOGS"
-  description: "Nhật ký gửi email trong hệ thống"
-  group: "System / Log"
-  reason: "Operational log — không phải nghiệp vụ CCHN."
-- source_system: "NHNCK"
-  source_table: "NOTIFICATIONS"
-  description: "Thông báo trong hệ thống"
-  group: "System / Log"
-  reason: "Operational/notification data."
-- source_system: "NHNCK"
-  source_table: "SEND_AND_RECIEVE_LOGS"
-  description: "Nhật ký gửi nhận dữ liệu tích hợp"
-  group: "System / Log"
-  reason: "Operational log."
-- source_system: "NHNCK"
-  source_table: "SIGNATURE_LOGS"
-  description: "Nhật ký ký số hồ sơ/CCHN"
-  group: "System / Log"
-  reason: "Operational log."
-- source_system: "NHNCK"
-  source_table: "SMS_LOGS"
-  description: "Nhật ký gửi SMS trong hệ thống"
-  group: "System / Log"
-  reason: "Operational log."
+- source_system: NHNCK
+  source_table: CERTIFICATE_DEPARTMENTS
+  description: Liên kết phòng ban với loại chứng chỉ
+  group: Application Config
+  reason: Application config.
+- source_system: NHNCK
+  source_table: CERTIFICATE_DOCUMENTS
+  description: Liên kết loại tài liệu với loại chứng chỉ
+  group: Application Config
+  reason: Application config — cấu hình quy trình, không phải instance data.
+- source_system: NHNCK
+  source_table: CERTIFICATE_NUMBER_TEMPLATES
+  description: Template sinh số chứng chỉ
+  group: Application Config
+  reason: Config/template data.
+- source_system: NHNCK
+  source_table: CERTIFICATE_SPECIALIZATIONS
+  description: Liên kết chuyên môn với loại chứng chỉ
+  group: Application Config
+  reason: Application config.
+- source_system: NHNCK
+  source_table: FORMS
+  description: Biểu mẫu liên quan đến quy trình cấp CCHN
+  group: Application Config
+  reason: Application config.
+- source_system: NHNCK
+  source_table: LEGAL_DOCUMENTS
+  description: Văn bản pháp lý về hành nghề chứng khoán
+  group: Application Config
+  reason: Application config — tài liệu tham chiếu pháp lý, không phải instance data.
+- source_system: NHNCK
+  source_table: PROCEDURES
+  description: Thủ tục hành chính cấp CCHN
+  group: Application Config
+  reason: Application config — cấu hình quy trình.
+- source_system: NHNCK
+  source_table: PROCEDURE_DOCUMENTS
+  description: Liên kết thủ tục hành chính với tài liệu yêu cầu
+  group: Application Config
+  reason: Application config.
+- source_system: NHNCK
+  source_table: PROCEDURE_FORMS
+  description: Liên kết thủ tục hành chính với biểu mẫu
+  group: Application Config
+  reason: Application config.
+- source_system: NHNCK
+  source_table: APPLICATION_ARCHIVES
+  description: Thông tin lưu trữ vật lý hồ sơ CCHN
+  group: Archive / Physical
+  reason: Physical archive metadata — không có giá trị phân tích.
+- source_system: NHNCK
+  source_table: CERTIFICATE_ARCHIVES
+  description: Thông tin lưu trữ bản CCHN giấy
+  group: Archive / Physical
+  reason: Physical archive metadata.
+- source_system: NHNCK
+  source_table: APPLICATION_GROUPS
+  description: Nhóm hồ sơ CCHN xử lý tập thể (container batch)
+  group: Batch Processing
+  reason: Batch processing metadata — container tổ chức xử lý tập thể tại nguồn; thông
+    tin quyết định đã có trên DECISIONS (Tier 1), danh sách hồ sơ đã có trên APPLICATIONS.
+- source_system: NHNCK
+  source_table: APPLICATION_GROUP_MEMBERS
+  description: Thành viên (hồ sơ) trong nhóm xử lý tập thể
+  group: Batch Processing
+  reason: Batch processing metadata — danh sách hồ sơ trong nhóm; không có attribute
+    nghiệp vụ độc lập ngoài FK và ORDER_INDEX vận hành.
+- source_system: NHNCK
+  source_table: CERTIFICATE_RECORD_GROUPS
+  description: Nhóm quyết định cấp/thu hồi/hủy chứng chỉ (container batch)
+  group: Batch Processing
+  reason: Batch processing metadata — container tổ chức xử lý tập thể tại nguồn; thông
+    tin quyết định đã có trên DECISIONS (Tier 1), danh sách CCHN đã có trên CERTIFICATE_RECORDS.
+- source_system: NHNCK
+  source_table: CERTIFICATE_RECORD_GROUP_MEMBERS
+  description: Thành viên CCHN trong nhóm quyết định batch
+  group: Batch Processing
+  reason: Batch processing metadata — danh sách CCHN trong nhóm; dữ liệu nghiệp vụ
+    (REVOCATION_REASON, REISSUE) thuộc về CERTIFICATE_RECORDS, không phải thuộc quan
+    hệ thành viên.
+- source_system: NHNCK
+  source_table: DIGITAL_CERTIFICATES
+  description: Chứng thư số PKI
+  group: Digital Cert
+  reason: Operational/PKI data — không phải CCHN.
+- source_system: NHNCK
+  source_table: DIGITAL_CERTIFICATE_USERS
+  description: Người dùng được sử dụng chứng thư số
+  group: Digital Cert
+  reason: Operational/PKI data.
+- source_system: NHNCK
+  source_table: IDENTITY_INFO_C06S
+  description: Lịch sử xác thực danh tính người hành nghề với hệ thống C06 (Bộ Công
+    An)
+  group: Isolated
+  reason: Isolated entity — không có file per-table đầy đủ, cột PROFESSIONAL_ID chỉ
+    là suy luận từ tên bảng; thiếu thông tin cấu trúc cột để thiết kế entity. Đánh
+    giá lại khi có nhu cầu khai thác.
+- source_system: NHNCK
+  source_table: POST_CERT_TRAINING_COURSES
+  description: Danh mục khóa học bồi dưỡng kiến thức định kỳ sau cấp CCHN
+  group: Isolated
+  reason: Isolated entity — không có bảng đăng ký/enrollment liên quan trong scope;
+    chỉ là danh mục tham chiếu không có giá trị phân tích độc lập tại thời điểm thiết
+    kế.
+- source_system: NHNCK
+  source_table: CERTIFICATE_CONVERSION_REQUESTS
+  description: Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử
+  group: Operational
+  reason: Operational/migration data — nghiệp vụ 1 lần, không có giá trị phân tích
+    liên tục.
+- source_system: NHNCK
+  source_table: ORGANIZATION_REPORT_LOG_SYNCS
+  description: Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
+  group: Operational
+  reason: Operational sync log.
+- source_system: NHNCK
+  source_table: ORGANIZATION_REPORT_YEARLYS
+  description: Báo cáo hàng năm của tổ chức về người hành nghề
+  group: Operational
+  reason: Cần khảo sát thêm cấu trúc cột để xác định có phải entity độc lập không.
+- source_system: NHNCK
+  source_table: APPLICATION_LOGS
+  description: Nhật ký thay đổi trạng thái/nội dung hồ sơ
+  group: Source Process Log
+  reason: Quy trình internal tác nghiệp ứng dụng nguồn — không phải sự kiện nghiệp
+    vụ độc lập.
+- source_system: NHNCK
+  source_table: CERTIFICATE_RECORD_LOGS
+  description: Nhật ký hoạt động trên chứng chỉ hành nghề
+  group: Source Process Log
+  reason: Audit log nguồn — không phải sự kiện nghiệp vụ tường minh.
+- source_system: NHNCK
+  source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
+  description: Lịch sử thay đổi trạng thái chứng chỉ hành nghề
+  group: Source Process Log
+  reason: Audit log nguồn — trạng thái lifecycle nằm trên CERTIFICATE_RECORDS; log
+    nguồn không cần thiết trên Atomic.
+- source_system: NHNCK
+  source_table: VERIFY_APPLICATION_STATUSES
+  description: Bước xác minh hồ sơ tại từng cấp phê duyệt
+  group: Source Process Log
+  reason: Bước xác minh trung gian trong quy trình nguồn — không có giá trị phân tích
+    độc lập.
+- source_system: NHNCK
+  source_table: APPLICATION_DOCUMENTS
+  description: Tài liệu vật lý (file attachment) đính kèm hồ sơ đăng ký
+  group: Sub-process
+  reason: Bảng lưu file attachment (tên file, đường dẫn, loại tài liệu) — không có
+    attribute nghiệp vụ độc lập ngoài con trỏ file; thông tin loại tài liệu đã có
+    trên APPLICATION_SPECIALIZATIONS.
+- source_system: NHNCK
+  source_table: APPLICATION_DOCUMENT_HISTORIES
+  description: Lịch sử thẩm định từng tài liệu trong hồ sơ
+  group: Sub-process
+  reason: Quy trình internal tác nghiệp từ nguồn — không phản ánh sự kiện nghiệp vụ
+    có giá trị phân tích.
+- source_system: NHNCK
+  source_table: APPLICATION_SUPPLEMENTS
+  description: Thông tin bổ sung hồ sơ CCHN
+  group: Sub-process
+  reason: Sub-process bổ sung hồ sơ theo yêu cầu — cấu trúc internal tác nghiệp tại
+    nguồn.
+- source_system: NHNCK
+  source_table: DECISION_DOCUMENTS
+  description: Tài liệu đính kèm của quyết định
+  group: Sub-process
+  reason: Sub-process lưu file đính kèm — không có giá trị phân tích nghiệp vụ độc
+    lập.
+- source_system: NHNCK
+  source_table: DEPARTMENT_ACCESS
+  description: Quản lý quyền khai thác giữa các phòng ban
+  group: System / Auth
+  reason: Operational/system data.
+- source_system: NHNCK
+  source_table: PERMISSIONS
+  description: Danh mục quyền hạn trong hệ thống
+  group: System / Auth
+  reason: Operational/system data.
+- source_system: NHNCK
+  source_table: PERMISSION_ROLES
+  description: Phân quyền theo nhóm vai trò
+  group: System / Auth
+  reason: Operational/system data.
+- source_system: NHNCK
+  source_table: ROLES
+  description: Danh mục vai trò trong hệ thống
+  group: System / Auth
+  reason: Operational/system data.
+- source_system: NHNCK
+  source_table: USER_ROLES
+  description: Phân quyền người dùng theo vai trò
+  group: System / Auth
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: NHNCK
+  source_table: AUTO_INCREMENT_CODES
+  description: Quản lý số tự tăng cho mã CCHN và mã tài liệu
+  group: System / Config
+  reason: Sequence/counter table — operational data.
+- source_system: NHNCK
+  source_table: BACKUP_SCHEDULES
+  description: Lịch tự động sao lưu cơ sở dữ liệu
+  group: System / Config
+  reason: Operational/system data.
+- source_system: NHNCK
+  source_table: NOTIFICATION_CONFIGURATIONS
+  description: Cấu hình thông báo theo sự kiện nghiệp vụ
+  group: System / Config
+  reason: Application config data.
+- source_system: NHNCK
+  source_table: SYSTEM_PARAMETERS
+  description: Tham số cấu hình hệ thống
+  group: System / Config
+  reason: Config data.
+- source_system: NHNCK
+  source_table: ACTION_LOGS
+  description: Nhật ký hành động của người dùng trên hệ thống
+  group: System / Log
+  reason: System audit log — không phải nghiệp vụ CCHN.
+- source_system: NHNCK
+  source_table: BACKUPS
+  description: Thông tin file sao lưu cơ sở dữ liệu
+  group: System / Log
+  reason: Operational/system data.
+- source_system: NHNCK
+  source_table: DOCUMENT_SIGN_LOGS
+  description: Nhật ký ký số tài liệu
+  group: System / Log
+  reason: Operational log.
+- source_system: NHNCK
+  source_table: EMAIL_LOGS
+  description: Nhật ký gửi email trong hệ thống
+  group: System / Log
+  reason: Operational log — không phải nghiệp vụ CCHN.
+- source_system: NHNCK
+  source_table: NOTIFICATIONS
+  description: Thông báo trong hệ thống
+  group: System / Log
+  reason: Operational/notification data.
+- source_system: NHNCK
+  source_table: SEND_AND_RECIEVE_LOGS
+  description: Nhật ký gửi nhận dữ liệu tích hợp
+  group: System / Log
+  reason: Operational log.
+- source_system: NHNCK
+  source_table: SIGNATURE_LOGS
+  description: Nhật ký ký số hồ sơ/CCHN
+  group: System / Log
+  reason: Operational log.
+- source_system: NHNCK
+  source_table: SMS_LOGS
+  description: Nhật ký gửi SMS trong hệ thống
+  group: System / Log
+  reason: Operational log.

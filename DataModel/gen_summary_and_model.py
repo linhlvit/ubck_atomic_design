@@ -20,6 +20,26 @@ from pathlib import Path
 
 import yaml
 
+
+def _needs_quoting(value):
+    try:
+        loaded = yaml.safe_load(value)
+        return not isinstance(loaded, str)
+    except Exception:
+        return True
+
+
+class SmartQuoteDumper(yaml.Dumper):
+    pass
+
+
+def _str_representer(dumper, data):
+    style = '"' if _needs_quoting(data) else None
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style=style)
+
+
+SmartQuoteDumper.add_representer(str, _str_representer)
+
 ROOT       = Path(__file__).resolve().parent.parent
 ATOMIC_DIR = ROOT / "DataModel" / "Atomic"
 SUMMARY_OUT = ATOMIC_DIR / "dm_manifest.yaml"
@@ -332,7 +352,8 @@ def main():
         "entries":        summary_rows,
     }
     with open(SUMMARY_OUT, "w", encoding="utf-8") as f:
-        yaml.dump(manifest_doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        yaml.dump(manifest_doc, f, Dumper=SmartQuoteDumper,
+                  allow_unicode=True, sort_keys=False, default_flow_style=False)
     print(f"Written: {SUMMARY_OUT.relative_to(ROOT)}")
 
     # Write atomic_model.yaml (all sources, consolidated)
@@ -342,7 +363,8 @@ def main():
         "entities":       entities,
     }
     with open(MODEL_OUT, "w", encoding="utf-8") as f:
-        yaml.dump(model, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        yaml.dump(model, f, Dumper=SmartQuoteDumper,
+                  allow_unicode=True, sort_keys=False, default_flow_style=False)
     print(f"Written: {MODEL_OUT.relative_to(ROOT)}")
 
 
