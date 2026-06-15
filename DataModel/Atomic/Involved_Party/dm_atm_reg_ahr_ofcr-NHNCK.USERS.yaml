@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_USERS'"
-    etl_derived_value: null
+    etl_derived_value: NHNCK.USERS
 
   - name: Full Name
     physical_name: full_nm
@@ -246,6 +246,20 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null
 
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: "FK đến cán bộ tạo bản ghi (self-ref)"
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.CREATED_BY
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning: Mã cán bộ tạo bản ghi
@@ -256,7 +270,21 @@ attributes:
     source_system: NHNCK
     source_table: USERS
     source_column: NHNCK.qlnhn.USERS.CREATED_BY
-    comment: "Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh vòng lặp surrogate."
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_USERS'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: "FK đến cán bộ cập nhật bản ghi lần cuối (self-ref)"
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: USERS
+    source_column: NHNCK.qlnhn.USERS.UPDATED_BY
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null
 
@@ -270,6 +298,6 @@ attributes:
     source_system: NHNCK
     source_table: USERS
     source_column: NHNCK.qlnhn.USERS.UPDATED_BY
-    comment: "Self-ref: FK đến reg_ahr_ofcr.reg_ahr_ofcr_code. Lưu Code để tránh vòng lặp surrogate."
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null

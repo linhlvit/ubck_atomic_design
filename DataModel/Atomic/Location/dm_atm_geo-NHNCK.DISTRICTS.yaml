@@ -62,19 +62,19 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
+    etl_derived_value: NHNCK.DISTRICTS
 
-  - name: Geographic Area Short Code
-    physical_name: geo_shrt_code
-    business_meaning: Mã viết tắt quốc tịch/quốc gia.
-    data_domain: Text
+  - name: Geographic Area Type Code
+    physical_name: geo_tp_code
+    business_meaning: Phân loại vùng địa lý — Quận/Huyện
+    data_domain: Classification Value
     data_type: string
-    nullable: true
+    nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: DISTRICTS
     source_column: null
-    comment: Mã ISO hoặc mã nghiệp vụ do FIMS định nghĩa.
+    comment: null
     classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
     etl_derived_value: null
 
@@ -92,114 +92,16 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
     etl_derived_value: null
 
-  - name: Life Cycle Status Code
-    physical_name: lcs_code
-    business_meaning: "Trạng thái: 0: Không sử dụng 1: Sử dụng."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: null
-    comment: "Scheme: LIFE_CYCLE_STATUS."
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: Description
-    physical_name: dsc
-    business_meaning: Mô tả.
+  - name: ISO Country Code
+    physical_name: iso_cty_code
+    business_meaning: Mã quận/huyện theo chuẩn
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: DISTRICTS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: Created By
-    physical_name: crt_by
-    business_meaning: Người tạo bản ghi.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: null
-    comment: Mã người dùng hệ thống — denormalized.
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: Created Timestamp
-    physical_name: crt_tms
-    business_meaning: Ngày tạo bản ghi.
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: Updated Timestamp
-    physical_name: udt_tms
-    business_meaning: Ngày cập nhật bản ghi.
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: Geographic Area Type Code
-    physical_name: geo_tp_code
-    business_meaning: Phân loại vùng địa lý — Quận/Huyện
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: Geographic Area Business Code
-    physical_name: geo_bsn_code
-    business_meaning: Mã quốc tịch/quốc gia (mã nghiệp vụ).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: Note
-    physical_name: note
-    business_meaning: Ghi chú.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: null
+    source_column: NHNCK.DISTRICTS.DISTRICT_CODE
     comment: null
     classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
     etl_derived_value: null
@@ -229,20 +131,6 @@ attributes:
     source_table: DISTRICTS
     source_column: NHNCK.DISTRICTS.PROVINCE_ID
     comment: "Lookup pair: geo.geo_code. Pair with Parent Geographic Area Id."
-    classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-    etl_derived_value: null
-
-  - name: ISO Country Code
-    physical_name: iso_cty_code
-    business_meaning: Mã quận/huyện theo chuẩn
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DISTRICTS
-    source_column: NHNCK.DISTRICTS.DISTRICT_CODE
-    comment: null
     classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
     etl_derived_value: null
 

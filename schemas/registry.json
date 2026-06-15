@@ -47,6 +47,94 @@
       "file_naming": "transformation_rules.yaml (1 file duy nhất toàn dự án)",
       "version": "1.0",
       "notes": "File singleton — không tạo thêm file. Khi thêm rule mới, append vào mảng rules. ETL generator tham chiếu qua trường transformation_rules_ref trong mapping YAML."
+    },
+    {
+      "type": "lld_source_table",
+      "label": "LLD Source Table",
+      "description": "Thiết kế LLD Level 1 per source table — mapping source columns sang Atomic attributes",
+      "schema_file": "schemas/lld_source_table.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/{SOURCE}/lld_*.yaml",
+      "file_location": "DataModel/working/Atomic/lld/{SOURCE}/",
+      "file_naming": "lld_{SOURCE}_{TABLE}.yaml (VD: lld_NHNCK_DEPARTMENTS.yaml)",
+      "version": "1.0",
+      "notes": "Mỗi file tương ứng 1 source table. Chạy validate_lld_yaml.py để validate. design_status: draft → approved → locked."
+    },
+    {
+      "type": "entity_consolidation",
+      "label": "Entity Consolidation",
+      "description": "Level 2 consolidation — tổng hợp tất cả source mappings cho 1 Atomic entity từ nhiều source tables",
+      "schema_file": "schemas/entity_consolidation.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/entities/entity_*.yaml",
+      "file_location": "DataModel/working/Atomic/lld/entities/",
+      "file_naming": "entity_{physical_name}.yaml (VD: entity_geo.yaml)",
+      "version": "1.0",
+      "notes": "Sinh bằng generate_entity_consolidation.py. consolidation_status=approved khi Human xác nhận. entity_cv.yaml là singleton đặc biệt (không có source table)."
+    },
+    {
+      "type": "classification_scheme_registry",
+      "label": "Classification Scheme Registry",
+      "description": "Danh mục chuẩn hóa tất cả Classification Value scheme dùng trong Atomic layer",
+      "schema_file": "schemas/classification_scheme_registry.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/classification_schemes.yaml",
+      "file_location": "DataModel/working/Atomic/lld/",
+      "file_naming": "classification_schemes.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. Mọi Scheme Code dùng trong LLD phải có ở đây trước khi gán classification_context. Tra cứu bắt buộc theo atomic-lld-design SKILL."
+    },
+    {
+      "type": "pending_design_registry",
+      "label": "Pending Design Registry",
+      "description": "Design decision registry — source column cố ý không map vào Atomic, kèm lý do và hành động",
+      "schema_file": "schemas/pending_design_registry.schema.json",
+      "file_pattern": "DataModel/working/Atomic/lld/pending_design.yaml",
+      "file_location": "DataModel/working/Atomic/lld/",
+      "file_naming": "pending_design.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. post_check_source_coverage.py đọc để phân biệt cột chưa map (lỗi) vs cột đang pending (chủ ý). Cập nhật ngay trong cùng lượt thiết kế LLD khi phát sinh column out-of-scope."
+    },
+    {
+      "type": "atomic_entities",
+      "label": "Atomic Entities Registry",
+      "description": "Danh sách tất cả Atomic entity đã thiết kế — source of truth cho bcv_core_object, bcv_concept, table_type, status",
+      "schema_file": "schemas/atomic_entities.schema.json",
+      "file_pattern": "DataModel/working/Atomic/hld/atomic_entities.yaml",
+      "file_location": "DataModel/working/Atomic/hld/",
+      "file_naming": "atomic_entities.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. Cập nhật bởi aggregate_atomic.py (thêm source_table mới) và người thiết kế (thêm entity mới, đổi status). rename_entity.py từ chối rename khi status=approved."
+    },
+    {
+      "type": "atomic_out_of_scope",
+      "label": "Atomic Out-of-Scope Registry",
+      "description": "Danh sách source table bị loại khỏi Atomic layer kèm lý do",
+      "schema_file": "schemas/atomic_out_of_scope.schema.json",
+      "file_pattern": "DataModel/working/Atomic/hld/atomic_out_of_scope.yaml",
+      "file_location": "DataModel/working/Atomic/hld/",
+      "file_naming": "atomic_out_of_scope.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. Cập nhật bởi aggregate_out_of_scope.py hoặc tay khi phát sinh bảng nguồn không cần thiết kế Atomic."
+    },
+    {
+      "type": "dm_manifest",
+      "label": "Data Model Manifest",
+      "description": "Index tổng hợp tất cả dm_atm_*.yaml — mỗi entry là 1 ETL job (physical_name × source). Sinh tự động.",
+      "schema_file": "schemas/dm_manifest.schema.json",
+      "file_pattern": "DataModel/Atomic/dm_manifest.yaml",
+      "file_location": "DataModel/Atomic/",
+      "file_naming": "dm_manifest.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. Sinh bởi gen_summary_and_model.py. Không sửa tay. Dùng để tra cứu nhanh danh sách entity đã có DM YAML."
+    },
+    {
+      "type": "atomic_attributes",
+      "label": "Atomic Attributes Aggregate",
+      "description": "Flat aggregate toàn bộ attributes từ tất cả lld_*.yaml — dùng làm ETL spec input và tra cứu mapping detail",
+      "schema_file": "schemas/atomic_attributes.schema.json",
+      "file_pattern": "DataModel/working/Atomic/aggregate/atomic_attributes.yaml",
+      "file_location": "DataModel/working/Atomic/aggregate/",
+      "file_naming": "atomic_attributes.yaml (1 file duy nhất toàn dự án)",
+      "version": "1.0",
+      "notes": "Singleton file. Sinh bởi aggregate_atomic.py. Grain: 1 attribute × 1 source_system × 1 source_table. ETL generator filter theo source_system + source_table để lấy mapping detail cho từng job."
     }
   ]
 }

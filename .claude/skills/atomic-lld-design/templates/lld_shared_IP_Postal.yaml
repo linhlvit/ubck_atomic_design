@@ -1,0 +1,109 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+# Template: Involved Party Postal Address
+# Dùng khi bảng nguồn có 1 IP với địa chỉ cụ thể (VD: chỉ có HEAD_OFFICE)
+# Nếu nguồn có nhiều loại địa chỉ → tạo nhiều row riêng với classification_context khác nhau
+
+metadata:
+  source_system: {SOURCE}
+  source_table: {TABLE}
+  atomic_entity: Involved Party Postal Address
+  entity_physical_name: ip_postal_addr
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Postal Address"
+  table_type: Fundamental
+  group: T{N}
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: ""
+
+attributes:
+  # ── INVOLVED PARTY FK ───────────────────────────────────────────────
+  - attribute_name: Involved Party Id
+    physical_name: ip_id
+    description: "FK đến {Parent Entity} (Involved Party)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns:
+      - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
+    comment: "FK target: {Parent Entity}.{Parent Entity} Id."
+    classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: ip_code
+    description: "Mã {Parent Entity}."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
+    comment: "Lookup pair: {Parent Entity}.{Parent Entity} Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
+    etl_derived_value: null
+
+  # ── ADDRESS TYPE ────────────────────────────────────────────────────
+  - attribute_name: Address Type Code
+    physical_name: addr_type_code
+    description: "Loại địa chỉ."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE."
+    classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
+    etl_derived_value: "{ADDRESS_TYPE}"
+
+  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM={SOURCE}.{TABLE}"
+    etl_derived_value: "{SOURCE}.{TABLE}"
+
+  # ── ADDRESS FIELDS ───────────────────────────────────────────────────
+  # Điền các trường địa chỉ có trong nguồn, theo reference/shared_entity_schemas.md
+  # Trường địa lý: xem 4 cách xử lý trong shared_entity_schemas.md
+
+  # - attribute_name: Street Address
+  #   physical_name: street_addr
+  #   description: "{Mô tả gốc từ nguồn}."
+  #   data_domain: Text
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.{ADDRESS_COLUMN}"
+  #   comment: null
+  #   classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
+  #   etl_derived_value: null
+
+  # - attribute_name: Geographic Area Code
+  #   physical_name: geo_area_code
+  #   description: "Mã đơn vị địa chính (FK đến Geographic Area)."
+  #   data_domain: Text
+  #   nullable: true
+  #   is_primary_key: false
+  #   status: draft
+  #   source_columns:
+  #     - "{SOURCE}.{schema}.{TABLE}.{PROVINCE_COLUMN}"
+  #   comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Geographic Area Id."
+  #   classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
+  #   etl_derived_value: null

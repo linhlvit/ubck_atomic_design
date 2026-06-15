@@ -3,7 +3,7 @@
 **Phân hệ:** TTHC — Quản lý thủ tục hành chính UBCKNN  
 **Nền tảng nguồn:** Orchard Core CMS / EAV (SQLite)  
 **Nguồn tài liệu:** Đặc tả yêu cầu TTHC (05/03/2026) · Thiết kế CSDL TTHC (20/03/2026) · Khảo sát JSON schema 45 Eform  
-**Atomic mapping:** `atomic_entities.csv` · `TTHC_HLD_Overview.md`
+**Atomic mapping:** `atomic_entities.yaml` · `TTHC_HLD_Overview.md`
 
 > **Quy ước cột Ánh xạ Atomic:**
 > - 🟢 Tên entity — Atomic entity được thiết kế

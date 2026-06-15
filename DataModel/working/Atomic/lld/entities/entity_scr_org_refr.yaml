@@ -1,0 +1,348 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Securities Organization Reference"
+  physical_name: "scr_org_refr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Fundamental"
+  etl_pattern: "SCD4A"
+  consolidation_status: "pending"
+  consolidated_by: null
+  consolidated_at: null
+sources:
+- source_system: "NHNCK"
+  source_table: "ORGANIZATIONS"
+  lld_file: "NHNCK/lld_NHNCK_ORGANIZATIONS.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Securities Organization Reference Id"
+  physical_name: "scr_org_refr_id"
+  description: "Khóa đại diện cho tổ chức kinh doanh chứng khoán (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham gia\
+    \ TTCK (CTCK, QLQ, NH, Khác)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: null
+- attribute_name: "Securities Organization Reference Code"
+  physical_name: "scr_org_refr_code"
+  description: "Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "NHNCK.ORGANIZATIONS"
+  source_mappings:
+    NHNCK.ORGANIZATIONS: null
+- attribute_name: "Organization Code"
+  physical_name: "org_code"
+  description: "Mã tổ chức (mã nghiệp vụ do hệ thống gán)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mã nghiệp vụ — khác BK (ORGANIZATION_CODE khác ID nguồn)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ORGANIZATION_CODE"
+- attribute_name: "Securities Organization Reference Name"
+  physical_name: "scr_org_refr_nm"
+  description: "Tên đầy đủ tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ORGANIZATION_NAME"
+- attribute_name: "Securities Organization Reference English Name"
+  physical_name: "scr_org_refr_en_nm"
+  description: "Tên tiếng Anh của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ENGLISH_NAME"
+- attribute_name: "Securities Organization Reference Short Name"
+  physical_name: "scr_org_refr_shrt_nm"
+  description: "Tên viết tắt của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ABBREVIATION"
+- attribute_name: "Organization Type Code"
+  physical_name: "org_tp_code"
+  description: "Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: ORGANIZATION_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
+    \ sang string. Giữ nguyên leading zeros nếu có."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ORGANIZATION_TYPE_ID"
+- attribute_name: "Organization Level Code"
+  physical_name: "org_lvl_code"
+  description: "Cấp độ phân cấp tổ chức."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: ORGANIZATION_LEVEL."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.LEVEL_"
+- attribute_name: "Parent Securities Organization Reference Id"
+  physical_name: "prn_scr_org_refr_id"
+  description: "FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id. Self-referencing."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.PARENT_ID"
+- attribute_name: "Parent Securities Organization Reference Code"
+  physical_name: "prn_scr_org_refr_code"
+  description: "Mã tổ chức cha."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
+    \ Reference Code. Pair with Parent Securities Organization Reference Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.PARENT_ID"
+- attribute_name: "External System Linked Id"
+  physical_name: "ext_stm_linked_id"
+  description: "ID liên kết sang hệ thống FMS/SCMS."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string. Metadata liên\
+    \ kết hệ thống ngoài, lưu dạng text."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.LINKED_ID"
+- attribute_name: "External System Sync Id"
+  physical_name: "ext_stm_sync_id"
+  description: "Mã đồng bộ từ FMS/SCMS."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Metadata đồng bộ hệ thống ngoài."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.SYNC_ID"
+- attribute_name: "Legal Representative Name"
+  physical_name: "lgl_rprs_nm"
+  description: "Tên người đại diện pháp luật của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "BCV: \"Designated Representative\" (Involved Party). Chủ thể khác — không\
+    \ thuộc shared entity."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.REPRESENTATIVE"
+- attribute_name: "License Number"
+  physical_name: "license_nbr"
+  description: "Số giấy phép hoạt động chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.LICENSE_NUMBER"
+- attribute_name: "License Issuer Name"
+  physical_name: "license_issur_nm"
+  description: "Tên cơ quan cấp giấy phép hoạt động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.LICENSE_ISSUER"
+- attribute_name: "License Date"
+  physical_name: "license_dt"
+  description: "Ngày cấp giấy phép hoạt động."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.LICENSE_DATE"
+- attribute_name: "Charter Capital Amount"
+  physical_name: "charter_cptl_amt"
+  description: "Vốn điều lệ của tổ chức."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu dạng string (NVARCHAR2) — ETL cần cast/parse sang decimal. Cần\
+    \ validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.CHARTER_CAPITAL"
+- attribute_name: "Description"
+  physical_name: "dsc"
+  description: "Mô tả chi tiết về tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.DESCRIPTION"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
+  description: "Trạng thái bản ghi: 1=Hoạt động."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: ORGANIZATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
+    \ sang string."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.RECORD_STATUS"
+- attribute_name: "Sort Order"
+  physical_name: "sort_ordr"
+  description: "Thứ tự sắp xếp hiển thị."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.SORT_ORDER"
+- attribute_name: "Last Sync Date"
+  physical_name: "last_sync_dt"
+  description: "Ngày đồng bộ dữ liệu gần nhất."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.LAST_SYNC_DATE"
+- attribute_name: "Sync Status Code"
+  physical_name: "sync_st_code"
+  description: "Trạng thái đồng bộ: 0=Chưa đồng bộ, 1=Đã đồng bộ, 2=Lỗi."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: SYNC_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang\
+    \ string."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.SYNC_STATUS"
+- attribute_name: "Created Timestamp"
+  physical_name: "crt_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.CREATED_AT"
+- attribute_name: "Updated Timestamp"
+  physical_name: "udt_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.UPDATED_AT"
+- attribute_name: "Created By Officer Id"
+  physical_name: "crt_by_ofcr_id"
+  description: "FK đến cán bộ tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.CREATED_BY"
+- attribute_name: "Created By Officer Code"
+  physical_name: "crt_by_ofcr_code"
+  description: "Mã cán bộ tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.CREATED_BY"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "udt_by_ofcr_id"
+  description: "FK đến cán bộ cập nhật bản ghi gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.UPDATED_BY"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "udt_by_ofcr_code"
+  description: "Mã cán bộ cập nhật bản ghi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.UPDATED_BY"

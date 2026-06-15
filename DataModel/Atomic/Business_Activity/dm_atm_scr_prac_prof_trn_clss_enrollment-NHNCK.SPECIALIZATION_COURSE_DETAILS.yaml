@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
-    etl_derived_value: null
+    etl_derived_value: NHNCK.SPECIALIZATION_COURSE_DETAILS
 
   - name: Securities Practitioner Professional Training Class Id
     physical_name: scr_prac_prof_trn_clss_id
@@ -438,7 +438,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_AT
-    comment: Pending — chờ xác nhận ánh xạ audit field.
+    comment: null
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -452,13 +452,13 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_AT
-    comment: Pending — chờ xác nhận ánh xạ audit field.
+    comment: null
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
-    business_meaning: FK đến Officer tạo bản ghi
+    business_meaning: FK đến cán bộ tạo bản ghi
     data_domain: Surrogate Key
     data_type: string
     nullable: true
@@ -466,13 +466,27 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
-    comment: "Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã cán bộ tạo bản ghi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By Officer Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
-    business_meaning: FK đến Officer cập nhật bản ghi
+    business_meaning: FK đến cán bộ cập nhật bản ghi
     data_domain: Surrogate Key
     data_type: string
     nullable: true
@@ -480,6 +494,20 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
-    comment: "Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã cán bộ cập nhật bản ghi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null

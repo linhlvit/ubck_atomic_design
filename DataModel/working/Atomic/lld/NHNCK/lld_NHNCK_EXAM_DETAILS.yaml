@@ -1,0 +1,342 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "EXAM_DETAILS"
+  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
+  entity_physical_name: "scr_prac_qualf_exam_ases_rslt"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Assessment"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Result\
+    \ Id"
+  physical_name: "scr_prac_qualf_exam_ases_rslt_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"Assessment\" (Communication). Kết quả thi sát hạch\
+    \ chứng chỉ hành nghề của thí sinh."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Result\
+    \ Code"
+  physical_name: "scr_prac_qualf_exam_ases_rslt_code"
+  description: "Mã định danh nghiệp vụ. BK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.ID"
+  comment: "BK chính."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.EXAM_DETAILS"
+  etl_derived_value: "NHNCK.EXAM_DETAILS"
+  data_type: "string"
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
+  physical_name: "scr_prac_qualf_exam_ases_id"
+  description: "FK đến đợt thi sát hạch"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.EXAM_SESSION_ID"
+  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
+    \ Practitioner Qualification Examination Assessment Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Code"
+  physical_name: "scr_prac_qualf_exam_ases_code"
+  description: "Mã đợt thi sát hạch"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.EXAM_SESSION_ID"
+  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
+    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
+    \ Practitioner Qualification Examination Assessment Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Id"
+  physical_name: "scr_prac_id"
+  description: "FK đến người hành nghề"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.PROFESSIONAL_ID"
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Code"
+  physical_name: "scr_prac_code"
+  description: "Mã người hành nghề"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.PROFESSIONAL_ID"
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Type Code"
+  physical_name: "ctf_tp_code"
+  description: "Mã loại chứng chỉ dự thi"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.CERTIFICATE_ID"
+  comment: "Scheme: CERTIFICATE_TYPE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "License Application Id"
+  physical_name: "license_ap_id"
+  description: "FK đến hồ sơ đăng ký"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.APPLICATION_ID"
+  comment: "FK target: Securities Practitioner License Application.License Application\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "License Application Code"
+  physical_name: "license_ap_code"
+  description: "Mã hồ sơ đăng ký"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.APPLICATION_ID"
+  comment: "Lookup pair: Securities Practitioner License Application.License Application\
+    \ Code. Pair with License Application Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sequence Number"
+  physical_name: "seq_nbr"
+  description: "Số thứ tự dự thi trong đợt thi"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.SEQUENCE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Exam Number"
+  physical_name: "exam_nbr"
+  description: "Số báo danh"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.EXAM_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Law Score"
+  physical_name: "law_scor"
+  description: "Điểm thi pháp luật"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.LAW_SCORE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Law Result Code"
+  physical_name: "law_rslt_code"
+  description: "Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1: Đạt)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.LAW_RESULT"
+  comment: "Scheme: EXAM_SCORE_RESULT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Specialization Score"
+  physical_name: "specialization_scor"
+  description: "Điểm thi chuyên ngành"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.SPECIALIZATION_SCORE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Specialization Result Code"
+  physical_name: "specialization_rslt_code"
+  description: "Kết quả thi chuyên ngành (-1: Không thi, 0: Không đạt, 1: Đạt)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.SPECIALIZATION_RESULT"
+  comment: "Scheme: EXAM_SCORE_RESULT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overall Result Code"
+  physical_name: "ovrl_rslt_code"
+  description: "Kết quả thi tổng thể (-1: Không thi, 0: Không đạt, 1: Đạt)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.RESULT"
+  comment: "Scheme: EXAMINATION_RESULT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Note"
+  physical_name: "exam_note"
+  description: "Ghi chú"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "crt_tms"
+  description: "Thời điểm tạo bản ghi"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "udt_tms"
+  description: "Thời điểm cập nhật bản ghi"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.UPDATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By Officer Id"
+  physical_name: "crt_by_ofcr_id"
+  description: "FK đến cán bộ tạo bản ghi"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.CREATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Code"
+  physical_name: "crt_by_ofcr_code"
+  description: "Mã cán bộ tạo bản ghi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.CREATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "udt_by_ofcr_id"
+  description: "FK đến cán bộ cập nhật bản ghi"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.UPDATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "udt_by_ofcr_code"
+  description: "Mã cán bộ cập nhật bản ghi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.EXAM_DETAILS.UPDATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

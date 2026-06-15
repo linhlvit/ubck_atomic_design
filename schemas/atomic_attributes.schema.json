@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/atomic_attributes.schema.json",
+  "title": "Atomic Attributes Aggregate Schema",
+  "description": "Schema cho file atomic_attributes.yaml — flat aggregate toàn bộ attributes từ tất cả lld_*.yaml, dùng làm ETL spec input. Sinh bởi aggregate_atomic.py. Ghi vào DataModel/working/Atomic/aggregate/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_type", "schema_version", "attributes"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "atomic_attributes",
+      "description": "Phải là 'atomic_attributes'"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema"
+    },
+    "attributes": {
+      "type": "array",
+      "minItems": 0,
+      "description": "Flat list tất cả Atomic attributes. Grain: 1 attribute × 1 source_system × 1 source_table (× classification_context nếu có). Sinh tự động, không sửa tay.",
+      "items": {
+        "$ref": "#/definitions/atomic_attribute_entry"
+      }
+    }
+  },
+  "definitions": {
+    "atomic_attribute_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bcv_core_object", "atomic_entity", "atomic_attribute",
+        "data_domain", "nullable", "is_primary_key",
+        "source_system", "source_table"
+      ],
+      "properties": {
+        "bcv_core_object": {
+          "type": "string",
+          "description": "BCV Core Object của entity chứa attribute này"
+        },
+        "atomic_entity": {
+          "type": "string",
+          "description": "Tên Atomic entity (Title Case)"
+        },
+        "atomic_attribute": {
+          "type": "string",
+          "description": "Tên attribute đầy đủ (Title Case), VD: 'Involved Party Id'"
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Mô tả nghiệp vụ"
+        },
+        "data_domain": {
+          "type": "string",
+          "enum": [
+            "Text",
+            "Date",
+            "Timestamp",
+            "Currency Amount",
+            "Interest Rate",
+            "Exchange Rate",
+            "Percentage",
+            "Surrogate Key",
+            "Classification Value",
+            "Indicator",
+            "Boolean",
+            "Small Counter",
+            "Array<Text>",
+            "Array<Struct>"
+          ]
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "is_primary_key": {
+          "type": "boolean"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Mã source system, VD: NHNCK"
+        },
+        "source_table": {
+          "type": "string",
+          "description": "Tên bảng nguồn (không prefix schema)"
+        },
+        "source_column": {
+          "type": ["string", "null"],
+          "description": "Fully qualified column (SOURCE.schema.Table.Column), null nếu surrogate/derived"
+        },
+        "comment": {
+          "type": ["string", "null"],
+          "description": "FK target, Scheme code, BCV notes"
+        },
+        "classification_context": {
+          "type": ["string", "null"],
+          "description": "SCHEME=VALUE hoặc điều kiện lọc ETL"
+        },
+        "etl_derived_value": {
+          "type": ["string", "null"],
+          "description": "Giá trị hardcode ETL"
+        },
+        "atomic_table": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Physical name của bảng Atomic (snake_case)"
+        },
+        "atomic_column": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Physical column name (snake_case)"
+        },
+        "data_type": {
+          "type": ["string", "null"],
+          "description": "Kiểu dữ liệu Delta Lake, VD: string, bigint, date, decimal(18,2)"
+        }
+      }
+    }
+  }
+}

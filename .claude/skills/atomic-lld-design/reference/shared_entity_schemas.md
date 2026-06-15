@@ -14,7 +14,7 @@ Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào s
 | Ngày cấp | `Issue Date` | Date |
 | Nơi cấp | `Issuing Authority Name` | Text |
 
-**Trường hợp đặc biệt:** Nguồn có `identity_no` nhưng không có cột type phân biệt → dùng `IP_ALT_ID_TYPE=NATIONAL_ID` làm default. Document trong `pending_design.csv` (`reason="Nguồn không phân biệt loại giấy tờ"`, `action="Cần profile data nguồn để xác định loại giấy tờ thực tế"`) và thêm 1 điểm xác nhận vào HLD Tier tương ứng.
+**Trường hợp đặc biệt:** Nguồn có `identity_no` nhưng không có cột type phân biệt → dùng `IP_ALT_ID_TYPE=NATIONAL_ID` làm default. Document trong `pending_design.yaml` (`reason="Nguồn không phân biệt loại giấy tờ"`, `action="Cần profile data nguồn để xác định loại giấy tờ thực tế"`) và thêm 1 điểm xác nhận vào HLD Tier tương ứng.
 
 ## IP Postal Address
 
@@ -68,17 +68,29 @@ Mọi attribute trong file shared entity phải có `classification_context` v�
 Chọn value theo nguồn:
 - **Nguồn có cột type động qua lookup** (VD: `identity_type_cd` → CMND/CCCD/Hộ chiếu/GPKD) → dùng placeholder `(source)`: `IP_ALT_ID_TYPE=(source)`. ETL map value runtime.
 - **Nguồn cố định 1 loại** (VD: chỉ có cột `phone_no` = PHONE) → hardcode: `IP_ELEC_ADDR_TYPE=PHONE`.
+- **Nguồn chỉ có 1 loại địa chỉ cụ thể** (VD: chỉ có `PERMANENT_ADDRESS`, không có cột address_type) → hardcode loại đó: `IP_ADDR_TYPE=PERMANENT`. **KHÔNG dùng bare `IP_ADDR_TYPE`** — aggregate sẽ bỏ sót `Address Type Code` khi merge nhiều source.
 
 Scheme áp dụng:
 - `IP_ADDR_TYPE` (IP Postal Address)
 - `IP_ELEC_ADDR_TYPE` (IP Electronic Address)
 - `IP_ALT_ID_TYPE` (IP Alt Identification)
 
+## Quy tắc `etl_derived_value` cho Classification Value — BẮT BUỘC
+
+| `classification_context` | `etl_derived_value` | Ví dụ |
+|---|---|---|
+| `SCHEME=VALUE` (giá trị cố định) | Điền literal VALUE | `IP_ELEC_ADDR_TYPE=PHONE` → `PHONE` |
+| `SOURCE_SYSTEM=SRC.TABLE` | Điền literal `SRC.TABLE` | `SOURCE_SYSTEM=NHNCK.PROFESSIONALS` → `NHNCK.PROFESSIONALS` |
+| `SCHEME` (dynamic — nguồn thực sự có cột type lookup) | null hoặc expression mapping | `IP_ALT_ID_TYPE=(source)` → null |
+| `SCHEME=(source)` (lookup từ nguồn) | Expression mapping nếu biết | `NHNCK_IDENTITY_TYPE` → `1=CMND;2=CCCD;3=PASSPORT` |
+
+**Lý do:** ETL engineer đọc `etl_derived_value` để biết giá trị nào cần hardcode vào cột này mà không cần parse `classification_context`. Bỏ trống = ETL phải đoán.
+
 ## Cột nguồn không map được vào schema chuẩn
 
-Schema shared entity cố định — không có PK surrogate riêng (chỉ FK về entity chính), không có audit fields, không có business flag. Cột nguồn không map document trong `pending_design.csv`:
+Schema shared entity cố định — không có PK surrogate riêng (chỉ FK về entity chính), không có audit fields, không có business flag. Cột nguồn không map document trong `pending_design.yaml`:
 
-| Loại cột | Lý do (ghi vào pending_design.csv) |
+| Loại cột | Lý do (ghi vào pending_design.yaml) |
 |---|---|
 | PK kỹ thuật | "Shared entity không có PK surrogate riêng — chỉ FK về entity chính." |
 | Audit fields | "Shared entity schema chuẩn không có audit fields." |

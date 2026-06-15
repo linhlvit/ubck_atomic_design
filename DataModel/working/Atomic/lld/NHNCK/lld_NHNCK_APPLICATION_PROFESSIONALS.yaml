@@ -1,0 +1,619 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "APPLICATION_PROFESSIONALS"
+  atomic_entity: "Securities Practitioner License Application Snapshot"
+  entity_physical_name: "scr_prac_license_ap_snpst"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Securities Practitioner License Application Snapshot Id"
+  physical_name: "scr_prac_license_ap_snpst_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"Individual\" (Involved Party). Grain = 1 snapshot\
+    \ hồ sơ — không phải 1 IP."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Snapshot Code"
+  physical_name: "scr_prac_license_ap_snpst_code"
+  description: "Mã snapshot. BK từ PK nguồn"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.ID"
+  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_PROFESSIONALS"
+  etl_derived_value: "NHNCK.APPLICATION_PROFESSIONALS"
+  data_type: "string"
+- attribute_name: "License Application Id"
+  physical_name: "license_ap_id"
+  description: "FK đến hồ sơ đăng ký"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.APPLICATION_ID"
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "License Application Code"
+  physical_name: "license_ap_code"
+  description: "Mã hồ sơ đăng ký (denormalized)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.APPLICATION_ID"
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with License Application Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Id"
+  physical_name: "scr_prac_id"
+  description: "FK đến người hành nghề"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PROFESSIONAL_ID"
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Code"
+  physical_name: "scr_prac_code"
+  description: "Mã người hành nghề (denormalized)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PROFESSIONAL_ID"
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Organization Id"
+  physical_name: "org_id"
+  description: "FK đến tổ chức chứng khoán (nullable)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.ORGANIZATION_ID"
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Organization Code"
+  physical_name: "org_code"
+  description: "Mã tổ chức (denormalized)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.ORGANIZATION_ID"
+  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
+    \ Reference Code. Pair with Organization Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Id"
+  physical_name: "nat_id"
+  description: "FK đến Geographic Area (quốc tịch snapshot)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.NATIONALITY_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
+    \ = COUNTRY."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nat_code"
+  description: "Mã quốc gia/quốc tịch (denormalized)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.NATIONALITY_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Full Name"
+  physical_name: "snpst_full_nm"
+  description: "Họ và tên đầy đủ tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.FULL_NAME"
+  comment: "Snapshot — prefix \"Snapshot\" phân biệt với entity chính."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Given Name"
+  physical_name: "snpst_gvn_nm"
+  description: "Tên đệm và tên riêng tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.FIRST_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Birth Date"
+  physical_name: "snpst_brth_dt"
+  description: "Ngày sinh tại thời điểm nộp hồ sơ"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.BIRTH_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Snapshot Birth Year"
+  physical_name: "snpst_brth_yr"
+  description: "Năm sinh (chuỗi) tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.BIRTH_YEAR"
+  comment: "Nguồn lưu NVARCHAR2(4)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Gender Code"
+  physical_name: "snpst_gnd_code"
+  description: "Giới tính tại thời điểm nộp hồ sơ"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.GENDER"
+  comment: "Scheme: INDIVIDUAL_GENDER."
+  classification_context: "INDIVIDUAL_GENDER"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Education Level Code"
+  physical_name: "snpst_ed_lvl_code"
+  description: "Trình độ học vấn tại thời điểm nộp hồ sơ"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.EDUCATION_LEVEL_ID"
+  comment: "Scheme: EDUCATION_LEVEL."
+  classification_context: "EDUCATION_LEVEL"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Practitioner Registration Type Code"
+  physical_name: "snpst_prac_rgst_tp_code"
+  description: "Hình thức đăng ký tại thời điểm nộp hồ sơ"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.REGISTRATION_TYPE"
+  comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE."
+  classification_context: "PRACTITIONER_REGISTRATION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Identity Type Code"
+  physical_name: "snpst_id_tp_code"
+  description: "Loại giấy tờ định danh tại thời điểm nộp hồ sơ"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.IDENTITY_TYPE"
+  comment: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ chiếu. Grain\
+    \ ≠ Involved Party → không tách IP Alt ID."
+  classification_context: "IDENTITY_DOCUMENT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Identity Number"
+  physical_name: "snpst_id_nbr"
+  description: "Số giấy tờ định danh tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.IDENTITY_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Identity Issue Date"
+  physical_name: "snpst_id_issu_dt"
+  description: "Ngày cấp giấy tờ định danh tại thời điểm nộp hồ sơ"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.IDENTITY_ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Snapshot Identity Issue Place"
+  physical_name: "snpst_id_issu_plc"
+  description: "Nơi cấp giấy tờ định danh tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.IDENTITY_ISSUE_PLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Previous Identity Number"
+  physical_name: "snpst_prev_id_nbr"
+  description: "Số CMND cũ tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PREVIOUS_IDENTITY_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Phone Number"
+  physical_name: "snpst_ph_nbr"
+  description: "Số điện thoại cố định tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PHONE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Mobile Number"
+  physical_name: "snpst_mbl_nbr"
+  description: "Số điện thoại di động tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.MOBILE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Email"
+  physical_name: "snpst_email"
+  description: "Email tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.EMAIL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Workplace Name"
+  physical_name: "snpst_workplace_nm"
+  description: "Nơi làm việc tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.WORKPLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Position Name"
+  physical_name: "snpst_pos_nm"
+  description: "Chức vụ tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.POSITION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Department Name"
+  physical_name: "snpst_dept_nm"
+  description: "Phòng ban tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.DEPARTMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Place of Birth"
+  physical_name: "snpst_plc_of_brth"
+  description: "Nơi sinh tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PLACE_OF_BIRTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Address"
+  physical_name: "snpst_adr"
+  description: "Địa chỉ chung (legacy) tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Permanent Address"
+  physical_name: "snpst_perm_adr"
+  description: "Địa chỉ thường trú chi tiết tại thời điểm nộp hồ sơ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PERMANENT_ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Permanent Country Id"
+  physical_name: "snpst_perm_cty_id"
+  description: "FK đến Geographic Area — quốc gia thường trú (snapshot)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Permanent Country Code"
+  physical_name: "snpst_perm_cty_code"
+  description: "Mã quốc gia thường trú (denormalized snapshot)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Snapshot\
+    \ Permanent Country Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Permanent Province Id"
+  physical_name: "snpst_perm_prov_id"
+  description: "FK đến Geographic Area — tỉnh thường trú (snapshot)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Permanent Province Code"
+  physical_name: "snpst_perm_prov_code"
+  description: "Mã tỉnh thường trú (denormalized snapshot)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Snapshot\
+    \ Permanent Province Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Permanent District Id"
+  physical_name: "snpst_perm_dstc_id"
+  description: "FK đến Geographic Area — huyện thường trú (snapshot)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Permanent District Code"
+  physical_name: "snpst_perm_dstc_code"
+  description: "Mã huyện thường trú (denormalized snapshot)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Snapshot\
+    \ Permanent District Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Current Country Id"
+  physical_name: "snpst_crn_cty_id"
+  description: "FK đến Geographic Area — quốc gia tạm trú (snapshot)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Current Country Code"
+  physical_name: "snpst_crn_cty_code"
+  description: "Mã quốc gia tạm trú (denormalized snapshot)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Snapshot\
+    \ Current Country Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Current Province Id"
+  physical_name: "snpst_crn_prov_id"
+  description: "FK đến Geographic Area — tỉnh tạm trú (snapshot)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Current Province Code"
+  physical_name: "snpst_crn_prov_code"
+  description: "Mã tỉnh tạm trú (denormalized snapshot)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Snapshot\
+    \ Current Province Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Current District Id"
+  physical_name: "snpst_crn_dstc_id"
+  description: "FK đến Geographic Area — huyện tạm trú (snapshot)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Snapshot Current District Code"
+  physical_name: "snpst_crn_dstc_code"
+  description: "Mã huyện tạm trú (denormalized snapshot)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Snapshot\
+    \ Current District Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
+  description: "Trạng thái bản ghi snapshot"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_PROFESSIONALS.RECORD_STATUS"
+  comment: "Scheme: APPLICATION_STATUS. Reuse."
+  classification_context: "APPLICATION_STATUS"
+  etl_derived_value: null
+  data_type: "string"

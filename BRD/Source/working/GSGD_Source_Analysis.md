@@ -9,7 +9,7 @@
 - Đặc tả yêu cầu: `New_UBCKNN_Dac_ta_yeu_cau_GSGD_18_03_2026.docx`
 - Thiết kế CSDL: `New_UBCKNN_Thiet_ke_co_so_du_lieu_GSGD_18_03_2026.docx`
 - HLD Atomic Overview: `GSGD_HLD_Overview.md`
-- Atomic mapping: `atomic_entities.csv`
+- Atomic mapping: `atomic_entities.yaml`
 - Classification Value registry: `ref_shared_entity_classifications.csv`
 
 **Phạm vi CSDL nguồn:** 47 bảng — 28 bảng map Atomic entity, 19 bảng ngoài scope.

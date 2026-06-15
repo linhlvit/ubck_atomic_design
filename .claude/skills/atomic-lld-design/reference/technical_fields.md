@@ -1,7 +1,7 @@
 # Technical Fields trên Atomic
 
 Technical fields có prefix `ds_` được ETL framework tự động thêm vào khi implement database.
-**Không thiết kế trong file LLD (attr_*.csv).**
+**Không thiết kế trong file LLD (lld_*.yaml).**
 
 | Technical Field | Data Type | Nullable | Mô tả | ETL Pattern áp dụng |
 |---|---|---|---|---|

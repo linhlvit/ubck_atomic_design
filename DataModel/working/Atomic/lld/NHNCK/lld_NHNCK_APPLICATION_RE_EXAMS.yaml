@@ -1,0 +1,239 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "APPLICATION_RE_EXAMS"
+  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
+  entity_physical_name: "scr_prac_license_ap_re_exam_rqs"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Securities Practitioner License Application Re-Exam Request Id"
+  physical_name: "scr_prac_license_ap_re_exam_rqs_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"Documentation\" (Resource Item). Yêu cầu thi lại\
+    \ CCHN."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Re-Exam Request Code"
+  physical_name: "scr_prac_license_ap_re_exam_rqs_code"
+  description: "Mã định danh. BK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_RE_EXAMS"
+  etl_derived_value: "NHNCK.APPLICATION_RE_EXAMS"
+  data_type: "string"
+- attribute_name: "License Application Id"
+  physical_name: "license_ap_id"
+  description: "FK đến hồ sơ gốc đã thi trượt"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.APPLICATION_ID"
+  comment: "FK target: Securities Practitioner License Application.License Application\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "License Application Code"
+  physical_name: "license_ap_code"
+  description: "Mã hồ sơ gốc"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.APPLICATION_ID"
+  comment: "Lookup pair: Securities Practitioner License Application.License Application\
+    \ Code. Pair with License Application Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Assessment Result Id"
+  physical_name: "exam_ases_rslt_id"
+  description: "FK đến kết quả thi trượt"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
+  comment: "FK target: Securities Practitioner Qualification Examination Assessment\
+    \ Result.Examination Assessment Result Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Assessment Result Code"
+  physical_name: "exam_ases_rslt_code"
+  description: "Mã kết quả thi trượt"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
+  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment\
+    \ Result.Examination Assessment Result Code. Pair with Examination Assessment\
+    \ Result Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Re-Exam License Application Id"
+  physical_name: "re_exam_license_ap_id"
+  description: "FK đến hồ sơ thi lại mới (nullable — chưa nộp)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
+  comment: "FK target: Securities Practitioner License Application.License Application\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Re-Exam License Application Code"
+  physical_name: "re_exam_license_ap_code"
+  description: "Mã hồ sơ thi lại mới"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
+  comment: "Lookup pair: Securities Practitioner License Application.License Application\
+    \ Code. Pair with Re-Exam License Application Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
+  description: "Trạng thái bản ghi (1=Hoạt động)"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.RECORD_STATUS"
+  comment: "Scheme: APPLICATION_STATUS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Id"
+  physical_name: "crt_by_ofcr_id"
+  description: "FK đến Officer tạo bản ghi"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Pending — nguồn USERS chưa map."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Code"
+  physical_name: "crt_by_ofcr_code"
+  description: "Mã người tạo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id. Pending."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "udt_by_ofcr_id"
+  description: "FK đến Officer cập nhật bản ghi"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Pending — nguồn USERS chưa map."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "udt_by_ofcr_code"
+  description: "Mã người cập nhật"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id. Pending."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "crt_tms"
+  description: "Thời điểm tạo"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.CREATED_AT"
+  comment: "Pending — kiểu DATE nguồn map sang Timestamp Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "udt_tms"
+  description: "Thời điểm cập nhật"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.APPLICATION_RE_EXAMS.UPDATED_AT"
+  comment: "Pending — kiểu DATE nguồn map sang Timestamp Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

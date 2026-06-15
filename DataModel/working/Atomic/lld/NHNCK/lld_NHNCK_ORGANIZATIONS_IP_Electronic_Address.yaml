@@ -1,0 +1,186 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "ORGANIZATIONS"
+  atomic_entity: "Involved Party Electronic Address"
+  entity_physical_name: "ip_elc_adr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Securities Organization Reference."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.ORGANIZATIONS.ID"
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id. Shared entity — không có PK surrogate riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã tổ chức."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.ORGANIZATIONS.ID"
+  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
+    \ Reference Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=NHNCK.ORGANIZATIONS"
+  etl_derived_value: "NHNCK.ORGANIZATIONS"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "elc_adr_tp_code"
+  description: "Loại kênh liên lạc — điện thoại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: "PHONE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "elc_adr_val"
+  description: "Số điện thoại cố định của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.ORGANIZATIONS.PHONE_NUMBER"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "elc_adr_tp_code"
+  description: "Loại kênh liên lạc — số di động."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
+  etl_derived_value: "MOBILE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "elc_adr_val"
+  description: "Số di động của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.ORGANIZATIONS.MOBILE_NUMBER"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "elc_adr_tp_code"
+  description: "Loại kênh liên lạc — fax."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: "FAX"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "elc_adr_val"
+  description: "Số fax của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.ORGANIZATIONS.FAX"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "elc_adr_tp_code"
+  description: "Loại kênh liên lạc — email."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: "EMAIL"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "elc_adr_val"
+  description: "Địa chỉ email của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.ORGANIZATIONS.EMAIL"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "elc_adr_tp_code"
+  description: "Loại kênh liên lạc — website."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+  etl_derived_value: "WEBSITE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "elc_adr_val"
+  description: "Địa chỉ website của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.ORGANIZATIONS.WEBSITE"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+  etl_derived_value: null
+  data_type: "string"

@@ -1,0 +1,111 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "USERS"
+  atomic_entity: "Involved Party Electronic Address"
+  entity_physical_name: "ip_elc_adr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Regulatory Authority Officer"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.USERS.ID"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Shared entity — không có PK surrogate riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã cán bộ UBCK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.USERS.ID"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=NHNCK.USERS"
+  etl_derived_value: "NHNCK.USERS"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "elc_adr_tp_code"
+  description: "Loại địa chỉ điện tử — email."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: "EMAIL"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "elc_adr_val"
+  description: "Địa chỉ email cán bộ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.USERS.EMAIL"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "elc_adr_tp_code"
+  description: "Loại địa chỉ điện tử — điện thoại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: "PHONE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "elc_adr_val"
+  description: "Số điện thoại cán bộ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.qlnhn.USERS.PHONE_NUMBER"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: null
+  data_type: "string"

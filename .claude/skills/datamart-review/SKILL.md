@@ -229,6 +229,8 @@ HLD | [OK / GAP] | Mô tả vấn đề nếu có
 | **Atomic source** | `source_entity` + `atomic_table` + `atomic_column` tồn tại, không để trống với `etl_logic_type ≠ pending` |
 | **ETL logic — trace từ BA** | Với mỗi KPI Done: lấy tên bảng/trường nguồn BA ghi → tra `atomic_attributes.csv` → xác nhận `atomic_table.atomic_column` trong Attributes có khớp không |
 | **ETL logic — nội dung đúng** | `etl_logic` đúng với logic BA: JOIN đúng bảng, filter condition đúng (VD: `row_code`, `entp_tp_code`), aggregation đúng phép tính |
+| **ETL logic — không tham chiếu cột mart** | `etl_logic` KHÔNG được tham chiếu cột mart khác (`fct_*.col`) dù cột đó đã tính sẵn trong cùng bảng fact — phải flatten hoàn toàn xuống Atomic. Cột CASE WHEN hay derived formula tính từ cột join_atomic → bản thân cũng phải là `join_atomic`, repeat lại JOIN clause và tính lại formula trực tiếp từ Atomic |
+| **join_atomic coverage** | Đếm số `atomic_table` distinct trong toàn bộ cột của bảng (bỏ qua driving table và `rsk_wgt_cfg`/lookup). Nếu có ≥2 atomic_table khác nhau mà **không có dòng nào** `etl_logic_type = join_atomic` → 🔴 Critical: các bảng phụ chưa được khai báo JOIN, Attributes đang sai. Gọi `datamart-lld-design` để sửa. |
 | **Data domain / type** | Khớp với tính chất KPI (số tiền, tỷ lệ, đếm...) |
 | **Key constraints** | FK đúng, nullable đúng với business rule |
 | **src_stm_code** | Dim/Operational có `src_stm_code`, Fact No-Driving-Table không có |
@@ -265,6 +267,7 @@ Attributes | [OK / GAP / WARN] | Mô tả vấn đề nếu có (kèm: BA ghi g�
 | **KPI coverage** | Mọi KPI_ID trong HLD (Done/Doing) phải có dòng trong Detail Mapping |
 | **Logic trace từ BA** | Với mỗi KPI Done: lấy công thức/filter BA → đối chiếu với `logic` trong Detail Mapping — filter condition, aggregation, derived formula có khớp không |
 | **Logic nội dung đúng** | `logic` dùng đúng `physical_table.physical_column`, filter đủ điều kiện BA mô tả |
+| **Logic DERIVED — không tham chiếu KPI_ID khác** | `logic` của DERIVED **KHÔNG ĐƯỢC** viết dạng `(K_XXX_N - K_XXX_M) / NULLIF(K_XXX_M,0)`. Phải inline toàn bộ logic xuống `physical_table.physical_column` với đầy đủ filter condition. Lý do: KPI_ID là định danh nghiệp vụ, không phải biến SQL — ETL engine không resolve được. |
 | **column_role** | MEASURE / SLICER / FILTER / DERIVED đúng tính chất |
 | **mart_table/mart_column** | Dùng tên logical, tồn tại trong HLD và Attributes |
 | **KPI Pending** | Có dòng trong Detail Mapping với `mart_table`/`mart_column`/`logic` trống |
@@ -279,6 +282,9 @@ Bước C: Đối chiếu từng thành phần:
          → Aggregation: BA ghi SUM → logic phải là SUM (không được COUNT)
          → Filter: BA ghi "loại hình BCTC = Kiểm toán" → logic phải có WHERE tương ứng
          → Derived: BA ghi "A/B" → logic phải là DERIVED với mart_table/mart_column trống
+         → Derived formula: KHÔNG được dùng KPI_ID (VD: `K_XXX_N - K_XXX_M`) trong cột `logic`
+           — phải inline toàn bộ xuống `physical_table.physical_column` kèm filter condition đầy đủ
+           — VD đúng: `(fct_X.val WHERE ind_code='A' AND prd_dt=:t) - (fct_X.val WHERE ind_code='A' AND prd_dt=(SELECT MAX...))`
          → Sai/thiếu → 🔴 Critical nếu ảnh hưởng kết quả, 🟡 Warning nếu thiếu một phần
 Bước D: Kiểm tra mart_table.mart_column → trace ngược lên Attributes → xác nhận cột tồn tại và đúng
 ```
@@ -428,6 +434,36 @@ Một nhóm BA có thể dùng nhiều Fact/Dim. Review Attributes phải bao ph
 BA hay ghi công thức dạng `IDS.data.field` thay vì tên Atomic.
 Cần tìm Atomic entity/column tương ứng qua `atomic_attributes.csv`.
 Nếu không tìm thấy → ghi nhận là gap Atomic (cần bổ sung Atomic trước khi thiết kế Datamart).
+
+### Flatten hoàn toàn xuống Atomic — không tham chiếu cột mart trong etl_logic
+
+Mọi `etl_logic` trong Attributes phải tham chiếu trực tiếp Atomic table/column — **không được** dùng `fct_*.col` hay `dim_*.col` làm input, kể cả khi cột đó đã được tính sẵn trong cùng bảng mart.
+
+**Dấu hiệu lỗi 1 — tham chiếu cột mart:** `etl_logic` chứa `fct_<table>.<col>` hoặc `dim_<table>.<col>` → sai.
+
+**Dấu hiệu lỗi 2 — thiếu join_atomic:** Đếm số `atomic_table` distinct trong toàn bộ cột của 1 bảng mart (loại trừ driving table). Nếu có bảng Atomic phụ nào xuất hiện trong `atomic_table` mà **không có dòng nào** `etl_logic_type = join_atomic` tương ứng → các bảng phụ đó chưa được khai báo JOIN SQL đúng cách. Cách kiểm tra nhanh:
+```python
+import csv
+with open('DTM_*_Attributes.csv') as f:
+    rows = list(csv.reader(f))
+tbl = 'fct_xxx'  # bảng cần kiểm tra
+driving = 'yyy'  # driving table
+atomic_tables = set(r[12] for r in rows[1:] if r[1]==tbl and r[12] and r[12]!=driving)
+join_atomic_tables = set(r[12] for r in rows[1:] if r[1]==tbl and r[10]=='join_atomic')
+missing = atomic_tables - join_atomic_tables
+# missing != empty → Critical
+```
+
+**Trường hợp hay gặp:**
+- Cột CASE WHEN phân loại (status/label) dựa trên giá trị đã tính → phải lặp lại toàn bộ JOIN + formula gốc trong CASE WHEN
+- Cột % thay đổi (pct_chg) tính từ 2 cột measure khác → phải tính cả 2 giá trị trực tiếp từ Atomic bằng CASE WHEN/subquery
+- Bất kỳ cột nào `etl_logic_type = computed` mà `etl_logic` dùng cột mart → đổi về `join_atomic` và flatten
+
+**Quy tắc phân loại:**
+- Có JOIN sang bảng Atomic khác driving (dù kết hợp với driving) → `join_atomic`
+- `computed` chỉ dùng khi toàn bộ `etl_logic` chỉ tham chiếu driving table hoặc literal/function thuần
+
+**Action khi phát hiện lỗi này:** Đây là **Kịch bản C — Lỗi thiết kế**. Gọi `datamart-lld-design` để sửa lại `etl_logic_type` và `etl_logic` cho các cột vi phạm — không sửa tay trực tiếp vì cần đảm bảo format chuẩn `join_atomic` (INNER/LEFT JOIN ... → ...).
 
 ### Khi Detail Mapping trống (nhóm chưa thiết kế)
 

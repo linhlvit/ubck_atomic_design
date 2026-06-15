@@ -50,7 +50,7 @@
 | Misc | users | ... | ... |
 ```
 
-**Vấn đề:** Group không nhất quán giữa các source — khó query/group_by trong atomic_out_of_scope.csv.
+**Vấn đề:** Group không nhất quán giữa các source — khó query/group_by trong atomic_out_of_scope.yaml.
 
 **Đúng:** Dùng group từ `reference/group_classification.md`. Nếu phát sinh group mới → bổ sung vào file reference đó trước khi dùng.
 

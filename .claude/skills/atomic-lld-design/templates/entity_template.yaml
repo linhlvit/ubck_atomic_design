@@ -1,0 +1,77 @@
+schema_type: entity_consolidation
+schema_version: "1.0"
+
+# Template: Level 2 Entity Consolidation
+# AI sinh file này khi Human trigger "Consolidate entity X" từ App
+# Human review → resolve consolidation_notes → set consolidation_status: approved
+
+entity:
+  entity_name: "{Entity Name}"
+  physical_name: "{entity_physical_name}"
+  bcv_core_object: "{BCV Core Object}"
+  bcv_concept: "{[BCV Concept]}"
+  table_type: "{Fundamental|Relative|Fact Append|Fact Snapshot|Classification}"
+  etl_pattern: "{SCD4A|SCD2|Fact Append|Upsert}"
+  consolidation_status: pending   # pending → approved sau khi Human review
+  consolidated_by: null
+  consolidated_at: null
+
+sources:
+  - source_system: "{SOURCE_1}"
+    source_table: "{TABLE_1}"
+    lld_file: "{SOURCE_1}/lld_{SOURCE_1}_{TABLE_1}.yaml"
+  # - source_system: "{SOURCE_2}"
+  #   source_table: "{TABLE_2}"
+  #   lld_file: "{SOURCE_2}/lld_{SOURCE_2}_{TABLE_2}.yaml"
+
+consolidation_notes:
+  # AI điền vào đây các issues phát hiện khi merge:
+  # - "⚠️ {SOURCE_2}.{TABLE_2}: thiếu attribute '{Attribute Name}' — nullable=true cho source đó"
+  # - "⚠️ data_domain mismatch cho '{Attribute Name}': {SOURCE_1}=Text vs {SOURCE_2}=Classification Value"
+  # - "⚠️ Tên không nhất quán: {SOURCE_1} dùng 'Full Name', {SOURCE_2} dùng 'Organization Name'"
+
+attributes:
+  # Union của tất cả attributes từ các source, với source_mappings per source
+  # Key trong source_mappings: "SOURCE_SYSTEM.TABLE_NAME"
+  # Value: fully-qualified source_column hoặc null nếu không có trong source đó
+
+  - attribute_name: "{Entity Name} Id"
+    physical_name: "{entity_physical_name}_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    comment: "PK surrogate."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      "{SOURCE_1}.{TABLE_1}": null    # ETL-derived
+      # "{SOURCE_2}.{TABLE_2}": null
+
+  - attribute_name: "{Entity Name} Code"
+    physical_name: "{entity_physical_name}_code"
+    description: "BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    comment: "BK chính."
+    classification_context: null
+    etl_derived_value: null
+    source_mappings:
+      "{SOURCE_1}.{TABLE_1}": "{SOURCE_1}.{schema}.{TABLE_1}.{PK_COLUMN}"
+      # "{SOURCE_2}.{TABLE_2}": "{SOURCE_2}.{schema}.{TABLE_2}.{PK_COLUMN}"
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=..."
+    etl_derived_value: "..."
+    source_mappings:
+      "{SOURCE_1}.{TABLE_1}": null    # ETL-derived: {SOURCE_1}.{TABLE_1}
+      # "{SOURCE_2}.{TABLE_2}": null  # ETL-derived: {SOURCE_2}.{TABLE_2}
+
+  # Thêm các attribute nghiệp vụ, FK, Classification Value, audit block...

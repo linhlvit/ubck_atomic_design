@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
+    etl_derived_value: NHNCK.EXAM_DETAILS
 
   - name: Securities Practitioner Qualification Examination Assessment Id
     physical_name: scr_prac_qualf_exam_ases_id
@@ -274,8 +274,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: Created At
-    physical_name: crt_at
+  - name: Created Timestamp
+    physical_name: crt_tms
     business_meaning: Thời điểm tạo bản ghi
     data_domain: Timestamp
     data_type: timestamp
@@ -288,8 +288,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: Updated At
-    physical_name: udt_at
+  - name: Updated Timestamp
+    physical_name: udt_tms
     business_meaning: Thời điểm cập nhật bản ghi
     data_domain: Timestamp
     data_type: timestamp
@@ -302,9 +302,23 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: Created By
-    physical_name: crt_by
-    business_meaning: Người tạo bản ghi
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến cán bộ tạo bản ghi
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_DETAILS
+    source_column: NHNCK.qlnhn.EXAM_DETAILS.CREATED_BY
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: crt_by_ofcr_code
+    business_meaning: Mã cán bộ tạo bản ghi
     data_domain: Text
     data_type: string
     nullable: true
@@ -312,13 +326,27 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.qlnhn.EXAM_DETAILS.CREATED_BY
-    comment: null
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Created By Officer Id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: Updated By
-    physical_name: udt_by
-    business_meaning: Người cập nhật bản ghi
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: FK đến cán bộ cập nhật bản ghi
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_DETAILS
+    source_column: NHNCK.qlnhn.EXAM_DETAILS.UPDATED_BY
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: udt_by_ofcr_code
+    business_meaning: Mã cán bộ cập nhật bản ghi
     data_domain: Text
     data_type: string
     nullable: true
@@ -326,62 +354,6 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.qlnhn.EXAM_DETAILS.UPDATED_BY
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: "2. **Law Result / Specialization Result → Classification Value (EXAM_SCORE_RESULT)** thay vì Boolean: Vì giá trị có 3 trạng thái (-1/0/1)"
-    physical_name: 2._**law_rslt_x_specialization_rslt_→_cv_(exam_score_result)**_thay_vì_boolean:_vì_giá_trị_có_3_trạng_thái_(-1/0/1)
-    business_meaning: "Boolean chỉ đủ cho 2 trạng thái. Scheme EXAM_SCORE_RESULT là scheme mới đã liệt kê trong danh sách \"SCHEMES MỚI CẦN THÊM\"."
-    data_domain: null
-    data_type: 
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: "3. **Overall Result → EXAMINATION_RESULT** (scheme đã có) thay vì EXAM_SCORE_RESULT: Theo yêu cầu trong prompt"
-    physical_name: 3._**overall_rslt_→_examination_result**_(scheme_đã_có)_thay_vì_exam_score_result:_theo_yêu_cầu_trong_prmpt
-    business_meaning: giữ nhất quán với các entity khác dùng EXAMINATION_RESULT cho kết quả tổng thể.
-    data_domain: null
-    data_type: 
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: "4. **CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY → status: pending**: Theo yêu cầu; chưa xác định FK mapping cho CREATED_BY/UPDATED_BY nên để pending toàn bộ nhóm audit"
-    physical_name: 4._**created_at/updated_at/created_by/updated_by_→_status:_pending**:_theo_yêu_cầu;_chưa_xác_định_fk_mapping_cho_created_by/updated_by_nên_để_pndg_toàn_bộ_nhóm_audt
-    business_meaning: với data_domain tạm là Text (chưa resolve FK).
-    data_domain: null
-    data_type: 
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: "5. **Grain không phải Involved Party** → không tách shared entity."
-    physical_name: 5._**grain_không_phải_i_party**_→_không_tách_shared_entity.
-    business_meaning: null
-    data_domain: null
-    data_type: 
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: null
-    comment: null
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null

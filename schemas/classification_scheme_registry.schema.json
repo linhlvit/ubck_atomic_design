@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ubck-atomic-design.local/schemas/classification_scheme_registry.schema.json",
+  "title": "Classification Scheme Registry Schema",
+  "description": "Schema cho classification_schemes.yaml — danh mục chuẩn hóa tất cả Classification Value scheme dùng trong Atomic layer. Singleton file tại DataModel/working/Atomic/lld/classification_schemes.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_type", "schema_version", "schemes"],
+  "properties": {
+    "schema_type": {
+      "type": "string",
+      "const": "classification_scheme_registry",
+      "description": "Phải là 'classification_scheme_registry'"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Phiên bản schema, VD: '1.0'"
+    },
+    "schemes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Danh sách classification schemes — mỗi scheme là 1 loại Classification Value dùng trong Atomic layer",
+      "items": {
+        "$ref": "#/definitions/scheme"
+      }
+    }
+  },
+  "definitions": {
+    "scheme": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scheme_code", "source_type", "used_in_entities", "values"],
+      "properties": {
+        "scheme_code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$",
+          "description": "Mã scheme — UPPER_SNAKE_CASE, VD: IP_ADDR_TYPE, GEOGRAPHIC_AREA_TYPE"
+        },
+        "name": {
+          "oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}],
+          "description": "Tên mô tả scheme. null nếu chưa xác định."
+        },
+        "source_type": {
+          "type": "string",
+          "enum": ["source_table", "modeler_defined", "etl_derived"],
+          "description": "Nguồn gốc values: source_table=lấy từ bảng nguồn, modeler_defined=người thiết kế định nghĩa, etl_derived=ETL sinh ra"
+        },
+        "source_table": {
+          "oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}],
+          "description": "Bảng nguồn (nếu source_type=source_table). Format: SYSTEM.schema.table hoặc SYSTEM.TABLE"
+        },
+        "used_in_entities": {
+          "type": "array",
+          "description": "Danh sách Atomic entity logical name sử dụng scheme này",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "values": {
+          "type": "array",
+          "description": "Danh sách giá trị cụ thể (nếu etl_derived hoặc modeler_defined). Để [] nếu lấy từ source_table.",
+          "items": {
+            "$ref": "#/definitions/scheme_value"
+          }
+        }
+      }
+    },
+    "scheme_value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "name"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Giá trị code — thường là UPPER_SNAKE_CASE"
+        },
+        "name": {
+          "oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}],
+          "description": "Tên mô tả giá trị (tiếng Việt)"
+        },
+        "source_table": {
+          "oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}],
+          "description": "Bảng nguồn cho value cụ thể này (nếu khác scheme-level source_table)"
+        }
+      }
+    }
+  }
+}

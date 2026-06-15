@@ -28,10 +28,21 @@ Cụm Tác nghiệp (không có Fact) → không cần Calendar Date Dimension.
 
 ```
 ### Tab [Tên tab]
-#### Nhóm [Tên nhóm]
+#### Nhóm {STT} - [Tên nhóm]
 ##### READY (chỉ hiện khi Nhóm có cả READY lẫn PENDING)
 ##### PENDING (chỉ hiện khi Nhóm có cả READY lẫn PENDING)
 ```
+
+**Quy tắc đặt tên từ cột "Dashboard/báo cáo" trong BA:**
+- Cột BA format: `{Tên Tab}/ {Tên nhóm}`
+- `### Tab` → lấy phần TRƯỚC dấu `/`
+- `#### Nhóm` → `#### Nhóm {STT} - {phần SAU dấu /}` — STT lấy từ cột STT của BA, KHÔNG tự đánh số lại
+
+| BA ghi | STT | → Tab | → Nhóm |
+|---|---|---|---|
+| `Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống` | 1 | `### Tab Dashboard Giám sát rủi ro` | `#### Nhóm 1 - Chỉ số rủi ro hệ thống` |
+| `Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro` | 2 | (đã có Tab) | `#### Nhóm 2 - Phân tích đóng góp rủi ro` |
+| `Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ` | 4 | `### Tab Dashboard Sức khỏe thị trường và vĩ mô` | `#### Nhóm 4 - Chỉ số vĩ mô – tiền tệ` |
 
 Nếu Nhóm chỉ có READY hoặc chỉ có PENDING → không cần header `##### READY` / `##### PENDING`.
 
@@ -47,9 +58,11 @@ Nếu Nhóm chỉ có READY hoặc chỉ có PENDING → không cần header `##
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
-|---|---|---|---|---|
-| K_{MODULE}_N | ... | ... | Cơ sở / Phái sinh / Chiều | ... |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
+|---|---|---|---|---|---|
+| K_{MODULE}_N | ... | ... | Cơ sở / Phái sinh / Chiều | ... | *(để trống nếu KPI mới; điền "Reuse từ Nhóm X" nếu reuse)* |
+
+> ⚠️ **1 bảng duy nhất cho cả KPI mới lẫn reuse** — KHÔNG tách thành `*KPI mới:*` / `*KPI reuse:*` riêng biệt.
 
 **Star Schema:**
 
@@ -64,6 +77,8 @@ erDiagram
 flowchart LR
     ...
 ```
+
+> ⚠️ **Chỉ vẽ từ GOLD (Datamart) lên báo cáo** — KHÔNG vẽ Atomic entities (SIL layer) trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational thuộc GOLD layer.
 
 **Bảng grain:**
 
@@ -86,22 +101,30 @@ flowchart LR
 **Mart dự kiến:**
 - [Tên bảng] — grain: [mô tả grain dự kiến]
 
-**Bảng KPI PENDING:**
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-*KPI mới (chưa khai sinh ở Nhóm trước):*
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| [Tên KPI] | [SOURCE.table từ cột Bảng nguồn BA] | [Tên logical entity Atomic] | [tên_vật_lý_dự_kiến] |
+
+**Bảng KPI PENDING:**
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
 | K_{MODULE}_N | ... | Cơ sở / Phái sinh / Chiều | PENDING |
-
-*KPI reuse từ Nhóm M (không cấp ID mới):*   ← chỉ thêm bảng này nếu có reuse
-
-| KPI ID | Tên KPI | Ghi chú |
-|---|---|---|
-| K_{MODULE}_X | ... | Reuse từ Nhóm M |
+| K_{MODULE}_X | ... (reuse từ Nhóm M) | Cơ sở / Phái sinh | PENDING |
 ```
 
-❌ Bảng KPI PENDING chỉ có **4 cột** (KPI mới) — KHÔNG có Đơn vị, Công thức.
+> ⚠️ **KPI reuse trong PENDING thêm vào bảng 4 cột bình thường** — KHÔNG tách thành bảng reuse riêng. Cột Tên KPI ghi thêm "(reuse từ Nhóm M)" để phân biệt nguồn gốc.
+
+**Hướng dẫn điền Bảng mapping nguồn (Atomic Placeholder):**
+- `Bảng nguồn (BA)`: chép trực tiếp từ cột **Bảng nguồn** của BA file (ví dụ: `MDDS.IDXInfor`, `QLRR.risk_indicator_value`)
+- `Atomic entity dự kiến`: tên logical entity Atomic dự kiến sẽ được tạo (ví dụ: `Market Index Snapshot`)
+- `Atomic table dự kiến`: tên vật lý snake_case dự kiến (ví dụ: `mdds_mkt_idx_snpst`) — có thể để `TBD` nếu chưa xác định
+- Mỗi dòng = 1 Atomic entity riêng biệt (không gộp nhiều entity vào 1 dòng)
+- Bảng này là **thông tin thiết kế tham chiếu** — khi Atomic bổ sung entity, người thiết kế tra bảng này để verify tên table thực tế rồi chuyển block sang READY, không cần đọc lại BA
+
+❌ Bảng KPI PENDING chỉ có **4 cột** — KHÔNG có Đơn vị, Công thức.
 ❌ KHÔNG thiết kế Star Schema, erDiagram, Lineage cho block PENDING.
 ❌ KHÔNG tạo Open Issue về grain/schema/logic cho bảng PENDING — chỉ issue xác nhận thiếu Atomic.
 

@@ -1,0 +1,156 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Regulatory Authority Organization Unit"
+  physical_name: "reg_ahr_ou"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Fundamental"
+  etl_pattern: "SCD4A"
+  consolidation_status: "pending"
+  consolidated_by: null
+  consolidated_at: null
+sources:
+- source_system: "NHNCK"
+  source_table: "UNITS"
+  lld_file: "NHNCK/lld_NHNCK_UNITS.yaml"
+- source_system: "NHNCK"
+  source_table: "DEPARTMENTS"
+  lld_file: "NHNCK/lld_NHNCK_DEPARTMENTS.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Regulatory Authority Organization Unit Id"
+  physical_name: "reg_ahr_ou_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Đơn vị thuộc UBCKNN."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.DEPARTMENTS: null
+- attribute_name: "Regulatory Authority Organization Unit Code"
+  physical_name: "reg_ahr_ou_code"
+  description: "Mã đơn vị nội bộ UBCKNN. BK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: "NHNCK.UNITS.UNIT_CODE"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn. BK"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "NHNCK.UNITS"
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.DEPARTMENTS: null
+- attribute_name: "Organization Unit Type Code"
+  physical_name: "ou_tp_code"
+  description: "Phân loại — Phòng ban (Department)"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: ORGANIZATION_UNIT_TYPE. ETL-derived."
+  classification_context: "ORGANIZATION_UNIT_TYPE=UNIT"
+  etl_derived_value: "UNIT"
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.DEPARTMENTS: null
+- attribute_name: "Regulatory Authority Organization Unit Name"
+  physical_name: "reg_ahr_ou_nm"
+  description: "Tên đơn vị nội bộ UBCKNN"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: "NHNCK.UNITS.UNIT_NAME"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.DEPARTMENT_NAME"
+- attribute_name: "Hierarchy Level Code"
+  physical_name: "hier_lvl_code"
+  description: "Cấp độ trong cây phân cấp — null cho phòng ban"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: ORGANIZATION_UNIT_TYPE. Cấp tổ chức từ nguồn."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: "NHNCK.UNITS.LEVEL_"
+    NHNCK.DEPARTMENTS: null
+- attribute_name: "Parent Regulatory Authority Organization Unit Id"
+  physical_name: "prn_reg_ahr_ou_id"
+  description: "FK đến đơn vị cha (self-ref)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
+    \ Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: "NHNCK.UNITS.PARENT_ID"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.UNIT_ID"
+- attribute_name: "Parent Regulatory Authority Organization Unit Code"
+  physical_name: "prn_reg_ahr_ou_code"
+  description: "Mã đơn vị cha (UNITS)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
+    \ Organization Unit Code. Pair with Parent Regulatory Authority Organization Unit\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: "NHNCK.UNITS.PARENT_ID"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.UNIT_ID"
+- attribute_name: "Description"
+  physical_name: "dsc"
+  description: "Mô tả chi tiết phòng ban"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: "NHNCK.UNITS.DESCRIPTION"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.DESCRIPTION"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
+  description: "Trạng thái hoạt động của phòng ban"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: ORGANIZATION_UNIT_STATUS. 1=Hoạt động → ACTIVE; 0=Không → INACTIVE."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: "NHNCK.UNITS.RECORD_STATUS"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.RECORD_STATUS"
+- attribute_name: "Sort Order"
+  physical_name: "sort_ordr"
+  description: "Thứ tự sắp xếp phòng ban trong đơn vị"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.SORT_ORDER"

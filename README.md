@@ -8,33 +8,38 @@
 
 ```
 ubck_atomic_design/
-├── Atomic/
-│   ├── hld/                                      # HLD — thiết kế mức entity
-│   │   ├── <SYSTEM>_HLD_Tier<N>.md               # Thiết kế theo Tier dependency
-│   │   ├── <SYSTEM>_HLD_Overview.md              # Tổng quan toàn bộ source system
-│   │   ├── atomic_entities.csv                   # Tổng hợp tất cả Atomic entities (source of truth)
-│   │   └── atomic_out_of_scope.csv               # Bảng ngoài scope Atomic (auto-gen từ 7f)
-│   └── lld/
-│       ├── DCST/                                 # Source system: DCST
-│       │   └── attr_DCST_<TABLE>.csv
-│       ├── FMS/                                  # Source system: FMS
-│       │   └── attr_FMS_<TABLE>.csv
-│       ├── NHNCK/                                # Source system: NHNCK
-│       │   └── attr_NHNCK_<TABLE>.csv
-│       ├── scripts/
-│       │   ├── aggregate_atomic.py               # Script tổng hợp attributes + entities
-│       │   ├── aggregate_out_of_scope.py         # Script tổng hợp bảng ngoài scope từ 7f
-│       │   ├── rename_entity.py                  # Script propagate đổi tên entity
-│       │   ├── check_consistency.py              # Script kiểm tra nhất quán HLD vs atomic_entities.csv
-│       │   └── post_check_source_coverage.py     # Script kiểm tra coverage 2 chiều: source vs Atomic
-│       ├── manifest.csv                          # Danh sách tất cả LLD files + entity mapping
-│       ├── pending_design.csv                    # Cột nguồn chưa thiết kế (intentionally deferred)
-│       ├── ref_shared_entity_classifications.csv # Chuẩn hóa Classification Value scheme/code
-│       └── atomic_attributes.csv                 # Tổng hợp tất cả attributes (auto-gen)
-├── Source/                                       # Cấu trúc CSDL nguồn
+├── DataModel/
+│   └── working/
+│       └── Atomic/
+│           ├── hld/                                      # HLD — thiết kế mức entity
+│           │   ├── <SYSTEM>_HLD_Tier<N>.md               # Thiết kế theo Tier dependency
+│           │   ├── <SYSTEM>_HLD_Overview.md              # Tổng quan toàn bộ source system
+│           │   ├── atomic_entities.yaml                   # Tổng hợp tất cả Atomic entities (source of truth)
+│           │   └── atomic_out_of_scope.yaml               # Bảng ngoài scope Atomic (auto-gen từ 7f)
+│           ├── aggregate/
+│           │   └── atomic_attributes.yaml                 # Tổng hợp tất cả attributes (auto-gen)
+│           └── lld/
+│               ├── DCST/                                 # Source system: DCST
+│               │   └── lld_DCST_<TABLE>.yaml
+│               ├── FMS/                                  # Source system: FMS
+│               │   └── lld_FMS_<TABLE>.yaml
+│               ├── NHNCK/                                # Source system: NHNCK
+│               │   └── lld_NHNCK_<TABLE>.yaml
+│               ├── entities/                             # Level 2 consolidation per entity
+│               │   └── entity_<physical_name>.yaml
+│               ├── scripts/
+│               │   ├── aggregate_atomic.py               # Script tổng hợp attributes + entities
+│               │   ├── aggregate_out_of_scope.py         # Script tổng hợp bảng ngoài scope từ 7f
+│               │   ├── rename_entity.py                  # Script propagate đổi tên entity
+│               │   ├── check_consistency.py              # Script kiểm tra nhất quán HLD vs atomic_entities.yaml
+│               │   └── post_check_source_coverage.py     # Script kiểm tra coverage 2 chiều: source vs Atomic
+│               ├── manifest.yaml                          # Danh sách tất cả LLD files + entity mapping
+│               ├── pending_design.yaml                    # Cột nguồn chưa thiết kế (intentionally deferred)
+│               └── classification_schemes.yaml            # Chuẩn hóa Classification Value scheme/code
+├── Source/                                               # Cấu trúc CSDL nguồn
 │   ├── <SYSTEM>_Source_Tables.*
 │   └── <SYSTEM>_Source_Columns.*
-├── knowledge/                                    # BCV knowledge base
+├── knowledge/                                            # BCV knowledge base
 │   ├── terms.csv
 │   ├── term_relationships.csv
 │   └── reference_data_sets.csv
@@ -54,12 +59,12 @@ ubck_atomic_design/
 sequenceDiagram
     actor DM as Data Modeler
     participant SRC as Source/<br/>knowledge/
-    participant HLD as Atomic/hld/<br/>*_HLD_Tier*.md
-    participant SE as atomic_entities.csv<br/>(source of truth)
-    participant MF as manifest.csv
-    participant LLD as Atomic/lld/<SYSTEM>/<br/>attr_*.csv
+    participant HLD as DataModel/working/Atomic/hld/<br/>*_HLD_Tier*.md
+    participant SE as atomic_entities.yaml<br/>(source of truth)
+    participant MF as DataModel/working/Atomic/lld/<br/>manifest.yaml
+    participant LLD as DataModel/working/Atomic/lld/<SYSTEM>/<br/>lld_*.yaml
     participant AGG as aggregate_atomic.py
-    participant OUT as atomic_attributes.csv
+    participant OUT as DataModel/working/Atomic/aggregate/<br/>atomic_attributes.yaml
 
     rect rgb(230, 240, 255)
         note over DM,SE: Giai đoạn 1 — HLD
@@ -69,21 +74,21 @@ sequenceDiagram
             DM->>HLD: Viết *_HLD_TierN.md (6a~6f)
         end
         DM->>HLD: Viết *_HLD_Overview.md (7a~7f)
-        DM->>SE: Cập nhật atomic_entities.csv<br/>(bcv, table_type, description)
+        DM->>SE: Cập nhật atomic_entities.yaml<br/>(bcv, table_type, description)
     end
 
     rect rgb(230, 255, 230)
         note over DM,OUT: Giai đoạn 2 — LLD
         DM->>HLD: Đọc HLD làm input
-        DM->>MF: Thêm dòng mapping mới<br/>(source_system, source_table, lld_file, group)
+        DM->>MF: Thêm entry mapping mới<br/>(source_system, source_table, lld_file, group)
         loop Mỗi entity
-            DM->>LLD: Viết attr_<SYSTEM>_<TABLE>.csv
+            DM->>LLD: Viết lld_<SYSTEM>_<TABLE>.yaml
         end
         DM->>AGG: Chạy aggregate_atomic.py
         AGG->>SE: Đọc entity attributes
         AGG->>MF: Đọc danh sách lld_file
-        AGG->>LLD: Đọc từng attr file
-        AGG->>OUT: Ghi atomic_attributes.csv
+        AGG->>LLD: Đọc từng lld file
+        AGG->>OUT: Ghi atomic_attributes.yaml
         AGG->>SE: Cập nhật source_table
     end
 ```
@@ -95,12 +100,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor DM as Data Modeler
-    participant SE as atomic_entities.csv
+    participant SE as atomic_entities.yaml
     participant RN as rename_entity.py
-    participant MF as manifest.csv
-    participant LLD as attr_*.csv
+    participant MF as manifest.yaml
+    participant LLD as lld_*.yaml
     participant HLD as *_HLD_*.md
-    participant OUT as atomic_attributes.csv
+    participant OUT as atomic_attributes.yaml
 
     Note over DM,SE: Entity phải ở status=draft trước khi rename
     DM->>SE: Kiểm tra status entity
@@ -128,14 +133,14 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor DM as Data Modeler
-    participant SE as atomic_entities.csv
+    participant SE as atomic_entities.yaml
     participant AGG as aggregate_atomic.py
-    participant OUT as atomic_attributes.csv
+    participant OUT as atomic_attributes.yaml
 
     DM->>SE: Sửa table_type trực tiếp
     DM->>AGG: Chạy aggregate_atomic.py
     AGG->>SE: Đọc table_type mới (source of truth)
-    AGG->>OUT: Rebuild atomic_attributes.csv
+    AGG->>OUT: Rebuild atomic_attributes.yaml
 ```
 
 ---
@@ -201,7 +206,7 @@ Quy tắc bổ sung:
 | **7e** | Toàn bộ điểm cần xác nhận còn mở |
 | **7f** | Toàn bộ bảng ngoài scope |
 
-Sau HLD Overview → cập nhật `Atomic/hld/atomic_entities.csv`.
+Sau HLD Overview → cập nhật `Atomic/hld/atomic_entities.yaml`.
 
 ---
 
@@ -215,12 +220,12 @@ Sau HLD Overview → cập nhật `Atomic/hld/atomic_entities.csv`.
 
 | Loại | Vị trí |
 |---|---|
-| HLD Overview + HLD Tier tương ứng | `Atomic/hld/*.md` |
+| HLD Overview + HLD Tier tương ứng | `DataModel/working/Atomic/hld/*.md` |
 | Cấu trúc CSDL nguồn | `Source/*_Columns.*` |
-| LLD đã có cùng source system | `Atomic/lld/<SYSTEM>/attr_*.csv` |
-| LLD entity tương đồng source khác | `Atomic/lld/<OTHER>/attr_*.csv` |
-| Classification Value đã chuẩn hóa | `Atomic/lld/ref_shared_entity_classifications.csv` |
-| Danh sách entity đã có | `Atomic/lld/manifest.csv` |
+| LLD đã có cùng source system | `DataModel/working/Atomic/lld/<SYSTEM>/lld_*.yaml` |
+| LLD entity tương đồng source khác | `DataModel/working/Atomic/lld/<OTHER>/lld_*.yaml` |
+| Classification Value đã chuẩn hóa | `DataModel/working/Atomic/lld/classification_schemes.yaml` |
+| Danh sách entity đã có | `DataModel/working/Atomic/lld/manifest.yaml` |
 
 #### Quy tắc mapping cột nguồn
 
@@ -244,13 +249,13 @@ Mỗi entity có 1 giá trị `table_type` xác định ETL pattern trên Delta 
 | `Fact Append` | Log, sự kiện, giao dịch — không update | Insert-only |
 | `Snapshot` | Full load định kỳ, chụp trạng thái toàn bộ | Replace partition |
 
-Lưu trong `atomic_entities.csv` — `aggregate_atomic.py` đọc từ đây khi rebuild `atomic_attributes.csv`.
+Lưu trong `atomic_entities.yaml` — `aggregate_atomic.py` đọc từ đây khi rebuild `atomic_attributes.yaml`.
 
 ---
 
-#### Output mỗi entity — `attr_<SYSTEM>_<SourceTable>.csv`
+#### Output mỗi entity — `lld_<SYSTEM>_<SourceTable>.yaml`
 
-Cấu trúc 10 cột:
+Các fields:
 
 | Cột | Mô tả |
 |---|---|
@@ -265,11 +270,11 @@ Cấu trúc 10 cột:
 | `classification_context` | Shared entity: `SCHEME=VALUE` (1 dòng / 1 context) |
 | `etl_derived_value` | Giá trị ETL-derived cố định (không lấy từ cột nguồn) |
 
-Sau mỗi file attr → cập nhật `manifest.csv` và `ref_shared_entity_classifications.csv`.
+Sau mỗi file LLD → cập nhật `DataModel/working/Atomic/lld/manifest.yaml` và `DataModel/working/Atomic/lld/classification_schemes.yaml`.
 
-#### Grain của `manifest.csv` và quan hệ với ETL
+#### Grain của `manifest.yaml` và quan hệ với ETL
 
-**Grain:** `1 dòng manifest = 1 ETL job = 1 (atomic_entity × source_table)`
+**Grain:** `1 entry manifest = 1 ETL job = 1 (atomic_entity × source_table)`
 
 Mỗi dòng đại diện cho việc load dữ liệu từ **1 bảng nguồn** vào **1 bảng đích Atomic**. Các trường hợp phổ biến:
 
@@ -281,13 +286,13 @@ Mỗi dòng đại diện cho việc load dữ liệu từ **1 bảng nguồn** 
 
 Phân biệt **context** (addr_type, source_system) là logic **bên trong** từng ETL job — không phản ánh ở cấp manifest.
 
-Khi implement ETL, mỗi job tra `atomic_attributes.csv` với filter:
+Khi implement ETL, mỗi job tra `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` với filter:
 
 ```
 source_system = X  AND  source_table = Y
 ```
 
-để lấy toàn bộ mapping detail (source_column, classification_context) cho job đó. Cột `classification_context` trong `atomic_attributes.csv` xác định điều kiện lọc dữ liệu:
+để lấy toàn bộ mapping detail (source_column, classification_context) cho job đó. Cột `classification_context` trong `atomic_attributes.yaml` xác định điều kiện lọc dữ liệu:
 
 ```
 Source System Code = 'FIMS_AUTHOANNOUNCE'
@@ -298,54 +303,54 @@ Source System Code = 'FMS_SECURITIES' | Address Type Code = 'HEAD_OFFICE'
 
 ```bash
 cd <workspace_root>
-python Atomic/lld/scripts/aggregate_atomic.py
+python DataModel/working/Atomic/lld/scripts/aggregate_atomic.py
 ```
 
 Script tự động sinh:
-- `Atomic/lld/atomic_attributes.csv` — toàn bộ attributes (13 cột)
-- `Atomic/hld/atomic_entities.csv` — cập nhật `source_table` nếu có source mới (7 cột)
+- `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` — toàn bộ attributes
+- `DataModel/working/Atomic/hld/atomic_entities.yaml` — cập nhật `source_table` nếu có source mới
 
-> **Lưu ý:** `aggregate_atomic.py` đọc `bcv_core_object`, `bcv_concept`, `table_type`, `description` từ `atomic_entities.csv` (source of truth) — không ghi đè các cột này.
+> **Lưu ý:** `aggregate_atomic.py` đọc `bcv_core_object`, `bcv_concept`, `table_type`, `description` từ `atomic_entities.yaml` (source of truth) — không ghi đè các cột này.
 
 #### Post-check sau khi aggregate
 
 Sau khi chạy `aggregate_atomic.py`, chạy thêm script kiểm tra chất lượng:
 
 ```bash
-python Atomic/lld/scripts/post_check_source_coverage.py
+python DataModel/working/Atomic/lld/scripts/post_check_source_coverage.py
 ```
 
 Script thực hiện **2 chiều kiểm tra**:
 
 | Check | Hướng | Mô tả |
 |---|---|---|
-| **CHECK A** | Source → Atomic | Cột nguồn đã trong manifest nhưng chưa có mapping trong `atomic_attributes.csv` |
+| **CHECK A** | Source → Atomic | Cột nguồn đã trong manifest nhưng chưa có mapping trong `atomic_attributes.yaml` |
 | **CHECK B** | Atomic → Source | `source_column` trong Atomic trỏ đến cột không tồn tại trong `Source/*_Columns.csv` |
 
 Output phân loại thành 3 nhóm:
 
 | Nhóm | Ký hiệu | Ý nghĩa |
 |---|---|---|
-| Chưa map | `- column` | Cần thiết kế hoặc thêm vào `pending_design.csv` |
-| Pending | `~ column` | Đã ghi nhận trong `pending_design.csv`, chờ xử lý |
-| Ghost mapping | `⚠ entity.attr` | Tên cột trong Atomic không tồn tại ở nguồn — cần sửa attr file |
+| Chưa map | `- column` | Cần thiết kế hoặc thêm vào `pending_design.yaml` |
+| Pending | `~ column` | Đã ghi nhận trong `pending_design.yaml`, chờ xử lý |
+| Ghost mapping | `⚠ entity.attr` | Tên cột trong Atomic không tồn tại ở nguồn — cần sửa LLD file |
 
 **Các tùy chọn lọc:**
 
 ```bash
-python Atomic/lld/scripts/post_check_source_coverage.py --source SCMS      # chỉ kiểm tra nguồn SCMS
-python Atomic/lld/scripts/post_check_source_coverage.py --table CTCK_THONG_TIN  # chỉ 1 bảng
+python DataModel/working/Atomic/lld/scripts/post_check_source_coverage.py --source SCMS      # chỉ kiểm tra nguồn SCMS
+python DataModel/working/Atomic/lld/scripts/post_check_source_coverage.py --table CTCK_THONG_TIN  # chỉ 1 bảng
 ```
 
 **Xử lý kết quả:**
 
 | Check | Nguyên nhân phổ biến | Hành động |
 |---|---|---|
-| CHECK A — cột chưa map | Quên thiết kế hoặc bảng mới thêm vào manifest | Tạo/cập nhật attr file, hoặc thêm vào `pending_design.csv` |
-| CHECK A — cột pending | Cố ý defer | Theo dõi trong `pending_design.csv`, xử lý khi đến Tier tiếp theo |
-| CHECK B — ghost mapping | Tên cột gõ sai hoặc source đổi schema | Sửa `source_columns` trong attr file tương ứng |
+| CHECK A — cột chưa map | Quên thiết kế hoặc bảng mới thêm vào manifest | Tạo/cập nhật LLD file, hoặc thêm vào `pending_design.yaml` |
+| CHECK A — cột pending | Cố ý defer | Theo dõi trong `pending_design.yaml`, xử lý khi đến Tier tiếp theo |
+| CHECK B — ghost mapping | Tên cột gõ sai hoặc source đổi schema | Sửa `source_columns` trong LLD file tương ứng |
 
-**`pending_design.csv`** — file ghi nhận các cột nguồn cố ý chưa thiết kế:
+**`pending_design.yaml`** — file ghi nhận các cột nguồn cố ý chưa thiết kế:
 
 | Cột | Mô tả |
 |---|---|
@@ -364,7 +369,7 @@ Khi cần rename một Atomic entity (ví dụ: `High Risk Taxpayer Assessment` 
 
 **Điều kiện:** Entity phải có `status=draft`. Nếu đang `approved` → đổi về `draft` trước.
 
-**Bước 1 — Sửa `atomic_entities.csv`:**
+**Bước 1 — Sửa `atomic_entities.yaml`:**
 
 | Cột | Thay đổi |
 |---|---|
@@ -386,19 +391,19 @@ python Atomic/lld/scripts/rename_entity.py
 ```
 
 Script tự động propagate tên mới ra:
-- `Atomic/lld/manifest.csv` (cột `atomic_entity` — giữ sync)
-- `Atomic/lld/atomic_attributes.csv`
-- `Atomic/lld/<SYSTEM>/attr_<TABLE>.csv` (attribute name prefix + description)
+- `DataModel/working/Atomic/lld/manifest.yaml` (field `atomic_entity` — giữ sync)
+- `DataModel/working/Atomic/aggregate/atomic_attributes.yaml`
+- `DataModel/working/Atomic/lld/<SYSTEM>/lld_<TABLE>.yaml` (attribute name prefix + description)
 - Tất cả HLD Markdown files (`*_HLD_Tier*.md`, `*_HLD_Overview.md`)
-- `Atomic/lld/ref_shared_entity_classifications.csv`
+- `DataModel/working/Atomic/lld/classification_schemes.yaml`
 
 **Bước 4 — (Optional) Refresh aggregate:**
 
 ```bash
-python Atomic/lld/scripts/aggregate_atomic.py
+python DataModel/working/Atomic/lld/scripts/aggregate_atomic.py
 ```
 
-Chạy nếu cần rebuild hoàn toàn `atomic_attributes.csv`.
+Chạy nếu cần rebuild hoàn toàn `atomic_attributes.yaml`.
 
 > **Approved lock:** Nếu entity có `status=approved`, `rename_entity.py` sẽ từ chối thực thi và báo lỗi. Phải đổi `status` về `draft` trước khi rename.
 
@@ -406,27 +411,27 @@ Chạy nếu cần rebuild hoàn toàn `atomic_attributes.csv`.
 
 Khi cần sửa `table_type` của một entity:
 
-1. Sửa cột `table_type` trong `Atomic/hld/atomic_entities.csv`
-2. Chạy `aggregate_atomic.py` → `atomic_attributes.csv` được rebuild với bcv fields đúng
+1. Sửa field `table_type` trong `DataModel/working/Atomic/hld/atomic_entities.yaml`
+2. Chạy `aggregate_atomic.py` → `atomic_attributes.yaml` được rebuild với bcv fields đúng
 
-Không cần sửa manifest — `table_type` chỉ lưu trong `atomic_entities.csv`.
+Không cần sửa manifest — `table_type` chỉ lưu trong `atomic_entities.yaml`.
 
 ---
 
 ### Kiểm tra nhất quán HLD vs atomic_entities (sau khi re-run thiết kế)
 
-Khi cập nhật quy tắc thiết kế và chạy lại HLD, có nguy cơ tên entity trong HLD bị ghi đè khác với tên trong `atomic_entities.csv`. Dùng script này để phát hiện xung đột:
+Khi cập nhật quy tắc thiết kế và chạy lại HLD, có nguy cơ tên entity trong HLD bị ghi đè khác với tên trong `atomic_entities.yaml`. Dùng script này để phát hiện xung đột:
 
 ```bash
 python Atomic/lld/scripts/check_consistency.py
 ```
 
-Script so sánh tất cả entity name trong HLD Markdown files với `atomic_entities.csv` và báo cáo:
+Script so sánh tất cả entity name trong HLD Markdown files với `atomic_entities.yaml` và báo cáo:
 
 | Kết quả | Ý nghĩa |
 |---|---|
 | `OK` | Tất cả entities nhất quán với HLD |
-| `CONFLICT` | Entity trong HLD có tên khác `atomic_entities.csv` — cần sửa HLD |
+| `CONFLICT` | Entity trong HLD có tên khác `atomic_entities.yaml` — cần sửa HLD |
 | `WARN` | Entity không tìm thấy trong bất kỳ HLD file nào |
 
 **Các tùy chọn:**
@@ -440,9 +445,9 @@ python Atomic/lld/scripts/check_consistency.py --fix-hints      # in gợi ý c�
 
 - Entity `status=approved` bị CONFLICT → **bắt buộc sửa** (exit code 1)
 - Entity `status=draft` không tìm thấy trong HLD → WARN (exit code 0, chỉ cảnh báo)
-- Nếu HLD đang dùng tên cũ → cập nhật HLD theo tên trong `atomic_entities.csv`
-- Nếu muốn đổi tên mới → đảm bảo entity ở `status=draft`, sửa `atomic_entities.csv`, rồi chạy `rename_entity.py`
-- Không bao giờ sửa ngược `atomic_entities.csv` theo HLD nếu `status=approved`
+- Nếu HLD đang dùng tên cũ → cập nhật HLD theo tên trong `atomic_entities.yaml`
+- Nếu muốn đổi tên mới → đảm bảo entity ở `status=draft`, sửa `atomic_entities.yaml`, rồi chạy `rename_entity.py`
+- Không bao giờ sửa ngược `atomic_entities.yaml` theo HLD nếu `status=approved`
 
 ---
 
@@ -453,7 +458,7 @@ python Atomic/lld/scripts/check_consistency.py --fix-hints      # in gợi ý c�
 | `draft` | Đang thiết kế — tên entity và table_type có thể thay đổi |
 | `approved` | Đã duyệt — tên entity và table_type bị LOCKED, không thể rename qua script |
 
-Để rename entity đang `approved`: đổi `status → draft` trong `atomic_entities.csv` trước, sau đó mới chạy `rename_entity.py`.
+Để rename entity đang `approved`: đổi `status → draft` trong `atomic_entities.yaml` trước, sau đó mới chạy `rename_entity.py`.
 
 ---
 
@@ -468,7 +473,7 @@ python Atomic/lld/scripts/check_consistency.py --fix-hints      # in gợi ý c�
 | Tier 3 | 12 entities | `NHNCK_HLD_Tier3.md` |
 | Tier 4 | 7 entities | `NHNCK_HLD_Tier4.md` |
 
-LLD: 34 files trong `Atomic/lld/NHNCK/` — tất cả `draft`.
+LLD: 34 files trong `DataModel/working/Atomic/lld/NHNCK/` — tất cả `draft`.
 
 ### DCST — Dữ liệu Cơ quan Thuế
 
@@ -478,7 +483,7 @@ LLD: 34 files trong `Atomic/lld/NHNCK/` — tất cả `draft`.
 | Tier 2 | 6 entities | `DCST_HLD_Tier2.md` |
 | Tier 3 | 2 entities | `DCST_HLD_Tier3.md` |
 
-LLD: 14 files trong `Atomic/lld/DCST/` — tất cả `draft`.
+LLD: 14 files trong `DataModel/working/Atomic/lld/DCST/` — tất cả `draft`.
 
 ### FMS — Quản lý Giám sát Quỹ và Công ty Chứng khoán
 
@@ -489,7 +494,7 @@ LLD: 14 files trong `Atomic/lld/DCST/` — tất cả `draft`.
 | Tier 3 | 5 entities | `FMS_HLD_Tier3.md` |
 | Tier 4 | 3 entities | `FMS_HLD_Tier4.md` |
 
-LLD: 38 files trong `Atomic/lld/FMS/` — tất cả `draft`.
+LLD: 38 files trong `DataModel/working/Atomic/lld/FMS/` — tất cả `draft`.
 
 ---
 
@@ -499,15 +504,15 @@ LLD: 38 files trong `Atomic/lld/FMS/` — tất cả `draft`.
 |---|---|
 | Quy trình thiết kế HLD | `.claude/skills/SKILL_HLD.md` |
 | Quy trình thiết kế LLD | `.claude/skills/SKILL_LLD.md` |
-| HLD files | `Atomic/hld/` |
-| LLD files | `Atomic/lld/<SYSTEM>/` |
-| Tổng hợp entities | `Atomic/hld/atomic_entities.csv` |
-| Tổng hợp attributes | `Atomic/lld/atomic_attributes.csv` |
-| Manifest (source of truth) | `Atomic/lld/manifest.csv` |
-| Shared Entity Classifications | `Atomic/lld/ref_shared_entity_classifications.csv` |
-| Script tổng hợp | `Atomic/lld/scripts/aggregate_atomic.py` |
-| Script post-check coverage | `Atomic/lld/scripts/post_check_source_coverage.py` |
-| Script đổi tên entity | `Atomic/lld/scripts/rename_entity.py` |
-| Script kiểm tra nhất quán HLD | `Atomic/lld/scripts/check_consistency.py` |
-| Cột nguồn chưa thiết kế | `Atomic/lld/pending_design.csv` |
+| HLD files | `DataModel/working/Atomic/hld/` |
+| LLD files | `DataModel/working/Atomic/lld/<SYSTEM>/` |
+| Tổng hợp entities | `DataModel/working/Atomic/hld/atomic_entities.yaml` |
+| Tổng hợp attributes | `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` |
+| Manifest (source of truth) | `DataModel/working/Atomic/lld/manifest.yaml` |
+| Shared Entity Classifications | `DataModel/working/Atomic/lld/classification_schemes.yaml` |
+| Script tổng hợp | `DataModel/working/Atomic/lld/scripts/aggregate_atomic.py` |
+| Script post-check coverage | `DataModel/working/Atomic/lld/scripts/post_check_source_coverage.py` |
+| Script đổi tên entity | `DataModel/working/Atomic/lld/scripts/rename_entity.py` |
+| Script kiểm tra nhất quán HLD | `DataModel/working/Atomic/lld/scripts/check_consistency.py` |
+| Cột nguồn chưa thiết kế | `DataModel/working/Atomic/lld/pending_design.yaml` |
 | BCV knowledge base | `knowledge/` |
