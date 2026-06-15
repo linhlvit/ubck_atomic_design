@@ -102,7 +102,7 @@ attributes:
     source_system: NHNCK
     source_table: USERS
     source_column: NHNCK.USERS.UNIT_ID
-    comment: "FK target: reg_ahr_ou.reg_ahr_ou_id."
+    comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. Hash: hash_id('NHNCK.UNITS', UNIT_ID)."
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: NHNCK
     source_table: USERS
     source_column: NHNCK.USERS.DEPARTMENT_ID
-    comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. (Represents the DEPARTMENT node)"
+    comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. (Represents the DEPARTMENT node). Hash: hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_ID)."
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null
 
@@ -172,7 +172,7 @@ attributes:
     source_system: NHNCK
     source_table: USERS
     source_column: NHNCK.USERS.PROFESSIONAL_ID
-    comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer có thể không là NHNCK."
+    comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer có thể không là NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null
 
@@ -256,7 +256,7 @@ attributes:
     source_system: NHNCK
     source_table: USERS
     source_column: NHNCK.USERS.CREATED_BY
-    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null
 
@@ -284,7 +284,7 @@ attributes:
     source_system: NHNCK
     source_table: USERS
     source_column: NHNCK.USERS.UPDATED_BY
-    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
     classification_context: "Source System Code = 'NHNCK_USERS'"
     etl_derived_value: null
 

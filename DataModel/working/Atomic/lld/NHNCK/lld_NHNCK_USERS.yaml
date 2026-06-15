@@ -92,8 +92,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.UNIT_ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id."
+  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. Hash: hash_id('NHNCK.UNITS', UNIT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -120,8 +119,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.DEPARTMENT_ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. (Represents the DEPARTMENT node)"
+  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. (Represents the DEPARTMENT node). Hash: hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -162,8 +160,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer\
-    \ có thể không là NHNCK."
+  comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer có thể không là NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -242,7 +239,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -269,7 +266,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

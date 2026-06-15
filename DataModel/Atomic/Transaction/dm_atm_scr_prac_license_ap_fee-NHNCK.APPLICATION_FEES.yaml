@@ -60,7 +60,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.APPLICATION_ID
-    comment: "FK target: License Application.License Application Id."
+    comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.PROFESSIONAL_ID
-    comment: "FK target: scr_prac.scr_prac_id."
+    comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 
@@ -284,7 +284,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.CREATED_BY
-    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 
@@ -312,7 +312,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.UPDATED_BY
-    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 

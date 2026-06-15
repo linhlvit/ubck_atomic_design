@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id."
+  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -80,7 +80,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -262,7 +262,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -289,7 +289,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

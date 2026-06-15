@@ -65,8 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id."
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -93,7 +92,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -120,7 +119,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
-  comment: "FK target: License Certificate Document.License Certificate Document Id."
+  comment: "FK target: License Certificate Document.License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -161,8 +160,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "FK target: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Id. Self-referencing."
+  comment: "FK target: Securities Practitioner Organization Employment Report.Securities Practitioner Organization Employment Report Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -502,7 +500,7 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -542,7 +540,7 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

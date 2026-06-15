@@ -248,6 +248,21 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   `FK target: {Atomic Entity Name}.{Atomic Entity Name} Id. {notes}`
   → `atomic-gen-docs` parse prefix `FK target:` và đưa vào bảng Constraint của tài liệu CSDL.
 
+  **Hash comment — bắt buộc bổ sung cho ETL:** ETL hash surrogate Id từ 2 input:
+  `(source_system_code, business_key)`. FK_SOURCE = source table của **target entity**,
+  xác định từ `Source/{SOURCE}_Columns.csv` cột "Ghi chú (FK suy luận)".
+
+  | Case | source_columns | Hash comment |
+  |---|---|---|
+  | FK bình thường | `[SRC.TABLE.FK_COL]` | `Hash: hash_id('SRC.TARGET_TABLE', FK_COL).` |
+  | Shared entity (IP sub-table, dùng PK parent) | `[SRC.PARENT_TABLE.ID]` | `Hash: hash_id('SRC.PARENT_TABLE', ID).` |
+  | FK luôn NULL | `[]` (rỗng) | Không thêm hash — ghi lý do NULL thay thế |
+
+  Ví dụ:
+  - Normal: `"FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."`
+  - Shared entity: `"FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."`
+  - Always null: `"FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không có parent."`
+
 - **Code** — denormalized lookup (KHÔNG phải FK constraint, chỉ là copy giá trị business key cho tiện query):
   `Lookup pair: {Atomic Entity Name}.{Atomic Entity Name} Code. Pair with {Id field name}. {notes}`
   → `atomic-gen-docs` KHÔNG đưa Code vào bảng Constraint. Chỉ Id mới sinh constraint.
@@ -287,6 +302,7 @@ Trước khi xuất file:
 - [ ] **Conversion risk:** Mọi attribute có Data Domain không khớp tự nhiên với data type nguồn (ví dụ: nguồn `string` → domain `Small Counter`) đã có comment ghi chú conversion risk chưa? Nếu data type nguồn không khai báo → đã ghi "cần profile" trong comment?
 - [ ] **Domain mới:** Nếu có attribute dùng tag `[PROPOSE NEW DOMAIN]` → đã tách thành điểm cần xác nhận riêng để reviewer quyết định bổ sung vào `reference/data_domains.md`?
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
+- [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, ghi lý do NULL.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.

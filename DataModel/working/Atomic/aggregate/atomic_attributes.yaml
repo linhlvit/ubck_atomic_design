@@ -60,7 +60,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_conduct_vln"
@@ -93,7 +94,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_conduct_vln"
@@ -295,7 +297,8 @@ attributes:
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID"
   comment: "FK target: Securities Practitioner Professional Training Class.Securities\
-    \ Practitioner Professional Training Class Id."
+    \ Practitioner Professional Training Class Id. Hash: hash_id('NHNCK.SPECIALIZATION_COURSES',\
+    \ SPECIALIZATION_COURSE_ID)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -329,7 +332,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -443,7 +447,7 @@ attributes:
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm\
-    \ đăng ký."
+    \ đăng ký. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -477,7 +481,7 @@ attributes:
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm\
-    \ đăng ký."
+    \ đăng ký. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -511,7 +515,7 @@ attributes:
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm\
-    \ đăng ký."
+    \ đăng ký. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -690,7 +694,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -755,7 +760,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -788,7 +794,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -1049,7 +1056,8 @@ attributes:
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.DECISION_ID"
   comment: "FK target: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Id."
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases"
@@ -1195,7 +1203,7 @@ attributes:
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.CREATED_BY"
   comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority\
-    \ Officer Id."
+    \ Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases"
@@ -1229,7 +1237,7 @@ attributes:
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.UPDATED_BY"
   comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority\
-    \ Officer Id."
+    \ Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases"
@@ -1315,7 +1323,8 @@ attributes:
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.EXAM_SESSION_ID"
   comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+    \ Practitioner Qualification Examination Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS',\
+    \ EXAM_SESSION_ID)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_rslt"
@@ -1350,7 +1359,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_rslt"
@@ -1400,7 +1410,7 @@ attributes:
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.APPLICATION_ID"
   comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_rslt"
@@ -1593,7 +1603,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_rslt"
@@ -1626,7 +1637,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_rslt"
@@ -1711,7 +1723,7 @@ attributes:
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
   comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
-    \ Assessment Id."
+    \ Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_fee"
@@ -1840,7 +1852,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_fee"
@@ -1873,7 +1886,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_fee"
@@ -2325,7 +2339,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap"
@@ -2359,7 +2374,8 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID"
   comment: "FK target: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Id."
+    \ Practitioner License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ CERTIFICATE_RECORD_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap"
@@ -2394,7 +2410,8 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID"
   comment: "FK target: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Id."
+    \ Practitioner License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ PREVIOUS_CERTIFICATE_RECORD_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap"
@@ -2429,7 +2446,8 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
   comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+    \ Practitioner Qualification Examination Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS',\
+    \ EXAM_SESSION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap"
@@ -2464,7 +2482,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.ASSIGNEE_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap"
@@ -2497,7 +2516,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', INFO_VERIFY_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap"
@@ -2568,7 +2588,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id."
+  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_ed_ctf_doc"
@@ -2688,7 +2709,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_ed_ctf_doc"
@@ -2823,7 +2845,7 @@ attributes:
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
   comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_re_exam_rqs"
@@ -2857,7 +2879,8 @@ attributes:
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
   comment: "FK target: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Examination Assessment Result Id."
+    \ Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS',\
+    \ EXAM_DETAIL_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_re_exam_rqs"
@@ -2892,7 +2915,7 @@ attributes:
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
   comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_re_exam_rqs"
@@ -2942,7 +2965,7 @@ attributes:
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.CREATED_BY"
   comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Pending — nguồn USERS chưa map."
+    \ Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_re_exam_rqs"
@@ -2976,7 +2999,7 @@ attributes:
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY"
   comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Pending — nguồn USERS chưa map."
+    \ Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_re_exam_rqs"
@@ -3105,7 +3128,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ctf_doc"
@@ -3138,7 +3162,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ctf_doc"
@@ -3171,7 +3196,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ctf_doc"
@@ -3204,7 +3230,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ctf_doc"
@@ -3737,7 +3764,7 @@ attributes:
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -3770,7 +3797,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -3803,7 +3831,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
-  comment: "FK target: License Certificate Document.License Certificate Document Id."
+  comment: "FK target: License Certificate Document.License Certificate Document Id.\
+    \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -3854,7 +3883,8 @@ attributes:
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
   comment: "FK target: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Id. Self-referencing."
+    \ Practitioner Organization Employment Report Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS',\
+    \ PARENT_REPORT_ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -4272,7 +4302,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -4321,7 +4352,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -4483,7 +4515,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSES"
   source_column: "NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.PROVINCES',\
+    \ PROVINCE_ID)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss"
@@ -4580,7 +4613,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSES"
   source_column: "NHNCK.SPECIALIZATION_COURSES.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss"
@@ -4613,7 +4647,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSES"
   source_column: "NHNCK.SPECIALIZATION_COURSES.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss"
@@ -4728,7 +4763,7 @@ attributes:
   source_table: "USERS"
   source_column: "NHNCK.USERS.UNIT_ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id."
+    \ Organization Unit Id. Hash: hash_id('NHNCK.UNITS', UNIT_ID)."
   classification_context: "Source System Code = 'NHNCK_USERS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ofcr"
@@ -4762,7 +4797,8 @@ attributes:
   source_table: "USERS"
   source_column: "NHNCK.USERS.DEPARTMENT_ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. (Represents the DEPARTMENT node)"
+    \ Organization Unit Id. (Represents the DEPARTMENT node). Hash: hash_id('NHNCK.DEPARTMENTS',\
+    \ DEPARTMENT_ID)."
   classification_context: "Source System Code = 'NHNCK_USERS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ofcr"
@@ -4813,7 +4849,7 @@ attributes:
   source_table: "USERS"
   source_column: "NHNCK.USERS.PROFESSIONAL_ID"
   comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer\
-    \ có thể không là NHNCK."
+    \ có thể không là NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_USERS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ofcr"
@@ -4910,7 +4946,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "USERS"
   source_column: "NHNCK.USERS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_USERS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ofcr"
@@ -4943,7 +4980,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "USERS"
   source_column: "NHNCK.USERS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_USERS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ofcr"
@@ -5073,7 +5111,7 @@ attributes:
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.PARENT_ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id."
+    \ Organization Unit Id. Hash: hash_id('NHNCK.UNITS', PARENT_ID)."
   classification_context: "Source System Code = 'NHNCK_UNITS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ou"
@@ -5253,7 +5291,8 @@ attributes:
   source_table: "DEPARTMENTS"
   source_column: "NHNCK.DEPARTMENTS.UNIT_ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Parent là Unit không phải Department."
+    \ Organization Unit Id. Parent là Unit không phải Department. Hash: hash_id('NHNCK.UNITS',\
+    \ UNIT_ID)."
   classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ou"
@@ -5481,7 +5520,7 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.PARENT_ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Self-referencing."
+    \ Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_org_refr"
@@ -5742,7 +5781,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_org_refr"
@@ -5775,7 +5815,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_org_refr"
@@ -6003,7 +6044,8 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Nullable — người hành nghề có thể chưa công tác."
+    \ Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac"
@@ -6037,7 +6079,7 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.NATIONALITY_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = COUNTRY."
+    \ = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac"
@@ -6394,7 +6436,8 @@ attributes:
   source_table: "PROFESSIONAL_HISTORIES"
   source_column: "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Nullable — người hành nghề có thể chưa công tác."
+    \ Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
   etl_derived_value: null
   atomic_table: "scr_prac"
@@ -6428,7 +6471,7 @@ attributes:
   source_table: "PROFESSIONAL_HISTORIES"
   source_column: "NHNCK.PROFESSIONALS.NATIONALITY_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = COUNTRY."
+    \ = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
   etl_derived_value: null
   atomic_table: "scr_prac"
@@ -6639,7 +6682,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
   etl_derived_value: null
   atomic_table: "scr_prac_emp_st"
@@ -6674,7 +6718,7 @@ attributes:
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
   etl_derived_value: null
   atomic_table: "scr_prac_emp_st"
@@ -6891,7 +6935,7 @@ attributes:
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.APPLICATION_ID"
   comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_emp_exrnc"
@@ -6943,7 +6987,7 @@ attributes:
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.ORGANIZATION_ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_emp_exrnc"
@@ -7204,7 +7248,7 @@ attributes:
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID"
   comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Id."
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7237,7 +7281,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7271,7 +7316,7 @@ attributes:
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id."
+    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7305,7 +7350,7 @@ attributes:
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.NATIONALITY_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = COUNTRY."
+    \ = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7675,7 +7720,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.COUNTRIES',\
+    \ PERMANENT_COUNTRY_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7708,7 +7754,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.PROVINCES',\
+    \ PERMANENT_PROVINCE_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7741,7 +7788,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.DISTRICTS',\
+    \ PERMANENT_DISTRICT_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7774,7 +7822,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.COUNTRIES',\
+    \ CURRENT_COUNTRY_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7807,7 +7856,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.PROVINCES',\
+    \ CURRENT_PROVINCE_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7840,7 +7890,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.DISTRICTS',\
+    \ CURRENT_DISTRICT_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_snpst"
@@ -7939,7 +7990,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_TRAININGS"
   source_column: "NHNCK.PROFESSIONAL_TRAININGS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_hist"
@@ -8119,7 +8171,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Practitioner Id."
+  comment: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
   etl_derived_value: null
   atomic_table: "scr_prac_rel_p"
@@ -8264,7 +8317,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.COUNTRIES',\
+    \ COUNTRY_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
   etl_derived_value: null
   atomic_table: "scr_prac_rel_p"
@@ -8344,7 +8398,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
   etl_derived_value: null
   atomic_table: "scr_prac_rel_p"
@@ -8377,7 +8432,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
   etl_derived_value: null
   atomic_table: "scr_prac_rel_p"
@@ -8668,7 +8724,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROVINCES"
   source_column: "NHNCK.PROVINCES.COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Parent là COUNTRY."
+  comment: "FK target: Geographic Area.Geographic Area Id. Parent là COUNTRY. Hash:\
+    \ hash_id('NHNCK.COUNTRIES', COUNTRY_ID)."
   classification_context: "Source System Code = 'NHNCK_PROVINCES'"
   etl_derived_value: null
   atomic_table: "geo"
@@ -8829,7 +8886,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "DISTRICTS"
   source_column: "NHNCK.DISTRICTS.PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Parent là PROVINCE."
+  comment: "FK target: Geographic Area.Geographic Area Id. Parent là PROVINCE. Hash:\
+    \ hash_id('NHNCK.PROVINCES', PROVINCE_ID)."
   classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
   etl_derived_value: null
   atomic_table: "geo"
@@ -8926,7 +8984,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id."
+  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_fee"
@@ -8959,7 +9018,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_fee"
@@ -9184,7 +9244,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_fee"
@@ -9217,7 +9278,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_fee"
@@ -9251,7 +9313,7 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
   comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
     \ Type Code = '(source)'"
   etl_derived_value: null
@@ -9390,7 +9452,8 @@ attributes:
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -9477,7 +9540,8 @@ attributes:
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
@@ -9564,7 +9628,8 @@ attributes:
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address\
     \ Type Code = 'PHONE'"
   etl_derived_value: null
@@ -9651,7 +9716,8 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng."
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -9738,7 +9804,8 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng."
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'FAX'"
   etl_derived_value: null
@@ -9825,7 +9892,8 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng."
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'MOBILE'"
   etl_derived_value: null
@@ -9912,7 +9980,8 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng."
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'PHONE'"
   etl_derived_value: null
@@ -9999,7 +10068,8 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng."
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'WEBSITE'"
   etl_derived_value: null
@@ -10086,7 +10156,7 @@ attributes:
   source_table: "USERS"
   source_column: "NHNCK.USERS.ID"
   comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Shared entity — không có PK surrogate riêng."
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.USERS', ID)."
   classification_context: "Source System Code = 'NHNCK_USERS' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -10173,7 +10243,7 @@ attributes:
   source_table: "USERS"
   source_column: "NHNCK.USERS.ID"
   comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Shared entity — không có PK surrogate riêng."
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.USERS', ID)."
   classification_context: "Source System Code = 'NHNCK_USERS' | Electronic Address\
     \ Type Code = 'PHONE'"
   etl_derived_value: null
@@ -10260,7 +10330,7 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
   comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -10347,7 +10417,7 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
   comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic\
     \ Address Type Code = 'MOBILE'"
   etl_derived_value: null
@@ -10434,7 +10504,7 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
   comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic\
     \ Address Type Code = 'PHONE'"
   etl_derived_value: null
@@ -10521,7 +10591,8 @@ attributes:
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.ID"
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Shared entity — không có PK surrogate riêng."
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_UNITS' | Address Type Code\
     \ = 'HEAD_OFFICE'"
   etl_derived_value: null
@@ -10608,7 +10679,8 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ID"
   comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng."
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type\
     \ Code = 'HEAD_OFFICE'"
   etl_derived_value: null
@@ -10695,7 +10767,7 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
   comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'PERMANENT'"
   etl_derived_value: null
@@ -10782,7 +10854,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.COUNTRIES',\
+    \ PERMANENT_COUNTRY_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'PERMANENT'"
   etl_derived_value: null
@@ -10816,7 +10889,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.PROVINCES',\
+    \ PERMANENT_PROVINCE_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'PERMANENT'"
   etl_derived_value: null
@@ -10851,7 +10925,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.DISTRICTS',\
+    \ PERMANENT_DISTRICT_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'PERMANENT'"
   etl_derived_value: null

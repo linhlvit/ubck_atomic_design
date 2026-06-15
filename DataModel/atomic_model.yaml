@@ -85,7 +85,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến người hành nghề chứng khoán bị vi phạm.
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -98,7 +99,8 @@ entities:
       - source_table: VIOLATIONS
         source_column: NHNCK.VIOLATIONS.PROFESSIONAL_ID
         business_meaning: FK đến người hành nghề chứng khoán bị vi phạm.
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề chứng khoán bị vi phạm.
@@ -119,7 +121,8 @@ entities:
   - name: License Decision Document Id
     physical_name: license_dcsn_doc_id
     business_meaning_1st: FK đến quyết định xử lý vi phạm.
-    comment_1st: "FK target: License Decision Document.License Decision Document Id."
+    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+      \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -132,7 +135,8 @@ entities:
       - source_table: VIOLATIONS
         source_column: NHNCK.VIOLATIONS.DECISION_ID
         business_meaning: FK đến quyết định xử lý vi phạm.
-        comment: "FK target: License Decision Document.License Decision Document Id."
+        comment: "FK target: License Decision Document.License Decision Document Id.\
+          \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
   - name: License Decision Document Code
     physical_name: license_dcsn_doc_code
     business_meaning_1st: Mã quyết định xử lý vi phạm.
@@ -361,7 +365,8 @@ entities:
   - name: Securities Practitioner Professional Training Class Id
     physical_name: scr_prac_prof_trn_clss_id
     business_meaning_1st: FK đến lớp đào tạo nghiệp vụ chứng khoán
-    comment_1st: "FK target: scr_prac_prof_trn_clss.scr_prac_prof_trn_clss_id."
+    comment_1st: "FK target: scr_prac_prof_trn_clss.scr_prac_prof_trn_clss_id. Hash:\
+      \ hash_id('NHNCK.SPECIALIZATION_COURSES', SPECIALIZATION_COURSE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -374,7 +379,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
         business_meaning: FK đến lớp đào tạo nghiệp vụ chứng khoán
-        comment: "FK target: scr_prac_prof_trn_clss.scr_prac_prof_trn_clss_id."
+        comment: "FK target: scr_prac_prof_trn_clss.scr_prac_prof_trn_clss_id. Hash:\
+          \ hash_id('NHNCK.SPECIALIZATION_COURSES', SPECIALIZATION_COURSE_ID)."
   - name: Securities Practitioner Professional Training Class Code
     physical_name: scr_prac_prof_trn_clss_code
     business_meaning_1st: Mã lớp đào tạo
@@ -397,7 +403,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến người hành nghề chứng khoán
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -410,7 +417,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID
         business_meaning: FK đến người hành nghề chứng khoán
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề
@@ -516,7 +524,8 @@ entities:
   - name: Permanent Residence Country Id
     physical_name: perm_rsdnc_cty_id
     business_meaning_1st: FK đến quốc gia thường trú (snapshot)
-    comment_1st: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+    comment_1st: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.COUNTRIES',\
+      \ PERMANENT_COUNTRY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -529,7 +538,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
         business_meaning: FK đến quốc gia thường trú (snapshot)
-        comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+        comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.COUNTRIES',\
+          \ PERMANENT_COUNTRY_ID)."
   - name: Permanent Residence Country Code
     physical_name: perm_rsdnc_cty_code
     business_meaning_1st: Mã quốc gia thường trú
@@ -552,7 +562,8 @@ entities:
   - name: Permanent Residence Province Id
     physical_name: perm_rsdnc_prov_id
     business_meaning_1st: FK đến tỉnh/thành thường trú (snapshot)
-    comment_1st: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+    comment_1st: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.PROVINCES',\
+      \ PERMANENT_PROVINCE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -565,7 +576,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID
         business_meaning: FK đến tỉnh/thành thường trú (snapshot)
-        comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+        comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.PROVINCES',\
+          \ PERMANENT_PROVINCE_ID)."
   - name: Permanent Residence Province Code
     physical_name: perm_rsdnc_prov_code
     business_meaning_1st: Mã tỉnh/thành thường trú
@@ -588,7 +600,8 @@ entities:
   - name: Permanent Residence District Id
     physical_name: perm_rsdnc_dstc_id
     business_meaning_1st: FK đến quận/huyện thường trú (snapshot)
-    comment_1st: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+    comment_1st: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.DISTRICTS',\
+      \ PERMANENT_DISTRICT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -601,7 +614,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID
         business_meaning: FK đến quận/huyện thường trú (snapshot)
-        comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+        comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.DISTRICTS',\
+          \ PERMANENT_DISTRICT_ID)."
   - name: Permanent Residence District Code
     physical_name: perm_rsdnc_dstc_code
     business_meaning_1st: Mã quận/huyện thường trú
@@ -781,7 +795,8 @@ entities:
   - name: Assignee Officer Id
     physical_name: assignee_ofcr_id
     business_meaning_1st: FK đến cán bộ phụ trách (nullable)
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ ASSIGNEE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -794,7 +809,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID
         business_meaning: FK đến cán bộ phụ trách (nullable)
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ ASSIGNEE_ID)."
   - name: Assignee Officer Code
     physical_name: assignee_ofcr_code
     business_meaning_1st: Mã cán bộ phụ trách
@@ -851,7 +867,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -864,7 +881,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
         business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi
@@ -887,7 +905,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -900,7 +919,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
         business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi
@@ -1187,7 +1207,8 @@ entities:
   - name: License Decision Id
     physical_name: license_dcsn_id
     business_meaning_1st: FK đến quyết định cấp chứng chỉ liên quan đợt thi
-    comment_1st: "FK target: scr_prac_license_dcsn_doc.scr_prac_license_dcsn_doc_id."
+    comment_1st: "FK target: scr_prac_license_dcsn_doc.scr_prac_license_dcsn_doc_id.\
+      \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1200,7 +1221,8 @@ entities:
       - source_table: EXAM_SESSIONS
         source_column: NHNCK.EXAM_SESSIONS.DECISION_ID
         business_meaning: FK đến quyết định cấp chứng chỉ liên quan đợt thi
-        comment: "FK target: scr_prac_license_dcsn_doc.scr_prac_license_dcsn_doc_id."
+        comment: "FK target: scr_prac_license_dcsn_doc.scr_prac_license_dcsn_doc_id.\
+          \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
   - name: License Decision Code
     physical_name: license_dcsn_code
     business_meaning_1st: Mã quyết định cấp chứng chỉ
@@ -1342,7 +1364,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến người tạo
-    comment_1st: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1355,7 +1378,8 @@ entities:
       - source_table: EXAM_SESSIONS
         source_column: NHNCK.EXAM_SESSIONS.CREATED_BY
         business_meaning: FK đến người tạo
-        comment: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã người tạo
@@ -1378,7 +1402,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến người cập nhật
-    comment_1st: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1391,7 +1416,8 @@ entities:
       - source_table: EXAM_SESSIONS
         source_column: NHNCK.EXAM_SESSIONS.UPDATED_BY
         business_meaning: FK đến người cập nhật
-        comment: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "Pending. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã người cập nhật
@@ -1492,7 +1518,8 @@ entities:
   - name: Securities Practitioner Qualification Examination Assessment Id
     physical_name: scr_prac_qualf_exam_ases_id
     business_meaning_1st: FK đến đợt thi sát hạch
-    comment_1st: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id."
+    comment_1st: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id.\
+      \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -1505,7 +1532,8 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.EXAM_SESSION_ID
         business_meaning: FK đến đợt thi sát hạch
-        comment: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id."
+        comment: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id.\
+          \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   - name: Securities Practitioner Qualification Examination Assessment Code
     physical_name: scr_prac_qualf_exam_ases_code
     business_meaning_1st: Mã đợt thi sát hạch
@@ -1528,7 +1556,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến người hành nghề
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -1541,7 +1570,8 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.PROFESSIONAL_ID
         business_meaning: FK đến người hành nghề
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề
@@ -1580,7 +1610,7 @@ entities:
     physical_name: license_ap_id
     business_meaning_1st: FK đến hồ sơ đăng ký
     comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id."
+      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1594,7 +1624,7 @@ entities:
         source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
         business_meaning: FK đến hồ sơ đăng ký
         comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id."
+          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   - name: License Application Code
     physical_name: license_ap_code
     business_meaning_1st: Mã hồ sơ đăng ký
@@ -1791,7 +1821,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1804,7 +1835,8 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.CREATED_BY
         business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi
@@ -1827,7 +1859,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1840,7 +1873,8 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.UPDATED_BY
         business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi
@@ -1942,7 +1976,7 @@ entities:
     physical_name: exam_ases_id
     business_meaning_1st: FK đến đợt thi (Exam Assessment)
     comment_1st: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
-      \ Assessment Id."
+      \ Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -1956,7 +1990,7 @@ entities:
         source_column: NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID
         business_meaning: FK đến đợt thi (Exam Assessment)
         comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
-          \ Assessment Id."
+          \ Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   - name: Examination Assessment Code
     physical_name: exam_ases_code
     business_meaning_1st: Mã đợt thi
@@ -2081,7 +2115,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến Officer (người tạo)
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2094,7 +2129,8 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.CREATED_BY
         business_meaning: FK đến Officer (người tạo)
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã người tạo
@@ -2117,7 +2153,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến Officer (người cập nhật)
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2130,7 +2167,8 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.UPDATED_BY
         business_meaning: FK đến Officer (người cập nhật)
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã người cập nhật
@@ -2625,7 +2663,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến Securities Practitioner.
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -2638,7 +2677,8 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.PROFESSIONAL_ID
         business_meaning: FK đến Securities Practitioner.
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề.
@@ -2660,7 +2700,8 @@ entities:
     physical_name: license_ctf_doc_id
     business_meaning_1st: FK đến License Certificate Document (CCHN trong sổ đăng
       bộ).
-    comment_1st: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id."
+    comment_1st: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id.\
+      \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2674,7 +2715,8 @@ entities:
         source_column: NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID
         business_meaning: FK đến License Certificate Document (CCHN trong sổ đăng
           bộ).
-        comment: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id."
+        comment: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id.\
+          \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
   - name: License Certificate Document Code
     physical_name: license_ctf_doc_code
     business_meaning_1st: Mã CCHN trong sổ đăng bộ.
@@ -2697,7 +2739,8 @@ entities:
   - name: Previous License Certificate Document Id
     physical_name: prev_license_ctf_doc_id
     business_meaning_1st: FK đến CCHN cũ (khi cấp lại).
-    comment_1st: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id."
+    comment_1st: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id.\
+      \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', PREVIOUS_CERTIFICATE_RECORD_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2710,7 +2753,8 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID
         business_meaning: FK đến CCHN cũ (khi cấp lại).
-        comment: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id."
+        comment: "FK target: scr_prac_license_ctf_doc.scr_prac_license_ctf_doc_id.\
+          \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', PREVIOUS_CERTIFICATE_RECORD_ID)."
   - name: Previous License Certificate Document Code
     physical_name: prev_license_ctf_doc_code
     business_meaning_1st: Mã CCHN cũ.
@@ -2733,7 +2777,8 @@ entities:
   - name: Examination Assessment Id
     physical_name: exam_ases_id
     business_meaning_1st: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
-    comment_1st: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id."
+    comment_1st: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id.\
+      \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2746,7 +2791,8 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.EXAM_SESSION_ID
         business_meaning: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
-        comment: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id."
+        comment: "FK target: scr_prac_qualf_exam_ases.scr_prac_qualf_exam_ases_id.\
+          \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   - name: Examination Assessment Code
     physical_name: exam_ases_code
     business_meaning_1st: Mã đợt thi sát hạch.
@@ -2770,7 +2816,8 @@ entities:
     physical_name: assignee_ofcr_id
     business_meaning_1st: FK đến Regulatory Authority Officer — cán bộ được phân công
       xử lý hồ sơ.
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ ASSIGNEE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2784,7 +2831,8 @@ entities:
         source_column: NHNCK.APPLICATIONS.ASSIGNEE_ID
         business_meaning: FK đến Regulatory Authority Officer — cán bộ được phân công
           xử lý hồ sơ.
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ ASSIGNEE_ID)."
   - name: Assignee Officer Code
     physical_name: assignee_ofcr_code
     business_meaning_1st: Mã cán bộ được phân công.
@@ -2808,7 +2856,8 @@ entities:
     physical_name: info_verify_ofcr_id
     business_meaning_1st: FK đến Regulatory Authority Officer — cán bộ xác minh thông
       tin.
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ INFO_VERIFY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2822,7 +2871,8 @@ entities:
         source_column: NHNCK.APPLICATIONS.INFO_VERIFY_ID
         business_meaning: FK đến Regulatory Authority Officer — cán bộ xác minh thông
           tin.
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ INFO_VERIFY_ID)."
   - name: Info Verify Officer Code
     physical_name: info_verify_ofcr_code
     business_meaning_1st: Mã cán bộ xác minh thông tin.
@@ -2908,7 +2958,8 @@ entities:
   - name: License Application Id
     physical_name: license_ap_id
     business_meaning_1st: FK đến License Application (hồ sơ đăng ký)
-    comment_1st: "FK target: License Application.License Application Id."
+    comment_1st: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+      \ APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -2921,7 +2972,8 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
         business_meaning: FK đến License Application (hồ sơ đăng ký)
-        comment: "FK target: License Application.License Application Id."
+        comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+          \ APPLICATION_ID)."
   - name: License Application Code
     physical_name: license_ap_code
     business_meaning_1st: Mã hồ sơ đăng ký. Lookup pair
@@ -3029,7 +3081,8 @@ entities:
   - name: Appraised By Officer Id
     physical_name: appraised_by_ofcr_id
     business_meaning_1st: FK đến cán bộ thẩm định (Regulatory Authority Officer)
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ ASSIGNEE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3042,7 +3095,8 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
         business_meaning: FK đến cán bộ thẩm định (Regulatory Authority Officer)
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ ASSIGNEE_ID)."
   - name: Appraised By Officer Code
     physical_name: appraised_by_ofcr_code
     business_meaning_1st: Mã cán bộ thẩm định. Lookup pair
@@ -3194,7 +3248,7 @@ entities:
     physical_name: license_ap_id
     business_meaning_1st: FK đến hồ sơ gốc đã thi trượt
     comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id."
+      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -3208,7 +3262,7 @@ entities:
         source_column: NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID
         business_meaning: FK đến hồ sơ gốc đã thi trượt
         comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id."
+          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   - name: License Application Code
     physical_name: license_ap_code
     business_meaning_1st: Mã hồ sơ gốc
@@ -3232,7 +3286,8 @@ entities:
     physical_name: exam_ases_rslt_id
     business_meaning_1st: FK đến kết quả thi trượt
     comment_1st: "FK target: Securities Practitioner Qualification Examination Assessment\
-      \ Result.Examination Assessment Result Id."
+      \ Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS',\
+      \ EXAM_DETAIL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -3246,7 +3301,8 @@ entities:
         source_column: NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID
         business_meaning: FK đến kết quả thi trượt
         comment: "FK target: Securities Practitioner Qualification Examination Assessment\
-          \ Result.Examination Assessment Result Id."
+          \ Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS',\
+          \ EXAM_DETAIL_ID)."
   - name: Examination Assessment Result Code
     physical_name: exam_ases_rslt_code
     business_meaning_1st: Mã kết quả thi trượt
@@ -3272,7 +3328,7 @@ entities:
     physical_name: re_exam_license_ap_id
     business_meaning_1st: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
     comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id."
+      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3286,7 +3342,7 @@ entities:
         source_column: NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
         business_meaning: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
         comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id."
+          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
   - name: Re-Exam License Application Code
     physical_name: re_exam_license_ap_code
     business_meaning_1st: Mã hồ sơ thi lại mới
@@ -3327,7 +3383,7 @@ entities:
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến Officer tạo bản ghi
     comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa\
-      \ map."
+      \ map. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3341,7 +3397,7 @@ entities:
         source_column: NHNCK.APPLICATION_RE_EXAMS.CREATED_BY
         business_meaning: FK đến Officer tạo bản ghi
         comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa\
-          \ map."
+          \ map. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã người tạo
@@ -3365,7 +3421,7 @@ entities:
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến Officer cập nhật bản ghi
     comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa\
-      \ map."
+      \ map. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3379,7 +3435,7 @@ entities:
         source_column: NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY
         business_meaning: FK đến Officer cập nhật bản ghi
         comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Pending — nguồn USERS chưa\
-          \ map."
+          \ map. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã người cập nhật
@@ -3528,7 +3584,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến Securities Practitioner
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -3541,7 +3598,8 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID
         business_meaning: FK đến Securities Practitioner
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã nghiệp vụ của người hành nghề
@@ -3562,7 +3620,8 @@ entities:
   - name: Issue License Decision Id
     physical_name: issu_license_dcsn_id
     business_meaning_1st: FK đến quyết định cấp chứng chỉ
-    comment_1st: "FK target: License Decision Document.License Decision Document Id."
+    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+      \ Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -3575,7 +3634,8 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
         business_meaning: FK đến quyết định cấp chứng chỉ
-        comment: "FK target: License Decision Document.License Decision Document Id."
+        comment: "FK target: License Decision Document.License Decision Document Id.\
+          \ Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
   - name: Issue License Decision Code
     physical_name: issu_license_dcsn_code
     business_meaning_1st: Mã nghiệp vụ của quyết định cấp
@@ -3598,7 +3658,8 @@ entities:
   - name: Revocation License Decision Id
     physical_name: revocation_license_dcsn_id
     business_meaning_1st: FK đến quyết định thu hồi chứng chỉ
-    comment_1st: "FK target: License Decision Document.License Decision Document Id."
+    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+      \ Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3611,7 +3672,8 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
         business_meaning: FK đến quyết định thu hồi chứng chỉ
-        comment: "FK target: License Decision Document.License Decision Document Id."
+        comment: "FK target: License Decision Document.License Decision Document Id.\
+          \ Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
   - name: Revocation License Decision Code
     physical_name: revocation_license_dcsn_code
     business_meaning_1st: Mã nghiệp vụ của quyết định thu hồi
@@ -3634,7 +3696,8 @@ entities:
   - name: Cancellation License Decision Id
     physical_name: cncl_license_dcsn_id
     business_meaning_1st: FK đến quyết định hủy chứng chỉ
-    comment_1st: "FK target: License Decision Document.License Decision Document Id."
+    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+      \ Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3647,7 +3710,8 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
         business_meaning: FK đến quyết định hủy chứng chỉ
-        comment: "FK target: License Decision Document.License Decision Document Id."
+        comment: "FK target: License Decision Document.License Decision Document Id.\
+          \ Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
   - name: Cancellation License Decision Code
     physical_name: cncl_license_dcsn_code
     business_meaning_1st: Mã nghiệp vụ của quyết định hủy
@@ -4261,7 +4325,8 @@ entities:
   - name: Securities Organization Reference Id
     physical_name: scr_org_refr_id
     business_meaning_1st: FK đến tổ chức kinh doanh chứng khoán.
-    comment_1st: "FK target: scr_org_refr.scr_org_refr_id."
+    comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -4274,7 +4339,8 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID
         business_meaning: FK đến tổ chức kinh doanh chứng khoán.
-        comment: "FK target: scr_org_refr.scr_org_refr_id."
+        comment: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_ID)."
   - name: Securities Organization Reference Code
     physical_name: scr_org_refr_code
     business_meaning_1st: Mã tổ chức (denormalized).
@@ -4295,7 +4361,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến người hành nghề chứng khoán.
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -4308,7 +4375,8 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID
         business_meaning: FK đến người hành nghề chứng khoán.
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề (denormalized).
@@ -4330,7 +4398,7 @@ entities:
     physical_name: license_ctf_doc_id
     business_meaning_1st: FK đến hồ sơ chứng chỉ hành nghề (nullable).
     comment_1st: "FK target: License Certificate Document.License Certificate Document\
-      \ Id."
+      \ Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -4344,7 +4412,7 @@ entities:
         source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID
         business_meaning: FK đến hồ sơ chứng chỉ hành nghề (nullable).
         comment: "FK target: License Certificate Document.License Certificate Document\
-          \ Id."
+          \ Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
   - name: License Certificate Document Code
     physical_name: license_ctf_doc_code
     business_meaning_1st: Mã hồ sơ chứng chỉ hành nghề (denormalized).
@@ -4386,7 +4454,8 @@ entities:
   - name: Parent Report Id
     physical_name: prn_rpt_id
     business_meaning_1st: FK self-ref — báo cáo gốc được điều chỉnh (nullable).
-    comment_1st: "FK target: scr_prac_org_emp_rpt.scr_prac_org_emp_rpt_id. Self-referencing."
+    comment_1st: "FK target: scr_prac_org_emp_rpt.scr_prac_org_emp_rpt_id. Self-referencing.\
+      \ Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -4399,7 +4468,8 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID
         business_meaning: FK self-ref — báo cáo gốc được điều chỉnh (nullable).
-        comment: "FK target: scr_prac_org_emp_rpt.scr_prac_org_emp_rpt_id. Self-referencing."
+        comment: "FK target: scr_prac_org_emp_rpt.scr_prac_org_emp_rpt_id. Self-referencing.\
+          \ Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
   - name: Parent Report Code
     physical_name: prn_rpt_code
     business_meaning_1st: Mã báo cáo gốc (denormalized).
@@ -4834,7 +4904,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến nhân viên UBCKNN tạo bản ghi.
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -4847,7 +4918,8 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_BY
         business_meaning: FK đến nhân viên UBCKNN tạo bản ghi.
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã nhân viên tạo bản ghi (denormalized).
@@ -4887,7 +4959,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến nhân viên UBCKNN cập nhật bản ghi.
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -4900,7 +4973,8 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.UPDATED_BY
         business_meaning: FK đến nhân viên UBCKNN cập nhật bản ghi.
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã nhân viên cập nhật bản ghi (denormalized).
@@ -5085,7 +5159,7 @@ entities:
   - name: Province Id
     physical_name: prov_id
     business_meaning_1st: FK đến tỉnh/thành nơi tổ chức thi
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', PROVINCE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -5098,7 +5172,7 @@ entities:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
         business_meaning: FK đến tỉnh/thành nơi tổ chức thi
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', PROVINCE_ID)."
   - name: Province Code
     physical_name: prov_code
     business_meaning_1st: Mã tỉnh/thành nơi tổ chức thi (lookup pair)
@@ -5187,7 +5261,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -5200,7 +5275,8 @@ entities:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_BY
         business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi
@@ -5223,7 +5299,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -5236,7 +5313,8 @@ entities:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_BY
         business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi
@@ -5284,7 +5362,7 @@ entities:
     physical_name: ip_id
     business_meaning_1st: FK đến Securities Practitioner.
     comment_1st: "FK target: scr_prac.scr_prac_id. Shared entity — không có PK surrogate\
-      \ riêng."
+      \ riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -5298,7 +5376,7 @@ entities:
         source_column: NHNCK.PROFESSIONALS.ID
         business_meaning: FK đến Securities Practitioner.
         comment: "FK target: scr_prac.scr_prac_id. Shared entity — không có PK surrogate\
-          \ riêng."
+          \ riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   - name: Involved Party Code
     physical_name: ip_code
     business_meaning_1st: Mã người hành nghề.
@@ -5450,7 +5528,7 @@ entities:
     physical_name: ip_id
     business_meaning_1st: FK đến Securities Organization Reference.
     comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Shared entity — không có\
-      \ PK surrogate riêng."
+      \ PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -5464,22 +5542,22 @@ entities:
         source_column: NHNCK.ORGANIZATIONS.ID
         business_meaning: FK đến Securities Organization Reference.
         comment: "FK target: scr_org_refr.scr_org_refr_id. Shared entity — không có\
-          \ PK surrogate riêng."
+          \ PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.ID
         business_meaning: FK đến Securities Practitioner.
         comment: "FK target: scr_prac.scr_prac_id. Shared entity — không có PK surrogate\
-          \ riêng."
+          \ riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
       - source_table: UNITS
         source_column: NHNCK.UNITS.ID
         business_meaning: FK đến Regulatory Authority Organization Unit
         comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. Shared entity — không có PK\
-          \ surrogate riêng."
+          \ surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
       - source_table: USERS
         source_column: NHNCK.USERS.ID
         business_meaning: FK đến Regulatory Authority Officer
         comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Shared entity — không có\
-          \ PK surrogate riêng."
+          \ PK surrogate riêng. Hash: hash_id('NHNCK.USERS', ID)."
   - name: Involved Party Code
     physical_name: ip_code
     business_meaning_1st: Mã tổ chức.
@@ -5710,7 +5788,7 @@ entities:
     physical_name: ip_id
     business_meaning_1st: FK đến Securities Organization Reference.
     comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Shared entity — không có\
-      \ PK surrogate riêng."
+      \ PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -5724,17 +5802,17 @@ entities:
         source_column: NHNCK.ORGANIZATIONS.ID
         business_meaning: FK đến Securities Organization Reference.
         comment: "FK target: scr_org_refr.scr_org_refr_id. Shared entity — không có\
-          \ PK surrogate riêng."
+          \ PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.ID
         business_meaning: FK đến Securities Practitioner.
         comment: "FK target: scr_prac.scr_prac_id. Shared entity — không có PK surrogate\
-          \ riêng."
+          \ riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
       - source_table: UNITS
         source_column: NHNCK.UNITS.ID
         business_meaning: FK đến Regulatory Authority Organization Unit
         comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. Shared entity — không có PK\
-          \ surrogate riêng."
+          \ surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
   - name: Involved Party Code
     physical_name: ip_code
     business_meaning_1st: Mã tổ chức.
@@ -5847,7 +5925,7 @@ entities:
   - name: Country Id
     physical_name: cty_id
     business_meaning_1st: FK đến Geographic Area — quốc gia.
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -5860,7 +5938,7 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia.
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
   - name: Country Code
     physical_name: cty_code
     business_meaning_1st: Mã quốc gia.
@@ -5881,7 +5959,7 @@ entities:
   - name: Province Id
     physical_name: prov_id
     business_meaning_1st: FK đến Geographic Area — tỉnh/thành.
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -5894,7 +5972,7 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID
         business_meaning: FK đến Geographic Area — tỉnh/thành.
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
   - name: Province Code
     physical_name: prov_code
     business_meaning_1st: Mã tỉnh/thành.
@@ -5915,7 +5993,7 @@ entities:
   - name: District Id
     physical_name: dstc_id
     business_meaning_1st: FK đến Geographic Area — quận/huyện.
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -5928,7 +6006,7 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID
         business_meaning: FK đến Geographic Area — quận/huyện.
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
   - name: District Code
     physical_name: dstc_code
     business_meaning_1st: Mã quận/huyện.
@@ -6060,7 +6138,8 @@ entities:
   - name: Organization Unit Id
     physical_name: ou_id
     business_meaning_1st: FK đến Regulatory Authority Organization Unit (đơn vị)
-    comment_1st: "FK target: reg_ahr_ou.reg_ahr_ou_id."
+    comment_1st: "FK target: reg_ahr_ou.reg_ahr_ou_id. Hash: hash_id('NHNCK.UNITS',\
+      \ UNIT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -6073,7 +6152,8 @@ entities:
       - source_table: USERS
         source_column: NHNCK.USERS.UNIT_ID
         business_meaning: FK đến Regulatory Authority Organization Unit (đơn vị)
-        comment: "FK target: reg_ahr_ou.reg_ahr_ou_id."
+        comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. Hash: hash_id('NHNCK.UNITS',\
+          \ UNIT_ID)."
   - name: Organization Unit Code
     physical_name: ou_code
     business_meaning_1st: Mã đơn vị
@@ -6097,7 +6177,7 @@ entities:
     physical_name: dept_id
     business_meaning_1st: FK đến Regulatory Authority Organization Unit (phòng ban)
     comment_1st: "FK target: reg_ahr_ou.reg_ahr_ou_id. (Represents the DEPARTMENT\
-      \ node)"
+      \ node). Hash: hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -6111,7 +6191,7 @@ entities:
         source_column: NHNCK.USERS.DEPARTMENT_ID
         business_meaning: FK đến Regulatory Authority Organization Unit (phòng ban)
         comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. (Represents the DEPARTMENT\
-          \ node)"
+          \ node). Hash: hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_ID)."
   - name: Department Code
     physical_name: dept_code
     business_meaning_1st: Mã phòng ban
@@ -6152,7 +6232,7 @@ entities:
     physical_name: scr_prac_id
     business_meaning_1st: FK đến Securities Practitioner (nếu cán bộ cũng là NHNCK)
     comment_1st: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer\
-      \ có thể không là NHNCK."
+      \ có thể không là NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -6166,7 +6246,7 @@ entities:
         source_column: NHNCK.USERS.PROFESSIONAL_ID
         business_meaning: FK đến Securities Practitioner (nếu cán bộ cũng là NHNCK)
         comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer\
-          \ có thể không là NHNCK."
+          \ có thể không là NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề liên kết
@@ -6257,7 +6337,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ tạo bản ghi (self-ref)
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -6270,7 +6351,8 @@ entities:
       - source_table: USERS
         source_column: NHNCK.USERS.CREATED_BY
         business_meaning: FK đến cán bộ tạo bản ghi (self-ref)
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi
@@ -6293,7 +6375,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ cập nhật bản ghi lần cuối (self-ref)
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -6306,7 +6389,8 @@ entities:
       - source_table: USERS
         source_column: NHNCK.USERS.UPDATED_BY
         business_meaning: FK đến cán bộ cập nhật bản ghi lần cuối (self-ref)
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi lần cuối
@@ -6487,7 +6571,8 @@ entities:
   - name: Parent Regulatory Authority Organization Unit Id
     physical_name: prn_reg_ahr_ou_id
     business_meaning_1st: FK đến đơn vị cha (UNITS)
-    comment_1st: "FK target: reg_ahr_ou.reg_ahr_ou_id. Parent là Unit không phải Department."
+    comment_1st: "FK target: reg_ahr_ou.reg_ahr_ou_id. Parent là Unit không phải Department.\
+      \ Hash: hash_id('NHNCK.UNITS', UNIT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -6500,11 +6585,13 @@ entities:
       - source_table: DEPARTMENTS
         source_column: NHNCK.DEPARTMENTS.UNIT_ID
         business_meaning: FK đến đơn vị cha (UNITS)
-        comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. Parent là Unit không phải Department."
+        comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. Parent là Unit không phải Department.\
+          \ Hash: hash_id('NHNCK.UNITS', UNIT_ID)."
       - source_table: UNITS
         source_column: NHNCK.UNITS.PARENT_ID
         business_meaning: FK đến đơn vị cha (self-ref)
-        comment: "FK target: reg_ahr_ou.reg_ahr_ou_id."
+        comment: "FK target: reg_ahr_ou.reg_ahr_ou_id. Hash: hash_id('NHNCK.UNITS',\
+          \ PARENT_ID)."
   - name: Parent Regulatory Authority Organization Unit Code
     physical_name: prn_reg_ahr_ou_code
     business_meaning_1st: Mã đơn vị cha (UNITS)
@@ -6780,7 +6867,8 @@ entities:
   - name: Parent Securities Organization Reference Id
     physical_name: prn_scr_org_refr_id
     business_meaning_1st: FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp.
-    comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Self-referencing."
+    comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Self-referencing. Hash:\
+      \ hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -6793,7 +6881,8 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.ORGANIZATIONS.PARENT_ID
         business_meaning: FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp.
-        comment: "FK target: scr_org_refr.scr_org_refr_id. Self-referencing."
+        comment: "FK target: scr_org_refr.scr_org_refr_id. Self-referencing. Hash:\
+          \ hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
   - name: Parent Securities Organization Reference Code
     physical_name: prn_scr_org_refr_code
     business_meaning_1st: Mã tổ chức cha.
@@ -7062,7 +7151,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ tạo bản ghi.
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -7075,7 +7165,8 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.ORGANIZATIONS.CREATED_BY
         business_meaning: FK đến cán bộ tạo bản ghi.
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi.
@@ -7098,7 +7189,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ cập nhật bản ghi gần nhất.
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -7111,7 +7203,8 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.ORGANIZATIONS.UPDATED_BY
         business_meaning: FK đến cán bộ cập nhật bản ghi gần nhất.
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi gần nhất.
@@ -7423,7 +7516,7 @@ entities:
     physical_name: org_id
     business_meaning_1st: FK đến tổ chức chứng khoán hiện tại (nullable)
     comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Nullable — người hành nghề\
-      \ có thể chưa công tác."
+      \ có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -7437,12 +7530,12 @@ entities:
         source_column: NHNCK.PROFESSIONALS.ORGANIZATION_ID
         business_meaning: FK đến tổ chức chứng khoán hiện tại (nullable)
         comment: "FK target: scr_org_refr.scr_org_refr_id. Nullable — người hành nghề\
-          \ có thể chưa công tác."
+          \ có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
       - source_table: PROFESSIONAL_HISTORIES
         source_column: NHNCK.PROFESSIONALS.ORGANIZATION_ID
         business_meaning: FK đến tổ chức chứng khoán hiện tại (nullable)
         comment: "FK target: scr_org_refr.scr_org_refr_id. Nullable — người hành nghề\
-          \ có thể chưa công tác."
+          \ có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   - name: Organization Code
     physical_name: org_code
     business_meaning_1st: Mã tổ chức (denormalized lookup)
@@ -7470,7 +7563,8 @@ entities:
   - name: Nationality Id
     physical_name: nat_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch)
-    comment_1st: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY."
+    comment_1st: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY. Hash:\
+      \ hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -7483,11 +7577,13 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.NATIONALITY_ID
         business_meaning: FK đến Geographic Area (quốc tịch)
-        comment: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY."
+        comment: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY. Hash:\
+          \ hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
       - source_table: PROFESSIONAL_HISTORIES
         source_column: NHNCK.PROFESSIONALS.NATIONALITY_ID
         business_meaning: FK đến Geographic Area (quốc tịch)
-        comment: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY."
+        comment: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY. Hash:\
+          \ hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
   - name: Nationality Code
     physical_name: nat_code
     business_meaning_1st: Mã quốc gia/quốc tịch (denormalized)
@@ -7768,7 +7864,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: Surrogate key FK đến người hành nghề chứng khoán.
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -7781,7 +7878,8 @@ entities:
       - source_table: PROFESSIONAL_WORK_HISTORIES
         source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID
         business_meaning: Surrogate key FK đến người hành nghề chứng khoán.
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã kỹ thuật của người hành nghề (dư thừa).
@@ -7803,7 +7901,8 @@ entities:
     physical_name: scr_org_refr_id
     business_meaning_1st: Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi
       người hành nghề làm việc.
-    comment_1st: "FK target: scr_org_refr.scr_org_refr_id."
+    comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -7817,7 +7916,8 @@ entities:
         source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
         business_meaning: Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi
           người hành nghề làm việc.
-        comment: "FK target: scr_org_refr.scr_org_refr_id."
+        comment: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_ID)."
   - name: Securities Organization Reference Code
     physical_name: scr_org_refr_code
     business_meaning_1st: Mã kỹ thuật của tổ chức (dư thừa).
@@ -8062,7 +8162,7 @@ entities:
     physical_name: license_ap_id
     business_meaning_1st: FK đến hồ sơ đăng ký CCHN
     comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id."
+      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -8076,7 +8176,7 @@ entities:
         source_column: NHNCK.APPLICATION_EXPERIENCES.APPLICATION_ID
         business_meaning: FK đến hồ sơ đăng ký CCHN
         comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id."
+          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   - name: License Application Code
     physical_name: license_ap_code
     business_meaning_1st: Mã hồ sơ đăng ký CCHN
@@ -8119,7 +8219,8 @@ entities:
     physical_name: scr_org_refr_id
     business_meaning_1st: FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable
       — nếu nơi làm việc là CTCK/QLQ đã đăng ký)
-    comment_1st: "FK target: scr_org_refr.scr_org_refr_id."
+    comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -8133,7 +8234,8 @@ entities:
         source_column: NHNCK.APPLICATION_EXPERIENCES.ORGANIZATION_ID
         business_meaning: FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable
           — nếu nơi làm việc là CTCK/QLQ đã đăng ký)
-        comment: "FK target: scr_org_refr.scr_org_refr_id."
+        comment: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_ID)."
   - name: Securities Organization Reference Code
     physical_name: scr_org_refr_code
     business_meaning_1st: Mã tổ chức kinh doanh chứng khoán (dư thừa)
@@ -8422,7 +8524,8 @@ entities:
   - name: License Application Id
     physical_name: license_ap_id
     business_meaning_1st: FK đến hồ sơ đăng ký
-    comment_1st: "FK target: scr_prac_license_ap.scr_prac_license_ap_id."
+    comment_1st: "FK target: scr_prac_license_ap.scr_prac_license_ap_id. Hash: hash_id('NHNCK.APPLICATIONS',\
+      \ APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -8435,7 +8538,8 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID
         business_meaning: FK đến hồ sơ đăng ký
-        comment: "FK target: scr_prac_license_ap.scr_prac_license_ap_id."
+        comment: "FK target: scr_prac_license_ap.scr_prac_license_ap_id. Hash: hash_id('NHNCK.APPLICATIONS',\
+          \ APPLICATION_ID)."
   - name: License Application Code
     physical_name: license_ap_code
     business_meaning_1st: Mã hồ sơ đăng ký (denormalized)
@@ -8458,7 +8562,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến người hành nghề
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -8471,7 +8576,8 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PROFESSIONAL_ID
         business_meaning: FK đến người hành nghề
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề (denormalized)
@@ -8492,7 +8598,8 @@ entities:
   - name: Organization Id
     physical_name: org_id
     business_meaning_1st: FK đến tổ chức chứng khoán (nullable)
-    comment_1st: "FK target: scr_org_refr.scr_org_refr_id."
+    comment_1st: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -8505,7 +8612,8 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID
         business_meaning: FK đến tổ chức chứng khoán (nullable)
-        comment: "FK target: scr_org_refr.scr_org_refr_id."
+        comment: "FK target: scr_org_refr.scr_org_refr_id. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_ID)."
   - name: Organization Code
     physical_name: org_code
     business_meaning_1st: Mã tổ chức (denormalized)
@@ -8528,7 +8636,8 @@ entities:
   - name: Nationality Id
     physical_name: nat_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch snapshot)
-    comment_1st: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY."
+    comment_1st: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY. Hash:\
+      \ hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -8541,7 +8650,8 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.NATIONALITY_ID
         business_meaning: FK đến Geographic Area (quốc tịch snapshot)
-        comment: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY."
+        comment: "FK target: geo.geo_id. Geographic Area Type Code = COUNTRY. Hash:\
+          \ hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
   - name: Nationality Code
     physical_name: nat_code
     business_meaning_1st: Mã quốc gia/quốc tịch (denormalized)
@@ -8921,7 +9031,7 @@ entities:
   - name: Snapshot Permanent Country Id
     physical_name: snpst_perm_cty_id
     business_meaning_1st: FK đến Geographic Area — quốc gia thường trú (snapshot)
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -8934,7 +9044,7 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia thường trú (snapshot)
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
   - name: Snapshot Permanent Country Code
     physical_name: snpst_perm_cty_code
     business_meaning_1st: Mã quốc gia thường trú (denormalized snapshot)
@@ -8957,7 +9067,7 @@ entities:
   - name: Snapshot Permanent Province Id
     physical_name: snpst_perm_prov_id
     business_meaning_1st: FK đến Geographic Area — tỉnh thường trú (snapshot)
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -8970,7 +9080,7 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID
         business_meaning: FK đến Geographic Area — tỉnh thường trú (snapshot)
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
   - name: Snapshot Permanent Province Code
     physical_name: snpst_perm_prov_code
     business_meaning_1st: Mã tỉnh thường trú (denormalized snapshot)
@@ -8993,7 +9103,7 @@ entities:
   - name: Snapshot Permanent District Id
     physical_name: snpst_perm_dstc_id
     business_meaning_1st: FK đến Geographic Area — huyện thường trú (snapshot)
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9006,7 +9116,7 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID
         business_meaning: FK đến Geographic Area — huyện thường trú (snapshot)
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
   - name: Snapshot Permanent District Code
     physical_name: snpst_perm_dstc_code
     business_meaning_1st: Mã huyện thường trú (denormalized snapshot)
@@ -9029,7 +9139,7 @@ entities:
   - name: Snapshot Current Country Id
     physical_name: snpst_crn_cty_id
     business_meaning_1st: FK đến Geographic Area — quốc gia tạm trú (snapshot)
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', CURRENT_COUNTRY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9042,7 +9152,7 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia tạm trú (snapshot)
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', CURRENT_COUNTRY_ID)."
   - name: Snapshot Current Country Code
     physical_name: snpst_crn_cty_code
     business_meaning_1st: Mã quốc gia tạm trú (denormalized snapshot)
@@ -9063,7 +9173,7 @@ entities:
   - name: Snapshot Current Province Id
     physical_name: snpst_crn_prov_id
     business_meaning_1st: FK đến Geographic Area — tỉnh tạm trú (snapshot)
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', CURRENT_PROVINCE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9076,7 +9186,7 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID
         business_meaning: FK đến Geographic Area — tỉnh tạm trú (snapshot)
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.PROVINCES', CURRENT_PROVINCE_ID)."
   - name: Snapshot Current Province Code
     physical_name: snpst_crn_prov_code
     business_meaning_1st: Mã tỉnh tạm trú (denormalized snapshot)
@@ -9097,7 +9207,7 @@ entities:
   - name: Snapshot Current District Id
     physical_name: snpst_crn_dstc_id
     business_meaning_1st: FK đến Geographic Area — huyện tạm trú (snapshot)
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.DISTRICTS', CURRENT_DISTRICT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9110,7 +9220,7 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID
         business_meaning: FK đến Geographic Area — huyện tạm trú (snapshot)
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.DISTRICTS', CURRENT_DISTRICT_ID)."
   - name: Snapshot Current District Code
     physical_name: snpst_crn_dstc_code
     business_meaning_1st: Mã huyện tạm trú (denormalized snapshot)
@@ -9227,7 +9337,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: Surrogate key FK đến người hành nghề chứng khoán.
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -9240,7 +9351,8 @@ entities:
       - source_table: PROFESSIONAL_TRAININGS
         source_column: NHNCK.PROFESSIONAL_TRAININGS.PROFESSIONAL_ID
         business_meaning: Surrogate key FK đến người hành nghề chứng khoán.
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã kỹ thuật của người hành nghề (dư thừa).
@@ -9444,7 +9556,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: scr_prac_id
     business_meaning_1st: FK đến Securities Practitioner
-    comment_1st: "FK target: Securities Practitioner.Practitioner Id."
+    comment_1st: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -9457,7 +9570,8 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID
         business_meaning: FK đến Securities Practitioner
-        comment: "FK target: Securities Practitioner.Practitioner Id."
+        comment: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã người hành nghề chứng khoán
@@ -9601,7 +9715,7 @@ entities:
   - name: Country Id
     physical_name: cty_id
     business_meaning_1st: FK đến Geographic Area — quốc gia
-    comment_1st: "FK target: geo.geo_id."
+    comment_1st: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', COUNTRY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9614,7 +9728,7 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia
-        comment: "FK target: geo.geo_id."
+        comment: "FK target: geo.geo_id. Hash: hash_id('NHNCK.COUNTRIES', COUNTRY_ID)."
   - name: Country Code
     physical_name: cty_code
     business_meaning_1st: Mã quốc gia
@@ -9686,7 +9800,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến Regulatory Authority Officer — người tạo
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9699,7 +9814,8 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY
         business_meaning: FK đến Regulatory Authority Officer — người tạo
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã người tạo
@@ -9722,7 +9838,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến Regulatory Authority Officer — người cập nhật
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -9735,7 +9852,8 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY
         business_meaning: FK đến Regulatory Authority Officer — người cập nhật
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã người cập nhật
@@ -9955,11 +10073,13 @@ entities:
       - source_table: DISTRICTS
         source_column: NHNCK.DISTRICTS.PROVINCE_ID
         business_meaning: FK đến tỉnh/thành cha
-        comment: "FK target: geo.geo_id. Parent là PROVINCE."
+        comment: "FK target: geo.geo_id. Parent là PROVINCE. Hash: hash_id('NHNCK.PROVINCES',\
+          \ PROVINCE_ID)."
       - source_table: PROVINCES
         source_column: NHNCK.PROVINCES.COUNTRY_ID
         business_meaning: FK đến quốc gia cha
-        comment: "FK target: geo.geo_id. Parent là COUNTRY."
+        comment: "FK target: geo.geo_id. Parent là COUNTRY. Hash: hash_id('NHNCK.COUNTRIES',\
+          \ COUNTRY_ID)."
   - name: Parent Geographic Area Code
     physical_name: prn_geo_code
     business_meaning_1st: Mã vùng địa lý cha
@@ -10096,7 +10216,8 @@ entities:
   - name: License Application Id
     physical_name: license_ap_id
     business_meaning_1st: FK đến License Application
-    comment_1st: "FK target: License Application.License Application Id."
+    comment_1st: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+      \ APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -10109,7 +10230,8 @@ entities:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.APPLICATION_FEES.APPLICATION_ID
         business_meaning: FK đến License Application
-        comment: "FK target: License Application.License Application Id."
+        comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+          \ APPLICATION_ID)."
   - name: License Application Code
     physical_name: license_ap_code
     business_meaning_1st: Mã hồ sơ đăng ký (lookup pair)
@@ -10133,7 +10255,8 @@ entities:
     physical_name: scr_prac_id
     business_meaning_1st: FK đến Securities Practitioner (redundant — derive được
       từ Application)
-    comment_1st: "FK target: scr_prac.scr_prac_id."
+    comment_1st: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -10147,7 +10270,8 @@ entities:
         source_column: NHNCK.APPLICATION_FEES.PROFESSIONAL_ID
         business_meaning: FK đến Securities Practitioner (redundant — derive được
           từ Application)
-        comment: "FK target: scr_prac.scr_prac_id."
+        comment: "FK target: scr_prac.scr_prac_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: scr_prac_code
     business_meaning_1st: Mã chuyên viên (lookup pair)
@@ -10372,7 +10496,8 @@ entities:
   - name: Created By Officer Id
     physical_name: crt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ CREATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -10385,7 +10510,8 @@ entities:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.APPLICATION_FEES.CREATED_BY
         business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ CREATED_BY)."
   - name: Created By Officer Code
     physical_name: crt_by_ofcr_code
     business_meaning_1st: Mã cán bộ tạo bản ghi
@@ -10408,7 +10534,8 @@ entities:
   - name: Updated By Officer Id
     physical_name: udt_by_ofcr_id
     business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    comment_1st: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+      \ UPDATED_BY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -10421,7 +10548,8 @@ entities:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.APPLICATION_FEES.UPDATED_BY
         business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+        comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id. Hash: hash_id('NHNCK.USERS',\
+          \ UPDATED_BY)."
   - name: Updated By Officer Code
     physical_name: udt_by_ofcr_code
     business_meaning_1st: Mã cán bộ cập nhật bản ghi

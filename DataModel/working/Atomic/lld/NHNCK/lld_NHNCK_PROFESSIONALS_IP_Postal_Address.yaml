@@ -28,8 +28,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -94,7 +93,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
@@ -120,7 +119,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
@@ -147,7 +146,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id."
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
