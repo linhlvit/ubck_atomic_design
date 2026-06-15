@@ -37,9 +37,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.UNITS: "NHNCK.qlnhn.UNITS.ID"
-    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ID"
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.ID"
+    NHNCK.UNITS: "NHNCK.UNITS.ID"
+    NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã người hành nghề."
@@ -51,9 +51,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.UNITS: "NHNCK.qlnhn.UNITS.UNIT_CODE"
-    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ID"
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.ID"
+    NHNCK.UNITS: "NHNCK.UNITS.UNIT_CODE"
+    NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn."
@@ -90,8 +90,8 @@ attributes:
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
-    NHNCK.UNITS: "NHNCK.qlnhn.UNITS.ADDRESS"
-    NHNCK.ORGANIZATIONS: "NHNCK.qlnhn.ORGANIZATIONS.ADDRESS"
+    NHNCK.UNITS: "NHNCK.UNITS.ADDRESS"
+    NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ADDRESS"
     NHNCK.PROFESSIONALS: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
@@ -112,14 +112,14 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.qlnhn.PROFESSIONALS.ADDRESS\
+  comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.PROFESSIONALS.ADDRESS\
     \ khi PERMANENT_ADDRESS null. ETL xử lý logic này."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.PERMANENT_ADDRESS"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_ADDRESS"
 - attribute_name: "Country Id"
   physical_name: "cty_id"
   description: "FK đến Geographic Area — quốc gia."
@@ -132,7 +132,7 @@ attributes:
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
 - attribute_name: "Country Code"
   physical_name: "cty_code"
   description: "Mã quốc gia."
@@ -145,7 +145,7 @@ attributes:
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.PERMANENT_COUNTRY_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
 - attribute_name: "Province Id"
   physical_name: "prov_id"
   description: "FK đến Geographic Area — tỉnh/thành."
@@ -158,7 +158,7 @@ attributes:
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
 - attribute_name: "Province Code"
   physical_name: "prov_code"
   description: "Mã tỉnh/thành."
@@ -172,7 +172,7 @@ attributes:
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.PERMANENT_PROVINCE_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
 - attribute_name: "District Id"
   physical_name: "dstc_id"
   description: "FK đến Geographic Area — quận/huyện."
@@ -185,7 +185,7 @@ attributes:
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
 - attribute_name: "District Code"
   physical_name: "dstc_code"
   description: "Mã quận/huyện."
@@ -199,4 +199,4 @@ attributes:
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.qlnhn.PROFESSIONALS.PERMANENT_DISTRICT_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"

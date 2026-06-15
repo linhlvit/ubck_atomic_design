@@ -45,7 +45,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.ID
+    source_column: NHNCK.VIOLATIONS.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -73,7 +73,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.PROFESSIONAL_ID
+    source_column: NHNCK.VIOLATIONS.PROFESSIONAL_ID
     comment: "FK target: scr_prac.scr_prac_id."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -87,7 +87,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.PROFESSIONAL_ID
+    source_column: NHNCK.VIOLATIONS.PROFESSIONAL_ID
     comment: "Lookup pair: scr_prac.scr_prac_code. Pair with scr_prac_id."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -101,7 +101,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.DECISION_ID
+    source_column: NHNCK.VIOLATIONS.DECISION_ID
     comment: "FK target: License Decision Document.License Decision Document Id."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -115,7 +115,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.DECISION_ID
+    source_column: NHNCK.VIOLATIONS.DECISION_ID
     comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with License Decision Document Id."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -129,7 +129,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.FULL_NAME
+    source_column: NHNCK.VIOLATIONS.FULL_NAME
     comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS.
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -143,7 +143,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.BIRTH_DATE
+    source_column: NHNCK.VIOLATIONS.BIRTH_DATE
     comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS.
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -157,7 +157,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.IDENTITY_NUMBER
+    source_column: NHNCK.VIOLATIONS.IDENTITY_NUMBER
     comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Grain ≠ Involved Party nên không tách IP Alt Identification.
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -171,7 +171,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.CREATED_AT
+    source_column: NHNCK.VIOLATIONS.CREATED_AT
     comment: Business event date của Fact Append — thời điểm vi phạm được ghi nhận vào hệ thống.
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -185,7 +185,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.NOTE
+    source_column: NHNCK.VIOLATIONS.NOTE
     comment: null
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -199,7 +199,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.RECORD_TYPE
+    source_column: NHNCK.VIOLATIONS.RECORD_TYPE
     comment: "Scheme: RECORD_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
@@ -213,7 +213,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.qlnhn.VIOLATIONS.RECORD_STATUS
-    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
+    source_column: NHNCK.VIOLATIONS.RECORD_STATUS
+    comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
