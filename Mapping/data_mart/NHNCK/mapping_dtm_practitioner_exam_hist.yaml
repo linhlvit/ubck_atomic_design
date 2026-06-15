@@ -1,0 +1,103 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-practitioner_exam_hist
+  logical_name: Mapping Datamart - Practitioner Exam History
+  physical_name: practitioner_exam_hist
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: practitioner_exam_hist
+  etl_handle: SCD4A
+  description: 'Lịch sử thi sát hạch — toàn bộ lần thi per NHN: đợt thi, ngày thi,
+    điểm luật, điểm chuyên môn, kết quả, số quyết định công bố.'
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_qualf_exam_ases_rslt_hstr
+  alias: at_sc_pr_qu_ex_as_rs_hs
+  select_fields: prac_code, exam_ases_rslt_code, law_scor, specialization_scor, exam_rslt_code,
+    src_stm_code, exam_ases_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'NHNCK_ExamDetails'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_qualf_exam_ases_hstr
+  alias: at_sc_pr_qu_ex_as_hs
+  select_fields: ssn_nm, exam_strt_dt, exam_ases_id, license_dcsn_doc_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_license_dcsn_doc_hstr
+  alias: at_sc_pr_li_dc_do_hs
+  select_fields: dcsn_nbr, signing_dt, license_dcsn_doc_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_sc_pr_qu_ex_as_rs_hs
+  join_type: LEFT JOIN
+  join_alias: at_sc_pr_qu_ex_as_hs
+  join_on: at_sc_pr_qu_ex_as_hs.exam_ases_id = at_sc_pr_qu_ex_as_rs_hs.exam_ases_id
+  description: ''
+- main_alias: at_sc_pr_qu_ex_as_rs_hs
+  join_type: LEFT JOIN
+  join_alias: at_sc_pr_li_dc_do_hs
+  join_on: at_sc_pr_li_dc_do_hs.license_dcsn_doc_id = at_sc_pr_qu_ex_as_hs.license_dcsn_doc_id
+  description: ''
+mapping_columns:
+- target_column: practitioner_code
+  transformation: at_sc_pr_qu_ex_as_rs_hs.prac_code
+  data_type: string
+  target_attr_name: ''
+  description: PK composite (NHN)
+- target_column: exam_ases_rslt_code
+  transformation: at_sc_pr_qu_ex_as_rs_hs.exam_ases_rslt_code
+  data_type: string
+  target_attr_name: ''
+  description: PK kết quả thi
+- target_column: ssn_nm
+  transformation: at_sc_pr_qu_ex_as_hs.ssn_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên đợt thi
+- target_column: exam_strt_dt
+  transformation: at_sc_pr_qu_ex_as_hs.exam_strt_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày thi
+- target_column: law_scor
+  transformation: at_sc_pr_qu_ex_as_rs_hs.law_scor
+  data_type: string
+  target_attr_name: ''
+  description: Điểm pháp luật — Text do có thể là 'Vắng'/'Miễn thi'
+- target_column: specialization_scor
+  transformation: at_sc_pr_qu_ex_as_rs_hs.specialization_scor
+  data_type: string
+  target_attr_name: ''
+  description: Điểm chuyên môn
+- target_column: exam_rslt_code
+  transformation: at_sc_pr_qu_ex_as_rs_hs.exam_rslt_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Kết quả tổng — Scheme: EXAMINATION_RESULT'
+- target_column: dcsn_nbr
+  transformation: at_sc_pr_li_dc_do_hs.dcsn_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số quyết định công bố kết quả — join từ ExamSessions.DecisionId
+- target_column: dcsn_issu_dt
+  transformation: at_sc_pr_li_dc_do_hs.signing_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày ban hành quyết định công bố
+- target_column: src_stm_code
+  transformation: at_sc_pr_qu_ex_as_rs_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức NHNCK_ExamDetails. Driving
+    table: at_sc_pr_qu_ex_as_rs_hs.'
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

@@ -1,0 +1,82 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_scr_ofrg_ap
+  logical_name: Event hồ sơ đăng ký chào bán nộp lên UBCKNN — 1 row per hồ sơ. Application
+    Status Code ETL-derived tại Atomic. Phục vụ KPI Cards / donut / bảng chi tiết
+    Tab Hồ sơ đăng ký chào bán.
+  physical_name: fct_scr_ofrg_ap
+  dm_ref: DTM-fct_scr_ofrg_ap
+  brd_ref: BRD-DTM-QLCB
+target:
+  namespace: dtm
+  physical_name: fct_scr_ofrg_ap
+  etl_handle: Fact Append
+  description: Event hồ sơ đăng ký chào bán nộp lên UBCKNN — 1 row per hồ sơ. Application
+    Status Code ETL-derived tại Atomic. Phục vụ KPI Cards / donut / bảng chi tiết
+    Tab Hồ sơ đăng ký chào bán.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_ofrg_ap_hstr
+  alias: at_sc_of_ap_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_ofrg_tp_dim_hstr
+  alias: dt_of_tp_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_sc_of_ap_hs
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.dt = CAST(at_sc_of_ap_hs.crt_tms AS date)
+  description: ''
+- main_alias: at_sc_of_ap_hs
+  join_type: LEFT JOIN
+  join_alias: dt_of_tp_di_hs
+  join_on: dt_of_tp_di_hs.cntnt_tp_code = at_sc_of_ap_hs.cntnt_tp_code AND CAST(at_sc_of_ap_hs.crt_tms
+    AS date) BETWEEN dt_of_tp_di_hs.eff_dt AND dt_of_tp_di_hs.expiry_dt
+  description: ''
+mapping_columns:
+- target_column: ap_code
+  transformation: at_sc_of_ap_hs.scr_ofrg_ap_code
+  data_type: string
+  target_attr_name: ''
+  description: Degenerate Dimension — Business key hồ sơ (TTHC ContentItemId). Fact
+    Event không có Surrogate PK
+- target_column: subm_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK lịch theo ngày nộp hồ sơ (ContentItemIndex.CreatedUtc)
+- target_column: ofrg_tp_dim_id
+  transformation: dt_of_tp_di_hs.ofrg_tp_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK loại hình chào bán — ETL lookup qua NK cntnt_tp_code
+- target_column: ap_st_code
+  transformation: at_sc_of_ap_hs.ap_st_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái hồ sơ ETL-derived tại tầng Atomic — direct map, không tự
+    tính tại Datamart. Scheme: TTHC_APPLICATION_STATUS (DA_CAP_PHEP / TU_CHOI / DANG_XU_LY
+    / CHO_XU_LY)'
+- target_column: ap_yr
+  transformation: EXTRACT(YEAR FROM at_sc_of_ap_hs.crt_tms)
+  data_type: int
+  target_attr_name: ''
+  description: Năm nộp hồ sơ — Degenerate Dimension dạng int, extract từ Created Timestamp
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

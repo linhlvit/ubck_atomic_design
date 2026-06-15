@@ -1,0 +1,25 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,Source System,,,Description,,,
+dtm,sit_dtm,fct_ivsm_fnd_ccq_snpst,Fact Snapshot,,,,CCQ lưu hành per quỹ — grain 1 quỹ × 1 snapshot tháng ← FMS.TRANSFERMBF tích lũy. PENDING O_FMS_7 cho quỹ đóng,,,
+
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,,,
+1,physical_table,,atm_ivsm_fnd_ctf_tfr,ivsm_fnd_ctf_tfr,*,"ds_snpst_dt = to_date(""etl_date"", 'yyyy-MM-dd')",,,,
+2,physical_table,,dtm_cdr_dt_dim_hstr,cdr_dt_dim,*,"ds_snpst_dt = to_date(""etl_date"", 'yyyy-MM-dd') AND ds_rcrd_st = 1",,,,
+3,physical_table,,dtm_ivsm_fnd_dim_hstr,ivsm_fnd_dim,*,"ds_snpst_dt = to_date(""etl_date"", 'yyyy-MM-dd') AND ds_rcrd_st = 1",,,,
+
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,,,
+1,ivsm_fnd_ctf_tfr,LEFT JOIN,cdr_dt_dim,cdr_dt_dim.cdr_dt_id = ivsm_fnd_ctf_tfr.tfr_dt,,,,,,
+2,ivsm_fnd_ctf_tfr,LEFT JOIN,ivsm_fnd_dim,ivsm_fnd_dim.fnd_code = ivsm_fnd_ctf_tfr.ivsm_fnd_code AND ivsm_fnd_dim.ds_rcrd_st = 1,,,,,,
+
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Physical Target Column,Transformation,Data Type,Logical Target Column,,,Description,,,
+1,rpt_dt_dim_id,cdr_dt_dim.cdr_dt_dim_id,string,,,,FK lịch ngày snapshot CCQ,,,
+2,ivsm_fnd_dim_id,ivsm_fnd_dim.ivsm_fnd_dim_id,string,,,,"FK quỹ đầu tư — lookup qua NK fnd_code, active record",,,
+3,rpt_tpl_code,NULL  -- PENDING,string,,,,Mã biểu mẫu BC — Degenerate Dimension (null cho nguồn db),,,
+4,rpt_prd_code,NULL  -- PENDING,string,,,,Mã kỳ báo cáo — Degenerate Dimension (null cho nguồn db),,,
+5,outst_unit_cnt,SUM(ivsm_fnd_ctf_tfr.tfr_qty) WHERE ivsm_fnd_ctf_tfr.tfr_tp_code = 'MUA' AND ivsm_fnd_ctf_tfr.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id - SUM(ivsm_fnd_ctf_tfr.tfr_qty) WHERE ivsm_fnd_ctf_tfr.tfr_tp_code = 'BAN' AND ivsm_fnd_ctf_tfr.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id,"decimal(23,2)",,,,Số CCQ lưu hành = SUM(Transfer_Quantity MUA) − SUM(Transfer_Quantity BÁN) per quỹ per snapshot date,,,
+
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,,,

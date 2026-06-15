@@ -1,0 +1,110 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-practitioner_ctf_hist
+  logical_name: Mapping Datamart - Practitioner Certificate History
+  physical_name: practitioner_ctf_hist
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: practitioner_ctf_hist
+  etl_handle: SCD4A
+  description: 'Lịch sử cấp CCHN — toàn bộ CCHN per NHN: số CCHN, loại hình, ngày
+    cấp, ngày thu hồi, quyết định cấp, trạng thái.'
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_license_ctf_doc_hstr
+  alias: at_sc_pr_li_ct_do_hs
+  select_fields: prac_code, license_ctf_doc_code, ctf_nbr, ctf_issu_dt, revocation_dt,
+    src_stm_code, ctf_tp_code, ctf_st_code, issn_dcsn_doc_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'NHNCK_CertificateRecords'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv
+  select_fields: cl_nm, cl_code
+  filter: scm_code = 'CERTIFICATE_TYPE'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv_2
+  select_fields: cl_nm, cl_code
+  filter: scm_code = 'CERTIFICATE_STATUS'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_license_dcsn_doc_hstr
+  alias: at_sc_pr_li_dc_do_hs
+  select_fields: dcsn_nbr, license_dcsn_doc_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_sc_pr_li_ct_do_hs
+  join_type: LEFT JOIN
+  join_alias: at_cv
+  join_on: at_cv.cl_code = at_sc_pr_li_ct_do_hs.ctf_tp_code
+  description: ''
+- main_alias: at_sc_pr_li_ct_do_hs
+  join_type: LEFT JOIN
+  join_alias: at_cv_2
+  join_on: at_cv_2.cl_code = at_sc_pr_li_ct_do_hs.ctf_st_code
+  description: ''
+- main_alias: at_sc_pr_li_ct_do_hs
+  join_type: LEFT JOIN
+  join_alias: at_sc_pr_li_dc_do_hs
+  join_on: at_sc_pr_li_dc_do_hs.license_dcsn_doc_id = at_sc_pr_li_ct_do_hs.issn_dcsn_doc_id
+  description: ''
+mapping_columns:
+- target_column: practitioner_code
+  transformation: at_sc_pr_li_ct_do_hs.prac_code
+  data_type: string
+  target_attr_name: ''
+  description: PK composite (NHN)
+- target_column: license_ctf_doc_code
+  transformation: at_sc_pr_li_ct_do_hs.license_ctf_doc_code
+  data_type: string
+  target_attr_name: ''
+  description: PK CCHN
+- target_column: ctf_nbr
+  transformation: at_sc_pr_li_ct_do_hs.ctf_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số chứng chỉ
+- target_column: ctf_tp_nm
+  transformation: at_cv.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên loại CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_TYPE)'
+- target_column: ctf_st_nm
+  transformation: at_cv_2.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên trạng thái CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_STATUS)'
+- target_column: ctf_issu_dt
+  transformation: at_sc_pr_li_ct_do_hs.ctf_issu_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày cấp
+- target_column: revocation_dt
+  transformation: at_sc_pr_li_ct_do_hs.revocation_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày thu hồi — NULL = chưa thu hồi
+- target_column: issn_dcsn_nbr
+  transformation: at_sc_pr_li_dc_do_hs.dcsn_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số quyết định cấp — join qua IssueDecisionId
+- target_column: src_stm_code
+  transformation: at_sc_pr_li_ct_do_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức NHNCK_CertificateRecords.
+    Driving table: at_sc_pr_li_ct_do_hs.'
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

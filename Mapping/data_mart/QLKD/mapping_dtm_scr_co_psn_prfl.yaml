@@ -1,0 +1,101 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-scr_co_psn_prfl
+  logical_name: Nhân sự cao cấp CTCK — HĐQT/BĐH/BKS, thông tin cá nhân, email, phone
+  physical_name: scr_co_psn_prfl
+  dm_ref: DTM-scr_co_psn_prfl
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: scr_co_psn_prfl
+  etl_handle: SCD4A
+  description: Nhân sự cao cấp CTCK — HĐQT/BĐH/BKS, thông tin cá nhân, email, phone
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_co_snr_psn_hstr
+  alias: at_sc_co_sn_ps_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: psn_prfl_id
+  transformation: 'hash_id(''SCMS_CTCK_NHAN_SU_CAO_CAP'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: scr_co_snr_psn_code
+  transformation: at_sc_co_sn_ps_hs.scr_co_snr_psn_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã nhân sự cao cấp — business key
+- target_column: scr_co_code
+  transformation: at_sc_co_sn_ps_hs.scr_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã CTCK
+- target_column: full_nm
+  transformation: at_sc_co_sn_ps_hs.full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Họ tên nhân sự
+- target_column: pos_tp_code
+  transformation: at_sc_co_sn_ps_hs.pos_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Chức vụ (scheme: SCMS_POSITION_TYPE)'
+- target_column: dob
+  transformation: at_sc_co_sn_ps_hs.dob
+  data_type: date
+  target_attr_name: ''
+  description: Ngày sinh
+- target_column: idv_gnd_code
+  transformation: at_sc_co_sn_ps_hs.idv_gnd_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Giới tính (scheme: INDIVIDUAL_GENDER)'
+- target_column: identn_nbr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN ip_alt_identn
+    ON ip_alt_identn.ip_id = scr_co_snr_'
+  data_type: string
+  target_attr_name: ''
+  description: CMND/CCCD — từ Involved Party Alternative Identification
+- target_column: email_adr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN ip_elc_adr ON
+    ip_elc_adr.ip_id = at_sc_co_sn_ps_hs.ip'
+  data_type: string
+  target_attr_name: ''
+  description: Email nhân sự cao cấp — SCMS.CTCK_NHAN_SU_CAO_CAP.EMAIL, lấy qua Involved
+    Party Electronic Address (Electronic Address Type = EMAIL)
+- target_column: ph_nbr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN ip_elc_adr ON
+    ip_elc_adr.ip_id = at_sc_co_sn_ps_hs.ip'
+  data_type: string
+  target_attr_name: ''
+  description: Điện thoại nhân sự cao cấp — SCMS.CTCK_NHAN_SU_CAO_CAP.DIEN_THOAI,
+    lấy qua Involved Party Electronic Address (Electronic Address Type = PHONE)
+- target_column: psn_st_code
+  transformation: at_sc_co_sn_ps_hs.psn_st_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái nhân sự (scheme: SCMS_PERSONNEL_STATUS)'
+- target_column: crt_tms
+  transformation: at_sc_co_sn_ps_hs.crt_tms
+  data_type: timestamp
+  target_attr_name: ''
+  description: Ngày tạo bản ghi — dùng làm proxy ngày bổ nhiệm
+- target_column: resignation_dt
+  transformation: at_sc_co_sn_ps_hs.resignation_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày thôi việc
+- target_column: src_stm_code
+  transformation: at_sc_co_sn_ps_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức SCMS_CTCK_NHAN_SU_CAO_CAP.
+    Driving table: at_sc_co_sn_ps_hs.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

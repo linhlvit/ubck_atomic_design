@@ -1,0 +1,94 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-scr_co_fnc_rpt_hist
+  logical_name: Lịch sử BCTC CTCK — 1 CTCK × 1 biểu mẫu × 1 kỳ × 1 chỉ tiêu
+  physical_name: scr_co_fnc_rpt_hist
+  dm_ref: DTM-scr_co_fnc_rpt_hist
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: scr_co_fnc_rpt_hist
+  etl_handle: SCD4A
+  description: Lịch sử BCTC CTCK — 1 CTCK × 1 biểu mẫu × 1 kỳ × 1 chỉ tiêu
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_mbr_prd_rpt
+  alias: at_mb_pr_rp
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: fnc_rpt_hist_id
+  transformation: 'hash_id(''scr_co_fnc_rpt_hist_id'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: scr_co_code
+  transformation: at_mb_pr_rp.scr_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã CTCK
+- target_column: rpt_tpl_code
+  transformation: at_mb_pr_rp.rpt_tpl_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã biểu mẫu báo cáo
+- target_column: rpt_prd_yr
+  transformation: at_mb_pr_rp.yr_val
+  data_type: int
+  target_attr_name: ''
+  description: Năm kỳ báo cáo
+- target_column: rpt_prd_tp_code
+  transformation: at_mb_pr_rp.rpt_prd_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Kỳ: tháng/quý/năm/bán niên'
+- target_column: rpt_dt
+  transformation: at_mb_pr_rp.rpt_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày số liệu báo cáo
+- target_column: submission_dt
+  transformation: at_mb_pr_rp.subm_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày nộp thực tế
+- target_column: submission_ddln_dt
+  transformation: at_mb_pr_rp.subm_ddln_dt
+  data_type: date
+  target_attr_name: ''
+  description: Hạn nộp
+- target_column: submission_st_code
+  transformation: at_mb_pr_rp.subm_st_code
+  data_type: string
+  target_attr_name: ''
+  description: Trạng thái nộp
+- target_column: ind_val_amt
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN mbr_rpt_ind_val
+    ON mbr_rpt_ind_val.mbr_prd_rpt_id '
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá trị chỉ tiêu BCTC — cast từ Value
+- target_column: rpt_ind_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN mbr_rpt_ind_val
+    ON mbr_rpt_ind_val.mbr_prd_rpt_id '
+  data_type: string
+  target_attr_name: ''
+  description: Mã chỉ tiêu
+- target_column: row_nm
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN mbr_rpt_ind_val
+    ON mbr_rpt_ind_val.mbr_prd_rpt_id '
+  data_type: string
+  target_attr_name: ''
+  description: Tên hàng chỉ tiêu
+- target_column: src_stm_code
+  transformation: at_mb_pr_rp.src_stm_code WHERE at_mb_pr_rp.src_stm_code IN ('FMS_RPTMEMBER','SCMS_BC_THANH_VIEN')
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter 2 nguồn chính thức FMS_RPTMEMBER + SCMS_BC_THANH_VIEN.
+    Driving table: at_mb_pr_rp.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

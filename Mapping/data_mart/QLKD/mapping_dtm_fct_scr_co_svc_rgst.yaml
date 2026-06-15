@@ -1,0 +1,105 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_scr_co_svc_rgst
+  logical_name: Event đăng ký dịch vụ CTCK (SCMS) — 1 CTCK × 1 dịch vụ × 1 lần đăng
+    ký
+  physical_name: fct_scr_co_svc_rgst
+  dm_ref: DTM-fct_scr_co_svc_rgst
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: fct_scr_co_svc_rgst
+  etl_handle: Fact Append
+  description: Event đăng ký dịch vụ CTCK (SCMS) — 1 CTCK × 1 dịch vụ × 1 lần đăng
+    ký
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_co_svc_reg_hstr
+  alias: at_sc_co_sv_re_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_scr_co_dim_hstr
+  alias: dt_sc_co_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_svc_tp_dim_hstr
+  alias: dt_sv_tp_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_sc_co_sv_re_hs
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.cdr_dt = at_sc_co_sv_re_hs.reg_dt
+  description: ''
+- main_alias: at_sc_co_sv_re_hs
+  join_type: LEFT JOIN
+  join_alias: dt_sc_co_di_hs
+  join_on: dt_sc_co_di_hs.scr_co_code = at_sc_co_sv_re_hs.scr_co_code AND at_sc_co_sv_re_hs.reg_dt
+    BETWEEN dt_sc_co_di_hs.eff_dt AND dt_sc_co_di_hs.expiry_dt
+  description: ''
+- main_alias: at_sc_co_sv_re_hs
+  join_type: LEFT JOIN
+  join_alias: dt_sv_tp_di_hs
+  join_on: dt_sv_tp_di_hs.svc_tp_code = at_sc_co_sv_re_hs.svc_tp_code AND at_sc_co_sv_re_hs.reg_dt
+    BETWEEN dt_sv_tp_di_hs.eff_dt AND dt_sv_tp_di_hs.expiry_dt
+  description: ''
+mapping_columns:
+- target_column: rgst_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK lịch — ETL lookup từ Registration Date
+- target_column: scr_co_dim_id
+  transformation: dt_sc_co_di_hs.scr_co_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK CTCK — ETL lookup
+- target_column: svc_tp_dim_id
+  transformation: dt_sv_tp_di_hs.svc_tp_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK dịch vụ — ETL lookup
+- target_column: svc_st_code
+  transformation: at_sc_co_sv_re_hs.svc_sts_code
+  data_type: string
+  target_attr_name: ''
+  description: Trạng thái dịch vụ
+- target_column: rgst_doc_nbr
+  transformation: at_sc_co_sv_re_hs.reg_doc_no
+  data_type: string
+  target_attr_name: ''
+  description: Số văn bản đăng ký
+- target_column: tmt_dt
+  transformation: at_sc_co_sv_re_hs.trm_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày chấm dứt
+- target_column: vld_doc_dt
+  transformation: at_sc_co_sv_re_hs.vld_doc_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày hồ sơ hợp lệ
+- target_column: is_drft_ind
+  transformation: at_sc_co_sv_re_hs.is_drft_ind
+  data_type: string
+  target_attr_name: ''
+  description: Cờ bản tạm — filter IS_DRAFT=false
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

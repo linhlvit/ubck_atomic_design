@@ -1,0 +1,71 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-pblc_co_dim
+  logical_name: Công ty đại chúng — mã CK / tên / ngành / sàn niêm yết (SCD2)
+  physical_name: pblc_co_dim
+  dm_ref: DTM-pblc_co_dim
+  brd_ref: BRD-DTM-QLCB
+target:
+  namespace: dtm
+  physical_name: pblc_co_dim
+  etl_handle: SCD4A
+  description: Công ty đại chúng — mã CK / tên / ngành / sàn niêm yết (SCD2)
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_hstr
+  alias: at_pb_co_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'IDS_company_profiles'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: pblc_co_dim_id
+  transformation: hash_id('IDS_company_profiles', pblc_co_code)
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: pblc_co_code
+  transformation: at_pb_co_hs.pblc_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã định danh công ty đại chúng (NK) — IDS.company_profiles.id
+- target_column: pblc_co_nm
+  transformation: at_pb_co_hs.pblc_co_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên công ty đại chúng (tiếng Việt) — IDS.company_profiles.company_name_vn
+- target_column: pblc_co_en_nm
+  transformation: at_pb_co_hs.pblc_co_en_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên công ty đại chúng (tiếng Anh) — IDS.company_profiles.company_name_en
+- target_column: eqty_ticker
+  transformation: at_pb_co_hs.eqty_ticker
+  data_type: string
+  target_attr_name: ''
+  description: Mã chứng khoán cổ phiếu — IDS.company_profiles.equity_ticker
+- target_column: idy_cgy_level1_code
+  transformation: at_pb_co_hs.idy_cgy_level1_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã ngành cấp 1 — IDS.company_detail.category_l1_id
+- target_column: idy_cgy_level2_code
+  transformation: at_pb_co_hs.idy_cgy_level2_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã ngành cấp 2 — IDS.company_detail.category_l2_id
+- target_column: eqty_listing_exg_code
+  transformation: at_pb_co_hs.eqty_listing_exg_code
+  data_type: string
+  target_attr_name: ''
+  description: Sàn niêm yết cổ phiếu (HNX/HOSE/UPCoM) — IDS.company_profiles.equity_listing_exch_cd
+- target_column: src_stm_code
+  transformation: at_pb_co_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã nguồn dữ liệu. Driving table: at_pb_co_hs. Nguồn chính thức QLCB:
+    IDS_company_profiles. Lọc bỏ IDS_company_detail và ThanhTra_DM_CONG_TY_DC.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

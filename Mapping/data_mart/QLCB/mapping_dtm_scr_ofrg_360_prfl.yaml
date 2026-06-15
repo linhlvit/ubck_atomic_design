@@ -1,0 +1,306 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-scr_ofrg_360_prfl
+  logical_name: 'Hồ sơ 360° đợt chào bán — pivot theo loại hình chào bán (6 giá trị).
+    Bổ sung 4 cột tổ chức từ TTHC (K_QLCB_19–22). Grain: 1 row = 1 đợt × 1 loại hình
+    có qty > 0.'
+  physical_name: scr_ofrg_360_prfl
+  dm_ref: DTM-scr_ofrg_360_prfl
+  brd_ref: BRD-DTM-QLCB
+target:
+  namespace: dtm
+  physical_name: scr_ofrg_360_prfl
+  etl_handle: SCD4A
+  description: 'Hồ sơ 360° đợt chào bán — pivot theo loại hình chào bán (6 giá trị).
+    Bổ sung 4 cột tổ chức từ TTHC (K_QLCB_19–22). Grain: 1 row = 1 đợt × 1 loại hình
+    có qty > 0.'
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_scr_ofrg
+  alias: at_pb_co_sc_of
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_hstr
+  alias: at_pb_co_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_ap_eform_fld_val
+  alias: at_ap_ef_fl_va
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: joined_cte
+  namespace: ''
+  table_name: pblc_co_scr_ofrg
+  alias: pb_co_sc_of
+  select_fields: pblc_co_scr_ofrg.*, pblc_co.pblc_co_code, pblc_co.pblc_co_nm, pblc_co.pblc_co_en_nm,
+    pblc_co.eqty_ticker, pblc_co.idy_cgy_level1_code, pblc_co.idy_cgy_level2_code,
+    pblc_co.eqty_listing_exg_code
+  filter: 'LEFT JOIN pblc_co ON pblc_co_scr_ofrg.pblc_co_code = pblc_co.pblc_co_code  --
+    TODO: verify join condition'
+  description: ''
+- source_type: cte_ref
+  namespace: ''
+  table_name: base_joined
+  alias: ba_jo
+  select_fields: ''
+  filter: ''
+  description: ''
+- source_type: cte_ref
+  namespace: ''
+  table_name: base_joined
+  alias: ba_jo_2
+  select_fields: ''
+  filter: ''
+  description: ''
+- source_type: cte_ref
+  namespace: ''
+  table_name: base_joined
+  alias: ba_jo_3
+  select_fields: ''
+  filter: ''
+  description: ''
+- source_type: cte_ref
+  namespace: ''
+  table_name: base_joined
+  alias: ba_jo_4
+  select_fields: ''
+  filter: ''
+  description: ''
+- source_type: cte_ref
+  namespace: ''
+  table_name: base_joined
+  alias: ba_jo_5
+  select_fields: ''
+  filter: ''
+  description: ''
+- source_type: cte_ref
+  namespace: ''
+  table_name: base_joined
+  alias: ba_jo_6
+  select_fields: ''
+  filter: ''
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: scr_ofrg_id
+  transformation: at_pb_co_sc_of.pblc_co_scr_ofrg_id
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate PK Atomic — IDS.company_securities_issuance surrogate id
+- target_column: scr_ofrg_code
+  transformation: at_pb_co_sc_of.pblc_co_scr_ofrg_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã đợt chào bán (BK Operational) — IDS.company_securities_issuance.id
+- target_column: pblc_co_code
+  transformation: at_pb_co_hs.pblc_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã định danh công ty đại chúng — IDS.company_profiles.id
+- target_column: pblc_co_nm
+  transformation: at_pb_co_hs.pblc_co_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên công ty đại chúng (tiếng Việt) — IDS.company_profiles.company_name_vn
+- target_column: pblc_co_en_nm
+  transformation: at_pb_co_hs.pblc_co_en_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên công ty đại chúng (tiếng Anh) — IDS.company_profiles.company_name_en
+- target_column: eqty_ticker
+  transformation: at_pb_co_hs.eqty_ticker
+  data_type: string
+  target_attr_name: ''
+  description: Mã chứng khoán cổ phiếu — IDS.company_profiles.equity_ticker
+- target_column: idy_cgy_level1_code
+  transformation: at_pb_co_hs.idy_cgy_level1_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã ngành cấp 1 — IDS.company_detail.category_l1_id
+- target_column: idy_cgy_level2_code
+  transformation: at_pb_co_hs.idy_cgy_level2_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã ngành cấp 2 — IDS.company_detail.category_l2_id
+- target_column: eqty_listing_exg_code
+  transformation: at_pb_co_hs.eqty_listing_exg_code
+  data_type: string
+  target_attr_name: ''
+  description: Sàn niêm yết — IDS.company_profiles.equity_listing_exch_cd
+- target_column: scr_tp_code
+  transformation: at_pb_co_sc_of.scr_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại CK phát hành — IDS.company_securities_issuance.security_type_cd.
+    Scheme: IDS_ISSUANCE_SECURITY_TYPE'
+- target_column: ofrg_tp_cgy_code
+  transformation: '''PUBLIC'';''PRIVATE'';''ESOP'';''DIVIDEND'';''OWNER_CAPITAL'';''OTHER'''
+  data_type: string
+  target_attr_name: ''
+  description: Branch key — ETL emit 1 row per loại hình chào bán (PUBLIC/PRIVATE/ESOP/DIVIDEND/OWNER_CAPITAL/OTHER)
+- target_column: pln_ofrg_qty
+  transformation: (at_pb_co_sc_of.pln_exst_shrhlr_ofrg_qty + at_pb_co_sc_of.pln_auctn_ofrg_qty
+    + at_pb_co_sc_of.pln_pblc_othr_ofrg_qty + at_pb_co_sc_of.pln_pblc_co_ofrg_qty);at_pb_co_sc_of.pln_prvt_plcmt_ofrg_qty;(at_pb_co_sc_of.pln_esop_issn_qty
+    + at_pb_co_sc_of.pln_bns_shr_issn_qty);at_pb_co_sc_of.pln_dvdn_issn_qty;at_pb_co_sc_of.pln_own_cptl_issn_qty;(at_pb_co_sc_of.pln_scr_qty
+    - (at_pb_co_sc_of.pln_exst_shrhlr_ofrg_qty + at_pb_co_sc_of.pln_auctn_ofrg_qty
+    + at_pb_co_sc_of.pln_pblc_othr_ofrg_qty + at_pb_co_sc_of.pln_pblc_co_ofrg_qty
+    + at_pb_co_sc_of.pln_prvt_plcmt_ofrg_qty + at_pb_co_sc_of.pln_esop_issn_qty +
+    at_pb_co_sc_of.pln_bns_shr_issn_qty + at_pb_co_sc_of.pln_dvdn_issn_qty + at_pb_co_sc_of.pln_own_cptl_issn_qty))
+  data_type: int
+  target_attr_name: ''
+  description: Pivot qty dự kiến theo loại hình chào bán
+- target_column: pln_ofrg_amt
+  transformation: (at_pb_co_sc_of.pln_exst_shrhlr_ofrg_qty * at_pb_co_sc_of.pln_exst_shrhlr_ofrg_prc)
+    + (at_pb_co_sc_of.pln_auctn_ofrg_qty * at_pb_co_sc_of.pln_auctn_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_othr_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_othr_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_co_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_co_ofrg_prc);at_pb_co_sc_of.pln_prvt_plcmt_ofrg_qty
+    * at_pb_co_sc_of.pln_prvt_plcmt_ofrg_prc;(at_pb_co_sc_of.pln_esop_issn_qty * at_pb_co_sc_of.pln_esop_issn_prc)
+    + (at_pb_co_sc_of.pln_bns_shr_issn_qty * at_pb_co_sc_of.pln_bns_shr_issn_prc);NULL;NULL;at_pb_co_sc_of.pln_procd_amt
+    - ((at_pb_co_sc_of.pln_exst_shrhlr_ofrg_qty * at_pb_co_sc_of.pln_exst_shrhlr_ofrg_prc)
+    + (at_pb_co_sc_of.pln_auctn_ofrg_qty * at_pb_co_sc_of.pln_auctn_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_othr_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_othr_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_co_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_co_ofrg_prc) + (at_pb_co_sc_of.pln_prvt_plcmt_ofrg_qty
+    * at_pb_co_sc_of.pln_prvt_plcmt_ofrg_prc) + (at_pb_co_sc_of.pln_esop_issn_qty
+    * at_pb_co_sc_of.pln_esop_issn_prc) + (at_pb_co_sc_of.pln_bns_shr_issn_qty * at_pb_co_sc_of.pln_bns_shr_issn_prc))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Pivot giá trị dự kiến (qty × price) theo loại hình
+- target_column: pln_ofrg_trgt
+  transformation: NULL;at_pb_co_sc_of.pln_prvt_plcmt_ofrg_trgt;COALESCE(at_pb_co_sc_of.pln_esop_issn_trgt,
+    at_pb_co_sc_of.pln_bns_shr_issn_trgt);NULL;at_pb_co_sc_of.pln_own_cptl_issn_src;NULL
+  data_type: string
+  target_attr_name: ''
+  description: Pivot đối tượng chào bán dự kiến theo loại hình
+- target_column: pln_ofrg_empe_qty
+  transformation: NULL;NULL;(at_pb_co_sc_of.pln_esop_issn_qty + at_pb_co_sc_of.pln_bns_shr_issn_qty);NULL;NULL;NULL
+  data_type: int
+  target_attr_name: ''
+  description: Pivot số CK phát hành cho NLĐ dự kiến
+- target_column: act_ofrg_qty
+  transformation: (at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_qty + at_pb_co_sc_of.rslt_auctn_ofrg_qty
+    + at_pb_co_sc_of.rslt_pblc_othr_ofrg_qty + at_pb_co_sc_of.rslt_pblc_co_ofrg_qty);at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_qty;(at_pb_co_sc_of.rslt_esop_issn_qty
+    + at_pb_co_sc_of.rslt_bns_shr_issn_qty);at_pb_co_sc_of.rslt_dvdn_issn_qty;at_pb_co_sc_of.rslt_own_cptl_issn_qty;(at_pb_co_sc_of.scss_scr_qty
+    - (at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_qty + at_pb_co_sc_of.rslt_auctn_ofrg_qty
+    + at_pb_co_sc_of.rslt_pblc_othr_ofrg_qty + at_pb_co_sc_of.rslt_pblc_co_ofrg_qty
+    + at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_qty + at_pb_co_sc_of.rslt_esop_issn_qty
+    + at_pb_co_sc_of.rslt_bns_shr_issn_qty + at_pb_co_sc_of.rslt_dvdn_issn_qty + at_pb_co_sc_of.rslt_own_cptl_issn_qty))
+  data_type: int
+  target_attr_name: ''
+  description: Pivot qty thực tế theo loại hình chào bán
+- target_column: act_ofrg_amt
+  transformation: (at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_qty * at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_auctn_ofrg_qty * at_pb_co_sc_of.rslt_auctn_ofrg_prc) +
+    (at_pb_co_sc_of.rslt_pblc_othr_ofrg_qty * at_pb_co_sc_of.rslt_pblc_othr_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_pblc_co_ofrg_qty * at_pb_co_sc_of.rslt_pblc_co_ofrg_prc);at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_qty
+    * at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_prc;(at_pb_co_sc_of.rslt_esop_issn_qty *
+    at_pb_co_sc_of.rslt_esop_issn_prc) + (at_pb_co_sc_of.rslt_bns_shr_issn_qty * at_pb_co_sc_of.rslt_bns_shr_issn_prc);NULL;NULL;at_pb_co_sc_of.act_procd_amt
+    - ((at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_qty * at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_auctn_ofrg_qty * at_pb_co_sc_of.rslt_auctn_ofrg_prc) +
+    (at_pb_co_sc_of.rslt_pblc_othr_ofrg_qty * at_pb_co_sc_of.rslt_pblc_othr_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_pblc_co_ofrg_qty * at_pb_co_sc_of.rslt_pblc_co_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_qty * at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_esop_issn_qty * at_pb_co_sc_of.rslt_esop_issn_prc) + (at_pb_co_sc_of.rslt_bns_shr_issn_qty
+    * at_pb_co_sc_of.rslt_bns_shr_issn_prc))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Pivot giá trị thực tế (qty × price) theo loại hình
+- target_column: act_ofrg_trgt
+  transformation: NULL;at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_trgt;COALESCE(at_pb_co_sc_of.rslt_esop_issn_trgt,
+    at_pb_co_sc_of.rslt_bns_shr_issn_trgt);NULL;at_pb_co_sc_of.rslt_own_cptl_issn_src;NULL
+  data_type: string
+  target_attr_name: ''
+  description: Pivot đối tượng chào bán thực tế theo loại hình
+- target_column: act_ofrg_empe_qty
+  transformation: NULL;NULL;(at_pb_co_sc_of.rslt_esop_issn_qty + at_pb_co_sc_of.rslt_bns_shr_issn_qty);NULL;NULL;NULL
+  data_type: int
+  target_attr_name: ''
+  description: Pivot số CK phát hành cho NLĐ thực tế
+- target_column: ctf_nbr
+  transformation: at_pb_co_sc_of.ctf_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số GCN chào bán — IDS.company_securities_issuance.certificate_no
+- target_column: ctf_issu_dt
+  transformation: at_pb_co_sc_of.ctf_issu_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày cấp GCN chào bán
+- target_column: ssc_offc_doc_nbr
+  transformation: at_pb_co_sc_of.ssc_offc_doc_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số công văn UBCKNN
+- target_column: ssc_offc_doc_dt
+  transformation: at_pb_co_sc_of.ssc_offc_doc_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày ra công văn UBCKNN
+- target_column: ofrg_end_dt
+  transformation: at_pb_co_sc_of.ofrg_end_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày kết thúc chào bán CK
+- target_column: multi_ofrg_f
+  transformation: at_pb_co_sc_of.multi_ofrg_f
+  data_type: boolean
+  target_attr_name: ''
+  description: Có chào bán nhiều đợt — IDS.company_securities_issuance.multi_offering_flg
+- target_column: crt_by_login_nm
+  transformation: at_pb_co_sc_of.crt_by_login_nm
+  data_type: string
+  target_attr_name: ''
+  description: Chuyên viên (login_name kỹ thuật) — IDS.company_securities_issuance.created_by
+- target_column: cptl_usg_pln
+  transformation: at_pb_co_sc_of.cptl_usg_pln
+  data_type: string
+  target_attr_name: ''
+  description: Mục đích sử dụng vốn — IDS.company_securities_issuance.capital_usage_plan
+- target_column: advsr_nm
+  transformation: FILTER(at_ap_ef_fl_va.tx_fields, x -> x.cntnt_field LIKE '%Tochuctuvan%'
+    OR x.cntnt_field LIKE '%Tentochuctuvan%')[0].tx_val
+  data_type: string
+  target_attr_name: ''
+  description: 'Đơn vị tư vấn — array filter tx_fields theo content_field LIKE ''%Tochuctuvan%''
+    OR ''%Tentochuctuvan%''. Nullable — pattern cần xác nhận profile DB (O_QLCB_8
+    #4)'
+- target_column: audtr_nm
+  transformation: FILTER(at_ap_ef_fl_va.tx_fields, x -> x.cntnt_field LIKE '%Tochuckiemtoan%')[0].tx_val
+  data_type: string
+  target_attr_name: ''
+  description: Tổ chức kiểm toán — array filter tx_fields theo content_field LIKE
+    '%Tochuckiemtoan%'. Nullable
+- target_column: underwrtr_nm
+  transformation: FILTER(at_ap_ef_fl_va.tx_fields, x -> x.cntnt_field LIKE '%baolanh%'
+    AND x.cntnt_field NOT LIKE '%baolanhthanhtoan%')[0].tx_val
+  data_type: string
+  target_attr_name: ''
+  description: Đơn vị bảo lãnh — array filter tx_fields LIKE '%baolanh%' AND NOT LIKE
+    '%baolanhthanhtoan%'. Nullable — chỉ Eform 3/5/7
+- target_column: rtg_agnc_nm
+  transformation: FILTER(at_ap_ef_fl_va.tx_fields, x -> x.cntnt_field LIKE '%xephang%')[0].tx_val
+  data_type: string
+  target_attr_name: ''
+  description: Đơn vị xếp hạng tín nhiệm — array filter tx_fields LIKE '%xephang%'.
+    Nullable — chỉ Eform 7
+- target_column: src_stm_code
+  transformation: at_pb_co_sc_of.src_stm_code WHERE at_pb_co_sc_of.src_stm_code =
+    'IDS_company_securities_issuance'
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức IDS_company_securities_issuance.
+    Driving table: at_pb_co_sc_of.'
+final_filter:
+- clause_type: UNION ALL
+  expression: SELECT * FROM leg_public UNION ALL SELECT * FROM leg_private UNION ALL
+    SELECT * FROM leg_esop UNION ALL SELECT * FROM leg_dividend UNION ALL SELECT *
+    FROM leg_owner_capital UNION ALL SELECT * FROM leg_other
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

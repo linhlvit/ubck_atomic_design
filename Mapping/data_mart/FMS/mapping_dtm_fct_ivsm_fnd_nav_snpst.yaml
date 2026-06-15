@@ -1,0 +1,219 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_ivsm_fnd_nav_snpst
+  logical_name: NAV + phân bổ tài sản + cross-module QLRR — grain 1 quỹ × 1 BC. Measures
+    PENDING O_FMS_1
+  physical_name: fct_ivsm_fnd_nav_snpst
+  dm_ref: DTM-fct_ivsm_fnd_nav_snpst
+  brd_ref: BRD-DTM-FMS
+target:
+  namespace: dtm
+  physical_name: fct_ivsm_fnd_nav_snpst
+  etl_handle: Fact Snapshot
+  description: NAV + phân bổ tài sản + cross-module QLRR — grain 1 quỹ × 1 BC. Measures
+    PENDING O_FMS_1
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_rpt_impr_val_hstr
+  alias: at_rp_im_va_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_mbr_prd_rpt
+  alias: at_mb_pr_rp
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_rsk_ind_val
+  alias: at_rs_in_va
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND rsk_ind_code = 'GDP' AND prd_tp_code = '3'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_rsk_ind_val
+  alias: at_rs_in_va_2
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND rsk_ind_code = 'VN-Index' AND prd_tp_code =
+    '1'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_rsk_ind_val
+  alias: at_rs_in_va_3
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND rsk_ind_code = 'LNH_OVERNIGHT' AND prd_tp_code
+    = '1'
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_ivsm_fnd_dim_hstr
+  alias: dt_iv_fn_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_fnd_mgt_co_dim_hstr
+  alias: dt_fn_mg_co_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_rp_im_va_hs
+  join_type: INNER JOIN
+  join_alias: at_mb_pr_rp
+  join_on: at_mb_pr_rp.mbr_prd_rpt_id = at_rp_im_va_hs.mbr_prd_rpt_id AND at_mb_pr_rp.rpt_subm_st_code
+    IN ('SUBMITTED','LATE')
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: INNER JOIN
+  join_alias: at_rs_in_va
+  join_on: at_rs_in_va.prd_yr = YEAR(TO_DATE(CAST(at_mb_pr_rp.day_rpt AS string),
+    'yyyyMMdd')) AND at_rs_in_va.prd_val = QUARTER(TO_DATE(CAST(at_mb_pr_rp.day_rpt
+    AS string), 'yyyyMMdd'))
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: INNER JOIN
+  join_alias: at_rs_in_va_2
+  join_on: at_rs_in_va_2.prd_dt = PREV_BUSINESS_DAY(TO_DATE(CAST(at_mb_pr_rp.day_rpt
+    AS string), 'yyyyMMdd'))
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: INNER JOIN
+  join_alias: at_rs_in_va_3
+  join_on: at_rs_in_va_3.prd_dt = PREV_BUSINESS_DAY(TO_DATE(CAST(at_mb_pr_rp.day_rpt
+    AS string), 'yyyyMMdd'))
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.cdr_dt_id = at_mb_pr_rp.day_rpt
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: LEFT JOIN
+  join_alias: dt_iv_fn_di_hs
+  join_on: dt_iv_fn_di_hs.fnd_code = at_rp_im_va_hs.ivsm_fnd_code AND dt_iv_fn_di_hs.ds_rcrd_st
+    = 1
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: LEFT JOIN
+  join_alias: dt_fn_mg_co_di_hs
+  join_on: dt_fn_mg_co_di_hs.co_code = at_rp_im_va_hs.fnd_mgt_co_code AND dt_fn_mg_co_di_hs.ds_rcrd_st
+    = 1
+  description: ''
+mapping_columns:
+- target_column: rpt_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK ngày báo cáo — lookup qua mbr_prd_rpt.day_rpt, filter SUBMITTED/LATE
+- target_column: ivsm_fnd_dim_id
+  transformation: dt_iv_fn_di_hs.ivsm_fnd_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK quỹ đầu tư — lookup qua NK fnd_code, active record
+- target_column: fnd_mgt_co_dim_id
+  transformation: dt_fn_mg_co_di_hs.fnd_mgt_co_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK CTQLQ — lookup qua NK co_code, active record
+- target_column: rpt_tpl_code
+  transformation: at_rp_im_va_hs.rpt_id
+  data_type: string
+  target_attr_name: ''
+  description: Mã biểu mẫu BC — Degenerate Dimension
+- target_column: rpt_prd_code
+  transformation: at_rp_im_va_hs.rpt_prd_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã kỳ báo cáo — Degenerate Dimension
+- target_column: fnd_nav_amt
+  transformation: CAST(at_rp_im_va_hs.val AS decimal)
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: NAV per quỹ per kỳ từ RPTVALUES — pending O_FMS_1
+- target_column: tot_ast_amt
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng giá trị tài sản per quỹ per kỳ — pending O_FMS_1
+- target_column: listd_stk_amt
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá trị CP niêm yết — pending O_FMS_1
+- target_column: unlistd_stk_amt
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá trị CP chưa niêm yết — pending O_FMS_1
+- target_column: bond_amt
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá trị trái phiếu — pending O_FMS_1
+- target_column: cash_amt
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá trị tiền — pending O_FMS_1
+- target_column: othr_scr_amt
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá trị CK khác — pending O_FMS_1
+- target_column: othr_ast_amt
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá trị tài sản khác — pending O_FMS_1
+- target_column: gdp_ind_code
+  transformation: '''GDP'''
+  data_type: string
+  target_attr_name: ''
+  description: Mã chỉ tiêu QLRR GDP — Degenerate Dimension để tra cứu
+- target_column: gdp_val
+  transformation: CAST(at_rs_in_va.val AS decimal)
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GDP kỳ quý từ QLRR.risk_indicator_value (category=MACRO) — T-1: Period_Type=Quý
+    AND Period_Year=YEAR(rpt_dt) AND Period_Value=QUARTER(rpt_dt)'
+- target_column: vn_idx_ind_code
+  transformation: '''VN-Index'''
+  data_type: string
+  target_attr_name: ''
+  description: Mã chỉ tiêu QLRR VN-Index — Degenerate Dimension để tra cứu
+- target_column: vn_idx_val
+  transformation: CAST(at_rs_in_va_2.val AS decimal)
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'VN-Index từ QLRR (category=STOCK_MARKET) — T-1: Period_Date = ngày
+    làm việc trước rpt_dt'
+- target_column: ovnt_rate_ind_code
+  transformation: '''LNH_OVERNIGHT'''
+  data_type: string
+  target_attr_name: ''
+  description: Mã chỉ tiêu QLRR Lãi suất LNH qua đêm — Degenerate Dimension để tra
+    cứu
+- target_column: ovnt_rate_val
+  transformation: CAST(at_rs_in_va_3.val AS decimal)
+  data_type: decimal(5,2)
+  target_attr_name: ''
+  description: 'Lãi suất LNH qua đêm từ QLRR (category=MONETARY) — T-1: Period_Date
+    = ngày làm việc trước rpt_dt'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

@@ -1,0 +1,67 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-cpln_petition_list
+  logical_name: Đơn thư khiếu nại tố cáo — latest state per đơn (1 row per DT_DON_THU).
+    Phục vụ cả KPI aggregate (Nhóm 16-18) và danh sách chi tiết (Nhóm 19)
+  physical_name: cpln_petition_list
+  dm_ref: DTM-cpln_petition_list
+  brd_ref: BRD-DTM-TT
+target:
+  namespace: dtm
+  physical_name: cpln_petition_list
+  etl_handle: SCD4A
+  description: Đơn thư khiếu nại tố cáo — latest state per đơn (1 row per DT_DON_THU).
+    Phục vụ cả KPI aggregate (Nhóm 16-18) và danh sách chi tiết (Nhóm 19)
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cpln_petition
+  alias: at_cp_pe
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND src_stm_code = 'ThanhTra_DT_DON_THU'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: cpln_petition_code
+  transformation: at_cp_pe.cpln_petition_code
+  data_type: string
+  target_attr_name: ''
+  description: 'PK bảng tác nghiệp — PK nguồn DT_DON_THU.ID. Driving table: at_cp_pe.
+    ThanhTra.DT_DON_THU.ID'
+- target_column: petition_tp_code
+  transformation: at_cp_pe.petition_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: Loại đơn — ThanhTra.DT_DON_THU.LOAI_DON. scheme TT_PETITION_TYPE. ETL
+    gộp PHAN_ANH+KIEN_NGHI → PHAN_ANH_KIEN_NGHI
+- target_column: complainant_nm
+  transformation: at_cp_pe.complainant_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên tổ chức/cá nhân gửi đơn (snapshot) — ThanhTra.DT_DON_THU.TEN_TO_CHUC_CA_NHAN
+- target_column: petition_st_code
+  transformation: at_cp_pe.petition_st_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái đơn: MOI/DANG_XU_LY/HOAN_THANH/DONG — ThanhTra.DT_DON_THU.TRANG_THAI.
+    scheme TT_PETITION_STATUS'
+- target_column: submission_dt
+  transformation: at_cp_pe.subm_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày tiếp nhận đơn — ThanhTra.DT_DON_THU.NGAY_TIEP_NHAN
+- target_column: submission_yr
+  transformation: YEAR(at_cp_pe.subm_dt)
+  data_type: int
+  target_attr_name: ''
+  description: 'Năm tiếp nhận đơn — ETL: YEAR(NGAY_TIEP_NHAN). Dùng index filter thay
+    YEAR() function'
+- target_column: src_stm_code
+  transformation: at_cp_pe.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức ThanhTra_DT_DON_THU. Driving
+    table: at_cp_pe.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

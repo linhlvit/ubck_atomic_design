@@ -1,0 +1,218 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_scr_ofrg
+  logical_name: Event chào bán/phát hành CK — 1 row per đợt chào bán của 1 công ty
+    đại chúng. Lưu 6 cột per-type Amount/Quantity phục vụ breakdown loại hình.
+  physical_name: fct_scr_ofrg
+  dm_ref: DTM-fct_scr_ofrg
+  brd_ref: BRD-DTM-QLCB
+target:
+  namespace: dtm
+  physical_name: fct_scr_ofrg
+  etl_handle: Fact Append
+  description: Event chào bán/phát hành CK — 1 row per đợt chào bán của 1 công ty
+    đại chúng. Lưu 6 cột per-type Amount/Quantity phục vụ breakdown loại hình.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_scr_ofrg
+  alias: at_pb_co_sc_of
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_pblc_co_dim_hstr
+  alias: dt_pb_co_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_idy_cgy_dim_hstr
+  alias: dt_id_cg_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_pb_co_sc_of
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.dt = at_pb_co_sc_of.ssc_offc_doc_dt
+  description: ''
+- main_alias: at_pb_co_sc_of
+  join_type: LEFT JOIN
+  join_alias: dt_pb_co_di_hs
+  join_on: dt_pb_co_di_hs.pblc_co_code = at_pb_co_sc_of.pblc_co_code AND at_pb_co_sc_of.ssc_offc_doc_dt
+    BETWEEN dt_pb_co_di_hs.eff_dt AND dt_pb_co_di_hs.expiry_dt
+  description: ''
+- main_alias: at_pb_co_sc_of
+  join_type: LEFT JOIN
+  join_alias: dt_id_cg_di_hs
+  join_on: dt_id_cg_di_hs.idy_cgy_level1_code = pblc_co.idy_cgy_level1_code AND dt_id_cg_di_hs.idy_cgy_level2_code
+    = pblc_co.idy_cgy_level2_code AND at_pb_co_sc_of.ssc_offc_doc_dt BETWEEN dt_id_cg_di_hs.eff_dt
+    AND dt_id_cg_di_hs.expiry_dt
+  description: ''
+mapping_columns:
+- target_column: ssc_offc_doc_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK lịch theo ngày công văn UBCKNN
+- target_column: pblc_co_dim_id
+  transformation: dt_pb_co_di_hs.pblc_co_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK công ty đại chúng — ETL lookup qua NK pblc_co_code
+- target_column: idy_cgy_dim_id
+  transformation: dt_id_cg_di_hs.idy_cgy_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK ngành cấp 1 — ETL lookup qua NK composite (level1_code + level2_code)
+    tại thời điểm ssc_official_doc_date
+- target_column: scr_ofrg_code
+  transformation: at_pb_co_sc_of.pblc_co_scr_ofrg_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã đợt chào bán (DD) — IDS.company_securities_issuance.id (PK nguồn)
+- target_column: scr_tp_code
+  transformation: at_pb_co_sc_of.scr_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: Loại CK phát hành — IDS.company_securities_issuance.security_type_cd
+- target_column: pln_scr_qty
+  transformation: at_pb_co_sc_of.pln_scr_qty
+  data_type: int
+  target_attr_name: ''
+  description: Tổng số CK dự kiến chào bán
+- target_column: pln_procd_amt
+  transformation: at_pb_co_sc_of.pln_procd_amt
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng tiền dự kiến thu được (VNĐ)
+- target_column: scss_scr_qty
+  transformation: at_pb_co_sc_of.scss_scr_qty
+  data_type: int
+  target_attr_name: ''
+  description: Tổng số CK chào bán thành công
+- target_column: act_procd_amt
+  transformation: at_pb_co_sc_of.act_procd_amt
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng tiền thực thu (VNĐ)
+- target_column: ctf_issu_dt
+  transformation: at_pb_co_sc_of.ctf_issu_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày cấp GCN chào bán — lưu thêm làm reference, không phải FK date
+    chính
+- target_column: ofrg_end_dt
+  transformation: at_pb_co_sc_of.ofrg_end_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày kết thúc chào bán CK
+- target_column: ssc_offc_doc_dt
+  transformation: at_pb_co_sc_of.ssc_offc_doc_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày công văn UBCKNN — FK date chính trên Fact
+- target_column: pln_pblc_ofrg_amt
+  transformation: (at_pb_co_sc_of.pln_exst_shrhlr_ofrg_qty * at_pb_co_sc_of.pln_exst_shrhlr_ofrg_prc)
+    + (at_pb_co_sc_of.pln_auctn_ofrg_qty * at_pb_co_sc_of.pln_auctn_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_othr_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_othr_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_co_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_co_ofrg_prc)
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Tổng giá trị chào bán công khai dự kiến: (Shareholder qty × price)
+    + (Auction qty × price) + (Public Other qty × price) + (Public Company qty × price)'
+- target_column: pln_prvt_plcmt_amt
+  transformation: at_pb_co_sc_of.pln_prvt_plcmt_ofrg_qty * at_pb_co_sc_of.pln_prvt_plcmt_ofrg_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Tổng giá trị chào bán riêng lẻ dự kiến: qty × price'
+- target_column: pln_esop_amt
+  transformation: (at_pb_co_sc_of.pln_esop_issn_qty * at_pb_co_sc_of.pln_esop_issn_prc)
+    + (at_pb_co_sc_of.pln_bns_shr_issn_qty * at_pb_co_sc_of.pln_bns_shr_issn_prc)
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Tổng giá trị ESOP dự kiến: (ESOP qty × price) + (Bonus share qty ×
+    price)'
+- target_column: pln_dvdn_issn_qty
+  transformation: at_pb_co_sc_of.pln_dvdn_issn_qty
+  data_type: int
+  target_attr_name: ''
+  description: Phát hành trả cổ tức — số lượng CK dự kiến. Silver không có price field
+    (không huy động tiền mặt)
+- target_column: pln_own_cptl_issn_qty
+  transformation: at_pb_co_sc_of.pln_own_cptl_issn_qty
+  data_type: int
+  target_attr_name: ''
+  description: Phát hành tăng vốn từ VCSH — số lượng CK dự kiến. Silver không có price
+    field (không huy động tiền mặt)
+- target_column: pln_othr_amt
+  transformation: at_pb_co_sc_of.pln_procd_amt - ((at_pb_co_sc_of.pln_exst_shrhlr_ofrg_qty
+    * at_pb_co_sc_of.pln_exst_shrhlr_ofrg_prc) + (at_pb_co_sc_of.pln_auctn_ofrg_qty
+    * at_pb_co_sc_of.pln_auctn_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_othr_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_othr_ofrg_prc) + (at_pb_co_sc_of.pln_pblc_co_ofrg_qty
+    * at_pb_co_sc_of.pln_pblc_co_ofrg_prc) + (at_pb_co_sc_of.pln_prvt_plcmt_ofrg_qty
+    * at_pb_co_sc_of.pln_prvt_plcmt_ofrg_prc) + (at_pb_co_sc_of.pln_esop_issn_qty
+    * at_pb_co_sc_of.pln_esop_issn_prc) + (at_pb_co_sc_of.pln_bns_shr_issn_qty * at_pb_co_sc_of.pln_bns_shr_issn_prc))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Giá trị chào bán loại khác dự kiến: Planned Proceeds Amount − (PUBLIC
+    + PRIVATE + ESOP)'
+- target_column: act_pblc_ofrg_amt
+  transformation: (at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_qty * at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_auctn_ofrg_qty * at_pb_co_sc_of.rslt_auctn_ofrg_prc) +
+    (at_pb_co_sc_of.rslt_pblc_othr_ofrg_qty * at_pb_co_sc_of.rslt_pblc_othr_ofrg_prc)
+    + (at_pb_co_sc_of.rslt_pblc_co_ofrg_qty * at_pb_co_sc_of.rslt_pblc_co_ofrg_prc)
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng giá trị chào bán công khai thực tế
+- target_column: act_prvt_plcmt_amt
+  transformation: at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_qty * at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Tổng giá trị chào bán riêng lẻ thực tế: qty × price'
+- target_column: act_esop_amt
+  transformation: (at_pb_co_sc_of.rslt_esop_issn_qty * at_pb_co_sc_of.rslt_esop_issn_prc)
+    + (at_pb_co_sc_of.rslt_bns_shr_issn_qty * at_pb_co_sc_of.rslt_bns_shr_issn_prc)
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Tổng giá trị ESOP thực tế: (ESOP qty × price) + (Bonus share qty ×
+    price)'
+- target_column: act_dvdn_issn_qty
+  transformation: at_pb_co_sc_of.rslt_dvdn_issn_qty
+  data_type: int
+  target_attr_name: ''
+  description: Phát hành trả cổ tức — số lượng CK thực tế. Silver không có price field
+    (không huy động tiền mặt)
+- target_column: act_own_cptl_issn_qty
+  transformation: at_pb_co_sc_of.rslt_own_cptl_issn_qty
+  data_type: int
+  target_attr_name: ''
+  description: Phát hành tăng vốn từ VCSH — số lượng CK thực tế. Silver không có price
+    field (không huy động tiền mặt)
+- target_column: act_othr_amt
+  transformation: at_pb_co_sc_of.act_procd_amt - ((at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_qty
+    * at_pb_co_sc_of.rslt_exst_shrhlr_ofrg_prc) + (at_pb_co_sc_of.rslt_auctn_ofrg_qty
+    * at_pb_co_sc_of.rslt_auctn_ofrg_prc) + (at_pb_co_sc_of.rslt_pblc_othr_ofrg_qty
+    * at_pb_co_sc_of.rslt_pblc_othr_ofrg_prc) + (at_pb_co_sc_of.rslt_pblc_co_ofrg_qty
+    * at_pb_co_sc_of.rslt_pblc_co_ofrg_prc) + (at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_qty
+    * at_pb_co_sc_of.rslt_prvt_plcmt_ofrg_prc) + (at_pb_co_sc_of.rslt_esop_issn_qty
+    * at_pb_co_sc_of.rslt_esop_issn_prc) + (at_pb_co_sc_of.rslt_bns_shr_issn_qty *
+    at_pb_co_sc_of.rslt_bns_shr_issn_prc))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Giá trị chào bán loại khác thực tế: Actual Proceeds Amount − (PUBLIC
+    + PRIVATE + ESOP)'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

@@ -1,0 +1,77 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-scr_tdg_snpst_dim
+  logical_name: Dimension mã chứng khoán — slicer Mã CK, Sàn, Loại CK, Chỉ số. SCD
+    Type 4A. Driving = scr_tdg_snpst.
+  physical_name: scr_tdg_snpst_dim
+  dm_ref: DTM-scr_tdg_snpst_dim
+  brd_ref: BRD-DTM-GSTT
+target:
+  namespace: dtm
+  physical_name: scr_tdg_snpst_dim
+  etl_handle: SCD4A
+  description: Dimension mã chứng khoán — slicer Mã CK, Sàn, Loại CK, Chỉ số. SCD
+    Type 4A. Driving = scr_tdg_snpst.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_tdg_snpst
+  alias: at_sc_td_sn
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND src_stm_code = 'MDDS_StockInfor'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_indx_constituent_snpst
+  alias: at_in_co_sn
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+relationship:
+- main_alias: at_sc_td_sn
+  join_type: LEFT JOIN
+  join_alias: at_in_co_sn
+  join_on: at_in_co_sn.scr_tdg_snpst_id = at_sc_td_sn.scr_tdg_snpst_id
+  description: ''
+mapping_columns:
+- target_column: scr_tdg_snpst_dim_id
+  transformation: hash_id('MDDS_StockInfor', symb)
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key — ETL generated. Driving = at_sc_td_sn.
+- target_column: symb
+  transformation: at_sc_td_sn.symb
+  data_type: string
+  target_attr_name: ''
+  description: Mã chứng khoán — join anchor ETL và slicer Mã CK.
+- target_column: scr_nm
+  transformation: at_sc_td_sn.full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên đầy đủ chứng khoán — lấy từ full_nm của at_sc_td_sn.
+- target_column: flr_code
+  transformation: at_sc_td_sn.flr_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã sàn — slicer Sàn (HOSE/HNX/UPCOM/FDS). Scheme: MDDS_FLOOR_CODE.'
+- target_column: stk_tp_code
+  transformation: at_sc_td_sn.stk_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại chứng khoán — slicer Loại CK / Loại phái sinh. Scheme: MDDS_STOCK_TYPE.'
+- target_column: idx_codes
+  transformation: COLLECT_LIST(at_in_co_sn.indx_code ORDER BY at_in_co_sn.indx_code
+    ASC)
+  data_type: array<string>
+  target_attr_name: ''
+  description: 'Danh sách mã chỉ số CK thuộc về — slicer Chỉ số (O_GSTT_3 Closed).
+    LEFT JOIN vì FDS và một số mã chưa thuộc rổ nào. ETL: COLLECT_LIST sort alphabetically.'
+- target_column: src_stm_code
+  transformation: at_sc_td_sn.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức MDDS StockInfor để đảm
+    bảo forward-compatible khi Atomic bổ sung nguồn. Driving table: at_sc_td_sn.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

@@ -1,0 +1,109 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-idv_vln_hist
+  logical_name: Lịch sử vi phạm & xử phạt cá nhân — ThanhTra TT_HO_SO + TT_KET_LUAN
+  physical_name: idv_vln_hist
+  dm_ref: DTM-idv_vln_hist
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: idv_vln_hist
+  etl_handle: SCD4A
+  description: Lịch sử vi phạm & xử phạt cá nhân — ThanhTra TT_HO_SO + TT_KET_LUAN
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_insp_case
+  alias: at_in_ca
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND src_stm_code = 'ThanhTra_TT_HO_SO'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: vln_hist_id
+  transformation: 'hash_id(''ThanhTra_TT_HO_SO'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: idv_prfl_id
+  transformation: 'NULL'
+  data_type: string
+  target_attr_name: ''
+  description: FK đến Individual Profile — ETL match qua Subject Id Number = CMND/CCCD,
+    xem O_QLKD_14
+- target_column: inspection_case_code
+  transformation: at_in_ca.insp_case_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã hồ sơ thanh tra/kiểm tra (giám sát)
+- target_column: sbj_id_nbr
+  transformation: at_in_ca.sbj_id_nbr
+  data_type: string
+  target_attr_name: ''
+  description: CMND/CCCD đối tượng vi phạm
+- target_column: sbj_full_nm
+  transformation: at_in_ca.sbj_full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Họ tên đối tượng vi phạm (fallback filter)
+- target_column: inspection_tp_code
+  transformation: at_in_ca.insp_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại hình thanh/kiểm tra (scheme: TT_PLAN_TYPE)'
+- target_column: case_nm
+  transformation: at_in_ca.case_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên hồ sơ
+- target_column: signing_dt
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN insp_case_conclusion
+    ON insp_case_conclusion.insp_'
+  data_type: date
+  target_attr_name: ''
+  description: Ngày ký kết luận xử phạt
+- target_column: conclusion_doc_nbr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN insp_case_conclusion
+    ON insp_case_conclusion.insp_'
+  data_type: string
+  target_attr_name: ''
+  description: Số QĐ xử phạt
+- target_column: conclusion_smy
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN insp_case_conclusion
+    ON insp_case_conclusion.insp_'
+  data_type: string
+  target_attr_name: ''
+  description: Nội dung kết luận vi phạm — K_QLKD_125
+- target_column: vln_tp_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN insp_case_conclusion
+    ON insp_case_conclusion.insp_'
+  data_type: string
+  target_attr_name: ''
+  description: 'Hành vi vi phạm (scheme: TT_VIOLATION_TYPE)'
+- target_column: pny_tp_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN insp_case_conclusion
+    ON insp_case_conclusion.insp_'
+  data_type: string
+  target_attr_name: ''
+  description: 'Hình thức xử phạt (scheme: TT_PENALTY_TYPE)'
+- target_column: pny_amt
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN insp_case_conclusion
+    ON insp_case_conclusion.insp_'
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Số tiền phạt (VND)
+- target_column: conclusion_st_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN insp_case_conclusion
+    ON insp_case_conclusion.insp_'
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái kết luận (scheme: TT_CASE_STATUS)'
+- target_column: src_stm_code
+  transformation: at_in_ca.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức ThanhTra_TT_HO_SO. Driving
+    table: at_in_ca.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

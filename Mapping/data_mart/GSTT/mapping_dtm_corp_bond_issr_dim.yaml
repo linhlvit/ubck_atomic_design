@@ -1,0 +1,48 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-corp_bond_issr_dim
+  logical_name: Dimension tổ chức phát hành trái phiếu DN — slicer Mã TP, Tên nhà
+    phát hành. SCD Type 4A. Driving = corp_bond_tdg_snpst.
+  physical_name: corp_bond_issr_dim
+  dm_ref: DTM-corp_bond_issr_dim
+  brd_ref: BRD-DTM-GSTT
+target:
+  namespace: dtm
+  physical_name: corp_bond_issr_dim
+  etl_handle: SCD4A
+  description: Dimension tổ chức phát hành trái phiếu DN — slicer Mã TP, Tên nhà phát
+    hành. SCD Type 4A. Driving = corp_bond_tdg_snpst.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_corp_bond_tdg_snpst
+  alias: at_co_bo_td_sn
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND src_stm_code = 'MDDS_CorpBondInfor'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: corp_bond_issr_dim_id
+  transformation: hash_id('MDDS_CorpBondInfor', bond_ticker)
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key — ETL generated. Driving = at_co_bo_td_sn.
+- target_column: bond_ticker
+  transformation: at_co_bo_td_sn.symb
+  data_type: string
+  target_attr_name: ''
+  description: Mã trái phiếu — join anchor ETL từ Fact.
+- target_column: issr_nm
+  transformation: at_co_bo_td_sn.full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên tổ chức phát hành trái phiếu.
+- target_column: src_stm_code
+  transformation: at_co_bo_td_sn.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức MDDS CorpBondInfor để
+    đảm bảo forward-compatible khi Atomic bổ sung nguồn. Driving table: at_co_bo_td_sn.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

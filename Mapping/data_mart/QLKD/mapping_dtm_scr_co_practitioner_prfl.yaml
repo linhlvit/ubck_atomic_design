@@ -1,0 +1,84 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-scr_co_practitioner_prfl
+  logical_name: Người hành nghề CK tại CTCK — GCN, chứng chỉ, trạng thái
+  physical_name: scr_co_practitioner_prfl
+  dm_ref: DTM-scr_co_practitioner_prfl
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: scr_co_practitioner_prfl
+  etl_handle: SCD4A
+  description: Người hành nghề CK tại CTCK — GCN, chứng chỉ, trạng thái
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_hstr
+  alias: at_sc_pr_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: practitioner_prfl_id
+  transformation: 'hash_id(''scr_co_practitioner_prfl_id'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: prac_code
+  transformation: at_sc_pr_hs.prac_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã người hành nghề — business key
+- target_column: scr_co_code
+  transformation: at_sc_pr_hs.scr_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã CTCK
+- target_column: full_nm
+  transformation: at_sc_pr_hs.full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Họ tên NHN
+- target_column: identity_refr_code
+  transformation: at_sc_pr_hs.id_refr_code
+  data_type: string
+  target_attr_name: ''
+  description: CMND/CCCD NHN
+- target_column: practice_st_code
+  transformation: at_sc_pr_hs.practice_st_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái hành nghề (scheme: NHNCK_PRACTICE_STATUS)'
+- target_column: practitioner_rgst_tp_code
+  transformation: at_sc_pr_hs.prac_rgst_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại đăng ký HN (scheme: NHNCK_REGISTRATION_TYPE)'
+- target_column: license_ctf_nbr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN scr_prac_license_ctf_doc
+    ON scr_prac_license_ctf_d'
+  data_type: string
+  target_attr_name: ''
+  description: Số GCN hành nghề
+- target_column: ctf_tp_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN scr_prac_license_ctf_doc
+    ON scr_prac_license_ctf_d'
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại chứng chỉ/nghiệp vụ (scheme: CERTIFICATE_TYPE) — xem O_QLKD_10'
+- target_column: ctf_st_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN scr_prac_license_ctf_doc
+    ON scr_prac_license_ctf_d'
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái GCN (scheme: NHNCK_CERT_STATUS)'
+- target_column: src_stm_code
+  transformation: at_sc_pr_hs.src_stm_code WHERE at_sc_pr_hs.src_stm_code IN ('SCMS_CTCK_NGUOI_HANH_NGHE_CK','NHNCK_Professionals')
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter 2 nguồn chính thức SCMS_CTCK_NGUOI_HANH_NGHE_CK
+    + NHNCK_Professionals. Driving table: at_sc_pr_hs.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

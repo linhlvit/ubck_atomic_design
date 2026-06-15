@@ -1,0 +1,119 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_dscr_ivsm_ctr_snpst
+  logical_name: UTDM CTQLQ — grain 1 CTQLQ × 1 Report Template × 1 Report Date. Tất
+    cả measures PENDING O_FMS_1
+  physical_name: fct_dscr_ivsm_ctr_snpst
+  dm_ref: DTM-fct_dscr_ivsm_ctr_snpst
+  brd_ref: BRD-DTM-FMS
+target:
+  namespace: dtm
+  physical_name: fct_dscr_ivsm_ctr_snpst
+  etl_handle: Fact Snapshot
+  description: UTDM CTQLQ — grain 1 CTQLQ × 1 Report Template × 1 Report Date. Tất
+    cả measures PENDING O_FMS_1
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_rpt_impr_val_hstr
+  alias: at_rp_im_va_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_mbr_prd_rpt
+  alias: at_mb_pr_rp
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_fnd_mgt_co_dim_hstr
+  alias: dt_fn_mg_co_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_rp_im_va_hs
+  join_type: INNER JOIN
+  join_alias: at_mb_pr_rp
+  join_on: at_mb_pr_rp.mbr_prd_rpt_id = at_rp_im_va_hs.mbr_prd_rpt_id AND at_mb_pr_rp.rpt_subm_st_code
+    IN ('SUBMITTED','LATE')
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.cdr_dt_id = at_mb_pr_rp.day_rpt
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: LEFT JOIN
+  join_alias: dt_fn_mg_co_di_hs
+  join_on: dt_fn_mg_co_di_hs.co_code = at_rp_im_va_hs.fnd_mgt_co_code AND dt_fn_mg_co_di_hs.ds_rcrd_st
+    = 1
+  description: ''
+mapping_columns:
+- target_column: rpt_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK ngày báo cáo — lookup qua at_mb_pr_rp.day_rpt, filter SUBMITTED/LATE
+- target_column: fnd_mgt_co_dim_id
+  transformation: dt_fn_mg_co_di_hs.fnd_mgt_co_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK CTQLQ — lookup qua NK co_code, active record
+- target_column: rpt_tpl_code
+  transformation: at_rp_im_va_hs.rpt_id
+  data_type: string
+  target_attr_name: ''
+  description: Mã biểu mẫu BC — Degenerate Dimension
+- target_column: rpt_prd_code
+  transformation: at_rp_im_va_hs.rpt_prd_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã kỳ báo cáo — Degenerate Dimension
+- target_column: tot_ctr_cnt
+  transformation: SUM(CAST(at_rp_im_va_hs.val AS int)) WHERE at_rp_im_va_hs.rpt_trgt_id
+    = '180101'
+  data_type: int
+  target_attr_name: ''
+  description: Tổng số HĐ UTDM per CTQLQ per kỳ từ RPTVALUES — pending O_FMS_1
+- target_column: ind_ctr_cnt
+  transformation: SUM(CAST(at_rp_im_va_hs.val AS int)) WHERE at_rp_im_va_hs.rpt_trgt_id
+    = '180102'
+  data_type: int
+  target_attr_name: ''
+  description: Số HĐ UTDM cá nhân per CTQLQ per kỳ — pending O_FMS_1
+- target_column: org_ctr_cnt
+  transformation: SUM(CAST(at_rp_im_va_hs.val AS int)) WHERE at_rp_im_va_hs.rpt_trgt_id
+    = '180103'
+  data_type: int
+  target_attr_name: ''
+  description: Số HĐ UTDM tổ chức per CTQLQ per kỳ — pending O_FMS_1
+- target_column: tot_trst_mkt_val
+  transformation: SUM(CAST(at_rp_im_va_hs.val AS decimal)) WHERE at_rp_im_va_hs.rpt_trgt_id
+    = '180110'
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng GTTT UTDM per CTQLQ per kỳ từ RPTVALUES — pending O_FMS_1
+- target_column: ind_trst_mkt_val
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: GTTT UTDM cá nhân per CTQLQ per kỳ — pending O_FMS_1
+- target_column: org_trst_mkt_val
+  transformation: NULL  -- PENDING
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: GTTT UTDM tổ chức per CTQLQ per kỳ — pending O_FMS_1
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

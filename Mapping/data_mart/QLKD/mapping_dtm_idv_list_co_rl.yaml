@@ -1,0 +1,84 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-idv_list_co_rl
+  logical_name: Vai trò cá nhân tại DN niêm yết — VCB/FPT/HPG... (IDS)
+  physical_name: idv_list_co_rl
+  dm_ref: DTM-idv_list_co_rl
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: idv_list_co_rl
+  etl_handle: SCD4A
+  description: Vai trò cá nhân tại DN niêm yết — VCB/FPT/HPG... (IDS)
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_rel_ent
+  alias: at_pb_co_re_en
+  select_fields: '*'
+  filter: ds_record_status = 1 AND src_stm_code = 'IDS_company_relationship'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: list_co_rl_id
+  transformation: 'hash_id(''IDS_company_relationship'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: idv_prfl_id
+  transformation: 'NULL'
+  data_type: string
+  target_attr_name: ''
+  description: FK đến Individual Profile (ETL derived)
+- target_column: pblc_co_code
+  transformation: at_pb_co_re_en.pblc_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã DN niêm yết/ĐKGD
+- target_column: rltnp_tp_code
+  transformation: at_pb_co_re_en.rltnp_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Vai trò: TV HĐQT / Cổ đông lớn / Cố vấn... (scheme: IDS_RELATIONSHIP_TYPE
+    — xem O_QLKD_17)'
+- target_column: rel_ent_nm
+  transformation: at_pb_co_re_en.rel_ent_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên người liên quan trong IDS
+- target_column: own_shr_qty
+  transformation: at_pb_co_re_en.own_shr_qty
+  data_type: int
+  target_attr_name: ''
+  description: Số CP sở hữu tại DN niêm yết
+- target_column: own_rto
+  transformation: at_pb_co_re_en.own_rto
+  data_type: decimal(5,2)
+  target_attr_name: ''
+  description: Tỷ lệ sở hữu tại DN niêm yết
+- target_column: eff_fm_dt
+  transformation: at_pb_co_re_en.eff_fm_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày bắt đầu vai trò
+- target_column: eff_to_dt
+  transformation: at_pb_co_re_en.eff_to_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày kết thúc vai trò
+- target_column: lcs_code
+  transformation: CASE WHEN at_pb_co_re_en.eff_to_dt IS NULL THEN 'ACTIVE' ELSE 'INACTIVE'
+    END
+  data_type: string
+  target_attr_name: ''
+  description: CASE WHEN Public Company Related Entity.Effective To Date IS NULL THEN
+    'ACTIVE' ELSE 'INACTIVE' END
+- target_column: src_stm_code
+  transformation: at_pb_co_re_en.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức IDS_company_relationship.
+    Driving table: at_pb_co_re_en.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

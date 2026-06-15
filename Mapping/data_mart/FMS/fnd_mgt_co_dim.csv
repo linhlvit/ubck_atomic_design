@@ -1,0 +1,22 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,Source System,,,Description,,,
+dtm,sit_dtm,fnd_mgt_co_dim,SCD4A,FMS_SECURITIES,,,CTQLQ — Mã/Tên/Tên viết tắt/Vốn ĐL/Trạng thái (SCD2) ← FMS.SECURITIES,,,
+
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,,,
+1,physical_table,,atm_fnd_mgt_co_hstr,fnd_mgt_co,*,"ds_snpst_dt = to_date(""etl_date"", 'yyyy-MM-dd') AND ds_rcrd_st = 1 AND src_stm_code = 'FMS_SECURITIES'",,,,
+
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,,,
+
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Physical Target Column,Transformation,Data Type,Logical Target Column,,,Description,,,
+1,fnd_mgt_co_dim_id,"hash_id('FMS_SECURITIES', co_code)",string,,,,Surrogate key ETL generated,,,
+2,co_code,fnd_mgt_co.fnd_mgt_co_code,string,,,,Mã CTQLQ — join anchor ETL (= FMS.SECURITIES.Id),,,
+3,co_shrt_nm,fnd_mgt_co.fnd_mgt_co_shrt_nm,string,,,,Tên viết tắt CTQLQ,,,
+4,co_nm,fnd_mgt_co.fnd_mgt_co_nm,string,,,,Tên đầy đủ CTQLQ,,,
+5,lcs_code,fnd_mgt_co.lcs_code,string,,,,Trạng thái hoạt động CTQLQ — scheme: LIFE_CYCLE_STATUS,,,
+6,src_stm_code,fnd_mgt_co.src_stm_code,string,,,,Mã nguồn dữ liệu — scheme: SOURCE_SYSTEM. Filter: WHERE src_stm_code = 'FMS_SECURITIES',,,
+
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,,,

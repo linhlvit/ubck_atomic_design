@@ -1,0 +1,97 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_scr_co_rpt_cmpln_snpst
+  logical_name: Periodic Snapshot tuân thủ nộp báo cáo — 1 CTCK × 1 biểu mẫu × 1 kỳ
+  physical_name: fct_scr_co_rpt_cmpln_snpst
+  dm_ref: DTM-fct_scr_co_rpt_cmpln_snpst
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: fct_scr_co_rpt_cmpln_snpst
+  etl_handle: Fact Snapshot
+  description: Periodic Snapshot tuân thủ nộp báo cáo — 1 CTCK × 1 biểu mẫu × 1 kỳ
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_mbr_prd_rpt
+  alias: at_mb_pr_rp
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_scr_co_dim_hstr
+  alias: dt_sc_co_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_mb_pr_rp
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.cdr_dt = at_mb_pr_rp.snpst_dt
+  description: ''
+- main_alias: at_mb_pr_rp
+  join_type: LEFT JOIN
+  join_alias: dt_sc_co_di_hs
+  join_on: dt_sc_co_di_hs.scr_co_code = at_mb_pr_rp.scr_co_code AND at_mb_pr_rp.snpst_dt
+    BETWEEN dt_sc_co_di_hs.eff_dt AND dt_sc_co_di_hs.expiry_dt
+  description: ''
+mapping_columns:
+- target_column: snpst_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK lịch — ETL lookup
+- target_column: scr_co_dim_id
+  transformation: dt_sc_co_di_hs.scr_co_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK CTCK — ETL lookup
+- target_column: rpt_tpl_code
+  transformation: at_mb_pr_rp.rpt_tpl_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã biểu mẫu (DD)
+- target_column: submission_dt
+  transformation: at_mb_pr_rp.subm_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày nộp thực tế
+- target_column: submission_ddln_dt
+  transformation: at_mb_pr_rp.subm_ddln_dt
+  data_type: date
+  target_attr_name: ''
+  description: Hạn nộp
+- target_column: submission_st_code
+  transformation: at_mb_pr_rp.subm_st_code
+  data_type: string
+  target_attr_name: ''
+  description: Trạng thái nộp
+- target_column: rpt_prd_yr
+  transformation: at_mb_pr_rp.yr_val
+  data_type: int
+  target_attr_name: ''
+  description: Năm kỳ báo cáo
+- target_column: rpt_prd_tp_code
+  transformation: at_mb_pr_rp.rpt_prd_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: Kỳ báo cáo
+- target_column: is_on_tm_ind
+  transformation: CASE WHEN at_mb_pr_rp.subm_dt <= at_mb_pr_rp.subm_ddln_dt THEN true
+    ELSE false END
+  data_type: string
+  target_attr_name: ''
+  description: CASE WHEN Member Periodic Report.Submission Date <= Member Periodic
+    Report.Submission Deadline Date THEN true ELSE false END
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

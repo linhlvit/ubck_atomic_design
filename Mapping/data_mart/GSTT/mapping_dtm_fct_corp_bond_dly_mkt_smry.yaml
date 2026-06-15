@@ -1,0 +1,157 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_corp_bond_dly_mkt_smry
+  logical_name: Fact Periodic Snapshot — tổng hợp thị trường TPDN EOD theo mã TP /
+    ngày. Phục vụ Nhóm 2.
+  physical_name: fct_corp_bond_dly_mkt_smry
+  dm_ref: DTM-fct_corp_bond_dly_mkt_smry
+  brd_ref: BRD-DTM-GSTT
+target:
+  namespace: dtm
+  physical_name: fct_corp_bond_dly_mkt_smry
+  etl_handle: Fact Append
+  description: Fact Periodic Snapshot — tổng hợp thị trường TPDN EOD theo mã TP /
+    ngày. Phục vụ Nhóm 2.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_corp_bond_tdg_snpst
+  alias: at_co_bo_td_sn
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_trd
+  alias: at_sc_tr
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_hstr
+  alias: at_pb_co_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_rpt_subm
+  alias: at_pb_co_rp_su
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_fnc_rpt_val
+  alias: at_pb_co_fn_rp_va
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND clmn_code = '1'
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_corp_bond_issr_dim_hstr
+  alias: dt_co_bo_is_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_corp_bond_issr_indy_dim_hstr
+  alias: dt_co_bo_is_in_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_co_bo_td_sn
+  join_type: INNER JOIN
+  join_alias: at_sc_tr
+  join_on: at_sc_tr.symb_code = at_co_bo_td_sn.symb AND at_sc_tr.trd_dt = at_co_bo_td_sn.tdg_dt
+  description: ''
+- main_alias: at_co_bo_td_sn
+  join_type: LEFT JOIN
+  join_alias: at_pb_co_hs
+  join_on: at_pb_co_hs.bond_ticker = at_co_bo_td_sn.symb
+  description: ''
+- main_alias: at_pb_co_hs
+  join_type: LEFT JOIN
+  join_alias: at_pb_co_rp_su
+  join_on: at_pb_co_rp_su.pblc_co_id = at_pb_co_hs.pblc_co_id
+  description: ''
+- main_alias: at_pb_co_rp_su
+  join_type: LEFT JOIN
+  join_alias: at_pb_co_fn_rp_va
+  join_on: at_pb_co_fn_rp_va.pblc_co_rpt_subm_id = at_pb_co_rp_su.pblc_co_rpt_subm_id
+    AND at_pb_co_fn_rp_va.row_code IN ('10','03')
+  description: ''
+- main_alias: at_co_bo_td_sn
+  join_type: LEFT JOIN
+  join_alias: dt_co_bo_is_di_hs
+  join_on: dt_co_bo_is_di_hs.bond_ticker = at_co_bo_td_sn.symb AND at_co_bo_td_sn.tdg_dt
+    BETWEEN dt_co_bo_is_di_hs.eff_dt AND dt_co_bo_is_di_hs.expiry_dt
+  description: ''
+- main_alias: at_pb_co_hs
+  join_type: LEFT JOIN
+  join_alias: dt_co_bo_is_in_di_hs
+  join_on: dt_co_bo_is_in_di_hs.bond_ticker = at_co_bo_td_sn.symb AND at_co_bo_td_sn.tdg_dt
+    BETWEEN dt_co_bo_is_in_di_hs.eff_dt AND dt_co_bo_is_in_di_hs.expiry_dt
+  description: ''
+- main_alias: at_co_bo_td_sn
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.dt = at_co_bo_td_sn.tdg_dt
+  description: ''
+mapping_columns:
+- target_column: corp_bond_issr_dim_id
+  transformation: dt_co_bo_is_di_hs.corp_bond_issr_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK tổ chức phát hành TPDN. Driving = at_co_bo_td_sn.
+- target_column: corp_bond_issr_indy_dim_id
+  transformation: dt_co_bo_is_in_di_hs.corp_bond_issr_indy_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: 'FK ngành TPDN. Nullable: TPDN không map được sang pblc_co (O_GSTT_7).'
+- target_column: tdg_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK ngày giao dịch TPDN.
+- target_column: refr_prc
+  transformation: at_co_bo_td_sn.refr_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá tham chiếu TPDN — K_GSTT_14b.
+- target_column: cls_prc
+  transformation: at_co_bo_td_sn.cls_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá đóng cửa TPDN — K_GSTT_15b.
+- target_column: tot_mtch_vol
+  transformation: SUM(at_sc_tr.exec_vol WHERE at_sc_tr.mkt_id_code = 'BDO' AND at_sc_tr.board_tp_code
+    IN ('G1','G2','G3','T1','T2','T3'))
+  data_type: int
+  target_attr_name: ''
+  description: Tổng KL khớp lệnh TPDN — K_GSTT_17b. Market Id Code = 'BDO'.
+- target_column: tot_mtch_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.mkt_id_code = 'BDO' AND at_sc_tr.board_tp_code
+    IN ('G1','G2','G3','T1','T2','T3'))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng GT khớp lệnh TPDN — K_GSTT_18b. Market Id Code = 'BDO'.
+- target_column: net_rev
+  transformation: at_pb_co_fn_rp_va.data_val
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Doanh thu thuần TPDN forward-fill theo quý — K_GSTT_23. Join: at_co_bo_td_sn.symb
+    → pblc_co.bond_ticker. Row Code: ''10''/''03'' theo entp_tp_code.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

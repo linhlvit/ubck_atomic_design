@@ -1,0 +1,99 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-pny_dcsn_list
+  logical_name: Quyết định xử phạt — latest state per QĐ (1 row per GS_VAN_BAN_XU_LY).
+    Phục vụ tra cứu danh sách Nhóm 15 (XP)
+  physical_name: pny_dcsn_list
+  dm_ref: DTM-pny_dcsn_list
+  brd_ref: BRD-DTM-TT
+target:
+  namespace: dtm
+  physical_name: pny_dcsn_list
+  etl_handle: SCD4A
+  description: Quyết định xử phạt — latest state per QĐ (1 row per GS_VAN_BAN_XU_LY).
+    Phục vụ tra cứu danh sách Nhóm 15 (XP)
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_surveil_nfrc_dcsn
+  alias: at_su_nf_dc
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND src_stm_code = 'ThanhTra_GS_VAN_BAN_XU_LY'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_surveil_nfrc_case
+  alias: at_su_nf_ca
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+relationship:
+- main_alias: at_su_nf_dc
+  join_type: INNER JOIN
+  join_alias: at_su_nf_ca
+  join_on: at_su_nf_ca.surveil_nfrc_case_id = at_su_nf_dc.surveil_nfrc_case_id
+  description: ''
+mapping_columns:
+- target_column: pny_dcsn_code
+  transformation: at_su_nf_dc.surveil_nfrc_dcsn_code
+  data_type: string
+  target_attr_name: ''
+  description: 'PK bảng tác nghiệp — PK nguồn GS_VAN_BAN_XU_LY.ID. Driving table:
+    at_su_nf_dc. ThanhTra.GS_VAN_BAN_XU_LY.ID'
+- target_column: pny_dcsn_nbr
+  transformation: at_su_nf_dc.pny_dcsn_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số quyết định xử phạt / số công văn nhắc nhở — ThanhTra.GS_VAN_BAN_XU_LY.SO_QD_XU_PHAT
+- target_column: surveillance_case_code
+  transformation: at_su_nf_ca.case_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Mã hồ sơ giám sát — ThanhTra.GS_HO_SO.MA_HO_SO
+- target_column: sbj_nm
+  transformation: at_su_nf_ca.sbj_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên đối tượng vi phạm (denormalized) — ThanhTra.GS_HO_SO.TEN_DOI_TUONG
+- target_column: pny_sbj_cgy_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Phân loại đối tượng bị xử phạt — ETL-derived từ GS_HO_SO, field nguồn
+    chưa xác định. scheme TT_PENALTY_SUBJECT_CATEGORY — xem O_TT_9
+- target_column: vln_tp_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Loại hành vi vi phạm — scheme TT_VIOLATION_TYPE. field Silver nguồn
+    chưa xác định — xem O_TT_8
+- target_column: dcsn_st_code
+  transformation: at_su_nf_dc.dcsn_st_code
+  data_type: string
+  target_attr_name: ''
+  description: Trạng thái quyết định — ThanhTra.GS_VAN_BAN_XU_LY.TRANG_THAI. scheme
+    TT_CASE_STATUS
+- target_column: vln_rpt_dt
+  transformation: at_su_nf_dc.vln_rpt_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày ký biên bản vi phạm hành chính — ThanhTra.GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN
+- target_column: vln_rpt_yr
+  transformation: YEAR(at_su_nf_dc.vln_rpt_dt)
+  data_type: int
+  target_attr_name: ''
+  description: 'Năm biên bản vi phạm — ETL: YEAR(NGAY_BIEN_BAN). Dùng index filter'
+- target_column: tot_pny_amt
+  transformation: at_su_nf_dc.tot_pny_amt
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng tiền phạt (VNĐ) — ThanhTra.GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT
+- target_column: src_stm_code
+  transformation: at_su_nf_dc.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức ThanhTra_GS_VAN_BAN_XU_LY.
+    Driving table: at_su_nf_dc.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

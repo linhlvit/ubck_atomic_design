@@ -1,0 +1,71 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-practitioner_lst_co_role
+  logical_name: Mapping Datamart - Practitioner Listed Company Role
+  physical_name: practitioner_lst_co_role
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: practitioner_lst_co_role
+  etl_handle: SCD4A
+  description: 'Vai trò tại DN niêm yết/UPCOM — toàn bộ vai trò per NHN: tên DN, vị
+    trí, trạng thái, ngày bắt đầu/kết thúc.'
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_org_emp_rpt_hstr
+  alias: at_sc_pr_or_em_rp_hs
+  select_fields: prac_code, org_emp_rpt_code, workplace_nm, pos_nm, tmt_dt, hire_dt,
+    src_stm_code
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'NHNCK_OrganizationReports'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: practitioner_code
+  transformation: at_sc_pr_or_em_rp_hs.prac_code
+  data_type: string
+  target_attr_name: ''
+  description: PK composite (NHN)
+- target_column: org_emp_rpt_code
+  transformation: at_sc_pr_or_em_rp_hs.org_emp_rpt_code
+  data_type: string
+  target_attr_name: ''
+  description: 'PK báo cáo vai trò tại DN niêm yết. Driving table: at_sc_pr_or_em_rp_hs.'
+- target_column: workplace_nm
+  transformation: at_sc_pr_or_em_rp_hs.workplace_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên DN niêm yết/UPCOM — text tự do từ OrganizationReports.Workplace
+- target_column: pos_nm
+  transformation: at_sc_pr_or_em_rp_hs.pos_nm
+  data_type: string
+  target_attr_name: ''
+  description: Vai trò tại DN niêm yết — text tự do từ OrganizationReports.Position
+- target_column: emp_st
+  transformation: CASE WHEN at_sc_pr_or_em_rp_hs.tmt_dt IS NULL THEN 'Hiện tại' ELSE
+    'Đã kết thúc' END
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái vai trò — ETL-derived: NULL Termination Date → ''Hiện tại'';
+    có giá trị → ''Đã kết thúc'''
+- target_column: hire_dt
+  transformation: at_sc_pr_or_em_rp_hs.hire_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày bắt đầu vai trò
+- target_column: tmt_dt
+  transformation: at_sc_pr_or_em_rp_hs.tmt_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày kết thúc vai trò — NULL = đang đảm nhiệm
+- target_column: src_stm_code
+  transformation: at_sc_pr_or_em_rp_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức NHNCK_OrganizationReports.
+    Driving table: at_sc_pr_or_em_rp_hs.'
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

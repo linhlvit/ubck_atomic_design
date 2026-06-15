@@ -1,0 +1,68 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-svc_tp_dim
+  logical_name: Dịch vụ CTCK (SCMS_SERVICE_TYPE) — ký quỹ/ứng trước/lưu ký/phái sinh
+    (SCD2)
+  physical_name: svc_tp_dim
+  dm_ref: DTM-svc_tp_dim
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: svc_tp_dim
+  etl_handle: SCD4A
+  description: Dịch vụ CTCK (SCMS_SERVICE_TYPE) — ký quỹ/ứng trước/lưu ký/phái sinh
+    (SCD2)
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv
+  select_fields: '*'
+  filter: ''
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_co_svc_reg_hstr
+  alias: at_sc_co_sv_re_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_cv
+  join_type: LEFT JOIN
+  join_alias: at_sc_co_sv_re_hs
+  join_on: at_sc_co_sv_re_hs.cv_id = at_cv.cv_id
+  description: ''
+mapping_columns:
+- target_column: svc_tp_dim_id
+  transformation: hash_id('svc_tp_dim_id', svc_tp_code)
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: svc_tp_code
+  transformation: at_cv.cl_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã dịch vụ — Classification Value (scheme: SCMS_SERVICE_TYPE)'
+- target_column: svc_tp_nm
+  transformation: at_cv.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên dịch vụ tiếng Việt — Classification Value (scheme: SCMS_SERVICE_TYPE)'
+- target_column: svc_cgy_code
+  transformation: CASE WHEN at_sc_co_sv_re_hs.svc_tp_code IN ('KQY','UTRUOC','LUUKY')
+    THEN 'CK' WHEN at_sc_co_sv_re_hs.svc_tp_code IN ('MGPS','TVPS','TDPS') THEN 'PHAI_SINH'
+    ELSE NULL END
+  data_type: string
+  target_attr_name: ''
+  description: CASE WHEN at_sc_co_sv_re_hs.svc_tp_code IN ('KQY','UTRUOC','LUUKY')
+    THEN 'CK' WHEN at_sc_co_sv_re_hs.svc_tp_code IN ('MGPS','TVPS','TDPS') THEN 'PHAI_SINH'
+    ELSE NULL END
+- target_column: src_stm_code
+  transformation: at_cv.src_stm_code WHERE at_cv.scm_code = 'SCMS_SERVICE_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

@@ -1,0 +1,98 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-inspection_case_list
+  logical_name: Hồ sơ TT/KT — latest state per hồ sơ (1 row per TT_HO_SO). Phục vụ
+    tra cứu danh sách Nhóm 5 (TT) và Nhóm 10 (KT)
+  physical_name: inspection_case_list
+  dm_ref: DTM-inspection_case_list
+  brd_ref: BRD-DTM-TT
+target:
+  namespace: dtm
+  physical_name: inspection_case_list
+  etl_handle: SCD4A
+  description: Hồ sơ TT/KT — latest state per hồ sơ (1 row per TT_HO_SO). Phục vụ
+    tra cứu danh sách Nhóm 5 (TT) và Nhóm 10 (KT)
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_insp_case
+  alias: at_in_ca
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND src_stm_code = 'ThanhTra_TT_HO_SO'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_insp_dcsn
+  alias: at_in_dc
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+relationship:
+- main_alias: at_in_ca
+  join_type: INNER JOIN
+  join_alias: at_in_dc
+  join_on: at_in_dc.insp_dcsn_id = at_in_ca.insp_dcsn_id
+  description: ''
+mapping_columns:
+- target_column: inspection_case_code
+  transformation: at_in_ca.insp_case_code
+  data_type: string
+  target_attr_name: ''
+  description: 'PK bảng tác nghiệp — PK nguồn TT_HO_SO.ID. Driving table: at_in_ca.
+    ThanhTra.TT_HO_SO.ID'
+- target_column: case_nbr
+  transformation: at_in_ca.case_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Mã hồ sơ nghiệp vụ hiển thị — ThanhTra.TT_HO_SO.MA_HO_SO
+- target_column: dspl_nm
+  transformation: CASE WHEN at_in_ca.sbj_tp_code = 'CA_NHAN' THEN at_in_ca.sbj_full_nm
+    ELSE at_in_ca.sbj_org_nm END
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên hiển thị — ETL: COALESCE(TT_HO_SO.TEN_DOI_TUONG, TT_HO_SO.HO_TEN).
+    TEN_DOI_TUONG cho tổ chức; HO_TEN cho cá nhân'
+- target_column: sbj_cgy_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: 'Phân loại đối tượng — ETL-derived: resolve polymorphic DOI_TUONG_REF_ID
+    → DM_CONG_TY_CK/QLQ/DC/DOI_TUONG_KHAC → derive code. scheme TT_SUBJECT_CATEGORY
+    — xem O_TT_4'
+- target_column: inspection_tp_code
+  transformation: at_in_ca.insp_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: Loại hình THANH_TRA / KIEM_TRA — ThanhTra.TT_HO_SO.LOAI_HINH
+- target_column: inspection_form_tp_code
+  transformation: CASE WHEN at_in_dc.insp_anul_pln_id IS NULL THEN 'DOT_XUAT' ELSE
+    'DINH_KY' END
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại hình đợt thanh tra: DINH_KY / DOT_XUAT — ETL-derived: Inspection
+    Decision.Inspection Annual Plan Id IS NULL → DOT_XUAT; NOT NULL → DINH_KY'
+- target_column: case_st_code
+  transformation: at_in_ca.case_st_code
+  data_type: string
+  target_attr_name: ''
+  description: Trạng thái hồ sơ — ThanhTra.TT_HO_SO.TRANG_THAI_ID. scheme TT_CASE_STATUS
+- target_column: rcvd_dt
+  transformation: at_in_ca.rcvd_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày nhận hồ sơ — ThanhTra.TT_HO_SO.NGAY_NHAN_HO_SO
+- target_column: rcvd_yr
+  transformation: YEAR(at_in_ca.rcvd_dt)
+  data_type: int
+  target_attr_name: ''
+  description: 'Năm nhận hồ sơ — ETL: YEAR(NGAY_NHAN_HO_SO). Dùng index filter thay
+    YEAR() function'
+- target_column: src_stm_code
+  transformation: at_in_ca.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức ThanhTra_TT_HO_SO. Driving
+    table: at_in_ca.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

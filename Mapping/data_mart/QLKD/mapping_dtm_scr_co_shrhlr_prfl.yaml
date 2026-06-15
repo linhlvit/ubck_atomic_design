@@ -1,0 +1,97 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-scr_co_shrhlr_prfl
+  logical_name: Cổ đông CTCK — tên, tỷ lệ sở hữu, số tài khoản
+  physical_name: scr_co_shrhlr_prfl
+  dm_ref: DTM-scr_co_shrhlr_prfl
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: scr_co_shrhlr_prfl
+  etl_handle: SCD4A
+  description: Cổ đông CTCK — tên, tỷ lệ sở hữu, số tài khoản
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_co_shrhlr_hstr
+  alias: at_sc_co_sh_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'SCMS_CTCK_CO_DONG'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: shrhlr_prfl_id
+  transformation: 'hash_id(''SCMS_CTCK_CO_DONG'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: scr_co_shrhlr_code
+  transformation: at_sc_co_sh_hs.scr_co_shrhlr_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã cổ đông — business key
+- target_column: scr_co_code
+  transformation: at_sc_co_sh_hs.scr_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã CTCK
+- target_column: shrhlr_nm
+  transformation: at_sc_co_sh_hs.shrhlr_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên cổ đông
+- target_column: is_idv_ind
+  transformation: at_sc_co_sh_hs.is_idv_ind
+  data_type: string
+  target_attr_name: ''
+  description: Cổ đông cá nhân hay tổ chức
+- target_column: shrhlr_tp_code
+  transformation: at_sc_co_sh_hs.shrhlr_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại cổ đông (scheme: SCMS_SHAREHOLDER_RELATION_TYPE)'
+- target_column: shr_qty
+  transformation: at_sc_co_sh_hs.shr_qty
+  data_type: int
+  target_attr_name: ''
+  description: Số CP nắm giữ tại CTCK
+- target_column: shr_rto
+  transformation: at_sc_co_sh_hs.shr_rto
+  data_type: decimal(5,2)
+  target_attr_name: ''
+  description: Tỷ lệ sở hữu CP (%)
+- target_column: identn_nbr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN ip_alt_identn
+    ON ip_alt_identn.ip_id = scr_co_shrh'
+  data_type: string
+  target_attr_name: ''
+  description: CMND/CCCD cổ đông — từ Involved Party Alternative Identification
+- target_column: job_pos_nm
+  transformation: at_sc_co_sh_hs.job_pos_nm
+  data_type: string
+  target_attr_name: ''
+  description: Chức vụ cổ đông tại nơi khác (text tự do)
+- target_column: workplace_nm
+  transformation: at_sc_co_sh_hs.workplace_nm
+  data_type: string
+  target_attr_name: ''
+  description: Nơi làm việc của cổ đông (text tự do)
+- target_column: tdg_ac_nbr
+  transformation: at_sc_co_sh_hs.tdg_ac_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số TK giao dịch tại CTCK này
+- target_column: shrhlr_st_code
+  transformation: at_sc_co_sh_hs.shrhlr_st_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái cổ đông (scheme: SCMS_SHAREHOLDER_STATUS)'
+- target_column: src_stm_code
+  transformation: at_sc_co_sh_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức SCMS_CTCK_CO_DONG. Driving
+    table: at_sc_co_sh_hs.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

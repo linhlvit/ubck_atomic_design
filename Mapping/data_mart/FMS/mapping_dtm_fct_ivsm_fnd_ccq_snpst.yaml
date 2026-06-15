@@ -1,0 +1,80 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_ivsm_fnd_ccq_snpst
+  logical_name: CCQ lưu hành per quỹ — grain 1 quỹ × 1 snapshot tháng ← FMS.TRANSFERMBF
+    tích lũy. PENDING O_FMS_7 cho quỹ đóng
+  physical_name: fct_ivsm_fnd_ccq_snpst
+  dm_ref: DTM-fct_ivsm_fnd_ccq_snpst
+  brd_ref: BRD-DTM-FMS
+target:
+  namespace: dtm
+  physical_name: fct_ivsm_fnd_ccq_snpst
+  etl_handle: Fact Snapshot
+  description: CCQ lưu hành per quỹ — grain 1 quỹ × 1 snapshot tháng ← FMS.TRANSFERMBF
+    tích lũy. PENDING O_FMS_7 cho quỹ đóng
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_ivsm_fnd_ctf_tfr
+  alias: at_iv_fn_ct_tf
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_ivsm_fnd_dim_hstr
+  alias: dt_iv_fn_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_iv_fn_ct_tf
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.cdr_dt_id = at_iv_fn_ct_tf.tfr_dt
+  description: ''
+- main_alias: at_iv_fn_ct_tf
+  join_type: LEFT JOIN
+  join_alias: dt_iv_fn_di_hs
+  join_on: dt_iv_fn_di_hs.fnd_code = at_iv_fn_ct_tf.ivsm_fnd_code AND dt_iv_fn_di_hs.ds_rcrd_st
+    = 1
+  description: ''
+mapping_columns:
+- target_column: rpt_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK lịch ngày snapshot CCQ
+- target_column: ivsm_fnd_dim_id
+  transformation: dt_iv_fn_di_hs.ivsm_fnd_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK quỹ đầu tư — lookup qua NK fnd_code, active record
+- target_column: rpt_tpl_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Mã biểu mẫu BC — Degenerate Dimension (null cho nguồn db)
+- target_column: rpt_prd_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Mã kỳ báo cáo — Degenerate Dimension (null cho nguồn db)
+- target_column: outst_unit_cnt
+  transformation: SUM(at_iv_fn_ct_tf.tfr_qty) WHERE at_iv_fn_ct_tf.tfr_tp_code = 'MUA'
+    AND at_iv_fn_ct_tf.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id - SUM(at_iv_fn_ct_tf.tfr_qty)
+    WHERE at_iv_fn_ct_tf.tfr_tp_code = 'BAN' AND at_iv_fn_ct_tf.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Số CCQ lưu hành = SUM(Transfer_Quantity MUA) − SUM(Transfer_Quantity
+    BÁN) per quỹ per snapshot date
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

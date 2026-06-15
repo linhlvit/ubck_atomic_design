@@ -1,0 +1,23 @@
+﻿Target,Bảng đích,,,,,,,,,
+Database,Schema,Table Name,ETL Handle,Source System,,,Description,,,
+dtm,sit_dtm,fct_pny_dcsn,Fact Append,,,,Event quyết định xử phạt — 1 row per GS_VAN_BAN_XU_LY. Date key: Violation Report Date. Xem O_TT_8 (Violation Type) và O_TT_9 (Penalty Subject Category),,,
+
+Input,Bảng / CTE nguồn,,,,,,,,,
+#,Source Type,Schema,Table Name,Alias,Select Fields,Filter,Description,,,
+1,physical_table,,atm_surveil_nfrc_dcsn,surveil_nfrc_dcsn,*,"ds_snpst_dt = to_date(""etl_date"", 'yyyy-MM-dd')",,,,
+2,physical_table,,dtm_cdr_dt_dim_hstr,cdr_dt_dim,*,"ds_snpst_dt = to_date(""etl_date"", 'yyyy-MM-dd') AND ds_rcrd_st = 1",,,,
+
+Relationship,Quan hệ giữa các bảng / CTE nguồn,,,,,,,,,
+#,Main Alias,Join Type,Join Alias,Join On,,,Description,,,
+1,surveil_nfrc_dcsn,LEFT JOIN,cdr_dt_dim,cdr_dt_dim.dt = surveil_nfrc_dcsn.vln_rpt_dt,,,,,,
+
+Mapping,Mapping trường nguồn → trường đích,,,,,,,,,
+#,Physical Target Column,Transformation,Data Type,Logical Target Column,,,Description,,,
+1,vln_rpt_dt_dim_id,cdr_dt_dim.cdr_dt_dim_id,string,,,,FK lịch — ETL lookup từ Surveillance Enforcement Decision.Violation Report Date. ThanhTra.GS_VAN_BAN_XU_LY.NGAY_BIEN_BAN,,,
+2,pny_sbj_cgy_dim_id,NULL  -- PENDING,string,,,,"FK phân loại đối tượng bị xử phạt — ETL-derived, field Silver nguồn chưa xác định. 4 giá trị: TO_CHUC_KHAC/CTKT/GIAO_DICH_NDT/CA_NHAN — chờ O_TT_9",,,
+3,vln_tp_dim_id,NULL  -- PENDING,string,,,,FK loại hành vi vi phạm — field Silver nguồn chưa xác định. Dùng chung scheme TT_VIOLATION_TYPE với Tab TT/KT — xem O_TT_8,,,
+4,pny_dcsn_code,surveil_nfrc_dcsn.surveil_nfrc_dcsn_code,string,,,,PK nguồn dùng làm degenerate key quyết định xử phạt. COUNT(DISTINCT) để đếm QĐ. ThanhTra.GS_VAN_BAN_XU_LY.ID,,,
+5,tot_pny_amt,surveil_nfrc_dcsn.tot_pny_amt,"decimal(23,2)",,,,Tổng tiền phạt (đơn vị VNĐ) — presentation layer chia /1_000_000_000 → tỷ VNĐ hoặc /1_000_000 → triệu VNĐ. ThanhTra.GS_VAN_BAN_XU_LY.TONG_SO_TIEN_PHAT,,,
+
+Final Filter,Điều kiện lọc của Main Transform,,,,,,,,,
+#,Clause Type,Expression,,,,,Description,,,

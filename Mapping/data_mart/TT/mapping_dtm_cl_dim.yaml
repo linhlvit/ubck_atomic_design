@@ -1,0 +1,205 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-cl_dim
+  logical_name: 'Danh mục phân loại — phục vụ 3 scheme trên 2 Fact: TT_SUBJECT_CATEGORY
+    (6 giá trị tạm thời) / TT_PENALTY_SUBJECT_CATEGORY (4 giá trị) / TT_VIOLATION_TYPE
+    (11 giá trị). Mọi query JOIN phải kèm WHERE Scheme=''...'''
+  physical_name: cl_dim
+  dm_ref: DTM-cl_dim
+  brd_ref: BRD-DTM-TT
+target:
+  namespace: dtm
+  physical_name: cl_dim
+  etl_handle: SCD4A
+  description: 'Danh mục phân loại — phục vụ 3 scheme trên 2 Fact: TT_SUBJECT_CATEGORY
+    (6 giá trị tạm thời) / TT_PENALTY_SUBJECT_CATEGORY (4 giá trị) / TT_VIOLATION_TYPE
+    (11 giá trị). Mọi query JOIN phải kèm WHERE Scheme=''...'''
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv
+  select_fields: '*'
+  filter: ''
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: cl_dim_id
+  transformation: hash_id(at_cv.src_stm_code, at_cv.cl_code)
+  data_type: string
+  target_attr_name: ''
+  description: 'Surrogate key danh mục — unique per (Scheme + Code). Scheme: TT_VIOLATION_TYPE'
+- target_column: scm_code
+  transformation: at_cv.scm_code WHERE at_cv.scm_code = 'TT_VIOLATION_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã scheme phân loại: TT_VIOLATION_TYPE'
+- target_column: cl_code
+  transformation: at_cv.cl_code WHERE at_cv.scm_code = 'TT_VIOLATION_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: Mã giá trị trong scheme TT_VIOLATION_TYPE
+- target_column: cl_nm
+  transformation: at_cv.cl_nm WHERE at_cv.scm_code = 'TT_VIOLATION_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: Tên hiển thị tiếng Việt — scheme TT_VIOLATION_TYPE
+- target_column: src_stm_code
+  transformation: at_cv.src_stm_code WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn — scheme TT_VIOLATION_TYPE
+- target_column: cl_dim_id
+  transformation: hash_id(at_cv.src_stm_code, at_cv.cl_code)
+  data_type: string
+  target_attr_name: ''
+  description: 'Surrogate key danh mục — unique per (Scheme + Code). Scheme: TT_CASE_STATUS'
+- target_column: scm_code
+  transformation: at_cv.scm_code WHERE at_cv.scm_code = 'TT_CASE_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã scheme phân loại: TT_CASE_STATUS'
+- target_column: cl_code
+  transformation: at_cv.cl_code WHERE at_cv.scm_code = 'TT_CASE_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Mã giá trị trong scheme TT_CASE_STATUS
+- target_column: cl_nm
+  transformation: at_cv.cl_nm WHERE at_cv.scm_code = 'TT_CASE_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Tên hiển thị tiếng Việt — scheme TT_CASE_STATUS
+- target_column: src_stm_code
+  transformation: at_cv.src_stm_code WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn — scheme TT_CASE_STATUS
+- target_column: cl_dim_id
+  transformation: hash_id(at_cv.src_stm_code, at_cv.cl_code)
+  data_type: string
+  target_attr_name: ''
+  description: 'Surrogate key danh mục — unique per (Scheme + Code). Scheme: TT_PLAN_TYPE'
+- target_column: scm_code
+  transformation: at_cv.scm_code WHERE at_cv.scm_code = 'TT_PLAN_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã scheme phân loại: TT_PLAN_TYPE'
+- target_column: cl_code
+  transformation: at_cv.cl_code WHERE at_cv.scm_code = 'TT_PLAN_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: Mã giá trị trong scheme TT_PLAN_TYPE
+- target_column: cl_nm
+  transformation: at_cv.cl_nm WHERE at_cv.scm_code = 'TT_PLAN_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: Tên hiển thị tiếng Việt — scheme TT_PLAN_TYPE
+- target_column: src_stm_code
+  transformation: at_cv.src_stm_code WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn — scheme TT_PLAN_TYPE
+- target_column: cl_dim_id
+  transformation: hash_id(at_cv.src_stm_code, at_cv.cl_code)
+  data_type: string
+  target_attr_name: ''
+  description: 'Surrogate key danh mục — unique per (Scheme + Code). Scheme: TT_PETITION_TYPE'
+- target_column: scm_code
+  transformation: at_cv.scm_code WHERE at_cv.scm_code = 'TT_PETITION_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã scheme phân loại: TT_PETITION_TYPE'
+- target_column: cl_code
+  transformation: at_cv.cl_code WHERE at_cv.scm_code = 'TT_PETITION_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: Mã giá trị trong scheme TT_PETITION_TYPE
+- target_column: cl_nm
+  transformation: at_cv.cl_nm WHERE at_cv.scm_code = 'TT_PETITION_TYPE'
+  data_type: string
+  target_attr_name: ''
+  description: Tên hiển thị tiếng Việt — scheme TT_PETITION_TYPE
+- target_column: src_stm_code
+  transformation: at_cv.src_stm_code WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn — scheme TT_PETITION_TYPE
+- target_column: cl_dim_id
+  transformation: hash_id(at_cv.src_stm_code, at_cv.cl_code)
+  data_type: string
+  target_attr_name: ''
+  description: 'Surrogate key danh mục — unique per (Scheme + Code). Scheme: TT_PETITION_STATUS'
+- target_column: scm_code
+  transformation: at_cv.scm_code WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã scheme phân loại: TT_PETITION_STATUS'
+- target_column: cl_code
+  transformation: at_cv.cl_code WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Mã giá trị trong scheme TT_PETITION_STATUS
+- target_column: cl_nm
+  transformation: at_cv.cl_nm WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Tên hiển thị tiếng Việt — scheme TT_PETITION_STATUS
+- target_column: src_stm_code
+  transformation: at_cv.src_stm_code WHERE at_cv.scm_code = 'TT_PETITION_STATUS'
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn — scheme TT_PETITION_STATUS
+- target_column: cl_dim_id
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: 'Surrogate key danh mục — unique per (Scheme + Code). Scheme: TT_SUBJECT_CATEGORY'
+- target_column: scm_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã scheme phân loại: TT_SUBJECT_CATEGORY — PENDING (O_TT_4)'
+- target_column: cl_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Mã giá trị trong scheme TT_SUBJECT_CATEGORY — PENDING (O_TT_4)
+- target_column: cl_nm
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Tên hiển thị tiếng Việt — scheme TT_SUBJECT_CATEGORY — PENDING (O_TT_4)
+- target_column: src_stm_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn — scheme TT_SUBJECT_CATEGORY — PENDING (O_TT_4)
+- target_column: cl_dim_id
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: 'Surrogate key danh mục — unique per (Scheme + Code). Scheme: TT_PENALTY_SUBJECT_CATEGORY'
+- target_column: scm_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã scheme phân loại: TT_PENALTY_SUBJECT_CATEGORY — PENDING (O_TT_9)'
+- target_column: cl_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Mã giá trị trong scheme TT_PENALTY_SUBJECT_CATEGORY — PENDING (O_TT_9)
+- target_column: cl_nm
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Tên hiển thị tiếng Việt — scheme TT_PENALTY_SUBJECT_CATEGORY — PENDING
+    (O_TT_9)
+- target_column: src_stm_code
+  transformation: NULL  -- PENDING
+  data_type: string
+  target_attr_name: ''
+  description: Mã hệ thống nguồn — scheme TT_PENALTY_SUBJECT_CATEGORY — PENDING (O_TT_9)
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

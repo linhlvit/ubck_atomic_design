@@ -1,0 +1,282 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_scr_dly_mkt_smry
+  logical_name: Fact Periodic Snapshot — tổng hợp thị trường chứng khoán EOD theo
+    mã CK / ngày. Phục vụ Nhóm 1–27d_heatmap và STT 49.
+  physical_name: fct_scr_dly_mkt_smry
+  dm_ref: DTM-fct_scr_dly_mkt_smry
+  brd_ref: BRD-DTM-GSTT
+target:
+  namespace: dtm
+  physical_name: fct_scr_dly_mkt_smry
+  etl_handle: Fact Append
+  description: Fact Periodic Snapshot — tổng hợp thị trường chứng khoán EOD theo mã
+    CK / ngày. Phục vụ Nhóm 1–27d_heatmap và STT 49.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_tdg_snpst
+  alias: at_sc_td_sn
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_trd
+  alias: at_sc_tr
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_hstr
+  alias: at_pb_co_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_rpt_subm
+  alias: at_pb_co_rp_su
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_pblc_co_fnc_rpt_val
+  alias: at_pb_co_fn_rp_va
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND clmn_code = '1'
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_scr_tdg_snpst_dim_hstr
+  alias: dt_sc_td_sn_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_pblc_co_dim_hstr
+  alias: dt_pb_co_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_sc_td_sn
+  join_type: INNER JOIN
+  join_alias: at_sc_tr
+  join_on: at_sc_tr.symb_code = at_sc_td_sn.symb AND at_sc_tr.trd_dt = at_sc_td_sn.tdg_dt
+  description: ''
+- main_alias: at_sc_td_sn
+  join_type: LEFT JOIN
+  join_alias: at_pb_co_hs
+  join_on: at_pb_co_hs.eqty_ticker = at_sc_td_sn.symb
+  description: ''
+- main_alias: at_pb_co_hs
+  join_type: LEFT JOIN
+  join_alias: at_pb_co_rp_su
+  join_on: at_pb_co_rp_su.pblc_co_id = at_pb_co_hs.pblc_co_id
+  description: ''
+- main_alias: at_pb_co_rp_su
+  join_type: LEFT JOIN
+  join_alias: at_pb_co_fn_rp_va
+  join_on: at_pb_co_fn_rp_va.pblc_co_rpt_subm_id = at_pb_co_rp_su.pblc_co_rpt_subm_id
+    AND at_pb_co_fn_rp_va.row_code IN ('10','03')
+  description: ''
+- main_alias: at_sc_td_sn
+  join_type: LEFT JOIN
+  join_alias: dt_sc_td_sn_di_hs
+  join_on: dt_sc_td_sn_di_hs.symb = at_sc_td_sn.symb AND at_sc_td_sn.tdg_dt BETWEEN
+    dt_sc_td_sn_di_hs.eff_dt AND dt_sc_td_sn_di_hs.expiry_dt
+  description: ''
+- main_alias: at_pb_co_hs
+  join_type: LEFT JOIN
+  join_alias: dt_pb_co_di_hs
+  join_on: dt_pb_co_di_hs.eqty_ticker = at_pb_co_hs.eqty_ticker AND at_sc_td_sn.tdg_dt
+    BETWEEN dt_pb_co_di_hs.eff_dt AND dt_pb_co_di_hs.expiry_dt
+  description: ''
+- main_alias: at_sc_td_sn
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.dt = at_sc_td_sn.tdg_dt
+  description: ''
+mapping_columns:
+- target_column: scr_tdg_snpst_dim_id
+  transformation: dt_sc_td_sn_di_hs.scr_tdg_snpst_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK mã chứng khoán — driving = at_sc_td_sn.
+- target_column: indy_dim_id
+  transformation: dt_pb_co_di_hs.indy_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: 'FK ngành — resolve qua eqty_ticker. Nullable: mã không có trong pblc_co
+    (O_GSTT_4).'
+- target_column: tdg_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK ngày giao dịch.
+- target_column: cls_prc
+  transformation: at_sc_td_sn.cls_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá đóng cửa — K_GSTT_2.
+- target_column: refr_prc
+  transformation: at_sc_td_sn.refr_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá tham chiếu — K_GSTT_5. Cơ sở tính % thay đổi tại query layer.
+- target_column: opn_prc
+  transformation: at_sc_td_sn.opn_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá mở cửa — K_GSTT_19.
+- target_column: high_prc
+  transformation: at_sc_td_sn.high_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá cao nhất — K_GSTT_20. Dùng Top Vượt Đỉnh (O_GSTT_17).
+- target_column: low_prc
+  transformation: at_sc_td_sn.low_prc
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Giá thấp nhất — K_GSTT_21. Dùng Top Thùng Đáy (O_GSTT_17).
+- target_column: mat_dt
+  transformation: at_sc_td_sn.mat_dt
+  data_type: date
+  target_attr_name: ''
+  description: Ngày đáo hạn phái sinh — K_GSTT_18. Chỉ có giá trị khi Floor Code =
+    03.
+- target_column: pt_tot_mtch_vol
+  transformation: at_sc_td_sn.pt_tot_mtch_vol
+  data_type: int
+  target_attr_name: ''
+  description: Tổng KL khớp lệnh thỏa thuận từ snapshot — K_GSTT_14.
+- target_column: pt_tot_mtch_val
+  transformation: at_sc_td_sn.pt_tot_mtch_val
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng GT khớp lệnh thỏa thuận từ snapshot — K_GSTT_15.
+- target_column: tot_mtch_vol
+  transformation: SUM(at_sc_tr.exec_vol WHERE at_sc_tr.mkt_id_code IN ('STO','STX','UPX','DVX'))
+  data_type: int
+  target_attr_name: ''
+  description: Tổng KL khớp lệnh (cổ phiếu + FDS, loại trừ TP) — K_GSTT_1. Market
+    Id Code IN (STO, STX, UPX, DVX).
+- target_column: tot_mtch_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.mkt_id_code IN ('STO','STX','UPX','DVX'))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Tổng GT khớp lệnh — K_GSTT_4.
+- target_column: frgn_buy_vol
+  transformation: SUM(at_sc_tr.exec_vol WHERE at_sc_tr.buy_frgn_ivsr_tp_code IN ('10','20'))
+  data_type: int
+  target_attr_name: ''
+  description: 'KL nước ngoài mua — K_GSTT_8. Filter: buy_frgn_ivsr_tp_code IN (''10'',''20'').'
+- target_column: frgn_sell_vol
+  transformation: SUM(at_sc_tr.exec_vol WHERE at_sc_tr.sell_frgn_ivsr_tp_code IN ('10','20'))
+  data_type: int
+  target_attr_name: ''
+  description: 'KL nước ngoài bán — K_GSTT_9. Filter: sell_frgn_ivsr_tp_code IN (''10'',''20'').'
+- target_column: frgn_buy_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.buy_frgn_ivsr_tp_code IN ('10','20'))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GT nước ngoài mua — K_GSTT_11. Filter: buy_frgn_ivsr_tp_code IN (''10'',''20'').'
+- target_column: frgn_sell_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.sell_frgn_ivsr_tp_code IN ('10','20'))
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GT nước ngoài bán — K_GSTT_12. Filter: sell_frgn_ivsr_tp_code IN (''10'',''20'').'
+- target_column: deriv_mtch_vol
+  transformation: SUM(at_sc_tr.exec_vol WHERE at_sc_tr.mkt_id_code = 'DVX')
+  data_type: int
+  target_attr_name: ''
+  description: 'Tổng KL phái sinh — K_GSTT_16. Filter: mkt_id_code = ''DVX''.'
+- target_column: deriv_mtch_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.mkt_id_code = 'DVX')
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Tổng GT phái sinh — K_GSTT_17. Filter: mkt_id_code = ''DVX''.'
+- target_column: prop_buy_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.buy_clnt_hs_tp_code = '30')
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GT tự doanh mua — K_GSTT_71. Filter: buy_clnt_hs_tp_code = ''30''.
+    O_GSTT_22 Closed.'
+- target_column: prop_sell_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.sell_clnt_hs_tp_code = '30')
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GT tự doanh bán — K_GSTT_72. Filter: sell_clnt_hs_tp_code = ''30''.
+    O_GSTT_22 Closed.'
+- target_column: retail_buy_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.buy_ivsr_tp_code = '8000' AND
+    at_sc_tr.buy_frgn_ivsr_tp_code = '00')
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GT cá nhân trong nước mua — K_GSTT_77. Filter: buy_ivsr_tp_code =
+    ''8000'' AND buy_frgn_ivsr_tp_code = ''00''. O_GSTT_23 Closed.'
+- target_column: retail_sell_val
+  transformation: SUM(at_sc_tr.exec_val WHERE at_sc_tr.sell_ivsr_tp_code = '8000'
+    AND at_sc_tr.sell_frgn_ivsr_tp_code = '00')
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GT cá nhân trong nước bán — K_GSTT_78. Filter: sell_ivsr_tp_code =
+    ''8000'' AND sell_frgn_ivsr_tp_code = ''00''. O_GSTT_23 Closed.'
+- target_column: inst_dom_buy_val
+  transformation: SUM(at_sc_tr.exec_val WHERE (CASE WHEN at_sc_tr.src_stm_code = 'ORDERTRADE_HOSE'
+    THEN at_sc_tr.buy_ivsr_tp_code IN ('3000','4000','5000') ELSE at_sc_tr.buy_ivsr_tp_code
+    IN ('1000','2000','3000','4000','7100') END) AND at_sc_tr.buy_frgn_ivsr_tp_code
+    = '00')
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'GT tổ chức trong nước mua — K_GSTT_80. HOSE: buy_ivsr_tp_code IN (''3000'',''4000'',''5000'')
+    AND buy_frgn_ivsr_tp_code=''00''; HNX: buy_ivsr_tp_code IN (''1000'',''2000'',''3000'',''4000'',''7100'')
+    AND buy_frgn_ivsr_tp_code=''00''. Dùng src_stm_code làm discriminator. O_GSTT_23
+    Closed.'
+- target_column: inst_dom_sell_val
+  transformation: SUM(at_sc_tr.exec_val WHERE (CASE WHEN at_sc_tr.src_stm_code = 'ORDERTRADE_HOSE'
+    THEN at_sc_tr.sell_ivsr_tp_code IN ('3000','4000','5000') ELSE at_sc_tr.sell_ivsr_tp_code
+    IN ('1000','2000','3000','4000','7100') END) AND at_sc_tr.sell_frgn_ivsr_tp_code
+    = '00')
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: GT tổ chức trong nước bán — K_GSTT_81. Logic đối xứng buy side. O_GSTT_23
+    Closed.
+- target_column: nego_tdg_vol
+  transformation: SUM(at_sc_tr.exec_vol WHERE at_sc_tr.board_tp_code IN ('T1','T2','T3','T4','T6'))
+  data_type: int
+  target_attr_name: ''
+  description: KL thỏa thuận — K_GSTT_107 / STT 49. Board Type Code IN ('T1','T2','T3','T4','T6').
+    O_GSTT_27 Open.
+- target_column: net_rev
+  transformation: at_pb_co_fn_rp_va.data_val
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Doanh thu thuần forward-fill theo quý — K_GSTT_22. Row Code: ''10''
+    (dn/bh) hoặc ''03'' (td). Report Type: BCKQKD. Column Code = ''1''.'
+- target_column: net_prft_aft_tax
+  transformation: at_pb_co_fn_rp_va.data_val
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Lợi nhuận sau thuế forward-fill theo quý — K_GSTT_25. Row Code: ''60''
+    (dn/bh) hoặc ''21'' (td). Report Type: BCKQKD. Column Code = ''1''.'
+- target_column: eqty
+  transformation: at_pb_co_fn_rp_va.data_val
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: 'Vốn chủ sở hữu forward-fill theo quý — K_GSTT_43/46 P/B. Report Type:
+    BCDKT. Row Code xác nhận theo entp_tp_code. Column Code = ''1''.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

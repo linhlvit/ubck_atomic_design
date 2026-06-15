@@ -1,0 +1,112 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-idv_prfl
+  logical_name: Hồ sơ cá nhân nội bộ/NHN — merge SCMS + NHNCK theo CMND/CCCD
+  physical_name: idv_prfl
+  dm_ref: DTM-idv_prfl
+  brd_ref: BRD-DTM-QLKD
+target:
+  namespace: dtm
+  physical_name: idv_prfl
+  etl_handle: SCD4A
+  description: Hồ sơ cá nhân nội bộ/NHN — merge SCMS + NHNCK theo CMND/CCCD
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_co_snr_psn_hstr
+  alias: at_sc_co_sn_ps_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'SCMS_CTCK_NHAN_SU_CAO_CAP'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_co_snr_psn / scr_prac_hstr
+  alias: at_sc_co_sn_ps_pr_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_sc_co_sn_ps_hs
+  join_type: LEFT JOIN
+  join_alias: at_sc_co_sn_ps_hs / scr_prac
+  join_on: at_sc_co_sn_ps_hs / scr_prac.scr_co_snr_psn_id = at_sc_co_sn_ps_hs.scr_co_snr_psn_id
+  description: ''
+mapping_columns:
+- target_column: idv_prfl_id
+  transformation: 'hash_id(''SCMS_CTCK_NHAN_SU_CAO_CAP'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated — merge SCMS + NHNCK theo CMND/CCCD
+- target_column: scr_co_snr_psn_code
+  transformation: at_sc_co_sn_ps_hs.scr_co_snr_psn_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã nhân sự — business key merge từ SCMS + NHNCK
+- target_column: practitioner_id
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN scr_prac ON
+    scr_prac.id_refr_code = at_sc_co_sn_ps_hs'
+  data_type: string
+  target_attr_name: ''
+  description: Silver Id Practitioner (NHNCK) — NULL nếu chỉ có SCMS
+- target_column: scr_co_code
+  transformation: at_sc_co_sn_ps_hs.scr_co_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã CTCK
+- target_column: full_nm
+  transformation: at_sc_co_sn_ps_hs.full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Họ tên cá nhân
+- target_column: pos_tp_code
+  transformation: at_sc_co_sn_ps_hs.pos_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Chức vụ tại CTCK (scheme: SCMS_POSITION_TYPE)'
+- target_column: identn_nbr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN ip_alt_identn
+    ON ip_alt_identn.ip_id = scr_co_snr_'
+  data_type: string
+  target_attr_name: ''
+  description: CMND/CCCD — từ Involved Party Alternative Identification (SCMS.SO_CMND)
+    hoặc Securities Practitioner.Identity Reference Code (NHNCK)
+- target_column: license_ctf_nbr
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN scr_prac_license_ctf_doc
+    ON scr_prac_license_ctf_d'
+  data_type: string
+  target_attr_name: ''
+  description: Số GCN hành nghề
+- target_column: ctf_tp_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN scr_prac_license_ctf_doc
+    ON scr_prac_license_ctf_d'
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại chứng chỉ/nghiệp vụ (scheme: CERTIFICATE_TYPE)'
+- target_column: is_insider_verf
+  transformation: CASE WHEN at_sc_co_sn_ps_hs.id_nbr = scr_prac.id_refr_code THEN
+    true ELSE false END
+  data_type: string
+  target_attr_name: ''
+  description: CASE WHEN Securities Company Senior Personnel.Identification Number
+    = Securities Practitioner.Identification Number THEN true ELSE false END (merge
+    SCMS + NHNCK theo CMND/CCCD)
+- target_column: psn_st_code
+  transformation: at_sc_co_sn_ps_hs.psn_st_code
+  data_type: string
+  target_attr_name: ''
+  description: Trạng thái nhân sự
+- target_column: practice_st_code
+  transformation: 'NULL  -- TODO: join_atomic parse failed: LEFT JOIN scr_prac ON
+    scr_prac.id_refr_code = at_sc_co_sn_ps_hs'
+  data_type: string
+  target_attr_name: ''
+  description: Trạng thái hành nghề
+- target_column: src_stm_code
+  transformation: at_sc_co_sn_ps_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức SCMS_CTCK_NHAN_SU_CAO_CAP.
+    Driving table: at_sc_co_sn_ps_hs.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

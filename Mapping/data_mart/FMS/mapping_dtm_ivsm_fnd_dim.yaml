@@ -1,0 +1,68 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-ivsm_fnd_dim
+  logical_name: Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái/VĐL (SCD2) ← FMS.FUNDS. PENDING
+    O_FMS_10 cho Fund Type Code
+  physical_name: ivsm_fnd_dim
+  dm_ref: DTM-ivsm_fnd_dim
+  brd_ref: BRD-DTM-FMS
+target:
+  namespace: dtm
+  physical_name: ivsm_fnd_dim
+  etl_handle: SCD4A
+  description: Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái/VĐL (SCD2) ← FMS.FUNDS. PENDING
+    O_FMS_10 cho Fund Type Code
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_ivsm_fnd_hstr
+  alias: at_iv_fn_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'FMS_FUNDS'
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: ivsm_fnd_dim_id
+  transformation: hash_id('FMS_FUNDS', fnd_code)
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate key ETL generated
+- target_column: fnd_code
+  transformation: at_iv_fn_hs.ivsm_fnd_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã quỹ đầu tư — join anchor ETL (= FMS.FUNDS.Id)
+- target_column: fnd_nm
+  transformation: at_iv_fn_hs.ivsm_fnd_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên đầy đủ quỹ đầu tư
+- target_column: fnd_shrt_nm
+  transformation: at_iv_fn_hs.ivsm_fnd_shrt_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên viết tắt quỹ đầu tư
+- target_column: fnd_tp_code
+  transformation: at_iv_fn_hs.fnd_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Loại hình quỹ — scheme: FMS_FUND_TYPE'
+- target_column: practice_st_code
+  transformation: at_iv_fn_hs.practice_st_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Trạng thái hoạt động quỹ — scheme: FMS_OPERATION_STATUS'
+- target_column: fnd_cptl_amt
+  transformation: at_iv_fn_hs.fnd_cptl_amt
+  data_type: decimal(23,2)
+  target_attr_name: ''
+  description: Vốn điều lệ quỹ (VNĐ)
+- target_column: src_stm_code
+  transformation: at_iv_fn_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức FMS_FUNDS. Driving table:
+    at_iv_fn_hs.'
+final_filter: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
