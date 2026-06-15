@@ -17,19 +17,20 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: VIOLATIONS
+  table_name: VIOLATIONS
+  alias: viol
+  select_fields: ID, PROFESSIONAL_ID, DECISION_ID, FULL_NAME, BIRTH_DATE, IDENTITY_NUMBER,
+    CREATED_AT, NOTE, RECORD_TYPE, RECORD_STATUS
   filter: null
 relationship: []
 mapping_columns:
 - target_column: scr_prac_conduct_vln_id
-  transformation: '{hash_id}(''NHNCK_VIOLATIONS'', ql.ID)'
+  transformation: '{hash_id}(''NHNCK_VIOLATIONS'', viol.ID)'
   data_type: string
   description: Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key).
   target_attr_name: Securities Practitioner Conduct Violation Id
 - target_column: scr_prac_conduct_vln_code
-  transformation: ql.ID
+  transformation: viol.ID
   data_type: string
   description: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn.
   target_attr_name: Securities Practitioner Conduct Violation Code
@@ -39,57 +40,57 @@ mapping_columns:
   description: Mã hệ thống nguồn.
   target_attr_name: Source System Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', viol.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến người hành nghề chứng khoán bị vi phạm.
   target_attr_name: Securities Practitioner Id
 - target_column: scr_prac_code
-  transformation: ql.PROFESSIONAL_ID
+  transformation: viol.PROFESSIONAL_ID
   data_type: string
   description: Mã người hành nghề chứng khoán bị vi phạm.
   target_attr_name: Securities Practitioner Code
 - target_column: license_dcsn_doc_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.DECISION_ID)'
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', viol.DECISION_ID)'
   data_type: string
   description: FK đến quyết định xử lý vi phạm.
   target_attr_name: License Decision Document Id
 - target_column: license_dcsn_doc_code
-  transformation: ql.DECISION_ID
+  transformation: viol.DECISION_ID
   data_type: string
   description: Mã quyết định xử lý vi phạm.
   target_attr_name: License Decision Document Code
 - target_column: prac_nm_at_vln
-  transformation: ql.FULL_NAME
+  transformation: viol.FULL_NAME
   data_type: string
   description: Họ tên người hành nghề tại thời điểm vi phạm (snapshot).
   target_attr_name: Practitioner Name At Violation
 - target_column: prac_brth_dt_at_vln
-  transformation: ql.BIRTH_DATE
+  transformation: viol.BIRTH_DATE
   data_type: date
   description: Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot).
   target_attr_name: Practitioner Birth Date At Violation
 - target_column: prac_id_nbr_at_vln
-  transformation: ql.IDENTITY_NUMBER
+  transformation: viol.IDENTITY_NUMBER
   data_type: string
   description: Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot).
   target_attr_name: Practitioner Identity Number At Violation
 - target_column: vln_rcrd_dt
-  transformation: ql.CREATED_AT
+  transformation: viol.CREATED_AT
   data_type: timestamp
   description: Ngày ghi nhận vi phạm (business event date).
   target_attr_name: Violation Record Date
 - target_column: note
-  transformation: ql.NOTE
+  transformation: viol.NOTE
   data_type: string
   description: Ghi chú vi phạm.
   target_attr_name: Note
 - target_column: rcrd_tp_code
-  transformation: ql.RECORD_TYPE
+  transformation: viol.RECORD_TYPE
   data_type: string
   description: Phân loại bản ghi.
   target_attr_name: Record Type Code
 - target_column: rcrd_st_code
-  transformation: ql.RECORD_STATUS
+  transformation: viol.RECORD_STATUS
   data_type: string
   description: Trạng thái bản ghi vi phạm (1=Hoạt động).
   target_attr_name: Record Status Code

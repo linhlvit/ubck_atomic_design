@@ -17,76 +17,77 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: APPLICATION_SPECIALIZATIONS
+  table_name: APPLICATION_SPECIALIZATIONS
+  alias: ap_sp
+  select_fields: ID, APPLICATION_ID, SPECIALIZATION_ID, ISSUE_DATE, ISSUE_PLACE, RECORD_STATUS,
+    APPRAISALED_AT, ASSIGNEE_ID, FILES, NOTE
   filter: null
 relationship: []
 mapping_columns:
 - target_column: scr_prac_license_ap_ed_ctf_doc_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_SPECIALIZATIONS'', ql.ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_SPECIALIZATIONS'', ap_sp.ID)'
   data_type: string
   description: Id tự sinh (surrogate key)
   target_attr_name: Securities Practitioner License Application Education Certificate
     Document Id
 - target_column: scr_prac_license_ap_ed_ctf_doc_code
-  transformation: ql.ID
+  transformation: ap_sp.ID
   data_type: string
   description: Mã định danh bản ghi chuyên môn. BK
   target_attr_name: Securities Practitioner License Application Education Certificate
     Document Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_SPECIALIZATIONS'', ap_sp.APPLICATION_ID)'
   data_type: string
   description: FK đến License Application (hồ sơ đăng ký)
   target_attr_name: License Application Id
 - target_column: license_ap_code
-  transformation: ql.APPLICATION_ID
+  transformation: ap_sp.APPLICATION_ID
   data_type: string
   description: Mã hồ sơ đăng ký. Lookup pair
   target_attr_name: License Application Code
 - target_column: specialization_tp_code
-  transformation: ql.SPECIALIZATION_ID
+  transformation: ap_sp.SPECIALIZATION_ID
   data_type: string
   description: Mã loại chuyên môn (Classification Value)
   target_attr_name: Specialization Type Code
 - target_column: ctf_issu_dt
-  transformation: ql.ISSUE_DATE
+  transformation: ap_sp.ISSUE_DATE
   data_type: date
   description: Ngày cấp chứng chỉ chuyên môn
   target_attr_name: Certificate Issue Date
 - target_column: ctf_issu_plc
-  transformation: ql.ISSUE_PLACE
+  transformation: ap_sp.ISSUE_PLACE
   data_type: string
   description: Nơi cấp chứng chỉ chuyên môn
   target_attr_name: Certificate Issue Place
-- target_column: aprs_st_code
-  transformation: ql.RECORD_STATUS
+- target_column: rcrd_st_code
+  transformation: ap_sp.RECORD_STATUS
   data_type: string
   description: Trạng thái thẩm định chứng chỉ (Classification Value)
-  target_attr_name: Appraisal Status Code
+  target_attr_name: Record Status Code
 - target_column: aprs_completed_dt
-  transformation: ql.APPRAISALED_AT
+  transformation: ap_sp.APPRAISALED_AT
   data_type: timestamp
   description: Thời điểm thẩm định hoàn tất
   target_attr_name: Appraisal Completed Date
 - target_column: appraised_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ASSIGNEE_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_SPECIALIZATIONS'', ap_sp.ASSIGNEE_ID)'
   data_type: string
   description: FK đến cán bộ thẩm định (Regulatory Authority Officer)
   target_attr_name: Appraised By Officer Id
 - target_column: appraised_by_ofcr_code
-  transformation: ql.ASSIGNEE_ID
+  transformation: ap_sp.ASSIGNEE_ID
   data_type: string
   description: Mã cán bộ thẩm định. Lookup pair
   target_attr_name: Appraised By Officer Code
 - target_column: attch_files
-  transformation: ql.FILES
+  transformation: ap_sp.FILES
   data_type: string
   description: Danh sách file đính kèm (JSON CLOB)
   target_attr_name: Attachment Files
 - target_column: note
-  transformation: ql.NOTE
+  transformation: ap_sp.NOTE
   data_type: string
   description: Ghi chú bổ sung
   target_attr_name: Note

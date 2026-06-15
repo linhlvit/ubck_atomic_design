@@ -17,19 +17,20 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: APPLICATION_RE_EXAMS
+  table_name: APPLICATION_RE_EXAMS
+  alias: ap_re_ex
+  select_fields: ID, APPLICATION_ID, EXAM_DETAIL_ID, RE_APPLICATION_ID, RECORD_STATUS,
+    CREATED_BY, UPDATED_BY, CREATED_AT, UPDATED_AT
   filter: null
 relationship: []
 mapping_columns:
 - target_column: scr_prac_license_ap_re_exam_rqs_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ql.ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.ID)'
   data_type: string
   description: Id tự sinh (surrogate key)
   target_attr_name: Securities Practitioner License Application Re-Exam Request Id
 - target_column: scr_prac_license_ap_re_exam_rqs_code
-  transformation: ql.ID
+  transformation: ap_re_ex.ID
   data_type: string
   description: Mã định danh. BK
   target_attr_name: Securities Practitioner License Application Re-Exam Request Code
@@ -39,67 +40,67 @@ mapping_columns:
   description: Mã nguồn dữ liệu
   target_attr_name: Source System Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.APPLICATION_ID)'
   data_type: string
   description: FK đến hồ sơ gốc đã thi trượt
   target_attr_name: License Application Id
 - target_column: license_ap_code
-  transformation: ql.APPLICATION_ID
+  transformation: ap_re_ex.APPLICATION_ID
   data_type: string
   description: Mã hồ sơ gốc
   target_attr_name: License Application Code
 - target_column: exam_ases_rslt_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.EXAM_DETAIL_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.EXAM_DETAIL_ID)'
   data_type: string
   description: FK đến kết quả thi trượt
   target_attr_name: Examination Assessment Result Id
 - target_column: exam_ases_rslt_code
-  transformation: ql.EXAM_DETAIL_ID
+  transformation: ap_re_ex.EXAM_DETAIL_ID
   data_type: string
   description: Mã kết quả thi trượt
   target_attr_name: Examination Assessment Result Code
 - target_column: re_exam_license_ap_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.RE_APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.RE_APPLICATION_ID)'
   data_type: string
   description: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
   target_attr_name: Re-Exam License Application Id
 - target_column: re_exam_license_ap_code
-  transformation: ql.RE_APPLICATION_ID
+  transformation: ap_re_ex.RE_APPLICATION_ID
   data_type: string
   description: Mã hồ sơ thi lại mới
   target_attr_name: Re-Exam License Application Code
 - target_column: rcrd_st_code
-  transformation: ql.RECORD_STATUS
+  transformation: ap_re_ex.RECORD_STATUS
   data_type: string
   description: Trạng thái bản ghi (1=Hoạt động)
   target_attr_name: Record Status Code
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.CREATED_BY)'
   data_type: string
   description: FK đến Officer tạo bản ghi
   target_attr_name: Created By Officer Id
 - target_column: crt_by_ofcr_code
-  transformation: ql.CREATED_BY
+  transformation: ap_re_ex.CREATED_BY
   data_type: string
   description: Mã người tạo
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.UPDATED_BY)'
   data_type: string
   description: FK đến Officer cập nhật bản ghi
   target_attr_name: Updated By Officer Id
 - target_column: udt_by_ofcr_code
-  transformation: ql.UPDATED_BY
+  transformation: ap_re_ex.UPDATED_BY
   data_type: string
   description: Mã người cập nhật
   target_attr_name: Updated By Officer Code
 - target_column: crt_tms
-  transformation: ql.CREATED_AT
+  transformation: ap_re_ex.CREATED_AT
   data_type: timestamp
   description: Thời điểm tạo
   target_attr_name: Created Timestamp
 - target_column: udt_tms
-  transformation: ql.UPDATED_AT
+  transformation: ap_re_ex.UPDATED_AT
   data_type: timestamp
   description: Thời điểm cập nhật
   target_attr_name: Updated Timestamp

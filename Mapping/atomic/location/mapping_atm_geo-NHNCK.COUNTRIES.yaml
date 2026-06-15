@@ -17,19 +17,19 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: COUNTRIES
+  table_name: COUNTRIES
+  alias: coun
+  select_fields: ID, COUNTRY_NAME, COUNTRY_CODE, DEFAULT_FLAG, RECORD_STATUS
   filter: null
 relationship: []
 mapping_columns:
 - target_column: geo_id
-  transformation: '{hash_id}(''NHNCK_COUNTRIES'', ql.ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', coun.ID)'
   data_type: string
   description: Id tự sinh (surrogate key)
   target_attr_name: Geographic Area Id
 - target_column: geo_code
-  transformation: ql.ID
+  transformation: coun.ID
   data_type: string
   description: Mã quốc gia nguồn. BK
   target_attr_name: Geographic Area Code
@@ -44,17 +44,17 @@ mapping_columns:
   description: Phân loại vùng địa lý — Quốc gia
   target_attr_name: Geographic Area Type Code
 - target_column: geo_nm
-  transformation: ql.COUNTRY_NAME
+  transformation: coun.COUNTRY_NAME
   data_type: string
   description: Tên quốc gia/vùng lãnh thổ
   target_attr_name: Geographic Area Name
 - target_column: iso_cty_code
-  transformation: ql.COUNTRY_CODE
+  transformation: coun.COUNTRY_CODE
   data_type: string
   description: Mã quốc gia ISO 3166-1 alpha-2
   target_attr_name: ISO Country Code
 - target_column: prn_geo_id
-  transformation: '{hash_id}(''NHNCK_COUNTRIES'', ql.)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', coun.)'
   data_type: string
   description: FK đến vùng địa lý cha (self-ref). NULL cho quốc gia
   target_attr_name: Parent Geographic Area Id
@@ -64,14 +64,14 @@ mapping_columns:
   description: Mã vùng địa lý cha
   target_attr_name: Parent Geographic Area Code
 - target_column: dflt_f
-  transformation: ql.DEFAULT_FLAG
+  transformation: coun.DEFAULT_FLAG
   data_type: boolean
   description: 'Cờ mặc định: true=Mặc định; false=Không'
   target_attr_name: Default Flag
-- target_column: geo_st_code
-  transformation: ql.RECORD_STATUS
+- target_column: rcrd_st_code
+  transformation: coun.RECORD_STATUS
   data_type: string
   description: 'Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động'
-  target_attr_name: Geographic Area Status Code
+  target_attr_name: Record Status Code
 transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
 final_filter: []

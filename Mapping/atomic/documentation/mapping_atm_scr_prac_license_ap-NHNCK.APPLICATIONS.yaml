@@ -17,19 +17,25 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: APPLICATIONS
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: APPLICATION_CODE, APPLICATION_TYPE, STATUS_ID, REGISTRATION_TYPE,
+    CERTIFICATE_ID, TITLE, SUBMISSION_DATE, SUPPLEMENT_DATE, SUPPLEMENT_LETTER_DATE,
+    CERTIFICATE_NUMBER, ISSUE_DATE, PREVIOUS_CERTIFICATE_NUMBER, PREVIOUS_ISSUE_DATE,
+    PREVIOUS_CERTIFICATE_ID, REISSUE_REASON, REJECTION_REASON, CERTIFICATE_RECEIPT_METHOD,
+    CERTIFICATE_RECEIPT_ADDRESS, CERTIFICATE_RECEIPT_PHONE, RECEIPT_STATUS, VIOLATED,
+    DATA_EXPLOITABLE, REISSUE_HSM, NOTE, PROFESSIONAL_ID, CERTIFICATE_RECORD_ID, PREVIOUS_CERTIFICATE_RECORD_ID,
+    EXAM_SESSION_ID, ASSIGNEE_ID, INFO_VERIFY_ID
   filter: null
 relationship: []
 mapping_columns:
 - target_column: scr_prac_license_ap_id
-  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ql.APPLICATION_CODE)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
   data_type: string
   description: Id tự sinh (surrogate key).
   target_attr_name: Securities Practitioner License Application Id
 - target_column: scr_prac_license_ap_code
-  transformation: ql.APPLICATION_CODE
+  transformation: appl.APPLICATION_CODE
   data_type: string
   description: Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.
   target_attr_name: Securities Practitioner License Application Code
@@ -39,178 +45,178 @@ mapping_columns:
   description: Mã hệ thống nguồn.
   target_attr_name: Source System Code
 - target_column: ap_tp_code
-  transformation: ql.APPLICATION_TYPE
+  transformation: appl.APPLICATION_TYPE
   data_type: string
   description: Loại hồ sơ.
   target_attr_name: Application Type Code
 - target_column: ap_st_code
-  transformation: ql.STATUS_ID
+  transformation: appl.STATUS_ID
   data_type: string
   description: Trạng thái hồ sơ hiện tại.
   target_attr_name: Application Status Code
 - target_column: rgst_tp_code
-  transformation: ql.REGISTRATION_TYPE
+  transformation: appl.REGISTRATION_TYPE
   data_type: string
   description: Nguồn tiếp nhận hồ sơ.
   target_attr_name: Registration Type Code
 - target_column: ctf_tp_code
-  transformation: ql.CERTIFICATE_ID
+  transformation: appl.CERTIFICATE_ID
   data_type: string
   description: Loại chứng chỉ hành nghề đăng ký.
   target_attr_name: Certificate Type Code
 - target_column: ttl
-  transformation: ql.TITLE
+  transformation: appl.TITLE
   data_type: string
   description: Tiêu đề hoặc tên nhóm hồ sơ.
   target_attr_name: Title
 - target_column: subm_dt
-  transformation: ql.SUBMISSION_DATE
+  transformation: appl.SUBMISSION_DATE
   data_type: date
   description: Ngày nộp hồ sơ chính thức.
   target_attr_name: Submission Date
 - target_column: supplement_dt
-  transformation: ql.SUPPLEMENT_DATE
+  transformation: appl.SUPPLEMENT_DATE
   data_type: date
   description: Ngày nộp bổ sung hồ sơ.
   target_attr_name: Supplement Date
 - target_column: supplement_ltr_dt
-  transformation: ql.SUPPLEMENT_LETTER_DATE
+  transformation: appl.SUPPLEMENT_LETTER_DATE
   data_type: date
   description: Ngày ban hành công văn yêu cầu bổ sung hồ sơ.
   target_attr_name: Supplement Letter Date
 - target_column: ctf_nbr
-  transformation: ql.CERTIFICATE_NUMBER
+  transformation: appl.CERTIFICATE_NUMBER
   data_type: string
   description: Số CCHN cấp cho người hành nghề.
   target_attr_name: Certificate Number
 - target_column: issu_dt
-  transformation: ql.ISSUE_DATE
+  transformation: appl.ISSUE_DATE
   data_type: date
   description: Ngày cấp CCHN.
   target_attr_name: Issue Date
 - target_column: prev_ctf_nbr
-  transformation: ql.PREVIOUS_CERTIFICATE_NUMBER
+  transformation: appl.PREVIOUS_CERTIFICATE_NUMBER
   data_type: string
   description: Số CCHN cũ trước khi cấp lại.
   target_attr_name: Previous Certificate Number
 - target_column: prev_issu_dt
-  transformation: ql.PREVIOUS_ISSUE_DATE
+  transformation: appl.PREVIOUS_ISSUE_DATE
   data_type: date
   description: Ngày cấp CCHN cũ.
   target_attr_name: Previous Issue Date
 - target_column: prev_ctf_tp_code
-  transformation: ql.PREVIOUS_CERTIFICATE_ID
+  transformation: appl.PREVIOUS_CERTIFICATE_ID
   data_type: string
   description: Loại CCHN cũ khi cấp lại.
   target_attr_name: Previous Certificate Type Code
 - target_column: reissue_rsn
-  transformation: ql.REISSUE_REASON
+  transformation: appl.REISSUE_REASON
   data_type: string
   description: Lý do xin cấp lại CCHN.
   target_attr_name: Reissue Reason
 - target_column: rejection_rsn
-  transformation: ql.REJECTION_REASON
+  transformation: appl.REJECTION_REASON
   data_type: string
   description: Lý do trả lại hoặc từ chối hồ sơ.
   target_attr_name: Rejection Reason
 - target_column: ctf_recpt_mth_code
-  transformation: ql.CERTIFICATE_RECEIPT_METHOD
+  transformation: appl.CERTIFICATE_RECEIPT_METHOD
   data_type: string
   description: Phương thức nhận CCHN.
   target_attr_name: Certificate Receipt Method Code
 - target_column: ctf_recpt_adr
-  transformation: ql.CERTIFICATE_RECEIPT_ADDRESS
+  transformation: appl.CERTIFICATE_RECEIPT_ADDRESS
   data_type: string
   description: Địa chỉ nhận CCHN qua bưu điện.
   target_attr_name: Certificate Receipt Address
 - target_column: ctf_recpt_ph
-  transformation: ql.CERTIFICATE_RECEIPT_PHONE
+  transformation: appl.CERTIFICATE_RECEIPT_PHONE
   data_type: string
   description: Số điện thoại liên lạc khi nhận CCHN.
   target_attr_name: Certificate Receipt Phone
 - target_column: recpt_st_code
-  transformation: ql.RECEIPT_STATUS
+  transformation: appl.RECEIPT_STATUS
   data_type: string
   description: Trạng thái nhận CCHN.
   target_attr_name: Receipt Status Code
 - target_column: violated_ind
-  transformation: ql.VIOLATED
+  transformation: appl.VIOLATED
   data_type: boolean
   description: Cờ người hành nghề vi phạm quy định.
   target_attr_name: Violated Indicator
 - target_column: data_exploitable_ind
-  transformation: ql.DATA_EXPLOITABLE
+  transformation: appl.DATA_EXPLOITABLE
   data_type: boolean
   description: Cờ dữ liệu có thể khai thác.
   target_attr_name: Data Exploitable Indicator
 - target_column: reissue_hsm
-  transformation: ql.REISSUE_HSM
+  transformation: appl.REISSUE_HSM
   data_type: string
   description: Thông tin HSM khi cấp CCHN điện tử.
   target_attr_name: Reissue Hsm
 - target_column: note
-  transformation: ql.NOTE
+  transformation: appl.NOTE
   data_type: string
   description: Ghi chú bổ sung.
   target_attr_name: Note
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến Securities Practitioner.
   target_attr_name: Securities Practitioner Id
 - target_column: scr_prac_code
-  transformation: ql.PROFESSIONAL_ID
+  transformation: appl.PROFESSIONAL_ID
   data_type: string
   description: Mã người hành nghề.
   target_attr_name: Securities Practitioner Code
 - target_column: license_ctf_doc_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CERTIFICATE_RECORD_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.CERTIFICATE_RECORD_ID)'
   data_type: string
   description: FK đến License Certificate Document (CCHN trong sổ đăng bộ).
   target_attr_name: License Certificate Document Id
 - target_column: license_ctf_doc_code
-  transformation: ql.CERTIFICATE_RECORD_ID
+  transformation: appl.CERTIFICATE_RECORD_ID
   data_type: string
   description: Mã CCHN trong sổ đăng bộ.
   target_attr_name: License Certificate Document Code
 - target_column: prev_license_ctf_doc_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PREVIOUS_CERTIFICATE_RECORD_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.PREVIOUS_CERTIFICATE_RECORD_ID)'
   data_type: string
   description: FK đến CCHN cũ (khi cấp lại).
   target_attr_name: Previous License Certificate Document Id
 - target_column: prev_license_ctf_doc_code
-  transformation: ql.PREVIOUS_CERTIFICATE_RECORD_ID
+  transformation: appl.PREVIOUS_CERTIFICATE_RECORD_ID
   data_type: string
   description: Mã CCHN cũ.
   target_attr_name: Previous License Certificate Document Code
 - target_column: exam_ases_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.EXAM_SESSION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.EXAM_SESSION_ID)'
   data_type: string
   description: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
   target_attr_name: Examination Assessment Id
 - target_column: exam_ases_code
-  transformation: ql.EXAM_SESSION_ID
+  transformation: appl.EXAM_SESSION_ID
   data_type: string
   description: Mã đợt thi sát hạch.
   target_attr_name: Examination Assessment Code
 - target_column: assignee_ofcr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ASSIGNEE_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.ASSIGNEE_ID)'
   data_type: string
   description: FK đến Regulatory Authority Officer — cán bộ được phân công xử lý hồ
     sơ.
   target_attr_name: Assignee Officer Id
 - target_column: assignee_ofcr_code
-  transformation: ql.ASSIGNEE_ID
+  transformation: appl.ASSIGNEE_ID
   data_type: string
   description: Mã cán bộ được phân công.
   target_attr_name: Assignee Officer Code
 - target_column: info_verify_ofcr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.INFO_VERIFY_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.INFO_VERIFY_ID)'
   data_type: string
   description: FK đến Regulatory Authority Officer — cán bộ xác minh thông tin.
   target_attr_name: Info Verify Officer Id
 - target_column: info_verify_ofcr_code
-  transformation: ql.INFO_VERIFY_ID
+  transformation: appl.INFO_VERIFY_ID
   data_type: string
   description: Mã cán bộ xác minh thông tin.
   target_attr_name: Info Verify Officer Code

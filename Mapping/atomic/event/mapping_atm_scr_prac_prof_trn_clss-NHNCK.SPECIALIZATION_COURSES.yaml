@@ -17,64 +17,66 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: SPECIALIZATION_COURSES
+  table_name: SPECIALIZATION_COURSES
+  alias: sp_co
+  select_fields: COURSE_CODE, COURSE_NAME, ACADEMIC_YEAR, SPECIALIZATION_ID, EXAM_DATE_FROM,
+    EXAM_DATE_TO, ADDRESS, PROVINCE_ID, RECORD_STATUS, CREATED_AT, UPDATED_AT, CREATED_BY,
+    UPDATED_BY
   filter: null
 relationship: []
 mapping_columns:
 - target_column: scr_prac_prof_trn_clss_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', ql.COURSE_CODE)'
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.COURSE_CODE)'
   data_type: string
   description: Surrogate key cho khóa học chuyên môn
   target_attr_name: Securities Practitioner Professional Training Class Id
 - target_column: scr_prac_prof_trn_clss_code
-  transformation: ql.COURSE_CODE
+  transformation: sp_co.COURSE_CODE
   data_type: string
   description: Mã khóa học (business key)
   target_attr_name: Securities Practitioner Professional Training Class Code
 - target_column: trn_clss_nm
-  transformation: ql.COURSE_NAME
+  transformation: sp_co.COURSE_NAME
   data_type: string
   description: Tên khóa học
   target_attr_name: Training Class Name
 - target_column: academic_yr
-  transformation: ql.ACADEMIC_YEAR
+  transformation: sp_co.ACADEMIC_YEAR
   data_type: int
   description: Năm học
   target_attr_name: Academic Year
 - target_column: specialization_tp_code
-  transformation: ql.SPECIALIZATION_ID
+  transformation: sp_co.SPECIALIZATION_ID
   data_type: string
   description: Loại chuyên môn của khóa học
   target_attr_name: Specialization Type Code
 - target_column: exam_strt_dt
-  transformation: ql.EXAM_DATE_FROM
+  transformation: sp_co.EXAM_DATE_FROM
   data_type: date
   description: Ngày bắt đầu thi
   target_attr_name: Exam Start Date
 - target_column: exam_end_dt
-  transformation: ql.EXAM_DATE_TO
+  transformation: sp_co.EXAM_DATE_TO
   data_type: string
   description: Ngày kết thúc thi
   target_attr_name: Exam End Date
 - target_column: exam_lo_adr
-  transformation: ql.ADDRESS
+  transformation: sp_co.ADDRESS
   data_type: string
   description: Địa điểm tổ chức thi
   target_attr_name: Exam Location Address
 - target_column: prov_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PROVINCE_ID)'
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.PROVINCE_ID)'
   data_type: string
   description: FK đến tỉnh/thành nơi tổ chức thi
   target_attr_name: Province Id
 - target_column: prov_code
-  transformation: ql.PROVINCE_ID
+  transformation: sp_co.PROVINCE_ID
   data_type: string
   description: Mã tỉnh/thành nơi tổ chức thi (lookup pair)
   target_attr_name: Province Code
 - target_column: rcrd_st_code
-  transformation: ql.RECORD_STATUS
+  transformation: sp_co.RECORD_STATUS
   data_type: string
   description: Trạng thái bản ghi khóa học
   target_attr_name: Record Status Code
@@ -84,32 +86,32 @@ mapping_columns:
   description: Mã hệ thống nguồn
   target_attr_name: Source System Code
 - target_column: crt_tms
-  transformation: ql.CREATED_AT
+  transformation: sp_co.CREATED_AT
   data_type: timestamp
   description: Thời điểm tạo bản ghi
   target_attr_name: Created Timestamp
 - target_column: udt_tms
-  transformation: ql.UPDATED_AT
+  transformation: sp_co.UPDATED_AT
   data_type: timestamp
   description: Thời điểm cập nhật bản ghi
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.CREATED_BY)'
   data_type: string
   description: FK đến cán bộ tạo bản ghi
   target_attr_name: Created By Officer Id
 - target_column: crt_by_ofcr_code
-  transformation: ql.CREATED_BY
+  transformation: sp_co.CREATED_BY
   data_type: string
   description: Mã cán bộ tạo bản ghi
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.UPDATED_BY)'
   data_type: string
   description: FK đến cán bộ cập nhật bản ghi
   target_attr_name: Updated By Officer Id
 - target_column: udt_by_ofcr_code
-  transformation: ql.UPDATED_BY
+  transformation: sp_co.UPDATED_BY
   data_type: string
   description: Mã cán bộ cập nhật bản ghi
   target_attr_name: Updated By Officer Code

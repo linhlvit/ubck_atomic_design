@@ -15,19 +15,20 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: PROFESSIONALS
+  table_name: PROFESSIONALS
+  alias: pro
+  select_fields: ID, PERMANENT_ADDRESS, PERMANENT_COUNTRY_ID, PERMANENT_PROVINCE_ID,
+    PERMANENT_DISTRICT_ID
   filter: null
 relationship: []
 mapping_columns:
 - target_column: ip_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.ID)'
   data_type: string
   description: FK đến Securities Practitioner.
   target_attr_name: Involved Party Id
 - target_column: ip_code
-  transformation: ql.ID
+  transformation: pro.ID
   data_type: string
   description: Mã người hành nghề.
   target_attr_name: Involved Party Code
@@ -42,37 +43,37 @@ mapping_columns:
   description: Loại địa chỉ.
   target_attr_name: Address Type Code
 - target_column: adr_val
-  transformation: ql.PERMANENT_ADDRESS
+  transformation: pro.PERMANENT_ADDRESS
   data_type: string
   description: Giá trị địa chỉ.
   target_attr_name: Address Value
 - target_column: cty_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PERMANENT_COUNTRY_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.PERMANENT_COUNTRY_ID)'
   data_type: string
   description: FK đến Geographic Area — quốc gia.
   target_attr_name: Country Id
 - target_column: cty_code
-  transformation: ql.PERMANENT_COUNTRY_ID
+  transformation: pro.PERMANENT_COUNTRY_ID
   data_type: string
   description: Mã quốc gia.
   target_attr_name: Country Code
 - target_column: prov_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PERMANENT_PROVINCE_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.PERMANENT_PROVINCE_ID)'
   data_type: string
   description: FK đến Geographic Area — tỉnh/thành.
   target_attr_name: Province Id
 - target_column: prov_code
-  transformation: ql.PERMANENT_PROVINCE_ID
+  transformation: pro.PERMANENT_PROVINCE_ID
   data_type: string
   description: Mã tỉnh/thành.
   target_attr_name: Province Code
 - target_column: dstc_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PERMANENT_DISTRICT_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.PERMANENT_DISTRICT_ID)'
   data_type: string
   description: FK đến Geographic Area — quận/huyện.
   target_attr_name: District Id
 - target_column: dstc_code
-  transformation: ql.PERMANENT_DISTRICT_ID
+  transformation: pro.PERMANENT_DISTRICT_ID
   data_type: string
   description: Mã quận/huyện.
   target_attr_name: District Code

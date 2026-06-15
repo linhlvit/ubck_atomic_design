@@ -15,19 +15,19 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: UNITS
+  table_name: UNITS
+  alias: unit
+  select_fields: ID, UNIT_CODE, ADDRESS
   filter: null
 relationship: []
 mapping_columns:
 - target_column: ip_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ID)'
+  transformation: '{hash_id}(''NHNCK_UNITS'', unit.ID)'
   data_type: string
   description: FK đến Regulatory Authority Organization Unit
   target_attr_name: Involved Party Id
 - target_column: ip_code
-  transformation: ql.UNIT_CODE
+  transformation: unit.UNIT_CODE
   data_type: string
   description: Mã đơn vị
   target_attr_name: Involved Party Code
@@ -42,7 +42,7 @@ mapping_columns:
   description: Loại địa chỉ — trụ sở chính
   target_attr_name: Address Type Code
 - target_column: adr_val
-  transformation: ql.ADDRESS
+  transformation: unit.ADDRESS
   data_type: string
   description: Địa chỉ trụ sở đơn vị
   target_attr_name: Address Value

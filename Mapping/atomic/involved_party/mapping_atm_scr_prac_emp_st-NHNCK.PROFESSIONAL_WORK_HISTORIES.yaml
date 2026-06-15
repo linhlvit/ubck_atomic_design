@@ -17,20 +17,21 @@ target:
 input:
 - source_type: physical_table
   namespace: ods
-  table_name: qlnhn
-  alias: ql
-  select_fields: PROFESSIONAL_WORK_HISTORIES
+  table_name: PROFESSIONAL_WORK_HISTORIES
+  alias: pr_wo_hi
+  select_fields: ID, PROFESSIONAL_ID, ORGANIZATION_ID, UNIT_NAME, WORKPLACE, START_DATE,
+    END_DATE, POSITION_ID, POSITION_NAME, AWARDS, DISCIPLINES
   filter: null
 relationship: []
 mapping_columns:
 - target_column: scr_prac_emp_st_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_WORK_HISTORIES'', ql.ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_WORK_HISTORIES'', pr_wo_hi.ID)'
   data_type: string
   description: Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của
     người hành nghề chứng khoán (surrogate key).
   target_attr_name: Securities Practitioner Employment Status Id
 - target_column: scr_prac_emp_st_code
-  transformation: ql.ID
+  transformation: pr_wo_hi.ID
   data_type: string
   description: Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn.
   target_attr_name: Securities Practitioner Employment Status Code
@@ -40,65 +41,65 @@ mapping_columns:
   description: Mã hệ thống nguồn.
   target_attr_name: Source System Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_WORK_HISTORIES'', pr_wo_hi.PROFESSIONAL_ID)'
   data_type: string
   description: Surrogate key FK đến người hành nghề chứng khoán.
   target_attr_name: Securities Practitioner Id
 - target_column: scr_prac_code
-  transformation: ql.PROFESSIONAL_ID
+  transformation: pr_wo_hi.PROFESSIONAL_ID
   data_type: string
   description: Mã kỹ thuật của người hành nghề (dư thừa).
   target_attr_name: Securities Practitioner Code
 - target_column: scr_org_refr_id
-  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ORGANIZATION_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_WORK_HISTORIES'', pr_wo_hi.ORGANIZATION_ID)'
   data_type: string
   description: Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành
     nghề làm việc.
   target_attr_name: Securities Organization Reference Id
 - target_column: scr_org_refr_code
-  transformation: ql.ORGANIZATION_ID
+  transformation: pr_wo_hi.ORGANIZATION_ID
   data_type: string
   description: Mã kỹ thuật của tổ chức (dư thừa).
   target_attr_name: Securities Organization Reference Code
 - target_column: dept_nm
-  transformation: ql.UNIT_NAME
+  transformation: pr_wo_hi.UNIT_NAME
   data_type: string
   description: Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot
     text).
   target_attr_name: Department Name
 - target_column: workplace_nm
-  transformation: ql.WORKPLACE
+  transformation: pr_wo_hi.WORKPLACE
   data_type: string
   description: Tên tổ chức / nơi làm việc dạng text (có thể khác ORGANIZATION_NAME
     khi tổ chức đổi tên hoặc chưa có trong ORGANIZATIONS).
   target_attr_name: Workplace Name
 - target_column: emp_strt_dt
-  transformation: ql.START_DATE
+  transformation: pr_wo_hi.START_DATE
   data_type: date
   description: Ngày bắt đầu làm việc tại tổ chức.
   target_attr_name: Employment Start Date
 - target_column: emp_end_dt
-  transformation: ql.END_DATE
+  transformation: pr_wo_hi.END_DATE
   data_type: date
   description: Ngày kết thúc làm việc. Null = đang làm việc.
   target_attr_name: Employment End Date
 - target_column: pos_code
-  transformation: ql.POSITION_ID
+  transformation: pr_wo_hi.POSITION_ID
   data_type: string
   description: Mã chức vụ của người hành nghề tại tổ chức.
   target_attr_name: Position Code
 - target_column: pos_nm
-  transformation: ql.POSITION_NAME
+  transformation: pr_wo_hi.POSITION_NAME
   data_type: string
   description: Tên chức vụ snapshot tại thời điểm ghi nhận.
   target_attr_name: Position Name
 - target_column: awards
-  transformation: ql.AWARDS
+  transformation: pr_wo_hi.AWARDS
   data_type: string
   description: Thông tin khen thưởng trong thời gian làm việc tại tổ chức.
   target_attr_name: Awards
 - target_column: disciplines
-  transformation: ql.DISCIPLINES
+  transformation: pr_wo_hi.DISCIPLINES
   data_type: string
   description: Thông tin kỷ luật trong thời gian làm việc tại tổ chức.
   target_attr_name: Disciplines
