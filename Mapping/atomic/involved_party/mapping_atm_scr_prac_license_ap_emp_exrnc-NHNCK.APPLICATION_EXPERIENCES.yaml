@@ -1,0 +1,126 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-scr_prac_license_ap_emp_exrnc-NHNCK.APPLICATION_EXPERIENCES
+  logical_name: Mapping Atomic - Securities Practitioner License Application Employment
+    Experience – source NHNCK.APPLICATION_EXPERIENCES
+  physical_name: scr_prac_license_ap_emp_exrnc
+  dm_ref: ATM-scr_prac_license_ap_emp_exrnc-NHNCK.APPLICATION_EXPERIENCES
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
+target:
+  namespace: atm
+  physical_name: scr_prac_license_ap_emp_exrnc
+  etl_handle: SCD4A
+  description: Kinh nghiệm làm việc khai báo trong hồ sơ đăng ký CCHN. Ghi nhận tổ
+    chức, thời gian làm việc, chức vụ, phòng ban, số BHXH và thông tin hợp đồng lao
+    động.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: qlnhn
+  alias: ql
+  select_fields: APPLICATION_EXPERIENCES
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: scr_prac_license_ap_emp_exrnc_id
+  transformation: '{hash_id}(''NHNCK_APPLICATION_EXPERIENCES'', ql.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner License Application Employment Experience
+    Id
+- target_column: scr_prac_license_ap_emp_exrnc_code
+  transformation: ql.ID
+  data_type: string
+  description: Mã định danh kinh nghiệm làm việc. BK
+  target_attr_name: Securities Practitioner License Application Employment Experience
+    Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATION_EXPERIENCES'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: license_ap_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.APPLICATION_ID)'
+  data_type: string
+  description: FK đến hồ sơ đăng ký CCHN
+  target_attr_name: License Application Id
+- target_column: license_ap_code
+  transformation: ql.APPLICATION_ID
+  data_type: string
+  description: Mã hồ sơ đăng ký CCHN
+  target_attr_name: License Application Code
+- target_column: doc_tp_code
+  transformation: ql.DOCUMENT_ID
+  data_type: string
+  description: Mã loại tài liệu yêu cầu (Classification Value từ Documents)
+  target_attr_name: Document Type Code
+- target_column: scr_org_refr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ORGANIZATION_ID)'
+  data_type: string
+  description: FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable — nếu
+    nơi làm việc là CTCK/QLQ đã đăng ký)
+  target_attr_name: Securities Organization Reference Id
+- target_column: scr_org_refr_code
+  transformation: ql.ORGANIZATION_ID
+  data_type: string
+  description: Mã tổ chức kinh doanh chứng khoán (dư thừa)
+  target_attr_name: Securities Organization Reference Code
+- target_column: org_nm
+  transformation: ql.ORGANIZATION_NAME
+  data_type: string
+  description: Tên tổ chức nơi làm việc (snapshot text — giữ kể cả khi ORGANIZATION_ID
+    có giá trị)
+  target_attr_name: Organization Name
+- target_column: dept_nm
+  transformation: ql.DEPARTMENT_NAME
+  data_type: string
+  description: Tên phòng ban nơi làm việc
+  target_attr_name: Department Name
+- target_column: pos
+  transformation: ql.POSITION
+  data_type: string
+  description: Chức vụ tại tổ chức
+  target_attr_name: Position
+- target_column: emp_strt_dt
+  transformation: ql.START_DATE
+  data_type: date
+  description: Ngày bắt đầu làm việc tại tổ chức
+  target_attr_name: Employment Start Date
+- target_column: emp_end_dt
+  transformation: ql.END_DATE
+  data_type: date
+  description: Ngày kết thúc làm việc tại tổ chức (null nếu đang làm việc)
+  target_attr_name: Employment End Date
+- target_column: wrk_drtn_mo
+  transformation: ql.WORK_DURATION
+  data_type: int
+  description: Thời gian làm việc tại tổ chức (số tháng)
+  target_attr_name: Work Duration Months
+- target_column: tot_exrnc_drtn_mo
+  transformation: ql.TOTAL_DURATION
+  data_type: int
+  description: Tổng thời gian kinh nghiệm tích lũy (số tháng)
+  target_attr_name: Total Experience Duration Months
+- target_column: ins_nbr
+  transformation: ql.INSURANCE_NUMBER
+  data_type: string
+  description: Số bảo hiểm xã hội
+  target_attr_name: Insurance Number
+- target_column: labor_ctr_info
+  transformation: ql.LABOR_CONTRACT
+  data_type: string
+  description: Thông tin hợp đồng lao động
+  target_attr_name: Labor Contract Info
+- target_column: director_cfrm
+  transformation: ql.DIRECTOR_CONFIRMATION
+  data_type: string
+  description: Thông tin xác nhận của giám đốc tổ chức
+  target_attr_name: Director Confirmation
+- target_column: note
+  transformation: ql.NOTE
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

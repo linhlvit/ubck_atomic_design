@@ -1,0 +1,232 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-scr_prac_org_emp_rpt-NHNCK.ORGANIZATION_REPORTS
+  logical_name: Mapping Atomic - Securities Practitioner Organization Employment Report
+    – source NHNCK.ORGANIZATION_REPORTS
+  physical_name: scr_prac_org_emp_rpt
+  dm_ref: ATM-scr_prac_org_emp_rpt-NHNCK.ORGANIZATION_REPORTS
+  brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORTS
+target:
+  namespace: atm
+  physical_name: scr_prac_org_emp_rpt
+  etl_handle: Fact Append
+  description: Báo cáo của tổ chức về tình trạng làm việc của người hành nghề. Mỗi
+    dòng = 1 lần nộp báo cáo insert-only. Ghi nhận loại báo cáo, trạng thái làm việc,
+    chức vụ và ngày báo cáo.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: qlnhn
+  alias: ql
+  select_fields: ORGANIZATION_REPORTS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: scr_prac_org_emp_rpt_id
+  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', ql.ID)'
+  data_type: string
+  description: Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key).
+  target_attr_name: Securities Practitioner Organization Employment Report Id
+- target_column: scr_prac_org_emp_rpt_code
+  transformation: ql.ID
+  data_type: string
+  description: Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn.
+  target_attr_name: Securities Practitioner Organization Employment Report Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_ORGANIZATION_REPORTS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: scr_org_refr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ORGANIZATION_ID)'
+  data_type: string
+  description: FK đến tổ chức kinh doanh chứng khoán.
+  target_attr_name: Securities Organization Reference Id
+- target_column: scr_org_refr_code
+  transformation: ql.ORGANIZATION_ID
+  data_type: string
+  description: Mã tổ chức (denormalized).
+  target_attr_name: Securities Organization Reference Code
+- target_column: scr_prac_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến người hành nghề chứng khoán.
+  target_attr_name: Securities Practitioner Id
+- target_column: scr_prac_code
+  transformation: ql.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề (denormalized).
+  target_attr_name: Securities Practitioner Code
+- target_column: license_ctf_doc_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CERTIFICATE_RECORD_ID)'
+  data_type: string
+  description: FK đến hồ sơ chứng chỉ hành nghề (nullable).
+  target_attr_name: License Certificate Document Id
+- target_column: license_ctf_doc_code
+  transformation: ql.CERTIFICATE_RECORD_ID
+  data_type: string
+  description: Mã hồ sơ chứng chỉ hành nghề (denormalized).
+  target_attr_name: License Certificate Document Code
+- target_column: ctf_tp_code
+  transformation: ql.CERTIFICATE_ID
+  data_type: string
+  description: Loại chứng chỉ hành nghề tại thời điểm báo cáo.
+  target_attr_name: Certificate Type Code
+- target_column: prn_rpt_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PARENT_REPORT_ID)'
+  data_type: string
+  description: FK self-ref — báo cáo gốc được điều chỉnh (nullable).
+  target_attr_name: Parent Report Id
+- target_column: prn_rpt_code
+  transformation: ql.PARENT_REPORT_ID
+  data_type: string
+  description: Mã báo cáo gốc (denormalized).
+  target_attr_name: Parent Report Code
+- target_column: prac_nm_at_rpt
+  transformation: ql.FULL_NAME
+  data_type: string
+  description: Họ và tên người hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Practitioner Name At Report
+- target_column: prac_brth_dt_at_rpt
+  transformation: ql.BIRTH_DATE
+  data_type: date
+  description: Ngày sinh người hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Practitioner Birth Date At Report
+- target_column: prac_id_nbr_at_rpt
+  transformation: ql.IDENTITY_NUMBER
+  data_type: string
+  description: Số định danh cá nhân tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Practitioner Identity Number At Report
+- target_column: prac_pos_at_rpt
+  transformation: ql.POSITION
+  data_type: string
+  description: Chức vụ của người hành nghề tại tổ chức (snapshot).
+  target_attr_name: Practitioner Position At Report
+- target_column: prac_dept_at_rpt
+  transformation: ql.DEPARTMENT
+  data_type: string
+  description: Phòng ban của người hành nghề tại tổ chức (snapshot).
+  target_attr_name: Practitioner Department At Report
+- target_column: prac_workplace_at_rpt
+  transformation: ql.WORKPLACE
+  data_type: string
+  description: Nơi làm việc của người hành nghề tại thời điểm báo cáo (snapshot).
+  target_attr_name: Practitioner Workplace At Report
+- target_column: ctf_nbr_at_rpt
+  transformation: ql.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Certificate Number At Report
+- target_column: ctf_issu_dt_at_rpt
+  transformation: ql.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Certificate Issue Date At Report
+- target_column: hire_dt
+  transformation: ql.HIRE_DATE
+  data_type: date
+  description: Ngày tuyển dụng vào tổ chức.
+  target_attr_name: Hire Date
+- target_column: tmt_dt
+  transformation: ql.TERMINATION_DATE
+  data_type: date
+  description: Ngày chấm dứt hợp đồng lao động (NULL = đang làm việc).
+  target_attr_name: Termination Date
+- target_column: rpt_dt
+  transformation: ql.REPORT_DATE
+  data_type: date
+  description: Ngày lập báo cáo.
+  target_attr_name: Report Date
+- target_column: disciplines
+  transformation: ql.DISCIPLINES
+  data_type: string
+  description: Kỷ luật của người hành nghề tại tổ chức.
+  target_attr_name: Disciplines
+- target_column: dsc
+  transformation: ql.DESCRIPTION
+  data_type: string
+  description: Mô tả bổ sung cho báo cáo.
+  target_attr_name: Description
+- target_column: notes
+  transformation: ql.NOTES
+  data_type: string
+  description: Ghi chú nội bộ.
+  target_attr_name: Notes
+- target_column: bsn_dept_nm
+  transformation: ql.BUSINESS_DEPARTMENT
+  data_type: string
+  description: Tên phòng nghiệp vụ UBCKNN phụ trách (denormalized text).
+  target_attr_name: Business Department Name
+- target_column: rpt_file_path
+  transformation: ql.FILE_PATH
+  data_type: string
+  description: Đường dẫn file báo cáo đính kèm.
+  target_attr_name: Report File Path
+- target_column: tmt_file_path
+  transformation: ql.FILE_PATH_TERMINATION
+  data_type: string
+  description: Đường dẫn file chấm dứt hợp đồng đính kèm.
+  target_attr_name: Termination File Path
+- target_column: ext_sync_id
+  transformation: ql.SYNC_ID
+  data_type: string
+  description: Mã đồng bộ từ hệ thống ngoài (FMS/SCMS).
+  target_attr_name: External Sync Id
+- target_column: rcrd_tp_code
+  transformation: ql.RECORD_TYPE
+  data_type: string
+  description: Phân loại loại bản ghi báo cáo.
+  target_attr_name: Record Type Code
+- target_column: org_st_code_at_rpt
+  transformation: ql.STATUS_ORGANIZATION
+  data_type: string
+  description: Trạng thái tổ chức tại thời điểm lập báo cáo.
+  target_attr_name: Organization Status Code At Report
+- target_column: rcrd_st_code
+  transformation: ql.RECORD_STATUS
+  data_type: string
+  description: Trạng thái bản ghi báo cáo (1=Hoạt động).
+  target_attr_name: Record Status Code
+- target_column: sync_crt_tms
+  transformation: ql.SYNC_CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn.
+  target_attr_name: Sync Created Timestamp
+- target_column: sync_udt_tms
+  transformation: ql.SYNC_UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn.
+  target_attr_name: Sync Updated Timestamp
+- target_column: crt_tms
+  transformation: ql.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi trong NHNCK.
+  target_attr_name: Created Timestamp
+- target_column: crt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CREATED_BY)'
+  data_type: string
+  description: FK đến nhân viên UBCKNN tạo bản ghi.
+  target_attr_name: Created By Officer Id
+- target_column: crt_by_ofcr_code
+  transformation: ql.CREATED_BY
+  data_type: string
+  description: Mã nhân viên tạo bản ghi (denormalized).
+  target_attr_name: Created By Officer Code
+- target_column: udt_tms
+  transformation: ql.UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm cập nhật bản ghi gần nhất.
+  target_attr_name: Updated Timestamp
+- target_column: udt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.UPDATED_BY)'
+  data_type: string
+  description: FK đến nhân viên UBCKNN cập nhật bản ghi.
+  target_attr_name: Updated By Officer Id
+- target_column: udt_by_ofcr_code
+  transformation: ql.UPDATED_BY
+  data_type: string
+  description: Mã nhân viên cập nhật bản ghi (denormalized).
+  target_attr_name: Updated By Officer Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

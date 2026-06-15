@@ -1,0 +1,171 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-scr_org_refr-NHNCK.ORGANIZATIONS
+  logical_name: Mapping Atomic - Securities Organization Reference – source NHNCK.ORGANIZATIONS
+  physical_name: scr_org_refr
+  dm_ref: ATM-scr_org_refr-NHNCK.ORGANIZATIONS
+  brd_ref: BRD-SRC-NHNCK-ORGANIZATIONS
+target:
+  namespace: atm
+  physical_name: scr_org_refr
+  etl_handle: SCD4A
+  description: Tổ chức tham gia thị trường chứng khoán được UBCKNN quản lý (CTCK,
+    QLQ, Ngân hàng, v.v.). Ghi nhận mã tổ chức, tên, loại hình, vốn điều lệ và trạng
+    thái hoạt động.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: qlnhn
+  alias: ql
+  select_fields: ORGANIZATIONS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: scr_org_refr_id
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', ql.ID)'
+  data_type: string
+  description: Khóa đại diện cho tổ chức kinh doanh chứng khoán (surrogate key).
+  target_attr_name: Securities Organization Reference Id
+- target_column: scr_org_refr_code
+  transformation: ql.ID
+  data_type: string
+  description: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn.
+  target_attr_name: Securities Organization Reference Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_ORGANIZATIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: org_code
+  transformation: ql.ORGANIZATION_CODE
+  data_type: string
+  description: Mã tổ chức (mã nghiệp vụ do hệ thống gán).
+  target_attr_name: Organization Code
+- target_column: scr_org_refr_nm
+  transformation: ql.ORGANIZATION_NAME
+  data_type: string
+  description: Tên đầy đủ tổ chức.
+  target_attr_name: Securities Organization Reference Name
+- target_column: scr_org_refr_en_nm
+  transformation: ql.ENGLISH_NAME
+  data_type: string
+  description: Tên tiếng Anh của tổ chức.
+  target_attr_name: Securities Organization Reference English Name
+- target_column: scr_org_refr_shrt_nm
+  transformation: ql.ABBREVIATION
+  data_type: string
+  description: Tên viết tắt của tổ chức.
+  target_attr_name: Securities Organization Reference Short Name
+- target_column: org_tp_code
+  transformation: ql.ORGANIZATION_TYPE_ID
+  data_type: string
+  description: 'Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng.'
+  target_attr_name: Organization Type Code
+- target_column: org_lvl_code
+  transformation: ql.LEVEL_
+  data_type: string
+  description: Cấp độ phân cấp tổ chức.
+  target_attr_name: Organization Level Code
+- target_column: prn_scr_org_refr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PARENT_ID)'
+  data_type: string
+  description: FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp.
+  target_attr_name: Parent Securities Organization Reference Id
+- target_column: prn_scr_org_refr_code
+  transformation: ql.PARENT_ID
+  data_type: string
+  description: Mã tổ chức cha.
+  target_attr_name: Parent Securities Organization Reference Code
+- target_column: ext_stm_linked_id
+  transformation: ql.LINKED_ID
+  data_type: string
+  description: ID liên kết sang hệ thống FMS/SCMS.
+  target_attr_name: External System Linked Id
+- target_column: ext_stm_sync_id
+  transformation: ql.SYNC_ID
+  data_type: string
+  description: Mã đồng bộ từ FMS/SCMS.
+  target_attr_name: External System Sync Id
+- target_column: lgl_rprs_nm
+  transformation: ql.REPRESENTATIVE
+  data_type: string
+  description: Tên người đại diện pháp luật của tổ chức.
+  target_attr_name: Legal Representative Name
+- target_column: license_nbr
+  transformation: ql.LICENSE_NUMBER
+  data_type: string
+  description: Số giấy phép hoạt động chứng khoán.
+  target_attr_name: License Number
+- target_column: license_issur_nm
+  transformation: ql.LICENSE_ISSUER
+  data_type: string
+  description: Tên cơ quan cấp giấy phép hoạt động.
+  target_attr_name: License Issuer Name
+- target_column: license_dt
+  transformation: ql.LICENSE_DATE
+  data_type: date
+  description: Ngày cấp giấy phép hoạt động.
+  target_attr_name: License Date
+- target_column: charter_cptl_amt
+  transformation: ql.CHARTER_CAPITAL
+  data_type: decimal(23,2)
+  description: Vốn điều lệ của tổ chức.
+  target_attr_name: Charter Capital Amount
+- target_column: dsc
+  transformation: ql.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết về tổ chức.
+  target_attr_name: Description
+- target_column: rcrd_st_code
+  transformation: ql.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi: 1=Hoạt động.'
+  target_attr_name: Record Status Code
+- target_column: sort_ordr
+  transformation: ql.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị.
+  target_attr_name: Sort Order
+- target_column: last_sync_dt
+  transformation: ql.LAST_SYNC_DATE
+  data_type: date
+  description: Ngày đồng bộ dữ liệu gần nhất.
+  target_attr_name: Last Sync Date
+- target_column: sync_st_code
+  transformation: ql.SYNC_STATUS
+  data_type: string
+  description: 'Trạng thái đồng bộ: 0=Chưa đồng bộ, 1=Đã đồng bộ, 2=Lỗi.'
+  target_attr_name: Sync Status Code
+- target_column: crt_tms
+  transformation: ql.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: ql.UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm cập nhật bản ghi gần nhất.
+  target_attr_name: Updated Timestamp
+- target_column: crt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CREATED_BY)'
+  data_type: string
+  description: FK đến cán bộ tạo bản ghi.
+  target_attr_name: Created By Officer Id
+- target_column: crt_by_ofcr_code
+  transformation: ql.CREATED_BY
+  data_type: string
+  description: Mã cán bộ tạo bản ghi.
+  target_attr_name: Created By Officer Code
+- target_column: udt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.UPDATED_BY)'
+  data_type: string
+  description: FK đến cán bộ cập nhật bản ghi gần nhất.
+  target_attr_name: Updated By Officer Id
+- target_column: udt_by_ofcr_code
+  transformation: ql.UPDATED_BY
+  data_type: string
+  description: Mã cán bộ cập nhật bản ghi gần nhất.
+  target_attr_name: Updated By Officer Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,162 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-scr_prac_qualf_exam_ases-NHNCK.EXAM_SESSIONS
+  logical_name: Mapping Atomic - Securities Practitioner Qualification Examination
+    Assessment – source NHNCK.EXAM_SESSIONS
+  physical_name: scr_prac_qualf_exam_ases
+  dm_ref: ATM-scr_prac_qualf_exam_ases-NHNCK.EXAM_SESSIONS
+  brd_ref: BRD-SRC-NHNCK-EXAM_SESSIONS
+target:
+  namespace: atm
+  physical_name: scr_prac_qualf_exam_ases
+  etl_handle: SCD4A
+  description: Đợt thi sát hạch cấp CCHN do UBCKNN tổ chức. Ghi nhận thời gian đăng
+    ký và thi, địa điểm, hình thức nộp hồ sơ, quyết định công nhận kết quả và phí
+    thi.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: qlnhn
+  alias: ql
+  select_fields: EXAM_SESSIONS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: scr_prac_qualf_exam_ases_id
+  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ql.CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Id
+- target_column: scr_prac_qualf_exam_ases_code
+  transformation: ql.CODE
+  data_type: string
+  description: Mã định danh nghiệp vụ đợt thi. BK
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Code
+- target_column: ases_nm
+  transformation: ql.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị đợt thi
+  target_attr_name: Assessment Name
+- target_column: rpt_yr
+  transformation: ql.REPORT_YEAR
+  data_type: int
+  description: Năm báo cáo (YYYY)
+  target_attr_name: Report Year
+- target_column: exam_ssn_nbr
+  transformation: ql.SESSION_NUMBER
+  data_type: int
+  description: Kỳ thi trong năm (1, 2…)
+  target_attr_name: Examination Session Number
+- target_column: organizing_unit_nm
+  transformation: ql.ORGANIZING_UNIT
+  data_type: string
+  description: Tên đơn vị tổ chức thi
+  target_attr_name: Organizing Unit Name
+- target_column: ap_rgst_strt_dt
+  transformation: ql.APPLICATION_START_DATE
+  data_type: string
+  description: Ngày bắt đầu nhận đăng ký
+  target_attr_name: Application Registration Start Date
+- target_column: ap_rgst_end_dt
+  transformation: ql.APPLICATION_END_DATE
+  data_type: string
+  description: Ngày kết thúc nhận đăng ký
+  target_attr_name: Application Registration End Date
+- target_column: exam_strt_dt
+  transformation: ql.EXAM_START_DATE
+  data_type: string
+  description: Ngày bắt đầu thi
+  target_attr_name: Examination Start Date
+- target_column: exam_end_dt
+  transformation: ql.EXAM_END_DATE
+  data_type: string
+  description: Ngày kết thúc thi
+  target_attr_name: Examination End Date
+- target_column: rslt_notf_dt
+  transformation: ql.NOTI_DATE
+  data_type: string
+  description: Ngày thông báo kết quả thi
+  target_attr_name: Result Notification Date
+- target_column: exam_locations
+  transformation: ql.EXAM_LOCATIONS
+  data_type: string
+  description: Địa điểm tổ chức thi
+  target_attr_name: Examination Locations
+- target_column: subm_methods
+  transformation: ql.SUBMISSION_METHODS
+  data_type: string
+  description: Phương thức nộp hồ sơ
+  target_attr_name: Submission Methods
+- target_column: notf_file_path
+  transformation: ql.FILE_PATH
+  data_type: string
+  description: Đường dẫn file thông báo kết quả
+  target_attr_name: Notification File Path
+- target_column: license_dcsn_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định cấp chứng chỉ liên quan đợt thi
+  target_attr_name: License Decision Id
+- target_column: license_dcsn_code
+  transformation: ql.DECISION_ID
+  data_type: string
+  description: Mã quyết định cấp chứng chỉ
+  target_attr_name: License Decision Code
+- target_column: bnk_code
+  transformation: ql.BANK_ID
+  data_type: string
+  description: Mã ngân hàng thu phí
+  target_attr_name: Bank Code
+- target_column: bnk_ac_nbr
+  transformation: ql.BANK_ACCOUNT_NUMBER
+  data_type: string
+  description: Số tài khoản ngân hàng thu phí
+  target_attr_name: Bank Account Number
+- target_column: bnk_ac_nm
+  transformation: ql.BANK_ACCOUNT_NAME
+  data_type: string
+  description: Tên chủ tài khoản ngân hàng thu phí
+  target_attr_name: Bank Account Name
+- target_column: rcrd_st_code
+  transformation: ql.RECORD_STATUS
+  data_type: string
+  description: Trạng thái đợt thi (1=Hoạt động)
+  target_attr_name: Record Status Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_EXAM_SESSIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn
+  target_attr_name: Source System Code
+- target_column: crt_tms
+  transformation: ql.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: ql.UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm cập nhật bản ghi
+  target_attr_name: Updated Timestamp
+- target_column: crt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CREATED_BY)'
+  data_type: string
+  description: FK đến người tạo
+  target_attr_name: Created By Officer Id
+- target_column: crt_by_ofcr_code
+  transformation: ql.CREATED_BY
+  data_type: string
+  description: Mã người tạo
+  target_attr_name: Created By Officer Code
+- target_column: udt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.UPDATED_BY)'
+  data_type: string
+  description: FK đến người cập nhật
+  target_attr_name: Updated By Officer Id
+- target_column: udt_by_ofcr_code
+  transformation: ql.UPDATED_BY
+  data_type: string
+  description: Mã người cập nhật
+  target_attr_name: Updated By Officer Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

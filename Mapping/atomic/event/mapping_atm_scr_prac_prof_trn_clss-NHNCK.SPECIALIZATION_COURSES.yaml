@@ -1,0 +1,117 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-scr_prac_prof_trn_clss-NHNCK.SPECIALIZATION_COURSES
+  logical_name: Mapping Atomic - Securities Practitioner Professional Training Class
+    – source NHNCK.SPECIALIZATION_COURSES
+  physical_name: scr_prac_prof_trn_clss
+  dm_ref: ATM-scr_prac_prof_trn_clss-NHNCK.SPECIALIZATION_COURSES
+  brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
+target:
+  namespace: atm
+  physical_name: scr_prac_prof_trn_clss
+  etl_handle: SCD4A
+  description: Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán.
+    Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và địa
+    điểm thi.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: qlnhn
+  alias: ql
+  select_fields: SPECIALIZATION_COURSES
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: scr_prac_prof_trn_clss_id
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', ql.COURSE_CODE)'
+  data_type: string
+  description: Surrogate key cho khóa học chuyên môn
+  target_attr_name: Securities Practitioner Professional Training Class Id
+- target_column: scr_prac_prof_trn_clss_code
+  transformation: ql.COURSE_CODE
+  data_type: string
+  description: Mã khóa học (business key)
+  target_attr_name: Securities Practitioner Professional Training Class Code
+- target_column: trn_clss_nm
+  transformation: ql.COURSE_NAME
+  data_type: string
+  description: Tên khóa học
+  target_attr_name: Training Class Name
+- target_column: academic_yr
+  transformation: ql.ACADEMIC_YEAR
+  data_type: int
+  description: Năm học
+  target_attr_name: Academic Year
+- target_column: specialization_tp_code
+  transformation: ql.SPECIALIZATION_ID
+  data_type: string
+  description: Loại chuyên môn của khóa học
+  target_attr_name: Specialization Type Code
+- target_column: exam_strt_dt
+  transformation: ql.EXAM_DATE_FROM
+  data_type: date
+  description: Ngày bắt đầu thi
+  target_attr_name: Exam Start Date
+- target_column: exam_end_dt
+  transformation: ql.EXAM_DATE_TO
+  data_type: string
+  description: Ngày kết thúc thi
+  target_attr_name: Exam End Date
+- target_column: exam_lo_adr
+  transformation: ql.ADDRESS
+  data_type: string
+  description: Địa điểm tổ chức thi
+  target_attr_name: Exam Location Address
+- target_column: prov_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PROVINCE_ID)'
+  data_type: string
+  description: FK đến tỉnh/thành nơi tổ chức thi
+  target_attr_name: Province Id
+- target_column: prov_code
+  transformation: ql.PROVINCE_ID
+  data_type: string
+  description: Mã tỉnh/thành nơi tổ chức thi (lookup pair)
+  target_attr_name: Province Code
+- target_column: rcrd_st_code
+  transformation: ql.RECORD_STATUS
+  data_type: string
+  description: Trạng thái bản ghi khóa học
+  target_attr_name: Record Status Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_SPECIALIZATION_COURSES'''
+  data_type: string
+  description: Mã hệ thống nguồn
+  target_attr_name: Source System Code
+- target_column: crt_tms
+  transformation: ql.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi
+  target_attr_name: Created Timestamp
+- target_column: udt_tms
+  transformation: ql.UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm cập nhật bản ghi
+  target_attr_name: Updated Timestamp
+- target_column: crt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CREATED_BY)'
+  data_type: string
+  description: FK đến cán bộ tạo bản ghi
+  target_attr_name: Created By Officer Id
+- target_column: crt_by_ofcr_code
+  transformation: ql.CREATED_BY
+  data_type: string
+  description: Mã cán bộ tạo bản ghi
+  target_attr_name: Created By Officer Code
+- target_column: udt_by_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.UPDATED_BY)'
+  data_type: string
+  description: FK đến cán bộ cập nhật bản ghi
+  target_attr_name: Updated By Officer Id
+- target_column: udt_by_ofcr_code
+  transformation: ql.UPDATED_BY
+  data_type: string
+  description: Mã cán bộ cập nhật bản ghi
+  target_attr_name: Updated By Officer Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

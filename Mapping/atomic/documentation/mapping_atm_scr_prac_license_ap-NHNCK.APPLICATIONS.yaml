@@ -1,0 +1,218 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-scr_prac_license_ap-NHNCK.APPLICATIONS
+  logical_name: Mapping Atomic - Securities Practitioner License Application – source
+    NHNCK.APPLICATIONS
+  physical_name: scr_prac_license_ap
+  dm_ref: ATM-scr_prac_license_ap-NHNCK.APPLICATIONS
+  brd_ref: BRD-SRC-NHNCK-APPLICATIONS
+target:
+  namespace: atm
+  physical_name: scr_prac_license_ap
+  etl_handle: SCD4A
+  description: Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán. Ghi nhận loại đăng ký,
+    loại hồ sơ, trạng thái, ngày nộp, CCHN liên quan và kết quả thi. FK đến Practitioner
+    và Officer phụ trách.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: qlnhn
+  alias: ql
+  select_fields: APPLICATIONS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: scr_prac_license_ap_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ql.APPLICATION_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key).
+  target_attr_name: Securities Practitioner License Application Id
+- target_column: scr_prac_license_ap_code
+  transformation: ql.APPLICATION_CODE
+  data_type: string
+  description: Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.
+  target_attr_name: Securities Practitioner License Application Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: ap_tp_code
+  transformation: ql.APPLICATION_TYPE
+  data_type: string
+  description: Loại hồ sơ.
+  target_attr_name: Application Type Code
+- target_column: ap_st_code
+  transformation: ql.STATUS_ID
+  data_type: string
+  description: Trạng thái hồ sơ hiện tại.
+  target_attr_name: Application Status Code
+- target_column: rgst_tp_code
+  transformation: ql.REGISTRATION_TYPE
+  data_type: string
+  description: Nguồn tiếp nhận hồ sơ.
+  target_attr_name: Registration Type Code
+- target_column: ctf_tp_code
+  transformation: ql.CERTIFICATE_ID
+  data_type: string
+  description: Loại chứng chỉ hành nghề đăng ký.
+  target_attr_name: Certificate Type Code
+- target_column: ttl
+  transformation: ql.TITLE
+  data_type: string
+  description: Tiêu đề hoặc tên nhóm hồ sơ.
+  target_attr_name: Title
+- target_column: subm_dt
+  transformation: ql.SUBMISSION_DATE
+  data_type: date
+  description: Ngày nộp hồ sơ chính thức.
+  target_attr_name: Submission Date
+- target_column: supplement_dt
+  transformation: ql.SUPPLEMENT_DATE
+  data_type: date
+  description: Ngày nộp bổ sung hồ sơ.
+  target_attr_name: Supplement Date
+- target_column: supplement_ltr_dt
+  transformation: ql.SUPPLEMENT_LETTER_DATE
+  data_type: date
+  description: Ngày ban hành công văn yêu cầu bổ sung hồ sơ.
+  target_attr_name: Supplement Letter Date
+- target_column: ctf_nbr
+  transformation: ql.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số CCHN cấp cho người hành nghề.
+  target_attr_name: Certificate Number
+- target_column: issu_dt
+  transformation: ql.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp CCHN.
+  target_attr_name: Issue Date
+- target_column: prev_ctf_nbr
+  transformation: ql.PREVIOUS_CERTIFICATE_NUMBER
+  data_type: string
+  description: Số CCHN cũ trước khi cấp lại.
+  target_attr_name: Previous Certificate Number
+- target_column: prev_issu_dt
+  transformation: ql.PREVIOUS_ISSUE_DATE
+  data_type: date
+  description: Ngày cấp CCHN cũ.
+  target_attr_name: Previous Issue Date
+- target_column: prev_ctf_tp_code
+  transformation: ql.PREVIOUS_CERTIFICATE_ID
+  data_type: string
+  description: Loại CCHN cũ khi cấp lại.
+  target_attr_name: Previous Certificate Type Code
+- target_column: reissue_rsn
+  transformation: ql.REISSUE_REASON
+  data_type: string
+  description: Lý do xin cấp lại CCHN.
+  target_attr_name: Reissue Reason
+- target_column: rejection_rsn
+  transformation: ql.REJECTION_REASON
+  data_type: string
+  description: Lý do trả lại hoặc từ chối hồ sơ.
+  target_attr_name: Rejection Reason
+- target_column: ctf_recpt_mth_code
+  transformation: ql.CERTIFICATE_RECEIPT_METHOD
+  data_type: string
+  description: Phương thức nhận CCHN.
+  target_attr_name: Certificate Receipt Method Code
+- target_column: ctf_recpt_adr
+  transformation: ql.CERTIFICATE_RECEIPT_ADDRESS
+  data_type: string
+  description: Địa chỉ nhận CCHN qua bưu điện.
+  target_attr_name: Certificate Receipt Address
+- target_column: ctf_recpt_ph
+  transformation: ql.CERTIFICATE_RECEIPT_PHONE
+  data_type: string
+  description: Số điện thoại liên lạc khi nhận CCHN.
+  target_attr_name: Certificate Receipt Phone
+- target_column: recpt_st_code
+  transformation: ql.RECEIPT_STATUS
+  data_type: string
+  description: Trạng thái nhận CCHN.
+  target_attr_name: Receipt Status Code
+- target_column: violated_ind
+  transformation: ql.VIOLATED
+  data_type: boolean
+  description: Cờ người hành nghề vi phạm quy định.
+  target_attr_name: Violated Indicator
+- target_column: data_exploitable_ind
+  transformation: ql.DATA_EXPLOITABLE
+  data_type: boolean
+  description: Cờ dữ liệu có thể khai thác.
+  target_attr_name: Data Exploitable Indicator
+- target_column: reissue_hsm
+  transformation: ql.REISSUE_HSM
+  data_type: string
+  description: Thông tin HSM khi cấp CCHN điện tử.
+  target_attr_name: Reissue Hsm
+- target_column: note
+  transformation: ql.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+- target_column: scr_prac_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến Securities Practitioner.
+  target_attr_name: Securities Practitioner Id
+- target_column: scr_prac_code
+  transformation: ql.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề.
+  target_attr_name: Securities Practitioner Code
+- target_column: license_ctf_doc_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.CERTIFICATE_RECORD_ID)'
+  data_type: string
+  description: FK đến License Certificate Document (CCHN trong sổ đăng bộ).
+  target_attr_name: License Certificate Document Id
+- target_column: license_ctf_doc_code
+  transformation: ql.CERTIFICATE_RECORD_ID
+  data_type: string
+  description: Mã CCHN trong sổ đăng bộ.
+  target_attr_name: License Certificate Document Code
+- target_column: prev_license_ctf_doc_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.PREVIOUS_CERTIFICATE_RECORD_ID)'
+  data_type: string
+  description: FK đến CCHN cũ (khi cấp lại).
+  target_attr_name: Previous License Certificate Document Id
+- target_column: prev_license_ctf_doc_code
+  transformation: ql.PREVIOUS_CERTIFICATE_RECORD_ID
+  data_type: string
+  description: Mã CCHN cũ.
+  target_attr_name: Previous License Certificate Document Code
+- target_column: exam_ases_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.EXAM_SESSION_ID)'
+  data_type: string
+  description: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
+  target_attr_name: Examination Assessment Id
+- target_column: exam_ases_code
+  transformation: ql.EXAM_SESSION_ID
+  data_type: string
+  description: Mã đợt thi sát hạch.
+  target_attr_name: Examination Assessment Code
+- target_column: assignee_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ASSIGNEE_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Officer — cán bộ được phân công xử lý hồ
+    sơ.
+  target_attr_name: Assignee Officer Id
+- target_column: assignee_ofcr_code
+  transformation: ql.ASSIGNEE_ID
+  data_type: string
+  description: Mã cán bộ được phân công.
+  target_attr_name: Assignee Officer Code
+- target_column: info_verify_ofcr_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.INFO_VERIFY_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Officer — cán bộ xác minh thông tin.
+  target_attr_name: Info Verify Officer Id
+- target_column: info_verify_ofcr_code
+  transformation: ql.INFO_VERIFY_ID
+  data_type: string
+  description: Mã cán bộ xác minh thông tin.
+  target_attr_name: Info Verify Officer Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

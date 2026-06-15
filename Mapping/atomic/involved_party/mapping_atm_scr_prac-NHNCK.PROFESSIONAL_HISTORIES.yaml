@@ -1,0 +1,145 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-scr_prac-NHNCK.PROFESSIONAL_HISTORIES
+  logical_name: Mapping Atomic - Securities Practitioner – source NHNCK.PROFESSIONAL_HISTORIES
+  physical_name: scr_prac
+  dm_ref: ATM-scr_prac-NHNCK.PROFESSIONAL_HISTORIES
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_HISTORIES
+target:
+  namespace: atm
+  physical_name: scr_prac
+  etl_handle: SCD4A
+  description: Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin
+    nhân thân và trạng thái hành nghề.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: qlnhn
+  alias: ql
+  select_fields: PROFESSIONALS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: scr_prac_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_HISTORIES'', ql.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Id
+- target_column: scr_prac_code
+  transformation: ql.ID
+  data_type: string
+  description: Mã người hành nghề. BK từ PK nguồn
+  target_attr_name: Securities Practitioner Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_PROFESSIONAL_HISTORIES'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: full_nm
+  transformation: ql.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: Full Name
+- target_column: gvn_nm
+  transformation: ql.FIRST_NAME
+  data_type: string
+  description: Tên đệm và tên riêng
+  target_attr_name: Given Name
+- target_column: brth_dt
+  transformation: ql.BIRTH_DATE
+  data_type: date
+  description: Ngày sinh
+  target_attr_name: Birth Date
+- target_column: brth_yr
+  transformation: ql.BIRTH_YEAR
+  data_type: string
+  description: Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ)
+  target_attr_name: Birth Year
+- target_column: gnd_code
+  transformation: ql.GENDER
+  data_type: string
+  description: 'Giới tính: 0=Nam / 1=Nữ'
+  target_attr_name: Gender Code
+- target_column: ed_lvl_code
+  transformation: ql.EDUCATION_LEVEL_ID
+  data_type: string
+  description: Trình độ học vấn
+  target_attr_name: Education Level Code
+- target_column: prac_rgst_tp_code
+  transformation: ql.REGISTRATION_TYPE
+  data_type: string
+  description: 'Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay'
+  target_attr_name: Practitioner Registration Type Code
+- target_column: practice_st_code
+  transformation: ql.STATUS_WORK
+  data_type: string
+  description: Trạng thái hành nghề chứng khoán
+  target_attr_name: Practice Status Code
+- target_column: ac_st_code
+  transformation: ql.STATUS_ACCOUNT
+  data_type: string
+  description: Trạng thái tài khoản người dùng trên cổng NHNCK
+  target_attr_name: Account Status Code
+- target_column: org_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.ORGANIZATION_ID)'
+  data_type: string
+  description: FK đến tổ chức chứng khoán hiện tại (nullable)
+  target_attr_name: Organization Id
+- target_column: org_code
+  transformation: ql.ORGANIZATION_ID
+  data_type: string
+  description: Mã tổ chức (denormalized lookup)
+  target_attr_name: Organization Code
+- target_column: nat_id
+  transformation: '{hash_id}(''NHNCK_qlnhn'', ql.NATIONALITY_ID)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch)
+  target_attr_name: Nationality Id
+- target_column: nat_code
+  transformation: ql.NATIONALITY_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch (denormalized)
+  target_attr_name: Nationality Code
+- target_column: workplace_nm
+  transformation: ql.WORKPLACE
+  data_type: string
+  description: Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do)
+  target_attr_name: Workplace Name
+- target_column: pos_nm
+  transformation: ql.POSITION
+  data_type: string
+  description: Chức vụ hiện tại (denormalized text tự do)
+  target_attr_name: Position Name
+- target_column: dept_nm
+  transformation: ql.DEPARTMENT
+  data_type: string
+  description: Phòng ban hiện tại (denormalized text tự do)
+  target_attr_name: Department Name
+- target_column: prev_id_nbr
+  transformation: ql.PREVIOUS_IDENTITY_NUMBER
+  data_type: string
+  description: Số CMND cũ trước khi chuyển sang CCCD
+  target_attr_name: Previous Identity Number
+- target_column: hometown
+  transformation: ql.HOMETOWN
+  data_type: string
+  description: Quê quán (dữ liệu tích hợp C06)
+  target_attr_name: Hometown
+- target_column: ethnicity_nm
+  transformation: ql.NATIONAL
+  data_type: string
+  description: Dân tộc (dữ liệu tích hợp C06)
+  target_attr_name: Ethnicity Name
+- target_column: rlg_nm
+  transformation: ql.RELIGION
+  data_type: string
+  description: Tôn giáo (dữ liệu tích hợp C06)
+  target_attr_name: Religion Name
+- target_column: plc_of_brth_dsc
+  transformation: ql.PLACE_OF_BIRTH
+  data_type: string
+  description: Nơi sinh (text tự do)
+  target_attr_name: Place of Birth Description
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
