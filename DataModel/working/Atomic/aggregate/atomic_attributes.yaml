@@ -227,8 +227,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.RECORD_STATUS"
-  comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
-    \ sang string."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_conduct_vln"
@@ -643,7 +642,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.RECORD_STATUS"
-  comment: "Scheme: COURSE_STATUS. Reuse scheme hiện có. Nguồn: 1=Hoạt động."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss_enrollment"
@@ -1131,7 +1130,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.RECORD_STATUS"
-  comment: "Scheme: EXAMINATION_STATUS."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases"
@@ -1793,7 +1792,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.RECORD_STATUS"
-  comment: "Scheme: EXAMINATION_STATUS. 1=Hoạt động."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_qualf_exam_ases_fee"
@@ -2647,7 +2646,7 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
     \ Document"
-  atomic_attribute: "Appraisal Status Code"
+  atomic_attribute: "Record Status Code"
   description: "Trạng thái thẩm định chứng chỉ (Classification Value)"
   data_domain: "Classification Value"
   nullable: false
@@ -2655,11 +2654,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.RECORD_STATUS"
-  comment: "Scheme: APPRAISAL_STATUS. Map từ RECORD_STATUS: 1=Đạt/0=Chưa thẩm định."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_ed_ctf_doc"
-  atomic_column: "aprs_st_code"
+  atomic_column: "rcrd_st_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
@@ -3625,7 +3624,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "DECISIONS"
   source_column: "NHNCK.DECISIONS.RECORD_STATUS"
-  comment: "Scheme: DECISION_STATUS. Values: 1=Hoạt động; 0=Không hoạt động."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_DECISIONS'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_dcsn_doc"
@@ -4193,8 +4192,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.STATUS_ORGANIZATION"
-  comment: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert\
-    \ sang string."
+  comment: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert"
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -4210,7 +4208,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.RECORD_STATUS"
-  comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang string."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "scr_prac_org_emp_rpt"
@@ -4518,7 +4516,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSES"
   source_column: "NHNCK.SPECIALIZATION_COURSES.RECORD_STATUS"
-  comment: "Scheme: COURSE_STATUS. Nguồn: 1=Hoạt động."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
   etl_derived_value: null
   atomic_table: "scr_prac_prof_trn_clss"
@@ -5125,7 +5123,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.RECORD_STATUS"
-  comment: "Scheme: ORGANIZATION_UNIT_STATUS. 1=Hoạt động → ACTIVE; 0=Không → INACTIVE."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_UNITS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ou"
@@ -5305,7 +5303,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "DEPARTMENTS"
   source_column: "NHNCK.DEPARTMENTS.RECORD_STATUS"
-  comment: "Scheme: ORGANIZATION_UNIT_STATUS. 1=Hoạt động → ACTIVE; 0=Không → INACTIVE."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
   etl_derived_value: null
   atomic_table: "reg_ahr_ou"
@@ -5450,8 +5448,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_TYPE_ID"
-  comment: "Scheme: ORGANIZATION_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
-    \ sang string. Giữ nguyên leading zeros nếu có."
+  comment: "Scheme: ORGANIZATION_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert"
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_org_refr"
@@ -5648,8 +5645,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.RECORD_STATUS"
-  comment: "Scheme: ORGANIZATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
-    \ sang string."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
   etl_derived_value: null
   atomic_table: "scr_org_refr"
@@ -8552,7 +8548,7 @@ attributes:
   data_type: "boolean"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
-  atomic_attribute: "Geographic Area Status Code"
+  atomic_attribute: "Record Status Code"
   description: "Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động"
   data_domain: "Classification Value"
   nullable: true
@@ -8560,11 +8556,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "COUNTRIES"
   source_column: "NHNCK.COUNTRIES.RECORD_STATUS"
-  comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_COUNTRIES'"
   etl_derived_value: null
   atomic_table: "geo"
-  atomic_column: "geo_st_code"
+  atomic_column: "rcrd_st_code"
   data_type: "string"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
@@ -8713,7 +8709,7 @@ attributes:
   data_type: "boolean"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
-  atomic_attribute: "Geographic Area Status Code"
+  atomic_attribute: "Record Status Code"
   description: "Trạng thái bản ghi"
   data_domain: "Classification Value"
   nullable: true
@@ -8721,11 +8717,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROVINCES"
   source_column: "NHNCK.PROVINCES.RECORD_STATUS"
-  comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_PROVINCES'"
   etl_derived_value: null
   atomic_table: "geo"
-  atomic_column: "geo_st_code"
+  atomic_column: "rcrd_st_code"
   data_type: "string"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
@@ -8874,7 +8870,7 @@ attributes:
   data_type: "boolean"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
-  atomic_attribute: "Geographic Area Status Code"
+  atomic_attribute: "Record Status Code"
   description: "Trạng thái bản ghi"
   data_domain: "Classification Value"
   nullable: true
@@ -8882,11 +8878,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "DISTRICTS"
   source_column: "NHNCK.DISTRICTS.RECORD_STATUS"
-  comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
   etl_derived_value: null
   atomic_table: "geo"
-  atomic_column: "geo_st_code"
+  atomic_column: "rcrd_st_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
@@ -9084,7 +9080,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Payment Status Code"
+  atomic_attribute: "Record Status Code"
   description: "Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động)"
   data_domain: "Classification Value"
   nullable: false
@@ -9092,11 +9088,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.RECORD_STATUS"
-  comment: "Scheme: PAYMENT_STATUS."
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
   etl_derived_value: null
   atomic_table: "scr_prac_license_ap_fee"
-  atomic_column: "pymt_st_code"
+  atomic_column: "rcrd_st_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"

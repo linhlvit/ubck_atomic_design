@@ -150,14 +150,14 @@ attributes:
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATION_FEES: "NHNCK.APPLICATION_FEES.EXPIRY_DATE"
-- attribute_name: "Payment Status Code"
-  physical_name: "pymt_st_code"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
   description: "Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động)"
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  comment: "Scheme: PAYMENT_STATUS."
-  classification_context: "PAYMENT_STATUS"
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
+  classification_context: RECORD_STATUS
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATION_FEES: "NHNCK.APPLICATION_FEES.RECORD_STATUS"

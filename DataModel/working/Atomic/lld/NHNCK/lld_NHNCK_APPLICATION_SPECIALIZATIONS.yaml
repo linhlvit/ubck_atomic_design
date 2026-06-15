@@ -114,8 +114,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Appraisal Status Code"
-  physical_name: "aprs_st_code"
+- attribute_name: "Record Status Code"
+  physical_name: "rcrd_st_code"
   description: "Trạng thái thẩm định chứng chỉ (Classification Value)"
   data_domain: "Classification Value"
   nullable: false
@@ -123,8 +123,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.RECORD_STATUS"
-  comment: "Scheme: APPRAISAL_STATUS. Map từ RECORD_STATUS: 1=Đạt/0=Chưa thẩm định."
-  classification_context: "APPRAISAL_STATUS"
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
+  classification_context: RECORD_STATUS
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Appraisal Completed Date"

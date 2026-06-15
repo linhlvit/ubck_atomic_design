@@ -267,8 +267,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái bản ghi vi phạm (1=Hoạt động).
-    comment_1st: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
-      \ sang string."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -281,8 +280,7 @@ entities:
       - source_table: VIOLATIONS
         source_column: NHNCK.VIOLATIONS.RECORD_STATUS
         business_meaning: Trạng thái bản ghi vi phạm (1=Hoạt động).
-        comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
-          \ sang string."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
 - ldm:
     id: ATM-scr_prac_prof_trn_clss_enrollment
     logical_name_1st: Securities Practitioner Professional Training Class Enrollment
@@ -732,7 +730,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái bản ghi
-    comment_1st: "Scheme: COURSE_STATUS. Reuse scheme hiện có. Nguồn: 1=Hoạt động."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -745,7 +743,7 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.RECORD_STATUS
         business_meaning: Trạng thái bản ghi
-        comment: "Scheme: COURSE_STATUS. Reuse scheme hiện có. Nguồn: 1=Hoạt động."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Description
     physical_name: dsc
     business_meaning_1st: Mô tả
@@ -1276,7 +1274,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái đợt thi (1=Hoạt động)
-    comment_1st: "Scheme: EXAMINATION_STATUS."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -1289,7 +1287,7 @@ entities:
       - source_table: EXAM_SESSIONS
         source_column: NHNCK.EXAM_SESSIONS.RECORD_STATUS
         business_meaning: Trạng thái đợt thi (1=Hoạt động)
-        comment: "Scheme: EXAMINATION_STATUS."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn
@@ -2032,7 +2030,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái bản ghi
-    comment_1st: "Scheme: EXAMINATION_STATUS. 1=Hoạt động."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -2045,7 +2043,7 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.RECORD_STATUS
         business_meaning: Trạng thái bản ghi
-        comment: "Scheme: EXAMINATION_STATUS. 1=Hoạt động."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Created Timestamp
     physical_name: crt_tms
     business_meaning_1st: Thời điểm tạo
@@ -2994,11 +2992,10 @@ entities:
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ISSUE_PLACE
         business_meaning: Nơi cấp chứng chỉ chuyên môn
         comment: null
-  - name: Appraisal Status Code
-    physical_name: aprs_st_code
+  - name: Record Status Code
+    physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái thẩm định chứng chỉ (Classification Value)
-    comment_1st: "Scheme: APPRAISAL_STATUS. Map từ RECORD_STATUS: 1=Đạt/0=Chưa thẩm\
-      \ định."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -3011,8 +3008,7 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.RECORD_STATUS
         business_meaning: Trạng thái thẩm định chứng chỉ (Classification Value)
-        comment: "Scheme: APPRAISAL_STATUS. Map từ RECORD_STATUS: 1=Đạt/0=Chưa thẩm\
-          \ định."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Appraisal Completed Date
     physical_name: aprs_completed_dt
     business_meaning_1st: Thời điểm thẩm định hoàn tất
@@ -4118,7 +4114,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái hiệu lực của bản ghi quyết định
-    comment_1st: "Scheme: DECISION_STATUS. Values: 1=Hoạt động; 0=Không hoạt động."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -4131,7 +4127,7 @@ entities:
       - source_table: DECISIONS
         source_column: NHNCK.DECISIONS.RECORD_STATUS
         business_meaning: Trạng thái hiệu lực của bản ghi quyết định
-        comment: "Scheme: DECISION_STATUS. Values: 1=Hoạt động; 0=Không hoạt động."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Notification Content
     physical_name: notf_cntnt
     business_meaning_1st: Nội dung thông báo hoặc yêu cầu bổ sung hồ sơ kèm theo
@@ -4753,8 +4749,7 @@ entities:
   - name: Organization Status Code At Report
     physical_name: org_st_code_at_rpt
     business_meaning_1st: Trạng thái tổ chức tại thời điểm lập báo cáo.
-    comment_1st: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert\
-      \ sang string."
+    comment_1st: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert"
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -4767,13 +4762,11 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.STATUS_ORGANIZATION
         business_meaning: Trạng thái tổ chức tại thời điểm lập báo cáo.
-        comment: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert\
-          \ sang string."
+        comment: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert"
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái bản ghi báo cáo (1=Hoạt động).
-    comment_1st: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang\
-      \ string."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -4786,8 +4779,7 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.RECORD_STATUS
         business_meaning: Trạng thái bản ghi báo cáo (1=Hoạt động).
-        comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang\
-          \ string."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Sync Created Timestamp
     physical_name: sync_crt_tms
     business_meaning_1st: Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn.
@@ -5127,7 +5119,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái bản ghi khóa học
-    comment_1st: "Scheme: COURSE_STATUS. Nguồn: 1=Hoạt động."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -5140,7 +5132,7 @@ entities:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.SPECIALIZATION_COURSES.RECORD_STATUS
         business_meaning: Trạng thái bản ghi khóa học
-        comment: "Scheme: COURSE_STATUS. Nguồn: 1=Hoạt động."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn
@@ -6561,8 +6553,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: Trạng thái hoạt động của phòng ban
-    comment_1st: "Scheme: ORGANIZATION_UNIT_STATUS. 1=Hoạt động → ACTIVE; 0=Không\
-      \ → INACTIVE."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -6575,13 +6566,11 @@ entities:
       - source_table: DEPARTMENTS
         source_column: NHNCK.DEPARTMENTS.RECORD_STATUS
         business_meaning: Trạng thái hoạt động của phòng ban
-        comment: "Scheme: ORGANIZATION_UNIT_STATUS. 1=Hoạt động → ACTIVE; 0=Không\
-          \ → INACTIVE."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
       - source_table: UNITS
         source_column: NHNCK.UNITS.RECORD_STATUS
         business_meaning: Trạng thái hoạt động của đơn vị
-        comment: "Scheme: ORGANIZATION_UNIT_STATUS. 1=Hoạt động → ACTIVE; 0=Không\
-          \ → INACTIVE."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Sort Order
     physical_name: sort_ordr
     business_meaning_1st: Thứ tự sắp xếp phòng ban trong đơn vị
@@ -6756,7 +6745,7 @@ entities:
     physical_name: org_tp_code
     business_meaning_1st: "Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng."
     comment_1st: "Scheme: ORGANIZATION_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần\
-      \ convert sang string. Giữ nguyên leading zeros nếu có."
+      \ convert"
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -6770,7 +6759,7 @@ entities:
         source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_TYPE_ID
         business_meaning: "Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng."
         comment: "Scheme: ORGANIZATION_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần\
-          \ convert sang string. Giữ nguyên leading zeros nếu có."
+          \ convert"
   - name: Organization Level Code
     physical_name: org_lvl_code
     business_meaning_1st: Cấp độ phân cấp tổ chức.
@@ -6969,8 +6958,7 @@ entities:
   - name: Record Status Code
     physical_name: rcrd_st_code
     business_meaning_1st: "Trạng thái bản ghi: 1=Hoạt động."
-    comment_1st: "Scheme: ORGANIZATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần\
-      \ convert sang string."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -6983,8 +6971,7 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: NHNCK.ORGANIZATIONS.RECORD_STATUS
         business_meaning: "Trạng thái bản ghi: 1=Hoạt động."
-        comment: "Scheme: ORGANIZATION_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần\
-          \ convert sang string."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Sort Order
     physical_name: sort_ordr
     business_meaning_1st: Thứ tự sắp xếp hiển thị.
@@ -10023,10 +10010,10 @@ entities:
         source_column: NHNCK.PROVINCES.DEFAULT_FLAG
         business_meaning: Cờ mặc định
         comment: Giá trị 1 → true; 0 → false.
-  - name: Geographic Area Status Code
-    physical_name: geo_st_code
+  - name: Record Status Code
+    physical_name: rcrd_st_code
     business_meaning_1st: "Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động"
-    comment_1st: "Scheme: GEOGRAPHIC_AREA_STATUS."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -10039,15 +10026,15 @@ entities:
       - source_table: COUNTRIES
         source_column: NHNCK.COUNTRIES.RECORD_STATUS
         business_meaning: "Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động"
-        comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
       - source_table: DISTRICTS
         source_column: NHNCK.DISTRICTS.RECORD_STATUS
         business_meaning: Trạng thái bản ghi
-        comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
       - source_table: PROVINCES
         source_column: NHNCK.PROVINCES.RECORD_STATUS
         business_meaning: Trạng thái bản ghi
-        comment: "Scheme: GEOGRAPHIC_AREA_STATUS."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
 - ldm:
     id: ATM-scr_prac_license_ap_fee
     logical_name_1st: Securities Practitioner License Application Fee
@@ -10280,10 +10267,10 @@ entities:
         source_column: NHNCK.APPLICATION_FEES.EXPIRY_DATE
         business_meaning: Ngày hết hạn thanh toán
         comment: null
-  - name: Payment Status Code
-    physical_name: pymt_st_code
+  - name: Record Status Code
+    physical_name: rcrd_st_code
     business_meaning_1st: "Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động)"
-    comment_1st: "Scheme: PAYMENT_STATUS."
+    comment_1st: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -10296,7 +10283,7 @@ entities:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.APPLICATION_FEES.RECORD_STATUS
         business_meaning: "Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động)"
-        comment: "Scheme: PAYMENT_STATUS."
+        comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   - name: Payment Evidence File Path
     physical_name: pymt_evidence_file_path
     business_meaning_1st: Đường dẫn chứng từ thanh toán
