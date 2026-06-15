@@ -1,0 +1,86 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-practitioner_rel_p_prfl
+  logical_name: 'Mạng lưới người liên quan — toàn bộ người liên quan per NHN: họ tên,
+    mối quan hệ, nghề nghiệp, nơi làm việc.'
+  physical_name: practitioner_rel_p_prfl
+  dm_ref: DTM-practitioner_rel_p_prfl
+  brd_ref: BRD-DTM-NHNCK
+target:
+  namespace: dtm
+  physical_name: practitioner_rel_p_prfl
+  etl_handle: SCD4A
+  description: 'Mạng lưới người liên quan — toàn bộ người liên quan per NHN: họ tên,
+    mối quan hệ, nghề nghiệp, nơi làm việc.'
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_rel_p_hstr
+  alias: at_sc_pr_re_p_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'NHNCK_ProfessionalRelationships'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv
+  select_fields: '*'
+  filter: scm_code = 'RELATIONSHIP_TYPE'
+  description: ''
+relationship:
+- main_alias: at_sc_pr_re_p_hs
+  join_type: LEFT JOIN
+  join_alias: at_cv
+  join_on: at_cv.cl_code = at_sc_pr_re_p_hs.rltnp_tp_code
+  description: ''
+mapping_columns:
+- target_column: practitioner_id
+  transformation: at_sc_pr_re_p_hs.prac_id
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate PK — Atomic Id
+- target_column: practitioner_code
+  transformation: at_sc_pr_re_p_hs.prac_code
+  data_type: string
+  target_attr_name: ''
+  description: BK NHN
+- target_column: scr_practitioner_rel_p_code
+  transformation: at_sc_pr_re_p_hs.scr_prac_rel_p_code
+  data_type: string
+  target_attr_name: ''
+  description: BK người liên quan
+- target_column: rel_p_full_nm
+  transformation: at_sc_pr_re_p_hs.rel_p_full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Họ tên người liên quan
+- target_column: rltnp_tp_nm
+  transformation: at_cv.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên mối quan hệ — ETL denormalize từ Classification (scheme: RELATIONSHIP_TYPE)'
+- target_column: ocp_nm
+  transformation: at_sc_pr_re_p_hs.ocp_nm
+  data_type: string
+  target_attr_name: ''
+  description: Nghề nghiệp
+- target_column: workplace_nm
+  transformation: at_sc_pr_re_p_hs.workplace_nm
+  data_type: string
+  target_attr_name: ''
+  description: Nơi làm việc
+- target_column: identity_refr_code
+  transformation: at_sc_pr_re_p_hs.id_refr_code
+  data_type: string
+  target_attr_name: ''
+  description: Số CCCD/CMND/Hộ chiếu người liên quan — K_NHNCK_79
+- target_column: src_stm_code
+  transformation: at_sc_pr_re_p_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức NHNCK_ProfessionalRelationships.
+    Driving table: at_sc_pr_re_p_hs.'
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

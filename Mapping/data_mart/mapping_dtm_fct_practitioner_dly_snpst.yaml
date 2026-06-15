@@ -1,0 +1,119 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_practitioner_dly_snpst
+  logical_name: Periodic Snapshot ngày — 1 NHN × 1 ngày. Phục vụ KPI đếm tổng NHN,
+    cảnh báo, trình độ, độ tuổi. Slicer năm = filter snapshot cuối năm hoặc ngày mới
+    nhất trong năm.
+  physical_name: fct_practitioner_dly_snpst
+  dm_ref: DTM-fct_practitioner_dly_snpst
+  brd_ref: BRD-DTM-NHNCK
+target:
+  namespace: dtm
+  physical_name: fct_practitioner_dly_snpst
+  etl_handle: Fact Snapshot
+  description: Periodic Snapshot ngày — 1 NHN × 1 ngày. Phục vụ KPI đếm tổng NHN,
+    cảnh báo, trình độ, độ tuổi. Slicer năm = filter snapshot cuối năm hoặc ngày mới
+    nhất trong năm.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_hstr
+  alias: at_sc_pr_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_license_ctf_doc_hstr
+  alias: at_sc_pr_li_ct_do_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_conduct_vln
+  alias: at_sc_pr_co_vl
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_scr_practitioner_dim_hstr
+  alias: dt_sc_pr_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: dtm_cdr_dt_dim_hstr
+  alias: dt_cd_dt_di_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+relationship:
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: dt_sc_pr_di_hs
+  join_on: dt_sc_pr_di_hs.practitioner_code = at_sc_pr_hs.prac_code AND slicer_dt
+    BETWEEN dt_sc_pr_di_hs.eff_dt AND dt_sc_pr_di_hs.expiry_dt
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: dt_cd_dt_di_hs
+  join_on: dt_cd_dt_di_hs.full_dt = slicer_dt
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: ctf_doc_agg
+  join_on: ctf_doc_agg.prac_id = at_sc_pr_hs.prac_id
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: conduct_vln_agg
+  join_on: conduct_vln_agg.prac_id = at_sc_pr_hs.prac_id
+  description: ''
+mapping_columns:
+- target_column: practitioner_dim_id
+  transformation: dt_sc_pr_di_hs.practitioner_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK NHN
+- target_column: snpst_dt_dim_id
+  transformation: dt_cd_dt_di_hs.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: ''
+  description: FK lịch ngày snapshot
+- target_column: age
+  transformation: YEAR(slicer_dt) - YEAR(at_sc_pr_hs.dob)
+  data_type: int
+  target_attr_name: ''
+  description: Tuổi = Year(Snapshot_Date) - Year(Date_Of_Birth)
+- target_column: has_actv_ctf
+  transformation: COALESCE(ctf_doc_agg.has_actv_ctf, FALSE)
+  data_type: boolean
+  target_attr_name: ''
+  description: 'ETL-derived: TRUE nếu NHN có ≥1 CCHN ctf_st_code = 1 tại ngày snapshot'
+- target_column: has_actv_vln
+  transformation: COALESCE(conduct_vln_agg.has_actv_vln, FALSE)
+  data_type: boolean
+  target_attr_name: ''
+  description: 'ETL-derived: TRUE nếu NHN có ≥1 vi phạm vln_st_code = 1 tại ngày snapshot.
+    Xem O_NHNCK_5'
+final_filter: []
+join_agg_ctes:
+- cte_alias: ctf_doc_agg
+  source_alias: at_sc_pr_li_ct_do_hs
+  group_key: prac_id
+  agg_columns:
+  - target_col: has_actv_ctf
+    expression: COALESCE(MAX(ctf_st_code = '1'), FALSE)
+    data_type: boolean
+- cte_alias: conduct_vln_agg
+  source_alias: at_sc_pr_co_vl
+  group_key: prac_id
+  agg_columns:
+  - target_col: has_actv_vln
+    expression: COALESCE(MAX(vln_st_code = '1'), FALSE)
+    data_type: boolean
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

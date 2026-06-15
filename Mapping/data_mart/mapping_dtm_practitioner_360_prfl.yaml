@@ -1,0 +1,199 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-practitioner_360_prfl
+  logical_name: 'Hồ sơ 360° NHN — latest state. Lookup 1 NHN: họ tên, tuổi, quốc tịch,
+    nơi công tác, CCHN hiện tại, số người liên quan.'
+  physical_name: practitioner_360_prfl
+  dm_ref: DTM-practitioner_360_prfl
+  brd_ref: BRD-DTM-NHNCK
+target:
+  namespace: dtm
+  physical_name: practitioner_360_prfl
+  etl_handle: SCD4A
+  description: 'Hồ sơ 360° NHN — latest state. Lookup 1 NHN: họ tên, tuổi, quốc tịch,
+    nơi công tác, CCHN hiện tại, số người liên quan.'
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_hstr
+  alias: at_sc_pr_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'NHNCK_Professionals'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_rel_p_hstr
+  alias: at_sc_pr_re_p_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv
+  select_fields: '*'
+  filter: scm_code = 'NATIONALITY'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv_2
+  select_fields: '*'
+  filter: scm_code = 'PRACTICE_STATUS'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_org_emp_rpt_hstr
+  alias: at_sc_pr_or_em_rp_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_org_refr_hstr
+  alias: at_sc_or_re_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_license_ctf_doc_hstr
+  alias: at_sc_pr_li_ct_do_hs
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND ctf_st_code = '1'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv_3
+  select_fields: '*'
+  filter: scm_code = 'CERTIFICATE_TYPE'
+  description: ''
+relationship:
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: at_cv
+  join_on: at_cv.cl_code = at_sc_pr_hs.nat_code
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: at_cv_2
+  join_on: at_cv_2.cl_code = at_sc_pr_hs.practice_st_code
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: at_sc_pr_or_em_rp_hs
+  join_on: at_sc_pr_or_em_rp_hs.prac_id = at_sc_pr_hs.prac_id AND at_sc_pr_or_em_rp_hs.tmt_dt
+    IS NULL
+  description: ''
+- main_alias: at_sc_pr_or_em_rp_hs
+  join_type: LEFT JOIN
+  join_alias: at_sc_or_re_hs
+  join_on: at_sc_or_re_hs.scr_org_refr_id = at_sc_pr_or_em_rp_hs.scr_org_id
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: at_sc_pr_li_ct_do_hs
+  join_on: at_sc_pr_li_ct_do_hs.prac_id = at_sc_pr_hs.prac_id
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: at_cv_3
+  join_on: at_cv_3.cl_code = at_sc_pr_li_ct_do_hs.ctf_tp_code
+  description: ''
+- main_alias: at_sc_pr_hs
+  join_type: LEFT JOIN
+  join_alias: rel_p_agg
+  join_on: rel_p_agg.prac_id = at_sc_pr_hs.prac_id
+  description: ''
+mapping_columns:
+- target_column: practitioner_id
+  transformation: at_sc_pr_hs.prac_id
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate PK — Atomic Id
+- target_column: practitioner_code
+  transformation: at_sc_pr_hs.prac_code
+  data_type: string
+  target_attr_name: ''
+  description: BK NHN
+- target_column: full_nm
+  transformation: at_sc_pr_hs.full_nm
+  data_type: string
+  target_attr_name: ''
+  description: Họ và tên
+- target_column: dob
+  transformation: at_sc_pr_hs.dob
+  data_type: date
+  target_attr_name: ''
+  description: Ngày sinh
+- target_column: age
+  transformation: YEAR(slicer_dt) - YEAR(at_sc_pr_hs.dob)
+  data_type: int
+  target_attr_name: ''
+  description: 'ETL-derived: Year(Population_Date) - Year(Date_Of_Birth)'
+- target_column: nationality_nm
+  transformation: at_cv.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên quốc tịch — ETL denormalize từ Classification (scheme: NATIONALITY)'
+- target_column: identity_refr_code
+  transformation: at_sc_pr_hs.id_refr_code
+  data_type: string
+  target_attr_name: ''
+  description: Số CMND/CCCD/Hộ chiếu
+- target_column: practice_st_code
+  transformation: at_sc_pr_hs.practice_st_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã trạng thái hành nghề — Scheme: PRACTICE_STATUS'
+- target_column: practice_st_nm
+  transformation: at_cv_2.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên trạng thái hành nghề — ETL denormalize từ Classification (scheme:
+    PRACTICE_STATUS)'
+- target_column: crn_org_nm
+  transformation: at_sc_or_re_hs.org_nm
+  data_type: string
+  target_attr_name: ''
+  description: Tên tổ chức hiện tại — join Securities Organization Reference theo
+    OrganizationReport mới nhất có Termination Date = NULL
+- target_column: actv_ctf_nbr
+  transformation: at_sc_pr_li_ct_do_hs.ctf_nbr
+  data_type: string
+  target_attr_name: ''
+  description: Số CCHN đang hiệu lực — ctf_st_code = 1
+- target_column: actv_ctf_tp_code
+  transformation: at_sc_pr_li_ct_do_hs.ctf_tp_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã loại CCHN hiện tại — Scheme: CERTIFICATE_TYPE'
+- target_column: actv_ctf_tp_nm
+  transformation: at_cv_3.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên loại CCHN — ETL denormalize từ Classification (scheme: CERTIFICATE_TYPE)'
+- target_column: rel_p_cnt
+  transformation: rel_p_agg.rel_p_cnt
+  data_type: int
+  target_attr_name: ''
+  description: Số người liên quan — COUNT(*) từ Securities Practitioner Related Party
+    per NHN. Xem O_NHNCK_7
+- target_column: src_stm_code
+  transformation: at_sc_pr_hs.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã nguồn dữ liệu — scheme: SOURCE_SYSTEM. Filter: WHERE src_stm_code
+    = ''NHNCK_Professionals'''
+final_filter: []
+join_agg_ctes:
+- cte_alias: rel_p_agg
+  source_alias: at_sc_pr_re_p_hs
+  group_key: prac_id
+  agg_columns:
+  - target_col: rel_p_cnt
+    expression: COUNT(scr_prac_rel_p_id)
+    data_type: int
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

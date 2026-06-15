@@ -1,0 +1,83 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-practitioner_trn_hist
+  logical_name: 'Lịch sử cập nhật kiến thức — 1 lần đăng ký khóa học per NHN: năm
+    học, kết quả. DRAFT — thiếu Training Hours (xem O_NHNCK_9).'
+  physical_name: practitioner_trn_hist
+  dm_ref: DTM-practitioner_trn_hist
+  brd_ref: BRD-DTM-NHNCK
+target:
+  namespace: dtm
+  physical_name: practitioner_trn_hist
+  etl_handle: SCD4A
+  description: 'Lịch sử cập nhật kiến thức — 1 lần đăng ký khóa học per NHN: năm học,
+    kết quả. DRAFT — thiếu Training Hours (xem O_NHNCK_9).'
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_prof_trn_clss_enrollment
+  alias: at_sc_pr_pr_tr_cl_en
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date} AND src_stm_code = 'NHNCK_SpecializationCourseDetails'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_scr_prac_prof_trn_clss
+  alias: at_sc_pr_pr_tr_cl
+  select_fields: '*'
+  filter: ds_snpst_dt = {etl_date}
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv
+  select_fields: '*'
+  filter: scm_code = 'TRAINING_RESULT'
+  description: ''
+relationship:
+- main_alias: at_sc_pr_pr_tr_cl_en
+  join_type: LEFT JOIN
+  join_alias: at_sc_pr_pr_tr_cl
+  join_on: at_sc_pr_pr_tr_cl.prof_trn_clss_id = at_sc_pr_pr_tr_cl_en.prof_trn_clss_id
+  description: ''
+- main_alias: at_sc_pr_pr_tr_cl_en
+  join_type: LEFT JOIN
+  join_alias: at_cv
+  join_on: at_cv.cl_code = at_sc_pr_pr_tr_cl_en.ases_rslt_code
+  description: ''
+mapping_columns:
+- target_column: practitioner_id
+  transformation: at_sc_pr_pr_tr_cl_en.prac_id
+  data_type: string
+  target_attr_name: ''
+  description: Surrogate PK — Atomic Id
+- target_column: practitioner_code
+  transformation: at_sc_pr_pr_tr_cl_en.prac_code
+  data_type: string
+  target_attr_name: ''
+  description: BK NHN
+- target_column: enrollment_code
+  transformation: at_sc_pr_pr_tr_cl_en.prof_trn_clss_enrollment_code
+  data_type: string
+  target_attr_name: ''
+  description: BK đăng ký khóa học
+- target_column: trn_yr
+  transformation: at_sc_pr_pr_tr_cl.academic_yr
+  data_type: string
+  target_attr_name: ''
+  description: Năm học — Text vì năm dạng '2025'
+- target_column: ases_rslt_nm
+  transformation: at_cv.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Kết quả kiểm tra — ETL denormalize từ Classification (scheme: TRAINING_RESULT)'
+- target_column: src_stm_code
+  transformation: at_sc_pr_pr_tr_cl_en.src_stm_code
+  data_type: string
+  target_attr_name: ''
+  description: 'Mã hệ thống nguồn — filter nguồn chính thức NHNCK_SpecializationCourseDetails.
+    Driving table: at_sc_pr_pr_tr_cl_en.'
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
