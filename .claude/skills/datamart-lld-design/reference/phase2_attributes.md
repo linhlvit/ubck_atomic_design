@@ -37,11 +37,12 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 | key | Chỉ dùng trên | Không dùng trên |
 |---|---|---|
 | `PK` | Dimension, Operational | Fact |
-| `BK` | Operational | Dimension, Fact |
 | `NK` | Dimension | Fact, Operational |
 | `FK → <Dim>` | Fact | Dimension, Operational |
 | `DD` | Fact | — |
 | (trống) | Mọi loại | — |
+
+> **Operational:** trường `_code` đóng vai trò PK (`key = PK`) — không dùng `key = BK`, không tạo surrogate key `_id`.
 
 ❌ `nullable = true` cho PK / BK / NK / FK.
 ❌ `data_domain = Classification Value` mà `key` không trống.
@@ -164,8 +165,8 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 **FK lookup_dim/lookup_date:** `source_entity / atomic_table / source_attribute / atomic_column` phản ánh join key của driving table.
 
 **Bảng Tác nghiệp:**
-- Surrogate PK (`_id`) → `key = PK`
-- Business Key (`_code`) → `key = BK`
+- Business Key (`_code`) → `key = PK` — đây là PK duy nhất của bảng operational
+- Không tạo surrogate key (`_id`) cho bảng operational
 - `source_entity` phải là Atomic entity — không phải Dimension entity
 
 **Operational table có ≥2 BK từ 2 entity:**

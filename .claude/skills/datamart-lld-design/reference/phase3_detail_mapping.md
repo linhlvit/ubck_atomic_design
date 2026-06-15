@@ -96,6 +96,107 @@ Dòng FILTER/SLICER thuộc cùng KPI Base (cùng `kpi_id`) kế thừa `tinh_ch
 
 ---
 
+## Lưu ý từ thực tế review — lỗi tái diễn (bắt buộc kiểm tra trước khi giao file)
+
+Các lỗi dưới đây được tổng hợp từ review module PTTT. Mỗi lỗi có pattern cụ thể để kiểm tra nhanh.
+
+### L1 — K_PTTT_41 / Chiều thời gian bị copy-paste sai bảng
+
+**Pattern:** Nhóm có nhiều bảng Fact/Operational; khi copy SLICER/FILTER của K_PTTT_41 từ nhóm trước, `mart_table` và `logic` vẫn trỏ về bảng của nhóm cũ.
+
+**Kiểm tra:** Với mỗi nhóm, xác nhận SLICER `logic` của K_PTTT_41 (hoặc bất kỳ KPI Chiều thời gian tương đương) trỏ đúng `physical_table` của nhóm đó — không phải bảng nhóm khác.
+
+❌ `fct_mkt_rsk_snpst.snpst_dt` xuất hiện ở nhóm dùng `fct_mbr_sfty_per_mbr_snpst` → sai.
+
+---
+
+### L2 — Cột trong `logic` không tồn tại trong Attributes.csv
+
+**Pattern:** Điền `logic = <table>.<column>` nhưng cột đó không có trong `DTM_{MODULE}_Attributes.csv` — thường do đoán tên hoặc copy từ bảng khác.
+
+**Kiểm tra:** Với mọi `physical_table.physical_column` trong cột `logic`, tra tên cột trong Attributes.csv của bảng tương ứng trước khi giao file.
+
+❌ `scr_co_dim.scr_co_code` → không tồn tại; đúng là `scr_co_dim.mbr_code`.
+
+---
+
+### L3 — Operational table bị gán FILTER `cdr_dt_dim`
+
+**Pattern:** Bảng `opr_*` (Operational) không có FK `snpst_dt_dim_id` → không thể JOIN `cdr_dt_dim`. Dòng FILTER date dim không có nghĩa với Operational.
+
+**Quy tắc:**
+- Fact Snapshot → cần SLICER `snpst_dt` + FILTER `JOIN cdr_dt_dim ON ... snpst_dt_dim_id`
+- Operational → chỉ SLICER trực tiếp cột date (`rpt_dt`, `snpst_dt`...) — không có FILTER `cdr_dt_dim`
+
+❌ Thêm FILTER `cdr_dt_dim` cho bảng `opr_mbr_sfty_monitor` → sai.
+
+---
+
+### L4 — PENDING rule: nhóm HLD PENDING còn điền `column_role`/`mart_table`/`logic`
+
+**Pattern:** HLD nhóm = PENDING nhưng Detail Mapping vẫn điền đầy đủ column_role, mart_table, mart_column, logic (thường do copy từ nhóm khác hoặc điền dự kiến).
+
+**Quy tắc cứng:** HLD nhóm PENDING → **toàn bộ** dòng của nhóm đó trong Detail Mapping phải để trống `mart_table`/`mart_column`/`column_role`/`logic`. Chỉ được điền `kpi_id`, `kpi_name`, `tab`, `nhom`, `tinh_chat`, `source_module`, `ghi_chu`.
+
+❌ Nhóm 26–37 (HLD PENDING / FDS blocker) còn MEASURE/SLICER/FILTER → vi phạm.
+
+---
+
+### L5 — `kpi_name` sai ngữ cảnh khi nhóm được copy từ nhóm tương tự
+
+**Pattern:** Nhiều nhóm có cùng cấu trúc (VD: nhóm VN30/VN100/TPCP) — khi copy nhóm VN30 sang VN100, `kpi_name` vẫn ghi "VN30" thay vì "VN100".
+
+**Kiểm tra:** Với mọi nhóm được tạo bằng cách copy từ nhóm khác, scan toàn bộ `kpi_name` để đảm bảo không còn tên ngữ cảnh cũ.
+
+❌ `kpi_name = "KLGD HĐTL VN30 ngày t"` trong nhóm VN100 → sai.
+
+---
+
+### L6 — Logic sai nguồn dữ liệu — tham chiếu bảng không thuộc nhóm
+
+**Pattern:** `logic` trong một nhóm tham chiếu `physical_table` của nhóm khác — thường do copy-paste hoặc dùng tên bảng tương tự mà không kiểm tra.
+
+**Kiểm tra:** Với mỗi dòng MEASURE/SLICER/FILTER, xác nhận `physical_table` trong `logic` là bảng được thiết kế cho nhóm đó (có trong HLD section của nhóm và trong Attributes.csv).
+
+❌ `SUM(fct_mbr_sfty_per_mbr_snpst.mrgn_dbt_bil_vnd)` xuất hiện ở nhóm dùng `fct_indx_tdg_snpst` → sai.
+
+---
+
+### L7 — Dòng duplicate FILTER trong nhóm PENDING
+
+**Pattern:** Một KPI_ID có 2 dòng FILTER (do copy từ nhiều nguồn). Với nhóm PENDING, các dòng này đều phải xóa về 1 dòng PENDING duy nhất.
+
+**Kiểm tra:** Với nhóm PENDING, mỗi `kpi_id` chỉ được có 1 dòng trong Detail Mapping.
+
+❌ K_PTTT_111 có 2 dòng trong nhóm 37 PENDING → vi phạm.
+
+---
+
+### L8 — Placeholder `<TBD>` trong cột `logic`
+
+**Pattern:** Điền `logic = fct_xxx.col_<TBD>` khi chưa biết tên cột — placeholder bị để lại trong file giao.
+
+**Quy tắc:** `logic` phải là physical name xác định hoặc để trống. Nếu chưa xác định được → chuyển về PENDING (xóa `column_role`/`mart_table`/`logic`, ghi `ghi_chu` rõ blocker).
+
+❌ `logic = fct_mkt_cap_expl_snpst.gdp_<TBD>` → không hợp lệ.
+
+---
+
+### Checklist bổ sung — kiểm tra trước khi giao file Phase 3
+
+```
+□ L1: Mọi SLICER/FILTER Chiều thời gian → logic trỏ đúng physical_table của nhóm đó (không phải bảng nhóm khác)
+□ L2: Mọi physical_table.physical_column trong logic → tồn tại trong Attributes.csv của bảng tương ứng
+□ L3: Operational table → không có dòng FILTER cdr_dt_dim (chỉ SLICER date column trực tiếp)
+□ L4: HLD nhóm PENDING → toàn bộ dòng của nhóm: mart_table/mart_column/column_role/logic trống
+□ L5: Nhóm copy từ nhóm khác → scan kpi_name kiểm tra không còn tên ngữ cảnh cũ
+□ L6: Mọi physical_table trong logic → là bảng thuộc nhóm đó (không phải bảng nhóm khác)
+□ L7: Nhóm PENDING → mỗi kpi_id chỉ có 1 dòng (không duplicate)
+□ L8: Không có giá trị <TBD> hoặc placeholder chưa xác định trong cột logic
+```
+
+---
+
 ## Quy trình đối chiếu BA trước khi sinh
 
 **Bước 0 — Cross-check BA ↔ HLD ↔ Detail Mapping (BẮT BUỘC — thực hiện trước bước 1):**

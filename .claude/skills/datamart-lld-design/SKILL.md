@@ -1,15 +1,17 @@
 ---
 name: datamart-lld-design
 description: |
-  Thiết kế Low-Level Design (LLD) cho Datamart layer — Phase 2, 2b, 3 trong workflow thiết kế Datamart UBCKNN.
+  Thiết kế Low-Level Design (LLD) cho Datamart layer — Phase 2, 2b, 3, 4 trong workflow thiết kế Datamart UBCKNN.
   Sử dụng khi: HLD đã được duyệt, cần thiết kế chi tiết attribute mapping (Attributes.csv),
-  quan hệ bảng (Entities.csv), và mapping KPI (Detail_Mapping.csv).
+  quan hệ bảng (Entities.csv), mapping KPI (Detail_Mapping.csv), và sinh DDL flat table SQL.
 
   Output:
-    Datamart/lld/DTM_{MODULE}_Attributes.csv   (Phase 2)
-    Datamart/hld/DTM_{MODULE}_Entities.csv     (Phase 2b)
-    Datamart/hld/DTM_{MODULE}_Entities.md      (Phase 2b)
-    Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv (Phase 3)
+    Datamart/lld/DTM_{MODULE}_Attributes.csv        (Phase 2)
+    Datamart/hld/DTM_{MODULE}_Entities.csv          (Phase 2b)
+    Datamart/hld/DTM_{MODULE}_Entities.md           (Phase 2b)
+    Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv    (Phase 3)
+    Datamart/flat-table/{MODULE}/01_create_{module}_flat_tables.sql   (Phase 4)
+    Datamart/flat-table/{MODULE}/02_populate_{module}_flat_tables.sql (Phase 4)
 
   Input bắt buộc Phase 2: DTM_{MODULE}_HLD.md đã duyệt + atomic_attributes.yaml
 ---
@@ -52,6 +54,9 @@ Phase 2b:  Sau khi Phase 2 duyệt → xuất Entities.csv + Entities.md
 
 Phase 3:   Sau khi Phase 2 duyệt → xuất Detail_Mapping.csv
            → Tự động (không cần gate riêng)
+
+Phase 4:   Sau khi Phase 3 duyệt → sinh 2 file SQL flat table
+           → DỪNG, chờ user duyệt
 ```
 
 > **GATE RULE:** Không tự chuyển Phase khi user chưa xác nhận. Kết thúc mỗi Phase bằng câu hỏi xác nhận.
@@ -163,7 +168,7 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 □ Branch residual (OTHER) flatten hoàn toàn xuống Atomic
 □ Operational ≥2 BK: driving = entity con; entity cha lấy direct từ FK trong entity con
 □ Mọi Dimension có ≥1 NK
-□ Mọi Operational có đủ PK (_id) + BK (_code)
+□ Mọi Operational dùng trường _code làm PK duy nhất — không tạo surrogate key (_id)
 □ Không thiết kế Effective Date / Expiry Date / Population Date
 □ Mọi bảng dim/operational có attribute src_stm_code (cuối danh sách)
 □ src_stm_code: mọi bảng (kể cả single-source) → luôn có WHERE filter trong etl_logic (forward-compatibility)
@@ -230,4 +235,213 @@ OUTPUT CHECK:
 □ MEASURE: chỉ phép tính thuần (COUNT/SUM/AVG) — condition tách thành FILTER riêng
 □ NaN/trống trong cột Trạng thái mapping → ghi chú, xác nhận với BA
 □ Export UTF-8 BOM (utf-8-sig)
+```
+
+---
+
+## PHASE 4 — FLAT TABLE SQL
+
+### Mục đích
+
+Sinh 2 file SQL ClickHouse tạo và populate bảng flat (denormalized) cho phân hệ. Flat table = fact/operational table join với tất cả dim liên quan, đưa toàn bộ cột vào 1 bảng phục vụ truy vấn trực tiếp.
+
+### Input
+
+- `Datamart/hld/DTM_{MODULE}_Entities.csv` — danh sách entity + FKs
+- `Datamart/lld/DTM_{MODULE}_Attributes.csv` — tên bảng vật lý (`datamart_table`) + tên cột vật lý (`datamart_column`) + data type + key + nullable
+
+### Output
+
+```
+Datamart/flat-table/{MODULE}/01_create_{module}_flat_tables.sql
+Datamart/flat-table/{MODULE}/02_populate_{module}_flat_tables.sql
+```
+
+`{MODULE}` viết HOA trong tên thư mục (ví dụ `PTTT`); `{module}` viết thường trong tên file và tên bảng SQL (ví dụ `pttt`).
+
+### Quy tắc xác định bảng flat
+
+Chỉ sinh flat table cho bảng **`fact`** và **`operational`** — không sinh cho `dim`.
+
+**Đếm trước khi sinh:** Báo cáo cho user: "Phân hệ {MODULE} có X fact + Y operational = Z bảng flat." Chờ xác nhận trước khi sinh file.
+
+### Quy tắc đặt tên
+
+| Loại | Pattern | Ví dụ |
+|------|---------|-------|
+| `fact` | `datamart.{module}_{datamart_table}_flat` | `datamart.pttt_fct_mkt_rsk_snpst_flat` |
+| `operational` | `datamart.{datamart_table}_flat` | `datamart.opr_corp_bond_issuer_credit_flat` |
+
+`{datamart_table}` lấy trực tiếp từ cột `datamart_table` trong Attributes.csv — không đặt lại.
+
+### Cấu trúc cột flat table (fact)
+
+```
+-- From: FACT {ENTITY NAME}
+<tất cả cột của fact> (theo thứ tự trong Attributes.csv)
+
+-- From: CALENDAR DATE DIMENSION  (nếu fact có FK → Calendar Date)
+full_date, day_of_week, day_of_week_num, week_of_year,
+month_num, month_name, quarter_num, year_num, is_trading_day
+
+-- From: {DIM ENTITY NAME}  (lặp lại cho mỗi dim FK khác Calendar Date)
+<cột giá trị nghiệp vụ của dim> (bỏ PK surrogate và src_stm_code)
+
+-- Technical metadata
+ds_batch_date               Date      COMMENT 'ETL batch date'
+ds_population_timestamp     DateTime  COMMENT 'Population timestamp'
+```
+
+### Cấu trúc cột flat table (operational)
+
+```
+-- From: OPERATIONAL {ENTITY NAME}
+<tất cả cột của operational> (theo thứ tự trong Attributes.csv)
+
+-- Technical metadata
+ds_batch_date               Date      COMMENT 'ETL batch date'
+ds_population_timestamp     DateTime  COMMENT 'Population timestamp'
+```
+
+**Operational KHÔNG join Calendar Date và KHÔNG join bất kỳ dim nào.**
+
+### Xác định dim join
+
+Đọc cột `FKs` trong Entities.csv — format: `{Dim Entity}.{FK column name}`.
+
+Mỗi FK = 1 LEFT JOIN trong file populate. FK → Calendar Date Dimension dùng tên bảng `datamart.{module}_calendar_date_dimension`, join key `date_dimension_id = f.{fk_column}`.
+
+### Cột lấy từ dim (ngoài Calendar Date)
+
+Đọc Attributes.csv của bảng dim tương ứng, lấy **toàn bộ cột trừ**:
+- Cột PK surrogate (`data_domain = Surrogate Key`)
+- Cột `src_stm_code` (`data_domain = Classification Value`, `datamart_column = src_stm_code`)
+
+### Data type mapping sang ClickHouse
+
+| data_type trong Attributes | ClickHouse type |
+|---------------------------|-----------------|
+| `string` (nullable=false) | `String` |
+| `string` (nullable=true) | `Nullable(String)` |
+| `date` (nullable=false) | `Date` |
+| `date` (nullable=true) | `Nullable(Date)` |
+| `decimal(5,2)` (nullable=true) | `Nullable(Decimal(5,2))` |
+| `decimal(23,2)` (nullable=true) | `Nullable(Decimal(23,2))` |
+| `decimal(7,4)` (nullable=true) | `Nullable(Decimal(7,4))` |
+| `decimal(7,6)` (nullable=true) | `Nullable(Decimal(7,6))` |
+| `decimal(10,2)` (nullable=true) | `Nullable(Decimal(10,2))` |
+| `int` (nullable=false) | `Int64` |
+| `int` (nullable=true) | `Nullable(Int64)` |
+
+Calendar Date columns cố định:
+
+```sql
+full_date           Nullable(Date)    COMMENT 'Ngày đầy đủ — từ Calendar Date Dimension',
+day_of_week         Nullable(String)  COMMENT 'Thứ trong tuần',
+day_of_week_num     Nullable(Int32)   COMMENT 'Số thứ tự ngày trong tuần (1=Mon)',
+week_of_year        Nullable(Int32)   COMMENT 'Tuần trong năm',
+month_num           Nullable(Int32)   COMMENT 'Tháng',
+month_name          Nullable(String)  COMMENT 'Tên tháng',
+quarter_num         Nullable(Int32)   COMMENT 'Quý',
+year_num            Nullable(Int32)   COMMENT 'Năm',
+is_trading_day      Nullable(UInt8)   COMMENT 'Cờ ngày giao dịch',
+```
+
+### ENGINE / PARTITION / ORDER BY
+
+```sql
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(<driving_date_col>)
+ORDER BY (<driving_date_col>, <grain_key>)
+```
+
+- `<driving_date_col>`: cột `date` có `key = DD` trong Attributes.csv của bảng fact/operational
+- `<grain_key>`: cột BK hoặc FK dim (không phải Calendar Date FK) — nếu nhiều grain key thì liệt kê đủ
+
+### Pattern file 01 — CREATE TABLE
+
+```sql
+CREATE TABLE IF NOT EXISTS datamart.{flat_table_name} ON CLUSTER 'my_cluster'
+(
+    -- From: FACT/OPERATIONAL {ENTITY NAME}
+    col1    Type    COMMENT '...',
+    ...
+    -- From: CALENDAR DATE DIMENSION
+    full_date   Nullable(Date)  COMMENT '...',
+    ...
+    -- From: {DIM ENTITY NAME}
+    col_x   Nullable(String)    COMMENT '... — từ {Dim Entity Name}',
+    ...
+    -- Technical metadata
+    ds_batch_date               Date      COMMENT 'ETL batch date',
+    ds_population_timestamp     DateTime  COMMENT 'Population timestamp'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(<driving_date_col>)
+ORDER BY (<driving_date_col>, <grain_key>)
+COMMENT 'Flat table — {Entity Name} × {Dim1} × {Dim2}'
+;
+```
+
+### Pattern file 02 — POPULATE
+
+```sql
+TRUNCATE TABLE IF EXISTS datamart.{flat_table_name} ON CLUSTER 'my_cluster';
+INSERT INTO datamart.{flat_table_name}
+SELECT
+    f.col1,
+    f.col2,
+    ...
+    calendar_date.full_date,
+    ...
+    dim_alias.col_x,
+    ...
+    today()  AS ds_batch_date,
+    now()    AS ds_population_timestamp
+FROM datamart.{source_fact_table} f
+LEFT JOIN datamart.{module}_calendar_date_dimension calendar_date
+    ON calendar_date.date_dimension_id = f.{snpst_dt_dim_id}
+LEFT JOIN datamart.{dim_table} dim_alias
+    ON dim_alias.{dim_pk} = f.{fk_col}
+;
+```
+
+Operational table: chỉ `FROM datamart.{source_operational_table} o` + SELECT các cột + 2 technical metadata — không có LEFT JOIN.
+
+### Checklist Phase 4
+
+```
+PRE-CHECK (trước khi sinh):
+□ Đọc Entities.csv — đếm số fact + operational → báo cáo cho user, chờ xác nhận
+□ Xác nhận tên thư mục output: Datamart/flat-table/{MODULE}/
+□ Xác nhận tên file: 01_create_{module}_flat_tables.sql, 02_populate_{module}_flat_tables.sql
+
+FILE 01 (CREATE):
+□ Số bảng CREATE = số fact + số operational
+□ Naming fact flat: datamart.{module}_{datamart_table}_flat
+□ Naming operational flat: datamart.{datamart_table}_flat (không có module prefix)
+□ Thứ tự cột: fact columns → Calendar Date columns → dim columns → technical metadata
+□ Operational: chỉ operational columns → technical metadata (không có Calendar Date, không có dim)
+□ Data type dùng ClickHouse types (Nullable wrapper theo nullable=true/false trong Attributes)
+□ Calendar Date 9 cột cố định — không thêm không bớt
+□ Cột từ dim: bỏ PK surrogate và src_stm_code, giữ các cột giá trị nghiệp vụ còn lại
+□ Cột từ dim: COMMENT ghi rõ "— từ {Dim Entity Name}"
+□ ENGINE = ReplicatedReplacingMergeTree()
+□ PARTITION BY toYYYYMM(<cột DD>)
+□ ORDER BY (<cột DD>, <grain_key>)
+
+FILE 02 (POPULATE):
+□ Số TRUNCATE + INSERT block = số bảng trong file 01
+□ SELECT list đủ cột, đúng thứ tự khớp với CREATE TABLE
+□ Đếm cột SELECT = đếm cột CREATE (kể cả ds_batch_date, ds_population_timestamp)
+□ Tên bảng nguồn fact: datamart.{module}_{datamart_table} (có prefix module)
+□ Tên bảng nguồn operational: datamart.{datamart_table} (không có prefix module)
+□ Calendar Date join: datamart.{module}_calendar_date_dimension / date_dimension_id = f.{fk_col}
+□ Dim join: alias rõ ràng, ON {dim_pk} = f.{fk_col}
+□ today() AS ds_batch_date, now() AS ds_population_timestamp
+□ Operational: không có LEFT JOIN nào
+
+POST-CHECK (sau khi sinh):
+□ Cross-check: mỗi cột trong CREATE có đúng 1 entry tương ứng trong SELECT của INSERT
+□ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE
 ```
