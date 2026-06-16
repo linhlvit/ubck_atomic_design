@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: VIOLATION_RECORD_BEHAVIOR
+brd_ref: BRD-SRC-ThanhTra-VIOLATION_RECORD_BEHAVIOR
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: VIOLATION_RECORD_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> violation_record"
+    key: FK
+    fk_note: "FK → VIOLATION_RECORD.id"
+  - name: VIOLATION_BEHAVIOR_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> violation_behavior: hành vi vi phạm được ghi nhận"
+    key: FK
+    fk_note: "FK → VIOLATION_BEHAVIOR.id"
+  - name: DESCRIPTION
+    data_type: CLOB
+    description: "Mô tả chi tiết hành vi vi phạm (bao gồm thời gian, địa điểm)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: LEGAL_BASIS
+    data_type: CLOB
+    description: "Căn cứ quy định pháp luật bị vi phạm"
+    key: null
+    fk_note: null

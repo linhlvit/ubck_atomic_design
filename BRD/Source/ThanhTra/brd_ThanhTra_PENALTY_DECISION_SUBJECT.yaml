@@ -1,0 +1,131 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: PENALTY_DECISION_SUBJECT
+brd_ref: BRD-SRC-ThanhTra-PENALTY_DECISION_SUBJECT
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: PENALTY_DECISION_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> penalty_decision"
+    key: FK
+    fk_note: "FK → PENALTY_DECISION.id"
+  - name: SUBJECT_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên đối tượng bị xử phạt (cá nhân hoặc tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_ID_NUMBER
+    data_type: VARCHAR2(50 CHAR)
+    description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_DOB
+    data_type: DATE
+    description: "Ngày sinh đối tượng (chỉ dùng cho cá nhân)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_ADDRESS
+    data_type: VARCHAR2(1000 CHAR)
+    description: "Địa chỉ cư trú/trụ sở đối tượng bị xử phạt"
+    key: null
+    fk_note: null
+  - name: SUBJECT_LEGAL_REP
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên người đại diện theo pháp luật (chỉ dùng cho tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_LEGAL_REP_TITLE
+    data_type: VARCHAR2(200 CHAR)
+    description: "Chức vụ người đại diện theo pháp luật (chỉ dùng cho tổ chức)"
+    key: null
+    fk_note: null
+  - name: TOTAL_FINE_AMOUNT
+    data_type: NUMBER(19,4)
+    description: "Tổng mức phạt tiền đối với đối tượng này trong quyết định"
+    key: null
+    fk_note: null
+  - name: PAID_AMOUNT
+    data_type: NUMBER(19,4)
+    description: "Số tiền đã nộp phạt"
+    key: null
+    fk_note: null
+  - name: COERCED_AMOUNT
+    data_type: NUMBER(19,4)
+    description: "Số tiền đã cưỡng chế tài khoản"
+    key: null
+    fk_note: null
+  - name: PAYMENT_RECEIVED_DATE
+    data_type: DATE
+    description: "Ngày Thanh tra nhận chứng từ nộp phạt"
+    key: null
+    fk_note: null
+  - name: COMPLIANCE_STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái thi hành: NOT_PAID (Chưa nộp phạt - mặc định), PAID (Đã nộp phạt đủ), PARTIAL (Đã nộp một phần), COMPLAINING (Đang khiếu nại/khởi kiện)"
+    key: null
+    fk_note: null
+  - name: ENFORCEMENT_PROGRESS
+    data_type: CLOB
+    description: "Mô tả tiến trình thi hành quyết định xử phạt"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: PAYMENT_PROOF_URL
+    data_type: VARCHAR2(1000 CHAR)
+    description: "URL file chứng từ nộp tiền phạt do người vi phạm upload"
+    key: null
+    fk_note: null
+  - name: PAYMENT_PROOF_UPLOADED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm người vi phạm upload chứng từ nộp phạt"
+    key: null
+    fk_note: null
+  - name: SUBJECT_TAX_CODE
+    data_type: VARCHAR2(50 BYTE)
+    description: "Mã số thuế của đối tượng bị xử phạt"
+    key: null
+    fk_note: null

@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: VIOLATION_CASE
+brd_ref: BRD-SRC-ThanhTra-VIOLATION_CASE
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Mã hồ sơ tự động sinh"
+    key: null
+    fk_note: null
+  - name: NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên hồ sơ/vụ việc vi phạm hành chính"
+    key: null
+    fk_note: null
+  - name: SOURCE_CATEGORY
+    data_type: VARCHAR2(50 CHAR)
+    description: "Nguồn phát sinh: INSPECTION_RESULT (KQ thanh tra), INTERNAL_UNIT (Đơn vị nội bộ UBCKNN), STOCK_EXCHANGE (Sở GDCK), VSDC (VSDC), OTHER_SUPERVISION (KQ giám sát của đơn vị khác)"
+    key: null
+    fk_note: null
+  - name: SOURCE_UNIT_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID đơn vị gửi kết quả giám sát/vi phạm"
+    key: null
+    fk_note: null
+  - name: SOURCE_UNIT_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên đơn vị gửi kết quả (Sở GDCK, Ban giám sát, VSDC...)"
+    key: null
+    fk_note: null
+  - name: INSPECTION_TEAM_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> inspection_team (liên kết hồ sơ đoàn thanh tra nếu phát sinh từ thanh tra)"
+    key: FK
+    fk_note: "FK → INSPECTION_TEAM.id"
+  - name: EXAMINATION_TEAM_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> examination_team (liên kết hồ sơ đoàn kiểm tra nếu phát sinh từ kiểm tra)"
+    key: FK
+    fk_note: "FK → EXAMINATION_TEAM.id"
+  - name: ASSIGNED_OFFICER_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID cán bộ phụ trách xử lý hồ sơ VPHC"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: ASSIGNED_OFFICER_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên cán bộ phụ trách xử lý hồ sơ VPHC"
+    key: null
+    fk_note: null
+  - name: SUPERVISING_LEADER_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID lãnh đạo phụ trách hồ sơ VPHC"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: SUPERVISING_LEADER_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên lãnh đạo phụ trách hồ sơ VPHC"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái: NEW (Mới tiếp nhận), PROCESSING (Đang xử lý), DECISION_ISSUED (Đã ban hành quyết định), ENFORCED (Đang cưỡng chế), CLOSED (Đã kết thúc)"
+    key: null
+    fk_note: null
+  - name: BOND_ISSUER_CODE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Mã tổ chức phát hành trái phiếu (nếu hồ sơ liên quan TPDN)"
+    key: null
+    fk_note: null
+  - name: MARKET_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Thị trường: DOMESTIC (Trong nước), INTERNATIONAL (Quốc tế)"
+    key: null
+    fk_note: null
+  - name: BOND_CODE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Mã trái phiếu (nếu hồ sơ liên quan vi phạm về TPDN)"
+    key: null
+    fk_note: null
+  - name: PROCESSING_PROGRESS
+    data_type: CLOB
+    description: "Mô tả tiến trình xử lý hồ sơ VPHC"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

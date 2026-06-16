@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: VIOLATION_CASE_OUTPUT_DOCUMENT
+brd_ref: BRD-SRC-ThanhTra-VIOLATION_CASE_OUTPUT_DOCUMENT
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 BYTE)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: VIOLATION_CASE_ID
+    data_type: VARCHAR2(36 BYTE)
+    description: "FK -> violation_case"
+    key: FK
+    fk_note: "FK → VIOLATION_CASE.id"
+  - name: DOCUMENT_TYPE
+    data_type: VARCHAR2(80 CHAR)
+    description: "Loại văn bản đầu ra VPHC: PRE_VIOLATION_NOTICE_1 (TB vi phạm lần 1), REMINDER (Nhắc nhở), PRE_VIOLATION_NOTICE_N (TB vi phạm lần N), INFO_REQUEST (Yêu cầu cung cấp thông tin), PRE_DECISION_NOTICE (TB trước khi ban hành QĐ), PAYMENT_GUIDE (Hướng dẫn nộp phạt), PAYMENT_REMINDER (Đôn đốc nộp phạt), REMEDIAL_REMINDER (Đôn đốc khắc phục), PENALTY_DECISION (Quyết định xử phạt)"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_NUMBER
+    data_type: VARCHAR2(100 BYTE)
+    description: "Số văn bản đầu ra trong quá trình xử lý VPHC"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_NAME
+    data_type: VARCHAR2(500 BYTE)
+    description: "Tên văn bản đầu ra (VD: Quyết định xử phạt, QĐ cưỡng chế)"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_DATE
+    data_type: DATE
+    description: "Ngày ban hành văn bản đầu ra"
+    key: null
+    fk_note: null
+  - name: PENALTY_DECISION_ID
+    data_type: VARCHAR2(36 BYTE)
+    description: "FK -> penalty_decision (nếu văn bản đầu ra là quyết định xử phạt)"
+    key: FK
+    fk_note: "FK → PENALTY_DECISION.id"
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(200 BYTE)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(200 BYTE)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

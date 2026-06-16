@@ -1,0 +1,116 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: flyway_schema_history
+brd_ref: BRD-SRC-ThanhTra-flyway_schema_history
+columns:
+  - name: installed_rank
+    data_type: NUMBER(38,0)
+    description: "Thứ tự cài đặt migration"
+    key: PK
+    fk_note: null
+  - name: version
+    data_type: VARCHAR2(50 BYTE)
+    description: "Phiên bản migration (NULL với repeatable migrations)"
+    key: null
+    fk_note: null
+  - name: description
+    data_type: VARCHAR2(200 BYTE)
+    description: "Mô tả nội dung migration"
+    key: null
+    fk_note: null
+  - name: type
+    data_type: VARCHAR2(20 BYTE)
+    description: "Loại migration: SQL, JAVA_MIGRATION..."
+    key: null
+    fk_note: null
+  - name: script
+    data_type: VARCHAR2(1000 BYTE)
+    description: "Tên file script migration"
+    key: null
+    fk_note: null
+  - name: checksum
+    data_type: NUMBER(38,0)
+    description: "Giá trị hash kiểm tra tính toàn vẹn file migration"
+    key: null
+    fk_note: null
+  - name: installed_by
+    data_type: VARCHAR2(100 BYTE)
+    description: "Người dùng DB thực hiện migration"
+    key: null
+    fk_note: null
+  - name: installed_on
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm thực hiện migration"
+    key: null
+    fk_note: null
+  - name: execution_time
+    data_type: NUMBER(38,0)
+    description: "Thời gian thực hiện migration (milliseconds)"
+    key: null
+    fk_note: null
+  - name: success
+    data_type: NUMBER(1,0)
+    description: "Kết quả: true=Thành công, false=Thất bại"
+    key: null
+    fk_note: null
+  - name: SP_TIM_KIEM_HO_SO_TT
+    data_type: Procedure
+    description: "Tìm kiếm hồ sơ thanh tra theo các tiêu chí"
+    key: null
+    fk_note: null
+  - name: SP_CAP_NHAT_TRANG_THAI_HS
+    data_type: Procedure
+    description: "Cập nhật trạng thái hồ sơ"
+    key: null
+    fk_note: null
+  - name: SP_BAO_CAO_THANH_TRA
+    data_type: Procedure
+    description: "Xuất báo cáo tổng hợp thanh tra"
+    key: null
+    fk_note: null
+  - name: SP_BAO_CAO_XU_LY_VPHC
+    data_type: Procedure
+    description: "Xuất báo cáo xử lý vi phạm hành chính"
+    key: null
+    fk_note: null
+  - name: SP_TIM_KIEM_DON_THU
+    data_type: Procedure
+    description: "Tìm kiếm đơn thư KNTC"
+    key: null
+    fk_note: null
+  - name: FN_LAY_TONG_SO_TIEN_PHAT
+    data_type: Function
+    description: "Lấy tổng số tiền phạt của hồ sơ"
+    key: null
+    fk_note: null
+  - name: SP_THONG_KE_TIEN_DO_TT
+    data_type: Procedure
+    description: "Thống kê tiến độ thanh tra theo năm"
+    key: null
+    fk_note: null
+  - name: SP_NHAT_KY_HOAT_DONG
+    data_type: Procedure
+    description: "Ghi nhật ký hoạt động hệ thống"
+    key: null
+    fk_note: null
+  - name: PKG_THANH_TRA
+    data_type: SP_TIM_KIEM_HO_SO_TT, SP_CAP_NHAT_TRANG_THAI_HS, SP_THONG_KE_TIEN_DO_TT
+    description: "Package chứa các thủ tục nghiệp vụ thanh tra – kiểm tra"
+    key: null
+    fk_note: null
+  - name: PKG_BAO_CAO
+    data_type: SP_BAO_CAO_THANH_TRA, SP_BAO_CAO_XU_LY_VPHC
+    description: "Package xuất báo cáo tổng hợp"
+    key: null
+    fk_note: null
+  - name: PKG_DON_THU
+    data_type: SP_TIM_KIEM_DON_THU, FN_LAY_TONG_SO_TIEN_PHAT
+    description: "Package quản lý đơn thư KNTC và thống kê xử phạt"
+    key: null
+    fk_note: null
+  - name: PKG_HE_THONG
+    data_type: SP_NHAT_KY_HOAT_DONG
+    description: "Package tiện ích hệ thống"
+    key: null
+    fk_note: null

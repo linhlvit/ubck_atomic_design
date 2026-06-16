@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: PRIVATE_CATALOG_ITEM
+brd_ref: BRD-SRC-ThanhTra-PRIVATE_CATALOG_ITEM
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: CATALOG_TYPE
+    data_type: VARCHAR2(100 CHAR)
+    description: "Loại danh mục dùng riêng của phân hệ"
+    key: null
+    fk_note: null
+  - name: CODE
+    data_type: VARCHAR2(100 CHAR)
+    description: "Mã danh mục"
+    key: null
+    fk_note: null
+  - name: NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên danh mục"
+    key: null
+    fk_note: null
+  - name: ITEM_VALUE
+    data_type: VARCHAR2(1000 CHAR)
+    description: "Giá trị lưu trữ của mục danh mục"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10,0)
+    description: "Thứ tự hiển thị"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: VARCHAR2(2000 CHAR)
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: CLOB
+    description: "Mô tả"
+    key: null
+    fk_note: null

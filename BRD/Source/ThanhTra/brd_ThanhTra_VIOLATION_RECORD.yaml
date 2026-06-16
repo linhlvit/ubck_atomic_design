@@ -1,0 +1,226 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: VIOLATION_RECORD
+brd_ref: BRD-SRC-ThanhTra-VIOLATION_RECORD
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: RECORD_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số biên bản VPHC (tự sinh từ hệ thống VBĐH sau khi cấp số)"
+    key: null
+    fk_note: null
+  - name: RECORD_DATE
+    data_type: DATE
+    description: "Ngày lập biên bản VPHC"
+    key: null
+    fk_note: null
+  - name: RECORD_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Phân loại: PAPER (Biên bản giấy), ELECTRONIC (Biên bản điện tử)"
+    key: null
+    fk_note: null
+  - name: INSPECTION_TEAM_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID đoàn thanh tra liên kết với biên bản VPHC (không bắt buộc)"
+    key: null
+    fk_note: "FK suy luận → INSPECTION_TEAM.id"
+  - name: EXAMINATION_TEAM_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID đoàn kiểm tra liên kết với biên bản VPHC (không bắt buộc)"
+    key: null
+    fk_note: "FK suy luận → EXAMINATION_TEAM.id"
+  - name: VIOLATION_TIME
+    data_type: TIMESTAMP(6)
+    description: "Thời gian xảy ra vi phạm"
+    key: null
+    fk_note: null
+  - name: LOCATION
+    data_type: VARCHAR2(1000 CHAR)
+    description: "Địa điểm lập biên bản VPHC"
+    key: null
+    fk_note: null
+  - name: SOURCE_INFO
+    data_type: CLOB
+    description: "Thông tin nguồn tiếp nhận hành vi vi phạm"
+    key: null
+    fk_note: null
+  - name: RECORDER_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Họ tên người lập biên bản VPHC"
+    key: null
+    fk_note: null
+  - name: RECORDER_TITLE
+    data_type: VARCHAR2(200 CHAR)
+    description: "Chức vụ người lập biên bản VPHC"
+    key: null
+    fk_note: null
+  - name: RECORDER_UNIT
+    data_type: VARCHAR2(200 CHAR)
+    description: "Đơn vị công tác của người lập biên bản"
+    key: null
+    fk_note: null
+  - name: SUBJECT_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Đối tượng vi phạm: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên cá nhân/tổ chức vi phạm"
+    key: null
+    fk_note: null
+  - name: SUBJECT_ID_NUMBER
+    data_type: VARCHAR2(50 CHAR)
+    description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_DOB
+    data_type: DATE
+    description: "Ngày sinh đối tượng vi phạm (chỉ dùng cho cá nhân)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_ADDRESS
+    data_type: VARCHAR2(1000 CHAR)
+    description: "Địa chỉ cư trú/trụ sở đối tượng vi phạm"
+    key: null
+    fk_note: null
+  - name: SUBJECT_LEGAL_REP
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên người đại diện theo pháp luật (chỉ dùng cho tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_LEGAL_REP_TITLE
+    data_type: VARCHAR2(200 CHAR)
+    description: "Chức vụ người đại diện theo pháp luật"
+    key: null
+    fk_note: null
+  - name: SUBJECT_EMAIL
+    data_type: VARCHAR2(200 CHAR)
+    description: "Email đối tượng vi phạm (dùng gửi thông báo biên bản điện tử)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_PHONE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Số điện thoại đối tượng vi phạm (dùng gửi SMS thông báo)"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái: DRAFT (Nháp), PENDING_LEADER_SIGN (Chờ lãnh đạo ký - ký 2 bước), SIGNED (Đã ký số), NUMBERED (Đã có số văn bản), SENT_TO_SUBJECT (Đã gửi đối tượng vi phạm)"
+    key: null
+    fk_note: null
+  - name: SIGNED_BY
+    data_type: VARCHAR2(200 CHAR)
+    description: "ID người ký số biên bản điện tử (lần ký cuối)"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: SIGNED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm ký số biên bản điện tử"
+    key: null
+    fk_note: null
+  - name: NUMBERED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm được cấp số từ hệ thống VBĐH"
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm gửi thông báo biên bản đến đối tượng vi phạm"
+    key: null
+    fk_note: null
+  - name: SENT_TO_INSPECTOR
+    data_type: NUMBER(1,0)
+    description: "Đã gửi Thanh tra (dành cho ĐVGS): 0=Chưa, 1=Đã gửi"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: FORWARDED_TO_INSPECTION
+    data_type: NUMBER(1,0)
+    description: "Đã gửi biên bản đến Thanh tra (dành cho ĐVGS): 0=Chưa, 1=Đã"
+    key: null
+    fk_note: null
+  - name: FORWARDED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm ĐVGS gửi biên bản sang Thanh tra"
+    key: null
+    fk_note: null
+  - name: FORWARDED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID cán bộ ĐVGS thực hiện gửi biên bản sang Thanh tra"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VIOLATOR_SIGNED_FILE_URL
+    data_type: VARCHAR2(1000 CHAR)
+    description: "URL file biên bản VPHC đã có chữ ký của người vi phạm/đại diện tổ chức (Bước 7.1 QT 7)"
+    key: null
+    fk_note: null
+  - name: VIOLATOR_CONFIRMED_RECEIPT_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm người vi phạm xác nhận đã nhận/tải về/mở xem biên bản (Bước 7.2 QT 7)"
+    key: null
+    fk_note: null
+  - name: VIOLATOR_CONFIRMED_BY
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên người vi phạm/đại diện tổ chức xác nhận (xác thực qua VNeID - Bước 7.2 QT 7)"
+    key: null
+    fk_note: null
+  - name: RECORDER_UNIT_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID đơn vị (eCAT); recorder_unit giữ tên hiển thị"
+    key: null
+    fk_note: null
+  - name: SIGNATURE_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Loại chữ ký: SINGLE (Ký 1 lần), TWO_STEP (Ký 2 bước: ký nháy + ký duyệt)"
+    key: null
+    fk_note: null
+  - name: FIRST_SIGNED_BY
+    data_type: VARCHAR2(200 CHAR)
+    description: "ID người ký số đầu tiên (Chuyên viên/TTV ký nháy)"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: FIRST_SIGNED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm ký số đầu tiên"
+    key: null
+    fk_note: null
+  - name: SIGNED_DOCUMENT_URL
+    data_type: VARCHAR2(1000 CHAR)
+    description: "URL file biên bản VPHC đã được ký số (PDF)"
+    key: null
+    fk_note: null

@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: VPHC_PROCESS_OFFICIAL_LETTER
+brd_ref: BRD-SRC-ThanhTra-VPHC_PROCESS_OFFICIAL_LETTER
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: OFFICIAL_LETTER_SUBTYPE
+    data_type: VARCHAR2(80 CHAR)
+    description: "Loại công văn VPHC: PRE_VIOLATION_NOTICE_1 (TB vi phạm lần 1), REMINDER (Nhắc nhở), PRE_VIOLATION_NOTICE_N (TB vi phạm lần N), INFO_REQUEST (Yêu cầu cung cấp thông tin), PRE_DECISION_NOTICE (TB trước khi ban hành QĐ), PAYMENT_GUIDE (Hướng dẫn nộp phạt), PAYMENT_REMINDER (Đôn đốc nộp phạt), REMEDIAL_REMINDER (Đôn đốc khắc phục)"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_TEMPLATE_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> document_template: biểu mẫu công văn được sử dụng"
+    key: FK
+    fk_note: "FK → DOCUMENT_TEMPLATE.id"
+  - name: DOCUMENT_TEMPLATE_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên biểu mẫu công văn (snapshot tại thời điểm tạo)"
+    key: null
+    fk_note: null
+  - name: VIOLATION_CASE_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> violation_case: hồ sơ xử lý VPHC liên kết"
+    key: FK
+    fk_note: "FK → VIOLATION_CASE.id"
+  - name: VIOLATION_CASE_CODE
+    data_type: VARCHAR2(100 CHAR)
+    description: "Mã hồ sơ VPHC liên kết (snapshot)"
+    key: null
+    fk_note: null
+  - name: VIOLATION_RECORD_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> violation_record: biên bản VPHC liên kết"
+    key: FK
+    fk_note: "FK → VIOLATION_RECORD.id"
+  - name: VIOLATION_RECORD_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số biên bản VPHC liên kết (snapshot)"
+    key: null
+    fk_note: null
+  - name: PENALTY_DECISION_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> penalty_decision: quyết định xử phạt liên kết"
+    key: FK
+    fk_note: "FK → PENALTY_DECISION.id"
+  - name: PENALTY_DECISION_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số quyết định xử phạt liên kết (snapshot)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(200 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(50 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: FIELD_HTML_JSON
+    data_type: CLOB
+    description: "JSON {instanceId: html} — nội dung rich text người dùng đã sửa từng ô trên biểu mẫu"
+    key: null
+    fk_note: null
+  - name: FIELD_SOURCE_JSON
+    data_type: CLOB
+    description: "JSON {instanceId: plain} — snapshot dữ liệu API tại thời điểm lưu, dùng để phát hiện lệch và reset ô"
+    key: null
+    fk_note: null
+  - name: MANUAL_MERGE_DATA_JSON
+    data_type: CLOB
+    description: "JSON patch dữ liệu merge do người dùng chọn thủ công khi nguồn API chính rỗng"
+    key: null
+    fk_note: null
+  - name: OUTPUT_DOCUMENT_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Liên kết tới văn bản đầu ra trong hồ sơ xử lý VPHC khi công văn đã được đồng bộ"
+    key: null
+    fk_note: "FK suy luận → VIOLATION_CASE_OUTPUT_DOCUMENT.id"

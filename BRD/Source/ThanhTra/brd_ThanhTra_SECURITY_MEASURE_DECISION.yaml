@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: SECURITY_MEASURE_DECISION
+brd_ref: BRD-SRC-ThanhTra-SECURITY_MEASURE_DECISION
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: DECISION_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số quyết định áp dụng biện pháp bảo đảm an ninh TTCK"
+    key: null
+    fk_note: null
+  - name: DECISION_DATE
+    data_type: DATE
+    description: "Ngày ban hành quyết định"
+    key: null
+    fk_note: null
+  - name: MEASURE_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Loại biện pháp: BAN_POSITION (Cấm đảm nhiệm chức vụ), BAN_ACTIVITY (Cấm thực hiện hoạt động CK), FREEZE_ACCOUNT (Phong tỏa tài khoản CK), OTHER (Khác)"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_DATE
+    data_type: DATE
+    description: "Ngày có hiệu lực của quyết định"
+    key: null
+    fk_note: null
+  - name: DURATION_MONTHS
+    data_type: NUMBER(5,0)
+    description: "Thời hạn áp dụng (số tháng)"
+    key: null
+    fk_note: null
+  - name: SIGNER_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên người ký quyết định (Lãnh đạo UBCKNN)"
+    key: null
+    fk_note: null
+  - name: SUMMARY
+    data_type: CLOB
+    description: "Trích yếu nội dung quyết định"
+    key: null
+    fk_note: null
+  - name: SENT_STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái gửi: NOT_SENT (Chưa gửi), SENT (Đã gửi)"
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: DATE
+    description: "Thời điểm gửi quyết định đến các tổ chức liên quan"
+    key: null
+    fk_note: null
+  - name: SENT_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID cán bộ thực hiện gửi quyết định"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

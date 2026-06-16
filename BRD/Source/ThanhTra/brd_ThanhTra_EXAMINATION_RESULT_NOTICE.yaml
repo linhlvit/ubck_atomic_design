@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ThanhTra
+table: EXAMINATION_RESULT_NOTICE
+brd_ref: BRD-SRC-ThanhTra-EXAMINATION_RESULT_NOTICE
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: EXAMINATION_TEAM_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> examination_team: hồ sơ đoàn kiểm tra liên quan"
+    key: FK
+    fk_note: "FK → EXAMINATION_TEAM.id"
+  - name: NOTICE_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số công văn thông báo kết quả kiểm tra"
+    key: null
+    fk_note: null
+  - name: ISSUED_DATE
+    data_type: DATE
+    description: "Ngày ban hành công văn thông báo kết quả kiểm tra"
+    key: null
+    fk_note: null
+  - name: ANNOUNCED_DATE
+    data_type: DATE
+    description: "Ngày công bố thông báo kết quả"
+    key: null
+    fk_note: null
+  - name: TARGET_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Loại đối tượng kiểm tra: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY..."
+    key: null
+    fk_note: null
+  - name: TARGET_REFERENCE_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID tham chiếu đối tượng kiểm tra trong hệ thống nguồn"
+    key: null
+    fk_note: null
+  - name: TARGET_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên đối tượng kiểm tra"
+    key: null
+    fk_note: null
+  - name: CONTENT
+    data_type: CLOB
+    description: "Nội dung kết quả kiểm tra"
+    key: null
+    fk_note: null
+  - name: RECOMMENDATION
+    data_type: CLOB
+    description: "Ý kiến kiến nghị sau kiểm tra"
+    key: null
+    fk_note: null
+  - name: EXECUTION_STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái thực hiện: NOT_EXECUTED (Chưa thực hiện), FULLY_EXECUTED (Đã khắc phục xong), PARTIALLY_EXECUTED (Đã khắc phục 1 phần)"
+    key: null
+    fk_note: null
+  - name: EXECUTION_DESCRIPTION
+    data_type: CLOB
+    description: "Mô tả tình hình thực hiện kết quả kiểm tra"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
