@@ -44,7 +44,7 @@ mapping_columns:
   description: Mã hệ thống nguồn.
   target_attr_name: Source System Code
 - target_column: scr_org_refr_id
-  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', or_re.ORGANIZATION_ID)'
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', or_re.ORGANIZATION_ID)'
   data_type: string
   description: FK đến tổ chức kinh doanh chứng khoán.
   target_attr_name: Securities Organization Reference Id
@@ -54,7 +54,7 @@ mapping_columns:
   description: Mã tổ chức (denormalized).
   target_attr_name: Securities Organization Reference Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', or_re.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', or_re.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến người hành nghề chứng khoán.
   target_attr_name: Securities Practitioner Id
@@ -64,7 +64,7 @@ mapping_columns:
   description: Mã người hành nghề (denormalized).
   target_attr_name: Securities Practitioner Code
 - target_column: license_ctf_doc_id
-  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', or_re.CERTIFICATE_RECORD_ID)'
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', or_re.CERTIFICATE_RECORD_ID)'
   data_type: string
   description: FK đến hồ sơ chứng chỉ hành nghề (nullable).
   target_attr_name: License Certificate Document Id
@@ -209,7 +209,7 @@ mapping_columns:
   description: Thời điểm tạo bản ghi trong NHNCK.
   target_attr_name: Created Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', or_re.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', or_re.CREATED_BY)'
   data_type: string
   description: FK đến nhân viên UBCKNN tạo bản ghi.
   target_attr_name: Created By Officer Id
@@ -224,7 +224,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi gần nhất.
   target_attr_name: Updated Timestamp
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', or_re.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', or_re.UPDATED_BY)'
   data_type: string
   description: FK đến nhân viên UBCKNN cập nhật bản ghi.
   target_attr_name: Updated By Officer Id

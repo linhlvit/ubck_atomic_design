@@ -39,7 +39,7 @@ mapping_columns:
   description: Mã hệ thống nguồn.
   target_attr_name: Source System Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_RELATIONSHIPS'', pr_re.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pr_re.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến Securities Practitioner
   target_attr_name: Securities Practitioner Id
@@ -84,7 +84,7 @@ mapping_columns:
   description: Số CMND/CCCD người thân
   target_attr_name: Related Individual Identity Number
 - target_column: cty_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_RELATIONSHIPS'', pr_re.COUNTRY_ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', pr_re.COUNTRY_ID)'
   data_type: string
   description: FK đến Geographic Area — quốc gia
   target_attr_name: Country Id
@@ -109,7 +109,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_RELATIONSHIPS'', pr_re.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', pr_re.CREATED_BY)'
   data_type: string
   description: FK đến Regulatory Authority Officer — người tạo
   target_attr_name: Created By Officer Id
@@ -119,7 +119,7 @@ mapping_columns:
   description: Mã người tạo
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_RELATIONSHIPS'', pr_re.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', pr_re.UPDATED_BY)'
   data_type: string
   description: FK đến Regulatory Authority Officer — người cập nhật
   target_attr_name: Updated By Officer Id

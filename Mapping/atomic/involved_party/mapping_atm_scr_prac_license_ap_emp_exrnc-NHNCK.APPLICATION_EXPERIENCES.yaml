@@ -43,7 +43,7 @@ mapping_columns:
   description: Mã nguồn dữ liệu
   target_attr_name: Source System Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_EXPERIENCES'', ap_ex.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ap_ex.APPLICATION_ID)'
   data_type: string
   description: FK đến hồ sơ đăng ký CCHN
   target_attr_name: License Application Id
@@ -58,7 +58,7 @@ mapping_columns:
   description: Mã loại tài liệu yêu cầu (Classification Value từ Documents)
   target_attr_name: Document Type Code
 - target_column: scr_org_refr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_EXPERIENCES'', ap_ex.ORGANIZATION_ID)'
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', ap_ex.ORGANIZATION_ID)'
   data_type: string
   description: FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable — nếu
     nơi làm việc là CTCK/QLQ đã đăng ký)

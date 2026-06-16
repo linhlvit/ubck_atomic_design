@@ -97,7 +97,7 @@ mapping_columns:
   description: Đường dẫn file thông báo kết quả
   target_attr_name: Notification File Path
 - target_column: license_dcsn_id
-  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ex_se.DECISION_ID)'
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ex_se.DECISION_ID)'
   data_type: string
   description: FK đến quyết định cấp chứng chỉ liên quan đợt thi
   target_attr_name: License Decision Id
@@ -142,7 +142,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ex_se.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ex_se.CREATED_BY)'
   data_type: string
   description: FK đến người tạo
   target_attr_name: Created By Officer Id
@@ -152,7 +152,7 @@ mapping_columns:
   description: Mã người tạo
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ex_se.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ex_se.UPDATED_BY)'
   data_type: string
   description: FK đến người cập nhật
   target_attr_name: Updated By Officer Id

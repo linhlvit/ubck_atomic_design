@@ -48,7 +48,7 @@ mapping_columns:
   description: Giá trị địa chỉ.
   target_attr_name: Address Value
 - target_column: cty_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.PERMANENT_COUNTRY_ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', pro.PERMANENT_COUNTRY_ID)'
   data_type: string
   description: FK đến Geographic Area — quốc gia.
   target_attr_name: Country Id
@@ -58,7 +58,7 @@ mapping_columns:
   description: Mã quốc gia.
   target_attr_name: Country Code
 - target_column: prov_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.PERMANENT_PROVINCE_ID)'
+  transformation: '{hash_id}(''NHNCK_PROVINCES'', pro.PERMANENT_PROVINCE_ID)'
   data_type: string
   description: FK đến Geographic Area — tỉnh/thành.
   target_attr_name: Province Id
@@ -68,7 +68,7 @@ mapping_columns:
   description: Mã tỉnh/thành.
   target_attr_name: Province Code
 - target_column: dstc_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.PERMANENT_DISTRICT_ID)'
+  transformation: '{hash_id}(''NHNCK_DISTRICTS'', pro.PERMANENT_DISTRICT_ID)'
   data_type: string
   description: FK đến Geographic Area — quận/huyện.
   target_attr_name: District Id

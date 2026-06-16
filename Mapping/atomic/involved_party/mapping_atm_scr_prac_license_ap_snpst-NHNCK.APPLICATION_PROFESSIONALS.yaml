@@ -44,7 +44,7 @@ mapping_columns:
   description: Mã nguồn dữ liệu
   target_attr_name: Source System Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ap_pr.APPLICATION_ID)'
   data_type: string
   description: FK đến hồ sơ đăng ký
   target_attr_name: License Application Id
@@ -54,7 +54,7 @@ mapping_columns:
   description: Mã hồ sơ đăng ký (denormalized)
   target_attr_name: License Application Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ap_pr.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến người hành nghề
   target_attr_name: Securities Practitioner Id
@@ -64,7 +64,7 @@ mapping_columns:
   description: Mã người hành nghề (denormalized)
   target_attr_name: Securities Practitioner Code
 - target_column: org_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.ORGANIZATION_ID)'
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', ap_pr.ORGANIZATION_ID)'
   data_type: string
   description: FK đến tổ chức chứng khoán (nullable)
   target_attr_name: Organization Id
@@ -74,7 +74,7 @@ mapping_columns:
   description: Mã tổ chức (denormalized)
   target_attr_name: Organization Code
 - target_column: nat_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.NATIONALITY_ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', ap_pr.NATIONALITY_ID)'
   data_type: string
   description: FK đến Geographic Area (quốc tịch snapshot)
   target_attr_name: Nationality Id
@@ -189,7 +189,7 @@ mapping_columns:
   description: Địa chỉ thường trú chi tiết tại thời điểm nộp hồ sơ
   target_attr_name: Snapshot Permanent Address
 - target_column: snpst_perm_cty_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.PERMANENT_COUNTRY_ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', ap_pr.PERMANENT_COUNTRY_ID)'
   data_type: string
   description: FK đến Geographic Area — quốc gia thường trú (snapshot)
   target_attr_name: Snapshot Permanent Country Id
@@ -199,7 +199,7 @@ mapping_columns:
   description: Mã quốc gia thường trú (denormalized snapshot)
   target_attr_name: Snapshot Permanent Country Code
 - target_column: snpst_perm_prov_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.PERMANENT_PROVINCE_ID)'
+  transformation: '{hash_id}(''NHNCK_PROVINCES'', ap_pr.PERMANENT_PROVINCE_ID)'
   data_type: string
   description: FK đến Geographic Area — tỉnh thường trú (snapshot)
   target_attr_name: Snapshot Permanent Province Id
@@ -209,7 +209,7 @@ mapping_columns:
   description: Mã tỉnh thường trú (denormalized snapshot)
   target_attr_name: Snapshot Permanent Province Code
 - target_column: snpst_perm_dstc_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.PERMANENT_DISTRICT_ID)'
+  transformation: '{hash_id}(''NHNCK_DISTRICTS'', ap_pr.PERMANENT_DISTRICT_ID)'
   data_type: string
   description: FK đến Geographic Area — huyện thường trú (snapshot)
   target_attr_name: Snapshot Permanent District Id
@@ -219,7 +219,7 @@ mapping_columns:
   description: Mã huyện thường trú (denormalized snapshot)
   target_attr_name: Snapshot Permanent District Code
 - target_column: snpst_crn_cty_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.CURRENT_COUNTRY_ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', ap_pr.CURRENT_COUNTRY_ID)'
   data_type: string
   description: FK đến Geographic Area — quốc gia tạm trú (snapshot)
   target_attr_name: Snapshot Current Country Id
@@ -229,7 +229,7 @@ mapping_columns:
   description: Mã quốc gia tạm trú (denormalized snapshot)
   target_attr_name: Snapshot Current Country Code
 - target_column: snpst_crn_prov_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.CURRENT_PROVINCE_ID)'
+  transformation: '{hash_id}(''NHNCK_PROVINCES'', ap_pr.CURRENT_PROVINCE_ID)'
   data_type: string
   description: FK đến Geographic Area — tỉnh tạm trú (snapshot)
   target_attr_name: Snapshot Current Province Id
@@ -239,7 +239,7 @@ mapping_columns:
   description: Mã tỉnh tạm trú (denormalized snapshot)
   target_attr_name: Snapshot Current Province Code
 - target_column: snpst_crn_dstc_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.CURRENT_DISTRICT_ID)'
+  transformation: '{hash_id}(''NHNCK_DISTRICTS'', ap_pr.CURRENT_DISTRICT_ID)'
   data_type: string
   description: FK đến Geographic Area — huyện tạm trú (snapshot)
   target_attr_name: Snapshot Current District Id

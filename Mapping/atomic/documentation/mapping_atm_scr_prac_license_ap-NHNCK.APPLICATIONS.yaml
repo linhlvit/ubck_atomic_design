@@ -160,7 +160,7 @@ mapping_columns:
   description: Ghi chú bổ sung.
   target_attr_name: Note
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', appl.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến Securities Practitioner.
   target_attr_name: Securities Practitioner Id
@@ -170,7 +170,7 @@ mapping_columns:
   description: Mã người hành nghề.
   target_attr_name: Securities Practitioner Code
 - target_column: license_ctf_doc_id
-  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.CERTIFICATE_RECORD_ID)'
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', appl.CERTIFICATE_RECORD_ID)'
   data_type: string
   description: FK đến License Certificate Document (CCHN trong sổ đăng bộ).
   target_attr_name: License Certificate Document Id
@@ -180,7 +180,7 @@ mapping_columns:
   description: Mã CCHN trong sổ đăng bộ.
   target_attr_name: License Certificate Document Code
 - target_column: prev_license_ctf_doc_id
-  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.PREVIOUS_CERTIFICATE_RECORD_ID)'
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', appl.PREVIOUS_CERTIFICATE_RECORD_ID)'
   data_type: string
   description: FK đến CCHN cũ (khi cấp lại).
   target_attr_name: Previous License Certificate Document Id
@@ -190,7 +190,7 @@ mapping_columns:
   description: Mã CCHN cũ.
   target_attr_name: Previous License Certificate Document Code
 - target_column: exam_ases_id
-  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.EXAM_SESSION_ID)'
+  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', appl.EXAM_SESSION_ID)'
   data_type: string
   description: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
   target_attr_name: Examination Assessment Id
@@ -200,7 +200,7 @@ mapping_columns:
   description: Mã đợt thi sát hạch.
   target_attr_name: Examination Assessment Code
 - target_column: assignee_ofcr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.ASSIGNEE_ID)'
+  transformation: '{hash_id}(''NHNCK_USERS'', appl.ASSIGNEE_ID)'
   data_type: string
   description: FK đến Regulatory Authority Officer — cán bộ được phân công xử lý hồ
     sơ.
@@ -211,7 +211,7 @@ mapping_columns:
   description: Mã cán bộ được phân công.
   target_attr_name: Assignee Officer Code
 - target_column: info_verify_ofcr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.INFO_VERIFY_ID)'
+  transformation: '{hash_id}(''NHNCK_USERS'', appl.INFO_VERIFY_ID)'
   data_type: string
   description: FK đến Regulatory Authority Officer — cán bộ xác minh thông tin.
   target_attr_name: Info Verify Officer Id

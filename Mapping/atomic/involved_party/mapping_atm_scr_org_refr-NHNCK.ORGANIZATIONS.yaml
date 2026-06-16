@@ -151,7 +151,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi gần nhất.
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', org.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', org.CREATED_BY)'
   data_type: string
   description: FK đến cán bộ tạo bản ghi.
   target_attr_name: Created By Officer Id
@@ -161,7 +161,7 @@ mapping_columns:
   description: Mã cán bộ tạo bản ghi.
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', org.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', org.UPDATED_BY)'
   data_type: string
   description: FK đến cán bộ cập nhật bản ghi gần nhất.
   target_attr_name: Updated By Officer Id

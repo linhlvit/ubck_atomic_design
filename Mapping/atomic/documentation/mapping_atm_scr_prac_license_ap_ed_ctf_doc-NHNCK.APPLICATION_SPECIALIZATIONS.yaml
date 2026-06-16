@@ -37,7 +37,7 @@ mapping_columns:
   target_attr_name: Securities Practitioner License Application Education Certificate
     Document Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_SPECIALIZATIONS'', ap_sp.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ap_sp.APPLICATION_ID)'
   data_type: string
   description: FK đến License Application (hồ sơ đăng ký)
   target_attr_name: License Application Id
@@ -72,7 +72,7 @@ mapping_columns:
   description: Thời điểm thẩm định hoàn tất
   target_attr_name: Appraisal Completed Date
 - target_column: appraised_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_SPECIALIZATIONS'', ap_sp.ASSIGNEE_ID)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ap_sp.ASSIGNEE_ID)'
   data_type: string
   description: FK đến cán bộ thẩm định (Regulatory Authority Officer)
   target_attr_name: Appraised By Officer Id

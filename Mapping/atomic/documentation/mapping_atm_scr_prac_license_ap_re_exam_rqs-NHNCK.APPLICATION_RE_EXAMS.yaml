@@ -40,7 +40,7 @@ mapping_columns:
   description: Mã nguồn dữ liệu
   target_attr_name: Source System Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ap_re_ex.APPLICATION_ID)'
   data_type: string
   description: FK đến hồ sơ gốc đã thi trượt
   target_attr_name: License Application Id
@@ -50,7 +50,7 @@ mapping_columns:
   description: Mã hồ sơ gốc
   target_attr_name: License Application Code
 - target_column: exam_ases_rslt_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.EXAM_DETAIL_ID)'
+  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ap_re_ex.EXAM_DETAIL_ID)'
   data_type: string
   description: FK đến kết quả thi trượt
   target_attr_name: Examination Assessment Result Id
@@ -60,7 +60,7 @@ mapping_columns:
   description: Mã kết quả thi trượt
   target_attr_name: Examination Assessment Result Code
 - target_column: re_exam_license_ap_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.RE_APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ap_re_ex.RE_APPLICATION_ID)'
   data_type: string
   description: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
   target_attr_name: Re-Exam License Application Id
@@ -75,7 +75,7 @@ mapping_columns:
   description: Trạng thái bản ghi (1=Hoạt động)
   target_attr_name: Record Status Code
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ap_re_ex.CREATED_BY)'
   data_type: string
   description: FK đến Officer tạo bản ghi
   target_attr_name: Created By Officer Id
@@ -85,7 +85,7 @@ mapping_columns:
   description: Mã người tạo
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ap_re_ex.UPDATED_BY)'
   data_type: string
   description: FK đến Officer cập nhật bản ghi
   target_attr_name: Updated By Officer Id

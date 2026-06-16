@@ -41,7 +41,7 @@ mapping_columns:
   description: Mã hệ thống nguồn.
   target_attr_name: Source System Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_WORK_HISTORIES'', pr_wo_hi.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pr_wo_hi.PROFESSIONAL_ID)'
   data_type: string
   description: Surrogate key FK đến người hành nghề chứng khoán.
   target_attr_name: Securities Practitioner Id
@@ -51,7 +51,7 @@ mapping_columns:
   description: Mã kỹ thuật của người hành nghề (dư thừa).
   target_attr_name: Securities Practitioner Code
 - target_column: scr_org_refr_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_WORK_HISTORIES'', pr_wo_hi.ORGANIZATION_ID)'
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', pr_wo_hi.ORGANIZATION_ID)'
   data_type: string
   description: Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành
     nghề làm việc.

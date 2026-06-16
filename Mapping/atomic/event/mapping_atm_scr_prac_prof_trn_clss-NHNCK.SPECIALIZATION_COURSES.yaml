@@ -66,7 +66,7 @@ mapping_columns:
   description: Địa điểm tổ chức thi
   target_attr_name: Exam Location Address
 - target_column: prov_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.PROVINCE_ID)'
+  transformation: '{hash_id}(''NHNCK_PROVINCES'', sp_co.PROVINCE_ID)'
   data_type: string
   description: FK đến tỉnh/thành nơi tổ chức thi
   target_attr_name: Province Id
@@ -96,7 +96,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', sp_co.CREATED_BY)'
   data_type: string
   description: FK đến cán bộ tạo bản ghi
   target_attr_name: Created By Officer Id
@@ -106,7 +106,7 @@ mapping_columns:
   description: Mã cán bộ tạo bản ghi
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', sp_co.UPDATED_BY)'
   data_type: string
   description: FK đến cán bộ cập nhật bản ghi
   target_attr_name: Updated By Officer Id

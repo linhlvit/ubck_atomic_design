@@ -36,7 +36,7 @@ mapping_columns:
   description: Business key từ APPLICATION_FEES.ID
   target_attr_name: Securities Practitioner License Application Fee Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_FEES'', ap_fe.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ap_fe.APPLICATION_ID)'
   data_type: string
   description: FK đến License Application
   target_attr_name: License Application Id
@@ -46,7 +46,7 @@ mapping_columns:
   description: Mã hồ sơ đăng ký (lookup pair)
   target_attr_name: License Application Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_FEES'', ap_fe.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ap_fe.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến Securities Practitioner (redundant — derive được từ Application)
   target_attr_name: Securities Practitioner Id
@@ -116,7 +116,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_FEES'', ap_fe.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ap_fe.CREATED_BY)'
   data_type: string
   description: FK đến cán bộ tạo bản ghi
   target_attr_name: Created By Officer Id
@@ -126,7 +126,7 @@ mapping_columns:
   description: Mã cán bộ tạo bản ghi
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_APPLICATION_FEES'', ap_fe.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ap_fe.UPDATED_BY)'
   data_type: string
   description: FK đến cán bộ cập nhật bản ghi
   target_attr_name: Updated By Officer Id

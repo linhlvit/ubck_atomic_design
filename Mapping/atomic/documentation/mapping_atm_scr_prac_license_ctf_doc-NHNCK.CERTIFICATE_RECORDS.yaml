@@ -47,7 +47,7 @@ mapping_columns:
   description: Phân loại loại chứng chỉ (CCHN)
   target_attr_name: Certificate Type Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', ce_re.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ce_re.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến Securities Practitioner
   target_attr_name: Securities Practitioner Id
@@ -57,7 +57,7 @@ mapping_columns:
   description: Mã nghiệp vụ của người hành nghề
   target_attr_name: Securities Practitioner Code
 - target_column: issu_license_dcsn_id
-  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', ce_re.ISSUE_DECISION_ID)'
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ce_re.ISSUE_DECISION_ID)'
   data_type: string
   description: FK đến quyết định cấp chứng chỉ
   target_attr_name: Issue License Decision Id
@@ -67,7 +67,7 @@ mapping_columns:
   description: Mã nghiệp vụ của quyết định cấp
   target_attr_name: Issue License Decision Code
 - target_column: revocation_license_dcsn_id
-  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', ce_re.REVOCATION_DECISION_ID)'
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ce_re.REVOCATION_DECISION_ID)'
   data_type: string
   description: FK đến quyết định thu hồi chứng chỉ
   target_attr_name: Revocation License Decision Id
@@ -77,7 +77,7 @@ mapping_columns:
   description: Mã nghiệp vụ của quyết định thu hồi
   target_attr_name: Revocation License Decision Code
 - target_column: cncl_license_dcsn_id
-  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', ce_re.CANCELLATION_DECISION_ID)'
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ce_re.CANCELLATION_DECISION_ID)'
   data_type: string
   description: FK đến quyết định hủy chứng chỉ
   target_attr_name: Cancellation License Decision Id

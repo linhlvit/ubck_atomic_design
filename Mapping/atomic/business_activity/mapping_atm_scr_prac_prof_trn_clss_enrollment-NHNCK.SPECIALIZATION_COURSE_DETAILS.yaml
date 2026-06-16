@@ -45,7 +45,7 @@ mapping_columns:
   description: Mã nguồn dữ liệu
   target_attr_name: Source System Code
 - target_column: scr_prac_prof_trn_clss_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.SPECIALIZATION_COURSE_ID)'
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co_de.SPECIALIZATION_COURSE_ID)'
   data_type: string
   description: FK đến lớp đào tạo nghiệp vụ chứng khoán
   target_attr_name: Securities Practitioner Professional Training Class Id
@@ -55,7 +55,7 @@ mapping_columns:
   description: Mã lớp đào tạo
   target_attr_name: Securities Practitioner Professional Training Class Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', sp_co_de.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến người hành nghề chứng khoán
   target_attr_name: Securities Practitioner Id
@@ -90,7 +90,7 @@ mapping_columns:
   description: Nơi sinh (snapshot)
   target_attr_name: Place of Birth
 - target_column: perm_rsdnc_cty_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.PERMANENT_COUNTRY_ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', sp_co_de.PERMANENT_COUNTRY_ID)'
   data_type: string
   description: FK đến quốc gia thường trú (snapshot)
   target_attr_name: Permanent Residence Country Id
@@ -100,7 +100,7 @@ mapping_columns:
   description: Mã quốc gia thường trú
   target_attr_name: Permanent Residence Country Code
 - target_column: perm_rsdnc_prov_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.PERMANENT_PROVINCE_ID)'
+  transformation: '{hash_id}(''NHNCK_PROVINCES'', sp_co_de.PERMANENT_PROVINCE_ID)'
   data_type: string
   description: FK đến tỉnh/thành thường trú (snapshot)
   target_attr_name: Permanent Residence Province Id
@@ -110,7 +110,7 @@ mapping_columns:
   description: Mã tỉnh/thành thường trú
   target_attr_name: Permanent Residence Province Code
 - target_column: perm_rsdnc_dstc_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.PERMANENT_DISTRICT_ID)'
+  transformation: '{hash_id}(''NHNCK_DISTRICTS'', sp_co_de.PERMANENT_DISTRICT_ID)'
   data_type: string
   description: FK đến quận/huyện thường trú (snapshot)
   target_attr_name: Permanent Residence District Id
@@ -165,7 +165,7 @@ mapping_columns:
   description: Ghi chú
   target_attr_name: Note
 - target_column: assignee_ofcr_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.ASSIGNEE_ID)'
+  transformation: '{hash_id}(''NHNCK_USERS'', sp_co_de.ASSIGNEE_ID)'
   data_type: string
   description: FK đến cán bộ phụ trách (nullable)
   target_attr_name: Assignee Officer Id
@@ -185,7 +185,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', sp_co_de.CREATED_BY)'
   data_type: string
   description: FK đến cán bộ tạo bản ghi
   target_attr_name: Created By Officer Id
@@ -195,7 +195,7 @@ mapping_columns:
   description: Mã cán bộ tạo bản ghi
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSE_DETAILS'', sp_co_de.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', sp_co_de.UPDATED_BY)'
   data_type: string
   description: FK đến cán bộ cập nhật bản ghi
   target_attr_name: Updated By Officer Id

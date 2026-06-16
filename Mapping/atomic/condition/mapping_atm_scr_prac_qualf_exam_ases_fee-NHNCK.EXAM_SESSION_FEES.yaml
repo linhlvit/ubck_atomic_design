@@ -42,7 +42,7 @@ mapping_columns:
   description: Mã nguồn dữ liệu
   target_attr_name: Source System Code
 - target_column: exam_ases_id
-  transformation: '{hash_id}(''NHNCK_EXAM_SESSION_FEES'', ex_se_fe.EXAM_SESSION_ID)'
+  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ex_se_fe.EXAM_SESSION_ID)'
   data_type: string
   description: FK đến đợt thi (Exam Assessment)
   target_attr_name: Examination Assessment Id
@@ -82,7 +82,7 @@ mapping_columns:
   description: Thời điểm cập nhật
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_EXAM_SESSION_FEES'', ex_se_fe.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ex_se_fe.CREATED_BY)'
   data_type: string
   description: FK đến Officer (người tạo)
   target_attr_name: Created By Officer Id
@@ -92,7 +92,7 @@ mapping_columns:
   description: Mã người tạo
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_EXAM_SESSION_FEES'', ex_se_fe.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ex_se_fe.UPDATED_BY)'
   data_type: string
   description: FK đến Officer (người cập nhật)
   target_attr_name: Updated By Officer Id

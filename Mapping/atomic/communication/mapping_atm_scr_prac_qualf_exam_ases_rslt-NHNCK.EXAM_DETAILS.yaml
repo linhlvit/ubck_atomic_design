@@ -43,7 +43,7 @@ mapping_columns:
   description: Mã nguồn dữ liệu
   target_attr_name: Source System Code
 - target_column: scr_prac_qualf_exam_ases_id
-  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ex_de.EXAM_SESSION_ID)'
+  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ex_de.EXAM_SESSION_ID)'
   data_type: string
   description: FK đến đợt thi sát hạch
   target_attr_name: Securities Practitioner Qualification Examination Assessment Id
@@ -53,7 +53,7 @@ mapping_columns:
   description: Mã đợt thi sát hạch
   target_attr_name: Securities Practitioner Qualification Examination Assessment Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ex_de.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ex_de.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến người hành nghề
   target_attr_name: Securities Practitioner Id
@@ -68,7 +68,7 @@ mapping_columns:
   description: Mã loại chứng chỉ dự thi
   target_attr_name: Certificate Type Code
 - target_column: license_ap_id
-  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ex_de.APPLICATION_ID)'
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', ex_de.APPLICATION_ID)'
   data_type: string
   description: FK đến hồ sơ đăng ký
   target_attr_name: License Application Id
@@ -128,7 +128,7 @@ mapping_columns:
   description: Thời điểm cập nhật bản ghi
   target_attr_name: Updated Timestamp
 - target_column: crt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ex_de.CREATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ex_de.CREATED_BY)'
   data_type: string
   description: FK đến cán bộ tạo bản ghi
   target_attr_name: Created By Officer Id
@@ -138,7 +138,7 @@ mapping_columns:
   description: Mã cán bộ tạo bản ghi
   target_attr_name: Created By Officer Code
 - target_column: udt_by_ofcr_id
-  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ex_de.UPDATED_BY)'
+  transformation: '{hash_id}(''NHNCK_USERS'', ex_de.UPDATED_BY)'
   data_type: string
   description: FK đến cán bộ cập nhật bản ghi
   target_attr_name: Updated By Officer Id

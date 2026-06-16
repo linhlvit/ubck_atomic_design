@@ -49,7 +49,7 @@ mapping_columns:
   description: Giới tính
   target_attr_name: Individual Gender Code
 - target_column: ou_id
-  transformation: '{hash_id}(''NHNCK_USERS'', user.UNIT_ID)'
+  transformation: '{hash_id}(''NHNCK_UNITS'', user.UNIT_ID)'
   data_type: string
   description: FK đến Regulatory Authority Organization Unit (đơn vị)
   target_attr_name: Organization Unit Id
@@ -59,7 +59,7 @@ mapping_columns:
   description: Mã đơn vị
   target_attr_name: Organization Unit Code
 - target_column: dept_id
-  transformation: '{hash_id}(''NHNCK_USERS'', user.DEPARTMENT_ID)'
+  transformation: '{hash_id}(''NHNCK_DEPARTMENTS'', user.DEPARTMENT_ID)'
   data_type: string
   description: FK đến Regulatory Authority Organization Unit (phòng ban)
   target_attr_name: Department Id
@@ -74,7 +74,7 @@ mapping_columns:
   description: Mã vị trí/chức danh
   target_attr_name: Position Code
 - target_column: scr_prac_id
-  transformation: '{hash_id}(''NHNCK_USERS'', user.PROFESSIONAL_ID)'
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', user.PROFESSIONAL_ID)'
   data_type: string
   description: FK đến Securities Practitioner (nếu cán bộ cũng là NHNCK)
   target_attr_name: Securities Practitioner Id

@@ -85,7 +85,7 @@ mapping_columns:
   description: Trạng thái tài khoản người dùng trên cổng NHNCK
   target_attr_name: Account Status Code
 - target_column: org_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.ORGANIZATION_ID)'
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', pro.ORGANIZATION_ID)'
   data_type: string
   description: FK đến tổ chức chứng khoán hiện tại (nullable)
   target_attr_name: Organization Id
@@ -95,7 +95,7 @@ mapping_columns:
   description: Mã tổ chức (denormalized lookup)
   target_attr_name: Organization Code
 - target_column: nat_id
-  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.NATIONALITY_ID)'
+  transformation: '{hash_id}(''NHNCK_COUNTRIES'', pro.NATIONALITY_ID)'
   data_type: string
   description: FK đến Geographic Area (quốc tịch)
   target_attr_name: Nationality Id
