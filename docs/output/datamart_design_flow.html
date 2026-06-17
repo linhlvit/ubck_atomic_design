@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Datamart Design Flow</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 20px;
+      color: #1a237e;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .diagram-wrap {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      padding: 28px 32px;
+      overflow-x: auto;
+    }
+    /* Override mermaid subgraph label sizes */
+    .mermaid .cluster-label { font-size: 13px !important; }
+  </style>
+</head>
+<body>
+
+<h1>Datamart Design Flow — UBCKNN</h1>
+<p class="subtitle">Workflow thiết kế Datamart layer theo skill: datamart-hld-design → datamart-lld-design (Phase 2 / 2b / 3 / 4) → datamart-review</p>
+
+<div class="diagram-wrap">
+<div class="mermaid">
+%%{init: {"theme": "default", "flowchart": {"curve": "basis", "useMaxWidth": false, "htmlLabels": true}, "themeVariables": {"fontSize": "13px"}} }%%
+flowchart LR
+
+    %% ══════════════════════════════════════════
+    %% INPUTS
+    %% ══════════════════════════════════════════
+    subgraph INPUT["📥 Input"]
+        direction TB
+        BA["BA_analyst_{MODULE}.csv\nDone / Doing / Pending"]
+        SCR["Screenshot báo cáo"]
+        SRC["Source_Analysis.md"]
+        ATM[("atomic_attributes.yaml\nnguồn sự thật Atomic")]
+    end
+
+    %% ══════════════════════════════════════════
+    %% PHASE 1 — HLD
+    %% ══════════════════════════════════════════
+    subgraph P1["skill: datamart-hld-design"]
+        direction TB
+        DET1(["Deterministic"])
+        RSN1(["REASONING"])
+        HLD_OUT["DTM_{MODULE}_HLD.md\n• Data Lineage\n• Tổng quan báo cáo\n• erDiagram\n• Vấn đề mở"]
+    end
+
+    %% ══════════════════════════════════════════
+    %% GATE 1
+    %% ══════════════════════════════════════════
+    HR1[/"Human Review\nHLD"/]
+
+    %% errors gate 1
+    E1A["Chiều không có KPI_ID"]
+    E1B["Atomic READY chưa tra yaml"]
+    E1C["erDiagram sai type / thiếu PK"]
+    E1D["STT nhóm tự đánh lại"]
+
+    %% ══════════════════════════════════════════
+    %% PHASE 2 — ATTRIBUTES
+    %% ══════════════════════════════════════════
+    subgraph P2["skill: datamart-lld-design — Phase 2"]
+        direction TB
+        DET2(["Deterministic"])
+        RSN2(["REASONING"])
+        ATT_OUT["DTM_{MODULE}_Attributes.csv\n• Driving Table\n• etl_logic_type / etl_logic\n• src_stm_code dim/operational"]
+    end
+
+    %% ══════════════════════════════════════════
+    %% GATE 2
+    %% ══════════════════════════════════════════
+    HR2[/"Human Review\nAttributes"/]
+
+    %% errors gate 2
+    E2A["etl_logic thiếu table. prefix"]
+    E2B["src_stm_code thiếu WHERE filter"]
+    E2C["join_atomic trùng driving table"]
+    E2D["Dim/Operational thiếu src_stm_code"]
+
+    %% ══════════════════════════════════════════
+    %% PHASE 2b — ENTITIES
+    %% ══════════════════════════════════════════
+    subgraph P2B["skill: datamart-lld-design — Phase 2b"]
+        direction TB
+        DET2B(["Deterministic"])
+        ENT_OUT["DTM_{MODULE}_Entities.csv\nDTM_{MODULE}_Entities.md\n• Quan hệ bảng · FK\n• status = draft"]
+    end
+
+    %% ══════════════════════════════════════════
+    %% GATE 2b
+    %% ══════════════════════════════════════════
+    HR2B[/"Human Review\nEntities"/]
+
+    %% errors gate 2b
+    E2BA["FK sai chiều cha/con"]
+    E2BB["Tự set status = ready"]
+
+    %% ══════════════════════════════════════════
+    %% PHASE 3 — DETAIL MAPPING
+    %% ══════════════════════════════════════════
+    subgraph P3["skill: datamart-lld-design — Phase 3"]
+        direction TB
+        DET3(["Deterministic"])
+        RSN3(["REASONING"])
+        MAP_OUT["DTM_{MODULE}_Detail_Mapping.csv\n• Cross-check BA ↔ HLD trước\n• column_role / logic\n• SLICER/FILTER đủ mỗi nhóm\n• KPI Pending → placeholder"]
+    end
+
+    %% ══════════════════════════════════════════
+    %% GATE 3
+    %% ══════════════════════════════════════════
+    HR3[/"Human Review\nDetail Mapping"/]
+
+    %% errors gate 3
+    E3A["logic dùng tên logical (phải physical)"]
+    E3B["SLICER dùng shorthand xem nhóm X"]
+    E3C["KPI_ID sinh mới ngoài HLD"]
+    E3D["Bỏ qua Doing / Phân loại Chiều"]
+
+    %% ══════════════════════════════════════════
+    %% PHASE 4 — FLAT TABLE SQL
+    %% ══════════════════════════════════════════
+    subgraph P4["skill: datamart-lld-design — Phase 4"]
+        direction TB
+        DET4(["Deterministic"])
+        SQL_OUT["flat-table/{MODULE}/\n01_create_*.sql\n02_populate_*.sql\n• Chỉ fact + operational\n• ClickHouse DDL"]
+    end
+
+    %% ══════════════════════════════════════════
+    %% REVIEW LOOP
+    %% ══════════════════════════════════════════
+    subgraph RV["skill: datamart-review"]
+        direction TB
+        RV_A(["Kịch bản A\nHLD PENDING\n→ hld-design"])
+        RV_B(["Kịch bản B\nBA đổi logic\n→ lld-design"])
+        RV_C(["Kịch bản C\nLỗi kỹ thuật\n→ sửa trực tiếp"])
+        RV_G(["Gap Atomic\n→ ghi nhận PENDING"])
+    end
+
+    %% ══════════════════════════════════════════
+    %% CONNECTIONS — MAIN FLOW
+    %% ══════════════════════════════════════════
+    BA --> P1
+    SCR --> P1
+    SRC --> P1
+    ATM --> P1
+
+    DET1 --> HLD_OUT
+    RSN1 --> HLD_OUT
+    HLD_OUT --> HR1
+
+    HR1 -->|"approved"| P2
+    ATM --> P2
+
+    DET2 --> ATT_OUT
+    RSN2 --> ATT_OUT
+    ATT_OUT --> HR2
+
+    HR2 -->|"approved"| P2B
+
+    DET2B --> ENT_OUT
+    ENT_OUT --> HR2B
+
+    HR2B -->|"approved"| P3
+    BA --> P3
+
+    DET3 --> MAP_OUT
+    RSN3 --> MAP_OUT
+    MAP_OUT --> HR3
+
+    HR3 -->|"approved"| P4
+    ATT_OUT --> P4
+    ENT_OUT --> P4
+
+    DET4 --> SQL_OUT
+
+    %% ══════════════════════════════════════════
+    %% REVIEW LOOP CONNECTIONS
+    %% ══════════════════════════════════════════
+    SQL_OUT -.->|"trigger review"| RV
+    RV_A -.->|"re-design HLD"| P1
+    RV_B -.->|"update LLD"| P2
+    RV_C -.-> MAP_OUT
+
+    %% ══════════════════════════════════════════
+    %% ERROR ANNOTATIONS — đỏ trỏ vào gate
+    %% ══════════════════════════════════════════
+    E1A:::errNode --> HR1
+    E1B:::errNode --> HR1
+    E1C:::errNode --> HR1
+    E1D:::errNode --> HR1
+
+    E2A:::errNode --> HR2
+    E2B:::errNode --> HR2
+    E2C:::errNode --> HR2
+    E2D:::errNode --> HR2
+
+    E2BA:::errNode --> HR2B
+    E2BB:::errNode --> HR2B
+
+    E3A:::errNode --> HR3
+    E3B:::errNode --> HR3
+    E3C:::errNode --> HR3
+    E3D:::errNode --> HR3
+
+    %% ══════════════════════════════════════════
+    %% STYLES
+    %% ══════════════════════════════════════════
+    classDef errNode fill:#ffebee,stroke:#e53935,stroke-width:1.5px,color:#b71c1c,font-size:11px
+    classDef mechNode fill:#e8f5e9,stroke:#43a047,stroke-width:1.5px,color:#1b5e20,font-style:italic
+    classDef outputNode fill:#e3f2fd,stroke:#1565c0,stroke-width:1.5px,color:#0d47a1
+    classDef reviewNode fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1.5px,color:#4a148c
+    classDef gateNode fill:#fff9c4,stroke:#f9a825,stroke-width:2px,color:#5f4200
+    classDef inputNode fill:#fce4ec,stroke:#c62828,stroke-width:1px,color:#880e4f
+    classDef dbNode fill:#fff3e0,stroke:#e65100,stroke-width:1.5px,color:#bf360c
+
+    class DET1,DET2,DET2B,DET3,DET4,RSN1,RSN2,RSN3 mechNode
+    class HLD_OUT,ATT_OUT,ENT_OUT,MAP_OUT,SQL_OUT outputNode
+    class RV_A,RV_B,RV_C,RV_G reviewNode
+    class HR1,HR2,HR2B,HR3 gateNode
+    class BA,SCR,SRC inputNode
+    class ATM dbNode
+</div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { curve: 'basis', useMaxWidth: false }
+  });
+</script>
+</body>
+</html>

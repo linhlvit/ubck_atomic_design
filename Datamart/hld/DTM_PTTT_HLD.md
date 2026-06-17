@@ -536,16 +536,18 @@ flowchart LR
 
 **Mockup:**
 
-| Chỉ tiêu rủi ro | Giá trị hiện tại | Mức độ tác động | Tỷ trọng |
+| Chỉ tiêu rủi ro | Giá trị hiện tại (raw value) | Mức độ tác động (Z-score) | Tỷ trọng |
 |---|---|---|---|
-| Biến động chỉ số VN-Index | 1.45 | 0.29 | 20% |
-| Thanh khoản thị trường | -0.87 | -0.17 | 20% |
-| Dư nợ Margin | 0.63 | 0.09 | 15% |
-| Lãi suất liên ngân hàng | 0.21 | 0.03 | 15% |
-| Dòng tiền ròng NĐTNN | -1.02 | -0.15 | 15% |
-| Huy động vốn cổ phần | — | — | 15% |
+| Biến động chỉ số VN-Index | Rₜ = 0.0082 (log return ngày t) | 1.45 | 20% |
+| Thanh khoản thị trường | ILLIQₜ = 0.000031 | -0.87 | 20% |
+| Dư nợ Margin | Mₜ = 12.3% (Dư nợ / MCAP) | 0.63 | 15% |
+| Lãi suất liên ngân hàng | IRₜ = 4.85% | 0.21 | 15% |
+| Dòng tiền ròng NĐTNN | Fₜ = -320 tỷ VND | -1.02 | 15% |
+| Huy động vốn cổ phần | Cₜ = — | — | 15% |
 
 *(Huy động vốn cổ phần — PENDING)*
+
+> **Ghi chú mockup:** "Giá trị hiện tại" = raw value xₜ tại ngày t (Rₜ, ILLIQₜ, Mₜ, IRₜ, Fₜ, Cₜ). "Mức độ tác động" = Z-score chuẩn hóa = (xₜ − μ) / σ. Hai cột này độc lập, không tính Z × Weight.
 
 **Source:** `Fact Market Risk Snapshot` → `Calendar Date Dimension`
 
@@ -553,22 +555,26 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_PTTT_3 | Z-score Biến động giá | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Volatility` | Reuse từ Nhóm 1 |
-| K_PTTT_4 | Z-score Thanh khoản ILLIQ | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Liquidity` | Reuse từ Nhóm 1 |
-| K_PTTT_5 | Z-score Dư nợ Margin | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Margin` | Reuse từ Nhóm 1 |
-| K_PTTT_6 | Z-score Lãi suất liên ngân hàng | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Interest_Rate` | Reuse từ Nhóm 1 |
-| K_PTTT_7 | Z-score Dòng tiền ròng NĐTNN | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Foreign_Flow` | Reuse từ Nhóm 1 |
-| K_PTTT_12 | Mức độ tác động — Thanh khoản | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Liquidity × fct_mkt_rsk_snpst.Weight_Liquidity` | |
-| K_PTTT_13 | Mức độ tác động — Biến động chỉ số VN-Index | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Volatility × fct_mkt_rsk_snpst.Weight_Volatility` | |
-| K_PTTT_14 | Mức độ tác động — Dư nợ Margin | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Margin × fct_mkt_rsk_snpst.Weight_Margin` | |
-| K_PTTT_15 | Mức độ tác động — Lãi suất liên ngân hàng | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Interest_Rate × fct_mkt_rsk_snpst.Weight_Interest_Rate` | |
-| K_PTTT_16 | Mức độ tác động — Dòng tiền ròng NĐTNN | Số thực | Phái sinh | `fct_mkt_rsk_snpst.Z_Score_Foreign_Flow × fct_mkt_rsk_snpst.Weight_Foreign_Flow` | |
-| K_PTTT_18 | Tỷ trọng (Weight) — Biến động chỉ số VN-Index | % | Phái sinh | `fct_mkt_rsk_snpst.Weight_Volatility` | Reuse từ Nhóm 1 |
-| K_PTTT_19 | Tỷ trọng (Weight) — Thanh khoản | % | Phái sinh | `fct_mkt_rsk_snpst.Weight_Liquidity` | Reuse từ Nhóm 1 |
-| K_PTTT_20 | Tỷ trọng (Weight) — Dư nợ Margin | % | Phái sinh | `fct_mkt_rsk_snpst.Weight_Margin` | Reuse từ Nhóm 1 |
-| K_PTTT_21 | Tỷ trọng (Weight) — Lãi suất liên ngân hàng | % | Phái sinh | `fct_mkt_rsk_snpst.Weight_Interest_Rate` | Reuse từ Nhóm 1 |
-| K_PTTT_22 | Tỷ trọng (Weight) — Dòng tiền ròng NĐTNN | % | Phái sinh | `fct_mkt_rsk_snpst.Weight_Foreign_Flow` | Reuse từ Nhóm 1 |
-| K_PTTT_23 | Tỷ trọng (Weight) — Huy động vốn cổ phần | % | Phái sinh | `fct_mkt_rsk_snpst.Weight_Equity_Raise` | Reuse từ Nhóm 1 |
+| **Giá trị hiện tại (raw value tại ngày t)** | | | | | |
+| K_PTTT_12 | Giá trị hiện tại — Biến động chỉ số VN-Index (Rₜ) | Số thực | Cơ sở | `fct_mkt_rsk_snpst.indx_log_rtn_t` | Log return ngày t: ln(Pₜ/Pₜ₋₁) |
+| K_PTTT_13 | Giá trị hiện tại — Thanh khoản ILLIQ (ILLIQₜ) | Số thực | Cơ sở | `fct_mkt_rsk_snpst.illiq_t` | ILLIQₜ = \|Rₜ\| / VOLDₜ |
+| K_PTTT_10 | Giá trị hiện tại — Dư nợ Margin (Mₜ) | % | Phái sinh | `fct_mkt_rsk_snpst.mrgn_mcap_rto_pct` | Reuse từ Nhóm 1: Mₜ = MDₜ/MCAPₜ × 100 |
+| K_PTTT_14 | Giá trị hiện tại — Lãi suất liên ngân hàng (IRₜ) | % | Cơ sở | `fct_mkt_rsk_snpst.ir_t_pct` | Lãi suất tại ngày t từ RISK_INDICATOR_VALUE |
+| K_PTTT_15 | Giá trị hiện tại — Dòng tiền ròng NĐTNN (Fₜ) | Tỷ VND | Cơ sở | `fct_mkt_rsk_snpst.frgn_net_flw_t_bil` | Fₜ = SUM(buy) − SUM(sell) NĐTNN ngày t |
+| K_PTTT_16 | Giá trị hiện tại — Huy động vốn cổ phần (Cₜ) | Tỷ VND | Cơ sở | `fct_mkt_rsk_snpst.eqty_rse_t_bil` | PENDING — nguồn BA chưa mapping |
+| **Mức độ tác động (= Z-score chuẩn hóa, reuse từ Nhóm 1)** | | | | | |
+| K_PTTT_3 | Mức độ tác động — Biến động VN-Index (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_vol` | Reuse K_PTTT_3 từ Nhóm 1 — Mức độ tác động = Z-score |
+| K_PTTT_4 | Mức độ tác động — Thanh khoản ILLIQ (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_lqdt` | Reuse K_PTTT_4 từ Nhóm 1 — Mức độ tác động = Z-score |
+| K_PTTT_5 | Mức độ tác động — Dư nợ Margin (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_mrgn` | Reuse K_PTTT_5 từ Nhóm 1 — Mức độ tác động = Z-score |
+| K_PTTT_6 | Mức độ tác động — Lãi suất liên ngân hàng (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_ir` | Reuse K_PTTT_6 từ Nhóm 1 — Mức độ tác động = Z-score |
+| K_PTTT_7 | Mức độ tác động — Dòng tiền ròng NĐTNN (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_frgn_flw` | Reuse K_PTTT_7 từ Nhóm 1 — Mức độ tác động = Z-score |
+| **Tỷ trọng (Weight)** | | | | | |
+| K_PTTT_18 | Tỷ trọng (Weight) — Biến động chỉ số VN-Index | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_vol` | Reuse từ Nhóm 1 |
+| K_PTTT_19 | Tỷ trọng (Weight) — Thanh khoản | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_lqdt` | Reuse từ Nhóm 1 |
+| K_PTTT_20 | Tỷ trọng (Weight) — Dư nợ Margin | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_mrgn` | Reuse từ Nhóm 1 |
+| K_PTTT_21 | Tỷ trọng (Weight) — Lãi suất liên ngân hàng | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_ir` | Reuse từ Nhóm 1 |
+| K_PTTT_22 | Tỷ trọng (Weight) — Dòng tiền ròng NĐTNN | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_frgn_flw` | Reuse từ Nhóm 1 |
+| K_PTTT_23 | Tỷ trọng (Weight) — Huy động vốn cổ phần | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_eqty_rse` | Reuse từ Nhóm 1 |
 
 **Star Schema:**
 
@@ -577,13 +583,18 @@ erDiagram
     Fact_Market_Risk_Snapshot {
         int Snapshot_Date_Id FK
         float Volatility_30d
+        float Indx_Log_Rtn_t
+        float ILLIQ_t
+        float Margin_MCAP_Ratio_Pct
+        float IR_t_Pct
+        float Frgn_Net_Flw_t_Bil
+        float Eqty_Rse_t_Bil
         float Z_Score_Volatility
         float Z_Score_Liquidity
         float Z_Score_Margin
         float Z_Score_Interest_Rate
         float Z_Score_Foreign_Flow
         float MCAP_Total_Bil_VND
-        float Margin_MCAP_Ratio_Pct
         float Weight_Volatility
         float Weight_Liquidity
         float Weight_Margin
@@ -604,7 +615,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"] --> rpt_nh2_dong_gop["Dashboard Giám sát rủi ro — Nhóm 2: Z-score, Mức độ tác động, Tỷ trọng"]
+    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"] --> rpt_nh2_dong_gop["Dashboard Giám sát rủi ro — Nhóm 2: Giá trị hiện tại, Z-score, Mức độ tác động, Tỷ trọng"]
     cdr_dt_dim["Calendar Date Dimension"] --> rpt_nh2_dong_gop
 ```
 
@@ -619,9 +630,9 @@ flowchart LR
 
 ##### PENDING (Huy động vốn cổ phần)
 
-**KPI liên quan:** K_PTTT_8, K_PTTT_17
+**KPI liên quan:** K_PTTT_8, K_PTTT_16
 
-**Lý do pending:** K_PTTT_8 (Z-score Huy động vốn) cần nguồn SCMS.CBTT_CHAO_BAN + IDS-GSĐC + FMS — chưa có Atomic entity. K_PTTT_17 (Mức độ tác động) phụ thuộc K_PTTT_8.
+**Lý do pending:** K_PTTT_16 (Giá trị hiện tại — Huy động vốn Cₜ) và K_PTTT_8 (Z-score Huy động vốn) cần nguồn SCMS.CBTT_CHAO_BAN + IDS-GSĐC + FMS — chưa có Atomic entity.
 
 **Atomic cần bổ sung:** Xem Nhóm 1 — PENDING (Z-score Huy động vốn).
 
@@ -640,8 +651,8 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_PTTT_8 | Z-score Huy động vốn cổ phần (reuse từ Nhóm 1) | Phái sinh | PENDING |
-| K_PTTT_17 | Mức độ tác động — Huy động vốn cổ phần | Phái sinh | PENDING |
+| K_PTTT_16 | Giá trị hiện tại — Huy động vốn cổ phần (Cₜ) | Cơ sở | PENDING — nguồn BA chưa mapping |
+| K_PTTT_8 | Mức độ tác động — Huy động vốn cổ phần (Z-score, reuse từ Nhóm 1) | Phái sinh | PENDING |
 
 ---
 
