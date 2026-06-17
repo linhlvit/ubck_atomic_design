@@ -315,7 +315,7 @@ CERTIFICATE_CONVERSION_REQUESTS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTI
 CERTIFICATE_CONVERSION_REQUESTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
 CERTIFICATE_CONVERSION_REQUESTS,NOTES,NVARCHAR2(2000 CHAR),Ghi chú bổ sung,,
 CERTIFICATE_CONVERSION_REQUESTS,PROCESSED_AT,DATE,Thời điểm xử lý xong yêu cầu chuyển đổi,,
-CERTIFICATE_CONVERSION_REQUESTS,PROCESSED_BY,"NUMBER(10,0)",FK -> USERS: Người xử lý yêu cầu chuyển đổi,FK,FK → USERS.ID
+CERTIFICATE_CONVERSION_REQUESTS,PROCESSED_BY,"NUMBER(10,0)",FK -> USERS: Người xử lý yêu cầu chuyển đổi,FK,FK suy luận → USERS.ID
 CERTIFICATE_CONVERSION_REQUESTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
 CERTIFICATE_CONVERSION_REQUESTS,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
 CERTIFICATE_CONVERSION_REQUESTS,UPDATED_AT,DATE,Thời điểm cập nhật bản ghi lần cuối,,
@@ -381,7 +381,7 @@ CERTIFICATE_RECORD_GROUP_MEMBERS,ID,"NUMBER(10,0)",Khóa chính của bản ghi 
 CERTIFICATE_RECORD_GROUP_MEMBERS,CERTIFICATE_RECORD_GROUP_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORD_GROUPS: Nhóm cấp/thu hồi CCHN,FK,FK → CERTIFICATE_RECORD_GROUPS.ID
 CERTIFICATE_RECORD_GROUP_MEMBERS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
 CERTIFICATE_RECORD_GROUP_MEMBERS,ADDED_DATE,DATE,Ngày thêm bản ghi CCHN vào nhóm,,
-CERTIFICATE_RECORD_GROUP_MEMBERS,ADDED_BY,"NUMBER(10,0)",FK -> USERS: Người thêm bản ghi CCHN vào nhóm,FK,FK → USERS.ID
+CERTIFICATE_RECORD_GROUP_MEMBERS,ADDED_BY,"NUMBER(10,0)",FK -> USERS: Người thêm bản ghi CCHN vào nhóm,FK,FK suy luận → USERS.ID
 CERTIFICATE_RECORD_GROUP_MEMBERS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
 CERTIFICATE_RECORD_GROUP_MEMBERS,REISSUE,"NUMBER(10,0)","Cờ bản ghi CCHN này là cấp lại (không phải cấp mới): 1=Cấp lại, 0=Cấp mới",,
 CERTIFICATE_RECORD_GROUP_MEMBERS,REVOCATION_REASON,NVARCHAR2(2000 CHAR),Lý do thu hồi CCHN,,
@@ -448,7 +448,7 @@ DECISION_DOCUMENTS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản gh
 DECISION_DOCUMENTS,DECISION_NUMBER,NVARCHAR2(255 CHAR),Số quyết định hành chính (VD: 123/QĐ-UBCK),,
 DECISION_DOCUMENTS,POSITION,NVARCHAR2(255 CHAR),Chức vụ/vị trí đảm nhiệm,,
 DECISION_DOCUMENTS,FILE_PATH,NVARCHAR2(255 CHAR),"Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)",,
-DECISION_DOCUMENTS,SIGNED_BY,NVARCHAR2(255 CHAR),FK -> USERS: Người thực hiện ký số,FK,FK → USERS.ID
+DECISION_DOCUMENTS,SIGNED_BY,NVARCHAR2(255 CHAR),FK -> USERS: Người thực hiện ký số,FK,FK suy luận → USERS.ID
 DECISION_DOCUMENTS,SIGNED_DATE,DATE,Ngày ký ban hành quyết định,,
 DECISION_DOCUMENTS,RECORD_STATUS,"NUMBER(10,0)","Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động",,
 DECISION_DOCUMENTS,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
@@ -518,7 +518,7 @@ DOCUMENTS,MCDT_CODE,NVARCHAR2(50 CHAR),Mã chuyên ngành trên hệ thống C�
 DOCUMENTS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
 DOCUMENT_SIGN_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
 DOCUMENT_SIGN_LOGS,DOCUMENT_ID,"NUMBER(10,0)",FK -> DOCUMENTS: Loại tài liệu yêu cầu,FK,FK → DOCUMENTS.ID
-DOCUMENT_SIGN_LOGS,SIGNED_BY,"NUMBER(10,0)",FK -> USERS: Người thực hiện ký số,FK,FK → USERS.ID
+DOCUMENT_SIGN_LOGS,SIGNED_BY,"NUMBER(10,0)",FK -> USERS: Người thực hiện ký số,FK,FK suy luận → USERS.ID
 DOCUMENT_SIGN_LOGS,SIGNED_AT,DATE,Thời điểm ký số tài liệu/hồ sơ,,
 DOCUMENT_SIGN_LOGS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
 DOCUMENT_SIGN_LOGS,HASH,NVARCHAR2(510 CHAR),Giá trị hash của tài liệu đã được ký số,,
@@ -690,7 +690,7 @@ NOTIFICATION_CONFIGURATIONS,EMAIL_PARAMETERS_JSON,NCLOB,Danh sách tham số cho
 NOTIFICATION_CONFIGURATIONS,RECEIVERS_JSON,NCLOB,"Danh sách đối tượng nhận thông báo (JSON NCLOB: roles, units, users)",,
 ORGANIZATIONS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
 ORGANIZATIONS,PARENT_ID,"NUMBER(10,0)",FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp,FK,FK suy luận → ORGANIZATIONS.ID
-ORGANIZATIONS,ORGANIZATION_TYPE_ID,"NUMBER(10,0)","FK -> loại tổ chức kinh doanh CK: 0=Khác, 1=Công ty chứng khoán (CTCK), 2=Công ty quản lý quỹ (QLQ), 3=Ngân hàng",FK,FK suy luận → ORGANIZATIONS.ID
+ORGANIZATIONS,ORGANIZATION_TYPE_ID,"NUMBER(10,0)","FK -> loại tổ chức kinh doanh CK: 0=Khác, 1=Công ty chứng khoán (CTCK), 2=Công ty quản lý quỹ (QLQ), 3=Ngân hàng",FK,
 ORGANIZATIONS,LINKED_ID,"NUMBER(10,0)",ID liên kết với tổ chức trong hệ thống FMS hoặc SCMS,,
 ORGANIZATIONS,SYNC_ID,NVARCHAR2(100 CHAR),ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK,,
 ORGANIZATIONS,LEVEL_,NVARCHAR2(100 CHAR),Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh từ khóa Oracle),,
@@ -1003,7 +1003,7 @@ SEND_AND_RECIEVE_LOGS,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập n
 SIGNATURE_LOGS,ID,"NUMBER(10,0)",Khóa chính của bản ghi (số tự tăng),PK,
 SIGNATURE_LOGS,APPLICATION_ID,"NUMBER(10,0)",FK -> APPLICATIONS: Hồ sơ CCHN liên quan,FK,FK → APPLICATIONS.ID
 SIGNATURE_LOGS,CERTIFICATE_RECORD_ID,"NUMBER(10,0)",FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ,FK,FK → CERTIFICATE_RECORDS.ID
-SIGNATURE_LOGS,SIGNED_BY,"NUMBER(10,0)",FK -> USERS: Người thực hiện ký số,FK,FK → USERS.ID
+SIGNATURE_LOGS,SIGNED_BY,"NUMBER(10,0)",FK -> USERS: Người thực hiện ký số,FK,FK suy luận → USERS.ID
 SIGNATURE_LOGS,SIGNED_AT,DATE,Thời điểm ký số tài liệu/hồ sơ,,
 SIGNATURE_LOGS,RECORD_TYPE,"NUMBER(10,0)",Loại/phân loại của bản ghi,,
 SIGNATURE_LOGS,HASH,NVARCHAR2(510 CHAR),Giá trị hash của tài liệu đã được ký số,,
@@ -1125,7 +1125,7 @@ VERIFY_APPLICATION_STATUSES,SPEC_REASON,NCLOB,Lý do từ chối theo khía cạ
 VERIFY_APPLICATION_STATUSES,ORG_REASON,NCLOB,Lý do từ chối theo khía cạnh tổ chức (NCLOB),,
 VERIFY_APPLICATION_STATUSES,OVERVIEW_REASON,NCLOB,Lý do từ chối tổng quan của hồ sơ (NCLOB),,
 VERIFY_APPLICATION_STATUSES,OVERVIEW_FILE_PATH,NVARCHAR2(200 CHAR),Đường dẫn file tài liệu tổng quan thẩm định hồ sơ,,
-VERIFY_APPLICATION_STATUSES,VERIFIED_BY,"NUMBER(10,0)",FK -> USERS: Người xác minh/thẩm định cuối cùng,FK,FK → USERS.ID
+VERIFY_APPLICATION_STATUSES,VERIFIED_BY,"NUMBER(10,0)",FK -> USERS: Người xác minh/thẩm định cuối cùng,FK,FK suy luận → USERS.ID
 VERIFY_APPLICATION_STATUSES,CREATED_BY,"NUMBER(10,0)",ID tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
 VERIFY_APPLICATION_STATUSES,CREATED_AT,DATE,Thời điểm tạo bản ghi,,
 VERIFY_APPLICATION_STATUSES,UPDATED_BY,"NUMBER(10,0)",ID tài khoản người cập nhật bản ghi lần cuối,,FK suy luận → USERS.ID
