@@ -60,6 +60,12 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_mkt_rsk_snpst_flat ON CLUSTER 'my_c
     ir_val                      Nullable(Decimal(7,4))   COMMENT 'Lãi suất liên ngân hàng tại ngày snapshot',
     vnidx_mo_avg                Nullable(Decimal(10,2))  COMMENT 'Chỉ số VN-Index bình quân tháng',
     ir_mo_avg                   Nullable(Decimal(7,4))   COMMENT 'Lãi suất LNH bình quân tháng',
+    -- Raw values tại ngày t (Nhóm 2 — Giá trị hiện tại)
+    indx_log_rtn_t              Nullable(Decimal(10,8))  COMMENT 'Log return VN-Index tại ngày t — Rₜ = ln(Pₜ/Pₜ₋₁)',
+    illiq_t                     Nullable(Decimal(20,10)) COMMENT 'ILLIQ tại ngày t — ILLIQₜ = |Rₜ| / VOLDₜ',
+    ir_t_pct                    Nullable(Decimal(7,4))   COMMENT 'Lãi suất liên ngân hàng tại ngày t (%)',
+    frgn_net_flw_t_bil          Nullable(Decimal(23,2))  COMMENT 'Dòng tiền ròng NĐTNN tại ngày t (tỷ VND)',
+    eqty_rse_t_bil              Nullable(Decimal(23,2))  COMMENT 'Huy động vốn cổ phần tại ngày t (tỷ VND) — PENDING',
     -- From: CALENDAR DATE DIMENSION
     full_date                   Nullable(Date)           COMMENT 'Ngày đầy đủ — từ Calendar Date Dimension',
     day_of_week                 Nullable(String)         COMMENT 'Thứ trong tuần',
