@@ -1,4 +1,76 @@
-# Phase 2 — Attributes CSV Reference
+# Phase 1 — Attributes CSV Reference
+
+## Output và Naming
+
+### Cấu trúc thư mục
+
+```
+Datamart/lld/{MODULE}/
+    DTM_{MODULE}_{mart_table}.csv                        (fact — không có src_stm_code)
+    DTM_{MODULE}_{mart_table}_{src_stm_code}.csv         (dim, operational — mỗi nguồn 1 file)
+
+Datamart/lld/datamart_attributes.csv                     (master — append sau human approve)
+```
+
+- `{MODULE}` viết HOA (ví dụ `NHNCK`)
+- `{mart_table}` lấy từ cột `datamart_table` trong Entities.csv — không đặt lại
+- File `DTM_{MODULE}_Attributes.csv` tổng hợp theo module **không còn tồn tại**
+
+### Quy tắc src_stm_code cho dim và operational
+
+`src_stm_code` xác định từ **driving table** của bảng:
+1. Xác định driving table (bảng Atomic chính của grain — có PK/BK trong Attributes)
+2. Tra `DataModel/Atomic/dm_manifest.yaml` → tìm entry có `physical_name` = driving table
+3. Mở file YAML tương ứng → đọc attribute `Source System Code` → trích giá trị từ `classification_context`:
+   - Format: `"Source System Code = 'NHNCK_VIOLATIONS'"` → value = `NHNCK_VIOLATIONS`
+4. Dùng giá trị này làm suffix tên file
+
+Ví dụ: `scr_prac_conduct_vln` → manifest → entity YAML → `classification_context = "Source System Code = 'NHNCK_VIOLATIONS'"` → file = `DTM_NHNCK_scr_prac_conduct_vln_NHNCK_VIOLATIONS.csv`
+
+> **Nhiều source table cùng physical_name:** Đọc TẤT CẢ entry cùng `physical_name` trong manifest — mỗi entry có `classification_context` riêng → mỗi value = 1 file LLD riêng.
+
+### Flow Phase 1 theo reuse_status
+
+Đọc `Datamart/hld/DTM_{MODULE}_Entities.csv` → xử lý theo `reuse_status` từng bảng:
+
+| reuse_status | Hành động |
+|---|---|
+| `reuse` | **Không sinh file** — ghi note: "Bảng [datamart_table] reuse từ master, không cần thiết kế mới" |
+| `new` | Sinh file đầy đủ theo naming rule |
+| `partial` | Sinh file đầy đủ (toàn bộ cột bảng) — xem quy trình partial bên dưới |
+
+### Quy trình partial — thêm nguồn mới vào bảng đã có
+
+Khi `reuse_status = partial`:
+1. Đọc master `datamart_attributes.csv` — lấy tất cả cột hiện tại của `datamart_table` đó
+2. So sánh cột hiện có (master) với cột cần thiết kế cho nguồn mới
+3. Nếu có cột mới (delta) → **báo cáo human**:
+
+```
+Bảng [datamart_table] hiện có X cột từ nguồn [src cũ].
+Nguồn mới [src mới] cần thêm Y cột: [col_a, col_b, ...].
+
+Đề xuất:
+  - Cập nhật file nguồn cũ DTM_..._[src cũ].csv để map thêm Y cột (nếu có dữ liệu từ nguồn cũ)
+  - Sinh file mới DTM_..._[src mới].csv với đầy đủ X+Y cột
+
+→ Xin phê duyệt trước khi tiến hành
+```
+
+4. Sau human approve → **mọi file nguồn của bảng này phải chứa đầy đủ số cột hiện tại** (không có file nào thiếu cột so với schema bảng)
+
+### Merge vào master datamart_attributes.csv
+
+Sau khi human approve từng file:
+```
+"Merge file [tên file] vào datamart_attributes.csv không?"
+```
+
+- Nếu đồng ý → check trùng `(datamart_table, datamart_column)` trước khi append
+- Nếu trùng → bỏ qua dòng đó (không ghi đè)
+- Chỉ append rows mới (chưa có trong master)
+
+---
 
 ## Header 15 cột
 
