@@ -90,6 +90,14 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 5. **HLD hiện tại** (nếu có) — append thêm, không viết lại
 
+## BƯỚC 1B — SELF-REVIEW ATOMIC ATTRIBUTE NAMES (thực hiện TRƯỚC khi viết bảng KPI)
+
+- [ ] Mọi tên attribute dùng trong cột Nguồn/KPI → tra file YAML entity đó, lấy đúng `attribute.name` (field `name:` trong YAML, không phải `physical_name`). KHÔNG tự suy tên từ nghĩa nghiệp vụ.
+- [ ] Attribute không tìm thấy trong driving entity → kiểm tra entity liên quan (joined/shared entity), không kết luận PENDING trước khi tra entity phụ. Ví dụ: số định danh CCCD/Hộ chiếu nằm ở `Involved Party Alternative Identification`, không phải `Securities Practitioner`.
+- [ ] Attribute dạng ngày tháng có 2 trường tách biệt (VD: `Birth Date` + `Birth Year`) → ghi rõ cả 2 và công thức `COALESCE` trong ETL formula của KPI Derived. KHÔNG chỉ ghi 1 trường.
+
+---
+
 ## BƯỚC 2 — SCOPE GATING
 
 | KPI | Hành xử |
@@ -260,6 +268,8 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Node Datamart dùng `ID["label"]` — ID = physical name, label = logical name
 - [ ] Dim xuất hiện trong subgraph Datamart; link `Dim → Fact` (không phải `Fact → Dim`)
 - [ ] Dimension seed từ Classification Value: chỉ vẽ node `Classification Value` trong Atomic
+- [ ] **Mọi Dimension trong GOLD phải có Atomic entity nguồn trong SIL với edge đầy đủ** — duyệt từng node Dim trong subgraph GOLD, kiểm tra có ít nhất 1 Atomic entity trong SIL nối vào. Thiếu edge = thiếu nguồn → tự sửa trước khi xuất file. Ví dụ lỗi: `Securities Practitioner Dimension` xuất hiện trong GOLD nhưng không có node `Securities Practitioner` trong SIL + edge `Securities Practitioner → Securities Practitioner Dimension`.
+- [ ] **Mọi Atomic entity dùng ETL join vào Fact phải có edge riêng vào Fact** — nếu Atomic entity A được dùng để enrich/join khi populate Fact (không chỉ qua Dim), phải có edge `A → Fact` trong flowchart. Ví dụ lỗi: `Securities Practitioner` dùng để join lấy CCHN của NHN có `Practice_Status_Code='3'` → cần edge `Securities Practitioner → fct_prac_license_ctf_snpst`, không chỉ `Securities Practitioner → scr_prac_dim`.
 
 ### Section 2 — Tổng quan báo cáo
 - [ ] Hierarchy: `### Tab` → `#### Nhóm` → `##### PENDING/READY` (chỉ khi có cả 2) — quy tắc đặt tên:
@@ -278,6 +288,8 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] **KPI Done (sub-component) đã khai sinh ở Nhóm trước → reuse vào bảng KPI READY** — KHÔNG để trong PENDING header. Sub-component Done = thuộc READY, sub-component Pending = thuộc PENDING
 - [ ] Bảng PENDING không có Star Schema, erDiagram, Lineage flowchart
 - [ ] Block PENDING không tạo Open Issue (Section 4) về grain/schema/logic — chỉ ghi nhận Atomic cần bổ sung
+- [ ] **Tên attribute trong cột Nguồn phải là logical name chính xác từ YAML** — đọc `attribute.name` trong file YAML của entity đó. KHÔNG tự đặt tên theo cảm tính. Ví dụ sai: `Date Of Birth` khi YAML ghi `Birth Date`.
+- [ ] **KPI có nguồn từ entity phụ (join/shared entity)** → ghi rõ tên entity phụ + điều kiện join trong cột Nguồn. KHÔNG ghi nhầm vào entity chính. Ví dụ đúng: "`Involved Party Alternative Identification`.Identification Number — join qua ip_id, filter Identification Type Code = CCCD/PASSPORT".
 - [ ] KPI ID đã được khai sinh trong Section 2 trước khi xuất hiện ở file khác
 - [ ] Mọi dòng BA `Phân loại = "Chiều"` phải có KPI_ID trong bảng KPI của nhóm tương ứng — không được bỏ qua
 - [ ] Chiều dùng như ETL filter nội bộ (không hiển thị UI) → ghi rõ trong cột Ghi chú: "dùng trong formula KPI K_X_N" — vẫn phải có KPI_ID

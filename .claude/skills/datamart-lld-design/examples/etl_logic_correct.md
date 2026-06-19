@@ -42,15 +42,15 @@
 
 ---
 
-## `lookup_dim` — FK → SCD2 Dimension qua NK + date range
+## `lookup_dim` — FK → SCD4A Dimension qua NK (current state)
 
 ```csv
 "Fact Fund Management Company Snapshot","fct_fnd_mgt_co_snpst","Fund Management Company Dimension Id","fnd_mgt_co_dim_id","false","Surrogate Dimension Key","string","FK → Fund Management Company Dimension",
 "FK CTQLQ",
-"LOOKUP fnd_mgt_co_dim ON fnd_mgt_co_dim.co_code = rpt_impr_val.fnd_mgt_co_code AND rpt_impr_val.rpt_dt BETWEEN fnd_mgt_co_dim.eff_dt AND fnd_mgt_co_dim.expiry_dt","lookup_dim","Report Import Value","rpt_impr_val","Fund Management Company Code","fnd_mgt_co_code"
+"LOOKUP fnd_mgt_co_dim ON fnd_mgt_co_dim.co_code = rpt_impr_val.fnd_mgt_co_code","lookup_dim","Report Import Value","rpt_impr_val","Fund Management Company Code","fnd_mgt_co_code"
 ```
 
-**Đặc điểm:** `source_entity/atomic_table/atomic_column` = join key trong driving table. BETWEEN clause dùng `eff_dt`/`expiry_dt` của Dimension (ETL managed).
+**Đặc điểm:** `source_entity/atomic_table/atomic_column` = join key từ driving table. Dimension dùng SCD4A (current state) — không có `eff_dt`/`expiry_dt`, lookup đơn giản qua natural key.
 
 ---
 

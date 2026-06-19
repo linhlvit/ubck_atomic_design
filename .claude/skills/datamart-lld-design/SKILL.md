@@ -64,26 +64,33 @@ Phase 0 (PLAN):
            → trình bày plan tổng dạng bảng (xem định dạng bên dưới)
            → DỪNG chờ human approve plan → sau khi approve mới bắt đầu Nhóm 1
 
-Loop mỗi nhóm N (Phase 1 + Phase 2):
+Loop mỗi nhóm N — Phase 1 (HOÀN THÀNH TOÀN BỘ NHÓM TRƯỚC KHI CHUYỂN PHASE 2):
   Phase 1:   Đọc reuse_status từ Entities.csv cho các bảng của nhóm N
              → dim dùng chung đã thiết kế ở nhóm trước: check datamart_model.yaml
                → đủ cột → bỏ qua (reuse) | thiếu cột → báo delta, DỪNG chờ approve delta
              → bảng new/partial: đọc datamart_model.yaml lấy baseline (nếu partial)
              → xác định driving table + src_stm_code → sinh từng file
-             → SELF-REVIEW 4 TC → sửa nếu FAIL → trình bày SELF-REVIEW + file
+             → SELF-REVIEW 5 TC → sửa nếu FAIL → trình bày SELF-REVIEW + file
              → DỪNG chờ human duyệt từng file
              → hỏi merge master → DỪNG chờ human xác nhận merge
              → ghi datamart_model.yaml (upsert new / append delta)
+             → làm Nhóm N+1 Phase 1 → ... → làm đến hết Nhóm cuối Phase 1
 
+> **GATE CỨNG — chuyển Phase 2:**
+> ❌ KHÔNG được bắt đầu Phase 2 khi còn bất kỳ nhóm nào chưa hoàn thành Phase 1.
+> Điều kiện bắt buộc: **tất cả nhóm** (Nhóm 1 → Nhóm N_max) đã có file Attributes được human approve và merge vào master.
+> Trước khi chuyển Phase 2: liệt kê toàn bộ nhóm + trạng thái Phase 1 → báo cáo human → DỪNG chờ xác nhận.
+
+Loop mỗi nhóm N — Phase 2 (sau khi TOÀN BỘ Phase 1 đã xong):
   Phase 2:   Cross-check BA ↔ HLD cho KPI của nhóm N → báo gap nếu có
              → DỪNG chờ human xử lý gap (nếu có)
              → xuất block KPI nhóm N → append vào DTM_{MODULE}_Detail_Mapping.csv
              → SELF-REVIEW 4 TC → sửa nếu FAIL → trình bày SELF-REVIEW + block KPI
              → DỪNG chờ human duyệt block KPI nhóm N
+             → làm Nhóm N+1 Phase 2 → ... → làm đến hết Nhóm cuối Phase 2
 
-  → Sau khi human approve nhóm N (Phase 1 + Phase 2):
-             DỪNG — báo "Nhóm N hoàn thành. Tiếp tục Nhóm N+1?" → chờ human xác nhận
-             → làm nhóm N+1
+  → Sau khi human approve toàn bộ Phase 2:
+             DỪNG — báo "Tất cả nhóm Phase 2 hoàn thành." → chờ human xác nhận chuyển Phase 3
 
 Phase 3:   Sau khi tất cả nhóm đã duyệt → báo số bảng flat
            → DỪNG chờ human xác nhận
@@ -290,7 +297,7 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
-**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 4 testcase sau và báo kết quả:
+**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 5 testcase sau và báo kết quả:
 
 **TC1 — Số cột khớp HLD:**
 - Đếm số attribute trong file CSV vừa sinh (theo `datamart_attribute` unique, không đếm multi-source row).
@@ -300,8 +307,9 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 
 **TC2 — etl_logic_type hợp lệ:**
 - Kiểm tra mọi row không phải PK/NK/BK: `etl_logic_type` không được trống.
-- Kiểm tra đặc biệt: khi file CSV có `source_table` chứa ≥2 bảng Atomic (ký hiệu ` / ` trong `atomic_table`) → bảng nào là driving, bảng còn lại phải dùng `join_atomic` (không phải `direct`).
-- Báo: `✅ TC2 PASS` hoặc `❌ TC2 FAIL: [danh sách row sai etl_logic_type]`.
+- **Sub-check bắt buộc:** Với mỗi row có `etl_logic_type ∈ {direct, computed}`: kiểm tra `atomic_table` của row đó có phải driving table không. Nếu `atomic_table` khác driving table → phải đổi thành `join_atomic`. Ngoại lệ: `lookup_dim`, `lookup_date`, `pivot`, `pending` không áp dụng sub-check này.
+- Kiểm tra đặc biệt: khi file CSV có nhiều `atomic_table` khác nhau (ký hiệu ` / ` hoặc nhiều row khác nhau) → bảng nào không phải driving phải dùng `join_atomic`.
+- Báo: `✅ TC2 PASS` hoặc `❌ TC2 FAIL: [danh sách row sai etl_logic_type — ghi rõ atomic_table và driving table]`.
 - Nếu FAIL → sửa trước khi trình bày.
 
 **TC3 — Đầy đủ prefix table_name.column_name:**
@@ -315,7 +323,22 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 - Báo: `✅ TC4 PASS` hoặc `❌ TC4 FAIL: [tên bảng thiếu WHERE filter trên src_stm_code]`.
 - Nếu FAIL → sửa trước khi trình bày.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 4 TC đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+**TC5 — Cấu trúc CSV hợp lệ (bắt buộc dùng Bash tool):**
+- Sau khi Write file, chạy lệnh sau bằng Bash tool:
+  ```bash
+  python3 -c "
+  import csv
+  with open('<path_to_file>') as f:
+      rows = list(csv.reader(f))
+  bad = [i for i,r in enumerate(rows) if len(r) != 15]
+  print(f'Rows: {len(rows)-1} data rows')
+  print('Bad rows:', bad if bad else 'none')
+  "
+  ```
+- Báo: `✅ TC5 PASS: N rows × 15 cols` hoặc `❌ TC5 FAIL: row [i] có X cột — [nội dung row]`.
+- Nếu FAIL → sửa (thường do dấu `"` thiếu trong ô trống hoặc dấu phẩy trong etl_logic chưa được quote) → chạy lại TC5 → báo kết quả.
+
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 5 TC đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 
@@ -350,6 +373,7 @@ ATTRIBUTES CHECK:
 □ etl_logic (content) trống chỉ khi key ∈ {PK, NK, BK} hoặc etl_logic_type = pending
 □ etl_logic: mọi column reference có table_name. prefix
 □ etl_logic có dấu phẩy bên trong → đã double-quote trong CSV
+□ computed chỉ dùng khi TẤT CẢ input đều từ driving table — nếu dùng bảng khác (kể cả EXISTS, CASE WHEN, aggregate có điều kiện) → đổi thành join_atomic
 □ join_atomic: ghi rõ INNER JOIN hay LEFT JOIN
 □ Cột từ LEFT JOIN: nullable = true
 □ join_atomic: atomic_table khác driving — nếu trùng đổi về direct

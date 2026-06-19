@@ -394,7 +394,7 @@ AND SPECIALIZATION_COURSES.RECORD_STATUS ='1'";;;;;Chưa có SQL
 11;;Dashboard Cập nhật kiến thức của NHNCK;Ngày bắt đầu thi;;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;SPECIALIZATION_COURSES;EXAM_DATE_FROM;;;;;;;
 11;;Dashboard Cập nhật kiến thức của NHNCK;Ngày kết thúc thi;;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;SPECIALIZATION_COURSES;EXAM_DATE_TO;;;;;;;
 11;;Dashboard Cập nhật kiến thức của NHNCK;Điểm thi;;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;Specialization_Course_Details;Exam_Score;;;;;;;
-11;;Dashboard Cập nhật kiến thức của NHNCK;Kết quả thi;Kết quả thi (1: Đạt, 0: Không đạt);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;Specialization_Course_Details;Result;;;"Kết quả thi: 
+11;;Dashboard Cập nhật kiến thức của NHNCK;Kết quả thi;Kết quả thi (1: Đạt, 0: Không đạt);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;POST_CERT_TRAINING_COURSES;RECORD_STATUS;;;"Kết quả thi: 
 -1=Không thi, 0=Không đạt, 1=Đạt";;;;
 12;;Dashboard Lịch sử vi phạm của NHNCK;Số quyết định;Số quyết định xử phạt;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;DECISIONS;DECISION_NUMBER;;"select d.DECISION_NUMBER,d.SIGNED_DATE, v.* --count distinct a.IdentityId (mã định danh NHN)
 from QLNHN_UAT.Professionals a
@@ -413,12 +413,8 @@ Certificates.Certificate_Name";;;;;;;Done
 13;;Yêu cầu khai thác dữ liệu (Data Explorer);Ngày cấp;Ngày cấp CCHN;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;Certificate_Records;ISSUE_DATE;;;;;;;Done
 13;;Yêu cầu khai thác dữ liệu (Data Explorer);Trạng thái;"Trạng thái NHNCK:
 - Đang hành nghề
-- Chưa hành nghề";Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONALS;RECORD_STATUS;;;Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động;;;;Done
+- Chưa hành nghề";Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONALS;STATUS_WORK;;;Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động;;;;Done
 13;;Yêu cầu khai thác dữ liệu (Data Explorer);Điều kiện lọc: Loại hình;Chiều/ Loại chứng chỉ hành nghề;Data Explorer;Chiều;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;Certificates;"Certificates.Certificate_Code
 Certificates.Certificate_Name";;;;;;;Done
 13;;Yêu cầu khai thác dữ liệu (Data Explorer);Điều kiện lọc:Trạng thái;Chiều/ Trạng thái NHNCK;Data Explorer;Chiều;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONALS;RECORD_STATUS;;;Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động;;;;Done
 13;;Yêu cầu khai thác dữ liệu (Data Explorer);Mã định danh;Mã định danh NHNCK;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;PROFESSIONALS;IDENTITY_TYPE;;;;;;;
-13;;Yêu cầu khai thác dữ liệu (Data Explorer);Mã người hành nghề;Mã người hành nghề;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;;"Applications.ProfessionalId
-CertificateRecords. ProfessionalId";;;;;;;
-13;;Yêu cầu khai thác dữ liệu (Data Explorer);Mã CCHN;Mã CCHN;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;;Applications..CertificateRecordId;;;;;;;
-13;;Yêu cầu khai thác dữ liệu (Data Explorer);Trạng thái CCHN;Trạng thái CCHN: Trạng thái (0: Chưa sử dụng, 1: Đang sử dụng, 2: Thu hồi, 3: Đã hủy);Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;;CertificateRecords.Status;;;;;;;

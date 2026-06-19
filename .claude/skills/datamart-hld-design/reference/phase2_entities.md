@@ -78,7 +78,7 @@ datamart_entity,table_type,reuse_status,status,description,source_table,FKs
 ```csv
 "datamart_entity","table_type","reuse_status","status","description","source_table","FKs"
 "Calendar Date Dimension","dim","reuse","draft","Lịch ngày — năm/quý/tháng/ngày lễ phục vụ slicer","cdr_dt",""
-"Fund Management Company Dimension","dim","new","draft","CTQLQ — SCD2 lưu lịch sử trạng thái và thông tin cơ bản","fnd_mgt_co",""
+"Fund Management Company Dimension","dim","new","draft","CTQLQ — SCD4A lưu current state, lịch sử ở bảng history riêng","fnd_mgt_co",""
 "Fact Fund Management Company Snapshot","fact","new","draft","Thống kê thị trường CTQLQ — grain 1 snapshot toàn TT × 1 tháng","rpt_impr_val / fnd_mgt_co","Calendar Date Dimension.Snapshot Date Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id"
 "Foreign Investor 360 Profile","operational","partial","draft","Hồ sơ NĐT nước ngoài — 1 row per NĐT ở trạng thái hiện tại","frgn_ivsr",""
 ```
@@ -109,7 +109,7 @@ Chỉ vẽ đường quan hệ — không có attribute block. Đây khác với
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
-| Fund Management Company Dimension | Dimension | new | CTQLQ (SCD2) | 1 row / CTQLQ / version | — |
+| Fund Management Company Dimension | Dimension | new | CTQLQ (SCD4A) | 1 row / CTQLQ (current state) | — |
 | Fact Fund Management Company Snapshot | Fact Snapshot | new | Thống kê thị trường | 1 snapshot / tháng | K_FMS_1, K_FMS_2 |
 
 - Cột `Reuse`: hiển thị `reuse_status` để reviewer dễ nhận biết bảng nào cần thiết kế mới

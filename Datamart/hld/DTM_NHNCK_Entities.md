@@ -1,10 +1,13 @@
 # Datamart Entities Overview — NHNCK (Người hành nghề chứng khoán)
 
+**Module:** NHNCK  
+**Phiên bản:** 1.1  
+**Ngày:** 18/06/2026  
+**Ghi chú:** Tất cả Dimension áp dụng SCD Type 4A (current state).
+
 ---
 
-## Tổng quan toàn bộ Star Schema — DATAMART NHNCK
-
-> Hình này thể hiện toàn bộ 12 entities của Data Mart NHNCK: 2 Fact, 2 Dimension và 8 bảng Tác nghiệp, cùng các mối quan hệ giữa Fact và Dimension.
+## Tổng quan Star Schema — DATAMART NHNCK
 
 ```mermaid
 graph TB
@@ -13,296 +16,226 @@ graph TB
     classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
 
     DIM_DATE["Calendar Date Dimension"]:::dim
-    DIM_PRAC["Securities Practitioner Dimension SCD2"]:::dim
+    DIM_PRAC["Securities Practitioner Dimension"]:::dim
     DIM_CLASS["Classification Dimension"]:::dim
 
     FACT_CERT["Fact Practitioner License Certificate Snapshot"]:::fact
-    FACT_DAILY["Fact Practitioner Daily Snapshot"]:::fact
+    FACT_ANN["Fact Practitioner Daily Snapshot"]:::fact
 
     OPR1["Practitioner 360 Profile"]:::oper
-    OPR2["Practitioner Certificate History"]:::oper
-    OPR3["Practitioner Employment History"]:::oper
-    OPR4["Practitioner Violation History"]:::oper
-    OPR5["Practitioner Exam History"]:::oper
-    OPR6["Practitioner Training History"]:::oper
-    OPR7["Practitioner Related Party Profile"]:::oper
-    OPR9["Practitioner Listed Company Role"]:::oper
-    OPR8["Practitioner Data Explorer"]:::oper
+    OPR2["Practitioner Related Party Profile"]:::oper
+    OPR3["Practitioner Listed Company Role"]:::oper
+    OPR4["Practitioner Certificate History"]:::oper
+    OPR5["Practitioner Employment History"]:::oper
+    OPR6["Practitioner Violation History"]:::oper
+    OPR7["Practitioner Exam History"]:::oper
+    OPR8["Practitioner Training History"]:::oper
+    OPR9["Practitioner Data Explorer"]:::oper
 
     DIM_DATE --> FACT_CERT
-    DIM_DATE --> FACT_DAILY
+    DIM_DATE --> FACT_ANN
     DIM_PRAC --> FACT_CERT
-    DIM_PRAC --> FACT_DAILY
+    DIM_PRAC --> FACT_ANN
     DIM_CLASS --> FACT_CERT
 ```
+
 ---
 
 ## Tab THỐNG KÊ CHUNG
 
-### Nhóm 1 — Các chỉ tiêu tổng hợp CCHN (KPI thẻ)
-
-#### Star schema
+### Nhóm 1a — Chứng chỉ hành nghề — Thống kê tổng hợp (KPI thẻ CCHN)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : "Issue Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : "Practitioner Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : " "
+    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : " "
+    Classification_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : " "
 ```
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Practitioner License Certificate Snapshot | Periodic Snapshot tháng — đếm CCHN theo trạng thái, loại hình, cấp mới, thu hồi | 1 CCHN × 1 tháng | K_NHNCK_2, 2a, 2b, 3, 5–8 |
-| Securities Practitioner Dimension | NHN — định danh, trình độ, quốc tịch (SCD2) | 1 NHN per SCD2 version | — |
-| Calendar Date Dimension | Lịch ngày | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Practitioner License Certificate Snapshot | Fact Snapshot | new | Periodic Snapshot CCHN theo trạng thái, loại hình, cấp mới, thu hồi | 1 CCHN × 1 tháng | K_NHNCK_2, 2a, 2b, 3, 5, 6, 7, 8 |
+| Securities Practitioner Dimension | Dimension | new | NHN — định danh, trình độ, quốc tịch, trạng thái (SCD4A) | 1 NHN (current state) | — |
+| Calendar Date Dimension | Dimension | new | Lịch ngày (Conformed) | 1 ngày | — |
+| Classification Dimension | Dimension | new | Danh mục phân loại — toàn bộ cv Atomic. PK surrogate cl_dim_id. BK: (scm_code, cl_code). Fact join qua surrogate Id | 1 giá trị phân loại per scheme | — |
 
 ---
 
-### Nhóm 2 — Tổng NHN & Cảnh báo NHNCK
-
-#### Star schema
+### Nhóm 1b — Người hành nghề — Thống kê tổng hợp (KPI thẻ NHN)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : "Practitioner Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : " "
+    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : " "
 ```
 
-#### Bảng entity
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Practitioner Daily Snapshot | Fact Snapshot | new | Periodic Snapshot NHN — tổng NHN, cảnh báo vi phạm, trình độ, độ tuổi | 1 NHN × 1 ngày | K_NHNCK_1, 4 |
+| Securities Practitioner Dimension | Dimension | new | NHN — định danh, trình độ, quốc tịch, trạng thái (SCD4A) | 1 NHN (current state) | — |
+| Calendar Date Dimension | Dimension | new | Lịch ngày (Conformed) | 1 ngày | — |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Practitioner Daily Snapshot | Periodic Snapshot ngày — đếm tổng NHN đang hành nghề và NHN có cảnh báo vi phạm | 1 NHN × 1 ngày | K_NHNCK_1, 4 |
-| Securities Practitioner Dimension | NHN — định danh, trình độ, quốc tịch (SCD2) | 1 NHN per SCD2 version | — |
-| Calendar Date Dimension | Lịch ngày | 1 ngày | — |
+---
+
+### Nhóm 2 — Biểu đồ Trình độ chuyên môn
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : " "
+    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Practitioner Daily Snapshot | Fact Snapshot | new | Dùng chung với Nhóm 1b — GROUP BY Education_Level_Code | 1 NHN × 1 ngày | K_NHNCK_9–14 |
+| Securities Practitioner Dimension | Dimension | new | NHN — Education Level Code (SCD4A) | 1 NHN (current state) | — |
+| Calendar Date Dimension | Dimension | new | Lịch ngày (Conformed) | 1 ngày | — |
 
 ---
 
 ### Nhóm 3 — Biểu đồ cơ cấu theo loại hình CCHN
 
-#### Star schema
-
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : "Issue Date Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : "Practitioner Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : " "
+    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : " "
+    Classification_Dimension ||--o{ Fact_Practitioner_License_Certificate_Snapshot : " "
 ```
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Practitioner License Certificate Snapshot | Dùng chung với Nhóm 1 — GROUP BY Certificate_Type_Code tại snapshot cuối năm | 1 CCHN × 1 tháng | K_NHNCK_17–22 |
-| Securities Practitioner Dimension | NHN — định danh (SCD2) | 1 NHN per SCD2 version | — |
-| Calendar Date Dimension | Lịch ngày | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Practitioner License Certificate Snapshot | Fact Snapshot | new | Dùng chung với Nhóm 1a — GROUP BY Certificate_Type_Code | 1 CCHN × 1 tháng | K_NHNCK_17–22 |
+| Securities Practitioner Dimension | Dimension | new | NHN — định danh (SCD4A) | 1 NHN (current state) | — |
+| Calendar Date Dimension | Dimension | new | Lịch ngày (Conformed) | 1 ngày | — |
+| Classification Dimension | Dimension | new | Danh mục phân loại — Certificate_Type_Code là chiều lọc chính (scheme: CERTIFICATE_TYPE), Certificate_Status_Code (scheme: CERTIFICATE_STATUS) | 1 giá trị phân loại per scheme | — |
 
 ---
 
-### Nhóm 4 — Biểu đồ trình độ chuyên môn
-
-#### Star schema
+### Nhóm 4 — Biểu đồ Phân bổ độ tuổi
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : "Practitioner Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : " "
+    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : " "
 ```
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Practitioner Daily Snapshot | Dùng chung với Nhóm 2 — filter Has_Active_Certificate = true, GROUP BY Education_Level_Code | 1 NHN × 1 ngày | K_NHNCK_9–14 |
-| Securities Practitioner Dimension | NHN — Education Level Code (SCD2) | 1 NHN per SCD2 version | — |
-| Calendar Date Dimension | Lịch ngày | 1 ngày | — |
-
----
-
-### Nhóm 5 — Biểu đồ phân bổ độ tuổi
-
-#### Star schema
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Practitioner_Dimension ||--o{ Fact_Practitioner_Daily_Snapshot : "Practitioner Dimension Id"
-```
-
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Practitioner Daily Snapshot | Dùng chung với Nhóm 2 — filter Has_Active_Certificate = true, GROUP BY Age band + Nationality_Code | 1 NHN × 1 ngày | K_NHNCK_23–32 |
-| Securities Practitioner Dimension | NHN — Nationality Code (SCD2) | 1 NHN per SCD2 version | — |
-| Calendar Date Dimension | Lịch ngày | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Practitioner Daily Snapshot | Fact Snapshot | new | Dùng chung với Nhóm 1b — GROUP BY Age band + Nationality_Code | 1 NHN × 1 ngày | K_NHNCK_23–32 |
+| Securities Practitioner Dimension | Dimension | new | NHN — Nationality Code (SCD4A) | 1 NHN (current state) | — |
+| Calendar Date Dimension | Dimension | new | Lịch ngày (Conformed) | 1 ngày | — |
 
 ---
 
 ## Tab TRA CỨU HỒ SƠ 360°
 
-### Nhóm 6 — Danh sách & Header NHN 360°
-
-> **Ghi chú:** `Practitioner 360 Profile` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner`, `Securities Practitioner License Certificate Document`, `Securities Practitioner Organization Employment Report`, `Securities Practitioner Related Party`, không join qua Dimension.
-
-#### Star schema
+### Nhóm 5 — Dashboard Tra cứu hồ sơ 360° — Thông tin chung
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner 360 Profile | Hồ sơ 360° NHN — latest state. Atomic: Securities Practitioner + License Certificate Document + Organization Employment Report + Related Party | 1 NHN | K_NHNCK_33–42 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner 360 Profile | Operational | new | Hồ sơ 360° NHN — latest state: họ tên, tuổi, quốc tịch, nơi công tác, CCHN hiện tại, trạng thái | 1 NHN | K_NHNCK_33–41 |
 
 ---
 
-### Nhóm 7 — Lịch sử cấp chứng chỉ hành nghề
-
-> **Ghi chú:** `Practitioner Certificate History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner License Certificate Document` và `Securities Practitioner License Decision Document`.
-
-#### Star schema
+### Nhóm 6 — Sub-tab Mạng lưới người liên quan
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Certificate History | Lịch sử cấp CCHN — toàn bộ CCHN per NHN. Atomic: License Certificate Document + License Decision Document | 1 CCHN per NHN | K_NHNCK_43–48 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Related Party Profile | Operational | new | Mạng lưới người liên quan — toàn bộ: họ tên, quan hệ, nghề nghiệp, CCCD, quốc tịch, địa chỉ | 1 người liên quan per NHN | K_NHNCK_75–80, K_NHNCK_86 |
 
 ---
 
-### Nhóm 8 — Quá trình hành nghề
-
-> **Ghi chú:** `Practitioner Employment History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Organization Employment Report`.
-
-#### Star schema
+### Nhóm 7 — Dashboard Hồ sơ & Danh mục — Vai trò tại DN niêm yết
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Employment History | Quá trình hành nghề — toàn bộ lần công tác per NHN. Atomic: Organization Employment Report | 1 lần công tác per NHN | K_NHNCK_49–53 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Listed Company Role | Operational | new | Vai trò tại DN niêm yết/UPCOM — tất cả lịch sử: tên DN, vị trí, mã CTCK, trạng thái | 1 lần báo cáo tổ chức per NHN | K_NHNCK_81–84 (READY); K_NHNCK_85, 87–89 (PENDING) |
 
 ---
 
-### Nhóm 9 — Lịch sử vi phạm & xử phạt
-
-> **Ghi chú:** `Practitioner Violation History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Conduct Violation` và `Securities Practitioner License Decision Document`.
-
-#### Star schema
+### Nhóm 8 — Sub-tab Quá trình hành nghề
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Violation History | Lịch sử vi phạm — toàn bộ vi phạm per NHN. Atomic: Conduct Violation + License Decision Document | 1 vi phạm per NHN | K_NHNCK_54–58 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Employment History | Operational | new | Quá trình hành nghề — toàn bộ lần công tác: tổ chức, phân loại, vị trí, phòng ban, từ tháng, đến tháng | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90, K_NHNCK_91 |
 
 ---
 
-### Nhóm 10 — Đợt thi sát hạch
-
-> **Ghi chú:** `Practitioner Exam History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Qualification Examination Assessment Result`, `Securities Practitioner Qualification Examination Assessment` và `Securities Practitioner License Decision Document`.
-
-#### Star schema
+### Nhóm 9 — Sub-tab Lịch sử cấp chứng chỉ hành nghề
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Exam History | Lịch sử thi sát hạch — toàn bộ lần thi per NHN. Atomic: Examination Assessment Result + Examination Assessment + License Decision Document | 1 lần thi per NHN | K_NHNCK_59–63 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Certificate History | Operational | new | Lịch sử cấp CCHN — toàn bộ: số CCHN, loại hình, ngày cấp, ngày thu hồi, số quyết định cấp/thu hồi, trạng thái | 1 CCHN per NHN | K_NHNCK_43–48, K_NHNCK_92 |
 
 ---
 
-### Nhóm 11 — Cập nhật kiến thức hành nghề
-
-> **Ghi chú:** `Practitioner Training History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Professional Training Class Enrollment` và `Securities Practitioner Professional Training Class`. **DRAFT** — thiếu Training Hours (xem O_NHNCK_9).
-
-#### Star schema
+### Nhóm 10 — Sub-tab Đợt thi sát hạch
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Training History | Lịch sử cập nhật kiến thức — 1 enrollment per NHN, GROUP BY Training_Year khi hiển thị. Atomic: Training Class Enrollment + Training Class | 1 enrollment per NHN | K_NHNCK_64–67 (partial — xem O_NHNCK_9) |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Exam History | Operational | new | Lịch sử thi sát hạch — toàn bộ lần thi: đợt thi, ngày thi, điểm, kết quả, số quyết định công bố | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_93–95 |
 
 ---
 
-### Nhóm 12 — Mạng lưới người liên quan
-
-> **Ghi chú:** `Practitioner Related Party Profile` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Related Party`.
-
-#### Star schema
+### Nhóm 11 — Sub-tab Cập nhật kiến thức hành nghề
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Related Party Profile | Mạng lưới người liên quan — toàn bộ người liên quan per NHN. Atomic: Securities Practitioner Related Party | 1 người liên quan per NHN | K_NHNCK_75–78 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Training History | Operational | new | Lịch sử cập nhật kiến thức — 1 enrollment per NHN; GROUP BY năm học khi hiển thị. DRAFT — thiếu Training Hours (O_NHNCK_9) | 1 enrollment per NHN | K_NHNCK_66, K_NHNCK_96–100 (READY); K_NHNCK_67, K_NHNCK_101 (PENDING) |
 
 ---
 
-### Nhóm 12b — Vai trò tại DN niêm yết
-
-> **Ghi chú:** `Practitioner Listed Company Role` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Securities Practitioner Organization Employment Report`, filter theo `src_stm_code = 'NHNCK_OrganizationReports'`.
-
-#### Star schema
+### Nhóm 12 — Sub-tab Lịch sử vi phạm & xử phạt hành chính
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Listed Company Role | Vai trò tại DN niêm yết/UPCOM — toàn bộ vai trò per NHN: tên DN, vị trí, trạng thái, ngày bắt đầu/kết thúc. Atomic: Securities Practitioner Organization Employment Report | 1 vai trò per NHN | K_NHNCK_81–85 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Violation History | Operational | new | Lịch sử vi phạm — toàn bộ vi phạm: loại vi phạm, nội dung, số quyết định xử phạt, ngày quyết định | 1 vi phạm per NHN | K_NHNCK_54–57 (READY); K_NHNCK_58 (PENDING) |
 
 ---
 
 ## Tab DATA EXPLORER
 
-### Nhóm 13 — Data Explorer (Tra cứu tổng hợp CCHN)
-
-> **Ghi chú:** `Practitioner Data Explorer` là bảng tác nghiệp dạng flat list — lấy trực tiếp từ Atomic `Securities Practitioner License Certificate Document`, `Securities Practitioner` và `Securities Practitioner Organization Employment Report`. Slicer Loại hình và Trạng thái filter tại query time.
-
-#### Star schema
+### Nhóm 13 — Practitioner Data Explorer
 
 *Không có relationship line — bảng tác nghiệp*
 
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Practitioner Data Explorer | Flat list CCHN toàn thị trường — toàn bộ trạng thái. Atomic: License Certificate Document + Securities Practitioner + Organization Employment Report | 1 CCHN per NHN | K_NHNCK_68–74 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường — slicer Loại hình và Trạng thái filter tại query time. Dùng cho Tab DATA EXPLORER | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_102 |
 
 ---
 
-## Tổng hợp tất cả entities
+## Tổng hợp tất cả Entities
 
-| Datamart entity | table_type | status | Grain | KPI | source_table |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| `Calendar Date Dimension` | dim | draft | 1 ngày | — | Generated |
-| `Securities Practitioner Dimension` | dim | draft | 1 NHN per SCD2 version | — | Securities Practitioner |
-| `Fact Practitioner License Certificate Snapshot` | fact | draft | 1 CCHN × 1 tháng | K_NHNCK_2, 2a, 2b, 3, 5–8, 17–22 | Securities Practitioner License Certificate Document / Securities Practitioner License Application |
-| `Fact Practitioner Daily Snapshot` | fact | draft | 1 NHN × 1 ngày | K_NHNCK_1, 4, 9–14, 23–32 | Securities Practitioner / Securities Practitioner Conduct Violation |
-| `Practitioner 360 Profile` | operational | draft | 1 NHN | K_NHNCK_33–42 | Securities Practitioner / Securities Practitioner License Certificate Document / Securities Practitioner Organization Employment Report / Securities Practitioner Related Party |
-| `Practitioner Certificate History` | operational | draft | 1 CCHN per NHN | K_NHNCK_43–48 | Securities Practitioner License Certificate Document / Securities Practitioner License Decision Document |
-| `Practitioner Employment History` | operational | draft | 1 lần công tác per NHN | K_NHNCK_49–53 | Securities Practitioner Organization Employment Report |
-| `Practitioner Violation History` | operational | draft | 1 vi phạm per NHN | K_NHNCK_54–58 | Securities Practitioner Conduct Violation / Securities Practitioner License Decision Document |
-| `Practitioner Exam History` | operational | draft | 1 lần thi per NHN | K_NHNCK_59–63 | Securities Practitioner Qualification Examination Assessment Result / Securities Practitioner Qualification Examination Assessment / Securities Practitioner License Decision Document |
-| `Practitioner Training History` | operational | draft | 1 enrollment per NHN | K_NHNCK_64–67 | Securities Practitioner Professional Training Class Enrollment / Securities Practitioner Professional Training Class |
-| `Practitioner Related Party Profile` | operational | draft | 1 người liên quan per NHN | K_NHNCK_75–78 | Securities Practitioner Related Party |
-| `Practitioner Listed Company Role` | operational | draft | 1 vai trò per NHN | K_NHNCK_81–85 | Securities Practitioner Organization Employment Report |
-| `Practitioner Data Explorer` | operational | draft | 1 CCHN per NHN | K_NHNCK_68–74 | Securities Practitioner License Certificate Document / Securities Practitioner / Securities Practitioner Organization Employment Report |
+| Calendar Date Dimension | Dimension | new | Lịch ngày — năm/quý/tháng/ngày lễ (Conformed, SCD4A) | 1 ngày | — |
+| Securities Practitioner Dimension | Dimension | new | NHN — định danh, trình độ, quốc tịch, trạng thái (SCD4A) | 1 NHN (current state) | — |
+| Classification Dimension | Dimension | new | Danh mục phân loại — toàn bộ cv Atomic. PK surrogate cl_dim_id. BK: (scm_code, cl_code). Conformed Dim | 1 giá trị phân loại per scheme | — |
+| Fact Practitioner License Certificate Snapshot | Fact Snapshot | new | Periodic Snapshot CCHN — đếm theo trạng thái, loại hình, cấp mới, thu hồi | 1 CCHN × 1 tháng | K_NHNCK_2, 2a, 2b, 3, 5–8, 17–22 |
+| Fact Practitioner Daily Snapshot | Fact Snapshot | new | Periodic Snapshot NHN — tổng NHN, cảnh báo, trình độ, độ tuổi | 1 NHN × 1 ngày | K_NHNCK_1, 4, 9–14, 23–32 |
+| Practitioner 360 Profile | Operational | new | Hồ sơ 360° NHN — latest state | 1 NHN | K_NHNCK_33–41 |
+| Practitioner Related Party Profile | Operational | new | Mạng lưới người liên quan per NHN | 1 người liên quan per NHN | K_NHNCK_75–80, K_NHNCK_86 |
+| Practitioner Listed Company Role | Operational | new | Vai trò tại DN niêm yết/UPCOM per NHN | 1 lần báo cáo tổ chức per NHN | K_NHNCK_81–84, 85, 87–89 |
+| Practitioner Certificate History | Operational | new | Lịch sử cấp CCHN per NHN | 1 CCHN per NHN | K_NHNCK_43–48, K_NHNCK_92 |
+| Practitioner Employment History | Operational | new | Quá trình hành nghề per NHN | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90, K_NHNCK_91 |
+| Practitioner Violation History | Operational | new | Lịch sử vi phạm & xử phạt per NHN | 1 vi phạm per NHN | K_NHNCK_54–58 |
+| Practitioner Exam History | Operational | new | Lịch sử thi sát hạch per NHN | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_93–95 |
+| Practitioner Training History | Operational | new | Lịch sử cập nhật kiến thức per NHN (DRAFT) | 1 enrollment per NHN | K_NHNCK_66, K_NHNCK_67, K_NHNCK_96–101 |
+| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường (Data Explorer) | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_102 |

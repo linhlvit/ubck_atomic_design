@@ -132,7 +132,7 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 | `direct` | Map thẳng 1 Atomic col **có trong driving table** | `atomic_table.atomic_column` |
 | `computed` | Arithmetic từ nhiều Atomic cols | `atomic_table.col_a * atomic_table.col_b` |
 | `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.dt = atomic_table.date_col` |
-| `lookup_dim` | FK → SCD2 Dimension qua NK + date range | `LOOKUP dim ON dim.nk_col = driving.bk_col AND driving.rpt_dt BETWEEN dim.eff_dt AND dim.expiry_dt` |
+| `lookup_dim` | FK → SCD4A Dimension qua NK (current state, không dùng date range) | `LOOKUP dim ON dim.nk_col = driving.bk_col` |
 | `join_atomic` | Cột từ Atomic table **khác** driving table | `JOIN atomic_b ON atomic_b.fk_col = driving.join_col → atomic_b.target_col` |
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
 | `pending` | Chưa có Atomic source | *(để trống)* |
@@ -146,6 +146,15 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 - Cột có sẵn trong driving Atomic table → `direct`
 - Cột trong Atomic table khác, phải join → `join_atomic`
 - Test: nếu `etl_logic` dạng self-join → sai, đổi về `direct`
+
+**Lưu ý quan trọng — `computed` từ bảng khác driving:**
+Nếu logic tính toán (`computed`) sử dụng cột từ bảng **khác** driving table (kể cả dạng `EXISTS`, `CASE WHEN`, aggregate có điều kiện) → phải dùng `join_atomic`, không phải `computed`. `computed` chỉ dùng khi tất cả input đều từ driving table.
+
+| Logic | atomic_table | etl_logic_type đúng |
+|---|---|---|
+| `YEAR({etl_snapshot_dt}) - scr_prac.brth_yr` | `scr_prac` (= driving) | `computed` |
+| `EXISTS (SELECT 1 FROM scr_prac_license_ctf_doc WHERE ...)` | `scr_prac_license_ctf_doc` (≠ driving) | `join_atomic` |
+| `CASE WHEN scr_prac_license_ap.ap_tp_code IN (...) THEN ...` | `scr_prac_license_ap` (≠ driving) | `join_atomic` |
 
 **Quy tắc bắt buộc `table_name.column_name`:** Mọi column reference trong `etl_logic` phải có đủ prefix.
 Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), ETL runtime parameter, keyword `NULL`.
