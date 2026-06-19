@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Main Flow + Self-Review — HLD & LLD Datamart</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #1e293b; font-size: 13px; }
+
+.page-header {
+  background: linear-gradient(135deg, #0f3460 0%, #1e3a5f 100%);
+  color: white; padding: 20px 32px;
+}
+.page-header h1 { font-size: 18px; font-weight: 700; }
+.page-header p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+.container { max-width: 1320px; margin: 0 auto; padding: 24px 32px; }
+
+/* ── FLOW DIAGRAM ── */
+.flow-section { margin-bottom: 40px; }
+.section-label {
+  font-size: 13px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: #64748b; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+
+.flow-row {
+  display: flex; align-items: stretch; gap: 0;
+  margin-bottom: 4px;
+}
+
+/* STEP BOX */
+.step {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 120px; max-width: 160px; flex: 1;
+  position: relative;
+}
+
+.step-box {
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px 10px;
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  position: relative;
+  z-index: 1;
+}
+
+/* CONNECTOR */
+.arrow {
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; width: 32px; color: #94a3b8; font-size: 18px;
+  padding-top: 6px;
+}
+
+/* STEP TYPES */
+.type-input  { background: #f0fdf4; border: 2px solid #86efac; color: #166534; }
+.type-read   { background: #eff6ff; border: 2px solid #93c5fd; color: #1d4ed8; }
+.type-infer  { background: #fdf4ff; border: 2px solid #d8b4fe; color: #7e22ce; }
+.type-design { background: #fff7ed; border: 2px solid #fdba74; color: #9a3412; }
+.type-self   { background: #fef9c3; border: 2px solid #fde047; color: #854d0e; }
+.type-output { background: #f0fdf4; border: 2px solid #4ade80; color: #15803d; }
+.type-gate   { background: #fff1f2; border: 2px solid #fda4af; color: #be123c; }
+.type-human  { background: #fce7f3; border: 2px solid #f9a8d4; color: #9d174d; }
+.type-update { background: #fff7ed; border: 2px solid #fb923c; color: #c2410c; }
+
+.step-label {
+  font-size: 10px; color: #94a3b8; margin-top: 4px; text-align: center;
+  font-weight: 500;
+}
+
+/* PHASE STRIP */
+.phase-strip {
+  display: flex; align-items: center; gap: 8px;
+  margin: 18px 0 10px;
+}
+.phase-badge {
+  border-radius: 5px; padding: 3px 12px;
+  font-size: 11px; font-weight: 700; color: white;
+  white-space: nowrap;
+}
+.ph-hld1 { background: #2563eb; }
+.ph-hld2 { background: #0284c7; }
+.ph-lld0 { background: #7c3aed; }
+.ph-lld1 { background: #0891b2; }
+.ph-lld2 { background: #0d9488; }
+.ph-lld3 { background: #059669; }
+.ph-line { flex: 1; height: 1px; background: #e2e8f0; }
+.ph-note { font-size: 11px; color: #94a3b8; }
+
+/* NOTE BOX */
+.note-inline {
+  background: #fffbeb; border: 1px solid #fcd34d; border-radius: 6px;
+  padding: 6px 12px; font-size: 11px; color: #78350f;
+  margin: 6px 0 10px; display: flex; gap: 6px; align-items: flex-start;
+}
+
+/* ── SELF-REVIEW TABLE ── */
+.sr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+.sr-card {
+  background: white; border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden;
+}
+.sr-card-header {
+  padding: 10px 16px; font-weight: 700; font-size: 12px;
+  color: white; display: flex; align-items: center; gap: 8px;
+}
+.sr-hld1 { background: linear-gradient(90deg, #1d4ed8, #3b82f6); }
+.sr-lld1 { background: linear-gradient(90deg, #0369a1, #0891b2); }
+.sr-lld2 { background: linear-gradient(90deg, #0f766e, #14b8a6); }
+.sr-lld3 { background: linear-gradient(90deg, #047857, #10b981); }
+
+.sr-table { width: 100%; border-collapse: collapse; }
+.sr-table thead th {
+  background: #f8fafc; color: #475569; font-size: 11px; font-weight: 600;
+  padding: 6px 12px; border-bottom: 1px solid #e2e8f0; text-align: left;
+}
+.sr-table td { padding: 6px 12px; border-bottom: 1px solid #f1f5f9; font-size: 12px; vertical-align: top; line-height: 1.45; }
+.sr-table tr:last-child td { border-bottom: none; }
+.sr-table tr:hover td { background: #fafbfc; }
+.tc-id { font-weight: 700; color: #1d4ed8; white-space: nowrap; font-size: 11px; }
+.pass { color: #16a34a; font-weight: 700; font-size: 11px; }
+.fail { color: #dc2626; font-weight: 700; font-size: 11px; }
+.method { font-size: 11px; background: #f1f5f9; border-radius: 3px; padding: 1px 6px; color: #334155; white-space: nowrap; }
+
+/* HLD CHECKLIST */
+.cl-section { margin-bottom: 28px; }
+.cl-group {
+  background: white; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 16px;
+}
+.cl-group-header {
+  padding: 9px 16px; font-weight: 700; font-size: 12px;
+  color: white; display: flex; align-items: center; gap: 8px;
+}
+.cl-hld-s1 { background: linear-gradient(90deg, #1d4ed8, #2563eb); }
+.cl-hld-s2 { background: linear-gradient(90deg, #0369a1, #0284c7); }
+.cl-hld-s3 { background: linear-gradient(90deg, #0f766e, #0d9488); }
+.cl-hld-s4 { background: linear-gradient(90deg, #4f46e5, #6366f1); }
+.cl-hld-erd { background: linear-gradient(90deg, #7c3aed, #8b5cf6); }
+.cl-hld-p2 { background: linear-gradient(90deg, #059669, #10b981); }
+
+.cl-list { padding: 10px 16px; }
+.cl-item {
+  display: flex; gap: 8px; align-items: flex-start;
+  padding: 4px 0; border-bottom: 1px solid #f8fafc; font-size: 12px;
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-check { color: #94a3b8; flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+.cl-text { line-height: 1.45; }
+.cl-tag {
+  display: inline-block; border-radius: 3px; padding: 0px 5px;
+  font-size: 10px; font-weight: 600; margin-left: 4px; vertical-align: middle;
+}
+.tag-must { background: #fee2e2; color: #dc2626; }
+.tag-new  { background: #dbeafe; color: #1d4ed8; }
+.tag-warn { background: #fef3c7; color: #92400e; }
+
+/* LLD P1 CHECKLIST */
+.p1-checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.p1-group { background: white; border-radius: 8px; padding: 12px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.p1-group-title { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #e2e8f0; }
+.p1-item { font-size: 11.5px; padding: 3px 0; border-bottom: 1px dashed #f1f5f9; color: #374151; line-height: 1.4; display: flex; gap: 6px; }
+.p1-item:last-child { border-bottom: none; }
+
+@media (max-width: 900px) {
+  .sr-grid { grid-template-columns: 1fr; }
+  .p1-checklist { grid-template-columns: 1fr; }
+}
+
+code { background: #f1f5f9; border-radius: 3px; padding: 1px 5px; font-size: 11px; color: #374151; font-family: 'SF Mono', Consolas, monospace; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Main Flow + Self-Review Criteria — HLD & LLD Datamart</h1>
+  <p>Luồng chính: Input → Đọc/Suy luận → Thiết kế → Self-Review → Kết quả → Human Review · Skills: datamart-hld-design &amp; datamart-lld-design</p>
+</div>
+
+<div class="container">
+
+<!-- ════════════════════════════════════════════
+     SECTION 1 — MAIN FLOW DIAGRAM
+════════════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="section-label">Luồng chính theo từng Phase</div>
+
+  <!-- LEGEND -->
+  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;">
+    <span style="font-size:11px; color:#64748b; font-weight:600; align-self:center;">Màu sắc:</span>
+    <span class="step-box type-input" style="padding:2px 10px;border-radius:4px;font-size:11px;">Input</span>
+    <span class="step-box type-read" style="padding:2px 10px;border-radius:4px;font-size:11px;">Đọc</span>
+    <span class="step-box type-infer" style="padding:2px 10px;border-radius:4px;font-size:11px;">Suy luận</span>
+    <span class="step-box type-design" style="padding:2px 10px;border-radius:4px;font-size:11px;">Thiết kế</span>
+    <span class="step-box type-self" style="padding:2px 10px;border-radius:4px;font-size:11px;">Self-Review</span>
+    <span class="step-box type-output" style="padding:2px 10px;border-radius:4px;font-size:11px;">Kết quả</span>
+    <span class="step-box type-gate" style="padding:2px 10px;border-radius:4px;font-size:11px;">⛔ GATE</span>
+    <span class="step-box type-human" style="padding:2px 10px;border-radius:4px;font-size:11px;">👤 Human</span>
+    <span class="step-box type-update" style="padding:2px 10px;border-radius:4px;font-size:11px;">Update Registry</span>
+  </div>
+
+  <!-- ─── HLD Phase 1 ─── -->
+  <div class="phase-strip">
+    <span class="phase-badge ph-hld1">HLD · Phase 1</span>
+    <span class="ph-note">Thiết kế HLD.md</span>
+    <span class="ph-line"></span>
+  </div>
+
+  <div class="flow-row">
+    <div class="step">
+      <div class="step-box type-input">BA_analyst.csv<br>+ Screenshot<br>+ dm_manifest.yaml</div>
+      <div class="step-label">Input</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-read">Parse BA CSV<br>(csv.reader)<br>Đọc manifest<br>Đọc entity YAMLs</div>
+      <div class="step-label">🤖 Đọc</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-infer">Phân loại KPI<br>READY / PENDING<br>Xác định reuse<br>từ datamart_model</div>
+      <div class="step-label">🤖 Suy luận</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 1<br>Hỏi reuse_status<br>từng bảng</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Xác nhận<br>reuse / partial / new<br>cho từng bảng</div>
+      <div class="step-label">Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-design">Thiết kế<br>4 Sections<br>KPI, erDiagram<br>Flowchart, Lineage</div>
+      <div class="step-label">🤖 Thiết kế</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-self">Self-Review<br>Checklist HLD<br>(xem bên dưới)</div>
+      <div class="step-label">🤖 Self-Review</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-output">Xuất<br>DTM_{M}_HLD.md</div>
+      <div class="step-label">Kết quả</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 2<br>Duyệt HLD.md</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Review<br>HLD.md<br>→ Approve</div>
+      <div class="step-label">Human</div>
+    </div>
+  </div>
+
+  <!-- ─── HLD Phase 2 ─── -->
+  <div class="phase-strip" style="margin-top:22px;">
+    <span class="phase-badge ph-hld2">HLD · Phase 2</span>
+    <span class="ph-note">Entities Files · Sau khi HLD.md được duyệt</span>
+    <span class="ph-line"></span>
+  </div>
+
+  <div class="flow-row">
+    <div class="step">
+      <div class="step-box type-input">HLD.md<br>Section 3 + 4<br>(đã duyệt)</div>
+      <div class="step-label">Input</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-read">Đọc Section 3<br>(entity list, grain)<br>Đọc Section 4<br>(reuse_status)</div>
+      <div class="step-label">🤖 Đọc</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-infer">Trích FKs từ<br>graph TB<br>Tra manifest<br>→ atomic_table</div>
+      <div class="step-label">🤖 Suy luận</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-design">Xây dựng<br>Entities.csv<br>+ Entities.md<br>(erDiagram)</div>
+      <div class="step-label">🤖 Thiết kế</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-self">Self-Review<br>Checklist P2<br>(xem bên dưới)</div>
+      <div class="step-label">🤖 Self-Review</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-output">Xuất<br>Entities.csv<br>Entities.md</div>
+      <div class="step-label">Kết quả</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 3<br>Duyệt Entities</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Review<br>Entities.csv<br>→ Approve<br>→ sang LLD</div>
+      <div class="step-label">Human</div>
+    </div>
+  </div>
+
+  <!-- ─── LLD Phase 0 ─── -->
+  <div class="phase-strip" style="margin-top:22px;">
+    <span class="phase-badge ph-lld0">LLD · Phase 0</span>
+    <span class="ph-note">Plan tổng thể — 1 lần duy nhất</span>
+    <span class="ph-line"></span>
+  </div>
+
+  <div class="flow-row">
+    <div class="step">
+      <div class="step-box type-input">HLD.md Sec 2<br>+ Entities.csv<br>(đã duyệt)</div>
+      <div class="step-label">Input</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-read">Đọc Section 2<br>→ nhóm + KPIs<br>Đọc Entities.csv<br>→ reuse_status</div>
+      <div class="step-label">🤖 Đọc</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-infer">Map bảng/nhóm<br>Xác định dim<br>dùng chung<br>Tính new/partial/reuse</div>
+      <div class="step-label">🤖 Suy luận</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-output">Bảng Plan tổng<br>(Nhóm|KPIs<br>|Thiết kế|Reuse)</div>
+      <div class="step-label">Kết quả</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 4<br>Approve Plan</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Xác nhận<br>scope N nhóm<br>→ OK sang P1</div>
+      <div class="step-label">Human</div>
+    </div>
+  </div>
+
+  <!-- ─── LLD Phase 1 ─── -->
+  <div class="phase-strip" style="margin-top:22px;">
+    <span class="phase-badge ph-lld1">LLD · Phase 1</span>
+    <span class="ph-note">Attributes CSV — lặp cho từng Nhóm N · Hoàn thành TẤT CẢ nhóm trước khi sang Phase 2</span>
+    <span class="ph-line"></span>
+  </div>
+
+  <div class="note-inline">
+    ⚠️ Vòng lặp bên dưới chạy cho mỗi Nhóm N. Sau khi hoàn thành mỗi file: merge vào master rồi tiếp tục Nhóm N+1. Chỉ sang Phase 2 khi tất cả nhóm Phase 1 đã xong và được human xác nhận.
+  </div>
+
+  <div class="flow-row">
+    <div class="step">
+      <div class="step-box type-input">Entities.csv<br>+ HLD.md<br>+ manifest.yaml</div>
+      <div class="step-label">Input</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-read">Đọc reuse_status<br>Đọc entity YAMLs<br>Đọc datamart_model<br>(nếu partial)</div>
+      <div class="step-label">🤖 Đọc</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-infer">Xác định<br>Driving Table<br>+ src_stm_code<br>→ tên file</div>
+      <div class="step-label">🤖 Suy luận</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 5+6<br>Approve delta(partial)<br>+ confirm<br>danh sách file</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Xác nhận<br>file list &amp;<br>Driving Table</div>
+      <div class="step-label">Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-design">Điền 15 cột<br>Attributes CSV<br>etl_logic<br>etl_logic_type</div>
+      <div class="step-label">🤖 Thiết kế</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-self">Self-Review<br>5 TCs<br>(xem bên dưới)</div>
+      <div class="step-label">🤖 Self-Review</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-output">Xuất file CSV<br>DTM_{M}_{tbl}<br>_{stm_code}.csv</div>
+      <div class="step-label">Kết quả</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 7+8<br>Duyệt file<br>+ confirm merge</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Review CSV<br>→ Approve<br>→ OK merge</div>
+      <div class="step-label">Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-update">Append master<br>datamart_attributes<br>Upsert<br>datamart_model</div>
+      <div class="step-label">🤖 Update Registry</div>
+    </div>
+  </div>
+
+  <!-- ─── LLD Phase 2 ─── -->
+  <div class="phase-strip" style="margin-top:22px;">
+    <span class="phase-badge ph-lld2">LLD · Phase 2</span>
+    <span class="ph-note">Detail Mapping — lặp cho từng Nhóm N · Chỉ bắt đầu khi TẤT CẢ Phase 1 xong</span>
+    <span class="ph-line"></span>
+  </div>
+
+  <div class="flow-row">
+    <div class="step">
+      <div class="step-box type-input">BA_analyst.csv<br>+ HLD.md<br>+ Attributes CSV</div>
+      <div class="step-label">Input</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-read">Đọc BA rows<br>Done/Doing/Pending<br>Đọc bảng KPI HLD<br>Đọc Attributes CSV</div>
+      <div class="step-label">🤖 Đọc</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-infer">Cross-check<br>BA ↔ HLD<br>Đếm N_BA, N_KPI<br>Xác định gap</div>
+      <div class="step-label">🤖 Suy luận</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 10+11<br>Xử lý gap<br>+ confirm<br>N_BA / N_KPI</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Xử lý gap<br>Xác nhận<br>đếm số lượng</div>
+      <div class="step-label">Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-design">Sinh block<br>Detail Mapping<br>11 cột<br>column_role/logic</div>
+      <div class="step-label">🤖 Thiết kế</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-self">Self-Review<br>4 TCs + 10 Lỗi<br>(xem bên dưới)</div>
+      <div class="step-label">🤖 Self-Review</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-output">Block KPI<br>nhóm N<br>(Detail Mapping)</div>
+      <div class="step-label">Kết quả</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 12<br>Duyệt block<br>KPI nhóm N</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Review<br>block KPI<br>→ Approve</div>
+      <div class="step-label">Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-update">Append vào<br>Detail_Mapping<br>.csv (file chung)</div>
+      <div class="step-label">🤖 Update File</div>
+    </div>
+  </div>
+
+  <!-- ─── LLD Phase 3 ─── -->
+  <div class="phase-strip" style="margin-top:22px;">
+    <span class="phase-badge ph-lld3">LLD · Phase 3</span>
+    <span class="ph-note">Flat Table SQL — 1 lần duy nhất sau khi toàn bộ Phase 2 xong</span>
+    <span class="ph-line"></span>
+  </div>
+
+  <div class="flow-row">
+    <div class="step">
+      <div class="step-box type-input">Entities.csv<br>+ datamart_model<br>.yaml (nguồn sự thật)</div>
+      <div class="step-label">Input</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-read">Đọc Entities<br>→ đếm fact +<br>operational<br>Đọc columns schema</div>
+      <div class="step-label">🤖 Đọc</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 14<br>Confirm<br>số bảng flat</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Xác nhận<br>số bảng</div>
+      <div class="step-label">Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-design">Sinh File 01<br>CREATE TABLE<br>ClickHouse<br>(schema + Engine)</div>
+      <div class="step-label">🤖 Thiết kế</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-design">Sinh File 02<br>TRUNCATE<br>+ INSERT SELECT<br>(joins + logic)</div>
+      <div class="step-label">🤖 Thiết kế</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-self">Post-Check<br>CREATE ↔ SELECT<br>cross-check cột</div>
+      <div class="step-label">🤖 Self-Review</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-output">2 file SQL<br>01_create<br>02_populate</div>
+      <div class="step-label">Kết quả</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-gate">⛔ GATE 15<br>Duyệt SQL</div>
+      <div class="step-label">Chờ Human</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box type-human">👤 Review SQL<br>→ Approve<br>Skill kết thúc</div>
+      <div class="step-label">Human</div>
+    </div>
+  </div>
+
+</div><!-- end flow-section -->
+
+
+<!-- ════════════════════════════════════════════
+     SECTION 2 — SELF-REVIEW CRITERIA
+════════════════════════════════════════════ -->
+<div class="section-label">Tiêu chí Self-Review theo từng Phase</div>
+
+<div class="sr-grid">
+
+  <!-- ── HLD Phase 1 Self-Review ── -->
+  <div class="sr-card" style="grid-column: 1 / -1;">
+    <div class="sr-card-header sr-hld1">
+      📐 HLD · Phase 1 — Checklist tự kiểm tra trước khi xuất HLD.md
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0;">
+
+      <div>
+        <div style="padding:8px 12px; font-size:11px; font-weight:700; color:#1d4ed8; background:#eff6ff; border-bottom:1px solid #e2e8f0;">Section 1 — Data Lineage</div>
+        <div class="cl-list">
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Mỗi Cụm tổ chức theo 1 Fact duy nhất</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Mỗi flowchart đủ 3 subgraph: SRC / SIL / GOLD</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Cụm có Fact phải có <code>ECAT.ECAT_29_HolidayInfo</code> + <code>Calendar Date Dimension</code></span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Node Staging: ID không có dấu chấm</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Dim xuất hiện trong GOLD; edge <code>Dim → Fact</code> (không phải ngược)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text"><span class="cl-tag tag-must">BẮT BUỘC</span> Mọi Dim trong GOLD có ít nhất 1 Atomic entity nguồn trong SIL với edge đầy đủ</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Mọi Atomic entity dùng ETL join vào Fact phải có edge riêng vào Fact</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Node label trong flowchart không dùng <code>\n</code></span></div>
+        </div>
+      </div>
+
+      <div style="border-left:1px solid #e2e8f0;">
+        <div style="padding:8px 12px; font-size:11px; font-weight:700; color:#0369a1; background:#eff6ff; border-bottom:1px solid #e2e8f0;">Section 2 — Tổng quan báo cáo</div>
+        <div class="cl-list">
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Hierarchy đúng: <code>### Tab</code> → <code>#### Nhóm {STT} - tên</code> → <code>##### READY/PENDING</code> (chỉ khi có cả 2)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Tên Tab = phần TRƯỚC dấu <code>/</code>; Nhóm = STT gốc từ BA + phần SAU <code>/</code></span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text"><span class="cl-tag tag-must">BẮT BUỘC</span> Bảng KPI READY chỉ có 1 bảng duy nhất — không tách KPI mới / KPI reuse</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Mọi dòng BA <code>Phân loại = Chiều</code> có KPI_ID — không được bỏ qua</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Không dùng shorthand "xem Nhóm N" — liệt kê explicit từng KPI_ID</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Lineage Mart → Báo cáo: node bắt đầu là Fact/Dim/Operational GOLD — không vẽ Atomic</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Block PENDING: chỉ 4 cột (KPI ID/Tên/Tính chất/Trạng thái) — không có Đơn vị, Công thức</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Block PENDING không có Star Schema, erDiagram, Lineage</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Tên attribute trong cột Nguồn = <code>attribute.name</code> từ YAML (không tự đặt)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Dedup KPI cross-nhóm: trùng nội dung → reuse ID cũ, không cấp ID mới</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Đồng bộ "KPI liên quan" trong PENDING header với bảng KPI bên dưới</span></div>
+        </div>
+      </div>
+
+      <div style="border-left:1px solid #e2e8f0;">
+        <div style="padding:8px 12px; font-size:11px; font-weight:700; color:#0f766e; background:#f0fdf4; border-bottom:1px solid #e2e8f0;">Section 3 + 4 + erDiagram</div>
+        <div class="cl-list">
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Section 3 không bao gồm bảng PENDING</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Bảng Phân tích: chỉ liệt kê Fact (không liệt kê Dim)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Bảng Dimension: ghi chú "Tất cả áp dụng SCD Type 4A"</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Section 4: mỗi bảng trong Sec 3 có 1 dòng; reuse_status đã human xác nhận</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">erDiagram mở bằng <code>```mermaid</code> (không phải <code>```erDiagram</code>)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Types chỉ dùng: int/float/string/varchar/boolean/date/datetime</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Chỉ dùng label <code>PK</code> và <code>FK</code> — không có NK/BK/DD trong erDiagram</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text"><span class="cl-tag tag-must">BẮT BUỘC</span> Scan toàn file: không có <code>Population_Date</code> / <code>Effective_Date</code> / <code>Expiry_Date</code> / <code>Snapshot_Date</code></span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Số trường + tên trường đồng nhất ở mọi erDiagram trong file</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Chỉ dùng tên logical — không có snake_case ở bất kỳ đâu</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HLD Phase 2 ── -->
+  <div class="sr-card">
+    <div class="sr-card-header" style="background: linear-gradient(90deg,#0284c7,#38bdf8);">
+      📐 HLD · Phase 2 — Checklist Entities Files
+    </div>
+    <div class="cl-list">
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Danh sách entity đầy đủ từ Section 3 (fact + dim + operational)</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">table_type khớp phân loại Section 3 (fact/dim/operational)</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">reuse_status lấy từ Section 4 — không tự suy luận</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">source_table tra từ dm_manifest.yaml (physical_name) — không đoán</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">FKs: chỉ điền cho fact; trống cho dim/operational</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">FKs trích từ graph TB Section 3, format <code>{Dim Entity}.{Dim Entity Id}</code></span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">status = draft toàn bộ rows</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Thứ tự: Dimension → Fact → Operational</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Export UTF-8 BOM (utf-8-sig)</span></div>
+      <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Entities.md: erDiagram chỉ vẽ relationship lines — không vẽ attribute block</span></div>
+    </div>
+  </div>
+
+  <!-- ── LLD Phase 1: 5 TCs ── -->
+  <div class="sr-card">
+    <div class="sr-card-header sr-lld1">
+      🔧 LLD · Phase 1 — 5 Test Cases (bắt buộc PASS trước khi xuất file)
+    </div>
+    <table class="sr-table">
+      <thead><tr><th>TC</th><th>Tiêu chí</th><th>Phương pháp kiểm tra</th><th>Nếu FAIL</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="tc-id">TC1</td>
+          <td><b>Số cột khớp HLD</b><br>Đếm attribute unique trong CSV so với Section 3 HLD</td>
+          <td><span class="method">Đếm thủ công</span><br>So với bảng entity HLD</td>
+          <td class="fail">Sửa trước khi trình bày</td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC2</td>
+          <td><b>etl_logic_type hợp lệ</b><br>Không trống; row có atomic_table khác driving → phải là <code>join_atomic</code> (không phải <code>direct/computed</code>)</td>
+          <td><span class="method">Scan từng row</span><br>Check driving table vs atomic_table</td>
+          <td class="fail">Sửa etl_logic_type → re-check</td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC3</td>
+          <td><b>Prefix table.column đầy đủ</b><br>Mọi column reference trong etl_logic có dạng <code>table.col</code></td>
+          <td><span class="method">Scan etl_logic</span><br>Ngoại lệ: literal, SQL function, <code>{etl_date}</code>, NULL</td>
+          <td class="fail">Thêm prefix bị thiếu</td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC4</td>
+          <td><b>WHERE filter src_stm_code đầy đủ</b><br>Mọi dim/operational có etl_logic <code>WHERE ... src_stm_code = '...'</code> hoặc <code>IN (...)</code></td>
+          <td><span class="method">Scan bảng dim/oper</span><br>Kiểm tra attribute src_stm_code</td>
+          <td class="fail">Thêm WHERE filter (forward-compatibility)</td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC5</td>
+          <td><b>Cấu trúc CSV hợp lệ</b><br>Mọi row có đúng 15 cột — không lệch do dấu phẩy chưa được quote</td>
+          <td><span class="method">Bash: python3 csv.reader</span><br>Kiểm tra len(row) != 15</td>
+          <td class="fail">Fix quote → re-run TC5</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── LLD Phase 1: Attributes Checklist ── -->
+  <div class="sr-card" style="grid-column: 1 / -1;">
+    <div class="sr-card-header sr-lld1" style="background: linear-gradient(90deg,#0369a1,#0284c7);">
+      🔧 LLD · Phase 1 — Checklist nội dung Attributes CSV (kiểm tra trước khi submit từng file)
+    </div>
+    <div class="p1-checklist" style="padding:12px;">
+
+      <div class="p1-group">
+        <div class="p1-group-title">Key & Nullable</div>
+        <div class="p1-item"><span>□</span>nullable = false cho PK / BK / NK / FK</div>
+        <div class="p1-item"><span>□</span>Cột từ LEFT JOIN → nullable = true</div>
+        <div class="p1-item"><span>□</span>data_domain = Classification Value → key trống</div>
+        <div class="p1-item"><span>□</span>data_domain = Surrogate Dimension Key → key = FK → &lt;Dim&gt;</div>
+        <div class="p1-item"><span>□</span>data_domain = Surrogate Key không xuất hiện trên Fact</div>
+        <div class="p1-item"><span>□</span>Operational: trường _code làm PK duy nhất — không tạo surrogate _id</div>
+        <div class="p1-item"><span>□</span>Mọi Dimension có ≥ 1 NK</div>
+      </div>
+
+      <div class="p1-group">
+        <div class="p1-group-title">etl_logic_type</div>
+        <div class="p1-item"><span>□</span>direct: chỉ khi atomic_table = driving table</div>
+        <div class="p1-item"><span>□</span>computed: chỉ khi TẤT CẢ input từ driving table (kể cả EXISTS, CASE WHEN)</div>
+        <div class="p1-item"><span>□</span>join_atomic: atomic_table KHÁC driving — ghi rõ INNER/LEFT JOIN</div>
+        <div class="p1-item"><span>□</span>lookup_date: FK → Calendar Date Dimension</div>
+        <div class="p1-item"><span>□</span>lookup_dim: FK → SCD4A Dim qua NK</div>
+        <div class="p1-item"><span>□</span>pivot: số branch + thứ tự đồng nhất; branch residual flatten về Atomic</div>
+        <div class="p1-item"><span>□</span>pending: etl_logic để trống; không dùng cho row đã READY</div>
+        <div class="p1-item"><span>□</span>Không dùng etl_logic_type = "framework"</div>
+      </div>
+
+      <div class="p1-group">
+        <div class="p1-group-title">src_stm_code (dim & operational)</div>
+        <div class="p1-item"><span>□</span>Mọi bảng dim/operational có attribute src_stm_code cuối danh sách</div>
+        <div class="p1-item"><span>□</span>Single-source: luôn có WHERE src_stm_code = 'value' (forward-compatibility)</div>
+        <div class="p1-item"><span>□</span>Multi-source cùng lúc: WHERE src_stm_code IN ('v1','v2',...)</div>
+        <div class="p1-item"><span>□</span>Multi-source tách bộ: N bộ × M dòng, mỗi bộ có src_stm_code riêng</div>
+        <div class="p1-item"><span>□</span>Fact "No Driving Table": không thêm src_stm_code</div>
+        <div class="p1-item"><span>□</span>Bộ chưa xác định Atomic → etl_logic_type = pending toàn bộ bộ</div>
+      </div>
+
+      <div class="p1-group">
+        <div class="p1-group-title">Mapping & Naming</div>
+        <div class="p1-item"><span>□</span>Mọi mapping tra từ entity YAML — không đoán atomic_column</div>
+        <div class="p1-item"><span>□</span>Join key giữa Atomic: ưu tiên surrogate key (_id) thay vì business code</div>
+        <div class="p1-item"><span>□</span>Driving Table ghi rõ trong description của PK/BK</div>
+        <div class="p1-item"><span>□</span>Multi-hop: source_entity/table/attribute/column phản ánh bảng CUỐI chain</div>
+        <div class="p1-item"><span>□</span>ETL runtime: dùng <code>{etl_date}</code> — không dùng tên biến tùy ý</div>
+        <div class="p1-item"><span>□</span>Không thiết kế Effective/Expiry/Population Date</div>
+        <div class="p1-item"><span>□</span>Export UTF-8 BOM (utf-8-sig)</div>
+        <div class="p1-item"><span>□</span>etl_logic có dấu phẩy → đã double-quote trong CSV</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LLD Phase 2: 4 TCs ── -->
+  <div class="sr-card">
+    <div class="sr-card-header sr-lld2">
+      🔧 LLD · Phase 2 — 4 Test Cases (bắt buộc PASS trước khi trình bày block KPI)
+    </div>
+    <table class="sr-table">
+      <thead><tr><th>TC</th><th>Tiêu chí</th><th>Phương pháp kiểm tra</th><th>Nếu FAIL</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="tc-id">TC1</td>
+          <td><b>kpi_name + logic khớp BA</b><br>kpi_name khớp tên KPI trong HLD; logic không mâu thuẫn mô tả BA</td>
+          <td><span class="method">So sánh với HLD + BA</span></td>
+          <td class="fail">Sửa kpi_name/logic</td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC2</td>
+          <td><b>KPI_ID hợp lệ</b><br>Mọi kpi_id trong block ∈ tập KPI_ID HLD (bao gồm Chiều + Pending)</td>
+          <td><span class="method">So sánh với bảng KPI HLD</span><br>ID ngoài HLD → DỪNG báo cáo</td>
+          <td class="fail">Khai sinh trong HLD trước</td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC3</td>
+          <td><b>logic dùng tên physical</b><br>Cột logic phải là snake_case physical (<code>fct_xxx.col</code>), không phải Title Case logical</td>
+          <td><span class="method">Scan cột logic</span><br>Tìm Title_Case hoặc khoảng trắng</td>
+          <td class="fail">Chuyển sang physical name</td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC4</td>
+          <td><b>mart_table/mart_column tồn tại trong datamart_model.yaml</b><br>Mọi cặp (mart_table, mart_column) phải có trong model (trừ DERIVED trống)</td>
+          <td><span class="method">Tra datamart_model.yaml</span><br>Check entity + columns list</td>
+          <td class="fail">Fix model hoặc tên cột</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── LLD Phase 2: 10 Lỗi tái diễn ── -->
+  <div class="sr-card">
+    <div class="sr-card-header sr-lld2">
+      🔧 LLD · Phase 2 — 10 Lỗi tái diễn (checklist bổ sung trước khi giao file)
+    </div>
+    <table class="sr-table">
+      <thead><tr><th>Mã</th><th>Pattern lỗi</th><th>Cách kiểm tra nhanh</th></tr></thead>
+      <tbody>
+        <tr><td class="tc-id">L1</td><td><b>SLICER/FILTER thời gian trỏ sai bảng</b> — copy-paste từ nhóm khác, logic vẫn trỏ physical_table cũ</td><td>Với mỗi nhóm: xác nhận SLICER date dim trỏ đúng bảng của nhóm đó</td></tr>
+        <tr><td class="tc-id">L2</td><td><b>Cột trong logic không tồn tại</b> — đoán tên cột hoặc copy từ bảng khác</td><td>Mọi <code>table.col</code> trong logic → tra Attributes.csv tương ứng</td></tr>
+        <tr><td class="tc-id">L3</td><td><b>Operational bị gán FILTER cdr_dt_dim</b> — Operational không có FK snpst_dt_dim_id</td><td>Bảng opr_* → chỉ SLICER date column trực tiếp, không có FILTER cdr_dt_dim</td></tr>
+        <tr><td class="tc-id">L4</td><td><b>Nhóm PENDING điền đầy đủ mart_table/logic</b> — vi phạm rule PENDING</td><td>HLD nhóm = PENDING → toàn bộ dòng: mart_table/mart_column/column_role/logic TRỐNG</td></tr>
+        <tr><td class="tc-id">L5</td><td><b>kpi_name sai ngữ cảnh khi copy nhóm</b> — VN30 → VN100 nhưng name vẫn ghi VN30</td><td>Scan kpi_name tất cả nhóm copy: không còn tên ngữ cảnh cũ</td></tr>
+        <tr><td class="tc-id">L6</td><td><b>logic tham chiếu bảng không thuộc nhóm</b> — dùng bảng tương tự từ nhóm khác</td><td>physical_table trong logic → phải là bảng của nhóm đó (có trong HLD + Attributes)</td></tr>
+        <tr><td class="tc-id">L7</td><td><b>Duplicate KPI_ID trong nhóm PENDING</b> — copy sinh 2 dòng cho cùng 1 KPI</td><td>Nhóm PENDING: mỗi kpi_id chỉ có 1 dòng duy nhất</td></tr>
+        <tr><td class="tc-id">L8</td><td><b>Placeholder &lt;TBD&gt; trong logic</b> — để lại placeholder chưa xác định</td><td>Scan cột logic: không có <code>&lt;TBD&gt;</code> hay <code>&lt;...&gt;</code></td></tr>
+        <tr><td class="tc-id">L9</td><td><b>Cột nhom thiếu tên đầy đủ</b> — chỉ ghi "Nhóm 1" thiếu phần tên ngắn</td><td>Lấy từ heading HLD Sec 2: bỏ phần giữa (phân hệ), giữ tên ngắn</td></tr>
+        <tr><td class="tc-id">L10</td><td><b>DERIVED YoY refer KPI_ID thay vì physical column</b></td><td>DERIVED _YOY: logic phải là công thức physical theo template rút gọn, dùng <code>|</code> ngăn cách filter</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── LLD Phase 3 ── -->
+  <div class="sr-card" style="grid-column: 1 / -1;">
+    <div class="sr-card-header sr-lld3">
+      🔧 LLD · Phase 3 — Post-Check Flat Table SQL
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap:0;">
+      <div>
+        <div style="padding:8px 12px; font-size:11px; font-weight:700; color:#065f46; background:#ecfdf5; border-bottom:1px solid #e2e8f0;">File 01 — CREATE TABLE</div>
+        <div class="cl-list">
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Số bảng = số fact + số operational</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Naming fact: <code>{module}_{datamart_table}_flat</code></span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Naming operational: <code>{datamart_table}_flat</code> (không có module prefix)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Thứ tự cột: fact cols → Calendar Date 9 cols → dim cols → technical metadata</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Operational: chỉ operational cols → technical (không có Calendar Date, không có dim)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Calendar Date: đúng 9 cột cố định</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Dim cols: bỏ PK surrogate + src_stm_code; giữ giá trị nghiệp vụ; COMMENT ghi "— từ {Dim Name}"</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Data type dùng ClickHouse types (Nullable wrapper theo nullable)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">ENGINE = ReplicatedReplacingMergeTree()</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">PARTITION BY toYYYYMM(&lt;cột DD&gt;); ORDER BY (&lt;cột DD&gt;, &lt;grain_key&gt;)</span></div>
+        </div>
+      </div>
+      <div style="border-left:1px solid #e2e8f0;">
+        <div style="padding:8px 12px; font-size:11px; font-weight:700; color:#065f46; background:#ecfdf5; border-bottom:1px solid #e2e8f0;">File 02 — POPULATE (INSERT)</div>
+        <div class="cl-list">
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Số TRUNCATE + INSERT = số bảng trong file 01</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">SELECT list đủ cột, đúng thứ tự khớp CREATE TABLE</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Đếm cột SELECT = đếm cột CREATE (kể cả ds_batch_date, ds_population_timestamp)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Nguồn fact: <code>{module}_{datamart_table}</code> (có prefix module)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Nguồn operational: <code>{datamart_table}</code> (không prefix)</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Calendar Date join: <code>{module}_calendar_date_dimension</code></span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Dim join: alias rõ ràng, ON {dim_pk} = f.{fk_col}</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text"><code>today()</code> AS ds_batch_date; <code>now()</code> AS ds_population_timestamp</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Operational: không có LEFT JOIN</span></div>
+        </div>
+      </div>
+      <div style="border-left:1px solid #e2e8f0;">
+        <div style="padding:8px 12px; font-size:11px; font-weight:700; color:#065f46; background:#ecfdf5; border-bottom:1px solid #e2e8f0;">Cross-Check tổng thể</div>
+        <div class="cl-list">
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Mỗi cột trong CREATE có đúng 1 entry tương ứng trong SELECT</span></div>
+          <div class="cl-item"><span class="cl-check">□</span><span class="cl-text">Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end sr-grid -->
+
+<div style="margin-top:8px; color:#94a3b8; font-size:11px; text-align:center; padding-bottom:24px;">
+  Tổng hợp từ SKILL.md — datamart-hld-design &amp; datamart-lld-design · UBCK Lakehouse
+</div>
+
+</div><!-- container -->
+</body>
+</html>
