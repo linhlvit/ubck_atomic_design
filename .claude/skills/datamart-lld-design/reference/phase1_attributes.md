@@ -1,4 +1,76 @@
-# Phase 2 — Attributes CSV Reference
+# Phase 1 — Attributes CSV Reference
+
+## Output và Naming
+
+### Cấu trúc thư mục
+
+```
+Datamart/lld/{MODULE}/
+    DTM_{MODULE}_{mart_table}.csv                        (fact — không có src_stm_code)
+    DTM_{MODULE}_{mart_table}_{src_stm_code}.csv         (dim, operational — mỗi nguồn 1 file)
+
+Datamart/lld/datamart_attributes.csv                     (master — append sau human approve)
+```
+
+- `{MODULE}` viết HOA (ví dụ `NHNCK`)
+- `{mart_table}` lấy từ cột `datamart_table` trong Entities.csv — không đặt lại
+- File `DTM_{MODULE}_Attributes.csv` tổng hợp theo module **không còn tồn tại**
+
+### Quy tắc src_stm_code cho dim và operational
+
+`src_stm_code` xác định từ **driving table** của bảng:
+1. Xác định driving table (bảng Atomic chính của grain — có PK/BK trong Attributes)
+2. Tra `DataModel/Atomic/dm_manifest.yaml` → tìm entry có `physical_name` = driving table
+3. Mở file YAML tương ứng → đọc attribute `Source System Code` → trích giá trị từ `classification_context`:
+   - Format: `"Source System Code = 'NHNCK_VIOLATIONS'"` → value = `NHNCK_VIOLATIONS`
+4. Dùng giá trị này làm suffix tên file
+
+Ví dụ: `scr_prac_conduct_vln` → manifest → entity YAML → `classification_context = "Source System Code = 'NHNCK_VIOLATIONS'"` → file = `DTM_NHNCK_scr_prac_conduct_vln_NHNCK_VIOLATIONS.csv`
+
+> **Nhiều source table cùng physical_name:** Đọc TẤT CẢ entry cùng `physical_name` trong manifest — mỗi entry có `classification_context` riêng → mỗi value = 1 file LLD riêng.
+
+### Flow Phase 1 theo reuse_status
+
+Đọc `Datamart/hld/DTM_{MODULE}_Entities.csv` → xử lý theo `reuse_status` từng bảng:
+
+| reuse_status | Hành động |
+|---|---|
+| `reuse` | **Không sinh file** — ghi note: "Bảng [datamart_table] reuse từ master, không cần thiết kế mới" |
+| `new` | Sinh file đầy đủ theo naming rule |
+| `partial` | Sinh file đầy đủ (toàn bộ cột bảng) — xem quy trình partial bên dưới |
+
+### Quy trình partial — thêm nguồn mới vào bảng đã có
+
+Khi `reuse_status = partial`:
+1. Đọc master `datamart_attributes.csv` — lấy tất cả cột hiện tại của `datamart_table` đó
+2. So sánh cột hiện có (master) với cột cần thiết kế cho nguồn mới
+3. Nếu có cột mới (delta) → **báo cáo human**:
+
+```
+Bảng [datamart_table] hiện có X cột từ nguồn [src cũ].
+Nguồn mới [src mới] cần thêm Y cột: [col_a, col_b, ...].
+
+Đề xuất:
+  - Cập nhật file nguồn cũ DTM_..._[src cũ].csv để map thêm Y cột (nếu có dữ liệu từ nguồn cũ)
+  - Sinh file mới DTM_..._[src mới].csv với đầy đủ X+Y cột
+
+→ Xin phê duyệt trước khi tiến hành
+```
+
+4. Sau human approve → **mọi file nguồn của bảng này phải chứa đầy đủ số cột hiện tại** (không có file nào thiếu cột so với schema bảng)
+
+### Merge vào master datamart_attributes.csv
+
+Sau khi human approve từng file:
+```
+"Merge file [tên file] vào datamart_attributes.csv không?"
+```
+
+- Nếu đồng ý → check trùng `(datamart_table, datamart_column)` trước khi append
+- Nếu trùng → bỏ qua dòng đó (không ghi đè)
+- Chỉ append rows mới (chưa có trong master)
+
+---
 
 ## Header 15 cột
 
@@ -60,7 +132,7 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 | `direct` | Map thẳng 1 Atomic col **có trong driving table** | `atomic_table.atomic_column` |
 | `computed` | Arithmetic từ nhiều Atomic cols | `atomic_table.col_a * atomic_table.col_b` |
 | `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.dt = atomic_table.date_col` |
-| `lookup_dim` | FK → SCD2 Dimension qua NK + date range | `LOOKUP dim ON dim.nk_col = driving.bk_col AND driving.rpt_dt BETWEEN dim.eff_dt AND dim.expiry_dt` |
+| `lookup_dim` | FK → SCD4A Dimension qua NK (current state, không dùng date range) | `LOOKUP dim ON dim.nk_col = driving.bk_col` |
 | `join_atomic` | Cột từ Atomic table **khác** driving table | `JOIN atomic_b ON atomic_b.fk_col = driving.join_col → atomic_b.target_col` |
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
 | `pending` | Chưa có Atomic source | *(để trống)* |
@@ -74,6 +146,15 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 - Cột có sẵn trong driving Atomic table → `direct`
 - Cột trong Atomic table khác, phải join → `join_atomic`
 - Test: nếu `etl_logic` dạng self-join → sai, đổi về `direct`
+
+**Lưu ý quan trọng — `computed` từ bảng khác driving:**
+Nếu logic tính toán (`computed`) sử dụng cột từ bảng **khác** driving table (kể cả dạng `EXISTS`, `CASE WHEN`, aggregate có điều kiện) → phải dùng `join_atomic`, không phải `computed`. `computed` chỉ dùng khi tất cả input đều từ driving table.
+
+| Logic | atomic_table | etl_logic_type đúng |
+|---|---|---|
+| `YEAR({etl_snapshot_dt}) - scr_prac.brth_yr` | `scr_prac` (= driving) | `computed` |
+| `EXISTS (SELECT 1 FROM scr_prac_license_ctf_doc WHERE ...)` | `scr_prac_license_ctf_doc` (≠ driving) | `join_atomic` |
+| `CASE WHEN scr_prac_license_ap.ap_tp_code IN (...) THEN ...` | `scr_prac_license_ap` (≠ driving) | `join_atomic` |
 
 **Quy tắc bắt buộc `table_name.column_name`:** Mọi column reference trong `etl_logic` phải có đủ prefix.
 Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), ETL runtime parameter, keyword `NULL`.
@@ -92,6 +173,24 @@ Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `C
 | Hop đầu trong multi-hop chain là optional | LEFT JOIN |
 
 ❌ Cột từ `LEFT JOIN` phải có `nullable = true`.
+
+---
+
+## Ưu tiên join qua Surrogate Key trên Atomic
+
+**Quy tắc:** Khi join giữa 2 Atomic table, **ưu tiên dùng surrogate key** (`_id`) thay vì business code (`_code`).
+
+| Trường hợp | Join key đúng | Join key sai |
+|---|---|---|
+| `ip_alt_identn` ↔ `scr_prac` | `ip_alt_identn.ip_id = scr_prac.scr_prac_id` | `ip_alt_identn.ip_code = scr_prac.scr_prac_code` |
+| `scr_prac_license_ctf_doc` ↔ bảng quyết định | `ON xxx_id = yyy_id` | `ON xxx_code = yyy_code` |
+
+**Lý do:** Surrogate key là FK thực sự trong Atomic schema — quan hệ referential integrity đảm bảo đúng. Business code (`_code`) có thể bị reuse hoặc thay đổi theo thời gian. Join qua `_code` dễ gây fanout ngoài ý muốn nếu code không unique.
+
+**Cách tra cứu join key đúng:** Mở entity YAML → đọc comment của FK attribute — thường ghi `"FK target: <table>.<column>"`. Không suy luận từ tên cột.
+
+❌ `ip_alt_identn.ip_code = driving.scr_prac_code` — sai, dùng `ip_alt_identn.ip_id = driving.scr_prac_id`
+❌ Join qua business code khi surrogate FK đã có sẵn trong driving table.
 
 ---
 
