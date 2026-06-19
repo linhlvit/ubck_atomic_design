@@ -176,6 +176,24 @@ Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `C
 
 ---
 
+## Ưu tiên join qua Surrogate Key trên Atomic
+
+**Quy tắc:** Khi join giữa 2 Atomic table, **ưu tiên dùng surrogate key** (`_id`) thay vì business code (`_code`).
+
+| Trường hợp | Join key đúng | Join key sai |
+|---|---|---|
+| `ip_alt_identn` ↔ `scr_prac` | `ip_alt_identn.ip_id = scr_prac.scr_prac_id` | `ip_alt_identn.ip_code = scr_prac.scr_prac_code` |
+| `scr_prac_license_ctf_doc` ↔ bảng quyết định | `ON xxx_id = yyy_id` | `ON xxx_code = yyy_code` |
+
+**Lý do:** Surrogate key là FK thực sự trong Atomic schema — quan hệ referential integrity đảm bảo đúng. Business code (`_code`) có thể bị reuse hoặc thay đổi theo thời gian. Join qua `_code` dễ gây fanout ngoài ý muốn nếu code không unique.
+
+**Cách tra cứu join key đúng:** Mở entity YAML → đọc comment của FK attribute — thường ghi `"FK target: <table>.<column>"`. Không suy luận từ tên cột.
+
+❌ `ip_alt_identn.ip_code = driving.scr_prac_code` — sai, dùng `ip_alt_identn.ip_id = driving.scr_prac_id`
+❌ Join qua business code khi surrogate FK đã có sẵn trong driving table.
+
+---
+
 ## Quy tắc NK
 
 `NK` = trường ETL dùng để join từ driving table vào Dimension.

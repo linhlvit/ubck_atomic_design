@@ -64,6 +64,23 @@
 
 **Đặc điểm:** `source_entity/atomic_table/atomic_column` = bảng **joined** (cstd_bnk), không phải driving. Ghi rõ INNER/LEFT JOIN.
 
+### ✅ join_atomic — ưu tiên surrogate key (_id)
+
+```csv
+"Practitioner 360 Profile","opr_prac_360_profile","Identification Number","identn_nbr","true","Text","string","",
+"Số CCCD/Hộ chiếu NHN — LEFT JOIN ip_alt_identn qua scr_prac_id (surrogate key)",
+"LEFT JOIN ip_alt_identn ON ip_alt_identn.ip_id = scr_prac.scr_prac_id AND ip_alt_identn.identn_tp_code IN ('CCCD','PASSPORT') → ip_alt_identn.identn_nbr","join_atomic","Involved Party Alternative Identification","ip_alt_identn","Identification Number","identn_nbr"
+```
+
+### ❌ join_atomic — sai khi dùng business code thay surrogate key
+
+```csv
+-- SAI: ip_code là business code, không phải FK thực sự
+"LEFT JOIN ip_alt_identn ON ip_alt_identn.ip_code = scr_prac.scr_prac_code AND ..."
+```
+
+**Quy tắc:** Khi join 2 Atomic table, tra entity YAML để tìm FK attribute (thường có comment `"FK target: <table>.<column>"`). Dùng surrogate `_id` nếu có — không suy luận join key từ tên cột tương đồng.
+
 ---
 
 ## `join_atomic` multi-hop — qua bảng trung gian
