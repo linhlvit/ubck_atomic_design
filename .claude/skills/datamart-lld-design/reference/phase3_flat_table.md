@@ -51,24 +51,18 @@ month_num, month_name, quarter_num, year_num, is_trading_day
 
 -- From: {DIM ENTITY NAME}  (lặp lại cho mỗi dim FK khác Calendar Date)
 <cột giá trị nghiệp vụ của dim> (bỏ PK surrogate và src_stm_code)
-
--- Technical metadata
-ds_batch_date               Date      COMMENT 'ETL batch date'
-ds_population_timestamp     DateTime  COMMENT 'Population timestamp'
 ```
+
+**Không có technical metadata (ds_batch_date, ds_population_timestamp) trong flat table.**
 
 ## Cấu trúc cột flat table (operational)
 
 ```
 -- From: OPERATIONAL {ENTITY NAME}
 <tất cả cột của operational> (theo thứ tự trong Attributes.csv)
-
--- Technical metadata
-ds_batch_date               Date      COMMENT 'ETL batch date'
-ds_population_timestamp     DateTime  COMMENT 'Population timestamp'
 ```
 
-**Operational KHÔNG join Calendar Date và KHÔNG join bất kỳ dim nào.**
+**Operational KHÔNG join Calendar Date và KHÔNG join bất kỳ dim nào. Không có technical metadata.**
 
 ---
 
@@ -76,7 +70,19 @@ ds_population_timestamp     DateTime  COMMENT 'Population timestamp'
 
 Đọc cột `FKs` trong Entities.csv — format: `{Dim Entity}.{FK column name}`.
 
-Mỗi FK = 1 LEFT JOIN trong file populate. FK → Calendar Date Dimension dùng tên bảng `datamart.{module}_calendar_date_dimension`, join key `date_dimension_id = f.{fk_column}`.
+**Quy tắc JOIN cho fact → Calendar Date Dimension:**
+- FK snapshot date (`snpst_dt_dim_id`) → dùng `JOIN` (không LEFT JOIN) — đây là FK chính dùng để lọc ngày ETL
+- FK date khác (VD: `issu_dt_dim_id`, `evnt_dt_dim_id`) → dùng `LEFT JOIN` — là dữ liệu lịch sử, không lọc
+
+**Điều kiện lọc ngày (ETL daily):**
+- Đặt ở mệnh đề `WHERE`, không đặt trong `ON`
+- Fact Snapshot: `WHERE snpst_cal.cdr_dt = :etl_date`
+- Fact Event: `WHERE evnt_cal.cdr_dt = :etl_date`
+- Operational: không lọc ngày
+
+Các FK → dim khác (không phải Calendar Date) dùng `LEFT JOIN`.
+
+Tên bảng Calendar Date: `datamart.{module}_calendar_date_dimension`, join key `date_dimension_id = f.{fk_column}`.
 
 ## Cột lấy từ dim (ngoài Calendar Date)
 
@@ -116,6 +122,8 @@ year_num            Nullable(Int32)   COMMENT 'Năm',
 is_trading_day      Nullable(UInt8)   COMMENT 'Cờ ngày giao dịch',
 ```
 
+> **Không thêm cột `cdr_dt` vào flat table** — cột này chỉ dùng làm điều kiện lọc trong WHERE của POPULATE, không được select vào flat table.
+
 ---
 
 ## ENGINE / PARTITION / ORDER BY
@@ -145,9 +153,6 @@ CREATE TABLE IF NOT EXISTS datamart.{flat_table_name} ON CLUSTER 'my_cluster'
     -- From: {DIM ENTITY NAME}
     col_x   Nullable(String)    COMMENT '... — từ {Dim Entity Name}',
     ...
-    -- Technical metadata
-    ds_batch_date               Date      COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime  COMMENT 'Population timestamp'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(<driving_date_col>)
@@ -158,6 +163,7 @@ COMMENT 'Flat table — {Entity Name} × {Dim1} × {Dim2}'
 
 ## Pattern file 02 — POPULATE
 
+**Fact Snapshot:**
 ```sql
 TRUNCATE TABLE IF EXISTS datamart.{flat_table_name} ON CLUSTER 'my_cluster';
 INSERT INTO datamart.{flat_table_name}
@@ -165,18 +171,42 @@ SELECT
     f.col1,
     f.col2,
     ...
-    calendar_date.full_date,
+    snpst_cal.full_date,
+    snpst_cal.day_of_week,
+    ...
+    issu_cal.full_date          AS issu_full_date,   -- nếu có FK date phụ
     ...
     dim_alias.col_x,
     ...
-    today()  AS ds_batch_date,
-    now()    AS ds_population_timestamp
 FROM datamart.{source_fact_table} f
-LEFT JOIN datamart.{module}_calendar_date_dimension calendar_date
-    ON calendar_date.date_dimension_id = f.{snpst_dt_dim_id}
+JOIN datamart.{module}_calendar_date_dimension snpst_cal
+    ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.{module}_calendar_date_dimension issu_cal   -- FK date phụ nếu có
+    ON issu_cal.date_dimension_id = f.{issu_dt_dim_id}
 LEFT JOIN datamart.{dim_table} dim_alias
     ON dim_alias.{dim_pk} = f.{fk_col}
+WHERE snpst_cal.cdr_dt = :etl_date
 ;
 ```
 
-Operational table: chỉ `FROM datamart.{source_operational_table} o` + SELECT các cột + 2 technical metadata — không có LEFT JOIN.
+**Fact Event:**
+```sql
+...
+JOIN datamart.{module}_calendar_date_dimension evnt_cal
+    ON evnt_cal.date_dimension_id = f.evnt_dt_dim_id
+...
+WHERE evnt_cal.cdr_dt = :etl_date
+;
+```
+
+**Operational table:** không có JOIN, không có WHERE lọc ngày.
+```sql
+TRUNCATE TABLE IF EXISTS datamart.{flat_table_name} ON CLUSTER 'my_cluster';
+INSERT INTO datamart.{flat_table_name}
+SELECT
+    o.col1,
+    o.col2,
+    ...
+FROM datamart.{source_operational_table} o
+;
+```

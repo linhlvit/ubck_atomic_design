@@ -76,11 +76,15 @@ Bước 2:  Tổng hợp cuối — sau khi review xong toàn scope
 
 > **GATE RULE — BẮT BUỘC:**
 > 1. Sau Bước 0b: DỪNG, không bắt đầu review chi tiết cho đến khi user xác nhận kế hoạch
-> 2. Sau mỗi nhóm: DỪNG, không tự chuyển sang nhóm tiếp theo khi chưa có lệnh từ user
+> 2. Sau mỗi nhóm:
+>    - **Có vấn đề (Critical/Warning/Info):** DỪNG, hỏi user muốn (a) sửa ngay, (b) ghi nhận sang nhóm N+1, hay (c) dừng
+>    - **Không có vấn đề (tất cả 3 lớp = OK):** Tự động chuyển sang nhóm N+1 trong plan — KHÔNG dừng chờ xác nhận
 > 3. Trước mọi sửa đổi file: DỪNG, không sửa khi chưa được user xác nhận rõ ràng
 >
-> **Câu hỏi kết thúc mỗi nhóm (bắt buộc):**
+> **Câu hỏi kết thúc mỗi nhóm CÓ vấn đề (bắt buộc):**
 > "Nhóm N đã review xong. Bạn muốn: **(a)** sửa [vấn đề X] ngay, **(b)** ghi nhận và sang nhóm N+1, hay **(c)** dừng tại đây?"
+>
+> **Khi nhóm N không có vấn đề:** Tự động in "✅ Nhóm N — OK (không phát hiện vấn đề). Chuyển sang Nhóm N+1..." và bắt đầu review ngay.
 
 ---
 
@@ -100,47 +104,46 @@ Bước 2:  Tổng hợp cuối — sau khi review xong toàn scope
 ## BƯỚC 0b — LẬP KẾ HOẠCH REVIEW
 
 > Bước này thực hiện **một lần duy nhất** trước khi bắt đầu review chi tiết bất kỳ nhóm nào.
-> Mục đích: cho user thấy toàn cảnh trước khi đi vào từng nhóm.
+> Mục đích: đọc toàn bộ BA để có danh sách nhóm chính xác, sau đó dừng chờ user xác nhận.
 
-### 0b.1 — Đọc nhanh toàn bộ BA
+### 0b.1 — Đọc toàn bộ BA (bắt buộc đọc hết, không đọc lướt)
 
-Dùng Python `csv.reader` đọc toàn bộ part file. Với mỗi nhóm (STT), tổng hợp:
+Dùng Python `csv.reader` đọc **toàn bộ** tất cả part file (`part1`, `part2`, `part3`...).
+Với mỗi nhóm (STT), tổng hợp đầy đủ:
 - Tên nhóm (Col 2)
 - Tổng KPI, số Done, số Doing, số Pending
-- Bảng nguồn xuất hiện (Col 15) — để đánh giá có Atomic sẵn không
+- Bảng nguồn xuất hiện (Col 15)
 
 **Xác định trạng thái BA per-nhóm:**
 - `ALL_DONE`: 100% Done/Doing — nguồn đầy đủ
 - `PARTIAL`: có Done/Doing + còn Pending
 - `ALL_PENDING`: 100% Pending hoặc trống — chưa có nguồn
 
-### 0b.2 — Đọc nhanh HLD
+### 0b.2 — Đọc HLD
 
 Với mỗi nhóm trong BA, kiểm tra trong HLD:
 - Nhóm có section trong HLD không?
 - Trạng thái HLD: `READY` / `PENDING` / `Chưa có`
 
-### 0b.3 — Xuất bảng kế hoạch tổng thể
+### 0b.3 — Xuất bảng danh sách nhóm theo thứ tự tăng dần
 
-| Nhóm | Tên nhóm | BA Status | HLD Status | Ưu tiên | Action dự kiến |
-|---|---|---|---|---|---|
-| 1 | Dashboard chấm điểm CTDC | ALL_PENDING | PENDING | ⬜ Thấp | Giữ nguyên — chờ nguồn |
-| 6 | GSTT thống kê niêm yết | ALL_DONE | READY | 🟢 Review | Review 3 lớp |
-| 25 | BCTC DN bảo hiểm | ALL_DONE | PENDING | 🔴 Cao | Thiết kế HLD mới (Kịch bản A) |
+Liệt kê **toàn bộ nhóm**, sắp xếp theo số nhóm từ nhỏ đến lớn (nhóm 1 → nhóm N):
 
-**Mức ưu tiên:**
-- 🔴 Cao: BA Done nhưng HLD PENDING hoặc LLD trống — cần thiết kế mới
-- 🟡 Trung: HLD READY, có thể có delta từ BA cập nhật — cần xác nhận
-- 🟢 Review: HLD READY, BA Done, cần cross-check đảm bảo không lệch
-- ⬜ Thấp: BA ALL_PENDING — chưa có gì để review, giữ nguyên
+| Nhóm | Tên nhóm | Tổng KPI | Done | Doing | Pending | BA Status | HLD Status |
+|---|---|---|---|---|---|---|---|
+| 1 | Dashboard chấm điểm CTDC | 5 | 0 | 0 | 5 | ALL_PENDING | PENDING |
+| 2 | ... | ... | ... | ... | ... | ... | ... |
+| 6 | GSTT thống kê niêm yết | 8 | 8 | 0 | 0 | ALL_DONE | READY |
+
+> Thứ tự review sẽ tuần tự từ nhóm 1 đến nhóm N — không sắp xếp lại theo ưu tiên.
 
 ### 0b.4 — ⛔ DỪNG, hỏi user
 
-Sau khi trình bày bảng kế hoạch, hỏi:
+Sau khi trình bày bảng danh sách, hỏi:
 
-> "Đây là kế hoạch review [N] nhóm của module [MODULE]. Bạn muốn:
-> - Review **theo thứ tự trên** (ưu tiên 🔴 trước)?
-> - Review **tuần tự 1→N** theo số nhóm?
+> "Đây là danh sách [N] nhóm của module [MODULE]. Thứ tự review sẽ tuần tự nhóm 1 → [N].
+> Bạn muốn:
+> - Bắt đầu review **từ nhóm 1** (theo thứ tự trên)?
 > - Chỉ review **một số nhóm cụ thể** (nhóm nào)?
 > - Bỏ qua nhóm nào (VD: nhóm ALL_PENDING)?"
 
@@ -348,6 +351,13 @@ Sau khi trình bày bảng tổng hợp:
   - Phân loại: Critical 🔴 / Warning 🟡 / Info 🔵
   - Đề xuất action cụ thể cho từng vấn đề
         ↓
+   ┌──────────────────────────────────────┐
+   │ KHÔNG có vấn đề (tất cả 3 lớp = OK) │
+   │ → In: "✅ Nhóm N — OK"              │
+   │ → Tự động chuyển sang nhóm N+1      │
+   │ → Bắt đầu review nhóm N+1 ngay      │
+   └──────────────────────────────────────┘
+        ↓ (nếu có vấn đề)
 ⛔ DỪNG — Hỏi user:
 "Nhóm N xong. Bạn muốn:
   (a) Sửa [vấn đề X] ngay
@@ -359,12 +369,12 @@ Sau khi trình bày bảng tổng hợp:
    │ → Xác nhận lại action cụ thể  │
    │ → Thực hiện (Edit / gọi skill)│
    │ → Báo cáo hoàn thành          │
-   │ → Hỏi: "Tiếp tục nhóm N+1?"  │
+   │ → Tự động chuyển nhóm N+1     │
    └────────────────────────────────┘
    ┌────────────────────────────────┐
    │ User chọn (b)                 │
    │ → Ghi nhận vào backlog        │
-   │ → Chuyển sang review nhóm N+1 │
+   │ → Tự động chuyển nhóm N+1     │
    └────────────────────────────────┘
    ┌────────────────────────────────┐
    │ User chọn (c)                 │
@@ -375,7 +385,9 @@ Sau khi trình bày bảng tổng hợp:
 
 ### Quy tắc cứng
 
-- **KHÔNG tự chuyển nhóm** — luôn phải có lệnh từ user
+- **Tự động chuyển nhóm** khi nhóm N = OK (không có vấn đề) — không cần lệnh từ user
+- **Tự động chuyển nhóm** sau khi user chọn (a) xong hoặc chọn (b) — không hỏi lại "tiếp tục không?"
+- **DỪNG chờ user** chỉ khi nhóm N có vấn đề cần quyết định
 - **KHÔNG tự sửa file** — kể cả lỗi nhỏ (Info), phải hỏi trước
 - **KHÔNG gộp review nhiều nhóm** trừ khi user nói rõ "review nhanh nhóm X-Y"
 - **Nếu user nói "tiếp tục"** mà không chỉ định nhóm → hiểu là nhóm tiếp theo trong kế hoạch đã duyệt ở Bước 0b

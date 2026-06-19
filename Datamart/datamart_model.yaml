@@ -403,6 +403,15 @@ entities:
         description: "Ngày thu hồi CCHN — NULL nếu chưa thu hồi"
         source_atomic_table: "scr_prac_license_ctf_doc"
         source_atomic_column: "scr_prac_license_ctf_doc.revocation_dt"
+      - logical_name: "Decision Type Code"
+        physical_name: "dcsn_tp_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Loại quyết định thu hồi/hủy CCHN — Classification Value (scheme: DECISION_TYPE): 2=Thu hồi, 6=Hủy CCHN; NULL nếu chưa có quyết định"
+        source_atomic_table: "scr_prac_license_dcsn_doc"
+        source_atomic_column: "scr_prac_license_dcsn_doc.dcsn_tp_code"
 
   - id: "DTM-opr_prac_360_profile"
     logical_name: "Practitioner 360 Profile"

@@ -3,11 +3,14 @@
 -- Module: Người Hành Nghề Chứng Khoán (NHNCK)
 -- Generated: Phase 3 LLD Datamart
 -- 11 bảng: 2 fact + 9 operational
+-- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
 -- ============================================================
 
 
 -- ============================================================
 -- 1. FACT: nhnck_fct_prac_license_ctf_snpst_flat
+--    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
+--    issu_cal:  LEFT JOIN (lịch sử — không lọc ngày)
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.nhnck_fct_prac_license_ctf_snpst_flat
@@ -25,6 +28,7 @@ SELECT
     f.is_reissue_ind,
     f.ctf_issu_dt,
     f.revocation_dt,
+    f.dcsn_tp_code,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cal.full_date         AS snpst_full_date,
@@ -66,14 +70,10 @@ SELECT
     ctf_st_cls.scm_code         AS ctf_st_scm_code,
     ctf_st_cls.scm_nm           AS ctf_st_scm_nm,
     ctf_st_cls.cl_code          AS ctf_st_cl_code,
-    ctf_st_cls.cl_nm            AS ctf_st_cl_nm,
-
-    -- Technical metadata
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    ctf_st_cls.cl_nm            AS ctf_st_cl_nm
 
 FROM datamart.nhnck_fct_prac_license_ctf_snpst f
-LEFT JOIN datamart.nhnck_calendar_date_dimension snpst_cal
+JOIN datamart.nhnck_calendar_date_dimension snpst_cal
     ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.nhnck_calendar_date_dimension issu_cal
     ON issu_cal.date_dimension_id = f.issu_dt_dim_id
@@ -83,11 +83,13 @@ LEFT JOIN datamart.nhnck_cls_dim ctf_tp_cls
     ON ctf_tp_cls.cl_dim_id = f.ctf_tp_cl_dim_id
 LEFT JOIN datamart.nhnck_cls_dim ctf_st_cls
     ON ctf_st_cls.cl_dim_id = f.ctf_st_cl_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 
 -- ============================================================
 -- 2. FACT: nhnck_fct_prac_dly_snpst_flat
+--    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.nhnck_fct_prac_dly_snpst_flat
@@ -116,17 +118,14 @@ SELECT
     prac_dim.ed_lvl_code        AS prac_ed_lvl_code,
     prac_dim.nat_code           AS prac_nat_code,
     prac_dim.brth_dt            AS prac_brth_dt,
-    prac_dim.practice_st_code   AS prac_practice_st_code,
-
-    -- Technical metadata
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    prac_dim.practice_st_code   AS prac_practice_st_code
 
 FROM datamart.nhnck_fct_prac_dly_snpst f
-LEFT JOIN datamart.nhnck_calendar_date_dimension snpst_cal
+JOIN datamart.nhnck_calendar_date_dimension snpst_cal
     ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.nhnck_scr_prac_dim prac_dim
     ON prac_dim.scr_prac_dim_id = f.prac_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 
@@ -149,9 +148,7 @@ SELECT
     o.actv_ctf_tp_code,
     o.actv_ctf_tp_nm,
     o.actv_ctf_nbr,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_360_profile o
 ;
 
@@ -173,9 +170,7 @@ SELECT
     o.cty_code,
     o.cty_nm,
     o.rel_idv_adr,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_rel_p_profile o
 ;
 
@@ -195,9 +190,7 @@ SELECT
     o.employment_st,
     o.hire_dt,
     o.tmt_dt,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_lst_co_role o
 ;
 
@@ -219,9 +212,7 @@ SELECT
     o.revocation_dcsn_nbr,
     o.pcs_st_code,
     o.pcs_st_nm,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_ctf_hist o
 ;
 
@@ -242,9 +233,7 @@ SELECT
     o.prac_dept_at_rpt,
     o.hire_dt,
     o.tmt_dt,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_emp_hist o
 ;
 
@@ -264,9 +253,7 @@ SELECT
     o.rcrd_st_nm,
     o.dcsn_nbr,
     o.dcsn_signed_dt,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_vln_hist o
 ;
 
@@ -294,9 +281,7 @@ SELECT
     o.ovrl_rslt_nm,
     o.dcsn_nbr,
     o.dcsn_signed_dt,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_exam_hist o
 ;
 
@@ -317,9 +302,7 @@ SELECT
     o.exam_scor,
     o.trn_rslt_code,
     o.trn_rslt_nm,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_trn_hist o
 ;
 
@@ -340,8 +323,6 @@ SELECT
     o.issu_dt,
     o.current_org_nm,
     o.identn_tp_code,
-    o.src_stm_code,
-    today()     AS ds_batch_date,
-    now()       AS ds_population_timestamp
+    o.src_stm_code
 FROM datamart.opr_prac_data_explr o
 ;
