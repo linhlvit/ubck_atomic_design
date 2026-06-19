@@ -222,7 +222,23 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 ---
 
-### Checklist bổ sung — kiểm tra trước khi giao file Phase 3
+### L11 — Thiếu row FILTER `src_stm_code` cho Operational table
+
+**Pattern:** Bảng `opr_*` (Operational) có `src_stm_code` nhưng Detail Mapping không có dòng FILTER để lọc nguồn — khi Atomic table nhận thêm nguồn mới, presentation layer khai thác dữ liệu lẫn nguồn.
+
+**Quy tắc:**
+- **Operational table** có `src_stm_code`: bắt buộc có 1 row `column_role = FILTER` với `logic = "src_stm_code = '<VALUE>'"`, `ghi_chu = 'Forward-compat: lọc đúng nguồn khi bảng có nhiều src_stm_code'`. Đặt ngay sau row `JOIN_KEY` đầu tiên của bảng đó trong Detail Mapping.
+- **Dimension table**: KHÔNG cần row FILTER `src_stm_code` — Surrogate Key đã encode nguồn (SK = hash(natural_key + src_stm_code)), JOIN từ Fact sang Dim qua SK đã đảm bảo đúng nguồn.
+- Ngoại lệ không áp dụng: `cv` (Classification Value) và `cdr_dt_dim` (Calendar Date) — conformed/shared tables.
+
+**Kiểm tra:** Với mỗi Operational table trong Detail Mapping, tìm row `column_role = FILTER` có `logic` chứa `src_stm_code`. Nếu thiếu → thêm row.
+
+❌ `opr_prac_360_profile` không có FILTER `src_stm_code = 'NHNCK_PROFESSIONALS'` → sai.
+✅ `opr_prac_360_profile` có 1 dòng `column_role = FILTER`, `logic = "src_stm_code = 'NHNCK_PROFESSIONALS'"`.
+
+---
+
+### Checklist bổ sung — kiểm tra trước khi giao file Phase 2
 
 ```
 □ L1: Mọi SLICER/FILTER Chiều thời gian → logic trỏ đúng physical_table của nhóm đó (không phải bảng nhóm khác)
@@ -235,6 +251,7 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 □ L8: Không có giá trị <TBD> hoặc placeholder chưa xác định trong cột logic
 □ L9: Cột nhom → tên đầy đủ theo HLD (không chỉ "Nhóm X" — phải có phần tên ngắn)
 □ L10: DERIVED _YOY → logic viết bằng physical column theo template rút gọn (không refer KPI_ID)
+□ L11: Mỗi Operational table (opr_*) có src_stm_code → có đúng 1 dòng FILTER logic="src_stm_code = '<VALUE>'" ngay sau JOIN_KEY đầu tiên; Dimension table → không thêm FILTER này
 ```
 
 ---

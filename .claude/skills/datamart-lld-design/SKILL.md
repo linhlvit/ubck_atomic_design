@@ -319,9 +319,19 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 - Nếu FAIL → sửa trước khi trình bày.
 
 **TC4 — Lọc src_stm_code đầy đủ:**
+
+Sub-check A — `src_stm_code` attribute của bảng dim/operational:
 - Với mỗi bảng `dim` và `operational`: kiểm tra attribute `src_stm_code` có `etl_logic` chứa điều kiện `WHERE <table>.src_stm_code = '...'` hoặc `WHERE <table>.src_stm_code IN (...)`.
-- Báo: `✅ TC4 PASS` hoặc `❌ TC4 FAIL: [tên bảng thiếu WHERE filter trên src_stm_code]`.
-- Nếu FAIL → sửa trước khi trình bày.
+- Báo fail nếu thiếu: `❌ TC4A FAIL: [tên bảng] thiếu WHERE filter trên src_stm_code`.
+
+Sub-check B — JOIN sang bảng Atomic khác driving table:
+- Với mọi row có `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}`: nếu bảng đích (`atomic_table`) là Atomic entity có cột `src_stm_code` (xác định bằng cách kiểm tra `etl_logic` có tham chiếu bảng đó không), thì `etl_logic` phải chứa `AND <atomic_table>.src_stm_code = '<VALUE>'` trong điều kiện JOIN.
+- Ngoại lệ không áp dụng sub-check B: `cv` (Classification Value) và `cdr_dt_dim` (Calendar Date) — 2 bảng này là conformed/shared, không có phân biệt nguồn.
+- Lý do (forward-compatibility): khi Atomic table sau này nhận thêm nguồn mới, ETL join không bị nhân bản dữ liệu sai nguồn.
+- Báo fail nếu thiếu: `❌ TC4B FAIL: [attribute] — join sang [atomic_table] thiếu AND src_stm_code filter`.
+
+Báo tổng: `✅ TC4 PASS` (cả A và B đều pass) hoặc liệt kê từng lỗi A/B.
+Nếu FAIL → sửa trước khi trình bày.
 
 **TC5 — Cấu trúc CSV hợp lệ (bắt buộc dùng Bash tool):**
 - Sau khi Write file, chạy lệnh sau bằng Bash tool:
