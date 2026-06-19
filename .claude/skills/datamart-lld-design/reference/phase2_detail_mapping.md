@@ -182,6 +182,46 @@ Các lỗi dưới đây được tổng hợp từ review module PTTT. Mỗi l�
 
 ---
 
+### L9 — Cột `nhom` thiếu tên đầy đủ theo HLD
+
+**Pattern:** Cột `nhom` chỉ ghi `"Nhóm 1a"` thay vì tên đầy đủ theo HLD heading Section 2 — mất ngữ nghĩa khi xem file CSV độc lập.
+
+**Quy tắc:**
+- Lấy tên từ heading HLD Section 2: `#### Nhóm Xa — [Phân hệ] — [Tên ngắn]`
+- Nếu heading có 3 phần → bỏ phần giữa (phân hệ nghiệp vụ, thường trùng với Tab): `Nhóm Xa — [Tên ngắn]`
+- Nếu heading có 2 phần → giữ nguyên: `Nhóm X — [Tên ngắn]`
+
+| HLD heading | `nhom` đúng |
+|---|---|
+| `Nhóm 1a — Chứng chỉ hành nghề — Thống kê tổng hợp (KPI thẻ CCHN)` | `Nhóm 1a — Thống kê tổng hợp (KPI thẻ CCHN)` |
+| `Nhóm 1b — Người hành nghề — Thống kê tổng hợp (KPI thẻ NHN)` | `Nhóm 1b — Thống kê tổng hợp (KPI thẻ NHN)` |
+| `Nhóm 2 — Biểu đồ Trình độ chuyên môn` | `Nhóm 2 — Biểu đồ Trình độ chuyên môn` |
+| `Nhóm 5 — Dashboard Tra cứu hồ sơ 360° — Thông tin chung của NHNCK` | `Nhóm 5 — Thông tin chung của NHNCK` |
+
+❌ `nhom = "Nhóm 1a"` → thiếu tên ngắn, không hợp lệ.
+
+---
+
+### L10 — DERIVED YoY logic refer KPI_ID thay vì công thức physical
+
+**Pattern:** Ghi `logic = (K_NHNCK_2[Y] - K_NHNCK_2[Y-1]) / K_NHNCK_2[Y-1] * 100` — refer KPI_ID thay vì viết công thức bằng physical column.
+
+**Quy tắc:** DERIVED _YOY phải viết công thức rút gọn theo dạng:
+```
+( COUNT/SUM(fct_xxx.col | <filter_conditions> | snpst yr=:Y) - COUNT/SUM(fct_xxx.col | <filter_conditions> | snpst yr=:Y-1) ) / NULLIF( COUNT/SUM(fct_xxx.col | <filter_conditions> | snpst yr=:Y-1) , 0) * 100
+```
+
+**Ký hiệu `|` trong YoY formula** = ngăn cách điều kiện filter (pseudo-SQL, dùng trong cột `logic` để tránh dấu phẩy phá cấu trúc CSV). `ghi_chu` ghi `"YoY % tăng trưởng — presentation layer resolve 2 năm"`.
+
+Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
+```
+( COUNT(DISTINCT fct_prac_license_ctf_snpst.license_ctf_doc_code | ctf_issu_dt IN :Y | snpst yr=:Y) - COUNT(DISTINCT fct_prac_license_ctf_snpst.license_ctf_doc_code | ctf_issu_dt IN :Y-1 | snpst yr=:Y-1) ) / NULLIF( COUNT(DISTINCT fct_prac_license_ctf_snpst.license_ctf_doc_code | ctf_issu_dt IN :Y-1 | snpst yr=:Y-1) , 0) * 100
+```
+
+❌ `logic = (K_NHNCK_2[Y] - K_NHNCK_2[Y-1]) / K_NHNCK_2[Y-1] * 100` → refer KPI_ID không hợp lệ.
+
+---
+
 ### Checklist bổ sung — kiểm tra trước khi giao file Phase 3
 
 ```
@@ -193,6 +233,8 @@ Các lỗi dưới đây được tổng hợp từ review module PTTT. Mỗi l�
 □ L6: Mọi physical_table trong logic → là bảng thuộc nhóm đó (không phải bảng nhóm khác)
 □ L7: Nhóm PENDING → mỗi kpi_id chỉ có 1 dòng (không duplicate)
 □ L8: Không có giá trị <TBD> hoặc placeholder chưa xác định trong cột logic
+□ L9: Cột nhom → tên đầy đủ theo HLD (không chỉ "Nhóm X" — phải có phần tên ngắn)
+□ L10: DERIVED _YOY → logic viết bằng physical column theo template rút gọn (không refer KPI_ID)
 ```
 
 ---
