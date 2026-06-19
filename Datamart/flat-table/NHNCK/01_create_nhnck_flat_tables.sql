@@ -7,9 +7,9 @@
 
 
 -- ============================================================
--- 1. FACT: fct_prac_license_ctf_snpst_flat
+-- 1. FACT: nhnck_fct_prac_license_ctf_snpst_flat
 --    Periodic Snapshot CCHN × tháng
---    Joins: Calendar Date (issu_dt + snpst_dt) × scr_prac_dim × cls_dim (ctf_tp + ctf_st)
+--    Joins: Calendar Date (snpst_dt JOIN + issu_dt LEFT JOIN) × scr_prac_dim × cls_dim ×2
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLUSTER 'my_cluster'
 (
@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLU
     is_reissue_ind          String              COMMENT 'Là CCHN cấp lại (Y/N)',
     ctf_issu_dt             Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt           Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
+    dcsn_tp_code            Nullable(String)    COMMENT 'Loại quyết định — scheme: DECISION_TYPE (2=Thu hồi, 6=Hủy); NULL nếu chưa có quyết định',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_full_date         Nullable(Date)      COMMENT 'Ngày đầy đủ — từ Calendar Date Dimension (snapshot)',
@@ -67,11 +68,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLU
     ctf_st_scm_code         Nullable(String)    COMMENT 'Mã scheme trạng thái CCHN — từ Classification Dimension',
     ctf_st_scm_nm           Nullable(String)    COMMENT 'Tên scheme trạng thái CCHN — từ Classification Dimension',
     ctf_st_cl_code          Nullable(String)    COMMENT 'Mã trạng thái CCHN — từ Classification Dimension',
-    ctf_st_cl_nm            Nullable(String)    COMMENT 'Tên trạng thái CCHN — từ Classification Dimension',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    ctf_st_cl_nm            Nullable(String)    COMMENT 'Tên trạng thái CCHN — từ Classification Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(ctf_issu_dt)
@@ -81,9 +78,9 @@ COMMENT 'Flat table — Fact Practitioner License Certificate Snapshot × Calend
 
 
 -- ============================================================
--- 2. FACT: fct_prac_dly_snpst_flat
+-- 2. FACT: nhnck_fct_prac_dly_snpst_flat
 --    Periodic Snapshot NHN × ngày
---    Joins: Calendar Date (snpst_dt) × scr_prac_dim
+--    Joins: Calendar Date (snpst_dt JOIN) × scr_prac_dim
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my_cluster'
 (
@@ -111,11 +108,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my
     prac_ed_lvl_code        Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
     prac_nat_code           Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
     prac_brth_dt            Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
-    prac_practice_st_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    prac_practice_st_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(snpst_full_date)
@@ -143,15 +136,11 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_360_profile_flat ON CLUSTER 'my_clu
     actv_ctf_tp_code    Nullable(String)    COMMENT 'Loại CCHN hiện tại — scheme: CERTIFICATE_TYPE',
     actv_ctf_tp_nm      Nullable(String)    COMMENT 'Tên loại CCHN hiện tại',
     actv_ctf_nbr        Nullable(String)    COMMENT 'Số CCHN hiện tại',
-    src_stm_code        String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code)
+PARTITION BY toYYYYMM(brth_dt)
+ORDER BY (prac_code)
 COMMENT 'Flat table — Practitioner 360 Profile (latest state per NHN)'
 ;
 
@@ -173,15 +162,11 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_rel_p_profile_flat ON CLUSTER 'my_c
     cty_code            Nullable(String)    COMMENT 'Mã quốc gia người liên quan',
     cty_nm              Nullable(String)    COMMENT 'Tên quốc gia',
     rel_idv_adr         Nullable(String)    COMMENT 'Địa chỉ người liên quan',
-    src_stm_code        String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, rel_p_code)
+PARTITION BY tuple()
+ORDER BY (prac_code, rel_p_code)
 COMMENT 'Flat table — Practitioner Related Party Profile (1 người liên quan per NHN)'
 ;
 
@@ -201,15 +186,11 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_lst_co_role_flat ON CLUSTER 'my_clu
     employment_st           Nullable(String)    COMMENT 'Trạng thái vai trò (Active/Inactive)',
     hire_dt                 Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
     tmt_dt                  Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
-    src_stm_code            String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, org_emp_rpt_code)
+PARTITION BY tuple()
+ORDER BY (prac_code, org_emp_rpt_code)
 COMMENT 'Flat table — Practitioner Listed Company Role (1 báo cáo tổ chức per NHN)'
 ;
 
@@ -231,15 +212,11 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_ctf_hist_flat ON CLUSTER 'my_cluste
     revocation_dcsn_nbr     Nullable(String)    COMMENT 'Số quyết định thu hồi',
     pcs_st_code             Nullable(String)    COMMENT 'Trạng thái xử lý hồ sơ — scheme: PROCESS_STATUS',
     pcs_st_nm               Nullable(String)    COMMENT 'Tên trạng thái xử lý hồ sơ',
-    src_stm_code            String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, license_ctf_doc_code)
+PARTITION BY toYYYYMM(issu_dt)
+ORDER BY (issu_dt, prac_code, license_ctf_doc_code)
 COMMENT 'Flat table — Practitioner Certificate History (1 CCHN per NHN)'
 ;
 
@@ -260,15 +237,11 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_emp_hist_flat ON CLUSTER 'my_cluste
     prac_dept_at_rpt    Nullable(String)    COMMENT 'Phòng ban tại thời điểm báo cáo',
     hire_dt             Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
     tmt_dt              Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
-    src_stm_code        String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, org_emp_rpt_code)
+PARTITION BY toYYYYMM(hire_dt)
+ORDER BY (hire_dt, prac_code, org_emp_rpt_code)
 COMMENT 'Flat table — Practitioner Employment History (1 lần công tác per NHN)'
 ;
 
@@ -288,15 +261,11 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_vln_hist_flat ON CLUSTER 'my_cluste
     rcrd_st_nm          Nullable(String)    COMMENT 'Tên trạng thái vi phạm',
     dcsn_nbr            Nullable(String)    COMMENT 'Số quyết định xử phạt',
     dcsn_signed_dt      Nullable(Date)      COMMENT 'Ngày quyết định xử phạt',
-    src_stm_code        String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, conduct_vln_code)
+PARTITION BY toYYYYMM(dcsn_signed_dt)
+ORDER BY (dcsn_signed_dt, prac_code, conduct_vln_code)
 COMMENT 'Flat table — Practitioner Violation History (1 vi phạm per NHN)'
 ;
 
@@ -324,15 +293,11 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_exam_hist_flat ON CLUSTER 'my_clust
     ovrl_rslt_nm                Nullable(String)    COMMENT 'Tên kết quả tổng hợp',
     dcsn_nbr                    Nullable(String)    COMMENT 'Số quyết định công bố kết quả',
     dcsn_signed_dt              Nullable(Date)      COMMENT 'Ngày ký quyết định công bố',
-    src_stm_code                String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code                String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, exam_ases_rslt_code)
+PARTITION BY toYYYYMM(exam_strt_dt)
+ORDER BY (exam_strt_dt, prac_code, exam_ases_rslt_code)
 COMMENT 'Flat table — Practitioner Exam History (1 lần thi per NHN)'
 ;
 
@@ -343,25 +308,21 @@ COMMENT 'Flat table — Practitioner Exam History (1 lần thi per NHN)'
 CREATE TABLE IF NOT EXISTS datamart.opr_prac_trn_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Training History
-    prac_code       String              COMMENT 'PK (1/2) — Mã NHN',
-    enrollment_code String              COMMENT 'PK (2/2) — Mã đăng ký khóa học',
-    trn_clss_code   String              COMMENT 'Mã khóa học',
-    trn_clss_nm     Nullable(String)    COMMENT 'Tên khóa học',
-    academic_yr     Nullable(Int64)     COMMENT 'Năm học',
-    exam_strt_dt    Nullable(Date)      COMMENT 'Ngày bắt đầu thi',
-    exam_end_dt     Nullable(String)    COMMENT 'Ngày kết thúc thi (Text — nguồn VARCHAR2(200))',
-    exam_scor       Nullable(Decimal(5,2)) COMMENT 'Điểm thi — nullable nếu chưa thi',
-    trn_rslt_code   Nullable(String)    COMMENT 'Kết quả thi — scheme: TRAINING_RESULT',
-    trn_rslt_nm     Nullable(String)    COMMENT 'Tên kết quả thi',
-    src_stm_code    String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    prac_code       String                  COMMENT 'PK (1/2) — Mã NHN',
+    enrollment_code String                  COMMENT 'PK (2/2) — Mã đăng ký khóa học',
+    trn_clss_code   String                  COMMENT 'Mã khóa học',
+    trn_clss_nm     Nullable(String)        COMMENT 'Tên khóa học',
+    academic_yr     Nullable(Int64)         COMMENT 'Năm học',
+    exam_strt_dt    Nullable(Date)          COMMENT 'Ngày bắt đầu thi',
+    exam_end_dt     Nullable(String)        COMMENT 'Ngày kết thúc thi (Text — nguồn VARCHAR2(200))',
+    exam_scor       Nullable(Decimal(5,2))  COMMENT 'Điểm thi — nullable nếu chưa thi',
+    trn_rslt_code   Nullable(String)        COMMENT 'Kết quả thi — scheme: TRAINING_RESULT',
+    trn_rslt_nm     Nullable(String)        COMMENT 'Tên kết quả thi',
+    src_stm_code    String                  COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, enrollment_code)
+PARTITION BY toYYYYMM(exam_strt_dt)
+ORDER BY (exam_strt_dt, prac_code, enrollment_code)
 COMMENT 'Flat table — Practitioner Training History (1 enrollment per NHN)'
 ;
 
@@ -382,14 +343,10 @@ CREATE TABLE IF NOT EXISTS datamart.opr_prac_data_explr_flat ON CLUSTER 'my_clus
     issu_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     current_org_nm          Nullable(String)    COMMENT 'Tên tổ chức công tác hiện tại',
     identn_tp_code          Nullable(String)    COMMENT 'Loại giấy tờ định danh — scheme: IP_ALT_ID_TYPE',
-    src_stm_code            String              COMMENT 'Mã hệ thống nguồn',
-
-    -- Technical metadata
-    ds_batch_date               Date        COMMENT 'ETL batch date',
-    ds_population_timestamp     DateTime    COMMENT 'Population timestamp'
+    src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ds_batch_date)
-ORDER BY (ds_batch_date, prac_code, license_ctf_doc_code)
+PARTITION BY toYYYYMM(issu_dt)
+ORDER BY (issu_dt, prac_code, license_ctf_doc_code)
 COMMENT 'Flat table — Practitioner Data Explorer (1 CCHN per NHN — toàn bộ trạng thái)'
 ;

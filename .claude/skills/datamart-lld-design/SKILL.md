@@ -314,7 +314,7 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 
 **TC3 — Đầy đủ prefix table_name.column_name:**
 - Kiểm tra mọi column reference trong `etl_logic` có dạng `<table>.<col>`.
-- Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), NULL, ETL runtime parameter.
+- Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), NULL, ETL runtime parameter (`{etl_date}`).
 - Báo: `✅ TC3 PASS` hoặc `❌ TC3 FAIL: [danh sách etl_logic thiếu prefix]`.
 - Nếu FAIL → sửa trước khi trình bày.
 
