@@ -1,4 +1,4 @@
-source: NHNCK
+﻿source: NHNCK
 description: Quản lý giám sát người hành nghề chứng khoán
 brd_entries:
 - brd_id: BRD-SRC-NHNCK-ACTION_LOGS
@@ -1416,7 +1416,7 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {data_date}
+      filter_logic: created_at >= {etl_date}
       filter_note: Thông tin file sao lưu cơ sở dữ liệu — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-BACKUP_SCHEDULES
   brd_name: Design Atomic từ nguồn NHNCK bảng BACKUP_SCHEDULES
@@ -1456,7 +1456,7 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {data_date}
+      filter_logic: created_at >= {etl_date}
       filter_note: Nhật ký gửi email trong hệ thống — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-SMS_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng SMS_LOGS
@@ -1477,7 +1477,7 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {data_date}
+      filter_logic: created_at >= {etl_date}
       filter_note: Nhật ký gửi SMS trong hệ thống — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-SEND_AND_RECIEVE_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng SEND_AND_RECIEVE_LOGS
