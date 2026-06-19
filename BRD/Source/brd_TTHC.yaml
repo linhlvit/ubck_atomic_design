@@ -1,4 +1,4 @@
-source: TTHC
+﻿source: TTHC
 description: "Quản lý thủ tục hành chính — Hệ thống tiếp nhận và xử lý hồ sơ đăng ký chào bán / phát hành chứng khoán theo mô hình EAV (Orchard Core / SQLite)"
 brd_entries:
 
@@ -45,7 +45,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "CreatedUtc >= {data_date}"
+        filter_logic: "CreatedUtc >= {etl_date}"
         filter_note: "Hồ sơ chào bán/kết quả xét duyệt — append theo ngày tạo mới (filter Published=1 AND Latest=1 trong ETL)"
 
   # ─── UID-01 Giá trị field Eform ───────────────────────────────────────────
@@ -69,7 +69,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field text Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-HtmlFieldIndex
@@ -91,7 +91,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field HTML Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-MultiTextFieldIndex
@@ -113,7 +113,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field đa văn bản Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-LinkFieldIndex
@@ -135,7 +135,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field link Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-NumericFieldIndex
@@ -157,7 +157,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field số Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-DateFieldIndex
@@ -179,7 +179,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field ngày Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-DateTimeFieldIndex
@@ -201,7 +201,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field ngày giờ Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-TimeFieldIndex
@@ -223,7 +223,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field giờ Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-BooleanFieldIndex
@@ -245,7 +245,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field boolean Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-ContentPickerFieldIndex
@@ -267,7 +267,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field content picker Eform — append theo ContentItemIndex cha cùng ngày"
 
   - brd_id: BRD-SRC-TTHC-UserPickerFieldIndex
@@ -289,7 +289,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{data_date}')"
+        filter_logic: "ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')"
         filter_note: "Field user picker Eform — append theo ContentItemIndex cha cùng ngày"
 
   # ─── UID-02 Quy trình xét duyệt ──────────────────────────────────────────
@@ -315,7 +315,7 @@ brd_entries:
       refresh_frequency: daily
       ingestion:
         data_change_mode: Append
-        filter_logic: "CreatedUtc >= {data_date}"
+        filter_logic: "CreatedUtc >= {etl_date}"
         filter_note: "Workflow instance xét duyệt — append theo ngày khởi tạo workflow"
 
   # ─── Ngoài scope ──────────────────────────────────────────────────────────

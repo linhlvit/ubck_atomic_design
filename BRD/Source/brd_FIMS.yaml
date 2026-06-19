@@ -1,4 +1,4 @@
-source: FIMS
+﻿source: FIMS
 description: "Hệ thống quản lý giám sát nhà đầu tư nước ngoài"
 brd_entries:
   # ─── FIMS_UID01 Quản trị phân hệ ─────────────────────────────────────────
@@ -1372,7 +1372,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Báo cáo thành viên — append khi có báo cáo mới nộp"
 
   - brd_id: BRD-SRC-FIMS-RPTVALUES
@@ -1396,7 +1396,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Giá trị báo cáo — append theo báo cáo cha"
 
   - brd_id: BRD-SRC-FIMS-RPTVALUESMANAGERMENT
@@ -1578,7 +1578,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Tin công bố thông tin — append theo ngày tạo thông báo mới"
 
   # ─── FIMS_UID09 Cảnh báo ─────────────────────────────────────────────────
@@ -1636,7 +1636,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Vi phạm — append theo ngày ghi nhận vi phạm mới"
 
   # ─── FIMS_UID10 Tiện ích ─────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-source: QLRR
+﻿source: QLRR
 description: "Quản lý rủi ro về thị trường chứng khoán"
 brd_entries:
   # QLRR001/003/004 — Chỉ tiêu tài chính (dùng chung schema)
@@ -95,7 +95,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "period_date = {data_date}"
+        filter_logic: "period_date = {etl_date}"
         filter_note: "Số liệu chỉ tiêu theo kỳ — append khi có kỳ mới hoặc cập nhật thủ công"
 
   - brd_id: BRD-SRC-QLRR-risk_indicator_value_history
@@ -117,7 +117,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "changed_at >= {data_date}"
+        filter_logic: "changed_at >= {etl_date}"
         filter_note: "Lịch sử thay đổi số liệu — append mỗi lần cập nhật"
 
   - brd_id: BRD-SRC-QLRR-risk_indicator_schedule
@@ -206,7 +206,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "uploaded_at >= {data_date}"
+        filter_logic: "uploaded_at >= {etl_date}"
         filter_note: "Lượt upload file báo cáo — append theo ngày upload"
 
   - brd_id: BRD-SRC-QLRR-risk_report_file
@@ -228,7 +228,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "File đính kèm báo cáo — append theo lượt upload cha"
 
   # QLRR005 — Quản lý Cảnh báo
@@ -283,7 +283,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "triggered_at >= {data_date}"
+        filter_logic: "triggered_at >= {etl_date}"
         filter_note: "Cảnh báo thực tế — append khi chỉ tiêu vượt ngưỡng"
 
   - brd_id: BRD-SRC-QLRR-risk_alert_resolution
@@ -307,7 +307,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Bản ghi xử lý cảnh báo — append theo cảnh báo cha"
 
   - brd_id: BRD-SRC-QLRR-risk_alert_resolution_file
@@ -329,7 +329,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "File giải trình — append theo bản ghi xử lý cha"
 
   - brd_id: BRD-SRC-QLRR-risk_alert_history
@@ -353,7 +353,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Lịch sử xử lý cảnh báo — append mỗi sự kiện trên dòng thời gian"
 
   - brd_id: BRD-SRC-QLRR-risk_notification
@@ -375,7 +375,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "sent_at >= {data_date}"
+        filter_logic: "sent_at >= {etl_date}"
         filter_note: "Thông báo cảnh báo — append theo ngày gửi"
 
   # QLRR006 — Phân quyền dữ liệu (out of scope)

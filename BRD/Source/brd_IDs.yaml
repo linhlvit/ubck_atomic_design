@@ -1,4 +1,4 @@
-source: IDS
+﻿source: IDS
 description: "Hệ thống Công bố Thông tin — Quản lý, giám sát công ty đại chúng và tổ chức kiểm toán"
 brd_entries:
   # UID-01 — Quản lý hồ sơ công ty đại chúng
@@ -168,7 +168,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Lịch sử tăng vốn trước khi thành đại chúng — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-company_add_capital
@@ -190,7 +190,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Quá trình tăng vốn — append theo ngày phát sinh sự kiện"
 
   - brd_id: BRD-SRC-IDS-company_securities_issuance
@@ -212,7 +212,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Phát hành chứng khoán — append theo ngày phát hành"
 
   - brd_id: BRD-SRC-IDS-company_tender_offer
@@ -234,7 +234,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Chào mua công khai — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-company_treasury_stocks
@@ -256,7 +256,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Cổ phiếu quỹ — append theo ngày phát sinh thay đổi"
 
   # UID-03 — Giám sát và xử phạt CTĐC
@@ -279,7 +279,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Thanh tra kiểm tra — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-company_penalize
@@ -301,7 +301,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Xử phạt hành chính — append theo ngày phát sinh"
 
   # UID-04 — Quản lý cổ đông giao dịch
@@ -420,7 +420,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Chứng khoán vào diện kiểm soát — append theo ngày áp dụng"
 
   - brd_id: BRD-SRC-IDS-positions
@@ -535,7 +535,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Lần nộp báo cáo/tin CBTT — append mỗi lần nộp mới"
 
   - brd_id: BRD-SRC-IDS-data
@@ -561,7 +561,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Dữ liệu BCTC theo lần nộp — append theo company_data cha"
 
   - brd_id: BRD-SRC-IDS-data_values
@@ -635,7 +635,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Thông báo — append theo ngày tạo thông báo mới"
 
   - brd_id: BRD-SRC-IDS-noti_config
@@ -919,7 +919,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Nhắc nhở công ty KT/KTV — append theo ngày phát sinh"
 
   - brd_id: BRD-SRC-IDS-af_sanctions
@@ -943,7 +943,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Xử phạt công ty KT/KTV — append theo ngày phát sinh"
 
   # UID-08 — Lịch sử thay đổi (SCD2 kỹ thuật) — out of scope

@@ -1,4 +1,4 @@
-source: GSGD
+﻿source: GSGD
 description: "Phần hệ giám sát giao dịch"
 brd_entries:
   # ─── UID1 Quản lý thông tin ───────────────────────────────────────────────
@@ -202,7 +202,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Sự kiện tổ chức niêm yết — append theo ngày ghi nhận sự kiện mới"
 
   - brd_id: BRD-SRC-GSGD-company_event_history
@@ -308,7 +308,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Báo cáo bất thường — append theo ngày nhận báo cáo"
 
   - brd_id: BRD-SRC-GSGD-abnormal_report_file
@@ -330,7 +330,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "File đính kèm báo cáo bất thường — append theo báo cáo cha"
 
   - brd_id: BRD-SRC-GSGD-compliance_report_template
@@ -400,7 +400,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "report_date = {data_date}"
+        filter_logic: "report_date = {etl_date}"
         filter_note: "Instance báo cáo tuân thủ theo kỳ — append khi có kỳ mới"
 
   - brd_id: BRD-SRC-GSGD-compliance_report_data
@@ -422,7 +422,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Dữ liệu chi tiết báo cáo tuân thủ — append theo instance cha"
 
   # ─── UID2 Phân tích chuyên sâu vụ việc ───────────────────────────────────
@@ -456,7 +456,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Vụ việc giám sát — append theo ngày khởi tạo vụ việc mới"
 
   - brd_id: BRD-SRC-GSGD-case_attach_file
@@ -478,7 +478,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "File đính kèm vụ việc — append theo vụ việc cha"
 
   - brd_id: BRD-SRC-GSGD-case_file_workflow
@@ -500,7 +500,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Bước quy trình vụ việc — append mỗi lần cập nhật trạng thái"
 
   - brd_id: BRD-SRC-GSGD-case_approval_step
@@ -522,7 +522,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Log duyệt vụ việc — append mỗi bước duyệt"
 
   - brd_id: BRD-SRC-GSGD-analysis_attribute_define
@@ -568,7 +568,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Giá trị tiêu chí phân tích — append theo lần chạy phân tích"
 
   - brd_id: BRD-SRC-GSGD-analysis_execution_log
@@ -590,7 +590,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Log thực thi phân tích — append mỗi lần chạy"
 
   - brd_id: BRD-SRC-GSGD-analysis_suspicious_account_code
@@ -614,7 +614,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "TK nghi vấn theo biểu mẫu — append mỗi lần chạy"
 
   - brd_id: BRD-SRC-GSGD-analysis_suspicious_account
@@ -638,7 +638,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Kết quả phân tích TK nghi vấn — append mỗi lần chạy"
 
   - brd_id: BRD-SRC-GSGD-analysis_account_relationship
@@ -662,7 +662,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Kết quả phân tích quan hệ TK — append mỗi lần chạy"
 
   - brd_id: BRD-SRC-GSGD-analysis_account_group
@@ -686,7 +686,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Kết quả phân tích nhóm TK — append mỗi lần chạy"
 
   - brd_id: BRD-SRC-GSGD-analysis_account_group_member
@@ -708,7 +708,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Thành viên nhóm TK trong kết quả — append theo nhóm cha"
 
   - brd_id: BRD-SRC-GSGD-analysis_report
@@ -732,7 +732,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Báo cáo phân tích — append mỗi lần tạo báo cáo"
 
   - brd_id: BRD-SRC-GSGD-suspicious_account

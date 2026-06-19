@@ -1,4 +1,4 @@
-source: KNT
+﻿source: KNT
 description: "Dữ liệu Cơ quan Thuế từ Tổng cục Thuế"
 brd_entries:
   # ─── KNT-01 Quản lý thông tin đăng ký thuế ───────────────────────────────
@@ -72,7 +72,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Báo cáo tài chính từ Cục Thuế — append khi nhận gói tin mới"
 
   - brd_id: BRD-SRC-KNT-TCT_BAO_CAO_CHI_TIET
@@ -94,7 +94,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Chi tiết báo cáo tài chính — append theo báo cáo cha"
 
   # ─── KNT-03 Cưỡng chế nợ thuế ───────────────────────────────────────────
@@ -122,7 +122,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Cưỡng chế nợ thuế — append khi nhận quyết định mới"
 
   - brd_id: BRD-SRC-KNT-TCT_TTCCN_HOA_DON
@@ -148,7 +148,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Cưỡng chế qua hóa đơn — append theo quyết định cưỡng chế"
 
   - brd_id: BRD-SRC-KNT-HOA_DON_CHI_TIET
@@ -170,7 +170,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Chi tiết hóa đơn bị ngừng — append theo cưỡng chế cha"
 
   # ─── KNT-04 Xử lý vi phạm pháp luật về thuế ────────────────────────────
@@ -196,7 +196,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Xử lý vi phạm thuế — append khi nhận thông tin vi phạm mới"
 
   # ─── KNT-05 Giám sát doanh nghiệp rủi ro cao ────────────────────────────

@@ -1,4 +1,4 @@
-source: MDDS
+﻿source: MDDS
 description: "Hệ thống phân phối dữ liệu thị trường — Bảng giá, sổ khớp, chỉ số thị trường realtime"
 brd_entries:
   # UID-01 — Thị trường và chỉ số tổng hợp
@@ -114,7 +114,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "trade_date = {data_date}"
+        filter_logic: "trade_date = {etl_date}"
         filter_note: "Log tick-by-tick khớp lệnh — append theo ngày giao dịch"
 
   # UID-03 — Trái phiếu doanh nghiệp
@@ -159,5 +159,5 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "trade_date = {data_date}"
+        filter_logic: "trade_date = {etl_date}"
         filter_note: "Log tick-by-tick khớp lệnh TPDN — append theo ngày giao dịch"

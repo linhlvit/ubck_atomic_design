@@ -1,4 +1,4 @@
-source: SCMS
+﻿source: SCMS
 description: "Quản lý giám sát Công ty chứng khoán"
 brd_entries:
   # SCMS_UID01 — Quản lý CTCK (hồ sơ và đơn vị trực thuộc)
@@ -205,7 +205,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Quyết định xử phạt hành chính — append theo ngày phát hành quyết định"
 
   - brd_id: BRD-SRC-SCMS-CTCK_NGUOI_HANH_NGHE_CK
@@ -299,7 +299,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Giao dịch chuyển nhượng cổ đông — append theo ngày phát sinh giao dịch"
 
   - brd_id: BRD-SRC-SCMS-CTCK_CD_DAI_DIEN
@@ -393,7 +393,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Báo cáo định kỳ thành viên — append khi có báo cáo mới nộp"
 
   - brd_id: BRD-SRC-SCMS-BC_BAO_CAO_GT
@@ -415,7 +415,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Giá trị chỉ tiêu báo cáo — append theo báo cáo cha"
 
   - brd_id: BRD-SRC-SCMS-BC_THANH_VIEN_LS
@@ -473,7 +473,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Tình hình gửi báo cáo vi phạm — append theo kỳ kiểm tra"
 
   - brd_id: BRD-SRC-SCMS-BC_VI_PHAM_LOAI_VP
@@ -495,7 +495,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Chi tiết loại vi phạm — append theo bản ghi vi phạm cha"
 
   # CBTT
@@ -518,7 +518,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Báo cáo công bố thông tin — append theo ngày công bố"
 
   - brd_id: BRD-SRC-SCMS-CBTT_CHAO_BAN_CHUNG_KHOAN
@@ -540,7 +540,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Thông tin chào bán CK công bố — append theo ngày công bố"
 
   - brd_id: BRD-SRC-SCMS-CBTT_CO_DONG
@@ -562,7 +562,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {data_date}"
+        filter_logic: "created_at >= {etl_date}"
         filter_note: "Thông tin cổ đông công bố — append theo ngày công bố"
 
   # Khai thác tổng hợp (out of scope)

@@ -1,4 +1,4 @@
-source: OrderTrade
+﻿source: OrderTrade
 description: "Sổ lệnh và Sổ khớp HOSE & HNX — dữ liệu giao dịch chứng khoán từ hệ thống KRX"
 brd_entries:
   # UID-01 — Lệnh giao dịch (Order Lifecycle)
@@ -23,7 +23,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "order_date = {data_date}"
+        filter_logic: "order_date = {etl_date}"
         filter_note: "Sổ lệnh HOSE — append theo ngày giao dịch, mỗi event lệnh mới/sửa/hủy"
 
   - brd_id: BRD-SRC-OrderTrade-Order_HNX
@@ -47,7 +47,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "order_date = {data_date}"
+        filter_logic: "order_date = {etl_date}"
         filter_note: "Sổ lệnh HNX — append theo ngày giao dịch"
 
   # UID-02 — Khớp lệnh (Trade Execution)
@@ -74,7 +74,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "trade_date = {data_date}"
+        filter_logic: "trade_date = {etl_date}"
         filter_note: "Sổ khớp HOSE — append theo ngày khớp lệnh"
 
   - brd_id: BRD-SRC-OrderTrade-Trade_HNX
@@ -100,5 +100,5 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "trade_date = {data_date}"
+        filter_logic: "trade_date = {etl_date}"
         filter_note: "Sổ khớp HNX — append theo ngày khớp lệnh"
