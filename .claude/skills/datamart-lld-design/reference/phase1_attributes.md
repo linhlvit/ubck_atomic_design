@@ -137,6 +137,10 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
 | `pending` | Chưa có Atomic source | *(để trống)* |
 
+**ETL runtime parameter — tên biến chuẩn:**
+Mọi tham chiếu đến ngày ETL chạy (snapshot date, population date, runtime date) đều dùng **`{etl_date}`** — không dùng `{etl_snapshot_dt}`, `{etl_population_dt}`, hay tên biến tùy ý khác.
+Ví dụ đúng: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = {etl_date}`, `YEAR({etl_date}) - scr_prac.brth_yr`
+
 ❌ `etl_logic_type = framework` — không tồn tại.
 ❌ `etl_logic` để trống cho attribute READY không phải PK/NK/BK.
 ❌ `etl_logic_type = direct` mà `etl_logic` bắt đầu bằng `=`.
@@ -152,12 +156,12 @@ Nếu logic tính toán (`computed`) sử dụng cột từ bảng **khác** dri
 
 | Logic | atomic_table | etl_logic_type đúng |
 |---|---|---|
-| `YEAR({etl_snapshot_dt}) - scr_prac.brth_yr` | `scr_prac` (= driving) | `computed` |
+| `YEAR({etl_date}) - scr_prac.brth_yr` | `scr_prac` (= driving) | `computed` |
 | `EXISTS (SELECT 1 FROM scr_prac_license_ctf_doc WHERE ...)` | `scr_prac_license_ctf_doc` (≠ driving) | `join_atomic` |
 | `CASE WHEN scr_prac_license_ap.ap_tp_code IN (...) THEN ...` | `scr_prac_license_ap` (≠ driving) | `join_atomic` |
 
 **Quy tắc bắt buộc `table_name.column_name`:** Mọi column reference trong `etl_logic` phải có đủ prefix.
-Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), ETL runtime parameter, keyword `NULL`.
+Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), ETL runtime parameter (`{etl_date}`), keyword `NULL`.
 
 ---
 
