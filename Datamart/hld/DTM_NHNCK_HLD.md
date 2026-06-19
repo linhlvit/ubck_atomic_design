@@ -948,7 +948,7 @@ flowchart LR
 |---|---|---|---|---|
 | K_NHNCK_33 | Họ tên NHN | Text | Base | `Securities Practitioner`.Full Name |
 | K_NHNCK_34 | Ngày sinh | Date | Base | `Securities Practitioner`.Birth Date — dùng `brth_dt`; nếu null thì fallback `Birth Year` (`brth_yr`) |
-| K_NHNCK_35 | Tuổi | Int | Derived | ETL-derived: `COALESCE(YEAR(brth_dt), CAST(brth_yr AS INT))` → tính `YEAR(Population_Date) − giá_trị_đó` khi populate bảng |
+| K_NHNCK_35 | Tuổi | Int | Derived | ETL-derived: `COALESCE(YEAR(brth_dt), CAST(brth_yr AS INT))` → tính `YEAR(CURRENT_DATE) − giá_trị_đó` khi populate bảng |
 | K_NHNCK_36 | Quốc tịch | Text | Base | `Securities Practitioner`.Nationality Code — ETL denormalize Nationality Name từ Classification (scheme: NATIONALITY) khi populate bảng |
 | K_NHNCK_37 | Số định danh / Hộ chiếu | Text | Base | `Involved Party Alternative Identification`.Identification Number — join qua `ip_id = scr_prac_id`, lấy bản ghi `Identification Type Code` = CCCD hoặc PASSPORT |
 | K_NHNCK_38 | Nơi công tác hiện tại | Text | Base | `Securities Practitioner`.Workplace — text tự do từ `Professionals.WORKPLACE` |
@@ -975,7 +975,7 @@ erDiagram
         varchar Active_Certificate_Type_Name
         varchar Active_Certificate_Number
         string Source_System_Code
-        datetime Population_Date
+
     }
 ```
 
@@ -1055,7 +1055,7 @@ erDiagram
         varchar Country_Code
         varchar Country_Name
         varchar Related_Individual_Address
-        datetime Population_Date
+
     }
 ```
 
@@ -1130,7 +1130,7 @@ erDiagram
         varchar Employment_Status
         date Hire_Date
         date Termination_Date
-        datetime Population_Date
+
     }
 
     Practitioner_Related_Party_Profile {
@@ -1218,7 +1218,7 @@ erDiagram
         varchar Practitioner_Department_At_Report
         date Hire_Date
         date Termination_Date
-        datetime Population_Date
+
     }
 ```
 
@@ -1295,7 +1295,7 @@ erDiagram
         varchar Revocation_Decision_Number
         varchar Process_Status_Code
         varchar Process_Status_Name
-        datetime Population_Date
+
     }
 ```
 
@@ -1350,6 +1350,7 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Nguồn | Ghi chú |
 |---|---|---|---|---|---|
 | K_NHNCK_59 | Tên đợt thi | Text | Base | `Securities Practitioner Qualification Examination Assessment`.Assessment Name | Khai sinh tại Nhóm 10 |
+| K_NHNCK_103 | Kỳ thi | Text | Derived | `Securities Practitioner Qualification Examination Assessment`.Report Year + Examination Session Number — ETL concat thành chuỗi hiển thị (VD: "2025_1") khi populate bảng | Khai sinh tại Nhóm 10 |
 | K_NHNCK_60 | Ngày thi | Date | Base | `Securities Practitioner Qualification Examination Assessment`.Examination Start Date | Khai sinh tại Nhóm 10 |
 | K_NHNCK_61 | Điểm thi luật | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Law Score | Khai sinh tại Nhóm 10 |
 | K_NHNCK_93 | Điểm thi chuyên môn | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Specialization Score | Khai sinh tại Nhóm 10 |
@@ -1366,6 +1367,9 @@ erDiagram
         varchar Practitioner_Code PK
         varchar Examination_Assessment_Result_Code PK
         varchar Assessment_Name
+        int Report_Year
+        int Examination_Session_Number
+        varchar Examination_Period
         date Examination_Start_Date
         varchar Law_Score
         varchar Specialization_Score
@@ -1377,7 +1381,7 @@ erDiagram
         varchar Overall_Result_Name
         varchar Decision_Number
         date Decision_Signed_Date
-        datetime Population_Date
+
     }
 ```
 
@@ -1396,7 +1400,7 @@ flowchart LR
         G1["Practitioner Exam History"]
     end
     subgraph RPT["Bao cao - Nhom 10"]
-        R1["K_NHNCK_59-63,93-95: Dot thi sat hach"]
+        R1["K_NHNCK_59-63,93-95,103: Dot thi sat hach"]
     end
     SV1 --> G1
     SV2 --> G1
@@ -1458,7 +1462,7 @@ erDiagram
         decimal Exam_Score
         varchar Training_Result_Code
         varchar Training_Result_Name
-        datetime Population_Date
+
     }
 ```
 
@@ -1533,7 +1537,7 @@ erDiagram
         varchar Record_Status_Name
         varchar Decision_Number
         date Decision_Signed_Date
-        datetime Population_Date
+
     }
 ```
 
@@ -1619,7 +1623,7 @@ erDiagram
         date Certificate_Issue_Date
         varchar Current_Organization_Name
         varchar Identification_Type_Code
-        datetime Population_Date
+
     }
 ```
 
@@ -1702,7 +1706,7 @@ graph TB
 | `Practitioner Certificate History` | 1 CCHN per NHN | K_NHNCK_43–48 READY; K_NHNCK_92 (Số quyết định thu hồi) READY | READY |
 | `Practitioner Employment History` | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90 (Phân loại tổ chức), K_NHNCK_91 (Phòng ban) | READY |
 | `Practitioner Violation History` | 1 vi phạm per NHN | K_NHNCK_54, K_NHNCK_55, K_NHNCK_56, K_NHNCK_57 READY; K_NHNCK_58 PENDING (O_NHNCK_15 — RECORD_STATUS là trường kỹ thuật) | PARTIAL |
-| `Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_93 (Điểm CM), K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM) READY | READY |
+| `Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_93 (Điểm CM), K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_103 (Kỳ thi) READY | READY |
 | `Practitioner Training History` | 1 enrollment per NHN | K_NHNCK_100, K_NHNCK_96, K_NHNCK_97, K_NHNCK_98, K_NHNCK_99, K_NHNCK_66 READY; K_NHNCK_101 PENDING (O_NHNCK_15 — RECORD_STATUS là trường kỹ thuật); K_NHNCK_67 PENDING (O_NHNCK_9 — chờ Atomic entity) | DRAFT |
 | `Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–80 READY; K_NHNCK_86 (Địa chỉ) READY | READY |
 | `Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–84 READY; K_NHNCK_85 PENDING (VSDC); K_NHNCK_87–89 PENDING (VSDC/MSS) | PARTIAL |

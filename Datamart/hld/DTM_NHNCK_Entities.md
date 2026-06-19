@@ -185,7 +185,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Practitioner Exam History | Operational | new | Lịch sử thi sát hạch — toàn bộ lần thi: đợt thi, ngày thi, điểm, kết quả, số quyết định công bố | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_93–95 |
+| Practitioner Exam History | Operational | new | Lịch sử thi sát hạch — toàn bộ lần thi: đợt thi, ngày thi, điểm, kết quả, số quyết định công bố | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_93–95, K_NHNCK_103 |
 
 ---
 

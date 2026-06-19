@@ -321,6 +321,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Tên entity dùng underscore (không dấu cách)
 - [ ] Tên cột dùng Title_Case_With_Underscore
 - [ ] Không thiết kế `Effective Date` / `Expiry Date` / `Population Date` / `Snapshot Date`
+- [ ] **Scan toàn bộ erDiagram đã viết trong file trước khi xuất:** không có trường `Population_Date` / `Effective_Date` / `Expiry_Date` / `Snapshot_Date` trong bất kỳ entity block nào
 - [ ] Toàn file HLD: mỗi bảng có số trường và tên trường giống hệt nhau ở mọi erDiagram
 
 ### Quy ước chung

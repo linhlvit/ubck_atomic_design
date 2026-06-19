@@ -546,16 +546,6 @@ entities:
         description: "Mã hệ thống nguồn — ETL-derived"
         source_atomic_table: "scr_prac"
         source_atomic_column: "scr_prac.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac"
-        source_atomic_column: null
-
   - id: "DTM-fct_prac_dly_snpst"
     logical_name: "Fact Practitioner Daily Snapshot"
     datamart_table: "fct_prac_dly_snpst"
@@ -740,16 +730,6 @@ entities:
         description: "Mã hệ thống nguồn — ETL-derived"
         source_atomic_table: "scr_prac_rel_p"
         source_atomic_column: "scr_prac_rel_p.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_rel_p"
-        source_atomic_column: null
-
   - id: "DTM-opr_prac_lst_co_role"
     logical_name: "Practitioner Listed Company Role"
     datamart_table: "opr_prac_lst_co_role"
@@ -854,16 +834,6 @@ entities:
         description: "Mã hệ thống nguồn — ETL-derived"
         source_atomic_table: "scr_prac_org_emp_rpt"
         source_atomic_column: "scr_prac_org_emp_rpt.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_org_emp_rpt"
-        source_atomic_column: null
-
   - id: "DTM-opr_prac_emp_hist"
     logical_name: "Practitioner Employment History"
     datamart_table: "opr_prac_emp_hist"
@@ -978,16 +948,6 @@ entities:
         description: "Mã hệ thống nguồn — ETL-derived"
         source_atomic_table: "scr_prac_org_emp_rpt"
         source_atomic_column: "scr_prac_org_emp_rpt.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_org_emp_rpt"
-        source_atomic_column: null
-
   - id: "DTM-opr_prac_ctf_hist"
     logical_name: "Practitioner Certificate History"
     datamart_table: "opr_prac_ctf_hist"
@@ -1111,16 +1071,6 @@ entities:
         description: "Mã hệ thống nguồn — ETL-derived"
         source_atomic_table: "scr_prac_license_ctf_doc"
         source_atomic_column: "scr_prac_license_ctf_doc.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_license_ctf_doc"
-        source_atomic_column: null
-
   - id: "DTM-opr_prac_exam_hist"
     logical_name: "Practitioner Exam History"
     datamart_table: "opr_prac_exam_hist"
@@ -1164,6 +1114,33 @@ entities:
         description: "Tên đợt thi — ETL-derived: join scr_prac_qualf_exam_ases"
         source_atomic_table: "scr_prac_qualf_exam_ases"
         source_atomic_column: "scr_prac_qualf_exam_ases.ases_nm"
+      - logical_name: "Report Year"
+        physical_name: "rpt_yr"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "Năm báo cáo đợt thi — ETL-derived: join scr_prac_qualf_exam_ases"
+        source_atomic_table: "scr_prac_qualf_exam_ases"
+        source_atomic_column: "scr_prac_qualf_exam_ases.rpt_yr"
+      - logical_name: "Examination Session Number"
+        physical_name: "exam_ssn_nbr"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "Kỳ thi trong năm (1, 2, ...) — ETL-derived: join scr_prac_qualf_exam_ases"
+        source_atomic_table: "scr_prac_qualf_exam_ases"
+        source_atomic_column: "scr_prac_qualf_exam_ases.exam_ssn_nbr"
+      - logical_name: "Examination Period"
+        physical_name: "exam_period"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Kỳ thi dạng chuỗi hiển thị VD: 2025_1 — ETL-derived: CONCAT(rpt_yr, '_', exam_ssn_nbr)"
+        source_atomic_table: "scr_prac_qualf_exam_ases"
+        source_atomic_column: "scr_prac_qualf_exam_ases.rpt_yr / scr_prac_qualf_exam_ases.exam_ssn_nbr"
       - logical_name: "Examination Start Date"
         physical_name: "exam_strt_dt"
         data_domain: "Date"
@@ -1272,17 +1249,6 @@ entities:
         description: "Mã hệ thống nguồn — ETL-derived"
         source_atomic_table: "scr_prac_qualf_exam_ases_rslt"
         source_atomic_column: "scr_prac_qualf_exam_ases_rslt.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_qualf_exam_ases_rslt"
-        source_atomic_column: null
-
-
   - id: "DTM-opr_prac_trn_hist"
     logical_name: "Practitioner Training History"
     datamart_table: "opr_prac_trn_hist"
@@ -1397,16 +1363,6 @@ entities:
         description: "Mã hệ thống nguồn"
         source_atomic_table: "scr_prac_prof_trn_clss_enrollment"
         source_atomic_column: "scr_prac_prof_trn_clss_enrollment.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_prof_trn_clss_enrollment"
-        source_atomic_column: null
-
   - id: "DTM-opr_prac_vln_hist"
     logical_name: "Practitioner Violation History"
     datamart_table: "opr_prac_vln_hist"
@@ -1512,16 +1468,6 @@ entities:
         description: "Mã hệ thống nguồn"
         source_atomic_table: "scr_prac_conduct_vln"
         source_atomic_column: "scr_prac_conduct_vln.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_conduct_vln"
-        source_atomic_column: null
-
   - id: "DTM-opr_prac_data_explr"
     logical_name: "Practitioner Data Explorer"
     datamart_table: "opr_prac_data_explr"
@@ -1639,12 +1585,3 @@ entities:
         description: "Mã hệ thống nguồn"
         source_atomic_table: "scr_prac_license_ctf_doc"
         source_atomic_column: "scr_prac_license_ctf_doc.src_stm_code"
-      - logical_name: "Population Date"
-        physical_name: "population_dt"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời điểm ETL populate bảng tác nghiệp này"
-        source_atomic_table: "scr_prac_license_ctf_doc"
-        source_atomic_column: null
