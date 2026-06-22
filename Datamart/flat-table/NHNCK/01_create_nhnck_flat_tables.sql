@@ -55,8 +55,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLU
     ctf_st_cl_nm            Nullable(String)    COMMENT 'Tên trạng thái CCHN — từ Classification Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(ctf_issu_dt)
-ORDER BY (ctf_issu_dt, license_ctf_doc_code)
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), license_ctf_doc_code)
 COMMENT 'Flat table — Fact Practitioner License Certificate Snapshot × Calendar Date × Securities Practitioner Dimension × Classification Dimension'
 ;
 
@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my
     prac_practice_st_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(snpst_cdr_dt)
-ORDER BY (snpst_cdr_dt, prac_dim_id)
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), prac_dim_id)
 COMMENT 'Flat table — Fact Practitioner Daily Snapshot × Calendar Date × Securities Practitioner Dimension'
 ;
 
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_360_profile_flat ON CLUSTER '
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(brth_dt)
+PARTITION BY toYYYYMM(assumeNotNull(brth_dt))
 ORDER BY (prac_code)
 COMMENT 'Flat table — Practitioner 360 Profile (latest state per NHN)'
 ;
@@ -191,8 +191,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_ctf_hist_flat ON CLUSTER 'my_
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(issu_dt)
-ORDER BY (issu_dt, prac_code, license_ctf_doc_code)
+PARTITION BY toYYYYMM(assumeNotNull(issu_dt))
+ORDER BY (assumeNotNull(issu_dt), prac_code, license_ctf_doc_code)
 COMMENT 'Flat table — Practitioner Certificate History (1 CCHN per NHN)'
 ;
 
@@ -216,8 +216,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_emp_hist_flat ON CLUSTER 'my_
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(hire_dt)
-ORDER BY (hire_dt, prac_code, org_emp_rpt_code)
+PARTITION BY toYYYYMM(assumeNotNull(hire_dt))
+ORDER BY (assumeNotNull(hire_dt), prac_code, org_emp_rpt_code)
 COMMENT 'Flat table — Practitioner Employment History (1 lần công tác per NHN)'
 ;
 
@@ -240,8 +240,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_vln_hist_flat ON CLUSTER 'my_
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(dcsn_signed_dt)
-ORDER BY (dcsn_signed_dt, prac_code, conduct_vln_code)
+PARTITION BY toYYYYMM(assumeNotNull(dcsn_signed_dt))
+ORDER BY (assumeNotNull(dcsn_signed_dt), prac_code, conduct_vln_code)
 COMMENT 'Flat table — Practitioner Violation History (1 vi phạm per NHN)'
 ;
 
@@ -272,8 +272,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_exam_hist_flat ON CLUSTER 'my
     src_stm_code                String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(exam_strt_dt)
-ORDER BY (exam_strt_dt, prac_code, exam_ases_rslt_code)
+PARTITION BY toYYYYMM(assumeNotNull(exam_strt_dt))
+ORDER BY (assumeNotNull(exam_strt_dt), prac_code, exam_ases_rslt_code)
 COMMENT 'Flat table — Practitioner Exam History (1 lần thi per NHN)'
 ;
 
@@ -297,8 +297,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_trn_hist_flat ON CLUSTER 'my_
     src_stm_code    String                  COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(exam_strt_dt)
-ORDER BY (exam_strt_dt, prac_code, enrollment_code)
+PARTITION BY toYYYYMM(assumeNotNull(exam_strt_dt))
+ORDER BY (assumeNotNull(exam_strt_dt), prac_code, enrollment_code)
 COMMENT 'Flat table — Practitioner Training History (1 enrollment per NHN)'
 ;
 
@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_data_explr_flat ON CLUSTER 'm
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(issu_dt)
-ORDER BY (issu_dt, prac_code, license_ctf_doc_code)
+PARTITION BY toYYYYMM(assumeNotNull(issu_dt))
+ORDER BY (assumeNotNull(issu_dt), prac_code, license_ctf_doc_code)
 COMMENT 'Flat table — Practitioner Data Explorer (1 CCHN per NHN — toàn bộ trạng thái)'
 ;

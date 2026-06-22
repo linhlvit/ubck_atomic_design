@@ -33,7 +33,7 @@ Chỉ sinh flat table cho bảng **`fact`** và **`operational`** — không sin
 | Loại | Pattern | Ví dụ |
 |------|---------|-------|
 | `fact` | `datamart.{module}_{datamart_table}_flat` | `datamart.pttt_fct_mkt_rsk_snpst_flat` |
-| `operational` | `datamart.{datamart_table}_flat` | `datamart.opr_corp_bond_issuer_credit_flat` |
+| `operational` | `datamart.{module}_{datamart_table}_flat` | `datamart.pttt_opr_corp_bond_issuer_credit_flat` |
 
 `{datamart_table}` lấy trực tiếp từ cột `datamart_table` trong Attributes.csv — không đặt lại.
 
@@ -46,8 +46,7 @@ Chỉ sinh flat table cho bảng **`fact`** và **`operational`** — không sin
 <tất cả cột của fact> (theo thứ tự trong Attributes.csv)
 
 -- From: CALENDAR DATE DIMENSION  (nếu fact có FK → Calendar Date)
-full_date, day_of_week, day_of_week_num, week_of_year,
-month_num, month_name, quarter_num, year_num, is_trading_day
+cdr_dt  -- nếu có nhiều FK date, dùng alias: snpst_cdr_dt, issu_cdr_dt, evnt_cdr_dt, ...
 
 -- From: {DIM ENTITY NAME}  (lặp lại cho mỗi dim FK khác Calendar Date)
 <cột giá trị nghiệp vụ của dim> (bỏ PK surrogate và src_stm_code)
@@ -82,7 +81,9 @@ month_num, month_name, quarter_num, year_num, is_trading_day
 
 Các FK → dim khác (không phải Calendar Date) dùng `LEFT JOIN`.
 
-Tên bảng Calendar Date: `datamart.{module}_calendar_date_dimension`, join key `date_dimension_id = f.{fk_column}`.
+Tên bảng Calendar Date (physical): `datamart.cdr_dt_dim`, join key `cdr_dt_dim_id = f.{fk_column}`.
+
+> **Bắt buộc dùng tên vật lý:** tên bảng và tên cột phải khớp với `datamart_table` và `datamart_column` trong `Datamart/lld/datamart_attributes.csv` — không dùng tên logical.
 
 ## Cột lấy từ dim (ngoài Calendar Date)
 
@@ -108,21 +109,17 @@ Tên bảng Calendar Date: `datamart.{module}_calendar_date_dimension`, join key
 | `int` (nullable=false) | `Int64` |
 | `int` (nullable=true) | `Nullable(Int64)` |
 
-Calendar Date columns cố định:
+Calendar Date — chỉ lấy cột `cdr_dt`:
 
 ```sql
-full_date           Nullable(Date)    COMMENT 'Ngày đầy đủ — từ Calendar Date Dimension',
-day_of_week         Nullable(String)  COMMENT 'Thứ trong tuần',
-day_of_week_num     Nullable(Int32)   COMMENT 'Số thứ tự ngày trong tuần (1=Mon)',
-week_of_year        Nullable(Int32)   COMMENT 'Tuần trong năm',
-month_num           Nullable(Int32)   COMMENT 'Tháng',
-month_name          Nullable(String)  COMMENT 'Tên tháng',
-quarter_num         Nullable(Int32)   COMMENT 'Quý',
-year_num            Nullable(Int32)   COMMENT 'Năm',
-is_trading_day      Nullable(UInt8)   COMMENT 'Cờ ngày giao dịch',
-```
+-- 1 FK date:
+cdr_dt              Nullable(Date)  COMMENT 'Ngày — từ Calendar Date Dimension',
 
-> **Không thêm cột `cdr_dt` vào flat table** — cột này chỉ dùng làm điều kiện lọc trong WHERE của POPULATE, không được select vào flat table.
+-- Nhiều FK date (dùng alias theo vai trò):
+snpst_cdr_dt        Nullable(Date)  COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+issu_cdr_dt         Nullable(Date)  COMMENT 'Ngày cấp — từ Calendar Date Dimension',
+evnt_cdr_dt         Nullable(Date)  COMMENT 'Ngày sự kiện — từ Calendar Date Dimension',
+```
 
 ---
 
@@ -130,12 +127,13 @@ is_trading_day      Nullable(UInt8)   COMMENT 'Cờ ngày giao dịch',
 
 ```sql
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(<driving_date_col>)
-ORDER BY (<driving_date_col>, <grain_key>)
+PARTITION BY toYYYYMM(assumeNotNull(<driving_date_col>))
+ORDER BY (assumeNotNull(<driving_date_col>), <grain_key>)
 ```
 
 - `<driving_date_col>`: cột `date` có `key = DD` trong Attributes.csv của bảng fact/operational
 - `<grain_key>`: cột BK hoặc FK dim (không phải Calendar Date FK) — nếu nhiều grain key thì liệt kê đủ
+- **`assumeNotNull` bắt buộc:** cột date trong flat table thường là `Nullable(Date)` (do join từ dim hoặc dữ liệu nghiệp vụ có thể NULL). ClickHouse MergeTree không cho phép `Nullable` trong `PARTITION BY` và `ORDER BY` → luôn wrap bằng `assumeNotNull(...)`. NULL sẽ được map về `1970-01-01` khi partition/sort.
 
 ---
 
@@ -148,15 +146,15 @@ CREATE TABLE IF NOT EXISTS datamart.{flat_table_name} ON CLUSTER 'my_cluster'
     col1    Type    COMMENT '...',
     ...
     -- From: CALENDAR DATE DIMENSION
-    full_date   Nullable(Date)  COMMENT '...',
+    snpst_cdr_dt   Nullable(Date)  COMMENT '... — từ Calendar Date Dimension',
     ...
     -- From: {DIM ENTITY NAME}
     col_x   Nullable(String)    COMMENT '... — từ {Dim Entity Name}',
     ...
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(<driving_date_col>)
-ORDER BY (<driving_date_col>, <grain_key>)
+PARTITION BY toYYYYMM(assumeNotNull(<driving_date_col>))
+ORDER BY (assumeNotNull(<driving_date_col>), <grain_key>)
 COMMENT 'Flat table — {Entity Name} × {Dim1} × {Dim2}'
 ;
 ```
@@ -171,18 +169,16 @@ SELECT
     f.col1,
     f.col2,
     ...
-    snpst_cal.full_date,
-    snpst_cal.day_of_week,
-    ...
-    issu_cal.full_date          AS issu_full_date,   -- nếu có FK date phụ
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
+    issu_cal.cdr_dt             AS issu_cdr_dt,     -- nếu có FK date phụ
     ...
     dim_alias.col_x,
     ...
 FROM datamart.{source_fact_table} f
-JOIN datamart.{module}_calendar_date_dimension snpst_cal
-    ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.{module}_calendar_date_dimension issu_cal   -- FK date phụ nếu có
-    ON issu_cal.date_dimension_id = f.{issu_dt_dim_id}
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim issu_cal              -- FK date phụ nếu có
+    ON issu_cal.cdr_dt_dim_id = f.{issu_dt_dim_id}
 LEFT JOIN datamart.{dim_table} dim_alias
     ON dim_alias.{dim_pk} = f.{fk_col}
 WHERE snpst_cal.cdr_dt = :etl_date
@@ -192,8 +188,8 @@ WHERE snpst_cal.cdr_dt = :etl_date
 **Fact Event:**
 ```sql
 ...
-JOIN datamart.{module}_calendar_date_dimension evnt_cal
-    ON evnt_cal.date_dimension_id = f.evnt_dt_dim_id
+JOIN datamart.cdr_dt_dim evnt_cal
+    ON evnt_cal.cdr_dt_dim_id = f.evnt_dt_dim_id
 ...
 WHERE evnt_cal.cdr_dt = :etl_date
 ;
