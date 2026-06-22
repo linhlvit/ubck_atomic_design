@@ -29,26 +29,10 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLU
     dcsn_tp_code            Nullable(String)    COMMENT 'Loại quyết định — scheme: DECISION_TYPE (2=Thu hồi, 6=Hủy); NULL nếu chưa có quyết định',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
-    snpst_full_date         Nullable(Date)      COMMENT 'Ngày đầy đủ — từ Calendar Date Dimension (snapshot)',
-    snpst_day_of_week       Nullable(String)    COMMENT 'Thứ trong tuần (snapshot)',
-    snpst_day_of_week_num   Nullable(Int32)     COMMENT 'Số thứ tự ngày trong tuần 1=Mon (snapshot)',
-    snpst_week_of_year      Nullable(Int32)     COMMENT 'Tuần trong năm (snapshot)',
-    snpst_month_num         Nullable(Int32)     COMMENT 'Tháng (snapshot)',
-    snpst_month_name        Nullable(String)    COMMENT 'Tên tháng (snapshot)',
-    snpst_quarter_num       Nullable(Int32)     COMMENT 'Quý (snapshot)',
-    snpst_year_num          Nullable(Int32)     COMMENT 'Năm (snapshot)',
-    snpst_is_trading_day    Nullable(UInt8)     COMMENT 'Cờ ngày giao dịch (snapshot)',
+    snpst_cdr_dt            Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension (snapshot)',
 
     -- From: CALENDAR DATE DIMENSION (Issue Date)
-    issu_full_date          Nullable(Date)      COMMENT 'Ngày đầy đủ — từ Calendar Date Dimension (cấp)',
-    issu_day_of_week        Nullable(String)    COMMENT 'Thứ trong tuần (cấp)',
-    issu_day_of_week_num    Nullable(Int32)     COMMENT 'Số thứ tự ngày trong tuần 1=Mon (cấp)',
-    issu_week_of_year       Nullable(Int32)     COMMENT 'Tuần trong năm (cấp)',
-    issu_month_num          Nullable(Int32)     COMMENT 'Tháng (cấp)',
-    issu_month_name         Nullable(String)    COMMENT 'Tên tháng (cấp)',
-    issu_quarter_num        Nullable(Int32)     COMMENT 'Quý (cấp)',
-    issu_year_num           Nullable(Int32)     COMMENT 'Năm (cấp)',
-    issu_is_trading_day     Nullable(UInt8)     COMMENT 'Cờ ngày giao dịch (cấp)',
+    issu_cdr_dt             Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension (cấp)',
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     prac_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
@@ -92,15 +76,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my
     has_actv_vln            String              COMMENT 'TRUE nếu có vi phạm đang hoạt động',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
-    snpst_full_date         Nullable(Date)      COMMENT 'Ngày đầy đủ — từ Calendar Date Dimension',
-    snpst_day_of_week       Nullable(String)    COMMENT 'Thứ trong tuần',
-    snpst_day_of_week_num   Nullable(Int32)     COMMENT 'Số thứ tự ngày trong tuần 1=Mon',
-    snpst_week_of_year      Nullable(Int32)     COMMENT 'Tuần trong năm',
-    snpst_month_num         Nullable(Int32)     COMMENT 'Tháng',
-    snpst_month_name        Nullable(String)    COMMENT 'Tên tháng',
-    snpst_quarter_num       Nullable(Int32)     COMMENT 'Quý',
-    snpst_year_num          Nullable(Int32)     COMMENT 'Năm',
-    snpst_is_trading_day    Nullable(UInt8)     COMMENT 'Cờ ngày giao dịch',
+    snpst_cdr_dt            Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension',
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     prac_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
@@ -111,8 +87,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my
     prac_practice_st_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(snpst_full_date)
-ORDER BY (snpst_full_date, prac_dim_id)
+PARTITION BY toYYYYMM(snpst_cdr_dt)
+ORDER BY (snpst_cdr_dt, prac_dim_id)
 COMMENT 'Flat table — Fact Practitioner Daily Snapshot × Calendar Date × Securities Practitioner Dimension'
 ;
 
@@ -120,7 +96,7 @@ COMMENT 'Flat table — Fact Practitioner Daily Snapshot × Calendar Date × Sec
 -- ============================================================
 -- 3. OPERATIONAL: opr_prac_360_profile_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_360_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_360_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner 360 Profile
     prac_code           String              COMMENT 'PK — Mã NHN',
@@ -148,7 +124,7 @@ COMMENT 'Flat table — Practitioner 360 Profile (latest state per NHN)'
 -- ============================================================
 -- 4. OPERATIONAL: opr_prac_rel_p_profile_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_rel_p_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_rel_p_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Related Party Profile
     prac_code           String              COMMENT 'PK (1/2) — Mã NHN',
@@ -174,7 +150,7 @@ COMMENT 'Flat table — Practitioner Related Party Profile (1 người liên qua
 -- ============================================================
 -- 5. OPERATIONAL: opr_prac_lst_co_role_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_lst_co_role_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_lst_co_role_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Listed Company Role
     prac_code               String              COMMENT 'PK (1/2) — Mã NHN',
@@ -198,7 +174,7 @@ COMMENT 'Flat table — Practitioner Listed Company Role (1 báo cáo tổ chứ
 -- ============================================================
 -- 6. OPERATIONAL: opr_prac_ctf_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_ctf_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_ctf_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Certificate History
     prac_code               String              COMMENT 'PK (1/2) — Mã NHN',
@@ -224,7 +200,7 @@ COMMENT 'Flat table — Practitioner Certificate History (1 CCHN per NHN)'
 -- ============================================================
 -- 7. OPERATIONAL: opr_prac_emp_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_emp_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_emp_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Employment History
     prac_code           String              COMMENT 'PK (1/2) — Mã NHN',
@@ -249,7 +225,7 @@ COMMENT 'Flat table — Practitioner Employment History (1 lần công tác per 
 -- ============================================================
 -- 8. OPERATIONAL: opr_prac_vln_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_vln_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_vln_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Violation History
     prac_code           String              COMMENT 'PK (1/2) — Mã NHN',
@@ -273,7 +249,7 @@ COMMENT 'Flat table — Practitioner Violation History (1 vi phạm per NHN)'
 -- ============================================================
 -- 9. OPERATIONAL: opr_prac_exam_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_exam_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_exam_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Exam History
     prac_code                   String              COMMENT 'PK (1/2) — Mã NHN',
@@ -305,7 +281,7 @@ COMMENT 'Flat table — Practitioner Exam History (1 lần thi per NHN)'
 -- ============================================================
 -- 10. OPERATIONAL: opr_prac_trn_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_trn_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_trn_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Training History
     prac_code       String                  COMMENT 'PK (1/2) — Mã NHN',
@@ -330,7 +306,7 @@ COMMENT 'Flat table — Practitioner Training History (1 enrollment per NHN)'
 -- ============================================================
 -- 11. OPERATIONAL: opr_prac_data_explr_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.opr_prac_data_explr_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_data_explr_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Data Explorer
     prac_code               String              COMMENT 'PK (1/2) — Mã NHN',

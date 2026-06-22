@@ -31,26 +31,10 @@ SELECT
     f.dcsn_tp_code,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
-    snpst_cal.full_date         AS snpst_full_date,
-    snpst_cal.day_of_week       AS snpst_day_of_week,
-    snpst_cal.day_of_week_num   AS snpst_day_of_week_num,
-    snpst_cal.week_of_year      AS snpst_week_of_year,
-    snpst_cal.month_num         AS snpst_month_num,
-    snpst_cal.month_name        AS snpst_month_name,
-    snpst_cal.quarter_num       AS snpst_quarter_num,
-    snpst_cal.year_num          AS snpst_year_num,
-    snpst_cal.is_trading_day    AS snpst_is_trading_day,
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
 
     -- From: CALENDAR DATE DIMENSION (Issue Date)
-    issu_cal.full_date          AS issu_full_date,
-    issu_cal.day_of_week        AS issu_day_of_week,
-    issu_cal.day_of_week_num    AS issu_day_of_week_num,
-    issu_cal.week_of_year       AS issu_week_of_year,
-    issu_cal.month_num          AS issu_month_num,
-    issu_cal.month_name         AS issu_month_name,
-    issu_cal.quarter_num        AS issu_quarter_num,
-    issu_cal.year_num           AS issu_year_num,
-    issu_cal.is_trading_day     AS issu_is_trading_day,
+    issu_cal.cdr_dt             AS issu_cdr_dt,
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     prac_dim.prac_code          AS prac_code,
@@ -73,10 +57,10 @@ SELECT
     ctf_st_cls.cl_nm            AS ctf_st_cl_nm
 
 FROM datamart.fct_prac_license_ctf_snpst f
-JOIN datamart.calendar_date_dimension snpst_cal
-    ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.calendar_date_dimension issu_cal
-    ON issu_cal.date_dimension_id = f.issu_dt_dim_id
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim issu_cal
+    ON issu_cal.cdr_dt_dim_id = f.issu_dt_dim_id
 LEFT JOIN datamart.scr_prac_dim prac_dim
     ON prac_dim.scr_prac_dim_id = f.prac_dim_id
 LEFT JOIN datamart.cls_dim ctf_tp_cls
@@ -102,15 +86,7 @@ SELECT
     f.has_actv_vln,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
-    snpst_cal.full_date         AS snpst_full_date,
-    snpst_cal.day_of_week       AS snpst_day_of_week,
-    snpst_cal.day_of_week_num   AS snpst_day_of_week_num,
-    snpst_cal.week_of_year      AS snpst_week_of_year,
-    snpst_cal.month_num         AS snpst_month_num,
-    snpst_cal.month_name        AS snpst_month_name,
-    snpst_cal.quarter_num       AS snpst_quarter_num,
-    snpst_cal.year_num          AS snpst_year_num,
-    snpst_cal.is_trading_day    AS snpst_is_trading_day,
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     prac_dim.prac_code          AS prac_code,
@@ -121,8 +97,8 @@ SELECT
     prac_dim.practice_st_code   AS prac_practice_st_code
 
 FROM datamart.fct_prac_dly_snpst f
-JOIN datamart.calendar_date_dimension snpst_cal
-    ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.scr_prac_dim prac_dim
     ON prac_dim.scr_prac_dim_id = f.prac_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
@@ -132,8 +108,8 @@ WHERE snpst_cal.cdr_dt = :etl_date
 -- ============================================================
 -- 3. OPERATIONAL: opr_prac_360_profile_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_360_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_360_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_360_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_360_profile_flat
 SELECT
     o.prac_code,
     o.full_nm,
@@ -156,8 +132,8 @@ FROM datamart.opr_prac_360_profile o
 -- ============================================================
 -- 4. OPERATIONAL: opr_prac_rel_p_profile_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_rel_p_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_rel_p_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_rel_p_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_rel_p_profile_flat
 SELECT
     o.prac_code,
     o.rel_p_code,
@@ -178,8 +154,8 @@ FROM datamart.opr_prac_rel_p_profile o
 -- ============================================================
 -- 5. OPERATIONAL: opr_prac_lst_co_role_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_lst_co_role_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_lst_co_role_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_lst_co_role_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_lst_co_role_flat
 SELECT
     o.prac_code,
     o.org_emp_rpt_code,
@@ -198,8 +174,8 @@ FROM datamart.opr_prac_lst_co_role o
 -- ============================================================
 -- 6. OPERATIONAL: opr_prac_ctf_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_ctf_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_ctf_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_ctf_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_ctf_hist_flat
 SELECT
     o.prac_code,
     o.license_ctf_doc_code,
@@ -220,8 +196,8 @@ FROM datamart.opr_prac_ctf_hist o
 -- ============================================================
 -- 7. OPERATIONAL: opr_prac_emp_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_emp_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_emp_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_emp_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_emp_hist_flat
 SELECT
     o.prac_code,
     o.org_emp_rpt_code,
@@ -241,8 +217,8 @@ FROM datamart.opr_prac_emp_hist o
 -- ============================================================
 -- 8. OPERATIONAL: opr_prac_vln_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_vln_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_vln_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_vln_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_vln_hist_flat
 SELECT
     o.prac_code,
     o.conduct_vln_code,
@@ -261,8 +237,8 @@ FROM datamart.opr_prac_vln_hist o
 -- ============================================================
 -- 9. OPERATIONAL: opr_prac_exam_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_exam_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_exam_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_exam_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_exam_hist_flat
 SELECT
     o.prac_code,
     o.exam_ases_rslt_code,
@@ -289,8 +265,8 @@ FROM datamart.opr_prac_exam_hist o
 -- ============================================================
 -- 10. OPERATIONAL: opr_prac_trn_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_trn_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_trn_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_trn_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_trn_hist_flat
 SELECT
     o.prac_code,
     o.enrollment_code,
@@ -310,8 +286,8 @@ FROM datamart.opr_prac_trn_hist o
 -- ============================================================
 -- 11. OPERATIONAL: opr_prac_data_explr_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.opr_prac_data_explr_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.opr_prac_data_explr_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_data_explr_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_prac_data_explr_flat
 SELECT
     o.prac_code,
     o.license_ctf_doc_code,
