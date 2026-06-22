@@ -10,11 +10,11 @@ ldm:
   status: approved
   bcv_core_object: Business Activity
   bcv_concept: "[Business Activity] Conduct Violation"
-  table_type: Fact Append
-  etl_pattern: Fact Append
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: NHNCK
   description: |
-    Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only. FK đến Practitioner và Decision.
+    Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được ghi nhận kèm quyết định xử lý. FK đến Practitioner và Decision.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -172,7 +172,7 @@ attributes:
     source_system: NHNCK
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.CREATED_AT
-    comment: Business event date của Fact Append — thời điểm vi phạm được ghi nhận vào hệ thống.
+    comment: Ngày ghi nhận vi phạm vào hệ thống.
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
 
