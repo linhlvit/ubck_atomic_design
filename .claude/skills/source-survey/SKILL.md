@@ -13,6 +13,8 @@ description: |
   không cần truyền thêm tham số SCHEMA.
   Chế độ reconcile: đã có sẵn {SOURCE}_Tables.csv + {SOURCE}_Columns.csv từ
   tài liệu thiết kế — chỉ chạy Giai đoạn 1 + 1b để đối chiếu, không ghi đè CSV.
+  Lưu ý: scope_status KHÔNG được đánh trong skill này — tất cả bảng khởi tạo với
+  scope_status: pending. Việc đánh in_scope do skill atomic-lld-design thực hiện sau LLD.
 ---
 
 # Skill: Source Survey — Khảo sát CSDL nguồn
@@ -46,13 +48,6 @@ bằng cách gọi thử `list_tables` qua tool `mcp__{MCP_SERVER}__list_tables`
 | `SOURCE` | Tên source system viết HOA | `ThanhTra`, `NHNCK`, `FIMS` |
 | `MCP_SERVER` | Tên MCP server tương ứng | `oracle-thanhtra`, `oracle-nhnck` |
 | `MODE` | Chế độ chạy (tuỳ chọn, mặc định `full`) | `full` / `reconcile` |
-| `BRD_FILE` | Đường dẫn file BRD Excel (tuỳ chọn) | `BRD/Report/BRD_ThanhTra.xlsx` |
-| `BRD_SHEET` | Tên sheet chứa SQL (tuỳ chọn) | `TT` |
-| `BRD_SQL_COL` | Header cột chứa SQL (tuỳ chọn) | `Câu lệnh tham khảo` |
-| `BRD_STATUS_COL` | Header cột trạng thái (tuỳ chọn) | `Trạng thái mapping` |
-| `BRD_STATUS_VAL` | Giá trị filter (tuỳ chọn) | `Done` |
-
-Nếu không có BRD → bỏ qua highlight, tạo diagram không có BRD layer.
 
 ---
 
@@ -60,11 +55,10 @@ Nếu không có BRD → bỏ qua highlight, tạo diagram không có BRD layer.
 
 | MODE | Giai đoạn chạy | Ghi đè CSV gốc |
 |---|---|---|
-| `full` (mặc định) | 1 → 2 → 3 → 4 → 4b | Có (tạo mới hoàn toàn) |
-| `reconcile` | 1 → 1b → 4 → 4b | Không — chỉ cập nhật cột Ghi chú và tạo Reconcile file |
+| `full` (mặc định) | 1 → 2 → 3 → 4 | Có (tạo mới hoàn toàn) |
+| `reconcile` | 1 → 1b → 4 | Không — chỉ cập nhật cột Ghi chú và tạo Reconcile file |
 
 Giai đoạn 4 (sinh BRD YAML) luôn chạy ở cả hai mode sau khi có CSV hoàn chỉnh.
-Giai đoạn 4b (cập nhật scope từ BRD Excel) chỉ chạy khi `BRD_FILE` được cung cấp **và** cột "Bảng nguồn" đã được điền — bỏ qua nếu chưa có.
 
 Nếu người dùng đã có CSV tài liệu thiết kế và chỉ muốn đối chiếu → hỏi xác nhận
 MODE trước khi chạy, tránh ghi đè dữ liệu tài liệu.
@@ -307,9 +301,13 @@ Mỗi bảng trong `{SOURCE}_Tables.csv` → 1 entry trong `brd_entries`. Cần 
 
 **`brd_id`:** `BRD-SRC-{SOURCE}-{TABLE_NAME}` — tên bảng theo convention nguồn (Oracle = UPPER_SNAKE_CASE).
 
-**`functional_group` và `scope_status`/`scope_reason`:**
+**`functional_group`:**
 Suy luận từ tên bảng + mô tả. Hỏi người dùng xác nhận nhóm chức năng nếu không rõ.
-Tiêu chí out_of_scope phổ biến: audit log, config/system parameters, PKI/digital cert operational, backup, queue.
+
+**`scope_status` và `scope_reason`:**
+Tất cả bảng được khởi tạo với `scope_status: pending` và `scope_reason: null`.
+Không suy luận in_scope/out_of_scope tại đây — scope sẽ được cập nhật tự động bởi
+skill `atomic-lld-design` sau khi thiết kế LLD xong.
 
 **`related_tables`** — điền cho **tất cả bảng** (kể cả out_of_scope), dựa trên FK trong `{SOURCE}_Columns.csv`:
 - Cột "Khóa" = `FK`, cột "Ghi chú" = `FK → TargetTable.TargetCol`
@@ -327,7 +325,7 @@ Xác định `data_change_mode` theo 2 bước:
 | Nhóm keyword (kiểm tra tên cột, case-insensitive, bỏ `_`) | Kết quả |
 |---|---|
 | Có cột chứa `updated` / `modified` / `last_update` / `last_sync` / `sync_updated` | `Update` (filter_logic=null, filter_note=null) |
-| Chỉ có cột chứa `created` / `insert` / `create` — không có nhóm "cập nhật" | `Append` (filter theo cột đó) |
+| Chỉ có cột chứa `created` / `insert` / `create` — không có nhóm "cập nhật" | `Append` (filter theo cột đó — tên cột có thể là bất kỳ, không bắt buộc `created_at`) |
 | Không có cột nào thuộc cả 2 nhóm | → Bước 2 |
 
 *Bước 2 — Reasoning theo nghĩa bảng* (nếu Bước 1 không xác định được):
@@ -340,7 +338,7 @@ Xác định `data_change_mode` theo 2 bước:
 **Lý do quy tắc:** `UpdatedAt` tồn tại → DB track thay đổi sau insert → Append sẽ bỏ sót. Chỉ có `CreatedAt` → row không thay đổi sau tạo → Append an toàn.
 
 **Lưu ý Oracle UPPER_SNAKE_CASE:**
-- `filter_logic` dùng tên cột lowercase: `created_at >= {data_date}` (không phải `CreatedAt`)
+- `filter_logic` dùng tên cột lowercase với đủ 2 điều kiện: `created_at >= {etl_date} AND created_at < {etl_date} + 1` (tên cột có thể khác `created_at`, VD: `update_dt`, `append_at`; không phải `CreatedAt`)
 - Dùng `to_upper_snake()` để convert: `re.sub(r'([a-z\d])([A-Z])', r'\1_\2', col).upper().lower()`
 
 ### 4.2 — Files cột: `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml`
@@ -397,100 +395,6 @@ ls BRD/Source/{SOURCE}/ | wc -l
 
 ---
 
-## Giai đoạn 4b — Cập nhật scope_status từ BRD Excel
-
-**Điều kiện chạy:** `BRD_FILE` được cung cấp **và** cột "Bảng nguồn" trong BRD Excel đã được điền (thường sau khi đã chạy Giai đoạn 3 + xác nhận bảng nguồn). Nếu cột chưa điền → bỏ qua giai đoạn này.
-
-**Tham số bổ sung** (thêm vào bảng đầu vào khi có BRD):
-
-| Tham số | Mô tả | Ví dụ NHNCK |
-|---|---|---|
-| `BRD_SOURCE_COL` | Header cột "Bảng nguồn" đã điền | `Bảng nguồn` |
-| `BRD_NGUON_COL` | Header cột lọc source system | `Nguồn` |
-| `BRD_NGUON_VAL` | Giá trị filter (tên source) | `NHNCK` |
-
-### Logic extract bảng từ Excel
-
-```python
-import openpyxl
-
-wb = openpyxl.load_workbook(BRD_FILE, data_only=True)
-ws = wb[BRD_SHEET]
-
-header = [str(c.value or '').strip() for c in ws[2]]  # header ở row 2
-col_nguon  = next(i for i,h in enumerate(header) if h == BRD_NGUON_COL)
-col_bang_p = next(i for i,h in enumerate(header) if h == BRD_SOURCE_COL)
-
-brd_tables = set()
-for row in ws.iter_rows(min_row=3, values_only=True):
-    if not any(row): continue
-    if str(row[col_nguon] or '').strip() != BRD_NGUON_VAL: continue
-    val = str(row[col_bang_p] or '').strip()
-    for t in val.split(','):
-        t = t.strip()
-        if t:
-            brd_tables.add(t)
-```
-
-### Cập nhật brd_{SOURCE}.yaml
-
-- Bảng có tên trong `brd_tables` → `scope_status: in_scope`
-- Bảng không có trong `brd_tables` → `scope_status: out_of_scope`
-- Dùng regex patch text-level (không parse/dump YAML để giữ nguyên format + comments):
-
-```python
-import re
-
-with open(f'BRD/Source/brd_{SOURCE}.yaml', encoding='utf-8') as f:
-    content = f.read()
-
-changed = 0
-
-def patch_entry(m):
-    global changed
-    entry_text = m.group(0)
-    tm = re.search(r'^    table:\s+(\S+)', entry_text, re.MULTILINE)
-    if not tm:
-        return entry_text
-    table_name = tm.group(1)
-    desired = 'in_scope' if table_name in brd_tables else 'out_of_scope'
-    current = 'in_scope' if 'scope_status: in_scope' in entry_text else 'out_of_scope'
-    if desired != current:
-        entry_text = entry_text.replace(
-            f'scope_status: {current}', f'scope_status: {desired}'
-        )
-        changed += 1
-    return entry_text
-
-patched = re.sub(
-    r'(?s)(^- brd_id:.*?)(?=^- brd_id:|\Z)',
-    patch_entry,
-    content,
-    flags=re.MULTILINE
-)
-
-with open(f'BRD/Source/brd_{SOURCE}.yaml', 'w', encoding='utf-8') as f:
-    f.write(patched)
-
-print(f"Đã cập nhật {changed} bảng")
-```
-
-### Sau khi patch
-
-Rebuild `_summary.csv`:
-```bash
-/opt/homebrew/bin/python3.12 scripts/generate_brd_summary.py
-```
-
-### Kiểm tra
-
-```bash
-grep "scope_status:" BRD/Source/brd_{SOURCE}.yaml | sort | uniq -c
-# → in_scope count phải bằng len(brd_tables)
-```
-
----
-
 ## Lưu ý khi áp dụng cho source mới
 
 - **Thêm source mới**: tạo script MCP mới tại `~/.claude/oracle_mcp_{source}.py`
@@ -499,8 +403,6 @@ grep "scope_status:" BRD/Source/brd_{SOURCE}.yaml | sort | uniq -c
   `.claude/settings.json` và restart session để kích hoạt
 - **Xác nhận kết nối** trước khi chạy: gọi `mcp__{MCP_SERVER}__list_tables` — nếu trả về
   danh sách bảng là kết nối thành công
-- Nếu BRD có nhiều sheet → hỏi người dùng sheet nào chứa SQL mapping
-- Cột SQL trong BRD có thể có tên khác → tìm theo keyword "câu lệnh" hoặc "SQL"
 - Sau khi xuất CSV, xác nhận số bảng/cột hợp lý với người dùng trước khi tạo diagram
 - Nếu đã có CSV từ tài liệu thiết kế → ưu tiên dùng `MODE=reconcile` thay vì `full`,
   để không mất thông tin mô tả đã được dịch/bổ sung thủ công trong CSV gốc

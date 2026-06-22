@@ -1,0 +1,254 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: ThanhTra
+  source_table: SECURITY_MEASURE_DECISION_RECIPIENT
+  atomic_entity: Security Measure Decision Recipient
+  entity_physical_name: tt_sec_msr_dcsn_rcpt
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  group: T2
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Security Measure Decision Recipient Id
+    physical_name: tt_sec_msr_dcsn_rcpt_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Security Measure Decision Recipient Code
+    physical_name: tt_sec_msr_dcsn_rcpt_code
+    description: "Khóa chính UUID của bảng nguồn. BK của entity."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.ID
+    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: SOURCE_SYSTEM=ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT
+    etl_derived_value: ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT
+
+  - attribute_name: Security Measure Decision Id
+    physical_name: tt_sec_msr_dcsn_id
+    description: "FK đến Security Measure Decision (quyết định biện pháp ngăn chặn gửi đến đơn vị này)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.SECURITY_MEASURE_DECISION_ID
+    comment: "FK target: Security Measure Decision.Security Measure Decision Id. Hash: hash_id('ThanhTra.SECURITY_MEASURE_DECISION', SECURITY_MEASURE_DECISION_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Security Measure Decision Code
+    physical_name: tt_sec_msr_dcsn_code
+    description: "Mã Security Measure Decision (denormalized lookup)."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.SECURITY_MEASURE_DECISION_ID
+    comment: "Lookup pair: Security Measure Decision.Security Measure Decision Code. Pair with Security Measure Decision Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Recipient Type Code
+    physical_name: rcpt_tp_code
+    description: "Loại đơn vị nhận quyết định: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, STOCK_EXCHANGE, VSDC, SSC_DEPARTMENT."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.RECIPIENT_TYPE
+    comment: "Scheme: TT_DECISION_RECIPIENT_TYPE."
+    classification_context: TT_DECISION_RECIPIENT_TYPE
+    etl_derived_value: null
+
+  - attribute_name: Recipient Name
+    physical_name: rcpt_nm
+    description: "Tên tổ chức nhận quyết định biện pháp ngăn chặn (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.RECIPIENT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Recipient Reference Id
+    physical_name: rcpt_ref_id
+    description: "ID tham chiếu tổ chức nhận trong hệ thống nguồn."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.RECIPIENT_REFERENCE_ID
+    comment: "Denormalized reference — không FK formal sang hệ thống nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Sent Date
+    physical_name: sent_dt
+    description: "Ngày gửi quyết định đến đơn vị nhận."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.SENT_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Confirmation Status Code
+    physical_name: confirm_st_code
+    description: "Trạng thái xác nhận nhận quyết định: CONFIRMED (Đã xác nhận), NOT_CONFIRMED (Chưa xác nhận)."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.CONFIRMATION_STATUS
+    comment: "Scheme: TT_SECURITY_MEASURE_SENT_STATUS."
+    classification_context: TT_SECURITY_MEASURE_SENT_STATUS
+    etl_derived_value: null
+
+  - attribute_name: Confirmed Date
+    physical_name: confirmed_dt
+    description: "Thời điểm xác nhận đã nhận quyết định."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.CONFIRMED_AT
+    comment: "Nguồn DATE — không có giờ."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Confirmed By
+    physical_name: confirmed_by
+    description: "Người xác nhận đã nhận quyết định (text tự do, denormalized)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.CONFIRMED_BY
+    comment: "Không có FK formal đến Officer — lưu dạng text denormalized."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_ts
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.CREATED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_ts
+    description: "Thời điểm cập nhật gần nhất."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.LAST_MODIFIED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Id
+    physical_name: created_by_officer_id
+    description: "ID người dùng tạo bản ghi."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.CREATED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Code
+    physical_name: created_by_officer_code
+    description: "Mã người dùng tạo bản ghi."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.CREATED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Id
+    physical_name: updated_by_officer_id
+    description: "ID người dùng cập nhật gần nhất."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.LAST_MODIFIED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Code
+    physical_name: updated_by_officer_code
+    description: "Mã người dùng cập nhật gần nhất."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.LAST_MODIFIED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
+    classification_context: null
+    etl_derived_value: null

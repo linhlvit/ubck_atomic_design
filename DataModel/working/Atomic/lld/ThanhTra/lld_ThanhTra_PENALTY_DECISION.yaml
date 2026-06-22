@@ -1,0 +1,488 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: ThanhTra
+  source_table: PENALTY_DECISION
+  atomic_entity: Penalty Decision
+  entity_physical_name: tt_penalty_dcsn
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
+  table_type: Fundamental
+  group: T4
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Quyết định xử phạt VPHC. Grain: 1 dòng = 1 quyết định. FK→VIOLATION_CASE (T3). Ghi nhận T4-01: dùng parent [Event] vì không có term Judicial Event cho hành chính."
+
+attributes:
+  - attribute_name: Penalty Decision Id
+    physical_name: tt_penalty_dcsn_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: [Event] Event."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Penalty Decision Code
+    physical_name: tt_penalty_dcsn_code
+    description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.ID
+    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: SOURCE_SYSTEM=ThanhTra.PENALTY_DECISION
+    etl_derived_value: ThanhTra.PENALTY_DECISION
+
+  - attribute_name: Violation Case Id
+    physical_name: vln_case_id
+    description: "FK đến hồ sơ VPHC."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.VIOLATION_CASE_ID
+    comment: "FK target: Violation Case.Violation Case Id. Hash: hash_id('ThanhTra.VIOLATION_CASE', VIOLATION_CASE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violation Case Code
+    physical_name: vln_case_code
+    description: "Mã hồ sơ VPHC liên kết (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.VIOLATION_CASE_ID
+    comment: "Lookup pair: Violation Case.Violation Case Code. Pair with Violation Case Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Decision Number
+    physical_name: decision_number
+    description: "Số quyết định xử phạt VPHC (cập nhật sau khi ký, cấp số từ VBĐH)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.DECISION_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Issued Date
+    physical_name: issued_dt
+    description: "Ngày ban hành quyết định xử phạt."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.ISSUED_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Decision Category Code
+    physical_name: decision_category_code
+    description: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ UBCKNN ký)."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.DECISION_CATEGORY
+    comment: "Scheme: TT_PENALTY_DECISION_CATEGORY."
+    classification_context: TT_PENALTY_DECISION_CATEGORY
+    etl_derived_value: null
+
+  - attribute_name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    description: "Trạng thái: DRAFT, SUBMITTED, APPROVED, REJECTED, ISSUED, SENT_TO_SUBJECT, ENFORCED."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.STATUS
+    comment: "Scheme: TT_PENALTY_DECISION_STATUS."
+    classification_context: TT_PENALTY_DECISION_STATUS
+    etl_derived_value: null
+
+  - attribute_name: Signer Officer Id
+    physical_name: signer_officer_id
+    description: "FK đến cán bộ ký quyết định xử phạt."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.SIGNER_ID
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', SIGNER_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Signer Officer Code
+    physical_name: signer_officer_code
+    description: "Tên cán bộ ký quyết định (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.SIGNER_NAME
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Signer Officer Id. Nguồn lưu SIGNER_NAME (text snapshot)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Assigned Officer Id
+    physical_name: assigned_officer_id
+    description: "FK đến cán bộ được phân công xử lý quyết định."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.ASSIGNED_OFFICER_ID
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Assigned Officer Code
+    physical_name: assigned_officer_code
+    description: "Tên cán bộ được phân công (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.ASSIGNED_OFFICER_NAME
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Assigned Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Submitted By Officer Id
+    physical_name: submitted_by_officer_id
+    description: "FK đến cán bộ trình ký quyết định."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.SUBMITTED_BY_ID
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', SUBMITTED_BY_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Submitted By Officer Code
+    physical_name: submitted_by_officer_code
+    description: "Mã cán bộ trình ký (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.SUBMITTED_BY_ID
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Submitted By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Approver Officer Id
+    physical_name: approver_officer_id
+    description: "FK đến người phê duyệt quyết định."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.APPROVER_ID
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', APPROVER_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Approver Officer Code
+    physical_name: approver_officer_code
+    description: "Mã người phê duyệt (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.APPROVER_ID
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Approver Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Anti Money Laundering Indicator
+    physical_name: anti_money_laundering_ind
+    description: "Quyết định có nội dung PCRT: 0=Không, 1=Có."
+    data_domain: Indicator
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.ANTI_MONEY_LAUNDERING
+    comment: "Nguồn NUMBER(1,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Total Fine Amount
+    physical_name: total_fine_amt
+    description: "Tổng mức phạt tiền của quyết định (VNĐ)."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.TOTAL_FINE_AMOUNT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Payment Deadline
+    physical_name: payment_deadline_dt
+    description: "Hạn nộp tiền phạt."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.PAYMENT_DEADLINE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Submitted Timestamp
+    physical_name: submitted_ts
+    description: "Thời điểm trình ký quyết định."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.SUBMITTED_AT
+    comment: "Nguồn TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Complaint Exists Indicator
+    physical_name: complaint_exists_ind
+    description: "Có khiếu nại: 0=Không, 1=Có."
+    data_domain: Indicator
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.COMPLAINT_EXISTS
+    comment: "Nguồn NUMBER(1,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Complaint Content
+    physical_name: complaint_content
+    description: "Nội dung khiếu nại quyết định xử phạt."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.COMPLAINT_CONTENT
+    comment: "Nguồn CLOB — ETL truncate."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Complaint Received Date
+    physical_name: complaint_received_dt
+    description: "Ngày tiếp nhận khiếu nại."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.COMPLAINT_RECEIVED_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Complaint Status Code
+    physical_name: complaint_status_code
+    description: "Trạng thái khiếu nại: PROCESSING, RESOLVED."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.COMPLAINT_STATUS
+    comment: "Scheme: TT_COMPLAINT_STATUS."
+    classification_context: TT_COMPLAINT_STATUS
+    etl_derived_value: null
+
+  - attribute_name: Complaint Result
+    physical_name: complaint_result
+    description: "Kết quả giải quyết khiếu nại."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.COMPLAINT_RESULT
+    comment: "Nguồn CLOB — ETL truncate."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Lawsuit Exists Indicator
+    physical_name: lawsuit_exists_ind
+    description: "Có khởi kiện: 0=Không, 1=Có."
+    data_domain: Indicator
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.LAWSUIT_EXISTS
+    comment: "Nguồn NUMBER(1,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Lawsuit Content
+    physical_name: lawsuit_content
+    description: "Nội dung khởi kiện quyết định xử phạt."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.LAWSUIT_CONTENT
+    comment: "Nguồn CLOB — ETL truncate."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Signed Document URL
+    physical_name: signed_doc_url
+    description: "URL file PDF đã ký số."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.SIGNED_DOCUMENT_URL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Summary
+    physical_name: summary
+    description: "Tóm tắt nội dung quyết định xử phạt."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.SUMMARY
+    comment: "Nguồn CLOB — ETL truncate."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_ts
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.CREATED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_ts
+    description: "Thời điểm cập nhật gần nhất."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.LAST_MODIFIED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Id
+    physical_name: created_by_officer_id
+    description: "ID người dùng tạo bản ghi."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.CREATED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Code
+    physical_name: created_by_officer_code
+    description: "Mã người dùng tạo bản ghi."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.CREATED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Id
+    physical_name: updated_by_officer_id
+    description: "ID người dùng cập nhật gần nhất."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.LAST_MODIFIED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Code
+    physical_name: updated_by_officer_code
+    description: "Mã người dùng cập nhật gần nhất."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PENALTY_DECISION.LAST_MODIFIED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
+    classification_context: null
+    etl_derived_value: null

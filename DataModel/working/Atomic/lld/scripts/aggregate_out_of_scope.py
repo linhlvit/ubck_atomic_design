@@ -36,7 +36,7 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-s
 # ---------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).parent
 LLD_DIR    = SCRIPT_DIR.parent
-HLD_DIR    = LLD_DIR.parent.parent / "DataModel" / "working" / "Atomic" / "hld"
+HLD_DIR    = LLD_DIR.parent / "hld"
 OUT_FILE   = HLD_DIR / "atomic_out_of_scope.yaml"
 
 

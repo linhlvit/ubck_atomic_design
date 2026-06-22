@@ -1,5 +1,5 @@
 schema_type: atomic_out_of_scope
-schema_version: "1.0"
+schema_version: '1.0'
 entries:
 - source_system: NHNCK
   source_table: CERTIFICATE_DEPARTMENTS
@@ -255,3 +255,173 @@ entries:
   description: Nhật ký gửi SMS trong hệ thống
   group: System / Log
   reason: Operational log.
+- source_system: THANHTRA
+  source_table: ADHOC_ADMIN_VIOLATION_REPORT
+  description: Báo cáo vi phạm hành chính ad-hoc
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: ADHOC_ANTI_CORRUPTION_REPORT
+  description: Báo cáo phòng chống tham nhũng ad-hoc
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: ADHOC_INSPECTION_REPORT
+  description: Báo cáo thanh tra ad-hoc
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: ADMIN_VIOLATION_REPORT_OUTLINE
+  description: Outline cấu trúc báo cáo vi phạm hành chính
+  group: Audit Log nguồn
+  reason: Form Metadata — cấu trúc báo cáo, không có instance data nghiệp vụ
+- source_system: THANHTRA
+  source_table: ANTI_CORRUPTION_DOCUMENT
+  description: Tài liệu phòng chống tham nhũng
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: ANTI_CORRUPTION_PERIODIC_REPORT
+  description: Báo cáo phòng chống tham nhũng định kỳ
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: ANTI_CORRUPTION_REPORT_OUTLINE
+  description: Outline cấu trúc báo cáo chống tham nhũng
+  group: Audit Log nguồn
+  reason: Form Metadata — cấu trúc báo cáo
+- source_system: THANHTRA
+  source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+  description: Tài liệu phòng chống rửa tiền
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: ANTI_MONEY_LAUNDERING_REPORT
+  description: Báo cáo phòng chống rửa tiền
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: CITIZEN_COMPLAINT_REPORT_OUTLINE
+  description: Outline cấu trúc báo cáo khiếu nại
+  group: Audit Log nguồn
+  reason: Form Metadata — cấu trúc báo cáo, không có instance data nghiệp vụ
+- source_system: THANHTRA
+  source_table: INSPECTION_REPORT_OUTLINE
+  description: Outline cấu trúc báo cáo thanh tra
+  group: Audit Log nguồn
+  reason: Form Metadata — cấu trúc báo cáo, không có instance data nghiệp vụ
+- source_system: THANHTRA
+  source_table: SUPERVISION_ACTIVITY_REPORT
+  description: Báo cáo hoạt động giám sát
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: DOCUMENT_TEMPLATE
+  description: 'Template biểu mẫu công văn: định nghĩa cấu trúc form, placeholder
+    fields'
+  group: Form Metadata
+  reason: Operational/system data — metadata form/template không có giá trị nghiệp
+    vụ Atomic
+- source_system: THANHTRA
+  source_table: DOCUMENT_TEMPLATE_KEY_ASSIGN
+  description: Gán key vào template công văn cụ thể
+  group: Form Metadata
+  reason: Form Metadata — operational form configuration
+- source_system: THANHTRA
+  source_table: DOCUMENT_TEMPLATE_KEY_DEFINITION
+  description: Định nghĩa key trong template công văn
+  group: Form Metadata
+  reason: Form Metadata — cấu trúc định nghĩa form field
+- source_system: THANHTRA
+  source_table: DOCUMENT_TEMPLATE_VERSION
+  description: Phiên bản template công văn
+  group: Form Metadata
+  reason: Form Metadata — version control của form template
+- source_system: THANHTRA
+  source_table: FORM_TEMPLATE
+  description: Template biểu mẫu chung
+  group: Form Metadata
+  reason: Form Metadata — cấu trúc form
+- source_system: THANHTRA
+  source_table: FORM_TEMPLATE_PLACEHOLDER
+  description: Placeholder trong template biểu mẫu
+  group: Form Metadata
+  reason: Form Metadata — field definition trong form
+- source_system: THANHTRA
+  source_table: FORM_TEMPLATE_VERSION
+  description: Phiên bản template biểu mẫu
+  group: Form Metadata
+  reason: Form Metadata — version control
+- source_system: THANHTRA
+  source_table: PENALTY_DECISION_VIOLATION_RECORD
+  description: Bảng nối nhiều-nhiều giữa quyết định xử phạt và biên bản vi phạm
+  group: Junction
+  reason: Pure junction không có business attribute — quan hệ đã suy luận qua VIOLATION_CASE
+- source_system: THANHTRA
+  source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+  description: Bảng nối nhiều-nhiều giữa loại xử phạt và hành vi vi phạm
+  group: Junction
+  reason: Pure junction không có business attribute — denormalize vào TT Violation
+    Behavior
+- source_system: THANHTRA
+  source_table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
+  description: Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật
+  group: Junction
+  reason: Pure junction không có business attribute — denormalize vào TT Violation
+    Behavior dạng ARRAY
+- source_system: THANHTRA
+  source_table: CODE_SEQUENCE_COUNTER
+  description: Bộ đếm sinh mã tự động
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: THANHTRA
+  source_table: DOCUMENT_ATTACHMENT
+  description: Tệp đính kèm tài liệu (file pointer)
+  group: Operational / System
+  reason: Operational/system data — metadata file, không có attribute nghiệp vụ độc
+    lập
+- source_system: THANHTRA
+  source_table: NOTIFICATION
+  description: Thông báo hệ thống (in-app notification)
+  group: Operational / System
+  reason: Operational/system data — notification hệ thống, không phải nghiệp vụ
+- source_system: THANHTRA
+  source_table: OFFICIAL_LETTER_TYPE
+  description: Danh mục loại công văn hệ thống
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: THANHTRA
+  source_table: PRIVATE_CATALOG_ITEM
+  description: Danh mục private do user định nghĩa trong hệ thống
+  group: Operational / System
+  reason: Operational/system data — configuration metadata
+- source_system: THANHTRA
+  source_table: dynamic_column
+  description: Cột động của hệ thống dynamic table
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: THANHTRA
+  source_table: dynamic_connection
+  description: Kết nối dynamic table
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: THANHTRA
+  source_table: dynamic_generator_config
+  description: Cấu hình generator dynamic
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: THANHTRA
+  source_table: dynamic_generator_seq
+  description: Sequence cho dynamic generator
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: THANHTRA
+  source_table: dynamic_table
+  description: Bảng động của hệ thống
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: THANHTRA
+  source_table: flyway_schema_history
+  description: Lịch sử migration schema database
+  group: Operational / System
+  reason: Operational/system data — database maintenance

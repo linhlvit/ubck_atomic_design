@@ -312,6 +312,7 @@ Trước khi xuất file:
 - [ ] **Shared entity type động:** Nếu nguồn có cột type qua lookup_values (`identity_type_cd`...) → đã dùng `SCHEME=(source)` placeholder chưa? Không để bare context.
 - [ ] **Shared entity — cột không map:** PK kỹ thuật / audit fields / business flag của bảng nguồn shared đã được document trong `pending_design.yaml`?
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
+- [ ] **scope_status sync:** Sau khi lưu LLD file → chạy sync script (xem section "Cập nhật scope_status trong BRD Source YAML") → kiểm tra tất cả source_tables (metadata + source_columns) đã là `in_scope` trong `brd_{SOURCE}.yaml`.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
 - [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC.TABLE`. Dynamic context (không có `=VALUE`) → null hoặc expression mapping.
 - [ ] **Source System Code:** `classification_context = SOURCE_SYSTEM=NHNCK.TABLE_NAME` (không free-text, không bare, không trống); `etl_derived_value = NHNCK.TABLE_NAME` (bắt buộc, không trống).
@@ -414,6 +415,61 @@ attributes:
 1. Đọc toàn bộ file hiện tại.
 2. Bổ sung scheme/giá trị mới phát sinh.
 3. Xuất 1 file duy nhất chứa toàn bộ cũ + mới.
+
+### Cập nhật scope_status trong BRD Source YAML
+
+Sau khi lưu LLD file (hoặc sau khi hoàn thành cả Tier), chạy sync scope cho toàn bộ
+LLD đã có của source. Đây là bước đánh `in_scope` chính thức — thay thế hoàn toàn
+Giai đoạn 4b của source-survey.
+
+**Thu thập source tables từ toàn bộ LLD của source:**
+1. `metadata.source_table` — bảng chính của mỗi LLD file
+2. Pattern `"{SOURCE}.TABLE.COL"` trong `source_columns` — bảng phụ/join được reference
+
+Tất cả bảng tìm được → đánh `scope_status: in_scope`, kể cả bảng hiện đang `out_of_scope`.
+
+```python
+import re, glob, sys, io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+SOURCE = "{SOURCE}"  # thay bằng source đang thiết kế
+
+lld_tables = set()
+for f in glob.glob(f"DataModel/working/Atomic/lld/{SOURCE}/lld_{SOURCE}_*.yaml"):
+    content = open(f, encoding='utf-8').read()
+    m = re.search(r'source_table:\s+"([^"]+)"', content)
+    if m:
+        lld_tables.add(m.group(1))
+    for ref in re.findall(rf'"{SOURCE}\.([A-Z_]+)\.[A-Z_]+"', content):
+        lld_tables.add(ref)
+
+print(f"Tables to mark in_scope ({len(lld_tables)}): {sorted(lld_tables)}")
+
+with open(f'BRD/Source/brd_{SOURCE}.yaml', encoding='utf-8') as f:
+    brd_content = f.read()
+
+changed = []
+
+def patch(m):
+    block = m.group(0)
+    tm = re.search(r'^    table:\s+(\S+)', block, re.MULTILINE)
+    if not tm or tm.group(1) not in lld_tables:
+        return block
+    for old_status in ('pending', 'out_of_scope'):
+        if f'scope_status: {old_status}' in block:
+            changed.append(tm.group(1))
+            return block.replace(f'scope_status: {old_status}', 'scope_status: in_scope')
+    return block  # đã là in_scope
+
+patched = re.sub(
+    r'(?s)(^- brd_id:.*?)(?=^- brd_id:|\Z)',
+    patch, brd_content, flags=re.MULTILINE
+)
+open(f'BRD/Source/brd_{SOURCE}.yaml', 'w', encoding='utf-8').write(patched)
+print(f"Đã đánh in_scope ({len(changed)} bảng): {sorted(changed)}")
+```
+
+Sau khi patch: `python scripts/generate_brd_summary.py`
 
 ### Bước 7 — Validate LLD YAML
 

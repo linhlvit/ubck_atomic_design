@@ -508,3 +508,514 @@ schemes:
     used_in_entities:
       - "Securities Practitioner Employment Status"
     values: []
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # THANHTRA — Hệ thống Thanh tra, Kiểm tra và Xử lý VPHC — UBCKNN
+  # Prefix: TT_
+  # ─────────────────────────────────────────────────────────────────────────
+
+  # --- Tier 1 schemes ---
+
+  - scheme_code: "TT_PLAN_STATUS"
+    name: "Trạng thái kế hoạch thanh tra/kiểm tra năm"
+    source_type: "source_table"
+    source_table: "THANHTRA.INSPECTION_ANNUAL_PLAN"
+    used_in_entities:
+      - "Inspection Annual Plan"
+      - "Examination Annual Plan"
+    values: []
+
+  - scheme_code: "TT_PROACTIVE_NOTICE_TYPE"
+    name: "Loại thông báo chủ động phát hiện vi phạm"
+    source_type: "source_table"
+    source_table: "THANHTRA.PROACTIVE_NOTICE"
+    used_in_entities:
+      - "Proactive Notice"
+    values: []
+
+  - scheme_code: "TT_NOTICE_PRIORITY"
+    name: "Độ ưu tiên thông báo chủ động"
+    source_type: "source_table"
+    source_table: "THANHTRA.PROACTIVE_NOTICE"
+    used_in_entities:
+      - "Proactive Notice"
+    values: []
+
+  - scheme_code: "TT_NOTICE_STATUS"
+    name: "Trạng thái thông báo chủ động"
+    source_type: "source_table"
+    source_table: "THANHTRA.PROACTIVE_NOTICE"
+    used_in_entities:
+      - "Proactive Notice"
+    values: []
+
+  - scheme_code: "TT_PENALTY_CATEGORY"
+    name: "Phân loại hình phạt: hình phạt chính, hình phạt bổ sung, biện pháp khắc phục"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_TYPE"
+    used_in_entities:
+      - "Penalty Type"
+    values: []
+
+  - scheme_code: "TT_ENTITY_STATUS"
+    name: "Trạng thái entity chung (active/inactive)"
+    source_type: "modeler_defined"
+    source_table: null
+    used_in_entities:
+      - "Penalty Type"
+      - "Violation Behavior"
+    values: []
+
+  - scheme_code: "TT_PETITION_CATEGORY"
+    name: "Loại đơn thư: khiếu nại, tố cáo, kiến nghị"
+    source_type: "source_table"
+    source_table: "THANHTRA.PETITION"
+    used_in_entities:
+      - "Petition"
+    values: []
+
+  - scheme_code: "TT_PETITION_STATUS"
+    name: "Trạng thái xử lý đơn thư"
+    source_type: "source_table"
+    source_table: "THANHTRA.PETITION"
+    used_in_entities:
+      - "Petition"
+    values: []
+
+  - scheme_code: "TT_SECURITY_MEASURE_TYPE"
+    name: "Loại biện pháp bảo đảm: ngăn chặn, tạm giữ tài sản..."
+    source_type: "source_table"
+    source_table: "THANHTRA.SECURITY_MEASURE_DECISION"
+    used_in_entities:
+      - "Security Measure Decision"
+    values: []
+
+  - scheme_code: "TT_SECURITY_MEASURE_SENT_STATUS"
+    name: "Trạng thái gửi quyết định biện pháp bảo đảm đến đơn vị nhận"
+    source_type: "source_table"
+    source_table: "THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT"
+    used_in_entities:
+      - "Security Measure Decision Recipient"
+    values: []
+
+  # --- Tier 2 schemes ---
+
+  - scheme_code: "TT_INSPECTION_TARGET_TYPE"
+    name: "Loại đối tượng trong kế hoạch thanh tra: CTCK, CTQLQ, CTNY, CTĐC..."
+    source_type: "source_table"
+    source_table: "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET"
+    used_in_entities:
+      - "Inspection Annual Plan Target"
+    values: []
+
+  - scheme_code: "TT_INSPECTION_TYPE"
+    name: "Loại hình thanh tra: PERIODIC, THEMATIC, UNSCHEDULED"
+    source_type: "source_table"
+    source_table: "THANHTRA.INSPECTION_TEAM"
+    used_in_entities:
+      - "Inspection Team"
+    values: []
+
+  - scheme_code: "TT_EXAMINATION_TARGET_TYPE"
+    name: "Loại đối tượng trong kế hoạch kiểm tra"
+    source_type: "source_table"
+    source_table: "THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET"
+    used_in_entities:
+      - "Examination Annual Plan Target"
+    values: []
+
+  - scheme_code: "TT_CITIZEN_RECEPTION_STATUS"
+    name: "Trạng thái buổi tiếp công dân"
+    source_type: "source_table"
+    source_table: "THANHTRA.CITIZEN_RECEPTION"
+    used_in_entities:
+      - "Citizen Reception"
+    values: []
+
+  - scheme_code: "TT_SECURITY_MEASURE_EXECUTION_RESULT"
+    name: "Kết quả thực thi biện pháp bảo đảm"
+    source_type: "source_table"
+    source_table: "THANHTRA.SECURITY_MEASURE_EXECUTION"
+    used_in_entities:
+      - "Security Measure Execution"
+    values: []
+
+  # --- Tier 3 schemes ---
+
+  - scheme_code: "TT_TEAM_TARGET_TYPE"
+    name: "Loại đối tượng thanh tra/kiểm tra thực tế theo đoàn — mở rộng hơn kế hoạch: thêm AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION"
+    source_type: "source_table"
+    source_table: "THANHTRA.INSPECTION_TEAM_TARGET"
+    used_in_entities:
+      - "Inspection Team Target"
+      - "Examination Team Target"
+    values: []
+
+  - scheme_code: "TT_CONCLUSION_EXECUTION_STATUS"
+    name: "Trạng thái thực hiện kết luận thanh tra: NOT_EXECUTED, FULLY_EXECUTED, PARTIALLY_EXECUTED"
+    source_type: "source_table"
+    source_table: "THANHTRA.INSPECTION_CONCLUSION"
+    used_in_entities:
+      - "Inspection Conclusion"
+    values:
+      - "NOT_EXECUTED"
+      - "FULLY_EXECUTED"
+      - "PARTIALLY_EXECUTED"
+
+  - scheme_code: "TT_VIOLATION_CASE_SOURCE"
+    name: "Nguồn phát sinh hồ sơ VPHC: INSPECTION_RESULT, INTERNAL_UNIT, STOCK_EXCHANGE, VSDC, OTHER_SUPERVISION"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_CASE"
+    used_in_entities:
+      - "Violation Case"
+    values:
+      - "INSPECTION_RESULT"
+      - "INTERNAL_UNIT"
+      - "STOCK_EXCHANGE"
+      - "VSDC"
+      - "OTHER_SUPERVISION"
+
+  - scheme_code: "TT_VIOLATION_CASE_STATUS"
+    name: "Trạng thái hồ sơ VPHC: NEW, PROCESSING, DECISION_ISSUED, ENFORCED, CLOSED"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_CASE"
+    used_in_entities:
+      - "Violation Case"
+      - "Violation Case Status History"
+    values:
+      - "NEW"
+      - "PROCESSING"
+      - "DECISION_ISSUED"
+      - "ENFORCED"
+      - "CLOSED"
+
+  - scheme_code: "TT_MARKET_TYPE"
+    name: "Loại thị trường liên quan vi phạm: DOMESTIC, INTERNATIONAL"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_CASE"
+    used_in_entities:
+      - "Violation Case"
+    values:
+      - "DOMESTIC"
+      - "INTERNATIONAL"
+
+  - scheme_code: "TT_VIOLATION_RECORD_TYPE"
+    name: "Loại biên bản vi phạm: PAPER, ELECTRONIC"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_RECORD"
+    used_in_entities:
+      - "Violation Record"
+    values:
+      - "PAPER"
+      - "ELECTRONIC"
+
+  - scheme_code: "TT_VIOLATION_RECORD_STATUS"
+    name: "Trạng thái biên bản VPHC: DRAFT, PENDING_LEADER_SIGN, SIGNED, NUMBERED, SENT_TO_SUBJECT"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_RECORD"
+    used_in_entities:
+      - "Violation Record"
+    values:
+      - "DRAFT"
+      - "PENDING_LEADER_SIGN"
+      - "SIGNED"
+      - "NUMBERED"
+      - "SENT_TO_SUBJECT"
+
+  - scheme_code: "TT_SIGNATURE_TYPE"
+    name: "Loại chữ ký biên bản: SINGLE (1 bước), TWO_STEP (2 bước)"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_RECORD"
+    used_in_entities:
+      - "Violation Record"
+    values:
+      - "SINGLE"
+      - "TWO_STEP"
+
+  # --- Tier 4 schemes ---
+
+  - scheme_code: "TT_PENALTY_DECISION_CATEGORY"
+    name: "Phân loại người ký quyết định: INSPECTOR_SIGNED, SSC_LEADER_SIGNED"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_DECISION"
+    used_in_entities:
+      - "Penalty Decision"
+    values:
+      - "INSPECTOR_SIGNED"
+      - "SSC_LEADER_SIGNED"
+
+  - scheme_code: "TT_PENALTY_DECISION_STATUS"
+    name: "Trạng thái quyết định xử phạt: DRAFT, PENDING_APPROVAL, APPROVED, REJECTED, ISSUED, SENT_TO_SUBJECT, ENFORCED"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_DECISION"
+    used_in_entities:
+      - "Penalty Decision"
+    values:
+      - "DRAFT"
+      - "PENDING_APPROVAL"
+      - "APPROVED"
+      - "REJECTED"
+      - "ISSUED"
+      - "SENT_TO_SUBJECT"
+      - "ENFORCED"
+
+  - scheme_code: "TT_COMPLAINT_STATUS"
+    name: "Trạng thái khiếu nại quyết định xử phạt: PROCESSING, RESOLVED"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_DECISION"
+    used_in_entities:
+      - "Penalty Decision"
+    values:
+      - "PROCESSING"
+      - "RESOLVED"
+
+  - scheme_code: "TT_CONCLUSION_REMEDIAL_STATUS"
+    name: "Trạng thái thực hiện kiến nghị khắc phục từ kết luận"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL"
+    used_in_entities:
+      - "Inspection Conclusion Remedial"
+      - "Examination Result Notice Remedial"
+    values: []
+
+  - scheme_code: "TT_RECEIVED_DOCUMENT_TYPE"
+    name: "Loại tài liệu đối tượng vi phạm nộp vào hồ sơ VPHC"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT"
+    used_in_entities:
+      - "Violation Case Received Document"
+    values: []
+
+  # --- Tier 5 schemes ---
+
+  - scheme_code: "TT_OUTPUT_DOCUMENT_TYPE"
+    name: "Loại văn bản đầu ra VPHC: PRE_VIOLATION_NOTICE_1, REMINDER, PRE_VIOLATION_NOTICE_N, INFO_REQUEST, PRE_DECISION_NOTICE, PAYMENT_GUIDE, PAYMENT_REMINDER, REMEDIAL_REMINDER, PENALTY_DECISION"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT"
+    used_in_entities:
+      - "Violation Case Output Document"
+    values:
+      - "PRE_VIOLATION_NOTICE_1"
+      - "REMINDER"
+      - "PRE_VIOLATION_NOTICE_N"
+      - "INFO_REQUEST"
+      - "PRE_DECISION_NOTICE"
+      - "PAYMENT_GUIDE"
+      - "PAYMENT_REMINDER"
+      - "REMEDIAL_REMINDER"
+      - "PENALTY_DECISION"
+
+  - scheme_code: "TT_COMPLIANCE_STATUS"
+    name: "Trạng thái thi hành quyết định xử phạt của đối tượng: NOT_PAID, PAID, PARTIAL, COMPLAINING"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_DECISION_SUBJECT"
+    used_in_entities:
+      - "Penalty Decision Subject"
+    values:
+      - "NOT_PAID"
+      - "PAID"
+      - "PARTIAL"
+      - "COMPLAINING"
+
+  - scheme_code: "TT_APPROVAL_ACTION"
+    name: "Loại thao tác phê duyệt quyết định: CREATED, EDITED, SUBMITTED, APPROVED, REJECTED, SENT_TO_SUBJECT"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_DECISION_APPROVAL_HISTORY"
+    used_in_entities:
+      - "Penalty Decision Approval History"
+    values:
+      - "CREATED"
+      - "EDITED"
+      - "SUBMITTED"
+      - "APPROVED"
+      - "REJECTED"
+      - "SENT_TO_SUBJECT"
+
+  - scheme_code: "TT_OFFICIAL_LETTER_SUBTYPE"
+    name: "Loại công văn VPHC (lưu free text, không FK formal): PRE_VIOLATION_NOTICE_1, REMINDER, PRE_VIOLATION_NOTICE_N, INFO_REQUEST, PRE_DECISION_NOTICE, PAYMENT_GUIDE, PAYMENT_REMINDER, REMEDIAL_REMINDER"
+    source_type: "etl_derived"
+    source_table: "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER"
+    used_in_entities:
+      - "VPHC Process Official Letter"
+    values:
+      - "PRE_VIOLATION_NOTICE_1"
+      - "REMINDER"
+      - "PRE_VIOLATION_NOTICE_N"
+      - "INFO_REQUEST"
+      - "PRE_DECISION_NOTICE"
+      - "PAYMENT_GUIDE"
+      - "PAYMENT_REMINDER"
+      - "REMEDIAL_REMINDER"
+
+  # --- Tier 7 schemes ---
+
+  - scheme_code: "TT_CIRCUMSTANCE_TYPE"
+    name: "Loại tình tiết áp dụng trong quyết định xử phạt: AGGRAVATING (tăng nặng), MITIGATING (giảm nhẹ)"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_DECISION_CIRCUMSTANCE"
+    used_in_entities:
+      - "TT Penalty Decision Subject Behavior Circumstance"
+    values:
+      - "AGGRAVATING"
+      - "MITIGATING"
+
+  # --- Schemes bổ sung từ thiết kế lại HLD ---
+
+  - scheme_code: "TT_PETITION_DUPLICATE_TYPE"
+    name: "Phân loại đơn gốc/đơn trùng: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)"
+    source_type: "source_table"
+    source_table: "THANHTRA.PETITION"
+    used_in_entities:
+      - "TT Petition"
+    values:
+      - "ORIGINAL"
+      - "DUPLICATE"
+
+  - scheme_code: "TT_PETITION_DOCUMENT_TYPE"
+    name: "Loại văn bản xử lý đơn thư (8 loại): tờ trình phân loại, phiếu hướng dẫn, công văn thông báo thụ lý, phiếu đề xuất xử lý, phiếu đề xuất thụ lý, phiếu chuyển đơn PAKN, phiếu chuyển đơn TC, CV trả lời NĐT"
+    source_type: "source_table"
+    source_table: "THANHTRA.PETITION_DOCUMENT"
+    used_in_entities:
+      - "TT Petition Document"
+    values:
+      - "CLASSIFICATION_REPORT"
+      - "MULTI_CONTENT_GUIDE"
+      - "ACCEPTANCE_NOTICE"
+      - "FEEDBACK_PROPOSAL"
+      - "ACCEPTANCE_PROPOSAL"
+      - "FEEDBACK_TRANSFER"
+      - "DENUNCIATION_TRANSFER"
+      - "INVESTOR_RESPONSE"
+
+  - scheme_code: "TT_DECISION_RECIPIENT_TYPE"
+    name: "Loại đơn vị nhận quyết định biện pháp ngăn chặn: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, STOCK_EXCHANGE, VSDC, SSC_DEPARTMENT"
+    source_type: "source_table"
+    source_table: "THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT"
+    used_in_entities:
+      - "TT Security Measure Decision Recipient"
+    values:
+      - "SECURITIES_COMPANY"
+      - "FUND_MANAGEMENT_COMPANY"
+      - "STOCK_EXCHANGE"
+      - "VSDC"
+      - "SSC_DEPARTMENT"
+
+  - scheme_code: "TT_CITIZEN_SUBJECT_TYPE"
+    name: "Loại đối tượng trong buổi tiếp công dân: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)"
+    source_type: "source_table"
+    source_table: "THANHTRA.CITIZEN_RECEPTION"
+    used_in_entities:
+      - "TT Citizen Reception"
+    values:
+      - "INDIVIDUAL"
+      - "ORGANIZATION"
+
+  - scheme_code: "TT_TEAM_MEMBER_ROLE_TYPE"
+    name: "Vai trò thành viên đoàn thanh tra/kiểm tra (cần profile từ data thực tế)"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.INSPECTION_TEAM_MEMBER"
+    used_in_entities:
+      - "TT Inspection Team Member"
+      - "TT Examination Team Member"
+    values: []
+
+  - scheme_code: "TT_POST_PROCESSING_STATUS"
+    name: "Trạng thái thực hiện kiến nghị sau thanh tra: PENDING, IN_PROGRESS, PARTIALLY_DONE, COMPLETED, OVERDUE"
+    source_type: "source_table"
+    source_table: "THANHTRA.POST_INSPECTION_PROCESSING"
+    used_in_entities:
+      - "TT Inspection Post Processing"
+    values:
+      - "PENDING"
+      - "IN_PROGRESS"
+      - "PARTIALLY_DONE"
+      - "COMPLETED"
+      - "OVERDUE"
+
+  - scheme_code: "TT_POST_PROCESSING_REQUIREMENT_TYPE"
+    name: "Loại yêu cầu xử lý sau thanh tra (cần profile từ data thực tế)"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.POST_INSPECTION_PROCESSING"
+    used_in_entities:
+      - "TT Inspection Post Processing"
+    values: []
+
+  - scheme_code: "TT_PENALTY_SUBJECT_TYPE"
+    name: "Loại đối tượng bị xử phạt trong quyết định (cần profile — có thể trùng với TT_ENFORCEMENT_SUBJECT_TYPE)"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.PENALTY_DECISION_SUBJECT"
+    used_in_entities:
+      - "TT Penalty Decision Subject"
+    values: []
+
+  - scheme_code: "TT_ENFORCEMENT_SUBJECT_TYPE"
+    name: "Loại đối tượng bị áp dụng biện pháp ngăn chặn (cần profile từ data thực tế)"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT"
+    used_in_entities:
+      - "TT Security Measure Decision Subject"
+    values: []
+
+  - scheme_code: "TT_CONCLUSION_TARGET_TYPE"
+    name: "Loại đối tượng trong kết luận thanh tra / thông báo kết quả kiểm tra (cần profile)"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.INSPECTION_CONCLUSION"
+    used_in_entities:
+      - "TT Inspection Conclusion"
+      - "TT Examination Result Notice"
+    values: []
+
+  - scheme_code: "TT_VIOLATION_SUBJECT_TYPE"
+    name: "Loại đối tượng lập biên bản vi phạm hành chính (cần profile từ data thực tế)"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.VIOLATION_RECORD"
+    used_in_entities:
+      - "TT Violation Record"
+    values: []
+
+  # --- Tier 2 schemes bổ sung ---
+
+  - scheme_code: "TT_COMPANY_TYPE"
+    name: "Loại công ty nhận thông báo chủ động — cần profile giá trị thực tế từ data"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.PROACTIVE_NOTICE_RECIPIENT"
+    used_in_entities:
+      - "Proactive Notice Recipient"
+    values:
+      - code: "SECURITIES_COMPANY"
+        name: "Công ty chứng khoán"
+        source_table: null
+      - code: "FUND_MANAGEMENT_COMPANY"
+        name: "Công ty quản lý quỹ"
+        source_table: null
+
+  - scheme_code: "TT_NOTICE_RECIPIENT_STATUS"
+    name: "Trạng thái xác nhận nhận thông báo chủ động — cần profile giá trị thực tế từ data"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.PROACTIVE_NOTICE_RECIPIENT"
+    used_in_entities:
+      - "Proactive Notice Recipient"
+    values:
+      - code: "PENDING"
+        name: "Chưa xác nhận"
+        source_table: null
+      - code: "CONFIRMED"
+        name: "Đã xác nhận"
+        source_table: null
+
+  - scheme_code: "TT_PUSH_STATUS"
+    name: "Trạng thái đẩy thông báo chủ động đến công ty — cần profile giá trị thực tế từ data"
+    source_type: "modeler_defined"
+    source_table: "THANHTRA.PROACTIVE_NOTICE_RECIPIENT"
+    used_in_entities:
+      - "Proactive Notice Recipient"
+    values:
+      - code: "PENDING"
+        name: "Chưa đẩy"
+        source_table: null
+      - code: "SUCCESS"
+        name: "Đẩy thành công"
+        source_table: null
+      - code: "FAILED"
+        name: "Đẩy thất bại"
+        source_table: null

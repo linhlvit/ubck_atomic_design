@@ -1,0 +1,657 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: ThanhTra
+  source_table: VIOLATION_RECORD
+  atomic_entity: Violation Record
+  entity_physical_name: tt_vln_record
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  group: T3
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Biên bản vi phạm hành chính (VPHC). FK đến INSPECTION_TEAM và EXAMINATION_TEAM là suy luận (không formal FK trong BRD) — cả 2 nullable. Grain: 1 dòng = 1 biên bản VPHC. BK nullable khi status=DRAFT."
+
+attributes:
+  - attribute_name: Violation Record Id
+    physical_name: tt_vln_record_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violation Record Code
+    physical_name: tt_vln_record_code
+    description: "Số biên bản tự sinh từ VBĐH sau khi cấp số. BK của entity."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.RECORD_NUMBER
+    comment: "BK chính. Số biên bản tự sinh từ VBĐH sau khi cấp số. Có thể null ở trạng thái DRAFT."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: SOURCE_SYSTEM=ThanhTra.VIOLATION_RECORD
+    etl_derived_value: ThanhTra.VIOLATION_RECORD
+
+  - attribute_name: Inspection Team Id
+    physical_name: insp_team_id
+    description: "FK đến đoàn thanh tra liên quan biên bản VPHC."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.INSPECTION_TEAM_ID
+    comment: "FK target: Inspection Team.Inspection Team Id. Hash: hash_id('ThanhTra.INSPECTION_TEAM', INSPECTION_TEAM_ID). FK suy luận — không formal FK trong BRD."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Team Code
+    physical_name: insp_team_code
+    description: "Mã đoàn thanh tra liên kết (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.INSPECTION_TEAM_ID
+    comment: "Lookup pair: Inspection Team.Inspection Team Code. Pair with Inspection Team Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Examination Team Id
+    physical_name: exam_team_id
+    description: "FK đến đoàn kiểm tra liên quan biên bản VPHC."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.EXAMINATION_TEAM_ID
+    comment: "FK target: Examination Team.Examination Team Id. Hash: hash_id('ThanhTra.EXAMINATION_TEAM', EXAMINATION_TEAM_ID). FK suy luận — không formal FK trong BRD."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Examination Team Code
+    physical_name: exam_team_code
+    description: "Mã đoàn kiểm tra liên kết (snapshot)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.EXAMINATION_TEAM_ID
+    comment: "Lookup pair: Examination Team.Examination Team Code. Pair with Examination Team Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Record Date
+    physical_name: record_dt
+    description: "Ngày lập biên bản VPHC."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.RECORD_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Record Type Code
+    physical_name: record_tp_code
+    description: "Phân loại: PAPER, ELECTRONIC."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.RECORD_TYPE
+    comment: "Scheme: TT_VIOLATION_RECORD_TYPE."
+    classification_context: TT_VIOLATION_RECORD_TYPE
+    etl_derived_value: null
+
+  - attribute_name: Violation Timestamp
+    physical_name: violation_ts
+    description: "Thời gian xảy ra vi phạm."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.VIOLATION_TIME
+    comment: "Nguồn TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Location
+    physical_name: location
+    description: "Địa điểm lập biên bản VPHC."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.LOCATION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source Info
+    physical_name: src_info
+    description: "Thông tin nguồn tiếp nhận hành vi vi phạm."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SOURCE_INFO
+    comment: "Nguồn CLOB — ETL truncate."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Recorder Name
+    physical_name: recorder_nm
+    description: "Họ tên người lập biên bản VPHC."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.RECORDER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Recorder Title
+    physical_name: recorder_title
+    description: "Chức danh người lập biên bản VPHC."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.RECORDER_TITLE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Recorder Unit
+    physical_name: recorder_unit
+    description: "Đơn vị công tác của người lập biên bản."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.RECORDER_UNIT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Type Code
+    physical_name: subject_tp_code
+    description: "Đối tượng vi phạm: INDIVIDUAL, ORGANIZATION."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_TYPE
+    comment: "Scheme: TT_VIOLATION_SUBJECT_TYPE."
+    classification_context: TT_VIOLATION_SUBJECT_TYPE
+    etl_derived_value: null
+
+  - attribute_name: Subject Name
+    physical_name: subject_nm
+    description: "Tên đối tượng vi phạm."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Id Number
+    physical_name: subject_id_nbr
+    description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_ID_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Date Of Birth
+    physical_name: subject_dob
+    description: "Ngày sinh đối tượng vi phạm (chỉ dùng cho cá nhân)."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_DOB
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Address
+    physical_name: subject_addr
+    description: "Địa chỉ đối tượng vi phạm."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_ADDRESS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Legal Rep
+    physical_name: subject_legal_rep
+    description: "Tên người đại diện theo pháp luật (chỉ dùng cho tổ chức)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_LEGAL_REP
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Legal Rep Title
+    physical_name: subject_legal_rep_title
+    description: "Chức danh người đại diện theo pháp luật."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_LEGAL_REP_TITLE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Email
+    physical_name: subject_email
+    description: "Email dùng gửi thông báo biên bản điện tử."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_EMAIL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Subject Phone
+    physical_name: subject_phone
+    description: "Số điện thoại đối tượng vi phạm."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SUBJECT_PHONE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    description: "Trạng thái: DRAFT, PENDING_LEADER_SIGN, SIGNED, NUMBERED, SENT_TO_SUBJECT."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.STATUS
+    comment: "Scheme: TT_VIOLATION_RECORD_STATUS."
+    classification_context: TT_VIOLATION_RECORD_STATUS
+    etl_derived_value: null
+
+  - attribute_name: Signature Type Code
+    physical_name: signature_tp_code
+    description: "Loại chữ ký: SINGLE, TWO_STEP."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SIGNATURE_TYPE
+    comment: "Scheme: TT_SIGNATURE_TYPE."
+    classification_context: TT_SIGNATURE_TYPE
+    etl_derived_value: null
+
+  - attribute_name: Signed By Officer Id
+    physical_name: signed_by_officer_id
+    description: "FK đến cán bộ ký số cuối biên bản VPHC."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SIGNED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', SIGNED_BY). Người ký số cuối."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Signed By Officer Code
+    physical_name: signed_by_officer_code
+    description: "Mã cán bộ ký số cuối biên bản VPHC."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SIGNED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Signed By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Signed Timestamp
+    physical_name: signed_ts
+    description: "Thời điểm ký số biên bản."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SIGNED_AT
+    comment: "Nguồn TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: First Signed By Officer Id
+    physical_name: first_signed_by_officer_id
+    description: "FK đến cán bộ ký nháy biên bản VPHC (ký 2 bước)."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.FIRST_SIGNED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', FIRST_SIGNED_BY). Người ký nháy (ký 2 bước)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: First Signed By Officer Code
+    physical_name: first_signed_by_officer_code
+    description: "Mã cán bộ ký nháy biên bản VPHC."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.FIRST_SIGNED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with First Signed By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: First Signed Timestamp
+    physical_name: first_signed_ts
+    description: "Thời điểm ký nháy biên bản."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.FIRST_SIGNED_AT
+    comment: "Nguồn TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Numbered Timestamp
+    physical_name: numbered_ts
+    description: "Thời điểm được cấp số từ VBĐH."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.NUMBERED_AT
+    comment: "Nguồn TIMESTAMP(6). Thời điểm được cấp số từ VBĐH."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Sent Timestamp
+    physical_name: sent_ts
+    description: "Thời điểm gửi biên bản cho đối tượng vi phạm."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SENT_AT
+    comment: "Nguồn TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Sent To Inspector Indicator
+    physical_name: sent_to_inspector_ind
+    description: "Đã gửi Thanh tra (dành cho ĐVGS): 0=Chưa, 1=Đã gửi."
+    data_domain: Indicator
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SENT_TO_INSPECTOR
+    comment: "Nguồn NUMBER(1,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Forwarded To Inspection Indicator
+    physical_name: forwarded_to_insp_ind
+    description: "Đã gửi biên bản đến Thanh tra: 0=Chưa, 1=Đã."
+    data_domain: Indicator
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.FORWARDED_TO_INSPECTION
+    comment: "Nguồn NUMBER(1,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Forwarded Timestamp
+    physical_name: forwarded_ts
+    description: "Thời điểm chuyển biên bản đến Thanh tra."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.FORWARDED_AT
+    comment: "Nguồn TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Forwarded By Officer Id
+    physical_name: forwarded_by_officer_id
+    description: "FK đến cán bộ thực hiện chuyển biên bản."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.FORWARDED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', FORWARDED_BY)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Forwarded By Officer Code
+    physical_name: forwarded_by_officer_code
+    description: "Mã cán bộ thực hiện chuyển biên bản."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.FORWARDED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Forwarded By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violator Confirmed By
+    physical_name: violator_confirmed_by
+    description: "Tên người vi phạm xác nhận qua VNeID."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.VIOLATOR_CONFIRMED_BY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violator Confirmed Receipt Timestamp
+    physical_name: violator_confirmed_receipt_ts
+    description: "Thời điểm người vi phạm xác nhận nhận biên bản qua VNeID."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.VIOLATOR_CONFIRMED_RECEIPT_AT
+    comment: "Nguồn TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Signed Document URL
+    physical_name: signed_document_url
+    description: "URL file biên bản VPHC đã ký số (PDF)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.SIGNED_DOCUMENT_URL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violator Signed File URL
+    physical_name: violator_signed_file_url
+    description: "URL file biên bản đã có chữ ký của người vi phạm."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.VIOLATOR_SIGNED_FILE_URL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_ts
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.CREATED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_ts
+    description: "Thời điểm cập nhật gần nhất."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.LAST_MODIFIED_AT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Id
+    physical_name: created_by_officer_id
+    description: "ID người dùng tạo bản ghi."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.CREATED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created By Officer Code
+    physical_name: created_by_officer_code
+    description: "Mã người dùng tạo bản ghi."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.CREATED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Id
+    physical_name: updated_by_officer_id
+    description: "ID người dùng cập nhật gần nhất."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.LAST_MODIFIED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated By Officer Code
+    physical_name: updated_by_officer_code
+    description: "Mã người dùng cập nhật gần nhất."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_RECORD.LAST_MODIFIED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
+    classification_context: null
+    etl_derived_value: null
