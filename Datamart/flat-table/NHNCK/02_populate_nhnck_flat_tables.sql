@@ -72,16 +72,16 @@ SELECT
     ctf_st_cls.cl_code          AS ctf_st_cl_code,
     ctf_st_cls.cl_nm            AS ctf_st_cl_nm
 
-FROM datamart.nhnck_fct_prac_license_ctf_snpst f
-JOIN datamart.nhnck_calendar_date_dimension snpst_cal
+FROM datamart.fct_prac_license_ctf_snpst f
+JOIN datamart.calendar_date_dimension snpst_cal
     ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.nhnck_calendar_date_dimension issu_cal
+LEFT JOIN datamart.calendar_date_dimension issu_cal
     ON issu_cal.date_dimension_id = f.issu_dt_dim_id
-LEFT JOIN datamart.nhnck_scr_prac_dim prac_dim
+LEFT JOIN datamart.scr_prac_dim prac_dim
     ON prac_dim.scr_prac_dim_id = f.prac_dim_id
-LEFT JOIN datamart.nhnck_cls_dim ctf_tp_cls
+LEFT JOIN datamart.cls_dim ctf_tp_cls
     ON ctf_tp_cls.cl_dim_id = f.ctf_tp_cl_dim_id
-LEFT JOIN datamart.nhnck_cls_dim ctf_st_cls
+LEFT JOIN datamart.cls_dim ctf_st_cls
     ON ctf_st_cls.cl_dim_id = f.ctf_st_cl_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
@@ -120,10 +120,10 @@ SELECT
     prac_dim.brth_dt            AS prac_brth_dt,
     prac_dim.practice_st_code   AS prac_practice_st_code
 
-FROM datamart.nhnck_fct_prac_dly_snpst f
-JOIN datamart.nhnck_calendar_date_dimension snpst_cal
+FROM datamart.fct_prac_dly_snpst f
+JOIN datamart.calendar_date_dimension snpst_cal
     ON snpst_cal.date_dimension_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.nhnck_scr_prac_dim prac_dim
+LEFT JOIN datamart.scr_prac_dim prac_dim
     ON prac_dim.scr_prac_dim_id = f.prac_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
