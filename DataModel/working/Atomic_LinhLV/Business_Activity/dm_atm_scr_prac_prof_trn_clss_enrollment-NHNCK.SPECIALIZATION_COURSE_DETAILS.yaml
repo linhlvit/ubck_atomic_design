@@ -1,0 +1,485 @@
+﻿schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_prof_trn_clss_enrollment-NHNCK.SPECIALIZATION_COURSE_DETAILS
+  logical_name: Securities Practitioner Professional Training Class Enrollment
+  physical_name: scr_prac_prof_trn_clss_enrollment
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa đào tạo chuyên môn. Ghi nhận điểm thi, kết quả đạt/không đạt và trạng thái ghi danh.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-SPECIALIZATION_COURSE_DETAILS
+
+attributes:
+  - name: Securities Practitioner Professional Training Class Enrollment Id
+    physical_name: scr_prac_prof_trn_clss_enrollment_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: null
+    comment: "PK surrogate. BCV: Business Activity — đăng ký học viên vào lớp đào tạo nghiệp vụ + kết quả."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Professional Training Class Enrollment Code
+    physical_name: scr_prac_prof_trn_clss_enrollment_code
+    business_meaning: Mã định danh (BK từ PK nguồn)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.ID
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Professional Training Class Id
+    physical_name: scr_prac_prof_trn_clss_id
+    business_meaning: FK đến lớp đào tạo nghiệp vụ chứng khoán
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
+    comment: "FK target: scr_prac_prof_trn_clss.scr_prac_prof_trn_clss_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Professional Training Class Code
+    physical_name: scr_prac_prof_trn_clss_code
+    business_meaning: Mã lớp đào tạo
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
+    comment: "Lookup pair: scr_prac_prof_trn_clss.scr_prac_prof_trn_clss_code. Pair with scr_prac_prof_trn_clss_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Id
+    physical_name: scr_prac_id
+    business_meaning: FK đến người hành nghề chứng khoán
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID
+    comment: "FK target: scr_prac.scr_prac_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Code
+    physical_name: scr_prac_code
+    business_meaning: Mã người hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID
+    comment: "Lookup pair: scr_prac.scr_prac_code. Pair with scr_prac_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Specialization Type Code
+    physical_name: specialization_tp_code
+    business_meaning: Loại chuyên ngành đào tạo
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_ID
+    comment: "Scheme: SPECIALIZATION. Lookup từ SPECIALIZATIONS."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Exam Number
+    physical_name: exam_nbr
+    business_meaning: Số báo danh dự thi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.EXAM_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Practitioner Name At Enrollment
+    physical_name: prac_nm_at_enrollment
+    business_meaning: Họ tên học viên tại thời điểm đăng ký (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.FULL_NAME
+    comment: Denormalized snapshot tại thời điểm đăng ký.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Practitioner Birth Date At Enrollment
+    physical_name: prac_brth_dt_at_enrollment
+    business_meaning: Ngày sinh tại thời điểm đăng ký (snapshot)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.BIRTH_DATE
+    comment: Denormalized snapshot tại thời điểm đăng ký.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Place of Birth
+    physical_name: plc_of_brth
+    business_meaning: Nơi sinh (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PLACE_OF_BIRTH
+    comment: Denormalized snapshot tại thời điểm đăng ký.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Permanent Residence Country Id
+    physical_name: perm_rsdnc_cty_id
+    business_meaning: FK đến quốc gia thường trú (snapshot)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
+    comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Permanent Residence Country Code
+    physical_name: perm_rsdnc_cty_code
+    business_meaning: Mã quốc gia thường trú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
+    comment: "Lookup pair: geo.geo_code. Pair with Permanent Residence Country Id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Permanent Residence Province Id
+    physical_name: perm_rsdnc_prov_id
+    business_meaning: FK đến tỉnh/thành thường trú (snapshot)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID
+    comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Permanent Residence Province Code
+    physical_name: perm_rsdnc_prov_code
+    business_meaning: Mã tỉnh/thành thường trú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID
+    comment: "Lookup pair: geo.geo_code. Pair with Permanent Residence Province Id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Permanent Residence District Id
+    physical_name: perm_rsdnc_dstc_id
+    business_meaning: FK đến quận/huyện thường trú (snapshot)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID
+    comment: "FK target: geo.geo_id. Snapshot tại thời điểm đăng ký."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Permanent Residence District Code
+    physical_name: perm_rsdnc_dstc_code
+    business_meaning: Mã quận/huyện thường trú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID
+    comment: "Lookup pair: geo.geo_code. Pair with Permanent Residence District Id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Practitioner Identity Type Code At Enrollment
+    physical_name: prac_id_tp_code_at_enrollment
+    business_meaning: Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE
+    comment: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu. Snapshot — entity grain là enrollment, không phải Involved Party."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Practitioner Identity Number At Enrollment
+    physical_name: prac_id_nbr_at_enrollment
+    business_meaning: Số định danh tại thời điểm đăng ký (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.IDENTITY_NUMBER
+    comment: Denormalized snapshot tại thời điểm đăng ký.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Practitioner Identity Issue Date At Enrollment
+    physical_name: prac_id_issu_dt_at_enrollment
+    business_meaning: Ngày cấp giấy tờ định danh (snapshot)
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.IDENTITY_ISSUE_DATE
+    comment: Denormalized snapshot tại thời điểm đăng ký.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Practitioner Identity Issue Place At Enrollment
+    physical_name: prac_id_issu_plc_at_enrollment
+    business_meaning: Nơi cấp giấy tờ định danh (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.IDENTITY_ISSUE_PLACE
+    comment: Denormalized snapshot tại thời điểm đăng ký.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Exam Score
+    physical_name: exam_scor
+    business_meaning: Điểm thi
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.EXAM_SCORE
+    comment: "Nguồn kiểu FLOAT — conversion risk: có thể chứa giá trị ngoài [0,100] hoặc text thay thế (VD: vắng). Cần validate ETL."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Training Result Code
+    physical_name: trn_rslt_code
+    business_meaning: "Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.RESULT
+    comment: "Scheme: TRAINING_RESULT."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: rcrd_st_code
+    business_meaning: Trạng thái bản ghi
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.RECORD_STATUS
+    comment: "Scheme: COURSE_STATUS. Reuse scheme hiện có. Nguồn: 1=Hoạt động."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: dsc
+    business_meaning: Mô tả
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.NOTE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Id
+    physical_name: assignee_ofcr_id
+    business_meaning: FK đến cán bộ phụ trách (nullable)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID
+    comment: "FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Assignee Officer Code
+    physical_name: assignee_ofcr_code
+    business_meaning: Mã cán bộ phụ trách
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID
+    comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Assignee Officer Id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: crt_tms
+    business_meaning: Thời điểm tạo bản ghi
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_AT
+    comment: Pending — chờ xác nhận ánh xạ audit field.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: udt_tms
+    business_meaning: Thời điểm cập nhật bản ghi
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_AT
+    comment: Pending — chờ xác nhận ánh xạ audit field.
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: crt_by_ofcr_id
+    business_meaning: FK đến Officer tạo bản ghi
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
+    comment: "Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: udt_by_ofcr_id
+    business_meaning: FK đến Officer cập nhật bản ghi
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSE_DETAILS
+    source_column: NHNCK.qlnhn.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
+    comment: "Pending — chờ xác nhận ánh xạ audit field. FK target: reg_ahr_ofcr.reg_ahr_ofcr_id."
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
+    etl_derived_value: null

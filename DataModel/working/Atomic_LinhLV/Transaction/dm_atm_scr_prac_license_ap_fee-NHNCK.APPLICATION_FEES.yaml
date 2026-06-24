@@ -1,0 +1,331 @@
+﻿schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-scr_prac_license_ap_fee-NHNCK.APPLICATION_FEES
+  logical_name: Securities Practitioner License Application Fee
+  physical_name: scr_prac_license_ap_fee
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Event] Transaction"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Phí thực tế phát sinh cho hồ sơ đăng ký CCHN — phí nộp hồ sơ, phí cấp CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt với Examination Assessment Fee (Condition).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-APPLICATION_FEES
+
+attributes:
+  - name: Securities Practitioner License Application Fee Id
+    physical_name: scr_prac_license_ap_fee_id
+    business_meaning: Surrogate primary key
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Application Fee Code
+    physical_name: scr_prac_license_ap_fee_code
+    business_meaning: Business key từ APPLICATION_FEES.ID
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.ID
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: License Application Id
+    physical_name: license_ap_id
+    business_meaning: FK đến License Application
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.APPLICATION_ID
+    comment: "FK target: License Application.License Application Id."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: License Application Code
+    physical_name: license_ap_code
+    business_meaning: Mã hồ sơ đăng ký (lookup pair)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.APPLICATION_ID
+    comment: "Lookup pair: License Application.License Application Code. Pair with License Application Id."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Id
+    physical_name: scr_prac_id
+    business_meaning: FK đến Securities Practitioner (redundant — derive được từ Application)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.PROFESSIONAL_ID
+    comment: "FK target: scr_prac.scr_prac_id."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Code
+    physical_name: scr_prac_code
+    business_meaning: Mã chuyên viên (lookup pair)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.PROFESSIONAL_ID
+    comment: "Lookup pair: scr_prac.scr_prac_code. Pair with scr_prac_id."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Fee Type Code
+    physical_name: fee_tp_code
+    business_meaning: "Loại phí: 1=Phí thi 2=Phí phúc khảo 3=Phí cấp chứng chỉ"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.FEE_TYPE
+    comment: "Scheme: FEE_TYPE."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Fee Content
+    physical_name: fee_cntnt
+    business_meaning: Nội dung khoản phí
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.CONTENT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Fee Amount
+    physical_name: fee_amt
+    business_meaning: Số tiền phí (VNĐ)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.FEE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Payment Request Date
+    physical_name: pymt_rqs_dt
+    business_meaning: Ngày yêu cầu nộp phí
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.REQUEST_DATE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Payment Date
+    physical_name: pymt_dt
+    business_meaning: Ngày thanh toán thực tế
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.PAYMENT_DATE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Payment Expiry Date
+    physical_name: pymt_expiry_dt
+    business_meaning: Ngày hết hạn thanh toán
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.EXPIRY_DATE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Payment Status Code
+    physical_name: pymt_st_code
+    business_meaning: "Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.RECORD_STATUS
+    comment: "Scheme: PAYMENT_STATUS."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Payment Evidence File Path
+    physical_name: pymt_evidence_file_path
+    business_meaning: Đường dẫn chứng từ thanh toán
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.FILE_PATH
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.NOTE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Created By User Id
+    physical_name: crt_by_usr_id
+    business_meaning: FK đến User (người tạo) — pending
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_BY
+    comment: "FK target: User.User Id. Pending."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Created By User Code
+    physical_name: crt_by_usr_code
+    business_meaning: Mã user (lookup pair — pending)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_BY
+    comment: "Lookup pair: User.User Code. Pair with Created By User Id. Pending."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Created At
+    physical_name: crt_at
+    business_meaning: Thời điểm tạo bản ghi — pending
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Updated By User Id
+    physical_name: udt_by_usr_id
+    business_meaning: FK đến User (người cập nhật) — pending
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_BY
+    comment: "FK target: User.User Id. Pending."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Updated By User Code
+    physical_name: udt_by_usr_code
+    business_meaning: Mã user (lookup pair — pending)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_BY
+    comment: "Lookup pair: User.User Code. Pair with Updated By User Id. Pending."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
+
+  - name: Updated At
+    physical_name: udt_at
+    business_meaning: Thời điểm cập nhật bản ghi — pending
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_FEES
+    source_column: NHNCK.qlnhn.APPLICATION_FEES.UPDATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    etl_derived_value: null
