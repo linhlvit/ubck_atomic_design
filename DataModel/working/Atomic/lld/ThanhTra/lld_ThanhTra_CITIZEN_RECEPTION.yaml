@@ -22,7 +22,7 @@ metadata:
 
 attributes:
   - attribute_name: Citizen Reception Id
-    physical_name: tt_citizen_reception_id
+    physical_name: ctzn_rcptn_id
     description: "Khóa đại diện (surrogate key)."
     data_domain: Surrogate Key
     nullable: false
@@ -34,7 +34,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Citizen Reception Code
-    physical_name: tt_citizen_reception_code
+    physical_name: ctzn_rcptn_code
     description: "Khóa chính UUID của bảng nguồn. BK của entity."
     data_domain: Text
     nullable: false
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Petition Id
-    physical_name: tt_petition_id
+    physical_name: peti_id
     description: "FK đến Petition (đơn thư liên kết với buổi tiếp công dân này, nếu có)."
     data_domain: Surrogate Key
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Petition Code
-    physical_name: tt_petition_code
+    physical_name: peti_code
     description: "Mã Petition (denormalized lookup, snapshot tại thời điểm tiếp)."
     data_domain: Text
     nullable: true
