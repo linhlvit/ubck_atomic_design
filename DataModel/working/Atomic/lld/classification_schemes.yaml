@@ -847,6 +847,184 @@ schemes:
       - "PAYMENT_REMINDER"
       - "REMEDIAL_REMINDER"
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # SCMS — Hệ thống Quản lý Giám sát Công ty Chứng khoán — UBCKNN
+  # Prefix: SCMS_
+  # ─────────────────────────────────────────────────────────────────────────
+
+  # --- Tier 1 schemes ---
+
+  - scheme_code: "SCMS_COMPANY_TYPE"
+    name: "Loại hình doanh nghiệp CTCK"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_COMPANY_TYPE"
+    used_in_entities:
+      - "Securities Company"
+    values: []
+
+  - scheme_code: "SCMS_SC_FIRM_STATUS"
+    name: "Trạng thái pháp lý CTCK/CN/VPDD/PGD"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SC_FIRM_STATUS"
+    used_in_entities:
+      - "Securities Company"
+      - "Securities Company Branch"
+      - "Securities Company Representative Office"
+      - "Securities Company Transaction Office"
+      - "Securities Company Foreign Branch"
+      - "Securities Company Foreign Representative Office"
+    values: []
+
+  - scheme_code: "SCMS_SERVICE_TYPE"
+    name: "Loại dịch vụ chứng khoán"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SERVICE"
+    used_in_entities:
+      - "Securities Company Licensed Service"
+      - "Securities Company Custodian Bank"
+    values: []
+
+  - scheme_code: "SCMS_BUSINESS_LINE"
+    name: "Nghiệp vụ kinh doanh chứng khoán"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_BUSINESS_LINE"
+    used_in_entities:
+      - "Securities Company"
+    values: []
+
+  - scheme_code: "SCMS_NATIONALITY"
+    name: "Quốc tịch"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_NATIONALITY"
+    used_in_entities:
+      - "Securities Company Senior Personnel"
+      - "Securities Company Shareholder"
+      - "Securities Company Foreign Branch Personnel"
+      - "Securities Company Foreign Representative Office Personnel"
+    values: []
+
+  - scheme_code: "SCMS_ALERT_INDICATOR_TYPE"
+    name: "Loại chỉ tiêu cảnh báo"
+    source_type: "source_table"
+    source_table: "SCMS.ALERT_INDICATOR"
+    used_in_entities:
+      - "Securities Company Alert Indicator"
+    values: []
+
+  - scheme_code: "SCMS_RISK_CAMEL_GROUP"
+    name: "Nhóm chỉ tiêu CAMEL (C/A/M/E/L)"
+    source_type: "source_table"
+    source_table: "SCMS.RISK_INDICATOR_GROUP"
+    used_in_entities:
+      - "Securities Company Risk Indicator Group"
+    values: []
+
+  # --- Tier 2 schemes ---
+
+  - scheme_code: "SCMS_POSITION_TYPE"
+    name: "Chức vụ nhân sự CTCK"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_POSITION"
+    used_in_entities:
+      - "Securities Company Senior Personnel"
+      - "Securities Company Foreign Branch Personnel"
+      - "Securities Company Foreign Representative Office Personnel"
+    values: []
+
+  - scheme_code: "SCMS_RELATIONSHIP_TYPE"
+    name: "Mối quan hệ (gia đình/sở hữu/quản lý)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_RELATIONSHIP"
+    used_in_entities:
+      - "Securities Company Insider Related Person"
+      - "Securities Company Shareholder Relation"
+      - "Securities Company Related Person"
+      - "Securities Company Major Shareholder Relation"
+    values: []
+
+  - scheme_code: "SCMS_VIOLATION_TYPE"
+    name: "Loại vi phạm"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_VIOLATION_TYPE"
+    used_in_entities:
+      - "Securities Company Report Violation"
+      - "Securities Company Alert Violation"
+    values: []
+
+  - scheme_code: "SCMS_EVENT_TYPE"
+    name: "Loại sự kiện/loại văn bản CBTT hoặc thay đổi hồ sơ"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE"
+    used_in_entities:
+      - "Securities Company Profile Change"
+      - "Securities Company Disclosure Report"
+    values: []
+
+  - scheme_code: "SCMS_PROFILE_STATUS"
+    name: "Trạng thái hồ sơ phê duyệt"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_PROFILE_STATUS"
+    used_in_entities:
+      - "Securities Company Profile Change"
+      - "Securities Company Periodic Report"
+      - "Securities Company Adhoc Report"
+    values: []
+
+  - scheme_code: "SCMS_REPORT_SUBMISSION_STATUS"
+    name: "Trạng thái nộp báo cáo (đúng hạn/trễ hạn/chưa nộp)"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_PERIODIC_REPORT"
+    used_in_entities:
+      - "Securities Company Periodic Report"
+      - "Securities Company Adhoc Report"
+      - "Securities Company Foreign Branch Periodic Report"
+      - "Securities Company Foreign Representative Office Periodic Report"
+    values: []
+
+  - scheme_code: "SCMS_INSPECTION_TYPE"
+    name: "Hình thức kiểm tra/thanh tra (định kỳ/đột xuất/chuyên đề)"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_INSPECTION_SCHEDULE"
+    used_in_entities:
+      - "Securities Company Inspection Schedule"
+    values: []
+
+  - scheme_code: "SCMS_ADMIN_SANCTION_TYPE"
+    name: "Loại biện pháp xử lý hành chính"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_ADMIN_SANCTION"
+    used_in_entities:
+      - "Securities Company Administrative Sanction"
+    values: []
+
+  - scheme_code: "SCMS_PETITION_TYPE"
+    name: "Loại đơn (khiếu nại/tố cáo/kiến nghị/phản ánh)"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_COMPLAINT_PETITION"
+    used_in_entities:
+      - "Securities Company Complaint Petition"
+    values: []
+
+  - scheme_code: "SCMS_SHAREHOLDER_TXN_TYPE"
+    name: "Loại giao dịch cổ đông"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SHAREHOLDER_TRANSACTION_TYPE"
+    used_in_entities:
+      - "Securities Company Shareholder Ownership Change"
+      - "Securities Company Shareholder Transfer"
+    values: []
+
+  # --- Tier 3 schemes ---
+
+  - scheme_code: "SCMS_VERIFICATION_STATUS"
+    name: "Trạng thái xác minh hồ sơ/thông tin"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE"
+    used_in_entities:
+      - "Securities Company Shareholder Ownership Change"
+      - "Securities Company Major Shareholder Relation"
+    values: []
+
   # --- Tier 7 schemes ---
 
   - scheme_code: "TT_CIRCUMSTANCE_TYPE"
