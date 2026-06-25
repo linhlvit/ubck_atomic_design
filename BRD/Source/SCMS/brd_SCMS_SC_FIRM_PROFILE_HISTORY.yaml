@@ -1,0 +1,151 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_PROFILE_HISTORY
+brd_ref: BRD-SRC-SCMS-SC_FIRM_PROFILE_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: CHI_TIET_ID
+    data_type: NUMBER(10)
+    description: "Id table ChiNhanh/congty..."
+    key: null
+    fk_note: null
+  - name: LINKED_TABLE
+    data_type: NVARCHAR2(30)
+    description: "vd: chi nhanh, cong ty ..."
+    key: null
+    fk_note: null
+  - name: DOCUMENT_TYPE
+    data_type: NVARCHAR2(50)
+    description: "Loai van ban phap ly: GP = Giay phep; QD = Quyet dinh; CV = Cong van; TT = Thong tu; ND = Nghi dinh"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_NUMBER
+    data_type: NVARCHAR2(300)
+    description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
+    key: null
+    fk_note: null
+  - name: APPROVAL_DATE
+    data_type: TIMESTAMP(6)
+    description: "Ngay ch?p thu?n"
+    key: null
+    fk_note: null
+  - name: VALID_DATE
+    data_type: TIMESTAMP(6)
+    description: "Ngay h?p l?"
+    key: null
+    fk_note: null
+  - name: REASON
+    data_type: NVARCHAR2(1000)
+    description: "ghi chu"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: NVARCHAR2(1000)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: START_DATE
+    data_type: TIMESTAMP(6)
+    description: "Ngày bắt đầu kỳ báo cáo hoặc hiệu lực"
+    key: null
+    fk_note: null
+  - name: END_DATE
+    data_type: TIMESTAMP(6)
+    description: "Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực"
+    key: null
+    fk_note: null
+  - name: EXPECTED_SUSPENSION_DATE
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: EXPECTED_OPERATION_DATE
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: INSPECTION_LEVEL
+    data_type: NVARCHAR2(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: APPROVAL_AUTHORITY
+    data_type: NVARCHAR2(250)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: APPROVED_BY
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: APPROVED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm phê duyệt"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(4)
+    description: "Trang thai phe duyet ho so: 0 = Cho duyet; 1 = Da duyet; 2 = Tu choi"
+    key: null
+    fk_note: null
+  - name: EVENT_TYPE_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
+    key: FK
+    fk_note: "FK → CAT_EVENT_TYPE.ID"
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: CHANGE_HISTORY
+    data_type: CLOB
+    description: "Thay d?i nh?ng tru?ng nao"
+    key: null
+    fk_note: null
+  - name: ID_OLD
+    data_type: NUMBER(10)
+    description: "Cột id_old — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: APPROVAL_ATTACHMENT_PATH
+    data_type: NVARCHAR2(1000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_FILENAME
+    data_type: VARCHAR2(1000 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_FILEDATA
+    data_type: BLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_ROWID
+    data_type: VARCHAR2(200 BYTE)
+    description: ""
+    key: null
+    fk_note: null

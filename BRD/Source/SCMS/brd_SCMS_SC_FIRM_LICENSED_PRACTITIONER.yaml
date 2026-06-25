@@ -1,0 +1,381 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_LICENSED_PRACTITIONER
+brd_ref: BRD-SRC-SCMS-SC_FIRM_LICENSED_PRACTITIONER
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: SC_FIRM_PERSONNEL_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SO_CHUNG_CHI_HNCK
+    data_type: NVARCHAR2(100)
+    description: "Cột so_chung_chi_hnck — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: SECURITIES_LICENSE_DATE
+    data_type: DATE
+    description: "Ngày cấp chứng chỉ hành nghề chứng khoán"
+    key: null
+    fk_note: null
+  - name: SYNCED
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SYNC_AT
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: TRANG_THAI
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SC_FIRM_SERVICE_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → SC_FIRM_SERVICE.ID"
+  - name: HOTEN
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột hoten — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: DATE_OF_BIRTH
+    data_type: DATE
+    description: "Ngày sinh (dd/mm/yyyy)"
+    key: null
+    fk_note: null
+  - name: SOCMT
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột socmt — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: ID_CARD_ISSUED_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: NOICAPCMT
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột noicapcmt — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: QUOCTICH
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột quoctich — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: DIACHITHUONGTRU
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột diachithuongtru — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: HOKHAUTHUONGTRU
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột hokhauthuongtru — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: NOISINH
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột noisinh — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: DIENTHOAI
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột dienthoai — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: DIDONG
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột didong — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(255)
+    description: "Địa chỉ email liên hệ"
+    key: null
+    fk_note: null
+  - name: TENCONGTY
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột tencongty — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: TENTIENGANH
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột tentienganh — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: TENVIETTAT
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột tenviettat — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: SOGIAYPHEP
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột sogiayphep — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: PHONGBAN
+    data_type: VARCHAR2(200 BYTE)
+    description: "Cột phongban — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: CHUCVU
+    data_type: VARCHAR2(200 BYTE)
+    description: "Cột chucvu — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: START_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: END_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: VARCHAR2(1 BYTE)
+    description: "Trang thai nguoi hanh nghe: 1 = Duong nhiem/Dang lam viec; 0 = Da nghi viec/Mien nhiem"
+    key: null
+    fk_note: null
+  - name: ERRTEXT
+    data_type: VARCHAR2(1000 BYTE)
+    description: "Cột errtext — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: REPORT_ID
+    data_type: NUMBER
+    description: "Cột report_id — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: "FK suy luận → FORM_REPORT.ID"
+  - name: DATECREATED
+    data_type: DATE
+    description: "Cột datecreated — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: CREATEDBY
+    data_type: VARCHAR2(200 BYTE)
+    description: "Cột createdby — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: DATEMODIFY
+    data_type: DATE
+    description: "Cột datemodify — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: MODIFYBY
+    data_type: VARCHAR2(200 BYTE)
+    description: "Cột modifyby — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: BATCHID
+    data_type: VARCHAR2(30 BYTE)
+    description: "Cột batchid — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: CONTENT
+    data_type: VARCHAR2(1000 BYTE)
+    description: "Nội dung thông báo/tin nhắn/văn bản"
+    key: null
+    fk_note: null
+  - name: NHN_ID
+    data_type: NUMBER
+    description: "Cột nhn_id — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1)
+    description: "Co xoa mem: 1 = Da xoa; 0 = Chua xoa"
+    key: null
+    fk_note: null
+  - name: GIOITINH
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột gioitinh — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: SC_FIRM_BRANCH_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_branch: Chi nhánh CTCK liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_BRANCH.ID"
+  - name: SC_FIRM_TRANSACTION_OFFICE_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_transaction_office: Phòng giao dịch CTCK liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_TRANSACTION_OFFICE.ID"
+  - name: SC_FIRM_REP_OFFICE_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_rep_office: VPDD CTCK liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_REP_OFFICE.ID"
+  - name: BUSINESS_LINE_ID
+    data_type: VARCHAR2(100 BYTE)
+    description: "FK -> cat_business_line: Nghiệp vụ kinh doanh liên quan"
+    key: FK
+    fk_note: "FK → CAT_BUSINESS_LINE.ID"
+  - name: LABOR_CONTRACT_TERMINATION_REPORT
+    data_type: NUMBER(1)
+    description: "Co da nop bao cao cham dut hop dong lao dong: 1 = Da nop; 0 = Chua nop"
+    key: null
+    fk_note: null
+  - name: BUSINESS_DIVISION_ID
+    data_type: NUMBER(10)
+    description: "Cột business_division_id — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: NATIONAL_ID
+    data_type: VARCHAR2(50)
+    description: "Số CCCD/CMND/Hộ chiếu"
+    key: null
+    fk_note: null
+  - name: POSITION_IDS
+    data_type: CLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: PERMANENT_ADDRESS
+    data_type: CLOB
+    description: "Địa chỉ thường trú theo hộ khẩu"
+    key: null
+    fk_note: null
+  - name: RESPONSIBLE_SERVICE_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: PHONE
+    data_type: VARCHAR2(50)
+    description: "Số điện thoại liên hệ"
+    key: null
+    fk_note: null
+  - name: ENTITY_TYPE
+    data_type: VARCHAR2(20)
+    description: "Loai doi tuong hanh nghe: CA_NHAN = Ca nhan; TO_CHUC = To chuc"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: CLOB
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: GENDER
+    data_type: NUMBER(10)
+    description: "Giới tính: 1=Nam, 2=Nữ"
+    key: null
+    fk_note: null
+  - name: FULL_NAME
+    data_type: VARCHAR2(500)
+    description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức)"
+    key: null
+    fk_note: null
+  - name: INSIDER
+    data_type: NUMBER(10)
+    description: "Co la nguoi noi bo cua CTCK (theo quy dinh CBTT): 1 = Nguoi noi bo; 0 = Khong phai"
+    key: null
+    fk_note: null
+  - name: WORK_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu làm việc tại CTCK"
+    key: null
+    fk_note: null
+  - name: APPOINTMENT_DATE
+    data_type: DATE
+    description: "Ngày bổ nhiệm vào chức vụ"
+    key: null
+    fk_note: null
+  - name: ISSUE_DATE
+    data_type: DATE
+    description: "Ngày cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: WORK_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc làm việc tại CTCK"
+    key: null
+    fk_note: null
+  - name: DISMISSAL_DATE
+    data_type: DATE
+    description: "Ngày miễn nhiệm khỏi chức vụ"
+    key: null
+    fk_note: null
+  - name: NGAY_SINH
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: ISSUE_PLACE
+    data_type: VARCHAR2(500)
+    description: "Nơi cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: DEPARTMENT
+    data_type: VARCHAR2(255)
+    description: "Phòng/Ban công tác"
+    key: null
+    fk_note: null
+  - name: NATIONALITY_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_nationality: Quốc tịch (khóa ngoại tới danh mục quốc tịch)"
+    key: FK
+    fk_note: "FK → CAT_NATIONALITY.ID"
+  - name: SECURITIES_LICENSE_NUMBER
+    data_type: VARCHAR2(100)
+    description: "Số chứng chỉ hành nghề chứng khoán (CCHN)"
+    key: null
+    fk_note: null
+  - name: LATEST_VERIFICATION_AT
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: WORK_STATUS
+    data_type: VARCHAR2(20)
+    description: "Trang thai lam viec: DANG_LAM_VIEC = Dang lam viec tai CTCK; DA_NGHI_VIEC = Da nghi viec"
+    key: null
+    fk_note: null
+  - name: VERIFICATION_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai xac minh CCHN voi he thong: 0 = Cho xac minh; 1 = Khop (xac minh thanh cong); 2 = Khong khop"
+    key: null
+    fk_note: null

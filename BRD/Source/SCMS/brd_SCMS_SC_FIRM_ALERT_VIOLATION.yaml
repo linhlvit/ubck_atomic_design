@@ -1,0 +1,141 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_ALERT_VIOLATION
+brd_ref: BRD-SRC-SCMS-SC_FIRM_ALERT_VIOLATION
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: SEVERITY_LEVEL
+    data_type: NUMBER(3)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CONDITION
+    data_type: NVARCHAR2(500)
+    description: "Điều kiện áp dụng (biểu thức logic)"
+    key: null
+    fk_note: null
+  - name: GIA_TRI_SO_SANH
+    data_type: NUMBER
+    description: "Cột gia_tri_so_sanh — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: GIA_TRI_THUC_TE
+    data_type: NUMBER(38,2)
+    description: "Cột gia_tri_thuc_te — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(2000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: ALERT_INDICATOR_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → ALERT_INDICATOR.ID"
+  - name: ALERT_YEAR
+    data_type: VARCHAR2(10)
+    description: "Năm kiểm tra cảnh báo"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD
+    data_type: VARCHAR2(50)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD_VALUE
+    data_type: VARCHAR2(100 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: RESOLVED
+    data_type: NUMBER(1)
+    description: "Cờ đã được xử lý: 1=Đã xử lý, 0=Chưa xử lý"
+    key: null
+    fk_note: null
+  - name: DEDUCTED_SCORE
+    data_type: NUMBER(38,2)
+    description: "Điểm bị trừ khi vi phạm"
+    key: null
+    fk_note: null
+  - name: RESOLUTION_NOTE
+    data_type: VARCHAR2(2000)
+    description: "Ghi chú xử lý cảnh báo vi phạm"
+    key: null
+    fk_note: null
+  - name: PERIOD
+    data_type: NUMBER(10)
+    description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)"
+    key: null
+    fk_note: null
+  - name: VIOLATION_DESCRIPTION
+    data_type: VARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung vi phạm phát hiện"
+    key: null
+    fk_note: null
+  - name: VIOLATION_SEVERITY
+    data_type: NUMBER(10)
+    description: "Mức độ vi phạm: 1=Nhẹ, 2=Trung bình, 3=Nghiêm trọng"
+    key: null
+    fk_note: null
+  - name: REPORT_YEAR
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: PROCESSING_DATE
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: PROCESSOR_ID
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người thực hiện xử lý"
+    key: FK
+    fk_note: "FK → SYS_USER.ID"
+  - name: THRESHOLD
+    data_type: NUMBER(38,2)
+    description: "Ngưỡng vi phạm tại thời điểm phát hiện cảnh báo"
+    key: null
+    fk_note: null
+  - name: ALERT_CONDITION_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ENTITY_TYPE
+    data_type: NVARCHAR2(32)
+    description: "Loai doi tuong vi pham: CTCK = Cong ty chung khoan; CN_NUOC_NGOAI = Chi nhanh CTCK nuoc ngoai; VPDD_NUOC_NGOAI = Van phong dai dien CTCK nuoc ngoai"
+    key: null
+    fk_note: null
+  - name: ENTITY_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ALERT_RUN_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → ALERT_RUN.ID"

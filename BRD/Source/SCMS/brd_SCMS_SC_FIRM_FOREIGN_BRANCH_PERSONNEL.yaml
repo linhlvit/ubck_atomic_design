@@ -1,0 +1,166 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_FOREIGN_BRANCH_PERSONNEL
+brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_PERSONNEL
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: BUSINESS_DIVISION
+    data_type: VARCHAR2(255)
+    description: "Bộ phận nghiệp vụ phụ trách"
+    key: null
+    fk_note: null
+  - name: NATIONAL_ID
+    data_type: VARCHAR2(20)
+    description: "Số CCCD/CMND/Hộ chiếu"
+    key: null
+    fk_note: null
+  - name: POSITION_JSON
+    data_type: CLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: SECURITIES_LICENSE
+    data_type: NUMBER(1)
+    description: "Cờ có chứng chỉ hành nghề chứng khoán: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: SC_FIRM_FOREIGN_BRANCH_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_FOREIGN_BRANCH.ID"
+  - name: DISCLOSURE_REPRESENTATIVE
+    data_type: NUMBER(1)
+    description: "Cờ là người đại diện công bố thông tin (ĐDCBTT): 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: VARCHAR2(1000)
+    description: "Địa chỉ trụ sở chính/văn phòng"
+    key: null
+    fk_note: null
+  - name: PERMANENT_ADDRESS
+    data_type: VARCHAR2(1000)
+    description: "Địa chỉ thường trú theo hộ khẩu"
+    key: null
+    fk_note: null
+  - name: PHONE
+    data_type: VARCHAR2(50)
+    description: "Số điện thoại liên hệ"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(200)
+    description: "Địa chỉ email liên hệ"
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_EMAIL
+    data_type: VARCHAR2(255)
+    description: "Email dùng để nhận thông báo CBTT"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: CLOB
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: GENDER
+    data_type: VARCHAR2(10)
+    description: "Giới tính: 1=Nam, 2=Nữ"
+    key: null
+    fk_note: null
+  - name: FULL_NAME
+    data_type: VARCHAR2(200)
+    description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức)"
+    key: null
+    fk_note: null
+  - name: WORK_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu làm việc tại CTCK"
+    key: null
+    fk_note: null
+  - name: APPOINTMENT_DATE
+    data_type: DATE
+    description: "Ngày bổ nhiệm vào chức vụ"
+    key: null
+    fk_note: null
+  - name: SECURITIES_LICENSE_DATE
+    data_type: DATE
+    description: "Ngày cấp chứng chỉ hành nghề chứng khoán"
+    key: null
+    fk_note: null
+  - name: ID_ISSUED_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: DISMISSAL_DATE
+    data_type: DATE
+    description: "Ngày miễn nhiệm khỏi chức vụ"
+    key: null
+    fk_note: null
+  - name: RESIGNATION_DATE
+    data_type: DATE
+    description: "Ngày nghỉ việc/thôi việc"
+    key: null
+    fk_note: null
+  - name: DATE_OF_BIRTH
+    data_type: DATE
+    description: "Ngày sinh (dd/mm/yyyy)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: BRANCH_HEAD_USER_ID
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ISSUE_PLACE
+    data_type: VARCHAR2(255)
+    description: "Nơi cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: DEPARTMENT
+    data_type: VARCHAR2(255)
+    description: "Phòng/Ban công tác"
+    key: null
+    fk_note: null
+  - name: NATIONALITY
+    data_type: VARCHAR2(200)
+    description: "Quốc tịch (mã hoặc tên quốc gia)"
+    key: null
+    fk_note: null
+  - name: SECURITIES_LICENSE_NUMBER
+    data_type: VARCHAR2(100)
+    description: "Số chứng chỉ hành nghề chứng khoán (CCHN)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai ban ghi nhan su chi nhanh NN: 1 = Duong nhiem; 0 = Mien nhiem"
+    key: null
+    fk_note: null
+  - name: WORK_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai lam viec hien tai: 1 = Duong nhiem; 2 = Mien nhiem; 3 = Da nghi viec"
+    key: null
+    fk_note: null
+  - name: VERIFICATION_STATUS
+    data_type: VARCHAR2(50)
+    description: "Trang thai xac minh chung chi hanh nghe: CHO_XAC_MINH = Cho xac minh; KHOP = Khop (da xac minh); KHONG_KHOP = Khong khop"
+    key: null
+    fk_note: null

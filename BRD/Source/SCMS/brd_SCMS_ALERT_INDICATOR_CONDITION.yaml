@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: ALERT_INDICATOR_CONDITION
+brd_ref: BRD-SRC-SCMS-ALERT_INDICATOR_CONDITION
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: ALERT_INDICATOR_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → ALERT_INDICATOR.ID"
+  - name: CONDITION
+    data_type: NVARCHAR2(50)
+    description: "Điều kiện áp dụng (biểu thức logic)"
+    key: null
+    fk_note: null
+  - name: GIA_TRI_SO_SANH
+    data_type: NUMBER
+    description: "Cột gia_tri_so_sanh — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(2000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai dieu kien canh bao: 0 = Khong su dung; 1 = Dang su dung"
+    key: null
+    fk_note: null
+  - name: CONDITION_NAME
+    data_type: NVARCHAR2(500)
+    description: ""
+    key: null
+    fk_note: null
+  - name: UPPER_CONDITION
+    data_type: VARCHAR2(50 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SCORE
+    data_type: NUMBER(38,2)
+    description: "Điểm số đánh giá"
+    key: null
+    fk_note: null
+  - name: ITEM_VALUE
+    data_type: NUMBER(38,2)
+    description: ""
+    key: null
+    fk_note: null
+  - name: VALUE_2
+    data_type: NUMBER(38,2)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(500)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: SEVERITY
+    data_type: NUMBER(10)
+    description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao"
+    key: null
+    fk_note: null
+  - name: NGAY_SUA
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NGUOI_SUA_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: OPERATOR
+    data_type: VARCHAR2(20)
+    description: "Toán tử so sánh (>, <, =, >=, <=, !=)"
+    key: null
+    fk_note: null
+  - name: FREQUENCY
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: COMPARISON_VALUE_TYPE
+    data_type: NVARCHAR2(20)
+    description: "Loai gia tri so sanh: FIXED = Gia tri co dinh; PERCENTAGE = Ty le phan tram; FORMULA = Cong thuc tinh toan"
+    key: null
+    fk_note: null
+  - name: OPERATOR_2
+    data_type: NVARCHAR2(20)
+    description: ""
+    key: null
+    fk_note: null

@@ -1,0 +1,406 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_INFO
+brd_ref: BRD-SRC-SCMS-SC_FIRM_INFO
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: CODE
+    data_type: NVARCHAR2(50)
+    description: "Mã định danh (mã viết tắt, mã nghiệp vụ)"
+    key: null
+    fk_note: null
+  - name: SHORT_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên viết tắt (VD: SSI, VPS, MBS)"
+    key: null
+    fk_note: null
+  - name: NAME_VI
+    data_type: NVARCHAR2(500)
+    description: "Tên đầy đủ bằng tiếng Việt"
+    key: null
+    fk_note: null
+  - name: NAME_EN
+    data_type: NVARCHAR2(500)
+    description: "Tên đầy đủ bằng tiếng Anh"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: NVARCHAR2(1000)
+    description: "Địa chỉ trụ sở chính/văn phòng"
+    key: null
+    fk_note: null
+  - name: PROVINCE_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_province: Tỉnh/thành phố"
+    key: FK
+    fk_note: "FK → CAT_PROVINCE.ID"
+  - name: DISTRICT_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên quận/huyện (lưu trực tiếp)"
+    key: null
+    fk_note: null
+  - name: WARD_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên phường/xã (lưu trực tiếp)"
+    key: null
+    fk_note: null
+  - name: COUNTRY_ID
+    data_type: NUMBER(10)
+    description: "FK -> danh mục quốc gia"
+    key: FK
+    fk_note: null
+  - name: PHONE
+    data_type: NVARCHAR2(100)
+    description: "Số điện thoại liên hệ"
+    key: null
+    fk_note: null
+  - name: FAX
+    data_type: NVARCHAR2(50)
+    description: "Số fax"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: NVARCHAR2(100)
+    description: "Địa chỉ email liên hệ"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: NVARCHAR2(250)
+    description: "Địa chỉ website"
+    key: null
+    fk_note: null
+  - name: CHARTER_CAPITAL
+    data_type: NUMBER(38)
+    description: "Vốn điều lệ (đơn vị: đồng)"
+    key: null
+    fk_note: null
+  - name: TAX_CODE
+    data_type: NVARCHAR2(20)
+    description: "Mã số thuế doanh nghiệp"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LICENSE_NUMBER
+    data_type: NVARCHAR2(30)
+    description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LICENSE_DATE
+    data_type: DATE
+    description: "Ngày cấp giấy phép kinh doanh/thành lập lần đầu"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LICENSE_ISSUER
+    data_type: NVARCHAR2(250)
+    description: "Nơi cấp giấy phép kinh doanh (mặc định: UBCKNN)"
+    key: null
+    fk_note: null
+  - name: COMPANY_TYPE_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_company_type: Loại hình doanh nghiệp"
+    key: FK
+    fk_note: "FK → CAT_COMPANY_TYPE.ID"
+  - name: TOTAL_SHARES
+    data_type: NUMBER(38)
+    description: "Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá 10.000đ)"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LINES
+    data_type: NVARCHAR2(100)
+    description: "Nghiệp vụ kinh doanh chứng khoán được cấp phép"
+    key: null
+    fk_note: null
+  - name: LISTED
+    data_type: NUMBER(1)
+    description: "Co niem yet: 1 = Co niem yet tren san; 0 = Khong niem yet"
+    key: null
+    fk_note: null
+  - name: LISTING_EXCHANGE
+    data_type: NVARCHAR2(20)
+    description: "Sàn niêm yết (HOSE, HNX, UPCOM)"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE
+    data_type: NVARCHAR2(20)
+    description: "Mã chứng khoán niêm yết"
+    key: null
+    fk_note: null
+  - name: SC_FIRM_REGISTRATION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: DECISION_NUMBER
+    data_type: NVARCHAR2(30)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LICENSE_EXPIRY_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: TERMINATION_DECISION_NUMBER
+    data_type: NVARCHAR2(30)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai ho so CTCK - FK toi bang CAT_SC_FIRM_STATUS (cac gia tri do nguoi dung dinh nghia, VD: Dang hoat dong, Tam ngung, Dinh chi)"
+    key: null
+    fk_note: null
+  - name: PROVISIONAL
+    data_type: NUMBER(1)
+    description: "Co ban nhap: 1 = Ban nhap; 0 = Chinh thuc"
+    key: null
+    fk_note: null
+  - name: ENTERPRISE_CODE
+    data_type: NVARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ELECTRONIC_TRADING_STATUS
+    data_type: NVARCHAR2(20)
+    description: "Trang thai giao dich dien tu: HOAT_DONG = Dang hoat dong; TAM_NGUNG = Tam ngung; DINH_CHI = Dinh chi hoat dong"
+    key: null
+    fk_note: null
+  - name: ELECTRONIC_TRADING_DECISION_NUMBER
+    data_type: NVARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ELECTRONIC_TRADING_DECISION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: ELECTRONIC_TRADING_REASON
+    data_type: NVARCHAR2(500)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(500)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: NVARCHAR2(2000)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: ADDITIONAL_BUSINESS_LINES
+    data_type: NVARCHAR2(100)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DISTRICT_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_district: Quận/huyện"
+    key: FK
+    fk_note: "FK → CAT_DISTRICT.ID"
+  - name: WARD_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_ward: Phường/xã"
+    key: FK
+    fk_note: "FK → CAT_WARD.ID"
+  - name: CERTIFICATE_NUMBER
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LISTING_DATE
+    data_type: DATE
+    description: "Ngày niêm yết trên sàn giao dịch"
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_CERT_NUMBER
+    data_type: NVARCHAR2(500)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_CERT_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: PUBLIC_COMPANY_REGISTRATION_DATE
+    data_type: DATE
+    description: "Ngày đăng ký là công ty đại chúng với UBCKNN"
+    key: null
+    fk_note: null
+  - name: PUBLIC_COMPANY_DECISION_NUMBER
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SYNCED_FROM_ADMIN_PROC
+    data_type: NUMBER(1)
+    description: "Co dong bo tu TTHC (Thu tuc hanh chinh): 1 = Da dong bo; 0 = Chua dong bo"
+    key: null
+    fk_note: null
+  - name: AMENDMENT_DECLARATION
+    data_type: NUMBER(1)
+    description: "Co khai bo sung/sua doi: 1 = Co van ban sua doi; 0 = Khong co"
+    key: null
+    fk_note: null
+  - name: AMENDMENT_DOCUMENT_NUMBER
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: AMENDMENT_EFFECTIVE_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: AMENDMENT_DOCUMENT_FILE
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: PUBLIC_COMPANY
+    data_type: NUMBER(1)
+    description: "Co cong ty dai chung: 1 = La cong ty dai chung; 0 = Khong phai"
+    key: null
+    fk_note: null
+  - name: EVENT_TYPE_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
+    key: FK
+    fk_note: "FK → CAT_EVENT_TYPE.ID"
+  - name: FOUNDATION_LICENSE_FILE
+    data_type: VARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_LIMIT_TO_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_LIMIT_FROM_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: FOREIGN_INVESTOR_OWNERSHIP_LIMIT
+    data_type: NUMBER(9,4)
+    description: ""
+    key: null
+    fk_note: null
+  - name: BUSINESS_LICENSE
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FINANCIAL_REPORT_TYPE
+    data_type: VARCHAR2(50)
+    description: "Loai bao cao tai chinh: RIENG_LE = Rieu le; HOP_NHAT = Hop nhat (nhieu gia tri phan cach boi dau phay)"
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBER_CODE
+    data_type: VARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBER_CERT_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: FOUNDATION_LICENSE_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: OFFICIAL_OPERATION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: AMENDMENT_EXPIRY_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: PUBLIC_COMPANY_END_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: FISCAL_YEAR_END_DATE
+    data_type: VARCHAR2(5)
+    description: ""
+    key: null
+    fk_note: null
+  - name: AMENDMENT_DOCUMENT_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: FOUNDATION_LICENSE_ISSUER
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBER_CERT_NUMBER
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FOUNDATION_LICENSE_NUMBER
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: PUBLIC_COMPANY_END_DECISION_NUMBER
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FORM_DATA_JSON
+    data_type: NCLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBERSHIP_REVOCATION_DECISION
+    data_type: VARCHAR2(200 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBERSHIP_REVOCATION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null

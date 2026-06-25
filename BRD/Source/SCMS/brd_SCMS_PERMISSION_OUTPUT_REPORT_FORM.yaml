@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: PERMISSION_OUTPUT_REPORT_FORM
+brd_ref: BRD-SRC-SCMS-PERMISSION_OUTPUT_REPORT_FORM
+columns:
+  - name: ID
+    data_type: NUMBER
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: PERMISSION_OUTPUT_REPORT_ID
+    data_type: NUMBER
+    description: ""
+    key: null
+    fk_note: "FK suy luận → PERMISSION_OUTPUT_REPORT.ID"
+  - name: FORM_REPORT_ID
+    data_type: NUMBER
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"

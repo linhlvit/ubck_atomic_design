@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: OUTPUT_REPORT_EXTRACTION_VALUE
+brd_ref: BRD-SRC-SCMS-OUTPUT_REPORT_EXTRACTION_VALUE
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: OUTPUT_REPORT_EXTRACTION_ID
+    data_type: NUMBER(10)
+    description: "FK -> output_report_extraction: Cấu hình khai thác báo cáo liên quan"
+    key: FK
+    fk_note: "FK → OUTPUT_REPORT_EXTRACTION.ID"
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: FORM_SHEET_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET.ID"
+  - name: FORM_SHEET_ROW_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_ROW.ID"
+  - name: FORM_SHEET_COLUMN_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_COLUMN.ID"
+  - name: FORM_SHEET_CELL_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_CELL.ID"
+  - name: ROW_ID
+    data_type: NUMBER
+    description: "Số thứ tự dòng dữ liệu trong báo cáo động"
+    key: null
+    fk_note: null
+  - name: ITEM_VALUE
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: AUDITED_REPORT_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD
+    data_type: NVARCHAR2(500)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: RESULT
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: EXPORT_FILE_PATH
+    data_type: VARCHAR2(500)
+    description: "Đường dẫn file đã xuất"
+    key: null
+    fk_note: null
+  - name: ERROR_MESSAGE
+    data_type: VARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: USER_ID
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người dùng liên quan"
+    key: FK
+    fk_note: "FK → SYS_USER.ID"
+  - name: RECORD_COUNT
+    data_type: NUMBER(10)
+    description: "Số bản ghi trong kết quả báo cáo"
+    key: null
+    fk_note: null
+  - name: INPUT_PARAMETER
+    data_type: VARCHAR2(4000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: EXECUTION_TIME
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null

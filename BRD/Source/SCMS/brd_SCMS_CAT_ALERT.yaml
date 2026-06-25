@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: CAT_ALERT
+brd_ref: BRD-SRC-SCMS-CAT_ALERT
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: FORM_SHEET_CELL_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_CELL.ID"
+  - name: ALERT_CODE
+    data_type: NVARCHAR2(200)
+    description: "Mã chỉ tiêu cảnh báo"
+    key: null
+    fk_note: null
+  - name: ALERT_NAME
+    data_type: NVARCHAR2(2000)
+    description: "Tên chỉ tiêu cảnh báo"
+    key: null
+    fk_note: null
+  - name: FORMULA
+    data_type: NVARCHAR2(1020)
+    description: "Công thức tính toán giá trị ô"
+    key: null
+    fk_note: null
+  - name: CONDITION
+    data_type: NVARCHAR2(200)
+    description: "Điều kiện áp dụng (biểu thức logic)"
+    key: null
+    fk_note: null
+  - name: ITEM_VALUE
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: HIERARCHY_LEVEL
+    data_type: NUMBER(4)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu kỳ báo cáo hoặc hiệu lực"
+    key: null
+    fk_note: null
+  - name: END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: DELETED
+    data_type: NUMBER(1)
+    description: "Cờ xóa mềm: 0=Chưa xóa (đang sử dụng), 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER
+    description: "Trang thai ban ghi danh muc canh bao: 1 = Dang su dung; 0 = Ngung su dung"
+    key: null
+    fk_note: null

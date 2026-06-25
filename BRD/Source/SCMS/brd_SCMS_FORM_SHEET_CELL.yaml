@@ -1,0 +1,226 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_SHEET_CELL
+brd_ref: BRD-SRC-SCMS-FORM_SHEET_CELL
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: FORM_SHEET_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET.ID"
+  - name: INDICATOR_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FORM_SHEET_COLUMN_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_COLUMN.ID"
+  - name: FORM_SHEET_ROW_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_ROW.ID"
+  - name: FORM_SHEET_CELL_INPUT_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FORMAT
+    data_type: VARCHAR2(100)
+    description: "Định dạng hiển thị/in ấn của ô (VD: #,##0; dd/MM/yyyy)"
+    key: null
+    fk_note: null
+  - name: UNIT
+    data_type: NUMBER
+    description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)"
+    key: null
+    fk_note: null
+  - name: DEFAULT_VALUE
+    data_type: NUMBER
+    description: "Giá trị mặc định của ô khi khởi tạo"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: NUMBER(1)
+    description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER
+    description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
+    key: null
+    fk_note: null
+  - name: LABEL
+    data_type: NVARCHAR2(2000)
+    description: "Nhãn hiển thị của ô trong biểu mẫu"
+    key: null
+    fk_note: null
+  - name: STYLE_FORMAT
+    data_type: NVARCHAR2(20)
+    description: "Dinh dang chu ky tu: ID = In dam; IN = In nghieng; IH = In hoa; GC = Gach chan (co the ket hop)"
+    key: null
+    fk_note: null
+  - name: COLOR
+    data_type: NVARCHAR2(20)
+    description: "Màu chữ (mã màu HEX)"
+    key: null
+    fk_note: null
+  - name: ALIGNMENT
+    data_type: NVARCHAR2(20)
+    description: "Canh lề văn bản (LEFT/CENTER/RIGHT)"
+    key: null
+    fk_note: null
+  - name: BOLD
+    data_type: NUMBER
+    description: "Cờ in đậm: 1=In đậm, 0=Thường"
+    key: null
+    fk_note: null
+  - name: ITALIC
+    data_type: NUMBER
+    description: "Cờ in nghiêng: 1=In nghiêng, 0=Thường"
+    key: null
+    fk_note: null
+  - name: UPPERCASE
+    data_type: NUMBER
+    description: "Cờ bắt buộc chữ hoa: 1=Bật, 0=Tắt"
+    key: null
+    fk_note: null
+  - name: UNDERLINE
+    data_type: NUMBER
+    description: "Cờ gạch chân: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: CHARACTER_FORMAT
+    data_type: NVARCHAR2(20)
+    description: "Dinh dang ky tu dac biet cho o (VD: TENTIENGVIET = Hien thi ten tieng Viet cua doi tuong)"
+    key: null
+    fk_note: null
+  - name: FILTER_ID
+    data_type: NVARCHAR2(100)
+    description: "Filter theo d?nh d?ng ky t? la T?ng theo tr?ng thai/T?ng theo nghi?p v?"
+    key: null
+    fk_note: null
+  - name: SUM_FORMULA
+    data_type: CLOB
+    description: "Công thức tổng hợp của ô (tính tổng nhiều ô)"
+    key: null
+    fk_note: null
+  - name: FORMULA_TEXT
+    data_type: CLOB
+    description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng"
+    key: null
+    fk_note: null
+  - name: FORMULA
+    data_type: CLOB
+    description: "Công thức tính toán giá trị ô"
+    key: null
+    fk_note: null
+  - name: REQUIRED
+    data_type: NUMBER(1)
+    description: "Cờ bắt buộc: 1=Bắt buộc nhập, 0=Không bắt buộc"
+    key: null
+    fk_note: null
+  - name: TEMPLATE_FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "Bi?u m?u bao cao ID d?i v?i cac d?nh d?ng ky t? la ngay g?i bao cao"
+    key: null
+    fk_note: null
+  - name: EDITABLE
+    data_type: NUMBER(1)
+    description: "Cờ cho phép nhập liệu: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: COL_SPAN
+    data_type: NUMBER(10)
+    description: "Số cột được gộp (colspan trong HTML/Excel)"
+    key: null
+    fk_note: null
+  - name: DROPDOWN_DATA
+    data_type: VARCHAR2(2000)
+    description: "Dữ liệu tùy chọn cho dropdown (JSON hoặc danh sách chuỗi)"
+    key: null
+    fk_note: null
+  - name: GIA_TRI_MAC_DINH
+    data_type: VARCHAR2(1000)
+    description: "Cột gia_tri_mac_dinh — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: MAX_VALUE
+    data_type: FLOAT
+    description: "Giá trị tối đa được phép nhập"
+    key: null
+    fk_note: null
+  - name: MIN_VALUE
+    data_type: FLOAT
+    description: "Giá trị tối thiểu được phép nhập"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: VARCHAR2(50)
+    description: "Kieu du lieu o: TEXT = Van ban; NUMBER = So; DATE = Ngay thang; BOOLEAN = Co/Khong; SELECT = Chon tu danh sach; FORMULA = Cong thuc tinh toan"
+    key: null
+    fk_note: null
+  - name: CELL_CODE
+    data_type: VARCHAR2(50)
+    description: "Mã định danh ô trong sheet (VD: A1, B2)"
+    key: null
+    fk_note: null
+  - name: NGAY_SUA
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: ROW_SPAN
+    data_type: NUMBER(10)
+    description: "Số hàng được gộp (rowspan trong HTML/Excel)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai o (cell): 1 = Dang su dung; 0 = Khong su dung"
+    key: null
+    fk_note: null

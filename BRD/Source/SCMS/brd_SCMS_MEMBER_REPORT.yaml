@@ -1,0 +1,241 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: MEMBER_REPORT
+brd_ref: BRD-SRC-SCMS-MEMBER_REPORT
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: USER_ID
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người dùng liên quan"
+    key: FK
+    fk_note: "FK → SYS_USER.ID"
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: FORM_PERIODIC_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report_periodic: Lịch kỳ biểu mẫu liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT_PERIODIC.ID"
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: SUBMISSION_DEADLINE_AT
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: EXTENSION_DEADLINE_AT
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SUBMISSION_TIME
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: REASON
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: RESUBMISSION_REASON
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: NVARCHAR2(2000)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: DATA_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1)
+    description: "Co xoa mem: 0 = Chua xoa (dang su dung); 1 = Da xoa"
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: DATE
+    description: "Thời điểm gửi thông báo/tin nhắn"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(2)
+    description: "Trang thai bao cao thanh vien: 1 = Chua gui; 2 = Da gui; 3 = Gui muon; 4 = Bi huy; 5 = Yeu cau gui lai; 6 = Yeu cau huy"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER
+    description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
+    key: null
+    fk_note: null
+  - name: AUDIT_FIRM_ID
+    data_type: NUMBER(10)
+    description: "FK -> audit_firm: Công ty kiểm toán"
+    key: FK
+    fk_note: "FK → AUDIT_FIRM.ID"
+  - name: AUDITOR_ID
+    data_type: NUMBER(10)
+    description: "Ki?m toan vien"
+    key: null
+    fk_note: "FK suy luận → AUDITOR.ID"
+  - name: ALERT_YEAR
+    data_type: VARCHAR2(6 BYTE)
+    description: "Năm kiểm tra cảnh báo"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD
+    data_type: NVARCHAR2(20)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD_VALUE
+    data_type: NVARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SUMMARY
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DELETED_AT
+    data_type: DATE
+    description: "Thời điểm xóa bản ghi"
+    key: null
+    fk_note: null
+  - name: REPORT_LOCKED
+    data_type: NUMBER(1)
+    description: "Co khoa bao cao: 0 = Khong khoa (co the chinh sua); 1 = Da khoa (chi doc)"
+    key: null
+    fk_note: null
+  - name: AUDIT_STATUS
+    data_type: NVARCHAR2(50)
+    description: "Trang thai kiem toan bao cao tai chinh: CHUA_KIEM_TOAN = Chua kiem toan; DA_KIEM_TOAN = Da kiem toan; DANG_KIEM_TOAN = Dang kiem toan"
+    key: null
+    fk_note: null
+  - name: SUBMISSION_REPORT_TYPE
+    data_type: VARCHAR2(5 BYTE)
+    description: "Phan loai bao cao: DK = Bao cao dinh ky; BT = Bao cao bat thuong; TYC = Bao cao theo yeu cau; K = Bao cao khac"
+    key: null
+    fk_note: null
+  - name: REPORT_CANCELLED
+    data_type: NUMBER(2)
+    description: "Co huy bao cao: 1 = Bi huy (da huy); 2 = De nghi huy (cho xu ly)"
+    key: null
+    fk_note: null
+  - name: REPORT_NAME
+    data_type: NVARCHAR2(2000)
+    description: "Tên báo cáo/biểu mẫu"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(2000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: EXTENSION_REASON
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: REPORT_FILE_PATH
+    data_type: NVARCHAR2(2000)
+    description: "Đường dẫn file báo cáo chính"
+    key: null
+    fk_note: null
+  - name: VALID_REPORT_SUBMISSION
+    data_type: NUMBER(1)
+    description: "Co hop le khi nop bao cao: 1 = Hop le; 0 = Khong hop le (xuat PDF)"
+    key: null
+    fk_note: null
+  - name: LEGACY_ROWTEXT
+    data_type: VARCHAR2(40 BYTE)
+    description: "ROWID cua RPTLOGS"
+    key: null
+    fk_note: null
+  - name: CONVERTED
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_LOG_ID
+    data_type: VARCHAR2(40 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_FILENAME
+    data_type: VARCHAR2(1000 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_FILEDATA
+    data_type: BLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: PERIOD
+    data_type: NUMBER(10)
+    description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)"
+    key: null
+    fk_note: null
+  - name: REPORT_YEAR
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: APPROVED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm phê duyệt"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: APPROVED_BY
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người phê duyệt/chấp thuận"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: EVENT_TYPE_ID
+    data_type: NUMBER(19)
+    description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
+    key: FK
+    fk_note: "FK → CAT_EVENT_TYPE.ID"

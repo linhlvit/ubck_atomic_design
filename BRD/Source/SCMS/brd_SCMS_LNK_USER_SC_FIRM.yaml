@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: LNK_USER_SC_FIRM
+brd_ref: BRD-SRC-SCMS-LNK_USER_SC_FIRM
+columns:
+  - name: USER_ID
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người dùng liên quan"
+    key: FK
+    fk_note: "FK → SYS_USER.ID"
+  - name: SC_FIRM_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"

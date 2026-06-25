@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: SC_FIRM_SHAREHOLDER_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_shareholder: Cổ đông CTCK liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_SHAREHOLDER.ID"
+  - name: REPRESENTATIVE_NAME
+    data_type: NVARCHAR2(250)
+    description: ""
+    key: null
+    fk_note: null
+  - name: POSITION
+    data_type: NVARCHAR2(100)
+    description: "Chức vụ (tên chức vụ)"
+    key: null
+    fk_note: null
+  - name: ID_NUMBER
+    data_type: NVARCHAR2(30)
+    description: "Số CMND (định danh cũ)"
+    key: null
+    fk_note: null
+  - name: ISSUE_DATE
+    data_type: DATE
+    description: "Ngày cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: ISSUE_PLACE
+    data_type: NVARCHAR2(250)
+    description: "Nơi cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: SHARES_COUNT
+    data_type: NUMBER(38)
+    description: ""
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_RATIO
+    data_type: NUMBER(10,4)
+    description: "Tỷ lệ sở hữu vốn (%)"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: NVARCHAR2(1000)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null

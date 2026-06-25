@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: BANK_PERIODIC_REPORT_HISTORY
+brd_ref: BRD-SRC-SCMS-BANK_PERIODIC_REPORT_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: BANK_PERIODIC_REPORT_ID
+    data_type: NUMBER(19)
+    description: "FK -> bank_periodic_report: Báo cáo định kỳ ngân hàng liên quan"
+    key: FK
+    fk_note: "FK → BANK_PERIODIC_REPORT.ID"
+  - name: PERFORMED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm thực hiện"
+    key: null
+    fk_note: null
+  - name: PERFORMER_NAME
+    data_type: NVARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ACTION
+    data_type: NVARCHAR2(100)
+    description: "Tên hành động/thao tác thực hiện"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai lich su bao cao ngan hang (tham chieu BANK_PERIODIC_REPORT.RECORD_STATUS)"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NCLOB
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: DATA_FILE_PATH
+    data_type: NCLOB
+    description: "Cột data_file_path — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null

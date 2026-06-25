@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SSC_NOTIFICATION_RECIPIENT
+brd_ref: BRD-SRC-SCMS-SSC_NOTIFICATION_RECIPIENT
+columns:
+  - name: ID
+    data_type: NUMBER
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: NOTIFICATION_ID
+    data_type: NUMBER
+    description: ""
+    key: null
+    fk_note: "FK suy luận → NOTIFICATION.ID"
+  - name: RECIPIENT_ID
+    data_type: NUMBER
+    description: "FK -> sys_user: Người nhận thông báo/tin nhắn"
+    key: FK
+    fk_note: "FK → SYS_USER.ID"

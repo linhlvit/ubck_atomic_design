@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: DISCLOSURE_SHAREHOLDER
+brd_ref: BRD-SRC-SCMS-DISCLOSURE_SHAREHOLDER
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: TRANSACTION_TYPE_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_DATE
+    data_type: TIMESTAMP(6)
+    description: "Ngày công bố thông tin"
+    key: null
+    fk_note: null
+  - name: CONTENT
+    data_type: NVARCHAR2(1000)
+    description: "Nội dung thông báo/tin nhắn/văn bản"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: VARCHAR2(500)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai ban ghi cong bo co dong: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
+    key: null
+    fk_note: null
+  - name: TITLE
+    data_type: VARCHAR2(500)
+    description: "Tiêu đề thông báo/tin nhắn/báo cáo"
+    key: null
+    fk_note: null
+  - name: SUMMARY
+    data_type: VARCHAR2(2000)
+    description: "Tóm tắt nội dung trích yếu"
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm gửi thông báo/tin nhắn"
+    key: null
+    fk_note: null
+  - name: LEGACY_FILENAME
+    data_type: VARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_FILEDATA
+    data_type: BLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_ROWTEXT
+    data_type: VARCHAR2(40 BYTE)
+    description: ""
+    key: null
+    fk_note: null

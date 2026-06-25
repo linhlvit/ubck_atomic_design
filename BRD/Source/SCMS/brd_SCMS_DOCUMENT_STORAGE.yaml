@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: DOCUMENT_STORAGE
+brd_ref: BRD-SRC-SCMS-DOCUMENT_STORAGE
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: COMPANY_NAME
+    data_type: NVARCHAR2(1000)
+    description: "Tên công ty/tổ chức"
+    key: null
+    fk_note: null
+  - name: FOLDER_ID
+    data_type: NUMBER(10)
+    description: "FK -> document_folder: Thư mục chứa tài liệu"
+    key: FK
+    fk_note: "FK → DOCUMENT_FOLDER.ID"
+  - name: ATTACHMENT_PATH
+    data_type: VARCHAR2(500)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: VARCHAR2(4000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: ENTRY_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null

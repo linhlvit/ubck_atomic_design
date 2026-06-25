@@ -1,0 +1,156 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_SHEET
+brd_ref: BRD-SRC-SCMS-FORM_SHEET
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: SHEET_CODE
+    data_type: NVARCHAR2(200)
+    description: "Mã định danh sheet trong biểu mẫu"
+    key: null
+    fk_note: null
+  - name: SHEET_NAME
+    data_type: NVARCHAR2(1000)
+    description: "Tên sheet trong biểu mẫu báo cáo"
+    key: null
+    fk_note: null
+  - name: MAIN_TITLE
+    data_type: VARCHAR2(4000)
+    description: "Tiêu đề chính của sheet"
+    key: null
+    fk_note: null
+  - name: SUB_TITLE
+    data_type: VARCHAR2(4000)
+    description: "Tiêu đề phụ của sheet"
+    key: null
+    fk_note: null
+  - name: COVER_PAGE
+    data_type: NUMBER(1)
+    description: "Cờ là trang bìa: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: PAPER_SIZE
+    data_type: NVARCHAR2(20)
+    description: "Khổ giấy in (A4, A3)"
+    key: null
+    fk_note: null
+  - name: PAPER_ORIENTATION
+    data_type: NVARCHAR2(20)
+    description: "Chiều giấy in (Dọc/Ngang)"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(4)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: VARCHAR2(4000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: SIGNATORY
+    data_type: VARCHAR2(4000)
+    description: "Người ký/vị trí ký trên báo cáo in"
+    key: null
+    fk_note: null
+  - name: REPORT_STYLE
+    data_type: NVARCHAR2(20)
+    description: "Kieu bo tri sheet: H = Hang (theo hang); C = Cot (theo cot); HC = Hang-Cot; TH = Tong hop"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: NUMBER(1)
+    description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(2)
+    description: "Trang thai sheet bieu mau: 1 = Dang su dung; 0 = Khong su dung"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: SUB_TITLE_POSITION
+    data_type: NVARCHAR2(20)
+    description: "Vi tri hien thi tieu de phu: TREN = Tren tieu de chinh; DUOI = Duoi tieu de chinh"
+    key: null
+    fk_note: null
+  - name: SUB_TITLE_ENABLED
+    data_type: NVARCHAR2(20)
+    description: "Vi tri can le tieu de phu: GIUA = Can giua; TRAI = Can trai; PHAI = Can phai"
+    key: null
+    fk_note: null
+  - name: FORM_SHEET_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET.ID"
+  - name: LEGACY_SHEET_CODE
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: COMPANY_INFO
+    data_type: VARCHAR2(4000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NATIONAL_HEADING
+    data_type: VARCHAR2(4000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: RPTDETAILID
+    data_type: VARCHAR2(20 BYTE)
+    description: "ID sheet he thong cu"
+    key: null
+    fk_note: null
+  - name: MACOTSYNC
+    data_type: VARCHAR2(2000 BYTE)
+    description: "Ma cot la se su dung de sync"
+    key: null
+    fk_note: null
+  - name: RECORD_TYPE
+    data_type: NUMBER(2)
+    description: "Loai sheet: DATA = Sheet du lieu chinh; SUMMARY = Sheet tong hop; HEADER = Sheet tieu de"
+    key: null
+    fk_note: null
+  - name: COLUMNORDER
+    data_type: VARCHAR2(500 BYTE)
+    description: "Order theo cot"
+    key: null
+    fk_note: null
+  - name: START_ROW
+    data_type: NUMBER(3)
+    description: "Thu tu Hang bat dau dem"
+    key: null
+    fk_note: null
+  - name: MACOTSTT
+    data_type: VARCHAR2(20 BYTE)
+    description: "Ma cot la cot tinh theo STT"
+    key: null
+    fk_note: null

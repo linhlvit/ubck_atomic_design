@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_ADHOC_REPORT_HISTORY
+brd_ref: BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: REPORT_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_REPORT.ID"
+  - name: DATA_FILE_PATH
+    data_type: NCLOB
+    description: "Cột data_file_path — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NCLOB
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: PERFORMER_NAME
+    data_type: VARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ACTION
+    data_type: VARCHAR2(100)
+    description: "Tên hành động/thao tác thực hiện"
+    key: null
+    fk_note: null
+  - name: PERFORMED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm thực hiện"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai lich su bao cao dot xuat (tham chieu SC_FIRM_ADHOC_REPORT.RECORD_STATUS): 0 = Chua gui; 1 = Gui dung han; 2 = Gui muon; 3 = Bi huy"
+    key: null
+    fk_note: null

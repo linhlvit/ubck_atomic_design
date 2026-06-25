@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_INSIDER_RELATION_HISTORY
+brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: CHANGE_TYPE
+    data_type: VARCHAR2(50)
+    description: "Loai thay doi lich su nguoi noi bo: TRANG_THAI = Thay doi trang thai; TY_LE_SO_HUU = Thay doi ty le so huu; THONG_TIN = Thay doi thong tin co ban"
+    key: null
+    fk_note: null
+  - name: RECORDED_AT
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: INSIDER_RELATION_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CONTENT
+    data_type: NCLOB
+    description: "Nội dung thông báo/tin nhắn/văn bản"
+    key: null
+    fk_note: null

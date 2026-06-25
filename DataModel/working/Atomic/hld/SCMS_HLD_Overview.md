@@ -35,7 +35,7 @@
 | 2 | Involved Party | [Involved Party] Representative Office | Organization | SC_FIRM_FOREIGN_REP_OFFICE | Update | Văn phòng đại diện CTCK nước ngoài tại Việt Nam | Securities Company Foreign Representative Office | Relative | (1) Representative Office — BCV: cùng định nghĩa. (2) Bảng: CODE, NAME, FK→SC_FIRM_INFO, PARENT_COMPANY_NAME/COUNTRY, SCOPE_OF_ACTIVITY, STATUS, ESTABLISH_DATE. (3) Representative Office khớp. |
 | 2 | Involved Party | [Involved Party] Representative Office | Organization | SC_FIRM_FOREIGN_REP_OFFICE_VN | Update | Văn phòng đại diện CTCK nước ngoài đã được cấp giấy phép VN | Securities Company Foreign Representative Office VN | Relative | (1) Representative Office — BCV: cùng định nghĩa. (2) Bảng: CODE, NAME, BUSINESS_LICENSE_NUMBER(own), STATUS, ESTABLISH_DATE — không tìm thấy FK→SC_FIRM_INFO trong cột; xem 7e-03. (3) Tạm đặt T2 theo logic nghiệp vụ; cần xác nhận FK. |
 | 2 | Involved Party | [Involved Party] Senior Officer | Individual | SC_FIRM_SENIOR_PERSONNEL | Update | Nhân sự cấp cao của CTCK (GĐ, PGĐ, KTT, ...) | Securities Company Senior Personnel | Relative | (1) Senior Officer — BCV: "an Involved Party that is a high-ranking officer in an organization". (2) Bảng: FK→SC_FIRM_INFO, FK→SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE(nullable), FULL_NAME, POSITION_ID, APPOINTMENT_DATE, CCHN_NUMBER, NATIONALITY_ID. (3) Senior Officer khớp. FK chính → SC_FIRM_INFO (T1); FK phụ đến T2 entities là location pointer, không gây circular. |
-| 2 | Involved Party | [Involved Party] Registered Securities Practitioner | Individual | SC_FIRM_LICENSED_PRACTITIONER | Update | Người hành nghề chứng khoán đang công tác tại CTCK | Securities Practitioner | Relative | (1) Registered Securities Practitioner — BCV: người HNCK có đăng ký chính thức. (2) Bảng: FK→SC_FIRM_INFO, FK→SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE(nullable), FULL_NAME, CCHN_NUMBER, CCHN_TYPE, APPOINTED_DATE. (3) Shared entity — extend source_table vào Securities Practitioner từ NHNCK. FK chính → SC_FIRM_INFO (T1). |
+| 2 | Involved Party | [Involved Party] Individual | Individual | SC_FIRM_LICENSED_PRACTITIONER | Update | Người hành nghề chứng khoán đang công tác tại CTCK | Securities Practitioner | Fundamental | (1) Individual — BCV Concept LOCKED theo entity approved từ NHNCK. (2) Bảng: FK→SC_FIRM_INFO, FK→SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE(nullable), FULL_NAME, CCHN_NUMBER, CCHN_TYPE, APPOINTED_DATE. (3) Shared entity — extend source_table vào Securities Practitioner từ NHNCK. Quan hệ với SC_FIRM_INFO thể hiện qua attribute sc_firm_id trong LLD, không qua Tier/Table Type. |
 | 2 | Involved Party | [Involved Party] Auditor | Individual | AUDITOR | Update | Kiểm toán viên cá nhân trực thuộc công ty kiểm toán | Securities Company Auditor | Relative | (1) Auditor — BCV: "an Involved Party responsible for auditing financial statements". (2) Bảng: FK→AUDIT_FIRM, FULL_NAME, AUDITOR_CODE, STATUS, CERTIFICATE_NUMBER, APPOINTED_DATE. (3) Auditor khớp. Phụ thuộc Securities Company Audit Firm (T1). |
 | 2 | Arrangement | [Arrangement] Securities Service Agreement | Arrangement | CUSTODIAN_BANK | Update | Thỏa thuận lưu ký/thanh toán giữa CTCK và ngân hàng được chỉ định | Securities Company Custodian Bank | Relative | (1) Securities Service Agreement — BCV: "an Arrangement defining terms of securities-related services". (2) Bảng: FK→SC_FIRM_INFO, FK→BANK(via BANK_CODE), SERVICE_TYPE_ID, AGREEMENT_DATE, STATUS. (3) Securities Service Agreement phù hợp — ghi nhận thỏa thuận lưu ký. |
 | 2 | Arrangement | [Arrangement] Service License | Arrangement | LNK_SC_FIRM_SERVICE | Update | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK | Securities Company Licensed Service | Relative | (1) Service License — BCV: "an Arrangement defining a licensed service". (2) Bảng: FK→SC_FIRM_INFO, SERVICE_TYPE_ID(FK→CAT_SERVICE), LICENSE_NUMBER, LICENSE_DATE, EXPIRY_DATE — có LICENSE_NUMBER là attribute nghiệp vụ → không phải pure junction. (3) Service License khớp. |
@@ -92,20 +92,38 @@ graph TD
     RISK_GRP["**Securities Company Risk Indicator Group**\n(RISK_INDICATOR_GROUP)"]:::atomic
     ALERT_IND["**Securities Company Alert Indicator**\n(ALERT_INDICATOR)"]:::atomic
     RISK_PER["**Securities Company Risk Reporting Period**"]:::atomic
+    ALERT_FIN_IND["**Securities Company Alert Financial Indicator**"]:::atomic
     GEO["Geographic Area\n(shared — extend)"]:::shared
 
     %% Tier 2
     BRANCH["**Securities Company Branch**"]:::atomic
     TXN_OFF["**Securities Company Transaction Office**"]:::atomic
     REP_OFF["**Securities Company Representative Office**"]:::atomic
+    DOM_REP_OFF["**Securities Company Domestic Representative Office**"]:::atomic
     FOR_BR["**Securities Company Foreign Branch**"]:::atomic
     FOR_RP["**Securities Company Foreign Rep. Office**"]:::atomic
+    FOR_RP_VN["**Securities Company Foreign Representative Office VN**"]:::atomic
     SENIOR["**Securities Company Senior Personnel**"]:::atomic
     PRACT["Securities Practitioner\n(shared — extend)"]:::shared
     AUDITOR["**Securities Company Auditor**"]:::atomic
     CUST_BK["**Securities Company Custodian Bank**"]:::atomic
     LIC_SVC["**Securities Company Licensed Service**"]:::atomic
+    PERIODIC_RPT["**Securities Company Periodic Report**"]:::atomic
+    ADHOC_RPT["**Securities Company Adhoc Report**"]:::atomic
+    DISCLOSURE_RPT["**Securities Company Disclosure Report**"]:::atomic
+    DISCLOSURE_SO["**Securities Company Disclosure Securities Offering**"]:::atomic
+    DISCLOSURE_SH["**Securities Company Disclosure Shareholder**"]:::atomic
+    REPORT_VIOL["**Securities Company Report Violation**"]:::atomic
+    ALERT_VIOL["**Securities Company Alert Violation**"]:::atomic
+    PENALTY_DEC["**Securities Company Administrative Penalty Decision**"]:::atomic
+    SANCTION["**Securities Company Administrative Sanction**"]:::atomic
+    COMPLAINT["**Securities Company Complaint Petition**"]:::atomic
+    INSPECTION["**Securities Company Inspection Schedule**"]:::atomic
     SHAREHOLDER["**Securities Company Shareholder**"]:::atomic
+    INSIDER["**Securities Company Insider Related Person**"]:::atomic
+    OWNERSHIP_REL["**Securities Company Ownership Relation**"]:::atomic
+    RELATED_PER["**Securities Company Related Person**"]:::atomic
+    PROFILE_CHG["**Securities Company Profile Change**"]:::atomic
     RISK_SCALE["**Securities Company Risk Scoring Scale**"]:::atomic
     ALERT_COND["**Securities Company Alert Indicator Condition**"]:::atomic
     ALERT_RUN["**Securities Company Alert Run**"]:::atomic
@@ -115,10 +133,14 @@ graph TD
     SH_REP["**Securities Company Shareholder Representative**"]:::atomic
     SH_CHANGE["**Securities Company Shareholder Ownership Change**"]:::atomic
     SH_XFER["**Securities Company Shareholder Transfer**"]:::atomic
+    SH_REL["**Securities Company Shareholder Relation**"]:::atomic
+    MAJ_SH_REL["**Securities Company Major Shareholder Relation**"]:::atomic
     RISK_DETAIL["**Securities Company Risk Scoring Detail**"]:::atomic
     RISK_SUM["**Securities Company Risk Summary**"]:::atomic
     FOR_BR_PER["**Securities Company Foreign Branch Personnel**"]:::atomic
     FOR_RP_PER["**Securities Company Foreign Rep. Office Personnel**"]:::atomic
+    FOR_BR_RPT["**Securities Company Foreign Branch Periodic Report**"]:::atomic
+    FOR_RP_RPT["**Securities Company Foreign Representative Office Periodic Report**"]:::atomic
 
     %% Tier 4
     RISK_SUM_DT["**Securities Company Risk Summary Detail**"]:::atomic
@@ -127,13 +149,30 @@ graph TD
     SC_CO --> BRANCH
     SC_CO --> TXN_OFF
     SC_CO --> REP_OFF
+    SC_CO --> DOM_REP_OFF
     SC_CO --> FOR_BR
     SC_CO --> FOR_RP
+    SC_CO --> FOR_RP_VN
     SC_CO --> SENIOR
     SC_CO --> PRACT
     SC_CO --> CUST_BK
     SC_CO --> LIC_SVC
+    SC_CO --> PERIODIC_RPT
+    SC_CO --> ADHOC_RPT
+    SC_CO --> DISCLOSURE_RPT
+    SC_CO --> DISCLOSURE_SO
+    SC_CO --> DISCLOSURE_SH
+    SC_CO --> REPORT_VIOL
+    SC_CO --> ALERT_VIOL
+    SC_CO --> PENALTY_DEC
+    SC_CO --> SANCTION
+    SC_CO --> COMPLAINT
+    SC_CO --> INSPECTION
     SC_CO --> SHAREHOLDER
+    SC_CO --> INSIDER
+    SC_CO --> OWNERSHIP_REL
+    SC_CO --> RELATED_PER
+    SC_CO --> PROFILE_CHG
     SC_CO --> RISK_ASSIGN
     AU_FIRM --> AUDITOR
     RISK_IND --> RISK_SCALE
@@ -145,11 +184,15 @@ graph TD
     SHAREHOLDER --> SH_REP
     SHAREHOLDER --> SH_CHANGE
     SHAREHOLDER --> SH_XFER
+    SHAREHOLDER --> SH_REL
+    SC_CO --> MAJ_SH_REL
     RISK_SCALE --> RISK_DETAIL
     RISK_PER --> RISK_DETAIL
     RISK_PER --> RISK_SUM
     FOR_BR --> FOR_BR_PER
     FOR_RP --> FOR_RP_PER
+    FOR_BR --> FOR_BR_RPT
+    FOR_RP --> FOR_RP_RPT
 
     %% T3 → T4
     RISK_SUM --> RISK_SUM_DT
@@ -179,6 +222,8 @@ graph TD
 | CAT_INDICATOR_STATISTIC | Danh mục chỉ tiêu thống kê | Classification Value | Scheme: SCMS_INDICATOR_STATISTIC. |
 | CAT_SERVICE_LEGAL_CAPITAL | Vốn pháp định theo từng dịch vụ chứng khoán | Classification Value | Scheme: SCMS_SERVICE_LEGAL_CAPITAL. |
 | CATEGORY | Danh mục chung hệ thống | Classification Value | Scheme: SCMS_GENERAL_CATEGORY. |
+| CAT_SC_FIRM_POSITION | Danh mục vị trí tại công ty chứng khoán | Classification Value | Scheme: SCMS_SC_FIRM_POSITION_TYPE. |
+| CAT_STATISTIC | Danh mục mã thống kê | Classification Value | Scheme: SCMS_STATISTIC_TYPE. |
 
 ---
 
@@ -186,9 +231,9 @@ graph TD
 
 | Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
 |---|---|---|---|
-| LNK_SC_FIRM_BUSINESS_LINE | Liên kết CTCK với nghiệp vụ kinh doanh (SC_FIRM_INFO_ID + CAT_BUSINESS_LINE_ID — không có attribute nghiệp vụ) | Securities Company | Pure junction — denormalize thành `business_line_codes ARRAY<STRING>` trên Securities Company. |
+| LNK_SC_FIRM_BUSINESS_LINE | Liên kết CTCK với nghiệp vụ kinh doanh (SC_FIRM_INFO_ID + CAT_BUSINESS_LINE_ID + RECORD_STATUS) | Securities Company | Pure junction — denormalize thành `business_line_codes ARRAY<STRING>` trên Securities Company. ETL filter RECORD_STATUS = 1 (active only) trước khi denormalize. |
 | LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE | Liên kết chi nhánh NN với dịch vụ CK (SC_FIRM_FOREIGN_BRANCH_ID + CAT_SERVICE_ID — không có attribute) | Securities Company Foreign Branch | Pure junction — denormalize thành `licensed_service_codes ARRAY<STRING>` trên Securities Company Foreign Branch. |
-| LNK_TRANSACTION_OFFICE_SERVICE | Liên kết phòng giao dịch với dịch vụ CK (SC_FIRM_TRANSACTION_OFFICE_ID + CAT_SERVICE_ID — không có attribute) | Securities Company Transaction Office | Pure junction — denormalize thành `licensed_service_codes ARRAY<STRING>` trên Securities Company Transaction Office. |
+| LNK_TRANSACTION_OFFICE_SERVICE | Liên kết phòng giao dịch với dịch vụ CK (SC_FIRM_TRANSACTION_OFFICE_ID + CAT_SERVICE_ID + RECORD_STATUS) | Securities Company Transaction Office | Pure junction — denormalize thành `licensed_service_codes ARRAY<STRING>` trên Securities Company Transaction Office. ETL filter RECORD_STATUS = 1 (active only) trước khi denormalize. |
 | LNK_PRACTITIONER_BUSINESS_LINE | Liên kết người HNCK với nghiệp vụ CK (LICENSED_PRACTITIONER_ID + CAT_BUSINESS_LINE_ID — không có attribute) | Securities Practitioner | Pure junction — denormalize thành `business_line_codes ARRAY<STRING>` trên Securities Practitioner. |
 
 ---
@@ -296,6 +341,7 @@ graph TD
 | Isolated | SMSVW_TLPROFILES | View hồ sơ TL từ schema SMS | View/shadow từ schema SMS cũ. |
 | Isolated | DISCLOSURE_NEWS | Tin tức công bố thông tin | Không tìm thấy FK rõ ràng đến SC_FIRM_INFO — cần xác nhận thêm. |
 | Isolated | DISCLOSURE_NEWS_FILE | Tệp đính kèm tin tức CBTT | Cascade từ DISCLOSURE_NEWS chưa xác định. |
+| Chưa xác nhận | SC_FIRM_SERVICE | Dịch vụ chứng khoán CTCK (có thể trùng LNK_SC_FIRM_SERVICE) | Thiết kế dư thừa — tạm giữ để đảm bảo coverage. Xem xét merge vào Securities Company Licensed Service sau khi xác nhận cấu trúc cột với 7e-04. |
 
 ---
 
@@ -567,5 +613,5 @@ graph TD
 
 
 ### 53. Securities Practitioner
-**Tier:** 2 | **Source:** `SCMS.SC_FIRM_LICENSED_PRACTITIONER` | **BCV Concept:** [Involved Party] Registered Securities Practitioner | **BCO:** Involved Party | **Table Type:** Relative
+**Tier:** 2 | **Source:** `SCMS.SC_FIRM_LICENSED_PRACTITIONER` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Người hành nghề chứng khoán đang công tác tại CTCK. Shared entity extend source_table vào Securities Practitioner từ NHNCK. Ghi nhận số CCHN, loại CCHN, ngày bổ nhiệm và đơn vị công tác.
