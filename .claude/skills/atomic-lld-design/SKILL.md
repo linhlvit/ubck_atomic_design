@@ -85,7 +85,7 @@ Từ HLD đã duyệt, xác định:
 
 ### Bước 3 — Thiết kế attribute-level
 
-Copy [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới. Nhớ sinh `physical_name` (snake_case) cho mỗi attribute ngay khi thiết kế. `data_type` để trống — `transform_physical_names.py` sẽ tự điền dựa vào `data_domain`.
+Copy [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới. Sinh `physical_name` cho mỗi attribute theo thuật toán longest-match-first từ `system/rules/rule_transform_logical_name.csv` (xem mục **Physical name** bên dưới). `data_type` để trống — `transform_physical_names.py` sẽ tự điền dựa vào `data_domain`.
 
 #### 3a. Mô tả (description)
 - Ghép 2 phần: **mô tả gốc từ CSDL nguồn (giữ nguyên)** + mô tả bổ sung trên model (nếu có).
@@ -393,9 +393,25 @@ attributes:
     etl_derived_value: NHNCK.PROFESSIONALS
 ```
 
-**Physical name (snake_case):** AI sinh sẵn `physical_name` cho mỗi attribute khi thiết kế. `data_type` để trống hoặc null — `transform_physical_names.py` tự patch sau khi lưu file.
-- Entity: `[domain_prefix]_[bcv_term]` (VD: `scr_practitioner`, `scr_org_ref`)
-- Attribute: `[entity_prefix]_[field]` → viết tắt thông minh, snake_case (VD: `scr_practitioner_id`, `org_full_nm`, `src_stm_code`)
+**Physical name:** AI sinh `physical_name` cho mỗi attribute theo đúng logic của `transform_physical_names.py`. `data_type` để trống — script tự patch sau.
+
+**Thuật toán transform (longest-match-first):**
+1. Lowercase toàn bộ logical name.
+2. Duyệt từ trái sang phải; tại mỗi vị trí thử match cụm dài nhất có trong `system/rules/rule_transform_logical_name.csv` (cột `Name`) tại **word boundary**.
+3. Nếu match → thay bằng `Abbreviation` tương ứng (lowercase).
+4. Nếu không match → giữ nguyên word đó (lowercase, `-` → `_`).
+5. Nối các token bằng `_`.
+
+**Ví dụ:**
+- `Securities Practitioner` → `scr` + `prac` → `scr_prac`
+- `Practitioner Code` → `prac` + `code` → `prac_code`
+- `Source System` → `src` + `stm` → `src_stm`
+- `Identification Number` → `identn` + `nbr` → `identn_nbr`
+- `Date Of Birth` → `dob` (cụm 3 từ match trực tiếp)
+
+**Quy tắc đặt tên:**
+- Entity physical name: `[domain_prefix]_[bcv_term]` — áp dụng transform trên logical entity name (VD: `Securities Practitioner` → `scr_prac`)
+- Attribute physical name: `[entity_prefix]_[field_tokens]` — áp dụng transform trên logical attribute name, **không** lặp lại prefix entity nếu tên attribute đã bao gồm (VD: attribute `Practitioner Code` trong entity `Securities Practitioner` → `prac_code`, không phải `scr_prac_prac_code`)
 
 ### Cập nhật manifest.yaml
 
