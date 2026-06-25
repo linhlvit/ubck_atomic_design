@@ -93,8 +93,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PETITION_DOCUMENT.DOCUMENT_TYPE
-    comment: "Scheme: TT_PETITION_DOCUMENT_TYPE."
-    classification_context: TT_PETITION_DOCUMENT_TYPE
+    comment: "Scheme: PETITION_DOCUMENT_TYPE."
+    classification_context: PETITION_DOCUMENT_TYPE
     etl_derived_value: null
 
   - attribute_name: Document Number
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Content
-    physical_name: content
+    physical_name: cntnt
     description: "Nội dung văn bản xử lý đơn thư."
     data_domain: Text
     nullable: true
@@ -145,8 +145,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PETITION_DOCUMENT.CLASSIFICATION_RESULT
-    comment: "Scheme: TT_PETITION_CATEGORY. Dùng lại scheme phân loại đơn thư cho kết quả phân loại."
-    classification_context: TT_PETITION_CATEGORY
+    comment: "Scheme: PETITION_CATEGORY. Dùng lại scheme phân loại đơn thư cho kết quả phân loại."
+    classification_context: PETITION_CATEGORY
     etl_derived_value: null
 
   - attribute_name: Proposed Action
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Transfer Target Unit
-    physical_name: transfer_target_unit
+    physical_name: trnsf_trgt_unit
     description: "Cơ quan hoặc đơn vị nhận chuyển đơn thư (denormalized text)."
     data_domain: Text
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Prepared By Officer Id
-    physical_name: prepared_by_officer_id
+    physical_name: prpr_by_ofcr_id
     description: "FK đến Regulatory Authority Officer (cán bộ chuẩn bị văn bản)."
     data_domain: Surrogate Key
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Prepared By Officer Code
-    physical_name: prepared_by_officer_code
+    physical_name: prpr_by_ofcr_code
     description: "Mã cán bộ chuẩn bị văn bản (denormalized lookup)."
     data_domain: Text
     nullable: true
@@ -254,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Prepared Date
-    physical_name: prepared_dt
+    physical_name: prpr_dt
     description: "Ngày chuẩn bị văn bản xử lý đơn thư."
     data_domain: Date
     nullable: true
@@ -280,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -293,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -306,7 +306,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -319,7 +319,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -332,7 +332,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -345,7 +345,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

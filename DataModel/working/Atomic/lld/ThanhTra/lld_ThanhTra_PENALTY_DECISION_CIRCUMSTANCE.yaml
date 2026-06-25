@@ -59,7 +59,7 @@ attributes:
     etl_derived_value: ThanhTra.PENALTY_DECISION_CIRCUMSTANCE
 
   - attribute_name: Penalty Decision Subject Behavior Id
-    physical_name: penalty_dcsn_subj_bhr_id
+    physical_name: pny_dcsn_sbj_bhvr_id
     description: "FK đến chi tiết hành vi vi phạm của đối tượng trong quyết định."
     data_domain: Surrogate Key
     nullable: false
@@ -72,7 +72,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Penalty Decision Subject Behavior Code
-    physical_name: penalty_dcsn_subj_bhr_code
+    physical_name: pny_dcsn_sbj_bhvr_code
     description: "Mã chi tiết hành vi vi phạm liên kết (snapshot)."
     data_domain: Text
     nullable: true
@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Circumstance Type Code
-    physical_name: circumstance_tp_code
+    physical_name: crcm_tp_code
     description: "Loại: AGGRAVATING (Tăng nặng), MITIGATING (Giảm nhẹ)."
     data_domain: Classification Value
     nullable: false
@@ -93,12 +93,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PENALTY_DECISION_CIRCUMSTANCE.CIRCUMSTANCE_TYPE
-    comment: "Scheme: TT_CIRCUMSTANCE_TYPE."
-    classification_context: TT_CIRCUMSTANCE_TYPE
+    comment: "Scheme: CIRCUMSTANCE_TYPE."
+    classification_context: CIRCUMSTANCE_TYPE
     etl_derived_value: null
 
   - attribute_name: Content
-    physical_name: content
+    physical_name: cntnt
     description: "Nội dung tình tiết tăng nặng hoặc giảm nhẹ."
     data_domain: Text
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -137,7 +137,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -150,7 +150,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

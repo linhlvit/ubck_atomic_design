@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Target Type Code
-    physical_name: target_tp_code
+    physical_name: trgt_tp_code
     description: "Loại đối tượng trong kế hoạch thanh tra: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, v.v."
     data_domain: Classification Value
     nullable: true
@@ -93,12 +93,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.INSPECTION_ANNUAL_PLAN_TARGET.TARGET_TYPE
-    comment: "Scheme: TT_INSPECTION_TARGET_TYPE."
-    classification_context: TT_INSPECTION_TARGET_TYPE
+    comment: "Scheme: INSPECTION_TARGET_TYPE."
+    classification_context: INSPECTION_TARGET_TYPE
     etl_derived_value: null
 
   - attribute_name: Target Reference Id
-    physical_name: target_ref_id
+    physical_name: trgt_ref_id
     description: "ID tham chiếu đối tượng trong hệ thống nguồn (IDS/SCMS/FMS)."
     data_domain: Text
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Target Name
-    physical_name: target_nm
+    physical_name: trgt_nm
     description: "Tên đối tượng thanh tra trong kế hoạch (snapshot tại thời điểm lập kế hoạch)."
     data_domain: Text
     nullable: true
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Target Code
-    physical_name: target_code
+    physical_name: trgt_code
     description: "Mã chứng khoán hoặc mã số doanh nghiệp của đối tượng thanh tra."
     data_domain: Text
     nullable: true
@@ -137,7 +137,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Target Source
-    physical_name: target_src
+    physical_name: trgt_src
     description: "Hệ thống nguồn cung cấp thông tin đối tượng (IDS/SCMS/FMS)."
     data_domain: Text
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Planned Content
-    physical_name: planned_content
+    physical_name: pln_cntnt
     description: "Nội dung thanh tra dự kiến đối với đối tượng này."
     data_domain: Text
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

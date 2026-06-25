@@ -29,7 +29,20 @@ attributes:
     is_primary_key: true
     status: draft
     source_columns: []
-    comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
+    comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_CASE', ID). BCV: [Business Activity] Conduct Violation."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violation Case Unique Key
+    physical_name: vln_case_uk
+    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_CASE.ID
+    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
     classification_context: null
     etl_derived_value: null
 
@@ -124,7 +137,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Source Category Code
-    physical_name: src_category_code
+    physical_name: src_cat_code
     description: "Nguồn phát sinh: INSPECTION_RESULT, INTERNAL_UNIT, STOCK_EXCHANGE, VSDC, OTHER_SUPERVISION."
     data_domain: Classification Value
     nullable: true
@@ -132,8 +145,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_CASE.SOURCE_CATEGORY
-    comment: "Scheme: TT_VIOLATION_CASE_SOURCE_CATEGORY."
-    classification_context: TT_VIOLATION_CASE_SOURCE_CATEGORY
+    comment: "Scheme: VIOLATION_CASE_SOURCE_CATEGORY."
+    classification_context: VIOLATION_CASE_SOURCE_CATEGORY
     etl_derived_value: null
 
   - attribute_name: Source Unit Name
@@ -150,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Assigned Officer Id
-    physical_name: assigned_officer_id
+    physical_name: asgn_ofcr_id
     description: "FK đến cán bộ được phân công xử lý hồ sơ VPHC."
     data_domain: Surrogate Key
     nullable: true
@@ -163,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Assigned Officer Code
-    physical_name: assigned_officer_code
+    physical_name: asgn_ofcr_code
     description: "Tên cán bộ phụ trách xử lý hồ sơ VPHC (snapshot)."
     data_domain: Text
     nullable: true
@@ -176,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Supervising Leader Id
-    physical_name: supervising_leader_id
+    physical_name: sprvsg_ldr_id
     description: "FK đến lãnh đạo phụ trách hồ sơ VPHC."
     data_domain: Surrogate Key
     nullable: true
@@ -189,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Supervising Leader Code
-    physical_name: supervising_leader_code
+    physical_name: sprvsg_ldr_code
     description: "Tên lãnh đạo phụ trách hồ sơ VPHC (snapshot)."
     data_domain: Text
     nullable: true
@@ -202,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Life Cycle Status Code
-    physical_name: life_cycle_status_code
+    physical_name: lcs_code
     description: "Trạng thái: NEW, PROCESSING, DECISION_ISSUED, ENFORCED, CLOSED."
     data_domain: Classification Value
     nullable: false
@@ -210,8 +223,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_CASE.STATUS
-    comment: "Scheme: TT_VIOLATION_CASE_STATUS."
-    classification_context: TT_VIOLATION_CASE_STATUS
+    comment: "Scheme: VIOLATION_CASE_STATUS."
+    classification_context: VIOLATION_CASE_STATUS
     etl_derived_value: null
 
   - attribute_name: Market Type Code
@@ -223,8 +236,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_CASE.MARKET_TYPE
-    comment: "Scheme: TT_MARKET_TYPE."
-    classification_context: TT_MARKET_TYPE
+    comment: "Scheme: MARKET_TYPE."
+    classification_context: MARKET_TYPE
     etl_derived_value: null
 
   - attribute_name: Bond Issuer Code
@@ -254,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Processing Progress
-    physical_name: processing_progress
+    physical_name: proc_progress
     description: "Mô tả tiến trình xử lý hồ sơ VPHC."
     data_domain: Text
     nullable: true
@@ -280,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -293,7 +306,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -306,7 +319,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -319,7 +332,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -332,7 +345,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -345,7 +358,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

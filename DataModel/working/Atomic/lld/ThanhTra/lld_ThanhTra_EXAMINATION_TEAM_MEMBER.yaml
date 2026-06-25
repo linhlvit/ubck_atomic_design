@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Member Officer Id
-    physical_name: member_officer_id
+    physical_name: mbr_ofcr_id
     description: "FK đến cán bộ là thành viên đoàn kiểm tra."
     data_domain: Surrogate Key
     nullable: true
@@ -98,7 +98,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Member Officer Code
-    physical_name: member_officer_code
+    physical_name: mbr_ofcr_code
     description: "Tài khoản đăng nhập của thành viên đoàn kiểm tra."
     data_domain: Text
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Member Full Name
-    physical_name: member_full_nm
+    physical_name: mbr_full_nm
     description: "Họ tên đầy đủ thành viên đoàn kiểm tra (snapshot)."
     data_domain: Text
     nullable: true
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Member Department Name
-    physical_name: member_dept_nm
+    physical_name: mbr_dept_nm
     description: "Tên phòng ban/đơn vị của thành viên (snapshot)."
     data_domain: Text
     nullable: true
@@ -145,12 +145,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.EXAMINATION_TEAM_MEMBER.ROLE_IN_TEAM
-    comment: "Scheme: TT_TEAM_MEMBER_ROLE_TYPE."
-    classification_context: TT_TEAM_MEMBER_ROLE_TYPE
+    comment: "Scheme: TEAM_MEMBER_ROLE_TYPE."
+    classification_context: TEAM_MEMBER_ROLE_TYPE
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

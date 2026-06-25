@@ -93,8 +93,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.RECIPIENT_TYPE
-    comment: "Scheme: TT_DECISION_RECIPIENT_TYPE."
-    classification_context: TT_DECISION_RECIPIENT_TYPE
+    comment: "Scheme: DECISION_RECIPIENT_TYPE."
+    classification_context: DECISION_RECIPIENT_TYPE
     etl_derived_value: null
 
   - attribute_name: Recipient Name
@@ -137,7 +137,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Confirmation Status Code
-    physical_name: confirm_st_code
+    physical_name: cnfrm_st_code
     description: "Trạng thái xác nhận nhận quyết định: CONFIRMED (Đã xác nhận), NOT_CONFIRMED (Chưa xác nhận)."
     data_domain: Classification Value
     nullable: true
@@ -145,12 +145,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT.CONFIRMATION_STATUS
-    comment: "Scheme: TT_SECURITY_MEASURE_SENT_STATUS."
-    classification_context: TT_SECURITY_MEASURE_SENT_STATUS
+    comment: "Scheme: SECURITY_MEASURE_SENT_STATUS."
+    classification_context: SECURITY_MEASURE_SENT_STATUS
     etl_derived_value: null
 
   - attribute_name: Confirmed Date
-    physical_name: confirmed_dt
+    physical_name: cnfrm_dt
     description: "Thời điểm xác nhận đã nhận quyết định."
     data_domain: Date
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Confirmed By
-    physical_name: confirmed_by
+    physical_name: cnfrm_by
     description: "Người xác nhận đã nhận quyết định (text tự do, denormalized)."
     data_domain: Text
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

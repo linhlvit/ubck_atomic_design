@@ -29,7 +29,20 @@ attributes:
     is_primary_key: true
     status: draft
     source_columns: []
-    comment: "PK surrogate. BCV: [Communication] Feedback."
+    comment: "PK surrogate. Hash: hash_id('ThanhTra.PETITION', ID). BCV: [Communication] Feedback."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Petition Unique Key
+    physical_name: peti_uk
+    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PETITION.ID
+    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
     classification_context: null
     etl_derived_value: null
 
@@ -59,7 +72,7 @@ attributes:
     etl_derived_value: ThanhTra.PETITION
 
   - attribute_name: Received Date
-    physical_name: received_dt
+    physical_name: rcv_dt
     description: "Ngày tiếp nhận đơn thư."
     data_domain: Date
     nullable: true
@@ -72,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Forwarding Unit
-    physical_name: forwarding_unit
+    physical_name: fwdng_unit
     description: "Đơn vị/cơ quan chuyển đơn thư đến Thanh tra."
     data_domain: Text
     nullable: true
@@ -111,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Content
-    physical_name: content
+    physical_name: cntnt
     description: "Nội dung tóm tắt đơn thư."
     data_domain: Text
     nullable: true
@@ -124,7 +137,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Petition Category Code
-    physical_name: petition_cat_code
+    physical_name: peti_cat_code
     description: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo)."
     data_domain: Classification Value
     nullable: true
@@ -132,8 +145,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PETITION.PETITION_CATEGORY
-    comment: "Scheme: TT_PETITION_CATEGORY."
-    classification_context: TT_PETITION_CATEGORY
+    comment: "Scheme: PETITION_CATEGORY."
+    classification_context: PETITION_CATEGORY
     etl_derived_value: null
 
   - attribute_name: Related To Corporate Bond Indicator
@@ -176,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Assigned Officer Id
-    physical_name: assigned_officer_id
+    physical_name: asgn_ofcr_id
     description: "ID chuyên viên được phân công xử lý đơn thư."
     data_domain: Surrogate Key
     nullable: true
@@ -189,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Assigned Officer Code
-    physical_name: assigned_officer_code
+    physical_name: asgn_ofcr_code
     description: "Tên chuyên viên được phân công xử lý đơn thư (snapshot)."
     data_domain: Text
     nullable: true
@@ -210,8 +223,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PETITION.DUPLICATE_TYPE
-    comment: "Scheme: TT_PETITION_DUPLICATE_TYPE."
-    classification_context: TT_PETITION_DUPLICATE_TYPE
+    comment: "Scheme: PETITION_DUPLICATE_TYPE."
+    classification_context: PETITION_DUPLICATE_TYPE
     etl_derived_value: null
 
   - attribute_name: Original Petition Id
@@ -254,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Transferred Authority
-    physical_name: transferred_authority
+    physical_name: trnsf_auth
     description: "Tên cơ quan có thẩm quyền nhận chuyển đơn."
     data_domain: Text
     nullable: true
@@ -267,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Internal Transfer Unit Name
-    physical_name: internal_transfer_unit_nm
+    physical_name: int_trnsf_unit_nm
     description: "Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn."
     data_domain: Text
     nullable: true
@@ -280,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Archived Indicator
-    physical_name: archived_ind
+    physical_name: archv_ind
     description: "Lưu đơn: 0=Không, 1=Có."
     data_domain: Indicator
     nullable: true
@@ -293,7 +306,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Guidance Document Number
-    physical_name: guidance_doc_nbr
+    physical_name: gdnc_doc_nbr
     description: "Số văn bản hướng dẫn nhà đầu tư (văn bản đi)."
     data_domain: Text
     nullable: true
@@ -306,7 +319,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Guidance Document Date
-    physical_name: guidance_doc_dt
+    physical_name: gdnc_doc_dt
     description: "Ngày văn bản hướng dẫn nhà đầu tư."
     data_domain: Date
     nullable: true
@@ -319,7 +332,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Life Cycle Status Code
-    physical_name: life_cycle_st_code
+    physical_name: lcs_code
     description: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)."
     data_domain: Classification Value
     nullable: true
@@ -327,8 +340,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PETITION.STATUS
-    comment: "Scheme: TT_PETITION_STATUS."
-    classification_context: TT_PETITION_STATUS
+    comment: "Scheme: PETITION_STATUS."
+    classification_context: PETITION_STATUS
     etl_derived_value: null
 
   - attribute_name: End Date
@@ -358,7 +371,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -371,7 +384,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -384,7 +397,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -397,7 +410,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -410,7 +423,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -423,7 +436,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

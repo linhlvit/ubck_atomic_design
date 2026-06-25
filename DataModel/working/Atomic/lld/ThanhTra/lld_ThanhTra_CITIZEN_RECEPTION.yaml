@@ -72,7 +72,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Receiver Officer Id
-    physical_name: receiver_officer_id
+    physical_name: rcvr_ofcr_id
     description: "FK đến Regulatory Authority Officer (cán bộ UBCKNN thực hiện tiếp công dân)."
     data_domain: Surrogate Key
     nullable: true
@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Receiver Officer Code
-    physical_name: receiver_officer_code
+    physical_name: rcvr_ofcr_code
     description: "Mã cán bộ tiếp công dân (snapshot tại thời điểm tiếp). Map từ RECEIVER_NAME."
     data_domain: Text
     nullable: true
@@ -106,8 +106,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.CITIZEN_RECEPTION.SUBJECT_TYPE
-    comment: "Scheme: TT_CITIZEN_SUBJECT_TYPE."
-    classification_context: TT_CITIZEN_SUBJECT_TYPE
+    comment: "Scheme: CITIZEN_SUBJECT_TYPE."
+    classification_context: CITIZEN_SUBJECT_TYPE
     etl_derived_value: null
 
   - attribute_name: Subject Name
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Number Of People
-    physical_name: num_of_people
+    physical_name: nbr_of_ppl
     description: "Số người tham gia buổi tiếp công dân."
     data_domain: Small Counter
     nullable: true
@@ -150,7 +150,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Petition Attached Indicator
-    physical_name: petition_attached_ind
+    physical_name: peti_attch_ind
     description: "Cờ cho biết có đơn thư kèm theo hay không (0=Không, 1=Có)."
     data_domain: Indicator
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Petition Category Code
-    physical_name: petition_cat_code
+    physical_name: peti_cat_code
     description: "Loại đơn thư kèm theo (chỉ có giá trị khi petition_attached=1): FEEDBACK_SUGGESTION, COMPLAINT, DENUNCIATION."
     data_domain: Classification Value
     nullable: true
@@ -171,12 +171,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.CITIZEN_RECEPTION.PETITION_CATEGORY
-    comment: "Scheme: TT_PETITION_CATEGORY. Chỉ điền khi Petition Attached Indicator = 1."
-    classification_context: TT_PETITION_CATEGORY
+    comment: "Scheme: PETITION_CATEGORY. Chỉ điền khi Petition Attached Indicator = 1."
+    classification_context: PETITION_CATEGORY
     etl_derived_value: null
 
   - attribute_name: Processing Status Code
-    physical_name: processing_st_code
+    physical_name: proc_st_code
     description: "Trạng thái xử lý buổi tiếp công dân."
     data_domain: Classification Value
     nullable: true
@@ -184,8 +184,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.CITIZEN_RECEPTION.PROCESSING_STATUS
-    comment: "Scheme: TT_CITIZEN_RECEPTION_STATUS."
-    classification_context: TT_CITIZEN_RECEPTION_STATUS
+    comment: "Scheme: CITIZEN_RECEPTION_STATUS."
+    classification_context: CITIZEN_RECEPTION_STATUS
     etl_derived_value: null
 
   - attribute_name: Petition Id
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -254,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -267,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -280,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -293,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

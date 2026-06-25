@@ -59,7 +59,7 @@ attributes:
     etl_derived_value: ThanhTra.POST_INSPECTION_PROCESSING
 
   - attribute_name: Inspection Conclusion Id
-    physical_name: insp_conclusion_id
+    physical_name: insp_cncl_id
     description: "FK đến kết luận thanh tra."
     data_domain: Surrogate Key
     nullable: false
@@ -72,7 +72,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Inspection Conclusion Code
-    physical_name: insp_conclusion_code
+    physical_name: insp_cncl_code
     description: "Mã kết luận thanh tra liên kết (snapshot)."
     data_domain: Text
     nullable: true
@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Requirement Type Code
-    physical_name: requirement_tp_code
+    physical_name: req_tp_code
     description: "Loại yêu cầu xử lý sau thanh tra."
     data_domain: Classification Value
     nullable: true
@@ -93,12 +93,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.POST_INSPECTION_PROCESSING.REQUIREMENT_TYPE
-    comment: "Scheme: TT_POST_PROCESSING_REQUIREMENT_TYPE."
-    classification_context: TT_POST_PROCESSING_REQUIREMENT_TYPE
+    comment: "Scheme: POST_PROCESSING_REQUIREMENT_TYPE."
+    classification_context: POST_PROCESSING_REQUIREMENT_TYPE
     etl_derived_value: null
 
   - attribute_name: Responsible Party
-    physical_name: responsible_party
+    physical_name: resp_p
     description: "Đơn vị/cá nhân chịu trách nhiệm thực hiện kiến nghị."
     data_domain: Text
     nullable: true
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Life Cycle Status Code
-    physical_name: life_cycle_status_code
+    physical_name: lcs_code
     description: "Trạng thái: PENDING, IN_PROGRESS, PARTIALLY_DONE, COMPLETED, OVERDUE."
     data_domain: Classification Value
     nullable: false
@@ -132,12 +132,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.POST_INSPECTION_PROCESSING.STATUS
-    comment: "Scheme: TT_POST_PROCESSING_STATUS."
-    classification_context: TT_POST_PROCESSING_STATUS
+    comment: "Scheme: POST_PROCESSING_STATUS."
+    classification_context: POST_PROCESSING_STATUS
     etl_derived_value: null
 
   - attribute_name: Requirement Summary
-    physical_name: requirement_summary
+    physical_name: req_smy
     description: "Tóm tắt yêu cầu/kiến nghị cần thực hiện từ kết luận thanh tra."
     data_domain: Text
     nullable: true
@@ -150,7 +150,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Implementation Notes
-    physical_name: implementation_notes
+    physical_name: impl_notes
     description: "Ghi chú về tiến trình thực hiện kiến nghị."
     data_domain: Text
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Result Summary
-    physical_name: result_summary
+    physical_name: rslt_smy
     description: "Tóm tắt kết quả thực hiện kiến nghị."
     data_domain: Text
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Last Updated Date
-    physical_name: last_updated_dt
+    physical_name: last_udt_dt
     description: "Ngày cập nhật tình hình thực hiện gần nhất."
     data_domain: Date
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -254,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -267,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -280,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

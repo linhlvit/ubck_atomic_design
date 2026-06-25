@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Approval Decision Number
-    physical_name: approval_dcsn_nbr
+    physical_name: aprv_dcsn_nbr
     description: "Số quyết định phê duyệt kế hoạch (bắt buộc khi status=APPROVED)."
     data_domain: Text
     nullable: true
@@ -98,7 +98,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Approval Decision Date
-    physical_name: approval_dcsn_dt
+    physical_name: aprv_dcsn_dt
     description: "Ngày quyết định phê duyệt (bắt buộc khi status=APPROVED)."
     data_domain: Date
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Life Cycle Status Code
-    physical_name: life_cycle_st_code
+    physical_name: lcs_code
     description: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)."
     data_domain: Classification Value
     nullable: false
@@ -119,8 +119,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.EXAMINATION_ANNUAL_PLAN.STATUS
-    comment: "Scheme: TT_PLAN_STATUS."
-    classification_context: TT_PLAN_STATUS
+    comment: "Scheme: PLAN_STATUS."
+    classification_context: PLAN_STATUS
     etl_derived_value: null
 
   - attribute_name: Note
@@ -137,7 +137,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -150,7 +150,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Type Code
-    physical_name: subject_tp_code
+    physical_name: sbj_tp_code
     description: "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)."
     data_domain: Classification Value
     nullable: true
@@ -93,12 +93,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_TYPE
-    comment: "Scheme: TT_PENALTY_SUBJECT_TYPE."
-    classification_context: TT_PENALTY_SUBJECT_TYPE
+    comment: "Scheme: PENALTY_SUBJECT_TYPE."
+    classification_context: PENALTY_SUBJECT_TYPE
     etl_derived_value: null
 
   - attribute_name: Subject Name
-    physical_name: subject_nm
+    physical_name: sbj_nm
     description: "Tên đối tượng bị xử phạt."
     data_domain: Text
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Id Number
-    physical_name: subject_id_number
+    physical_name: sbj_id_nbr
     description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)."
     data_domain: Text
     nullable: true
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Tax Code
-    physical_name: subject_tax_code
+    physical_name: sbj_tax_code
     description: "Mã số thuế của đối tượng bị xử phạt."
     data_domain: Text
     nullable: true
@@ -137,7 +137,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Date Of Birth
-    physical_name: subject_dob_dt
+    physical_name: sbj_dob_dt
     description: "Ngày sinh đối tượng bị xử phạt (cá nhân)."
     data_domain: Date
     nullable: true
@@ -150,7 +150,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Address
-    physical_name: subject_address
+    physical_name: sbj_addr
     description: "Địa chỉ đối tượng bị xử phạt."
     data_domain: Text
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Legal Rep
-    physical_name: subject_legal_rep
+    physical_name: sbj_lgl_rprs
     description: "Tên người đại diện pháp luật."
     data_domain: Text
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Legal Rep Title
-    physical_name: subject_legal_rep_title
+    physical_name: sbj_lgl_rprs_ttl
     description: "Chức danh người đại diện pháp luật."
     data_domain: Text
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Payment Received Date
-    physical_name: payment_received_dt
+    physical_name: pymt_rcv_dt
     description: "Ngày xác nhận đã nhận tiền phạt."
     data_domain: Date
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Compliance Status Code
-    physical_name: compliance_status_code
+    physical_name: cmpln_st_code
     description: "Trạng thái thi hành: NOT_PAID, PAID, PARTIAL, COMPLAINING."
     data_domain: Classification Value
     nullable: true
@@ -249,12 +249,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PENALTY_DECISION_SUBJECT.COMPLIANCE_STATUS
-    comment: "Scheme: TT_COMPLIANCE_STATUS."
-    classification_context: TT_COMPLIANCE_STATUS
+    comment: "Scheme: COMPLIANCE_STATUS."
+    classification_context: COMPLIANCE_STATUS
     etl_derived_value: null
 
   - attribute_name: Enforcement Progress
-    physical_name: enforcement_progress
+    physical_name: nfrc_progress
     description: "Diễn tiến cưỡng chế thi hành quyết định."
     data_domain: Text
     nullable: true
@@ -293,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Payment Proof Uploaded Timestamp
-    physical_name: payment_proof_uploaded_ts
+    physical_name: pymt_proof_upload_tms
     description: "Thời điểm upload chứng từ nộp tiền phạt."
     data_domain: Timestamp
     nullable: true
@@ -306,7 +306,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -319,7 +319,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -332,7 +332,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -345,7 +345,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -358,7 +358,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -371,7 +371,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

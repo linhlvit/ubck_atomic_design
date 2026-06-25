@@ -29,7 +29,20 @@ attributes:
     is_primary_key: true
     status: draft
     source_columns: []
-    comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
+    comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR', ID). BCV: [Business Activity] Conduct Violation."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violation Behavior Unique Key
+    physical_name: vln_bhvr_uk
+    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_BEHAVIOR.ID
+    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
     classification_context: null
     etl_derived_value: null
 
@@ -72,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Description
-    physical_name: description
+    physical_name: dsc
     description: "Mô tả chi tiết hành vi vi phạm hành chính."
     data_domain: Text
     nullable: true
@@ -150,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Life Cycle Status Code
-    physical_name: life_cycle_st_code
+    physical_name: lcs_code
     description: "Trạng thái hiệu lực của danh mục hành vi vi phạm (ACTIVE/INACTIVE)."
     data_domain: Classification Value
     nullable: true
@@ -158,8 +171,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_BEHAVIOR.STATUS
-    comment: "Scheme: TT_ENTITY_STATUS."
-    classification_context: TT_ENTITY_STATUS
+    comment: "Scheme: ENTITY_STATUS."
+    classification_context: ENTITY_STATUS
     etl_derived_value: null
 
   - attribute_name: Note
@@ -215,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -228,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -241,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -254,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -267,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -280,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

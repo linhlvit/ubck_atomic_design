@@ -59,7 +59,7 @@ attributes:
     etl_derived_value: ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER
 
   - attribute_name: Official Letter Subtype Code
-    physical_name: official_letter_subtype_code
+    physical_name: offc_ltr_subtp_code
     description: "Loại công văn: PRE_VIOLATION_NOTICE_1, REMINDER, PRE_VIOLATION_NOTICE_N, INFO_REQUEST, PRE_DECISION_NOTICE, PAYMENT_GUIDE, PAYMENT_REMINDER, REMEDIAL_REMINDER."
     data_domain: Classification Value
     nullable: true
@@ -67,8 +67,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER.OFFICIAL_LETTER_SUBTYPE
-    comment: "Scheme: TT_OFFICIAL_LETTER_SUBTYPE."
-    classification_context: TT_OFFICIAL_LETTER_SUBTYPE
+    comment: "Scheme: OFFICIAL_LETTER_SUBTYPE."
+    classification_context: OFFICIAL_LETTER_SUBTYPE
     etl_derived_value: null
 
   - attribute_name: Violation Case Id
@@ -98,7 +98,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Violation Record Id
-    physical_name: vln_record_id
+    physical_name: vln_rcrd_id
     description: "FK đến biên bản VPHC (nullable)."
     data_domain: Surrogate Key
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Violation Record Code
-    physical_name: vln_record_code
+    physical_name: vln_rcrd_code
     description: "Mã biên bản VPHC liên kết (snapshot)."
     data_domain: Text
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Violation Case Output Document Id
-    physical_name: vln_case_out_doc_id
+    physical_name: vln_case_otpt_doc_id
     description: "FK đến văn bản đầu ra VPHC (FK suy luận)."
     data_domain: Surrogate Key
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Violation Case Output Document Code
-    physical_name: vln_case_out_doc_code
+    physical_name: vln_case_otpt_doc_code
     description: "Mã văn bản đầu ra VPHC liên kết (snapshot)."
     data_domain: Text
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -254,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

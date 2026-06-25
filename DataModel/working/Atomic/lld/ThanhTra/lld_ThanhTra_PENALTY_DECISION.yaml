@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Decision Number
-    physical_name: decision_number
+    physical_name: dcsn_nbr
     description: "Số quyết định xử phạt VPHC (cập nhật sau khi ký, cấp số từ VBĐH)."
     data_domain: Text
     nullable: true
@@ -98,7 +98,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Issued Date
-    physical_name: issued_dt
+    physical_name: issu_dt
     description: "Ngày ban hành quyết định xử phạt."
     data_domain: Date
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Decision Category Code
-    physical_name: decision_category_code
+    physical_name: dcsn_cat_code
     description: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ UBCKNN ký)."
     data_domain: Classification Value
     nullable: true
@@ -119,12 +119,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PENALTY_DECISION.DECISION_CATEGORY
-    comment: "Scheme: TT_PENALTY_DECISION_CATEGORY."
-    classification_context: TT_PENALTY_DECISION_CATEGORY
+    comment: "Scheme: PENALTY_DECISION_CATEGORY."
+    classification_context: PENALTY_DECISION_CATEGORY
     etl_derived_value: null
 
   - attribute_name: Life Cycle Status Code
-    physical_name: life_cycle_status_code
+    physical_name: lcs_code
     description: "Trạng thái: DRAFT, SUBMITTED, APPROVED, REJECTED, ISSUED, SENT_TO_SUBJECT, ENFORCED."
     data_domain: Classification Value
     nullable: false
@@ -132,12 +132,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PENALTY_DECISION.STATUS
-    comment: "Scheme: TT_PENALTY_DECISION_STATUS."
-    classification_context: TT_PENALTY_DECISION_STATUS
+    comment: "Scheme: PENALTY_DECISION_STATUS."
+    classification_context: PENALTY_DECISION_STATUS
     etl_derived_value: null
 
   - attribute_name: Signer Officer Id
-    physical_name: signer_officer_id
+    physical_name: sgnr_ofcr_id
     description: "FK đến cán bộ ký quyết định xử phạt."
     data_domain: Surrogate Key
     nullable: true
@@ -150,7 +150,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Signer Officer Code
-    physical_name: signer_officer_code
+    physical_name: sgnr_ofcr_code
     description: "Tên cán bộ ký quyết định (snapshot)."
     data_domain: Text
     nullable: true
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Assigned Officer Id
-    physical_name: assigned_officer_id
+    physical_name: asgn_ofcr_id
     description: "FK đến cán bộ được phân công xử lý quyết định."
     data_domain: Surrogate Key
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Assigned Officer Code
-    physical_name: assigned_officer_code
+    physical_name: asgn_ofcr_code
     description: "Tên cán bộ được phân công (snapshot)."
     data_domain: Text
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Submitted By Officer Id
-    physical_name: submitted_by_officer_id
+    physical_name: subm_by_ofcr_id
     description: "FK đến cán bộ trình ký quyết định."
     data_domain: Surrogate Key
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Submitted By Officer Code
-    physical_name: submitted_by_officer_code
+    physical_name: subm_by_ofcr_code
     description: "Mã cán bộ trình ký (snapshot)."
     data_domain: Text
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Approver Officer Id
-    physical_name: approver_officer_id
+    physical_name: aprv_ofcr_id
     description: "FK đến người phê duyệt quyết định."
     data_domain: Surrogate Key
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Approver Officer Code
-    physical_name: approver_officer_code
+    physical_name: aprv_ofcr_code
     description: "Mã người phê duyệt (snapshot)."
     data_domain: Text
     nullable: true
@@ -267,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Payment Deadline
-    physical_name: payment_deadline_dt
+    physical_name: pymt_ddln_dt
     description: "Hạn nộp tiền phạt."
     data_domain: Date
     nullable: true
@@ -280,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Submitted Timestamp
-    physical_name: submitted_ts
+    physical_name: subm_tms
     description: "Thời điểm trình ký quyết định."
     data_domain: Timestamp
     nullable: true
@@ -293,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Complaint Exists Indicator
-    physical_name: complaint_exists_ind
+    physical_name: cpln_exists_ind
     description: "Có khiếu nại: 0=Không, 1=Có."
     data_domain: Indicator
     nullable: true
@@ -306,7 +306,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Complaint Content
-    physical_name: complaint_content
+    physical_name: cpln_cntnt
     description: "Nội dung khiếu nại quyết định xử phạt."
     data_domain: Text
     nullable: true
@@ -319,7 +319,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Complaint Received Date
-    physical_name: complaint_received_dt
+    physical_name: cpln_rcv_dt
     description: "Ngày tiếp nhận khiếu nại."
     data_domain: Date
     nullable: true
@@ -332,7 +332,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Complaint Status Code
-    physical_name: complaint_status_code
+    physical_name: cpln_st_code
     description: "Trạng thái khiếu nại: PROCESSING, RESOLVED."
     data_domain: Classification Value
     nullable: true
@@ -340,12 +340,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PENALTY_DECISION.COMPLAINT_STATUS
-    comment: "Scheme: TT_COMPLAINT_STATUS."
-    classification_context: TT_COMPLAINT_STATUS
+    comment: "Scheme: COMPLAINT_STATUS."
+    classification_context: COMPLAINT_STATUS
     etl_derived_value: null
 
   - attribute_name: Complaint Result
-    physical_name: complaint_result
+    physical_name: cpln_rslt
     description: "Kết quả giải quyết khiếu nại."
     data_domain: Text
     nullable: true
@@ -410,7 +410,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -423,7 +423,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -436,7 +436,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -449,7 +449,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -462,7 +462,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -475,7 +475,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

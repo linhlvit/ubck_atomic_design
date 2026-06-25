@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Record Date
-    physical_name: record_dt
+    physical_name: rcrd_dt
     description: "Ngày lập biên bản VPHC."
     data_domain: Date
     nullable: true
@@ -124,7 +124,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Record Type Code
-    physical_name: record_tp_code
+    physical_name: rcrd_tp_code
     description: "Phân loại: PAPER, ELECTRONIC."
     data_domain: Classification Value
     nullable: true
@@ -132,12 +132,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_RECORD.RECORD_TYPE
-    comment: "Scheme: TT_VIOLATION_RECORD_TYPE."
-    classification_context: TT_VIOLATION_RECORD_TYPE
+    comment: "Scheme: VIOLATION_RECORD_TYPE."
+    classification_context: VIOLATION_RECORD_TYPE
     etl_derived_value: null
 
   - attribute_name: Violation Timestamp
-    physical_name: violation_ts
+    physical_name: vln_tms
     description: "Thời gian xảy ra vi phạm."
     data_domain: Timestamp
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Recorder Name
-    physical_name: recorder_nm
+    physical_name: rcdr_nm
     description: "Họ tên người lập biên bản VPHC."
     data_domain: Text
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Recorder Title
-    physical_name: recorder_title
+    physical_name: rcdr_title
     description: "Chức danh người lập biên bản VPHC."
     data_domain: Text
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Recorder Unit
-    physical_name: recorder_unit
+    physical_name: rcdr_unit
     description: "Đơn vị công tác của người lập biên bản."
     data_domain: Text
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Type Code
-    physical_name: subject_tp_code
+    physical_name: sbj_tp_code
     description: "Đối tượng vi phạm: INDIVIDUAL, ORGANIZATION."
     data_domain: Classification Value
     nullable: true
@@ -223,12 +223,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_RECORD.SUBJECT_TYPE
-    comment: "Scheme: TT_VIOLATION_SUBJECT_TYPE."
-    classification_context: TT_VIOLATION_SUBJECT_TYPE
+    comment: "Scheme: VIOLATION_SUBJECT_TYPE."
+    classification_context: VIOLATION_SUBJECT_TYPE
     etl_derived_value: null
 
   - attribute_name: Subject Name
-    physical_name: subject_nm
+    physical_name: sbj_nm
     description: "Tên đối tượng vi phạm."
     data_domain: Text
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Id Number
-    physical_name: subject_id_nbr
+    physical_name: sbj_id_nbr
     description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)."
     data_domain: Text
     nullable: true
@@ -254,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Date Of Birth
-    physical_name: subject_dob
+    physical_name: sbj_dob
     description: "Ngày sinh đối tượng vi phạm (chỉ dùng cho cá nhân)."
     data_domain: Date
     nullable: true
@@ -267,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Address
-    physical_name: subject_addr
+    physical_name: sbj_addr
     description: "Địa chỉ đối tượng vi phạm."
     data_domain: Text
     nullable: true
@@ -280,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Legal Rep
-    physical_name: subject_legal_rep
+    physical_name: sbj_lgl_rprs
     description: "Tên người đại diện theo pháp luật (chỉ dùng cho tổ chức)."
     data_domain: Text
     nullable: true
@@ -293,7 +293,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Legal Rep Title
-    physical_name: subject_legal_rep_title
+    physical_name: sbj_lgl_rprs_ttl
     description: "Chức danh người đại diện theo pháp luật."
     data_domain: Text
     nullable: true
@@ -306,7 +306,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Email
-    physical_name: subject_email
+    physical_name: sbj_email
     description: "Email dùng gửi thông báo biên bản điện tử."
     data_domain: Text
     nullable: true
@@ -319,7 +319,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Subject Phone
-    physical_name: subject_phone
+    physical_name: sbj_phone
     description: "Số điện thoại đối tượng vi phạm."
     data_domain: Text
     nullable: true
@@ -332,7 +332,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Life Cycle Status Code
-    physical_name: life_cycle_status_code
+    physical_name: lcs_code
     description: "Trạng thái: DRAFT, PENDING_LEADER_SIGN, SIGNED, NUMBERED, SENT_TO_SUBJECT."
     data_domain: Classification Value
     nullable: false
@@ -340,8 +340,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_RECORD.STATUS
-    comment: "Scheme: TT_VIOLATION_RECORD_STATUS."
-    classification_context: TT_VIOLATION_RECORD_STATUS
+    comment: "Scheme: VIOLATION_RECORD_STATUS."
+    classification_context: VIOLATION_RECORD_STATUS
     etl_derived_value: null
 
   - attribute_name: Signature Type Code
@@ -353,12 +353,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_RECORD.SIGNATURE_TYPE
-    comment: "Scheme: TT_SIGNATURE_TYPE."
-    classification_context: TT_SIGNATURE_TYPE
+    comment: "Scheme: SIGNATURE_TYPE."
+    classification_context: SIGNATURE_TYPE
     etl_derived_value: null
 
   - attribute_name: Signed By Officer Id
-    physical_name: signed_by_officer_id
+    physical_name: sgn_by_ofcr_id
     description: "FK đến cán bộ ký số cuối biên bản VPHC."
     data_domain: Surrogate Key
     nullable: true
@@ -371,7 +371,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Signed By Officer Code
-    physical_name: signed_by_officer_code
+    physical_name: sgn_by_ofcr_code
     description: "Mã cán bộ ký số cuối biên bản VPHC."
     data_domain: Text
     nullable: true
@@ -384,7 +384,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Signed Timestamp
-    physical_name: signed_ts
+    physical_name: sgn_tms
     description: "Thời điểm ký số biên bản."
     data_domain: Timestamp
     nullable: true
@@ -397,7 +397,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: First Signed By Officer Id
-    physical_name: first_signed_by_officer_id
+    physical_name: fst_sgn_by_ofcr_id
     description: "FK đến cán bộ ký nháy biên bản VPHC (ký 2 bước)."
     data_domain: Surrogate Key
     nullable: true
@@ -410,7 +410,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: First Signed By Officer Code
-    physical_name: first_signed_by_officer_code
+    physical_name: fst_sgn_by_ofcr_code
     description: "Mã cán bộ ký nháy biên bản VPHC."
     data_domain: Text
     nullable: true
@@ -423,7 +423,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: First Signed Timestamp
-    physical_name: first_signed_ts
+    physical_name: fst_sgn_tms
     description: "Thời điểm ký nháy biên bản."
     data_domain: Timestamp
     nullable: true
@@ -436,7 +436,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Numbered Timestamp
-    physical_name: numbered_ts
+    physical_name: nbr_tms
     description: "Thời điểm được cấp số từ VBĐH."
     data_domain: Timestamp
     nullable: true
@@ -449,7 +449,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Sent Timestamp
-    physical_name: sent_ts
+    physical_name: sent_tms
     description: "Thời điểm gửi biên bản cho đối tượng vi phạm."
     data_domain: Timestamp
     nullable: true
@@ -475,7 +475,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Forwarded To Inspection Indicator
-    physical_name: forwarded_to_insp_ind
+    physical_name: fwrd_to_insp_ind
     description: "Đã gửi biên bản đến Thanh tra: 0=Chưa, 1=Đã."
     data_domain: Indicator
     nullable: true
@@ -488,7 +488,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Forwarded Timestamp
-    physical_name: forwarded_ts
+    physical_name: fwrd_tms
     description: "Thời điểm chuyển biên bản đến Thanh tra."
     data_domain: Timestamp
     nullable: true
@@ -501,7 +501,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Forwarded By Officer Id
-    physical_name: forwarded_by_officer_id
+    physical_name: fwrd_by_ofcr_id
     description: "FK đến cán bộ thực hiện chuyển biên bản."
     data_domain: Surrogate Key
     nullable: true
@@ -514,7 +514,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Forwarded By Officer Code
-    physical_name: forwarded_by_officer_code
+    physical_name: fwrd_by_ofcr_code
     description: "Mã cán bộ thực hiện chuyển biên bản."
     data_domain: Text
     nullable: true
@@ -540,7 +540,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Violator Confirmed Receipt Timestamp
-    physical_name: violator_confirmed_receipt_ts
+    physical_name: vltr_cnfrm_rcpt_tms
     description: "Thời điểm người vi phạm xác nhận nhận biên bản qua VNeID."
     data_domain: Timestamp
     nullable: true
@@ -553,7 +553,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Signed Document URL
-    physical_name: signed_document_url
+    physical_name: sgn_doc_url
     description: "URL file biên bản VPHC đã ký số (PDF)."
     data_domain: Text
     nullable: true
@@ -566,7 +566,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Violator Signed File URL
-    physical_name: violator_signed_file_url
+    physical_name: vltr_sgn_file_url
     description: "URL file biên bản đã có chữ ký của người vi phạm."
     data_domain: Text
     nullable: true
@@ -579,7 +579,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -592,7 +592,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -605,7 +605,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -618,7 +618,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -631,7 +631,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -644,7 +644,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

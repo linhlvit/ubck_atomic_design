@@ -85,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Company Code
-    physical_name: company_code
+    physical_name: co_code
     description: "Mã công ty nhận thông báo (CTCK hoặc CTQLQ). BK denormalized."
     data_domain: Text
     nullable: false
@@ -98,7 +98,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Company Name
-    physical_name: company_nm
+    physical_name: co_nm
     description: "Tên công ty nhận thông báo (snapshot tại thời điểm gửi)."
     data_domain: Text
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Company Type
-    physical_name: company_tp
+    physical_name: co_tp
     description: "Loại công ty nhận thông báo (CTCK, CTQLQ hoặc giá trị tương đương từ nguồn)."
     data_domain: Text
     nullable: true
@@ -119,12 +119,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PROACTIVE_NOTICE_RECIPIENT.COMPANY_TYPE
-    comment: "Lưu Text — chưa có scheme TT_COMPANY_TYPE. Cần thêm scheme: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY. Profile giá trị thực tế trước khi chuyển sang Classification Value."
+    comment: "Lưu Text — chưa có scheme COMPANY_TYPE. Cần thêm scheme: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY. Profile giá trị thực tế trước khi chuyển sang Classification Value."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Confirmation Status
-    physical_name: confirm_st
+    physical_name: cnfrm_st
     description: "Trạng thái xác nhận đã nhận thông báo (PENDING/CONFIRMED hoặc giá trị tương đương)."
     data_domain: Text
     nullable: true
@@ -132,12 +132,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PROACTIVE_NOTICE_RECIPIENT.CONFIRMATION_STATUS
-    comment: "Lưu Text — chưa có scheme TT_NOTICE_RECIPIENT_STATUS. Cần thêm scheme: PENDING, CONFIRMED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
+    comment: "Lưu Text — chưa có scheme NOTICE_RECIPIENT_STATUS. Cần thêm scheme: PENDING, CONFIRMED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Confirmed Timestamp
-    physical_name: confirmed_ts
+    physical_name: cnfrm_tms
     description: "Thời điểm xác nhận đã nhận thông báo."
     data_domain: Timestamp
     nullable: true
@@ -150,7 +150,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Confirmed By
-    physical_name: confirmed_by
+    physical_name: cnfrm_by
     description: "Người đại diện công ty xác nhận đã nhận thông báo (text tự do)."
     data_domain: Text
     nullable: true
@@ -171,12 +171,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.PROACTIVE_NOTICE_RECIPIENT.PUSH_STATUS
-    comment: "Lưu Text — chưa có scheme TT_PUSH_STATUS. Cần thêm scheme: PENDING, SUCCESS, FAILED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
+    comment: "Lưu Text — chưa có scheme PUSH_STATUS. Cần thêm scheme: PENDING, SUCCESS, FAILED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Push Error
-    physical_name: push_error
+    physical_name: push_err
     description: "Thông tin lỗi khi đẩy thông báo thất bại."
     data_domain: Text
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -202,7 +202,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -254,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

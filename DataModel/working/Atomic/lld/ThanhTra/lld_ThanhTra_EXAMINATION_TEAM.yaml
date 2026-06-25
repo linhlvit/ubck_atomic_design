@@ -29,7 +29,20 @@ attributes:
     is_primary_key: true
     status: draft
     source_columns: []
-    comment: "PK surrogate. BCV: [Business Activity] Business Review."
+    comment: "PK surrogate. Hash: hash_id('ThanhTra.EXAMINATION_TEAM', ID). BCV: [Business Activity] Business Review."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Examination Team Unique Key
+    physical_name: exam_tm_uk
+    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.EXAMINATION_TEAM.ID
+    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
     classification_context: null
     etl_derived_value: null
 
@@ -59,7 +72,7 @@ attributes:
     etl_derived_value: ThanhTra.EXAMINATION_TEAM
 
   - attribute_name: Examination Annual Plan Id
-    physical_name: exam_annual_plan_id
+    physical_name: exam_anul_pln_id
     description: "FK đến kế hoạch kiểm tra năm (chỉ có khi form_type=PERIODIC)."
     data_domain: Surrogate Key
     nullable: true
@@ -72,7 +85,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Examination Annual Plan Code
-    physical_name: exam_annual_plan_code
+    physical_name: exam_anul_pln_code
     description: "Mã kế hoạch kiểm tra năm liên kết (snapshot)."
     data_domain: Text
     nullable: true
@@ -119,8 +132,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.EXAMINATION_TEAM.FORM_TYPE
-    comment: "Scheme: TT_INSPECTION_TYPE."
-    classification_context: TT_INSPECTION_TYPE
+    comment: "Scheme: INSPECTION_TYPE."
+    classification_context: INSPECTION_TYPE
     etl_derived_value: null
 
   - attribute_name: Start Date
@@ -150,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Duration Days
-    physical_name: duration_days
+    physical_name: drtn_days
     description: "Thời hạn kiểm tra (số ngày, chỉ nhập số nguyên > 0)."
     data_domain: Small Counter
     nullable: true
@@ -202,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Announcement Date
-    physical_name: announcement_dt
+    physical_name: ancm_dt
     description: "Ngày công bố quyết định kiểm tra."
     data_domain: Date
     nullable: true
@@ -215,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Content
-    physical_name: content
+    physical_name: cntnt
     description: "Nội dung kiểm tra tổng quát."
     data_domain: Text
     nullable: true
@@ -293,7 +306,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -306,7 +319,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -319,7 +332,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -332,7 +345,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -345,7 +358,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -358,7 +371,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true

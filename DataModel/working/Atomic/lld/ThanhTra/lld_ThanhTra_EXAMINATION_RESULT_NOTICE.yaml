@@ -98,7 +98,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Issued Date
-    physical_name: issued_dt
+    physical_name: issu_dt
     description: "Ngày ban hành thông báo kết quả kiểm tra."
     data_domain: Date
     nullable: true
@@ -111,7 +111,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Announced Date
-    physical_name: announced_dt
+    physical_name: ancm_dt
     description: "Ngày công bố thông báo kết quả kiểm tra."
     data_domain: Date
     nullable: true
@@ -132,8 +132,8 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.EXAMINATION_RESULT_NOTICE.TARGET_TYPE
-    comment: "Scheme: TT_CONCLUSION_TARGET_TYPE. Dùng chung với INSPECTION_CONCLUSION."
-    classification_context: TT_CONCLUSION_TARGET_TYPE
+    comment: "Scheme: CONCLUSION_TARGET_TYPE. Dùng chung với INSPECTION_CONCLUSION."
+    classification_context: CONCLUSION_TARGET_TYPE
     etl_derived_value: null
 
   - attribute_name: Target Reference Id
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Content
-    physical_name: content
+    physical_name: cntnt
     description: "Nội dung thông báo kết quả kiểm tra."
     data_domain: Text
     nullable: true
@@ -176,7 +176,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Recommendation
-    physical_name: recommendation
+    physical_name: rcmnd
     description: "Ý kiến kiến nghị trong thông báo kết quả kiểm tra."
     data_domain: Text
     nullable: true
@@ -189,7 +189,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Execution Status Code
-    physical_name: execution_status_code
+    physical_name: exec_st_code
     description: "Trạng thái thực hiện: NOT_EXECUTED, FULLY_EXECUTED, PARTIALLY_EXECUTED."
     data_domain: Classification Value
     nullable: true
@@ -197,12 +197,12 @@ attributes:
     status: draft
     source_columns:
       - ThanhTra.EXAMINATION_RESULT_NOTICE.EXECUTION_STATUS
-    comment: "Scheme: TT_CONCLUSION_EXECUTION_STATUS. Dùng chung với INSPECTION_CONCLUSION."
-    classification_context: TT_CONCLUSION_EXECUTION_STATUS
+    comment: "Scheme: CONCLUSION_EXECUTION_STATUS. Dùng chung với INSPECTION_CONCLUSION."
+    classification_context: CONCLUSION_EXECUTION_STATUS
     etl_derived_value: null
 
   - attribute_name: Execution Description
-    physical_name: execution_desc
+    physical_name: exec_dsc
     description: "Mô tả tình hình thực hiện thông báo kết quả kiểm tra."
     data_domain: Text
     nullable: true
@@ -215,7 +215,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created Timestamp
-    physical_name: created_ts
+    physical_name: crt_tms
     description: "Thời điểm tạo bản ghi."
     data_domain: Timestamp
     nullable: true
@@ -228,7 +228,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated Timestamp
-    physical_name: updated_ts
+    physical_name: udt_tms
     description: "Thời điểm cập nhật gần nhất."
     data_domain: Timestamp
     nullable: true
@@ -241,7 +241,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Id
-    physical_name: created_by_officer_id
+    physical_name: crt_by_ofcr_id
     description: "ID người dùng tạo bản ghi."
     data_domain: Surrogate Key
     nullable: true
@@ -254,7 +254,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Created By Officer Code
-    physical_name: created_by_officer_code
+    physical_name: crt_by_ofcr_code
     description: "Mã người dùng tạo bản ghi."
     data_domain: Text
     nullable: true
@@ -267,7 +267,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Id
-    physical_name: updated_by_officer_id
+    physical_name: udt_by_ofcr_id
     description: "ID người dùng cập nhật gần nhất."
     data_domain: Surrogate Key
     nullable: true
@@ -280,7 +280,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Updated By Officer Code
-    physical_name: updated_by_officer_code
+    physical_name: udt_by_ofcr_code
     description: "Mã người dùng cập nhật gần nhất."
     data_domain: Text
     nullable: true
