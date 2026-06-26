@@ -35,27 +35,27 @@ attributes:
 
   - attribute_name: Violation Behavior Unique Key
     physical_name: vln_bhvr_uk
-    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_BEHAVIOR.ID
-    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Violation Behavior Code
-    physical_name: vln_bhvr_code
-    description: "Mã hành vi vi phạm hành chính (UNIQUE, tự động sinh). BK của entity."
+    description: "Unique Key nghiệp vụ. Mã hành vi vi phạm tự sinh UNIQUE."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_BEHAVIOR.CODE
-    comment: "BK chính. Mã tự động sinh UNIQUE — không phải PK UUID."
+    comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violation Behavior Code
+    physical_name: vln_bhvr_code
+    description: "Khóa chính UUID của bảng nguồn. BK của entity."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_BEHAVIOR.ID
+    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
     classification_context: null
     etl_derived_value: null
 

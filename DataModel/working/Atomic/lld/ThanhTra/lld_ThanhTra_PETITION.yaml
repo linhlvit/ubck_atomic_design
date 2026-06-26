@@ -35,27 +35,27 @@ attributes:
 
   - attribute_name: Petition Unique Key
     physical_name: peti_uk
-    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ID
-    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Petition Code
-    physical_name: peti_code
-    description: "Mã vụ việc tự động sinh (VD: DA2540). BK của entity."
+    description: "Unique Key nghiệp vụ. Mã vụ việc tự sinh UNIQUE (VD: DA2540)."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
       - ThanhTra.PETITION.CODE
-    comment: "BK chính. Mã nghiệp vụ tự sinh."
+    comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Petition Code
+    physical_name: peti_code
+    description: "Khóa chính UUID của bảng nguồn. BK của entity."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.PETITION.ID
+    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
     classification_context: null
     etl_derived_value: null
 

@@ -35,14 +35,14 @@ attributes:
 
   - attribute_name: Legal Document Unique Key
     physical_name: lgl_doc_uk
-    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
+    description: "Unique Key nghiệp vụ. Mã văn bản pháp luật tự sinh UNIQUE (VD: VBPL-XXXX)."
     data_domain: Text
-    nullable: true
+    nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.ID
-    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
+      - ThanhTra.LEGAL_DOCUMENT.CODE
+    comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
     classification_context: null
     etl_derived_value: null
 
@@ -70,19 +70,6 @@ attributes:
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: SOURCE_SYSTEM=ThanhTra.LEGAL_DOCUMENT
     etl_derived_value: ThanhTra.LEGAL_DOCUMENT
-
-  - attribute_name: Legal Document Reference Code
-    physical_name: lgl_doc_ref_code
-    description: "Mã văn bản pháp luật (VD: VBPL-XXXX). UNIQUE."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.CODE
-    comment: "Mã định danh nghiệp vụ của văn bản pháp luật."
-    classification_context: null
-    etl_derived_value: null
 
   - attribute_name: Legal Document Name
     physical_name: lgl_doc_nm

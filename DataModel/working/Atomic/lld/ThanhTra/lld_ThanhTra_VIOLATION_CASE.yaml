@@ -35,27 +35,27 @@ attributes:
 
   - attribute_name: Violation Case Unique Key
     physical_name: vln_case_uk
-    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_CASE.ID
-    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Violation Case Code
-    physical_name: vln_case_code
-    description: "Mã hồ sơ VPHC tự sinh. BK của entity."
+    description: "Unique Key nghiệp vụ. Mã hồ sơ VPHC tự sinh UNIQUE."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
       - ThanhTra.VIOLATION_CASE.CODE
-    comment: "BK chính. Mã hồ sơ VPHC tự sinh."
+    comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violation Case Code
+    physical_name: vln_case_code
+    description: "Khóa chính UUID của bảng nguồn. BK của entity."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.VIOLATION_CASE.ID
+    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
     classification_context: null
     etl_derived_value: null
 

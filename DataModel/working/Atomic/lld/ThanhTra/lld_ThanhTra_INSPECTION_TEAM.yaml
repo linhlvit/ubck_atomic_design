@@ -35,27 +35,27 @@ attributes:
 
   - attribute_name: Inspection Team Unique Key
     physical_name: insp_tm_uk
-    description: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.INSPECTION_TEAM.ID
-    comment: "UUID kỹ thuật của bảng nguồn. Không dùng làm BK."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Inspection Team Code
-    physical_name: insp_tm_code
-    description: "Mã hồ sơ đoàn thanh tra tự sinh (HSTT-YYYY-XXX). BK của entity."
+    description: "Unique Key nghiệp vụ. Mã hồ sơ đoàn thanh tra tự sinh UNIQUE (HSTT-YYYY-XXX)."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
       - ThanhTra.INSPECTION_TEAM.CODE
-    comment: "BK chính. Mã nghiệp vụ tự sinh (không phải UUID PK)."
+    comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Team Code
+    physical_name: insp_tm_code
+    description: "Khóa chính UUID của bảng nguồn. BK của entity."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - ThanhTra.INSPECTION_TEAM.ID
+    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
     classification_context: null
     etl_derived_value: null
 
