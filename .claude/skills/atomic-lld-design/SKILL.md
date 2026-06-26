@@ -688,14 +688,9 @@ Không giả định scope từ tên bảng. Đọc kỹ mô tả nguồn trư�
 | announcement | `ancm` | `ancm_dt`, `ancm_ttl` |
 | remedial (adj/noun) | `rmdl` | `rmdl_msr`, `rmdl_ddln_dt` |
 | abnormal | `abnrm` | `abnrm_txn_chk_ind` |
+| coerced | `crc` | `crc_amt` |
+| lawsuit | `lwst` | `lwst_exists_ind`, `lwst_cntnt` |
 | reception | `rcptn` | `rcptn_dt`, `ctzn_rcptn_id` |
 | verification | `verf` | `verf_mins_sign_dt` |
 | minutes (biên bản) | `mins` | `verf_mins_sign_dt` |
 
-### Từ B3 — giữ nguyên lowercase (không có trong CSV, không có trong bảng B2)
-
-Những từ dưới đây **không tìm thấy trong CSV** và chưa có trong bảng B2 → áp dụng B3: giữ nguyên token lowercase. Liệt kê để tránh tìm lại mỗi lần.
-
-| Từ | Token giữ nguyên | Đề xuất thêm vào B2 | Ghi chú |
-|---|---|---|---|
-| lawsuit | `lawsuit` | `lwst` (đề xuất) | Dùng trong `lawsuit_exists_ind`, `lawsuit_content` |
