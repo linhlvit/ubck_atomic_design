@@ -1,0 +1,181 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: BANK
+brd_ref: BRD-SRC-SCMS-BANK
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: ADDRESS
+    data_type: VARCHAR2(1000)
+    description: "Địa chỉ trụ sở chính/văn phòng"
+    key: null
+    fk_note: null
+  - name: PHONE
+    data_type: VARCHAR2(50)
+    description: "Số điện thoại liên hệ"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(255)
+    description: "Địa chỉ email liên hệ"
+    key: null
+    fk_note: null
+  - name: ENTERPRISE_CODE
+    data_type: VARCHAR2(50)
+    description: "Mã số doanh nghiệp đăng ký tại Sở KH"
+    key: null
+    fk_note: null
+  - name: TAX_CODE
+    data_type: VARCHAR2(50)
+    description: "Mã số thuế doanh nghiệp"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: BANK_NAME
+    data_type: VARCHAR2(500)
+    description: "Tên ngân hàng"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai ngan hang: 1 = Hoat dong; 0 = Ngung hoat dong"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: NAME_EN
+    data_type: VARCHAR2(500 BYTE)
+    description: "Tên đầy đủ bằng tiếng Anh"
+    key: null
+    fk_note: null
+  - name: SHORT_NAME
+    data_type: VARCHAR2(200 BYTE)
+    description: "Tên viết tắt (VD: SSI, VPS, MBS)"
+    key: null
+    fk_note: null
+  - name: FAX
+    data_type: VARCHAR2(50 BYTE)
+    description: "Số fax"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: VARCHAR2(500 BYTE)
+    description: "Địa chỉ website"
+    key: null
+    fk_note: null
+  - name: OPERATION_LICENSE_NUMBER
+    data_type: VARCHAR2(100 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LICENSE_ISSUE_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: LICENSE_ISSUER
+    data_type: VARCHAR2(500 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CHARTER_CAPITAL
+    data_type: NUMBER(20,2)
+    description: "Vốn điều lệ (đơn vị: đồng)"
+    key: null
+    fk_note: null
+  - name: CATEGORY
+    data_type: NUMBER(1)
+    description: "Cột category — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: SETTLEMENT_BANK_DECISION_NUMBER
+    data_type: VARCHAR2(200 BYTE)
+    description: "Số quyết định chỉ định ngân hàng thanh toán"
+    key: null
+    fk_note: null
+  - name: SETTLEMENT_BANK_DECISION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: SETTLEMENT_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu thực hiện chức năng thanh toán"
+    key: null
+    fk_note: null
+  - name: SETTLEMENT_FUNCTION_DESCRIPTION
+    data_type: NCLOB
+    description: "Mô tả chức năng thanh toán của ngân hàng"
+    key: null
+    fk_note: null
+  - name: BUSINESS_REG_CERT_NUMBER
+    data_type: VARCHAR2(200 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: BUSINESS_REG_CERT_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_START_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBER_CERT_NUMBER
+    data_type: VARCHAR2(200 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_CERT_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBER_CODE
+    data_type: VARCHAR2(200 BYTE)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_FUNCTION_DESCRIPTION
+    data_type: NCLOB
+    description: "Mô tả chức năng lưu ký của ngân hàng"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: VARCHAR2(500 BYTE)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NCLOB
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: INPUT_REPORT_DATA
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null

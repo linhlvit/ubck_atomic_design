@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_REPORT_DEEP_CONFIG
+brd_ref: BRD-SRC-SCMS-FORM_REPORT_DEEP_CONFIG
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(19)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: EFORM_SCHEMA_JSON
+    data_type: NCLOB
+    description: "Schema định nghĩa cấu trúc eform (JSON)"
+    key: null
+    fk_note: null
+  - name: EXCEL_CONFIG_JSON
+    data_type: NCLOB
+    description: "Cấu hình ánh xạ dữ liệu từ Excel vào eform (JSON)"
+    key: null
+    fk_note: null
+  - name: SHEETS_JSON
+    data_type: NCLOB
+    description: "Danh sách và cấu trúc các sheet trong biểu mẫu (JSON)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: EFORM_RUNTIME_MANIFEST_JSON
+    data_type: NCLOB
+    description: ""
+    key: null
+    fk_note: null

@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: LNK_EVENT_TYPE_FORM
+brd_ref: BRD-SRC-SCMS-LNK_EVENT_TYPE_FORM
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: EVENT_TYPE_ID
+    data_type: NUMBER(19)
+    description: "FK -> cat_event_type: Loai su vu/su kien nghiep vu"
+    key: FK
+    fk_note: "FK → CAT_EVENT_TYPE.ID"
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(19)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: APPLICABLE_FROM
+    data_type: DATE
+    description: "Ngày bắt đầu áp dụng"
+    key: null
+    fk_note: null
+  - name: APPLICABLE_TO
+    data_type: DATE
+    description: "Ngày kết thúc áp dụng"
+    key: null
+    fk_note: null
+  - name: REQUIRED
+    data_type: NUMBER(1)
+    description: "Cờ bắt buộc: 1=Bắt buộc nhập, 0=Không bắt buộc"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(5)
+    description: "Trang thai ban ghi lien ket LoaiSuVu-BaoCao: 1 = Dang hoat dong; 0 = Ngung hoat dong"
+    key: null
+    fk_note: null

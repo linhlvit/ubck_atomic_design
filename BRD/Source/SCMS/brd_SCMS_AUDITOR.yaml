@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: AUDITOR
+brd_ref: BRD-SRC-SCMS-AUDITOR
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: AUDIT_FIRM_ID
+    data_type: NUMBER(10)
+    description: "FK -> audit_firm: Công ty kiểm toán"
+    key: FK
+    fk_note: "FK → AUDIT_FIRM.ID"
+  - name: FULL_NAME
+    data_type: NVARCHAR2(250)
+    description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức)"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_NUMBER
+    data_type: NVARCHAR2(30)
+    description: "Số chứng chỉ hành nghề kiểm toán"
+    key: null
+    fk_note: null
+  - name: ISSUE_DATE
+    data_type: TIMESTAMP(6)
+    description: "Ngày cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: APPROVAL_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: APPROVAL_REVOCATION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai kiem toan vien: 1 = Hoat dong/Con hanh nghe; 0 = Ngung hanh nghe"
+    key: null
+    fk_note: null

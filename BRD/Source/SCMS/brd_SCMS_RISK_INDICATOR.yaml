@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: RISK_INDICATOR
+brd_ref: BRD-SRC-SCMS-RISK_INDICATOR
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: INDICATOR_CODE
+    data_type: NVARCHAR2(50)
+    description: "Mã chỉ tiêu"
+    key: null
+    fk_note: null
+  - name: INDICATOR_NAME
+    data_type: NVARCHAR2(2000)
+    description: "Tên chỉ tiêu"
+    key: null
+    fk_note: null
+  - name: WEIGHT
+    data_type: NUMBER(6,2)
+    description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: IMPLEMENTATION_METHOD
+    data_type: NUMBER(1)
+    description: "Phuong phap tinh toan: 1 = Thu cong (nhap tay); 2 = Tu dong (tinh theo cong thuc)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: DEFAULT_VALUE
+    data_type: NUMBER
+    description: "Giá trị mặc định của ô khi khởi tạo"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai chi tieu rui ro: 0 = Khong su dung; 1 = Dang su dung"
+    key: null
+    fk_note: null
+  - name: RECORD_TYPE
+    data_type: NVARCHAR2(20)
+    description: "Nhom chi tieu theo mo hinh CAMEL: C = Muc do du von (Capital Adequacy); A = Chat luong tai san (Asset Quality); M = Chat luong quan tri (Management Quality); E = Kha nang sinh loi (Earnings); L = Chat luong thanh khoan (Liquidity)"
+    key: null
+    fk_note: null
+  - name: FORMULA
+    data_type: CLOB
+    description: "Công thức tính toán giá trị ô"
+    key: null
+    fk_note: null
+  - name: SUM_FORMULA
+    data_type: CLOB
+    description: "Công thức tổng hợp của ô (tính tổng nhiều ô)"
+    key: null
+    fk_note: null
+  - name: FORMULA_TEXT
+    data_type: CLOB
+    description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng"
+    key: null
+    fk_note: null

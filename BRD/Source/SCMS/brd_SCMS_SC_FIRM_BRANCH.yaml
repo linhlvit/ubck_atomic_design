@@ -1,0 +1,216 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_BRANCH
+brd_ref: BRD-SRC-SCMS-SC_FIRM_BRANCH
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: FULL_NAME
+    data_type: NVARCHAR2(500)
+    description: "Ten chi nhanh"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: NVARCHAR2(1000)
+    description: "Địa chỉ trụ sở chính/văn phòng"
+    key: null
+    fk_note: null
+  - name: PROVINCE_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_province: Tỉnh/thành phố"
+    key: FK
+    fk_note: "FK → CAT_PROVINCE.ID"
+  - name: DISTRICT_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên quận/huyện (lưu trực tiếp)"
+    key: null
+    fk_note: null
+  - name: WARD_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên phường/xã (lưu trực tiếp)"
+    key: null
+    fk_note: null
+  - name: PHONE
+    data_type: NVARCHAR2(100)
+    description: "Số điện thoại liên hệ"
+    key: null
+    fk_note: null
+  - name: FAX
+    data_type: NVARCHAR2(50)
+    description: "Số fax"
+    key: null
+    fk_note: null
+  - name: DECISION_NUMBER
+    data_type: NVARCHAR2(30)
+    description: "S? quy?t d?nh"
+    key: null
+    fk_note: null
+  - name: DECISION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: VALID_DOSSIER_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: DIRECTOR_NAME
+    data_type: NVARCHAR2(100)
+    description: ""
+    key: null
+    fk_note: null
+  - name: BUSINESS_LINES
+    data_type: NVARCHAR2(100)
+    description: "Nghiệp vụ kinh doanh chứng khoán được cấp phép"
+    key: null
+    fk_note: null
+  - name: BRANCH_STATUS
+    data_type: NUMBER(2)
+    description: "Trang thai phap ly chi nhanh - FK toi bang CAT_SC_FIRM_STATUS (VD: Dang hoat dong, Tam ngung, Dinh chi, Dong cua)"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai ban ghi: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
+    key: null
+    fk_note: null
+  - name: PROVISIONAL
+    data_type: NUMBER(1)
+    description: "Co ban nhap: 1 = Ban nhap; 0 = Chinh thuc"
+    key: null
+    fk_note: null
+  - name: SC_FIRM_BRANCH_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_branch: Chi nhánh CTCK liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_BRANCH.ID"
+  - name: DISTRICT_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_district: Quận/huyện"
+    key: FK
+    fk_note: "FK → CAT_DISTRICT.ID"
+  - name: WARD_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_ward: Phường/xã"
+    key: FK
+    fk_note: "FK → CAT_WARD.ID"
+  - name: NHAN_SU_GIAM_DOC_ID
+    data_type: NUMBER(10)
+    description: "ID NHAN su"
+    key: null
+    fk_note: null
+  - name: REPRESENTATIVE_TITLE
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CO_QUAN_CAP
+    data_type: VARCHAR2(200)
+    description: "Cột co_quan_cap — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(200)
+    description: "Địa chỉ email liên hệ"
+    key: null
+    fk_note: null
+  - name: BRANCH_CODE
+    data_type: VARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LICENSE_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: OPERATION_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: NGAY_SUA
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: REPRESENTATIVE_NAME
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NGUOI_SUA_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: PHONE_NUMBER
+    data_type: VARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LICENSE_NUMBER
+    data_type: VARCHAR2(100)
+    description: ""
+    key: null
+    fk_note: null
+  - name: BRANCH_NAME
+    data_type: VARCHAR2(500)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NAME_EN
+    data_type: VARCHAR2(500)
+    description: "Tên đầy đủ bằng tiếng Anh"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: VARCHAR2(500)
+    description: "Địa chỉ website"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: VARCHAR2(2000 BYTE)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_OPERATION_DATE
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null

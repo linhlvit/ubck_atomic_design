@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_REPORT_PERIODIC
+brd_ref: BRD-SRC-SCMS-FORM_REPORT_PERIODIC
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: REPORT_PERIOD
+    data_type: NVARCHAR2(20)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: PERIOD_NUM
+    data_type: NUMBER
+    description: "Số kỳ báo cáo (T = thứ tự kỳ trong năm)"
+    key: null
+    fk_note: null
+  - name: LATEST_SUBMISSION_TIME
+    data_type: NUMBER
+    description: "Thời điểm muộn nhất được phép gửi báo cáo"
+    key: null
+    fk_note: null
+  - name: UNIT
+    data_type: NUMBER(1)
+    description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)"
+    key: null
+    fk_note: null
+  - name: PREPARATION_TIME
+    data_type: NUMBER
+    description: "S? ngay/tu?n/thang/nam... theo k? bao cao"
+    key: null
+    fk_note: null
+  - name: SUBMISSION_HOUR
+    data_type: NUMBER
+    description: "HH:mm:ss => Quy d?i thanh giay(SEC_TO_TIME)"
+    key: null
+    fk_note: null
+  - name: EXPECTED_INSERT_DATE
+    data_type: DATE
+    description: "Ngay d? ki?n c?p nh?p t? d?ng theo job"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: NUMBER(1)
+    description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai lich ky bieu mau: 1 = Dang hoat dong; 0 = Khong su dung"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(500)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: ON_DAY
+    data_type: NUMBER(1)
+    description: "Vào ngày cụ thể trong tháng (VD: ngày 15, ngày cuối tháng)"
+    key: null
+    fk_note: null
+  - name: INSERT_VALUE
+    data_type: NVARCHAR2(50)
+    description: "Gia tr? c?p nh?p t? d?ng theo job"
+    key: null
+    fk_note: null
+  - name: PREV_FORM_PERIODIC_ID
+    data_type: NUMBER(10)
+    description: "id d?nh k? cu"
+    key: null
+    fk_note: null
+  - name: LEGACY_REPORT_ID
+    data_type: VARCHAR2(10 BYTE)
+    description: "ID bao cao he thong cu"
+    key: null
+    fk_note: null

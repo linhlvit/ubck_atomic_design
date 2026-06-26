@@ -1,0 +1,161 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: BANK_PERIODIC_REPORT
+brd_ref: BRD-SRC-SCMS-BANK_PERIODIC_REPORT
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(19)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: EVENT_TYPE_ID
+    data_type: NUMBER(19)
+    description: "FK -> cat_event_type: Loai su vu/su kien nghiep vu ngan hang"
+    key: FK
+    fk_note: "FK → CAT_EVENT_TYPE.ID"
+  - name: BANK_ID
+    data_type: NUMBER(19)
+    description: "FK -> bank: Ngân hàng liên quan"
+    key: FK
+    fk_note: "FK → BANK.ID"
+  - name: REPORT_NAME
+    data_type: NVARCHAR2(2000)
+    description: "Tên báo cáo/biểu mẫu"
+    key: null
+    fk_note: null
+  - name: REPORT_YEAR
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: PERIOD
+    data_type: NUMBER(10)
+    description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD
+    data_type: NVARCHAR2(20)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: QUARTER
+    data_type: NUMBER(10)
+    description: "Quý trong năm (1, 2, 3, 4)"
+    key: null
+    fk_note: null
+  - name: REPORT_MONTH
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu kỳ báo cáo hoặc hiệu lực"
+    key: null
+    fk_note: null
+  - name: END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực"
+    key: null
+    fk_note: null
+  - name: SUBMISSION_DEADLINE
+    data_type: DATE
+    description: "Hạn nộp báo cáo theo quy định"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai bao cao dinh ky ngan hang: 0 = Chua gui; 1 = Da gui; 2 = Da duyet; -1 = Tu choi; 3 = Bi huy"
+    key: null
+    fk_note: null
+  - name: IMPORT_FILE_PATH
+    data_type: NVARCHAR2(2000)
+    description: "Đường dẫn file Excel import dữ liệu"
+    key: null
+    fk_note: null
+  - name: DIGITAL_SIGNATURE_FILE
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: VALID_DIGITAL_SIGNATURE
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: VALID_DATA
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm gửi thông báo/tin nhắn"
+    key: null
+    fk_note: null
+  - name: SENDER_ID
+    data_type: NUMBER(19)
+    description: "FK -> sys_user: Người gửi thông báo/tin nhắn"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: APPROVED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVED_BY
+    data_type: NUMBER(19)
+    description: "FK -> sys_user: Người phê duyệt/chấp thuận"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: REJECTION_REASON
+    data_type: NCLOB
+    description: "Lý do từ chối báo cáo"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NCLOB
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: OVERDUE_DAYS
+    data_type: NUMBER(10)
+    description: "Số ngày nộp báo cáo quá hạn"
+    key: null
+    fk_note: null
+  - name: CANCELLED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm hủy báo cáo"
+    key: null
+    fk_note: null
+  - name: CANCELLED_BY
+    data_type: NUMBER(19)
+    description: "FK -> sys_user: Người hủy báo cáo"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CANCELLATION_REASON
+    data_type: NCLOB
+    description: "Lý do hủy báo cáo"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: SUBMISSION_DEADLINE_AT
+    data_type: TIMESTAMP(0)
+    description: ""
+    key: null
+    fk_note: null

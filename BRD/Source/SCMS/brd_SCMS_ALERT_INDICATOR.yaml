@@ -1,0 +1,146 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: ALERT_INDICATOR
+brd_ref: BRD-SRC-SCMS-ALERT_INDICATOR
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: ALERT_CODE
+    data_type: NVARCHAR2(50)
+    description: "Mã chỉ tiêu cảnh báo"
+    key: null
+    fk_note: null
+  - name: ALERT_NAME
+    data_type: NVARCHAR2(2000)
+    description: "Tên chỉ tiêu cảnh báo"
+    key: null
+    fk_note: null
+  - name: LEGAL_REFERENCE_ID
+    data_type: NUMBER(10)
+    description: "Chua lien k?t d?n b?ng khac"
+    key: null
+    fk_note: null
+  - name: LEGAL_REFERENCE
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SEVERITY_LEVEL
+    data_type: NUMBER(3)
+    description: "C?p 1 ho?c 2 ho?c 3"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(2000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: DEFAULT_VALUE
+    data_type: NUMBER
+    description: "Giá trị mặc định của ô khi khởi tạo"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai chi tieu canh bao: 0 = Khong su dung; 1 = Dang su dung"
+    key: null
+    fk_note: null
+  - name: SUM_FORMULA
+    data_type: CLOB
+    description: "Công thức tổng hợp của ô (tính tổng nhiều ô)"
+    key: null
+    fk_note: null
+  - name: FORMULA_TEXT
+    data_type: CLOB
+    description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng"
+    key: null
+    fk_note: null
+  - name: FORMULA
+    data_type: CLOB
+    description: "Công thức tính toán giá trị ô"
+    key: null
+    fk_note: null
+  - name: ALERT_INDICATOR_TYPE
+    data_type: NUMBER(1)
+    description: "Loai chi tieu canh bao: AN_TOAN_TAI_CHINH = An toan tai chinh; TUAN_THU = Tuan thu phap ly; RUI_RO = Rui ro hoat dong"
+    key: null
+    fk_note: null
+  - name: UNIT
+    data_type: VARCHAR2(255)
+    description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)"
+    key: null
+    fk_note: null
+  - name: INDICATOR_TYPE_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: INDICATOR_CODE
+    data_type: VARCHAR2(255)
+    description: "Mã chỉ tiêu"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(255)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: SEVERITY
+    data_type: NUMBER(10)
+    description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao"
+    key: null
+    fk_note: null
+  - name: LOWER_THRESHOLD
+    data_type: NUMBER(38,2)
+    description: "Ngưỡng cảnh báo dưới"
+    key: null
+    fk_note: null
+  - name: UPPER_THRESHOLD
+    data_type: NUMBER(38,2)
+    description: "Ngưỡng cảnh báo trên"
+    key: null
+    fk_note: null
+  - name: INDICATOR_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên chỉ tiêu"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: WEIGHT
+    data_type: NUMBER(38,2)
+    description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)"
+    key: null
+    fk_note: null
+  - name: LEGAL_BASIS
+    data_type: NCLOB
+    description: "Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng)"
+    key: null
+    fk_note: null

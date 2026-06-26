@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_ROW_HEADER
+brd_ref: BRD-SRC-SCMS-FORM_ROW_HEADER
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_SHEET_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET.ID"
+  - name: SORT_ORDER
+    data_type: NUMBER(4)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER
+    description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
+    key: null
+    fk_note: null
+  - name: ALIGNMENT
+    data_type: VARCHAR2(20)
+    description: "Canh lề văn bản (LEFT/CENTER/RIGHT)"
+    key: null
+    fk_note: null
+  - name: HIERARCHY_LEVEL
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: COT_BAT_DAU
+    data_type: NUMBER(10)
+    description: "Cột cot_bat_dau — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: COT_KET_THUC
+    data_type: NUMBER(10)
+    description: "Cột cot_ket_thuc — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: BOLD
+    data_type: NUMBER(1)
+    description: "Cờ in đậm: 1=In đậm, 0=Thường"
+    key: null
+    fk_note: null
+  - name: BACKGROUND_COLOR
+    data_type: VARCHAR2(20)
+    description: "Màu nền của hàng/ô (mã màu HEX hoặc tên)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: HEADER_TITLE
+    data_type: VARCHAR2(500)
+    description: "Tiêu đề của nhóm hàng header"
+    key: null
+    fk_note: null
+  - name: PARENT_HEADER_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_row_header: Header cha trong cấu trúc phân cấp"
+    key: FK
+    fk_note: "FK → FORM_ROW_HEADER.ID"
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai tieu de hang: 1 = Dang su dung; 0 = Khong su dung"
+    key: null
+    fk_note: null

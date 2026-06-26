@@ -1,0 +1,171 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_REPORT
+brd_ref: BRD-SRC-SCMS-FORM_REPORT
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SYS_FUNCTION_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → SYS_FUNCTION.ID"
+  - name: REPORT_CODE
+    data_type: NVARCHAR2(200)
+    description: "Mã báo cáo/biểu mẫu (VD: BCTC-Q, ATCT-T)"
+    key: null
+    fk_note: null
+  - name: REPORT_NAME
+    data_type: NVARCHAR2(2000)
+    description: "Tên báo cáo/biểu mẫu"
+    key: null
+    fk_note: null
+  - name: LEGAL_BASIS
+    data_type: NVARCHAR2(2000)
+    description: "Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng)"
+    key: null
+    fk_note: null
+  - name: REPORT_GROUP
+    data_type: NVARCHAR2(100)
+    description: "Nhóm báo cáo (phân nhóm theo chức năng/đối tượng)"
+    key: null
+    fk_note: null
+  - name: REQUIRES_DISCLOSURE
+    data_type: NUMBER(1)
+    description: "Co phai cong bo thong tin khi nop bao cao: 1 = Co; 0 = Khong"
+    key: null
+    fk_note: null
+  - name: REQUIRES_IMPORT
+    data_type: NUMBER(1)
+    description: "Co yeu cau nhap lieu qua file Excel: 1 = Co; 0 = Khong"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: NVARCHAR2(2000)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: NUMBER(1)
+    description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(2)
+    description: "Trang thai bieu mau bao cao: 0 = Khong su dung; 1 = Dang su dung (hoat dong); 2 = Ban nhap"
+    key: null
+    fk_note: null
+  - name: REPORT_TYPE
+    data_type: NVARCHAR2(20)
+    description: "Loai bao cao: DINH_KY = Bao cao dinh ky; BAT_THUONG = Bao cao bat thuong; THEO_YEU_CAU = Bao cao theo yeu cau; CBTT = Cong bo thong tin"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER
+    description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
+    key: null
+    fk_note: null
+  - name: VERSION_DATE
+    data_type: DATE
+    description: "Luu l?i ngay c?a phien b?n khi dua vao s? d?ng"
+    key: null
+    fk_note: null
+  - name: SUMMARY
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: SENDER_ENTITY
+    data_type: NVARCHAR2(50)
+    description: "Loai don vi gui bao cao: CTCK = Cong ty chung khoan; VPDD = Van phong dai dien CTCK nuoc ngoai tai VN; CNCTCK = Chi nhanh CTCK nuoc ngoai tai VN"
+    key: null
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: REPORT_STYLE
+    data_type: NUMBER(1)
+    description: "Phong cach bao cao: 0 = Bao cao dau vao (nhap lieu); 1 = Bao cao dau ra (xuat du lieu)"
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_NEWS_TYPE
+    data_type: VARCHAR2(30 BYTE)
+    description: "Loai tin CBTT tao ra khi gui bao cao: 1 = Dinh ky; 2 = Bat thuong; 3 = Theo yeu cau"
+    key: null
+    fk_note: null
+  - name: INPUT_REPORT
+    data_type: NUMBER
+    description: "Cờ là báo cáo đầu vào do đơn vị nộp: 1=Đầu vào, 0=Đầu ra"
+    key: null
+    fk_note: null
+  - name: NEXT_FORM_ID
+    data_type: NUMBER(10)
+    description: "BM ID bao cao tip theo"
+    key: null
+    fk_note: null
+  - name: LEGACY_REPORT_TYPE
+    data_type: NVARCHAR2(200)
+    description: "Ma loai bao cao he thong cu (de tim kiem theo lien thong voi he thong 334)"
+    key: null
+    fk_note: null
+  - name: EXCEL_TEMPLATE_PATH
+    data_type: VARCHAR2(500)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: VARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: PARENT_ID
+    data_type: NUMBER(10)
+    description: "FK -> cùng bảng: ID bản ghi cha trong cấu trúc phân cấp"
+    key: FK
+    fk_note: "FK suy luận → FORM_REPORT.ID"
+  - name: SIGNATURE_TYPE
+    data_type: NUMBER(10)
+    description: "Loai chu ky yeu cau: DIEN_TU = Chu ky dien tu; SO_HOA = So hoa/upload file ky; NONE = Khong yeu cau chu ky"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: EFORM_ENABLED
+    data_type: NUMBER(1)
+    description: "Cờ có eform (biểu mẫu điện tử tương tác): 1=Có, 0=Không"
+    key: null
+    fk_note: null

@@ -1,0 +1,216 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: DISCLOSURE_REPORT
+brd_ref: BRD-SRC-SCMS-DISCLOSURE_REPORT
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: NEWS_TYPE
+    data_type: VARCHAR2(255)
+    description: "Loai tin cong bo: 1 = Dinh ky; 2 = Bat thuong; 3 = Theo yeu cau"
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_TYPE
+    data_type: VARCHAR2(255)
+    description: "Loai hinh cong bo: 1 = CBTT tren san; 2 = UBCKNN; 3 = Trang web cong ty"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD
+    data_type: VARCHAR2(255)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: REPORT_YEAR
+    data_type: VARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: TITLE
+    data_type: VARCHAR2(255)
+    description: "Tiêu đề thông báo/tin nhắn/báo cáo"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(255)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: SUMMARY
+    data_type: VARCHAR2(255)
+    description: "Tóm tắt nội dung trích yếu"
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_PERSON_NAME
+    data_type: VARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_DATE
+    data_type: DATE
+    description: "Ngày công bố thông tin"
+    key: null
+    fk_note: null
+  - name: ATTACHMENT_PATH
+    data_type: VARCHAR2(255)
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
+    key: null
+    fk_note: null
+  - name: ERROR_DESCRIPTION
+    data_type: NVARCHAR2(1000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm gửi thông báo/tin nhắn"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai gui CBTT tu he thong BA: 0 = Chua gui; 1 = Da gui thanh cong; -1 = Loi khi gui"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD_VALUE
+    data_type: VARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: MEMBER_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> member_report: Báo cáo thành viên liên quan"
+    key: FK
+    fk_note: "FK → MEMBER_REPORT.ID"
+  - name: LEGACY_NEWS_ID
+    data_type: NUMBER(20)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_FILENAME
+    data_type: VARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LEGACY_FILEDATA
+    data_type: BLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: ORIGINAL_DISCLOSURE_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: EVENT_TYPE_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
+    key: FK
+    fk_note: "FK → CAT_EVENT_TYPE.ID"
+  - name: NOTE
+    data_type: VARCHAR2(255)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CORRECTION
+    data_type: NUMBER(1)
+    description: "Cờ tin đính chính: 1=Đính chính, 0=Tin gốc"
+    key: null
+    fk_note: null
+  - name: CANCELLATION_REASON
+    data_type: VARCHAR2(255)
+    description: "Lý do hủy báo cáo"
+    key: null
+    fk_note: null
+  - name: REJECTION_REASON
+    data_type: VARCHAR2(2000)
+    description: "Lý do từ chối báo cáo"
+    key: null
+    fk_note: null
+  - name: CANCELLED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm hủy báo cáo"
+    key: null
+    fk_note: null
+  - name: EVENT_DATE
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: APPROVED_BY
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người phê duyệt/chấp thuận"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: SENDER_ID
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người gửi thông báo/tin nhắn"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CANCELLED_BY
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người hủy báo cáo"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LATE_DAYS
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_DEADLINE
+    data_type: TIMESTAMP(6)
+    description: "Thời hạn phải công bố thông tin"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Cột updated_at — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: NUMBER(10)
+    description: "Cột updated_by — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: EFORM_DATA
+    data_type: NCLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: SC_FIRM_ADHOC_REPORT_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → SC_FIRM_ADHOC_REPORT.ID"
+  - name: PERIODIC_REPORT_ID
+    data_type: NUMBER(19)
+    description: "FK -> sc_firm_periodic_report: Báo cáo định kỳ liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_PERIODIC_REPORT.ID"
+  - name: SC_FIRM_FOREIGN_BRANCH_ID
+    data_type: NUMBER(19)
+    description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_FOREIGN_BRANCH.ID"
+  - name: SC_FIRM_FOREIGN_BRANCH_REPORT_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null

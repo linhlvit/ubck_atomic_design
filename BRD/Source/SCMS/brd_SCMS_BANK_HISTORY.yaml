@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: BANK_HISTORY
+brd_ref: BRD-SRC-SCMS-BANK_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: BANK_ID
+    data_type: NUMBER
+    description: "FK -> bank: Ngân hàng liên quan"
+    key: FK
+    fk_note: "FK → BANK.ID"
+  - name: NGAY_THUC_HIEN
+    data_type: TIMESTAMP(6)
+    description: "Cột ngay_thuc_hien — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: SU_VU_CODE
+    data_type: VARCHAR2(64 BYTE)
+    description: "Cột su_vu_code — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: EVENT_TYPE_NAME
+    data_type: NVARCHAR2(500)
+    description: "Ten loai su vu/su kien (luu tru truc tiep, khong FK)"
+    key: null
+    fk_note: null
+  - name: CONTENT_BEFORE
+    data_type: NCLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: CONTENT_AFTER
+    data_type: NCLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: DOCUMENT_NUMBER
+    data_type: NVARCHAR2(200)
+    description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_DATE
+    data_type: DATE
+    description: "Ngày văn bản/thay đổi có hiệu lực"
+    key: null
+    fk_note: null
+  - name: FILE_VAN_BAN_TEN
+    data_type: NVARCHAR2(500)
+    description: "Cột file_van_ban_ten — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: FILE_VAN_BAN_DUONG_DAN
+    data_type: VARCHAR2(500 BYTE)
+    description: "Cột file_van_ban_duong_dan — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: PERFORMED_BY
+    data_type: NUMBER
+    description: "FK -> sys_user: Người thực hiện"
+    key: FK
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: PERFORMER_NAME
+    data_type: NVARCHAR2(255)
+    description: "Tên người thực hiện"
+    key: null
+    fk_note: null

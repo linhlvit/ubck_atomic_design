@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: CAT_SC_FIRM_STATUS
+brd_ref: BRD-SRC-SCMS-CAT_SC_FIRM_STATUS
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_STATUS_CODE
+    data_type: NVARCHAR2(50)
+    description: "Mã trạng thái hoạt động CTCK"
+    key: null
+    fk_note: null
+  - name: SC_FIRM_STATUS_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên trạng thái hoạt động CTCK"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: REPORT_SUBMISSION_ENABLED
+    data_type: NUMBER(1)
+    description: "Cờ CTCK ở trạng thái này phải nộp báo cáo: 1=Phải nộp, 0=Không"
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_ENABLED
+    data_type: NUMBER(1)
+    description: "Cờ CTCK ở trạng thái này phải CBTT: 1=Phải CBTT, 0=Không"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai ban ghi danh muc: 1 = Dang su dung; 0 = Ngung su dung"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CODE
+    data_type: NVARCHAR2(50)
+    description: "Mã định danh (mã viết tắt, mã nghiệp vụ)"
+    key: null
+    fk_note: null
+  - name: ITEM_NAME
+    data_type: NVARCHAR2(250)
+    description: ""
+    key: null
+    fk_note: null
+  - name: APPLICABLE_ENTITY
+    data_type: NVARCHAR2(100)
+    description: "Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai)"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(1000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null

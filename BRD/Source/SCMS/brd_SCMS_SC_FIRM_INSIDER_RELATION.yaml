@@ -1,0 +1,156 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SC_FIRM_INSIDER_RELATION
+brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(19)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: SENIOR_PERSONNEL_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FULL_NAME
+    data_type: NVARCHAR2(500)
+    description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức)"
+    key: null
+    fk_note: null
+  - name: NATIONAL_ID
+    data_type: NVARCHAR2(50)
+    description: "Số CCCD/CMND/Hộ chiếu"
+    key: null
+    fk_note: null
+  - name: RELATIONSHIP
+    data_type: NVARCHAR2(200)
+    description: "Mối quan hệ (vợ/chồng/con cái/anh chị em)"
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_RATIO
+    data_type: NUMBER(12,4)
+    description: "Tỷ lệ sở hữu vốn (%)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai ban ghi: 1 = Con hieu luc; 0 = Het hieu luc"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(19)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: FOUNDING_SHAREHOLDER
+    data_type: NUMBER(10)
+    description: "Co la co dong sang lap: 1 = Co; 0 = Khong"
+    key: null
+    fk_note: null
+  - name: PERMANENT_ADDRESS
+    data_type: VARCHAR2(1000)
+    description: "Địa chỉ thường trú theo hộ khẩu"
+    key: null
+    fk_note: null
+  - name: PHONE
+    data_type: VARCHAR2(50)
+    description: "Số điện thoại liên hệ"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(320)
+    description: "Địa chỉ email liên hệ"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NCLOB
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: GENDER
+    data_type: NUMBER(10)
+    description: "Giới tính: 1=Nam, 2=Nữ"
+    key: null
+    fk_note: null
+  - name: RELATION_START_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: ISSUE_DATE
+    data_type: DATE
+    description: "Ngày cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_RATIO_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: DATE_OF_BIRTH
+    data_type: DATE
+    description: "Ngày sinh (dd/mm/yyyy)"
+    key: null
+    fk_note: null
+  - name: ISSUE_PLACE
+    data_type: VARCHAR2(500)
+    description: "Nơi cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: NATIONALITY_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_nationality: Quốc tịch (khóa ngoại tới danh mục quốc tịch)"
+    key: FK
+    fk_note: "FK → CAT_NATIONALITY.ID"
+  - name: SHARES_COUNT
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(19)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: ENTITY_TYPE
+    data_type: NVARCHAR2(20)
+    description: "Loai doi tuong nguoi noi bo: CA_NHAN = Ca nhan; TO_CHUC = To chuc (CTCK/NH/CN)"
+    key: null
+    fk_note: null
+  - name: NAME_EN
+    data_type: NVARCHAR2(500)
+    description: "Tên đầy đủ bằng tiếng Anh"
+    key: null
+    fk_note: null
+  - name: SHORT_NAME
+    data_type: NVARCHAR2(200)
+    description: "Tên viết tắt (VD: SSI, VPS, MBS)"
+    key: null
+    fk_note: null
+  - name: LEGAL_REPRESENTATIVE_NAME
+    data_type: NVARCHAR2(500)
+    description: ""
+    key: null
+    fk_note: null
+  - name: REPRESENTATIVE_POSITION
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null

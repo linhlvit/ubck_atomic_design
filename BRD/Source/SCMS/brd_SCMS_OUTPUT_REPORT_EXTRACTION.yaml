@@ -1,0 +1,131 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: OUTPUT_REPORT_EXTRACTION
+brd_ref: BRD-SRC-SCMS-OUTPUT_REPORT_EXTRACTION
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: FROM_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: TO_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: AGGREGATION_DATE
+    data_type: DATE
+    description: "Ngày tổng hợp dữ liệu báo cáo"
+    key: null
+    fk_note: null
+  - name: USER_ID
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người dùng liên quan"
+    key: FK
+    fk_note: "FK → SYS_USER.ID"
+  - name: REPORT_PERIOD
+    data_type: VARCHAR2(4000 BYTE)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: UNIT
+    data_type: NUMBER(10)
+    description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)"
+    key: null
+    fk_note: null
+  - name: DATE_RANGE
+    data_type: NUMBER(1)
+    description: "Cờ lọc theo khoảng thời gian: 1=Lọc khoảng, 0=Lọc ngày cụ thể"
+    key: null
+    fk_note: null
+  - name: AUDITED_REPORT_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SC_FIRM_FILTER
+    data_type: CLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SQL_QUERY
+    data_type: NVARCHAR2(2000)
+    description: "Câu truy vấn SQL dùng để khai thác dữ liệu báo cáo đầu ra"
+    key: null
+    fk_note: null
+  - name: EXPORT_FORMAT
+    data_type: VARCHAR2(100)
+    description: "Định dạng xuất file báo cáo (Excel/PDF/Word)"
+    key: null
+    fk_note: null
+  - name: REPORT_TYPE
+    data_type: NUMBER(10)
+    description: "Loại báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT)"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: REPORT_GROUP_ID
+    data_type: NUMBER(10)
+    description: "FK -> nhóm báo cáo đầu ra"
+    key: FK
+    fk_note: null
+  - name: TEMPLATE_FILE_PATH
+    data_type: VARCHAR2(500)
+    description: "Đường dẫn file template của báo cáo đầu ra"
+    key: null
+    fk_note: null
+  - name: REPORT_NAME
+    data_type: VARCHAR2(500)
+    description: "Tên báo cáo/biểu mẫu"
+    key: null
+    fk_note: null
+  - name: PARAMETER
+    data_type: VARCHAR2(4000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null

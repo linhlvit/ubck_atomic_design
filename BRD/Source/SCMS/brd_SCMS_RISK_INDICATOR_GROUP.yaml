@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: RISK_INDICATOR_GROUP
+brd_ref: BRD-SRC-SCMS-RISK_INDICATOR_GROUP
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: GROUP_CODE
+    data_type: NVARCHAR2(50)
+    description: "Cột group_code — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: GROUP_NAME
+    data_type: NVARCHAR2(2000)
+    description: "Cột group_name — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: WEIGHT
+    data_type: NUMBER(6,2)
+    description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai nhom chi tieu: 0 = Khong su dung; 1 = Dang su dung"
+    key: null
+    fk_note: null
+  - name: RECORD_TYPE
+    data_type: VARCHAR2(22 BYTE)
+    description: "Nhom theo mo hinh CAMEL: C = Von (Capital); A = Tai san (Asset); M = Quan tri (Management); E = Sinh loi (Earnings); L = Thanh khoan (Liquidity)"
+    key: null
+    fk_note: null

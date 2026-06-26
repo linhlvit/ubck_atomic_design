@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: ALERT_RUN
+brd_ref: BRD-SRC-SCMS-ALERT_RUN
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: RUN_ID
+    data_type: NVARCHAR2(64)
+    description: "Mã định danh của lần chạy cảnh báo"
+    key: null
+    fk_note: null
+  - name: ALERT_TARGET_ENTITY
+    data_type: NVARCHAR2(80)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DATA_YEAR
+    data_type: NUMBER(10)
+    description: "Năm dữ liệu được lấy để kiểm tra cảnh báo"
+    key: null
+    fk_note: null
+  - name: DATA_PERIOD
+    data_type: NVARCHAR2(20)
+    description: "Kỳ dữ liệu được lấy để kiểm tra cảnh báo"
+    key: null
+    fk_note: null
+  - name: ALERT_INDICATOR_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → ALERT_INDICATOR.ID"
+  - name: PERFORMER_NAME
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: START_TIME
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm bắt đầu thực hiện"
+    key: null
+    fk_note: null
+  - name: END_TIME
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm kết thúc thực hiện"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NVARCHAR2(30)
+    description: "Trang thai lan chay canh bao: 0 = Dang xu ly; 1 = Hoan thanh; -1 = Loi; 2 = Bi huy"
+    key: null
+    fk_note: null
+  - name: ALERT_COUNT_GENERATED
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ERROR_MESSAGE
+    data_type: NVARCHAR2(2000)
+    description: "Thông báo lỗi phát sinh (nếu có)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null

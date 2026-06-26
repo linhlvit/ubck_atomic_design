@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: LNK_TRANSACTION_OFFICE_SERVICE
+brd_ref: BRD-SRC-SCMS-LNK_TRANSACTION_OFFICE_SERVICE
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: SC_FIRM_TRANSACTION_OFFICE_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → SC_FIRM_TRANSACTION_OFFICE.ID"
+  - name: SERVICE_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_service: Dịch vụ chứng khoán"
+    key: FK
+    fk_note: "FK → CAT_SERVICE.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(10)
+    description: "Trang thai ban ghi lien ket PGD-Dich vu: 1 = Dang hoat dong; 0 = Ngung hoat dong"
+    key: null
+    fk_note: null

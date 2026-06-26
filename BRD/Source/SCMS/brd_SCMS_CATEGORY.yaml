@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: CATEGORY
+brd_ref: BRD-SRC-SCMS-CATEGORY
+columns:
+  - name: ID
+    data_type: RAW
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: VARCHAR2(50)
+    description: "Mã định danh (mã viết tắt, mã nghiệp vụ)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: DESCRIPTION
+    data_type: VARCHAR2(1000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: ITEM_NAME
+    data_type: VARCHAR2(255)
+    description: ""
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: VARCHAR2(20)
+    description: "Trang thai danh muc: ACTIVE = Dang su dung; INACTIVE = Ngung su dung"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Cột updated_at — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(100)
+    description: "Cột updated_by — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"

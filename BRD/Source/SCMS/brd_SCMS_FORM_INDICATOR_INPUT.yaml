@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_INDICATOR_INPUT
+brd_ref: BRD-SRC-SCMS-FORM_INDICATOR_INPUT
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: NVARCHAR2(100)
+    description: "Mã định danh (mã viết tắt, mã nghiệp vụ)"
+    key: null
+    fk_note: null
+  - name: ITEM_NAME
+    data_type: NVARCHAR2(500)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NCLOB
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: NVARCHAR2(50)
+    description: "Kiểu dữ liệu (TEXT/NUMBER/DATE/BOOLEAN/SELECT)"
+    key: null
+    fk_note: null
+  - name: REFERENCE_CATALOG_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai truong nhap lieu bieu mau: 1 = Dang su dung; 0 = Khong su dung"
+    key: null
+    fk_note: null
+  - name: NGUOI_TAO
+    data_type: NVARCHAR2(200)
+    description: "Cột nguoi_tao — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: NGUOI_CAP_NHAT
+    data_type: NVARCHAR2(200)
+    description: "Cột nguoi_cap_nhat — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: REFERENCE_CATALOG_TYPE
+    data_type: NVARCHAR2(80)
+    description: "Loai danh muc tham chieu khi DATA_TYPE=SELECT: PROVINCE = Tinh thanh; NATIONALITY = Quoc tich; SC_FIRM_STATUS = Trang thai CTCK; CUSTOM = Tuy chinh"
+    key: null
+    fk_note: null
+  - name: CATEGORY
+    data_type: NVARCHAR2(30)
+    description: "Cột category — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: SOURCE_ENTITY_CODE
+    data_type: NVARCHAR2(80)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FIELD_METADATA_ID
+    data_type: NUMBER(19)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SELECTION_LIST_SOURCE
+    data_type: NVARCHAR2(80)
+    description: "Nguồn lấy danh sách chọn (API endpoint hoặc bảng danh mục)"
+    key: null
+    fk_note: null

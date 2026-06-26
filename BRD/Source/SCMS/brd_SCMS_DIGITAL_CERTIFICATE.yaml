@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: DIGITAL_CERTIFICATE
+brd_ref: BRD-SRC-SCMS-DIGITAL_CERTIFICATE
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: USER_ID
+    data_type: NUMBER(10)
+    description: "FK -> sys_user: Người dùng liên quan"
+    key: FK
+    fk_note: "FK → SYS_USER.ID"
+  - name: USERNAME
+    data_type: NVARCHAR2(50)
+    description: "Tên đăng nhập (tài khoản)"
+    key: null
+    fk_note: null
+  - name: KEY_DATA
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SERIAL
+    data_type: NVARCHAR2(1000)
+    description: "Cột serial — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: SUBJECT
+    data_type: NVARCHAR2(1000)
+    description: "Cột subject — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: ISSUER
+    data_type: NVARCHAR2(500)
+    description: "Cột issuer — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: INDIVIDUAL
+    data_type: NUMBER(1)
+    description: "Cờ là cá nhân: 1=Cá nhân, 0=Tổ chức"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai chung thu so: 1 = Con hieu luc; 0 = Da het han hoac bi thu hoi"
+    key: null
+    fk_note: null
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: CERTIFICATE_FILE_PATH
+    data_type: VARCHAR2(500)
+    description: "Đường dẫn file chứng thư số (.cer/.pem)"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: VARCHAR2(2000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: PURPOSE
+    data_type: VARCHAR2(500)
+    description: "Mục đích sử dụng chứng thư số"
+    key: null
+    fk_note: null
+  - name: ISSUE_DATE
+    data_type: DATE
+    description: "Ngày cấp giấy tờ/chứng chỉ"
+    key: null
+    fk_note: null
+  - name: EXPIRY_DATE
+    data_type: DATE
+    description: "Ngày hết hạn"
+    key: null
+    fk_note: null
+  - name: NGAY_SUA
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: NGUOI_SUA_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SERIAL_NUMBER
+    data_type: VARCHAR2(100)
+    description: "Số serial của chứng thư số"
+    key: null
+    fk_note: null
+  - name: SUBJECT_NAME
+    data_type: VARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: ISSUING_ORGANIZATION
+    data_type: VARCHAR2(500)
+    description: "Tổ chức cấp chứng thư số (CA)"
+    key: null
+    fk_note: null

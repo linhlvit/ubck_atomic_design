@@ -1,0 +1,156 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_SHEET_ROW
+brd_ref: BRD-SRC-SCMS-FORM_SHEET_ROW
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: FORM_SHEET_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET.ID"
+  - name: ROW_CODE
+    data_type: VARCHAR2(50)
+    description: "Mã hàng trong sheet biểu mẫu"
+    key: null
+    fk_note: null
+  - name: ROW_NAME
+    data_type: VARCHAR2(500)
+    description: "Tên hiển thị của hàng trong biểu mẫu"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: NAME_FORMAT
+    data_type: NVARCHAR2(20)
+    description: "Dinh dang ten hang: ID = In dam; IN = In nghieng; IH = In hoa; GC = Gach chan"
+    key: null
+    fk_note: null
+  - name: COLOR
+    data_type: NVARCHAR2(20)
+    description: "Màu chữ (mã màu HEX)"
+    key: null
+    fk_note: null
+  - name: ALIGNMENT
+    data_type: NVARCHAR2(20)
+    description: "Canh lề văn bản (LEFT/CENTER/RIGHT)"
+    key: null
+    fk_note: null
+  - name: FROZEN_ROW
+    data_type: NUMBER(1)
+    description: "Cờ hàng cố định khi cuộn: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: NUMBER(1)
+    description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(2)
+    description: "Trang thai hang: 1 = Dang su dung; 0 = Khong su dung"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER
+    description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LEGACY_ROW_CODE
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: MAHANGSYNC
+    data_type: NVARCHAR2(2000)
+    description: "Hang d? so sanh hang d?ng"
+    key: null
+    fk_note: null
+  - name: HIDDEN_ROW
+    data_type: NUMBER(1)
+    description: "Cờ ẩn hàng: 1=Ẩn, 0=Hiển thị"
+    key: null
+    fk_note: null
+  - name: HIERARCHY_LEVEL
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: EDITABLE
+    data_type: NUMBER(1)
+    description: "Cờ cho phép nhập liệu: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: FORMULA
+    data_type: VARCHAR2(1000)
+    description: "Công thức tính toán giá trị ô"
+    key: null
+    fk_note: null
+  - name: PARENT_ROW_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_sheet_row: Hàng cha trong cấu trúc phân cấp"
+    key: FK
+    fk_note: "FK → FORM_SHEET_ROW.ID"
+  - name: BOLD
+    data_type: NUMBER(1)
+    description: "Cờ in đậm: 1=In đậm, 0=Thường"
+    key: null
+    fk_note: null
+  - name: ITALIC
+    data_type: NUMBER(1)
+    description: "Cờ in nghiêng: 1=In nghiêng, 0=Thường"
+    key: null
+    fk_note: null
+  - name: ROW_TYPE
+    data_type: NUMBER(10)
+    description: "Loai hang du lieu: DU_LIEU = Hang nhap lieu chinh; TONG_CONG = Hang tong cong/tong hop; TIEU_DE = Hang tieu de"
+    key: null
+    fk_note: null
+  - name: BACKGROUND_COLOR
+    data_type: VARCHAR2(20)
+    description: "Màu nền của hàng/ô (mã màu HEX hoặc tên)"
+    key: null
+    fk_note: null
+  - name: NGAY_SUA
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"

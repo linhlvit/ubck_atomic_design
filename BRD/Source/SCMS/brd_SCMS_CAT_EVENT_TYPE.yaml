@@ -1,0 +1,121 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: CAT_EVENT_TYPE
+brd_ref: BRD-SRC-SCMS-CAT_EVENT_TYPE
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: EVENT_TYPE_CODE
+    data_type: NVARCHAR2(50)
+    description: "Mã sự vụ (thành lập, điều chỉnh vốn, thay đổi tên)"
+    key: null
+    fk_note: null
+  - name: EVENT_TYPE_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên sự vụ/sự kiện"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NVARCHAR2(1000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai danh muc su vu: 1 = Dang su dung; 0 = Ngung su dung"
+    key: null
+    fk_note: null
+  - name: REQUIRES_LICENSE
+    data_type: NUMBER(1)
+    description: "Cờ sự vụ này cần có giấy phép/văn bản chấp thuận: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: TARGET_ENTITY
+    data_type: NVARCHAR2(20)
+    description: ""
+    key: null
+    fk_note: null
+  - name: REQUIRES_DISCLOSURE
+    data_type: NUMBER
+    description: ""
+    key: null
+    fk_note: null
+  - name: OBLIGATION_TYPE
+    data_type: NUMBER(10)
+    description: "Loai nghia vu ap dung: 1 = Chi bao cao (khong CBTT); 2 = Chi CBTT (khong bao cao); 3 = Vua bao cao vua CBTT; 4 = Thay doi ho so CTCK"
+    key: null
+    fk_note: null
+  - name: EVENT_GROUP_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CYCLE
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FREQUENCY
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CUTOFF_DATE
+    data_type: NVARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SUBMISSION_METHOD
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_DATE
+    data_type: DATE
+    description: "Ngày văn bản/thay đổi có hiệu lực"
+    key: null
+    fk_note: null
+  - name: EXPIRY_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Cột updated_at — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: NUMBER(19)
+    description: "Cột updated_by — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: EVENT_CATEGORY
+    data_type: NUMBER(5)
+    description: "Phân loại sự vụ (loại thay đổi hồ sơ)"
+    key: null
+    fk_note: null
+  - name: DEADLINE_CALCULATION_METHOD
+    data_type: NUMBER(5)
+    description: ""
+    key: null
+    fk_note: null
+  - name: DU_LIEU_MO_RONG
+    data_type: NCLOB
+    description: "Cột du_lieu_mo_rong — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null

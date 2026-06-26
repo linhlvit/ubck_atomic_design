@@ -1,0 +1,201 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: REPORT_CELL_VALUE
+brd_ref: BRD-SRC-SCMS-REPORT_CELL_VALUE
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: SC_FIRM_INFO_ID
+    data_type: NUMBER(10)
+    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_INFO.ID"
+  - name: MEMBER_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> member_report: Báo cáo thành viên liên quan"
+    key: FK
+    fk_note: "FK → MEMBER_REPORT.ID"
+  - name: FORM_SHEET_CELL_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_CELL.ID"
+  - name: INDICATOR_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CATALOG_NAME
+    data_type: NVARCHAR2(1000)
+    description: "Tên danh mục"
+    key: null
+    fk_note: null
+  - name: CATALOG_ID
+    data_type: NVARCHAR2(2000)
+    description: ""
+    key: null
+    fk_note: null
+  - name: TEXT_DANH_MUC
+    data_type: NVARCHAR2(1000)
+    description: "Cột text_danh_muc — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: FORM_SHEET_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET.ID"
+  - name: FORM_SHEET_ROW_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_ROW.ID"
+  - name: FORM_SHEET_COLUMN_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: "FK suy luận → FORM_SHEET_COLUMN.ID"
+  - name: ROW_NAME
+    data_type: NVARCHAR2(1000)
+    description: "Tên hiển thị của hàng trong biểu mẫu"
+    key: null
+    fk_note: null
+  - name: COLUMN_NAME
+    data_type: NVARCHAR2(1000)
+    description: "Tên hiển thị của cột"
+    key: null
+    fk_note: null
+  - name: SHEET_NAME
+    data_type: NVARCHAR2(1000)
+    description: "Tên sheet trong biểu mẫu báo cáo"
+    key: null
+    fk_note: null
+  - name: ROW_ID
+    data_type: NUMBER(10)
+    description: "Số thứ tự dòng dữ liệu trong báo cáo động"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER(2)
+    description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
+    key: null
+    fk_note: null
+  - name: DATA_DATE
+    data_type: DATE
+    description: ""
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: FORM_PERIODIC_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report_periodic: Lịch kỳ biểu mẫu liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT_PERIODIC.ID"
+  - name: REPORT_PERIOD_VALUE
+    data_type: NVARCHAR2(50)
+    description: ""
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD
+    data_type: NVARCHAR2(20)
+    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
+    key: null
+    fk_note: null
+  - name: REPORT_YEAR
+    data_type: NVARCHAR2(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FORM_SHEET_CELL_INPUT_ID
+    data_type: NUMBER(10)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SUBMISSION_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai gui bao cao tai thoi diem ghi nhan o du lieu (tham chieu MEMBER_REPORT.RECORD_STATUS): 1 = Chua gui; 2 = Da gui; 3 = Gui muon; 4 = Bi huy"
+    key: null
+    fk_note: null
+  - name: SUM_FORMULA
+    data_type: CLOB
+    description: "Công thức tổng hợp của ô (tính tổng nhiều ô)"
+    key: null
+    fk_note: null
+  - name: FORMULA
+    data_type: CLOB
+    description: "Công thức tính toán giá trị ô"
+    key: null
+    fk_note: null
+  - name: UNIT
+    data_type: NUMBER
+    description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)"
+    key: null
+    fk_note: null
+  - name: FORMAT
+    data_type: NVARCHAR2(200)
+    description: "Định dạng hiển thị/in ấn của ô (VD: #,##0; dd/MM/yyyy)"
+    key: null
+    fk_note: null
+  - name: ROW_ORDER
+    data_type: NUMBER
+    description: ""
+    key: null
+    fk_note: null
+  - name: ITEM_VALUE
+    data_type: CLOB
+    description: ""
+    key: null
+    fk_note: null
+  - name: PERIODIC_REPORT_ID
+    data_type: NUMBER(19)
+    description: "FK -> sc_firm_periodic_report: Báo cáo định kỳ liên quan"
+    key: FK
+    fk_note: "FK → SC_FIRM_PERIODIC_REPORT.ID"
+  - name: NOTE
+    data_type: VARCHAR2(2000)
+    description: "Ghi chú bổ sung, không bắt buộc"
+    key: null
+    fk_note: null
+  - name: OLD_VALUE
+    data_type: VARCHAR2(4000)
+    description: "Giá trị cũ trước khi thay đổi"
+    key: null
+    fk_note: null
+  - name: NUMERIC_VALUE
+    data_type: FLOAT
+    description: "Giá trị số của ô dùng để so sánh/tính toán"
+    key: null
+    fk_note: null
+  - name: NGAY_SUA
+    data_type: TIMESTAMP(6)
+    description: ""
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"

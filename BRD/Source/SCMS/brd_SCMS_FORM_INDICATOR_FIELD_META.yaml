@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_INDICATOR_FIELD_META
+brd_ref: BRD-SRC-SCMS-FORM_INDICATOR_FIELD_META
+columns:
+  - name: ID
+    data_type: NUMBER(19)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: ENTITY_CODE
+    data_type: NVARCHAR2(80)
+    description: ""
+    key: null
+    fk_note: null
+  - name: FIELD_CODE
+    data_type: NVARCHAR2(100)
+    description: "Mã trường dữ liệu trong biểu mẫu"
+    key: null
+    fk_note: null
+  - name: DB_COLUMN_NAME
+    data_type: NVARCHAR2(200)
+    description: "Tên cột tương ứng trong cơ sở dữ liệu"
+    key: null
+    fk_note: null
+  - name: DISPLAY_NAME
+    data_type: NVARCHAR2(500)
+    description: "Tên hiển thị cho người dùng"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: NVARCHAR2(50)
+    description: "Kiểu dữ liệu (TEXT/NUMBER/DATE/BOOLEAN/SELECT)"
+    key: null
+    fk_note: null
+  - name: RELATION_TYPE
+    data_type: NVARCHAR2(50)
+    description: "Loai lien ket: ONE_TO_ONE = Mot-mot; ONE_TO_MANY = Mot-nhieu; LOOKUP = Tra cuu danh muc"
+    key: null
+    fk_note: null
+  - name: JUNCTION_TABLE_NAME
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: MAIN_FK_COLUMN
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CATALOG_TABLE_NAME
+    data_type: NVARCHAR2(200)
+    description: "Tên bảng danh mục tham chiếu"
+    key: null
+    fk_note: null
+  - name: CATALOG_FK_COLUMN
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: CATALOG_FILTER_COLUMN
+    data_type: NVARCHAR2(200)
+    description: ""
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10)
+    description: "Thứ tự sắp xếp hiển thị"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai metadata truong nhap lieu: 1 = Dang su dung; 0 = Khong su dung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: VALUE_SOURCE
+    data_type: NVARCHAR2(2000)
+    description: "Nguồn dữ liệu của giá trị (DB/API/Hardcode)"
+    key: null
+    fk_note: null
+  - name: STRING_FORMAT
+    data_type: NVARCHAR2(30)
+    description: ""
+    key: null
+    fk_note: null

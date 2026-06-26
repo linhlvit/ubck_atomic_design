@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: SYS_FUNCTION_DETAIL
+brd_ref: BRD-SRC-SCMS-SYS_FUNCTION_DETAIL
+columns:
+  - name: ID
+    data_type: NUMBER(10)
+    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
+    key: PK
+    fk_note: null
+  - name: FUNCTION_NAME
+    data_type: NVARCHAR2(250)
+    description: "Tên chức năng/menu hệ thống"
+    key: null
+    fk_note: null
+  - name: FRONTEND_ROUTE
+    data_type: NVARCHAR2(100)
+    description: "Đường dẫn trang Vue.js (frontend route)"
+    key: null
+    fk_note: null
+  - name: API_ROUTE
+    data_type: NVARCHAR2(500)
+    description: "Đường dẫn API backend"
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
+    data_type: NUMBER(1)
+    description: "Trang thai chi tiet chuc nang: 1 = Dang hoat dong; 0 = Vo hieu hoa"
+    key: null
+    fk_note: null
+  - name: API_TEMP
+    data_type: NVARCHAR2(500)
+    description: "Cột api_temp — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null

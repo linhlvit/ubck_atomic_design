@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: LNK_SC_FIRM_STATUS_REPORT
+brd_ref: BRD-SRC-SCMS-LNK_SC_FIRM_STATUS_REPORT
+columns:
+  - name: SC_FIRM_STATUS_ID
+    data_type: NUMBER(10)
+    description: "FK -> cat_sc_firm_status: Trạng thái CTCK"
+    key: FK
+    fk_note: "FK → CAT_SC_FIRM_STATUS.ID"
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(10)
+    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(10)
+    description: "ID tài khoản người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → SYS_USER.ID"
