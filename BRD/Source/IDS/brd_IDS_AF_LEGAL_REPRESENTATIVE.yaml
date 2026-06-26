@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: AF_LEGAL_REPRESENTATIVE
+brd_ref: BRD-SRC-IDS-AF_LEGAL_REPRESENTATIVE
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: AF_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Link đến bảng AF_PROFILES"
+    key: FK
+    fk_note: "FK → AF_PROFILES.ID"
+  - name: FULL_NAME
+    data_type: VARCHAR2(50)
+    description: "Tên đầy đủ"
+    key: null
+    fk_note: null
+  - name: IDENTITY_NO
+    data_type: VARCHAR2(18)
+    description: "Số CMND/hộ chiếu"
+    key: null
+    fk_note: null
+  - name: PHONE_NO
+    data_type: VARCHAR2(18)
+    description: "Số điện thoại liên hệ"
+    key: null
+    fk_note: null
+  - name: POSITION_TITLE_CD
+    data_type: VARCHAR2(100)
+    description: "Chức vụ"
+    key: null
+    fk_note: null
+  - name: APPOINTMENT_START_DATE
+    data_type: DATE
+    description: "Bổ nhiệm (từ ngày)"
+    key: null
+    fk_note: null
+  - name: APPOINTMENT_END_DATE
+    data_type: DATE
+    description: "Bổ nhiệm (đến ngày)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null

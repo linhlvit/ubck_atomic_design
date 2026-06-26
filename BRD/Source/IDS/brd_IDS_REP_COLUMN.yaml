@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: REP_COLUMN
+brd_ref: BRD-SRC-IDS-REP_COLUMN
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COL_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên cột (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: COL_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên cột (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: REP_FORM_ID
+    data_type: NUMBER(10,0)
+    description: "ID của form chứa cột"
+    key: FK
+    fk_note: "FK → REP_FORMS.ID"
+  - name: COL_INDEX
+    data_type: NUMBER(3,0)
+    description: "Thứ tự cột"
+    key: null
+    fk_note: null
+  - name: DUPLICATE_COL_FLG
+    data_type: NUMBER(1,0)
+    description: "Có cho phép nhân đôi cột hay không"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Kiểu dữ liệu, lookup group RF_C_DATA_TYPE"
+    key: null
+    fk_note: null
+  - name: COL_FORMULA
+    data_type: VARCHAR2(1500)
+    description: "Công thức tính"
+    key: null
+    fk_note: null
+  - name: COL_CD
+    data_type: VARCHAR2(30)
+    description: "Lưu mã tự sinh của chỉ tiêu cột"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người cập nhật"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày cập nhật"
+    key: null
+    fk_note: null
+  - name: COL_DESCRIPTION
+    data_type: VARCHAR2(255)
+    description: "Mô tả"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Xóa mềm"
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(20)
+    description: null
+    key: null
+    fk_note: null

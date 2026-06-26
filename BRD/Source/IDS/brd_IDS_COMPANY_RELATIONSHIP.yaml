@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: COMPANY_RELATIONSHIP
+brd_ref: BRD-SRC-IDS-COMPANY_RELATIONSHIP
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(19,0)
+    description: "Khóa link đến bảng COMPANY_PROFILES"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: RELATIONSHIP_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Kiểu công ty (mẹ, con, liên danh liên kết): LOOKUP_VALUES LOOKUP_GROUP = COMPANY_RELATIONSHIP_TYPE"
+    key: null
+    fk_note: null
+  - name: FULL_NAME_VI
+    data_type: VARCHAR2(600)
+    description: "Tên (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: FULL_NAME_EN
+    data_type: VARCHAR2(600)
+    description: "Tên (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: BUSINESS_REG_NO
+    data_type: VARCHAR2(500)
+    description: "Mã số doanh nghiệp"
+    key: null
+    fk_note: null
+  - name: HEAD_OFFICE_ADDR
+    data_type: VARCHAR2(255)
+    description: "Địa chỉ trụ sở chính"
+    key: null
+    fk_note: null
+  - name: RELATED_PARTY_INFO
+    data_type: VARCHAR2(255)
+    description: "Thông tin người liên quan"
+    key: null
+    fk_note: null
+  - name: PAID_IN_CAPITAL
+    data_type: NUMBER(19,0)
+    description: "Vốn điều lệ thực góp"
+    key: null
+    fk_note: null
+  - name: OWNED_SHARE_QTY
+    data_type: NUMBER(19,0)
+    description: "Số cổ phiếu sở hữu"
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_RATIO
+    data_type: NUMBER(19,6)
+    description: "Phần trăm sở hữu"
+    key: null
+    fk_note: null
+  - name: VOTING_SHARE_RATIO
+    data_type: NUMBER(19,6)
+    description: "Tỷ lệ cổ phiếu biểu quyết"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_FROM_DATE
+    data_type: DATE
+    description: "Ngày hiệu lực (từ ngày)"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_TO_DATE
+    data_type: DATE
+    description: "Ngày hiệu lực (đến ngày)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm (0 - Chưa xóa; 1 - Đã xóa)"
+    key: null
+    fk_note: null
+  - name: IS_SYNC
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu đồng bộ (1- Đồng bộ; 0 - Thêm tay)"
+    key: null
+    fk_note: null

@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: LOGINS
+brd_ref: BRD-SRC-IDS-LOGINS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "ID - Khóa chính"
+    key: PK
+    fk_note: null
+  - name: LOGIN_NAME
+    data_type: VARCHAR2(50)
+    description: "Tên đăng nhập"
+    key: null
+    fk_note: null
+  - name: FULL_NAME
+    data_type: VARCHAR2(200)
+    description: "Tên đầy đủ"
+    key: null
+    fk_note: null
+  - name: BIRTH_DATE
+    data_type: DATE
+    description: "Ngày sinh"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(255)
+    description: "Email"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: VARCHAR2(500)
+    description: "Địa chỉ"
+    key: null
+    fk_note: null
+  - name: TEL
+    data_type: VARCHAR2(50)
+    description: "Số điện thoại"
+    key: null
+    fk_note: null
+  - name: FAX
+    data_type: VARCHAR2(50)
+    description: "Fax"
+    key: null
+    fk_note: null
+  - name: GENDER_CD
+    data_type: NUMBER(1,0)
+    description: "Giới tính - Lookup_values (lookup_group = GENDER)"
+    key: null
+    fk_note: null
+  - name: DEPT_CD
+    data_type: VARCHAR2(20)
+    description: "Mã phòng ban (lấy từ DM phòng ban Department). Mặc định: - CTĐC: công ty đại chúng - CTKT: công ty kiểm toán - TCPH: công ty chưa đại chúng / cổ đông thực hiện chào bán - CN: cá nhân"
+    key: null
+    fk_note: null
+  - name: LOGIN_TYPE
+    data_type: NUMBER(1,0)
+    description: "Loại user: 1-Admin, 2-Chuyên viên, 3-Lãnh đạo, 4-Tổ chức, 5-Khác"
+    key: null
+    fk_note: null
+  - name: OBJECT_TYPE
+    data_type: NUMBER(1,0)
+    description: "Loại đối tượng: 1-Nội bộ UBCK, 2-Tổ chức bên ngoài, 3-Cá nhân bên ngoài"
+    key: null
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Lưu ID công ty đại chúng / công ty kiểm toán"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: ID_SYNC
+    data_type: VARCHAR2(255)
+    description: "ID tại SSO"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái hoạt động (1: đang hoạt động, 0: không hoạt động)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(50)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(50)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null

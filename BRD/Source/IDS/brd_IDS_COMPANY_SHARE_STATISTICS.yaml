@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: COMPANY_SHARE_STATISTICS
+brd_ref: BRD-SRC-IDS-COMPANY_SHARE_STATISTICS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng COMPANY_PROFILES"
+    key: FK
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: TOTAL_ISSUED_SHARE
+    data_type: NUMBER(19,0)
+    description: "Tổng số CP đã phát hành"
+    key: null
+    fk_note: null
+  - name: TOTAL_OUTSTANDING_SHARE
+    data_type: NUMBER(19,0)
+    description: "Tổng số CP đang lưu hành"
+    key: null
+    fk_note: null
+  - name: TOTAL_OUTSTANDING_VALUE
+    data_type: NUMBER(24,0)
+    description: "Tổng giá trị CP đang lưu hành (đồng)"
+    key: null
+    fk_note: null
+  - name: TOTAL_TREASURY_SHARE
+    data_type: NUMBER(19,0)
+    description: "Tổng số cổ phiếu quỹ"
+    key: null
+    fk_note: null
+  - name: LASTEST_TREASURY_PURCHASE_QTY
+    data_type: NUMBER(19,0)
+    description: "Đợt mua lại cổ phiếu quỹ gần nhất: Số lượng CP mua lại"
+    key: null
+    fk_note: null
+  - name: LASTEST_TREASURY_PURCHASE_END_DATE
+    data_type: DATE
+    description: "Đợt mua lại cổ phiếu quỹ gần nhất: Ngày kết thúc việc mua lại CP"
+    key: null
+    fk_note: null
+  - name: PREFERRED_SHARE_TYPE
+    data_type: VARCHAR2(100)
+    description: "Loại cổ phiếu ưu đãi"
+    key: null
+    fk_note: null
+  - name: TOTAL_PREFERRED_SHARE
+    data_type: NUMBER(19,0)
+    description: "Tổng số cổ phiếu ưu đãi"
+    key: null
+    fk_note: null
+  - name: TOTAL_PREFERRED_VALUE
+    data_type: NUMBER(24,0)
+    description: "Tổng giá trị cổ phiếu ưu đãi (đồng)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null

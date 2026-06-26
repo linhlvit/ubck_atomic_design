@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: DATA_VALUES
+brd_ref: BRD-SRC-IDS-DATA_VALUES
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: FIELD_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên trường (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: FIELD_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên trường (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: TEXT_VALUE
+    data_type: VARCHAR2(2000)
+    description: "Dữ liệu kiểu text"
+    key: null
+    fk_note: null
+  - name: DATE_VALUE
+    data_type: DATE
+    description: "Dữ liệu kiểu date"
+    key: null
+    fk_note: null
+  - name: NUMBER_VALUE
+    data_type: FLOAT
+    description: "Dữ liệu kiểu number"
+    key: null
+    fk_note: null
+  - name: COMPANY_DATA_ID
+    data_type: NUMBER(10,0)
+    description: "Mã công ty"
+    key: FK
+    fk_note: "FK → COMPANY_DATA.ID"
+  - name: PARENT_ID
+    data_type: NUMBER(19,0)
+    description: "Mã giá trị"
+    key: FK
+    fk_note: null
+  - name: FORM_ID
+    data_type: NUMBER(10,0)
+    description: "Mã form"
+    key: FK
+    fk_note: "FK → FORMS.ID"
+  - name: FIELD_ID
+    data_type: NUMBER(10,0)
+    description: "Mã field"
+    key: FK
+    fk_note: "FK → FIELDS.ID"
+  - name: FORM_FIELD_ID
+    data_type: NUMBER(10,0)
+    description: "Mã khóa cha của field"
+    key: FK
+    fk_note: null
+  - name: FIELD_PARENT_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa cha"
+    key: FK
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: VARCHAR2(30)
+    description: "Kiểu dữ liệu"
+    key: null
+    fk_note: null
+  - name: REQUIRED_FLG
+    data_type: NUMBER(1,0)
+    description: "Bắt nhập hay không cho các nhãn trường: 0-không bắt buộc, 1-bắt buộc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null

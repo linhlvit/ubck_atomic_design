@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: ACCOUNT_NUMBERS
+brd_ref: BRD-SRC-IDS-ACCOUNT_NUMBERS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: TRADING_ACCOUNT_NO
+    data_type: VARCHAR2(50)
+    description: "Số tài khoản"
+    key: null
+    fk_note: null
+  - name: SEC_COMPANY_CD
+    data_type: VARCHAR2(20)
+    description: "Mã CTy chứng khoán"
+    key: null
+    fk_note: null
+  - name: LEGAL_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "ID cổ đông liên quan - ref LEGAL_ENTITIES"
+    key: FK
+    fk_note: "FK → LEGAL_ENTITIES.ID"
+  - name: ACCOUNT_OPEN_DATE
+    data_type: DATE
+    description: "Ngày mở"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "0-inactive, 1-active"
+    key: null
+    fk_note: null
+  - name: PRIMARY_ACCOUNT_FLG
+    data_type: NUMBER(1,0)
+    description: "1-key, 0-không key"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa"
+    key: null
+    fk_note: null

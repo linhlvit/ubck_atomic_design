@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: FOREIGN_OWNER_LIMIT
+brd_ref: BRD-SRC-IDS-FOREIGN_OWNER_LIMIT
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng COMPANY_PROFILES"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: MAX_OWNER_RATE
+    data_type: NUMBER(10,4)
+    description: "Tỷ lệ sở hữu nước ngoài tối đa"
+    key: null
+    fk_note: null
+  - name: FROM_DATE
+    data_type: DATE
+    description: "Thời gian áp dụng (từ ngày)"
+    key: null
+    fk_note: null
+  - name: TO_DATE
+    data_type: DATE
+    description: "Thời gian áp dụng (đến ngày)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)"
+    key: null
+    fk_note: null
+  - name: SYNC_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu đồng bộ (1 - Đồng bộ, 0 - Thêm trên giao diện)"
+    key: null
+    fk_note: null

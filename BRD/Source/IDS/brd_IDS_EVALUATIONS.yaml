@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: EVALUATIONS
+brd_ref: BRD-SRC-IDS-EVALUATIONS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_ID
+    data_type: NUMBER(10,0)
+    description: "Id của công ty được đánh giá"
+    key: null
+    fk_note: null
+  - name: PERIOD_ID
+    data_type: NUMBER(10,0)
+    description: "Id kỳ đánh giá"
+    key: null
+    fk_note: null
+  - name: TOTAL_SCORE
+    data_type: NUMBER(5,2)
+    description: "Tổng điểm"
+    key: null
+    fk_note: null
+  - name: EVALUATION_DATE
+    data_type: DATE
+    description: "Ngày đánh giá (ngày chạy đánh giá trong kỳ)"
+    key: null
+    fk_note: null
+  - name: TYPE
+    data_type: VARCHAR2(1)
+    description: "Xếp Loại (A,B,C - theo tổng điểm)"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: VARCHAR2(30)
+    description: "Trạng thái đánh giá"
+    key: null
+    fk_note: null
+  - name: APPROVED_BY
+    data_type: VARCHAR2(30)
+    description: "Người duyệt"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: APPROVED_DATE
+    data_type: DATE
+    description: "Ngày duyệt"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null

@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: INTG_REPORT_CONFIG
+brd_ref: BRD-SRC-IDS-INTG_REPORT_CONFIG
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: FORM_ID
+    data_type: NUMBER(10,0)
+    description: "Reference to FORMS.ID"
+    key: FK
+    fk_note: "FK → FORMS.ID"
+  - name: SYNC_IDS_FLG
+    data_type: NUMBER(1,0)
+    description: "Single point sync flag"
+    key: null
+    fk_note: null
+  - name: CHECK_ATTACHMENT_FLG
+    data_type: NUMBER(1,0)
+    description: "Check attached file flag"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Active flag"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Soft delete flag"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Created by"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Created date"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Updated by"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Updated date"
+    key: null
+    fk_note: null

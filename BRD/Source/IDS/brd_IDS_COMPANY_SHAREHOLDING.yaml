@@ -1,0 +1,191 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: COMPANY_SHAREHOLDING
+brd_ref: BRD-SRC-IDS-COMPANY_SHAREHOLDING
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "ID công ty - ref COMPANY_PROFILES"
+    key: FK
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: LEGAL_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "ID cổ đông - ref LEGAL_ENTITIES"
+    key: FK
+    fk_note: "FK → LEGAL_ENTITIES.ID"
+  - name: FOUNDER_HLD_FLG
+    data_type: NUMBER(1,0)
+    description: "Cổ đông sáng lập"
+    key: null
+    fk_note: null
+  - name: FOUNDER_HLD_ACTIVE_DATE
+    data_type: DATE
+    description: "Ngày hoạt động của cổ đông sáng lập"
+    key: null
+    fk_note: null
+  - name: FOUNDER_HLD_INACTIVE_DATE
+    data_type: DATE
+    description: "Ngày kết thúc hoạt động của cổ đông sáng lập"
+    key: null
+    fk_note: null
+  - name: MAJOR_HLD_FLG
+    data_type: NUMBER(1,0)
+    description: "Là cổ đông lớn"
+    key: null
+    fk_note: null
+  - name: MAJOR_HLD_ACTIVE_DATE
+    data_type: DATE
+    description: "Ngày hoạt động của cổ đông lớn"
+    key: null
+    fk_note: null
+  - name: MAJOR_HLD_INACTIVE_DATE
+    data_type: DATE
+    description: "Ngày kết thúc hoạt động của cổ đông lớn"
+    key: null
+    fk_note: null
+  - name: STRATEGIC_HLD_FLG
+    data_type: NUMBER(1,0)
+    description: "Là cổ đông chiến lược (0-Không, 1-CDCL)"
+    key: null
+    fk_note: null
+  - name: STRATEGIC_HLD_ACTIVE_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu là cổ đông chiến lược"
+    key: null
+    fk_note: null
+  - name: STRATEGIC_HLD_INACTIVE_DATE
+    data_type: DATE
+    description: "Ngày kết thúc là cổ đông chiến lược"
+    key: null
+    fk_note: null
+  - name: INSIDER_HLD_FLG
+    data_type: NUMBER(1,0)
+    description: "Cổ đông nội bộ"
+    key: null
+    fk_note: null
+  - name: INSIDER_HLD_ACTIVE_DATE
+    data_type: DATE
+    description: "Ngày hoạt động của cổ đông nước ngoài"
+    key: null
+    fk_note: null
+  - name: INSIDER_HLD_INACTIVE_DATE
+    data_type: DATE
+    description: "Ngày kết thúc hoạt động của cổ đông nước ngoài"
+    key: null
+    fk_note: null
+  - name: GOVERNMENT_HLD_FLG
+    data_type: NUMBER(1,0)
+    description: "Là cổ đông nhà nước (0-Không, 1-CDNN)"
+    key: null
+    fk_note: null
+  - name: GOVERNMENT_HLD_ACTIVE_DATE
+    data_type: DATE
+    description: "Ngày hoạt động của cổ đông nhà nước"
+    key: null
+    fk_note: null
+  - name: GOVERNMENT_HLD_INACTIVE_DATE
+    data_type: DATE
+    description: "Ngày kết thúc hoạt động của cổ đông nhà nước"
+    key: null
+    fk_note: null
+  - name: RELATED_HLD_FLG
+    data_type: NUMBER(1,0)
+    description: "Cổ đông liên quan"
+    key: null
+    fk_note: null
+  - name: RELATED_HLD_ACTIVE_DATE
+    data_type: DATE
+    description: "Ngày hoạt động của cổ đông liên quan"
+    key: null
+    fk_note: null
+  - name: RELATED_HLD_INACTIVE_DATE
+    data_type: DATE
+    description: "Ngày kết thúc hoạt động của cổ đông liên quan"
+    key: null
+    fk_note: null
+  - name: OTHER_HLD_FLG
+    data_type: NUMBER(1,0)
+    description: "Cổ đông khác"
+    key: null
+    fk_note: null
+  - name: OTHER_HLD_ACTIVE_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu là cổ đông khác"
+    key: null
+    fk_note: null
+  - name: OTHER_HLD_INACTIVE_DATE
+    data_type: DATE
+    description: "Ngày kết thúc là cổ đông khác"
+    key: null
+    fk_note: null
+  - name: SHAREHOLDER_TYPE
+    data_type: VARCHAR2(100)
+    description: "Loại cổ đông (cách nhau dấu ,) - LOOKUP_VALUES LOOKUP_GROUP = SHAREHOLDER_TYPE"
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_QTY
+    data_type: NUMBER(15,0)
+    description: "Số lượng cổ phiếu nắm giữ"
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_RATIO
+    data_type: NUMBER(7,4)
+    description: "Phần trăm nắm giữ"
+    key: null
+    fk_note: null
+  - name: OWNERSHIP_DATE
+    data_type: DATE
+    description: "Ngày đạt tỷ lệ sở hữu"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(512)
+    description: "Mô tả"
+    key: null
+    fk_note: null
+  - name: APPROVAL_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái thông tin cổ đông (0-Chưa duyệt, 1-Đã duyệt)"
+    key: null
+    fk_note: null
+  - name: DATA_SOURCE_CD
+    data_type: NUMBER(1,0)
+    description: "Dữ liệu cập nhật từ trung tâm lưu ký - LOOKUP_VALUES LOOKUP_GROUP = LE_DATA_SOURCE"
+    key: null
+    fk_note: null
+  - name: DATA_UPDATED_DATE
+    data_type: DATE
+    description: "Ngày cập nhật dữ liệu từ trung tâm lưu ký và các sổ"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa"
+    key: null
+    fk_note: null

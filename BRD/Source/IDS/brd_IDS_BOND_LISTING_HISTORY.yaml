@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: BOND_LISTING_HISTORY
+brd_ref: BRD-SRC-IDS-BOND_LISTING_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Mã công ty"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: BOND_TICKER
+    data_type: VARCHAR2(20)
+    description: "Mã trái phiếu"
+    key: null
+    fk_note: null
+  - name: BOND_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại hình trái phiếu; LOOKUP_GROUP = 'BOND_TYPE'"
+    key: null
+    fk_note: null
+  - name: DECISION_NO
+    data_type: VARCHAR2(18)
+    description: "Số quyết định"
+    key: null
+    fk_note: null
+  - name: DECISION_DATE
+    data_type: DATE
+    description: "Ngày quyết định"
+    key: null
+    fk_note: null
+  - name: ISSUANCE_QTY
+    data_type: NUMBER(19,0)
+    description: "Số lượng phát hành"
+    key: null
+    fk_note: null
+  - name: PAR_VALUE
+    data_type: NUMBER(10,0)
+    description: "Mệnh giá"
+    key: null
+    fk_note: null
+  - name: COUPON_RATE
+    data_type: NUMBER(7,4)
+    description: "Lãi suất phát hành"
+    key: null
+    fk_note: null
+  - name: ISSUANCE_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu phát hành"
+    key: null
+    fk_note: null
+  - name: ISSUANCE_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc phát hành"
+    key: null
+    fk_note: null
+  - name: MATURITY_DATE
+    data_type: DATE
+    description: "Ngày đáo hạn"
+    key: null
+    fk_note: null
+  - name: ISSUANCE_CATEGORY_CD
+    data_type: VARCHAR2(100)
+    description: "Phân loại; LOOKUP_GROUP = 'BOND_ISSUANCE_CATEGORY'"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: IS_DELETED
+    data_type: NUMBER(1,0)
+    description: "Trạng thái xóa (0 - chưa xóa, 1 - đã xóa)"
+    key: null
+    fk_note: null
+  - name: IS_SYNC
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null

@@ -1,0 +1,111 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: AF_INSPECTION
+brd_ref: BRD-SRC-IDS-AF_INSPECTION
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: AF_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Link đến bảng AF_PROFILES"
+    key: FK
+    fk_note: "FK → AF_PROFILES.ID"
+  - name: INSPECTION_AUTHORITY_CD
+    data_type: VARCHAR2(100)
+    description: "Đơn vị kiểm tra (BTC hoặc UBCKNN)"
+    key: null
+    fk_note: null
+  - name: INSPECTION_TEAM
+    data_type: VARCHAR2(512)
+    description: "Đoàn kiểm tra, nhiều người sẽ cách nhau dấu ';'"
+    key: null
+    fk_note: null
+  - name: INSPECTION_DECISION_NO
+    data_type: VARCHAR2(18)
+    description: "Số quyết định kiểm tra"
+    key: null
+    fk_note: null
+  - name: INSPECTION_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu kiểm tra"
+    key: null
+    fk_note: null
+  - name: INSPECTION_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc kiểm tra"
+    key: null
+    fk_note: null
+  - name: AUDIT_SYSTEM_RESULT_CD
+    data_type: VARCHAR2(100)
+    description: "Kết quả kiểm tra hệ thống (Tốt; Đạt; Không đạt; Kém)"
+    key: null
+    fk_note: null
+  - name: OVERALL_RESULT_CD
+    data_type: VARCHAR2(100)
+    description: "Kết quả kiểm tra tổng thể (Tốt; Đạt; Không đạt; Kém)"
+    key: null
+    fk_note: null
+  - name: OVERALL_ACTION_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức quyết định tổng thể (Quyết định đình chỉ; Công văn nhắc nhở)"
+    key: null
+    fk_note: null
+  - name: OVERALL_ACTION_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức xử lý tổng thể (Sau kiểm tra, Qua công tác giám sát)"
+    key: null
+    fk_note: null
+  - name: OVERALL_DOCUMENT_NO
+    data_type: VARCHAR2(18)
+    description: "Số văn bản tổng thể"
+    key: null
+    fk_note: null
+  - name: OVERALL_DOCUMENT_DATE
+    data_type: DATE
+    description: "Ngày văn bản tổng thể"
+    key: null
+    fk_note: null
+  - name: OVERALL_VIOLATION_CONTENT
+    data_type: VARCHAR2(1024)
+    description: "Nội dung vi phạm tổng thể"
+    key: null
+    fk_note: null
+  - name: OVERALL_EFFECTIVE_FROM_DATE
+    data_type: DATE
+    description: "Thời gian hiệu lực - Từ ngày tổng thể"
+    key: null
+    fk_note: null
+  - name: OVERALL_EFFECTIVE_TO_DATE
+    data_type: DATE
+    description: "Thời gian hiệu lực - Đến ngày tổng thể"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Soft delete - 0: Active, 1: Deleted"
+    key: null
+    fk_note: null

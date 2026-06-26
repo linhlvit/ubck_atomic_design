@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: FIELDS
+brd_ref: BRD-SRC-IDS-FIELDS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: FIELD_NAME_VI
+    data_type: VARCHAR2(500)
+    description: "Tên trường"
+    key: null
+    fk_note: null
+  - name: FIELD_NAME_EN
+    data_type: VARCHAR2(500)
+    description: "Tên trường Tiếng anh"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: VARCHAR2(30)
+    description: "Kiểu dữ liệu"
+    key: null
+    fk_note: null
+  - name: REPEATABLE_FLG
+    data_type: NUMBER(1,0)
+    description: "Lặp (0 - không lặp; 1 - lặp)"
+    key: null
+    fk_note: null
+  - name: FORM_TYPE
+    data_type: VARCHAR2(100)
+    description: "Kiểu trường (HS; CBTT)"
+    key: null
+    fk_note: null
+  - name: PARENT_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa cha"
+    key: null
+    fk_note: null
+  - name: LOOKUP_GROUP
+    data_type: VARCHAR2(30)
+    description: "Loại (LOOKUP_GROUP của LOOKUP_VALUES)"
+    key: null
+    fk_note: null
+  - name: CONTROL_UNIT_CD
+    data_type: VARCHAR2(255)
+    description: "Đơn vị kiểm soát DEPT_CD của DEPARTMENT"
+    key: null
+    fk_note: null
+  - name: OPERATING_UNIT_CD
+    data_type: VARCHAR2(255)
+    description: "Đơn vị sử dụng DEPT_CD của DEPARTMENT"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Cờ kích hoạt (1 - active, 0 - deleted soft delete)"
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(20)
+    description: null
+    key: null
+    fk_note: null

@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: DATA_TYPES
+brd_ref: BRD-SRC-IDS-DATA_TYPES
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: VARCHAR2(512)
+    description: "Kiểu dữ liệu"
+    key: null
+    fk_note: null
+  - name: REF_TYPE_VI
+    data_type: VARCHAR2(30)
+    description: "Tên tham chiếu của kiểu dữ liệu (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: REF_TYPE_EN
+    data_type: VARCHAR2(30)
+    description: "Tên tham chiếu của kiểu dữ liệu (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(20)
+    description: null
+    key: null
+    fk_note: null

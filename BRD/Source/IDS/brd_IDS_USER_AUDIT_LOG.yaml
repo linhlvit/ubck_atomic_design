@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: USER_AUDIT_LOG
+brd_ref: BRD-SRC-IDS-USER_AUDIT_LOG
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: USER_ID
+    data_type: VARCHAR2(40)
+    description: "User ID"
+    key: null
+    fk_note: null
+  - name: USER_NAME
+    data_type: VARCHAR2(50)
+    description: "Tên người dùng"
+    key: null
+    fk_note: null
+  - name: USER_AGENT
+    data_type: VARCHAR2(500)
+    description: "Thông tin agent lấy từ request header"
+    key: null
+    fk_note: null
+  - name: CLIENT_IP
+    data_type: VARCHAR2(45)
+    description: "IP của người dùng"
+    key: null
+    fk_note: null
+  - name: HTTP_METHOD
+    data_type: VARCHAR2(10)
+    description: "HTTP method"
+    key: null
+    fk_note: null
+  - name: QUERY_PARAMS
+    data_type: CLOB
+    description: "Tham số (đối với method GET)"
+    key: null
+    fk_note: null
+  - name: REQUEST_BODY
+    data_type: CLOB
+    description: "Body khi call api"
+    key: null
+    fk_note: null
+  - name: SOURCE_SERVICE
+    data_type: VARCHAR2(100)
+    description: "Tên service chứa api"
+    key: null
+    fk_note: null
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày người dùng thao tác (datetime)"
+    key: null
+    fk_note: null
+  - name: REQUEST_URI
+    data_type: VARCHAR2(500)
+    description: "Request URI path (ví dụ: /api/v1/masterdata/fields)"
+    key: null
+    fk_note: null

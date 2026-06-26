@@ -1,0 +1,156 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: NOTIFICATIONS
+brd_ref: BRD-SRC-IDS-NOTIFICATIONS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: NOTI_CD
+    data_type: VARCHAR2(50)
+    description: "Mã thông báo"
+    key: null
+    fk_note: null
+  - name: NOTI_TITLE_VI
+    data_type: VARCHAR2(255)
+    description: "Tiêu đề thông báo (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: NOTI_TITLE_EN
+    data_type: VARCHAR2(255)
+    description: "Tiêu đề thông báo (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: NOTI_CATEGORY_CD
+    data_type: VARCHAR2(50)
+    description: "Phân loại: Nhắc lịch hay Thông báo"
+    key: null
+    fk_note: null
+  - name: FORM_ID
+    data_type: NUMBER(10,0)
+    description: "Link đến bảng FORMS"
+    key: null
+    fk_note: "FK → FORMS.ID"
+  - name: FORM_CD
+    data_type: VARCHAR2(50)
+    description: "Mã form"
+    key: null
+    fk_note: null
+  - name: SEND_SCHEDULE_TYPE_CD
+    data_type: VARCHAR2(50)
+    description: "Lịch gửi tin định kỳ"
+    key: null
+    fk_note: null
+  - name: NEWS_STATUS_CD
+    data_type: VARCHAR2(100)
+    description: "Trạng thái tin"
+    key: null
+    fk_note: null
+  - name: SENT_DATE
+    data_type: DATE
+    description: "Ngày gửi tin"
+    key: null
+    fk_note: null
+  - name: NOTI_CONTENT_VI
+    data_type: VARCHAR2(512)
+    description: "Nội dung thông báo (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: NOTI_CONTENT_EN
+    data_type: VARCHAR2(512)
+    description: "Nội dung thông báo (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: MONTHLY_SEND_DAY
+    data_type: VARCHAR2(10)
+    description: "Ngày gửi thông báo định kỳ theo tháng"
+    key: null
+    fk_note: null
+  - name: MONTHLY_SEND_MONTH
+    data_type: VARCHAR2(10)
+    description: "Tháng định kỳ gửi thông báo"
+    key: null
+    fk_note: null
+  - name: NEWS_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại tin gốc"
+    key: null
+    fk_note: null
+  - name: SEND_CHANNEL_CD
+    data_type: VARCHAR2(100)
+    description: "Hình tức gửi tin"
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(255)
+    description: "Hệ thống IDS hoặc AUDIT"
+    key: null
+    fk_note: null
+  - name: LOGIN_ID
+    data_type: VARCHAR2(40)
+    description: "Link đến bảng LOGINS"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: LOGIN_NAME
+    data_type: VARCHAR2(30)
+    description: "Người quản lý"
+    key: null
+    fk_note: null
+  - name: OBJECT_TYPE
+    data_type: NUMBER
+    description: "Loại đối tượng: 1- Nội bộ UBCK; 2- Tổ chức bên ngoài; 3- Cá nhân bên ngoài"
+    key: null
+    fk_note: null
+  - name: RECIPIENT_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Đối tượng nhận tin"
+    key: null
+    fk_note: null
+  - name: EQUITY_LISTING_EXCH
+    data_type: VARCHAR2(20)
+    description: "Sàn niêm yết (ĐKGD cổ phiếu)"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái (0-không kích hoạt, 1-kích hoạt)"
+    key: null
+    fk_note: null
+  - name: REMINDER_BEFORE_DUE_DAYS
+    data_type: NUMBER(5,0)
+    description: "Nhắc trước bao nhiêu ngày"
+    key: null
+    fk_note: null
+  - name: SEND_HOUR
+    data_type: VARCHAR2(100)
+    description: "Giờ gửi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Nguời tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Nguời sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm"
+    key: null
+    fk_note: null

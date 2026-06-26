@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: LOGIN_PERMISSION_BY_CODE
+brd_ref: BRD-SRC-IDS-LOGIN_PERMISSION_BY_CODE
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính của bảng"
+    key: PK
+    fk_note: null
+  - name: LOGIN_ID
+    data_type: NUMBER(10,0)
+    description: "ID của tài khoản sử dụng"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: LOGIN_NAME
+    data_type: VARCHAR2(50)
+    description: "User name"
+    key: null
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "ID hồ sơ được phân quyền"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(25)
+    description: "Phân hệ gồm: IDS; AUDIT"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái xóa: Khi chuyển quyền dữ liệu/ hoặc xóa công ty khỏi người dùng thì thực hiện set = 1"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(50)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(50)
+    description: "Người cập nhật"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày cập nhật"
+    key: null
+    fk_note: null

@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: VIOLATION_REPORT
+brd_ref: BRD-SRC-IDS-VIOLATION_REPORT
+columns:
+  - name: ID
+    data_type: NUMBER(38,0)
+    description: null
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(38,0)
+    description: "COMPANY_PROFILE_ID"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: VIOLATION_TEMPLATE_ID
+    data_type: NUMBER(38,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: FORM_ID
+    data_type: NUMBER(38,0)
+    description: "FORM_ID"
+    key: null
+    fk_note: "FK → FORMS.ID"
+  - name: FORM_CD
+    data_type: VARCHAR2(255)
+    description: "Mã mẫu báo cáo"
+    key: null
+    fk_note: null
+  - name: PERIOD_NAME
+    data_type: VARCHAR2(255)
+    description: "Kỳ tính"
+    key: null
+    fk_note: null
+  - name: PERIOD_QUARTER
+    data_type: NUMBER
+    description: "quý 1234 - năm 5 - bán niên 6"
+    key: null
+    fk_note: null
+  - name: PERIOD_YEAR
+    data_type: NUMBER
+    description: "Năm"
+    key: null
+    fk_note: null
+  - name: BASE_COLUMN
+    data_type: VARCHAR2(255)
+    description: "Cột căn cứ để tính"
+    key: null
+    fk_note: null
+  - name: BASE_DATE
+    data_type: DATE
+    description: "Ngày chốt sổ kỳ báo cáo"
+    key: null
+    fk_note: null
+  - name: DEADLINE_DATE
+    data_type: DATE
+    description: "Hạn chót cần nộp báo cáo"
+    key: null
+    fk_note: null
+  - name: ACTUAL_SUBMIT_DATE
+    data_type: DATE
+    description: "Ngày công ty nộp thực tế"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: VARCHAR2(50)
+    description: "Trạng thái gửi báo cáo"
+    key: null
+    fk_note: null
+  - name: CREATED_DATE
+    data_type: TIMESTAMP
+    description: "Thời gian tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(500)
+    description: "Người tạo bản ghi"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: TIMESTAMP
+    description: "Thời gian cập nhật bản ghi lần cuối"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(500)
+    description: "Người cập nhật bản ghi lần cuối"
+    key: null
+    fk_note: "FK → LOGINS.ID"

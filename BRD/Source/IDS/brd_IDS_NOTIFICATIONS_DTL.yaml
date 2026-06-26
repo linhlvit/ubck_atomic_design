@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: NOTIFICATIONS_DTL
+brd_ref: BRD-SRC-IDS-NOTIFICATIONS_DTL
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: NOTIFICATIONS_ID
+    data_type: NUMBER(10,0)
+    description: "Id thông báo"
+    key: null
+    fk_note: "FK → NOTIFICATIONS.ID"
+  - name: LOGIN_ID
+    data_type: NUMBER(10,0)
+    description: "Id người dùng"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: FULL_NAME
+    data_type: VARCHAR2(200)
+    description: "Tên"
+    key: null
+    fk_note: null
+  - name: OBJECT_TYPE
+    data_type: NUMBER(1,0)
+    description: "Loại đối tượng: 1- Nội bộ UBCK; 2- Tổ chức bên ngoài; 3- Cá nhân bên ngoài"
+    key: null
+    fk_note: null
+  - name: DEPT_CD
+    data_type: VARCHAR2(20)
+    description: "Mã phòng ban"
+    key: null
+    fk_note: null
+  - name: LOGIN_TYPE
+    data_type: NUMBER(1,0)
+    description: "Loại user"
+    key: null
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Id công ty đại chúng"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: EQUITY_LISTING_EXCH
+    data_type: VARCHAR2(20)
+    description: "Sàn niêm yết (ĐKGD cổ phiếu)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Nguời tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Nguời sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(255)
+    description: null
+    key: null
+    fk_note: null
+  - name: TEL
+    data_type: VARCHAR2(50)
+    description: null
+    key: null
+    fk_note: null

@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: AF_PROFILES
+brd_ref: BRD-SRC-IDS-AF_PROFILES
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: AUDIT_FIRM_CD
+    data_type: VARCHAR2(50)
+    description: "Mã"
+    key: null
+    fk_note: null
+  - name: FULL_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên đầy đủ (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: FULL_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên đầy đủ (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: SHORT_NAME
+    data_type: VARCHAR2(50)
+    description: "Tên viết tắt"
+    key: null
+    fk_note: null
+  - name: BUSINESS_REG_NO
+    data_type: VARCHAR2(50)
+    description: "Giấy chứng nhận ĐKKD"
+    key: null
+    fk_note: null
+  - name: ELIGIBILITY_CERT_NO
+    data_type: VARCHAR2(20)
+    description: "Giấy chứng nhận đủ điều kiện KD"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: VARCHAR2(255)
+    description: "Địa chỉ"
+    key: null
+    fk_note: null
+  - name: PHONE_NO
+    data_type: VARCHAR2(18)
+    description: "Điện thoại"
+    key: null
+    fk_note: null
+  - name: FAX_NO
+    data_type: VARCHAR2(18)
+    description: "Số Fax"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: VARCHAR2(255)
+    description: "Website"
+    key: null
+    fk_note: null
+  - name: PAID_IN_CAPITAL
+    data_type: NUMBER(18,0)
+    description: "Vốn điều lệ thực góp"
+    key: null
+    fk_note: null
+  - name: FOREIGN_AUDIT_MEMBER_FLG
+    data_type: NUMBER(1,0)
+    description: "Thành viên của hãng kiểm toán nước ngoài (0-không là thành viên, 1-là thành viên)"
+    key: null
+    fk_note: null
+  - name: MEMBERSHIP_START_DATE
+    data_type: DATE
+    description: "Ngày trở thành thành viên"
+    key: null
+    fk_note: null
+  - name: MEMBERSHIP_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc là thành viên"
+    key: null
+    fk_note: null
+  - name: STATUS_CD
+    data_type: VARCHAR2(255)
+    description: "Trạng thái công ty kiểm toán (LOOKUP_GROUP = AF_STATUS)"
+    key: null
+    fk_note: null
+  - name: EXTERNAL_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: FOREIGN_AUDIT_FIRM_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên hãng kiểm toán nước ngoài (nếu là thành viên)"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS_CD
+    data_type: VARCHAR2(100)
+    description: null
+    key: null
+    fk_note: null
+  - name: APPROVER_COMMENT
+    data_type: VARCHAR2(255)
+    description: null
+    key: null
+    fk_note: null

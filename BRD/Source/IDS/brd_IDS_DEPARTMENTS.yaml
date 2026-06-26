@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: DEPARTMENTS
+brd_ref: BRD-SRC-IDS-DEPARTMENTS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: DEPT_CD
+    data_type: VARCHAR2(30)
+    description: "Mã phòng/ban"
+    key: null
+    fk_note: null
+  - name: DEPT_NAME_VI
+    data_type: VARCHAR2(50)
+    description: "Tên phòng/ban (Tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: DEPT_NAME_EN
+    data_type: VARCHAR2(50)
+    description: "Tên phòng/ban (Tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(255)
+    description: "Mô tả"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Kích hoạt"
+    key: null
+    fk_note: null
+  - name: SYNC_FLG
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null

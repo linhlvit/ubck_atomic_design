@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: HISTORY_CHANGE_LOG
+brd_ref: BRD-SRC-IDS-HISTORY_CHANGE_LOG
+columns:
+  - name: ID
+    data_type: VARCHAR2(255)
+    description: "Khóa chính của bản ghi lịch sử thay đổi, sinh UUID tại ứng dụng để tránh dùng IDENTITY trên Oracle"
+    key: PK
+    fk_note: null
+  - name: TABLE_NAME
+    data_type: VARCHAR2(100)
+    description: "Tên bảng chứa dữ liệu gốc, ví dụ: FORMS, COMPANY_PROFILES"
+    key: null
+    fk_note: null
+  - name: OBJECT_ID
+    data_type: VARCHAR2(100)
+    description: "ID của bản ghi bên bảng gốc, lưu dạng chuỗi để hỗ trợ nhiều kiểu khóa"
+    key: null
+    fk_note: null
+  - name: ACTION
+    data_type: VARCHAR2(20)
+    description: "Loại thay đổi dữ liệu: CREATE, UPDATE hoặc DELETE"
+    key: null
+    fk_note: null
+  - name: CHANGED_BY
+    data_type: VARCHAR2(100)
+    description: "Người thực hiện thay đổi dữ liệu"
+    key: null
+    fk_note: null
+  - name: CHANGED_AT
+    data_type: TIMESTAMP
+    description: "Thời điểm phát sinh thay đổi dữ liệu"
+    key: null
+    fk_note: null
+  - name: SOURCE_SERVICE
+    data_type: VARCHAR2(100)
+    description: "Tên service phát sinh lịch sử thay đổi"
+    key: null
+    fk_note: null
+  - name: BEFORE_DATA
+    data_type: CLOB
+    description: "Snapshot dữ liệu trước khi thay đổi, lưu dưới dạng JSON"
+    key: null
+    fk_note: null
+  - name: AFTER_DATA
+    data_type: CLOB
+    description: "Snapshot dữ liệu sau khi thay đổi, lưu dưới dạng JSON"
+    key: null
+    fk_note: null
+  - name: CHANGED_FIELDS
+    data_type: CLOB
+    description: "Danh sách tên các field thay đổi, lưu dưới dạng JSON array"
+    key: null
+    fk_note: null

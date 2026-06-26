@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: EVALUATION_GROUPS
+brd_ref: BRD-SRC-IDS-EVALUATION_GROUPS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: GROUP_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên của nhóm đánh giá"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(255)
+    description: "Mô tả chi tiết về nhóm đánh giá"
+    key: null
+    fk_note: null
+  - name: WEIGHT
+    data_type: NUMBER(5,2)
+    description: "Trọng số (giá trị từ 0 đến 1) áp dụng cho nhóm đánh giá"
+    key: null
+    fk_note: null
+  - name: DISPLAY_ORDER
+    data_type: NUMBER
+    description: "Số thứ tự hiển thị"
+    key: null
+    fk_note: null
+  - name: GROUP_CD
+    data_type: VARCHAR2(30)
+    description: "Mã nhóm"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null

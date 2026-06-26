@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: HOLDER_RELATIONSHIP
+brd_ref: BRD-SRC-IDS-HOLDER_RELATIONSHIP
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Id khóa chính tự sinh"
+    key: PK
+    fk_note: null
+  - name: RELATIONSHIP_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại quan hệ - LOOKUP_VALUES LOOKUP_GROUP = RELATIONSHIP_TYPE"
+    key: null
+    fk_note: null
+  - name: LEGAL_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "ID cổ đông liên quan - ref LEGAL_ENTITIES"
+    key: FK
+    fk_note: "FK → LEGAL_ENTITIES.ID"
+  - name: RELATED_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "ID cổ đông liên quan"
+    key: FK
+    fk_note: null
+  - name: EFFECTIVE_FROM_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_TO_DATE
+    data_type: DATE
+    description: "Ngày kết thúc"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái (0-Inactive, 1-Active)"
+    key: null
+    fk_note: null
+  - name: RELATIONSHIP_REASON
+    data_type: VARCHAR2(255)
+    description: "Lý do"
+    key: null
+    fk_note: null
+  - name: REMARKS
+    data_type: VARCHAR2(512)
+    description: "Ghi chú"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa"
+    key: null
+    fk_note: null

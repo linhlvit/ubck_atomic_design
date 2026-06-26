@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: INTG_REPORT_FIELD
+brd_ref: BRD-SRC-IDS-INTG_REPORT_FIELD
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính tự tăng"
+    key: PK
+    fk_note: null
+  - name: NEWS_TYPE_GROUP_CD
+    data_type: VARCHAR2(100)
+    description: "Nhóm tin tức (LOOKUP_VALUES group = FORM_GROUP)"
+    key: null
+    fk_note: null
+  - name: NEWS_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại tin gốc (LOOKUP_VALUES group = NEWS_TYPE)"
+    key: null
+    fk_note: null
+  - name: FORM_ID
+    data_type: NUMBER(10,0)
+    description: "ID mẫu báo cáo (FK to FORMS)"
+    key: FK
+    fk_note: "FK → FORMS.ID"
+  - name: FIELD_ID
+    data_type: NUMBER(10,0)
+    description: "ID Field (FK to FIELDS)"
+    key: FK
+    fk_note: "FK → FIELDS.ID"
+  - name: REP_FORM_ID
+    data_type: NUMBER(10,0)
+    description: "ID trong trường hợp form khai báo có cấu trúc"
+    key: FK
+    fk_note: "FK → REP_FORMS.ID"
+  - name: REP_COLUMN_ID
+    data_type: NUMBER(10,0)
+    description: "ID Column"
+    key: FK
+    fk_note: "FK → REP_COLUMN.ID"
+  - name: FIELD_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên trường (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: FIELD_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên trường (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: VARCHAR2(50)
+    description: "Kiểu dữ liệu (VD: String, Number, Date)"
+    key: null
+    fk_note: null
+  - name: IMPORT_ORDER
+    data_type: NUMBER(3,0)
+    description: "Thứ tự hiển thị file import"
+    key: null
+    fk_note: null
+  - name: SHEET_NAME
+    data_type: VARCHAR2(1000)
+    description: "Tên sheet file import"
+    key: null
+    fk_note: null
+  - name: REQUIRE_FLG
+    data_type: NUMBER(1,0)
+    description: "Bắt buộc nhập file import (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+  - name: REQ_ANNUAL_FS_FLG
+    data_type: NUMBER(1,0)
+    description: "Bắt buộc với BCTC năm/bán niên (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+  - name: FIXED_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu fix không cho sửa trường bắt buộc"
+    key: null
+    fk_note: null
+  - name: TARGET_TYPE
+    data_type: NUMBER(1,0)
+    description: "Phân loại: 1: Tin - 2: File đính kèm - 0: HSCT"
+    key: null
+    fk_note: null
+  - name: SAVE_DATA_VALUE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu trường lưu vào bảng DATA_VALUES (0: Không lưu, 1: Có lưu)"
+    key: null
+    fk_note: null
+  - name: INFO_GROUP_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên group"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái (1: Đang hoạt động, 0: Không hoạt động)"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Xóa bản ghi (1: Xóa, 0: Chưa xóa)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(50)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(50)
+    description: "Người cập nhật cuối"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày cập nhật cuối"
+    key: null
+    fk_note: null

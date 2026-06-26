@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: FORM_FIELD_HISTORY
+brd_ref: BRD-SRC-IDS-FORM_FIELD_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: FIELD_ID
+    data_type: NUMBER(19,0)
+    description: "Mã field"
+    key: null
+    fk_note: "FK → FIELDS.ID"
+  - name: FORM_ID
+    data_type: NUMBER(19,0)
+    description: "Mã form"
+    key: null
+    fk_note: "FK → FORMS.ID"
+  - name: FIELD_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên trường"
+    key: null
+    fk_note: null
+  - name: FORM_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên form (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: ACTION
+    data_type: NUMBER(1,0)
+    description: "1-insert, 2-update, 3-delete"
+    key: null
+    fk_note: null
+  - name: CHANGED_BY
+    data_type: VARCHAR2(30)
+    description: "Người thay đổi"
+    key: null
+    fk_note: null
+  - name: CHANGED_DATE
+    data_type: DATE
+    description: "Ngày thay đổi"
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(20)
+    description: null
+    key: null
+    fk_note: null

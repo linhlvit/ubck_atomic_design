@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: EVALUATION_DETAILS
+brd_ref: BRD-SRC-IDS-EVALUATION_DETAILS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: EVALUATION_ID
+    data_type: NUMBER(10,0)
+    description: "Id của đợt đánh giá"
+    key: null
+    fk_note: null
+  - name: CRITERION_ID
+    data_type: NUMBER(10,0)
+    description: "Id chỉ tiêu đánh giá"
+    key: null
+    fk_note: null
+  - name: RESULT
+    data_type: VARCHAR2(500)
+    description: "Kết quả (<1 lần/ năm....0 lần/năm....)"
+    key: null
+    fk_note: null
+  - name: SCORE
+    data_type: NUMBER(5,0)
+    description: "Điểm số (Bình thường- 0 điểm, cảnh báo -1 điểm, rủi ro -3 điểm)"
+    key: null
+    fk_note: null
+  - name: EVALUATE
+    data_type: NUMBER(1,0)
+    description: "Kết quả đánh giá (1-Bình thường, 2- Cảnh báo, 3- Rủi ro)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null

@@ -1,0 +1,296 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: COMPANY_PROFILES
+brd_ref: BRD-SRC-IDS-COMPANY_PROFILES
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_NAME_VN
+    data_type: VARCHAR2(255)
+    description: "Tên công ty (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: COMPANY_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên công ty (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: BUSINESS_REG_NO
+    data_type: VARCHAR2(100)
+    description: "Mã số thuế"
+    key: null
+    fk_note: null
+  - name: FIRST_REG_DATE
+    data_type: DATE
+    description: "Ngày đăng ký lần đầu"
+    key: null
+    fk_note: null
+  - name: LATEST_REG_DATE
+    data_type: DATE
+    description: "Ngày đăng ký thay đổi gần nhất"
+    key: null
+    fk_note: null
+  - name: LATEST_REG_PROV
+    data_type: VARCHAR2(50)
+    description: "Tỉnh/TP đăng ký gần nhất"
+    key: null
+    fk_note: null
+  - name: CAPITAL_PAID_REPORTED
+    data_type: NUMBER(18,0)
+    description: "Vốn điều lệ"
+    key: null
+    fk_note: null
+  - name: TREASURY_SHARES
+    data_type: NUMBER(19,0)
+    description: "Cổ phiếu quỹ"
+    key: null
+    fk_note: null
+  - name: HEAD_OFFICE_ADDR
+    data_type: VARCHAR2(255)
+    description: "Địa chỉ trụ sở"
+    key: null
+    fk_note: null
+  - name: PROVINCE_ID
+    data_type: VARCHAR2(50)
+    description: "Tỉnh/TP"
+    key: null
+    fk_note: "FK → PROVINCES.ID"
+  - name: TRADING_OFFICE_ADDR
+    data_type: VARCHAR2(255)
+    description: "Địa chỉ giao dịch"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: VARCHAR2(255)
+    description: "Website"
+    key: null
+    fk_note: null
+  - name: PHONE_NO
+    data_type: VARCHAR2(20)
+    description: "Số điện thoại"
+    key: null
+    fk_note: null
+  - name: FAX_NO
+    data_type: VARCHAR2(20)
+    description: "Số fax"
+    key: null
+    fk_note: null
+  - name: CATEGORY_L1_ID
+    data_type: NUMBER(19,0)
+    description: "Ngành cấp 1"
+    key: null
+    fk_note: "FK → CATEGORIES.ID"
+  - name: CATEGORY_L2_ID
+    data_type: NUMBER(19,0)
+    description: "Ngành cấp 2"
+    key: null
+    fk_note: "FK → CATEGORIES.ID"
+  - name: ENTERPRISE_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại doanh nghiệp"
+    key: null
+    fk_note: null
+  - name: FINANCIAL_STMT_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại báo cáo tài chính"
+    key: null
+    fk_note: null
+  - name: SECURITIES_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại chứng khoán"
+    key: null
+    fk_note: null
+  - name: EQUITY_LISTING_EXCH
+    data_type: VARCHAR2(100)
+    description: "Sàn niêm yết"
+    key: null
+    fk_note: null
+  - name: EQUITY_TICKER
+    data_type: VARCHAR2(20)
+    description: "Mã cổ phiếu"
+    key: null
+    fk_note: null
+  - name: EQUITY_SECURITY_FLG
+    data_type: NUMBER(1,0)
+    description: "Cờ chứng khoán cổ phiếu"
+    key: null
+    fk_note: null
+  - name: EQUITY_LISTED_QTY
+    data_type: NUMBER(19,0)
+    description: "Số lượng cổ phiếu niêm yết"
+    key: null
+    fk_note: null
+  - name: BOND_LISTING_EXCH
+    data_type: VARCHAR2(20)
+    description: "Sàn trái phiếu"
+    key: null
+    fk_note: null
+  - name: BOND_TICKER
+    data_type: VARCHAR2(20)
+    description: "Mã trái phiếu"
+    key: null
+    fk_note: null
+  - name: BOND_SECURITY_FLG
+    data_type: NUMBER(1,0)
+    description: "Cờ chứng khoán trái phiếu"
+    key: null
+    fk_note: null
+  - name: BOND_LISTED_QTY
+    data_type: NUMBER(19,0)
+    description: "Số lượng trái phiếu niêm yết"
+    key: null
+    fk_note: null
+  - name: INTL_EXCH
+    data_type: VARCHAR2(20)
+    description: "Sàn quốc tế"
+    key: null
+    fk_note: null
+  - name: INTL_TICKER
+    data_type: VARCHAR2(20)
+    description: "Mã quốc tế"
+    key: null
+    fk_note: null
+  - name: STATUS_IDS_CD
+    data_type: VARCHAR2(100)
+    description: "Trạng thái"
+    key: null
+    fk_note: null
+  - name: AUTO_APPROVAL_FLG
+    data_type: NUMBER(1,0)
+    description: "Tự động phê duyệt"
+    key: null
+    fk_note: null
+  - name: COMPANY_LOGIN
+    data_type: VARCHAR2(50)
+    description: "Tài khoản đăng nhập"
+    key: null
+    fk_note: null
+  - name: APPROVER_COMMENT
+    data_type: VARCHAR2(255)
+    description: "Ghi chú phê duyệt"
+    key: null
+    fk_note: null
+  - name: SPECIALIST_NOTES
+    data_type: VARCHAR2(2000)
+    description: "Ghi chú chuyên viên"
+    key: null
+    fk_note: null
+  - name: IDS_REG_STATUS_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái đăng ký IDS"
+    key: null
+    fk_note: null
+  - name: IDS_REG_DATE
+    data_type: DATE
+    description: "Ngày đăng ký IDS"
+    key: null
+    fk_note: null
+  - name: OPERATING_STATUS_CD
+    data_type: VARCHAR2(100)
+    description: "Trạng thái hoạt động"
+    key: null
+    fk_note: null
+  - name: FY_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc năm tài chính"
+    key: null
+    fk_note: null
+  - name: PUBLIC_COMPANY_FORM_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức công ty đại chúng"
+    key: null
+    fk_note: null
+  - name: PUBLIC_COM_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại công ty đại chúng"
+    key: null
+    fk_note: null
+  - name: PUBLIC_BOND_ISSUER_FLG
+    data_type: NUMBER(1,0)
+    description: "Doanh nghiệp phát hành trái phiếu"
+    key: null
+    fk_note: null
+  - name: FORMER_STATE_OWNED_FLG
+    data_type: NUMBER(1,0)
+    description: "Doanh nghiệp nhà nước (trước đây)"
+    key: null
+    fk_note: null
+  - name: EQUIT_LICENSE_DATE
+    data_type: DATE
+    description: "Ngày cấp phép cổ phần hóa"
+    key: null
+    fk_note: null
+  - name: CAPITAL_AT_EQUIT
+    data_type: NUMBER(18,0)
+    description: "Vốn điều lệ tại thời điểm CPH"
+    key: null
+    fk_note: null
+  - name: HAS_STATE_OWN_FLG
+    data_type: NUMBER(1,0)
+    description: "Có vốn nhà nước"
+    key: null
+    fk_note: null
+  - name: FDI_COM_FLG
+    data_type: NUMBER(1,0)
+    description: "Doanh nghiệp FDI"
+    key: null
+    fk_note: null
+  - name: HAS_PARENT_COM_FLG
+    data_type: NUMBER(1,0)
+    description: "Có công ty mẹ"
+    key: null
+    fk_note: null
+  - name: HAS_SUBSIDIARIES_FLG
+    data_type: NUMBER(1,0)
+    description: "Có công ty con"
+    key: null
+    fk_note: null
+  - name: HAS_JOINT_VENTURES_FLG
+    data_type: NUMBER(1,0)
+    description: "Có liên doanh"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái xoá"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(255)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(255)
+    description: "Người cập nhật"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày cập nhật"
+    key: null
+    fk_note: null
+  - name: HEAD_OFFICE_PROV
+    data_type: VARCHAR2(50)
+    description: "Tỉnh/TP trụ sở chính"
+    key: null
+    fk_note: null
+  - name: IPO_COMPANY_FLG
+    data_type: NUMBER(1,0)
+    description: "1-Công ty đang IPO, 0-Công ty đại chúng"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS_CD
+    data_type: VARCHAR2(100)
+    description: "Trạng thái phê duyệt hồ sơ"
+    key: null
+    fk_note: null

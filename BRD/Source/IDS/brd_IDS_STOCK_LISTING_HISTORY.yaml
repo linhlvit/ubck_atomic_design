@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: STOCK_LISTING_HISTORY
+brd_ref: BRD-SRC-IDS-STOCK_LISTING_HISTORY
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "ID công ty, tham chiếu bảng COMPANY_PROFILES"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: ACTION_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Phân loại (Đăng ký niêm yết/giao dịch lần đầu; Hủy đăng ký niêm yết /giao dịch lần đầu; Đăng ký niêm yết/giao dịch bổ sung; Hủy niêm yết/giao dịch bổ sung): LOOKUP_VALUES.LOOKUP_GROUP = STOCK_LISTING_ACTION_TYPE"
+    key: null
+    fk_note: null
+  - name: SEQUENCE_NO
+    data_type: NUMBER(2,0)
+    description: "Số lần"
+    key: null
+    fk_note: null
+  - name: EXCHANGE_CD
+    data_type: VARCHAR2(100)
+    description: "Sàn niêm yết"
+    key: null
+    fk_note: null
+  - name: EQUITY_TICKER
+    data_type: VARCHAR2(20)
+    description: "Mã cổ phiếu"
+    key: null
+    fk_note: null
+  - name: DECISION_NO
+    data_type: VARCHAR2(18)
+    description: "Số quyết định"
+    key: null
+    fk_note: null
+  - name: DECISION_DATE
+    data_type: DATE
+    description: "Ngày quyết định"
+    key: null
+    fk_note: null
+  - name: FIRST_TRADING_DATE
+    data_type: DATE
+    description: "Ngày giao dịch lần đầu"
+    key: null
+    fk_note: null
+  - name: DELISTING_DATE
+    data_type: DATE
+    description: "Ngày hủy niêm yết"
+    key: null
+    fk_note: null
+  - name: LISTED_SHARE_QTY
+    data_type: NUMBER(15,0)
+    description: "Số lượng cổ phiếu niêm yết"
+    key: null
+    fk_note: null
+  - name: CHANGE_SHARE_QTY
+    data_type: NUMBER(15,0)
+    description: "Số lượng cổ phiếu niêm yết bổ sung/ hủy"
+    key: null
+    fk_note: null
+  - name: TOTAL_SHARE_QTY_AFTER_CHANGE
+    data_type: NUMBER(15,0)
+    description: "Số lượng cổ phiếu sau niêm yết bổ sung/ hủy"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo bản ghi"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Thời gian tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người cập nhật bản ghi"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Thời gian cập nhật bản ghi"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Soft Delete mark"
+    key: null
+    fk_note: null

@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: VIOLATION_TEMPLATES
+brd_ref: BRD-SRC-IDS-VIOLATION_TEMPLATES
+columns:
+  - name: ID
+    data_type: NUMBER(38,0)
+    description: "Khóa chính - ID tự tăng"
+    key: PK
+    fk_note: null
+  - name: FORM_ID
+    data_type: NUMBER(38,0)
+    description: null
+    key: null
+    fk_note: "FK → FORMS.ID"
+  - name: VIOLATION_CD
+    data_type: VARCHAR2(255)
+    description: "Mã vi phạm"
+    key: null
+    fk_note: null
+  - name: VIOLATION_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên vi phạm (Tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: VIOLATION_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên vi phạm (Tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: VIOLATION_TYPE_CD
+    data_type: VARCHAR2(255)
+    description: "Mã loại vi phạm VIOLATION_TYPE"
+    key: null
+    fk_note: null
+  - name: VIOLATION_SUBTYPE_CD
+    data_type: VARCHAR2(255)
+    description: "Mã nhóm/loại vi phạm chi tiết VIOLATION_SUBTYPE"
+    key: null
+    fk_note: null
+  - name: REPORT_TYPE_CD
+    data_type: VARCHAR2(255)
+    description: "Mã loại báo cáo REPORT_TYPE"
+    key: null
+    fk_note: null
+  - name: REPORT_SCOPE_CD
+    data_type: VARCHAR2(255)
+    description: "Mã phạm vi báo cáo REPORT_SCOPE"
+    key: null
+    fk_note: null
+  - name: PERIOD_TYPE_CD
+    data_type: VARCHAR2(255)
+    description: "Mã loại kỳ báo cáo (Năm, Bán niên, Quý...) REPORT_PERIOD_TYPE"
+    key: null
+    fk_note: null
+  - name: VIOLATION_TRIGGER_POINT_CD
+    data_type: VARCHAR2(255)
+    description: "Mã thời điểm/hành động kích hoạt vi phạm VIOLATION_TRIGGER_POINT"
+    key: null
+    fk_note: null
+  - name: OFFSET_DAYS
+    data_type: NUMBER
+    description: "Số ngày bù/chênh lệch để tính hạn (Deadline)"
+    key: null
+    fk_note: null
+  - name: VIOLATION_TRIGGER_POINT_CD_EX
+    data_type: VARCHAR2(255)
+    description: "Mốc chặn"
+    key: null
+    fk_note: null
+  - name: OFFSET_DAYS_EX
+    data_type: NUMBER
+    description: "Thời hạn tối đa"
+    key: null
+    fk_note: null
+  - name: DAY_TYPE_CD
+    data_type: VARCHAR2(255)
+    description: "Mã loại ngày (Ngày làm việc, Ngày thường...) DAY_TYPE"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu có hiệu lực"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc hiệu lực"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)"
+    key: null
+    fk_note: null
+  - name: OFFSET_DAYS_CONDITION
+    data_type: NUMBER
+    description: "Số ngày cộng thêm khi có điều kiện"
+    key: null
+    fk_note: null
+  - name: CREATED_DATE
+    data_type: TIMESTAMP
+    description: "Thời gian tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(500)
+    description: "Người tạo bản ghi"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: TIMESTAMP
+    description: "Thời gian cập nhật bản ghi lần cuối"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(500)
+    description: "Người cập nhật bản ghi lần cuối"
+    key: null
+    fk_note: "FK → LOGINS.ID"

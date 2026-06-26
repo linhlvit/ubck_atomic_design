@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: INTG_FINANCIAL_STATEMENT
+brd_ref: BRD-SRC-IDS-INTG_FINANCIAL_STATEMENT
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính tự tăng"
+    key: PK
+    fk_note: null
+  - name: EXCHANGE_CODE
+    data_type: VARCHAR2(20)
+    description: "Sở giao dịch (HOSE, HNX)"
+    key: null
+    fk_note: null
+  - name: REPORT_YEAR
+    data_type: VARCHAR2(4)
+    description: "Lưu trữ năm báo cáo"
+    key: null
+    fk_note: null
+  - name: ENTERPRISE_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại hình doanh nghiệp"
+    key: null
+    fk_note: null
+  - name: FINANCIAL_STATEMENT_CD
+    data_type: VARCHAR2(100)
+    description: "Loại báo cáo tài chính"
+    key: null
+    fk_note: null
+  - name: REPORT_CATALOG_ID
+    data_type: NUMBER(10,0)
+    description: "ID của báo cáo tài chính"
+    key: null
+    fk_note: "FK → REPORT_CATALOG.ID"
+  - name: IDS_RROW_ID
+    data_type: NUMBER(10,0)
+    description: "ID chỉ tiêu của BCTC"
+    key: null
+    fk_note: null
+  - name: IDS_ROW_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên chỉ tiêu"
+    key: null
+    fk_note: null
+  - name: IDS_ROW_DESC
+    data_type: VARCHAR2(100)
+    description: "Mã chỉ tiêu"
+    key: null
+    fk_note: null
+  - name: EXCH_INDICATOR_CODE
+    data_type: VARCHAR2(100)
+    description: "Mã chỉ tiêu của Sở"
+    key: null
+    fk_note: null
+  - name: EXCH_INDICATOR_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên chỉ tiêu của Sở"
+    key: null
+    fk_note: null
+  - name: SUMMARY_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu là chỉ tiêu tổng"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Xóa bản ghi"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái hoạt động"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người cập nhật"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày cập nhật"
+    key: null
+    fk_note: null

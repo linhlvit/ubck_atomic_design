@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: COMPANY_ADD_CAPITAL
+brd_ref: BRD-SRC-IDS-COMPANY_ADD_CAPITAL
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng COMPANY_PROFILES"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: REPORT_YEAR
+    data_type: VARCHAR2(4)
+    description: "Năm điều chỉnh vốn góp"
+    key: null
+    fk_note: null
+  - name: PAID_IN_CAPITAL_EOFY
+    data_type: NUMBER(19,0)
+    description: "Vốn điều lệ thực góp (tính đến thời điểm kết thúc năm tài chính)"
+    key: null
+    fk_note: null
+  - name: CAPITAL_INCREASE_AM
+    data_type: NUMBER(19,0)
+    description: "Vốn điều lệ tăng thêm so với năm trước"
+    key: null
+    fk_note: null
+  - name: CAPITAL_INCREASE_COUNT
+    data_type: NUMBER(2,0)
+    description: "Số đợt tăng vốn trong năm"
+    key: null
+    fk_note: null
+  - name: CAPITAL_INCREASE_PURPOSE
+    data_type: VARCHAR2(512)
+    description: "Mục đích tăng vốn"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_NO
+    data_type: VARCHAR2(18)
+    description: "Số công văn"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_DATE
+    data_type: DATE
+    description: "Ngày công văn"
+    key: null
+    fk_note: null
+  - name: LICENSING_AUTHORITY_VI
+    data_type: VARCHAR2(500)
+    description: "Đơn vị cấp phép (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: LICENSING_AUTHORITY_EN
+    data_type: VARCHAR2(500)
+    description: "Đơn vị cấp phép (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Ghi nhận bản ghi đã xóa hay không"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: IS_SYNC
+    data_type: NUMBER(1,0)
+    description: "Trạng thái đồng bộ"
+    key: null
+    fk_note: null

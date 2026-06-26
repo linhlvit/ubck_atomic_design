@@ -1,0 +1,111 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: LEGAL_ENTITIES
+brd_ref: BRD-SRC-IDS-LEGAL_ENTITIES
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: ENTITY_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên cổ đông hoặc người nội bộ hoặc người liên quan"
+    key: null
+    fk_note: null
+  - name: ENTITY_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại hình (Cá nhân, Tổ chức) - LOOKUP_VALUES LOOKUP_GROUP = ENTITY_TYPE"
+    key: null
+    fk_note: null
+  - name: IDENTITY_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại giấy tờ (cách nhau dấu ,) - IDENTITY_TYPE_CD của bảng IDENTITY"
+    key: null
+    fk_note: null
+  - name: BUSINESS_REG_NO
+    data_type: VARCHAR2(15)
+    description: "Mã doanh nghiệp"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: VARCHAR2(255)
+    description: "Địa chỉ"
+    key: null
+    fk_note: null
+  - name: PHONE_NO
+    data_type: VARCHAR2(18)
+    description: "Điện thoại"
+    key: null
+    fk_note: null
+  - name: FAX_NO
+    data_type: VARCHAR2(18)
+    description: "Số Fax"
+    key: null
+    fk_note: null
+  - name: GENDER_CD
+    data_type: VARCHAR2(100)
+    description: "Giới tính - LOOKUP_VALUES LOOKUP_GROUP = GENDER"
+    key: null
+    fk_note: null
+  - name: EDUCATION_LEVEL_CD
+    data_type: VARCHAR2(100)
+    description: "Trình độ - LOOKUP_VALUES LOOKUP_GROUP = EDUCATION_LEVEL"
+    key: null
+    fk_note: null
+  - name: NATIONALITY
+    data_type: VARCHAR2(50)
+    description: "Quốc gia"
+    key: null
+    fk_note: null
+  - name: BIRTH_DATE
+    data_type: DATE
+    description: "Ngày sinh"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa"
+    key: null
+    fk_note: null
+  - name: FIRST_REG_DATE
+    data_type: DATE
+    description: "Ngày đăng ký lần đầu (đối với CĐ là tổ chức)"
+    key: null
+    fk_note: null
+  - name: PAID_UP_CHARTER_CAPITAL
+    data_type: NUMBER(18,0)
+    description: "Vốn điều lệ thực góp"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: VARCHAR2(255)
+    description: "Website"
+    key: null
+    fk_note: null
+  - name: BUSINESS_SECTOR
+    data_type: VARCHAR2(100)
+    description: "Business sector - Ngành nghề kinh doanh chính (theo mã ngành cấp 4 của Tổng cục Thống kê)"
+    key: null
+    fk_note: null

@@ -1,0 +1,331 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: SECURITIES_OFFERING_RESULT
+brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_RESULT
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: SECURITIES_OFFERING_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng SECURITIES_OFFERING"
+    key: FK
+    fk_note: "FK → SECURITIES_OFFERING.ID"
+  - name: OFFERING_PHASE_NAME
+    data_type: VARCHAR2(128)
+    description: "Tên đợt chào bán"
+    key: null
+    fk_note: null
+  - name: RESULT_REPORT_DATE
+    data_type: DATE
+    description: "Ngày báo cáo kết quả"
+    key: null
+    fk_note: null
+  - name: OFFERING_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc đợt CBPH"
+    key: null
+    fk_note: null
+  - name: OFFERING_METHOD_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức chào bán phát hành --> Lấy từ bảng SECURITIES_OFFERING_PLANS"
+    key: null
+    fk_note: null
+  - name: SECURITY_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại chứng khoán: (gồm: Cổ phiếu; Cổ phiếu ưu đãi; Trái phiếu; Trái phiếu kèm chứng quyền; Trái phiếu chuyển đổi): LOOKUP_VALUES LOOKUP_GROUP = 'SO_SECURITY_TYPE'"
+    key: null
+    fk_note: null
+  - name: TOTAL_SUCCESSFUL_QTY
+    data_type: NUMBER(15,0)
+    description: "Tổng số chứng khoán CBPH thành công"
+    key: null
+    fk_note: null
+  - name: ACTUAL_OFFERING_PRICE
+    data_type: NUMBER(19,0)
+    description: "Giá chào bán thực tế (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: TOTAL_COLLECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Tổng số tiền thu được (VND)"
+    key: null
+    fk_note: null
+  - name: SUCCESSFUL_RATIO
+    data_type: NUMBER(5,2)
+    description: "% so với tổng số chứng khoán đăng ký"
+    key: null
+    fk_note: null
+  - name: ISSUER_SUCCESSFUL_QTY
+    data_type: NUMBER(15,0)
+    description: "Số lượng chứng khoán của TCPH CBPH thành công (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: SHAREHOLDER_SUCCESSFUL_QTY
+    data_type: NUMBER(15,0)
+    description: "Số lượng chứng khoán của cổ đông/thành viên CBPH thành công (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: ISSUER_COLLECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Số tiền thu được của TCPH (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: SHAREHOLDER_COLLECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Số tiền thu được của cổ đông/thành viên (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: CAPITAL_SOURCE
+    data_type: VARCHAR2(255)
+    description: "Nguồn (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: EMPLOYEE_QTY
+    data_type: NUMBER(7,0)
+    description: "Số lượng người lao động ((hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_SUCCESSFUL_QTY
+    data_type: NUMBER(15,0)
+    description: "SL chứng khoán của NĐT trong nước"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_COLLECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Số tiền thu được của NĐT trong nước"
+    key: null
+    fk_note: null
+  - name: FOREIGN_SUCCESSFUL_QTY
+    data_type: NUMBER(15,0)
+    description: "SL chứng khoán của NĐT nước ngoài"
+    key: null
+    fk_note: null
+  - name: FOREIGN_COLLECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Số tiền thu được của NĐT nước ngoài"
+    key: null
+    fk_note: null
+  - name: POST_ISSUANCE_TOTAL_QTY
+    data_type: NUMBER(15,0)
+    description: "Tổng số CK sau đợt phát hành"
+    key: null
+    fk_note: null
+  - name: TOTAL_TREASURY_SHARE
+    data_type: NUMBER(15,0)
+    description: "Tổng số cổ phiếu quỹ"
+    key: null
+    fk_note: null
+  - name: TOTAL_OUTSTANDING_SHARE
+    data_type: NUMBER(15,0)
+    description: "Số chứng khoán đang lưu hành"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_OFFERING_PRICE
+    data_type: NUMBER(19,0)
+    description: "Giá chào bán (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_OFFERING_QTY
+    data_type: NUMBER(15,0)
+    description: "Số chứng khoán CBPH"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_REGISTERED_QTY
+    data_type: NUMBER(15,0)
+    description: "Số CK đăng ký mua/hoán đổi"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_DISTRIBUTED_QTY
+    data_type: NUMBER(15,0)
+    description: "Số CK được phân phối/hoán đổi"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_REG_INVESTOR_QTY
+    data_type: NUMBER(7,0)
+    description: "Số NĐT đăng ký mua/hoán đổi"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_DIST_INVESTOR_QTY
+    data_type: NUMBER(7,0)
+    description: "Số NĐT được phân phối/hoán đổi"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_UNDIST_INVESTOR_QTY
+    data_type: NUMBER(7,0)
+    description: "Số NĐT không được phân phối/hoán đổi"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_REMAINING_QTY
+    data_type: NUMBER(15,0)
+    description: "Số chứng khoán còn lại"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_DISTRIBUTED_PCT
+    data_type: NUMBER(5,2)
+    description: "Tỷ lệ CK được phân phối/phát hành"
+    key: null
+    fk_note: null
+  - name: FOREIGN_OFFERING_PRICE
+    data_type: NUMBER(19,0)
+    description: "Giá chào bán (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: FOREIGN_OFFERING_QTY
+    data_type: NUMBER(15,0)
+    description: "Số chứng khoán CBPH"
+    key: null
+    fk_note: null
+  - name: FOREIGN_REGISTERED_QTY
+    data_type: NUMBER(15,0)
+    description: "Số CK đăng ký mua/hoán đổi"
+    key: null
+    fk_note: null
+  - name: FOREIGN_DISTRIBUTED_QTY
+    data_type: NUMBER(15,0)
+    description: "Số CK được phân phối/hoán đổi"
+    key: null
+    fk_note: null
+  - name: FOREIGN_REG_INVESTOR_QTY
+    data_type: NUMBER(7,0)
+    description: "Số NĐT đăng ký mua/hoán đổi"
+    key: null
+    fk_note: null
+  - name: FOREIGN_DIST_INVESTOR_QTY
+    data_type: NUMBER(7,0)
+    description: "Số NĐT được phân phối/hoán đổi"
+    key: null
+    fk_note: null
+  - name: FOREIGN_UNDIST_INVESTOR_QTY
+    data_type: NUMBER(7,0)
+    description: "Số NĐT không được phân phối/hoán đổi"
+    key: null
+    fk_note: null
+  - name: FOREIGN_REMAINING_QTY
+    data_type: NUMBER(15,0)
+    description: "Số chứng khoán còn lại"
+    key: null
+    fk_note: null
+  - name: FOREIGN_DISTRIBUTED_PCT
+    data_type: NUMBER(5,2)
+    description: "Tỷ lệ CK được phân phối/phát hành"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_NO
+    data_type: VARCHAR2(18)
+    description: "Số giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_DATE
+    data_type: DATE
+    description: "Ngày giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_NO
+    data_type: VARCHAR2(18)
+    description: "Số công văn của UBCKNN"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_DATE
+    data_type: DATE
+    description: "Ngày công văn"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS_CD
+    data_type: VARCHAR2(100)
+    description: "Trạng thái phê duyệt kết quả (dùng để Ban QLCB phê duyệt gồm: Chờ kiểm tra; Chờ duyệt; Đã duyệt; Từ chối) : LOOKUP_VALUES LOOKUP_GROUP = 'SO_APPROVAL_STATUS'"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_ID
+    data_type: VARCHAR2(30)
+    description: "ID Login của Lãnh đạo phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_NAME
+    data_type: VARCHAR2(128)
+    description: "Lãnh đạo duyệt phương án (Chuyên viên chọn lãnh đạo phê duyệt dữ liệu phương án)"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_ID
+    data_type: VARCHAR2(36)
+    description: "ID Login của Chuyên viên xử lý"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_NAME
+    data_type: VARCHAR2(128)
+    description: "Chuyên viên xử lý (đồng bộ từ TTHC về, có thể chọn user nếu thêm mới tại IDS)"
+    key: null
+    fk_note: null
+  - name: REVISION_REASON
+    data_type: VARCHAR2(512)
+    description: "Lý do chỉnh sửa"
+    key: null
+    fk_note: null
+  - name: TOTAL_EXPENSE
+    data_type: NUMBER(19,0)
+    description: "Tổng chi phí (VND)"
+    key: null
+    fk_note: null
+  - name: UNDERWRITING_FEE
+    data_type: NUMBER(19,0)
+    description: "Phí bảo lãnh (VND)"
+    key: null
+    fk_note: null
+  - name: DISTRIBUTION_FEE
+    data_type: NUMBER(19,0)
+    description: "Phí phân phối (VND)"
+    key: null
+    fk_note: null
+  - name: AUDIT_FEE
+    data_type: NUMBER(19,0)
+    description: "Phí kiểm toán (VND)"
+    key: null
+    fk_note: null
+  - name: OTHER_EXPENSE
+    data_type: NUMBER(19,0)
+    description: "Chi phí khác (VND)"
+    key: null
+    fk_note: null
+  - name: NET_OFFERING_PROCEEDS
+    data_type: NUMBER(24,0)
+    description: "Tổng thu ròng từ đợt CBPH (VND)"
+    key: null
+    fk_note: null
+  - name: IS_SYNC
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu đồng bộ dữ liệu: 1- Đồng bộ từ CBTT ; 0 - Tạo mới tại IDS"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu trạng thái xóa mềm: 1 - Xóa; 0 - Chưa xóa"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: APPROVER_COMMENT
+    data_type: VARCHAR2(255)
+    description: null
+    key: null
+    fk_note: null

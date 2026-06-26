@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: AF_TECHNICAL_AUDIT
+brd_ref: BRD-SRC-IDS-AF_TECHNICAL_AUDIT
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: AF_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Link đến bảng AF_PROFILES"
+    key: FK
+    fk_note: "FK → AF_PROFILES.ID"
+  - name: AF_INSPECTION_ID
+    data_type: NUMBER(10,0)
+    description: "Link đến bảng AF_INSPECTION"
+    key: FK
+    fk_note: "FK → AF_INSPECTION.ID"
+  - name: INSPECTION_ENTITY_FILES
+    data_type: VARCHAR2(1000)
+    description: "Tên hồ sơ kiểm tra (chọn MCK hoặc nhập tay)"
+    key: null
+    fk_note: null
+  - name: INSPECTION_YEAR
+    data_type: VARCHAR2(4)
+    description: "Năm kiểm tra"
+    key: null
+    fk_note: null
+  - name: SIGNING_AUDITOR_NAME
+    data_type: VARCHAR2(100)
+    description: "Kiểm toán viên ký BCTC (chọn từ danh sách KTV)"
+    key: null
+    fk_note: null
+  - name: LEGAL_REPRESENTATIVE_NAME
+    data_type: VARCHAR2(100)
+    description: "Lãnh đạo ký BCTC (chọn từ danh sách KTV)"
+    key: null
+    fk_note: null
+  - name: INSPECTION_RESULT_CD
+    data_type: VARCHAR2(100)
+    description: "Kết quả kiểm tra (Tốt; Đạt; Không đạt; Kém)"
+    key: null
+    fk_note: null
+  - name: AUDIT_ACTION_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức quyết định (Quyết định đình chỉ; Công văn nhắc nhở)"
+    key: null
+    fk_note: null
+  - name: ACTION_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức xử lý (Sau kiểm tra, Qua công tác giám sát)"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_NO
+    data_type: VARCHAR2(18)
+    description: "Số văn bản"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_DATE
+    data_type: DATE
+    description: "Ngày văn bản"
+    key: null
+    fk_note: null
+  - name: VIOLATION_CONTENT
+    data_type: VARCHAR2(512)
+    description: "Nội dung vi phạm"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_FROM_DATE
+    data_type: DATE
+    description: "Thời gian hiệu lực - Từ ngày"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_TO_DATE
+    data_type: DATE
+    description: "Thời gian hiệu lực - Đến ngày"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Soft delete flag - 0: Active, 1: Deleted"
+    key: null
+    fk_note: null

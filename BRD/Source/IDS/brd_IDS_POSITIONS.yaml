@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: POSITIONS
+brd_ref: BRD-SRC-IDS-POSITIONS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: POSITION_CD
+    data_type: VARCHAR2(100)
+    description: "Loại chức vụ - LOOKUP_VALUES LOOKUP_GROUP = POSITION"
+    key: null
+    fk_note: null
+  - name: APPOINTMENT_DATE
+    data_type: DATE
+    description: "Ngày bổ nhiệm"
+    key: null
+    fk_note: null
+  - name: DISMISSAL_DATE
+    data_type: DATE
+    description: "Ngày miễn nhiệm"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Có trạng thái chức vụ hiện tại (0-Không, 1-Có)"
+    key: null
+    fk_note: null
+  - name: LEGAL_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "ID cổ đông liên quan - ref LEGAL_ENTITIES"
+    key: FK
+    fk_note: "FK → LEGAL_ENTITIES.ID"
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa"
+    key: null
+    fk_note: null

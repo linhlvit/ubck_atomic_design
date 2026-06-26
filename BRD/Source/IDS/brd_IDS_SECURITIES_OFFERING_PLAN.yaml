@@ -1,0 +1,296 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: SECURITIES_OFFERING_PLAN
+brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_PLAN
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: SECURITIES_OFFERING_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng SECURITIES_OFFERING"
+    key: FK
+    fk_note: "FK → SECURITIES_OFFERING.ID"
+  - name: OFFERING_METHOD_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức chào bán phát hành: lấy từ danh mục lookup_value (Chào bán ra công chúng theo hình thức khác; Chào bán của cổ đông công ty đại chúng ra công chúng; Chào bán riêng lẻ; Hoán đổi; Phát hành trả cổ tức;....): LOOKUP_VALUES LOOKUP_GROUP = 'SO_OFFERING_METHOD'"
+    key: null
+    fk_note: null
+  - name: DISTRIBUTION_METHOD_CD
+    data_type: VARCHAR2(100)
+    description: "Phương thức phân phối: gồm (Tổ chức bảo lãnh phát hành; Đại lý phát hành;Đấu giá; Khác), có thể chọn nhiều: LOOKUP_VALUES LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD'"
+    key: null
+    fk_note: null
+  - name: SECURITY_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại chứng khoán: (gồm: Cổ phiếu; Cổ phiếu ưu đãi; Trái phiếu; Trái phiếu kèm chứng quyền; Trái phiếu chuyển đổi): LOOKUP_VALUES LOOKUP_GROUP = 'SO_SECURITY_TYPE'"
+    key: null
+    fk_note: null
+  - name: SECURITY_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên chứng khoán"
+    key: null
+    fk_note: null
+  - name: PAR_VALUE
+    data_type: NUMBER(10,0)
+    description: "Mệnh giá"
+    key: null
+    fk_note: null
+  - name: TOTAL_REGISTERED_QTY
+    data_type: NUMBER(10,0)
+    description: "Tổng số chứng khoán chào bán/ phát hành --> Lấy bên bảng SECURITIES_OFFERINGS"
+    key: null
+    fk_note: null
+  - name: OFFERING_PRICE
+    data_type: NUMBER(8,0)
+    description: "Giá chào bán phát hành dự kiến"
+    key: null
+    fk_note: null
+  - name: TOTAL_EXPECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Tổng số tiền dự kiến thu được (VNĐ) --> Lấy bên bảng SECURITIES_OFFERINGS"
+    key: null
+    fk_note: null
+  - name: ISSUER_TOTAL_REGISTERED_QTY
+    data_type: NUMBER(10,0)
+    description: "Số lượng chứng khoán TCPH đăng ký (hiển thị đối với 1 số thủ tục) --> TỰ ĐỘNG LÁY TỔNG TRONG BẢNG SECURITIES_OFFERING_DISTRIBUTION"
+    key: null
+    fk_note: null
+  - name: SHAREHOLDER_REGISTERED_QTY
+    data_type: NUMBER(10,0)
+    description: "Số lượng chứng khoán cổ đông/thành viên đăng ký (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: ISSUER_TOTAL_EXPECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Số tiền dự kiến thu được từ TCPH (VND) (hiển thị đối với 1 số thủ tục) --> TỰ ĐỘNG LÁY TỔNG TRONG BẢNG SECURITIES_OFFERING_DISTRIBUTION"
+    key: null
+    fk_note: null
+  - name: SHAREHOLDER_EXPECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Số tiền dự kiến thu được từ cổ đông/thành viên (VND) (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: OFFERING_START_DATE
+    data_type: DATE
+    description: "Thời gian chào bán (từ ngày)"
+    key: null
+    fk_note: null
+  - name: OFFERING_END_DATE
+    data_type: DATE
+    description: "Thời gian chào bán (đến ngày)"
+    key: null
+    fk_note: null
+  - name: OWNED_SHARE_QTY
+    data_type: NUMBER(10,0)
+    description: "Số lượng cổ phiếu sở hữu (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: UNRESTRICTED_SHARE_QTY
+    data_type: NUMBER(10,0)
+    description: "Số lượng cổ phiếu được phép chuyển nhượng (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: OFFER_TO_OWNED_PCT
+    data_type: NUMBER(5,2)
+    description: "Tỷ lệ CP đăng ký chào bán / Tổng CP sở hữu (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: TRANSFER_RESTRICT_PERIOD
+    data_type: VARCHAR2(50)
+    description: "Thời gian hạn chế chuyển nhượng (hiển thị 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: OFFER_SUCCESS_PCT
+    data_type: NUMBER(5,2)
+    description: "Tỷ lệ chào bán thành công (hiển thị ở 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: OFFER_TO_OUTSTANDING_PCT
+    data_type: NUMBER(5,2)
+    description: "Tỷ lệ phát hành (hiển thị ở 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: EMPLOYEE_QTY
+    data_type: NUMBER(7,0)
+    description: "Số lượng người lao động (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: CAPITAL_SOURCE
+    data_type: VARCHAR2(255)
+    description: "Nguồn vốn (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: EXERCISE_PERIOD
+    data_type: VARCHAR2(50)
+    description: "Thời hạn thực hiện quyền (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: RIGHTS_RATIO
+    data_type: VARCHAR2(20)
+    description: "Tỷ lệ thực hiện quyềN (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: SWAP_RATIO
+    data_type: VARCHAR2(20)
+    description: "Tỷ lệ hoán đổi (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: SWAP_TARGET
+    data_type: VARCHAR2(512)
+    description: "Đối tượng phát hành để hoán đổi (hiển thị đối với 1 số thủ tục)"
+    key: null
+    fk_note: null
+  - name: ISSUANCE_MARKET
+    data_type: VARCHAR2(512)
+    description: "Thị trường phát hành (đối với chào bán tại nước ngoài)"
+    key: null
+    fk_note: null
+  - name: INTEREST_RATE
+    data_type: NUMBER(5,2)
+    description: "Lãi suất"
+    key: null
+    fk_note: null
+  - name: BOND_TERM_VALUE
+    data_type: VARCHAR2(100)
+    description: "Kỳ hạn trái phiếu (tháng)"
+    key: null
+    fk_note: null
+  - name: INTEREST_PAYMENT_PERIOD
+    data_type: VARCHAR2(100)
+    description: "Kỳ trả lãi"
+    key: null
+    fk_note: null
+  - name: CONVERSION_PERIOD_VALUE
+    data_type: VARCHAR2(100)
+    description: "Thời hạn chuyển đổi"
+    key: null
+    fk_note: null
+  - name: CONVERSION_RATIO
+    data_type: NUMBER(6,2)
+    description: "Tỷ lệ chuyển đổi"
+    key: null
+    fk_note: null
+  - name: CONVERSION_GUARANTEE_PLAN
+    data_type: VARCHAR2(1024)
+    description: "Phương án đảm bảo tỷ lệ sở hữu nước ngoài về chuyển đổi"
+    key: null
+    fk_note: null
+  - name: EXERCISE_PERIOD_VALUE
+    data_type: VARCHAR2(100)
+    description: "Thời hạn thực hiện quyền"
+    key: null
+    fk_note: null
+  - name: EXERCISE_RATIO
+    data_type: NUMBER(6,2)
+    description: "Tỷ lệ thực hiện quyền"
+    key: null
+    fk_note: null
+  - name: EXERCISE_GUARANTEE_PLAN
+    data_type: VARCHAR2(1024)
+    description: "Phương án đảm bảo tỷ lệ sở hữu nước ngoài về thực hiện quyền"
+    key: null
+    fk_note: null
+  - name: GUARANTEE_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Hình thức bảo đảm (gồm : Thanh toán bằng bảo lãnh; Thanh toán bằng tài sản) LOOKUP_VALUES LOOKUP_GROUP = 'GUARANTEE_TYPE'"
+    key: null
+    fk_note: null
+  - name: GUARANTEED_BOND_VALUE
+    data_type: NUMBER(24,2)
+    description: "Giá trị trái phiếu được bảo đảm"
+    key: null
+    fk_note: null
+  - name: PAYMENT_GUARANTOR_ORG
+    data_type: VARCHAR2(255)
+    description: "Tên tổ chức bảo lãnh thanh toán"
+    key: null
+    fk_note: null
+  - name: PAYMENT_GUARANTEE_VALUE
+    data_type: NUMBER(24,2)
+    description: "Giá trị bảo lãnh"
+    key: null
+    fk_note: null
+  - name: SECURED_ASSET
+    data_type: VARCHAR2(512)
+    description: "Tài sản bảo đảm"
+    key: null
+    fk_note: null
+  - name: SECURED_ASSET_VALUE
+    data_type: NUMBER(24,2)
+    description: "Giá trị tài sản bảo đảm"
+    key: null
+    fk_note: null
+  - name: SECURED_ASSET_OWNER
+    data_type: VARCHAR2(255)
+    description: "Chủ sở hữu tài sản bảo đảm"
+    key: null
+    fk_note: null
+  - name: SECURED_ASSET_ORG
+    data_type: VARCHAR2(255)
+    description: "Tổ chức nhận tài sản bảo đảm"
+    key: null
+    fk_note: null
+  - name: PUBLIC_OFFERING_VAL
+    data_type: NUMBER(19,0)
+    description: "Tổng giá trị TP CB ra công chúng (trái phiếu đang lưu hành)"
+    key: null
+    fk_note: null
+  - name: PRIVATE_PLACEMENT_VAL
+    data_type: NUMBER(19,0)
+    description: "Tổng giá trị TP CB riêng lẻ (trái phiếu đang lưu hành)"
+    key: null
+    fk_note: null
+  - name: TOTAL_OUTSTANDING_VAL
+    data_type: NUMBER(19,0)
+    description: "Tổng giá TP đang lưu hành"
+    key: null
+    fk_note: null
+  - name: PUBLIC_OFFERING_12M_VAL
+    data_type: NUMBER(19,0)
+    description: "Tổng giá trị TP CB ra công chúng (huy động trong 12 tháng gần nhất)"
+    key: null
+    fk_note: null
+  - name: PRIVATE_PLACEMENT_12M_VAL
+    data_type: NUMBER(19,0)
+    description: "Tổng giá trị TP CB riêng lẻ (huy động trong 12 tháng gần nhất)"
+    key: null
+    fk_note: null
+  - name: TOTAL_12M_VAL
+    data_type: NUMBER(19,0)
+    description: "Tổng giá trị TP huy động trong 12 tháng gần nhất"
+    key: null
+    fk_note: null
+  - name: REG_TO_OUTSTANDING_PCT
+    data_type: NUMBER(5,2)
+    description: "Tỷ lệ trái phiếu đăng ký CB/ Tổng đang lưu hành"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null

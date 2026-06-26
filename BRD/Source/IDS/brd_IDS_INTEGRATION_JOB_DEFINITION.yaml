@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: INTEGRATION_JOB_DEFINITION
+brd_ref: BRD-SRC-IDS-INTEGRATION_JOB_DEFINITION
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: JOB_CODE
+    data_type: VARCHAR2(100)
+    description: "Mã job — phải khớp JobHandler.getJobCode() và URL /inbound/jobs/{jobCode}/execute"
+    key: null
+    fk_note: null
+  - name: JOB_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên hiển thị"
+    key: null
+    fk_note: null
+  - name: ENABLED
+    data_type: VARCHAR2(1)
+    description: "Y = bật; N (hoặc khác Y) = tắt — orchestrator chỉ load khi enabled='Y'"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(500)
+    description: "Mô tả mục đích job"
+    key: null
+    fk_note: null
+  - name: CONFIG_JSON
+    data_type: CLOB
+    description: "Cấu hình bổ sung dạng JSON (path API, default values …) — handler tự đọc"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: TIMESTAMP
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(100)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: TIMESTAMP
+    description: "Ngày sửa"
+    key: null
+    fk_note: null

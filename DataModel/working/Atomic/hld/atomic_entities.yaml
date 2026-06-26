@@ -117,7 +117,7 @@ entities:
   description: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ\
     \ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ\
     \ 1 nguồn."
-  source_table: "NHNCK.PROFESSIONALS"
+  source_table: "NHNCK.PROFESSIONALS, IDS.identity, IDS.af_legal_representative"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -125,7 +125,9 @@ entities:
   table_type: "Fundamental"
   description: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email).\
     \ Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."
-  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.USERS, NHNCK.PROFESSIONALS"
+  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.USERS, NHNCK.PROFESSIONALS,\
+    \ IDS.company_detail, IDS.stock_holders, IDS.af_profiles, IDS.legal_representative,\
+    \ IDS.af_legal_representative"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -133,7 +135,8 @@ entities:
   table_type: "Fundamental"
   description: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường\
     \ trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."
-  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS"
+  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS, IDS.company_detail,\
+    \ IDS.stock_holders, IDS.af_profiles"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
@@ -234,3 +237,473 @@ entities:
     \ với Examination Assessment Fee (Condition)."
   source_table: "NHNCK.APPLICATION_FEES"
   status: "approved"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Citizen Reception"
+  table_type: ""
+  description: "Ghi nhận buổi tiếp công dân tại UBCKNN: ngày tiếp, cán bộ tiếp, loại\
+    \ đối tượng, nội dung tóm tắt, liên kết hồ sơ đơn thư nếu có."
+  source_table: "ThanhTra.CITIZEN_RECEPTION"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Examination Annual Plan Target"
+  table_type: ""
+  description: "Danh sách đối tượng được đưa vào kế hoạch kiểm tra hàng năm, phân\
+    \ loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng)."
+  source_table: "ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Examination Result Notice"
+  table_type: ""
+  description: "Thông báo kết quả kiểm tra chính thức: số công văn, ngày ban hành\
+    \ và công bố, đối tượng kiểm tra, nội dung kết quả, kiến nghị và trạng thái thực\
+    \ hiện."
+  source_table: "ThanhTra.EXAMINATION_RESULT_NOTICE"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Examination Result Notice Remedial"
+  table_type: ""
+  description: "Từng biện pháp khắc phục yêu cầu trong thông báo kết quả kiểm tra:\
+    \ nội dung chi tiết biện pháp khắc phục theo từng kết quả kiểm tra."
+  source_table: "ThanhTra.EXAMINATION_RESULT_NOTICE_REMEDIAL"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Examination Team Member"
+  table_type: ""
+  description: "Danh sách thành viên đoàn kiểm tra: ID người dùng, tên và vai trò\
+    \ trong đoàn (trưởng đoàn, kiểm tra viên, thư ký...)."
+  source_table: "ThanhTra.EXAMINATION_TEAM_MEMBER"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Examination Team Target"
+  table_type: ""
+  description: "Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại đơn vị/cá\
+    \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
+  source_table: "ThanhTra.EXAMINATION_TEAM_TARGET"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Inspection Annual Plan Target"
+  table_type: ""
+  description: "Danh sách đối tượng được đưa vào kế hoạch thanh tra hàng năm, phân\
+    \ loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng)."
+  source_table: "ThanhTra.INSPECTION_ANNUAL_PLAN_TARGET"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Inspection Conclusion"
+  table_type: ""
+  description: "Kết luận thanh tra chính thức: số kết luận, ngày ban hành và công\
+    \ bố, đối tượng thanh tra, nội dung kết luận, kiến nghị, trạng thái thực hiện\
+    \ kiến nghị."
+  source_table: "ThanhTra.INSPECTION_CONCLUSION"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Inspection Conclusion Remedial"
+  table_type: ""
+  description: "Từng biện pháp khắc phục yêu cầu trong kết luận thanh tra: nội dung\
+    \ chi tiết từng kiến nghị cần thực hiện."
+  source_table: "ThanhTra.INSPECTION_CONCLUSION_REMEDIAL"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Inspection Post Processing"
+  table_type: ""
+  description: "Theo dõi tiến độ thực hiện từng kiến nghị sau thanh tra: loại yêu\
+    \ cầu, đơn vị chịu trách nhiệm, thời hạn, trạng thái thực hiện (5 bước), ghi chú\
+    \ tình hình."
+  source_table: "ThanhTra.POST_INSPECTION_PROCESSING"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Inspection Team Member"
+  table_type: ""
+  description: "Danh sách thành viên đoàn thanh tra: ID người dùng, tên và vai trò\
+    \ trong đoàn (trưởng đoàn, thanh tra viên, thư ký...)."
+  source_table: "ThanhTra.INSPECTION_TEAM_MEMBER"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Inspection Team Target"
+  table_type: ""
+  description: "Danh sách đối tượng được thanh tra trong đoàn cụ thể: 7 loại đơn vị/cá\
+    \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
+  source_table: "ThanhTra.INSPECTION_TEAM_TARGET"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Penalty Decision"
+  table_type: ""
+  description: "Quyết định xử phạt vi phạm hành chính: ghi nhận số quyết định, ngày\
+    \ ban hành, tổng số tiền phạt, trạng thái (7 bước), thông tin khiếu nại và khởi\
+    \ kiện liên quan."
+  source_table: "ThanhTra.PENALTY_DECISION"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Penalty Decision Circumstance"
+  table_type: ""
+  description: ""
+  source_table: "ThanhTra.PENALTY_DECISION_CIRCUMSTANCE"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Penalty Decision Subject"
+  table_type: ""
+  description: "Đối tượng bị xử phạt trong quyết định: thông tin định danh, tổng số\
+    \ tiền phạt, số tiền đã nộp, số tiền cưỡng chế, trạng thái tuân thủ thanh toán."
+  source_table: "ThanhTra.PENALTY_DECISION_SUBJECT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Penalty Decision Subject Behavior"
+  table_type: ""
+  description: "Chi tiết từng hành vi vi phạm của một đối tượng trong quyết định xử\
+    \ phạt: liên kết hành vi vi phạm, hình thức xử phạt được áp dụng, mức phạt thực\
+    \ tế."
+  source_table: "ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Petition Document"
+  table_type: ""
+  description: "Văn bản phát sinh trong quá trình xử lý đơn thư (8 loại), từ tờ trình\
+    \ phân loại, phiếu đề xuất thụ lý đến công văn trả lời nhà đầu tư."
+  source_table: "ThanhTra.PETITION_DOCUMENT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Proactive Notice Recipient"
+  table_type: ""
+  description: "Danh sách công ty nhận thông báo chủ động: mã công ty và loại người\
+    \ nhận, theo dõi phạm vi phát hành thông báo."
+  source_table: "ThanhTra.PROACTIVE_NOTICE_RECIPIENT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Security Measure Decision Recipient"
+  table_type: ""
+  description: "Danh sách đơn vị nhận bản sao quyết định biện pháp ngăn chặn: công\
+    \ ty chứng khoán, quản lý quỹ, sở giao dịch, VSDC, ban nghiệp vụ UBCKNN."
+  source_table: "ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Security Measure Decision Subject"
+  table_type: ""
+  description: "Đối tượng bị áp dụng biện pháp ngăn chặn trong quyết định: thông tin\
+    \ định danh nhúng (loại, tên, số giấy tờ)."
+  source_table: "ThanhTra.SECURITY_MEASURE_DECISION_SUBJECT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Security Measure Execution"
+  table_type: ""
+  description: "Theo dõi kết quả thực thi quyết định biện pháp ngăn chặn: người báo\
+    \ cáo, ngày báo cáo, kết quả (đã thực hiện đầy đủ/đang thực hiện/chưa thực hiện)."
+  source_table: "ThanhTra.SECURITY_MEASURE_EXECUTION"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "VPHC Official Letter"
+  table_type: ""
+  description: "Công văn chính thức phát sinh trong quy trình xử lý VPHC (8 loại từ\
+    \ thông báo vi phạm đến đôn đốc khắc phục), sử dụng biểu mẫu chuẩn, liên kết với\
+    \ hồ sơ VPHC/biên bản/quyết định."
+  source_table: "ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Violation Behavior"
+  table_type: ""
+  description: "Danh mục hành vi vi phạm hành chính được pháp luật quy định: loại\
+    \ hành vi, hình thức xử phạt chính, khung tiền phạt min/max, biện pháp khắc phục."
+  source_table: "ThanhTra.VIOLATION_BEHAVIOR"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Violation Case"
+  table_type: ""
+  description: "Hồ sơ xử lý vi phạm hành chính (VPHC): ghi nhận nguồn phát hiện, liên\
+    \ kết đoàn thanh tra/kiểm tra, cán bộ phụ trách, vòng đời hồ sơ (5 trạng thái),\
+    \ theo dõi tiền bảo đảm."
+  source_table: "ThanhTra.VIOLATION_CASE"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Violation Case Output Document"
+  table_type: ""
+  description: "Danh sách văn bản đầu ra phát sinh trong quá trình xử lý hồ sơ VPHC\
+    \ (9 loại), từ thông báo vi phạm đến quyết định xử phạt."
+  source_table: "ThanhTra.VIOLATION_CASE_OUTPUT_DOCUMENT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Violation Case Received Document"
+  table_type: ""
+  description: "Văn bản do đối tượng vi phạm hoặc cơ quan nộp vào hồ sơ VPHC: số văn\
+    \ bản, ngày tiếp nhận, nội dung tóm tắt."
+  source_table: "ThanhTra.VIOLATION_CASE_RECEIVED_DOCUMENT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Violation Record"
+  table_type: ""
+  description: "Biên bản vi phạm hành chính: tài liệu pháp lý chính thức ghi nhận\
+    \ hành vi vi phạm, trải qua workflow 4 bước từ soạn thảo đến gửi cho đối tượng."
+  source_table: "ThanhTra.VIOLATION_RECORD"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Violation Record Behavior"
+  table_type: ""
+  description: "Từng hành vi vi phạm cụ thể được ghi nhận trong biên bản: liên kết\
+    \ danh mục hành vi, mô tả chi tiết (thời gian, địa điểm), căn cứ pháp lý áp dụng."
+  source_table: "ThanhTra.VIOLATION_RECORD_BEHAVIOR"
+  status: "draft"
+# ─────────────────────────────────────────────────────────────────────────
+# IDS — Information Disclosure System (Hệ thống Công bố Thông tin) — 29 entities
+# ─────────────────────────────────────────────────────────────────────────
+- bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Account"
+  atomic_entity: "Stock Holder Trading Account"
+  table_type: "Relative"
+  description: "Tài khoản giao dịch chứng khoán của cổ đông tại CTCK. Ghi nhận số tài\
+    \ khoản, mã CTCK, ngày mở và cờ tài khoản chính. Một cổ đông có thể có nhiều tài\
+    \ khoản. FK đến Stock Holder."
+  source_table: "IDS.account_numbers"
+  status: "draft"
+- bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Ownership"
+  atomic_entity: "Public Company State Capital"
+  table_type: "Relative"
+  description: "Thông tin tỷ lệ sở hữu và cơ quan đại diện phần vốn nhà nước tại công\
+    \ ty đại chúng. Mô tả quan hệ sở hữu vốn nhà nước dạng Arrangement. FK đến Public\
+    \ Company."
+  source_table: "IDS.state_capital"
+  status: "draft"
+- bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Ownership"
+  atomic_entity: "Stock Control"
+  table_type: "Relative"
+  description: "Chứng khoán của cổ đông bị đưa vào diện kiểm soát hoặc hạn chế chuyển\
+    \ nhượng. Ghi nhận mã CK, loại hạn chế và thời gian hiệu lực. Phục vụ giám sát\
+    \ tuân thủ. FK đến Stock Holder."
+  source_table: "IDS.stock_controls"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Enforcement Action"
+  atomic_entity: "Audit Firm Sanction"
+  table_type: "Fact Append"
+  description: "Quyết định xử phạt hành chính do BTC hoặc UBCKNN phát hành đối với công\
+    \ ty kiểm toán hoặc kiểm toán viên. Ghi nhận số quyết định, ngày, cơ quan xử phạt\
+    \ và đối tượng. FK loại trừ nhau đến Audit Firm Approval hoặc Auditor Approval."
+  source_table: "IDS.af_sanctions"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Warning Notice"
+  atomic_entity: "Audit Firm Warning"
+  table_type: "Fact Append"
+  description: "Văn bản nhắc nhở do BTC hoặc UBCKNN phát hành đối với công ty kiểm toán\
+    \ hoặc kiểm toán viên. Một entity chung cho cả 2 loại đối tượng; phân biệt qua\
+    \ warning_target_type_code. FK loại trừ nhau đến Audit Firm Approval hoặc Auditor\
+    \ Approval."
+  source_table: "IDS.af_warning"
+  status: "draft"
+- bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Notification"
+  atomic_entity: "Disclosure Notification"
+  table_type: "Fact Append"
+  description: "Instance thông báo CBTT đã được phát sinh — mỗi bản ghi là một lần gửi\
+    \ thông báo với kênh gửi, trạng thái, loại tin và ngày gửi. Insert-only. FK đến\
+    \ Disclosure Notification Config."
+  source_table: "IDS.notifications"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  atomic_entity: "Disclosure Form Definition"
+  table_type: "Fundamental"
+  description: "Template định nghĩa form Công bố Thông tin — mỗi form là một loại hồ\
+    \ sơ hoặc loại tin CBTT. Cấu trúc self-referencing qua parent_form_id tạo phân\
+    \ cấp form cha-con. Là Condition chuẩn hóa quy trình nộp hồ sơ CBTT."
+  source_table: "IDS.forms"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Notification Configuration"
+  atomic_entity: "Disclosure Notification Config"
+  table_type: "Fundamental"
+  description: "Cấu hình điều kiện gửi thông báo CBTT — định nghĩa kênh gửi (email/SMS/push),\
+    \ hệ thống đích và lịch gửi định kỳ. Là Condition điều phối việc tạo instance\
+    \ thông báo Disclosure Notification."
+  source_table: "IDS.noti_config"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  atomic_entity: "Financial Report Catalog"
+  table_type: "Fundamental"
+  description: "Danh mục template báo cáo tài chính (BCTC IFRS/VAS). Định nghĩa loại\
+    \ báo cáo, phạm vi (hợp nhất/mẹ), loại doanh nghiệp và tập hàng/cột tương ứng.\
+    \ Là anchor cho Financial Report Row/Column Template."
+  source_table: "IDS.report_catalog"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  atomic_entity: "Financial Report Column Template"
+  table_type: "Relative"
+  description: "Định nghĩa cột trong template báo cáo tài chính — thường là kỳ báo cáo\
+    \ (năm hiện tại, năm trước). Là thành phần cấu trúc của Financial Report Catalog.\
+    \ FK đến Financial Report Catalog."
+  source_table: "IDS.rcol"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  atomic_entity: "Financial Report Row Template"
+  table_type: "Relative"
+  description: "Định nghĩa hàng trong template báo cáo tài chính — loại hàng (value/formula/description),\
+    \ mã hàng, tên hiển thị và công thức nếu có. Là thành phần cấu trúc của Financial\
+    \ Report Catalog. FK đến Financial Report Catalog."
+  source_table: "IDS.rrow"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Ownership Constraint"
+  atomic_entity: "Public Company Foreign Ownership Limit"
+  table_type: "Relative"
+  description: "Lịch sử các quyết định quy định tỷ lệ giới hạn sở hữu nước ngoài tại\
+    \ công ty đại chúng. Mỗi bản ghi là một lần ban hành quy định kèm số văn bản và\
+    \ ngày hiệu lực. FK đến Public Company."
+  source_table: "IDS.foreign_owner_limit"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  atomic_entity: "Periodic Report Form"
+  table_type: "Fundamental"
+  description: "Template báo cáo định kỳ thống kê độc lập với BCTC — bao gồm các loại\
+    \ báo cáo tháng/quý/năm/bán niên. Định nghĩa tần suất và cấu trúc hàng/cột. Là\
+    \ anchor cho Periodic Report Form Row/Column Template."
+  source_table: "IDS.rep_forms"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  atomic_entity: "Periodic Report Form Column Template"
+  table_type: "Relative"
+  description: "Định nghĩa cột trong template báo cáo định kỳ với data_type_cd. Là thành\
+    \ phần cấu trúc của Periodic Report Form. FK đến Periodic Report Form."
+  source_table: "IDS.rep_column"
+  status: "draft"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  atomic_entity: "Periodic Report Form Row Template"
+  table_type: "Relative"
+  description: "Định nghĩa hàng trong template báo cáo định kỳ với data_type_cd phân\
+    \ biệt loại dữ liệu (số/text/công thức). Là thành phần cấu trúc của Periodic Report\
+    \ Form. FK đến Periodic Report Form."
+  source_table: "IDS.rep_row"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Audit Firm Approval"
+  table_type: "Relative"
+  description: "Quyết định chấp thuận và đình chỉ đối với công ty kiểm toán do Bộ Tài\
+    \ chính (mof_*) và UBCKNN (ssc_*) phát hành. Một bản ghi gộp thông tin từ cả 2\
+    \ cơ quan. FK đến Audit Firm."
+  source_table: "IDS.af_approval"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Auditor Approval"
+  table_type: "Relative"
+  description: "Kiểm toán viên được chấp thuận thuộc công ty kiểm toán — ghi nhận quyết\
+    \ định chấp thuận/đình chỉ của BTC và UBCKNN ở cấp cá nhân, kèm ngày rời công\
+    \ ty. Cấu trúc tương tự Audit Firm Approval nhưng cho cá nhân. FK đến Audit Firm."
+  source_table: "IDS.af_auditor_approval"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Financial Statement"
+  atomic_entity: "Public Company Financial Report Value"
+  table_type: "Fact Append"
+  description: "Giá trị ô báo cáo tài chính thực tế của công ty đại chúng. Mỗi bản ghi\
+    \ = 1 ô (giao giữa hàng và cột) của 1 lần nộp BCTC đã duyệt. Insert-only. FK đến\
+    \ Public Company Report Submission, Financial Report Row Template và Financial Report\
+    \ Column Template."
+  source_table: "IDS.data"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Filing"
+  atomic_entity: "Public Company Report Submission"
+  table_type: "Relative"
+  description: "Lần nộp báo cáo hoặc tin Công bố Thông tin của công ty đại chúng đã\
+    \ được phê duyệt (filter news_status_cd = APPROVED). Liên kết công ty với form\
+    \ CBTT đã định nghĩa và ghi nhận ngày nộp, ngày duyệt. FK đến Public Company và\
+    \ Disclosure Form Definition."
+  source_table: "IDS.company_data"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Audit Firm"
+  table_type: "Fundamental"
+  description: "Công ty kiểm toán được Bộ Tài chính và UBCKNN chấp thuận. Ghi nhận tên\
+    \ VI/EN, vốn điều lệ thực góp, trạng thái, ngày chấp thuận và thông tin thành\
+    \ viên hãng kiểm toán quốc tế. Shared entity với SCMS.CT_KIEM_TOAN."
+  source_table: "IDS.af_profiles"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Audit Firm Legal Representative"
+  table_type: "Relative"
+  description: "Người đại diện pháp luật của công ty kiểm toán. Ghi nhận chức vụ, số\
+    \ CMND/hộ chiếu, email và điện thoại. Nguồn cho IP Electronic Address và IP Alternative\
+    \ Identification. FK đến Audit Firm."
+  source_table: "IDS.af_legal_representative"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Public Company"
+  table_type: "Fundamental"
+  description: "Công ty đại chúng được UBCKNN quản lý. Hạt nhân của hệ thống IDS — ghi\
+    \ nhận thông tin pháp lý, trạng thái niêm yết, mã chứng khoán, vốn điều lệ và đặc\
+    \ điểm tài chính. Merge 1-1 từ company_profiles và company_detail; shared entity\
+    \ với SCMS.DM_CONG_TY_DC."
+  source_table: "IDS.company_profiles, IDS.company_detail"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Public Company Legal Representative"
+  table_type: "Relative"
+  description: "Người đại diện pháp luật và người Công bố Thông tin của công ty đại chúng.\
+    \ Phân biệt vai trò qua representative_role_code. Một công ty có thể có nhiều bản\
+    \ ghi qua thời gian. FK đến Public Company."
+  source_table: "IDS.legal_representative"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  atomic_entity: "Public Company Related Entity"
+  table_type: "Relative"
+  description: "Quan hệ giữa công ty đại chúng và pháp nhân liên quan (mẹ, con, liên\
+    \ doanh, liên kết) kèm tỷ lệ sở hữu và loại quan hệ. Ghi nhận các mối liên kết\
+    \ pháp nhân phục vụ giám sát tập đoàn. FK đến Public Company."
+  source_table: "IDS.company_relationship"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Stock Holder"
+  table_type: "Fundamental"
+  description: "Cổ đông giao dịch của công ty đại chúng — cá nhân hoặc tổ chức. Grain\
+    \ = một cổ đông tại một công ty; ghi nhận thông tin nhân thân, địa chỉ và quốc\
+    \ tịch. Nguồn cho IP Postal Address và IP Electronic Address. FK đến Public Company."
+  source_table: "IDS.stock_holders"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  atomic_entity: "Stock Holder Relationship"
+  table_type: "Relative"
+  description: "Quan hệ giữa các cổ đông giao dịch (vợ-chồng, cha-con, người ủy quyền,\
+    \ sở hữu chéo). Mỗi bản ghi là một cặp quan hệ song phương. FK đến Stock Holder\
+    \ × 2."
+  source_table: "IDS.holder_relationship"
+  status: "draft"

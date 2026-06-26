@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: FILES
+brd_ref: BRD-SRC-IDS-FILES
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: FILE_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên file lưu trong hệ thống"
+    key: null
+    fk_note: null
+  - name: ORIGINAL_FILE_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên file gốc khi upload"
+    key: null
+    fk_note: null
+  - name: CONTENT_TYPE
+    data_type: VARCHAR2(255)
+    description: "MIME type (ví dụ application/pdf)"
+    key: null
+    fk_note: null
+  - name: FILE_SIZE
+    data_type: NUMBER(19,0)
+    description: "Kích thước file (bytes)"
+    key: null
+    fk_note: null
+  - name: MINIO_KEY
+    data_type: VARCHAR2(255)
+    description: "Key truy cập file trong MinIO (thường UUID + extension)"
+    key: null
+    fk_note: null
+  - name: BUCKET_NAME
+    data_type: VARCHAR2(255)
+    description: "Tên bucket MinIO"
+    key: null
+    fk_note: null
+  - name: FILE_PATH
+    data_type: VARCHAR2(255)
+    description: "Đường dẫn logic trong bucket"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(1000)
+    description: "Mô tả file"
+    key: null
+    fk_note: null
+  - name: TABLE_NAME
+    data_type: VARCHAR2(255)
+    description: "Bảng object gắn file (vd users, products). Null nếu file standalone"
+    key: null
+    fk_note: null
+  - name: OBJECT_ID
+    data_type: NUMBER(19,0)
+    description: "ID record trong bảng tương ứng TABLE_NAME. Null nếu file standalone"
+    key: null
+    fk_note: null
+  - name: DRAFT_TOKEN
+    data_type: VARCHAR2(128)
+    description: "Khóa tạm gom file draft trước khi bind sang object thật. Null nếu file không ở draft flow"
+    key: null
+    fk_note: null
+  - name: FILE_STATUS
+    data_type: VARCHAR2(20)
+    description: "Trạng thái file metadata (TEMP hoặc ACTIVE)"
+    key: null
+    fk_note: null
+  - name: FILE_CATEGORY
+    data_type: VARCHAR2(255)
+    description: "Phân loại trong cùng object (vd AVATAR, CONTRACT, PRODUCT_IMAGE)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(255)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: TIMESTAMP
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(255)
+    description: "Người cập nhật"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: TIMESTAMP
+    description: "Ngày cập nhật"
+    key: null
+    fk_note: null

@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: VIOLATION_PENALTY_CONFIG
+brd_ref: BRD-SRC-IDS-VIOLATION_PENALTY_CONFIG
+columns:
+  - name: ID
+    data_type: NUMBER(38,0)
+    description: "Khóa chính - ID tự tăng"
+    key: PK
+    fk_note: null
+  - name: VIOLATION_TEMPLATE_ID
+    data_type: NUMBER(38,0)
+    description: "ID của mẫu vi phạm (FK liên kết với bảng VIOLATION_TEMPLATES)"
+    key: null
+    fk_note: null
+  - name: OVERDUE_DAYS
+    data_type: NUMBER
+    description: "Số ngày quá hạn cố định"
+    key: null
+    fk_note: null
+  - name: MIN_OVERDUE_DAYS
+    data_type: NUMBER
+    description: "Số ngày quá hạn tối thiểu"
+    key: null
+    fk_note: null
+  - name: MAX_OVERDUE_DAYS
+    data_type: NUMBER
+    description: "Số ngày quá hạn tối đa"
+    key: null
+    fk_note: null
+  - name: PARA_CD
+    data_type: VARCHAR2(255)
+    description: "Mã đoạn/khoản mục quy định phạt (Paragraph Code)"
+    key: null
+    fk_note: null
+  - name: ACTION_TYPE_CD
+    data_type: VARCHAR2(255)
+    description: "Mã loại hành động/hình thức xử phạt (Nhắc nhở, Cảnh cáo, Phạt tiền...)"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(1000)
+    description: "Mô tả chi tiết mức phạt"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu có hiệu lực"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc hiệu lực"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)"
+    key: null
+    fk_note: null
+  - name: CREATED_DATE
+    data_type: TIMESTAMP
+    description: "Thời gian tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(500)
+    description: "Người tạo bản ghi"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: TIMESTAMP
+    description: "Thời gian cập nhật bản ghi lần cuối"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(500)
+    description: "Người cập nhật bản ghi lần cuối"
+    key: null
+    fk_note: "FK → LOGINS.ID"

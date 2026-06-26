@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: UBCK_SYNC_ITEM_LOG
+brd_ref: BRD-SRC-IDS-UBCK_SYNC_ITEM_LOG
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: null
+    key: PK
+    fk_note: null
+  - name: CORRELATION_ID
+    data_type: VARCHAR2(64)
+    description: "Khớp INTEGRATION_SYNC_LOG.CORRELATION_ID — không FK cứng để tránh ràng buộc tx"
+    key: null
+    fk_note: null
+  - name: JOB_CODE
+    data_type: VARCHAR2(100)
+    description: null
+    key: null
+    fk_note: null
+  - name: BUSINESS_REG_NO
+    data_type: VARCHAR2(100)
+    description: "MST công ty (nếu có)"
+    key: null
+    fk_note: null
+  - name: IDENTITY_NO
+    data_type: VARCHAR2(50)
+    description: "Số giấy tờ NĐT (IDS011/015)"
+    key: null
+    fk_note: null
+  - name: ITEM_STATUS
+    data_type: VARCHAR2(30)
+    description: "UPDATED │ NO_CHANGE │ EMPTY_FROM_API │ UNMAPPED │ NOT_FOUND_LOCAL │ FAILED"
+    key: null
+    fk_note: null
+  - name: API_RAW_VALUE
+    data_type: VARCHAR2(500)
+    description: "Giá trị raw từ API CSDLTT (vd. 'Suspended')"
+    key: null
+    fk_note: null
+  - name: MAPPED_VALUE
+    data_type: VARCHAR2(500)
+    description: "Giá trị sau khi map sang code IDS"
+    key: null
+    fk_note: null
+  - name: PREVIOUS_VALUE
+    data_type: VARCHAR2(500)
+    description: "Giá trị cũ trong IDS trước update"
+    key: null
+    fk_note: null
+  - name: API_UPDATED_DATE
+    data_type: VARCHAR2(20)
+    description: "updatedDate gốc từ API (dd/MM/yyyy)"
+    key: null
+    fk_note: null
+  - name: REASON
+    data_type: VARCHAR2(1000)
+    description: "Lý do skip/fail; null cho UPDATED/NO_CHANGE"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP
+    description: null
+    key: null
+    fk_note: null

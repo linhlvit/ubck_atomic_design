@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: LEGAL_REPRESENTATIVE
+brd_ref: BRD-SRC-IDS-LEGAL_REPRESENTATIVE
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng COMPANY_PROFILES"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: NAME
+    data_type: VARCHAR2(50)
+    description: "Tên"
+    key: null
+    fk_note: null
+  - name: POSITION_CD
+    data_type: VARCHAR2(100)
+    description: "Loại chức vụ (LOOKUP_VALUES.LOOKUP_GROUP = 'POSITION')"
+    key: null
+    fk_note: null
+  - name: APPOINTMENT_DATE
+    data_type: DATE
+    description: "Ngày bổ nhiệm"
+    key: null
+    fk_note: null
+  - name: PHONE_NO
+    data_type: VARCHAR2(20)
+    description: "Số điện thoại"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: VARCHAR2(50)
+    description: "Email"
+    key: null
+    fk_note: null
+  - name: IDENTITY_NO
+    data_type: VARCHAR2(25)
+    description: "Số CMND, CCCD, Hộ chiếu"
+    key: null
+    fk_note: null
+  - name: ISSUE_DATE
+    data_type: DATE
+    description: "Ngày cấp"
+    key: null
+    fk_note: null
+  - name: ISSUE_PLACE
+    data_type: VARCHAR2(100)
+    description: "Nơi cấp"
+    key: null
+    fk_note: null
+  - name: REPRESENTATIVE_ROLE
+    data_type: NUMBER(1,0)
+    description: "0 - người đại diện pháp luật, 1 - người thực hiện CBTT"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)"
+    key: null
+    fk_note: null

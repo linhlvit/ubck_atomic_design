@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: RROW
+brd_ref: BRD-SRC-IDS-RROW
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: ROW_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên hàng (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: ROW_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên hàng (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: ROW_CD
+    data_type: VARCHAR2(30)
+    description: "Lưu mã tự sinh của chỉ tiêu hàng. Quy tắc r+ sequence"
+    key: null
+    fk_note: null
+  - name: ROW_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Kiểu giá trị của hàng V/F/D - Value/Formula/Description  LOOKUP_VALUES với LOOKUP_GROUP='REPORT_ROW_TYPE'"
+    key: null
+    fk_note: null
+  - name: ROW_FORMULA
+    data_type: VARCHAR2(1500)
+    description: "Lưu công thức của hàng"
+    key: null
+    fk_note: null
+  - name: ROW_INDEX
+    data_type: NUMBER(3,0)
+    description: "Thứ tự"
+    key: null
+    fk_note: null
+  - name: REPORT_CATALOG_ID
+    data_type: NUMBER(10,0)
+    description: "ID của báo cáo chứa hàng"
+    key: FK
+    fk_note: "FK → REPORT_CATALOG.ID"
+  - name: REPORT_YEAR
+    data_type: VARCHAR2(4)
+    description: "Lưu năm tạo báo cáo chứa, lấy từ bảng REPORT_CATALOG"
+    key: null
+    fk_note: null
+  - name: RC_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái (0 không sử dụng, 1 - đang sử dụng)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: VARCHAR2(1000)
+    description: "Mô tả"
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(20)
+    description: null
+    key: null
+    fk_note: null
+  - name: ROW_DESC
+    data_type: VARCHAR2(500)
+    description: null
+    key: null
+    fk_note: null
+  - name: FORMULA_DESC
+    data_type: VARCHAR2(2000)
+    description: null
+    key: null
+    fk_note: null

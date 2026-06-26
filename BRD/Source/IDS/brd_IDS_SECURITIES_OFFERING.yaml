@@ -1,0 +1,191 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: SECURITIES_OFFERING
+brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: APPLICANT_TYPE_FLG
+    data_type: NUMBER(1,0)
+    description: "1-Tổ chức, 0-Cá nhân phát hành"
+    key: null
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng COMPANY_PROFILES"
+    key: FK
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: LEGAL_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng LEGAL_ENTITIES"
+    key: FK
+    fk_note: "FK → LEGAL_ENTITIES.ID"
+  - name: APPLICATION_CD
+    data_type: VARCHAR2(100)
+    description: "Mã hồ sơ"
+    key: null
+    fk_note: null
+  - name: ADMINISTRATIVE_PROC_CD
+    data_type: VARCHAR2(100)
+    description: "Thủ tục hành chính: LOOKUP_VALUES LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE'"
+    key: null
+    fk_note: null
+  - name: ADMINISTRATIVE_STATUS_CD
+    data_type: NUMBER(1,0)
+    description: "Trạng thái TTHC: lấy từ thủ tục hành chính: LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS'"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_NO
+    data_type: VARCHAR2(18)
+    description: "Số giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_DATE
+    data_type: DATE
+    description: "Ngày giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_NO
+    data_type: VARCHAR2(18)
+    description: "Số công văn của UBCKNN"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_DATE
+    data_type: DATE
+    description: "Ngày công văn"
+    key: null
+    fk_note: null
+  - name: OFFERING_PURPOSE
+    data_type: VARCHAR2(255)
+    description: "Mục đích sử dụng"
+    key: null
+    fk_note: null
+  - name: TOTAL_REGISTERED_QTY
+    data_type: NUMBER(15,0)
+    description: "Tổng số chứng khoán chào bán/ phát hành"
+    key: null
+    fk_note: null
+  - name: TOTAL_EXPECTED_AM
+    data_type: NUMBER(19,0)
+    description: "Tổng số tiền dự kiến thu được (VNĐ)"
+    key: null
+    fk_note: null
+  - name: CAPITAL_USAGE_PLAN
+    data_type: VARCHAR2(512)
+    description: "Phương án sử dụng (phương án sử dụng vốn)"
+    key: null
+    fk_note: null
+  - name: EXPECTED_SCHEDULE
+    data_type: VARCHAR2(100)
+    description: "Tiến độ dự kiến (phương án sử dụng vốn)"
+    key: null
+    fk_note: null
+  - name: MATCHING_CAPITAL
+    data_type: VARCHAR2(255)
+    description: "Nguồn vốn đối ứng (phương án sử dụng vốn)"
+    key: null
+    fk_note: null
+  - name: CONSULTING_ORG
+    data_type: VARCHAR2(255)
+    description: "Bên liên quan đến Tổ chức tư vấn"
+    key: null
+    fk_note: null
+  - name: AUDIT_ORG
+    data_type: VARCHAR2(255)
+    description: "Bên liên quan đến Tổ chức kiểm toán"
+    key: null
+    fk_note: null
+  - name: BOND_REPRESENTATIVE_ORG
+    data_type: VARCHAR2(255)
+    description: "Bên liên quan đến Đại diện người sở hữu trái phiếu"
+    key: null
+    fk_note: null
+  - name: UNDERWWRITING_ORG
+    data_type: VARCHAR2(255)
+    description: "Bên liên quan đến Tổ chức bảo lãnh phát hành"
+    key: null
+    fk_note: null
+  - name: CREDIT_RATING_ORG
+    data_type: VARCHAR2(255)
+    description: "Bên liên quan đến Tổ chức xếp hạng tín nhiệm"
+    key: null
+    fk_note: null
+  - name: OTHER_ORG
+    data_type: VARCHAR2(255)
+    description: "Bên liên quan đến Tổ chức liên quan khác"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS_CD
+    data_type: VARCHAR2(100)
+    description: "Trạng thái phê duyệt phương án (dùng để Ban QLCB phê duyệt gồm: Đang xử lý; Chờ duyệt; Đã duyệt; Từ chối) : LOOKUP_VALUES LOOKUP_GROUP = 'SO_APPROVAL_STATUS'"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_ID
+    data_type: VARCHAR2(30)
+    description: "ID Login của Lãnh đạo phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_NAME
+    data_type: VARCHAR2(128)
+    description: "Lãnh đạo duyệt phương án (Chuyên viên chọn lãnh đạo phê duyệt dữ liệu phương án)"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_ID
+    data_type: VARCHAR2(30)
+    description: "ID Login của Chuyên viên xử lý"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_NAME
+    data_type: VARCHAR2(128)
+    description: "Chuyên viên xử lý (đồng bộ từ TTHC về, có thể chọn user nếu thêm mới tại IDS)"
+    key: null
+    fk_note: null
+  - name: REVISION_REASON
+    data_type: VARCHAR2(512)
+    description: "Lý do chỉnh sửa"
+    key: null
+    fk_note: null
+  - name: MULTI_TURN_FLG
+    data_type: NUMBER(1,0)
+    description: "Hồ sơ đăng ký chào bán phát hành có nhiều đợt không, 1-Có, 0_không"
+    key: null
+    fk_note: null
+  - name: IS_SYNC
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu đồng bộ dữ liệu: 1- Đồng bộ từ TTHC; 0 - Tạo mới tại IDS"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu trạng thái xóa mềm: 1 - Xóa; 0 - Chưa xóa"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: APPROVER_COMMENT
+    data_type: VARCHAR2(255)
+    description: null
+    key: null
+    fk_note: null

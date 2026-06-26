@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: COMPANY_DIGITAL_CERTIFICATES
+brd_ref: BRD-SRC-IDS-COMPANY_DIGITAL_CERTIFICATES
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "Link to COMPANY_PROFILES"
+    key: FK
+    fk_note: "FK → COMPANY_PROFILES.ID"
+  - name: SERIAL_NO
+    data_type: VARCHAR2(50)
+    description: "Serial number"
+    key: null
+    fk_note: null
+  - name: PROVIDER_NAME
+    data_type: VARCHAR2(255)
+    description: "Service provider name"
+    key: null
+    fk_note: null
+  - name: SIGNATURE_TYPE_CD
+    data_type: VARCHAR2(100)
+    description: "Signature type code"
+    key: null
+    fk_note: null
+  - name: START_DATE
+    data_type: DATE
+    description: "Start date"
+    key: null
+    fk_note: null
+  - name: END_DATE
+    data_type: DATE
+    description: "End date"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "Active status (1 active, 0 inactive)"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Created by"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Created date"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Updated by"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Updated date"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Soft delete flag (0 not deleted, 1 deleted)"
+    key: null
+    fk_note: null

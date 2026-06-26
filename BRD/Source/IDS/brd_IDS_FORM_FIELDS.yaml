@@ -1,0 +1,111 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: FORM_FIELDS
+brd_ref: BRD-SRC-IDS-FORM_FIELDS
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: FIELD_ID
+    data_type: NUMBER(10,0)
+    description: "Mã field"
+    key: null
+    fk_note: "FK → FIELDS.ID"
+  - name: FIELD_PARENT_ID
+    data_type: NUMBER(10,0)
+    description: "Mã field cha"
+    key: null
+    fk_note: null
+  - name: FORM_ID
+    data_type: NUMBER(10,0)
+    description: "Mã form"
+    key: null
+    fk_note: "FK → FORMS.ID"
+  - name: FIELD_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên trường"
+    key: null
+    fk_note: null
+  - name: FIELD_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên trường tiếng Anh"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: VARCHAR2(30)
+    description: "Kiểu dữ liệu (DATA_TYPE của bảng DATA_TYPES)"
+    key: null
+    fk_note: null
+  - name: FIELD_ORDER
+    data_type: NUMBER(3,0)
+    description: "Thứ tự sắp xếp"
+    key: null
+    fk_note: null
+  - name: PARENT_ID
+    data_type: NUMBER(19,0)
+    description: "Mã cha (tham chiếu chính bảng này)"
+    key: FK
+    fk_note: null
+  - name: FIELD_FORMAT
+    data_type: VARCHAR2(1024)
+    description: "Định dạng của trường"
+    key: null
+    fk_note: null
+  - name: REQUIRED_FLG
+    data_type: NUMBER(1,0)
+    description: "0-không bắt buộc, 1-bắt buộc"
+    key: null
+    fk_note: null
+  - name: CORRECTION_FLG
+    data_type: NUMBER(1,0)
+    description: "0-không đính chính, 1-cho phép đính chính"
+    key: null
+    fk_note: null
+  - name: PUBLISHED_FLG
+    data_type: NUMBER(1,0)
+    description: "0-không công bố, 1-được phép công bố"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLG
+    data_type: NUMBER(1,0)
+    description: "0-không hoạt động, 1-đang hoạt động"
+    key: null
+    fk_note: null
+  - name: DOC_REF
+    data_type: VARCHAR2(255)
+    description: "Tham chiếu hồ sơ"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: LAST_UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: null
+  - name: LAST_UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(20)
+    description: null
+    key: null
+    fk_note: null
+  - name: READ_ONLY_FLG
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null

@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: DATA
+brd_ref: BRD-SRC-IDS-DATA
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: REPORT_CATALOG_ID
+    data_type: NUMBER(10,0)
+    description: "ID của báo cáo"
+    key: FK
+    fk_note: "FK → REPORT_CATALOG.ID"
+  - name: DATA_VALUE
+    data_type: FLOAT
+    description: "Lưu lại dữ liệu trong báo cáo"
+    key: null
+    fk_note: null
+  - name: REPORT_YEAR
+    data_type: NUMBER(4,0)
+    description: "Năm báo cáo tài chính"
+    key: null
+    fk_note: null
+  - name: REPORT_QUARTER
+    data_type: NUMBER(1,0)
+    description: "Quý báo cáo tài chính"
+    key: null
+    fk_note: null
+  - name: CELL_ENABLED_FLG
+    data_type: NUMBER(1,0)
+    description: "Trạng thái ô nhập liệu (0-disable, 1-enable) Phụ thuộc vào giá trị của trường APPROVAL_STATUS_CD trong bảng COMPANY_DATA, nếu là draft thì enable"
+    key: null
+    fk_note: null
+  - name: RC_TYPE
+    data_type: VARCHAR2(1)
+    description: "Kiểu dữ liệu: I/O - Input/Output"
+    key: null
+    fk_note: null
+  - name: ROW_CD
+    data_type: VARCHAR2(30)
+    description: "Mã hàng"
+    key: null
+    fk_note: null
+  - name: COL_CD
+    data_type: VARCHAR2(30)
+    description: "Mã cột"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: COMPANY_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "ID Hồ sơ doanh nghiệp"
+    key: null
+    fk_note: "FK → COMPANY_PROFILES.ID"
