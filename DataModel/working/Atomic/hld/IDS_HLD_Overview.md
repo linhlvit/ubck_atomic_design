@@ -7,40 +7,72 @@
 
 ## Tổng quan Atomic Entities
 
-| Tier | Atomic Entity | BCV Core Object | BCV Concept | Table Type | Source Table(s) | Ghi chú |
-|---|---|---|---|---|---|---|
-| T1 | Public Company | Involved Party | [Involved Party] Organization | Fundamental | IDS.company_profiles, IDS.company_detail | Merge 1-1; shared entity với SCMS.DM_CONG_TY_DC |
-| T1 | Audit Firm | Involved Party | [Involved Party] Organization | Fundamental | IDS.af_profiles | Shared entity với SCMS.CT_KIEM_TOAN |
-| T1 | Disclosure Form Definition | Condition | [Condition] Form Definition | Fundamental | IDS.forms | Self-ref qua parent_form_id |
-| T1 | Financial Report Catalog | Condition | [Condition] Form Definition | Fundamental | IDS.report_catalog | |
-| T1 | Periodic Report Form | Condition | [Condition] Form Definition | Fundamental | IDS.rep_forms | |
-| T1 | Disclosure Notification Config | Condition | [Condition] Notification Configuration | Fundamental | IDS.noti_config | |
-| T2 | Public Company Legal Representative | Involved Party | [Involved Party] Individual Employment Status | Relative | IDS.legal_representative | FK → Public Company |
-| T2 | Public Company State Capital | Arrangement | [Arrangement] Ownership | Relative | IDS.state_capital | FK → Public Company |
-| T2 | Public Company Foreign Ownership Limit | Condition | [Condition] Ownership Constraint | Relative | IDS.foreign_owner_limit | FK → Public Company |
-| T2 | Public Company Related Entity | Involved Party | [Involved Party] Involved Party Relationship | Relative | IDS.company_relationship | FK → Public Company |
-| T2 | Stock Holder | Involved Party | [Involved Party] Individual | Fundamental | IDS.stock_holders | Grain = cổ đông × công ty; FK → Public Company |
-| T2 | Audit Firm Approval | Documentation | [Documentation] Gov. Registration Document | Relative | IDS.af_approval | Gộp BTC + SSC; FK → Audit Firm |
-| T2 | Audit Firm Legal Representative | Involved Party | [Involved Party] Individual Employment Status | Relative | IDS.af_legal_representative | FK → Audit Firm |
-| T2 | Financial Report Row Template | Condition | [Condition] Form Definition | Relative | IDS.rrow | FK → Financial Report Catalog |
-| T2 | Financial Report Column Template | Condition | [Condition] Form Definition | Relative | IDS.rcol | FK → Financial Report Catalog |
-| T2 | Periodic Report Form Row Template | Condition | [Condition] Form Definition | Relative | IDS.rep_row | FK → Periodic Report Form |
-| T2 | Periodic Report Form Column Template | Condition | [Condition] Form Definition | Relative | IDS.rep_column | FK → Periodic Report Form |
-| T2 | Disclosure Notification | Communication | [Communication] Notification | Fact Append | IDS.notifications | FK → Disclosure Notification Config |
-| T2 | Involved Party Postal Address | Involved Party | Shared Entity | Fundamental | IDS.company_detail, IDS.stock_holders, IDS.af_profiles | Shared — bổ sung source |
-| T2 | Involved Party Electronic Address | Involved Party | Shared Entity | Fundamental | IDS.company_detail, IDS.stock_holders, IDS.af_profiles, IDS.legal_representative, IDS.af_legal_representative | Shared — bổ sung source |
-| T2 | Involved Party Alternative Identification | Involved Party | Shared Entity | Fundamental | IDS.identity, IDS.af_legal_representative | Shared — bổ sung source |
-| T3 | Stock Holder Trading Account | Arrangement | [Arrangement] Account | Relative | IDS.account_numbers | FK → Stock Holder |
-| T3 | Stock Holder Relationship | Involved Party | [Involved Party] Involved Party Relationship | Relative | IDS.holder_relationship | FK → Stock Holder × 2 (self-ref) |
-| T3 | Stock Control | Arrangement | [Arrangement] Ownership | Relative | IDS.stock_controls | FK → Stock Holder |
-| T3 | Auditor Approval | Documentation | [Documentation] Gov. Registration Document | Relative | IDS.af_auditor_approval | FK → Audit Firm (qua af_profiles) |
-| T3 | Audit Firm Warning | Business Activity | [Business Activity] Warning Notice | Fact Append | IDS.af_warning | FK loại trừ nhau → Audit Firm Approval hoặc Auditor Approval |
-| T3 | Audit Firm Sanction | Business Activity | [Business Activity] Enforcement Action | Fact Append | IDS.af_sanctions | FK loại trừ nhau → Audit Firm Approval hoặc Auditor Approval |
-| T3 | Public Company Report Submission | Documentation | [Documentation] Filing | Relative | IDS.company_data | FK → Public Company + Disclosure Form Definition; filter APPROVED |
-| T4 | Public Company Financial Report Value | Documentation | [Documentation] Financial Statement | Fact Append | IDS.data | FK → Public Company Report Submission + Row/Column Template |
+| Tier | Atomic Entity | BCV Core Object | BCV Concept | table_type | Source Table(s) |
+|---|---|---|---|---|---|
+| T1 | Public Company | Involved Party | [Involved Party] Organization | Fundamental | IDS.COMPANY_PROFILES |
+| T1 | Legal Entity | Involved Party | [Involved Party] Individual | Fundamental | IDS.LEGAL_ENTITIES |
+| T1 | Audit Firm | Involved Party | [Involved Party] Organization | Fundamental | IDS.AF_PROFILES |
+| T1 | Disclosure Form Definition | Condition | [Condition] Form Definition | Fundamental | IDS.FORMS |
+| T1 | Financial Report Catalog | Condition | [Condition] Form Definition | Fundamental | IDS.REPORT_CATALOG |
+| T1 | Periodic Report Form | Condition | [Condition] Form Definition | Fundamental | IDS.REP_FORMS |
+| T1 | Public Company Evaluation Group | Group | [Group] Group | Classification | IDS.EVALUATION_GROUPS |
+| T1 | Public Company Evaluation Period | Event | [Event] Period | Fundamental | IDS.EVALUATION_PERIODS |
+| T2 | Public Company Legal Representative | Involved Party | [Involved Party] Individual Employment Status | Relative | IDS.LEGAL_REPRESENTATIVE |
+| T2 | Public Company State Capital | Arrangement | [Arrangement] Ownership | Relative | IDS.STATE_CAPITAL |
+| T2 | Public Company Foreign Ownership Limit | Condition | [Condition] Ownership Constraint | Relative | IDS.FOREIGN_OWNER_LIMIT |
+| T2 | Public Company Related Entity | Involved Party | [Involved Party] Involved Party Relationship | Relative | IDS.COMPANY_RELATIONSHIP |
+| T2 | Public Company Inspection | Business Activity | [Business Activity] Inspection | Fact Append | IDS.COMPANY_INSPECTION |
+| T2 | Public Company Penalty | Business Activity | [Business Activity] Enforcement Action | Fact Append | IDS.COMPANY_PENALTIES |
+| T2 | Public Company Capital Mobilization | Business Activity | [Business Activity] Business Activity | Relative | IDS.CAPITAL_MOBILIZATION |
+| T2 | Public Company Capital Increase | Business Activity | [Business Activity] Business Activity | Relative | IDS.COMPANY_ADD_CAPITAL |
+| T2 | Public Company Tender Offer | Business Activity | [Business Activity] Business Activity | Relative | IDS.COMPANY_TENDER_OFFER |
+| T2 | Public Company Treasury Stock Activity | Business Activity | [Business Activity] Business Activity | Relative | IDS.COMPANY_TREASURY_STOCKS |
+| T2 | Public Company Share Statistics | Arrangement | [Arrangement] Ownership | Relative | IDS.COMPANY_SHARE_STATISTICS |
+| T2 | Public Company Stock Listing History | Business Activity | [Business Activity] Business Activity | Fact Append | IDS.STOCK_LISTING_HISTORY |
+| T2 | Public Company Bond Listing History | Business Activity | [Business Activity] Business Activity | Fact Append | IDS.BOND_LISTING_HISTORY |
+| T2 | Public Company Registration | Documentation | [Documentation] Gov. Registration Document | Fact Append | IDS.PUB_COMPANY_REGISTRATION |
+| T2 | Public Company Deregistration | Documentation | [Documentation] Gov. Registration Document | Fact Append | IDS.PUB_COMPANY_CANCELLATION |
+| T2 | Public Company Report Extension | Documentation | [Documentation] Filing | Relative | IDS.REPORT_EXTENSIONS |
+| T2 | Financial Report Row Template | Condition | [Condition] Form Definition | Relative | IDS.RROW |
+| T2 | Financial Report Column Template | Condition | [Condition] Form Definition | Relative | IDS.RCOL |
+| T2 | Periodic Report Form Row Template | Condition | [Condition] Form Definition | Relative | IDS.REP_ROW |
+| T2 | Periodic Report Form Column Template | Condition | [Condition] Form Definition | Relative | IDS.REP_COLUMN |
+| T2 | Audit Firm Approval | Documentation | [Documentation] Gov. Registration Document | Relative | IDS.AF_APPROVAL |
+| T2 | Audit Firm Legal Representative | Involved Party | [Involved Party] Individual Employment Status | Relative | IDS.AF_LEGAL_REPRESENTATIVE |
+| T2 | Auditor Profile | Involved Party | [Involved Party] Individual | Relative | IDS.AF_AUDITOR_PROFILES |
+| T2 | Audit Firm Status History | Business Activity | [Business Activity] Status History | Fact Append | IDS.AF_STATUS_HISTORY |
+| T2 | Violation Template | Condition | [Condition] Compliance Rule | Relative | IDS.VIOLATION_TEMPLATES |
+| T2 | Public Company Evaluation Criterion | Condition | [Condition] Evaluation Criteria | Classification | IDS.EVALUATION_CRITERIA |
+| T2 | Audit Firm Inspection | Business Activity | [Business Activity] Inspection | Fact Append | IDS.AF_INSPECTION |
+| T2 | Disclosure Notification | Communication | [Communication] Notification | Fact Append | IDS.NOTIFICATIONS |
+| T2 | Financial Report Data | Documentation | [Documentation] Financial Statement | Fact Snapshot | IDS.DATA |
+| T2 | Involved Party Postal Address | Involved Party | Shared Entity | Fundamental | IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE |
+| T2 | Involved Party Electronic Address | Involved Party | Shared Entity | Fundamental | IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, IDS.LEGAL_REPRESENTATIVE, IDS.AF_LEGAL_REPRESENTATIVE |
+| T2 | Involved Party Alternative Identification | Involved Party | Shared Entity | Fundamental | IDS.LEGAL_ENTITIES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE |
+| T3 | Legal Entity Alternative Identification | Involved Party | [Involved Party] Alternative Identification | Relative | IDS.IDENTITY |
+| T3 | Legal Entity Position | Involved Party | [Involved Party] Individual Employment Status | Relative | IDS.POSITIONS |
+| T3 | Legal Entity Trading Account | Arrangement | [Arrangement] Account | Relative | IDS.ACCOUNT_NUMBERS |
+| T3 | Legal Entity Relationship | Involved Party | [Involved Party] Involved Party Relationship | Relative | IDS.HOLDER_RELATIONSHIP |
+| T3 | Legal Entity Stock Control | Arrangement | [Arrangement] Ownership | Relative | IDS.STOCK_CONTROLS |
+| T3 | Company Shareholding | Arrangement | [Arrangement] Ownership | Relative | IDS.COMPANY_SHAREHOLDING |
+| T3 | Company Entity Role | Involved Party | [Involved Party] Individual Employment Status | Relative | IDS.COMPANY_ENTITY_ROLE |
+| T3 | Audit Firm Warning | Business Activity | [Business Activity] Warning Notice | Fact Append | IDS.AF_WARNING |
+| T3 | Audit Firm Sanction | Business Activity | [Business Activity] Enforcement Action | Fact Append | IDS.AF_SANCTIONS |
+| T3 | Audit Firm Suspension | Business Activity | [Business Activity] Enforcement Action | Fact Append | IDS.AF_SUSPENSION |
+| T3 | Audit Firm Technical Audit | Business Activity | [Business Activity] Inspection | Fact Append | IDS.AF_TECHNICAL_AUDIT |
+| T3 | Auditor Status History | Business Activity | [Business Activity] Status History | Fact Append | IDS.AF_AUDITOR_STATUS_HISTORY |
+| T3 | Public Company Report Submission | Documentation | [Documentation] Filing | Relative | IDS.COMPANY_DATA |
+| T3 | Securities Offering | Business Activity | [Business Activity] Business Activity | Relative | IDS.SECURITIES_OFFERING |
+| T3 | Public Company Evaluation | Business Activity | [Business Activity] Evaluation | Relative | IDS.EVALUATIONS |
+| T3 | Public Company Violation Report | Business Activity | [Business Activity] Business Activity | Relative | IDS.VIOLATION_REPORT |
+| T3 | Public Company HTE Violation Report | Business Activity | [Business Activity] Business Activity | Relative | IDS.HTE_VIOLATION_REPORT |
+| T3 | Disclosure Notification Recipient | Communication | [Communication] Notification | Relative | IDS.NOTIFICATIONS_DTL |
+| T4 | Securities Offering Plan | Business Activity | [Business Activity] Business Activity | Relative | IDS.SECURITIES_OFFERING_PLAN |
+| T4 | Securities Offering Result | Business Activity | [Business Activity] Business Activity | Fact Append | IDS.SECURITIES_OFFERING_RESULT |
+| T4 | Public Company Evaluation Detail | Business Activity | [Business Activity] Evaluation | Relative | IDS.EVALUATION_DETAILS |
 
-**Tổng: 29 Atomic entities** (6 Tier 1, 15 Tier 2, 7 Tier 3, 1 Tier 4)
-*(Trong đó: 3 shared entities extend source_table — không tạo mới)*
+**Tổng: 60 Atomic entities** (8 Tier 1, 30 Tier 2, 19 Tier 3, 3 Tier 4)
+*(Trong đó: 3 shared entities (Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification) extend source_table IDS — không tạo mới)*
 
 ---
 
@@ -50,11 +82,13 @@
 graph TD
     subgraph T1["Tier 1 — Independent Entities"]
         PC["Public Company"]
+        LE["Legal Entity"]
         AF["Audit Firm"]
         DFD["Disclosure Form Definition"]
         FRC["Financial Report Catalog"]
         PRF["Periodic Report Form"]
-        DNC["Disclosure Notification Config"]
+        PCEG["Public Company Evaluation Group"]
+        PCEP["Public Company Evaluation Period"]
     end
 
     subgraph T2["Tier 2 — FK to Tier 1"]
@@ -62,66 +96,122 @@ graph TD
         PCSC["Public Company State Capital"]
         PCFOL["Public Company Foreign Ownership Limit"]
         PCRE["Public Company Related Entity"]
-        SH["Stock Holder"]
-        AFA["Audit Firm Approval"]
-        AFLR["Audit Firm Legal Representative"]
+        PCI["Public Company Inspection"]
+        PCP["Public Company Penalty"]
+        PCCM["Public Company Capital Mobilization"]
+        PCCI["Public Company Capital Increase"]
+        PCTO["Public Company Tender Offer"]
+        PCTS["Public Company Treasury Stock Activity"]
+        PCSS["Public Company Share Statistics"]
+        PCSLH["Public Company Stock Listing History"]
+        PCBLH["Public Company Bond Listing History"]
+        PCR["Public Company Registration"]
+        PCD["Public Company Deregistration"]
+        PCRE2["Public Company Report Extension"]
         FRRT["Financial Report Row Template"]
         FRCT["Financial Report Column Template"]
         PRFRT["Periodic Report Form Row Template"]
         PRFCT["Periodic Report Form Column Template"]
+        AFA["Audit Firm Approval"]
+        AFLR["Audit Firm Legal Representative"]
+        AP["Auditor Profile"]
+        AFSH["Audit Firm Status History"]
+        VT["Violation Template"]
+        PCEC["Public Company Evaluation Criterion"]
+        AFI["Audit Firm Inspection"]
         DN["Disclosure Notification"]
-        IPPA["Involved Party Postal Address"]
-        IPEA["Involved Party Electronic Address"]
-        IPAI["Involved Party Alternative Identification"]
+        FRD["Financial Report Data"]
     end
 
     subgraph T3["Tier 3 — FK to Tier 2"]
-        SHTA["Stock Holder Trading Account"]
-        SHR["Stock Holder Relationship"]
-        SC["Stock Control"]
-        AA["Auditor Approval"]
+        LEAI["Legal Entity Alternative Identification"]
+        LEP["Legal Entity Position"]
+        LETA["Legal Entity Trading Account"]
+        LER["Legal Entity Relationship"]
+        LESC["Legal Entity Stock Control"]
+        CSH["Company Shareholding"]
+        CER["Company Entity Role"]
         AFW["Audit Firm Warning"]
-        AFS["Audit Firm Sanction"]
+        AFSA["Audit Firm Sanction"]
+        AFSU["Audit Firm Suspension"]
+        AFTA["Audit Firm Technical Audit"]
+        ASH["Auditor Status History"]
         PCRS["Public Company Report Submission"]
+        SO["Securities Offering"]
+        PCE["Public Company Evaluation"]
+        PCVR["Public Company Violation Report"]
+        PCHVR["Public Company HTE Violation Report"]
+        DNR["Disclosure Notification Recipient"]
     end
 
     subgraph T4["Tier 4 — FK to Tier 3"]
-        PCFRV["Public Company Financial Report Value"]
+        SOP["Securities Offering Plan"]
+        SOR["Securities Offering Result"]
+        PCED["Public Company Evaluation Detail"]
     end
 
     PC --> PCLR
     PC --> PCSC
     PC --> PCFOL
     PC --> PCRE
-    PC --> SH
-    PC --> IPPA
-    PC --> PCRS
-    AF --> AFA
-    AF --> AFLR
-    AF --> IPPA
-    AF --> IPEA
-    DFD --> PCRS
+    PC --> PCI
+    PC --> PCP
+    PC --> PCCM
+    PC --> PCCI
+    PC --> PCTO
+    PC --> PCTS
+    PC --> PCSS
+    PC --> PCSLH
+    PC --> PCBLH
+    PC --> PCR
+    PC --> PCD
+    PC --> PCRE2
+    PC --> FRD
     FRC --> FRRT
     FRC --> FRCT
+    FRC --> FRD
     PRF --> PRFRT
     PRF --> PRFCT
-    DNC --> DN
-    SH --> SHTA
-    SH --> SHR
-    SH --> SC
-    SH --> IPPA
-    SH --> IPEA
-    SH --> IPAI
-    AFA --> AA
-    AFA --> AFW
-    AFA --> AFS
-    AA --> AFW
-    AA --> AFS
-    AFLR --> IPEA
-    AFLR --> IPAI
-    PCRS --> PCFRV
-    FRRT --> PCFRV
-    FRCT --> PCFRV
+    DFD --> DN
+    AF --> AFA
+    AF --> AFLR
+    AF --> AFSH
+    AF --> AFI
+    PCEG --> PCEC
+    LE --> LEAI
+    LE --> LEP
+    LE --> LETA
+    LE --> LER
+    LE --> LESC
+    PC --> CSH
+    LE --> CSH
+    PC --> CER
+    LE --> CER
+    AF --> AFW
+    AP --> AFW
+    AF --> AFSA
+    AF --> AFSU
+    AP --> AFSU
+    AFI --> AFTA
+    AP --> ASH
+    PC --> PCRS
+    DFD --> PCRS
+    PC --> SO
+    LE --> SO
+    PC --> PCE
+    PCEP --> PCE
+    PC --> PCVR
+    DFD --> PCVR
+    VT --> PCVR
+    PC --> PCHVR
+    DFD --> PCHVR
+    VT --> PCHVR
+    DN --> DNR
+    AP --> AFA
+    SO --> SOP
+    SO --> SOR
+    PCE --> PCED
+    PCEC --> PCED
 ```
 
 ---
@@ -130,18 +220,14 @@ graph TD
 
 | # | Quyết định | Lý do |
 |---|---|---|
-| D-01 | `company_profiles` và `company_detail` (quan hệ 1-1) merge vào entity `Public Company` | Hai bảng không có grain riêng biệt; company_profiles là primary source cho trường trùng nhau |
-| D-02 | `categories` (ngành nghề 2 cấp, self-ref) → Classification Value `IDS_INDUSTRY_CATEGORY`, không tạo Atomic entity | Bảng chỉ có Code + Name, không có instance data nghiệp vụ |
-| D-03 | `countries` và `provinces` → sử dụng shared Geographic Area đã có từ NHNCK, không tạo entity mới | Dữ liệu gốc đã được chuẩn hóa tại NHNCK |
-| D-04 | `af_approval` gộp BTC (`mof_*`) và UBCKNN (`ssc_*`) vào 1 entity `Audit Firm Approval` | Mỗi bản ghi nguồn đã chứa đủ thông tin của cả 2 cơ quan; không cần tách |
-| D-05 | `company_data` filter `news_status_cd = 'APPROVED'` — bản ghi PENDING/REJECTED không lên Atomic | Chỉ BCTC/tin CBTT đã được phê duyệt có giá trị nghiệp vụ |
-| D-06 | `data` (Public Company Financial Report Value) đưa vào scope do Gold có requirement cần giá trị ô BCTC | Quyết định đảo chiều từ out-of-scope — Gold cần số liệu tài chính thực tế |
-| D-07 | `noti_config_apply` (junction noti_config × company_profile, không có attribute) → out-of-scope | Pure junction table không có business attribute |
-| D-08 | `fields`, `form_fields`, `data_values`, `report_approval`, `report_extensions` → out-of-scope | Field-level metadata động hoặc quy trình nội bộ hệ thống, chưa có Gold requirement |
-| D-09 | Bảng `*_his` (lịch sử kỹ thuật) → out-of-scope | Atomic tự triển khai SCD2/SCD4A — không cần map lại bảng lịch sử nguồn |
-| D-10 | `positions` (chức vụ cổ đông) → pending thiết kế do thiếu thông tin cột | Cần xác nhận cấu trúc bảng trước khi thiết kế Atomic |
-| D-11 | `Stock Holder` xếp là Fundamental (không phải Relative) dù FK đến `company_profiles` | Cổ đông có lifecycle riêng là Involved Party độc lập; grain = cổ đông × công ty không làm mất tính độc lập |
-| D-12 | `Audit Firm Warning` và `Audit Firm Sanction` có FK loại trừ nhau (đến AF Approval hoặc Auditor Approval) | Giữ nguyên pattern nguồn — 1 trong 2 FK luôn NULL; ETL dùng warning_target_type_cd để phân biệt |
+| D-01 | `AF_APPROVAL` → 1 entity `Audit Firm Approval` thay vì 2 entity riêng | Nguồn chỉ có 1 bảng `AF_APPROVAL` với cột `TARGET_TYPE_CD` phân biệt đối tượng (công ty KT / KTV). Tách 2 entity từ 1 bảng không phù hợp thiết kế Atomic. |
+| D-02 | `AF_INSPECTION` xếp Tier 2 (FK → AF_PROFILES T1), không phải Tier 3 | Phân tích FK: AF_INSPECTION.AF_PROFILE_ID → AF_PROFILES (T1) trực tiếp. Tier 3 chỉ là các entity AF enforcement phụ thuộc AF_INSPECTION. |
+| D-03 | `NOTIFICATIONS` xếp Tier 2 (FK → FORMS T1), `NOTIFICATIONS_DTL` xếp Tier 3 | NOTIFICATIONS.FORM_ID → FORMS (T1) trực tiếp → Tier 2. NOTIFICATIONS_DTL → NOTIFICATIONS (T2) → Tier 3. |
+| D-04 | `DATA` → `Financial Report Data` xếp Tier 2 | DATA.REPORT_CATALOG_ID → REPORT_CATALOG (T1) + DATA.COMPANY_PROFILE_ID → COMPANY_PROFILES (T1). FK đến 2 T1 → đây là Tier 2, không phải T4. ROW_CD/COL_CD là code join, không có FK constraint vật lý. |
+| D-05 | `LEGAL_ENTITIES` là Tier 1 độc lập, không phụ thuộc `COMPANY_PROFILES` | BRD xác nhận LEGAL_ENTITIES không có FK → COMPANY_PROFILES. Quan hệ với CTĐC là qua junction tables COMPANY_SHAREHOLDING và COMPANY_ENTITY_ROLE (T3). |
+| D-06 | `SECURITIES_OFFERING` có 2 FK nullable loại trừ nhau: COMPANY_PROFILE_ID và LEGAL_ENTITY_ID | APPLICANT_TYPE_FLG phân biệt tổ chức (công ty) hay cá nhân. Giữ 2 FK nullable trên Atomic, ETL dùng APPLICANT_TYPE_FLG để xác định. |
+| D-07 | Không tạo entity riêng cho `CATEGORIES` | CATEGORIES chỉ có Code + Name → Classification Value scheme `IDS_INDUSTRY_CATEGORY`. FK từ COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID xử lý thành cặp Id + Code dư thừa trên `Public Company`. |
+| D-08 | `VIOLATION_REPORT` và `HTE_VIOLATION_REPORT` giữ 2 entity riêng | Cấu trúc gần giống nhau nhưng thuộc 2 module khác nhau (CBTT thông thường và HTE). Nếu cần aggregate có thể tạo Gold view — không gộp trên Atomic. |
 
 ---
 
@@ -149,278 +235,263 @@ graph TD
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| T1 | Involved Party | [Involved Party] Organization | Organization | `company_profiles` | Update | Thông tin cơ bản của công ty đại chúng (tên, mã CK, sàn niêm yết, trạng thái, vốn điều lệ). Hạt nhân IDS. | Public Company | Fundamental | [Involved Party] Organization — pháp nhân tổ chức được UBCKNN quản lý |
-| T1 | Involved Party | [Involved Party] Organization | Organization | `af_profiles` | Update | Hồ sơ công ty kiểm toán được BTC/UBCKNN chấp thuận (tên, vốn, thành viên hãng nước ngoài). | Audit Firm | Fundamental | [Involved Party] Organization — tổ chức kiểm toán độc lập |
-| T1 | Condition | [Condition] Form Definition | Condition | `forms` | Update | Định nghĩa template form CBTT; self-ref qua parent_form_id tạo cấu trúc cha-con. | Disclosure Form Definition | Fundamental | [Condition] Form Definition — template/tiêu chuẩn cho từng loại hồ sơ/tin CBTT |
-| T1 | Condition | [Condition] Form Definition | Condition | `report_catalog` | Update | Danh mục template báo cáo tài chính với tập hàng/cột tương ứng. | Financial Report Catalog | Fundamental | [Condition] Form Definition — mẫu danh mục BCTC |
-| T1 | Condition | [Condition] Form Definition | Condition | `rep_forms` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên) độc lập với BCTC. | Periodic Report Form | Fundamental | [Condition] Form Definition — mẫu báo cáo định kỳ |
-| T1 | Condition | [Condition] Notification Configuration | Condition | `noti_config` | Update | Cấu hình thông báo CBTT: kênh gửi, hệ thống đích, lịch gửi. | Disclosure Notification Config | Fundamental | [Condition] Notification Configuration — điều kiện kích hoạt và định tuyến thông báo |
-| T2 | Involved Party | [Involved Party] Individual Employment Status | Involved Party | `legal_representative` | Update | Người đại diện pháp luật và người CBTT của CTĐC; phân biệt vai trò qua representative_role. | Public Company Legal Representative | Relative | [Involved Party] Individual Employment Status — vai trò đại diện tại CTĐC |
-| T2 | Arrangement | [Arrangement] Ownership | Arrangement | `state_capital` | Update | Tỷ lệ và cơ quan đại diện phần vốn nhà nước tại CTĐC. | Public Company State Capital | Relative | [Arrangement] Ownership — quan hệ sở hữu vốn nhà nước |
-| T2 | Condition | [Condition] Ownership Constraint | Condition | `foreign_owner_limit` | Update | Lịch sử quyết định quy định tỷ lệ giới hạn sở hữu nước ngoài tại CTĐC theo thời gian. | Public Company Foreign Ownership Limit | Relative | [Condition] Ownership Constraint — ràng buộc sở hữu theo quy định |
-| T2 | Involved Party | [Involved Party] Involved Party Relationship | Involved Party | `company_relationship` | Update | Quan hệ mẹ/con/liên doanh/liên kết giữa CTĐC và pháp nhân liên quan kèm tỷ lệ sở hữu. | Public Company Related Entity | Relative | [Involved Party] Involved Party Relationship — quan hệ giữa các pháp nhân |
-| T2 | Involved Party | [Involved Party] Individual | Involved Party | `stock_holders` | Update | Cổ đông giao dịch của CTĐC (cá nhân hoặc tổ chức); grain = cổ đông × công ty. | Stock Holder | Fundamental | [Involved Party] Individual — cổ đông là Involved Party với lifecycle riêng |
-| T2 | Documentation | [Documentation] Gov. Registration Document | Documentation | `af_approval` | Update | Quyết định chấp thuận/đình chỉ công ty kiểm toán do BTC và UBCKNN phát hành (gộp mof_* + ssc_*). | Audit Firm Approval | Relative | [Documentation] Gov. Registration Document — văn bản hành chính chấp thuận tổ chức kiểm toán |
-| T2 | Involved Party | [Involved Party] Individual Employment Status | Involved Party | `af_legal_representative` | Update | Người đại diện pháp luật của công ty kiểm toán (chức vụ, CMND/hộ chiếu, email, SĐT). | Audit Firm Legal Representative | Relative | [Involved Party] Individual Employment Status — vai trò đại diện tại công ty kiểm toán |
-| T2 | Condition | [Condition] Form Definition | Condition | `rrow` | Update | Hàng của template báo cáo tài chính (loại hàng: value/formula/description). | Financial Report Row Template | Relative | [Condition] Form Definition — thành phần hàng của template BCTC |
-| T2 | Condition | [Condition] Form Definition | Condition | `rcol` | Update | Cột của template báo cáo tài chính (thường là kỳ báo cáo). | Financial Report Column Template | Relative | [Condition] Form Definition — thành phần cột của template BCTC |
-| T2 | Condition | [Condition] Form Definition | Condition | `rep_row` | Update | Hàng của template báo cáo định kỳ với data_type_cd. | Periodic Report Form Row Template | Relative | [Condition] Form Definition — thành phần hàng của template báo cáo định kỳ |
-| T2 | Condition | [Condition] Form Definition | Condition | `rep_column` | Update | Cột của template báo cáo định kỳ với data_type_cd. | Periodic Report Form Column Template | Relative | [Condition] Form Definition — thành phần cột của template báo cáo định kỳ |
-| T2 | Communication | [Communication] Notification | Communication | `notifications` | Append | Instance thông báo CBTT đã phát sinh: kênh gửi, trạng thái, ngày gửi. | Disclosure Notification | Fact Append | [Communication] Notification — thông báo thực tế được gửi |
-| T2 | Involved Party | Shared Entity | Shared Entity | `company_detail`, `stock_holders`, `af_profiles` | Update | Địa chỉ bưu chính từ nhiều bảng IDS (CTĐC, cổ đông, công ty KT). | Involved Party Postal Address | Fundamental | Shared Entity — bổ sung source_table |
-| T2 | Involved Party | Shared Entity | Shared Entity | `company_detail`, `stock_holders`, `af_profiles`, `legal_representative`, `af_legal_representative` | Update | Địa chỉ điện tử từ nhiều bảng IDS (điện thoại/email/fax/website). | Involved Party Electronic Address | Fundamental | Shared Entity — bổ sung source_table |
-| T2 | Involved Party | Shared Entity | Shared Entity | `identity`, `af_legal_representative` | Update | Giấy tờ định danh của cổ đông và người đại diện pháp luật công ty KT. | Involved Party Alternative Identification | Fundamental | Shared Entity — bổ sung source_table |
-| T3 | Arrangement | [Arrangement] Account | Arrangement | `account_numbers` | Update | Tài khoản giao dịch chứng khoán của cổ đông tại các CTCK; có đánh dấu tài khoản chính. | Stock Holder Trading Account | Relative | [Arrangement] Account — tài khoản giao dịch là Arrangement giữa cổ đông và CTCK |
-| T3 | Involved Party | [Involved Party] Involved Party Relationship | Involved Party | `holder_relationship` | Update | Quan hệ giữa các cổ đông (vợ-chồng, cha-con, ủy quyền, sở hữu chéo). | Stock Holder Relationship | Relative | [Involved Party] Involved Party Relationship — quan hệ giữa cổ đông |
-| T3 | Arrangement | [Arrangement] Ownership | Arrangement | `stock_controls` | Update | Chứng khoán của cổ đông bị đưa vào diện kiểm soát/hạn chế chuyển nhượng. | Stock Control | Relative | [Arrangement] Ownership — sở hữu có ràng buộc kiểm soát |
-| T3 | Documentation | [Documentation] Gov. Registration Document | Documentation | `af_auditor_approval` | Update | Kiểm toán viên được chấp thuận; kèm quyết định BTC + SSC cấp cá nhân; có ngày rời công ty. | Auditor Approval | Relative | [Documentation] Gov. Registration Document — văn bản chấp thuận kiểm toán viên cấp cá nhân |
-| T3 | Business Activity | [Business Activity] Warning Notice | Business Activity | `af_warning` | Append | Văn bản nhắc nhở do BTC/UBCKNN đối với công ty KT hoặc kiểm toán viên; FK loại trừ nhau. | Audit Firm Warning | Fact Append | [Business Activity] Warning Notice — sự kiện giám sát/cảnh báo nghiệp vụ |
-| T3 | Business Activity | [Business Activity] Enforcement Action | Business Activity | `af_sanctions` | Append | Quyết định xử phạt hành chính đối với công ty KT hoặc kiểm toán viên; FK loại trừ nhau. | Audit Firm Sanction | Fact Append | [Business Activity] Enforcement Action — sự kiện chế tài/xử phạt |
-| T3 | Documentation | [Documentation] Filing | Documentation | `company_data` | Update | Lần nộp báo cáo/tin CBTT của CTĐC đã được phê duyệt; liên kết CTĐC với form CBTT. | Public Company Report Submission | Relative | [Documentation] Filing — hồ sơ/báo cáo nộp chính thức lên UBCKNN |
-| T4 | Documentation | [Documentation] Financial Statement | Documentation | `data` | Append | Giá trị ô BCTC thực tế — mỗi bản ghi là 1 ô (rrow × rcol) của 1 lần nộp BCTC. | Public Company Financial Report Value | Fact Append | [Documentation] Financial Statement — số liệu tài chính thực tế đã được duyệt |
+| T1 | Involved Party | [Involved Party] Organization | Organization | `COMPANY_PROFILES` | Update | Thông tin cơ bản của công ty đại chúng: tên VI/EN, mã CK, sàn niêm yết, trạng thái, vốn điều lệ, loại hình doanh nghiệp, loại BCTC, ngày kết thúc năm tài chính. | Public Company | Fundamental | (1) [Involved Party] Organization — tổ chức có pháp nhân, được quản lý bởi UBCKNN. (2) Cấu trúc trường: ID, COMPANY_NAME_VN/EN, EQUITY_TICKER, BUSINESS_REG_NO, STATUS_IDS_CD, PROVINCE_ID (FK), CATEGORY_L1/L2_ID (FK), EQUITY_LISTING_EXCH, ENTERPRISE_TYPE_CD, FINANCIAL_STMT_TYPE_CD, FY_END_DATE. (3) Chọn [Involved Party] Organization. |
+| T1 | Involved Party | [Involved Party] Individual | Involved Party | `LEGAL_ENTITIES` | Update | Cổ đông giao dịch, người nội bộ, người liên quan của CTĐC (cá nhân hoặc tổ chức). Độc lập, không FK đến COMPANY_PROFILES. | Legal Entity | Fundamental | (1) [Involved Party] Individual — BCV mô tả người/tổ chức tham gia vào hoạt động CK. (2) Cấu trúc trường: ENTITY_NAME, ENTITY_TYPE_CD (cá nhân/tổ chức), IDENTITY_TYPE_CD, BUSINESS_REG_NO, BIRTH_DATE, NATIONALITY, ADDRESS. Không FK đến COMPANY_PROFILES. (3) Chọn [Involved Party] Individual (dùng chung cho cả cá nhân và tổ chức tư nhân không phải CTĐC). |
+| T1 | Involved Party | [Involved Party] Organization | Organization | `AF_PROFILES` | Update | Hồ sơ công ty kiểm toán được BTC/UBCKNN chấp thuận: tên VI/EN, vốn thực góp, thành viên hãng kiểm toán quốc tế. | Audit Firm | Fundamental | (1) [Involved Party] Organization — tổ chức kiểm toán có pháp nhân, được quản lý bởi UBCKNN. (2) Cấu trúc trường: AF_NAME_VN/EN, CHARTER_CAPITAL_PAID, INTERNATIONAL_AFFILIATE_ID, STATUS_CD. (3) Chọn [Involved Party] Organization. |
+| T1 | Condition | [Condition] Form Definition | Condition | `FORMS` | Update | Định nghĩa template form CBTT — tên form, phiên bản, self-ref qua parent_form_id. | Disclosure Form Definition | Fundamental | (1) [Condition] Form Definition — template/form là điều kiện/quy định về cách thức CBTT. (2) Cấu trúc trường: FORM_CODE, FORM_NAME, FORM_VERSION, PARENT_FORM_ID (self-ref), STATUS_CD. (3) Chọn [Condition] Form Definition. |
+| T1 | Condition | [Condition] Form Definition | Condition | `REPORT_CATALOG` | Update | Danh mục báo cáo tài chính: định nghĩa loại báo cáo và tập hàng/cột. | Financial Report Catalog | Fundamental | (1) [Condition] Form Definition — catalog định nghĩa cấu trúc BCTC. (2) Cấu trúc trường: CATALOG_CODE, CATALOG_NAME, FINANCIAL_STMT_TYPE_CD, STATUS_CD. (3) Chọn [Condition] Form Definition. |
+| T1 | Condition | [Condition] Form Definition | Condition | `REP_FORMS` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên): tên form, kỳ báo cáo, loại. | Periodic Report Form | Fundamental | (1) [Condition] Form Definition — template báo cáo định kỳ là quy định về cấu trúc báo cáo. (2) Cấu trúc trường: FORM_CODE, FORM_NAME, PERIOD_TYPE_CD, STATUS_CD. (3) Chọn [Condition] Form Definition. |
+| T1 | Group | [Group] Group | Group | `EVALUATION_GROUPS` | Update | Nhóm chỉ tiêu đánh giá xếp hạng CTĐC: tên nhóm, thứ tự, tổng điểm tối đa nhóm. | Public Company Evaluation Group | Classification | (1) [Group] Group — nhóm phân loại chỉ tiêu đánh giá. (2) Cấu trúc trường: GROUP_NAME, ORDER_NO, MAX_SCORE. Không có instance data → Classification. (3) Chọn [Group] Group. |
+| T1 | Event | [Event] Period | Event | `EVALUATION_PERIODS` | Update | Kỳ đánh giá xếp hạng CTĐC: năm đánh giá, tháng, trạng thái kỳ. | Public Company Evaluation Period | Fundamental | (1) [Event] Period — kỳ thời gian có lifecycle riêng (open/close). (2) Cấu trúc trường: PERIOD_YEAR, PERIOD_MONTH, STATUS_CD, OPEN_DATE, CLOSE_DATE. (3) Chọn [Event] Period. |
+| T2 | Involved Party | [Involved Party] Individual Employment Status | Involved Party | `LEGAL_REPRESENTATIVE` | Update | Người đại diện pháp luật và người CBTT của CTĐC: chức vụ, thời gian đảm nhiệm. | Public Company Legal Representative | Relative | (1) [Involved Party] Individual Employment Status — vai trò/chức vụ của cá nhân tại CTĐC. (2) FK → COMPANY_PROFILES. Cấu trúc: PERSON_NAME, POSITION_CD, EFFECTIVE_FROM/TO_DATE. (3) Chọn [Involved Party] Individual Employment Status. |
+| T2 | Arrangement | [Arrangement] Ownership | Arrangement | `STATE_CAPITAL` | Update | Tỷ lệ và cơ quan đại diện phần vốn nhà nước tại CTĐC. | Public Company State Capital | Relative | (1) [Arrangement] Ownership — sở hữu vốn nhà nước. (2) FK → COMPANY_PROFILES. Cấu trúc: AGENCY_NAME, OWNERSHIP_RATIO, EFFECTIVE_DATE. (3) Chọn [Arrangement] Ownership. |
+| T2 | Condition | [Condition] Ownership Constraint | Condition | `FOREIGN_OWNER_LIMIT` | Update | Lịch sử quyết định quy định tỷ lệ giới hạn sở hữu nước ngoài tại CTĐC. | Public Company Foreign Ownership Limit | Relative | (1) [Condition] Ownership Constraint — quy định ràng buộc tỷ lệ sở hữu. (2) FK → COMPANY_PROFILES. Cấu trúc: LIMIT_RATIO, DECISION_NO/DATE, EFFECTIVE_FROM/TO_DATE. (3) Chọn [Condition] Ownership Constraint. |
+| T2 | Involved Party | [Involved Party] Involved Party Relationship | Involved Party | `COMPANY_RELATIONSHIP` | Update | Quan hệ mẹ/con/liên doanh/liên kết giữa CTĐC và pháp nhân liên quan. | Public Company Related Entity | Relative | (1) [Involved Party] Involved Party Relationship — quan hệ giữa 2 Involved Party. (2) FK → COMPANY_PROFILES + LEGAL_ENTITIES (nullable). Cấu trúc: RELATIONSHIP_TYPE_CD, PARTNER_NAME. (3) Chọn [Involved Party] Involved Party Relationship. |
+| T2 | Business Activity | [Business Activity] Inspection | Business Activity | `COMPANY_INSPECTION` | Update | Đợt thanh tra/kiểm tra CTĐC do UBCKNN thực hiện: số quyết định, phạm vi, kết quả. | Public Company Inspection | Fact Append | (1) [Business Activity] Inspection — đợt thanh tra là sự kiện nghiệp vụ. (2) FK → COMPANY_PROFILES. Cấu trúc: INSPECTION_TYPE_CD, DECISION_NO/DATE, SCOPE, LEAD_UNIT. (3) Chọn [Business Activity] Inspection. |
+| T2 | Business Activity | [Business Activity] Enforcement Action | Business Activity | `COMPANY_PENALTIES` | Update | Quyết định xử phạt hành chính đối với CTĐC hoặc cá nhân liên quan. | Public Company Penalty | Fact Append | (1) [Business Activity] Enforcement Action — quyết định chế tài. (2) FK → COMPANY_PROFILES. Cấu trúc: PENALIZED_SUBJECT_TYPE_CD, PENALTY_DECISION_NO/DATE, PENALTY_AMOUNT. (3) Chọn [Business Activity] Enforcement Action. |
+| T2 | Business Activity | [Business Activity] Business Activity | Business Activity | `CAPITAL_MOBILIZATION` | Update | Lịch sử huy động vốn trước khi trở thành CTĐC (theo năm). | Public Company Capital Mobilization | Relative | (1) [Business Activity] Business Activity — hoạt động huy động vốn. (2) FK → COMPANY_PROFILES. (3) Chọn [Business Activity] Business Activity. |
+| T2 | Business Activity | [Business Activity] Business Activity | Business Activity | `COMPANY_ADD_CAPITAL` | Update | Quá trình tăng vốn sau khi là CTĐC: phương thức, quyết định, lần tăng vốn. | Public Company Capital Increase | Relative | (1) [Business Activity] Business Activity — hoạt động tăng vốn điều lệ. (2) FK → COMPANY_PROFILES. (3) Chọn [Business Activity] Business Activity. |
+| T2 | Business Activity | [Business Activity] Business Activity | Business Activity | `COMPANY_TENDER_OFFER` | Update | Phương án chào mua công khai của CTĐC. | Public Company Tender Offer | Relative | (1) [Business Activity] Business Activity — hoạt động chào mua công khai. (2) FK → COMPANY_PROFILES. (3) Chọn [Business Activity] Business Activity. |
+| T2 | Business Activity | [Business Activity] Business Activity | Business Activity | `COMPANY_TREASURY_STOCKS` | Update | Mua bán cổ phiếu quỹ theo năm của CTĐC. | Public Company Treasury Stock Activity | Relative | (1) [Business Activity] Business Activity — hoạt động mua/bán cổ phiếu quỹ. (2) FK → COMPANY_PROFILES. (3) Chọn [Business Activity] Business Activity. |
+| T2 | Arrangement | [Arrangement] Ownership | Arrangement | `COMPANY_SHARE_STATISTICS` | Update | Thống kê cấu trúc vốn/cổ phần sau mỗi đợt mua/bán. | Public Company Share Statistics | Relative | (1) [Arrangement] Ownership — cấu trúc sở hữu cổ phần theo từng thời điểm. (2) FK → COMPANY_PROFILES. (3) Chọn [Arrangement] Ownership. |
+| T2 | Business Activity | [Business Activity] Business Activity | Business Activity | `STOCK_LISTING_HISTORY` | Update | Lịch sử niêm yết/đăng ký giao dịch cổ phiếu của CTĐC. | Public Company Stock Listing History | Fact Append | (1) [Business Activity] Business Activity — sự kiện niêm yết/hủy niêm yết. (2) FK → COMPANY_PROFILES. (3) Chọn [Business Activity] Business Activity. |
+| T2 | Business Activity | [Business Activity] Business Activity | Business Activity | `BOND_LISTING_HISTORY` | Update | Lịch sử phát hành/niêm yết trái phiếu của CTĐC. | Public Company Bond Listing History | Fact Append | (1) [Business Activity] Business Activity — sự kiện phát hành/niêm yết TPDN. (2) FK → COMPANY_PROFILES. (3) Chọn [Business Activity] Business Activity. |
+| T2 | Documentation | [Documentation] Gov. Registration Document | Documentation | `PUB_COMPANY_REGISTRATION` | Update | Lịch sử đăng ký trở thành công ty đại chúng. | Public Company Registration | Fact Append | (1) [Documentation] Gov. Registration Document — hồ sơ đăng ký với cơ quan nhà nước. (2) FK → COMPANY_PROFILES. (3) Chọn [Documentation] Gov. Registration Document. |
+| T2 | Documentation | [Documentation] Gov. Registration Document | Documentation | `PUB_COMPANY_CANCELLATION` | Update | Lịch sử hủy đăng ký tư cách công ty đại chúng. | Public Company Deregistration | Fact Append | (1) [Documentation] Gov. Registration Document — quyết định hủy đăng ký. (2) FK → COMPANY_PROFILES. (3) Chọn [Documentation] Gov. Registration Document. |
+| T2 | Documentation | [Documentation] Filing | Documentation | `REPORT_EXTENSIONS` | Update | Gia hạn nộp báo cáo định kỳ của CTĐC: lý do, ngày gia hạn đến, trạng thái phê duyệt. | Public Company Report Extension | Relative | (1) [Documentation] Filing — hồ sơ xin gia hạn nộp báo cáo. (2) FK → COMPANY_PROFILES. (3) Chọn [Documentation] Filing. |
+| T2 | Condition | [Condition] Form Definition | Condition | `RROW` | Update | Định nghĩa hàng của template báo cáo tài chính: mã hàng, tên, cấp, công thức tổng hợp. | Financial Report Row Template | Relative | (1) [Condition] Form Definition — định nghĩa cấu trúc template BCTC. (2) FK → REPORT_CATALOG. (3) Chọn [Condition] Form Definition. |
+| T2 | Condition | [Condition] Form Definition | Condition | `RCOL` | Update | Định nghĩa cột của template báo cáo tài chính: mã cột, tên, kỳ tham chiếu. | Financial Report Column Template | Relative | (1) [Condition] Form Definition — định nghĩa cấu trúc template BCTC. (2) FK → REPORT_CATALOG. (3) Chọn [Condition] Form Definition. |
+| T2 | Condition | [Condition] Form Definition | Condition | `REP_ROW` | Update | Định nghĩa hàng của template báo cáo định kỳ. | Periodic Report Form Row Template | Relative | (1) [Condition] Form Definition — định nghĩa cấu trúc template báo cáo định kỳ. (2) FK → REP_FORMS. (3) Chọn [Condition] Form Definition. |
+| T2 | Condition | [Condition] Form Definition | Condition | `REP_COLUMN` | Update | Định nghĩa cột của template báo cáo định kỳ. | Periodic Report Form Column Template | Relative | (1) [Condition] Form Definition — định nghĩa cấu trúc template báo cáo định kỳ. (2) FK → REP_FORMS. (3) Chọn [Condition] Form Definition. |
+| T2 | Documentation | [Documentation] Gov. Registration Document | Documentation | `AF_APPROVAL` | Update | Quyết định chấp thuận/đình chỉ cho công ty KT hoặc KTV (TARGET_TYPE_CD phân biệt loại, SOURCE_TYPE_CD phân biệt cơ quan ban hành). | Audit Firm Approval | Relative | (1) [Documentation] Gov. Registration Document — quyết định chấp thuận từ cơ quan nhà nước. (2) FK → AF_PROFILES (bắt buộc) + AF_AUDITOR_PROFILES (nullable). Cấu trúc: TARGET_TYPE_CD, APPROVAL_DOC_NO, APPROVAL_ISSUE/START/END_DATE. (3) Chọn [Documentation] Gov. Registration Document. |
+| T2 | Involved Party | [Involved Party] Individual Employment Status | Involved Party | `AF_LEGAL_REPRESENTATIVE` | Update | Người đại diện pháp luật của công ty kiểm toán. | Audit Firm Legal Representative | Relative | (1) [Involved Party] Individual Employment Status — vai trò người đại diện pháp luật. (2) FK → AF_PROFILES. (3) Chọn [Involved Party] Individual Employment Status. |
+| T2 | Involved Party | [Involved Party] Individual | Involved Party | `AF_AUDITOR_PROFILES` | Update | Hồ sơ kiểm toán viên thuộc công ty kiểm toán: CCCD, chứng chỉ hành nghề, chứng chỉ kiểm toán. | Auditor Profile | Relative | (1) [Involved Party] Individual — cá nhân kiểm toán viên. (2) FK → AF_PROFILES. Cấu trúc: FULL_NAME, IDENTITY_NO, PRACTICE_CERT_NO/ISSUE_DATE, AUDIT_CERT_NO. (3) Chọn [Involved Party] Individual. |
+| T2 | Business Activity | [Business Activity] Status History | Business Activity | `AF_STATUS_HISTORY` | Update | Lịch sử thay đổi trạng thái hoạt động của công ty kiểm toán: loại trạng thái, quyết định, thời gian hiệu lực. | Audit Firm Status History | Fact Append | (1) [Business Activity] Status History — chuỗi sự kiện thay đổi trạng thái. (2) FK → AF_PROFILES. Cấu trúc: STATUS_TYPE, SUSPENSION_STATUS_TYPE, DECISION_NO/DATE, EFFECTIVE_FROM/TO_DATE. (3) Chọn [Business Activity] Status History. |
+| T2 | Condition | [Condition] Compliance Rule | Condition | `VIOLATION_TEMPLATES` | Update | Cấu hình mẫu vi phạm báo cáo CBTT: loại báo cáo, thời hạn nộp mặc định, điều khoản xử phạt. | Violation Template | Relative | (1) [Condition] Compliance Rule — quy tắc tuân thủ về thời hạn nộp báo cáo. (2) FK → FORMS. (3) Chọn [Condition] Compliance Rule. |
+| T2 | Condition | [Condition] Evaluation Criteria | Condition | `EVALUATION_CRITERIA` | Update | Chỉ tiêu đánh giá xếp hạng CTĐC: mã chỉ tiêu, tên, điểm tối đa, trọng số. | Public Company Evaluation Criterion | Classification | (1) [Condition] Evaluation Criteria — tiêu chí/thang đo đánh giá. (2) FK → EVALUATION_GROUPS. Classification (danh mục chỉ tiêu). (3) Chọn [Condition] Evaluation Criteria. |
+| T2 | Business Activity | [Business Activity] Inspection | Business Activity | `AF_INSPECTION` | Update | Đợt kiểm tra công ty kiểm toán: số quyết định, ngày, kết quả kiểm tra hệ thống kiểm toán, hành động xử lý. | Audit Firm Inspection | Fact Append | (1) [Business Activity] Inspection — đợt kiểm tra là sự kiện nghiệp vụ. (2) FK → AF_PROFILES (T1). Cấu trúc: INSPECTION_DECISION_NO, INSPECTION_START/END_DATE, AUDIT_SYSTEM_RESULT_CD, OVERALL_RESULT_CD. (3) Chọn [Business Activity] Inspection. |
+| T2 | Communication | [Communication] Notification | Communication | `NOTIFICATIONS` | Update | Instance thông báo CBTT đã phát sinh: trạng thái, loại tin, ngày gửi. | Disclosure Notification | Fact Append | (1) [Communication] Notification — thông báo được gửi tới đối tượng nhận. (2) FK → FORMS (T1). (3) Chọn [Communication] Notification. |
+| T2 | Documentation | [Documentation] Financial Statement | Documentation | `DATA` | Update | Giá trị số liệu tài chính của CTĐC theo kỳ: giá trị ô, năm/quý báo cáo, mã hàng/cột tham chiếu template. | Financial Report Data | Fact Snapshot | (1) [Documentation] Financial Statement — số liệu trong BCTC. (2) FK → REPORT_CATALOG (T1) + COMPANY_PROFILES (T1). ROW_CD/COL_CD là code join ngữ nghĩa, không có FK vật lý đến RROW/RCOL. (3) Chọn [Documentation] Financial Statement. Fact Snapshot (chụp theo kỳ REPORT_YEAR/QUARTER). |
+| T2 | Involved Party | Shared Entity | Shared Entity | `COMPANY_PROFILES`, `LEGAL_ENTITIES`, `AF_PROFILES`, `AF_LEGAL_REPRESENTATIVE` | Update | Địa chỉ bưu chính của Involved Party từ nhiều bảng nguồn IDS. | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table IDS. |
+| T2 | Involved Party | Shared Entity | Shared Entity | `COMPANY_PROFILES`, `LEGAL_ENTITIES`, `AF_PROFILES`, `LEGAL_REPRESENTATIVE`, `AF_LEGAL_REPRESENTATIVE` | Update | Địa chỉ điện tử (điện thoại/email/fax/website) của Involved Party. | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table IDS. |
+| T2 | Involved Party | Shared Entity | Shared Entity | `LEGAL_ENTITIES`, `AF_LEGAL_REPRESENTATIVE`, `LEGAL_REPRESENTATIVE` | Update | Giấy tờ định danh của thực thể pháp lý và người đại diện. | Involved Party Alternative Identification | Fundamental | Shared Entity — extend source_table IDS. |
+| T3 | Involved Party | [Involved Party] Alternative Identification | Involved Party | `IDENTITY` | Update | Giấy tờ định danh của cổ đông/người nội bộ/người liên quan: loại giấy tờ, số, ngày cấp, nơi cấp. | Legal Entity Alternative Identification | Relative | (1) [Involved Party] Alternative Identification — giấy tờ định danh của Legal Entity. (2) FK → LEGAL_ENTITIES. Grain: 1 dòng = 1 giấy tờ. (3) Là nguồn chính cho IP Alt Identification shared entity với grain chuẩn. |
+| T3 | Involved Party | [Involved Party] Individual Employment Status | Involved Party | `POSITIONS` | Update | Chức vụ của người nội bộ/cổ đông tại công ty: mã chức vụ, ngày bổ nhiệm, ngày miễn nhiệm. | Legal Entity Position | Relative | (1) [Involved Party] Individual Employment Status — vai trò chức vụ của cá nhân. (2) FK → LEGAL_ENTITIES. Cấu trúc: POSITION_CD, APPOINTMENT_DATE, DISMISSAL_DATE. (3) Chọn [Involved Party] Individual Employment Status. |
+| T3 | Arrangement | [Arrangement] Account | Arrangement | `ACCOUNT_NUMBERS` | Update | Tài khoản giao dịch chứng khoán của cổ đông tại CTCK: số tài khoản, mã CTCK, cờ tài khoản chính. | Legal Entity Trading Account | Relative | (1) [Arrangement] Account — thỏa thuận tài khoản giao dịch. (2) FK → LEGAL_ENTITIES. Cấu trúc: ACCOUNT_NO, CTCK_CODE, PRIMARY_ACCOUNT_FLG, OPEN_DATE. (3) Chọn [Arrangement] Account. |
+| T3 | Involved Party | [Involved Party] Involved Party Relationship | Involved Party | `HOLDER_RELATIONSHIP` | Update | Quan hệ giữa các cổ đông: vợ-chồng, cha-con, ủy quyền, sở hữu chéo. | Legal Entity Relationship | Relative | (1) [Involved Party] Involved Party Relationship — quan hệ giữa 2 Legal Entity. (2) FK × 2 → LEGAL_ENTITIES (self-referencing). Cấu trúc: LEGAL_ENTITY_ID, RELATED_LEGAL_ENTITY_ID, RELATIONSHIP_TYPE_CD. (3) Chọn [Involved Party] Involved Party Relationship. |
+| T3 | Arrangement | [Arrangement] Ownership | Arrangement | `STOCK_CONTROLS` | Update | Chứng khoán của cổ đông bị đưa vào diện kiểm soát/hạn chế chuyển nhượng: loại hạn chế, thời gian hiệu lực. | Legal Entity Stock Control | Relative | (1) [Arrangement] Ownership — sở hữu có ràng buộc kiểm soát. (2) FK → LEGAL_ENTITIES. Cấu trúc: TICKER, RESTRICTION_TYPE_CD, START_DATE, END_DATE. (3) Chọn [Arrangement] Ownership. |
+| T3 | Arrangement | [Arrangement] Ownership | Arrangement | `COMPANY_SHAREHOLDING` | Update | Thông tin cổ đông của CTĐC: số lượng, tỷ lệ sở hữu, phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan). | Company Shareholding | Relative | (1) [Arrangement] Ownership — quan hệ sở hữu giữa cổ đông và công ty. (2) FK → COMPANY_PROFILES + LEGAL_ENTITIES. Cấu trúc: SHAREHOLDER_TYPE, OWNERSHIP_QTY/RATIO/DATE, 7 cờ phân loại. (3) Chọn [Arrangement] Ownership. |
+| T3 | Involved Party | [Involved Party] Individual Employment Status | Involved Party | `COMPANY_ENTITY_ROLE` | Update | Vai trò của người nội bộ/cổ đông tại CTĐC: loại vai trò, trạng thái hoạt động, thời gian hiệu lực. | Company Entity Role | Relative | (1) [Involved Party] Individual Employment Status — vai trò theo thời gian tại tổ chức. (2) FK → COMPANY_PROFILES + LEGAL_ENTITIES. Cấu trúc: ROLE_TYPE_CD, ACTIVE_FLG, EFFECTIVE_FROM/TO_DATE. (3) Chọn [Involved Party] Individual Employment Status. |
+| T3 | Business Activity | [Business Activity] Warning Notice | Business Activity | `AF_WARNING` | Update | Văn bản nhắc nhở đối với công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt). | Audit Firm Warning | Fact Append | (1) [Business Activity] Warning Notice — hoạt động cảnh báo/nhắc nhở nghiệp vụ. (2) FK → AF_PROFILES + AF_AUDITOR_PROFILES (nullable) + AF_INSPECTION (nullable). (3) Chọn [Business Activity] Warning Notice. |
+| T3 | Business Activity | [Business Activity] Enforcement Action | Business Activity | `AF_SANCTIONS` | Update | Quyết định xử phạt hành chính đối với công ty kiểm toán. | Audit Firm Sanction | Fact Append | (1) [Business Activity] Enforcement Action — hành động chế tài/xử phạt. (2) FK → AF_PROFILES. Cấu trúc: SANCTION_AUTHORITY_CD, DECISION_NO/DATE, SANCTION_CONTENT. (3) Chọn [Business Activity] Enforcement Action. |
+| T3 | Business Activity | [Business Activity] Enforcement Action | Business Activity | `AF_SUSPENSION` | Update | Đình chỉ hoạt động của công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt). | Audit Firm Suspension | Fact Append | (1) [Business Activity] Enforcement Action — đình chỉ là hành động chế tài. (2) FK → AF_PROFILES + AF_AUDITOR_PROFILES (nullable) + AF_INSPECTION (nullable). (3) Chọn [Business Activity] Enforcement Action. |
+| T3 | Business Activity | [Business Activity] Inspection | Business Activity | `AF_TECHNICAL_AUDIT` | Update | Kết quả kiểm tra hồ sơ kiểm toán trong một đợt kiểm tra: kết quả, hành động xử lý, nội dung vi phạm. | Audit Firm Technical Audit | Fact Append | (1) [Business Activity] Inspection — kiểm tra hồ sơ kiểm toán là sub-activity của đợt kiểm tra. (2) FK → AF_PROFILES + AF_INSPECTION. (3) Chọn [Business Activity] Inspection. |
+| T3 | Business Activity | [Business Activity] Status History | Business Activity | `AF_AUDITOR_STATUS_HISTORY` | Update | Lịch sử thay đổi trạng thái của kiểm toán viên: loại sự kiện, ngày hiệu lực, lý do. | Auditor Status History | Fact Append | (1) [Business Activity] Status History — chuỗi sự kiện thay đổi trạng thái. (2) FK → AF_AUDITOR_PROFILES. (3) Chọn [Business Activity] Status History. |
+| T3 | Documentation | [Documentation] Filing | Documentation | `COMPANY_DATA` | Update | Lần nộp báo cáo/tin CBTT của CTĐC đã phê duyệt (filter NEWS_STATUS_CD = APPROVED). | Public Company Report Submission | Relative | (1) [Documentation] Filing — hồ sơ/báo cáo nộp chính thức. (2) FK → COMPANY_PROFILES + FORMS. Filter APPROVED only. (3) Chọn [Documentation] Filing. |
+| T3 | Business Activity | [Business Activity] Business Activity | Business Activity | `SECURITIES_OFFERING` | Update | Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân (APPLICANT_TYPE_FLG phân biệt). | Securities Offering | Relative | (1) [Business Activity] Business Activity — phát hành CK là hoạt động kinh doanh quan trọng. (2) FK → COMPANY_PROFILES (nullable) hoặc LEGAL_ENTITIES (nullable), loại trừ nhau theo APPLICANT_TYPE_FLG. (3) Chọn [Business Activity] Business Activity. |
+| T3 | Business Activity | [Business Activity] Evaluation | Business Activity | `EVALUATIONS` | Update | Đánh giá/xếp hạng CTĐC theo kỳ: tổng điểm, ngày đánh giá, loại đánh giá (A/B/C), trạng thái. | Public Company Evaluation | Relative | (1) [Business Activity] Evaluation — hoạt động đánh giá xếp hạng. (2) FK → COMPANY_PROFILES + EVALUATION_PERIODS. (3) Chọn [Business Activity] Evaluation. |
+| T3 | Business Activity | [Business Activity] Business Activity | Business Activity | `VIOLATION_REPORT` | Update | Theo dõi vi phạm nộp báo cáo định kỳ của CTĐC: hạn nộp, ngày nộp thực tế, trạng thái. | Public Company Violation Report | Relative | (1) [Business Activity] Business Activity — theo dõi tuân thủ báo cáo. (2) FK → COMPANY_PROFILES + FORMS + VIOLATION_TEMPLATES. (3) Chọn [Business Activity] Business Activity. |
+| T3 | Business Activity | [Business Activity] Business Activity | Business Activity | `HTE_VIOLATION_REPORT` | Update | Theo dõi vi phạm nộp báo cáo (module HTE) của CTĐC: hạn nộp, ngày nộp thực tế, trạng thái. | Public Company HTE Violation Report | Relative | (1) [Business Activity] Business Activity — theo dõi tuân thủ báo cáo module HTE. (2) FK → COMPANY_PROFILES + FORMS + VIOLATION_TEMPLATES. (3) Chọn [Business Activity] Business Activity. |
+| T3 | Communication | [Communication] Notification | Communication | `NOTIFICATIONS_DTL` | Update | Danh sách người nhận của một thông báo CBTT: login, loại đối tượng, email, điện thoại. | Disclosure Notification Recipient | Relative | (1) [Communication] Notification — chi tiết người nhận thông báo. (2) FK → NOTIFICATIONS + COMPANY_PROFILES (nullable). (3) Chọn [Communication] Notification. |
+| T4 | Business Activity | [Business Activity] Business Activity | Business Activity | `SECURITIES_OFFERING_PLAN` | Update | Kế hoạch chi tiết chào bán CK: phương thức, loại CK, số lượng, giá, thời gian, điều kiện đặc thù theo loại. | Securities Offering Plan | Relative | (1) [Business Activity] Business Activity — kế hoạch chào bán là activity con của hồ sơ phát hành. (2) FK → SECURITIES_OFFERING. 57 cột chi tiết kế hoạch. (3) Chọn [Business Activity] Business Activity. |
+| T4 | Business Activity | [Business Activity] Business Activity | Business Activity | `SECURITIES_OFFERING_RESULT` | Update | Kết quả thực tế chào bán CK: số lượng thành công, giá, tổng huy động, phân chia trong nước/nước ngoài, chi phí phát hành. | Securities Offering Result | Fact Append | (1) [Business Activity] Business Activity — kết quả chào bán là outcome của phát hành CK. (2) FK → SECURITIES_OFFERING. 65 cột kết quả. (3) Chọn [Business Activity] Business Activity. |
+| T4 | Business Activity | [Business Activity] Evaluation | Business Activity | `EVALUATION_DETAILS` | Update | Chi tiết từng chỉ tiêu trong kết quả đánh giá CTĐC: kết quả, điểm, cờ đánh giá. | Public Company Evaluation Detail | Relative | (1) [Business Activity] Evaluation — chi tiết chỉ tiêu là thành phần đánh giá tổng thể. (2) FK → EVALUATIONS + EVALUATION_CRITERIA. Grain: 1 chỉ tiêu × 1 lần đánh giá. (3) Chọn [Business Activity] Evaluation. |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
 ```mermaid
 erDiagram
-    Public_Company {
-        string pblc_co_id PK
-        string pblc_co_code
-        string src_stm_code
-    }
-    Audit_Firm {
-        string audt_firm_id PK
-        string audt_firm_code
-    }
-    Disclosure_Form_Definition {
-        string dscl_form_defn_id PK
-        string prnt_dscl_form_defn_id FK
-    }
-    Financial_Report_Catalog {
-        string fnc_rpt_ctlg_id PK
-    }
-    Periodic_Report_Form {
-        string prd_rpt_form_id PK
-    }
-    Disclosure_Notification_Config {
-        string dscl_notf_config_id PK
-    }
-    Public_Company_Legal_Representative {
-        string pblc_co_lgl_rprs_id PK
-        string pblc_co_id FK
-    }
-    Public_Company_State_Capital {
-        string pblc_co_ste_cptl_id PK
-        string pblc_co_id FK
-    }
-    Public_Company_Foreign_Ownership_Limit {
-        string pblc_co_frgn_own_lmt_id PK
-        string pblc_co_id FK
-    }
-    Public_Company_Related_Entity {
-        string pblc_co_rel_ent_id PK
-        string pblc_co_id FK
-    }
-    Stock_Holder {
-        string stk_hldr_id PK
-        string pblc_co_id FK
-    }
-    Audit_Firm_Approval {
-        string audt_firm_aprv_id PK
-        string audt_firm_id FK
-    }
-    Audit_Firm_Legal_Representative {
-        string audt_firm_lgl_rprs_id PK
-        string audt_firm_id FK
-    }
-    Financial_Report_Row_Template {
-        string fnc_rpt_row_tpl_id PK
-        string fnc_rpt_ctlg_id FK
-    }
-    Financial_Report_Column_Template {
-        string fnc_rpt_clmn_tpl_id PK
-        string fnc_rpt_ctlg_id FK
-    }
-    Periodic_Report_Form_Row_Template {
-        string prd_rpt_form_row_tpl_id PK
-        string prd_rpt_form_id FK
-    }
-    Periodic_Report_Form_Column_Template {
-        string prd_rpt_form_clmn_tpl_id PK
-        string prd_rpt_form_id FK
-    }
-    Disclosure_Notification {
-        string dscl_notf_id PK
-        string dscl_notf_config_id FK
-    }
-    Involved_Party_Postal_Address {
-        string ip_pst_adr_id PK
-    }
-    Involved_Party_Electronic_Address {
-        string ip_elc_adr_id PK
-    }
-    Involved_Party_Alt_Identification {
-        string ip_alt_identn_id PK
-    }
-    Stock_Holder_Trading_Account {
-        string stk_hldr_tdg_ac_id PK
-        string stk_hldr_id FK
-    }
-    Stock_Holder_Relationship {
-        string stk_hldr_rltnp_id PK
-        string stk_hldr_id FK
-        string rltd_stk_hldr_id FK
-    }
-    Stock_Control {
-        string stk_cntl_id PK
-        string stk_hldr_id FK
-    }
-    Auditor_Approval {
-        string audtr_aprv_id PK
-        string audt_firm_id FK
-    }
-    Audit_Firm_Warning {
-        string audt_firm_wrn_id PK
-        string audt_firm_aprv_id FK
-        string audtr_aprv_id FK
-    }
-    Audit_Firm_Sanction {
-        string audt_firm_snct_id PK
-        string audt_firm_aprv_id FK
-        string audtr_aprv_id FK
-    }
-    Public_Company_Report_Submission {
-        string pblc_co_rpt_subm_id PK
-        string pblc_co_id FK
-        string dscl_form_defn_id FK
-    }
-    Public_Company_Financial_Report_Value {
-        string pblc_co_fnc_rpt_val_id PK
-        string pblc_co_rpt_subm_id FK
-        string fnc_rpt_row_tpl_id FK
-        string fnc_rpt_clmn_tpl_id FK
-    }
+    Public_Company { string pblc_co_id PK }
+    Legal_Entity { string lgl_enty_id PK }
+    Audit_Firm { string audt_firm_id PK }
+    Disclosure_Form_Definition { string dscl_form_defn_id PK }
+    Financial_Report_Catalog { string fin_rpt_ctlg_id PK }
+    Periodic_Report_Form { string prd_rpt_form_id PK }
+    Public_Company_Evaluation_Group { string pblc_co_eval_grp_id PK }
+    Public_Company_Evaluation_Period { string pblc_co_eval_prd_id PK }
 
-    Public_Company ||--o{ Public_Company_Legal_Representative : "pblc_co_id"
-    Public_Company ||--o{ Public_Company_State_Capital : "pblc_co_id"
-    Public_Company ||--o{ Public_Company_Foreign_Ownership_Limit : "pblc_co_id"
-    Public_Company ||--o{ Public_Company_Related_Entity : "pblc_co_id"
-    Public_Company ||--o{ Stock_Holder : "pblc_co_id"
-    Public_Company ||--o{ Public_Company_Report_Submission : "pblc_co_id"
-    Audit_Firm ||--o{ Audit_Firm_Approval : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Legal_Representative : "audt_firm_id"
-    Audit_Firm ||--o{ Auditor_Approval : "audt_firm_id"
-    Disclosure_Form_Definition ||--o{ Disclosure_Form_Definition : "parent"
-    Disclosure_Form_Definition ||--o{ Public_Company_Report_Submission : "dscl_form_defn_id"
-    Financial_Report_Catalog ||--o{ Financial_Report_Row_Template : "fnc_rpt_ctlg_id"
-    Financial_Report_Catalog ||--o{ Financial_Report_Column_Template : "fnc_rpt_ctlg_id"
-    Periodic_Report_Form ||--o{ Periodic_Report_Form_Row_Template : "prd_rpt_form_id"
-    Periodic_Report_Form ||--o{ Periodic_Report_Form_Column_Template : "prd_rpt_form_id"
-    Disclosure_Notification_Config ||--o{ Disclosure_Notification : "dscl_notf_config_id"
-    Stock_Holder ||--o{ Stock_Holder_Trading_Account : "stk_hldr_id"
-    Stock_Holder ||--o{ Stock_Holder_Relationship : "stk_hldr_id"
-    Stock_Holder ||--o{ Stock_Control : "stk_hldr_id"
-    Audit_Firm_Approval ||--o{ Audit_Firm_Warning : "audt_firm_aprv_id"
-    Auditor_Approval ||--o{ Audit_Firm_Warning : "audtr_aprv_id"
-    Audit_Firm_Approval ||--o{ Audit_Firm_Sanction : "audt_firm_aprv_id"
-    Auditor_Approval ||--o{ Audit_Firm_Sanction : "audtr_aprv_id"
-    Public_Company_Report_Submission ||--o{ Public_Company_Financial_Report_Value : "pblc_co_rpt_subm_id"
-    Financial_Report_Row_Template ||--o{ Public_Company_Financial_Report_Value : "fnc_rpt_row_tpl_id"
-    Financial_Report_Column_Template ||--o{ Public_Company_Financial_Report_Value : "fnc_rpt_clmn_tpl_id"
+    Public_Company_Legal_Representative { string pblc_co_lgl_rep_id PK }
+    Public_Company_State_Capital { string pblc_co_st_cap_id PK }
+    Public_Company_Foreign_Ownership_Limit { string pblc_co_fo_lmt_id PK }
+    Public_Company_Related_Entity { string pblc_co_rltd_enty_id PK }
+    Public_Company_Inspection { string pblc_co_inspc_id PK }
+    Public_Company_Penalty { string pblc_co_pnlt_id PK }
+    Public_Company_Capital_Mobilization { string pblc_co_cap_mob_id PK }
+    Public_Company_Capital_Increase { string pblc_co_cap_inc_id PK }
+    Public_Company_Tender_Offer { string pblc_co_tndr_ofr_id PK }
+    Public_Company_Treasury_Stock_Activity { string pblc_co_trs_stk_id PK }
+    Public_Company_Share_Statistics { string pblc_co_shr_stat_id PK }
+    Public_Company_Stock_Listing_History { string pblc_co_stk_lst_id PK }
+    Public_Company_Bond_Listing_History { string pblc_co_bnd_lst_id PK }
+    Public_Company_Registration { string pblc_co_reg_id PK }
+    Public_Company_Deregistration { string pblc_co_dereg_id PK }
+    Public_Company_Report_Extension { string pblc_co_rpt_ext_id PK }
+    Financial_Report_Row_Template { string fin_rpt_row_tpl_id PK }
+    Financial_Report_Column_Template { string fin_rpt_col_tpl_id PK }
+    Periodic_Report_Form_Row_Template { string prd_rpt_row_tpl_id PK }
+    Periodic_Report_Form_Column_Template { string prd_rpt_col_tpl_id PK }
+    Audit_Firm_Approval { string audt_firm_aprvl_id PK }
+    Audit_Firm_Legal_Representative { string audt_firm_lgl_rep_id PK }
+    Auditor_Profile { string audtr_prfl_id PK }
+    Audit_Firm_Status_History { string audt_firm_st_his_id PK }
+    Violation_Template { string viol_tpl_id PK }
+    Public_Company_Evaluation_Criterion { string pblc_co_eval_crt_id PK }
+    Audit_Firm_Inspection { string audt_firm_inspc_id PK }
+    Disclosure_Notification { string dscl_notf_id PK }
+    Financial_Report_Data { string fin_rpt_dat_id PK }
+
+    Legal_Entity_Alternative_Identification { string lgl_enty_alt_id PK }
+    Legal_Entity_Position { string lgl_enty_pos_id PK }
+    Legal_Entity_Trading_Account { string lgl_enty_tdg_ac_id PK }
+    Legal_Entity_Relationship { string lgl_enty_rltnp_id PK }
+    Legal_Entity_Stock_Control { string lgl_enty_stk_cntl_id PK }
+    Company_Shareholding { string co_shldhg_id PK }
+    Company_Entity_Role { string co_enty_role_id PK }
+    Audit_Firm_Warning { string audt_firm_wrn_id PK }
+    Audit_Firm_Sanction { string audt_firm_snct_id PK }
+    Audit_Firm_Suspension { string audt_firm_susp_id PK }
+    Audit_Firm_Technical_Audit { string audt_firm_tec_aud_id PK }
+    Auditor_Status_History { string audtr_st_his_id PK }
+    Public_Company_Report_Submission { string pblc_co_rpt_subm_id PK }
+    Securities_Offering { string scrt_ofr_id PK }
+    Public_Company_Evaluation { string pblc_co_eval_id PK }
+    Public_Company_Violation_Report { string pblc_co_viol_rpt_id PK }
+    Public_Company_HTE_Violation_Report { string pblc_co_hte_viol_rpt_id PK }
+    Disclosure_Notification_Recipient { string dscl_notf_rcpt_id PK }
+
+    Securities_Offering_Plan { string scrt_ofr_pln_id PK }
+    Securities_Offering_Result { string scrt_ofr_rslt_id PK }
+    Public_Company_Evaluation_Detail { string pblc_co_eval_dtl_id PK }
+
+    Public_Company ||--o{ Public_Company_Legal_Representative : ""
+    Public_Company ||--o{ Public_Company_State_Capital : ""
+    Public_Company ||--o{ Public_Company_Foreign_Ownership_Limit : ""
+    Public_Company ||--o{ Public_Company_Related_Entity : ""
+    Public_Company ||--o{ Public_Company_Inspection : ""
+    Public_Company ||--o{ Public_Company_Penalty : ""
+    Public_Company ||--o{ Public_Company_Capital_Mobilization : ""
+    Public_Company ||--o{ Public_Company_Capital_Increase : ""
+    Public_Company ||--o{ Public_Company_Tender_Offer : ""
+    Public_Company ||--o{ Public_Company_Treasury_Stock_Activity : ""
+    Public_Company ||--o{ Public_Company_Share_Statistics : ""
+    Public_Company ||--o{ Public_Company_Stock_Listing_History : ""
+    Public_Company ||--o{ Public_Company_Bond_Listing_History : ""
+    Public_Company ||--o{ Public_Company_Registration : ""
+    Public_Company ||--o{ Public_Company_Deregistration : ""
+    Public_Company ||--o{ Public_Company_Report_Extension : ""
+    Public_Company ||--o{ Financial_Report_Data : ""
+    Financial_Report_Catalog ||--o{ Financial_Report_Row_Template : ""
+    Financial_Report_Catalog ||--o{ Financial_Report_Column_Template : ""
+    Financial_Report_Catalog ||--o{ Financial_Report_Data : ""
+    Periodic_Report_Form ||--o{ Periodic_Report_Form_Row_Template : ""
+    Periodic_Report_Form ||--o{ Periodic_Report_Form_Column_Template : ""
+    Audit_Firm ||--o{ Audit_Firm_Approval : ""
+    Audit_Firm ||--o{ Audit_Firm_Legal_Representative : ""
+    Audit_Firm ||--o{ Auditor_Profile : ""
+    Audit_Firm ||--o{ Audit_Firm_Status_History : ""
+    Audit_Firm ||--o{ Audit_Firm_Inspection : ""
+    Audit_Firm ||--o{ Audit_Firm_Warning : ""
+    Audit_Firm ||--o{ Audit_Firm_Sanction : ""
+    Audit_Firm ||--o{ Audit_Firm_Suspension : ""
+    Auditor_Profile ||--o| Audit_Firm_Approval : ""
+    Auditor_Profile ||--o{ Auditor_Status_History : ""
+    Auditor_Profile ||--o| Audit_Firm_Warning : ""
+    Auditor_Profile ||--o| Audit_Firm_Suspension : ""
+    Audit_Firm_Inspection ||--o{ Audit_Firm_Technical_Audit : ""
+    Disclosure_Form_Definition ||--o{ Disclosure_Notification : ""
+    Disclosure_Form_Definition ||--o{ Violation_Template : ""
+    Disclosure_Form_Definition ||--o{ Public_Company_Report_Submission : ""
+    Disclosure_Form_Definition ||--o{ Public_Company_Violation_Report : ""
+    Disclosure_Form_Definition ||--o{ Public_Company_HTE_Violation_Report : ""
+    Public_Company_Evaluation_Group ||--o{ Public_Company_Evaluation_Criterion : ""
+    Legal_Entity ||--o{ Legal_Entity_Alternative_Identification : ""
+    Legal_Entity ||--o{ Legal_Entity_Position : ""
+    Legal_Entity ||--o{ Legal_Entity_Trading_Account : ""
+    Legal_Entity ||--o{ Legal_Entity_Relationship : ""
+    Legal_Entity ||--o{ Legal_Entity_Stock_Control : ""
+    Public_Company ||--o{ Company_Shareholding : ""
+    Legal_Entity ||--o{ Company_Shareholding : ""
+    Public_Company ||--o{ Company_Entity_Role : ""
+    Legal_Entity ||--o{ Company_Entity_Role : ""
+    Public_Company ||--o| Securities_Offering : ""
+    Legal_Entity ||--o| Securities_Offering : ""
+    Public_Company ||--o{ Public_Company_Evaluation : ""
+    Public_Company_Evaluation_Period ||--o{ Public_Company_Evaluation : ""
+    Public_Company ||--o{ Public_Company_Report_Submission : ""
+    Public_Company ||--o{ Public_Company_Violation_Report : ""
+    Violation_Template ||--o{ Public_Company_Violation_Report : ""
+    Public_Company ||--o{ Public_Company_HTE_Violation_Report : ""
+    Violation_Template ||--o{ Public_Company_HTE_Violation_Report : ""
+    Disclosure_Notification ||--o{ Disclosure_Notification_Recipient : ""
+    Public_Company ||--o| Disclosure_Notification_Recipient : ""
+    Securities_Offering ||--o{ Securities_Offering_Plan : ""
+    Securities_Offering ||--o{ Securities_Offering_Result : ""
+    Public_Company_Evaluation ||--o{ Public_Company_Evaluation_Detail : ""
+    Public_Company_Evaluation_Criterion ||--o{ Public_Company_Evaluation_Detail : ""
 ```
 
 #### 7c. Bảng Classification Value
 
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
-| `lookup_values` (group IDS_COMPANY_STATUS) | Trạng thái niêm yết IDS | [Classification] Classification Value | Classification Value scheme `IDS_COMPANY_STATUS` |
-| `lookup_values` (group IDS_EQUITY_LISTING_EXCH) | Sàn niêm yết cổ phiếu (HNX/HOSE/UPCoM) | [Classification] Classification Value | Classification Value scheme `IDS_EQUITY_LISTING_EXCH` |
-| `lookup_values` (group IDS_SECURITIES_TYPE) | Loại chứng khoán phát hành | [Classification] Classification Value | Classification Value scheme `IDS_SECURITIES_TYPE` |
-| `lookup_values` (group IDS_PUBLIC_COMPANY_FORM) | Hình thức trở thành CTĐC | [Classification] Classification Value | Classification Value scheme `IDS_PUBLIC_COMPANY_FORM` |
-| `lookup_values` (group IDS_ENTERPRISE_TYPE) | Loại hình doanh nghiệp | [Classification] Classification Value | Classification Value scheme `IDS_ENTERPRISE_TYPE` |
-| `lookup_values` (group IDS_FINANCIAL_STMT_TYPE) | Loại báo cáo tài chính (IFRS/VAS) | [Classification] Classification Value | Classification Value scheme `IDS_FINANCIAL_STMT_TYPE` |
-| `lookup_values` (group IDS_FORM_TYPE) | Loại hồ sơ/tin CBTT | [Classification] Classification Value | Classification Value scheme `IDS_FORM_TYPE` |
-| `lookup_values` (group IDS_NEWS_TYPE) | Loại tin gốc | [Classification] Classification Value | Classification Value scheme `IDS_NEWS_TYPE` |
-| `lookup_values` (group IDS_SUB_NEWS_TYPE) | Loại tin con | [Classification] Classification Value | Classification Value scheme `IDS_SUB_NEWS_TYPE` |
-| `lookup_values` (group IDS_NOTIFICATION_SEND_CHANNEL) | Hình thức gửi thông báo | [Classification] Classification Value | Classification Value scheme `IDS_NOTIFICATION_SEND_CHANNEL` |
-| `lookup_values` (group IDS_NOTIFICATION_TARGET_SYSTEM) | Hệ thống nhận thông báo | [Classification] Classification Value | Classification Value scheme `IDS_NOTIFICATION_TARGET_SYSTEM` |
-| `lookup_values` (group IDS_NOTIFICATION_SEND_SCHEDULE) | Lịch gửi thông báo | [Classification] Classification Value | Classification Value scheme `IDS_NOTIFICATION_SEND_SCHEDULE` |
-| `lookup_values` (group IDS_REPRESENTATIVE_ROLE) | Vai trò người đại diện (PL / CBTT) | [Classification] Classification Value | Classification Value scheme `IDS_REPRESENTATIVE_ROLE` |
-| `lookup_values` (group IDS_COMPANY_RELATIONSHIP_TYPE) | Loại quan hệ công ty | [Classification] Classification Value | Classification Value scheme `IDS_COMPANY_RELATIONSHIP_TYPE` |
-| `lookup_values` (group IDS_ENTITY_TYPE) | Loại hình cổ đông (cá nhân/tổ chức) | [Classification] Classification Value | Classification Value scheme `IDS_ENTITY_TYPE` |
-| `lookup_values` (group IDS_GENDER) | Giới tính | [Classification] Classification Value | Classification Value scheme `IDS_GENDER` |
-| `lookup_values` (group IDS_EDUCATION_LEVEL) | Trình độ học vấn | [Classification] Classification Value | Classification Value scheme `IDS_EDUCATION_LEVEL` |
-| `lookup_values` (group IDS_IDENTITY_TYPE) | Loại giấy tờ định danh | [Classification] Classification Value | Classification Value scheme `IDS_IDENTITY_TYPE` (ETL map sang IP_ALT_ID_TYPE) |
-| `lookup_values` (group IDS_AF_POSITION_TITLE) | Chức vụ người đại diện/KTV | [Classification] Classification Value | Classification Value scheme `IDS_AF_POSITION_TITLE` |
-| `lookup_values` (group IDS_NEWS_STATUS) | Trạng thái tin thông báo | [Classification] Classification Value | Classification Value scheme `IDS_NEWS_STATUS` |
-| `lookup_values` (group IDS_HOLDER_RELATIONSHIP_TYPE) | Loại quan hệ cổ đông | [Classification] Classification Value | Classification Value scheme `IDS_HOLDER_RELATIONSHIP_TYPE` |
-| `lookup_values` (group IDS_STOCK_RESTRICTION_TYPE) | Loại hạn chế chuyển nhượng CK | [Classification] Classification Value | Classification Value scheme `IDS_STOCK_RESTRICTION_TYPE` |
-| `lookup_values` (group IDS_WARNING_TARGET_TYPE) | Đối tượng nhắc nhở | [Classification] Classification Value | Classification Value scheme `IDS_WARNING_TARGET_TYPE` |
-| `lookup_values` (group IDS_WARNING_SOURCE_TYPE) | Cơ quan nhắc nhở | [Classification] Classification Value | Classification Value scheme `IDS_WARNING_SOURCE_TYPE` |
-| `lookup_values` (group IDS_SANCTION_AUTHORITY) | Cơ quan xử phạt | [Classification] Classification Value | Classification Value scheme `IDS_SANCTION_AUTHORITY` |
-| `lookup_values` (group IDS_SANCTION_TARGET_TYPE) | Đối tượng xử phạt | [Classification] Classification Value | Classification Value scheme `IDS_SANCTION_TARGET_TYPE` |
-| `lookup_values` (group IDS_INSPECTION_TYPE) | Loại thanh tra/kiểm tra | [Classification] Classification Value | Classification Value scheme `IDS_INSPECTION_TYPE` |
-| `lookup_values` (group IDS_INSPECTION_MODE) | Thanh tra định kỳ/bất thường | [Classification] Classification Value | Classification Value scheme `IDS_INSPECTION_MODE` |
-| `lookup_values` (group IDS_PENALIZED_SUBJECT_TYPE) | Đối tượng xử phạt CTĐC | [Classification] Classification Value | Classification Value scheme `IDS_PENALIZED_SUBJECT_TYPE` |
-| `lookup_values` (group IDS_ISSUANCE_SECURITY_TYPE) | Loại chứng khoán phát hành | [Classification] Classification Value | Classification Value scheme `IDS_ISSUANCE_SECURITY_TYPE` |
-| `categories` | Ngành nghề 2 cấp (self-ref) | [Classification] Classification Value | Classification Value scheme `IDS_INDUSTRY_CATEGORY` |
-| `report_catalog.rc_type_cd` | Loại catalog BCTC | [Classification] Classification Value | Classification Value scheme `IDS_REPORT_CATALOG_TYPE` (etl_derived) |
-| `report_catalog.rc_scope_cd` | Phạm vi báo cáo (hợp nhất/mẹ) | [Classification] Classification Value | Classification Value scheme `IDS_REPORT_SCOPE` |
-| `rep_forms.rf_report_type_cd` | Tần suất báo cáo định kỳ | [Classification] Classification Value | Classification Value scheme `IDS_PERIODIC_REPORT_FREQUENCY` (etl_derived) |
-| `rrow.row_type_cd` | Loại hàng BCTC | [Classification] Classification Value | Classification Value scheme `IDS_REPORT_ROW_TYPE` (etl_derived) |
-| `rep_row.data_type_cd` | Kiểu dữ liệu hàng báo cáo định kỳ | [Classification] Classification Value | Classification Value scheme `IDS_PERIODIC_FORM_ROW_DATA_TYPE` (etl_derived) |
-| `rep_column.data_type_cd` | Kiểu dữ liệu cột báo cáo định kỳ | [Classification] Classification Value | Classification Value scheme `IDS_PERIODIC_FORM_COLUMN_DATA_TYPE` (etl_derived) |
+| `CATEGORIES` | Danh mục ngành nghề kinh doanh của CTĐC (2 cấp: L1 và L2) | [Classification] Industry Category | Classification Value scheme `IDS_INDUSTRY_CATEGORY`. FK từ COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID xử lý thành cặp Id + Code dư thừa trên Public Company. |
+| `LOOKUP_VALUES` | Master bảng reference data của toàn hệ thống IDS: mọi Classification Value đều load từ đây theo LOOKUP_GROUP | [Classification] Reference Data | Master source cho tất cả Classification Value schemes IDS. Không tạo Atomic entity — mỗi LOOKUP_GROUP đăng ký thành 1 scheme riêng trong `classification_schemes.yaml`. |
 
 #### 7d. Junction Tables
 
 | Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
 |---|---|---|---|
-| `noti_config_apply` | Junction: áp dụng cấu hình thông báo cho công ty đại chúng cụ thể | Disclosure Notification Config | Out-of-scope — pure junction không có business attribute (xem D-07) |
-| `form_fields` | Junction: danh sách fields trong một form | Disclosure Form Definition | Out-of-scope — field definition metadata (xem D-08) |
+| `VIOLATION_PENALTY_CONFIG` | Cấu hình mức phạt cho từng mẫu vi phạm: FK → VIOLATION_TEMPLATES + bảng config phạt | Violation Template | Cần xem cấu trúc cột — nếu chỉ có FK + config code → xem xét denormalize vào entity Violation Template. Đưa vào Tier 2 6e để xác nhận. |
 
 #### 7e. Điểm cần xác nhận
 
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
-| 1 | T2 | `Stock Holder` grain = cổ đông × công ty. Cùng một cá nhân là cổ đông 2 CTĐC → 2 bản ghi `Stock Holder` riêng. Nếu sau này cần xác định cùng 1 người → cần identity matching logic ở Gold. | Scope Atomic: giữ nguyên grain. Scope Gold: cần logic golden record. |
-| 2 | T2–T3 | `Audit Firm Warning` và `Audit Firm Sanction` có FK loại trừ nhau (audt_firm_aprv_id HOẶC audtr_aprv_id). ETL cần dùng warning_target_type_cd / sanction_target_type_cd để populate đúng FK. | ETL complexity tăng nhưng model giữ đơn giản 1 entity chung. |
-| 3 | T3 | `Public Company Report Submission` filter `news_status_cd = 'APPROVED'` — cần verify ETL không bỏ sót bản ghi hợp lệ do logic filter. | Ảnh hưởng completeness của Public Company Financial Report Value (Tier 4). |
-| 4 | T2 | `positions` (chức vụ cổ đông, UID-04.6) chưa thiết kế do thiếu thông tin cột. Nếu sau review thấy cần thiết → cần thêm Tier 2 entity và cập nhật HLD. | Scope Atomic: pending. Ảnh hưởng Stock Holder. |
-| 5 | T1–T2 | `Audit Firm` là shared entity với SCMS.CT_KIEM_TOAN. Khi SCMS HLD được duyệt, cần verify entity name + table_type không bị lock conflict. | Cần coordination với thiết kế SCMS nếu chưa approved. |
+| 1 | T2 | `AF_INSPECTION` đã điều chỉnh từ T3 → T2 (FK trực tiếp → AF_PROFILES T1). File Tier3.md còn note này tại 6f T3-01 — cần cập nhật Tier3 để chuyển AF_INSPECTION khỏi danh sách Tier 3. | Tier 3 còn mention AF_INSPECTION trong nhóm entity con của Audit Firm — cần review lại Tier3.md header. |
+| 2 | T2 | `NOTIFICATIONS` đã điều chỉnh từ T3 → T2 (FK → FORMS T1). `NOTIFICATIONS_DTL` → T3. File Tier3.md còn mention NOTIFICATIONS trong header — cần cập nhật. | Cập nhật header Tier3.md để loại bỏ NOTIFICATIONS. |
+| 3 | T2 | `Financial Report Data` (DATA) đã điều chỉnh từ T4 → T2 (FK → REPORT_CATALOG T1 + COMPANY_PROFILES T1). Tier4.md ghi nhận điều chỉnh này. | Tier4.md đã xử lý đúng. |
+| 4 | T3 | `VIOLATION_PENALTY_CONFIG` chưa có thông tin cột đầy đủ — hiện tạm đưa vào 7d Junction Tables. Cần đọc BRD file `brd_IDS_VIOLATION_PENALTY_CONFIG.yaml`. | Nếu chỉ là junction → denormalize vào Violation Template. Nếu có attribute nghiệp vụ riêng → entity T3 FK → Violation Template. |
+| 5 | T4 | `SECURITIES_OFFERING_RESULT` Source Change Mode = Update nhưng đặt Table Type Fact Append. Cần xác nhận logic ETL khi nguồn update kết quả chào bán. | Nếu update được → đổi sang Relative (SCD2). |
+| 6 | T3 | `EVALUATION_CBONDS` chưa xuất hiện trong HLD. Cần đọc BRD file để xác định xếp Tier nào. | Nếu FK → EVALUATIONS → Tier 4. |
+| 7 | T3 | Gộp `VIOLATION_REPORT` và `HTE_VIOLATION_REPORT` hay giữ riêng? | Giữ 2 entity riêng — không gộp trên Atomic. Có thể tạo Gold view aggregate sau. |
 
 #### 7f. Bảng ngoài scope
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| `Form Metadata` | `fields` | Định nghĩa trường của form CBTT (tên field, kiểu dữ liệu, bắt buộc/không) | Cascade drop từ form_fields — metadata định nghĩa form, chưa có Gold requirement trực tiếp |
-| `Form Metadata` | `form_fields` | Bảng nối: danh sách fields trong một form | Pure junction table không có business attribute — denormalized vào data_values |
-| `Audit Log nguồn` | `fields_history` | Lịch sử thay đổi định nghĩa fields | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
-| `Audit Log nguồn` | `form_fields_history` | Lịch sử thay đổi form_fields | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
-| `Intermediate` | `data_values` | Giá trị nhập theo từng field của form CBTT | Dữ liệu field-level động cần map cả field_id + form_field_id, chưa có Gold requirement; xử lý cùng anchor fields đã drop |
-| `Operational / System` | `report_approval` | Phê duyệt tin công bố (quy trình nội bộ hệ thống) | Operational/system data — không có giá trị nghiệp vụ; quy trình nội bộ IDS |
-| `Operational / System` | `report_extensions` | Gia hạn nộp báo cáo (quy trình nội bộ hệ thống) | Operational/system data — không có giá trị nghiệp vụ; quy trình nội bộ IDS |
-| `Operational / System` | `data_types` | Kiểu dữ liệu cho fields của form | Operational/system data — không có giá trị nghiệp vụ |
-| `Operational / System` | `logins` | Tài khoản đăng nhập vào IDS (nội bộ + công ty) | Operational/system data — không có giá trị nghiệp vụ |
-| `Operational / System` | `users` | Tài khoản sử dụng hệ thống phân hệ kiểm toán | Operational/system data — không có giá trị nghiệp vụ |
-| `Operational / System` | `data_access_rules` | Phân quyền dữ liệu theo user | Operational/system data — không có giá trị nghiệp vụ |
-| `Operational / System` | `sys_parameters` | Tham số cấu hình hệ thống IDS | Operational/system data — không có giá trị nghiệp vụ |
-| `Operational / System` | `user_audit_log` | Log thao tác của user trong hệ thống | Operational/system data — không có giá trị nghiệp vụ |
-| `Operational / System` | `sms_log` | Log gửi SMS liên kết với company_profiles | Operational/system data — không có giá trị nghiệp vụ |
-| `Audit Log nguồn` | `company_profiles_his` | Lịch sử thay đổi hồ sơ công ty đại chúng | Audit Log nguồn — Atomic tự track SCD4A/SCD2 trên Public Company |
-| `Audit Log nguồn` | `company_detail_his` | Lịch sử thay đổi chi tiết công ty đại chúng | Audit Log nguồn — Atomic tự track SCD4A/SCD2 trên Public Company |
-| `Audit Log nguồn` | `company_change_role_his` | Lịch sử thay đổi vai trò user theo công ty | Audit Log nguồn — không phải sự kiện nghiệp vụ |
-| `Audit Log nguồn` | `stockholder_history` | Lịch sử thay đổi hồ sơ cổ đông | Audit Log nguồn — Atomic tự track SCD2 trên Stock Holder |
-| `Reference Data` | `countries` | Danh mục quốc gia (Code + Name) | Không có FK inbound từ bảng nghiệp vụ — xử lý thành FK đến shared Geographic Area (COUNTRY) |
-| `Reference Data` | `provinces` | Danh mục tỉnh thành (Code + Name) | Không có FK inbound từ bảng nghiệp vụ — xử lý thành FK đến shared Geographic Area (PROVINCE) |
-| `Reference Data` | `categories` | Danh mục ngành nghề 2 cấp (self-ref) | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value scheme IDS_INDUSTRY_CATEGORY |
-| `Operational / System` | `departments` | Phòng ban của UBCKNN | Dùng shared Regulatory Authority Organization Unit khi cần FK — không tạo entity mới |
-| `Junction` | `noti_config_apply` | Áp dụng cấu hình thông báo cho công ty cụ thể | Pure junction table không có business attribute — Cascade drop do không có value riêng |
-| `Chưa có cột` | `positions` | Chức vụ của cổ đông giao dịch (Chủ tịch HĐQT, Thành viên BGĐ...) | Chưa có thông tin cột đầy đủ trong tài liệu thiết kế — xếp pending thiết kế |
-
-<!--
-GRAIN: 1 dòng = 1 bảng nguồn. KHÔNG gộp `table1, table2`.
-GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
--->
+| Audit Log nguồn | `HISTORY_CHANGE_LOG` | Bảng lịch sử thay đổi dữ liệu toàn hệ thống IDS theo cơ chế generic (change_mode = Append). | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
+| Operational / System | `USER_AUDIT_LOG` | Log hành động người dùng trong hệ thống IDS (change_mode = Append). | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `MIGRATION_EXECUTIONS` | Metadata quản lý tiến trình migration dữ liệu vào IDS. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `MIGRATION_LOGS` | Log chi tiết từng bước migration (change_mode = Append). | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `UBCK_SYNC_ITEM_LOG` | Log đồng bộ item với hệ thống UBCK khác (change_mode = Append). | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTEGRATION_JOB_DEFINITION` | Định nghĩa các job tích hợp hệ thống. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTEGRATION_SYNC_LOG` | Log đồng bộ tích hợp giữa các hệ thống. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTG_FINANCIAL_STATEMENT` | Staging bảng BCTC từ hệ thống tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTG_FORM_MAPPING` | Mapping form giữa các hệ thống tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTG_IMPORT_DATA_LOG` | Log import dữ liệu từ hệ thống ngoài. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTG_REPORT_CONFIG` | Cấu hình báo cáo cho tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTG_REPORT_FIELD` | Mapping field báo cáo cho tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `INTG_SIGNATURE_CONFIG` | Cấu hình chữ ký điện tử cho tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
+| Hệ thống / Phân quyền | `LOGINS` | Tài khoản đăng nhập của người dùng IDS (CTĐC và cán bộ UBCKNN). | Operational/system data — không có giá trị nghiệp vụ |
+| Hệ thống / Phân quyền | `LOGIN_PERMISSION_BY_CODE` | Phân quyền theo mã permission cho tài khoản đăng nhập. | Operational/system data — không có giá trị nghiệp vụ |
+| Hệ thống / Phân quyền | `DEPARTMENTS` | Phòng ban nội bộ của IDS (không phải đơn vị nghiệp vụ). | Operational/system data — không có giá trị nghiệp vụ |
+| Hệ thống / Phân quyền | `SYS_PARAMETERS` | Tham số cấu hình hệ thống IDS. | Operational/system data — không có giá trị nghiệp vụ |
+| Audit Log nguồn | `COMPANY_CHANGE_ROLE_HIS` | Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn. | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
+| Reference Data | `LOOKUP_VALUES` | Master bảng danh mục của toàn hệ thống IDS. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
+| Reference Data | `COUNTRIES` | Danh mục quốc gia. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
+| Reference Data | `PROVINCES` | Danh mục tỉnh/thành phố. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
+| Reference Data | `WARDS` | Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
+| Reference Data | `DATA_TYPES` | Danh mục kiểu dữ liệu của trường trong form BCTC. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
+| Reference Data | `HOLIDAY_CALENDAR` | Danh mục ngày lễ/nghỉ. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
+| Form Metadata | `FIELDS` | Định nghĩa field trong form CBTT. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
+| Form Metadata | `FORM_FIELDS` | Mapping field vào form CBTT. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
+| Form Metadata | `FORM_FIELD_HISTORY` | Lịch sử thay đổi field trong form. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
+| Form Metadata | `FIELDS_MGR` | Quản lý field metadata trong hệ thống. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
+| Form Metadata | `DATA_VALUES` | Bảng giá trị tham chiếu cho field trong form. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
+| Operational / System | `SMS_LOG` | Log tin nhắn SMS được gửi từ hệ thống IDS. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `MANUAL_DOCUMENT` | Tài liệu hướng dẫn sử dụng được lưu trong IDS. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `FILES` | Bảng quản lý file đính kèm (tên file, đường dẫn, loại file). | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | `COMPANY_DIGITAL_CERTIFICATES` | Chứng chỉ số của CTĐC dùng để ký điện tử trong IDS. | Operational/system data — không có giá trị nghiệp vụ |
 
 ---
 
@@ -430,117 +501,245 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
 ### 1. Public Company
-**Tier:** 1 | **Source:** `IDS.company_profiles, IDS.company_detail` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Công ty đại chúng được UBCKNN quản lý. Hạt nhân của hệ thống IDS — ghi nhận thông tin pháp lý, trạng thái niêm yết, mã chứng khoán, vốn điều lệ và đặc điểm tài chính. Merge 1-1 từ company_profiles và company_detail; shared entity với SCMS.DM_CONG_TY_DC.
+**Tier:** 1 | **Source:** `COMPANY_PROFILES` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Hồ sơ công ty đại chúng (CTĐC) được quản lý bởi UBCKNN: tên, mã CK, sàn niêm yết, trạng thái hoạt động, vốn điều lệ, loại hình doanh nghiệp, nhóm ngành, loại BCTC.
 
-### 2. Audit Firm
-**Tier:** 1 | **Source:** `IDS.af_profiles` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Công ty kiểm toán được Bộ Tài chính và UBCKNN chấp thuận. Ghi nhận tên VI/EN, vốn điều lệ thực góp, trạng thái, ngày chấp thuận và thông tin thành viên hãng kiểm toán quốc tế. Shared entity với SCMS.CT_KIEM_TOAN.
+### 2. Legal Entity
+**Tier:** 1 | **Source:** `LEGAL_ENTITIES` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Thực thể pháp lý tham gia giao dịch chứng khoán: cổ đông, người nội bộ, người liên quan của CTĐC (cả cá nhân lẫn tổ chức không phải CTĐC). Độc lập với COMPANY_PROFILES.
 
-### 3. Disclosure Form Definition
-**Tier:** 1 | **Source:** `IDS.forms` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
-**Description:** Template định nghĩa form Công bố Thông tin — mỗi form là một loại hồ sơ hoặc loại tin CBTT. Cấu trúc self-referencing qua parent_form_id tạo phân cấp form cha-con. Là Condition chuẩn hóa quy trình nộp hồ sơ CBTT.
+### 3. Audit Firm
+**Tier:** 1 | **Source:** `AF_PROFILES` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Công ty kiểm toán được BTC hoặc UBCKNN chấp thuận kiểm toán báo cáo tài chính của CTĐC và tổ chức phát hành.
 
-### 4. Financial Report Catalog
-**Tier:** 1 | **Source:** `IDS.report_catalog` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
-**Description:** Danh mục template báo cáo tài chính (BCTC IFRS/VAS). Định nghĩa loại báo cáo, phạm vi (hợp nhất/mẹ), loại doanh nghiệp và tập hàng/cột tương ứng. Là anchor cho Financial Report Row/Column Template.
+### 4. Disclosure Form Definition
+**Tier:** 1 | **Source:** `FORMS` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
+**Description:** Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc, phiên bản, và hệ thống phân cấp form qua self-reference.
 
-### 5. Periodic Report Form
-**Tier:** 1 | **Source:** `IDS.rep_forms` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
-**Description:** Template báo cáo định kỳ thống kê độc lập với BCTC — bao gồm các loại báo cáo tháng/quý/năm/bán niên. Định nghĩa tần suất và cấu trúc hàng/cột. Là anchor cho Periodic Report Form Row/Column Template.
+### 5. Financial Report Catalog
+**Tier:** 1 | **Source:** `REPORT_CATALOG` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
+**Description:** Danh mục báo cáo tài chính: định nghĩa loại BCTC và tập hàng/cột dùng cho template số liệu.
 
-### 6. Disclosure Notification Config
-**Tier:** 1 | **Source:** `IDS.noti_config` | **BCV Concept:** [Condition] Notification Configuration | **BCO:** Condition | **Table Type:** Fundamental
-**Description:** Cấu hình điều kiện gửi thông báo CBTT — định nghĩa kênh gửi (email/SMS/push), hệ thống đích và lịch gửi định kỳ. Là Condition điều phối việc tạo instance thông báo Disclosure Notification.
+### 6. Periodic Report Form
+**Tier:** 1 | **Source:** `REP_FORMS` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
+**Description:** Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định cấu trúc form cho từng loại kỳ báo cáo.
 
-### 7. Public Company Legal Representative
-**Tier:** 2 | **Source:** `IDS.legal_representative` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Relative
-**Description:** Người đại diện pháp luật và người Công bố Thông tin của công ty đại chúng. Phân biệt vai trò qua representative_role_code. Một công ty có thể có nhiều bản ghi qua thời gian. FK đến Public Company.
+### 7. Public Company Evaluation Group
+**Tier:** 1 | **Source:** `EVALUATION_GROUPS` | **BCV Concept:** [Group] Group | **BCO:** Group | **Table Type:** Classification
+**Description:** Nhóm phân loại chỉ tiêu dùng trong hệ thống đánh giá/xếp hạng công ty đại chúng: tên nhóm, thứ tự, tổng điểm tối đa.
 
-### 8. Public Company State Capital
-**Tier:** 2 | **Source:** `IDS.state_capital` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Relative
-**Description:** Thông tin tỷ lệ sở hữu và cơ quan đại diện phần vốn nhà nước tại công ty đại chúng. Mô tả quan hệ sở hữu vốn nhà nước dạng Arrangement. FK đến Public Company.
+### 8. Public Company Evaluation Period
+**Tier:** 1 | **Source:** `EVALUATION_PERIODS` | **BCV Concept:** [Event] Period | **BCO:** Event | **Table Type:** Fundamental
+**Description:** Kỳ đánh giá/xếp hạng công ty đại chúng: xác định năm, tháng và trạng thái mở/đóng của từng kỳ đánh giá.
 
-### 9. Public Company Foreign Ownership Limit
-**Tier:** 2 | **Source:** `IDS.foreign_owner_limit` | **BCV Concept:** [Condition] Ownership Constraint | **BCO:** Condition | **Table Type:** Relative
-**Description:** Lịch sử các quyết định quy định tỷ lệ giới hạn sở hữu nước ngoài tại công ty đại chúng. Mỗi bản ghi là một lần ban hành quy định kèm số văn bản và ngày hiệu lực. FK đến Public Company.
+### 9. Public Company Legal Representative
+**Tier:** 2 | **Source:** `LEGAL_REPRESENTATIVE` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Người đại diện pháp luật và người phụ trách CBTT của CTĐC: chức danh, thời gian đảm nhiệm.
 
-### 10. Public Company Related Entity
-**Tier:** 2 | **Source:** `IDS.company_relationship` | **BCV Concept:** [Involved Party] Involved Party Relationship | **BCO:** Involved Party | **Table Type:** Relative
-**Description:** Quan hệ giữa công ty đại chúng và pháp nhân liên quan (mẹ, con, liên doanh, liên kết) kèm tỷ lệ sở hữu và loại quan hệ. Ghi nhận các mối liên kết pháp nhân phục vụ giám sát tập đoàn. FK đến Public Company.
+### 10. Public Company State Capital
+**Tier:** 2 | **Source:** `STATE_CAPITAL` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Relative
+**Description:** Tỷ lệ vốn nhà nước tại CTĐC và cơ quan đại diện phần vốn nhà nước: tỷ lệ sở hữu, ngày hiệu lực.
 
-### 11. Stock Holder
-**Tier:** 2 | **Source:** `IDS.stock_holders` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Cổ đông giao dịch của công ty đại chúng — cá nhân hoặc tổ chức. Grain = một cổ đông tại một công ty; ghi nhận thông tin nhân thân, địa chỉ và quốc tịch. Nguồn cho IP Postal Address và IP Electronic Address. FK đến Public Company.
+### 11. Public Company Foreign Ownership Limit
+**Tier:** 2 | **Source:** `FOREIGN_OWNER_LIMIT` | **BCV Concept:** [Condition] Ownership Constraint | **BCO:** Condition | **Table Type:** Relative
+**Description:** Quyết định quy định tỷ lệ tối đa sở hữu nước ngoài tại CTĐC: số quyết định, tỷ lệ giới hạn, thời gian hiệu lực.
 
-### 12. Audit Firm Approval
-**Tier:** 2 | **Source:** `IDS.af_approval` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Relative
-**Description:** Quyết định chấp thuận và đình chỉ đối với công ty kiểm toán do Bộ Tài chính (mof_*) và UBCKNN (ssc_*) phát hành. Một bản ghi gộp thông tin từ cả 2 cơ quan. FK đến Audit Firm.
+### 12. Public Company Related Entity
+**Tier:** 2 | **Source:** `COMPANY_RELATIONSHIP` | **BCV Concept:** [Involved Party] Involved Party Relationship | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Quan hệ sở hữu/liên kết giữa CTĐC và các pháp nhân liên quan: mối quan hệ mẹ/con/liên doanh/liên kết.
 
-### 13. Audit Firm Legal Representative
-**Tier:** 2 | **Source:** `IDS.af_legal_representative` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Relative
-**Description:** Người đại diện pháp luật của công ty kiểm toán. Ghi nhận chức vụ, số CMND/hộ chiếu, email và điện thoại. Nguồn cho IP Electronic Address và IP Alternative Identification. FK đến Audit Firm.
+### 13. Public Company Inspection
+**Tier:** 2 | **Source:** `COMPANY_INSPECTION` | **BCV Concept:** [Business Activity] Inspection | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Đợt thanh tra/kiểm tra CTĐC do UBCKNN thực hiện: số quyết định, loại thanh tra, phạm vi, đơn vị chủ trì, kết quả.
 
-### 14. Financial Report Row Template
-**Tier:** 2 | **Source:** `IDS.rrow` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
-**Description:** Định nghĩa hàng trong template báo cáo tài chính — loại hàng (value/formula/description), mã hàng, tên hiển thị và công thức nếu có. Là thành phần cấu trúc của Financial Report Catalog. FK đến Financial Report Catalog.
+### 14. Public Company Penalty
+**Tier:** 2 | **Source:** `COMPANY_PENALTIES` | **BCV Concept:** [Business Activity] Enforcement Action | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Quyết định xử phạt hành chính đối với CTĐC hoặc cá nhân liên quan: đối tượng bị xử phạt, số quyết định, hình thức, mức phạt.
 
-### 15. Financial Report Column Template
-**Tier:** 2 | **Source:** `IDS.rcol` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
-**Description:** Định nghĩa cột trong template báo cáo tài chính — thường là kỳ báo cáo (năm hiện tại, năm trước). Là thành phần cấu trúc của Financial Report Catalog. FK đến Financial Report Catalog.
+### 15. Public Company Capital Mobilization
+**Tier:** 2 | **Source:** `CAPITAL_MOBILIZATION` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Lịch sử huy động vốn trước khi trở thành CTĐC: số lần huy động, tổng giá trị huy động theo năm.
 
-### 16. Periodic Report Form Row Template
-**Tier:** 2 | **Source:** `IDS.rep_row` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
-**Description:** Định nghĩa hàng trong template báo cáo định kỳ với data_type_cd phân biệt loại dữ liệu (số/text/công thức). Là thành phần cấu trúc của Periodic Report Form. FK đến Periodic Report Form.
+### 16. Public Company Capital Increase
+**Tier:** 2 | **Source:** `COMPANY_ADD_CAPITAL` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Từng đợt tăng vốn điều lệ của CTĐC sau khi niêm yết: phương thức tăng vốn, quyết định, giá trị vốn sau tăng.
 
-### 17. Periodic Report Form Column Template
-**Tier:** 2 | **Source:** `IDS.rep_column` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
-**Description:** Định nghĩa cột trong template báo cáo định kỳ với data_type_cd. Là thành phần cấu trúc của Periodic Report Form. FK đến Periodic Report Form.
+### 17. Public Company Tender Offer
+**Tier:** 2 | **Source:** `COMPANY_TENDER_OFFER` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Phương án chào mua công khai cổ phiếu của CTĐC: bên chào mua, mức giá, số lượng, thời gian chào mua.
 
-### 18. Disclosure Notification
-**Tier:** 2 | **Source:** `IDS.notifications` | **BCV Concept:** [Communication] Notification | **BCO:** Communication | **Table Type:** Fact Append
-**Description:** Instance thông báo CBTT đã được phát sinh — mỗi bản ghi là một lần gửi thông báo với kênh gửi, trạng thái, loại tin và ngày gửi. Insert-only. FK đến Disclosure Notification Config.
+### 18. Public Company Treasury Stock Activity
+**Tier:** 2 | **Source:** `COMPANY_TREASURY_STOCKS` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Hoạt động mua/bán cổ phiếu quỹ của CTĐC theo năm: số lượng đăng ký mua/bán, giá, thời gian.
 
-### 19. Involved Party Postal Address
-**Tier:** 2 | **Source:** `IDS.company_detail, IDS.stock_holders, IDS.af_profiles` | **BCV Concept:** Shared Entity | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Địa chỉ bưu chính của Involved Party. Lưu trữ địa chỉ trụ sở/kinh doanh/thường trú từ các bảng IDS (công ty đại chúng, cổ đông, công ty kiểm toán). Shared entity — bổ sung source_table IDS vào dòng đã có.
+### 19. Public Company Share Statistics
+**Tier:** 2 | **Source:** `COMPANY_SHARE_STATISTICS` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Relative
+**Description:** Thống kê cấu trúc vốn/cổ phần của CTĐC tại từng thời điểm: tổng số cổ phần, cổ phần lưu hành, cổ phần nước ngoài.
 
-### 20. Involved Party Electronic Address
-**Tier:** 2 | **Source:** `IDS.company_detail, IDS.stock_holders, IDS.af_profiles, IDS.legal_representative, IDS.af_legal_representative` | **BCV Concept:** Shared Entity | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Địa chỉ liên lạc điện tử của Involved Party (điện thoại/email/fax/website) từ nhiều bảng IDS. Shared entity — bổ sung source_table IDS vào dòng đã có.
+### 20. Public Company Stock Listing History
+**Tier:** 2 | **Source:** `STOCK_LISTING_HISTORY` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Lịch sử các sự kiện niêm yết và hủy niêm yết cổ phiếu của CTĐC trên sàn giao dịch.
 
-### 21. Involved Party Alternative Identification
-**Tier:** 2 | **Source:** `IDS.identity, IDS.af_legal_representative` | **BCV Concept:** Shared Entity | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/ĐKKD). Bổ sung từ cổ đông giao dịch (identity) và người đại diện pháp luật công ty kiểm toán. Shared entity — bổ sung source_table IDS.
+### 21. Public Company Bond Listing History
+**Tier:** 2 | **Source:** `BOND_LISTING_HISTORY` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Lịch sử phát hành và niêm yết trái phiếu doanh nghiệp của CTĐC.
 
-### 22. Stock Holder Trading Account
-**Tier:** 3 | **Source:** `IDS.account_numbers` | **BCV Concept:** [Arrangement] Account | **BCO:** Arrangement | **Table Type:** Relative
-**Description:** Tài khoản giao dịch chứng khoán của cổ đông tại CTCK. Ghi nhận số tài khoản, mã CTCK, ngày mở và cờ tài khoản chính. Một cổ đông có thể có nhiều tài khoản. FK đến Stock Holder.
+### 22. Public Company Registration
+**Tier:** 2 | **Source:** `PUB_COMPANY_REGISTRATION` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fact Append
+**Description:** Hồ sơ và lịch sử đăng ký tư cách công ty đại chúng với UBCKNN.
 
-### 23. Stock Holder Relationship
-**Tier:** 3 | **Source:** `IDS.holder_relationship` | **BCV Concept:** [Involved Party] Involved Party Relationship | **BCO:** Involved Party | **Table Type:** Relative
-**Description:** Quan hệ giữa các cổ đông giao dịch (vợ-chồng, cha-con, người ủy quyền, sở hữu chéo). Mỗi bản ghi là một cặp quan hệ song phương. FK đến Stock Holder × 2.
+### 23. Public Company Deregistration
+**Tier:** 2 | **Source:** `PUB_COMPANY_CANCELLATION` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fact Append
+**Description:** Hồ sơ và lịch sử hủy đăng ký tư cách công ty đại chúng với UBCKNN.
 
-### 24. Stock Control
-**Tier:** 3 | **Source:** `IDS.stock_controls` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Relative
-**Description:** Chứng khoán của cổ đông bị đưa vào diện kiểm soát hoặc hạn chế chuyển nhượng. Ghi nhận mã CK, loại hạn chế và thời gian hiệu lực. Phục vụ giám sát tuân thủ. FK đến Stock Holder.
+### 24. Public Company Report Extension
+**Tier:** 2 | **Source:** `REPORT_EXTENSIONS` | **BCV Concept:** [Documentation] Filing | **BCO:** Documentation | **Table Type:** Relative
+**Description:** Hồ sơ xin gia hạn nộp báo cáo định kỳ của CTĐC: lý do xin gia hạn, thời gian gia hạn được chấp thuận.
 
-### 25. Auditor Approval
-**Tier:** 3 | **Source:** `IDS.af_auditor_approval` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Relative
-**Description:** Kiểm toán viên được chấp thuận thuộc công ty kiểm toán — ghi nhận quyết định chấp thuận/đình chỉ của BTC và UBCKNN ở cấp cá nhân, kèm ngày rời công ty. Cấu trúc tương tự Audit Firm Approval nhưng cho cá nhân. FK đến Audit Firm.
+### 25. Financial Report Row Template
+**Tier:** 2 | **Source:** `RROW` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
+**Description:** Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên, cấp phân cấp, công thức tổng hợp.
 
-### 26. Audit Firm Warning
-**Tier:** 3 | **Source:** `IDS.af_warning` | **BCV Concept:** [Business Activity] Warning Notice | **BCO:** Business Activity | **Table Type:** Fact Append
-**Description:** Văn bản nhắc nhở do BTC hoặc UBCKNN phát hành đối với công ty kiểm toán hoặc kiểm toán viên. Một entity chung cho cả 2 loại đối tượng; phân biệt qua warning_target_type_code. FK loại trừ nhau đến Audit Firm Approval hoặc Auditor Approval.
+### 26. Financial Report Column Template
+**Tier:** 2 | **Source:** `RCOL` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
+**Description:** Định nghĩa từng cột trong template báo cáo tài chính: mã cột, tên, kỳ tham chiếu (hiện tại/kỳ trước).
 
-### 27. Audit Firm Sanction
-**Tier:** 3 | **Source:** `IDS.af_sanctions` | **BCV Concept:** [Business Activity] Enforcement Action | **BCO:** Business Activity | **Table Type:** Fact Append
-**Description:** Quyết định xử phạt hành chính do BTC hoặc UBCKNN phát hành đối với công ty kiểm toán hoặc kiểm toán viên. Ghi nhận số quyết định, ngày, cơ quan xử phạt và đối tượng. FK loại trừ nhau đến Audit Firm Approval hoặc Auditor Approval.
+### 27. Periodic Report Form Row Template
+**Tier:** 2 | **Source:** `REP_ROW` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
+**Description:** Định nghĩa từng hàng trong template báo cáo định kỳ.
 
-### 28. Public Company Report Submission
-**Tier:** 3 | **Source:** `IDS.company_data` | **BCV Concept:** [Documentation] Filing | **BCO:** Documentation | **Table Type:** Relative
-**Description:** Lần nộp báo cáo hoặc tin Công bố Thông tin của công ty đại chúng đã được phê duyệt (filter news_status_cd = APPROVED). Liên kết công ty với form CBTT đã định nghĩa và ghi nhận ngày nộp, ngày duyệt. FK đến Public Company và Disclosure Form Definition.
+### 28. Periodic Report Form Column Template
+**Tier:** 2 | **Source:** `REP_COLUMN` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Relative
+**Description:** Định nghĩa từng cột trong template báo cáo định kỳ.
 
-### 29. Public Company Financial Report Value
-**Tier:** 4 | **Source:** `IDS.data` | **BCV Concept:** [Documentation] Financial Statement | **BCO:** Documentation | **Table Type:** Fact Append
-**Description:** Giá trị ô báo cáo tài chính thực tế của công ty đại chúng. Mỗi bản ghi = 1 ô (giao giữa hàng và cột) của 1 lần nộp BCTC đã duyệt. Insert-only. FK đến Public Company Report Submission, Financial Report Row Template và Financial Report Column Template.
+### 29. Audit Firm Approval
+**Tier:** 2 | **Source:** `AF_APPROVAL` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Relative
+**Description:** Quyết định chấp thuận hoặc đình chỉ của BTC/UBCKNN đối với công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng, SOURCE_TYPE_CD phân biệt cơ quan ban hành).
+
+### 30. Audit Firm Legal Representative
+**Tier:** 2 | **Source:** `AF_LEGAL_REPRESENTATIVE` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Người đại diện pháp luật của công ty kiểm toán được đăng ký với UBCKNN.
+
+### 31. Auditor Profile
+**Tier:** 2 | **Source:** `AF_AUDITOR_PROFILES` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Hồ sơ kiểm toán viên thuộc công ty kiểm toán: giấy tờ định danh, chứng chỉ hành nghề kiểm toán, chứng chỉ kiểm toán viên hành nghề.
+
+### 32. Audit Firm Status History
+**Tier:** 2 | **Source:** `AF_STATUS_HISTORY` | **BCV Concept:** [Business Activity] Status History | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Lịch sử thay đổi trạng thái hoạt động của công ty kiểm toán: đình chỉ, tạm ngừng, chấm dứt, thu hồi chứng nhận.
+
+### 33. Violation Template
+**Tier:** 2 | **Source:** `VIOLATION_TEMPLATES` | **BCV Concept:** [Condition] Compliance Rule | **BCO:** Condition | **Table Type:** Relative
+**Description:** Mẫu cấu hình quy tắc vi phạm CBTT: loại báo cáo, thời hạn nộp mặc định, điều khoản xử phạt tương ứng.
+
+### 34. Public Company Evaluation Criterion
+**Tier:** 2 | **Source:** `EVALUATION_CRITERIA` | **BCV Concept:** [Condition] Evaluation Criteria | **BCO:** Condition | **Table Type:** Classification
+**Description:** Chỉ tiêu đánh giá/xếp hạng công ty đại chúng thuộc một nhóm chỉ tiêu: mã chỉ tiêu, tên, điểm tối đa, thứ tự.
+
+### 35. Audit Firm Inspection
+**Tier:** 2 | **Source:** `AF_INSPECTION` | **BCV Concept:** [Business Activity] Inspection | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Đợt kiểm tra tổng thể công ty kiểm toán: số quyết định kiểm tra, thời gian, kết quả kiểm tra hệ thống kiểm toán, kết quả tổng thể, hành động xử lý.
+
+### 36. Disclosure Notification
+**Tier:** 2 | **Source:** `NOTIFICATIONS` | **BCV Concept:** [Communication] Notification | **BCO:** Communication | **Table Type:** Fact Append
+**Description:** Instance thông báo công bố thông tin đã được tạo ra trong hệ thống: gắn với form CBTT, trạng thái gửi, thời gian gửi.
+
+### 37. Financial Report Data
+**Tier:** 2 | **Source:** `DATA` | **BCV Concept:** [Documentation] Financial Statement | **BCO:** Documentation | **Table Type:** Fact Snapshot
+**Description:** Giá trị số liệu từng ô trong báo cáo tài chính của CTĐC theo kỳ (năm/quý): giá trị, mã hàng, mã cột theo catalog BCTC.
+
+### 38. Involved Party Postal Address
+**Tier:** 2 | **Source:** `COMPANY_PROFILES`, `LEGAL_ENTITIES`, `AF_PROFILES`, `AF_LEGAL_REPRESENTATIVE` | **BCV Concept:** Shared Entity | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Địa chỉ bưu chính của các Involved Party trong hệ thống IDS. Shared entity — extend source_table IDS vào entity đã được phê duyệt từ NHNCK.
+
+### 39. Involved Party Electronic Address
+**Tier:** 2 | **Source:** `COMPANY_PROFILES`, `LEGAL_ENTITIES`, `AF_PROFILES`, `LEGAL_REPRESENTATIVE`, `AF_LEGAL_REPRESENTATIVE` | **BCV Concept:** Shared Entity | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Địa chỉ điện tử (điện thoại, email, fax, website) của các Involved Party trong hệ thống IDS. Shared entity — extend source_table IDS.
+
+### 40. Involved Party Alternative Identification
+**Tier:** 2 | **Source:** `LEGAL_ENTITIES`, `AF_LEGAL_REPRESENTATIVE`, `LEGAL_REPRESENTATIVE` | **BCV Concept:** Shared Entity | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Giấy tờ định danh (CMND/CCCD/hộ chiếu) của thực thể pháp lý và người đại diện trong hệ thống IDS. Shared entity — extend source_table IDS.
+
+### 41. Legal Entity Alternative Identification
+**Tier:** 3 | **Source:** `IDENTITY` | **BCV Concept:** [Involved Party] Alternative Identification | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Chi tiết từng giấy tờ định danh của cổ đông/người nội bộ/người liên quan: loại giấy tờ, số, ngày cấp, nơi cấp. Nguồn chính cho IP Alternative Identification shared entity.
+
+### 42. Legal Entity Position
+**Tier:** 3 | **Source:** `POSITIONS` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Chức vụ của người nội bộ/cổ đông tại công ty: mã chức vụ, ngày bổ nhiệm, ngày miễn nhiệm, trạng thái.
+
+### 43. Legal Entity Trading Account
+**Tier:** 3 | **Source:** `ACCOUNT_NUMBERS` | **BCV Concept:** [Arrangement] Account | **BCO:** Arrangement | **Table Type:** Relative
+**Description:** Tài khoản giao dịch chứng khoán của cổ đông mở tại công ty chứng khoán: số tài khoản, mã CTCK, cờ tài khoản chính.
+
+### 44. Legal Entity Relationship
+**Tier:** 3 | **Source:** `HOLDER_RELATIONSHIP` | **BCV Concept:** [Involved Party] Involved Party Relationship | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Quan hệ giữa các cổ đông/người liên quan: vợ-chồng, cha-con, ủy quyền, sở hữu chéo — 2 FK tự tham chiếu đến Legal Entity.
+
+### 45. Legal Entity Stock Control
+**Tier:** 3 | **Source:** `STOCK_CONTROLS` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Relative
+**Description:** Chứng khoán của cổ đông bị đưa vào diện kiểm soát/hạn chế chuyển nhượng: mã CK, loại hạn chế, thời gian hiệu lực.
+
+### 46. Company Shareholding
+**Tier:** 3 | **Source:** `COMPANY_SHAREHOLDING` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Relative
+**Description:** Cổ đông của CTĐC và thông tin sở hữu: số lượng cổ phần, tỷ lệ sở hữu, phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan).
+
+### 47. Company Entity Role
+**Tier:** 3 | **Source:** `COMPANY_ENTITY_ROLE` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Relative
+**Description:** Vai trò của người nội bộ/cổ đông tại CTĐC trong một khoảng thời gian: loại vai trò, trạng thái hoạt động, thời gian hiệu lực.
+
+### 48. Audit Firm Warning
+**Tier:** 3 | **Source:** `AF_WARNING` | **BCV Concept:** [Business Activity] Warning Notice | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Văn bản nhắc nhở của BTC/UBCKNN đối với công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng).
+
+### 49. Audit Firm Sanction
+**Tier:** 3 | **Source:** `AF_SANCTIONS` | **BCV Concept:** [Business Activity] Enforcement Action | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Quyết định xử phạt hành chính của UBCKNN đối với công ty kiểm toán: số quyết định, ngày ban hành, nội dung xử phạt.
+
+### 50. Audit Firm Suspension
+**Tier:** 3 | **Source:** `AF_SUSPENSION` | **BCV Concept:** [Business Activity] Enforcement Action | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Quyết định đình chỉ hoạt động của UBCKNN đối với công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng).
+
+### 51. Audit Firm Technical Audit
+**Tier:** 3 | **Source:** `AF_TECHNICAL_AUDIT` | **BCV Concept:** [Business Activity] Inspection | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Kết quả kiểm tra hồ sơ kiểm toán cụ thể trong một đợt kiểm tra tổng thể: hồ sơ được kiểm tra, kết quả, hành động xử lý, nội dung vi phạm.
+
+### 52. Auditor Status History
+**Tier:** 3 | **Source:** `AF_AUDITOR_STATUS_HISTORY` | **BCV Concept:** [Business Activity] Status History | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Lịch sử thay đổi trạng thái hành nghề của kiểm toán viên: loại sự kiện (cấp/thu hồi/đình chỉ chứng chỉ), ngày hiệu lực, lý do.
+
+### 53. Public Company Report Submission
+**Tier:** 3 | **Source:** `COMPANY_DATA` | **BCV Concept:** [Documentation] Filing | **BCO:** Documentation | **Table Type:** Relative
+**Description:** Lần nộp báo cáo/tin CBTT chính thức của CTĐC đã được phê duyệt (filter NEWS_STATUS_CD = APPROVED): liên kết CTĐC với form CBTT và ngày nộp.
+
+### 54. Securities Offering
+**Tier:** 3 | **Source:** `SECURITIES_OFFERING` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân: số đăng ký, chứng nhận, tổng số lượng đăng ký. APPLICANT_TYPE_FLG phân biệt tổ chức và cá nhân.
+
+### 55. Public Company Evaluation
+**Tier:** 3 | **Source:** `EVALUATIONS` | **BCV Concept:** [Business Activity] Evaluation | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Kết quả đánh giá/xếp hạng tổng thể của một CTĐC trong một kỳ đánh giá: tổng điểm, loại xếp hạng (A/B/C), trạng thái phê duyệt.
+
+### 56. Public Company Violation Report
+**Tier:** 3 | **Source:** `VIOLATION_REPORT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Theo dõi vi phạm nộp báo cáo CBTT định kỳ của CTĐC: hạn nộp, ngày nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm.
+
+### 57. Public Company HTE Violation Report
+**Tier:** 3 | **Source:** `HTE_VIOLATION_REPORT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Theo dõi vi phạm nộp báo cáo định kỳ của CTĐC trong module HTE: hạn nộp, ngày nộp thực tế, trạng thái tuân thủ.
+
+### 58. Disclosure Notification Recipient
+**Tier:** 3 | **Source:** `NOTIFICATIONS_DTL` | **BCV Concept:** [Communication] Notification | **BCO:** Communication | **Table Type:** Relative
+**Description:** Chi tiết người nhận của một thông báo CBTT: tài khoản nhận, loại đối tượng, công ty liên quan, địa chỉ email và điện thoại.
+
+### 59. Securities Offering Plan
+**Tier:** 4 | **Source:** `SECURITIES_OFFERING_PLAN` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Kế hoạch chi tiết chào bán chứng khoán: phương thức phân phối, loại CK, số lượng, giá chào bán, thời gian chào bán, điều kiện đặc thù theo loại CK.
+
+### 60. Securities Offering Result
+**Tier:** 4 | **Source:** `SECURITIES_OFFERING_RESULT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fact Append
+**Description:** Kết quả thực tế chào bán chứng khoán: số lượng thành công, giá thực tế, tổng giá trị huy động, phân chia trong nước/nước ngoài, chi phí phát hành.
+
+### 61. Public Company Evaluation Detail
+**Tier:** 4 | **Source:** `EVALUATION_DETAILS` | **BCV Concept:** [Business Activity] Evaluation | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Chi tiết điểm từng chỉ tiêu trong kết quả đánh giá CTĐC: kết quả định tính, điểm số, cờ đánh giá — grain 1 chỉ tiêu × 1 kỳ đánh giá × 1 công ty.
