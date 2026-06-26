@@ -685,14 +685,16 @@ Không giả định scope từ tên bảng. Đọc kỹ mô tả nguồn trư�
 | payment | `pymt` | `pymt_rcv_dt`, `pymt_proof_upload_tms` |
 | supervising leader | `sprvsg_ldr` | `sprvsg_ldr_id` |
 | announcement | `ancm` | `ancm_dt`, `ancm_ttl` |
+| remedial (adj/noun) | `rmdl` | `rmdl_msr`, `rmdl_ddln_dt` |
+| reception | `rcptn` | `rcptn_dt`, `ctzn_rcptn_id` |
+| verification | `verf` | `verf_mins_sign_dt` |
+| minutes (biên bản) | `mins` | `verf_mins_sign_dt` |
 
 ### Từ B3 — giữ nguyên lowercase (không có trong CSV, không có trong bảng B2)
 
 Những từ dưới đây **không tìm thấy trong CSV** và chưa có trong bảng B2 → áp dụng B3: giữ nguyên token lowercase. Liệt kê để tránh tìm lại mỗi lần.
 
-| Từ | Token giữ nguyên | Ghi chú |
-|---|---|---|
-| abnormal | `abnormal` | Dùng trong `abnormal_txn_chk_ind` (txn, chk từ CSV) |
-| lawsuit | `lawsuit` | Dùng trong `lawsuit_exists_ind`, `lawsuit_content` |
-| verification | `verification` | Dùng trong `verification_minutes_sign_dt` |
-| minutes | `minutes` | Dùng trong `verification_minutes_sign_dt` |
+| Từ | Token giữ nguyên | Đề xuất thêm vào B2 | Ghi chú |
+|---|---|---|---|
+| abnormal | `abnormal` | `abnrm` (đề xuất) | Dùng trong `abnormal_txn_chk_ind` (txn, chk từ CSV) |
+| lawsuit | `lawsuit` | `lwst` (đề xuất) | Dùng trong `lawsuit_exists_ind`, `lawsuit_content` |
