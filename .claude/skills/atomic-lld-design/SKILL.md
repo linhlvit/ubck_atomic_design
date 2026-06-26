@@ -393,25 +393,7 @@ attributes:
     etl_derived_value: NHNCK.PROFESSIONALS
 ```
 
-**Physical name:** AI sinh `physical_name` cho mỗi attribute theo đúng logic của `transform_physical_names.py`. `data_type` để trống — script tự patch sau.
-
-**Thuật toán transform (longest-match-first):**
-1. Lowercase toàn bộ logical name.
-2. Duyệt từ trái sang phải; tại mỗi vị trí thử match cụm dài nhất có trong `system/rules/rule_transform_logical_name.csv` (cột `Name`) tại **word boundary**.
-3. Nếu match → thay bằng `Abbreviation` tương ứng (lowercase).
-4. Nếu không match → giữ nguyên word đó (lowercase, `-` → `_`).
-5. Nối các token bằng `_`.
-
-**Ví dụ:**
-- `Securities Practitioner` → `scr` + `prac` → `scr_prac`
-- `Practitioner Code` → `prac` + `code` → `prac_code`
-- `Source System` → `src` + `stm` → `src_stm`
-- `Identification Number` → `identn` + `nbr` → `identn_nbr`
-- `Date Of Birth` → `dob` (cụm 3 từ match trực tiếp)
-
-**Quy tắc đặt tên:**
-- Entity physical name: `[domain_prefix]_[bcv_term]` — áp dụng transform trên logical entity name (VD: `Securities Practitioner` → `scr_prac`)
-- Attribute physical name: `[entity_prefix]_[field_tokens]` — áp dụng transform trên logical attribute name, **không** lặp lại prefix entity nếu tên attribute đã bao gồm (VD: attribute `Practitioner Code` trong entity `Securities Practitioner` → `prac_code`, không phải `scr_prac_prac_code`)
+**Physical name:** Sinh `physical_name` theo quy tắc B1→B2→B3 trong section **[QUY TẮC ĐẶT `physical_name`](#quy-tắc-đặt-physical_name)** ở cuối file. `data_type` để trống — `transform_physical_names.py` tự patch sau.
 
 ### Cập nhật manifest.yaml
 
@@ -613,3 +595,93 @@ Entity chứa nhóm trường mô tả chủ thể khác (không phải chủ th
 ### Scope entity
 Không giả định scope từ tên bảng. Đọc kỹ mô tả nguồn trước.
 - VD: `THONG_TIN_DK_THUE` = "thông tin đăng ký thuế" (tổ chức, DN, hộ KD) → không gắn prefix "Organization".
+
+## QUY TẮC ĐẶT `physical_name`
+
+### Nguyên tắc ưu tiên (B1 → B2 → B3)
+
+> **B1 — `system/rules/rule_transform_logical_name.csv`** (ưu tiên tuyệt đối)
+> Tra từng từ (và cụm từ) trong logical name theo thuật toán longest-match-first.
+>
+> **B2 — Bảng tra cứu trong SKILL này** (chỉ dùng khi từ KHÔNG có trong CSV)
+> Bao gồm: audit block chuẩn, danh từ agent (-er/-or), past participle đặc biệt.
+>
+> **B3 — Giữ nguyên lowercase** nếu không có ở B1/B2 (tuyệt đối không tự suy luận).
+
+### Format chung
+- snake_case, toàn chữ thường
+- `entity_prefix` + `_` + `field_abbreviation`
+- KHÔNG dùng từ đầy đủ khi có từ viết tắt chuẩn
+
+### Thuật toán transform (longest-match-first) — áp dụng B1
+
+1. Lowercase toàn bộ logical name.
+2. Duyệt từ trái sang phải; tại mỗi vị trí thử match **cụm dài nhất** có trong `rule_transform_logical_name.csv` (cột `Name`) tại word boundary.
+3. Nếu match → thay bằng `Abbreviation` tương ứng (lowercase).
+4. Nếu không match → giữ nguyên word đó (lowercase, `-` → `_`).
+5. Nối các token bằng `_`.
+
+**Ví dụ:**
+- `Securities Practitioner` → `scr` + `prac` → `scr_prac`
+- `Source System` → `src` + `stm` → `src_stm`
+- `Date Of Birth` → `dob` (cụm 3 từ match trực tiếp)
+- `Sent Timestamp` → `snd` + `tms` → `snd_tms` (Sent→SND trong CSV)
+
+**Quy tắc đặt tên:**
+- Entity physical name: `[domain_prefix]_[bcv_term]` — transform trên logical entity name.
+- Attribute physical name: `[entity_prefix]_[field_tokens]` — transform trên logical attribute name, **không** lặp lại prefix entity nếu tên attribute đã bao gồm.
+
+### Quy tắc past participle (-ed) — B2 khi từ KHÔNG có trong CSV
+
+> **BỎ hậu tố `-ed`, dùng viết tắt của ROOT động từ.** KHÔNG thêm `d` sau viết tắt root.
+
+| Từ đầy đủ | Root | Viết tắt (B2) | Ví dụ |
+|---|---|---|---|
+| signed | sign | `sgn` | `sgn_by_ofcr_id` |
+| forwarded | forward | `fwrd` | `fwrd_tms` |
+| submitted | submit | `subm` | `subm_by_ofcr_id` |
+| confirmed | confirm | `cnfrm` | `cnfrm_tms` |
+| announced | announce | `ancm` | `ancm_dt` |
+
+> Các past participle đã có trong CSV (dùng B1): `issued→ISSU`, `assigned→ASGN`, `received→RCV`, `transferred→TFRD`, `prepared→PREP`, `created→CRT`, `updated→UDT`, `numbered→NBR`.
+
+### Bảng từ viết tắt bổ sung (B2 — từ KHÔNG có trong CSV)
+
+| Từ đầy đủ | Viết tắt | Ví dụ |
+|---|---|---|
+| **Audit block chuẩn** | | |
+| Created Timestamp | `crt_tms` | thay `created_ts` |
+| Updated Timestamp | `udt_tms` | thay `updated_ts` |
+| Created By … Id | `crt_by_…_id` | `crt_by_ofcr_id` |
+| Created By … Code | `crt_by_…_code` | `crt_by_ofcr_code` |
+| Updated By … Id | `udt_by_…_id` | `udt_by_ofcr_id` |
+| Updated By … Code | `udt_by_…_code` | `udt_by_ofcr_code` |
+| **Danh từ agent (-er/-or) và nghiệp vụ đặc thù** | | |
+| violator | `vltr` | `vltr_cnfrm_rcpt_tms`, `vltr_cnfrm_by` |
+| signer (noun) | `sgnr` | `sgnr_ofcr_id`, `sgnr_nm` |
+| recorder (noun) | `rcdr` | `rcdr_nm`, `rcdr_title` |
+| approver (noun) | `aprv` | `aprv_ofcr_id`, `aprv_dcsn_nbr` |
+| sender (noun) | `sndr` | `sndr_nm`, `sndr_adr`, `sndr_ofcr_id` |
+| monitoring (noun) | `mon` | `mon_ofcr_id`, `mon_ofcr_code` |
+| forwarding (noun/adj) | `fwdng` | `fwdng_unit` |
+| **Từ kỹ thuật không có trong CSV** | | |
+| life cycle status code | `lcs_code` | thay `life_cycle_st_code` |
+| unique key | `uk` | `peti_uk`, `vln_case_uk` |
+| party | `p` | `rel_p_id`, `rspl_p` |
+| member | `mbr` | `mbr_ofcr_id`, `mbr_full_nm` |
+| enforcement | `nfrc` | `nfrc_st`, `nfrc_tp_code` |
+| attached / attach | `attch` | `attch_file`, `peti_attch_ind` |
+| guidance | `gdnc` | `gdnc_doc_nbr`, `gdnc_doc_dt` |
+| archived | `archv` | `archv_nbr`, `archv_ind` |
+| **Prefix nhóm nghiệp vụ** | | |
+| Complaint … | `cpln_` | `cpln_exists_ind`, `cpln_cntnt`, `cpln_rcv_dt`, `cpln_st_code`, `cpln_rslt` |
+| violation | `vln` | `vln_case_id`, `vln_bhvr_id`, `vln_rcrd_id` |
+| behavior | `bhvr` | `vln_bhvr_id`, `vln_bhvr_code` |
+| record (entity) | `rcrd` | `vln_rcrd_id`, `rcrd_tp_code` |
+| conclusion | `cncl` | `cncl_nbr`, `insp_cncl_id` |
+| circumstance | `crcm` | `crcm_tp_code` |
+| execution | `exec` | `exec_st_code`, `exec_dsc` |
+| implementation | `impl` | `impl_notes` |
+| payment | `pymt` | `pymt_rcv_dt`, `pymt_proof_upload_tms` |
+| supervising leader | `sprvsg_ldr` | `sprvsg_ldr_id` |
+| announcement | `ancm` | `ancm_dt`, `ancm_ttl` |
