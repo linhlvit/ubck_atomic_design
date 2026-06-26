@@ -7,8 +7,8 @@
 > **File chi tiết theo tầng:**
 > - [SCMS_HLD_Tier1.md](SCMS_HLD_Tier1.md) — Entity độc lập: Securities Company, Securities Company Audit Firm, Securities Company Settlement Bank, Risk/Alert Indicators & Period, Geographic Area (shared)
 > - [SCMS_HLD_Tier2.md](SCMS_HLD_Tier2.md) — Phụ thuộc Tier 1: chi nhánh/VPĐD/PGD, nhân sự, kiểm toán viên, báo cáo, CBTT, vi phạm, chế tài, cổ đông, rủi ro/cảnh báo
-> - [SCMS_HLD_Tier3.md](SCMS_HLD_Tier3.md) — Phụ thuộc Tier 2: cổ đông đại diện/chuyển nhượng/quan hệ, điểm rủi ro chi tiết, tổng hợp rủi ro, báo cáo/nhân sự NN
-> - [SCMS_HLD_Tier4.md](SCMS_HLD_Tier4.md) — Phụ thuộc Tier 3: chi tiết tổng hợp rủi ro theo nhóm chỉ tiêu CAMEL
+> - [SCMS_HLD_Tier3.md](SCMS_HLD_Tier3.md) — Phụ thuộc Tier 2: cổ đông đại diện/chuyển nhượng/quan hệ, điểm rủi ro chi tiết, báo cáo/nhân sự NN
+> - [SCMS_HLD_Tier3.md](SCMS_HLD_Tier3.md) (bổ sung) — Securities Company Risk Summary Detail (hạ từ T4 xuống T3 sau khi xác nhận FK)
 
 ---
 
@@ -16,9 +16,9 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_PROVINCE | Update | Danh mục tỉnh/thành phố trực thuộc trung ương | Geographic Area | Fundamental | Geographic Area — BCV ngoại lệ: dù chỉ có Code+Name vẫn là Atomic entity. Cùng entity với CAT_DISTRICT, CAT_WARD; phân biệt bằng Geographic Area Type Code (PROVINCE/DISTRICT/WARD). Self-ref: WARD → DISTRICT → PROVINCE. Shared entity extend source_table từ NHNCK. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_DISTRICT | Update | Danh mục quận/huyện/thị xã | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với CAT_PROVINCE, CAT_WARD. Geographic Area Type Code = DISTRICT. Shared entity extend source_table từ NHNCK. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_WARD | Update | Danh mục phường/xã/thị trấn | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với CAT_PROVINCE, CAT_DISTRICT. Geographic Area Type Code = WARD. Shared entity extend source_table từ NHNCK. |
+| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_PROVINCE | Append | Danh mục tỉnh/thành phố trực thuộc trung ương | Geographic Area | Fundamental | Geographic Area — BCV ngoại lệ: dù chỉ có Code+Name vẫn là Atomic entity. Cùng entity với CAT_DISTRICT, CAT_WARD; phân biệt bằng Geographic Area Type Code (PROVINCE/DISTRICT/WARD). Self-ref: WARD → DISTRICT → PROVINCE. Shared entity extend source_table từ NHNCK. |
+| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_DISTRICT | Append | Danh mục quận/huyện/thị xã | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với CAT_PROVINCE, CAT_WARD. Geographic Area Type Code = DISTRICT. Shared entity extend source_table từ NHNCK. |
+| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_WARD | Append | Danh mục phường/xã/thị trấn | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với CAT_PROVINCE, CAT_DISTRICT. Geographic Area Type Code = WARD. Shared entity extend source_table từ NHNCK. |
 | 1 | Involved Party | [Involved Party] Broker Dealer | Organization | SC_FIRM_INFO | Update | Thông tin pháp lý toàn diện công ty chứng khoán thành viên do UBCKNN quản lý | Securities Company | Fundamental | (1) Broker Dealer — BCV: "an Involved Party that engages in the business of buying and selling securities for its own account or on behalf of customers". (2) Bảng: SC_FIRM_CODE(UNIQUE), SC_FIRM_NAME_VI/EN, CHARTER_CAPITAL, BUSINESS_LICENSE_NUMBER, COMPANY_TYPE_ID, STATUS, FOUNDER_NAME, LISTED_DATE — thông tin pháp lý đầy đủ CTCK. (3) Broker Dealer khớp hoàn toàn — CTCK môi giới/tự doanh/quản lý danh mục/ngân hàng đầu tư. Entity trung tâm SCMS. |
 | 1 | Involved Party | [Involved Party] Audit Firm | Organization | AUDIT_FIRM | Update | Danh mục công ty kiểm toán được UBCKNN chấp thuận | Securities Company Audit Firm | Fundamental | (1) Audit Firm — BCV: "an Involved Party that provides auditing services". (2) Bảng: AUDIT_FIRM_CODE(UNIQUE), AUDIT_FIRM_NAME, STATUS, BUSINESS_LICENSE_NUMBER — danh mục công ty kiểm toán chấp thuận. (3) Audit Firm khớp. Entity độc lập; không extend Securities Organization Reference NHNCK vì cấu trúc và phạm vi khác. |
 | 1 | Involved Party | [Involved Party] Depositary Bank | Organization | BANK | Update | Danh mục ngân hàng đối tác lưu ký/thanh toán cho CTCK | Securities Company Settlement Bank | Fundamental | (1) Depositary Bank — BCV: "an Involved Party that holds financial assets in custody on behalf of customers". (2) Bảng: BANK_CODE(UNIQUE), BANK_NAME, STATUS — danh mục ngân hàng đối tác. (3) Depositary Bank khớp. Danh mục ngân hàng trong SCMS độc lập với NHNCK.BANKS. |
@@ -36,15 +36,15 @@
 | 2 | Involved Party | [Involved Party] Representative Office | Organization | SC_FIRM_FOREIGN_REP_OFFICE_VN | Update | Văn phòng đại diện CTCK nước ngoài đã được cấp giấy phép VN | Securities Company Foreign Representative Office VN | Relative | (1) Representative Office — BCV: cùng định nghĩa. (2) Bảng: CODE, NAME, BUSINESS_LICENSE_NUMBER(own), STATUS, ESTABLISH_DATE — không tìm thấy FK→SC_FIRM_INFO trong cột; xem 7e-03. (3) Tạm đặt T2 theo logic nghiệp vụ; cần xác nhận FK. |
 | 2 | Involved Party | [Involved Party] Senior Officer | Individual | SC_FIRM_SENIOR_PERSONNEL | Update | Nhân sự cấp cao của CTCK (GĐ, PGĐ, KTT, ...) | Securities Company Senior Personnel | Relative | (1) Senior Officer — BCV: "an Involved Party that is a high-ranking officer in an organization". (2) Bảng: FK→SC_FIRM_INFO, FK→SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE(nullable), FULL_NAME, POSITION_ID, APPOINTMENT_DATE, CCHN_NUMBER, NATIONALITY_ID. (3) Senior Officer khớp. FK chính → SC_FIRM_INFO (T1); FK phụ đến T2 entities là location pointer, không gây circular. |
 | 2 | Involved Party | [Involved Party] Individual | Individual | SC_FIRM_LICENSED_PRACTITIONER | Update | Người hành nghề chứng khoán đang công tác tại CTCK | Securities Practitioner | Fundamental | (1) Individual — BCV Concept LOCKED theo entity approved từ NHNCK. (2) Bảng: FK→SC_FIRM_INFO, FK→SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE(nullable), FULL_NAME, CCHN_NUMBER, CCHN_TYPE, APPOINTED_DATE. (3) Shared entity — extend source_table vào Securities Practitioner từ NHNCK. Quan hệ với SC_FIRM_INFO thể hiện qua attribute sc_firm_id trong LLD, không qua Tier/Table Type. |
-| 2 | Involved Party | [Involved Party] Auditor | Individual | AUDITOR | Update | Kiểm toán viên cá nhân trực thuộc công ty kiểm toán | Securities Company Auditor | Relative | (1) Auditor — BCV: "an Involved Party responsible for auditing financial statements". (2) Bảng: FK→AUDIT_FIRM, FULL_NAME, AUDITOR_CODE, STATUS, CERTIFICATE_NUMBER, APPOINTED_DATE. (3) Auditor khớp. Phụ thuộc Securities Company Audit Firm (T1). |
+| 2 | Involved Party | [Involved Party] Auditor | Individual | AUDITOR | Update | Kiểm toán viên cá nhân trực thuộc công ty kiểm toán | Securities Company Audit Firm Auditor | Relative | (1) Auditor — BCV: "an Involved Party responsible for auditing financial statements". (2) Bảng: FK→AUDIT_FIRM, FULL_NAME, AUDITOR_CODE, STATUS, CERTIFICATE_NUMBER, APPOINTED_DATE. (3) Auditor khớp. Phụ thuộc Securities Company Audit Firm (T1). |
 | 2 | Arrangement | [Arrangement] Securities Service Agreement | Arrangement | CUSTODIAN_BANK | Update | Thỏa thuận lưu ký/thanh toán giữa CTCK và ngân hàng được chỉ định | Securities Company Custodian Bank | Relative | (1) Securities Service Agreement — BCV: "an Arrangement defining terms of securities-related services". (2) Bảng: FK→SC_FIRM_INFO, FK→BANK(via BANK_CODE), SERVICE_TYPE_ID, AGREEMENT_DATE, STATUS. (3) Securities Service Agreement phù hợp — ghi nhận thỏa thuận lưu ký. |
-| 2 | Arrangement | [Arrangement] Service License | Arrangement | LNK_SC_FIRM_SERVICE | Update | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK | Securities Company Licensed Service | Relative | (1) Service License — BCV: "an Arrangement defining a licensed service". (2) Bảng: FK→SC_FIRM_INFO, SERVICE_TYPE_ID(FK→CAT_SERVICE), LICENSE_NUMBER, LICENSE_DATE, EXPIRY_DATE — có LICENSE_NUMBER là attribute nghiệp vụ → không phải pure junction. (3) Service License khớp. |
+| 2 | Arrangement | [Arrangement] Service License | Arrangement | LNK_SC_FIRM_SERVICE | Append | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK | Securities Company Licensed Service | Relative | (1) Service License — BCV: "an Arrangement defining a licensed service". (2) Bảng: FK→SC_FIRM_INFO, SERVICE_TYPE_ID(FK→CAT_SERVICE), LICENSE_NUMBER, LICENSE_DATE, EXPIRY_DATE — có LICENSE_NUMBER là attribute nghiệp vụ → không phải pure junction. (3) Service License khớp. |
 | 2 | Event | [Event] Transaction | Event | SC_FIRM_PERIODIC_REPORT | Update | Báo cáo định kỳ của CTCK nộp lên UBCKNN | Securities Company Periodic Report | Relative | (1) Transaction — BCV: "an Event that exchanges value or information between parties". (2) Bảng: FK→SC_FIRM_INFO, FORM_REPORT_ID(Classification Value — FORM_REPORT excluded), PERIOD, YEAR, DEADLINE, SUBMISSION_DATE, STATUS. (3) Transaction phù hợp — mỗi lần nộp là 1 sự kiện trao đổi thông tin. |
 | 2 | Event | [Event] Transaction | Event | SC_FIRM_ADHOC_REPORT | Update | Báo cáo đột xuất của CTCK nộp lên UBCKNN | Securities Company Adhoc Report | Relative | (1) Transaction — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_INFO, FORM_REPORT_ID(Classification Value), EVENT_DATE, SUBMISSION_DATE, STATUS — triggered by event. (3) Transaction phù hợp. |
 | 2 | Event | [Event] Communication | Event | DISCLOSURE_REPORT | Update | Báo cáo công bố thông tin (CBTT) của CTCK gửi lên UBCKNN | Securities Company Disclosure Report | Relative | (1) Communication — BCV: "an Event that is an exchange of information". (2) Bảng: FK→SC_FIRM_INFO, FORM_REPORT_ID(Classification Value), DISCLOSURE_TYPE, CONTENT_SUMMARY, SUBMISSION_DATE, STATUS. (3) Communication khớp — CBTT là trao đổi thông tin có cấu trúc pháp lý. |
 | 2 | Event | [Event] Communication | Event | DISCLOSURE_SECURITIES_OFFERING | Update | Thông tin công bố đợt chào bán chứng khoán của CTCK | Securities Company Disclosure Securities Offering | Relative | (1) Communication — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_INFO, OFFERING_TYPE, OFFERING_VALUE, DISCLOSURE_DATE, STATUS. (3) Communication khớp. |
-| 2 | Event | [Event] Communication | Event | DISCLOSURE_SHAREHOLDER | Update | Thông tin công bố về cổ đông lớn hoặc thay đổi sở hữu CTCK | Securities Company Disclosure Shareholder | Relative | (1) Communication — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_INFO, SHAREHOLDER_NAME, OWNERSHIP_RATIO, DISCLOSURE_DATE, STATUS. (3) Communication khớp. |
-| 2 | Event | [Event] Business Activity | Event | REPORT_VIOLATION | Append | Vi phạm phát hiện từ kết quả kiểm tra báo cáo CTCK | Securities Company Report Violation | Fact Append | (1) Business Activity — BCV: "an Event involving an action or series of actions". (2) Bảng: FK→SC_FIRM_INFO, VIOLATION_TYPE_ID, VIOLATION_DATE, DESCRIPTION, SEVERITY — mỗi dòng là 1 vi phạm phát hiện insert-only. (3) Business Activity phù hợp. Fact Append vì nguồn là Append. |
+| 2 | Event | [Event] Communication | Event | DISCLOSURE_SHAREHOLDER | Append | Thông tin công bố về cổ đông lớn hoặc thay đổi sở hữu CTCK | Securities Company Disclosure Shareholder | Relative | (1) Communication — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_INFO, SHAREHOLDER_NAME, OWNERSHIP_RATIO, DISCLOSURE_DATE, STATUS. (3) Communication khớp. |
+| 2 | Event | [Event] Business Activity | Event | REPORT_VIOLATION | Update | Vi phạm phát hiện từ kết quả kiểm tra báo cáo CTCK | Securities Company Report Violation | Fact Append | (1) Business Activity — BCV: "an Event involving an action or series of actions". (2) Bảng: FK→SC_FIRM_INFO, VIOLATION_TYPE_ID, VIOLATION_DATE, DESCRIPTION, SEVERITY — mỗi dòng là 1 vi phạm phát hiện insert-only. (3) Business Activity phù hợp. Fact Append vì nguồn là Append. |
 | 2 | Event | [Event] Business Activity | Event | SC_FIRM_ALERT_VIOLATION | Append | Vi phạm ngưỡng được hệ thống cảnh báo tự động phát hiện | Securities Company Alert Violation | Fact Append | (1) Business Activity — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_INFO, FK→ALERT_INDICATOR, VIOLATION_DATE, ACTUAL_VALUE, THRESHOLD_VALUE, SEVERITY — vi phạm do hệ thống phát hiện tự động. (3) Business Activity phù hợp. Fact Append. |
 | 2 | Documentation | [Documentation] Legal Decision | Documentation | SC_FIRM_ADMIN_PENALTY_DECISION | Update | Quyết định xử phạt vi phạm hành chính do UBCKNN ban hành cho CTCK | Securities Company Administrative Penalty Decision | Relative | (1) Legal Decision — BCV: "a Documentation Item that is a formal legal decision". (2) Bảng: FK→SC_FIRM_INFO, DECISION_NUMBER, DECISION_DATE, PENALTY_TYPE_CODE, FINE_AMOUNT, EFFECTIVE_DATE, STATUS. (3) Legal Decision khớp. |
 | 2 | Documentation | [Documentation] Legal Decision | Documentation | SC_FIRM_ADMIN_SANCTION | Update | Biện pháp xử lý hành chính áp dụng cho CTCK | Securities Company Administrative Sanction | Relative | (1) Legal Decision — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_INFO, SANCTION_TYPE_ID, DECISION_NUMBER, EFFECTIVE_DATE, STATUS, REASON. (3) Legal Decision phù hợp. Tách entity riêng vì nguồn bảng khác Penalty Decision. |
@@ -55,24 +55,24 @@
 | 2 | Involved Party | [Involved Party] Connected Entity | Organization | SC_FIRM_OWNERSHIP_RELATION | Update | Quan hệ sở hữu của CTCK với các tổ chức khác (mẹ/con/liên kết) | Securities Company Ownership Relation | Relative | (1) Connected Entity — BCV: "an Involved Party connected through ownership or control". (2) Bảng: FK→SC_FIRM_INFO, RELATED_ENTITY_NAME, RELATIONSHIP_TYPE_ID, OWNERSHIP_RATIO, START_DATE. (3) Connected Entity phù hợp. |
 | 2 | Involved Party | [Involved Party] Connected Person | Individual | SC_FIRM_RELATED_PERSON | Update | Người liên quan của CTCK theo quy định pháp luật chứng khoán | Securities Company Related Person | Relative | (1) Connected Person — BCV: "an Involved Party connected to another through personal or business relationship". (2) Bảng: FK→SC_FIRM_INFO, RELATED_PERSON_NAME, NATIONALITY_ID, RELATIONSHIP_TYPE_ID, START_DATE. (3) Connected Person phù hợp. |
 | 2 | Event | [Event] Business Activity | Event | SC_FIRM_PROFILE_CHANGE | Append | Sự kiện thay đổi thông tin hồ sơ CTCK hoặc đơn vị trực thuộc | Securities Company Profile Change | Fact Append | (1) Business Activity — BCV: "an Event involving an action or series of actions". (2) Bảng: FK→SC_FIRM_INFO, CHANGE_OBJECT_TYPE, CHANGE_TYPE_ID, CHANGE_DATE, APPROVAL_DOCUMENT_NUMBER, BEFORE_VALUE, AFTER_VALUE, STATUS. (3) Business Activity phù hợp. Fact Append — mỗi lần thay đổi là event insert-only. |
-| 2 | Condition | [Condition] Risk Scale | Condition | RISK_SCORING_SCALE | Update | Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu | Securities Company Risk Scoring Scale | Relative | (1) Risk Scale — BCV: "a Condition defining a scale for assessing risk". (2) Bảng: FK→RISK_INDICATOR, SCORE_LEVEL, MIN_VALUE, MAX_VALUE, DESCRIPTION — các mức điểm theo khoảng giá trị. (3) Risk Scale khớp. Condition vì đây là quy định, không phải instance. |
+| 2 | Condition | [Condition] Risk Scale | Condition | RISK_SCORING_SCALE | Update | Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu | Securities Company Risk Indicator Scoring Scale | Relative | (1) Risk Scale — BCV: "a Condition defining a scale for assessing risk". (2) Bảng: FK→RISK_INDICATOR, SCORE_LEVEL, MIN_VALUE, MAX_VALUE, DESCRIPTION — các mức điểm theo khoảng giá trị. (3) Risk Scale khớp. Condition vì đây là quy định, không phải instance. |
 | 2 | Condition | [Condition] Alert Rule | Condition | ALERT_INDICATOR_CONDITION | Update | Điều kiện kích hoạt cảnh báo cho từng chỉ tiêu cảnh báo | Securities Company Alert Indicator Condition | Relative | (1) Alert Rule — BCV: "a Condition defining rules that trigger an alert". (2) Bảng: FK→ALERT_INDICATOR, CONDITION_EXPRESSION, THRESHOLD_VALUE, COMPARISON_OPERATOR, EFFECTIVE_DATE. (3) Alert Rule khớp. Condition vì đây là quy tắc kích hoạt. |
-| 2 | Event | [Event] Business Activity | Event | ALERT_RUN | Append | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm | Securities Company Alert Run | Fact Append | (1) Business Activity — BCV: "an Event involving an action or series of actions". (2) Bảng: FK→ALERT_INDICATOR, RUN_DATE, RUN_STATUS, RECORDS_CHECKED, VIOLATIONS_FOUND. (3) Business Activity phù hợp. Fact Append — mỗi lần chạy là 1 sự kiện. |
+| 2 | Event | [Event] Business Activity | Event | ALERT_RUN | Append | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm | Securities Company Alert Indicator Run | Fact Append | (1) Business Activity — BCV: "an Event involving an action or series of actions". (2) Bảng: FK→ALERT_INDICATOR, RUN_DATE, RUN_STATUS, RECORDS_CHECKED, VIOLATIONS_FOUND. (3) Business Activity phù hợp. Fact Append — mỗi lần chạy là 1 sự kiện. |
 | 2 | Arrangement | [Arrangement] Assessment Assignment | Arrangement | RISK_REPORTING_PERIOD_SC_FIRM | Update | Gán kỳ đánh giá rủi ro cho từng CTCK cụ thể | Securities Company Risk Reporting Period Assignment | Relative | (1) Assessment Assignment — BCV: "an Arrangement assigning a period/entity for assessment". (2) Bảng: FK→SC_FIRM_INFO, FK→RISK_REPORTING_PERIOD, ASSIGNED_DATE, STATUS. (3) Assessment Assignment phù hợp nhất. |
 | 3 | Involved Party | [Involved Party] Representative | Individual | SC_FIRM_SHAREHOLDER_REPRESENTATIVE | Update | Người được cổ đông tổ chức ủy quyền đại diện quyền lợi tại CTCK | Securities Company Shareholder Representative | Relative | (1) Representative — BCV: "an Involved Party acting on behalf of another". (2) Bảng: FK→SC_FIRM_SHAREHOLDER, FK→SC_FIRM_INFO, REPRESENTATIVE_NAME, ID_NUMBER, REPRESENTED_SHARES, APPOINTMENT_DATE. (3) Representative khớp. Phụ thuộc Securities Company Shareholder (T2). |
 | 3 | Event | [Event] Transaction | Event | SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE | Append | Giao dịch thay đổi sở hữu cổ đông CTCK | Securities Company Shareholder Ownership Change | Fact Append | (1) Transaction — BCV: "an Event that exchanges value between parties". (2) Bảng: FK→SC_FIRM_SHAREHOLDER, FK→SC_FIRM_INFO, CHANGE_DATE, SHARES_BEFORE, SHARES_AFTER, RATIO_BEFORE, RATIO_AFTER, VERIFICATION_STATUS. (3) Transaction khớp — thay đổi giá trị sở hữu insert-only. |
 | 3 | Involved Party | [Involved Party] Connected Person | Individual | SC_FIRM_SHAREHOLDER_RELATION | Update | Người có liên quan của cổ đông CTCK | Securities Company Shareholder Relation | Relative | (1) Connected Person — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_SHAREHOLDER, FK→SC_FIRM_INFO, RELATED_PERSON_NAME, RELATIONSHIP_TYPE_ID, ID_NUMBER. (3) Connected Person khớp. Phụ thuộc Securities Company Shareholder (T2). |
-| 3 | Involved Party | [Involved Party] Major Shareholder | Individual / Organization | SC_FIRM_MAJOR_SHAREHOLDER_RELATION | Update | Quan hệ cổ đông lớn (sở hữu ≥5%) của CTCK | Securities Company Major Shareholder Relation | Relative | (1) Major Shareholder — BCV: "an Involved Party that holds a significant ownership stake". (2) Bảng: FK→SC_FIRM_INFO, SHAREHOLDER_ID(nullable — xem 7e-06), SHAREHOLDER_NAME, OWNERSHIP_RATIO, THRESHOLD_DATE. (3) Major Shareholder khớp. FK→SC_FIRM_SHAREHOLDER nullable → T3. |
-| 3 | Event | [Event] Transaction | Event | SC_FIRM_SHAREHOLDER_TRANSFER | Append | Chuyển nhượng cổ phần giữa hai cổ đông CTCK | Securities Company Shareholder Transfer | Fact Append | (1) Transaction — BCV: "an Event that transfers value between parties". (2) Bảng: FK_TRANSFEROR→SC_FIRM_SHAREHOLDER, FK_TRANSFEREE→SC_FIRM_SHAREHOLDER, FK→SC_FIRM_INFO, TRANSFER_DATE, SHARE_COUNT, PRICE_PER_SHARE. (3) Transaction khớp — dual FK cùng entity cha là self-join pattern hợp lệ. |
-| 3 | Event | [Event] Business Activity | Event | RISK_SCORING_SC_FIRM_DETAIL | Append | Chi tiết điểm rủi ro từng chỉ tiêu cho từng CTCK theo từng kỳ đánh giá | Securities Company Risk Scoring Detail | Fact Snapshot | (1) Business Activity — BCV: "an Event involving scoring/assessment actions". (2) Bảng: FK→SC_FIRM_INFO, FK→RISK_INDICATOR, FK→RISK_SCORING_SCALE(T2), FK→RISK_REPORTING_PERIOD, SCORE, ACTUAL_VALUE, SCORING_DATE. (3) Fact Snapshot — grain: 1 chỉ tiêu × 1 CTCK × 1 kỳ. FK→RISK_SCORING_SCALE(T2) → đặt T3. |
-| 3 | Event | [Event] Business Activity | Event | RISK_SUMMARY | Append | Tổng hợp điểm rủi ro của CTCK theo kỳ đánh giá | Securities Company Risk Summary | Fact Snapshot | (1) Business Activity — BCV: "an Event summarizing assessment results". (2) Bảng: FK→SC_FIRM_INFO, FK→RISK_REPORTING_PERIOD, TOTAL_SCORE, RISK_RATING, SCORING_DATE. (3) Fact Snapshot — grain: 1 CTCK × 1 kỳ. FK→RISK_REPORTING_PERIOD(T1) + FK→SC_FIRM_INFO(T1) → xem 7e-07 về FK→RISK_REPORTING_PERIOD_SC_FIRM(T2). |
+| 2 | Involved Party | [Involved Party] Major Shareholder | Individual / Organization | SC_FIRM_MAJOR_SHAREHOLDER_RELATION | Update | Quan hệ cổ đông lớn (sở hữu ≥5%) của CTCK | Securities Company Major Shareholder Relation | Relative | (1) Major Shareholder — BCV: "an Involved Party that holds a significant ownership stake". (2) Bảng: FK→SC_FIRM_INFO(FK cứng), SHAREHOLDER_ID(key: null, fk_note: null — không phải FK). (3) Major Shareholder khớp. Chỉ FK→SC_FIRM_INFO(T1) → T2. |
+| 3 | Event | [Event] Transaction | Event | SC_FIRM_SHAREHOLDER_TRANSFER | Update | Chuyển nhượng cổ phần giữa hai cổ đông CTCK | Securities Company Shareholder Transfer | Fact Append | (1) Transaction — BCV: "an Event that transfers value between parties". (2) Bảng: FK_TRANSFEROR→SC_FIRM_SHAREHOLDER, FK_TRANSFEREE→SC_FIRM_SHAREHOLDER, FK→SC_FIRM_INFO, TRANSFER_DATE, SHARE_COUNT, PRICE_PER_SHARE. (3) Transaction khớp — dual FK cùng entity cha là self-join pattern hợp lệ. |
+| 3 | Event | [Event] Business Activity | Event | RISK_SCORING_SC_FIRM_DETAIL | Update | Chi tiết điểm rủi ro từng chỉ tiêu cho từng CTCK theo từng kỳ đánh giá | Securities Company Risk Scoring Detail | Fact Snapshot | (1) Business Activity — BCV: "an Event involving scoring/assessment actions". (2) Bảng: FK→SC_FIRM_INFO, FK→RISK_INDICATOR, FK→RISK_SCORING_SCALE(T2), FK→RISK_REPORTING_PERIOD, SCORE, ACTUAL_VALUE, SCORING_DATE. (3) Fact Snapshot — grain: 1 chỉ tiêu × 1 CTCK × 1 kỳ. FK→RISK_SCORING_SCALE(T2) → đặt T3. |
+| 2 | Event | [Event] Business Activity | Event | RISK_SUMMARY | Update | Tổng hợp điểm rủi ro của CTCK theo kỳ đánh giá | Securities Company Risk Summary | Fact Snapshot | (1) Business Activity — BCV: "an Event summarizing assessment results". (2) Bảng: FK→SC_FIRM_INFO(FK cứng), RISK_REPORTING_PERIOD_ID(FK suy luận→RISK_REPORTING_PERIOD), RISK_SCORING_SC_FIRM_ID(key: null, fk_note: null — không phải FK). (3) Fact Snapshot — grain: 1 CTCK × 1 kỳ. Chỉ FK→T1 → T2. |
 | 3 | Event | [Event] Transaction | Event | SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT | Update | Báo cáo định kỳ do chi nhánh CTCK nước ngoài nộp lên UBCKNN | Securities Company Foreign Branch Periodic Report | Relative | (1) Transaction — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_FOREIGN_BRANCH(T2), FORM_REPORT_ID(Classification Value), PERIOD, YEAR, DEADLINE, SUBMISSION_DATE, STATUS. (3) Transaction phù hợp. Phụ thuộc Securities Company Foreign Branch (T2). |
 | 3 | Event | [Event] Transaction | Event | SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT | Update | Báo cáo định kỳ do VPĐD CTCK nước ngoài nộp lên UBCKNN | Securities Company Foreign Representative Office Periodic Report | Relative | (1) Transaction — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_FOREIGN_REP_OFFICE(T2), FORM_REPORT_ID(Classification Value), PERIOD, YEAR, SUBMISSION_DATE, STATUS. (3) Transaction phù hợp. |
-| 3 | Involved Party | [Involved Party] Key Personnel | Individual | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | Update | Nhân sự tại chi nhánh CTCK nước ngoài tại Việt Nam | Securities Company Foreign Branch Personnel | Relative | (1) Key Personnel — BCV: "an Involved Party that is a key member of an organization". (2) Bảng: FK→SC_FIRM_FOREIGN_BRANCH(T2), FULL_NAME, POSITION_ID, NATIONALITY_ID, APPOINTMENT_DATE, CCHN_NUMBER. (3) Key Personnel khớp. |
+| 3 | Involved Party | [Involved Party] Key Personnel | Individual | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | Append | Nhân sự tại chi nhánh CTCK nước ngoài tại Việt Nam | Securities Company Foreign Branch Personnel | Relative | (1) Key Personnel — BCV: "an Involved Party that is a key member of an organization". (2) Bảng: FK→SC_FIRM_FOREIGN_BRANCH(T2), FULL_NAME, POSITION_ID, NATIONALITY_ID, APPOINTMENT_DATE, CCHN_NUMBER. (3) Key Personnel khớp. |
 | 3 | Involved Party | [Involved Party] Key Personnel | Individual | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | Update | Nhân sự tại VPĐD CTCK nước ngoài tại Việt Nam | Securities Company Foreign Representative Office Personnel | Relative | (1) Key Personnel — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_FOREIGN_REP_OFFICE(T2), FULL_NAME, POSITION_ID, NATIONALITY_ID, APPOINTMENT_DATE, DISMISSAL_DATE. (3) Key Personnel khớp. |
-| 4 | Event | [Event] Business Activity | Event | RISK_SUMMARY_DETAIL | Append | Chi tiết điểm tổng hợp rủi ro theo từng nhóm chỉ tiêu CAMEL | Securities Company Risk Summary Detail | Fact Snapshot | (1) Business Activity — BCV: "an Event summarizing component scores". (2) Bảng: FK→RISK_SUMMARY(T3), FK→RISK_INDICATOR_GROUP(T1), GROUP_SCORE, COMPONENT_WEIGHT. (3) Fact Snapshot — grain: 1 nhóm (C/A/M/E/L) × 1 tổng hợp rủi ro. FK→RISK_SUMMARY(T3) → bắt buộc T4. |
+| 3 | Event | [Event] Business Activity | Event | RISK_SUMMARY_DETAIL | Update | Chi tiết điểm tổng hợp rủi ro theo từng nhóm chỉ tiêu CAMEL | Securities Company Risk Summary Detail | Fact Snapshot | (1) Business Activity — BCV: "an Event summarizing component scores". (2) Bảng: FK→RISK_SUMMARY(T2), FK→RISK_INDICATOR_GROUP(T1), GROUP_SCORE, COMPONENT_WEIGHT. (3) Fact Snapshot — grain: 1 nhóm (C/A/M/E/L) × 1 tổng hợp rủi ro. FK→RISK_SUMMARY(T2) → T3. |
 
-**Tổng: 52 Atomic entities** (T1: 9 entities, T2: 33 entities, T3: 11 entities, T4: 1 entity)
+**Tổng: 52 Atomic entities** (T1: 9 entities, T2: 35 entities, T3: 10 entities, T4: 0 entities)
 *(Trong đó: 2 shared entities extend source_table — không tạo mới: `Geographic Area` extend SCMS.CAT_PROVINCE/CAT_DISTRICT/CAT_WARD, `Securities Practitioner` extend SCMS.SC_FIRM_LICENSED_PRACTITIONER)*
 
 ---
@@ -105,7 +105,7 @@ graph TD
     FOR_RP_VN["**Securities Company Foreign Representative Office VN**"]:::atomic
     SENIOR["**Securities Company Senior Personnel**"]:::atomic
     PRACT["Securities Practitioner\n(shared — extend)"]:::shared
-    AUDITOR["**Securities Company Auditor**"]:::atomic
+    AUDITOR["**Securities Company Audit Firm Auditor**"]:::atomic
     CUST_BK["**Securities Company Custodian Bank**"]:::atomic
     LIC_SVC["**Securities Company Licensed Service**"]:::atomic
     PERIODIC_RPT["**Securities Company Periodic Report**"]:::atomic
@@ -124,25 +124,23 @@ graph TD
     OWNERSHIP_REL["**Securities Company Ownership Relation**"]:::atomic
     RELATED_PER["**Securities Company Related Person**"]:::atomic
     PROFILE_CHG["**Securities Company Profile Change**"]:::atomic
-    RISK_SCALE["**Securities Company Risk Scoring Scale**"]:::atomic
+    RISK_SCALE["**Securities Company Risk Indicator Scoring Scale**"]:::atomic
     ALERT_COND["**Securities Company Alert Indicator Condition**"]:::atomic
-    ALERT_RUN["**Securities Company Alert Run**"]:::atomic
+    ALERT_RUN["**Securities Company Alert Indicator Run**"]:::atomic
     RISK_ASSIGN["**Securities Company Risk Reporting Period Assignment**"]:::atomic
+    MAJ_SH_REL["**Securities Company Major Shareholder Relation**"]:::atomic
+    RISK_SUM["**Securities Company Risk Summary**"]:::atomic
 
     %% Tier 3
     SH_REP["**Securities Company Shareholder Representative**"]:::atomic
     SH_CHANGE["**Securities Company Shareholder Ownership Change**"]:::atomic
     SH_XFER["**Securities Company Shareholder Transfer**"]:::atomic
     SH_REL["**Securities Company Shareholder Relation**"]:::atomic
-    MAJ_SH_REL["**Securities Company Major Shareholder Relation**"]:::atomic
     RISK_DETAIL["**Securities Company Risk Scoring Detail**"]:::atomic
-    RISK_SUM["**Securities Company Risk Summary**"]:::atomic
     FOR_BR_PER["**Securities Company Foreign Branch Personnel**"]:::atomic
     FOR_RP_PER["**Securities Company Foreign Rep. Office Personnel**"]:::atomic
     FOR_BR_RPT["**Securities Company Foreign Branch Periodic Report**"]:::atomic
     FOR_RP_RPT["**Securities Company Foreign Representative Office Periodic Report**"]:::atomic
-
-    %% Tier 4
     RISK_SUM_DT["**Securities Company Risk Summary Detail**"]:::atomic
 
     %% T1 → T2
@@ -174,27 +172,28 @@ graph TD
     SC_CO --> RELATED_PER
     SC_CO --> PROFILE_CHG
     SC_CO --> RISK_ASSIGN
+    SC_CO --> MAJ_SH_REL
+    SC_CO --> RISK_SUM
     AU_FIRM --> AUDITOR
     RISK_IND --> RISK_SCALE
     ALERT_IND --> ALERT_COND
     ALERT_IND --> ALERT_RUN
     RISK_PER --> RISK_ASSIGN
+    RISK_PER --> RISK_SUM
 
     %% T2 → T3
     SHAREHOLDER --> SH_REP
     SHAREHOLDER --> SH_CHANGE
     SHAREHOLDER --> SH_XFER
     SHAREHOLDER --> SH_REL
-    SC_CO --> MAJ_SH_REL
     RISK_SCALE --> RISK_DETAIL
     RISK_PER --> RISK_DETAIL
-    RISK_PER --> RISK_SUM
     FOR_BR --> FOR_BR_PER
     FOR_RP --> FOR_RP_PER
     FOR_BR --> FOR_BR_RPT
     FOR_RP --> FOR_RP_RPT
 
-    %% T3 → T4
+    %% T2 → T3
     RISK_SUM --> RISK_SUM_DT
     RISK_GRP --> RISK_SUM_DT
 ```
@@ -247,8 +246,11 @@ graph TD
 | 3 | T2 | SC_FIRM_FOREIGN_REP_OFFICE_VN — không tìm thấy FK→SC_FIRM_INFO_ID trong cột. Quan hệ với CTCK Việt Nam là gì? | Nếu không có business FK: hạ xuống T1; nếu có FK ẩn qua BUSINESS_LICENSE_NUMBER: giữ T2 và xác định join key. |
 | 4 | T2 | SC_FIRM_SERVICE và LNK_SC_FIRM_SERVICE — 2 bảng có phản ánh cùng dữ liệu không? | Nếu trùng: giữ LNK_SC_FIRM_SERVICE → `Securities Company Licensed Service`, loại SC_FIRM_SERVICE. Nếu khác giai đoạn: merge 2 bảng vào 1 entity. |
 | 5 | T1 | ALERT_FINANCIAL_INDICATOR — quan hệ với ALERT_INDICATOR như thế nào (subset/parallel/loại khác)? | Nếu là subset: gộp vào `Securities Company Alert Indicator` + phân biệt bằng Classification Value; nếu độc lập: giữ 2 entity. |
-| 6 | T3 | SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SHAREHOLDER_ID — nullable? Cổ đông lớn có thể không có trong SC_FIRM_SHAREHOLDER không? | Nếu nullable về nghiệp vụ: FK không bắt buộc, entity vẫn ở T3; nếu luôn not-null: tăng độ chặt FK constraint. |
-| 7 | T3 | RISK_SUMMARY — có FK→RISK_REPORTING_PERIOD_SC_FIRM (T2) hay chỉ FK→RISK_REPORTING_PERIOD (T1) trực tiếp? | Nếu FK→RISK_REPORTING_PERIOD_SC_FIRM(T2): giữ T3 đúng. Nếu chỉ FK→T1: có thể đặt T2, nhưng logic nghiệp vụ vẫn phụ thuộc T2. |
+| 6 | T2 | SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SHAREHOLDER_ID — nullable? Cổ đông lớn có thể không có trong SC_FIRM_SHAREHOLDER không? | **Đã xác nhận từ BRD:** SHAREHOLDER_ID có `key: null, fk_note: null` — không phải FK khai báo, chỉ là cột lưu ID tham chiếu mềm. Không có FK đến SC_FIRM_SHAREHOLDER. Entity chỉ FK→SC_FIRM_INFO(T1) → **hạ xuống T2**. |
+| 7 | T2 | RISK_SUMMARY — có FK→RISK_REPORTING_PERIOD_SC_FIRM (T2) hay chỉ FK→RISK_REPORTING_PERIOD (T1) trực tiếp? | **Đã xác nhận từ BRD:** RISK_SCORING_SC_FIRM_ID có `key: null, fk_note: null` — không phải FK. RISK_REPORTING_PERIOD_ID là FK suy luận→RISK_REPORTING_PERIOD(T1). Không có FK đến T2. → **hạ xuống T2**. |
+| 8 | T2 | REPORT_VIOLATION — nguồn Update (có LAST_MODIFIED_AT) nhưng Table Type = Fact Append. ETL xử lý correction thế nào? | Nếu correction chỉ sửa nội dung mô tả (không thêm occurrence): ETL upsert theo khóa tự nhiên (SC_FIRM_INFO_ID + VIOLATION_DATE + VIOLATION_TYPE_ID). Nếu correction tạo occurrence mới: giữ insert-only và xem xét đổi Table Type. |
+| 9 | T3 | SC_FIRM_SHAREHOLDER_TRANSFER — nguồn Update (có LAST_MODIFIED_AT + RECORD_STATUS) nhưng Table Type = Fact Append. ETL xử lý correction/huỷ chuyển nhượng thế nào? | Nếu huỷ chuyển nhượng tạo record mới với trạng thái CANCELLED: giữ Fact Append + filter RECORD_STATUS = active. Nếu cập nhật trực tiếp record gốc: ETL upsert theo transfer_id. |
+| 10 | T3 | SC_FIRM_FOREIGN_BRANCH_PERSONNEL — nguồn Append (chỉ có CREATED_AT, không có UPDATED_AT), Table Type = Relative (SCD4A). Nguồn Append + SCD4A Relative là bất thường — business rule cập nhật nhân sự là gì? | Nếu nhân sự thực tế không bao giờ được sửa (chỉ tạo mới + deactivate): SCD4A vẫn hợp lệ nhưng ETL chỉ insert, không cần xử lý update. Nếu có sửa ngoài DB source: cần thêm UPDATED_AT hoặc dùng CDC. |
 
 ---
 
@@ -392,7 +394,7 @@ graph TD
 **Description:** Điều kiện kích hoạt cảnh báo cho từng chỉ tiêu cảnh báo. Ghi nhận biểu thức logic, ngưỡng giá trị, toán tử so sánh và thời hạn hiệu lực của quy tắc.
 
 
-### 9. Securities Company Alert Run
+### 9. Securities Company Alert Indicator Run
 **Tier:** 2 | **Source:** `SCMS.ALERT_RUN` | **BCV Concept:** [Event] Business Activity | **BCO:** Event | **Table Type:** Fact Append
 **Description:** Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm. Mỗi dòng = 1 lần chạy insert-only với chỉ tiêu, thời điểm, trạng thái và số vi phạm phát hiện.
 
@@ -407,7 +409,7 @@ graph TD
 **Description:** Công ty kiểm toán được UBCKNN chấp thuận thực hiện kiểm toán báo cáo tài chính của CTCK. Ghi nhận mã, tên, số GPĐKKD và trạng thái hoạt động.
 
 
-### 12. Securities Company Auditor
+### 12. Securities Company Audit Firm Auditor
 **Tier:** 2 | **Source:** `SCMS.AUDITOR` | **BCV Concept:** [Involved Party] Auditor | **BCO:** Involved Party | **Table Type:** Relative
 **Description:** Kiểm toán viên cá nhân trực thuộc công ty kiểm toán được giao thực hiện kiểm toán CTCK. Ghi nhận mã kiểm toán viên, số chứng chỉ, ngày bổ nhiệm và trạng thái.
 
@@ -557,9 +559,9 @@ graph TD
 **Description:** Chi tiết điểm rủi ro từng chỉ tiêu cho từng CTCK theo từng kỳ đánh giá. Grain: 1 chỉ tiêu × 1 CTCK × 1 kỳ. Ghi nhận điểm, giá trị thực tế và thang điểm áp dụng.
 
 
-### 42. Securities Company Risk Scoring Scale
+### 42. Securities Company Risk Indicator Scoring Scale
 **Tier:** 2 | **Source:** `SCMS.RISK_SCORING_SCALE` | **BCV Concept:** [Condition] Risk Scale | **BCO:** Condition | **Table Type:** Relative
-**Description:** Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu. Định nghĩa các mức điểm theo khoảng giá trị (min/max) và điều kiện áp dụng từng mức.
+**Description:** Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu rủi ro. Định nghĩa các mức điểm theo khoảng giá trị (min/max) và điều kiện áp dụng từng mức.
 
 
 ### 43. Securities Company Risk Summary

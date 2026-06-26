@@ -20,66 +20,88 @@ description: |
 
 ## QUY TRÌNH REVIEW
 
-### Bước 0 — Thu thập input
+### Bước 0 — Xác nhận input tồn tại (lazy — không đọc nội dung)
 
-1. Đọc `BRD/Source/brd_{SOURCE}.yaml` → lấy danh sách bảng trong scope thiết kế, đếm `total_in_scope`.
+Chạy 4 shell commands, **không đọc nội dung bất kỳ file nào**:
 
-   > **Lưu ý `scope_status`:** `in_scope` chỉ được ghi sau khi LLD hoàn thành (do `atomic-lld-design` skill chạy sync script). Nếu source đang ở giai đoạn HLD (chưa có LLD), các bảng trong scope sẽ có `scope_status: pending`. Quy tắc đọc:
-   > - Có bảng `in_scope` → dùng `in_scope` làm danh sách scope.
-   > - Không có bảng `in_scope` nào (toàn `pending`) → dùng `pending` làm danh sách scope, ghi chú trong kế hoạch.
-   > - Bảng `out_of_scope` → không đưa vào scope review.
+```bash
+# 1. File bắt buộc tồn tại?
+ls BRD/Source/brd_{SOURCE}.yaml
+ls DataModel/working/Atomic/hld/{SOURCE}_HLD_Overview.md
+ls BRD/Source/{SOURCE}/ | wc -l        # đếm số BRD per-table
 
-2. Đọc `DataModel/working/Atomic/hld/{SOURCE}_HLD_Overview.md` → lấy mục 7a, 7b, 7d, 7e, 7f.
-3. Kiểm tra file BRD per-table: với mỗi bảng trong scope (in_scope hoặc pending tùy bước 1), kiểm tra `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml` tồn tại không — đếm số file có để điền vào cột Trạng thái.
-4. Kiểm tra file tùy chọn tồn tại không — ghi nhận để bỏ qua TC tương ứng nếu thiếu:
-   - `DataModel/working/Atomic/lld/manifest.yaml` → dùng cho TC-02/2e (3e cũ)
-   - `DataModel/working/Atomic/hld/atomic_entities.yaml` → dùng cho TC-01
+# 2. Scope dùng in_scope hay pending? + đếm số bảng trong scope
+grep -c "scope_status: in_scope" BRD/Source/brd_{SOURCE}.yaml
+grep -c "scope_status: pending" BRD/Source/brd_{SOURCE}.yaml
+
+# 3. Đếm nhanh entity 7a và bảng 7f từ HLD Overview (đếm dòng bảng markdown)
+grep -c "^| " DataModel/working/Atomic/hld/{SOURCE}_HLD_Overview.md
+
+# 4. File tùy chọn tồn tại?
+ls DataModel/working/Atomic/lld/manifest.yaml 2>/dev/null && echo "manifest: có" || echo "manifest: không"
+ls DataModel/working/Atomic/hld/atomic_entities.yaml 2>/dev/null && echo "atomic_entities: có" || echo "atomic_entities: không"
+```
+
+> **Quy tắc scope:** Nếu `grep -c "in_scope"` trả về 0 → dùng `pending`. Nếu > 0 → dùng `in_scope`. Bảng `out_of_scope` không đưa vào scope review.
+
+> **Sanity check sơ bộ từ grep dòng bảng:** Kết quả grep `^| ` là tổng dòng markdown table trong toàn file (gộp cả 7a, 7c, 7d, 7f và các bảng khác) — dùng để phát hiện file rỗng/bất thường, không phải số chính xác. Số chính xác của 7a và 7f sẽ được đếm khi TC tương ứng chạy.
+
+Dừng ngay nếu file bắt buộc thiếu — báo lỗi cho human.
 
 ### Bước 1 — Lập kế hoạch và trình bày human duyệt
 
-Sau Bước 0, lập kế hoạch chạy và **trình bày cho human duyệt trước khi chạy bất kỳ TC nào**. Format trình bày:
+Tổng hợp từ output Bước 0, trình bày ngắn gọn — **không đọc thêm file nào**:
 
 ```
 ## Kế hoạch Review — {SOURCE}
 
-**Input xác nhận:**
+Input: BRD tổng ✓ | HLD Overview ✓ | BRD per-table: {N} file
+Scope: {in_scope / pending} — {total} bảng | HLD markdown rows: {M} dòng bảng
+manifest: {có/không} | atomic_entities: {có/không}
 
-| Tài liệu | Đường dẫn | Trạng thái | Ghi chú |
-|---|---|---|---|
-| BRD tổng | `BRD/Source/brd_{SOURCE}.yaml` | Đầy đủ / Thiếu | Bắt buộc — scope dùng: {in_scope / pending} — tổng bảng trong scope: {total_in_scope} |
-| HLD Overview | `DataModel/working/Atomic/hld/{SOURCE}_HLD_Overview.md` | Đầy đủ / Thiếu | Bắt buộc — entity 7a: {total_7a}, bảng 7f: {total_7f} |
-| BRD per-table | `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml` | Đầy đủ / Thiếu ({có}/{total_in_scope} file) | Bắt buộc cho TC-06/07/08/09 |
-| manifest.yaml | `DataModel/working/Atomic/lld/manifest.yaml` | Đầy đủ / Thiếu | Tùy chọn → TC-02/2e {chạy / bỏ qua} |
-| atomic_entities.yaml | `DataModel/working/Atomic/hld/atomic_entities.yaml` | Đầy đủ / Thiếu | Tùy chọn → TC-01 {chạy / bỏ qua} |
+TC-01 Lock status       → {chạy / bỏ qua (thiếu atomic_entities.yaml)}
+TC-02 Tên Entity        → {chạy / 2e bỏ qua (thiếu manifest)}
+TC-03 Table Type        → chạy
+TC-04 Dependency Tier   → chạy
+TC-05 7f Coverage       → chạy
+TC-06 Junction table    → chạy
+TC-07 Classification?   → chạy
+TC-08 BCV Concept       → chạy
+TC-09 Change Mode       → chạy
+TC-10 Đồng bộ Tier files → chạy tự động sau TC-09
 
-**Thứ tự chạy:**
-| # | Test Case | File đọc thêm | Ghi chú |
-|---|---|---|---|
-| TC-01 | Lock status entity approved | atomic_entities.yaml | Bỏ qua nếu file không tồn tại |
-| TC-02 | Tên Atomic Entity | manifest.yaml | 2e bỏ qua nếu manifest không tồn tại |
-| TC-03 | Table Type | 7a, 7e | — |
-| TC-04 | Dependency Tier | 7a, 7b, 7e | — |
-| TC-05 | 7f Bảng ngoài scope | 7f, brd_{SOURCE}.yaml | brd tổng đã đọc ở Bước 0 |
-| TC-06 | Junction table | 7d, 7a, BRD per-table | Lớp 3 đọc BRD per-table |
-| TC-07 | Classification Value hay Entity | BRD per-table | Gộp lần đọc với TC-06 |
-| TC-08 | BCV Concept phù hợp | BRD per-table (selective) | Gộp lần đọc với TC-06+07 |
-| TC-09 | Source Table Change Mode | BRD per-table (toàn bộ) | Đọc hết những bảng còn lại |
-
-Xác nhận chạy toàn bộ? Hoặc chỉ định TC cụ thể cần chạy.
+Xác nhận chạy toàn bộ? Hoặc chỉ định TC cụ thể.
 ```
 
 ### Bước 2 — Chờ human duyệt
 
-- Human xác nhận chạy toàn bộ → chạy TC-01 đến TC-09 lần lượt.
-- Human chỉ định TC cụ thể → chỉ chạy các TC đó, theo đúng thứ tự trong kế hoạch.
+- Human xác nhận chạy toàn bộ → chạy TC-01 đến TC-09 lần lượt, sau đó tự động chạy TC-10.
+- Human chỉ định TC cụ thể → chỉ chạy các TC đó, theo đúng thứ tự.
 - Human điều chỉnh scope → cập nhật kế hoạch, trình bày lại trước khi chạy.
 
-### Bước 3 — Chạy lần lượt từng TC
+### Bước 3 — Chạy lần lượt từng TC (lazy per TC)
 
-Chạy theo thứ tự trong kế hoạch đã duyệt, áp dụng quy tắc sau sau mỗi TC:
+**Nguyên tắc đọc file:** Mỗi TC chỉ đọc đúng phần cần — dùng `offset` + `limit` hẹp hoặc `grep` thay vì đọc full file. Không giữ raw content trong output — chỉ xuất bảng kết quả đã tổng hợp.
 
-- **TC có lỗi** (Kết quả chứa `Lỗi` / `Sai quy tắc` / `Sai Tier` / `Bỏ sót` / `Vi phạm LOCKED` hoặc bất kỳ vấn đề nghiêm trọng) → **dừng lại**, trình bày chi tiết lỗi và chờ human xử lý. Chỉ tiếp TC tiếp theo khi human xác nhận.
-- **TC pass hoàn toàn** (tất cả dòng đều `OK` hoặc chỉ có `Cần xác nhận` / `Cần xem xét`) → in kết quả ngắn gọn rồi **tự động chuyển sang TC tiếp theo** mà không cần chờ.
+**Nguyên tắc self-review bắt buộc trước khi xuất output mỗi TC:**
+
+Trước khi trình bày kết quả TC cho human, bắt buộc tự hỏi:
+
+> *"Kết quả tôi chuẩn bị flag có đúng với quy tắc trong skill `atomic-hld-design` không?"*
+
+Quy trình self-review (thực hiện trong đầu, không cần xuất ra):
+
+1. **Đọc lại quy tắc liên quan trong skill `atomic-hld-design`** — đặc biệt với các trường hợp ngoại lệ, pattern riêng (Pure Junction, Classification Value, Geographic Area, Batch Processing Metadata, File Attachment...).
+2. **Kiểm tra cross-reference với các section khác của HLD Overview** — một bảng nguồn có thể được xử lý hợp lệ tại 7c, 7d, 7e thay vì 7a/7f. Không flag "thiếu" chỉ vì không tìm thấy ở 7a hoặc 7f.
+3. **Với mỗi flag lỗi dự kiến: tự đặt câu hỏi phản biện** — "Có quy tắc nào trong skill HLD cho phép thiết kế này không?" Nếu có → hạ xuống `Cần xác nhận`, không flag `Lỗi`.
+4. **Chỉ flag `Lỗi` khi có vi phạm rõ ràng** — nếu còn nghi ngờ, luôn ưu tiên `Cần xác nhận` hoặc không flag.
+
+> **Bài học từ lỗi TC-05 (SCMS):** Lớp 3 Coverage check ban đầu flag 23 bảng CAT_/LNK_ là "missing" vì chỉ so sánh với 7a + 7f, bỏ sót mục 7c (Classification Value) và 7d (Junction Tables). Cross-check với skill HLD mới phát hiện 23 bảng đó đã được xử lý đúng — không có lỗi thực sự. Self-review buộc phải kiểm tra đủ 4 section (7a + 7c + 7d + 7f) trước khi kết luận.
+
+Quy tắc sau mỗi TC:
+
+- **TC có lỗi** (Kết quả chứa `Lỗi` / `Sai quy tắc` / `Sai Tier` / `Bỏ sót` / `Vi phạm LOCKED`) → **dừng lại**, trình bày chi tiết lỗi và chờ human xử lý. Chỉ tiếp TC tiếp theo khi human xác nhận.
+- **TC pass hoàn toàn** (tất cả dòng `OK` hoặc chỉ `Cần xác nhận` / `Cần xem xét`) → in kết quả ngắn gọn rồi **tự động chuyển sang TC tiếp theo**.
 
 Sau TC cuối cùng: xuất **Báo cáo tổng hợp** theo format chuẩn ở cuối file này.
 
@@ -128,6 +150,14 @@ Sai bất kỳ cột → **`Vi phạm LOCKED`** — lỗi nghiêm trọng.
 
 ---
 
+#### Self-review TC-01 — trước khi xuất output
+
+> Trước khi flag `Vi phạm LOCKED`, tự hỏi:
+> 1. **Entity có thực sự khớp tên chính xác trong `atomic_entities.yaml`?** — Chỉ entity exact match tên mới vào scope TC-01. Entity tên gần giống nhưng khác → không phải approved entity, bỏ qua.
+> 2. **Status có phải `approved`?** — `status=draft` được phép sửa tự do, không flag.
+> 3. **Cột vi phạm có phải 1 trong 4 LOCKED?** — `source_table` và `description` được phép khác (bổ sung source mới), không flag dù giá trị khác.
+> 4. **Thay đổi có chủ ý?** — Nếu có vẻ người thiết kế đổi có lý do (VD: BCV term được refine), flag `Vi phạm LOCKED` nhưng ghi thêm đề xuất "Đổi status → draft trước nếu thay đổi có chủ ý".
+
 #### Output TC-01
 
 | Atomic Entity | Status | Cột vi phạm | Giá trị 7a | Giá trị LOCKED | Kết quả | Đề xuất |
@@ -146,15 +176,41 @@ Sai bất kỳ cột → **`Vi phạm LOCKED`** — lỗi nghiêm trọng.
 - HLD Overview mục 7a — cột `Atomic Entity`, `BCV Concept`, `BCV Core Object`, `Table Type`, `Tier`, `Category`
 - `DataModel/working/Atomic/lld/manifest.yaml` — entity đã `status=approved` (input tùy chọn — kiểm tra nếu file tồn tại)
 
+> **⚠️ Nguyên tắc chung TC-02 — đọc trước khi chạy từng điểm kiểm tra:**
+> TC-02 kiểm tra **tính nhất quán** của tên, không kiểm tra **sự giống nhau literal với BCV Term**. Thiết kế HLD là sáng tạo có hướng dẫn — người thiết kế được phép dùng tên nghiệp vụ cụ thể hơn BCV Term nếu có giải thích. Trước khi flag bất kỳ lỗi nào ở 2a hoặc 2c:
+> - Đọc cột `BCV Term` (2a) hoặc diagram 7b (2c) để lấy context đầy đủ.
+> - Chỉ flag khi điều kiện phụ (ghi chú lý do / xác định cha đúng) **không thỏa** — không flag chỉ dựa vào so sánh tên literal.
+> - Khi nghi ngờ: ưu tiên **không flag** và ghi `Cần xác nhận` thay vì flag `Lỗi`.
+
 #### Các điểm kiểm tra
 
-**2a — Tên entity phải chứa BCV Term**
+**2a — Tên entity phải chứa BCV Term (trừ ngoại lệ)**
 
 BCV Term = phần sau dấu `]` trong cột `BCV Concept` (VD: `[Involved Party] Fund Management Company` → BCV Term = `Fund Management Company`).
 
-Quy tắc: `Atomic Entity` phải **chứa** BCV Term đó (substring, case-insensitive).
+Quy tắc cơ bản: `Atomic Entity` phải **chứa** BCV Term đó (substring, case-insensitive).
 
-Lỗi: tên entity không chứa BCV Term — thường do dùng tên loại cụ thể từ bảng nguồn thay vì BCV Term.
+**Ngoại lệ — bỏ qua 2a, không flag:**
+
+| Trường hợp | Lý do bỏ qua |
+|---|---|
+| BCV Term trùng với tên BCV Core Object (VD: `Transaction`, `Communication`, `Business Activity`, `Event`, `Documentation`, `Individual`) | Term quá generic — bắt buộc chứa làm tên entity vô nghĩa; hàng chục entity trong dự án chia sẻ cùng Term |
+| Entity là shared entity (cột BCV Term trong 7a ghi "Shared Entity" hoặc entity đã có trong `atomic_entities.yaml` với `status=approved`) | Tên LOCKED — không được đổi dù không khớp |
+| BCV Term gần bằng Core Object (VD: `Arrangement`, `Condition`, `Property`) và entity đã dùng tên nghiệp vụ cụ thể hơn | Tương tự trường hợp generic |
+
+**Chỉ flag lỗi 2a khi đủ 2 điều kiện:**
+1. BCV Term đủ đặc thù — có ít nhất 2 từ, không trùng Core Object, mang nghĩa domain cụ thể (VD: `Broker Dealer`, `Audit Firm`, `Assessment Period`, `Risk Category`, `Alert Rule`)
+2. Tên entity dùng từ khác không chứa BCV Term **và** không có ghi chú lý do trong cột `BCV Term` của 7a
+
+Lỗi thực sự: tên entity dùng tên bảng nguồn thô (VD: `RISK_REPORTING_PERIOD`) hoặc tên loại cụ thể hoàn toàn khác nghĩa với BCV Term mà không giải thích.
+
+> **⚠️ Lưu ý thực thi — lỗi hay gặp khi review:**
+> Kiểm tra điều kiện 2 TRƯỚC khi flag. Quy trình bắt buộc:
+> 1. Đọc nội dung cột `BCV Term` trong 7a cho entity đang xét.
+> 2. Nếu cột có ghi chú lý do (dù ngắn) → **bỏ qua, không flag**.
+> 3. Chỉ flag khi cột trống hoặc chỉ ghi lại tên BCV Term mà không giải thích tại sao tên entity khác term.
+>
+> BCV Term là kim chỉ nam chọn concept — tên entity sau đó được đặt theo nghĩa nghiệp vụ cụ thể. Pattern `[Prefix] + [BCV Term]` là default, không phải bắt buộc tuyệt đối. 34/52 entity trong một source system thực tế (SCMS) không chứa BCV Term literal nhưng đều có ghi chú lý do hợp lệ → tất cả pass điều kiện 2.
 
 **2b — Entity cùng nhóm nghiệp vụ phải chung prefix**
 
@@ -168,13 +224,33 @@ Lỗi: entity cùng nhóm dùng prefix không nhất quán.
 
 **2c — Tên entity con phải chứa đầy đủ tên entity cha**
 
-Entity cha = entity ở Tier thấp hơn mà entity con có FK trỏ đến (suy ra từ thứ tự Tier trong mục 7a + Diagram 7b nếu có).
+Entity cha = entity ở Tier thấp hơn mà entity con có FK **duy nhất hoặc chính** trỏ đến (suy ra từ thứ tự Tier trong mục 7a + Diagram 7b nếu có).
 
 Quy tắc: tên entity con phải chứa **toàn bộ** tên entity cha dưới dạng substring liên tục.
 
 VD: entity cha = `Securities Company` → entity con phải là `Securities Company Branch`, không được là `Branch`.
 
-Lỗi: tên entity con không chứa tên entity cha.
+**Xác định entity cha khi entity có nhiều FK:**
+- Entity con có FK đến nhiều entity ở Tier cao hơn → cha là entity mà **tên entity con mô tả trực tiếp** (entity định nghĩa grain của entity con).
+- VD: `Securities Company Shareholder Representative` FK đến cả `Securities Company Shareholder` (T2) và `Securities Company` (T1) → cha là `Securities Company Shareholder` vì entity con mô tả "đại diện của cổ đông", không phải "đại diện của CTCK".
+
+**Ngoại lệ — bỏ qua 2c, không flag:**
+
+| Trường hợp | Lý do bỏ qua |
+|---|---|
+| Entity cha là shared entity từ source khác (VD: `Geographic Area`, `Securities Practitioner`) | Tên cha LOCKED, entity con không nhất thiết embed |
+| Entity con FK đến cha nhưng grain entity con là **instance riêng biệt** (không phải sub-record của cha) | VD: entity cha là entity tổ chức (Firm/Branch), entity con là người (Auditor/Personnel) — grain khác loại hoàn toàn; tên entity con không cần embed tên tổ chức cha nếu đã rõ domain qua prefix |
+
+> **Lưu ý ngoại lệ thứ 2:** Áp dụng khi tên entity con đã có prefix domain rõ ràng phân biệt được cha (VD: `Securities Company Audit Firm Auditor` — vẫn phải embed `Audit Firm` vì không có prefix nào khác phân biệt auditor thuộc firm nào). Nếu không có prefix tường minh → vẫn bắt buộc embed tên cha.
+
+Lỗi: tên entity con không chứa tên entity cha **và** không thỏa ngoại lệ nào ở trên.
+
+> **⚠️ Lưu ý thực thi — lỗi hay gặp khi review:**
+> Khi entity có nhiều FK (multi-dependency), xác định cha chính xác trước khi flag:
+> 1. Đọc diagram 7b để biết tất cả FK của entity con.
+> 2. Áp quy tắc: cha = entity mà **tên entity con mô tả trực tiếp** (định nghĩa grain).
+> 3. Nếu entity con chứa tên bất kỳ cha nào trong chuỗi dependency → không flag.
+> 4. Tên chứa prefix cấp cao (VD: `Securities Company`) là đủ nếu không có cha cấp trung rõ ràng hơn định nghĩa grain.
 
 **2d — BCV Concept format và BCV Core Object hợp lệ**
 
@@ -257,6 +333,14 @@ Inference từ cột `Tier` trong mục 7a:
 
 → Kết quả: `OK` / `Cần xác nhận`
 
+#### Self-review TC-03 — trước khi xuất output
+
+> Trước khi flag `Sai quy tắc` hoặc `Cần xác nhận`, tự hỏi:
+> 1. **Bước 1 — Entity có được ghi ngoại lệ trong mục 7e không?** — Skill HLD cho phép ngoại lệ nếu đã ghi rõ. Đọc 7e trước khi flag bất kỳ entity nào ở Bước 1.
+> 2. **Bước 2 — Entity Tier 2+ Fundamental có phải shared entity không?** — Shared entity (IP Postal Address, IP Electronic Address, IP Alt Identification) có lifecycle riêng, đặt Tier 2 theo context source là hợp lệ. Không flag `Cần xác nhận` nếu entity là shared entity đã approved.
+> 3. **Bước 2 — Entity Tier 1 Relative có phải Geographic Area không?** — Skill HLD ngoại lệ: Geographic Area Tier 1 vẫn là `Fundamental`, không phải `Relative`. Nếu gặp entity địa lý Tier 1 với Fundamental → không flag.
+> 4. **Bước 3 — Append + Fundamental có được ghi vào 7e không?** — Skill HLD quy định bất thường này phải ghi vào 7e "Điểm cần xác nhận". Nếu đã ghi → hạ xuống `OK (đã ghi 7e)` thay vì `Cần xác nhận`.
+
 #### Output TC-05
 
 Bảng báo cáo (1 dòng per entity):
@@ -314,6 +398,15 @@ So sánh `tier_expected` với `tier_current` từ mục 7a:
 | Entity có trong 7a nhưng không có node tương ứng trong diagram 7b | `Thiếu trong 7b` |
 | Node trong diagram 7b trỏ đến entity không có trong mục 7a | `Orphan ref trong 7b` |
 | Entity có trong cả 7a và 7b, Tier khớp | `OK` |
+
+#### Self-review TC-04 — trước khi xuất output
+
+> Trước khi flag `Sai Tier`, tự hỏi:
+> 1. **Entity không có FK trong diagram — có phải shared entity không?** — Shared entity (IP Postal Address, IP Electronic Address, IP Alt Identification) không có FK đến entity Atomic nào trong diagram 7b của source hiện tại. Công thức tính Tier kỳ vọng sẽ ra T1, nhưng Tier T2 là hợp lệ theo context source. Không flag `Sai Tier` với shared entity.
+> 2. **Entity có FK loại trừ nhau (mutually exclusive FK) — tính Tier theo FK nào?** — Khi entity có 2 FK loại trừ nhau (chỉ 1 trong 2 được populate tại runtime), cả 2 vẫn là dependency thực sự trong thiết kế. Tính `tier_expected = max(tier của cả 2 FK entity) + 1`.
+> 3. **Circular reference có trong 7e chưa?** — Nếu A → B và B → A, kiểm tra 7e trước khi flag. Đã có trong 7e → `OK (circular — đã ghi 7e)`.
+> 4. **Multi-dependency — đã lấy Tier sâu nhất chưa?** — Entity FK đến nhiều entity ở Tier khác nhau → Tier kỳ vọng = max(tất cả FK) + 1. Không lấy min hoặc trung bình.
+> 5. **Shared entity từ source khác trong diagram 7b** — có thể xuất hiện dưới dạng node tham chiếu. Tier của shared entity trong diagram 7b là Tier theo source gốc, có thể khác Tier trong HLD hiện tại → không flag `Orphan ref` với shared entity.
 
 #### Output TC-06
 
@@ -395,35 +488,46 @@ Lý do phải đề cập "junction", "pure junction", hoặc "denormalize" / "A
 
 #### Lớp 3 — Coverage (đọc thêm `brd_{SOURCE}.yaml`)
 
+> **Coverage công thức đầy đủ:** Mỗi bảng `pending`/`in_scope` trong BRD phải xuất hiện ở **một trong bốn** mục: 7a (Atomic entity), 7c (Classification Value), 7d (Junction Table), hoặc 7f (Ngoài scope). Bảng `out_of_scope` trong BRD phải có trong 7f.
+
 **Bước 1 — Sanity check số học (chạy trước, nếu lệch dừng ngay):**
 
 ```
-total_in_scope  = count(scope_status: in_scope) từ brd_{SOURCE}.yaml
-total_7a        = count(dòng data mục 7a HLD Overview)
-total_7f        = count(dòng data mục 7f HLD Overview)
+total_scope     = count(scope_status: in_scope hoặc pending) từ brd_{SOURCE}.yaml
+total_7a        = count(dòng data mục 7a HLD Overview)   ← Source Table — nhiều dòng/1 entity ok
+total_7c        = count(dòng data mục 7c HLD Overview)   ← Classification Value
+total_7d        = count(dòng data mục 7d HLD Overview)   ← Junction Tables
+total_7f        = count(dòng data mục 7f HLD Overview)   ← Ngoài scope
 ```
 
-Kỳ vọng: `total_in_scope = total_7a + total_7f`
+Kỳ vọng: `total_scope ≈ unique_source_tables(7a) + total_7c + total_7d + total_7f`
 
-Nếu lệch → số lệch = số bảng bị bỏ sót hoặc thêm nhầm → báo ngay, không cần chạy Bước 2+3.
-
-> Lưu ý: 7c và 7d không đưa vào sanity check vì Source Table không bắt buộc ghi trong các mục đó.
+> Lưu ý: 7a có thể có nhiều dòng cho 1 entity (multi-source), nên sanity check đếm unique Source Table, không đếm dòng. Nếu số lệch lớn (>2) → dừng ngay, không cần chạy Bước 2+3.
 
 **Bước 2 — Chi tiết bảng bị sót:**
 
-Với từng bảng `in_scope` trong BRD: kiểm tra có xuất hiện trong cột Source Table của 7a hoặc 7f không.
+Với từng bảng `in_scope`/`pending` trong BRD: kiểm tra có xuất hiện trong cột Source Table của **7a, 7c, 7d, hoặc 7f** không.
 
-- Không có ở 7a lẫn 7f → `Bỏ sót` — lỗi nghiêm trọng.
+- Không có ở bất kỳ mục nào → `Bỏ sót` — lỗi nghiêm trọng.
+- Chỉ so sánh với 7a + 7f mà bỏ qua 7c/7d là sai phương pháp — sẽ flag false positive.
 
 **Bước 3 — Phân loại chéo:**
 
-Bảng xuất hiện đồng thời trong cột Source Table của 7a và 7f → `Phân loại chéo` — lỗi nghiêm trọng.
+Bảng xuất hiện đồng thời ở 2+ mục trong (7a, 7c, 7d, 7f) → `Phân loại chéo` — lỗi nghiêm trọng.
 
 **Bước 4 — Orphan trong 7f:**
 
 Bảng trong 7f không có trong BRD (không tìm thấy ở bất kỳ `scope_status`) → `Không có trong BRD` — kiểm tra có phải nhầm tên bảng không.
 
 ---
+
+#### Self-review TC-05 — trước khi xuất output
+
+> Trước khi flag bất kỳ lỗi nào, tự hỏi:
+> 1. **Lớp 1 — Group `Cascade drop` anchor ở 7a hay 7f?** — Anchor phải ở 7f (ngoài scope). Nếu anchor đang ở 7a (entity in-scope), đây là lỗi logic cascade nghiêm trọng. Kiểm tra kỹ trước khi flag.
+> 2. **Lớp 3 — Đã check đủ 4 mục (7a + 7c + 7d + 7f) chưa?** — Đây là bài học từ lỗi SCMS: bảng có thể hợp lệ ở 7c (Classification Value) hoặc 7d (Junction Table). Không flag `Bỏ sót` chỉ vì không thấy ở 7a và 7f.
+> 3. **Lớp 3 — Bảng `out_of_scope` trong BRD có cần ở 7f không?** — Coverage công thức: bảng `out_of_scope` **phải** có trong 7f. Phân biệt với bảng `pending`/`in_scope` — hai loại scope khác nhau.
+> 4. **Sanity check số học — đã dùng unique Source Table của 7a chưa?** — 7a có thể có nhiều dòng cho 1 entity (multi-source). Đếm unique Source Table, không đếm dòng, tránh lệch ảo.
 
 #### Output TC-07
 
@@ -517,6 +621,14 @@ Candidate = bảng có đúng 2 cột nghiệp vụ đều là FK (`key: FK` ho�
 
 ---
 
+#### Self-review TC-06 — trước khi xuất output
+
+> Trước khi flag lỗi, tự hỏi:
+> 1. **Lớp 2/2a — "Entity chính" có tên chính xác tuyệt đối không?** — So sánh exact string với danh sách entity trong 7a. Tên gần đúng nhưng sai 1 từ (VD: thiếu "Catalog") là lỗi thực sự — entity chính sai sẽ gắn ARRAY nhầm chỗ.
+> 2. **Lớp 3 — Bảng pure junction đã check cả 7f (group Junction) chưa?** — Con đường B: bảng junction được phép ngoài scope Atomic nếu ở 7f với group `Junction`. Không flag `Bỏ sót hoàn toàn` nếu đã có ở 7f.
+> 3. **Lớp 3 — Bảng có đúng 2 cột nghiệp vụ đều là FK không?** — Bảng có thêm attribute nghiệp vụ riêng (timestamp, status, amount...) → không phải pure junction → không thuộc scope Lớp 3 TC-06.
+> 4. **Lớp 2/2c — "Xử lý trên Atomic" có thể thiếu tên entity nhận nhưng vẫn rõ nghĩa không?** — Nếu context trong 7d đã chỉ rõ entity nhận qua cột `Entity chính`, flag `Cần xác nhận` thay vì `Lỗi`.
+
 #### Output TC-08
 
 **Output Lớp 1 + Lớp 2** (gộp, 1 dòng per check vi phạm):
@@ -580,6 +692,26 @@ Dấu hiệu nhận biết pure junction table từ `brd_{SOURCE}_{TABLE}.yaml`:
 - Không có attribute nghiệp vụ riêng (không có timestamp, amount, status, description...)
 
 Lỗi: bảng thỏa điều kiện trên nhưng đang nằm ở mục 7a thay vì 7d.
+
+**7f — Bảng lưu báo cáo đầu vào (submission) → để ở 7f, không phải 7a**
+
+Mỗi phân hệ giám sát quản lý 1 nhóm đối tượng (CTCK, ngân hàng, quỹ...) và có bộ báo cáo định kỳ riêng mà đối tượng đó nộp lên. Các bảng lưu submission này (VD: `SC_FIRM_PERIODIC_REPORT`, `BANK_PERIODIC_REPORT`) **được thiết kế theo phương pháp riêng** — không thiết kế thành Atomic entity theo cách thông thường.
+
+Dấu hiệu nhận biết bảng submission báo cáo:
+- FK đến đối tượng giám sát (CTCK, ngân hàng...) + FK đến biểu mẫu (`FORM_REPORT_ID`) hoặc có `PERIOD`/`YEAR`/`QUARTER`
+- Có workflow nộp: `SUBMISSION_DEADLINE`, `SENT_AT`, `APPROVED_AT`, `REJECTION_REASON`
+- `RECORD_STATUS` phản ánh trạng thái nộp (chưa gửi/đã gửi/đã duyệt/từ chối/hủy)
+
+**Bỏ qua (không flag):** bảng thuộc pattern này đang ở 7f — lý do ngoài scope đúng là "Thiết kế theo phương pháp báo cáo đầu vào" (không phải lý do thiếu thông tin). Lỗi thực sự chỉ là nếu bảng submission đang ở **7a** thay vì 7f.
+
+#### Self-review TC-07 — trước khi xuất output
+
+> Trước khi flag `Sai vị trí`, tự hỏi:
+> 1. **Check 7a (Code + Name) — bảng có thực sự chỉ có Code + Name không?** — Đọc cột trong BRD per-table: nếu có FK đến entity nghiệp vụ, timestamp, status, hoặc attribute mô tả lifecycle → không phải Classification Value. Không flag chỉ dựa vào tên bảng.
+> 2. **Check 7c (bảng địa lý) — đây là ngoại lệ quan trọng nhất của skill HLD:** bảng địa lý (tỉnh, thành phố, quốc gia) dù chỉ có Code + Name vẫn là Atomic entity `[Location] Geographic Area`, Table Type = `Fundamental`. Nếu thấy bảng địa lý ở 7a với Fundamental → **không flag**, đây là thiết kế đúng.
+> 3. **Check 7e (pure junction) — bảng có attribute nghiệp vụ riêng không?** — Bảng có 2 FK + timestamp/status → không phải pure junction → không thuộc check 7e. Chỉ flag khi thực sự chỉ có 2 cột đều là FK.
+> 4. **Check 7f (submission báo cáo) — bảng đang ở 7f là hợp lệ.** Chỉ flag nếu bảng submission đang ở **7a** — đó mới là lỗi.
+> 5. **Cross-check với skill HLD — Batch Processing Metadata:** bảng chỉ lưu danh sách thành viên batch/group (không có attribute nghiệp vụ riêng) → ngoài scope Atomic, nên ở 7f. Nếu đang ở 7a → flag.
 
 #### Output TC-07
 
@@ -661,6 +793,15 @@ VD: bảng nhân viên → `Individual` chi tiết hơn `Involved Party`; bảng
 
 Lỗi: tồn tại term chi tiết hơn phù hợp với cấu trúc cột nhưng không được gán.
 
+#### Self-review TC-08 — trước khi xuất output
+
+> Trước khi flag lỗi BCV Concept, tự hỏi:
+> 1. **Term không tìm thấy — đã thử các keyword khác nhau chưa?** — BCV term có thể có nhiều cách viết. Thử grep với từ khóa ngắn hơn (VD: thay vì "Ownership Constraint" thử "Ownership", "Constraint") trước khi kết luận term không tồn tại.
+> 2. **Core Object lệch category — đã đọc nội dung description của term chưa?** — Skill HLD quy định: Core Object xác định từ **nội dung** term, không từ `category` trong terms.csv. Đọc `description_vi` trước khi flag Core Object sai.
+> 3. **Term chi tiết hơn — có thực sự phù hợp với cấu trúc cột không?** — Term chi tiết hơn chỉ tốt hơn khi cấu trúc cột của bảng nguồn khớp. Không flag "có term tốt hơn" nếu term đó mô tả scope hẹp hơn mà bảng nguồn lại có nhiều loại instance.
+> 4. **Shared entity — BCV Concept ghi "Shared Entity" là hợp lệ.** Không cần tra term cho shared entity, không flag.
+> 5. **Entity là Classification Value (7c) — không thuộc scope TC-08.** Chỉ kiểm tra entity trong mục 7a.
+
 #### Output TC-08
 
 Bảng báo cáo:
@@ -720,6 +861,14 @@ Các trường hợp lỗi:
 - Giá trị khác nhau (copy nhầm / thiếu sync)
 - Ô trống hoặc `N/A` trong khi BRD đã có giá trị
 
+#### Self-review TC-09 — trước khi xuất output
+
+> Trước khi flag `Sai BRD`, tự hỏi:
+> 1. **Bước A — Cột keyword có thực sự chỉ thị mode không?** — Cột chứa `updated_at` thường là Update, nhưng nếu bảng là Append-only log mà vẫn có cột `updated_at` để track record cuối → xem xét `table_meaning` để phán quyết. Không áp cứng pattern keyword khi `table_meaning` mâu thuẫn.
+> 2. **Bước A — Safe default `Update` có hợp lý với bảng này không?** — Khi không xác định được từ cột hoặc `table_meaning`, dùng `Update` làm safe default. Nếu bảng rõ ràng là log/history nhưng không có keyword → override về `Append` với ghi chú.
+> 3. **Bước B — Bảng `Append + Fundamental/Relative` đã được ghi vào 7e chưa?** — Skill HLD quy định bất thường này phải ghi vào 7e. Nếu HLD Mode khác BRD Mode nhưng đã được giải thích trong 7e → flag `Sai HLD` nhưng thêm ghi chú "đã ghi 7e, cần sync mode trong HLD".
+> 4. **Bảng shared entity (multi-source) — Change Mode lấy từ source nào?** — Shared entity có nhiều source table, mỗi source có thể có mode khác nhau. Mode trong HLD là mode của source chính (first source). Không flag nếu mode khớp với source đầu tiên.
+
 #### Output TC-09
 
 Bảng báo cáo:
@@ -730,6 +879,89 @@ Bảng báo cáo:
 - **Cột xác định mode**: tên cột keyword tìm được (Bước 1), hoặc `table_meaning` keyword (Bước 2), hoặc `safe default`
 - **Kết quả**: `OK` / `Sai BRD` / `Sai HLD` / `Sai cả hai`
 - **Đề xuất**: để trống nếu OK; ghi rõ giá trị cần chỉnh nếu sai
+
+---
+
+### TC-10 — Đồng bộ Tier files với HLD Overview
+
+**Mục tiêu:** Sau khi TC-01→09 hoàn tất và mọi thay đổi đã được áp dụng lên HLD Overview, đảm bảo nội dung các file `{SOURCE}_HLD_Tier{N}.md` khớp chính xác với mục 7a HLD Overview.
+
+> **Nguyên tắc:** HLD Overview mục 7a là source of truth. Tier files là presentation layer — cần đồng bộ theo Overview, không ngược lại.
+
+**Chạy tự động sau TC-09.** Không cần human xác nhận trung gian — TC-10 là bước kết thúc bắt buộc của mỗi review session.
+
+**Scope:** Tất cả file `{SOURCE}_HLD_Tier{N}.md` tồn tại trong `DataModel/working/Atomic/hld/`. Đọc từ:
+- HLD Overview mục 7a — danh sách entity hiện tại với Tier, tên, Table Type, BCV Concept, BCV Core Object
+- Tất cả file `{SOURCE}_HLD_Tier{N}.md` — mục 6a (bảng tổng quan entity của tầng đó)
+
+---
+
+#### Bước 1 — Liệt kê Tier files hiện có
+
+```bash
+ls DataModel/working/Atomic/hld/{SOURCE}_HLD_Tier*.md
+```
+
+Ghi nhận danh sách file Tier hiện có. Nếu không có file Tier nào → báo và kết thúc TC-10 (không có gì để đồng bộ).
+
+#### Bước 2 — Build snapshot từ Overview 7a
+
+Từ mục 7a HLD Overview, xây dựng bảng tham chiếu:
+
+| Tier | Atomic Entity | Table Type | BCV Core Object | BCV Concept |
+|---|---|---|---|---|
+
+Đây là **trạng thái đúng** cần đồng bộ sang Tier files.
+
+#### Bước 3 — So sánh từng Tier file với snapshot
+
+Với mỗi file `{SOURCE}_HLD_Tier{N}.md`, đọc mục 6a → so sánh với snapshot:
+
+| Loại lệch | Mô tả | Hành động |
+|---|---|---|
+| **Entity thừa** | Entity trong 6a của TierN nhưng không có trong Overview 7a hoặc Tier đã đổi | Xóa dòng khỏi file Tier cũ; thêm vào file Tier mới nếu Tier đã đổi |
+| **Entity thiếu** | Entity trong Overview 7a với Tier=N nhưng không có trong 6a của TierN | Thêm dòng vào file Tier đúng |
+| **Cột lệch** | Entity có trong cả hai nhưng tên/Table Type/BCV Concept/BCV Core Object khác | Cập nhật dòng trong Tier file theo Overview |
+
+#### Bước 4 — Kiểm tra Tier file rỗng / Tier file thiếu
+
+- **Tier file rỗng sau bước 3** (mục 6a không còn dòng data): xóa file.
+- **Tier mới xuất hiện trong Overview nhưng chưa có file**: tạo file `{SOURCE}_HLD_Tier{N}.md` mới từ template, điền mục 6a với các entity thuộc Tier đó. Các mục 6b–6f để trống hoặc ghi `*(Chưa cập nhật sau review)*`.
+
+#### Bước 5 — Verify số liệu cuối
+
+```
+count(entity trong tất cả mục 6a Tier files) = count(dòng data mục 7a Overview)
+```
+
+Nếu lệch → kiểm tra lại Bước 3–4, không được kết thúc TC-10 khi số liệu còn lệch.
+
+---
+
+#### Self-review TC-10 — trước khi thực hiện thay đổi
+
+> Trước khi sửa bất kỳ Tier file nào, tự hỏi:
+> 1. **Source of truth là HLD Overview 7a sau khi đã apply tất cả fix từ TC-01→09.** — Không sync theo Tier file cũ. Nếu TC trước vừa đổi tên entity (VD: TC-02 sửa "Stock Control" → "Stock Holder Control"), snapshot phải lấy từ Overview đã được cập nhật.
+> 2. **Entity "thừa" trong Tier file có phải tên cũ trước khi TC-02 sửa không?** — Nếu có, đây là `Cập nhật cột` (tên cũ → tên mới), không phải `Xóa` + `Thêm mới` 2 dòng riêng biệt.
+> 3. **Tier file mới cần tạo — đã có template không?** — Copy từ `templates/HLD_Tier.md`, điền mục 6a, để 6b–6f trống hoặc ghi `*(Chưa cập nhật sau review)*`.
+> 4. **Verify cuối — số liệu phải khớp trước khi báo cáo hoàn tất.** — Nếu lệch, tìm nguyên nhân (entity bị đếm 2 lần trong 2 Tier file, hoặc entity chưa được thêm vào Tier mới).
+
+#### Output TC-10
+
+**Bảng thay đổi đã thực hiện:**
+
+| File Tier | Entity | Loại thay đổi | Chi tiết |
+|---|---|---|---|
+
+- **Loại thay đổi**: `Thêm mới` / `Xóa` / `Di chuyển (TierA → TierB)` / `Cập nhật cột`
+- Nếu không có thay đổi nào: ghi `Không có thay đổi — Tier files đã đồng bộ`.
+
+**Verify cuối:**
+```
+Tổng entity Overview 7a: {N}
+Tổng entity Tier files (sau sync): {N}
+Kết quả: Khớp ✓ / Lệch {X} entity ✗
+```
 
 ---
 
@@ -785,9 +1017,14 @@ Sau khi chạy tất cả Test Case, xuất báo cáo theo format:
 - OK: {X} | Sai BRD: {Y} | Sai HLD: {Z} | Sai cả hai: {W}
 [bảng chi tiết]
 
+### TC-10: Đồng bộ Tier files
+- Tổng thay đổi: {N} (Thêm mới: {A} | Xóa: {B} | Di chuyển: {C} | Cập nhật cột: {D})
+- Verify: Overview {N} entity = Tier files {N} entity — {Khớp ✓ / Lệch ✗}
+[bảng chi tiết thay đổi]
+
 ### Tổng kết
 - Số vấn đề cần xử lý: {tổng}
 - Ưu tiên cao (ảnh hưởng cấu trúc): [TC-01 Vi phạm LOCKED, TC-02/2e LOCKED, TC-08 Lỗi nghiêm trọng, TC-05 Bỏ sót / Phân loại chéo, TC-06 Bỏ sót hoàn toàn, TC-04 Sai Tier, TC-07 Sai vị trí, TC-09 Sai BRD]
 - Ưu tiên trung bình (sai quy tắc thiết kế): [TC-05 Lỗi logic cascade, TC-06 Lỗi tham chiếu entity / Thiếu ARRAY, TC-03 Sai quy tắc, TC-08 Cần xem xét, TC-02/2a 2b 2c 2d, TC-07 Sai Table Type, TC-04 Thiếu ghi nhận circular]
-- Ưu tiên thấp (sync/format): [TC-06 Phân loại group sai / Cần xác nhận, TC-05 Cần xem xét / Không có trong BRD, TC-04 Thiếu trong 7b / Orphan ref, TC-03 Cần xác nhận, TC-09 Sai HLD]
+- Ưu tiên thấp (sync/format): [TC-06 Phân loại group sai / Cần xác nhận, TC-05 Cần xem xét / Không có trong BRD, TC-04 Thiếu trong 7b / Orphan ref, TC-03 Cần xác nhận, TC-09 Sai HLD, TC-10 Cập nhật cột Tier file]
 ```
