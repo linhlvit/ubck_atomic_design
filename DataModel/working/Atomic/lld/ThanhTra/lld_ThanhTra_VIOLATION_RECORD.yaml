@@ -35,14 +35,14 @@ attributes:
 
   - attribute_name: Violation Record Code
     physical_name: vln_rcrd_code
-    description: "Số biên bản tự sinh từ VBĐH sau khi cấp số. BK của entity."
+    description: "Khóa chính UUID của bảng nguồn. BK của entity."
     data_domain: Text
-    nullable: true
+    nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - ThanhTra.VIOLATION_RECORD.RECORD_NUMBER
-    comment: "BK chính. Số biên bản tự sinh từ VBĐH sau khi cấp số. Có thể null ở trạng thái DRAFT."
+      - ThanhTra.VIOLATION_RECORD.ID
+    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
     classification_context: null
     etl_derived_value: null
 

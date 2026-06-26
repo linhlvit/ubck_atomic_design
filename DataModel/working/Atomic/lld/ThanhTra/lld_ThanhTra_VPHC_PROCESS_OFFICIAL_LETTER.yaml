@@ -4,8 +4,8 @@ schema_version: "2.0"
 metadata:
   source_system: ThanhTra
   source_table: VPHC_PROCESS_OFFICIAL_LETTER
-  atomic_entity: VPHC Official Letter
-  entity_physical_name: vphc_offc_ltr
+  atomic_entity: VPHC Process Official Letter
+  entity_physical_name: vphc_proc_offc_ltr
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Form Document"
   table_type: Fundamental
@@ -21,8 +21,8 @@ metadata:
   notes: "Công văn trong quy trình xử lý VPHC. Tất cả 3 FK đều nullable. 3 CLOB form rendering (FIELD_HTML_JSON, FIELD_SOURCE_JSON, MANUAL_MERGE_DATA_JSON) không map lên Atomic theo T5-03. Ghi nhận T5-02: xem xét thêm constraint ít nhất 1 FK phải có giá trị."
 
 attributes:
-  - attribute_name: VPHC Official Letter Id
-    physical_name: vphc_offc_ltr_id
+  - attribute_name: VPHC Process Official Letter Id
+    physical_name: vphc_proc_offc_ltr_id
     description: "Khóa đại diện (surrogate key)."
     data_domain: Surrogate Key
     nullable: false
@@ -33,8 +33,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - attribute_name: VPHC Official Letter Code
-    physical_name: vphc_offc_ltr_code
+  - attribute_name: VPHC Process Official Letter Code
+    physical_name: vphc_proc_offc_ltr_code
     description: "BK chính. PK nguồn (VARCHAR2 UUID)."
     data_domain: Text
     nullable: false
@@ -118,8 +118,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_RECORD_NUMBER
-    comment: "Lookup pair: Violation Record.Violation Record Code. Pair with Violation Record Id. Nguồn lưu VIOLATION_RECORD_NUMBER (snapshot)."
+      - ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_RECORD_ID
+    comment: "Lookup pair: Violation Record.Violation Record Code. Pair with Violation Record Id."
     classification_context: null
     etl_derived_value: null
 
@@ -144,8 +144,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER.PENALTY_DECISION_NUMBER
-    comment: "Lookup pair: Penalty Decision.Penalty Decision Code. Pair with Penalty Decision Id. Nguồn lưu PENALTY_DECISION_NUMBER (snapshot)."
+      - ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER.PENALTY_DECISION_ID
+    comment: "Lookup pair: Penalty Decision.Penalty Decision Code. Pair with Penalty Decision Id."
     classification_context: null
     etl_derived_value: null
 
