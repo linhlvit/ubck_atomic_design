@@ -681,7 +681,18 @@ Không giả định scope từ tên bảng. Đọc kỹ mô tả nguồn trư�
 | conclusion | `cncl` | `cncl_nbr`, `insp_cncl_id` |
 | circumstance | `crcm` | `crcm_tp_code` |
 | execution | `exec` | `exec_st_code`, `exec_dsc` |
-| implementation | `impl` | `impl_notes` |
+| implementation | `impl` | `impl_note` |
 | payment | `pymt` | `pymt_rcv_dt`, `pymt_proof_upload_tms` |
 | supervising leader | `sprvsg_ldr` | `sprvsg_ldr_id` |
 | announcement | `ancm` | `ancm_dt`, `ancm_ttl` |
+
+### Từ B3 — giữ nguyên lowercase (không có trong CSV, không có trong bảng B2)
+
+Những từ dưới đây **không tìm thấy trong CSV** và chưa có trong bảng B2 → áp dụng B3: giữ nguyên token lowercase. Liệt kê để tránh tìm lại mỗi lần.
+
+| Từ | Token giữ nguyên | Ghi chú |
+|---|---|---|
+| abnormal | `abnormal` | Dùng trong `abnormal_txn_chk_ind` (txn, chk từ CSV) |
+| lawsuit | `lawsuit` | Dùng trong `lawsuit_exists_ind`, `lawsuit_content` |
+| verification | `verification` | Dùng trong `verification_minutes_sign_dt` |
+| minutes | `minutes` | Dùng trong `verification_minutes_sign_dt` |
