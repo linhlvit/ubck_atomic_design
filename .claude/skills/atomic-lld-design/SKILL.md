@@ -664,6 +664,7 @@ Không giả định scope từ tên bảng. Đọc kỹ mô tả nguồn trư�
 | sender (noun) | `sndr` | `sndr_nm`, `sndr_adr`, `sndr_ofcr_id` |
 | monitoring (noun) | `mon` | `mon_ofcr_id`, `mon_ofcr_code` |
 | forwarding (noun/adj) | `fwdng` | `fwdng_unit` |
+| reporter (noun) | `rptr` | `rptr_nm` |
 | **Từ kỹ thuật không có trong CSV** | | |
 | life cycle status code | `lcs_code` | thay `life_cycle_st_code` |
 | unique key | `uk` | `peti_uk`, `vln_case_uk` |
@@ -686,6 +687,7 @@ Không giả định scope từ tên bảng. Đọc kỹ mô tả nguồn trư�
 | supervising leader | `sprvsg_ldr` | `sprvsg_ldr_id` |
 | announcement | `ancm` | `ancm_dt`, `ancm_ttl` |
 | remedial (adj/noun) | `rmdl` | `rmdl_msr`, `rmdl_ddln_dt` |
+| abnormal | `abnrm` | `abnrm_txn_chk_ind` |
 | reception | `rcptn` | `rcptn_dt`, `ctzn_rcptn_id` |
 | verification | `verf` | `verf_mins_sign_dt` |
 | minutes (biên bản) | `mins` | `verf_mins_sign_dt` |
@@ -696,5 +698,4 @@ Những từ dưới đây **không tìm thấy trong CSV** và chưa có trong 
 
 | Từ | Token giữ nguyên | Đề xuất thêm vào B2 | Ghi chú |
 |---|---|---|---|
-| abnormal | `abnormal` | `abnrm` (đề xuất) | Dùng trong `abnormal_txn_chk_ind` (txn, chk từ CSV) |
 | lawsuit | `lawsuit` | `lwst` (đề xuất) | Dùng trong `lawsuit_exists_ind`, `lawsuit_content` |
