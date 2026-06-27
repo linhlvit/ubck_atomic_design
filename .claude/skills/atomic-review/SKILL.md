@@ -157,6 +157,7 @@ Sai bất kỳ cột → **`Vi phạm LOCKED`** — lỗi nghiêm trọng.
 > 2. **Status có phải `approved`?** — `status=draft` được phép sửa tự do, không flag.
 > 3. **Cột vi phạm có phải 1 trong 4 LOCKED?** — `source_table` và `description` được phép khác (bổ sung source mới), không flag dù giá trị khác.
 > 4. **Thay đổi có chủ ý?** — Nếu có vẻ người thiết kế đổi có lý do (VD: BCV term được refine), flag `Vi phạm LOCKED` nhưng ghi thêm đề xuất "Đổi status → draft trước nếu thay đổi có chủ ý".
+> 5. **Verify giá trị thực tế trong HLD 7a trước khi kết luận** — Khi dùng `grep`/`paste` để extract nhiều field cùng lúc, thứ tự field dễ bị lệch. Trước khi flag vi phạm, **đọc trực tiếp dòng cụ thể trong HLD Overview** (`Read` với offset chính xác) để xác nhận giá trị thực tế. Không kết luận chỉ dựa vào output tổng hợp từ grep nhiều file.
 
 #### Output TC-01
 
@@ -260,6 +261,10 @@ Kiểm tra 2 điều kiện:
 
 Lỗi: format sai, hoặc X trong `[X]` không khớp `BCV Core Object`, hoặc Core Object ngoài 15 giá trị.
 
+> **⚠️ Ngoại lệ quan trọng — 9 Data Concept ánh xạ sang 15 Core Object:**
+> CLAUDE.md mô tả 9 Data Concept (Involved Party, Classification, Arrangement, Product, Location, Condition, Event, Resource Item, Business Direction Item) ánh xạ sang 15 Core Objects. Nhóm `Event` trong 9 concept tách thành 4 Core Object: `Transaction`, `Communication`, `Event`, `Business Activity`.
+> Vì vậy `BCV Concept = [Event] Transaction` là **hoàn toàn đúng** — bracket `[Event]` chỉ nhóm cha (Data Concept), `Transaction` là Core Object cụ thể, `BCV Core Object = Transaction`. Không flag lỗi khi thấy bracket không khớp trực tiếp với Core Object trong trường hợp nhóm Event: `[Event] Transaction`, `[Event] Communication`, `[Event] Event`, `[Event] Business Activity` đều hợp lệ.
+
 **2e — Entity trùng với approved entity → tên phải khớp chính xác (LOCKED)**
 
 Chỉ chạy nếu `DataModel/working/Atomic/lld/manifest.yaml` tồn tại.
@@ -358,14 +363,15 @@ Bảng báo cáo (1 dòng per entity):
 
 ### TC-04 — Validate Dependency Tier có đúng không
 
-**Mục tiêu:** Kiểm tra số Tier gán cho từng entity trong mục 7a có đúng với dependency chain thực tế không — dựa vào diagram 7b (không cần đọc BRD per-table).
+**Mục tiêu:** Kiểm tra số Tier gán cho từng entity trong mục 7a có đúng với dependency chain thực tế không — dựa vào diagram 7b là chính; đọc thêm BRD per-table khi phát hiện entity Tier > 1 nhưng không có FK trong diagram.
 
 **Scope:** Tất cả entity trong mục 7a. Đọc từ:
 - HLD Overview mục 7a — cột `Atomic Entity`, `Tier`
 - HLD Overview mục 7b — diagram Mermaid (quan hệ FK giữa Atomic entities + Tier được gán)
 - HLD Overview mục 7e — circular reference đã được ghi nhận (nếu có)
+- `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml` — chỉ đọc khi entity có Tier > 1 nhưng `dependencies[] = []` sau khi parse diagram 7b (xem Bước 2b)
 
-> **Lý do dùng 7b thay vì BRD per-table:** Diagram 7b đã phản ánh quan hệ Atomic entity sau thiết kế — FK đến Classification Value đã được loại bỏ, chỉ còn FK giữa Atomic entity. Đây chính xác là input cần để verify Tier mà không cần đọc lại BRD.
+> **Lý do dùng 7b là chính:** Diagram 7b đã phản ánh quan hệ Atomic entity sau thiết kế — FK đến Classification Value đã được loại bỏ, chỉ còn FK giữa Atomic entity. Tuy nhiên diagram 7b có thể thiếu arrow cho các FK dạng "FK suy luận" (`key: null` + `fk_note: "FK suy luận → X.id"`) — loại FK nullable/soft reference mà người thiết kế không vẽ vào diagram. Bước 2b xử lý trường hợp này.
 
 #### Bước 1 — Parse diagram 7b → xây dựng adjacency list
 
@@ -385,7 +391,26 @@ Nếu dependencies(A) rỗng (không FK đến Atomic entity nào) → tier_expe
 
 So sánh `tier_expected` với `tier_current` từ mục 7a:
 - Khớp → `OK`
-- Không khớp → `Sai Tier`
+- Không khớp **và** `dependencies[]` không rỗng → `Sai Tier`
+- Không khớp **và** `dependencies[] = []` nhưng `tier_current > 1` → **không flag ngay** → chạy Bước 2b
+
+#### Bước 2b — Kiểm tra FK suy luận trong BRD (chỉ chạy khi Bước 2 ra `dependencies[] = []` nhưng Tier > 1)
+
+BRD ThanhTra (và một số source khác) dùng 2 convention FK:
+- `key: FK` → FK chính thức → được vẽ vào diagram 7b
+- `key: null` + `fk_note: "FK suy luận → X.id"` → FK thực tế trong DB nhưng nullable/soft → **không vẽ vào diagram 7b**
+
+Quy trình:
+1. Đọc `brd_{SOURCE}_{TABLE}.yaml` của entity đang xét.
+2. Tìm các cột có `fk_note` chứa pattern `"FK suy luận → {ENTITY}.id"` (hoặc tương tự).
+3. Xác định entity Atomic tương ứng với bảng nguồn được FK đến.
+4. Tính lại `tier_expected` theo FK suy luận tìm được.
+
+| Kết quả kiểm tra BRD | Hành động |
+|---|---|
+| Tìm thấy FK suy luận đến Atomic entity, `tier_expected` từ FK suy luận khớp `tier_current` | `OK` — Tier đúng; flag thêm `Thiếu arrow trong 7b` (ưu tiên thấp) |
+| Tìm thấy FK suy luận nhưng `tier_expected` vẫn không khớp | `Sai Tier` |
+| Không tìm thấy FK nào (kể cả suy luận) đến Atomic entity | `Sai Tier` — entity thực sự độc lập, Tier 1 |
 
 **Xử lý circular reference:** Nếu A → B và B → A (FK lẫn nhau) → không flag lỗi nếu đã được ghi nhận trong mục 7e. Kết quả: `OK (circular — đã ghi 7e)`. Nếu chưa ghi 7e → flag `Thiếu ghi nhận circular`.
 
@@ -407,6 +432,7 @@ So sánh `tier_expected` với `tier_current` từ mục 7a:
 > 3. **Circular reference có trong 7e chưa?** — Nếu A → B và B → A, kiểm tra 7e trước khi flag. Đã có trong 7e → `OK (circular — đã ghi 7e)`.
 > 4. **Multi-dependency — đã lấy Tier sâu nhất chưa?** — Entity FK đến nhiều entity ở Tier khác nhau → Tier kỳ vọng = max(tất cả FK) + 1. Không lấy min hoặc trung bình.
 > 5. **Shared entity từ source khác trong diagram 7b** — có thể xuất hiện dưới dạng node tham chiếu. Tier của shared entity trong diagram 7b là Tier theo source gốc, có thể khác Tier trong HLD hiện tại → không flag `Orphan ref` với shared entity.
+> 6. **Entity Tier > 1 nhưng không có arrow trong diagram 7b — chạy Bước 2b trước khi flag `Sai Tier`.** BRD có thể dùng convention `key: null` + `fk_note: "FK suy luận"` cho FK nullable/soft — loại FK này không được vẽ vào diagram 7b nhưng vẫn xác định Tier. Nếu Bước 2b tìm thấy FK suy luận khớp → kết quả là `OK` + `Thiếu arrow trong 7b`, không phải `Sai Tier`.
 
 #### Output TC-06
 
@@ -417,8 +443,9 @@ Bảng báo cáo:
 
 - **Tier kỳ vọng**: số tính từ Bước 2, hoặc `—` nếu không có trong diagram 7b
 - **FK đến entity**: danh sách entity phụ thuộc (từ diagram 7b), hoặc `(none)` nếu Tier 1
-- **Kết quả**: `OK` / `OK (circular — đã ghi 7e)` / `Sai Tier` / `Thiếu trong 7b` / `Orphan ref trong 7b` / `Thiếu ghi nhận circular`
-- **Đề xuất**: Tier đúng cần chỉnh / node cần bổ sung vào 7b / circular cần ghi 7e
+- **Kết quả**: `OK` / `OK (circular — đã ghi 7e)` / `OK + Thiếu arrow trong 7b` / `Sai Tier` / `Thiếu trong 7b` / `Orphan ref trong 7b` / `Thiếu ghi nhận circular`
+- **Đề xuất**: Tier đúng cần chỉnh / arrow cần bổ sung vào diagram 7b / circular cần ghi 7e
+- **`OK + Thiếu arrow trong 7b`**: Tier đúng (xác nhận qua FK suy luận ở Bước 2b) nhưng diagram 7b thiếu arrow — cần bổ sung arrow vào diagram để đầy đủ
 
 ---
 
@@ -599,6 +626,9 @@ Dấu hiệu thiếu: không đề cập tên entity nhận hoặc không có t�
 
 → Flag `Cần xác nhận` nếu thiếu.
 
+> **⚠️ Ngoại lệ — cột `Entity chính` đã chỉ rõ entity nhận:**
+> Nếu cột `Entity chính` trong cùng dòng đã ghi tên Atomic entity nhận ARRAY, coi đó là đủ thông tin — không cần lặp lại trong cột `Xử lý trên Atomic`. Không flag `Cần xác nhận` trong trường hợp này.
+
 ---
 
 #### Lớp 3 — Phát hiện junction bị bỏ sót (đọc BRD per-table)
@@ -627,7 +657,7 @@ Candidate = bảng có đúng 2 cột nghiệp vụ đều là FK (`key: FK` ho�
 > 1. **Lớp 2/2a — "Entity chính" có tên chính xác tuyệt đối không?** — So sánh exact string với danh sách entity trong 7a. Tên gần đúng nhưng sai 1 từ (VD: thiếu "Catalog") là lỗi thực sự — entity chính sai sẽ gắn ARRAY nhầm chỗ.
 > 2. **Lớp 3 — Bảng pure junction đã check cả 7f (group Junction) chưa?** — Con đường B: bảng junction được phép ngoài scope Atomic nếu ở 7f với group `Junction`. Không flag `Bỏ sót hoàn toàn` nếu đã có ở 7f.
 > 3. **Lớp 3 — Bảng có đúng 2 cột nghiệp vụ đều là FK không?** — Bảng có thêm attribute nghiệp vụ riêng (timestamp, status, amount...) → không phải pure junction → không thuộc scope Lớp 3 TC-06.
-> 4. **Lớp 2/2c — "Xử lý trên Atomic" có thể thiếu tên entity nhận nhưng vẫn rõ nghĩa không?** — Nếu context trong 7d đã chỉ rõ entity nhận qua cột `Entity chính`, flag `Cần xác nhận` thay vì `Lỗi`.
+> 4. **Lớp 2/2c — Cột `Entity chính` đã chỉ rõ entity nhận chưa?** — Nếu cột `Entity chính` trong cùng dòng đã ghi tên Atomic entity nhận ARRAY → không flag `Cần xác nhận`, dù cột `Xử lý trên Atomic` không lặp lại tên đó. Chỉ flag khi cả 2 cột đều không chỉ rõ entity nhận.
 
 #### Output TC-08
 
