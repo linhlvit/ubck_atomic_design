@@ -1,49 +1,224 @@
 ﻿STT,Tên bảng,Ý nghĩa bảng
-1,ContentItemIndex,"Lưu thông tin cơ bản về Content Item: ID, ContentType, Published, Latest, CreatedUtc..."
-2,Document,"Lưu dữ liệu JSON gốc (raw) của nội dung, cấu hình, cài đặt module. Cột Content là JSON serialize toàn bộ nội dung chi tiết của đối tượng."
-3,AliasPartIndex,Map alias URL đến Content Item.
-4,AutoroutePartIndex,Index cho đường dẫn URL được định nghĩa qua AutoroutePart.
-5,ContainedPartIndex,Quản lý các nội dung được chứa trong một nội dung cha (Container-Contained).
-6,IndexingTask,Đánh chỉ mục nội dung trong bảng.
-7,LayerMetadataIndex,"Thông tin về các ""layers"" dùng trong quản lý layout/hiển thị giao diện."
-8,DeploymentPlanIndex,"Các kế hoạch triển khai nội dung, cài đặt, cấu hình hệ thống."
-9,TaxonomyIndex,"Lưu các danh mục phân loại (tag, category) của nội dung."
-10,BooleanFieldIndex,Lưu các trường dữ liệu kiểu bool trong ContentItem.
-11,TextFieldIndex,"Trường văn bản đơn — index cho input-text, input-url, radios trong Eform."
-12,MultiTextFieldIndex,"Trường văn bản nhiều dòng hoặc nhiều giá trị — index cho textarea, multi-value fields trong Eform."
-13,HtmlFieldIndex,Trường HTML — index cho rich-text editor fields trong Eform.
-14,DateFieldIndex,Trường lưu giá trị ngày — index cho input-date trong Eform.
-15,DateTimeFieldIndex,Trường lưu giá trị ngày-giờ — index cho datetime fields trong Eform.
-16,TimeFieldIndex,Trường lưu giá trị giờ-phút-giây — index cho time fields trong Eform.
-17,NumericFieldIndex,Trường số — index cho input-number trong Eform.
-18,LinkFieldIndex,Trường chứa liên kết URL — index cho input-url fields trong Eform.
-19,ContentPickerFieldIndex,Trường chọn content item khác — dùng để liên kết GCN kết quả → hồ sơ gốc.
-20,UserPickerFieldIndex,Trường chọn người dùng trong ContentItem.
-21,UserIndex,Lưu thông tin người dùng cơ bản.
-22,UserByLoginInfoIndex,Tra cứu người dùng theo username/email.
-23,UserByClaimIndex,Tra cứu người dùng theo Claim (tùy chỉnh).
-24,UserByRoleNameIndex,Liên kết người dùng với vai trò.
-25,UserByRoleNameIndex_Document,Document JSON gốc cho index bảng UserByRoleNameIndex.
-26,OpenId_Document,JSON document của các đối tượng OpenID Connect (OAuth2).
-27,OpenId_OpenIdApplicationIndex,Lưu thông tin ứng dụng client (OAuth2 client).
-28,OpenId_OpenIdAuthorizationIndex,Lưu thông tin về mã ủy quyền (authorization grants).
-29,OpenId_OpenIdTokenIndex,Token đã cấp cho OAuth2 client.
-30,OpenId_OpenIdScopeIndex,Các phạm vi (scopes) của hệ thống OAuth2.
-31,OpenId_OpenIdScopeByResourceIndex,Mapping scope theo resource.
-32,OpenId_OpenIdScopeByResourceIndex_OpenId_Document,Document tương ứng với index scope-resource.
-33,OpenId_OpenIdAppByRedirectUriIndex,Index phụ để tìm OpenID app theo RedirectUri.
-34,OpenId_OpenIdAppByLogoutUriIndex,Index phụ để tìm OpenID app theo LogoutUri.
-35,OpenId_OpenIdAppByRoleNameIndex,Index phụ để tìm OpenID app theo RoleName.
-36,OpenId_OpenIdAppByRedirectUriIndex_OpenId_Document,Document gốc tương ứng với các index của RedirectUri.
-37,OpenId_OpenIdAppByLogoutUriIndex_OpenId_Document,Document gốc tương ứng với các index của LogoutUri.
-38,OpenId_OpenIdAppByRoleNameIndex_OpenId_Document,Document gốc tương ứng với các index của RoleName.
-39,Audit_AuditTrailEventIndex,"Lưu sự kiện audit: nội dung gì, ai thao tác, lúc nào."
-40,Audit_Document,Document JSON cho các audit trail events.
-41,Notification_NotificationIndex,Index các thông báo hệ thống gửi cho người dùng.
-42,Notification_Document,Dữ liệu JSON của thông báo.
-43,WorkflowIndex,Danh sách các workflow instance đang chạy.
-44,WorkflowTypeIndex,Danh sách các loại workflow được cấu hình.
-45,WorkflowBlockingActivitiesIndex,Workflow instance đang bị chặn — đang chờ tác vụ thủ công hoặc điều kiện.
-46,WorkflowTypeStartActivitiesIndex,Các hoạt động có thể kích hoạt khởi động workflow.
-47,sqlite_master,Bảng hệ thống SQLite định nghĩa cấu trúc schema.
-48,sqlite_sequence,Quản lý giá trị tự tăng (AUTOINCREMENT) cho các bảng.
+1,CONTENTITEMINDEX,"Orchard Core - chỉ mục chính của tất cả content item (loại, trạng thái publish, chủ sở hữu, ngày, đường dẫn)"
+2,DOCUMENT,Orchard Core YesSql - kho lưu trữ document JSON trung tâm cho toàn bộ nội dung và cấu hình CMS
+3,ALIASPARTINDEX,Orchard Core - chỉ mục lưu URL alias (đường dẫn tùy chỉnh) của content item
+4,AUTOROUTEPARTINDEX,Orchard Core - chỉ mục lưu URL tự động sinh cho content item
+5,CONTAINEDPARTINDEX,Orchard Core - chỉ mục theo dõi quan hệ cha-con giữa các content item
+6,INDEXINGTASK,Orchard Core - hàng đợi tác vụ đánh chỉ mục nội dung đang chờ xử lý
+7,LAYERMETADATAINDEX,Orchard Core - chỉ mục lưu metadata và quy tắc của widget layer
+8,DEPLOYMENTPLANINDEX,Orchard Core - chỉ mục theo dõi các bước trong kế hoạch triển khai
+9,TAXONOMYINDEX,"Orchard Core - chỉ mục phân loại, ánh xạ content item với các nhãn phân loại"
+10,BOOLEANFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường boolean
+11,TEXTFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường văn bản phục vụ lọc và tìm kiếm
+12,MULTITEXTFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường văn bản đa giá trị
+13,HTMLFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường HTML phục vụ tìm kiếm
+14,DATEFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường ngày (date)
+15,DATETIMEFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường ngày giờ (datetime)
+16,TIMEFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường thời gian (time)
+17,NUMERICFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường số
+18,LINKFIELDINDEX,Orchard Core - chỉ mục lưu giá trị trường liên kết (link)
+19,CONTENTPICKERFIELDINDEX,Orchard Core - chỉ mục lưu tham chiếu giữa các content item qua trường content picker
+20,USERPICKERFIELDINDEX,Orchard Core - chỉ mục lưu tham chiếu trường chọn người dùng
+21,USERINDEX,"Orchard Core - chỉ mục người dùng chính (tên đăng nhập, email, chuẩn hóa, trạng thái kích hoạt)"
+22,USERBYLOGININFOINDEX,Orchard Core - chỉ mục ánh xạ thông tin đăng nhập bên ngoài (Google/Facebook...) với người dùng
+23,USERBYCLAIMINDEX,Orchard Core - chỉ mục ánh xạ giá trị claim với người dùng
+24,USERBYROLENAMEINDEX,Orchard Core - chỉ mục ánh xạ tên vai trò với ID document người dùng
+25,USERBYROLENAMEINDEX_DOCUMENT,Orchard Core - bảng liên kết chỉ mục tên vai trò với document người dùng
+26,OPENID_DOCUMENT,Orchard Core YesSql - kho lưu trữ document JSON cho module OpenID
+27,OPENID_OPENIDAPPLICATIONINDEX,Orchard Core - chỉ mục ứng dụng OpenID
+28,OPENID_OPENIDAUTHORIZATIONINDEX,Orchard Core - chỉ mục ủy quyền OpenID
+29,OPENID_OPENIDTOKENINDEX,Orchard Core - chỉ mục token OpenID
+30,OPENID_OPENIDSCOPEINDEX,Orchard Core - chỉ mục scope OpenID
+31,OPENID_OPENIDSCOPEBYRESOURCEINDEX_OPENID_DOCUMENT,Orchard Core - bảng liên kết chỉ mục scope theo resource với document OpenID
+32,OPENID_OPENIDAPPBYREDIRECTURIINDEX,Orchard Core OpenID - chỉ mục ánh xạ redirect URI đến ứng dụng
+33,OPENID_OPENIDAPPBYLOGOUTURIINDEX,Orchard Core OpenID - chỉ mục ánh xạ logout URI đến ứng dụng
+34,OPENID_OPENIDAPPBYROLENAMEINDEX,Orchard Core OpenID - chỉ mục ánh xạ tên vai trò đến ứng dụng
+35,OPENID_OPENIDAPPBYREDIRECTURIINDEX_OPENID_DOCUMENT,Orchard Core - bảng liên kết chỉ mục redirect URI với document OpenID
+36,OPENID_OPENIDAPPBYLOGOUTURIINDEX_OPENID_DOCUMENT,Orchard Core - bảng liên kết chỉ mục logout URI với document OpenID
+37,OPENID_OPENIDAPPBYROLENAMEINDEX_OPENID_DOCUMENT,Orchard Core - bảng liên kết chỉ mục vai trò với document OpenID
+38,OAUTH2_AUTHORIZATION,"Spring Authorization Server - bản ghi ủy quyền OAuth2 (authorization_code, access_token, refresh_token)"
+39,OAUTH2_AUTHORIZATION_CONSENT,Spring Authorization Server - bản ghi đồng ý cấp quyền OAuth2 scope của người dùng
+40,OAUTH2_REGISTERED_CLIENT,"Spring Authorization Server - danh sách OAuth2 client đã đăng ký (client_id, secret, scope, redirect URI)"
+41,AUDIT_AUDITTRAILEVENTINDEX,Orchard Core - chỉ mục sự kiện audit trail (lịch sử thao tác)
+42,AUDIT_DOCUMENT,Orchard Core YesSql - kho lưu trữ document JSON cho module audit
+43,NOTIFICATION_NOTIFICATIONINDEX,Orchard Core - chỉ mục thông báo
+44,NOTIFICATION_DOCUMENT,Orchard Core YesSql - kho lưu trữ document JSON cho module thông báo
+45,WORKFLOWINDEX,Orchard Core - chỉ mục phiên bản quy trình đang chạy
+46,WORKFLOWTYPEINDEX,Orchard Core - chỉ mục loại quy trình đã đăng ký
+47,WORKFLOWBLOCKINGACTIVITIESINDEX,Orchard Core - chỉ mục quy trình theo dõi các hoạt động đang chặn thực thi
+48,WORKFLOWTYPESTARTACTIVITIESINDEX,Orchard Core - chỉ mục ánh xạ hoạt động khởi đầu với loại quy trình
+49,TRIGGER_LOGS,Nhật ký lịch sử thực thi trigger - ghi nhận mỗi lần trigger được kích hoạt và kết quả
+50,TRIGGER_ACTION_LOGS,Nhật ký thực thi từng bước hành động trong một lần chạy trigger
+51,FLYWAY_SCHEMA_HISTORY,Bảng lịch sử migration của Flyway - theo dõi các script migration DB đã áp dụng
+52,SMSPROVIDERCONFIG,"Cấu hình nhà cung cấp SMS (Viettel, Mobifone, VNPT, Twilio, AWS SNS)"
+53,TVRP_USERS,Người dùng ứng dụng - tài khoản người dùng cục bộ dùng cho RBAC (bổ sung cho Orchard UserIndex)
+54,TVRP_ROLES,Vai trò - các vai trò ứng dụng dùng trong phân quyền RBAC
+55,TVRP_USER_ROLES,Gán vai trò người dùng - ánh xạ nhiều-nhiều giữa người dùng và vai trò
+56,TVRP_USER_ROLE_HISTORY,Lịch sử vai trò người dùng - nhật ký kiểm toán việc gán và thu hồi vai trò
+57,TVRP_USER_SCOPES,Phạm vi dữ liệu người dùng - phạm vi truy cập dữ liệu gán cho người dùng để bảo mật cấp hàng
+58,TVRP_SCOPE_TEMPLATES,Mẫu phạm vi - mẫu định nghĩa phạm vi dữ liệu có thể tái sử dụng cho chính sách ABAC
+59,TVRP_USER_SCOPE_TEMPLATES,Gán mẫu phạm vi người dùng - theo dõi các mẫu phạm vi đã được áp dụng cho người dùng
+60,TVRP_USER_SITES,Gán site người dùng - ánh xạ người dùng với site trong cài đặt đa tenant
+61,TVRP_USER_ORG_UNITS,Thành viên đơn vị tổ chức - ánh xạ người dùng với đơn vị tổ chức kèm loại quan hệ
+62,TVRP_ORG_UNITS,"Đơn vị tổ chức - cấu trúc tổ chức phân cấp (công ty, phòng ban, bộ phận, nhóm)"
+63,TVRP_ORG_UNIT_SCOPES,Phạm vi dữ liệu đơn vị tổ chức - các mục phạm vi dữ liệu liên quan đến đơn vị tổ chức
+64,TVRP_ROLE_ORGUNIT_BINDING,Ràng buộc vai trò - đơn vị tổ chức - giới hạn phạm vi vai trò theo đơn vị tổ chức cụ thể
+65,TVRP_ROLE_SITE_BINDING,Ràng buộc vai trò - site - giới hạn phạm vi vai trò theo site trong cài đặt đa tenant
+66,TVRP_SERVICE_ACCOUNTS,Tài khoản dịch vụ - tài khoản xác thực M2M cho tích hợp hệ thống (xác thực khóa HMAC-SHA256)
+67,TVRP_SERVICE_ACCOUNT_KEYS,Khóa API tài khoản dịch vụ - khóa HMAC được cấp cho tài khoản dịch vụ
+68,TVRP_SERVICE_ACCOUNT_PERMISSION,Phân quyền tài khoản dịch vụ - quy tắc quyền hạn gán trực tiếp cho tài khoản dịch vụ
+69,TVRP_SECURITY_RESOURCES,Danh mục tài nguyên bảo mật - cơ sở dữ liệu phân cấp của tất cả tài nguyên được bảo vệ trong hệ thống
+70,TVRP_RESOURCE_GRANT,Cấp quyền tài nguyên - cấp quyền tạm thời cấp tài nguyên ngoài khung vai trò/chính sách thông thường
+71,TVRP_FIELD_PERMISSION,Phân quyền trường dữ liệu - quy tắc ACL kiểm soát truy cập vào từng trường của content item
+72,TVRP_SOD_RULE,Quy tắc phân tách nhiệm vụ (SoD) - định nghĩa các cặp quyền không tương thích để ngăn vi phạm SoD
+73,TVRP_DLG_AUTO_RULE,Quy tắc ủy quyền tự động - quy tắc tự động tạo ủy quyền khi có sự kiện (ví dụ: người dùng gia nhập đơn vị)
+74,TVRP_DLG_EMERGENCY_GRANT,Cấp quyền khẩn cấp - cấp quyền truy cập nâng cao cho tình huống khẩn cấp cần phê duyệt CEO/admin
+75,TVRP_DLG_EXTERNAL_PARTY,Bên ngoài trong ủy quyền - tổ chức bên ngoài tham gia ủy quyền liên tổ chức
+76,TVRP_DLG_INBOX_READ_MARKER,Đánh dấu đã đọc hộp thư ủy quyền - theo dõi các mục người dùng đã đọc
+77,TVRP_DLG_RECERT_CAMPAIGN,Chiến dịch tái chứng nhận ủy quyền - đợt xem xét định kỳ theo lô cho các ủy quyền đang hoạt động
+78,TVRP_DLG_SOD_VIOLATION_LOG,Nhật ký vi phạm phân tách nhiệm vụ (SoD) - ghi nhận các vi phạm quy tắc SoD
+79,TVRP_DLG_TEMPLATE,Mẫu ủy quyền - mẫu ủy quyền được cấu hình sẵn cho các trường hợp ủy quyền phổ biến
+80,TVRP_DELEGATION_APPROVAL,Phê duyệt ủy quyền - bản ghi phê duyệt hai lớp (maker-checker) cho yêu cầu ủy quyền
+81,TVRP_DELEGATION_AUDIT_LOG,Nhật ký kiểm toán ủy quyền - lịch sử bất biến của mọi thay đổi trạng thái ủy quyền
+82,TVRP_DELEGATION_RECERTIFICATION,Tái chứng nhận ủy quyền - bản ghi xem xét định kỳ để xác nhận hoặc thu hồi ủy quyền
+83,TVRP_USER_DELEGATION,Ủy quyền người dùng - cấp cho người được ủy quyền thẩm quyền thay mặt người ủy quyền thực hiện công việc
+84,TVRP_USER_DELEGATION_RESOURCE,Tài nguyên trong ủy quyền - các tài nguyên cụ thể được giới hạn phạm vi cho một ủy quyền
+85,TVRP_POLICY_AUDIT,Kiểm toán chính sách - bản ghi kiểm toán ABAC/GDPR ghi lại mọi quyết định phân quyền
+86,TVRP_POLICY_AUDIT_CHAIN_LOCK,Khóa chuỗi kiểm toán chính sách - đảm bảo tính toàn vẹn của chuỗi hash nhật ký kiểm toán
+87,TVRP_POLICY_CHANGE_REQUEST,Yêu cầu thay đổi chính sách - bản ghi luồng xem xét và phê duyệt thay đổi chính sách bảo mật
+88,TVRP_PATTERN_COUNTER,Bộ đếm mẫu - bộ đếm nguyên tử dùng để sinh mã/ID theo mẫu định sẵn
+89,TVRP_ACTION_RATE_COUNT,Giới hạn tần suất hành động - đếm số lần gọi hành động trong cửa sổ thời gian để kiểm soát rate limit
+90,TVRP_WORKFLOW_ACTION_AUDIT_LOG,Nhật ký kiểm toán hành động quy trình - ghi lại từng hành động quy trình được thực thi kèm snapshot kết quả
+91,TVRP_WORKFLOW_ACTIVITY_DEADLINE,Hạn chót hoạt động quy trình - theo dõi hạn chót SLA cho từng hoạt động trong phiên bản quy trình
+92,TVRP_WORKFLOW_DEFINITION,"Định nghĩa quy trình - xác định trạng thái, chuyển tiếp, hoạt động và SLA cho một loại quy trình"
+93,TVRP_WORKFLOW_INSTANCE,Phiên bản quy trình - phiên bản đang chạy hoặc đã hoàn thành của một định nghĩa quy trình
+94,TVRP_WORKFLOW_REASSIGN_REQUEST,Yêu cầu chuyển giao công việc - yêu cầu chuyển nhiệm vụ quy trình từ người này sang người khác
+95,TVRP_WORKFLOW_REASSIGN_RULE,Quy tắc chuyển giao công việc - xác định điều kiện và phê duyệt cần thiết để chuyển giao nhiệm vụ
+96,TVRP_WORKFLOW_STATUS,Trạng thái quy trình - các trạng thái có tên trong vòng đời quy trình (khởi đầu/trung gian/kết thúc)
+97,TVRP_WORKFLOW_STATUS_CATEGORY,Danh mục trạng thái quy trình - nhóm các trạng thái quy trình theo giai đoạn
+98,TVRP_WORKFLOW_TYPE_VERSION,Phiên bản loại quy trình - snapshot bất biến có versioning của loại quy trình Orchard
+99,TVRP_DECISION_TREE_EVAL_LOG,Nhật ký đánh giá cây quyết định - ghi lại các bước đánh giá chính sách/điều kiện
+100,TVRP_DECISION_TREE_VERSION,Phiên bản cây quyết định - snapshot có versioning của định nghĩa cây quyết định
+101,TVRP_NOTIFICATION_HISTORY,Lịch sử thông báo - bản ghi thông báo đã gửi kèm trạng thái phân phối
+102,TVRP_NOTIFICATION_PROVIDER,Nhà cung cấp thông báo - cấu hình nhà cung cấp đa kênh (SMS/Zalo/Email/Push/Webhook)
+103,TVRP_NOTIFICATION_PROVIDER_PROPS,Thuộc tính nhà cung cấp thông báo - các thuộc tính key-value cấu hình cho nhà cung cấp
+104,TVRP_CONFIGURATION_TRACE,Lịch sử thay đổi cấu hình - audit trail cho mọi thay đổi giá trị cấu hình (tạo/sửa/xóa/khôi phục)
+105,TVRP_CONFIGURATION_VALUE,"Kho lưu trữ cấu hình thống nhất - các giá trị cấu hình hệ thống/module với hỗ trợ kiểu dữ liệu, mã hóa và môi trường"
+106,TVRP_CONFIG_EXPORT_MODULES,Module trong gói xuất cấu hình - snapshot từng module trong một gói xuất cấu hình
+107,TVRP_CONFIG_EXPORT_PACKAGE,Gói xuất cấu hình - bản snapshot cấu hình có thể di chuyển giữa các môi trường
+108,TVRP_CONFIG_TRANSLATION,Bản dịch cấu hình - giá trị đã dịch theo ngôn ngữ cho các khóa cấu hình
+109,TVRP_SYSTEM_FLAGS,Cờ tính năng hệ thống - kho lưu trữ bật/tắt tính năng động theo key-value
+110,TVRP_SYSTEM_TAXONOMIES,"Phân loại hệ thống - danh mục phân loại toàn nền tảng (trạng thái quy trình, danh mục nội dung...)"
+111,TVRP_MIGRATION_TRACKING,Theo dõi migration - ghi nhận trạng thái migration cấp module ngoài Flyway
+112,TVRP_UNIFIED_CONFIG_REVISION,Phiên bản cấu hình thống nhất - snapshot có versioning các thay đổi cấu hình theo danh mục
+113,TVRP_GIT_INTEGRATION_CONFIG,Cấu hình tích hợp Git - cài đặt cho xuất/nhập cấu hình qua Git
+114,TVRP_REDIS_AUDIT_LOG,Nhật ký kiểm toán thao tác Redis - ghi lại các thao tác quản trị viên trên bộ nhớ đệm Redis
+115,TVRP_API_COLLECTION,Bộ sưu tập API - nhóm các API connector và endpoint được tổ chức thành bộ sưu tập có thể tái sử dụng
+116,TVRP_API_CONNECTOR,Kết nối API bên ngoài - cấu hình kết nối tới các dịch vụ REST/SOAP/GraphQL bên ngoài
+117,TVRP_API_ENDPOINT,Điểm cuối API - endpoint riêng lẻ được phát hiện/nhập từ đặc tả API connector
+118,TVRP_DATABASE_CONNECTION,Kết nối cơ sở dữ liệu - cấu hình kết nối DB ngoài để thực thi truy vấn SQL động
+119,TVRP_DATA_MAPPING,Quy tắc ánh xạ dữ liệu - quy tắc chuyển đổi trường dữ liệu cho nền tảng tích hợp
+120,TVRP_ENDPOINT_ACCESS_POLICY,Chính sách truy cập endpoint - quy tắc phân quyền endpoint API động (CHO PHÉP/TỪ CHỐI theo vai trò/phạm vi)
+121,TVRP_ENDPOINT_RULE_TEMPLATE,Mẫu quy tắc endpoint - mẫu có thể tái sử dụng cho chính sách truy cập endpoint
+122,TVRP_INTEGRATION_ENDPOINT,Endpoint tích hợp - cấu hình định tuyến và proxy cho nền tảng tích hợp
+123,TVRP_OAUTH2_CLIENT_META,Metadata OAuth2 client - metadata mở rộng cho các OAuth2 client đã đăng ký
+124,TVRP_OAUTH2_PROVIDER,Nhà cung cấp OAuth2 ngoài - cấu hình cho các nhà cung cấp OAuth2/OIDC bên ngoài
+125,TVRP_OD_API_KEY,Khóa API dữ liệu mở - khóa API được cấp để truy cập các endpoint phân phối dữ liệu mở
+126,TVRP_OD_CATALOG,Danh mục dữ liệu mở - danh mục cấp cao nhất nhóm các tập dữ liệu theo chủ đề/lĩnh vực
+127,TVRP_OD_DATASET,"Tập dữ liệu mở - tập dữ liệu có versioning kèm lược đồ, phân phối và metadata quản trị"
+128,TVRP_OD_DATASET_SCHEMA_BINDING,Ràng buộc lược đồ tập dữ liệu - liên kết tập dữ liệu với hồ sơ lược đồ
+129,TVRP_OD_DATASET_SNAPSHOT_TAG,Nhãn snapshot tập dữ liệu - nhãn đặt tên trỏ đến phiên bản cụ thể của tập dữ liệu
+130,TVRP_OD_DATASTORE_TABLE,Bảng kho dữ liệu - bảng/view vật lý trong kho dữ liệu cho một phân phối
+131,TVRP_OD_DEV_APPLICATION,Ứng dụng nhà phát triển - ứng dụng OAuth2 client đăng ký bởi người tiêu dùng API
+132,TVRP_OD_DISTRIBUTION,"Phân phối dữ liệu mở - định dạng/endpoint cụ thể của tập dữ liệu (CSV, API, SHP, WMS...)"
+133,TVRP_OD_EXPORT_JOB,Công việc xuất dữ liệu - tác vụ không đồng bộ xuất phiên bản tập dữ liệu ra tệp
+134,TVRP_OD_POLICY,Chính sách truy cập dữ liệu mở - quy tắc truy cập dữ liệu áp dụng cho tập dữ liệu/phân phối
+135,TVRP_OD_PUBLISHER,Nhà xuất bản dữ liệu mở - tổ chức hoặc đơn vị công bố dữ liệu mở
+136,TVRP_OD_QUALITY_RULE,Quy tắc chất lượng dữ liệu mở - định nghĩa quy tắc kiểm tra chất lượng cho tập dữ liệu
+137,TVRP_OD_QUALITY_RULE_RUN,Lịch sử chạy kiểm tra chất lượng dữ liệu mở - bản ghi thực thi kiểm tra chất lượng trên tập dữ liệu
+138,TVRP_OD_QUALITY_VIOLATION,Vi phạm chất lượng dữ liệu mở - vi phạm chất lượng từng trường được phát hiện
+139,TVRP_OD_SCHEMA_PROFILE,Hồ sơ lược đồ dữ liệu mở - định nghĩa lược đồ có thể tái sử dụng cho tập dữ liệu
+140,TVRP_OD_SCHEMA_PROFILE_FIELD,Trường hồ sơ lược đồ - định nghĩa từng trường trong hồ sơ lược đồ
+141,TVRP_OD_SCHEMA_PROFILE_VERSION,Phiên bản hồ sơ lược đồ - snapshot bất biến có versioning của hồ sơ lược đồ
+142,TVRP_OD_SPATIAL_VN,Dữ liệu không gian Việt Nam - dữ liệu ranh giới hành chính và tham chiếu không gian Việt Nam
+143,TVRP_OD_SUBSCRIPTION,Đăng ký dữ liệu mở - đăng ký của người dùng/ứng dụng nhận thông báo khi tập dữ liệu thay đổi
+144,TVRP_OD_TAXONOMY_MERGE_LOG,Nhật ký gộp phân loại - theo dõi các thao tác gộp nhãn phân loại
+145,TVRP_OD_TAXONOMY_TERM,Nhãn phân loại dữ liệu mở - thuật ngữ trong từ điển kiểm soát để phân loại tập dữ liệu
+146,TVRP_OD_THEME,Chủ đề dữ liệu mở - danh mục chủ đề để tổ chức tập dữ liệu (tương thích DCAT-AP)
+147,TVRP_OD_USAGE_DAILY,Thống kê sử dụng dữ liệu mở theo ngày - số liệu sử dụng API tổng hợp theo tập dữ liệu mỗi ngày
+148,TVRP_OD_USAGE_LOG,Nhật ký sử dụng dữ liệu mở - nhật ký truy cập từng yêu cầu cho API dữ liệu mở
+149,TVRP_OD_VALIDATION_RULE,Quy tắc kiểm tra hợp lệ trường dữ liệu mở - ràng buộc kiểm tra từng trường trong lược đồ
+150,TVRP_OD_VERSION,Phiên bản tập dữ liệu mở - snapshot phiên bản ngữ nghĩa của tập dữ liệu kèm snapshot JSON đầy đủ
+151,TVRP_OD_WORKFLOW_EVENT,Sự kiện quy trình dữ liệu mở - ghi nhận chuyển đổi trạng thái trong quy trình xem xét/xuất bản tập dữ liệu
+152,TVRP_CS_CATALOG_PRODUCT,Danh mục dịch vụ - mục catalog sản phẩm/dịch vụ đã công bố (API product)
+153,TVRP_CS_CATALOG_PRODUCT_OP,Danh mục dịch vụ - ánh xạ các phiên bản thao tác với mục catalog sản phẩm
+154,TVRP_CS_FEDERATION,Liên kết danh mục dịch vụ - tập dữ liệu ảo tổng hợp dữ liệu từ nhiều nguồn
+155,TVRP_CS_FEDERATION_MOUNT,Điểm gắn kết liên kết - ràng buộc nguồn dữ liệu trong một liên kết
+156,TVRP_CS_HARVEST,Thu thập dữ liệu - định nghĩa công việc ETL để nạp dữ liệu từ nguồn
+157,TVRP_CS_HARVEST_CHECKPOINT,Điểm kiểm tra thu thập - watermark cho phép tiếp tục thu thập gia tăng
+158,TVRP_CS_HARVEST_RUN,Lịch sử chạy thu thập - bản ghi thực thi của một lần chạy công việc thu thập
+159,TVRP_CS_JOB,Công việc định kỳ danh mục dịch vụ - định nghĩa công việc nền theo cron hoặc kích hoạt
+160,TVRP_CS_JOB_EXECUTION,Lịch sử thực thi công việc - kết quả của một lần chạy công việc
+161,TVRP_CS_LINEAGE_EDGE,Cạnh trong đồ thị nguồn gốc dữ liệu - quan hệ có hướng giữa các nút nguồn gốc
+162,TVRP_CS_LINEAGE_NODE,"Nút trong đồ thị nguồn gốc dữ liệu - tập dữ liệu, thao tác hoặc biến đổi trong đồ thị"
+163,TVRP_CS_MOCK_FIXTURE,Fixture mock - phản hồi cố định để kiểm thử thao tác mà không cần gọi upstream thật
+164,TVRP_CS_OPERATION,Thao tác danh mục dịch vụ - thao tác API có versioning (endpoint) trên một nguồn dữ liệu
+165,TVRP_CS_OP_PIPELINE,Pipeline thao tác - đường ống biến đổi áp dụng cho kết quả đầu ra của thao tác
+166,TVRP_CS_OP_POLICY,"Chính sách thao tác - quy tắc xác thực, giới hạn tốc độ, che giấu PII, bộ nhớ đệm theo phạm vi"
+167,TVRP_CS_OP_USAGE_DAILY,Thống kê sử dụng thao tác theo ngày - số liệu tổng hợp theo thao tác và người tiêu dùng
+168,TVRP_CS_OP_USAGE_LOG,Nhật ký sử dụng thao tác - nhật ký truy cập từng yêu cầu phục vụ thanh toán và phân tích
+169,TVRP_CS_OP_VERSION,Phiên bản thao tác - snapshot bất biến của thao tác tại một phiên bản semantic
+170,TVRP_CS_PROXY_CONTENT_TYPE,Loại nội dung proxy - ánh xạ thao tác sang loại nội dung Orchard để hiển thị trên CMS
+171,TVRP_CS_QUALITY_RULE,Quy tắc chất lượng dữ liệu - định nghĩa quy tắc kiểm tra chất lượng cho nguồn dữ liệu hoặc thao tác
+172,TVRP_CS_QUALITY_RULE_RUN,Lịch sử chạy kiểm tra chất lượng - bản ghi thực thi một lần kiểm tra chất lượng
+173,TVRP_CS_QUALITY_VIOLATION,Vi phạm chất lượng dữ liệu - vi phạm chất lượng từng trường được phát hiện trong lần chạy
+174,TVRP_CS_SCHEMA,Lược đồ dữ liệu danh mục dịch vụ - lược đồ được nội quan hoặc khai báo cho nguồn dữ liệu
+175,TVRP_CS_SOURCE,Nguồn dữ liệu danh mục dịch vụ - đăng ký nguồn dữ liệu bên ngoài hoặc nội bộ
+176,TVRP_CS_STREAM,Luồng dữ liệu thời gian thực - định nghĩa luồng sự kiện Kafka hoặc webhook
+177,TVRP_CS_STREAM_DLQ,Hàng đợi thư chết của luồng - các tin nhắn thất bại để thử lại hoặc kiểm tra
+178,TVRP_CS_STREAM_SUBSCRIPTION,Đăng ký luồng dữ liệu - đăng ký của người tiêu dùng đối với một luồng
+179,TVRP_CS_WEBHOOK,Webhook gửi đi - định nghĩa gửi sự kiện tới URL bên ngoài
+180,TVRP_CS_WEBHOOK_DELIVERY,Nhật ký gửi webhook - bản ghi từng lần thử gửi webhook và phản hồi nhận được
+181,TVRP_CS_WEBHOOK_NONCE,Nonce webhook - khóa idempotency để loại trùng lặp webhook
+182,TVRP_CONTENT_EXTENSION,Mở rộng nội dung - bổ sung metadata và trạng thái đồng bộ cho content item Orchard
+183,TVRP_CONTENT_INDEX_DEFINITION,Định nghĩa chỉ mục nội dung - cấu hình đánh chỉ mục trường tùy chỉnh cho loại nội dung
+184,TVRP_CONTENT_INDEX_VALUE,Giá trị chỉ mục nội dung - lưu trữ giá trị trường đã được đánh chỉ mục để truy vấn nhanh
+185,TVRP_CONTENT_ITEM_SCOPE,Phạm vi content item - liên kết content item với các chiều phạm vi dữ liệu
+186,TVRP_CONTENT_STATE_SNAPSHOT,Snapshot trạng thái quy trình - trạng thái luồng xử lý mới nhất của từng content item
+187,TVRP_CONTENT_TRANSLATION_INDEX,Chỉ mục bản dịch nội dung - liên kết phiên bản gốc và phiên bản đã dịch của content item
+188,TVRP_CONTENT_TYPE_TRIGGERS,Trigger loại nội dung - định nghĩa quy tắc tự động hóa theo sự kiện cho một loại nội dung
+189,TVRP_CONTENT_TYPE_TRIGGER_ACTIONS,Hành động trong trigger loại nội dung - các bước hành động bên trong một trigger
+190,TVRP_CONTENT_VERSION,Lịch sử phiên bản nội dung - lưu snapshot JSON của content item tại mỗi lần lưu
+191,TVRP_CONTENT_WORKFLOW_STATE_INDEX,Chỉ mục trạng thái quy trình nội dung - theo dõi trạng thái thực thi luồng xử lý cho từng content item
+192,TVRP_AUDIT_LOG,Nhật ký kiểm toán - ghi lại các thao tác tạo/sửa/xóa quan trọng kèm trạng thái trước và sau
+193,TVRP_RECORD_AUDIT_LOG,Nhật ký kiểm toán cấp bản ghi - theo dõi các hành động cấp/thu hồi quyền trên tài nguyên cụ thể
+194,TVRP_TRIGGER_AUDIT_LOG,Nhật ký kiểm toán trigger - ghi lại các thay đổi cấu hình trigger
+195,TVRP_SITE_THEME_AUDIT,Kiểm toán giao diện site - nhật ký kiểm toán chuỗi hash cho các thao tác thay đổi giao diện
+196,TVRP_DASHBOARD_LAYOUT,Bố cục bảng điều khiển - cấu hình lưới cho dashboard theo phạm vi HỆ THỐNG/VAI TRÒ/NGƯỜI DÙNG
+197,TVRP_DASHBOARD_LAYOUT_HISTORY,Lịch sử bố cục bảng điều khiển - snapshot bố cục trước mỗi lần thay đổi
+198,TVRP_DASHBOARD_WIDGET_PREF,Tùy chỉnh widget dashboard - cài đặt widget riêng theo từng người dùng
+199,TVRP_SITE_DOMAIN_INDEX,Chỉ mục tên miền site - ánh xạ tên miền tùy chỉnh với ID content item của site
+200,TVRP_SITE_THEME_VARIANT,Biến thể giao diện site - biến thể A/B testing của giao diện site với tỷ lệ phân chia lưu lượng
+201,TVRP_FRAGMENT_ASSETS,Tài nguyên fragment - tài nguyên JS/CSS đã biên dịch cho các micro-frontend Angular/React
+202,TVRP_MASTER_PAGE_ASSETS,Tài nguyên đã biên dịch của master page
+203,TVRP_MEDIA_FILE,Tệp đa phương tiện - metadata tệp tải lên (nhị phân lưu trên hệ thống tệp tại MEDIA_STORAGE_PATH)
+204,TVRP_SEARCH_DOCUMENT,Tài liệu tìm kiếm - chỉ mục tìm kiếm toàn văn bản dựa trên SQL cho content item
+205,TVRP_CALENDAR,"Lịch làm việc - định nghĩa giờ làm việc, ngày nghỉ và múi giờ phục vụ tính toán SLA"
+206,TVRP_CALENDAR_BUSINESS_HOURS,Giờ làm việc theo từng ngày trong tuần của một lịch
+207,TVRP_CALENDAR_EVENT,"Sự kiện lịch - ngày nghỉ lễ, ngày đặc biệt hoặc sự kiện định kỳ trên lịch làm việc"
+208,TVRP_TRIGGER_ACTION,Hành động trigger - bước hành động riêng lẻ trong định nghĩa trigger nội dung
+209,TVRP_TRIGGER_ACTION_TEMPLATE,Mẫu hành động trigger - mẫu hành động được dựng sẵn để tái sử dụng khi cấu hình trigger
+210,TVRP_TRIGGER_DEFINITION,"Định nghĩa trigger - quy tắc tự động hóa theo sự kiện (HTTP, cron, sự kiện nội dung, hoạt động quy trình)"
+211,TVRP_TRIGGER_EXECUTION_STEP,Bước thực thi trigger - bản ghi thực thi từng hành động trong một lần chạy trigger
+212,TVRP_TRIGGER_REVISION,Phiên bản trigger - snapshot bất biến của định nghĩa trigger tại thời điểm xuất bản
+213,TVRP_TRIGGER_SETTING,Cài đặt engine trigger - cài đặt key-value toàn cục cho engine thực thi trigger
+214,TVRP_TRIGGER_SLA_BREACH,Vi phạm SLA trigger - ghi nhận vi phạm SLA của một lần thực thi trigger
+215,TVRP_JOB_ACTION,Hành động công việc động - bước hành động riêng lẻ trong định nghĩa công việc định kỳ
+216,TVRP_JOB_DEFINITION,Định nghĩa công việc động - công việc định kỳ dựa trên Groovy với biểu thức cron
+217,TVRP_DATA_POLICIES,Chính sách dữ liệu ABAC - chính sách kiểm soát truy cập dựa trên thuộc tính với biểu thức điều kiện
+218,TVRP_DATA_POLICIES_HISTORY,Lịch sử phiên bản chính sách ABAC - snapshot bất biến của chính sách tại mỗi phiên bản
+219,TVRP_OBS_PROBLEM,Sự cố quan sát - sự cố hệ thống/dịch vụ bị phát hiện hoặc suy giảm hiệu suất
+220,TVRP_OBS_PROBLEM_EVENT,Sự kiện sự cố - chuyển đổi trạng thái và cập nhật cho một sự cố
+221,TVRP_OBS_SLO,Mục tiêu mức dịch vụ (SLO) - định nghĩa SLO và trạng thái tuân thủ hiện tại
+222,TVRP_DRAFT,"Bản nháp nội dung - bản nháp tự lưu của trang, fragment hoặc master page trước khi xuất bản"
+223,TVRP_GA4_CONFIGS,Cấu hình Google Analytics 4 - thông tin đăng nhập GA4 được mã hóa theo từng site
