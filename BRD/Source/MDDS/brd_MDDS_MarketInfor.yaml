@@ -1,0 +1,140 @@
+schema_type: brd_source_columns
+source: MDDS
+table: MarketInfor
+bronze_table: JAD_MARKETINFOR
+description: "Snapshot tổng hợp trạng thái sàn/chỉ số tại một thời điểm trong ngày — điểm chỉ số, tổng KL/GT, số mã tăng/giảm/trần/sàn, trạng thái phiên, giao dịch thỏa thuận"
+scope_status: in_scope
+
+columns:
+  - name: historyid
+    data_type: "character varying(255)"
+    nullable: false
+    description: "ID unique để lưu lịch sử — PK thực tế của bảng"
+  - name: id
+    data_type: "character varying(255)"
+    nullable: true
+    description: "ID jadapter sinh"
+  - name: marketindex
+    data_type: double precision
+    nullable: false
+    description: "Giá trị index tại thời điểm ghi nhận"
+  - name: indextime
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Thời gian ghi nhận chỉ số"
+  - name: indexcolor
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Indicator index đang tăng/giảm"
+  - name: indexchange
+    data_type: double precision
+    nullable: false
+    description: "Giá trị index thay đổi so với index cuối ngày hôm trước"
+  - name: indexpercentchange
+    data_type: double precision
+    nullable: false
+    description: "% index thay đổi so với index cuối ngày hôm trước"
+  - name: totalvolume
+    data_type: double precision
+    nullable: false
+    description: "Tổng khối lượng đã khớp"
+  - name: totalvalue
+    data_type: double precision
+    nullable: false
+    description: "Tổng giá trị đã khớp"
+  - name: marketstatus
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Trạng thái phiên giao dịch"
+  - name: advances
+    data_type: integer
+    nullable: false
+    description: "Số lượng mã tăng"
+  - name: declines
+    data_type: integer
+    nullable: false
+    description: "Số lượng mã giảm"
+  - name: nochange
+    data_type: integer
+    nullable: false
+    description: "Số lượng mã không tăng/giảm"
+  - name: advancesvolumn
+    data_type: bigint
+    nullable: false
+    description: "Tổng khối lượng đã khớp của các mã tăng"
+  - name: declinesvolumn
+    data_type: bigint
+    nullable: false
+    description: "Tổng khối lượng đã khớp của các mã giảm"
+  - name: nochangevolumn
+    data_type: bigint
+    nullable: false
+    description: "Khối lượng khớp mã không tăng/giảm"
+  - name: marketid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "ID thị trường — FSS tự quy định"
+  - name: marketcode
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã thị trường — FSS tự quy định"
+  - name: prv_prior_market_index
+    data_type: double precision
+    nullable: false
+    description: "Index cuối cùng của phiên trước đó"
+  - name: pt_total_qtty
+    data_type: bigint
+    nullable: false
+    description: "Tổng khối lượng giao dịch thỏa thuận"
+  - name: pt_total_value
+    data_type: double precision
+    nullable: false
+    description: "Tổng giá trị giao dịch thỏa thuận"
+  - name: pt_total_trade
+    data_type: double precision
+    nullable: false
+    description: "Tổng số giao dịch thỏa thuận"
+  - name: numberofce
+    data_type: integer
+    nullable: false
+    description: "Số lượng mã đang trần"
+  - name: numberoffl
+    data_type: integer
+    nullable: false
+    description: "Số lượng mã đang sàn"
+  - name: oddlottotalvalue
+    data_type: double precision
+    nullable: false
+    description: "Giá trị khớp lô lẻ"
+  - name: oddlottotalvolume
+    data_type: bigint
+    nullable: false
+    description: "Khối lượng khớp lô lẻ"
+  - name: tradingdate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày giao dịch"
+  - name: tscprodgrpid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã sản phẩm giao dịch (hose/hnx/upcom)"
+  - name: haltrsncode
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Lý do thị trường bị halt"
+  - name: indextypecode
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Loại index — mã Sở quy định"
+  - name: open
+    data_type: double precision
+    nullable: false
+    description: "Index mở cửa"
+  - name: low
+    data_type: double precision
+    nullable: false
+    description: "Index thấp nhất tính đến thời điểm hiện tại"
+  - name: high
+    data_type: double precision
+    nullable: false
+    description: "Index cao nhất tính đến thời điểm hiện tại"

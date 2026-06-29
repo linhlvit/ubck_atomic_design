@@ -1,0 +1,300 @@
+schema_type: brd_source_columns
+source: MDDS
+table: StockInfor
+bronze_table: JAD_STOCKINFOR
+description: "Snapshot bảng giá đa loại instrument tại một thời điểm — giá, sổ lệnh, tổng tích lũy, NĐTNN, đặc thù derivative/warrant/bond"
+scope_status: in_scope
+
+columns:
+  - name: historyid
+    data_type: "character varying(255)"
+    nullable: false
+    description: "ID unique cho từng dòng lịch sử — PK"
+  - name: kid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "ID của mã do jadapter tự sinh"
+  - name: symbol
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã chứng khoán"
+  - name: stockid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "ID của chứng khoán trong hệ thống Sở"
+  - name: fullname
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Tên chứng khoán (tiếng Việt)"
+  - name: tradingdate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày giao dịch format dd/mm/yyyy"
+  - name: floorcode
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond"
+  - name: stocktype
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...)"
+  - name: ceiling
+    data_type: double precision
+    nullable: true
+    description: "Giá trần"
+  - name: floor
+    data_type: double precision
+    nullable: true
+    description: "Giá sàn"
+  - name: reference
+    data_type: double precision
+    nullable: true
+    description: "Giá tham chiếu"
+  - name: bidprice3
+    data_type: double precision
+    nullable: true
+    description: "Giá mua top 3"
+  - name: bidvol3
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng mua top 3"
+  - name: bidprice2
+    data_type: double precision
+    nullable: true
+    description: "Giá mua top 2"
+  - name: bidvol2
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng mua top 2"
+  - name: bidprice1
+    data_type: double precision
+    nullable: true
+    description: "Giá mua top 1"
+  - name: bidvol1
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng mua top 1"
+  - name: closeprice
+    data_type: double precision
+    nullable: true
+    description: "Giá khớp gần nhất"
+  - name: closevol
+    data_type: bigint
+    nullable: true
+    description: "KL khớp gần nhất"
+  - name: change
+    data_type: double precision
+    nullable: true
+    description: "Thay đổi giữa giá khớp gần nhất và giá tham chiếu"
+  - name: offerprice1
+    data_type: double precision
+    nullable: true
+    description: "Giá bán top 1"
+  - name: offervol1
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng bán top 1"
+  - name: offerprice2
+    data_type: double precision
+    nullable: true
+    description: "Giá bán top 2"
+  - name: offervol2
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng bán top 2"
+  - name: offerprice3
+    data_type: double precision
+    nullable: true
+    description: "Giá bán top 3"
+  - name: offervol3
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng bán top 3"
+  - name: totaltrading
+    data_type: bigint
+    nullable: true
+    description: "Tổng khối lượng khớp từ đầu ngày"
+  - name: totaltradingvalue
+    data_type: double precision
+    nullable: true
+    description: "Tổng giá trị khớp từ đầu ngày"
+  - name: averageprice
+    data_type: double precision
+    nullable: true
+    description: "Giá khớp trung bình"
+  - name: open
+    data_type: double precision
+    nullable: true
+    description: "Giá mở cửa"
+  - name: high
+    data_type: double precision
+    nullable: true
+    description: "Giá khớp cao nhất tính đến thời điểm"
+  - name: low
+    data_type: double precision
+    nullable: true
+    description: "Giá khớp thấp nhất tính đến thời điểm"
+  - name: foreignbuy
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng NĐTNN mua"
+  - name: foreignsell
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng NĐTNN bán"
+  - name: foreignremain
+    data_type: bigint
+    nullable: true
+    description: "Room còn lại cho NĐTNN"
+  - name: foreignroom
+    data_type: bigint
+    nullable: true
+    description: "Tổng room NĐTNN"
+  - name: total_offer_qtty
+    data_type: bigint
+    nullable: true
+    description: "Tổng khối lượng dư bán"
+  - name: total_bid_qtty
+    data_type: bigint
+    nullable: true
+    description: "Tổng khối lượng dư mua"
+  - name: pt_match_qtty
+    data_type: bigint
+    nullable: true
+    description: "Khối lượng khớp thỏa thuận gần nhất"
+  - name: pt_match_price
+    data_type: bigint
+    nullable: true
+    description: "Giá khớp thỏa thuận gần nhất"
+  - name: pt_total_traded_qtty
+    data_type: bigint
+    nullable: true
+    description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày"
+  - name: pt_total_traded_value
+    data_type: double precision
+    nullable: true
+    description: "Tổng giá trị khớp thỏa thuận từ đầu ngày"
+  - name: status
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Trạng thái sự kiện quyền của CK"
+  - name: tradingsessionid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Trạng thái phiên tại thời điểm"
+  - name: openinterest
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Khối lượng mở OI — dành cho phái sinh"
+  - name: firsttradingdate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày giao dịch đầu tiên — dành cho phái sinh/CW"
+  - name: lasttradingdate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày giao dịch cuối cùng — dành cho phái sinh/CW"
+  - name: underlyingsymbol
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Chứng khoán cơ sở — dành cho CW/phái sinh"
+  - name: issuername
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Tổ chức phát hành"
+  - name: coveredwarranttype
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Kiểu chứng quyền"
+  - name: maturitydate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày đáo hạn"
+  - name: exerciseprice
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Giá thực hiện CW"
+  - name: exerciseratio
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Tỉ lệ thực hiện CW"
+  - name: listedshare
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Khối lượng CK niêm yết"
+  - name: fundtype
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Loại quỹ — FSS quy định"
+  - name: totallistingqtty
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Khối lượng CK niêm yết"
+  - name: symbolstatuscode
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Trạng thái mã CK"
+  - name: symbolisin
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã ISIN của CK"
+  - name: marketid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã sàn theo Sở"
+  - name: boardid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Board của mã CK (mặc định G1)"
+  - name: productgrpid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã sản phẩm của CK theo Sở"
+  - name: productid
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào"
+  - name: lastcolor
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Chiều mua/bán chủ động gần nhất"
+  - name: tradingtime
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Thời gian"
+  - name: couponrate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Lãi suất trái phiếu"
+  - name: yield
+    data_type: "character varying(255)"
+    nullable: true
+    description: "YTM"
+  - name: issuedate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày phát hành"
+  - name: settlementprice
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL"
+  - name: maturitymonthyear
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Năm tháng đáo hạn HĐTL"
+  - name: listingdate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày niêm yết sản phẩm phái sinh"
+  - name: contractmultiplier
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Hệ số nhân HĐTL"
+  - name: putorcall
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Loại quyền phái sinh: P/C"
+  - name: exercisestyle
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Kiểu thực hiện phái sinh: A/E/B/Z"

@@ -1,0 +1,1011 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  atomic_entity: Security Trading Snapshot
+  entity_physical_name: sec_trd_snpst
+  bcv_core_object: Product
+  bcv_concept: "[Product] Financial Market Instrument"
+  table_type: Fact Snapshot
+  group: T1
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc lập."
+
+attributes:
+  # ── PRIMARY KEY ──────────────────────────────────────────────────────
+  - attribute_name: Security Trading Snapshot Id
+    physical_name: sec_trd_snpst_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot trạng thái giao dịch của 1 mã CK tại 1 thời điểm."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── BUSINESS KEY ─────────────────────────────────────────────────────
+  - attribute_name: Security Trading Snapshot Code
+    physical_name: sec_trd_snpst_code
+    description: "ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.historyid
+    comment: "BK chính. PK nguồn historyid — unique per lần chụp."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── SOURCE SYSTEM CODE ───────────────────────────────────────────────
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: SOURCE_SYSTEM=MDDS.StockInfor
+    etl_derived_value: MDDS.StockInfor
+
+  # ── CORE IDENTIFIERS ─────────────────────────────────────────────────
+  - attribute_name: Symbol
+    physical_name: sec_trd_snpst_symb
+    description: "Mã chứng khoán."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.symbol
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Trading Date
+    physical_name: sec_trd_snpst_trd_dt
+    description: "Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.tradingdate
+    comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate format nhất quán."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Security Full Name
+    physical_name: sec_trd_snpst_full_nm
+    description: "Tên chứng khoán (tiếng Việt)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.fullname
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Security Id
+    physical_name: sec_trd_snpst_sec_id
+    description: "ID của chứng khoán trong hệ thống Sở."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.stockid
+    comment: "Mã nội bộ Sở — giữ dạng text denormalized."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Jadapter Id
+    physical_name: sec_trd_snpst_jad_id
+    description: "ID của mã do jadapter tự sinh."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.kid
+    comment: "Metadata kỹ thuật jadapter — giữ để traceability."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── CLASSIFICATION VALUES ─────────────────────────────────────────────
+  - attribute_name: Stock Type Code
+    physical_name: sec_trd_snpst_stk_tp_code
+    description: "Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...)."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.stocktype
+    comment: "Scheme: MDDS_STOCK_TYPE."
+    classification_context: MDDS_STOCK_TYPE
+    etl_derived_value: null
+
+  - attribute_name: Floor Code
+    physical_name: sec_trd_snpst_flr_code
+    description: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.floorcode
+    comment: "Scheme: MDDS_FLOOR_CODE."
+    classification_context: MDDS_FLOOR_CODE
+    etl_derived_value: null
+
+  - attribute_name: Trading Session Status Code
+    physical_name: sec_trd_snpst_trd_ssn_st_code
+    description: "Trạng thái phiên tại thời điểm chụp."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.tradingsessionid
+    comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
+    classification_context: MDDS_TRADING_SESSION_STATUS
+    etl_derived_value: null
+
+  - attribute_name: Trade Direction Code
+    physical_name: sec_trd_snpst_trd_drc_code
+    description: "Chiều mua/bán chủ động gần nhất."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.lastcolor
+    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
+    classification_context: MDDS_TRADE_DIRECTION
+    etl_derived_value: null
+
+  - attribute_name: Symbol Status Code
+    physical_name: sec_trd_snpst_symb_st_code
+    description: "Trạng thái mã CK."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.symbolstatuscode
+    comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
+    classification_context: MDDS_SYMBOL_STATUS
+    etl_derived_value: null
+
+  # ── PRICE FIELDS ──────────────────────────────────────────────────────
+  - attribute_name: Ceiling Price
+    physical_name: sec_trd_snpst_ceil_prc
+    description: "Giá trần."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.ceiling
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Floor Price
+    physical_name: sec_trd_snpst_flr_prc
+    description: "Giá sàn."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.floor
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Reference Price
+    physical_name: sec_trd_snpst_refr_prc
+    description: "Giá tham chiếu."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.reference
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Close Price
+    physical_name: sec_trd_snpst_cls_prc
+    description: "Giá khớp gần nhất."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.closeprice
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Close Volume
+    physical_name: sec_trd_snpst_cls_vol
+    description: "Khối lượng khớp gần nhất."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.closevol
+    comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ liệu."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Price Change
+    physical_name: sec_trd_snpst_prc_chg
+    description: "Thay đổi giữa giá khớp gần nhất và giá tham chiếu."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.change
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Open Price
+    physical_name: sec_trd_snpst_opn_prc
+    description: "Giá mở cửa."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.open
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: High Price
+    physical_name: sec_trd_snpst_high_prc
+    description: "Giá khớp cao nhất tính đến thời điểm."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.high
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Low Price
+    physical_name: sec_trd_snpst_low_prc
+    description: "Giá khớp thấp nhất tính đến thời điểm."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.low
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Average Price
+    physical_name: sec_trd_snpst_av_prc
+    description: "Giá khớp trung bình."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.averageprice
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORDER BOOK — BID ──────────────────────────────────────────────────
+  - attribute_name: Bid Price 1
+    physical_name: sec_trd_snpst_bid_prc_1
+    description: "Giá mua top 1."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.bidprice1
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Bid Volume 1
+    physical_name: sec_trd_snpst_bid_vol_1
+    description: "Khối lượng mua top 1."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.bidvol1
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Bid Price 2
+    physical_name: sec_trd_snpst_bid_prc_2
+    description: "Giá mua top 2."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.bidprice2
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Bid Volume 2
+    physical_name: sec_trd_snpst_bid_vol_2
+    description: "Khối lượng mua top 2."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.bidvol2
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Bid Price 3
+    physical_name: sec_trd_snpst_bid_prc_3
+    description: "Giá mua top 3."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.bidprice3
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Bid Volume 3
+    physical_name: sec_trd_snpst_bid_vol_3
+    description: "Khối lượng mua top 3."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.bidvol3
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORDER BOOK — OFFER ────────────────────────────────────────────────
+  - attribute_name: Offer Price 1
+    physical_name: sec_trd_snpst_ofr_prc_1
+    description: "Giá bán top 1."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.offerprice1
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Offer Volume 1
+    physical_name: sec_trd_snpst_ofr_vol_1
+    description: "Khối lượng bán top 1."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.offervol1
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Offer Price 2
+    physical_name: sec_trd_snpst_ofr_prc_2
+    description: "Giá bán top 2."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.offerprice2
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Offer Volume 2
+    physical_name: sec_trd_snpst_ofr_vol_2
+    description: "Khối lượng bán top 2."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.offervol2
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Offer Price 3
+    physical_name: sec_trd_snpst_ofr_prc_3
+    description: "Giá bán top 3."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.offerprice3
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Offer Volume 3
+    physical_name: sec_trd_snpst_ofr_vol_3
+    description: "Khối lượng bán top 3."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.offervol3
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ACCUMULATED TOTALS ────────────────────────────────────────────────
+  - attribute_name: Total Trading Volume
+    physical_name: sec_trd_snpst_tot_trd_vol
+    description: "Tổng khối lượng khớp từ đầu ngày."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.totaltrading
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Total Trading Value
+    physical_name: sec_trd_snpst_tot_trd_val
+    description: "Tổng giá trị khớp từ đầu ngày."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.totaltradingvalue
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Total Offer Volume
+    physical_name: sec_trd_snpst_tot_ofr_vol
+    description: "Tổng khối lượng dư bán."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.total_offer_qtty
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Total Bid Volume
+    physical_name: sec_trd_snpst_tot_bid_vol
+    description: "Tổng khối lượng dư mua."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.total_bid_qtty
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── FOREIGN INVESTOR ──────────────────────────────────────────────────
+  - attribute_name: Foreign Buy Volume
+    physical_name: sec_trd_snpst_frgn_buy_vol
+    description: "Khối lượng NĐTNN mua."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.foreignbuy
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Foreign Sell Volume
+    physical_name: sec_trd_snpst_frgn_sell_vol
+    description: "Khối lượng NĐTNN bán."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.foreignsell
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Foreign Remain Volume
+    physical_name: sec_trd_snpst_frgn_rem_vol
+    description: "Room còn lại cho NĐTNN."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.foreignremain
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Foreign Room Volume
+    physical_name: sec_trd_snpst_frgn_room_vol
+    description: "Tổng room NĐTNN."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.foreignroom
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── PUT-THROUGH (THỎA THUẬN) ─────────────────────────────────────────
+  - attribute_name: PT Match Volume
+    physical_name: sec_trd_snpst_pt_mtch_vol
+    description: "Khối lượng khớp thỏa thuận gần nhất."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.pt_match_qtty
+    comment: "PT = Put-Through (giao dịch thỏa thuận)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: PT Match Price
+    physical_name: sec_trd_snpst_pt_mtch_prc
+    description: "Giá khớp thỏa thuận gần nhất."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.pt_match_price
+    comment: "Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: PT Total Traded Volume
+    physical_name: sec_trd_snpst_pt_tot_trd_vol
+    description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.pt_total_traded_qtty
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: PT Total Traded Value
+    physical_name: sec_trd_snpst_pt_tot_trd_val
+    description: "Tổng giá trị khớp thỏa thuận từ đầu ngày."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.pt_total_traded_value
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── CORPORATE EVENTS & STATUS ─────────────────────────────────────────
+  - attribute_name: Security Event Status Code
+    physical_name: sec_trd_snpst_sec_evt_st_code
+    description: "Trạng thái sự kiện quyền của CK."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.status
+    comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+    classification_context: MDDS_SECURITY_EVENT_STATUS
+    etl_derived_value: null
+
+  - attribute_name: ISIN Code
+    physical_name: sec_trd_snpst_isin_code
+    description: "Mã ISIN của CK."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.symbolisin
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Listed Share Count
+    physical_name: sec_trd_snpst_list_shr_cnt
+    description: "Khối lượng CK niêm yết."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.listedshare
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Total Listing Volume
+    physical_name: sec_trd_snpst_tot_list_vol
+    description: "Khối lượng CK niêm yết."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.totallistingqtty
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── MARKET / BOARD METADATA ───────────────────────────────────────────
+  - attribute_name: Market Id
+    physical_name: sec_trd_snpst_mkt_id
+    description: "Mã sàn theo Sở."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.marketid
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Board Id
+    physical_name: sec_trd_snpst_brd_id
+    description: "Board của mã CK (mặc định G1)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.boardid
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Product Group Id
+    physical_name: sec_trd_snpst_prd_grp_id
+    description: "Mã sản phẩm của CK theo Sở."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.productgrpid
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Product Id
+    physical_name: sec_trd_snpst_prd_id
+    description: "Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.productid
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Trading Time
+    physical_name: sec_trd_snpst_trd_time
+    description: "Thời gian ghi nhận snapshot."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.tradingtime
+    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── FUND TYPE ─────────────────────────────────────────────────────────
+  - attribute_name: Fund Type Code
+    physical_name: sec_trd_snpst_fund_tp_code
+    description: "Loại quỹ — FSS quy định."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.fundtype
+    comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá trị."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── DERIVATIVE / WARRANT SPECIFIC ────────────────────────────────────
+  - attribute_name: Open Interest
+    physical_name: sec_trd_snpst_opn_int
+    description: "Khối lượng mở OI — dành cho phái sinh."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.openinterest
+    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU/OP."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: First Trading Date
+    physical_name: sec_trd_snpst_fst_trd_dt
+    description: "Ngày giao dịch đầu tiên — dành cho phái sinh/CW."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.firsttradingdate
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Last Trading Date
+    physical_name: sec_trd_snpst_last_trd_dt
+    description: "Ngày giao dịch cuối cùng — dành cho phái sinh/CW."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.lasttradingdate
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Underlying Symbol
+    physical_name: sec_trd_snpst_ulyg_symb
+    description: "Chứng khoán cơ sở — dành cho CW/phái sinh."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.underlyingsymbol
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Issuer Name
+    physical_name: sec_trd_snpst_issur_nm
+    description: "Tổ chức phát hành."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.issuername
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Covered Warrant Type Code
+    physical_name: sec_trd_snpst_cw_tp_code
+    description: "Kiểu chứng quyền."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.coveredwarranttype
+    comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+    classification_context: MDDS_COVERED_WARRANT_TYPE
+    etl_derived_value: null
+
+  - attribute_name: Maturity Date
+    physical_name: sec_trd_snpst_mat_dt
+    description: "Ngày đáo hạn."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.maturitydate
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Exercise Price
+    physical_name: sec_trd_snpst_exrc_prc
+    description: "Giá thực hiện CW."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.exerciseprice
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Exercise Ratio
+    physical_name: sec_trd_snpst_exrc_ratio
+    description: "Tỉ lệ thực hiện CW."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.exerciseratio
+    comment: "Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay decimal."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Settlement Price
+    physical_name: sec_trd_snpst_setl_prc
+    description: "Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.settlementprice
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Maturity Month Year
+    physical_name: sec_trd_snpst_mat_mth_yr
+    description: "Năm tháng đáo hạn HĐTL."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.maturitymonthyear
+    comment: "Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn hóa format."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Listing Date
+    physical_name: sec_trd_snpst_list_dt
+    description: "Ngày niêm yết sản phẩm phái sinh."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.listingdate
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Contract Multiplier
+    physical_name: sec_trd_snpst_cntr_mltplr
+    description: "Hệ số nhân HĐTL."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.contractmultiplier
+    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Put Or Call Code
+    physical_name: sec_trd_snpst_put_or_call_code
+    description: "Loại quyền phái sinh: P/C."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.putorcall
+    comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị khi stocktype = OP."
+    classification_context: MDDS_PUT_OR_CALL
+    etl_derived_value: null
+
+  - attribute_name: Exercise Style Code
+    physical_name: sec_trd_snpst_exrc_style_code
+    description: "Kiểu thực hiện phái sinh: A/E/B/Z."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.exercisestyle
+    comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other — chuẩn quốc tế, tập cố định."
+    classification_context: MDDS_EXERCISE_STYLE
+    etl_derived_value: null
+
+  # ── BOND FIELDS (bond via StockInfor, not CorpBondInfor) ──────────────
+  - attribute_name: Coupon Rate
+    physical_name: sec_trd_snpst_cpn_rate
+    description: "Lãi suất trái phiếu."
+    data_domain: Interest Rate
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.couponrate
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Yield
+    physical_name: sec_trd_snpst_yield
+    description: "YTM (Yield to Maturity)."
+    data_domain: Interest Rate
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.yield
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Issue Date
+    physical_name: sec_trd_snpst_issu_dt
+    description: "Ngày phát hành."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - MDDS.public.JAD_STOCKINFOR.issuedate
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+    classification_context: null
+    etl_derived_value: null

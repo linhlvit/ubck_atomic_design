@@ -1,0 +1,64 @@
+schema_type: brd_source_columns
+source: MDDS
+table: TransLog
+bronze_table: JAD_TRANSLOG
+description: "Log tick-by-tick từng lần khớp lệnh cổ phiếu: giá khớp, KL khớp, chiều chủ động, tích lũy KL/GT"
+scope_status: in_scope
+
+columns:
+  - name: Id
+    data_type: "character varying(255)"
+    nullable: false
+    description: "ID unique cho từng lần khớp — PK"
+  - name: sequenceMsg
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Sequence tín hiệu của sở"
+  - name: tradingdate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày giao dịch"
+  - name: symbol
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã chứng khoán"
+  - name: formattedTime
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Thời gian khớp"
+  - name: lastColor
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Chiều mua/bán chủ động"
+  - name: formattedMatchPrice
+    data_type: double precision
+    nullable: false
+    description: "Giá khớp"
+  - name: changeColor
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Indicator tăng/giảm so với giá tham chiếu"
+  - name: formattedVol
+    data_type: bigint
+    nullable: false
+    description: "Khối lượng khớp"
+  - name: formattedAccVol
+    data_type: bigint
+    nullable: false
+    description: "Tổng khối lượng khớp lũy kế trong ngày (lô chẵn)"
+  - name: formattedAccVal
+    data_type: double precision
+    nullable: false
+    description: "Tổng giá trị khớp lũy kế trong ngày (lô chẵn)"
+  - name: totalBuyVol
+    data_type: bigint
+    nullable: false
+    description: "Tổng khối lượng mua chủ động"
+  - name: totalSellVol
+    data_type: bigint
+    nullable: false
+    description: "Tổng khối lượng bán chủ động"
+  - name: boardID
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Board của mã, mặc định G1"

@@ -1,0 +1,40 @@
+schema_type: brd_source_columns
+source: MDDS
+table: CSIDXInfor
+bronze_table: JAD_CSIDXINFOR
+description: "Thành phần rổ chỉ số: cặp (IndexCode × Symbol) với khối lượng và ngày vào rổ theo ngày giao dịch"
+scope_status: in_scope
+
+columns:
+  - name: id
+    data_type: "character varying(255)"
+    nullable: false
+    description: "GUID — PK của bảng"
+  - name: indexcode
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã chỉ số (FK đến MarketInfor / IDXInfor)"
+  - name: symbol
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã chứng khoán trong rổ (FK đến StockInfor)"
+  - name: totalqtty
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Tổng khối lượng khớp lệnh lô chẵn"
+  - name: adddate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày thêm vào chỉ số"
+  - name: indexid
+    data_type: int
+    nullable: true
+    description: "ID nội bộ của chỉ số"
+  - name: floorcode
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã sở giao dịch CK"
+  - name: tradingdate
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Ngày giao dịch dạng dd/MM/yyyy"

@@ -1532,3 +1532,97 @@ schemes:
     used_in_entities:
       - "Public Company Securities Offering"
     values: []
+
+  # MDDS schemes
+  - scheme_code: "MDDS_STOCK_TYPE"
+    name: "Loại chứng khoán MDDS — ST/BO/MF/FU/OP/EF/W theo sàn"
+    source_type: "source_table"
+    source_table: "MDDS.StockInfor"
+    used_in_entities:
+      - "Security Trading Snapshot"
+      - "Corporate Bond Trading Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_FLOOR_CODE"
+    name: "Mã sàn giao dịch — 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond"
+    source_type: "source_table"
+    source_table: "MDDS.StockInfor"
+    used_in_entities:
+      - "Security Trading Snapshot"
+      - "Corporate Bond Trading Snapshot"
+      - "Index Constituent Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_TRADING_SESSION_STATUS"
+    name: "Trạng thái phiên giao dịch — 1 đang nhận lệnh, 2 tạm dừng, 13 kết thúc, 90 chờ, 97 đóng cửa"
+    source_type: "source_table"
+    source_table: "MDDS.StockInfor"
+    used_in_entities:
+      - "Security Trading Snapshot"
+      - "Corporate Bond Trading Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_INDEX_TYPE"
+    name: "Loại index — mã Sở quy định (HNX/HOSE)"
+    source_type: "source_table"
+    source_table: "MDDS.MarketInfor"
+    used_in_entities:
+      - "Market Index Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_MARKET_STATUS"
+    name: "Trạng thái sàn/chỉ số — 1 đang nhận lệnh, 2 tạm dừng, 13 kết thúc, 90 chờ, 97 đóng cửa"
+    source_type: "source_table"
+    source_table: "MDDS.MarketInfor"
+    used_in_entities:
+      - "Market Index Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_PERIOD_UNIT"
+    name: "Đơn vị kỳ hạn trái phiếu — 1 Ngày, 2 Tuần, 3 Tháng, 4 Năm"
+    source_type: "source_table"
+    source_table: "MDDS.CorpBondInfor"
+    used_in_entities:
+      - "Corporate Bond Trading Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_COUPON_TYPE"
+    name: "Kiểu trả lãi — Standard Coupon, Long Coupon, Short Coupon, Zero Coupon"
+    source_type: "source_table"
+    source_table: "MDDS.CorpBondInfor"
+    used_in_entities:
+      - "Corporate Bond Trading Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_INTEREST_RATE_TYPE"
+    name: "Loại lãi suất trái phiếu — Cố định, Thả nổi, Khác"
+    source_type: "source_table"
+    source_table: "MDDS.CorpBondInfor"
+    used_in_entities:
+      - "Corporate Bond Trading Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_SECURITY_TRADING_STATUS"
+    name: "Trạng thái giao dịch chứng khoán — 0 bình thường, 10 tạm ngừng, 11 hạn chế"
+    source_type: "source_table"
+    source_table: "MDDS.CorpBondInfor"
+    used_in_entities:
+      - "Corporate Bond Trading Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_TRADE_DIRECTION"
+    name: "Chiều giao dịch chủ động — Buy/Sell indicator"
+    source_type: "source_table"
+    source_table: "MDDS.TransLog"
+    used_in_entities:
+      - "Security Match Log"
+      - "Security Trading Snapshot"
+    values: []
+
+  - scheme_code: "MDDS_SYMBOL_STATUS"
+    name: "Trạng thái mã chứng khoán niêm yết — cần profile giá trị từ nguồn"
+    source_type: "source_table"
+    source_table: "MDDS.StockInfor"
+    used_in_entities:
+      - "Security Trading Snapshot"
+    values: []

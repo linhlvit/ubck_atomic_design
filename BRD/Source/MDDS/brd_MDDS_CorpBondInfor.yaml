@@ -1,0 +1,220 @@
+schema_type: brd_source_columns
+source: MDDS
+table: CorpBondInfor
+bronze_table: JAD_CORBONDINFOR
+description: "Snapshot bảng giá TPDN: giá, order book thỏa thuận Outright (PT_*), đặc thù bond (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát hành/đáo hạn)"
+scope_status: in_scope
+
+columns:
+  - name: kid
+    data_type: "guid"
+    nullable: true
+    description: "ID mã do jadapter sinh"
+  - name: symbol
+    data_type: "character varying(255)"
+    nullable: true
+    description: "Mã chứng khoán trái phiếu"
+  - name: fullname
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Tên đầy đủ của trái phiếu"
+  - name: tradingdate
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Ngày giao dịch format dd/mm/yyyy"
+  - name: floorcode
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Mã sàn: 06 (corp-bond HNX)"
+  - name: stocktype
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Loại CK: 12 (trái phiếu DN)"
+  - name: ceiling
+    data_type: "single precision"
+    nullable: true
+    description: "Giá trần khớp lệnh"
+  - name: floor
+    data_type: "single precision"
+    nullable: true
+    description: "Giá sàn khớp lệnh"
+  - name: reference
+    data_type: "single precision"
+    nullable: true
+    description: "Giá tham chiếu"
+  - name: closeprice
+    data_type: "single precision"
+    nullable: true
+    description: "Giá đóng cửa ngày"
+  - name: closevol
+    data_type: "single precision"
+    nullable: true
+    description: "KL đóng cửa"
+  - name: change
+    data_type: "single precision"
+    nullable: true
+    description: "Thay đổi giá khớp gần nhất so với giá tham chiếu"
+  - name: totaltrading
+    data_type: double precision
+    nullable: true
+    description: "Tổng khối lượng giao dịch"
+  - name: totaltradingvalue
+    data_type: double precision
+    nullable: true
+    description: "Tổng giá trị giao dịch"
+  - name: averageprice
+    data_type: "single precision"
+    nullable: true
+    description: "Giá trung bình"
+  - name: open
+    data_type: "single precision"
+    nullable: true
+    description: "Giá mở cửa"
+  - name: high
+    data_type: "single precision"
+    nullable: true
+    description: "Giá thực hiện cao nhất GD khớp lệnh"
+  - name: low
+    data_type: "single precision"
+    nullable: true
+    description: "Giá thực hiện thấp nhất GD khớp lệnh"
+  - name: foreignremain
+    data_type: "single precision"
+    nullable: true
+    description: "Room NĐTNN còn lại"
+  - name: pt_match_qtty
+    data_type: double precision
+    nullable: true
+    description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright"
+  - name: pt_match_price
+    data_type: double precision
+    nullable: true
+    description: "Giá thực hiện gần nhất GD thỏa thuận Outright"
+  - name: pt_total_traded_qtty
+    data_type: double precision
+    nullable: true
+    description: "Tổng khối lượng GD thỏa thuận Outright"
+  - name: pt_total_traded_value
+    data_type: double precision
+    nullable: true
+    description: "Tổng giá trị GD thỏa thuận Outright"
+  - name: tradingsessionid
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Trạng thái phiên giao dịch HNX"
+  - name: issuername
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Tên tổ chức phát hành"
+  - name: maturitydate
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Ngày đáo hạn trái phiếu"
+  - name: totallistingqtty
+    data_type: double precision
+    nullable: true
+    description: "Khối lượng niêm yết"
+  - name: bond_period
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Kỳ hạn trái phiếu"
+  - name: period_unit
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm)"
+  - name: period_remain
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Kỳ hạn còn lại tính bằng ngày"
+  - name: interest_type
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác)"
+  - name: interest_period
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Kỳ hạn trả lãi"
+  - name: interest_period_unit
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Đơn vị kỳ hạn trả lãi"
+  - name: interest_coupon_type
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon"
+  - name: interestrate_type
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Loại lãi suất: Cố định/Thả nổi/Khác"
+  - name: interest_payment_type
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Phương thức trả lãi"
+  - name: interest_rate
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Lãi suất danh nghĩa"
+  - name: pt_bestbidqtty
+    data_type: double precision
+    nullable: true
+    description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright"
+  - name: pt_bestbidprice
+    data_type: double precision
+    nullable: true
+    description: "Giá chào mua cao nhất GD thỏa thuận Outright"
+  - name: pt_bestofferqtty
+    data_type: double precision
+    nullable: true
+    description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright"
+  - name: pt_bestofferprice
+    data_type: double precision
+    nullable: true
+    description: "Giá chào bán thấp nhất GD thỏa thuận Outright"
+  - name: pt_totalbidqtty
+    data_type: double precision
+    nullable: true
+    description: "Tổng KL chào mua GD thỏa thuận Outright"
+  - name: pt_totalofferqtty
+    data_type: double precision
+    nullable: true
+    description: "Tổng KL chào bán GD thỏa thuận Outright"
+  - name: pt_maxqtty
+    data_type: double precision
+    nullable: true
+    description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright"
+  - name: pt_maxprice
+    data_type: double precision
+    nullable: true
+    description: "Giá thực hiện cao nhất GD thỏa thuận Outright"
+  - name: pt_minqtty
+    data_type: double precision
+    nullable: true
+    description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright"
+  - name: pt_minprice
+    data_type: double precision
+    nullable: true
+    description: "Giá thực hiện thấp nhất GD thỏa thuận Outright"
+  - name: issuedate
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Ngày phát hành trái phiếu"
+  - name: characteristics
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Đặc điểm trái phiếu"
+  - name: securitytradingstatus
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn chế)"
+  - name: tradsesstatus
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Trạng thái phiên giao dịch"
+  - name: parvalue
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Mệnh giá trái phiếu"
+  - name: tradingtime
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Thời gian giao dịch"
