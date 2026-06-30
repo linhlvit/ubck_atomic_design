@@ -1,22 +1,22 @@
-﻿source: OrderTrade
+﻿source: ORDERTRADE
 description: "Sổ lệnh và Sổ khớp HOSE & HNX — dữ liệu giao dịch chứng khoán từ hệ thống KRX"
 brd_entries:
   # UID-01 — Lệnh giao dịch (Order Lifecycle)
-  - brd_id: BRD-SRC-OrderTrade-Order_HOSE
-    brd_name: "Design Atomic từ nguồn OrderTrade bảng Order_HOSE"
+  - brd_id: BRD-SRC-ORDERTRADE-HOSE_ORDER_BOOK
+    brd_name: "Design Atomic từ nguồn ORDERTRADE bảng HOSE_ORDER_BOOK"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Sổ lệnh HOSE — ghi nhận toàn bộ lifecycle của từng lệnh giao dịch trên sàn HOSE (cổ phiếu / trái phiếu / repo). Mỗi bản ghi là một event: lệnh mới / sửa / hủy. Đối tượng trung tâm của phân hệ OrderTrade."
+      table_meaning: "Sổ lệnh HOSE — ghi nhận toàn bộ lifecycle của từng lệnh giao dịch trên sàn HOSE (cổ phiếu / trái phiếu / repo). Mỗi bản ghi là một event: lệnh mới / sửa / hủy. Đối tượng trung tâm của phân hệ ORDERTRADE."
       functional_group: "UID-01 Lệnh giao dịch (Order Lifecycle)"
       scope_status: in_scope
       scope_reason: null
-      table: Order_HOSE
+      table: HOSE_ORDER_BOOK
       related_tables:
-        - table: Order_HNX
+        - table: HNX_ORDER_BOOK
           relation: "Gộp chung entity Securities Order — phân biệt bằng market_id"
-        - table: Trade_HOSE
+        - table: HOSE_TRADE_BOOK
           relation: "1-N — khớp lệnh phát sinh từ lệnh này (FK qua Order Accept #)"
       notes: null
       data_volume_hint: null
@@ -26,21 +26,21 @@ brd_entries:
         filter_logic: "order_date = {etl_date}"
         filter_note: "Sổ lệnh HOSE — append theo ngày giao dịch, mỗi event lệnh mới/sửa/hủy"
 
-  - brd_id: BRD-SRC-OrderTrade-Order_HNX
-    brd_name: "Design Atomic từ nguồn OrderTrade bảng Order_HNX"
+  - brd_id: BRD-SRC-ORDERTRADE-HNX_ORDER_BOOK
+    brd_name: "Design Atomic từ nguồn ORDERTRADE bảng HNX_ORDER_BOOK"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Sổ lệnh HNX — tương đương Order_HOSE nhưng cho sàn HNX (cổ phiếu niêm yết / UPCOM / TPCP / TP DN / phái sinh). Có thêm tính năng Iceberg order và Stop order theo chuẩn KRX."
+      table_meaning: "Sổ lệnh HNX — tương đương HOSE_ORDER_BOOK nhưng cho sàn HNX (cổ phiếu niêm yết / UPCOM / TPCP / TP DN / phái sinh). Có thêm tính năng Iceberg order và Stop order theo chuẩn KRX."
       functional_group: "UID-01 Lệnh giao dịch (Order Lifecycle)"
       scope_status: in_scope
       scope_reason: null
-      table: Order_HNX
+      table: HNX_ORDER_BOOK
       related_tables:
-        - table: Order_HOSE
+        - table: HOSE_ORDER_BOOK
           relation: "Gộp chung entity Securities Order — phân biệt bằng market_id"
-        - table: Trade_HNX
+        - table: HNX_TRADE_BOOK
           relation: "1-N — khớp lệnh phát sinh từ lệnh này (FK qua Order Reception Number)"
       notes: null
       data_volume_hint: null
@@ -51,8 +51,8 @@ brd_entries:
         filter_note: "Sổ lệnh HNX — append theo ngày giao dịch"
 
   # UID-02 — Khớp lệnh (Trade Execution)
-  - brd_id: BRD-SRC-OrderTrade-Trade_HOSE
-    brd_name: "Design Atomic từ nguồn OrderTrade bảng Trade_HOSE"
+  - brd_id: BRD-SRC-ORDERTRADE-HOSE_TRADE_BOOK
+    brd_name: "Design Atomic từ nguồn ORDERTRADE bảng HOSE_TRADE_BOOK"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
@@ -61,13 +61,13 @@ brd_entries:
       functional_group: "UID-02 Khớp lệnh (Trade Execution)"
       scope_status: in_scope
       scope_reason: null
-      table: Trade_HOSE
+      table: HOSE_TRADE_BOOK
       related_tables:
-        - table: Order_HOSE
+        - table: HOSE_ORDER_BOOK
           relation: "FK (Buy side) Buy - Order Accept # → Securities Order lệnh mua"
-        - table: Order_HOSE
+        - table: HOSE_ORDER_BOOK
           relation: "FK (Sell side) Sell - Order Accept # → Securities Order lệnh bán"
-        - table: Trade_HNX
+        - table: HNX_TRADE_BOOK
           relation: "Gộp chung entity Securities Trade — phân biệt bằng market_id"
       notes: null
       data_volume_hint: null
@@ -77,23 +77,23 @@ brd_entries:
         filter_logic: "trade_date = {etl_date}"
         filter_note: "Sổ khớp HOSE — append theo ngày khớp lệnh"
 
-  - brd_id: BRD-SRC-OrderTrade-Trade_HNX
-    brd_name: "Design Atomic từ nguồn OrderTrade bảng Trade_HNX"
+  - brd_id: BRD-SRC-ORDERTRADE-HNX_TRADE_BOOK
+    brd_name: "Design Atomic từ nguồn ORDERTRADE bảng HNX_TRADE_BOOK"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Sổ khớp HNX — tương đương Trade_HOSE nhưng cho sàn HNX. Bổ sung trường Spread trade legs (Execution Price of Spread First/Second) cho giao dịch phái sinh/repo có 2 vế."
+      table_meaning: "Sổ khớp HNX — tương đương HOSE_TRADE_BOOK nhưng cho sàn HNX. Bổ sung trường Spread trade legs (Execution Price of Spread First/Second) cho giao dịch phái sinh/repo có 2 vế."
       functional_group: "UID-02 Khớp lệnh (Trade Execution)"
       scope_status: in_scope
       scope_reason: null
-      table: Trade_HNX
+      table: HNX_TRADE_BOOK
       related_tables:
-        - table: Order_HNX
+        - table: HNX_ORDER_BOOK
           relation: "FK (Buy side) Buy Order Reception Number → Securities Order lệnh mua"
-        - table: Order_HNX
+        - table: HNX_ORDER_BOOK
           relation: "FK (Sell side) Sell Order Reception Number → Securities Order lệnh bán"
-        - table: Trade_HOSE
+        - table: HOSE_TRADE_BOOK
           relation: "Gộp chung entity Securities Trade — phân biệt bằng market_id"
       notes: null
       data_volume_hint: null
