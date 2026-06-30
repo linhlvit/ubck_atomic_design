@@ -10,7 +10,7 @@ metadata:
   bcv_concept: "[Group] Share Index"
   table_type: Fact Snapshot
   group: T1
-  design_status: approved
+  design_status: draft
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -43,8 +43,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.historyid
-    comment: "BK chính. PK nguồn historyid — unique per lần chụp chỉ số."
+      - MDDS.JAD_MARKETINFOR.HISTORYID    comment: "BK chính. PK nguồn historyid — unique per lần chụp chỉ số."
     classification_context: null
     etl_derived_value: null
 
@@ -58,8 +57,8 @@ attributes:
     status: draft
     source_columns: []
     comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=MDDS.MarketInfor
-    etl_derived_value: MDDS.MarketInfor
+    classification_context: SOURCE_SYSTEM=MDDS.JAD_MARKETINFOR
+    etl_derived_value: MDDS.JAD_MARKETINFOR
 
   # ── CORE IDENTIFIERS ─────────────────────────────────────────────────
   - attribute_name: Market Code
@@ -70,8 +69,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.marketcode
-    comment: null
+      - MDDS.JAD_MARKETINFOR.MARKETCODE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -83,8 +81,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.marketid
-    comment: null
+      - MDDS.JAD_MARKETINFOR.MARKETID    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -96,8 +93,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.id
-    comment: "Metadata kỹ thuật jadapter — giữ để traceability."
+      - MDDS.JAD_MARKETINFOR.ID    comment: "Metadata kỹ thuật jadapter — giữ để traceability."
     classification_context: null
     etl_derived_value: null
 
@@ -109,8 +105,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.tradingdate
-    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - MDDS.JAD_MARKETINFOR.TRADINGDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -122,8 +117,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.indextime
-    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
+      - MDDS.JAD_MARKETINFOR.INDEXTIME    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
     classification_context: null
     etl_derived_value: null
 
@@ -136,8 +130,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.indextypecode
-    comment: "Scheme: MDDS_INDEX_TYPE."
+      - MDDS.JAD_MARKETINFOR.INDEXTYPECODE    comment: "Scheme: MDDS_INDEX_TYPE."
     classification_context: MDDS_INDEX_TYPE
     etl_derived_value: null
 
@@ -149,8 +142,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.marketstatus
-    comment: "Scheme: MDDS_MARKET_STATUS."
+      - MDDS.JAD_MARKETINFOR.MARKETSTATUS    comment: "Scheme: MDDS_MARKET_STATUS."
     classification_context: MDDS_MARKET_STATUS
     etl_derived_value: null
 
@@ -162,8 +154,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.indexcolor
-    comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
+      - MDDS.JAD_MARKETINFOR.INDEXCOLOR    comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
     classification_context: MDDS_PRICE_CHANGE_COLOR
     etl_derived_value: null
 
@@ -175,8 +166,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.haltrsncode
-    comment: "Cần profile giá trị — có thể promote sang Classification Value sau khi profile."
+      - MDDS.JAD_MARKETINFOR.HALTRSNCODE    comment: "Cần profile giá trị — có thể promote sang Classification Value sau khi profile."
     classification_context: null
     etl_derived_value: null
 
@@ -189,8 +179,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.marketindex
-    comment: "Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision — không mất dữ liệu."
+      - MDDS.JAD_MARKETINFOR.MARKETINDEX    comment: "Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision — không mất dữ liệu."
     classification_context: null
     etl_derived_value: null
 
@@ -202,8 +191,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.indexchange
-    comment: null
+      - MDDS.JAD_MARKETINFOR.INDEXCHANGE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -215,8 +203,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.indexpercentchange
-    comment: null
+      - MDDS.JAD_MARKETINFOR.INDEXPERCENTCHANGE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -228,8 +215,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.open
-    comment: null
+      - MDDS.JAD_MARKETINFOR.OPEN    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -241,8 +227,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.high
-    comment: null
+      - MDDS.JAD_MARKETINFOR.HIGH    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -254,8 +239,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.low
-    comment: null
+      - MDDS.JAD_MARKETINFOR.LOW    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -267,8 +251,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.prv_prior_market_index
-    comment: null
+      - MDDS.JAD_MARKETINFOR.PRV_PRIOR_MARKET_INDEX    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -281,8 +264,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.totalvolume
-    comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng CK, cùng pattern với advancesvolumn/declinesvolumn."
+      - MDDS.JAD_MARKETINFOR.TOTALVOLUME    comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng CK, cùng pattern với advancesvolumn/declinesvolumn."
     classification_context: null
     etl_derived_value: null
 
@@ -294,8 +276,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.totalvalue
-    comment: null
+      - MDDS.JAD_MARKETINFOR.TOTALVALUE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -308,8 +289,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.advances
-    comment: null
+      - MDDS.JAD_MARKETINFOR.ADVANCES    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -321,8 +301,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.declines
-    comment: null
+      - MDDS.JAD_MARKETINFOR.DECLINES    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -334,8 +313,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.nochange
-    comment: null
+      - MDDS.JAD_MARKETINFOR.NOCHANGE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -347,8 +325,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.numberofce
-    comment: null
+      - MDDS.JAD_MARKETINFOR.NUMBEROFCE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -360,8 +337,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.numberoffl
-    comment: null
+      - MDDS.JAD_MARKETINFOR.NUMBEROFFL    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -373,8 +349,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.advancesvolumn
-    comment: null
+      - MDDS.JAD_MARKETINFOR.ADVANCESVOLUMN    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -386,8 +361,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.declinesvolumn
-    comment: null
+      - MDDS.JAD_MARKETINFOR.DECLINESVOLUMN    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -399,8 +373,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.nochangevolumn
-    comment: null
+      - MDDS.JAD_MARKETINFOR.NOCHANGEVOLUMN    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -413,8 +386,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.oddlottotalvalue
-    comment: null
+      - MDDS.JAD_MARKETINFOR.ODDLOTTOTALVALUE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -426,8 +398,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.oddlottotalvolume
-    comment: null
+      - MDDS.JAD_MARKETINFOR.ODDLOTTOTALVOLUME    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -440,8 +411,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.pt_total_qtty
-    comment: null
+      - MDDS.JAD_MARKETINFOR.PT_TOTAL_QTTY    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -453,8 +423,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.pt_total_value
-    comment: null
+      - MDDS.JAD_MARKETINFOR.PT_TOTAL_VALUE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -466,8 +435,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.pt_total_trade
-    comment: "Nguồn double precision — widening, không mất dữ liệu."
+      - MDDS.JAD_MARKETINFOR.PT_TOTAL_TRADE    comment: "Nguồn double precision — widening, không mất dữ liệu."
     classification_context: null
     etl_derived_value: null
 
@@ -480,7 +448,6 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_MARKETINFOR.tscprodgrpid
-    comment: null
+      - MDDS.JAD_MARKETINFOR.TSCPRODGRPID    comment: null
     classification_context: null
     etl_derived_value: null

@@ -1,238 +1,238 @@
 schema_type: brd_source_columns
-source: OrderTrade
-table: Trade_HNX
-bronze_table: TRADE_HNX
+source: ORDERTRADE
+table: HNX_TRADE_BOOK
+bronze_table: HNX_TRADE_BOOK
 description: "Sổ khớp HNX — mỗi bản ghi là 1 lần khớp lệnh thành công trên HNX. Tương đương Trade_HOSE nhưng bổ sung Spread trade legs (Exec Price Spread First/Second) cho phái sinh/repo có 2 vế, và Quote Request Code cho RFQ"
 scope_status: in_scope
 
 columns:
-  - name: trade_date
+  - name: TRADE_DATE
     data_type: "date"
     nullable: false
     key: null
     description: "Ngày giao dịch của trade"
 
-  - name: market_id
+  - name: MARKET_ID
     data_type: "varchar(10)"
     nullable: false
     key: null
     description: "Mã thị trường chứng khoán"
     values: "STO=HoSE Stock; BDO=HoSE Bond; RPO=HoSE Repo; STX=HNX Stock; UPX=HNX UPCOM; BDX=HNX Gov Bond; DVX=HNX Derivatives; HCX=HNX Corp Bond"
 
-  - name: board_id
+  - name: BOARD_ID
     data_type: "varchar(5)"
     nullable: false
     key: null
     description: "Loại bảng giao dịch"
     values: "G1=Main; G2=Pre open; G3=Post closing; G4=Odd lot; G7=Buy-in; G8=Sell-out; T1=Negotiation regular; T2=Negotiation pre; T3=Negotiation post; T4=Negotiation regular odd lot; T6=Negotiation post odd lot; R1=Negotiation Repo"
 
-  - name: issue_code
+  - name: ISSUE_CODE
     data_type: "varchar(20)"
     nullable: false
     key: null
     description: "Mã định danh của loại chứng khoán đang được giao dịch (unique)"
 
-  - name: trade_no
+  - name: TRADE_NO
     data_type: "varchar(20)"
     nullable: false
     key: PK
     description: "ID của giao dịch — dùng làm unique key, audit, tracking trade (BK)"
 
-  - name: trade_time
+  - name: TRADE_TIME
     data_type: "varchar(20)"
     nullable: true
     key: null
     description: "Thời điểm giao dịch xảy ra"
 
-  - name: trade_price
+  - name: TRADE_PRICE
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Giá khớp của giao dịch"
 
-  - name: trade_qty
+  - name: TRADE_QTY
     data_type: "bigint"
     nullable: true
     key: null
     description: "Khối lượng giao dịch"
 
-  - name: session_id
+  - name: SESSION_ID
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Mã phiên giao dịch"
     values: "00=Pre-market; 10=ATO; 11=ATO extension; 20=Continuous shifted; 21=Continuous extension; 25=Buy-In; 30=ATC; 40=Continuous; 50=Pre off-hour; 60=Post off-hour receipt; 65=Post off-hours; 70=Post off-hour call auction; 80=Unit trading; 90=Trading halt; 99=Market closing"
 
-  - name: sell_replace_cancel_cls_code
+  - name: SELL_REPLACE_CANCEL_CLS_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
     description: "Loại hành động sửa/hủy của lệnh bên bán"
 
-  - name: sell_member_no
+  - name: SELL_MEMBER_NO
     data_type: "varchar(20)"
     nullable: true
     key: null
     description: "Mã định danh công ty chứng khoán thực hiện lệnh bán"
 
-  - name: sell_acct_no
+  - name: SELL_ACCT_NO
     data_type: "varchar(50)"
     nullable: true
     key: null
     description: "Số tài khoản giao dịch của khách hàng thực hiện lệnh bán"
 
-  - name: sell_order_type_code
+  - name: SELL_ORDER_TYPE_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
     description: "Loại lệnh của phía bán"
     values: "1=Market; 2=Limit; 3=Stop Market; 4=Stop Limit; X=Same side limit; Y=Contrary side limit"
 
-  - name: sell_order_condition_code
+  - name: SELL_ORDER_CONDITION_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
     description: "Điều kiện hiệu lực và cách xử lý của lệnh bán"
     values: "0=FAS; 1=GTC; 2=ATO; 3=FAK; 4=FOK; 6=GTD; 7=ATC; 9=MTL"
 
-  - name: sell_client_house_cls
+  - name: SELL_CLIENT_HOUSE_CLS
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Lệnh bán của khách hàng hay tự doanh"
     values: "10=Client trade; 30=House trade"
 
-  - name: sell_investor_cls_code
+  - name: SELL_INVESTOR_CLS_CODE
     data_type: "varchar(10)"
     nullable: true
     key: null
     description: "Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân (raw từ HNX)"
     values: "1000=Securities/Futures company; 2000=Insurance; 3000=Asset mgmt/Investment; 3100=Private fund; 4000=Bank; 5000=General finance; 6000=Pension/Fund; 7000=Country/International org; 7100=Misc corporation; 8000=Individual"
 
-  - name: sell_order_qty
+  - name: SELL_ORDER_QTY
     data_type: "bigint"
     nullable: true
     key: null
     description: "Khối lượng đặt bán"
 
-  - name: sell_order_price
+  - name: SELL_ORDER_PRICE
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Giá đặt bán"
 
-  - name: buy_member_no
+  - name: BUY_MEMBER_NO
     data_type: "varchar(20)"
     nullable: true
     key: null
     description: "Mã/số công ty chứng khoán thực hiện giao dịch mua"
 
-  - name: buy_replace_cancel_cls_code
+  - name: BUY_REPLACE_CANCEL_CLS_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
     description: "Loại hành động sửa/hủy của lệnh bên mua"
 
-  - name: buy_acct_no
+  - name: BUY_ACCT_NO
     data_type: "varchar(50)"
     nullable: true
     key: null
     description: "Mã tài khoản thực hiện giao dịch mua"
 
-  - name: buy_order_type_code
+  - name: BUY_ORDER_TYPE_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
     description: "Loại lệnh mua"
     values: "1=Market; 2=Limit; 3=Stop Market; 4=Stop Limit; X=Same side limit; Y=Contrary side limit"
 
-  - name: buy_order_condition_code
+  - name: BUY_ORDER_CONDITION_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
     description: "Điều kiện thực hiện lệnh mua"
     values: "0=FAS; 1=GTC; 2=ATO; 3=FAK; 4=FOK; 6=GTD; 7=ATC; 9=MTL"
 
-  - name: buy_client_house_cls
+  - name: BUY_CLIENT_HOUSE_CLS
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Lệnh mua của khách hàng hay tự doanh"
     values: "10=Client trade; 30=House trade"
 
-  - name: buy_investor_cls_code
+  - name: BUY_INVESTOR_CLS_CODE
     data_type: "varchar(10)"
     nullable: true
     key: null
     description: "Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân (raw từ HNX)"
     values: "1000=Securities/Futures company; 2000=Insurance; 3000=Asset mgmt/Investment; 3100=Private fund; 4000=Bank; 5000=General finance; 6000=Pension/Fund; 7000=Country/International org; 7100=Misc corporation; 8000=Individual"
 
-  - name: buy_order_qty
+  - name: BUY_ORDER_QTY
     data_type: "bigint"
     nullable: true
     key: null
     description: "Khối lượng đặt mua"
 
-  - name: buy_order_price
+  - name: BUY_ORDER_PRICE
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Giá đặt mua"
 
-  - name: msg_seq
+  - name: MSG_SEQ
     data_type: "bigint"
     nullable: true
     key: null
     description: "Số thứ tự message trong luồng dữ liệu (tăng dần từ 1)"
 
-  - name: sell_order_reception_no
+  - name: SELL_ORDER_RECEPTION_NO
     data_type: "varchar(20)"
     nullable: true
     key: FK
-    fk_note: "FK-BK → Order_HNX.order_reception_no (Sell side)"
+    fk_note: "FK-BK → HNX_ORDER_BOOK.order_reception_no (Sell side)"
     description: "Số định danh của lệnh bán tại thời điểm hệ thống KRX tiếp nhận"
 
-  - name: buy_order_reception_no
+  - name: BUY_ORDER_RECEPTION_NO
     data_type: "varchar(20)"
     nullable: true
     key: FK
-    fk_note: "FK-BK → Order_HNX.order_reception_no (Buy side)"
+    fk_note: "FK-BK → HNX_ORDER_BOOK.order_reception_no (Buy side)"
     description: "Số định danh của lệnh mua tại thời điểm hệ thống KRX tiếp nhận"
 
-  - name: sell_quote_request_code
+  - name: SELL_QUOTE_REQUEST_CODE
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Mã loại yêu cầu báo giá của bên bán (HNX RFQ)"
     values: "1=Request; 2=Cancel; 3=Confirm; 4=Reject"
 
-  - name: buy_quote_request_code
+  - name: BUY_QUOTE_REQUEST_CODE
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Mã loại yêu cầu báo giá của bên mua (HNX RFQ)"
     values: "1=Request; 2=Cancel; 3=Confirm; 4=Reject"
 
-  - name: exec_price_spread_first
+  - name: EXEC_PRICE_SPREAD_FIRST
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Giá khớp của leg thứ nhất trong spread trade (HNX-only: phái sinh/repo 2 vế)"
 
-  - name: exec_price_spread_second
+  - name: EXEC_PRICE_SPREAD_SECOND
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo 2 vế)"
 
-  - name: sell_foreign_investor_type_code
+  - name: SELL_FOREIGN_INVESTOR_TYPE_CODE
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán"
     values: "00=Not Foreigner; 10=Foreigner Residence; 20=Foreigner Non-residence"
 
-  - name: buy_foreign_investor_type_code
+  - name: BUY_FOREIGN_INVESTOR_TYPE_CODE
     data_type: "varchar(5)"
     nullable: true
     key: null

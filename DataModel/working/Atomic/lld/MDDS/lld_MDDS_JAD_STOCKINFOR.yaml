@@ -10,7 +10,7 @@ metadata:
   bcv_concept: "[Product] Financial Market Instrument"
   table_type: Fact Snapshot
   group: T1
-  design_status: approved
+  design_status: draft
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -43,8 +43,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.historyid
-    comment: "BK chính. PK nguồn historyid — unique per lần chụp."
+      - MDDS.JAD_STOCKINFOR.HISTORYID    comment: "BK chính. PK nguồn historyid — unique per lần chụp."
     classification_context: null
     etl_derived_value: null
 
@@ -58,8 +57,8 @@ attributes:
     status: draft
     source_columns: []
     comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=MDDS.StockInfor
-    etl_derived_value: MDDS.StockInfor
+    classification_context: SOURCE_SYSTEM=MDDS.JAD_STOCKINFOR
+    etl_derived_value: MDDS.JAD_STOCKINFOR
 
   # ── CORE IDENTIFIERS ─────────────────────────────────────────────────
   - attribute_name: Symbol
@@ -70,8 +69,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.symbol
-    comment: null
+      - MDDS.JAD_STOCKINFOR.SYMBOL    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -83,8 +81,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.tradingdate
-    comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate format nhất quán."
+      - MDDS.JAD_STOCKINFOR.TRADINGDATE    comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate format nhất quán."
     classification_context: null
     etl_derived_value: null
 
@@ -96,8 +93,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.fullname
-    comment: null
+      - MDDS.JAD_STOCKINFOR.FULLNAME    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -109,8 +105,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.stockid
-    comment: "Mã nội bộ Sở — giữ dạng text denormalized."
+      - MDDS.JAD_STOCKINFOR.STOCKID    comment: "Mã nội bộ Sở — giữ dạng text denormalized."
     classification_context: null
     etl_derived_value: null
 
@@ -122,8 +117,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.kid
-    comment: "Metadata kỹ thuật jadapter — giữ để traceability."
+      - MDDS.JAD_STOCKINFOR.KID    comment: "Metadata kỹ thuật jadapter — giữ để traceability."
     classification_context: null
     etl_derived_value: null
 
@@ -136,8 +130,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.stocktype
-    comment: "Scheme: MDDS_STOCK_TYPE."
+      - MDDS.JAD_STOCKINFOR.STOCKTYPE    comment: "Scheme: MDDS_STOCK_TYPE."
     classification_context: MDDS_STOCK_TYPE
     etl_derived_value: null
 
@@ -149,8 +142,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.floorcode
-    comment: "Scheme: MDDS_FLOOR_CODE."
+      - MDDS.JAD_STOCKINFOR.FLOORCODE    comment: "Scheme: MDDS_FLOOR_CODE."
     classification_context: MDDS_FLOOR_CODE
     etl_derived_value: null
 
@@ -162,8 +154,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.tradingsessionid
-    comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
+      - MDDS.JAD_STOCKINFOR.TRADINGSESSIONID    comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
     classification_context: MDDS_TRADING_SESSION_STATUS
     etl_derived_value: null
 
@@ -175,8 +166,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.lastcolor
-    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
+      - MDDS.JAD_STOCKINFOR.LASTCOLOR    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
     classification_context: MDDS_TRADE_DIRECTION
     etl_derived_value: null
 
@@ -188,8 +178,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.symbolstatuscode
-    comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
+      - MDDS.JAD_STOCKINFOR.SYMBOLSTATUSCODE    comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
     classification_context: MDDS_SYMBOL_STATUS
     etl_derived_value: null
 
@@ -202,8 +191,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.ceiling
-    comment: null
+      - MDDS.JAD_STOCKINFOR.CEILING    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -215,8 +203,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.floor
-    comment: null
+      - MDDS.JAD_STOCKINFOR.FLOOR    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -228,8 +215,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.reference
-    comment: null
+      - MDDS.JAD_STOCKINFOR.REFERENCE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -241,8 +227,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.closeprice
-    comment: null
+      - MDDS.JAD_STOCKINFOR.CLOSEPRICE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -254,8 +239,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.closevol
-    comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ liệu."
+      - MDDS.JAD_STOCKINFOR.CLOSEVOL    comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ liệu."
     classification_context: null
     etl_derived_value: null
 
@@ -267,8 +251,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.change
-    comment: null
+      - MDDS.JAD_STOCKINFOR.CHANGE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -280,8 +263,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.open
-    comment: null
+      - MDDS.JAD_STOCKINFOR.OPEN    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -293,8 +275,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.high
-    comment: null
+      - MDDS.JAD_STOCKINFOR.HIGH    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -306,8 +287,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.low
-    comment: null
+      - MDDS.JAD_STOCKINFOR.LOW    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -319,8 +299,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.averageprice
-    comment: null
+      - MDDS.JAD_STOCKINFOR.AVERAGEPRICE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -333,8 +312,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.bidprice1
-    comment: null
+      - MDDS.JAD_STOCKINFOR.BIDPRICE1    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -346,8 +324,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.bidvol1
-    comment: null
+      - MDDS.JAD_STOCKINFOR.BIDVOL1    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -359,8 +336,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.bidprice2
-    comment: null
+      - MDDS.JAD_STOCKINFOR.BIDPRICE2    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -372,8 +348,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.bidvol2
-    comment: null
+      - MDDS.JAD_STOCKINFOR.BIDVOL2    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -385,8 +360,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.bidprice3
-    comment: null
+      - MDDS.JAD_STOCKINFOR.BIDPRICE3    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -398,8 +372,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.bidvol3
-    comment: null
+      - MDDS.JAD_STOCKINFOR.BIDVOL3    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -412,8 +385,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.offerprice1
-    comment: null
+      - MDDS.JAD_STOCKINFOR.OFFERPRICE1    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -425,8 +397,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.offervol1
-    comment: null
+      - MDDS.JAD_STOCKINFOR.OFFERVOL1    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -438,8 +409,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.offerprice2
-    comment: null
+      - MDDS.JAD_STOCKINFOR.OFFERPRICE2    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -451,8 +421,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.offervol2
-    comment: null
+      - MDDS.JAD_STOCKINFOR.OFFERVOL2    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -464,8 +433,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.offerprice3
-    comment: null
+      - MDDS.JAD_STOCKINFOR.OFFERPRICE3    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -477,8 +445,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.offervol3
-    comment: null
+      - MDDS.JAD_STOCKINFOR.OFFERVOL3    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -491,8 +458,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.totaltrading
-    comment: null
+      - MDDS.JAD_STOCKINFOR.TOTALTRADING    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -504,8 +470,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.totaltradingvalue
-    comment: null
+      - MDDS.JAD_STOCKINFOR.TOTALTRADINGVALUE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -517,8 +482,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.total_offer_qtty
-    comment: null
+      - MDDS.JAD_STOCKINFOR.TOTAL_OFFER_QTTY    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -530,8 +494,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.total_bid_qtty
-    comment: null
+      - MDDS.JAD_STOCKINFOR.TOTAL_BID_QTTY    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -544,8 +507,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.foreignbuy
-    comment: null
+      - MDDS.JAD_STOCKINFOR.FOREIGNBUY    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -557,8 +519,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.foreignsell
-    comment: null
+      - MDDS.JAD_STOCKINFOR.FOREIGNSELL    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -570,8 +531,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.foreignremain
-    comment: null
+      - MDDS.JAD_STOCKINFOR.FOREIGNREMAIN    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -583,8 +543,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.foreignroom
-    comment: null
+      - MDDS.JAD_STOCKINFOR.FOREIGNROOM    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -597,8 +556,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.pt_match_qtty
-    comment: "PT = Put-Through (giao dịch thỏa thuận)."
+      - MDDS.JAD_STOCKINFOR.PT_MATCH_QTTY    comment: "PT = Put-Through (giao dịch thỏa thuận)."
     classification_context: null
     etl_derived_value: null
 
@@ -610,8 +568,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.pt_match_price
-    comment: "Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount."
+      - MDDS.JAD_STOCKINFOR.PT_MATCH_PRICE    comment: "Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount."
     classification_context: null
     etl_derived_value: null
 
@@ -623,8 +580,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.pt_total_traded_qtty
-    comment: null
+      - MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_QTTY    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -636,8 +592,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.pt_total_traded_value
-    comment: null
+      - MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_VALUE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -650,8 +605,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.status
-    comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+      - MDDS.JAD_STOCKINFOR.STATUS    comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
     classification_context: MDDS_SECURITY_EVENT_STATUS
     etl_derived_value: null
 
@@ -663,8 +617,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.symbolisin
-    comment: null
+      - MDDS.JAD_STOCKINFOR.SYMBOLISIN    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -676,8 +629,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.listedshare
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
+      - MDDS.JAD_STOCKINFOR.LISTEDSHARE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -689,8 +641,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.totallistingqtty
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
+      - MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -703,8 +654,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.marketid
-    comment: null
+      - MDDS.JAD_STOCKINFOR.MARKETID    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -716,8 +666,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.boardid
-    comment: null
+      - MDDS.JAD_STOCKINFOR.BOARDID    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -729,8 +678,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.productgrpid
-    comment: null
+      - MDDS.JAD_STOCKINFOR.PRODUCTGRPID    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -742,8 +690,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.productid
-    comment: null
+      - MDDS.JAD_STOCKINFOR.PRODUCTID    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -755,8 +702,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.tradingtime
-    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
+      - MDDS.JAD_STOCKINFOR.TRADINGTIME    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
     classification_context: null
     etl_derived_value: null
 
@@ -769,8 +715,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.fundtype
-    comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá trị."
+      - MDDS.JAD_STOCKINFOR.FUNDTYPE    comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá trị."
     classification_context: null
     etl_derived_value: null
 
@@ -783,8 +728,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.openinterest
-    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU/OP."
+      - MDDS.JAD_STOCKINFOR.OPENINTEREST    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU/OP."
     classification_context: null
     etl_derived_value: null
 
@@ -796,8 +740,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.firsttradingdate
-    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - MDDS.JAD_STOCKINFOR.FIRSTTRADINGDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -809,8 +752,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.lasttradingdate
-    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - MDDS.JAD_STOCKINFOR.LASTTRADINGDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -822,8 +764,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.underlyingsymbol
-    comment: null
+      - MDDS.JAD_STOCKINFOR.UNDERLYINGSYMBOL    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -835,8 +776,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.issuername
-    comment: null
+      - MDDS.JAD_STOCKINFOR.ISSUERNAME    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -848,8 +788,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.coveredwarranttype
-    comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+      - MDDS.JAD_STOCKINFOR.COVEREDWARRANTTYPE    comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
     classification_context: MDDS_COVERED_WARRANT_TYPE
     etl_derived_value: null
 
@@ -861,8 +800,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.maturitydate
-    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - MDDS.JAD_STOCKINFOR.MATURITYDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -874,8 +812,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.exerciseprice
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+      - MDDS.JAD_STOCKINFOR.EXERCISEPRICE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -887,8 +824,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.exerciseratio
-    comment: "Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay decimal."
+      - MDDS.JAD_STOCKINFOR.EXERCISERATIO    comment: "Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay decimal."
     classification_context: null
     etl_derived_value: null
 
@@ -900,8 +836,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.settlementprice
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+      - MDDS.JAD_STOCKINFOR.SETTLEMENTPRICE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -913,8 +848,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.maturitymonthyear
-    comment: "Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn hóa format."
+      - MDDS.JAD_STOCKINFOR.MATURITYMONTHYEAR    comment: "Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn hóa format."
     classification_context: null
     etl_derived_value: null
 
@@ -926,8 +860,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.listingdate
-    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - MDDS.JAD_STOCKINFOR.LISTINGDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -939,8 +872,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.contractmultiplier
-    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU."
+      - MDDS.JAD_STOCKINFOR.CONTRACTMULTIPLIER    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU."
     classification_context: null
     etl_derived_value: null
 
@@ -952,8 +884,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.putorcall
-    comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị khi stocktype = OP."
+      - MDDS.JAD_STOCKINFOR.PUTORCALL    comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị khi stocktype = OP."
     classification_context: MDDS_PUT_OR_CALL
     etl_derived_value: null
 
@@ -965,8 +896,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.exercisestyle
-    comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other — chuẩn quốc tế, tập cố định."
+      - MDDS.JAD_STOCKINFOR.EXERCISESTYLE    comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other — chuẩn quốc tế, tập cố định."
     classification_context: MDDS_EXERCISE_STYLE
     etl_derived_value: null
 
@@ -979,8 +909,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.couponrate
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+      - MDDS.JAD_STOCKINFOR.COUPONRATE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -992,8 +921,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.yield
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+      - MDDS.JAD_STOCKINFOR.YIELD    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -1005,7 +933,6 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_STOCKINFOR.issuedate
-    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - MDDS.JAD_STOCKINFOR.ISSUEDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null

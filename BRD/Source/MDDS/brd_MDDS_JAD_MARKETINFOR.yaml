@@ -1,140 +1,140 @@
 schema_type: brd_source_columns
 source: MDDS
-table: MarketInfor
+table: MARKETINFOR
 bronze_table: JAD_MARKETINFOR
 description: "Snapshot tổng hợp trạng thái sàn/chỉ số tại một thời điểm trong ngày — điểm chỉ số, tổng KL/GT, số mã tăng/giảm/trần/sàn, trạng thái phiên, giao dịch thỏa thuận"
 scope_status: in_scope
 
 columns:
-  - name: historyid
+  - name: HISTORYID
     data_type: "character varying(255)"
     nullable: false
     description: "ID unique để lưu lịch sử — PK thực tế của bảng"
-  - name: id
+  - name: ID
     data_type: "character varying(255)"
     nullable: true
     description: "ID jadapter sinh"
-  - name: marketindex
+  - name: MARKETINDEX
     data_type: double precision
     nullable: false
     description: "Giá trị index tại thời điểm ghi nhận"
-  - name: indextime
+  - name: INDEXTIME
     data_type: "character varying(255)"
     nullable: true
     description: "Thời gian ghi nhận chỉ số"
-  - name: indexcolor
+  - name: INDEXCOLOR
     data_type: "character varying(255)"
     nullable: true
     description: "Indicator index đang tăng/giảm"
-  - name: indexchange
+  - name: INDEXCHANGE
     data_type: double precision
     nullable: false
     description: "Giá trị index thay đổi so với index cuối ngày hôm trước"
-  - name: indexpercentchange
+  - name: INDEXPERCENTCHANGE
     data_type: double precision
     nullable: false
     description: "% index thay đổi so với index cuối ngày hôm trước"
-  - name: totalvolume
+  - name: TOTALVOLUME
     data_type: double precision
     nullable: false
     description: "Tổng khối lượng đã khớp"
-  - name: totalvalue
+  - name: TOTALVALUE
     data_type: double precision
     nullable: false
     description: "Tổng giá trị đã khớp"
-  - name: marketstatus
+  - name: MARKETSTATUS
     data_type: "character varying(255)"
     nullable: true
     description: "Trạng thái phiên giao dịch"
-  - name: advances
+  - name: ADVANCES
     data_type: integer
     nullable: false
     description: "Số lượng mã tăng"
-  - name: declines
+  - name: DECLINES
     data_type: integer
     nullable: false
     description: "Số lượng mã giảm"
-  - name: nochange
+  - name: NOCHANGE
     data_type: integer
     nullable: false
     description: "Số lượng mã không tăng/giảm"
-  - name: advancesvolumn
+  - name: ADVANCESVOLUMN
     data_type: bigint
     nullable: false
     description: "Tổng khối lượng đã khớp của các mã tăng"
-  - name: declinesvolumn
+  - name: DECLINESVOLUMN
     data_type: bigint
     nullable: false
     description: "Tổng khối lượng đã khớp của các mã giảm"
-  - name: nochangevolumn
+  - name: NOCHANGEVOLUMN
     data_type: bigint
     nullable: false
     description: "Khối lượng khớp mã không tăng/giảm"
-  - name: marketid
+  - name: MARKETID
     data_type: "character varying(255)"
     nullable: true
     description: "ID thị trường — FSS tự quy định"
-  - name: marketcode
+  - name: MARKETCODE
     data_type: "character varying(255)"
     nullable: true
     description: "Mã thị trường — FSS tự quy định"
-  - name: prv_prior_market_index
+  - name: PRV_PRIOR_MARKET_INDEX
     data_type: double precision
     nullable: false
     description: "Index cuối cùng của phiên trước đó"
-  - name: pt_total_qtty
+  - name: PT_TOTAL_QTTY
     data_type: bigint
     nullable: false
     description: "Tổng khối lượng giao dịch thỏa thuận"
-  - name: pt_total_value
+  - name: PT_TOTAL_VALUE
     data_type: double precision
     nullable: false
     description: "Tổng giá trị giao dịch thỏa thuận"
-  - name: pt_total_trade
+  - name: PT_TOTAL_TRADE
     data_type: double precision
     nullable: false
     description: "Tổng số giao dịch thỏa thuận"
-  - name: numberofce
+  - name: NUMBEROFCE
     data_type: integer
     nullable: false
     description: "Số lượng mã đang trần"
-  - name: numberoffl
+  - name: NUMBEROFFL
     data_type: integer
     nullable: false
     description: "Số lượng mã đang sàn"
-  - name: oddlottotalvalue
+  - name: ODDLOTTOTALVALUE
     data_type: double precision
     nullable: false
     description: "Giá trị khớp lô lẻ"
-  - name: oddlottotalvolume
+  - name: ODDLOTTOTALVOLUME
     data_type: bigint
     nullable: false
     description: "Khối lượng khớp lô lẻ"
-  - name: tradingdate
+  - name: TRADINGDATE
     data_type: "character varying(255)"
     nullable: true
     description: "Ngày giao dịch"
-  - name: tscprodgrpid
+  - name: TSCPRODGRPID
     data_type: "character varying(255)"
     nullable: true
     description: "Mã sản phẩm giao dịch (hose/hnx/upcom)"
-  - name: haltrsncode
+  - name: HALTRSNCODE
     data_type: "character varying(255)"
     nullable: true
     description: "Lý do thị trường bị halt"
-  - name: indextypecode
+  - name: INDEXTYPECODE
     data_type: "character varying(255)"
     nullable: true
     description: "Loại index — mã Sở quy định"
-  - name: open
+  - name: OPEN
     data_type: double precision
     nullable: false
     description: "Index mở cửa"
-  - name: low
+  - name: LOW
     data_type: double precision
     nullable: false
     description: "Index thấp nhất tính đến thời điểm hiện tại"
-  - name: high
+  - name: HIGH
     data_type: double precision
     nullable: false
     description: "Index cao nhất tính đến thời điểm hiện tại"
