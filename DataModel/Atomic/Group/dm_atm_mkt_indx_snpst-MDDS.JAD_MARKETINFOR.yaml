@@ -2,7 +2,7 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-mkt_indx_snpst-MDDS.MarketInfor
+  id: ATM-mkt_indx_snpst-MDDS.JAD_MARKETINFOR
   logical_name: Market Index Snapshot
   physical_name: mkt_indx_snpst
   layer: Atomic
@@ -19,7 +19,7 @@ ldm:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-MDDS-MarketInfor
+    brd: BRD-SRC-MDDS-JAD_MARKETINFOR
 
 attributes:
   - name: Market Index Snapshot Id
@@ -30,7 +30,7 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: MDDS
-    source_table: MarketInfor
+    source_table: JAD_MARKETINFOR
     source_column: null
     comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ số thị trường tại 1 thời điểm."
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
@@ -44,9 +44,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.historyid
-    comment: BK chính. PK nguồn historyid — unique per lần chụp chỉ số.
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.HISTORYID    comment: BK chính. PK nguồn historyid — unique per lần chụp chỉ số.
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -58,11 +57,11 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
+    source_table: JAD_MARKETINFOR
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
-    etl_derived_value: MDDS.MarketInfor
+    etl_derived_value: MDDS.JAD_MARKETINFOR
 
   - name: Market Code
     physical_name: mkt_code
@@ -72,9 +71,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.marketcode
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.MARKETCODE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -86,9 +84,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.marketid
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.MARKETID    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -100,9 +97,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.id
-    comment: Metadata kỹ thuật jadapter — giữ để traceability.
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.ID    comment: Metadata kỹ thuật jadapter — giữ để traceability.
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -114,9 +110,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.tradingdate
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.TRADINGDATE    comment: Nguồn lưu dạng string — ETL cần parse sang date.
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -128,9 +123,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.indextime
-    comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp.
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.INDEXTIME    comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp.
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -142,9 +136,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.indextypecode
-    comment: "Scheme: MDDS_INDEX_TYPE."
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.INDEXTYPECODE    comment: "Scheme: MDDS_INDEX_TYPE."
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -156,9 +149,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.marketstatus
-    comment: "Scheme: MDDS_MARKET_STATUS."
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.MARKETSTATUS    comment: "Scheme: MDDS_MARKET_STATUS."
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -170,9 +162,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.indexcolor
-    comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.INDEXCOLOR    comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -184,9 +175,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.haltrsncode
-    comment: Cần profile giá trị — có thể promote sang Classification Value sau khi profile.
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.HALTRSNCODE    comment: Cần profile giá trị — có thể promote sang Classification Value sau khi profile.
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -198,9 +188,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.marketindex
-    comment: Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision — không mất dữ liệu.
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.MARKETINDEX    comment: Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision — không mất dữ liệu.
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -212,9 +201,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.indexchange
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.INDEXCHANGE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -226,9 +214,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.indexpercentchange
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.INDEXPERCENTCHANGE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -240,9 +227,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.open
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.OPEN    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -254,9 +240,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.high
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.HIGH    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -268,9 +253,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.low
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.LOW    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -282,9 +266,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.prv_prior_market_index
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.PRV_PRIOR_MARKET_INDEX    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -296,9 +279,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.totalvolume
-    comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng CK, cùng pattern với advancesvolumn/declinesvolumn."
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.TOTALVOLUME    comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng CK, cùng pattern với advancesvolumn/declinesvolumn."
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -310,9 +292,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.totalvalue
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.TOTALVALUE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -324,9 +305,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.advances
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.ADVANCES    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -338,9 +318,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.declines
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.DECLINES    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -352,9 +331,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.nochange
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.NOCHANGE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -366,9 +344,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.numberofce
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.NUMBEROFCE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -380,9 +357,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.numberoffl
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.NUMBEROFFL    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -394,9 +370,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.advancesvolumn
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.ADVANCESVOLUMN    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -408,9 +383,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.declinesvolumn
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.DECLINESVOLUMN    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -422,9 +396,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.nochangevolumn
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.NOCHANGEVOLUMN    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -436,9 +409,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.oddlottotalvalue
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.ODDLOTTOTALVALUE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -450,9 +422,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.oddlottotalvolume
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.ODDLOTTOTALVOLUME    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -464,9 +435,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.pt_total_qtty
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_QTTY    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -478,9 +448,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.pt_total_value
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_VALUE    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -492,9 +461,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.pt_total_trade
-    comment: "Nguồn double precision — widening, không mất dữ liệu."
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_TRADE    comment: "Nguồn double precision — widening, không mất dữ liệu."
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null
 
@@ -506,8 +474,7 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: MarketInfor
-    source_column: MDDS.JAD_MARKETINFOR.tscprodgrpid
-    comment: null
+    source_table: JAD_MARKETINFOR
+    source_column: MDDS.JAD_MARKETINFOR.TSCPRODGRPID    comment: null
     classification_context: "Source System Code = 'MDDS_MARKETINFOR'"
     etl_derived_value: null

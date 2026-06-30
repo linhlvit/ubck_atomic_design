@@ -2,7 +2,7 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-scr_tdg_snpst-MDDS.StockInfor
+  id: ATM-scr_tdg_snpst-MDDS.JAD_STOCKINFOR
   logical_name: Security Trading Snapshot
   physical_name: scr_tdg_snpst
   layer: Atomic
@@ -19,7 +19,7 @@ ldm:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-MDDS-StockInfor
+    brd: BRD-SRC-MDDS-JAD_STOCKINFOR
 
 attributes:
   - name: Security Trading Snapshot Id
@@ -30,7 +30,7 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: MDDS
-    source_table: StockInfor
+    source_table: JAD_STOCKINFOR
     source_column: null
     comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot trạng thái giao dịch của 1 mã CK tại 1 thời điểm."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
@@ -44,9 +44,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.historyid
-    comment: BK chính. PK nguồn historyid — unique per lần chụp.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.HISTORYID    comment: BK chính. PK nguồn historyid — unique per lần chụp.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -58,11 +57,11 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
+    source_table: JAD_STOCKINFOR
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
-    etl_derived_value: MDDS.StockInfor
+    etl_derived_value: MDDS.JAD_STOCKINFOR
 
   - name: Symbol
     physical_name: symb
@@ -72,9 +71,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.symbol
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.SYMBOL    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -86,9 +84,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.tradingdate
-    comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate format nhất quán.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TRADINGDATE    comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate format nhất quán.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -100,9 +97,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.fullname
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FULLNAME    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -114,9 +110,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.stockid
-    comment: Mã nội bộ Sở — giữ dạng text denormalized.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.STOCKID    comment: Mã nội bộ Sở — giữ dạng text denormalized.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -128,9 +123,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.kid
-    comment: Metadata kỹ thuật jadapter — giữ để traceability.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.KID    comment: Metadata kỹ thuật jadapter — giữ để traceability.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -142,9 +136,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.stocktype
-    comment: "Scheme: MDDS_STOCK_TYPE."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.STOCKTYPE    comment: "Scheme: MDDS_STOCK_TYPE."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -156,9 +149,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.floorcode
-    comment: "Scheme: MDDS_FLOOR_CODE."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FLOORCODE    comment: "Scheme: MDDS_FLOOR_CODE."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -170,9 +162,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.tradingsessionid
-    comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TRADINGSESSIONID    comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -184,9 +175,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.lastcolor
-    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.LASTCOLOR    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -198,9 +188,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.symbolstatuscode
-    comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.SYMBOLSTATUSCODE    comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -212,9 +201,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.ceiling
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.CEILING    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -226,9 +214,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.floor
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FLOOR    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -240,9 +227,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.reference
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.REFERENCE    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -254,9 +240,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.closeprice
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.CLOSEPRICE    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -268,9 +253,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.closevol
-    comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ liệu.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.CLOSEVOL    comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ liệu.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -282,9 +266,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.change
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.CHANGE    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -296,9 +279,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.open
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OPEN    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -310,9 +292,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.high
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.HIGH    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -324,9 +305,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.low
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.LOW    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -338,9 +318,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.averageprice
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.AVERAGEPRICE    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -352,9 +331,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.bidprice1
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.BIDPRICE1    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -366,9 +344,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.bidvol1
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.BIDVOL1    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -380,9 +357,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.bidprice2
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.BIDPRICE2    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -394,9 +370,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.bidvol2
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.BIDVOL2    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -408,9 +383,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.bidprice3
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.BIDPRICE3    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -422,9 +396,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.bidvol3
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.BIDVOL3    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -436,9 +409,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.offerprice1
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE1    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -450,9 +422,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.offervol1
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OFFERVOL1    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -464,9 +435,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.offerprice2
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE2    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -478,9 +448,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.offervol2
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OFFERVOL2    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -492,9 +461,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.offerprice3
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE3    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -506,9 +474,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.offervol3
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OFFERVOL3    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -520,9 +487,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.totaltrading
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TOTALTRADING    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -534,9 +500,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.totaltradingvalue
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TOTALTRADINGVALUE    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -548,9 +513,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.total_offer_qtty
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TOTAL_OFFER_QTTY    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -562,9 +526,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.total_bid_qtty
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TOTAL_BID_QTTY    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -576,9 +539,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.foreignbuy
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FOREIGNBUY    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -590,9 +552,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.foreignsell
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FOREIGNSELL    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -604,9 +565,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.foreignremain
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FOREIGNREMAIN    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -618,9 +578,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.foreignroom
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FOREIGNROOM    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -632,9 +591,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.pt_match_qtty
-    comment: "PT = Put-Through (giao dịch thỏa thuận)."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_QTTY    comment: "PT = Put-Through (giao dịch thỏa thuận)."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -646,9 +604,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.pt_match_price
-    comment: Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_PRICE    comment: Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -660,9 +617,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.pt_total_traded_qtty
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_QTTY    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -674,9 +630,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.pt_total_traded_value
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_VALUE    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -688,9 +643,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.status
-    comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.STATUS    comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -702,9 +656,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.symbolisin
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.SYMBOLISIN    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -716,9 +669,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.listedshare
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.LISTEDSHARE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -730,9 +682,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.totallistingqtty
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -744,9 +695,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.marketid
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.MARKETID    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -758,9 +708,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.boardid
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.BOARDID    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -772,9 +721,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.productgrpid
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.PRODUCTGRPID    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -786,9 +734,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.productid
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.PRODUCTID    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -800,9 +747,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.tradingtime
-    comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TRADINGTIME    comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -814,9 +760,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.fundtype
-    comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá trị."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FUNDTYPE    comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá trị."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -828,9 +773,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.openinterest
-    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU/OP."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.OPENINTEREST    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU/OP."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -842,9 +786,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.firsttradingdate
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.FIRSTTRADINGDATE    comment: Nguồn lưu dạng string — ETL cần parse sang date.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -856,9 +799,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.lasttradingdate
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.LASTTRADINGDATE    comment: Nguồn lưu dạng string — ETL cần parse sang date.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -870,9 +812,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.underlyingsymbol
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.UNDERLYINGSYMBOL    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -884,9 +825,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.issuername
-    comment: null
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.ISSUERNAME    comment: null
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -898,9 +838,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.coveredwarranttype
-    comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.COVEREDWARRANTTYPE    comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -912,9 +851,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.maturitydate
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.MATURITYDATE    comment: Nguồn lưu dạng string — ETL cần parse sang date.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -926,9 +864,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.exerciseprice
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.EXERCISEPRICE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -940,9 +877,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.exerciseratio
-    comment: "Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay decimal."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.EXERCISERATIO    comment: "Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay decimal."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -954,9 +890,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.settlementprice
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.SETTLEMENTPRICE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -968,9 +903,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.maturitymonthyear
-    comment: Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn hóa format.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.MATURITYMONTHYEAR    comment: Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn hóa format.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -982,9 +916,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.listingdate
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.LISTINGDATE    comment: Nguồn lưu dạng string — ETL cần parse sang date.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -996,9 +929,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.contractmultiplier
-    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.CONTRACTMULTIPLIER    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -1010,9 +942,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.putorcall
-    comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị khi stocktype = OP."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.PUTORCALL    comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị khi stocktype = OP."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -1024,9 +955,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.exercisestyle
-    comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other — chuẩn quốc tế, tập cố định."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.EXERCISESTYLE    comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other — chuẩn quốc tế, tập cố định."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -1038,9 +968,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.couponrate
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.COUPONRATE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -1052,9 +981,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.yield
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.YIELD    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
 
@@ -1066,8 +994,7 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: MDDS
-    source_table: StockInfor
-    source_column: MDDS.JAD_STOCKINFOR.issuedate
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.ISSUEDATE    comment: Nguồn lưu dạng string — ETL cần parse sang date.
     classification_context: "Source System Code = 'MDDS_STOCKINFOR'"
     etl_derived_value: null
